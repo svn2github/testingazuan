@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xform style="twocolumn">
+  <title value="Vil du?">
+    <imgButton id="confirm.cancel" src="wcf/form/cancel.png" label="Avbryt"/>
+  </title>
+
+  <manual>
+    <tr>
+      <td colspan="2" class="xform-both" id="body"/>
+    </tr>
+  </manual>
+
+
+  <buttons>
+    <button id="confirm.accept" label="Ja"/>
+    <button id="confirm.cancel" label="Nei"/>
+  </buttons>
+
+</xform>

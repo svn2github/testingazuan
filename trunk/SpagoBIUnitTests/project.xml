@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+ * Copyright 2001-2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+
+<project>
+  <!-- the version of maven's project object model -->
+
+  <id>SpagoBIUnitTest</id>
+  <!-- a short but descriptive name for the project -->
+
+  <name>SpagoBIUnitTest</name>
+  <package>SpagoBIUnitTest</package>
+
+  <!-- The version of the project under development, e.g.
+       1.1, 1.2, 2.0-SNAPSHOT -->
+
+  <currentVersion>1.3</currentVersion>
+  <extend>${basedir}/../project.xml</extend>
+
+  <description>Unit Tests for SpagoBIProject</description>
+  <!-- a short description of what the project does -->
+  <shortDescription>Unit Tests for SpagoBIProject</shortDescription>
+
+  <dependencies>
+
+  	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>3.8.1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>dbunit</groupId>
+		<artifactId>dbunit</artifactId>
+		<version>2.1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>spago-core</groupId>
+		<artifactId>spago-core</artifactId>
+		<version>2.0.0</version>
+	</dependency>
+
+        <dependency>
+                <groupId>spago-web</groupId>
+                <artifactId>spago-web</artifactId>
+                <version>2.0.0</version>
+        </dependency>
+
+	<dependency>
+		<groupId>hibernate</groupId>
+		<artifactId>hibernate</artifactId>
+		<version>3.0.5</version>
+	</dependency>
+
+	<dependency>
+		<groupId>spagocms</groupId>
+		<artifactId>spagocms.renamejcr</artifactId>
+		<version></version>
+		<jar>spagocms.renamejcr.jar</jar>
+	</dependency>
+
+	<dependency>
+		<groupId>sbi.securityprovider.api</groupId>
+		<artifactId>sbi.securityprovider.api</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>sbi.security.exo</groupId>
+		<artifactId>sbi.security.exo</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>portlet-api</groupId>
+		<artifactId>portlet-api</artifactId>
+		<version>1.0</version>
+	</dependency>
+
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>servlet-api</artifactId>
+		<version>2.4</version>
+	</dependency>
+
+	<dependency>
+		<groupId>spagoportlet</groupId>
+		<artifactId>spagoportlet</artifactId>
+		<version></version>
+		<jar>spagoportlet.jar</jar>
+	</dependency>
+
+	<dependency>
+		<groupId>spagobi</groupId>
+		<artifactId>spagobi</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>eng.jackrabbit</groupId>
+		<artifactId>eng.jackrabbit</artifactId>
+		<version>0.16.4.1-dev</version>
+	</dependency>
+
+	<dependency>
+		<groupId>eng.jcr</groupId>
+		<artifactId>eng.jcr</artifactId>
+		<version></version>
+		<jar>eng.jcr.1.0.jar</jar>
+	</dependency>
+
+	<dependency>
+		<groupId>sbi.cmsfactory.api</groupId>
+		<artifactId>sbi.cmsfactory.api</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>sbi.cmsfactory.jackrabbit</groupId>
+		<artifactId>sbi.cmsfactory.jackrabbit</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>sbi.drivers.api</groupId>
+		<artifactId>sbi.drivers.api</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>sbi.drivers.jasperreport</groupId>
+		<artifactId>sbi.drivers.jasperreport</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>sbi.drivers.jpivot</groupId>
+		<artifactId>sbi.drivers.jpivot</artifactId>
+		<version>1.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>geronimo-spec</groupId>
+		<artifactId>geronimo-spec-jta</artifactId>
+		<version>1.0-M1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>antlr</groupId>
+		<artifactId>antlr</artifactId>
+		<version>2.7.5H3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-collections</groupId>
+		<artifactId>commons-collections</artifactId>
+		<version>3.1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-dbcp</groupId>
+		<artifactId>commons-dbcp</artifactId>
+		<version>1.2.1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging-api</artifactId>
+		<version></version>
+		<jar>commons-logging-api.jar</jar>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging</artifactId>
+		<version></version>
+		<jar>commons-logging.jar</jar>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-pool</groupId>
+		<artifactId>commons-pool</artifactId>
+		<version>1.2</version>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-fileupload</groupId>
+		<artifactId>commons-fileupload</artifactId>
+		<version>1.1-dev</version>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-validator</groupId>
+		<artifactId>commons-validator</artifactId>
+		<version>1.1.4</version>
+	</dependency>
+
+	<dependency>
+		<groupId>concurrent</groupId>
+		<artifactId>concurrent</artifactId>
+		<version>1.3.4</version>
+	</dependency>
+
+	<dependency>
+		<groupId>dom4j</groupId>
+		<artifactId>dom4j</artifactId>
+		<version>1.6</version>
+	</dependency>
+
+	<dependency>
+		<groupId>ehcache</groupId>
+		<artifactId>ehcache</artifactId>
+		<version>1.1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.8</version>
+	</dependency>
+
+	<dependency>
+		<groupId>lucene</groupId>
+		<artifactId>lucene</artifactId>
+		<version>1.4.3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>xerces</groupId>
+		<artifactId>xercesImpl</artifactId>
+		<version>2.6.2</version>
+	</dependency>
+
+	<!--dependency>
+		<groupId>xml-apis</groupId>
+		<artifactId>xml-apis</artifactId>
+		<version>2.0.2</version>
+	</dependency-->
+
+	<dependency>
+		<groupId>jakarta-oro</groupId>
+		<artifactId>jakarta-oro</artifactId>
+		<version>2.0.8</version>
+	</dependency>
+
+	<dependency>
+		<groupId>com.jamonapi</groupId>
+		<artifactId>jamon</artifactId>
+		<version>1.0</version>
+	</dependency>
+
+	<dependency>
+		<groupId>hsqldb</groupId>
+		<artifactId>hsqldb</artifactId>
+		<version>1.8.0.1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>asm</groupId>
+		<artifactId>asm</artifactId>
+		<version>1.5.3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>asm</groupId>
+		<artifactId>asm-attrs</artifactId>
+		<version>1.5.3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>cglib</groupId>
+		<artifactId>cglib</artifactId>
+		<version>2.1_2</version>
+		<!--jar>cglib-2.1_2.jar</jar-->
+	</dependency>
+
+        <dependency>
+                <groupId>qbe.core</groupId>
+                <artifactId>qbe.core</artifactId>
+                <version>1.7</version>
+        </dependency>
+
+	<dependency>
+                <groupId>groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>1.0-jsr-03</version>
+        </dependency>
+
+  </dependencies>
+
+  <build>
+	<!--sourceDirectory>src</sourceDirectory-->
+	<unitTestSourceDirectory>${basedir}/src/</unitTestSourceDirectory>
+    		<unitTest>
+			<resources>
+				<resource>
+       					<directory>${basedir}/src</directory>
+				</resource>
+      				<resource>
+					<targetPath>conf</targetPath>
+       					<directory>${basedir}/src/conf</directory>
+				</resource>
+				<resource>
+					<directory>${basedir}/src</directory>
+					<includes>
+					        <include>*</include>
+					</includes>
+      				</resource>
+			</resources>
+     			<includes>
+        			<include>**/*Test.java</include>
+     			</includes>
+     			<excludes>
+
+					<!-- no more used modules and publishers-->
+
+					<exclude>**/DetailBIObjectParameterModuleDbUnitTest.java</exclude>
+        			<exclude>**/DetailBIObjectParameterPublisherJUnitTest.java</exclude>
+
+					<exclude>**/DetailModalitiesModuleDbUnitTest.java</exclude>
+					<exclude>**/DetailModalitiesPublisherJUnitTest.java</exclude>
+
+					<exclude>**/ListBIObjectParametersModuleDbUnitTest.java</exclude>
+					<exclude>**/ListBIObjectParametersPublisherJUnitTest.java</exclude>
+
+					<exclude>**/ListParameterUsesModuleDbUnitTest.java</exclude>
+					<exclude>**/ListParameterUsesPublisherJUnitTest.java</exclude>
+
+					<exclude>**/SingleObjectExecutionModuleDbUnitTest.java</exclude>
+
+     			</excludes>
+     		</unitTest>
+  </build>
+
+
+</project>

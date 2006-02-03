@@ -1,0 +1,21 @@
+<project	default="test-launch-SpagoBIProject"
+		xmlns:j="jelly:core"
+		xmlns:maven="jelly:maven"
+		xmlns:ant="jelly:ant">
+
+<goal name="envSetup">
+  <j:set var="AF_ROOT_PATH" value="${basedir}/src/conf/"/>
+  <j:set var="AF_CONFIG_FILE" value="master.xml"/>
+  <j:set var="maven.junit.sysproperties">AF_ROOT_PATH AF_CONFIG_FILE</j:set>
+  <j:set var="maven.junit.fork" value="yes"/>
+</goal>
+
+<goal name="installCMS" prereqs="envSetup">
+  <ant:unzip src="${basedir}/jackrabbitRepositoriesForRecovery/spagobi_demo.zip" dest="${basedir}/jackrabbitRepositoriesForTest"/>
+</goal>
+
+<goal name="test-launch-SpagoBIProject" prereqs="installCMS">
+  <attainGoal name="maven-junit-report-plugin:report"/>
+  <attainGoal name="xdoc"/>
+</goal>
+</project>

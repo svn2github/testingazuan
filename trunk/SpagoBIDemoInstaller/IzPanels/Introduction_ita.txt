@@ -1,0 +1,16 @@
+Introduzione all'installazione di SpagoBiDemo.
+
+SpagoBIDemo sta per essere installato sul tuo PC.
+Prima di procedere controlla i seguenti requisiti minimi di sistema:
+
+- Distribuzione di Exo-Tomcat 1.0. 
+   NOTA BENE: Exo-Tomcat deve essere scaricato dal repository di Object Web
+   e scompresso in una cartella a scelta.
+   (http://forge.objectweb.org/project/showfiles.php?group_id=151&release_id=791)
+   Per il corretto funzionamento Exo-Tomcat non deve essere eseguito prima dell'installazione.
+   L'installazione su un server Exo-Tomcat preesistente e gia' utilizzato
+   ne comportera' la PERDITA DEI DATI.
+   
+- JDK versione 1.4 (o piu' recente);
+
+- 256 MB di memoria (suggerito).

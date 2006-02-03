@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+  <owner>bitest</owner>
+  <node>
+    <uri>/</uri>
+    <name>home</name>
+    <label>#{home}</label>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <description>/</description>
+    <pageReference type="text/xhtml" visible="true">bitest:/home</pageReference>
+    <pageReference type="application/vnd.wap.xhtml+xml" visible="true">bitest:/mobile</pageReference>
+
+    <node>
+        <uri>/home/manual</uri>
+        <name>manual</name>
+        <label>#{manual}</label>
+        <viewPermission>any</viewPermission>
+        <description>Manual Page</description>
+        <pageReference>bitest:/home/manual</pageReference>
+	<pageReference type="application/vnd.wap.xhtml+xml" visible="false">bitest:/home/manual</pageReference>
+    </node>
+    <node>
+      <uri>/home/sitemap</uri>
+      <name>sitemap</name>
+      <label>#{sitemap}</label>
+      <viewPermission>any</viewPermission>
+      <description>Sitemap Page</description>
+      <pageReference type="text/xhtml" visible="true">bitest:/home/sitemap</pageReference>
+      <pageReference type="application/vnd.wap.xhtml+xml" visible="false">bitest:/home/sitemap</pageReference>
+    </node>
+    <node>
+	  <uri>/</uri>
+      <name>spagobi</name>
+      <label>#{spagobi}</label>
+      <viewPermission>owner</viewPermission>
+      <editPermission>owner</editPermission>
+      <description>/</description>
+      <pageReference>bitest:/home</pageReference>
+    </node>
+  </node>
+</node-navigation>

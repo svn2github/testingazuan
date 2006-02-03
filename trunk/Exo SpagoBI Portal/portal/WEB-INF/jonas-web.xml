@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jonas-web-app PUBLIC "-//ObjectWeb//DTD JOnAS Web App 2.6//EN" "http://www.objectweb.org/jonas/dtds/jonas-web-app_2_6.dtd">
+
+<jonas-web-app>
+
+    <jonas-resource>
+      <res-ref-name>jdbc/ExoDS</res-ref-name>
+      <jndi-name>jdbc/ExoDS</jndi-name>
+    </jonas-resource>     
+    
+    <jonas-resource>
+      <res-ref-name>jdbc/WorkflowDS</res-ref-name>
+      <jndi-name>jdbc/WorkflowDS</jndi-name>
+    </jonas-resource>       
+
+</jonas-web-app>

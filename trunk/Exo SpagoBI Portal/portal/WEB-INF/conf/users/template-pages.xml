@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <owner>@owner@</owner>
+    <name>/home</name>
+    <title>Home</title>    
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Home</title>
+      <windowId>@owner@:/content/DisplayStaticContent/news</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>Introduction</name>
+          <value>title=Introduction</value>
+          <value>uri=war:/portal/static-content/home-intro</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/community</name>
+    <title>Community</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Community</title>
+      <windowId>@owner@:/content/DisplayStaticContent/community</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/community/charter</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/community/forum</name>
+    <title>Forum</title>
+    <state>maximized</state>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>forum</portlet-style>
+      <title>Forum</title>
+      <windowId>@owner@:/communications/Forum/forum</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/community/wiki</name>
+    <title>Wiki</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Wiki</title>
+      <windowId>@owner@:/xwiki/xwiki/wiki</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo</name>
+    <title>Demo</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>exo-content</portlet-style>
+      <title>Demo</title>
+      <windowId>@owner@:/content/DisplayStaticContent/demo</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/community/charter</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/workflow</name>
+    <title>Workflow</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>workflow</portlet-style>
+      <title>Workflow</title>
+      <windowId>@owner@:/workflow/Workflow/workflow-demo</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/explorer/jcr</name>
+    <title>JCR Explorer</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>jcr-explorer</portlet-style>
+      <title>Java Content Repository (JSR 170)</title>
+      <windowId>@owner@:/content/JCRExplorer/jcr-explorer</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/explorer/file</name>
+    <title>File Explorer</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>explorer</portlet-style>
+      <title>File</title>
+      <windowId>@owner@:/content/FileExplorer/file-explorer</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/resources</name>
+    <title>Log</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>resources</portlet-style>
+      <title>Resources</title>
+      <windowId>@owner@:/exo-admin/ResourcesPortlet/resources-demo</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/wsrp</name>
+    <title>Log</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <container renderer="TabRenderer">    
+      <portlet>
+        <portlet-style>wsrp-admin</portlet-style>
+        <title>Admin WSRP</title>
+        <windowId>@owner@:/wsrp/WSRPAdminPortlet/wsrp-admin</windowId>
+      </portlet>
+      <portlet>
+        <portlet-style>wsrp</portlet-style>
+        <title>Consumer Portlet</title>
+        <windowId>@owner@:/wsrp/WSRPConsumerPortlet/wsrp-consumer</windowId>
+      </portlet>    
+    </container>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/bridges</name>
+    <title>Bridges</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>exo-content</portlet-style>
+      <title>Bridges Portlet</title>
+      <windowId>@owner@:/content/DisplayStaticContent/bridges</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/community/charter</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/exomvc</name>
+    <title>eXo MVC Framework</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>eXo MVC Framework</title>
+      <portlet-style>exomvc</portlet-style>
+      <windowId>@owner@:/exomvc/ExoMVC/exomvc</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/mail</name>
+    <title>Mail</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>exo-content</portlet-style>
+      <title>Mail facilities</title>
+      <windowId>@owner@:/content/DisplayStaticContent/mail</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/community/charter</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/mail/message-center</name>
+    <title>message center</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Message Center</title>
+      <portlet-style>msc</portlet-style>
+      <windowId>exo:/communications/MessageCenter/message-center</windowId>
+    </portlet>
+  </page>
+  
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/demo/sms</name>
+    <title>SMS</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>sms</portlet-style>
+      <title>SMS Portlet</title>
+      <windowId>@owner@:/communications/SMS/send-sms</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/profile</name>
+    <title>Profile</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>profile</portlet-style>
+      <title>User profile</title>
+      <windowId>@owner@:/user/UserInfo/profile</windowId>
+    </portlet>
+  </page>  
+
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/search</name>
+    <title>Search</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>search</portlet-style>
+      <title>Search</title>
+      <windowId>@owner@:/content/SearchPortlet/search</windowId>
+    </portlet>
+  </page>  
+  
+  <page>
+    <owner>@owner@</owner>
+    <name>/home/sitemap</name>
+    <title>Site Map</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>sitemap</portlet-style>
+      <title>Site Map</title>
+      <windowId>@owner@:/nav/Sitemap/sitemap</windowId>
+    </portlet>
+  </page>
+</page-set>

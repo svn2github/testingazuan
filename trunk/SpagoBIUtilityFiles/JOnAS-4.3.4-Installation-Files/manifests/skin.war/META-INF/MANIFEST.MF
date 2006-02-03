@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: 1.5.0_01-b08 (Sun Microsystems Inc.)
+Class-Path:  jsf-api-1.1.jar jsf-impl-1.1.jar jstl.jar jstl_el.jar xml
+ -resolver-1.1.jar aspectjrt-1.2.jar commons-logging-1.0.4.jar commons
+ -lang-2.0.jar commons-collections-3.1.jar commons-pool-1.1.jar common
+ s-digester-1.5.jar commons-validator-1.1.1.jar commons-beanutils-1.6.
+ jar lucene-1.4.3.jar hibernate-2.1.6.jar cglib-full-2.0.1.jar odmg-3.
+ 0.jar xpp3-1.1.2a.jar xstream-1.1.jar mx4j-jmx-1.1.1.jar mx4j-tools-1
+ .1.1.jar dom4j-1.4.jar picocontainer-1.1.jar portlet-api-1.0.jar asm-
+ 1.4.1.jar asm-util-1.4.1.jar groovy-1.0-beta-7.jar
+Built-By: tuan
+
+Name: skin.war
+Specification-Title: exoplatform.web.skin
+Specification-Version: 1.0
+Specification-Vendor: eXo Platform SARL
+Implementation-Title: skin.war
+Implementation-Version: 1.0
+Implementation-Vendor: eXo Platform SARL
+

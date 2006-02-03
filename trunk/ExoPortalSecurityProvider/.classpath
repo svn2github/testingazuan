@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/exoplatform.container-1.0.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/exoplatform.services.organization.api-1.0.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/jasper-compiler.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/picocontainer-1.1.jar"/>
+	<classpathentry kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="lib" path="lib/spago-core-2.0.0.jar"/>
+	<classpathentry kind="src" path="/SpagoBIProject"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/exoplatform.services.database.api-1.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
+

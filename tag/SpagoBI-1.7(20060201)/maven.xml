@@ -1,0 +1,353 @@
+<?xml version="1.0"?>
+ 
+<project    default="Spago:build-all"
+            xmlns:j="jelly:core"
+            xmlns:maven="jelly:maven"
+            xmlns:ant="jelly:ant">
+ 
+    <goal name="Spago:build-all">
+
+
+        
+        <!-- DEFINE AND CREATE THE TARGET DIRECTORY --> 
+        <ant:property name="buildDir" value="${basedir}/target"/>
+        <ant:mkdir dir="${buildDir}"/>
+
+        <!-- COPY THE SPAGO-CORE LIB INTO THE MAVEN REPOSITORY --> 
+        <ant:mkdir dir="${maven.repo.local}/spago-core/jars"/>
+        <ant:copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/lib/spago-core-2.0.0.jar" 
+                  todir="${maven.repo.local}/spago-core/jars"/>     
+
+        <!-- COMPILE SBI.UTILS AND PUT THE JAR INTO THE REPOSITORY -->  
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIUtils/project.xml"
+                        goals="SpagoBIUtils"
+                        banner="Building SpagoBIUtils"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBIUtils/sbi.utils-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.utils/jars"/>
+        <ant:copy file="SpagoBIUtils/sbi.utils-1.6.jar" todir="${maven.repo.local}/sbi.utils/jars"/>
+
+
+
+        <!-- COMPILE SBI.DRIVERS.API AND PUT THE JAR INTO THE REPOSITORY -->  
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIDriversAPI/project.xml"
+                        goals="SpagoBIDriversAPI"
+                        banner="Building SpagoBIDriversAPI"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBIDriversAPI\sbi.drivers.api-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.drivers.api/jars"/>
+        <ant:copy file="SpagoBIDriversAPI/sbi.drivers.api-1.6.jar" todir="${maven.repo.local}/sbi.drivers.api/jars"/>
+
+        
+    
+        <!-- COMPILE SBI.SECURITYPROVIDER.API AND PUT THE JAR INTO THE REPOSITORY -->  
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBISecurityProviderAPI/project.xml"
+                        goals="SpagoBISecurityProviderAPI"
+                        banner="Building SpagoBISecurityProviderAPI"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBISecurityProviderAPI/sbi.securityprovider.api-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.securityprovider.api/jars"/>
+        <ant:copy file="SpagoBISecurityProviderAPI/sbi.securityprovider.api-1.6.jar" 
+                  todir="${maven.repo.local}/sbi.securityprovider.api/jars"/>
+
+
+
+
+        <!-- COPY THE JCR API AND JACKRABBIT IMPLEMENTATION LIB INTO THE MAVEN REPOSITORY --> 
+        <ant:mkdir dir="${maven.repo.local}/eng.jackrabbit/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/eng.jcr/jars"/>
+        <ant:copy file="${basedir}/SpagoBIUtilityFiles/cmsCommonLib/eng.jackrabbit-0.16.4.1-dev.jar" 
+                  todir="${maven.repo.local}/eng.jackrabbit/jars/"/>
+        <ant:copy file="${basedir}/SpagoBIUtilityFiles/cmsCommonLib/eng.jcr.1.0.jar" 
+                  todir="${maven.repo.local}/eng.jcr/jars/"/>  
+
+
+
+        <!-- COMPILE SBI.CMSFACTORY.API AND PUT THE JAR INTO THE REPOSITORY -->  
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBICMSFactoryAPI/project.xml"
+                        goals="SpagoBICMSFactoryAPI"
+                        banner="Building SpagoBICMSFactoryAPI"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBICMSFactoryAPI/sbi.cmsfactory.api-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.cmsfactory.api/jars"/>
+        <ant:copy file="SpagoBICMSFactoryAPI/sbi.cmsfactory.api-1.6.jar" 
+                  todir="${maven.repo.local}/sbi.cmsfactory.api/jars"/>
+
+
+        
+        <!-- COMPILE SBI.CMSFACTORY.JACKRABBIT AND PUT THE JAR INTO THE REPOSITORY --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBICMSFactoryJackrabbit/project.xml"
+                        goals="SpagoBICMSFactoryJackrabbit"
+                        banner="Building SpagoBICMSFactoryJackrabbit"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBICMSFactoryJackrabbit/sbi.cmsfactory.jackrabbit-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.cmsfactory.jackrabbit/jars"/>
+        <ant:copy file="SpagoBICMSFactoryJackrabbit/sbi.cmsfactory.jackrabbit-1.6.jar" 
+                  todir="${maven.repo.local}/sbi.cmsfactory.jackrabbit/jars"/>
+
+
+        <!-- COPY INTO MAVEN REPOSITORY JARS THAT CANNOT BE DOWNLOADED FROM IBIBLO  -->   
+        <ant:mkdir dir="${maven.repo.local}/antlr/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/commons-fileupload/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jakarta-oro/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.securityprovider.exo/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/spagocms/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/spagoportlet/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/spago-web/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/commons-beanutils/jars"/>
+        <ant:copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/lib/antlr-2.7.5H3.jar" 
+                  todir="${maven.repo.local}/antlr/jars/"/>
+        <ant:copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/lib/commons-fileupload-1.1-dev.jar" 
+                  todir="${maven.repo.local}/commons-fileupload/jars/"/>
+        <ant:copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/lib/jakarta-oro-2.0.8.jar" 
+                  todir="${maven.repo.local}/jakarta-oro/jars/"/>
+        <ant:copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/lib/spagocms.renamejcr.jar" 
+                  todir="${maven.repo.local}/spagocms/jars/"/>
+        <ant:copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/lib/spagoportlet.jar" 
+                  todir="${maven.repo.local}/spagoportlet/jars/"/>
+        <ant:copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/lib/spago-web-2.0.0.jar" 
+                  todir="${maven.repo.local}/spago-web/jars/"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-beanutils-core.jar" 
+                  todir="${maven.repo.local}/commons-beanutils/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-beanutils.jar" 
+                  todir="${maven.repo.local}/commons-beanutils/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-beanutils-bean-collections.jar" 
+                  todir="${maven.repo.local}/commons-beanutils/jars"/>
+         
+
+
+
+         <!-- COMPILE QBE.CORE AND PUT THE JAR INTO THE REPOSITORY --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="QbeCore/project.xml"
+                        goals="QueryByExampleCore"
+                        banner="Building Qbe core"
+                        ignoreFailures="false"/>
+        <ant:copy file="QbeCore/qbe.core-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/qbe.core/jars"/>
+        <ant:copy file="QbeCore/qbe.core-1.6.jar" 
+                  todir="${maven.repo.local}/qbe.core/jars"/>
+
+
+
+
+        <!-- COMPILE SPAGOBI, CREATE THE WAR AND ADD TO THE CLASSPATH THE SPAGOBI CLASSES --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIProject/project.xml"
+                        goals="classcompile"
+                        banner="Building SpagoBIProject - make class"
+                        ignoreFailures="false"/>
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIProject/project.xml"
+                        goals="buildwar"
+                        banner="Building SpagoBIProject - make war file"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBIProject/spagobi.war" todir="${buildDir}"/>
+        <ant:classpath>
+                <ant:pathelement path="${basedir}/SpagoBIProject/target/classes/"/>
+        </ant:classpath>
+
+
+
+        
+        <!-- COMPILE SBI.SECURITY.EXO AND PUT THE JAR INTO THE REPOSITORY --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="ExoPortalSecurityProvider/project.xml"
+                        goals="ExoPortalSecurityProvider"
+                        banner="Building ExoPortalSecurityProvider"
+                        ignoreFailures="false"/>
+        <ant:copy file="ExoPortalSecurityProvider/sbi.security.exo-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.security.exo/jars"/>
+        <ant:copy file="ExoPortalSecurityProvider/sbi.security.exo-1.6.jar" 
+                  todir="${maven.repo.local}/sbi.security.exo/jars"/>
+
+
+
+        <!-- COMPILE SBI.DRIVERS.JASPERREPORT AND PUT THE JAR INTO THE REPOSITORY --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIJasperReportDriver/project.xml"
+                        goals="SpagoBIJasperReportDriver"
+                        banner="Building SpagoBIJasperReportDriver"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBIJasperReportDriver/sbi.drivers.jasperreport-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.drivers.jasperreport/jars"/>
+        <ant:copy file="SpagoBIJasperReportDriver/sbi.drivers.jasperreport-1.6.jar" 
+                  todir="${maven.repo.local}/sbi.drivers.jasperreport/jars"/>
+
+
+
+        <!-- COMPILE SBI.DRIVERS.JPIVOT AND PUT THE JAR INTO THE REPOSITORY --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIJPivotDriver/project.xml"
+                        goals="SpagoBIJPivotDriver"
+                        banner="Building SpagoBIJPivotDriver"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBIJPivotDriver/sbi.drivers.jpivot-1.6.jar" todir="${buildDir}"/>
+        <ant:mkdir dir="${maven.repo.local}/sbi.drivers.jpivot/jars"/>
+        <ant:copy file="SpagoBIJPivotDriver/sbi.drivers.jpivot-1.6.jar" 
+                  todir="${maven.repo.local}/sbi.drivers.jpivot/jars"/>
+
+
+
+        <!-- COPY INTO MAVEN REPOSITORY JARS THAT CANNOT BE DOWNLOADED FROM IBIBLO  -->  
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/commons-logging-api-1.0.2.jar" 
+                  todir="${maven.repo.local}/commons-logging/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/dom4j.jar" 
+                  todir="${maven.repo.local}/dom4j/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/iReport/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/iReport.jar" 
+                  todir="${maven.repo.local}/iReport/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/itext/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/itext-1.01.jar" 
+                  todir="${maven.repo.local}/itext/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jdt-compiler/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/jdt-compiler.jar" 
+                  todir="${maven.repo.local}/jdt-compiler/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/xalan.jar" 
+                  todir="${maven.repo.local}/xalan/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/xercesImpl.jar" 
+                  todir="${maven.repo.local}/xerces/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/xmlParserAPIs.jar" 
+                  todir="${maven.repo.local}/xerces/jars"/>
+
+
+
+
+        <!-- COMPILE JASPER REPORT ENGINE AND CREATE THE WAR --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIJasperReportEngine/project.xml"
+                        goals="buildwar"
+                        banner="Building SpagoBIJasperReportEngine - make a war"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBIJasperReportEngine/SpagoBIJasperReportEngine.war" todir="${buildDir}"/>
+
+
+
+
+
+        <!-- COPY INTO MAVEN REPOSITORY JARS THAT CANNOT BE DOWNLOADED FROM IBIBLO  -->  
+        <ant:mkdir dir="${maven.repo.local}/activation/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/activation.jar" 
+                  todir="${maven.repo.local}/activation/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/avalon-framework/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/avalon-framework-cvs-20020806.jar" 
+                  todir="${maven.repo.local}/avalon-framework/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/batik/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/batik.jar" 
+                  todir="${maven.repo.local}/batik/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-collections-testframework-3.1.jar"           
+                  todir="${maven.repo.local}/commons-collections/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-digester.jar" 
+                  todir="${maven.repo.local}/commons-digester/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-logging-api.jar" 
+                  todir="${maven.repo.local}/commons-logging/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-logging.jar" 
+                  todir="${maven.repo.local}/commons-logging/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/fop/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/fop.jar" 
+                  todir="${maven.repo.local}/fop/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jai/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jai_codec.jar" 
+                  todir="${maven.repo.local}/jai/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jai_core.jar" 
+                  todir="${maven.repo.local}/jai/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jakarta-regexp/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jakarta-regexp-1.2.jar" 
+                  todir="${maven.repo.local}/jakarta-regexp/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/javacup/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/javacup.jar" 
+                  todir="${maven.repo.local}/javacup/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jcommon/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jcommon-0.9.6.jar" 
+                  todir="${maven.repo.local}/jcommon/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jfreechart/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jfreechart-0.9.21.jar" 
+                  todir="${maven.repo.local}/jfreechart/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jpivot/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jpivot.jar" 
+                  todir="${maven.repo.local}/jpivot/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jsf-api/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jsf-api.jar" 
+                  todir="${maven.repo.local}/jsf-api/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/jstl/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/jstl.jar" 
+                  todir="${maven.repo.local}/jstl/jars/"/>
+        <ant:mkdir dir="${maven.repo.local}/junit/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/junit.jar" 
+                  todir="${maven.repo.local}/junit/jars/"/>
+        <ant:mkdir dir="${maven.repo.local}/wcf/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/wcf.jar" 
+                  todir="${maven.repo.local}/wcf/jars/"/>
+        <ant:mkdir dir="${maven.repo.local}/mail/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/mail.jar" 
+                  todir="${maven.repo.local}/mail/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/mondrian/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/mondrian.jar" 
+                  todir="${maven.repo.local}/mondrian/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/saaj/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/saaj-api.jar" 
+                  todir="${maven.repo.local}/saaj/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/saaj-ri.jar" 
+                  todir="${maven.repo.local}/saaj/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/saxpath/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/saxpath.jar" 
+                  todir="${maven.repo.local}/saxpath/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/standard/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/standard.jar" 
+                  todir="${maven.repo.local}/standard/jars"/>
+        <ant:mkdir dir="${maven.repo.local}/xpp3/jars"/>
+        <ant:copy file="${basedir}/SpagoBIJPivotEngine/WebContent/WEB-INF/lib/xpp3-1.1.3.4d_b4_min.jar" 
+                  todir="${maven.repo.local}/xpp3/jars"/>
+
+
+
+        <!-- COMPILE JPIVOT ENGINE AND CREATE THE WAR --> 
+        <maven:reactor  basedir="${basedir}"
+                        includes="SpagoBIJPivotEngine/project.xml"
+                        goals="buildwar"
+                        banner="Building SpagoBIJPivotEngine - make a war"
+                        ignoreFailures="false"/>
+        <ant:copy file="SpagoBIJPivotEngine/SpagoBIJPivotEngine.war" todir="${buildDir}"/>
+
+        
+        <!-- PUT INTO THE TARGET THE FILES OF THE TOMCAT CONTEXTS -->  
+        <ant:mkdir dir="${buildDir}/exoTomcatContexts"/>
+        <ant:copy todir="${buildDir}/exoTomcatContexts">
+                <ant:fileset dir="${basedir}/SpagoBIUtilityFiles/exoTomcatContexts">
+                    <ant:include name="**/*.*"/>
+                </ant:fileset>
+        </ant:copy>
+
+
+        <!-- PUT INTO THE TARGET THE JCR LIBRARIES -->   
+        <ant:mkdir dir="${buildDir}/cmsCommonLib"/>
+        <ant:copy todir="${buildDir}/cmsCommonLib">
+                <ant:fileset dir="${basedir}/SpagoBIUtilityFiles/cmsCommonLib">
+                    <ant:include name="**/*.*"/>
+                </ant:fileset>
+        </ant:copy>
+
+    </goal>
+
+<goal name="test-launch">
+
+	<maven:reactor  basedir="${basedir}"
+        		includes="QbeCore/project.xml"
+                        goals="test-launch-QbeCore"
+                        banner="Tests on Qbe Core"
+                        ignoreFailures="false" />
+
+	<maven:reactor  basedir="${basedir}"
+        		includes="SpagoBIUnitTests/project.xml"
+                        goals="test-launch-SpagoBIProject"
+                        banner="Tests on SpagoBIProject"
+                        ignoreFailures="false" />
+
+</goal>
+
+</project>

@@ -1,0 +1,130 @@
+BODY {
+	margin-left: 8px;
+	FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	FONT-SIZE: 11px;
+	COLOR: black;
+	BACKGROUND-COLOR: white;
+}
+
+A {
+	FONT-SIZE: 11px;
+	TEXT-DECORATION: underline;
+	COLOR: #749d55;
+}
+
+A:HOVER {
+	COLOR: #000000
+}
+
+TH {
+	PADDING-RIGHT: 2px;
+	PADDING-LEFT: 2px;
+	FONT-SIZE: 11px;
+	PADDING-BOTTOM: 2px;
+	COLOR: white;
+	PADDING-TOP: 2px;
+	BACKGROUND-COLOR: #94A2BD;
+	BORDER-WIDTH: MEDIU;
+	BORDER-STYLE: OUTSET;
+}
+
+TABLE {
+	FONT-SIZE: 11px;
+	COLOR: black;
+	
+}
+
+
+TD.TESTATA {
+	width: 100%;
+	padding: 0px 0px 0px 1px;
+	HEIGHT: 25px;
+	BORDER: none;
+	FONT-SIZE: 11px;
+	COLOR: #000000;
+	TEXT-INDENT: 20pt;
+	BACKGROUND-COLOR: #ffe493;
+	TEXT-ALIGN: left;
+	text-transform: uppercase;
+	background-image: url('/spagobi/img/white_corner.gif');
+	background-position: top right;
+	background-repeat: no-repeat;
+	vertical-align: middle;
+}
+
+TR.DESC0 {
+	FONT-SIZE: 8pt;
+	COLOR: black;
+	BACKGROUND-COLOR: white
+}
+
+TR.DESC1 {
+	FONT-SIZE: 8pt;
+	COLOR: black;
+	BACKGROUND-COLOR: #EEF0F6
+}
+
+TD.DESC1 {
+	FONT-SIZE: 10px;
+	TEXT-ALIGN: left;
+}
+
+TD.DESC2 {
+	TEXT-ALIGN: left;
+}
+
+TD.DESC1B {
+	FONT-SIZE: 10px;
+	TEXT-ALIGN: left;
+	FONT-WEIGHT: bold;
+}
+
+TD.DESC2B {
+	TEXT-ALIGN: left;
+	FONT-WEIGHT: bold;
+}
+
+A.LAYMENU {
+	COLOR: #ffffff;
+	FONT-SIZE: 11px;
+	FONT-WEIGHT: bold;
+	TEXT-ALIGN: center;
+	CURSOR: hand;
+	TEXT-DECORATION: none;
+}
+
+TD.LAYMENU {
+	HEIGHT: 22px;
+	BORDER-BOTTOM: #294573 1px solid;
+	FONT-SIZE: 11px;
+	COLOR: white;
+	TEXT-ALIGN: center;
+	BACKGROUND-COLOR: #94A2BD;
+	CURSOR: hand;
+}
+
+TD.LAYMENUOVER {
+	HEIGHT: 22px;
+	BORDER-BOTTOM: #294573 1px solid;
+	FONT-SIZE: 11px;
+	COLOR: white;
+	TEXT-ALIGN: center;
+	BACKGROUND-COLOR: #A4B2CD;
+	CURSOR: hand;
+}
+
+TD.LAYMENUDISAB {
+	COLOR: black;
+	BACKGROUND-COLOR: #EEF0F6;
+	FONT-SIZE: 8pt;
+	FONT-WEIGHT: bold;
+	TEXT-ALIGN: center;
+	border-left: 1px solid #294573;
+	border-top: 1px solid #294573;
+	border-right: 1px solid #294573;
+}
+
+TD.LAYMENUEMPDISAB {
+	BACKGROUND-COLOR: #94A2BD;
+	border-bottom: 1px solid #294573;
+}

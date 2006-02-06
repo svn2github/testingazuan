@@ -1,0 +1,104 @@
+#divOperatoriSelect {
+	position: absolute;
+	border: 1px dashed;
+	background-color: white;
+	padding: 5px;
+	display: none;
+	z-index: 1000;
+	width: 100px;
+}
+
+#divTreeSelectJoin {
+	position: absolute;
+	border: 1px dashed;
+	background-color: white;
+	padding: 5px;
+	display: none;
+	z-index: 1000;
+}
+
+#divSpanCurrent {
+	position: absolute;
+	border: 1px dashed;
+	background-color: white;
+	display: none;
+	z-index: 2000;
+}
+
+#divOperatoriSelect table {
+	border: none;
+}
+
+#divOperatoriSelect table td {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	white-space: nowrap;
+}
+
+#divOperatoriSelect table td .even {
+	background-color: grey;
+}
+
+#divExpertSelect {
+	position: absolute;
+	background-color: white;
+	padding: 5px;
+	display: none;
+	z-index: 1000;
+	width: 100px;
+}
+
+#divQuery {
+	position: absolute;
+	padding: 5px;
+	display: none;
+	z-index: 1000;
+}
+
+#divQuery textarea {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	background-color: #FBFBFB;
+	border: 1px solid;
+	padding: 5px;
+}
+
+#divExpertSelect textarea {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	white-space: nowrap;
+}
+
+#divExpertSelect table {
+	border: 1px solid;
+}
+
+#divExpertSelect table td {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	white-space: nowrap;
+}
+
+#divExpertSelect table td .even {
+	background-color: grey;
+}
+
+.qbeTitle {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: black;
+	white-space: nowrap;
+}
+
+.qbeError {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: red;
+	font-weight: bold;
+	white-space: nowrap;
+}

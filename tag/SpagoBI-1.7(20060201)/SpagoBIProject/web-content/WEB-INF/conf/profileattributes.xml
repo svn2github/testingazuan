@@ -1,0 +1,6 @@
+<PROFILE_ATTRIBUTES>
+	<ATTRIBUTE name="area" valuefortest="areatest" />
+	<ATTRIBUTE name="divisione" valuefortest="divisionetest" />
+	<ATTRIBUTE name="direzione" valuefortest="direzionetest" />
+	<ATTRIBUTE name="filiale" valuefortest="filialetest" />
+</PROFILE_ATTRIBUTES>

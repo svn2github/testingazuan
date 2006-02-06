@@ -1,0 +1,20 @@
+<project default="SpagoBIDriversAPI"
+	    xmlns:j="jelly:core"
+            xmlns:maven="jelly:maven"
+            xmlns:ant="jelly:ant">
+
+  <goal name="clean">
+	<attainGoal name="clean"/>
+  </goal>
+
+  <goal name="SpagoBIDriversAPI">
+	<attainGoal name="jar:install"/>
+        <ant:copy todir="${basedir}/">
+                <ant:fileset dir="${basedir}/target/">
+                    <ant:include name="**/*.jar"/>
+                </ant:fileset>
+        </ant:copy>
+        <attainGoal name="clean:clean"/>
+  </goal>
+
+</project>

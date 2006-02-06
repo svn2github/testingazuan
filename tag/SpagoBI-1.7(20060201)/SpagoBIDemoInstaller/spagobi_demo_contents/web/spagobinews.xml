@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+	<channel>
+		<title>SpagoBI news</title>
+		<link>http://spagobi.eng.it</link>
+		<description>SpagoBi News</description>
+		<copyright></copyright>
+		<lastBuildDate>30 Jan 2006 09:13:00 GMT</lastBuildDate>
+		<generator>RSS generator</generator>
+     		<item>
+                	<title>SpagoBI version 1.7 released</title>
+			<description>
+				The SpagoBI platform 1.7 has been released on 30 january 2006. The new version contains many usability improvements, the Query By Example (QBE), which is a visual tool for the data inquiry and a Quick Start document, to give users a simple guide to start using SpagoBI.
+		        </description>
+			<link>http://localhost:8080/portal</link>
+			<guid isPermaLink="false">summary-1054822377</guid>
+			<pubDate>30 Jan 2006 09:13:00 GMT</pubDate>
+		</item>
+		<item>
+                	<title>Next SpagoBI release over eXo platform version 2:</title>
+			<description>
+				The next SpagoBI's version will use the eXo platform 2 portal server and the eXo 2 jcr 170 repository implementation.
+		        </description>
+			<link>http://localhost:8080/portal</link>
+			<guid isPermaLink="false">summary-1054822378</guid>
+			<pubDate>30 Jan 2006 09:13:00 GMT</pubDate>
+		</item>
+     		<item>
+                	<title>SpagoBI version 1.7: Tomcat, JBoss and JOnAS certificated</title>
+			<description>
+				The new version has been tested with JOnAS, Tomcat and JBoss. For JOnAS application server has been released a step by step installation guide and a package containing all the useful installation files, in order to facilitate the task. 
+		        </description>
+			<link>http://localhost:8080/portal</link>
+			<guid isPermaLink="false">summary-1054822379</guid>
+			<pubDate>30 Jan 2006 09:13:00 GMT</pubDate>
+		</item>
+                <item>
+                <title>SpagoBI source code moved to the ObjectWeb SVN repository</title>
+			<description>
+			The source code of the SpagoBI project has been moved to the SVN repository of the ObjectWeb Consortium. To connect access to the SpagoBI's ObjectWeb page and select the SVN tab.  
+		        </description>
+			<link>http://localhost:8080/portal</link>
+			<guid isPermaLink="false">summary-1054822380</guid>
+			<pubDate>30 Jan 2006 14:13:00 GMT</pubDate>
+		</item>
+	</channel>
+</rss>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <owner>biadmin</owner>
+    <name>/home</name>
+    <title>Home</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>    
+    <container renderer="TabRenderer" heigth="100%">    
+      <portlet heigth="100%">
+        	<portlet-style>default</portlet-style>
+                <showInfoBar>false</showInfoBar> 
+        	<title>Static Settings</title>
+        	<windowId>spagobi:/spagobi/SBISettings/sbisettings</windowId>
+      </portlet>  
+      <portlet heigth="100%">
+        	<portlet-style>default</portlet-style>
+                <showInfoBar>false</showInfoBar>
+        	<title>Development Environment</title>
+        	<windowId>spagobi:/spagobi/SBIDevelopmentContext/sbidevcont</windowId>
+      </portlet>      
+    </container>    
+  </page>
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/home/organization</name>
+    <title>Organization</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Organization</title>
+      <windowId>biadmin:/content/DisplayStaticContent/organization</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>Introduction</name>
+          <value>title=Introduction</value>
+          <value>uri=war:/portal/static-content/home-intro</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/error/page/page-not-found</name>
+    <title>${page-not-found}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Page Not Found</title>
+      <windowId>biadmin:/content/DisplayContent/page-not-found</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/error/page/user-page-view-permission</name>
+    <title>${user-page-view-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>View Page Permission</title>
+      <windowId>biadmin:/content/DisplayContent/user-page-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/error/page/user-page-edit-permission</name>
+    <title>${user-page-edit-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Edit Page Permission</title>
+      <windowId>biadmin:/content/DisplayContent/user-page-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/error/portal/user-portal-view-permission</name>
+    <title>${user-portal-view-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>View Portal Permission</title>
+      <windowId>biadmin:/content/DisplayContent/user-portal-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/error/portal/user-portal-edit-permission</name>
+    <title>${user-portal-edit-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Edit Portal Permition</title>
+      <windowId>biadmin:/content/DisplayContent/user-portal-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/home/manual</name>
+    <title>SpagoBi Manual</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>SpagoBi Manual</title>
+      <windowId>biadmin:/content/DisplayStaticContent/manual</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_admin</value>
+          <value>encoding=ISO-8859-1</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page> 
+
+  <page>
+    <owner>biadmin</owner>
+    <name>/home/sitemap</name>
+    <title>Site Map</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>sitemap</portlet-style>
+      <title>Site Map</title>
+      <windowId>biadmin:/nav/Sitemap/sitemap</windowId>
+    </portlet>
+  </page>
+
+</page-set>

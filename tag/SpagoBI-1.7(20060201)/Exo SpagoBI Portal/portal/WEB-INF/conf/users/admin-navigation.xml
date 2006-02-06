@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+  <owner>admin</owner>
+  <node>
+    <uri>/</uri>
+    <name>home</name>
+    <label>#{home}</label>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <description>/</description>
+    <pageReference>admin:/home</pageReference>
+    <node>
+      <uri>/home/organization</uri>
+      <name>organization</name>
+      <label>#{organization}</label>
+      <description>Organization Page</description>
+      <pageReference>admin:/home/organization</pageReference>
+      <node>
+        <uri>/home/organization/registration</uri>
+        <name>registration</name>
+        <label>#{registration}</label>
+        <description>Registration Page</description>
+        <pageReference>admin:/home/organization/registration</pageReference>
+      </node>
+      <node>
+        <uri>/home/organization/management</uri>
+        <name>management</name>
+        <label>#{management}</label>
+        <description>Management Page</description>
+        <pageReference>admin:/home/organization/management</pageReference>
+      </node>
+      <node>
+        <uri>/home/organization/portaladmin</uri>
+        <name>portaladmin</name>
+        <label>#{portal-admin}</label>
+        <description>Portals admin</description>
+        <pageReference>admin:/home/organization/portaladmin</pageReference>
+      </node>
+    </node>
+    <node>
+      <uri>/home/portal</uri>
+      <name>portal</name>
+      <label>#{portal}</label>
+      <description>Portlets Management Page</description>
+      <pageReference>admin:/home</pageReference>
+      <node>
+        <uri>/home/portal/registry</uri>
+        <name>registry</name>
+        <label>#{registry}</label>
+        <description>Registry Page</description>
+        <pageReference>admin:/home/portal/registry</pageReference>
+      </node>
+      <node>
+        <uri>/home/portal/i18n</uri>
+        <name>i18n</name>
+        <label>#{i18n}</label>
+        <description>Internationalization Page</description>
+        <pageReference>admin:/home/portal/i18n</pageReference>
+      </node>
+      <node>
+        <uri>/home/portal/backup</uri>
+        <name>backup</name>
+        <label>#{backup}</label>
+        <description>Backup Page</description>
+        <pageReference>admin:/home/portal/backup</pageReference>
+      </node>
+      <node>
+        <uri>/home/portal/index</uri>
+        <name>index</name>
+        <label>#{index}</label>
+        <description>Indexing Page</description>
+        <pageReference>admin:/home/portal/index</pageReference>
+      </node>      
+      <node>
+        <uri>/home/portal/wsrp</uri>
+        <name>wsrp</name>
+        <label>#{wsrp}</label>
+        <description>WSRP Page</description>
+        <pageReference>admin:/home/portal/wsrp</pageReference>
+      </node>
+    </node>
+    <node>
+      <uri>/home/monitoring</uri>
+      <name>monitoring</name>
+      <label>#{monitoring}</label>
+      <description>Monitoring Page</description>
+      <pageReference>admin:/home/monitoring</pageReference>
+      <node>
+        <uri>/home/monitoring/jmx</uri>
+        <name>jmx</name>
+        <label>#{jmx}</label>
+        <description>jmx monitoring</description>
+        <pageReference>admin:/home/monitoring/jmx</pageReference>
+      </node>
+      <node>
+        <uri>/home/monitoring/admin-console</uri>
+        <name>admin-console</name>
+        <label>#{admin-console}</label>
+        <description>Admin Console</description>
+        <pageReference>admin:/home/monitoring/admin-console</pageReference>
+      </node>      
+    </node>
+    <node>
+      <uri>/home/portlets</uri>
+      <name>portlets</name>
+      <label>#{portlets}</label>
+      <description>Portlets page</description>
+      <pageReference>admin:/home/portlets/forum</pageReference>
+      <node>
+        <uri>/home/portlets/forum</uri>
+        <name>forum</name>
+        <label>#{forum}</label>
+        <description>Forum</description>
+        <pageReference>admin:/home/portlets/forum</pageReference>
+      </node>
+      <node>
+        <uri>/home/portlets/file</uri>
+        <name>file-explorer</name>
+        <label>#{file-explorer}</label>
+        <description>file explorer</description>
+        <pageReference>admin:/home/portlets/file</pageReference>
+      </node>
+      <node>
+        <uri>/home/portlets/workflow</uri>
+        <name>workflow</name>
+        <label>#{workflow}</label>
+        <description>workflow</description>
+        <pageReference>admin:/home/portlets/workflow</pageReference>
+      </node>
+      <node>
+        <uri>/home/portlets/jcr</uri>
+        <name>jcr</name>
+        <label>#{jcr}</label>
+        <description>jcr</description>
+        <pageReference>admin:/home/portlets/jcr</pageReference>
+      </node>      
+    </node>
+    <node>
+      <uri>/home/sitemap</uri>
+      <name>sitemap</name>
+      <label>#{sitemap}</label>
+      <description>Sitemap Page</description>
+      <pageReference>admin:/home/sitemap</pageReference>
+    </node>
+  </node>
+</node-navigation>

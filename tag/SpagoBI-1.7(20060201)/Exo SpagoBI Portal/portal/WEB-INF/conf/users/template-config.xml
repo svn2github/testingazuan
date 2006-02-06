@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portal-config>
+  <owner>@owner@</owner>
+  <locale>en</locale>
+  <viewPermission>owner</viewPermission>
+  <editPermission>owner</editPermission>
+
+
+  <portalLayout decorator="exo" renderer="ContainerRowRenderer"
+    width="100%" height="100%">
+
+    <portlet>
+      <showInfoBar>false</showInfoBar>
+      <windowId>@owner@:/content/DisplayStaticContent/banner</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/banner</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+
+
+    <portlet>
+      <portlet-style>horizontal</portlet-style>
+      <showInfoBar>false</showInfoBar>
+      <windowId>@owner@:/nav/HorizontalMenu/toolbar</windowId>
+    </portlet>
+
+    <container renderer="ContainerColumnRenderer" height="100%">
+      <container renderer="ContainerRowRenderer" decorator="menu" width="200px">
+        <portlet>
+          <portlet-style>menu</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <windowId>@owner@:/nav/Menu/menu</windowId>
+        </portlet>
+        <portlet>
+          <portlet-style>welcome</portlet-style>
+          <title>Welcome</title>
+          <showInfoBar>false</showInfoBar>
+          <windowId>@owner@:/user/WelcomePortlet/welcome-user</windowId>
+        </portlet>
+        <portlet>
+          <portlet-style>visited-pages</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <windowId>@owner@:/nav/VisitedPagesPortlet/visited-page</windowId>
+        </portlet>        
+      </container>
+      <container renderer="ContainerRowRenderer">
+        <portlet height="20px">
+          <portlet-style>breadcrumbs</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <windowId>@owner@:/nav/Breadcrumbs/breadcrumbs</windowId>
+        </portlet>
+        <container decorator="exo-body">
+          <body>
+            <componentType>page-node</componentType>
+            <componentId>/</componentId>
+          </body>
+        </container>
+      </container>
+    </container>
+
+    <portlet>
+      <showInfoBar>false</showInfoBar>
+      <windowId>@owner@:/content/DisplayStaticContent/footer</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/footer</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+     </portlet>
+  </portalLayout>
+</portal-config>

@@ -1,0 +1,43 @@
+<div>
+  <p>There are two versions of the<b> eXo platform&#153; </b> distribution - the <i>express</i> 
+  and the <i>enterprise</i> editions. The choice of one of those depends on your requirements 
+  and resources.</p>
+
+  <p>Both versions are based on the same architecture that is composed of several modules.</p>
+  <p style="text-align:center"><img src="/portal/images/layers.jpg" alt=""/></p>
+  <ul>
+    <li><b>The services container. </b> It provides an Inversion of Control
+    (<a href="http://www.objectmentor.com/resources/articles/dip.pdf">IoC</a>)
+    mechanism to allow efficient services dependencies resolutions.
+    Each middleware component - such as database or Enterprise JavaBean (EJB) access service - is then
+    abstracted and separated from its implementation. This powerfull arcitecture allows a loose coupling
+    stack of components which increase the maintanability of the whole platform.</li>
+    
+    <li><b>The Content Management System (CMS). </b> It provides a hierarchy organization of binary objects
+    that can be stored in any database or a file system with a small and easy amount of code to implement
+    for each storage system. In other words, to store XML documents, a native XML database can be used
+    while objects can be stored either in a relational database or in an object database.
+    Note that the eXo platform&#153; development team will
+    implement the Java standardisation specifications in this area
+    (<a href="http://www.jcp.org/en/jsr/detail?id=170">JSR 170</a>) as soon as they are available.</li>
+    
+    <li><b>The Portlet Container. </b> It is a CERTIFIIED Open Source implementation of
+    <a href="http://jcp.org/aboutJava/communityprocess/final/jsr168/index.html">
+      the portlet API specification
+    </a>
+    (JSR 168). The module manages
+    the lifecycle and lazy instantiation of portlet components. The implementation has been
+    optimized with cache, pooling and shared session features as well as efficient monitoring
+    capabilities to provide a powerfull production environement.</li>
+    
+    <li><b>The Portal. </b>Our portal is based on Java Server Faces
+    (<a href="http://www.jcp.org/en/jsr/detail?id=127">JSR-127</a>), which is a new web framework
+    paradigm. It provides a real Model-View-Controller (MVC) reference architecture allowing developers to
+    deal with components and events on the web layer almost in the same way as they would with rich Swing
+    clients. The portal interacts with the portlet container in order to get the portlet contents,
+    it is then responsible of the
+    aggregation of those web components in the page.</li>
+
+  </ul>
+  <p style="text-align:center"><img src="/portal/images/platform2.jpg" alt=""/></p>
+</div>

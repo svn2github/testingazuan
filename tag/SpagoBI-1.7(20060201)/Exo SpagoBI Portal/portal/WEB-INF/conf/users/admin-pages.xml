@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <owner>admin</owner>
+    <name>/home</name>
+    <title>Home</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>summary</portlet-style>
+      <title>Administration summary</title>
+      <windowId>admin:/exo-admin/SummaryPortlet/summary</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/organization</name>
+    <title>Organization</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Organization</title>
+      <windowId>admin:/content/DisplayStaticContent/organization</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>Introduction</name>
+          <value>title=Introduction</value>
+          <value>uri=war:/portal/static-content/home-intro</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/organization/registration</name>
+    <title>Registration</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>register</portlet-style>
+      <title>Registration</title>
+      <windowId>admin:/user/RegisterPortlet/window-register</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/organization/management</name>
+    <title>Managenent</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>organization</portlet-style>
+      <title>Mangement</title>
+      <windowId>admin:/user/Organization/management</windowId>
+    </portlet>
+  </page>
+  
+  <page>
+    <owner>admin</owner>
+    <name>/home/organization/portaladmin</name>
+    <title>Portal Admin</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>portal-admin</portlet-style>
+      <title>Portal Admin</title>
+      <windowId>admin:/exo-admin/PortalAdminPortlet/portal-admin</windowId>
+    </portlet>
+  </page>    
+  
+  <page>
+    <owner>admin</owner>
+    <name>/home/portal/registry</name>
+    <title>Registry</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>portletregistery</portlet-style>
+      <title>Registry</title>
+      <windowId>admin:/exo-admin/PortletRegistery/registry</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/portal/wsrp</name>
+    <title>WSRP Conf</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>wsrp-admin</portlet-style>
+      <title>WSRP Conf</title>
+      <windowId>admin:/wsrp/WSRPAdminPortlet/wsrp</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/monitoring</name>
+    <title>Monitoring</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Monitoring</title>
+      <windowId>admin:/content/DisplayStaticContent/monitoring</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>Introduction</name>
+          <value>title=Introduction</value>
+          <value>uri=war:/portal/static-content/home-intro</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/monitoring/jmx</name>
+    <title>JMX Monitoring</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>jmx</portlet-style>
+      <title>JMX Monitoring</title>
+      <windowId>admin:/exo-admin/JMXPortlet/jmx</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/portal/i18n</name>
+    <title>Internationalization</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>resources</portlet-style>
+      <title>Internationalization</title>
+      <windowId>admin:/exo-admin/ResourcesPortlet/resources-demo</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/portal/backup</name>
+    <title>Backup</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>backup</portlet-style>
+      <title>Backup</title>
+      <windowId>admin:/exo-admin/BackupPortlet/backup</windowId>
+    </portlet>
+  </page>
+  
+  <page>
+    <owner>admin</owner>
+    <name>/home/portal/index</name>
+    <title>Indexing</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <title>Indexing</title>
+      <windowId>admin:/exo-admin/IndexerManagerPortlet/indexer</windowId>
+    </portlet>
+  </page>  
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/monitoring/admin-console</name>
+    <title>Admin Console</title>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>admin</portlet-style>
+      <title>Admin Console</title>
+      <windowId>admin:/exo-admin/AdminConsole/admin-console</windowId>
+    </portlet>
+  </page>  
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/portlets/forum</name>
+    <title>Forum</title>
+    <state>maximized</state>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>forum</portlet-style>
+      <title>Forum</title>
+      <windowId>admin:/communications/Forum/forum</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/portlets/file</name>
+    <title>File Explorer</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>explorer</portlet-style>
+      <title>File</title>
+      <windowId>admin:/content/FileExplorer/file-explorer</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/portlets/workflow</name>
+    <title>workflow</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>workflow</portlet-style>
+      <title>Workflow</title>
+      <windowId>admin:/workflow/Workflow/workflow</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/portlets/jcr</name>
+    <title>jcr</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>explorer</portlet-style>
+      <title>jcr</title>
+      <windowId>admin:/content/JCRExplorer/jcr</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/error/page/page-not-found</name>
+    <title>${page-not-found}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Page Not Found</title>
+      <windowId>admin:/content/DisplayContent/page-not-found</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/error/page/user-page-view-permission</name>
+    <title>${user-page-view-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>View Page Permission</title>
+      <windowId>admin:/content/DisplayContent/user-page-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/error/page/user-page-edit-permission</name>
+    <title>${user-page-edit-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Edit Page Permission</title>
+      <windowId>admin:/content/DisplayContent/user-page-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/error/portal/user-portal-view-permission</name>
+    <title>${user-portal-view-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>View Portal Permission</title>
+      <windowId>admin:/content/DisplayContent/user-portal-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/error/portal/user-portal-edit-permission</name>
+    <title>${user-portal-edit-permission}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Edit Portal Permition</title>
+      <windowId>admin:/content/DisplayContent/user-portal-view-permission</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>admin</owner>
+    <name>/home/sitemap</name>
+    <title>Site Map</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>sitemap</portlet-style>
+      <title>Site Map</title>
+      <windowId>exo:/nav/Sitemap/sitemap</windowId>
+    </portlet>
+  </page>
+</page-set>

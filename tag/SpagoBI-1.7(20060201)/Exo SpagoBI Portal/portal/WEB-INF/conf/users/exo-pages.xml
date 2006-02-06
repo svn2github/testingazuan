@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <owner>exo</owner>
+    <name>/home</name>
+    <title>Home</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <container width="100%" renderer="ContainerColumnRenderer">
+    <portlet width="70%">
+      <portlet-style>exo-content</portlet-style>
+      <showInfoBar>false</showInfoBar>
+      <title>Home</title>
+      <windowId>exo:/content/DisplayStaticContent/news</windowId>
+      <portlet-preferences>
+	<preference>
+          <name>d</name>
+          <value>title=content.title.introduction</value>
+          <value>uri=war:/portal/spagobi-static-content/home-intro</value>
+          <value>encoding=ISO-8859-1</value>
+          <read-only>false</read-only>
+        </preference>
+        <preference>
+          <name>a</name>
+          <value>title=implNotes</value>
+          <value>uri=war:/portal/spagobi-static-content/impl_notes</value>
+          <value>encoding=ISO-8859-1</value>
+          <read-only>false</read-only>
+        </preference>
+        <preference>
+          <name>c</name>
+          <value>title=adminmanual</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_admin</value>
+          <value>encoding=ISO-8859-1</value>
+          <read-only>false</read-only>
+        </preference>        
+		<preference>
+          <name>f</name>
+          <value>title=devmanual</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_dev</value>
+          <value>encoding=ISO-8859-1</value>
+          <read-only>false</read-only>
+        </preference>
+        <preference>
+          <name>b</name>
+          <value>title=testmanual</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_test</value>
+          <value>encoding=ISO-8859-1</value>
+          <read-only>false</read-only>
+        </preference>
+        <preference>
+          <name>e</name>
+          <value>title=usermanual</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_user</value>
+          <value>encoding=ISO-8859-1</value>
+          <read-only>false</read-only>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+    <portlet width="30%" renderer="BoxPortletRenderer" decorator="ic3-box">
+        <title>SpagoBI News</title>
+        <showInfoBar>false</showInfoBar>
+        <windowId>exo:/web/RssPortlet/RssPortletSpagobi</windowId>
+        <portlet-style>rss</portlet-style>
+        <portlet-preferences>
+          <preference>
+            <name>description</name>
+            <value>This is spagobi news</value>
+          </preference>
+          <preference>
+            <name>url</name>
+            <value>/spagobinews.xml</value>
+          </preference>
+          <preference>
+            <name>channel</name>
+            <value>News</value>
+          </preference>
+          <preference>
+            <name>item-to-show</name>
+            <value>5</value>
+          </preference>
+        </portlet-preferences>
+      </portlet>
+    </container> 
+  </page>
+
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/manual</name>
+    <title>SpagoBi Manual</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>SpagoBi Manual</title>
+      <windowId>exo:/content/DisplayStaticContent/manual</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/spagobi-static-content/manual.html</value>
+          <value>encoding=ISO-8859-1</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/manual/admin</name>
+    <title>Admin Manual</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Admin Manual</title>
+      <windowId>exo:/content/DisplayStaticContent/adminmanual</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_admin</value>
+          <value>encoding=ISO-8859-1</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/manual/dev</name>
+    <title>Developer Manual</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Developer Manual</title>
+      <windowId>exo:/content/DisplayStaticContent/devmanual</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_dev</value>
+          <value>encoding=ISO-8859-1</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/manual/test</name>
+    <title>Tester Manual</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Tester Manual</title>
+      <windowId>exo:/content/DisplayStaticContent/testmanual</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_test</value>
+          <value>encoding=ISO-8859-1</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+  
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/manual/user</name>
+    <title>User Manual</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>User Manual</title>
+      <windowId>exo:/content/DisplayStaticContent/usermanual</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/spagobi-static-content/manual_user</value>
+          <value>encoding=ISO-8859-1</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+  
+  <page>
+    <owner>exo</owner>
+    <name>/home/sbisite</name>
+    <title>SpagoBI Web Site</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>SpagoBI Web Site</title>
+      <windowId>exo:/content/DisplayStaticContent/sbisite</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/spagobi-static-content/spagobi_website</value>
+          <value>encoding=ISO-8859-1</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/community</name>
+    <title>Community</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Community</title>
+      <windowId>exo:/content/DisplayStaticContent/community</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/community/charter</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page renderer="PageColumnRenderer">
+    <owner>exo</owner>
+    <name>/home/community/news</name>
+    <title>News</title>
+    <state>maximized</state>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <container renderer="TabRenderer">    
+      <portlet>
+        <title>The Server Side</title>
+        <showInfoBar>false</showInfoBar>
+        <windowId>exo:/web/RssPortlet/RssPortlet</windowId>
+        <portlet-style>rss</portlet-style>
+        <portlet-preferences>
+          <preference>
+            <name>description</name>
+            <value>This is the news from internet</value>
+          </preference>
+          <preference>
+            <name>url</name>
+            <value>http://www.theserverside.com/rss/theserverside-1.0.rdf</value>
+          </preference>
+          <preference>
+            <name>channel</name>
+            <value>News</value>
+          </preference>
+          <preference>
+            <name>item-to-show</name>
+            <value>5</value>
+          </preference>
+        </portlet-preferences>
+      </portlet>
+      <container id="blogs" renderer="TabRenderer">  
+        <container id="Portals" renderer="TabRenderer">  
+          <portlet>
+            <title>Punit Pandey</title>
+            <showInfoBar>false</showInfoBar>
+            <windowId>exo:/web/RssPortlet/exo_blog_punit</windowId>
+            <portlet-style>default</portlet-style>
+            <portlet-preferences>
+              <preference>
+                <name>description</name>
+                <value>This is the news from internet</value>
+              </preference>
+              <preference>
+                <name>url</name>
+                <value>http://www.jroller.com/rss/portlets</value>
+              </preference>
+              <preference>
+                <name>channel</name>
+                <value>News</value>
+              </preference>
+              <preference>
+                <name>item-to-show</name>
+                <value>5</value>
+              </preference>
+            </portlet-preferences>
+          </portlet>        
+        </container> 
+        <container id="Wiki" renderer="TabRenderer">  
+          <portlet>
+            <title>Ludovic Dubost</title>
+            <showInfoBar>false</showInfoBar>
+            <windowId>exo:/web/RssPortlet/exo_blog_ludo</windowId>
+            <portlet-style>default</portlet-style>
+            <portlet-preferences>
+              <preference>
+                <name>description</name>
+                <value>This is the news from internet</value>
+              </preference>
+              <preference>
+                <name>url</name>
+                <value>http://www.ludovic.org/blog/index.rdf</value>
+              </preference>
+              <preference>
+                <name>channel</name>
+                <value>News</value>
+              </preference>
+              <preference>
+                <name>item-to-show</name>
+                <value>5</value>
+              </preference>
+            </portlet-preferences>
+          </portlet>        
+        </container>        
+      </container>
+    </container>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/community/forum</name>
+    <title>Forum</title>
+    <state>maximized</state>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>forum</portlet-style>
+      <title>Forum</title>
+      <windowId>exo:/communications/Forum/forum</windowId>
+    </portlet>
+  </page>
+  
+  <page>
+    <owner>exo</owner>
+    <name>/home/community/messages</name>
+    <title>Messages</title>
+    <state>maximized</state>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Message Center</title>
+      <portlet-style>msc</portlet-style>
+      <windowId>exo:/communications/MessageCenter/message-center</windowId>
+    </portlet>
+  </page>  
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/community/wiki</name>
+    <title>Wiki</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <container renderer="ContainerColumnRenderer" width="*">
+      <portlet width="*">
+        <title>Wiki</title>
+        <windowId>exo:/xwiki/xwiki/wiki</windowId>
+      </portlet>
+    </container>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/my-portal</name>
+    <title>My Portal</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>register</portlet-style>
+      <title>My Portal</title>
+      <windowId>exo:/user/RegisterPortlet/window-register</windowId>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/sitemap</name>
+    <title>Site Map</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>sitemap</portlet-style>
+      <title>Site Map</title>
+      <windowId>exo:/nav/Sitemap/sitemap</windowId>
+    </portlet>
+  </page>
+  
+  <page>
+    <owner>exo</owner>
+    <name>/home/search</name>
+    <title>Search</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <portlet-style>search</portlet-style>
+      <title>Search</title>
+      <windowId>exo:/content/SearchPortlet/search</windowId>
+    </portlet>
+  </page>  
+
+  <page>
+    <owner>exo</owner>
+    <name>/mobile</name>
+    <title>Mobile</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Home</title>
+      <windowId>exo:/content/DisplayStaticContent/mobile</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/portal/static-content/mobile-home</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+</page-set>

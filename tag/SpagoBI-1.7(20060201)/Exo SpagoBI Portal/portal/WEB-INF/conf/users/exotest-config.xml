@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portal-config>
+  <owner>exotest</owner>
+  <locale>en</locale>
+  <viewPermission>any</viewPermission>
+  <editPermission>owner</editPermission>
+
+
+  <portalLayout renderer="ContainerRowRenderer">
+    <portlet>
+      <portlet-style>banner</portlet-style>
+      <showInfoBar>false</showInfoBar>
+      <windowId>exotest:/hello/HelloWorld/banner</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=/banner</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+        <preference>
+          <name>test</name>
+          <value>value 1</value>
+          <value>value 2</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+
+    <portlet>
+      <style>toolbar</style>
+      <showInfoBar>false</showInfoBar>
+      <windowId>exotest:/hello/HelloWorld/toolbar</windowId>
+    </portlet>
+
+    <!--
+    <portlet>
+      <style>banner</style>
+      <showInfoBar>false</showInfoBar>
+      <windowId>exotest:/hello/AppletClient/banner</windowId>
+    </portlet>
+    -->
+
+    <container>
+      <body>
+        <componentType>page-node</componentType>
+        <componentId>/</componentId>
+      </body>
+    </container>
+
+    <portlet>
+      <portlet-style>footer</portlet-style>
+      <showInfoBar>false</showInfoBar>
+      <windowId>exotest:/hello/HelloWorld/footer</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=/footer</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </portalLayout>
+</portal-config>

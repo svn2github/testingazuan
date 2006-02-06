@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+  <service-configuration type="org.exoplatform.services.communication.forum.hibernate.WatcherNotifyListener">
+    <!-- {0} = forum name, {1}= post subject, {2}= post body -->
+    <value-param>
+      <name>forum.change.subject</name>
+      <value>Forum: {0}</value>
+    </value-param>
+    <value-param>
+      <name>forum.change.message</name>
+      <value><![CDATA[
+       This post has been updated or added to the forum {0}
+       ==========================================================
+       {2}
+      ]]></value>
+    </value-param>
+
+    <!-- {0} = topic, {1}= post subject, {2}= post body -->
+    <value-param>
+      <name>topic.change.subject</name>
+      <value>Topic: {0}</value>
+    </value-param>
+    <value-param>
+      <name>topic.change.message</name>
+      <value><![CDATA[
+       This post has been updated or added to the topic {0}
+       ==========================================================
+       {2}
+      ]]></value>
+    </value-param>
+  
+    <value-param>
+      <name>message.author</name>
+      <value>exo.platform@laposte.net</value>
+    </value-param>
+  </service-configuration>
+
+  <!-- ============================================================================= -->
+  <!--                     M A I L      S E R V I C E                                -->
+  <!-- ============================================================================= -->
+  <service-configuration type="org.exoplatform.services.communication.message.impl.MailServiceImpl">
+    <value-param>
+      <name>outgoing.mail.server</name>
+      <value>smtp1.sympatico.ca</value>
+    </value-param>
+  </service-configuration>
+</configuration>

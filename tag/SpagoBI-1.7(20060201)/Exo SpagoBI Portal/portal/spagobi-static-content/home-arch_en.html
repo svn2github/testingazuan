@@ -1,0 +1,73 @@
+<table>  <tr>    <td style="text-align: justify">        SpagoBI inherits the MVC architectural pattern from the J2EE Spago Framework  wich is used for SpagoBI's development.
+        Therefore, two remarks are relevant for the design of SpagoBI:
+        <ul>
+        	<li>It is possible to decline the MVC architectural pattern on the Business Intelligence aspects;</li>
+        	<li>metadata play a primary role as focal point for the guide and the control of the entire platform.</li>
+        </ul>
+        According to these two simple principles, the MVC pattern characterizes itself here in this way:
+        <ul>
+        	<li><b>Model</b>: it's the layer that encapsulates the application logic, which now assumes the means of 
+        	analytical logic. Business Intelligence specific objects (ex.: Reports, OLAP Analysis, Dashboard, etc.) 
+        	are handled as generic BI Components with their own control logic and with a specific execution 
+        	Engine/Server. Anyway, they remain application components which govern the business logic, where business is the 
+        	analysis.</li>
+
+        	<br></br>
+        	About the data domain, it locates itself at a Data Warehouse level instead of at an operational level, 
+        	even if that doesn't avoid the possibility to gain a considerable detail level. Finally, data domain 
+        	involves metadata level for semantic data management and for the expression of the control logic.
+        	<br></br>
+        	<br></br>
+        	<li><b>View</b>: adding to the problems of all the web applications concerning data publication and 
+        	information distribution in this context it is necessary to keep and require documents and data with an 
+        	historical validity. In analytical logics it is less necessary the manual inputs management by the end user.</li>
+        	<br></br>
+        	<li><b>Controller</b>: in the Business Intelligence the Controller takes the responsibility for coordination
+        	and navigation across specific objects and between different modules. Therefore, it solves also the drill-down, 
+        	drill-across, slice and dice requests with a less rigid logic than in web applications.</li>
+
+       
+        
+        	<BR></BR>
+		<center><IMG SRC="portal/spagobi-static-content/mvc.gif" border="0"></IMG></center>
+		  
+	</ul>
+        We will not continue in the description of how Spago implements the three MVC modules : we just say that SpagoBI 
+        inherits the Spago's settings translating them in its specific way as follows:
+        <ul>
+        	<li><b>Delivery layer</b>, distributing information and analysis models;</li>
+        	<li><b>Analytical layer</b>, transforming rough data in meaningful information;</li>
+
+        	<li><b>Data and metadata layer</b>, receiving data and structuring them for analytical purposes. </li> 
+        </ul>
+		
+		<BR></BR>
+		<center><IMG SRC="portal/spagobi-static-content/architecture_spagobi.gif" border="0"></IMG></center>
+		
+	In the <b>Delivery Layer</b>, portlets are the first way to access to the BI objects. It's possible to build your 
+	custom interface in a new Business Intelligence Portal, or in a part of an existing one, by including the necessary
+        portlets.<br></br>
+	You can use Web Services for the interaction with other enterprise applications and with portals too. At last, 
+	XML structures and models allow a simple transmission of the information and of the results. <br></br>
+
+	<b>Analytical Layer</b> is the platform core which coordinates all the analytical activities supplying their 
+	supporting tools. Its main components are Report, OLAP, Data Mining, Dashboard and Scorecards modules: each of 
+	them corresponding to specific functionalities with the same architectural setting; it allows an easy learning 
+	and a modular use. <br></br>  	   
+	Some service applications support the core components effectiveness preparing the working environment in its 
+	collateral aspects: parameters unified management, filters and domains, query by example capabilities, user and 
+	object profiling systems, structuring of categories for documents classification, documents storage and search, 
+	approval and management workflow. <br></br>  
+	The Context Controller takes the responsibility for a successful coordination of the Core Components interaction and of
+        their interaction with the service applications.<br></br>
+	The <b>Data and Metadata Layer</b> locates itself at data warehouse level and provides a meta-description of its
+        technical aspects and business meanings. A service repository to support document management  and object profiling
+        is also provided.<br></br>
+	The interaction with the core business components works in a native way or through a semantic interface layer.<br></br>
+
+	Its relation with the source systems is organized by an ETL module, that provides some features for data extraction, 
+	transformation and loading.<br></br>
+	Finally, <b>administration</b> users are supported by many tools for the whole platform configuration and control.<br></br>
+	Other information and details about the platform architecture are provided in the specific architectural design document.
+
+	<br/><br/>    </td>  </tr></table>

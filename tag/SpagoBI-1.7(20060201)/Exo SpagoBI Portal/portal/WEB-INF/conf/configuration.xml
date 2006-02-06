@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+  <!--
+  PortalProviderRenderer allow the third party customize some html element of the portal 
+  such title , meta, link , script....  You need to write your own renderer provider that 
+  implement the interface org.exoplatform.portal.html.PortalProviderRenderer
+  -->
+  <service-configuration 
+    key="org.exoplatform.portal.html.PortalProviderRenderer"
+    type="org.exoplatform.portal.faces.renderer.html.portal.ExoPortalProviderRenderer"/>
+
+  <!--
+  ID genrator for the new component such UIPortlet , UIPage , UIContainer. Use "uuid" for
+  your production portal as the generator will generate an unique id for each new component base 
+  on the time , ip address of the server and a randoom number. Use "exo" to generate some predictable
+  ID base on the portlet name , page name and container name. It is useful to have some predictable
+  id for the exo web unit test. The "exo" algorithm will return the portlet name , page name and 
+  container as the id if there is no component use that id in the UIPortal yet, otherwise it return
+  a uuid id for the new component.
+  -->
+  <service-configuration type="org.exoplatform.portal.faces.component.PortalComponentIDGenerator">
+    <value-param>
+      <name>algorithm</name>
+      <value>exo</value>
+    </value-param>
+  </service-configuration>
+  
+  <!--
+  This manager manage the UIComponent action listener, set cache.action.listener to true
+  if you want to use a single action listener instance for all the user.
+  the cache.action.listener value should set to true in the production use. But you may have the
+  problem  with the cache action listener.
+  -->
+  <service-configuration type="org.exoplatform.faces.ActionListenerManager">
+    <value-param>
+      <name>cache.action.listener</name>
+      <value>true</value>
+    </value-param>
+  </service-configuration>
+
+  <!--
+  This manager manage the UIComponent validator, set cache.validator to true
+  if you want to use a single validator instance for all the user.
+  the cache.validator value should set to true in the production use. But you may have the
+  problem  with the cached validator.
+  -->
+  <service-configuration type="org.exoplatform.faces.ValidatorManager">
+    <value-param>
+      <name>cache.validator</name>
+      <value>false</value>
+    </value-param>
+  </service-configuration>
+  <!-- ============================================================================= -->
+  <!--     L O C A L E   C O N F I G   M A N A G E R      S E R V I C E              -->
+  <!-- ============================================================================= -->
+  <!--
+    Edit the locales-config.xml file for your input encoding and output encoding
+  -->
+  <service-configuration type="org.exoplatform.services.resources.impl.LocaleConfigServiceImpl">
+    <value-param>
+      <name>locale.config.file</name>
+      <value>war:/conf/locales-config.xml</value>
+    </value-param>
+  </service-configuration>
+
+  <!--
+    Comment out this line to see how you can quickly make a listener with groovy script
+  -->
+  <service-configuration type="org/exoplatform/services/organization/GroovyNewUserEventListener.groovy"/>
+
+  <import>war:/conf/communication-configuration.xml</import>
+
+  <!--	
+  <import>war:/conf/organization-configuration.xml</import>		
+  --> 	
+
+</configuration>

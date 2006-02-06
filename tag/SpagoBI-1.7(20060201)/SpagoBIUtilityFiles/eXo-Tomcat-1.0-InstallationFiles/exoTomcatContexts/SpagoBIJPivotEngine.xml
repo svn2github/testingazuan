@@ -1,0 +1,5 @@
+  <Context path="/SpagoBIJPivotEngine" docBase="${catalina.home}/webapps/SpagoBIJPivotEngine"
+      debug="0" privileged="true">
+  <ResourceLink name="jdbc/sbifoodmart" type="javax.sql.DataSource" global="jdbc/sbifoodmart"/>
+  <ResourceLink name="cms/spagobicms" type="it.eng.javax.jcr.Repository" global="cms/spagobicms"/>
+  </Context>

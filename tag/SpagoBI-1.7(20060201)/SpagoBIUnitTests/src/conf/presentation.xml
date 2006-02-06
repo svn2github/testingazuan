@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PRESENTATION>
+
+	<MAPPING business_name="ListEnginesPage" business_type="PAGE" publisher_name="ListEnginesPubJ"/>
+	<MAPPING business_name="ListParametersPage" business_type="PAGE" publisher_name="ListParametersPubJ"/>
+	<MAPPING business_name="ListParameterUsesPage" business_type="PAGE" publisher_name="ListParameterUsesPubJ"/>
+	<MAPPING business_name="ListLovsPage" business_type="PAGE" publisher_name="ListLovsPubJ"/>
+	<MAPPING business_name="ListModalitiesChecksPage" business_type="PAGE" publisher_name="ListModalitiesChecksPubJ"/>
+	<MAPPING business_name="DetailEnginePage" business_type="PAGE" publisher_name="DetailEnginePubJ"/>
+	<MAPPING business_name="DetailParameterPage" business_type="PAGE" publisher_name="DetailParameterPubJ"/>
+	<MAPPING business_name="DetailFunctionalityPage" business_type="PAGE" publisher_name="DetailFunctionalityPubJ"/>
+	<MAPPING business_name="DetailModalitiesPage" business_type="PAGE" publisher_name="DetailModalitiesPubJ"/>
+	<MAPPING business_name="DetailModalitiesValuePage" business_type="PAGE" publisher_name="DetailModalitiesValuePubJ"/>
+	<MAPPING business_name="DetailModalitiesChecksPage" business_type="PAGE" publisher_name="DetailModalitiesChecksPubJ"/>
+	<MAPPING business_type="ACTION" business_name="START_ACTION" publisher_name="DYN_FORWARD_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_SETTINGS" publisher_name="LoginSBISettingsPublisher"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_DEVELOPMENT_CONTEXT" publisher_name="LoginSBIDevelopmentContextPublisher"/>
+	<MAPPING business_name="DetailBIObjectPage" business_type="PAGE" publisher_name="DetailBIObjectPubJ"/>
+	<MAPPING business_name="ListBIObjectParametersPage" business_type="PAGE" publisher_name="ListBIObjectParametersPubJ"/>
+	<MAPPING business_name="DetailBIObjectParameterPage" business_type="PAGE" publisher_name="DetailBIObjectParameterPubJ"/>
+	<MAPPING business_name="ExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
+	<MAPPING business_name="ValidateExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
+	<MAPPING business_name="TreeObjectsPage" business_type="PAGE" publisher_name="TreeObjectsPubJ"/>
+	<MAPPING business_name="GenericLookupPage" business_type="PAGE" publisher_name="LookupPublisher"/>
+	<MAPPING business_name="SaveConfigurationPage" business_type="PAGE" publisher_name="SaveConfigurationPubJ"/>
+	<MAPPING business_name="LOGIN_PAGE_SBI_FUNCTIONALITY" business_type="PAGE" publisher_name="TreeObjectsPubJ"/>
+	
+</PRESENTATION>
+

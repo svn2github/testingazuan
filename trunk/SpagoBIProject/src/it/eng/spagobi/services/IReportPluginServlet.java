@@ -24,15 +24,12 @@ package it.eng.spagobi.services;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.entities.ElementProperty;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.operations.SetOperation;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
+import it.eng.spago.cms.CmsManager;
+import it.eng.spago.cms.CmsNode;
+import it.eng.spago.cms.CmsProperty;
 import it.eng.spago.cms.init.CMSManager;
+import it.eng.spago.cms.operations.GetOperation;
+import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
@@ -167,24 +164,24 @@ public class IReportPluginServlet extends HttpServlet{
 	   	path += "/template";
 	    InputStream jcrContentStream = null;
 	    IEngUserProfile userProfile = new AnonymousCMSUserProfile();
-		OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
 		try{
-			CMSConnection connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(path);
-			get.setRetriveContentInformation("true");
-			get.setRetrivePropertiesInformation("true");
-			get.setRetriveVersionsInformation("false");
-			get.setRetriveChildsInformation("false");
-			ElementDescriptor desc = executor.getObject(connection, get, userProfile, true);
-			jcrContentStream = desc.getContent();
+            CmsManager manager = new CmsManager();
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(path);
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetrivePropertiesInformation("true");
+			getOp.setRetriveVersionsInformation("false");
+			getOp.setRetriveChildsInformation("false");
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			jcrContentStream = cmsnode.getContent();
 			String fileName = "NoName";
-			ElementProperty[] props = desc.getNamedElementProperties("fileName");
-			ElementProperty fileNameProp = null;
-			if(props.length>0)
-				fileNameProp = props[0];
-		    fileName = fileNameProp.getStringValues()[0];
-			//jcrContentStream = (InputStream) descSb.getAttribute("Content.Stream");
+			List properties = cmsnode.getProperties();
+			Iterator iterProps = properties.iterator();
+			while(iterProps.hasNext()){
+				CmsProperty prop = (CmsProperty)iterProps.next();
+				if(prop.getName().equalsIgnoreCase("fileName"))
+					 fileName = prop.getStringValues()[0];
+			}
 			byte[] jcrContent = GeneralUtilities.getByteArrayFromInputStream(jcrContentStream);
 			response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\";");
 			response.setContentLength(jcrContent.length);
@@ -198,16 +195,6 @@ public class IReportPluginServlet extends HttpServlet{
    	        flushOut(msgerr, out);
    	        return;
 		}
- 	    
-		//return (InputStream) descSb.getAttribute("Content.Stream");
-	   	//try{
-	   	//	jcrContentStream = JCRUtilities.getContentByPath(path);
-	   	//  } catch (Exception e) {
-	   	//	String msgErr = createErrorMessage("10", "Cannot retrive file");
-	   	//  response.setStatus(400);
-		//	flushOut(msgErr, out);
-		//	return;
-	   	// }
 	}
 	
 	
@@ -238,19 +225,22 @@ public class IReportPluginServlet extends HttpServlet{
 		}
 	   	try{
    	    	InputStream fileis = (InputStream)mapPar.get("FILE");
-   	    	OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-	        CMSConnection connection = CMSManager.getInstance().getConnection();
-	        SetOperation set = OperationBuilder.buildSetOperation();
-	        set.setContent(fileis);
-	        set.setType(SetOperation.TYPE_CONTENT);
-	        set.setPath(path+"/template");
+            CmsManager manager = new CmsManager();
+   	    	SetOperation setOp = new SetOperation();
+	        setOp.setContent(fileis);
+	        setOp.setType(SetOperation.TYPE_CONTENT);
+	        setOp.setPath(path+"/template");
+	        setOp.setEraseOldProperties(false);
+	        List properties = new ArrayList();
 	        String[] nameFilePropValues = new String[] { nameFile };
-	        set.setStringProperty("fileName", nameFilePropValues);
 	        String today = new Date().toString();
 	        String[] datePropValues = new String[] { today };
-	        set.setStringProperty("dateLoad", datePropValues);
-	        IEngUserProfile userProf = new AnonymousCMSUserProfile();
-	        executor.setObject(connection, set, userProf, true);
+	        CmsProperty propname = new CmsProperty("fileName", nameFilePropValues);
+	        CmsProperty propdateLoad = new CmsProperty("dateLoad", datePropValues);
+	        properties.add(propname);
+	        properties.add(propdateLoad);
+	        setOp.setProperties(properties);
+            manager.execSetOperation(setOp);
 	        String msg = createResponseMessage("");
 	        flushOut(msg, out);
 	        return;

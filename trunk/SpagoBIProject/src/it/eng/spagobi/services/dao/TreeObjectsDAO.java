@@ -22,13 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.dao;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
-import it.eng.spago.cms.init.CMSManager;
+import it.eng.spago.cms.CmsManager;
+import it.eng.spago.cms.CmsNode;
+import it.eng.spago.cms.CmsProperty;
+import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -52,13 +49,8 @@ import java.util.List;
  */
 public class TreeObjectsDAO implements ITreeObjectsDAO {
 
-	private OperationExecutor executor = null;
-	private CMSConnection connection = null;
-	private GetOperation getOp = null;
     private IEngUserProfile profile = null;  
 	
-    
-    
     /**
 	 * Gets an objects tree from path and User Profile information.
 	 * 
@@ -70,18 +62,9 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 	public SourceBean getXmlTreeObjects(String initialPath, IEngUserProfile prof) {
 		SourceBean dataTree = null; 
 		try {
-			executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			getOp = OperationBuilder.buildGetOperation();
 			profile = prof;
 			dataTree = openRecursively(initialPath, true);
-			connection.close();
 		} catch (Exception e) {
-			if(connection != null) {
-				if(!connection.isClose()) {
-					connection.close();
-				}
-			}
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
 		            "getXmlTreeObjects", "Cannot get XML tree objects", e);
 		}
@@ -109,24 +92,26 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 		SourceBean bean = null;
 		
 		try {	
+			CmsManager manager = new CmsManager();
 			// set the parameters for the get operation
+			GetOperation getOp = new GetOperation();
 			getOp.setPath(path);
 			getOp.setRetriveChildsInformation("true");
 			getOp.setRetriveContentInformation("false");
 			getOp.setRetrivePropertiesInformation("true");
 			getOp.setRetriveVersionsInformation("false");        	
 			// get the cms node descriptor of the functionality
-			ElementDescriptor desc = executor.getObject(connection, getOp, profile, false);
-			SourceBean result = desc.getDescriptor();
-			if(result == null) 
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			if(cmsnode == null) 
 				return null;
             // get the type of the object
-            try {
-            	type = desc.getNamedElementProperties(ObjectsTreeConstants.NODE_CMS_TYPE)[0].getStringValues()[0];
-            } catch (Exception e) {
-              type = "";  
-            }
-			
+			List properties = cmsnode.getProperties();
+			Iterator iterProps = properties.iterator();
+			while(iterProps.hasNext()){
+				CmsProperty prop = (CmsProperty)iterProps.next();
+			    if(prop.getName().equalsIgnoreCase(ObjectsTreeConstants.NODE_CMS_TYPE))
+			    	type = prop.getStringValues()[0];
+			}
             if(isRoot) {
 				bean = new SourceBean("SystemFunctionalities");
 				bean.setAttribute("name", "tree.rootfolder.name");
@@ -146,12 +131,12 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
             } 
                
             // get the child of the nodes
-			List childs = result.getAttributeAsList("CHILDS.CHILD");  	 
+			List childs = cmsnode.getChilds();  	 
 			// for each child
-			Iterator iter = childs.iterator();
-	   		while(iter.hasNext()) {
-	   			SourceBean child = (SourceBean)iter.next();
-	   		    String pathChild = (String)child.getAttribute("path");		    
+			Iterator iterchilds = childs.iterator();
+	   		while(iterchilds.hasNext()) {
+	   			CmsNode childnode =  (CmsNode)iterchilds.next();			
+	   		    String pathChild = childnode.getPath();		    
 	   		    SourceBean underBean = openRecursively(pathChild, false);
 	   		    if(underBean != null) {
 	   		    	bean.setAttribute(underBean);

@@ -26,12 +26,8 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.operations.DeleteOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.init.CMSManager;
+import it.eng.spago.cms.CmsManager;
+import it.eng.spago.cms.operations.DeleteOperation;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
@@ -941,10 +937,9 @@ public class DetailBIObjectModule extends AbstractModule {
 		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
             // try to delete the version
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			CMSConnection connection = CMSManager.getInstance().getConnection();
-			DeleteOperation del = OperationBuilder.buildDeleteOperation(pathVer, ver);
-			executor.deleteObject(connection, del, profile, true);
+			CmsManager manager = new CmsManager();
+			DeleteOperation delOp = new DeleteOperation(pathVer, ver);
+            manager.execDeleteOperation(delOp);
 			// populate response
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(pathObj);
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);

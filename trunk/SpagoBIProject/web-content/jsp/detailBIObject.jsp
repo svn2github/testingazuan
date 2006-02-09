@@ -24,12 +24,6 @@
 <portlet:defineObjects/>
 
 <style>
-@IMPORT url("/portal/default-skin.css");
-</style>
-<style>
-@IMPORT url("/wsrp/skin/portlet/wsrp-admin-portlet.css");
-</style>
-<style>
 @IMPORT url("/spagobi/css/table.css");
 </style>
 
@@ -200,12 +194,12 @@ return 0;
     <!--
 	<div style='width:49%;float:left;'>
 	-->
-	<table width="100%" cellspacing="0" border="0" id = "fieldsTable">
+	<table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
 		<tr>
 			<!--td width="40%"-->
 			<td>
 			
-		<table class="object-details-table" >
+		<table class="object-details-table" style='margin-top:5px;'>
 		  	<!--tr height='1'>
 		  		<td width="1px"><span>&nbsp;</span></td>
 		  		<td width="75px"><span>&nbsp;</span></td>
@@ -215,8 +209,8 @@ return 0;
 		  	
 		  	<tr height='25'>
 		      	<!--td>&nbsp;</td-->
-		      	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.docConf.docDet.labelField" /></td>
-		      	<td>&nbsp;</td>
+		      	<td style="width:75px;" align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.docConf.docDet.labelField" /></td>
+		      	<td style="width:10px;">&nbsp;</td>
 		      	<td><input class='portlet-form-input-field' type="text" style='width:230px;' name="label" id="label" value="<%=obj.getLabel()%>" maxlength="20">&nbsp;*</td>
 		    </tr>
 		    <tr height='25'>
@@ -531,11 +525,12 @@ return 0;
 	
 %>
 
-	<table style='width:100%;visibility:visible;' class='UIProducerNode' id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
-		<tr>
-			<td colspan='2' class='wsrp-admin-portlet'>
+	<div style='width:100%;visibility:visible;' class='UITabs' id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
+		<div class="first-tab-level">
+			<div style="overflow: hidden; width:  100%">
+			<!-- td colspan='2' class='wsrp-admin-portlet'>
 				<div class='UIWSRPAdminPortlet'>
-					<ul class='UISimpleTabs'>
+					<ul class='UISimpleTabs'-->
 						<input type='hidden' id='selected_par_id' name='' value=''/>
 
 <%
@@ -543,32 +538,36 @@ List biObjParams = obj.getBiObjectParameters();
 String par_idStr = (String) moduleResponse.getAttribute("selected_par_id");
 Integer par_idInt = new Integer(par_idStr);
 int par_id = Integer.parseInt(par_idStr);
-String linkClass = "link";
+String linkClass = "tab";
 boolean foundSelectedParId = false;
 for (int i = 0; i < biObjParams.size(); i++){
 	BIObjectParameter biObjPar = (BIObjectParameter) biObjParams.get(i);
 	if (biObjPar.getParID().equals(par_idInt)) {
-		linkClass = "select-link";
+		linkClass = "tab selected";
 		foundSelectedParId = true;
 	}
-	else linkClass = "link";
+	else linkClass = "tab";
 	%>
-					<li><a class='<%= linkClass%>' 
-						href='javascript:changeBIParameter("<%= biObjPar.getParID().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'> 
+					<div class='<%= linkClass%>'>
+					<a href='javascript:changeBIParameter("<%= biObjPar.getParID().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'> 
 						<%= biObjPar.getLabel()%>
-					    </a>
+					</a>
+					</div>
 <%}
-if (par_id < 0 || !foundSelectedParId) linkClass = "select-link";
-else linkClass = "link";
+if (par_id < 0 || !foundSelectedParId) linkClass = "tab selected";
+else linkClass = "tab";
 %>
-					<li><a class='<%= linkClass%>' href='javascript:changeBIParameter("-1", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'> 
+						<div class='<%= linkClass%>'>
+					<a href='javascript:changeBIParameter("-1", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'> 
 						<spagobi:message key = "SBIDev.docConf.docDet.newBIParameter" />
 					    </a>
-					</ul>
+					    </div>
+					<!-- /ul>
 				</div>
-			</td>
-		</tr>
-	</table>
+			</td-->
+			</div>
+		</div>
+	</div>
 	
 <script>
 
@@ -731,7 +730,7 @@ document.getElementById('tabPanelWithJavascript').style.visibility='visible';
 document.getElementById('tabPanelWithoutJavascript').style.visibility='hidden';
 </script--%>
 
-<table class='header-sub-table-portlet-section' style='margin-top:5px;'>		
+<table  class='header-sub-table-portlet-section' >		
 	<tr class='header-sub-row-portlet-section'>
 		<% if (par_id != -1) { %>
 		<td class='header-sub-title-column-portlet-section'>
@@ -760,13 +759,11 @@ document.getElementById('tabPanelWithoutJavascript').style.visibility='hidden';
 
 <input type='hidden' name='objParIdOld' value='<%= objPar.getParIdOld() != null ? objPar.getParIdOld().toString() : "-1" %>' />
 <input type='hidden' name='' value='' id='deleteBIObjectParameter' />
-
-	<div class="object-details-div" >
-		<table class="object-details-table" >
+		<table class="object-details-table" style='margin-top:5px;'>
 
 			<tr height='25'>
-			      	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.docConf.docDetParam.labelField" /></td>
-      				<td>&nbsp;</td>
+			      	<td style="width:75px;" align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.docConf.docDetParam.labelField" /></td>
+      				<td style="width:10px;">&nbsp;</td>
       				<td><input class='portlet-form-input-field' type="text" name="objParLabel" id="objParLabel" size="42" value="<%=objPar.getLabel()%>" maxlength="20">&nbsp;*</td>
     			</tr>
 
@@ -877,7 +874,7 @@ document.getElementById('tabPanelWithoutJavascript').style.visibility='hidden';
     			</tr>
 
 		</table>
-	</div>
+	
 </form>
 
 <% } %>

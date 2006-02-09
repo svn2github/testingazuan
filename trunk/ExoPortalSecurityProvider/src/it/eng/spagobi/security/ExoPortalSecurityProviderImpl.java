@@ -23,24 +23,14 @@ package it.eng.spagobi.security;
 
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.utilities.SpagoBITracer;
-
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
-import org.exoplatform.services.database.DatabaseService;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
 
 /**
  * Implements the IPortalSecurityProvider interface defining method to get the 
@@ -57,7 +47,7 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 		PortalContainer container = PortalContainer.getInstance();	
 		OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
 		try {
-			Collection groups = service.findGroups(null);
+			Collection groups = service.getGroupHandler().getAllGroups();
 		    Iterator iter = groups.iterator();
 		    Group group = null;
 		    Role role = null;
@@ -90,7 +80,7 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 		Role role = new Role(group.getId(), group.getDescription());
     	roles.add(role);
     	try{
-    		Collection children = orgService.findGroups(group);
+    		Collection children = orgService.getGroupHandler().findGroups(group);
     		if ((children == null) || (children.size() == 0)){
     			// End recursion
     			return;
@@ -123,7 +113,7 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 		OrganizationService service = 
 			(OrganizationService)portalCont.getComponentInstanceOfType(OrganizationService.class);
 		try {
-			Collection groups = service.findGroupsOfUser(user);
+			Collection groups = service.getGroupHandler().findGroupsOfUser(user);
 			Iterator iterGroups = groups.iterator();
 			while(iterGroups.hasNext()) {
 				Group group = (Group)iterGroups.next();

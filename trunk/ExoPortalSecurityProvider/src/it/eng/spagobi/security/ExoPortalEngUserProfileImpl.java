@@ -21,21 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 **/
 package it.eng.spagobi.security;
 
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.constants.SecurityConstants;
+import it.eng.spagobi.utilities.SpagoBITracer;
+
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
-
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.constants.SecurityConstants;
-import it.eng.spagobi.utilities.SpagoBITracer;
 
 /**
  * Implementation of the Spago IEngUserProfile interface
@@ -58,7 +57,7 @@ public class ExoPortalEngUserProfileImpl implements IEngUserProfile {
 		OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
 		this.roles = new ArrayList();
 		try{
-			Collection tmpRoles = service.findGroupsOfUser(userUniqueIdentifier); 
+			Collection tmpRoles = service.getGroupHandler().findGroupsOfUser(userUniqueIdentifier); 
 			Group group = null;
 			for (Iterator it = tmpRoles.iterator(); it.hasNext();){
 				group = (Group)it.next();

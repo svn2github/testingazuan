@@ -19,7 +19,7 @@
 
 
 <project>
-  <currentVersion>1.7</currentVersion>
+  <currentVersion>1.6</currentVersion>
   <extend>${basedir}/../project.xml</extend>
 
   <!-- a unique name for this project -->
@@ -73,13 +73,13 @@
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>spagobi</artifactId>
-                <version>1.7</version>
+                <version>1.6</version>
         </dependency>
 
         <dependency>
                 <groupId>sbi.securityprovider.api</groupId>
                 <artifactId>sbi.securityprovider.api</artifactId>
-                <version>1.7</version>
+                <version>1.6</version>
         </dependency>
 
    </dependencies>

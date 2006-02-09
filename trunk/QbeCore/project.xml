@@ -19,7 +19,7 @@
 
 
 <project>
-  <currentVersion>1.7</currentVersion>
+  <currentVersion>1.6</currentVersion>
   <extend>${basedir}/../project.xml</extend>
 
   <!-- a unique name for this project -->

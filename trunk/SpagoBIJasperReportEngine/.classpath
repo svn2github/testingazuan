@@ -27,8 +27,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcommon-1.0.0-rc1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jfreechart-1.0.0-rc1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/poi-2.5.1-final-20040804.jar"/>
-	<classpathentry kind="var" path="EXO_HOME/common/lib/eng.jackrabbit-0.16.4.1-dev.jar"/>
-	<classpathentry kind="var" path="EXO_HOME/common/lib/eng.jcr.1.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-httpclient-2.0.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sbi.utils-1.7.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>

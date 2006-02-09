@@ -21,20 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.bo.dao.jdbc;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.entities.ElementProperty;
-import it.eng.spago.cms.exec.operations.DeleteOperation;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.operations.RestoreOperation;
-import it.eng.spago.cms.exec.operations.SetOperation;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
-import it.eng.spago.cms.init.CMSManager;
 import it.eng.spago.dbaccess.SQLStatements;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
@@ -51,21 +37,15 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.Role;
-import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
-import it.eng.spagobi.utilities.UploadedFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -161,6 +141,7 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 	 */
 	
 	public BIObject loadBIObjectForDetail(String path) throws EMFUserError {
+		/*
 		SQLCommand cmdSelect = null;
 		DataResult dr = null;
 		ScrollableDataResult sdr = null;
@@ -184,7 +165,7 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 				 * select biobj_id, engine_id, descr, label, encrypt, rel_name,
 				 * state_id, state_cd, biobj_type_cd, biobj_type_id from
 				 * sbi_objects where biobj_id = ?
-				 */
+				 
 				String biObjectIDStr = aDataRow.getColumn("biobj_id").getStringValue();
 				Integer biObjectIDInt = Integer.valueOf(biObjectIDStr);
 				biObject.setId(biObjectIDInt);
@@ -212,6 +193,7 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 				SessionContainer session = requestContainer.getSessionContainer();
 				SessionContainer permSession = session.getPermanentContainer();
 				IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				
 				
 				OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
 				connection = CMSManager.getInstance().getConnection();
@@ -274,6 +256,8 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 			}
 			Utils.releaseResources(dataConnection, cmdSelect, dr);
 		}
+		*/
+		return null;
 	}
 	
 	
@@ -430,6 +414,7 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#insertBIObject(it.eng.spagobi.bo.BIObject)
 	 */
 	public void insertBIObject(BIObject obj) throws EMFUserError {
+		/*
 		SQLCommand cmdIns = null;
 		DataResult dr = null;
 		DataConnection dataConnection = null;
@@ -503,14 +488,14 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 			}
 			Utils.releaseResources(dataConnection, cmdIns, dr);
 		}
-		
+		*/
 	}
 
 	/**
 	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#eraseBIObject(it.eng.spagobi.bo.BIObject)
 	 */
 	public void eraseBIObject(BIObject obj) throws EMFUserError {
-		
+		/*
 		SQLCommand cmdDel = null;
 		DataResult dr = null;
 		DataConnection dataConnection = null;
@@ -567,13 +552,14 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 			}
 			Utils.releaseResources(dataConnection, cmdDel, dr);
 		}
-		
+		*/
 	}
 
 	/**
 	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#fillBIObjectTemplate(it.eng.spagobi.bo.BIObject)
 	 */
 	public void fillBIObjectTemplate(BIObject obj) {
+		/*
 		CMSConnection connection = null;
 		try{
 			RequestContainer requestContainer =  RequestContainer.getRequestContainer();
@@ -609,7 +595,7 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 					            "fillBIObjectTemplate", 
 					            "Cannot fill the response", e);
 		}
-		
+		*/
 	}
 	
 
@@ -717,6 +703,7 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 	 * @throws EMFUserError If any exception occurred
 	 */
 	private void internalModify(Object obj, boolean version) throws EMFUserError {
+		/*
 		SQLCommand cmdUpd = null;
 		DataResult dr = null;
 		DataConnection dataConnection = null;
@@ -815,6 +802,7 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
             }
 			Utils.releaseResources(dataConnection, cmdUpd, dr);
 		}
+		*/
 	}
 	/** 
 	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#getCorrectRolesForExecution(java.lang.String, it.eng.spago.security.IEngUserProfile)

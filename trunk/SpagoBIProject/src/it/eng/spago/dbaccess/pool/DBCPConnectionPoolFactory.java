@@ -34,11 +34,9 @@ import it.eng.spago.dbaccess.pool.DecriptAlgorithmFactory;
 import it.eng.spago.dbaccess.pool.IDecriptAlgorithm;
 import it.eng.spago.dbaccess.pool.NativePoolWrapper;
 import it.eng.spago.error.EMFInternalError;
-
 import javax.sql.DataSource;
-
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.xerces.parsers.IntegratedParserConfiguration;
+
 
 /**
  * @author Zoppello

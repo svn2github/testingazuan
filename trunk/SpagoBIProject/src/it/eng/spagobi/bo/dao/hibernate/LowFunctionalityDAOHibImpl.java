@@ -23,19 +23,15 @@ package it.eng.spagobi.bo.dao.hibernate;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.cms.CmsManager;
+import it.eng.spago.cms.CmsNode;
+import it.eng.spago.cms.CmsProperty;
 import it.eng.spago.cms.exceptions.BuildOperationException;
 import it.eng.spago.cms.exceptions.OperationExecutionException;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.operations.DeleteOperation;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.operations.SetOperation;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
-import it.eng.spago.cms.init.CMSManager;
+import it.eng.spago.cms.operations.DeleteOperation;
+import it.eng.spago.cms.operations.GetOperation;
+import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LowFunctionality;
@@ -277,7 +273,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			IEngUserProfile profile) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
-		CMSConnection connection = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -312,17 +307,17 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// set new roles into sbiFunctions
 			hibFunct.setSbiFuncRoles(functRoleToSave);
 
-			OperationExecutor executor = OperationExecutorManager
-					.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			SetOperation set = OperationBuilder.buildSetOperation();
-			set.setPath(aLowFunctionality.getPath());
-			set.setType(SetOperation.TYPE_CONTAINER);
-			set.setEraseOldProperties(true);
+            CmsManager manager = new CmsManager();
+			SetOperation setOp = new SetOperation(); 
+			setOp.setPath(aLowFunctionality.getPath());
+			setOp.setType(SetOperation.TYPE_CONTAINER);
+			setOp.setEraseOldProperties(true);
+			List properties = new ArrayList();
 			String[] typePropValues = new String[] { AdmintoolsConstants.LOW_FUNCTIONALITY_TYPE };
-			set.setStringProperty(AdmintoolsConstants.NODE_CMS_TYPE,
-					typePropValues);
-			executor.setObject(connection, set, profile, true);
+			CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
+            properties.add(proptype);
+            setOp.setProperties(properties);
+			manager.execSetOperation(setOp);
 			tx.commit();
 		} catch (OperationExecutionException oee) {
 			logException(oee);
@@ -336,13 +331,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				tx.rollback();
 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} catch (EMFInternalError emfie) {
-			logException(emfie);
-			if (tx != null)
-				tx.rollback();
-
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -352,11 +340,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
 		} finally {
-			if(connection!=null){
-				if(!connection.isClose()) {
-					connection.close();
-				}
-			}
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
@@ -371,10 +354,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	public void eraseLowFunctionality(LowFunctionality aLowFunctionality, IEngUserProfile profile) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
-		
-		CMSConnection connection = null;
 		try {
-
 			if(hasChild(aLowFunctionality.getPath())) {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
@@ -382,10 +362,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				params.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1000, new Vector(), params);
 			}
-		
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiFunctions hibFunct = (SbiFunctions) aSession.load(
@@ -398,9 +374,10 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			aSession.delete(hibFunct);
 			
-			DeleteOperation del = OperationBuilder.buildDeleteOperation();
-			del.setPath(aLowFunctionality.getPath());
-			executor.deleteObject(connection, del, profile, true);
+			CmsManager manager = new CmsManager();
+			DeleteOperation delOp = new DeleteOperation();
+			delOp.setPath(aLowFunctionality.getPath());
+			manager.execDeleteOperation(delOp);
 			
 			tx.commit();
 		} catch (HibernateException he) {
@@ -421,11 +398,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
-			if(connection!=null){
-				if(!connection.isClose()) {
-					connection.close();
-				}
-			}
 			if(aSession != null)
 				if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
@@ -533,28 +505,27 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 */
 	public boolean hasChild(String path) throws EMFUserError {
-		CMSConnection connection = null;
 		try{
 			RequestContainer reqCont = RequestContainer.getRequestContainer();
 			SessionContainer sessCont = reqCont.getSessionContainer();
 			SessionContainer permSess = sessCont.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(path);
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			if(desc.hasChilds()) {
+			
+			CmsManager manager = new CmsManager();
+            GetOperation getOp = new GetOperation();
+			getOp.setPath(path);
+			getOp.setRetriveChildsInformation("true");
+			getOp.setRetriveContentInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			List childs = cmsnode.getChilds();
+			if(!childs.isEmpty()) {
 				return true;
 			} else {
 				return false;
 			}
 		} catch (Exception e) {
-			if(connection!=null) {
-				if(!connection.isClose()) {
-					connection.close();
-				}
-			}
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 					"LowFunctionalityDAOImpl", 
 					"existByCode", 

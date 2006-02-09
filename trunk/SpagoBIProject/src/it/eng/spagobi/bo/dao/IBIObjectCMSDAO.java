@@ -93,4 +93,13 @@ public interface IBIObjectCMSDAO {
 	 */
 	public void deleteSubObject(String pathParent, String name, IEngUserProfile profile) throws EMFUserError;
 	
+	
+	
+	/**
+	 * Given a <code>BIObject</code> at input, fills it with template information.
+	 * 
+	 * @param obj The object to fill template information in.
+	 */
+	public void fillBIObjectTemplate(BIObject obj);
+	
 }

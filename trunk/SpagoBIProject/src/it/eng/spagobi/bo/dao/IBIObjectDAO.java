@@ -130,12 +130,6 @@ public interface IBIObjectDAO {
 	 */
 	public void eraseBIObject(BIObject obj) throws EMFUserError;
 
-	/**
-	 * Given a <code>BIObject</code> at input, fills it with template information.
-	 * 
-	 * @param obj The object to fill template information in.
-	 */
-	public void fillBIObjectTemplate(BIObject obj);
 	
 	/**
 	 * Given the path String for a report and th User profile, gets the corret roles for 

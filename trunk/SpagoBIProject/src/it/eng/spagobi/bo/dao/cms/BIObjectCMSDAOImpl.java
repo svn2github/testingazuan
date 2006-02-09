@@ -22,23 +22,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.bo.dao.cms;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.entities.ElementProperty;
-import it.eng.spago.cms.exec.operations.DeleteOperation;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.operations.SetOperation;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
-import it.eng.spago.cms.init.CMSManager;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.cms.CmsManager;
+import it.eng.spago.cms.CmsNode;
+import it.eng.spago.cms.CmsProperty;
+import it.eng.spago.cms.operations.DeleteOperation;
+import it.eng.spago.cms.operations.GetOperation;
+import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -65,24 +64,20 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	 */
 	public InputStream getTemplate(String path, IEngUserProfile profile) {
 		InputStream isTemp = null;
-		CMSConnection connection = null;
 		try {
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(path + "/template");
-			get.setRetriveContentInformation("true");
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			isTemp = desc.getContent();
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(path + "/template");
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetriveChildsInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			isTemp = cmsnode.getContent();
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 					            "getTemplate", "Cannot retrive object template", e);
-		} finally {
-			if(connection!=null) {
-		    	if(!connection.isClose())
-		    		connection.close();
-		    }
-		}
+		} finally {	}
 		return isTemp;
 	}
 	
@@ -125,35 +120,34 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 					            "saveSubObject", "Error while contolling subobjects node", e);
 		}
 		
-		OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-		CMSConnection connection = null;
 		try {
-	        connection = CMSManager.getInstance().getConnection();
-	        SetOperation set = OperationBuilder.buildSetOperation();
-	        set = OperationBuilder.buildSetOperation();
-	        set.setContent(new ByteArrayInputStream(content));
-	        set.setType(SetOperation.TYPE_CONTENT);
-	        set.setPath(pathParent + "/subobjects/" + name);
+			SetOperation setOp = new SetOperation();
+	        setOp.setContent(new ByteArrayInputStream(content));
+	        setOp.setType(SetOperation.TYPE_CONTENT);
+	        setOp.setPath(pathParent + "/subobjects/" + name);
+	        setOp.setEraseOldProperties(false);
+	        List properties = new ArrayList();
 	        String[] ownerPropValues = new String[] { userId };
-	        set.setStringProperty("owner", ownerPropValues);
 	        String[] visibilityPropValues = new String[] { visibilityStr };
-	        set.setStringProperty("public", visibilityPropValues);
 	        String[] namePropValues = new String[] { name };
-	        set.setStringProperty("name", namePropValues);
 	        String[] descrPropValues = new String[] { description };
-	        set.setStringProperty("description", descrPropValues);
-	        executor.setObject(connection, set, profile, true);
+	        CmsProperty propname = new CmsProperty("name", namePropValues);
+	        CmsProperty propvis = new CmsProperty("public", visibilityPropValues);
+	        CmsProperty propown = new CmsProperty("owner", ownerPropValues);
+	        CmsProperty propdesc = new CmsProperty("description", descrPropValues);
+	        properties.add(propname);
+	        properties.add(propvis);
+	        properties.add(propown);
+	        properties.add(propdesc);
+	        setOp.setProperties(properties);
+	        CmsManager manager = new CmsManager();
+			manager.execSetOperation(setOp);
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 					            "saveSubObject", "cannot save object with name " + name +
 					            "for user " + userId, e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} finally {
-			if(connection!=null) {
-		    	if(!connection.isClose())
-		    		connection.close();
-		    }
-		}
+		} finally {	}
 	}
 
 	
@@ -170,42 +164,53 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	public List getAccessibleSubObjects(String pathParent, IEngUserProfile profile) {
 		List subObjects = new ArrayList();
 		String user = (String)profile.getUserUniqueIdentifier();
-		CMSConnection connection = null;
-		try {
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(pathParent + "/subobjects");
-			get.setRetriveContentInformation("false");
-			get.setRetrivePropertiesInformation("false");
-			get.setRetriveVersionsInformation("false");
-			get.setRetriveChildsInformation("true");
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			SourceBean elementSB = desc.getDescriptor();
+		try{
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(pathParent + "/subobjects");
+			getOp.setRetriveContentInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			getOp.setRetriveChildsInformation("true");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
 			// if the sourceBean is null return the empty list
-			if(elementSB == null)
+			if(cmsnode == null)
 				return subObjects;
-			List childs = elementSB.getAttributeAsList("CHILDS.CHILD");
+			if(cmsnode.getChilds() == null)
+				return subObjects;
+			List childs = cmsnode.getChilds();
 			Iterator iterChilds = childs.iterator();
 			while(iterChilds.hasNext()) {
-				SourceBean childSB = (SourceBean)iterChilds.next();
-				String pathChild = (String)childSB.getAttribute("PATH");
-			    get.setPath(pathChild);
-			    get.setRetriveContentInformation("false");
-				get.setRetrivePropertiesInformation("true");
-				get.setRetriveVersionsInformation("false");
-				get.setRetriveChildsInformation("false");
-				connection = CMSManager.getInstance().getConnection();
-				desc = executor.getObject(connection, get, profile, true);
-				ElementProperty ownProp = desc.getNamedElementProperties("owner")[0];
-				String owner = ownProp.getStringValues()[0];
-				ElementProperty publicProp = desc.getNamedElementProperties("public")[0];
-				String publicVisStr = publicProp.getStringValues()[0];
-				ElementProperty nameProp = desc.getNamedElementProperties("name")[0];
-				String name = nameProp.getStringValues()[0];
-				ElementProperty descrProp = desc.getNamedElementProperties("description")[0];
-				String description = descrProp.getStringValues()[0];
-				
+				CmsNode child = (CmsNode)iterChilds.next();
+				String pathChild = child.getPath();
+				getOp.setPath(pathChild);
+			    getOp.setRetriveContentInformation("false");
+				getOp.setRetrivePropertiesInformation("true");
+				getOp.setRetriveVersionsInformation("false");
+				getOp.setRetriveChildsInformation("false");
+				CmsNode cmsnodechild = manager.execGetOperation(getOp);
+				List properties = cmsnodechild.getProperties();
+				Iterator iterProps = properties.iterator();
+				String owner = "";
+				String publicVisStr = "";
+				String name = "";
+				String description = "";
+				while(iterProps.hasNext()) {
+					CmsProperty prop = (CmsProperty)iterProps.next();
+					name = prop.getName();
+					if(name.equalsIgnoreCase("owner")) {
+						owner = prop.getStringValues()[0];
+					}
+					if(name.equalsIgnoreCase("public")) {
+						publicVisStr = prop.getStringValues()[0];
+					}
+					if(name.equalsIgnoreCase("name")) {
+						name = prop.getStringValues()[0];
+					}
+					if(name.equalsIgnoreCase("description")) {
+						description = prop.getStringValues()[0];
+					}
+				}
 				boolean publicVis = false;
 				if(publicVisStr.equalsIgnoreCase("true"))
 					publicVis = true;
@@ -219,12 +224,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 					            "getAccessibleSubObjects", "Cannot retrive subobjects List", e);
-		} finally {
-			if(connection!=null) {
-		    	if(!connection.isClose())
-		    		connection.close();
-		    }
-		}
+		} finally {}
 		return subObjects;
 	}
 
@@ -246,25 +246,19 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		Object userIdObj = profile.getUserUniqueIdentifier();
 		String userId = userIdObj.toString();
 		InputStream isTemp = null;
-		CMSConnection connection = null;
 		try {
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(pathParent + "/subobjects/" + name);
-			get.setRetriveContentInformation("true");
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			isTemp = desc.getContent();
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(pathParent + "/subobjects/" + name);
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetriveChildsInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 					            "getSubObject", "Cannot retrive subobject template", e);
-		} finally {
-			if(connection!=null) {
-		    	if(!connection.isClose())
-		    		connection.close();
-		    }
-		}
-		
+		} finally {}
 		return isTemp;
 	}
 
@@ -279,12 +273,11 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	public void deleteSubObject(String pathParent, String name, IEngUserProfile profile) throws EMFUserError {
 		
 		String pathTodel = pathParent + "/subobjects/" + name;
-		OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
 		try {
-			CMSConnection connection = CMSManager.getInstance().getConnection();
-			DeleteOperation del = OperationBuilder.buildDeleteOperation();
-			del.setPath(pathTodel);
-			executor.deleteObject(connection, del, profile, true);
+			DeleteOperation delOp = new DeleteOperation();
+			delOp.setPath(pathTodel);
+			CmsManager manager = new CmsManager();
+			manager.execDeleteOperation(delOp);
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 		                        "deleteSubObject", "Cannot delete subobject", e);
@@ -305,29 +298,65 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	 * @throws Exception
 	 */
 	private void controlForSubObjectsNode(String pathParent, IEngUserProfile profile) throws Exception {
-		OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-		CMSConnection connection = null;
 		try {
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(pathParent + "/subobjects");
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			connection = CMSManager.getInstance().getConnection();
-			if(desc.getDescriptor()==null) {
-				SetOperation set = OperationBuilder.buildSetOperation();
-		        set.setType(SetOperation.TYPE_CONTAINER);
-		        set.setPath(pathParent + "/subobjects");
-		        executor.setObject(connection, set, profile, true);
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(pathParent + "/subobjects");
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetriveChildsInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+            CmsManager manager = new CmsManager();
+            CmsNode cmsnode = manager.execGetOperation(getOp);
+			if((cmsnode==null) || (cmsnode.getName()==null) || cmsnode.getName().trim().equals("") ) {
+				SetOperation setOp = new SetOperation();
+				setOp.setEraseOldProperties(false);
+		        setOp.setType(SetOperation.TYPE_CONTAINER);
+		        setOp.setPath(pathParent + "/subobjects");
+		        manager.execSetOperation(setOp);
 			}
 		} catch(Exception e) {
 			throw e;
-		} finally {
-			if(connection!=null) {
-		    	if(!connection.isClose())
-		    		connection.close();
-		    }
-		}
+		} finally {	}
 	}
+	
+	
+	/** 
+	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#fillBIObjectTemplate(it.eng.spagobi.bo.BIObject)
+	 */
+	public void fillBIObjectTemplate(BIObject obj)  {
+		try{
+			CmsManager manager = new CmsManager();
+			GetOperation getOp = new GetOperation(); 
+			getOp.setPath(obj.getPath() + "/template" );
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetrivePropertiesInformation("true");
+			getOp.setRetriveVersionsInformation("true");
+			getOp.setRetriveChildsInformation("true");
+            CmsNode cmsnode = manager.execGetOperation(getOp);			
+            List properties = cmsnode.getProperties();
+            String fileName = "";
+            Iterator iterprop = properties.iterator();
+            while(iterprop.hasNext()) {
+            	CmsProperty prop = (CmsProperty)iterprop.next();
+            	if(prop.getName().equalsIgnoreCase("fileName"))
+            		fileName = prop.getStringValues()[0];
+            }
+			InputStream instr = cmsnode.getContent();
+			byte[] content = GeneralUtilities.getByteArrayFromInputStream(instr);
+            UploadedFile template = new UploadedFile();
+	        template.setFileContent(content);
+            template.setFileName(fileName);
+            obj.setTemplate(template);
+		} catch (Exception e) {
+			SpagoBITracer.major("BIObjectModule", 
+								"BIObjectCMSDAOImpl", 
+								"fillBIObjectTemplate", 
+								"Cannot fill BIObject Template",e);
+		}
+
+	}
+	
+	
 	
 }
 

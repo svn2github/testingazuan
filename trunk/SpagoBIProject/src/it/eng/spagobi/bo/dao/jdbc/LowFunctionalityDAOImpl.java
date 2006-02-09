@@ -21,17 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.bo.dao.jdbc;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.operations.DeleteOperation;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.operations.SetOperation;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
-import it.eng.spago.cms.init.CMSManager;
 import it.eng.spago.dbaccess.SQLStatements;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
@@ -50,16 +39,11 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.services.modules.TreeObjectsModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 
 /**
@@ -335,6 +319,7 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#insertLowFunctionality(it.eng.spagobi.bo.LowFunctionality,it.eng.spago.security.IEngUserProfile) )
 	 */
 	public void insertLowFunctionality(LowFunctionality aLowFunctionality, IEngUserProfile profile) throws EMFUserError {
+		/*
 		SQLCommand cmdIns = null;
 		SQLCommand cmdSel = null;
 		DataResult dr = null;
@@ -399,13 +384,14 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 			}
 			Utils.releaseResources(dataConnection, cmdIns, dr);
 		}
-		
+		*/
 	}
 
 	/**
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#eraseLowFunctionality(it.eng.spagobi.bo.LowFunctionality, it.eng.spago.security.IEngUserProfile)
 	 */
 	public void eraseLowFunctionality(LowFunctionality aLowFunctionality, IEngUserProfile profile) throws EMFUserError {
+		/*
 		SQLCommand cmdDel = null;
 		DataResult dr = null;
 		DataConnection dataConnection = null;
@@ -455,7 +441,7 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 			}
 			Utils.releaseResources(dataConnection, cmdDel, dr);
 		}
-		
+		*/
 	}
 
 	/**
@@ -497,6 +483,7 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 	 * 
 	 */
 	public boolean hasChild(String path) throws EMFUserError {
+		/*
 		CMSConnection connection = null;
 		try{
 			RequestContainer reqCont = RequestContainer.getRequestContainer();
@@ -525,6 +512,8 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 					"Error during recorer of the functionality by code", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1003);
 		}
+		*/
+		return true;
 	}
 
 	

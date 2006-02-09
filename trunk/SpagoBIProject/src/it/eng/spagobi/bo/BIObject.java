@@ -21,7 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.bo;
 
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.jdbc.BIObjectDAOImpl;
+import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.Serializable;
@@ -276,8 +279,13 @@ public class BIObject implements Serializable {
 	 * Loads a Template.
 	 **/
 	public void loadTemplate() {
-		BIObjectDAOImpl biobjdao = new BIObjectDAOImpl();
-		biobjdao.fillBIObjectTemplate(this);
+		try{
+			IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
+			cmsdao.fillBIObjectTemplate(this);
+		} catch(Exception e) {
+			SpagoBITracer.major("BiObject", this.getClass().getName(),
+								"loadTemplate", "cannot load template", e);
+		}
 	}
 	/**
 	 * Gets the template version 

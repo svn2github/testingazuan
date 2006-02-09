@@ -29,20 +29,16 @@ package it.eng.spagobi.bo.dao.hibernate;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
+import it.eng.spago.cms.CmsManager;
+import it.eng.spago.cms.CmsNode;
+import it.eng.spago.cms.CmsProperty;
+import it.eng.spago.cms.CmsVersion;
 import it.eng.spago.cms.exceptions.BuildOperationException;
 import it.eng.spago.cms.exceptions.OperationExecutionException;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.entities.ElementProperty;
-import it.eng.spago.cms.exec.operations.DeleteOperation;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.operations.RestoreOperation;
-import it.eng.spago.cms.exec.operations.SetOperation;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
-import it.eng.spago.cms.init.CMSManager;
+import it.eng.spago.cms.operations.DeleteOperation;
+import it.eng.spago.cms.operations.GetOperation;
+import it.eng.spago.cms.operations.RestoreOperation;
+import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -216,32 +212,37 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		SessionContainer session = requestContainer.getSessionContainer();
 		SessionContainer permSession = session.getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		CMSConnection connection = null;
 		try{
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(biObject.getPath() + "/template" );
-			get.setRetriveContentInformation("true");
-			get.setRetrivePropertiesInformation("true");
-			get.setRetriveVersionsInformation("true");
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			SourceBean descSB = desc.getDescriptor();
-			if (descSB != null){
-				String currentVerStr = (String)descSB.getAttribute("VERSION");
-				List versions = descSB.getAttributeAsList("VERSIONS.VERSION");
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(biObject.getPath() + "/template" );
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetrivePropertiesInformation("true");
+			getOp.setRetriveVersionsInformation("true");
+			getOp.setRetriveChildsInformation("false");
+            CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			if(cmsnode != null){
+				String currentVerStr = cmsnode.getVersion();
+				List versions = cmsnode.getVersions();
 				Iterator iterVer = versions.iterator();
 				ArrayList templates = new ArrayList();
 				TemplateVersion currentVer = null;
-				connection = CMSManager.getInstance().getConnection();
 				while(iterVer.hasNext()) {
-					SourceBean ver = (SourceBean)iterVer.next();
-					String nameVer = (String)ver.getAttribute("name");
-					String dateVer = (String)ver.getAttribute("dataCreation");
-					get.setVersion(nameVer);
-					desc = executor.getObject(connection, get, profile, false);
-					ElementProperty fileNameProp = desc.getNamedElementProperties("fileName")[0];
-					String nameFile = fileNameProp.getStringValues()[0];
+					CmsVersion ver = (CmsVersion)iterVer.next();
+					String nameVer = ver.getName();
+					String dateVer = ver.getDataCreation();
+					// retrive version
+					getOp.setVersion(nameVer);
+					CmsNode cmsnodever = manager.execGetOperation(getOp);
+					List properties = cmsnodever.getProperties();
+					Iterator iterProps = properties.iterator();
+					String nameFile = "";
+					while(iterProps.hasNext()) {
+						CmsProperty prop = (CmsProperty)iterProps.next();
+						String nameProp = prop.getName();
+						if(nameProp.equalsIgnoreCase("fileName")) 
+							nameFile = prop.getStringValues()[0];
+					}
 					TemplateVersion tempVer = new TemplateVersion();
 					tempVer.setDataLoad(dateVer);
 					tempVer.setVersionName(nameVer);
@@ -251,7 +252,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 						currentVer = tempVer;
 					}
 				}
-				connection.close();
 				biObject.setTemplateVersions(templates);
 				biObject.setCurrentTemplateVersion(currentVer);
 			}else{
@@ -261,11 +261,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				biObject.setCurrentTemplateVersion(tv);
 			}
 		} catch (Exception ex) {
-			if(connection != null) {
-				if(!connection.isClose()) {
-					connection.close();
-				}
-			}
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "BIObjectDAOImpl",
 				"loadByPath", "Cannot recover detail information", ex);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -347,7 +342,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
-		CMSConnection connection = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -378,57 +372,45 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			IEngUserProfile profile = (IEngUserProfile) permSession
 					.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
+			CmsManager manager = new CmsManager();
 			if (version) {
 				// if user has load a file template update the cms reporitory
-				if (biObject.getTemplate().getFileContent().length > 0) {
-					OperationExecutor executor = OperationExecutorManager
-							.getOperationExecutor();
-					connection = CMSManager.getInstance()
-							.getConnection();
-					SetOperation set = OperationBuilder.buildSetOperation();
-					set = OperationBuilder.buildSetOperation();
-					set.setContent(new ByteArrayInputStream(biObject
-							.getTemplate().getFileContent()));
-					set.setType(SetOperation.TYPE_CONTENT);
-					set.setPath(biObject.getPath() + "/template");
-					String[] nameFilePropValues = new String[] { biObject
-							.getTemplate().getFileName() };
-					set.setStringProperty("fileName", nameFilePropValues);
+				if(biObject.getTemplate().getFileContent().length > 0) {
+					SetOperation setOp = new SetOperation();
+					setOp.setContent(new ByteArrayInputStream(biObject.getTemplate().getFileContent()));
+					setOp.setType(SetOperation.TYPE_CONTENT);
+					setOp.setPath(biObject.getPath() + "/template");
+					// define properties list
+					List properties = new ArrayList();
+					String[] nameFilePropValues = new String[] { biObject.getTemplate().getFileName() };
 					String today = new Date().toString();
 					String[] datePropValues = new String[] { today };
-					set.setStringProperty("dateLoad", datePropValues);
-					executor.setObject(connection, set, profile, true);
+					CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
+					CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);
+					properties.add(propFileName);
+					properties.add(propDateLoad);
+                    setOp.setProperties(properties);
+                    // exec operation
+					manager.execSetOperation(setOp);
 				} else if (biObject.getNameCurrentTemplateVersion() != null) {
-					OperationExecutor executor = OperationExecutorManager
-							.getOperationExecutor();
-					connection = CMSManager.getInstance()
-							.getConnection();
-					GetOperation get = OperationBuilder.buildGetOperation();
-					get.setPath(biObject.getPath() + "/template");
-					get.setRetriveChildsInformation("false");
-					get.setRetriveContentInformation("false");
-					get.setRetrivePropertiesInformation("false");
-					get.setRetriveVersionsInformation("false");
-					SourceBean descSB = executor.getObject(connection, get,
-							profile, true).getDescriptor();
-					String verName = (String) descSB.getAttribute("VERSION");
-					if (!biObject.getNameCurrentTemplateVersion().equals(
-							verName)) {
-						connection = CMSManager.getInstance().getConnection();
-						RestoreOperation res = OperationBuilder
-								.buildRestoreOperation();
-						res.setPath(biObject.getPath() + "/template");
-						res
-								.setVersion(biObject
-										.getNameCurrentTemplateVersion());
-						executor.restoreObject(connection, res, profile, true);
+					GetOperation getOp = new GetOperation();
+					getOp.setPath(biObject.getPath() + "/template");
+					getOp.setRetriveChildsInformation("false");
+					getOp.setRetriveContentInformation("false");
+					getOp.setRetrivePropertiesInformation("false");
+					getOp.setRetriveVersionsInformation("false");
+					CmsNode cmsnode = manager.execGetOperation(getOp);
+					String verName = cmsnode.getVersion();
+					if(!biObject.getNameCurrentTemplateVersion().equals(verName)) {
+						RestoreOperation resOp = new RestoreOperation();
+						resOp.setPath(biObject.getPath() + "/template");
+						resOp.setVersion(biObject.getNameCurrentTemplateVersion());
+						manager.execRestoreOperation(resOp);
 					}
 				}
 			}
-
 			// Clear bytes in memory
 			biObject.setTemplate(null);
-
 			tx.commit();
 		} catch (OperationExecutionException oe) {
 
@@ -446,16 +428,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} catch (EMFInternalError emfie) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
-					"BIObjectDAOImpl", "internalModify",
-					"Cannot recover detail information", emfie);
-
-			if (tx != null)
-				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
-		} catch (HibernateException he) {
+		}  catch (HibernateException he) {
 			logException(he);
 
 			if (tx != null)
@@ -464,11 +437,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
 		} finally {
-			if(connection != null) {
-            	if(!connection.isClose()) {
-            		connection.close();
-            	}
-            }
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
@@ -489,7 +457,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 
 		Session aSession = null;
 		Transaction tx = null;
-		CMSConnection connection = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -521,30 +488,34 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
 			
-			
-			
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			SetOperation set = OperationBuilder.buildSetOperation();
-			set.setPath(biObject.getPath());
-			set.setType(SetOperation.TYPE_CONTAINER);
-			set.setEraseOldProperties(true);
+			CmsManager manager = new CmsManager();
+			SetOperation setOp = new SetOperation();
+			setOp.setPath(biObject.getPath());
+			setOp.setType(SetOperation.TYPE_CONTAINER);
+			setOp.setEraseOldProperties(true);
+			// define properties
+			List properties = new ArrayList();
 			String[] typePropValues = new String[] { biObject.getBiObjectTypeCode() };
-			set.setStringProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
-			executor.setObject(connection, set, profile, true);
+			CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
+			properties.add(proptype);
+			setOp.setProperties(properties);
+			manager.execSetOperation(setOp);
 			// Set the report template
 			if (biObject.getTemplate().getFileContent().length > 0) {
-				connection = CMSManager.getInstance().getConnection();
-				set = OperationBuilder.buildSetOperation();
-				set.setContent(new ByteArrayInputStream(biObject.getTemplate().getFileContent()));
-				set.setType(SetOperation.TYPE_CONTENT);
-				set.setPath(biObject.getPath() + "/template");
+				setOp.setContent(new ByteArrayInputStream(biObject.getTemplate().getFileContent()));
+				setOp.setType(SetOperation.TYPE_CONTENT);
+				setOp.setPath(biObject.getPath() + "/template");
+				// define properties
+				properties =  new ArrayList();
 				String[] nameFilePropValues = new String[] { biObject.getTemplate().getFileName() };
-				set.setStringProperty("fileName", nameFilePropValues);
 				String today = new Date().toString();
 				String[] datePropValues = new String[] { today };
-				set.setStringProperty("dateLoad", datePropValues);
-				executor.setObject(connection, set, profile, true);
+				CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
+				CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);
+				properties.add(propFileName);
+				properties.add(propDateLoad);
+				setOp.setProperties(properties);
+				manager.execSetOperation(setOp);
 			}
 			// Clear bytes in memory
 			biObject.setTemplate(null);
@@ -569,15 +540,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} catch (EMFInternalError emfie) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
-					"BIObjectDAOImpl", "internalModify",
-					"Cannot recover detail information", emfie);
-
-			if (tx != null)
-				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -587,11 +549,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
 		} finally {
-			if(connection != null) {
-            	if(!connection.isClose()) {
-            		connection.close();
-            	}
-            }
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
@@ -610,7 +567,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	public void eraseBIObject(BIObject obj) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
-		CMSConnection connection = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -631,15 +587,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			SessionContainer permSession = session.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			// erase from cms
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			DeleteOperation del = OperationBuilder.buildDeleteOperation();
-            del.setPath(obj.getPath());
-            executor.deleteObject(connection, del, profile, true);
-			
-			
+			CmsManager manager = new CmsManager();
+			DeleteOperation delOp = new DeleteOperation();
+			delOp.setPath(obj.getPath());
+			manager.execDeleteOperation(delOp);
 			tx.commit();
-			
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null)
@@ -651,11 +603,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
 		}	finally {
-			if(connection != null) {
-				if(!connection.isClose()) {
-					connection.close();
-				}
-			}
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
@@ -663,48 +610,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	
-	
-	
-	
-	/** 
-	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#fillBIObjectTemplate(it.eng.spagobi.bo.BIObject)
-	 */
-	public void fillBIObjectTemplate(BIObject obj)  {
-		CMSConnection connection = null;
-		try{
-			RequestContainer requestContainer =  RequestContainer.getRequestContainer();
-			SessionContainer session = requestContainer.getSessionContainer();
-			SessionContainer permSession = session.getPermanentContainer();
-			IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(obj.getPath() + "/template" );
-			get.setRetriveContentInformation("true");
-			get.setRetrivePropertiesInformation("true");
-			get.setRetriveVersionsInformation("true");
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			ElementProperty nameProp = desc.getNamedElementProperties("fileName")[0];
-			String fileName = nameProp.getStringValues()[0];
-			SourceBean descSB = desc.getDescriptor();
-			InputStream instr = (InputStream)descSB.getAttribute("CONTENT.STREAM");
-			byte[] content = GeneralUtilities.getByteArrayFromInputStream(instr);
-            UploadedFile template = new UploadedFile();
-	        template.setFileContent(content);
-            template.setFileName(fileName);
-            obj.setTemplate(template);
-            
-		} catch (Exception e) {
-			if(connection != null) {
-            	if(!connection.isClose()) {
-            		connection.close();
-            	}
-            }
-			SpagoBITracer.major("BIObjectModule", "BIObjectDAOHibImpl", "fillBIObjectTemplate", "Cannot fill BIObject Template",e);
-		}
-
-	}
-
 	/** 
 	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#getCorrectRolesForExecution(java.lang.String, it.eng.spago.security.IEngUserProfile)
 	 */

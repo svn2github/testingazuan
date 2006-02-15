@@ -14,6 +14,10 @@
 	    	<NODE path="/Functionalities" />
 		    <NODE path="/Functionalities/SystemFunctionalities" />
    		</INITIALSTRUCTURE>
+   		<NAMESPACES>
+   			<SYSTEMNAMESPACE prefix="appSys" uri="http://it.eng.spago.contentRepository.system" />
+   			<USERNAMESPACE prefix="appUsr" uri="http://it.eng.spago.contentRepository.user" />
+   		</NAMESPACES>
 	</CONTENTREPOSITORY>
              
     <!--                  
@@ -27,6 +31,10 @@
 	    	<NODE path="/Functionalities" />
 		    <NODE path="/Functionalities/SystemFunctionalities" />
    		</INITIALSTRUCTURE>
+   		<NAMESPACES>
+   			<SYSTEMNAMESPACE prefix="appSys" uri="http://it.eng.spago.contentRepository.system" />
+   			<USERNAMESPACE prefix="appUsr" uri="http://it.eng.spago.contentRepository.user" />
+   		</NAMESPACES>
 	</CONTENTREPOSITORY>
     -->
     
@@ -38,6 +46,10 @@
 	    	<NODE path="/Functionalities" />
 		    <NODE path="/Functionalities/SystemFunctionalities" />
    		</INITIALSTRUCTURE>
+   		<NAMESPACES>
+   			<SYSTEMNAMESPACE prefix="appSys" uri="http://it.eng.spago.contentRepository.system" />
+   			<USERNAMESPACE prefix="appUsr" uri="http://it.eng.spago.contentRepository.user" />
+   		</NAMESPACES>
 	</CONTENTREPOSITORY>
  	-->
 

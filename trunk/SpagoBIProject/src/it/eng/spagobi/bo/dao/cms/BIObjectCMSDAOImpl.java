@@ -197,17 +197,17 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 				String description = "";
 				while(iterProps.hasNext()) {
 					CmsProperty prop = (CmsProperty)iterProps.next();
-					name = prop.getName();
-					if(name.equalsIgnoreCase("owner")) {
+					String nameprop = prop.getName();
+					if(nameprop.equalsIgnoreCase("owner")) {
 						owner = prop.getStringValues()[0];
 					}
-					if(name.equalsIgnoreCase("public")) {
+					if(nameprop.equalsIgnoreCase("public")) {
 						publicVisStr = prop.getStringValues()[0];
 					}
-					if(name.equalsIgnoreCase("name")) {
+					if(nameprop.equalsIgnoreCase("name")) {
 						name = prop.getStringValues()[0];
 					}
-					if(name.equalsIgnoreCase("description")) {
+					if(nameprop.equalsIgnoreCase("description")) {
 						description = prop.getStringValues()[0];
 					}
 				}
@@ -255,6 +255,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 			getOp.setRetriveVersionsInformation("false");
 			CmsManager manager = new CmsManager();
 			CmsNode cmsnode = manager.execGetOperation(getOp);
+			isTemp = cmsnode.getContent();
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 					            "getSubObject", "Cannot retrive subobject template", e);

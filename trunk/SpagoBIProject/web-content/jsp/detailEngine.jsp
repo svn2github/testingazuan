@@ -54,28 +54,28 @@
 
 <div class="object-details-div">
 	<table class="object-details-table">
-	  	<!--tr height='1'>
-	  		<td width="1px"><span>&nbsp;</span></td>
-	  		<td width="12%"><span>&nbsp;</span></td>
-	  		<td width="20px"><span>&nbsp;</span></td>
-	  		<td><span>&nbsp;</span></td>
-	  	</tr-->
 	  	<tr height='25'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBISet.eng.LabelField" /></td>
-	      	<td>&nbsp;</td>
-	      	<td><input class='portlet-form-input-field' type="text" name="label" size="50" value="<%=engine.getLabel()%>" maxlength="20">&nbsp;*</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label' >
+	      		<spagobi:message key = "SBISet.eng.LabelField" />
+	      	</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td>
+	      		<input class='portlet-form-input-field' type="text" name="label" 
+	      			   size="50" value="<%=engine.getLabel()%>" maxlength="20">
+	      			   &nbsp;*
+	      	</td>
 	    </tr>
 	  	<tr height='25'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBISet.eng.NameField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label' ><spagobi:message key = "SBISet.eng.NameField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<td><input class='portlet-form-input-field' type="text" name="name" size="50" value="<%=engine.getName()%>" maxlength="45">&nbsp;*</td>
 	    </tr>
 	    <tr height='25'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.descriptionField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.descriptionField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<% 
 	      		String desc = engine.getDescription();
 	      		if( (desc==null) || (desc.equalsIgnoreCase("null"))  ) {
@@ -85,15 +85,15 @@
 	      	<td ><input class='portlet-form-input-field' type="text" name="description" size="50" value="<%= desc %>" maxlength="130"></td>
 	    </tr>
 	    <tr height='25'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.urlField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.urlField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<td><input class='portlet-form-input-field' type="text" name="url" size="50" value="<%=engine.getUrl()%>" maxlength="260">&nbsp;*</td>
 	    </tr>
 	    <tr height='25' style='display:none;'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.secondaryUrlField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.secondaryUrlField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<% 
 	      		String secUrl = engine.getSecondaryUrl();
 	      		if( (secUrl==null) || (secUrl.equalsIgnoreCase("null")) ) {
@@ -103,9 +103,9 @@
 	      	<td><input class='portlet-form-input-field' type="text" name="secondaryUrl" size="50" value="<%=secUrl%>" maxlength="260"></td>
 	    </tr>
 	    <tr height='25' style='display:none;'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.dirUploadField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.dirUploadField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<% 
 	      		String dirUpl = engine.getDirUpload();
 	      		if( (dirUpl==null) || (dirUpl.equalsIgnoreCase("null")) ) {
@@ -115,9 +115,9 @@
 	      	<td><input class='portlet-form-input-field' type="text" name="dirUpload" size="50" value="<%=dirUpl%>" maxlength="260"></td>
 	    </tr>
 	    <tr height='25' style='display:none;'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.dirUsableField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.dirUsableField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<% 
 	      		String dirUse = engine.getDirUsable();
 	      		if( (dirUse==null) || (dirUse.equalsIgnoreCase("null")) ) {
@@ -127,15 +127,15 @@
 	      	<td><input class='portlet-form-input-field' type="text" name="dirUsable" size="50" value="<%=dirUse%>" maxlength="260"></td>
 	    </tr>
 	    <tr height='25'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.driverNameField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.driverNameField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<td><input class='portlet-form-input-field' type="text" name="driverName" size="50" value="<%=engine.getDriverName()%>" maxlength="260">&nbsp;*</td>
 	    </tr>
 	    <tr height='25' style='display:none;'>
-	      	<!--td>&nbsp;</td-->
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.criptableField" /></td>
-	      	<td>&nbsp;</td>
+	      	<td width="10px">&nbsp;</td>
+	      	<td width="80px" align='right' class='portlet-form-field-label'><spagobi:message key = "SBISet.eng.criptableField" /></td>
+	      	<td width="10px">&nbsp;</td>
 	      	<td>
 	      	   <% 
 	      	      boolean isCrypt = false;
@@ -192,7 +192,6 @@
 
 </form>
 
-<!-- br/-->
  
 
 

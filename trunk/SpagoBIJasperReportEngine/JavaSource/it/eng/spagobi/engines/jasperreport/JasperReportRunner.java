@@ -6,7 +6,6 @@
  */
 package it.eng.spagobi.engines.jasperreport;
 
-import it.businesslogic.ireport.export.JRTxtExporter;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -32,6 +31,7 @@ import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 
@@ -138,7 +138,7 @@ public class JasperReportRunner {
 				    	exporter = new JRXmlExporter();
 				    }else if (outputType.equalsIgnoreCase("txt")) {
 				    	servletResponse.setContentType("text/plain");
-				    	exporter = new JRTxtExporter(); 
+				    	exporter = new JRTextExporter(); 
 				    } 
 				    
 				   

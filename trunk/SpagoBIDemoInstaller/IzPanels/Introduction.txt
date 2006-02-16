@@ -3,14 +3,15 @@ Introduction to SpagoBIDemo installation procedure.
 SpagoBIDemo installation is going to be performed.
 Before proceeding please checks the following system requirements:
 
-- Exo-Tomcat 1.0 installed on your PC but never executed;
-  ATTENTION: Exo-Tomcat must be downloaded from the Object Web repository
-  and decompressed into a freE choice folder.
-  (http://forge.objectweb.org/project/showfiles.php?group_id=151&release_id=791).
-  For a correct functionality Exo-Tomcat doesn't have to be executed before the installation.
-  The installation on a Exo-Tomcat already installed and used
+- New distribution of Exo-Tomcat Ecm Rc2 installed on your PC but never executed;
+  ATTENTION: The installation on a Exo-Tomcat already installed and used
   will result in a LOSS OF SERVER DATA.
-
-- JDK version 1.4 (or more recent);
+  Exo-Tomcat must be downloaded from the Object Web repository
+  and decompressed into a free choice folder. 
+  The link for the download is 
+  http://forge.objectweb.org/project/showfiles.php?group_id=151&release_id=791.
+  For a correct functionality Exo-Tomcat doesn't have to be executed before the installation.
+ 
+- JDK version 1.5.x
 
 - 256 MB memory (suggested).

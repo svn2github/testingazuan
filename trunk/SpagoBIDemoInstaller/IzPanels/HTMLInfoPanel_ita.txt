@@ -4,9 +4,9 @@ Ora puoi far partire il database e Exo-Tomcat.
 Lancia nell'ordine i seguenti file:
 
 - start.bat per Windows o start.sh per Unix all'interno della cartella 
-temp/data/databases di Exo-Tomcat (Controllare i permessi di esecuzione);
-- startup.bat per Windows o startup.sh per Unix all'interno della cartella 
+sbidata/databases di Exo-Tomcat (Controllare i permessi di esecuzione);
+- exo-run.bat per Windows o exo-run.sh per Unix all'interno della cartella 
 bin di Exo-Tomcat.
 
 Collegati, con il tuo browser (Explorer/Firefox) all'indirizzo 
-http://localhost:8080/portal
+http://localhost:8080/ecm

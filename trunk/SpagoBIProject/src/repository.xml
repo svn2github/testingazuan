@@ -150,7 +150,7 @@
         <param name="path" value="${rep.home}/repository"/>
     </FileSystem>
     -->
-    <FileSystem class="org.apache.jackrabbit.core.fs.local.DbFileSystem">
+    <FileSystem class="org.apache.jackrabbit.core.fs.local.DerbyFileSystem">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="fs_rep_"/>
     </FileSystem>
@@ -189,7 +189,7 @@
             <param name="path" value="${wsp.home}"/>
         </FileSystem>
         -->
-        <FileSystem class="org.apache.jackrabbit.core.fs.local.DbFileSystem">
+        <FileSystem class="org.apache.jackrabbit.core.fs.local.DerbyFileSystem">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="fs_ws_${wsp.name}_"/>
         </FileSystem>
@@ -271,7 +271,7 @@
             <param name="path" value="${rep.home}/version"/>
         </FileSystem>
         -->
-        <FileSystem class="org.apache.jackrabbit.core.fs.local.DbFileSystem">
+        <FileSystem class="org.apache.jackrabbit.core.fs.local.DerbyFileSystem">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="fs_version_"/>
         </FileSystem>

@@ -13,7 +13,10 @@ public class InstallSpagoBIDemo {
 
 			if (!installCommonLibs(pathsource, pathdest))
 				return;
-	
+	        
+			if(!installPatchBin(pathsource, pathdest))
+				return;
+			
 			if (!installPatchHsqldb(pathsource, pathdest))
 				return;
 
@@ -58,6 +61,17 @@ public class InstallSpagoBIDemo {
 		return true;
 	}
 	
+	
+	private static boolean installPatchBin(String pathsource, String pathdest) {
+		try {
+			File catalinaold = new File(pathdest + "/bin/catalina.sh");
+			catalinaold.delete();
+			FileUtilities.copy(pathdest + "/bin", pathsource	+ "/patchbin/catalina.sh");
+		} catch (Exception exc) {
+			return false;
+		}
+		return true;
+	}
 	
 	private static boolean installPatchHsqldb(String pathsource, String pathdest) {
 		try {

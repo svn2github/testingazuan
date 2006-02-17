@@ -150,9 +150,10 @@
         <param name="path" value="${rep.home}/repository"/>
     </FileSystem>
     -->
-    <FileSystem class="org.apache.jackrabbit.core.fs.local.DerbyFileSystem">
+    <FileSystem class="org.apache.jackrabbit.core.fs.db.DerbyFileSystem">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="fs_rep_"/>
+            <param name="externalBLOBs" value="false"/>
     </FileSystem>
     <!--
         security configuration
@@ -189,9 +190,10 @@
             <param name="path" value="${wsp.home}"/>
         </FileSystem>
         -->
-        <FileSystem class="org.apache.jackrabbit.core.fs.local.DerbyFileSystem">
+        <FileSystem class="org.apache.jackrabbit.core.fs.db.DerbyFileSystem">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="fs_ws_${wsp.name}_"/>
+            <param name="externalBLOBs" value="false"/>
         </FileSystem>
         <!--
             persistence manager of the workspace:
@@ -200,6 +202,7 @@
         <PersistenceManager class="org.apache.jackrabbit.core.state.db.DerbyPersistenceManager">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="pm_ws_${wsp.name}_"/>
+            <param name="externalBLOBs" value="false"/>
         </PersistenceManager>
         <!--
             Search index and the file system it uses.
@@ -271,9 +274,10 @@
             <param name="path" value="${rep.home}/version"/>
         </FileSystem>
         -->
-        <FileSystem class="org.apache.jackrabbit.core.fs.local.DerbyFileSystem">
+        <FileSystem class="org.apache.jackrabbit.core.fs.db.DerbyFileSystem">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="fs_version_"/>
+            <param name="externalBLOBs" value="false"/>
         </FileSystem>
         <!--
             Configures the perisistence manager to be used for persisting version state.
@@ -284,6 +288,7 @@
         <PersistenceManager class="org.apache.jackrabbit.core.state.db.DerbyPersistenceManager">
             <param name="url" value="jdbc:derby:${rep.home}/db;create=true"/>
             <param name="schemaObjectPrefix" value="pm_version_"/>
+            <param name="externalBLOBs" value="false"/>
         </PersistenceManager>
 
     </Versioning>

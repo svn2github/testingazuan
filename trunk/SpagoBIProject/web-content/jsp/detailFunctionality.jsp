@@ -3,7 +3,6 @@
 <%@ page import="it.eng.spagobi.constants.AdmintoolsConstants,
                  it.eng.spagobi.services.modules.DetailFunctionalityModule,
                  javax.portlet.PortletURL,
-                 it.eng.spago.base.SourceBean,
                  java.util.List,
                  it.eng.spagobi.bo.Role,
                  it.eng.spagobi.bo.LowFunctionality,
@@ -11,10 +10,6 @@
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.bo.dao.DAOFactory,
                  it.eng.spago.navigation.LightNavigationManager" %>
-
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-<portlet:defineObjects/>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailFunctionalityModule"); 
@@ -48,21 +43,19 @@
     	sysRoles[i][2] = role.getDescription();
     	
     }
-    
-    
 %>
 
+
+
+
 <form action="<%= formAct.toString() %>" method="post" id='formFunct' name = 'formFunct'>
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 
-<!-- table width='100%' cellspacing='0' border='0'>		
-	<tr height='40'>
-		<th align='center'><spagobi:message key = "SBISet.Funct.title" /></th>
-	</tr>
-</table-->
-
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -83,102 +76,101 @@
 	</tr>
 </table>
 
-<!-- spagobi:error /-->
-<!-- br/><br/--> 	
 
-<!-- div-->
+
+<div class='div_background_no_img' >
+
+
     
-	<div class="object-details-div">
-		<table class="object-details-table">
-		
-			<tr height='25'>
-	      		<td align='right' class='portlet-form-field-label' >
-	      			<spagobi:message key = "SBISet.Funct.codefield" />
-	      		</td>
-	      		<td>&nbsp;</td>
-	      		<% 
-	     			String code = functionality.getCode();
-	      			if( (code==null) || (code.equalsIgnoreCase("null"))  ) {
-	      				code = "";
-	      			}
-      			%>
-	      		<td>
-	      			<input class='portlet-form-input-field' type="text" 
-	      				   size="50" name="code" id="" value="<%= code %>" 
-	      				   <%  if(modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) { out.print(" readonly "); } %> />
-	      			&nbsp;* 
-	      		</td>
-	   		</tr>
-		
-			<tr height='25'>
-	      		<td align='right' class='portlet-form-field-label' >
-	      			<spagobi:message key = "SBISet.Funct.nameField" />
-	      		</td>
-	      		<td>&nbsp;</td>
-	      		<td>
-	      			<input class='portlet-form-input-field' type="text" 
-	      			       size="50" name="name" id="" 
-	      			       value="<%= functionality.getName() %>"  />
-	      			&nbsp;*	
-	      	    </td>
-	   		</tr>	
-	 	 	
-	 	 	<tr height='25'>
-	      		<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBISet.Funct.descriptionField" /></td>
-	      		<td>&nbsp;</td>
-	      		<% 
-      				String desc = functionality.getDescription();
-      				if( (desc==null) || (desc.equalsIgnoreCase("null"))  ) {
-      					desc = "";
-      				} 
-      			%>
-	      		<td><input class='portlet-form-input-field' type="text" size="50" name="description" id="" value="<%= desc %>" /> </td>
-	   		</tr>
-	   	
-	   		
-	 	</table>
-	 	
+<div class="div_detail_area_forms">
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.Funct.codefield" />
+		</span>
 	</div>
-	 
-	<div class='errors-object-details-div'>
-		<spagobi:error/>
-	</div>	
-	 	<!-- br/><br/--> 
-	 	
-	 	<% if(functionality.getCodType().equalsIgnoreCase("LOW_FUNCT")) { 
-	 			LowFunctionality lowFunctionality = (LowFunctionality)functionality;
-	 			
-	 			String path = lowFunctionality.getPath();
-	 			
-	 			Role[] devRolesObj = lowFunctionality.getDevRoles();
-	 			String[] devRules = new String[devRolesObj.length];
-	 			for(int i=0; i<devRolesObj.length; i++) {
-	 				devRules[i] = devRolesObj[i].getId().toString();
-	 			}
-	 			Role[] execRolesObj = lowFunctionality.getExecRoles();
-	 			String[] execRules = new String[execRolesObj.length];
-	 			for(int i=0; i<execRolesObj.length; i++) {
-	 				execRules[i] = execRolesObj[i].getId().toString();
-	 			}
-	 			Role[] testRolesObj = lowFunctionality.getTestRoles();
-	 			String[] testRules = new String[testRolesObj.length];
-	 			for(int i=0; i<testRolesObj.length; i++) {
-	 				testRules[i] = testRolesObj[i].getId().toString();
-	 			}
+	<div class='div_detail_form'>
+	<% 
+	  String code = functionality.getCode();
+	  if((code==null) || (code.equalsIgnoreCase("null"))  ) {
+	  	code = "";
+	  }
+    %>
+    	<input class='portlet-form-input-field' type="text" 
+	      	   size="50" name="code" id="" value="<%= code %>" 
+	      	   <%  if(modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) { out.print(" readonly "); } %> />
+	    &nbsp;* 
+	</div>
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.Funct.nameField" />
+		</span>
+	</div>
+	<div class='div_detail_form'> 
+		<input class='portlet-form-input-field' type="text" 
+	      	   size="50" name="name" id="" 
+	      	   value="<%= functionality.getName() %>"  />
+	   	&nbsp;*	
+	</div>
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.Funct.descriptionField" />
+		</span>
+	</div>
+	<div class='div_detail_form'> 
+	<% 
+      String desc = functionality.getDescription();
+      if( (desc==null) || (desc.equalsIgnoreCase("null"))  ) {
+      	desc = "";
+      } 
+     %>
+		<input class='portlet-form-input-field' type="text" 
+               size="50" name="description" id="" value="<%= desc %>" />
+	</div>
+</div>
 
-	 	%>
-	 	
-	 	<div style="padding-top:20px;padding-left:0px;display:block;clear:left;">
-	 		<table style="width:100%;">
+
+
+<spagobi:error/>
+
+	
+<% if(functionality.getCodType().equalsIgnoreCase("LOW_FUNCT")) { 
+		LowFunctionality lowFunctionality = (LowFunctionality)functionality;
+		String path = lowFunctionality.getPath();
+		Role[] devRolesObj = lowFunctionality.getDevRoles();
+		String[] devRules = new String[devRolesObj.length];
+		for(int i=0; i<devRolesObj.length; i++) {
+			devRules[i] = devRolesObj[i].getId().toString();
+		}
+		Role[] execRolesObj = lowFunctionality.getExecRoles();
+		String[] execRules = new String[execRolesObj.length];
+		for(int i=0; i<execRolesObj.length; i++) {
+			execRules[i] = execRolesObj[i].getId().toString();
+		}
+		Role[] testRolesObj = lowFunctionality.getTestRoles();
+		String[] testRules = new String[testRolesObj.length];
+		for(int i=0; i<testRolesObj.length; i++) {
+			testRules[i] = testRolesObj[i].getId().toString();
+		}
+%>	
+	
+<div class="div_functions_role_associations">
+	 		<table>
 	 				<tr>
-	 					<td class='portlet-section-header' align="left"><spagobi:message key = "SBISet.Funct.tabCol1" /></th>
-	 					<td class='portlet-section-header' align="center" width="90px"><spagobi:message key = "SBISet.Funct.tabCol2" /></th>
-	 					<td class='portlet-section-header' align="center" width="90px"><spagobi:message key = "SBISet.Funct.tabCol3" /></th>
-	 					<td class='portlet-section-header' align="center" width="90px"><spagobi:message key = "SBISet.Funct.tabCol4" /></th>
-	                    <td class='portlet-section-header' align="center" width="90px"></th> 				
-	 				</tr>
-	 				<tr>
-	 				    <td colspan="5"></td>
+	 					<td class='portlet-section-header' align="left">
+							<spagobi:message key = "SBISet.Funct.tabCol1" />
+						</td>
+	 					<td class='portlet-section-header' align="center" width="90px">
+							<spagobi:message key = "SBISet.Funct.tabCol2" />
+						</td>
+	 					<td class='portlet-section-header' align="center" width="90px">
+                            <spagobi:message key = "SBISet.Funct.tabCol3" />
+                        </td>
+	 					<td class='portlet-section-header' align="center" width="90px">
+                            <spagobi:message key = "SBISet.Funct.tabCol4" />
+                        </td>
+	                    <td class='portlet-section-header' align="center" width="90px">
+                        	&nbsp;
+                        </td> 				
 	 				</tr>
 	 			     <% 
 	 			    	boolean alternate = false;	
@@ -220,9 +212,8 @@
 					    </a>
 					    </td> 
 					 </tr>	
-                     <% } %> 
+                     <% } %>
                      <tr class='<%=rowClass%>'>
-                        <td class='portlet-font'/>
                         <td align="center">
                         <a onclick = "selectAllInColumns('development')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
                         <img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/expertok.gif")%>'/>
@@ -247,53 +238,19 @@
 					    <img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png")%>'/>
 					    </a>
 					    </td>
-					    <td align="center"/>
+					    <td align="center">&nbsp;</td>    
                      </tr>
 	 		</table>
-	 	</div>
-	 	
-	 	<% } %>
-	 	
-	 	<!-- br/-->
-	 	
-	 	<%--div style="width:100%;">
-	 		<table width="100%">
-      	    	<tr>
-      	    	    <td>&nbsp;</td>
-      	    	 	<td width="80px" align='center'>
-      	    	 	    <input type='image' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' name='save' alt='save'/> 
-					</td>
-					</form>
-					<td width='30px'>&nbsp;</td>
-					<td width="80px" align='center'>
-					    <a href='<%= backUrl.toString() %>' class='portlet-menu-item' >
-      						<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='Back' />
-						</a> 
-					</td>
-					<td>&nbsp;</td>
-      	    	</tr>
-      	    	<tr>
-      	    	    <td>&nbsp;</td>
-      	    	 	<td width="80px" align='center'>
-      	    	 	    <a href="javascript:document.getElementById('formFunct').submit()">
-      	    	 	    	<spagobi:message key = "SBISet.Funct.saveButt" /> 
-      	    	 	    </a>
-					</td>
-					<td width='30px'>&nbsp;</td>
-					<td width="80px" align='center'>
-				     	<a href='<%= backUrl.toString() %>'>
-				     		<spagobi:message key = "SBISet.Funct.backButt" />
-				     	</a>
-					</td>
-					<td>&nbsp;</td>
-      	    	</tr>
-      	    </table>
-	 	</div--%>
-	 	
-	 	<!-- br/-->
-	 		
-    </form>
-<!-- /div-->
+</div>
+
+<% } %>	 		
+</form>
+    
+
+
+</div>    
+    
+
 <script>
 function selectAllInColumns (columnName){
 var checkCollection = document.forms.formFunct.elements[columnName];

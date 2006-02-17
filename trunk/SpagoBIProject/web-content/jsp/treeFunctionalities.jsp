@@ -28,27 +28,21 @@
 	</tr>
 </table>
 
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-<portlet:defineObjects/>
+<div class="div_background">
+
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 
 <spagobi:treeObjects moduleName="TreeObjectsModule"  htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.FunctionalitiesTreeHtmlGenerator" />
 
 <br/>
 
-<%--table width="100%">
-	<tr>
-		<td align="center">
-			<a href= '<%= backUrl.toString() %>' class='portlet-menu-item' >
-      			<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='Back' />
-			</a>
-			<br>
-			<a href='<%= backUrl.toString() %>' >
-				<spagobi:message key = "SBISet.treeFunct.backButt" />
-			</a> 
-		</td>
-	</tr>
-</table--%>
+</div>
+
 
 
 

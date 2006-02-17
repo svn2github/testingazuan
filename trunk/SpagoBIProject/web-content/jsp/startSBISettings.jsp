@@ -6,22 +6,18 @@
 %>
 
 <%@ page import="it.eng.spagobi.constants.SpagoBIConstants" %>
-
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 <%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-
 <portlet:defineObjects/>
 
-<div>
-    <%--table width="100%" cellspacing="0" border="0">		
-		<tr height='40'>
-	    	<th align=middle><spagobi:message key = "SBISet.titleMenu" /></th>
-		</tr>
-	</table--%>
-	
-	<style>
-	@IMPORT url("/spagobi/css/table.css");
-	</style>
+<div class="div_background">
+
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 	
 	<table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
@@ -31,9 +27,7 @@
 		</tr>
 	</table>
 
-
-	
-	<!--br/--><br/>
+    <br/>
 	
 	<table>
 		<tr class="portlet-font">
@@ -80,6 +74,6 @@
 		</tr>
 	</table>
 	
-	<!--br/--><br/>
+	<br/>
 	
 </div>

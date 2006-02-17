@@ -2,6 +2,6 @@
 
 <TRACING>
 	<LOGGER name="DEFAULT_LOGGER" class="it.eng.spago.tracing.DefaultLogger">
-		<CONFIG trace_min_log_severity="5" debug="false" trace_path="/WEB-INF/log/" trace_name="spagobi-" append="true" trace_thread_name="false" /> 
+		<CONFIG trace_min_log_severity="0" debug="true" trace_path="/WEB-INF/log/" trace_name="spagobi-" append="true" trace_thread_name="false" /> 
 	</LOGGER>
 </TRACING>

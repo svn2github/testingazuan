@@ -214,6 +214,7 @@
 					 </tr>	
                      <% } %>
                      <tr class='<%=rowClass%>'>
+						<td align="center">&nbsp;</td>    
                         <td align="center">
                         <a onclick = "selectAllInColumns('development')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
                         <img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/expertok.gif")%>'/>
@@ -238,7 +239,7 @@
 					    <img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png")%>'/>
 					    </a>
 					    </td>
-					    <td align="center">&nbsp;</td>    
+						<td align="center">&nbsp;</td>   
                      </tr>
 	 		</table>
 </div>

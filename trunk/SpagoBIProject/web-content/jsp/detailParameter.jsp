@@ -394,70 +394,41 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-<!--
-<div >
+<!-- 
+<div class='portlet-section-header'>
 	Roles Associations 
 </div>
 <div style='width:33%;float:left;'>1</div>
 <div style='width:33%;float:left;'>2</div>
 <div style='width:33%;float:left;'>3</div>
-<div style='width:33%;float:left;'>4</div>
+<div style='width:33%;clear:left;float:left;'>4</div>
 <div style='width:33%;float:left;'>5</div>
 <div style='width:33%;float:left;'>6</div>
 <div style='clear:left;'>7</div>
 
-
 <table style='border: 1px solid red'> 
 <tr>
-	<td colspan='3' align="left" >
-  		Roles Associations 
-  	</td>
+  	    <td colspan='3' align="left" >
+  	    	Roles Associations 
+  	    </td>
+  	</tr>  		<tr>
+<td >   <input type='checkbox' name='paruseExtRoleId' value='129' />/spagobi/admin</td>
+<td ><input type='checkbox' name='paruseExtRoleId' value='130' />/spagobi/dev</td>
+<td >   <input type='checkbox' name='paruseExtRoleId' value='131' />/spagobi/share</td>
 </tr>
-<tr>
-	<td >   
-		<input type='checkbox' name='paruseExtRoleId' value='129' />
-			/spagobi/admin
-	</td>
-	<td>
-		<input type='checkbox' name='paruseExtRoleId' value='130' />
-			/spagobi/dev
-	</td>
-	<td >   
-		<input type='checkbox' name='paruseExtRoleId' value='131' />
-			/spagobi/share
-	</td>
+<tr >
+<td >   <input type='checkbox' name='paruseExtRoleId' value='132' />/spagobi/test</td>
+<td >   <input type='checkbox' name='paruseExtRoleId' value='133' />/spagobi/user</td>
+<td >luca</td>
 </tr>
-<tr>
-	<td>
-	   <input type='checkbox' name='paruseExtRoleId' value='132' />
-			/spagobi/test
-	</td>
-	<td >   
-		<input type='checkbox' name='paruseExtRoleId' value='133' />
-			/spagobi/user
-	</td>
-	<td ></td>
-</tr>
-</table> 
+    	</table> 
 -->
 
 
 
 
 
-
-
-<table width="100%" style='border: 1px solid #cccccc;'>
+<table>
 	<tr>
 		<td colspan="3" align="left" class='portlet-section-header'>
   	   		<spagobi:message key = "SBIDev.paramUse.valTab3" />
@@ -518,54 +489,68 @@
 
 
 
-<table width="100%" style='border: 1px solid #cccccc;margin-top:5px;'>
-	<tr>
-  		<td colspan="3" align="left" class='portlet-section-header'>
-  	   		<spagobi:message key = "SBIDev.paramUse.valTab2" />
-  	   	</td>
-   	</tr>
-  	<% 
-      List listChecks = paruse.getAssociatedChecks();
-      Check tmpCheck = null;
-      int counter = 1;
-      for(int i=0; i<sysChecks.length; i++) { 
-        if(counter==1) {
-           out.print("<tr class='portlet-font'>");
-        }
-      	boolean isCheck = false;
-      	String checkId = sysChecks[i][0].toString();
-      	//the list checks is not loaded at the moment
-      	if (listChecks != null){
-      		for(int j=0; j<listChecks.size(); j++) {
-      			tmpCheck = (Check)listChecks.get(j);
-       			if(checkId.equals(tmpCheck.getCheckId().toString())) 
-       				isCheck = true; 
-        	}
-      	}	    
-  	  	out.print("<td class='portlet-section-body'>");
-  	  	out.print("   <input type='checkbox' name='paruseCheckId' value='"+checkId+"' ");
-  	  	if(isCheck) {
-  	  		out.print(" checked='checked' ");
-  	  	}
-  	  	out.print(">" + sysChecks[i][1] + "</input>" );
-  	  	out.print("</td>");
-  	  	if((counter < 3) && (i==(sysChecks.length-1))){
-  	  	 	 int numcol = 3-counter;
-  	  	  	int num;
-  	  	  	for (num = 0; num <numcol; num++){
-  	   		 	 out.print("<td class='portlet-section-body'>");
-  	   		  	out.print("</td>");  
-  	  	  	}out.print("</tr>");
-  	  	} 
-  	  	if( (counter==3) || (i==(sysChecks.length-1)) ) {
-  	   		out.print("</tr>");
-  	  		counter = 1;
-  	  	} else {
-  	   		counter ++;
-  	  	}
-    }
- 	%>
-</table>   	
+
+
+
+<table width="100%" cellspacing="0" border="1" style='margin-top:5px;'>
+  	<tr height='1'>
+  		<td>
+  	    	<table width="100%">
+  	    		<tr >
+  	    			<td colspan="3" align="left" class='portlet-section-header'>
+  	    				<spagobi:message key = "SBIDev.paramUse.valTab2" />
+  	    			</td>
+  	    		</tr>
+  	    		<% 
+  	    		    List listChecks = paruse.getAssociatedChecks();
+  	    		    Check tmpCheck = null;
+  	    		    int counter = 1;
+  	    		    for(int i=0; i<sysChecks.length; i++) { 
+                        if(counter==1) {
+                          out.print("<tr class='portlet-font'>");
+                        }
+                        boolean isCheck = false;
+                        String checkId = sysChecks[i][0].toString();
+                         //the list checks is not loaded at the moment
+                        if (listChecks != null){
+                        	for(int j=0; j<listChecks.size(); j++) {
+                          		tmpCheck = (Check)listChecks.get(j);
+                   		  		if(checkId.equals(tmpCheck.getCheckId().toString())) 
+                   					isCheck = true; 
+                   			}
+                   		}	    
+  	    		 		out.print("<td class='portlet-section-body'>");
+  	    		 		out.print("   <input type='checkbox' name='paruseCheckId' value='"+checkId+"' ");
+  	    		 		if(isCheck) {
+  	    		 			out.print(" checked='checked' ");
+  	    		 		}
+  	    		 		out.print(">" + sysChecks[i][1] + "</input>" );
+  	    		 		out.print("</td>");
+  	    		 		if((counter < 3) && (i==(sysChecks.length-1))){
+  	    		 		  int numcol = 3-counter;
+  	    		 		  int num;
+  	    		 		  for (num = 0; num <numcol; num++){
+  	    		 		  out.print("<td class='portlet-section-body'>");
+  	    		 		  out.print("</td>");  
+  	    		 		  }out.print("</tr>");
+  	    		 		  } 
+  	    		 		
+  	    		 		if( (counter==3) || (i==(sysChecks.length-1)) ) {
+  	    		 		 	out.print("</tr>");
+  	    		 		 	counter = 1;
+  	    		 		} else {
+  	    		 		 	counter ++;
+  	    		 		 }
+  	    		  }
+  	    		%>
+  	    	</table>   	
+  		</td>
+  	</tr>
+</table>
+
+
+
+
 
 
 

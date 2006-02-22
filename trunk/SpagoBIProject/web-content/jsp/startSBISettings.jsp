@@ -39,7 +39,8 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListEnginesPage"/></portlet:actionURL>' class="portlet-menu-item" >
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListEnginesPage"/></portlet:actionURL>' 
+					class="link_main_menu" >
 				 	<spagobi:message key="SBISet.linkEngConf" />
 				</a>
 			</td>
@@ -53,7 +54,8 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OPERATION" value="<%= SpagoBIConstants.FUNCTIONALITIES_OPERATION %>"/></portlet:actionURL>' class="portlet-menu-item" >
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OPERATION" value="<%= SpagoBIConstants.FUNCTIONALITIES_OPERATION %>"/></portlet:actionURL>' 
+					class="link_main_menu" >
 					<spagobi:message key = "SBISet.linkFunctMan" />
 				</a>
 			</td>
@@ -67,7 +69,8 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OBJECTS_VIEW" value="<%= SpagoBIConstants.VIEW_OBJECTS_AS_LIST %>"/><portlet:param name="OBJECTS_VIEW" value="<%= SpagoBIConstants.VIEW_OBJECTS_AS_LIST %>"/></portlet:actionURL>' class="portlet-menu-item" >
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OBJECTS_VIEW" value="<%= SpagoBIConstants.VIEW_OBJECTS_AS_LIST %>"/><portlet:param name="OBJECTS_VIEW" value="<%= SpagoBIConstants.VIEW_OBJECTS_AS_LIST %>"/></portlet:actionURL>' 
+					class="link_main_menu" >
 					<spagobi:message key = "SBISet.linkDocMan" />
 				</a>
 			</td>

@@ -35,23 +35,12 @@
 
 %>
 
-<%--table width='100%' cellspacing='0' border='0'>		
-	<tr height='40'>
-		<th align='center'>
-			<% if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_LIST)) {  %>
-			   		<spagobi:message key = "SBISet.objects.titleList"/>
-			   		<!--out.write("Administration List Objects");-->
-			<%   } else if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)) { %>
-			   		<spagobi:message key = "SBISet.objects.titleTree"/>
-			   		<!--out.write("Administration Tree");-->
-			<%   }   %>
-		</th>
-	</tr>
-</table--%>
-
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -84,8 +73,14 @@
 
 
     <% if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)) { %>
+	<div class="div_background">
 		<spagobi:treeObjects moduleName="TreeObjectsModule"  htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator" />
 		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+	</div>	
     <% } else if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_LIST)) {  %>
     	<spagobi:listObjects moduleName="TreeObjectsModule"  
         	                 htmlGeneratorClass="it.eng.spagobi.presentation.listobjectshtmlgenerators.ListObjectsHtmlGeneratorAdminImpl"  
@@ -95,53 +90,7 @@
 	<% } %>
 
 
-<%--div style="width:100%;clear:left;">
-	<table width="100%">
-       	<tr>
-       	    <td>&nbsp;</td>
-			<td width="80px" align='center'>
-			    <a href='<%= backUrl.toString() %>' class='portlet-menu-item' >
-    				<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='Back' />
-				</a> 
-				<br/>
-				<a href='<%= backUrl.toString() %>'>
-					<spagobi:message key = "SBISet.objects.backButt"/>
-				</a>
-			</td>
-			<td width="30px">&nbsp;</td>
-			
-			<% if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)) { %>
-		    	
-		    	<td width="130px" align='center'>
-			    	<a href='<%= viewListUrl.toString() %>' class='portlet-menu-item' >
-    					<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/listView.png")%>' alt='Back' />
-					</a> 
-					<br/>
-					<a href='<%= viewListUrl.toString() %>' >
-						<spagobi:message key = "SBISet.objects.listViewButt"/>
-					</a>
-				</td>
-				
-    		<% } else if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_LIST)) { 	 %>
-    			
-    			<td width="130px" align='center'>
-			    	<a href='<%= viewTreeUrl.toString() %>' class='portlet-menu-item' >
-    					<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/treeView.png")%>' alt='Back' />
-					</a> 
-					<br/>
-					<a href='<%= viewTreeUrl.toString() %>'>
-						<spagobi:message key = "SBISet.objects.treeViewButt"/>
-					</a>
-				</td>
-				
-			<% } %>
 
-			<td>&nbsp;</td>
-       	</tr>
-    </table>
-</div--%>
-
-<!--br/-->
 
 
 

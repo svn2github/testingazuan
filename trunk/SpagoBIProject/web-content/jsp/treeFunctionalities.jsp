@@ -10,9 +10,12 @@
    backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
 %>
 
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -30,15 +33,12 @@
 
 <div class="div_background">
 
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
-
 <spagobi:treeObjects moduleName="TreeObjectsModule"  htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.FunctionalitiesTreeHtmlGenerator" />
 
+<br/>
+<br/>
+<br/>
+<br/>
 <br/>
 
 </div>

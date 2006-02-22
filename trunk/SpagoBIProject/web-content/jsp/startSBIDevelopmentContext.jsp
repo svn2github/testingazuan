@@ -39,7 +39,9 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListLovsPage"/></portlet:actionURL>' class="portlet-menu-item" ><spagobi:message key = "SBIDev.linkPredLov" /></a>
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListLovsPage"/></portlet:actionURL>' 
+					class="link_main_menu" >
+					<spagobi:message key = "SBIDev.linkPredLov" /></a>
 			</td>
 		</tr>
 		<tr class="portlet-font">
@@ -51,7 +53,9 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="LISTMODALITIESCHECKSPAGE"/></portlet:actionURL>' class="portlet-menu-item" ><spagobi:message key = "SBIDev.linkValConst" /></a>
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="LISTMODALITIESCHECKSPAGE"/></portlet:actionURL>' 
+					class="link_main_menu" >
+					<spagobi:message key = "SBIDev.linkValConst" /></a>
 			</td>
 		</tr>
 		<tr class="portlet-font" vAlign="middle">
@@ -63,7 +67,9 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListParametersPage"/></portlet:actionURL>' class="portlet-menu-item" ><spagobi:message key = "SBIDev.linkParam" /></a>
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListParametersPage"/></portlet:actionURL>' 
+					class="link_main_menu" >
+					<spagobi:message key = "SBIDev.linkParam" /></a>
 			</td>
 		</tr>
 		<tr class="portlet-font" vAlign="middle">
@@ -75,28 +81,12 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-			    <a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.DEV_ACTOR %>"/></portlet:actionURL>' class="portlet-menu-item" ><spagobi:message key = "SBIDev.linkDoc" /></a>
+			    <a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.DEV_ACTOR %>"/></portlet:actionURL>' 
+					class="link_main_menu" >
+					<spagobi:message key = "SBIDev.linkDoc" /></a>
 			</td>
 		</tr>
 		
-		<!--  QBE 
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objectAdministrationIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-			    <a href='<portlet:actionURL>
-			    			<portlet:param name="ACTION_NAME" value="PUBLISH_ACTION"/>
-			    			<portlet:param name="PUBLISHER_NAME" value="INDEX_PUBLISHER"/>
-			    		</portlet:actionURL>' class="portlet-menu-item">
-			    		QBE Test</a>
-			</td>
-		</tr>
-		  QBE -->
 	</table>
 	
 	<br/>

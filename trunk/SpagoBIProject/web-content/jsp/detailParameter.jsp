@@ -492,16 +492,14 @@
 
 
 
-<table width="100%" cellspacing="0" border="1" style='margin-top:5px;'>
-  	<tr height='1'>
-  		<td>
-  	    	<table width="100%">
-  	    		<tr >
-  	    			<td colspan="3" align="left" class='portlet-section-header'>
-  	    				<spagobi:message key = "SBIDev.paramUse.valTab2" />
-  	    			</td>
-  	    		</tr>
-  	    		<% 
+
+<table width="100%">
+	<tr>
+  		<td colspan="3" align="left" class='portlet-section-header'>
+  	    	<spagobi:message key = "SBIDev.paramUse.valTab2" />
+  	    </td>
+  	</tr>
+  	<% 
   	    		    List listChecks = paruse.getAssociatedChecks();
   	    		    Check tmpCheck = null;
   	    		    int counter = 1;
@@ -542,11 +540,8 @@
   	    		 		 	counter ++;
   	    		 		 }
   	    		  }
-  	    		%>
-  	    	</table>   	
-  		</td>
-  	</tr>
-</table>
+	%>
+</table>   	
 
 
 

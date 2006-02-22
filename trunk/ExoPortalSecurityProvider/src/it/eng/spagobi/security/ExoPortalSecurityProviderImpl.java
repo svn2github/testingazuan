@@ -21,12 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 **/
 package it.eng.spagobi.security;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.utilities.SpagoBITracer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
 import org.exoplatform.services.organization.Group;
@@ -106,12 +111,32 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 	 * @return List of user roles
 	 */
 	public List getUserRoles(String user, String passwd) {
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+							"ExoPortalSecurityProviderImpl::getUserRoles:start method");
 		List roles = new ArrayList();
-		RootContainer root = RootContainer.getInstance();
-		PortalContainer portalCont = root.getPortalContainer("portal");
-		PortalContainer.setInstance(portalCont);
+		String paramCont = "SPAGOBI.SECURITY.NAME_PORTAL_APPLICATION";
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+							"ExoPortalSecurityProviderImpl::getUserRoles:use param " + paramCont);
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+				            "ExoPortalSecurityProviderImpl::getUserRoles:config singleton retrived: " + config);
+		SourceBean paramContSB = (SourceBean)config.getAttribute(paramCont);
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+							"ExoPortalSecurityProviderImpl::getUserRoles:param context name Source Bean " +
+							"retrived: " + paramContSB);
+		String nameCont = (String)paramContSB.getCharacters();
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+				            "ExoPortalSecurityProviderImpl::getUserRoles: use context name " + nameCont);
+		RootContainer rootCont = RootContainer.getInstance();
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+	                        "ExoPortalSecurityProviderImpl::getUserRoles: root container retrived: " + rootCont);
+		PortalContainer container = rootCont.getPortalContainer(nameCont);
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+                            "ExoPortalSecurityProviderImpl::getUserRoles: portal container retrived: " + container);
 		OrganizationService service = 
-			(OrganizationService)portalCont.getComponentInstanceOfType(OrganizationService.class);
+			(OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+                			"ExoPortalSecurityProviderImpl::getUserRoles: organization service retrived: " + service);
 		try {
 			Collection groups = service.getGroupHandler().findGroupsOfUser(user);
 			Iterator iterGroups = groups.iterator();
@@ -126,6 +151,8 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 					               "getUserRoles()",
 					               "Error retrieving groups of user "+user, e);
 		}
+		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
+							"ExoPortalSecurityProviderImpl::getUserRoles:end method return roles: " + roles);
 		return roles;
 	}
 	

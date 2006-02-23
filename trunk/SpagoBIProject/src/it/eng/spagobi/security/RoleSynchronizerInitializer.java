@@ -157,41 +157,19 @@ public class RoleSynchronizerInitializer implements InitializerIFace {
     
 	/**
 	 * Gets the id for a Domain, given its code and value 
-	 * 
 	 * @param domainCode	The Domain code String
 	 * @param valueCode	The domain Value Dtring
 	 * @return	The Domain ID 
 	 */
     private Integer findSBIDomainValueID(String domainCode, String valueCode ){
-    	
-    	//    	select SBI_DOMAINS.VALUE_ID  from SBI_DOMAINS WHERE SBI_DOMAINS.VALUE_CD='PORTAL' AND DOMAIN_CD='ROLE_TYPE'
     	SQLCommand cmd = null;
 		DataResult dr = null;
 		DataConnection dataConnection = null;
 		Integer returnValue = null;
 		try {
-		
 			IDomainDAO domdao = DAOFactory.getDomainDAO();
 			Domain dom = domdao.loadDomainByCodeAndValue("ROLE_TYPE", "PORTAL");
 			returnValue = dom.getValueId();
-			/*
-			dataConnection = DataConnectionManager.getInstance().getConnection("spagobi");
-			String strSql = SQLStatements.getStatement("FIND_DOMAIN_VALUE_ID_GIVEN_DOMAIN_CODE_AND_VALUE_CODE");
-			ArrayList parameters = new ArrayList(2);
-			parameters.add(dataConnection.createDataField("VALUE_CD", Types.VARCHAR, valueCode));
-			parameters.add(dataConnection.createDataField("DOMAIN_CD", Types.VARCHAR, domainCode));
-			cmd = dataConnection.createSelectCommand(strSql);
-			dr = cmd.execute(parameters);
-			ScrollableDataResult sdr = null;
-			sdr = (ScrollableDataResult) dr.getDataObject();
-			if (sdr.hasRows()){
-				sdr.moveTo(1);
-				DataRow aDataRow = sdr.getDataRow();
-				String temp = aDataRow.getColumn("VALUE_ID").getStringValue();
-				returnValue = Integer.valueOf(temp);
-			}
-			*/
-			
 		}  catch (Exception ex) {
 			SpagoBITracer.major(SecurityConstants.NAME_MODULE,this.getClass().toString(),"findSBIDomainValueID", " An exception has occurred ", ex);
 		} finally {

@@ -53,22 +53,13 @@ public class PortletLoginAction extends AbstractAction{
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
-		
 		String remoteUser = portletRequest.getRemoteUser();
-		
 		SpagoBITracer.debug(SecurityConstants.NAME_MODULE, this.getClass().getName(),"service()", "USER CONNECTED IS [" + remoteUser+"]");
-		
-		
 		Principal principal = portletRequest.getUserPrincipal();
-		
 		String engUserProfileFactoryClass =  ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
-		
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
-		
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(principal);
-		
 		getRequestContainer().getSessionContainer().getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
 	}
 

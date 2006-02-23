@@ -10,7 +10,20 @@
 	height:25px;
 }
 
+.div_detail_label_check {
+	float:left;
+	width:120px;
+	height:25px;
+}
+
+
 .div_detail_form {
+	height:25px;
+}
+
+.div_radio_check {
+	float:left;
+	width:20px;
 	height:25px;
 }
 

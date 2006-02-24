@@ -17,18 +17,13 @@
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spago.navigation.LightNavigationManager" %>
 
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-
 <%
-
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
 	HashMap profileattrs = (HashMap)moduleResponse.getAttribute(SpagoBIConstants.PROFILE_ATTRS);
 	ModalitiesValue modVal = (ModalitiesValue)moduleResponse.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 	String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 	ArrayList list = (ArrayList)moduleResponse.getAttribute(SpagoBIConstants.LIST_INPUT_TYPE);
-	//String messagedet = (String)moduleResponse.getAttribute(SpagoBIConstants.MESSAGEDET);
-	    
+
 	PortletURL formUrl = renderResponse.createActionURL();
 	formUrl.setParameter("PAGE", "detailModalitiesValuePage");
 	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
@@ -66,19 +61,37 @@
 	  		lovDisplay = "inline";
 	  	}
 	}
+	
+	
+	String testButtonVisibility = null;
+	if (modVal != null && (modVal.getITypeCd().equalsIgnoreCase("QUERY")
+		|| modVal.getITypeCd().equalsIgnoreCase("SCRIPT")) )  {
+			testButtonVisibility = "visible";
+		}	
+	else {
+			testButtonVisibility = "hidden";
+	}
+	
 %>
 
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
+
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
+
+
 
 <form method='POST' action='<%= formUrl.toString() %>' id ='modalitiesValueForm' name='modalitiesValueForm'>
+	<input type='hidden' value='<%= modVal.getId() %>' name='id' />
+	<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
 
-<input type='hidden' value='<%= modVal.getId() %>' name='id' />
-<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
+
 
 <script type="text/javascript">
-function showWizard(){
+  function showWizard(){
 	var wizard = document.getElementById("input_type").value
 	if (wizard.match("QUERY") != null) {
 		document.getElementById("queryWizard").style.display = "inline"
@@ -107,16 +120,7 @@ function showWizard(){
 }
 </script>
 
-<% 
-String testButtonVisibility = null;
-if (modVal != null && (modVal.getITypeCd().equalsIgnoreCase("QUERY")
-	|| modVal.getITypeCd().equalsIgnoreCase("SCRIPT")) )  {
-		testButtonVisibility = "visible";
-	}	
-else {
-		testButtonVisibility = "hidden";
-}
-%>
+
 
 <table class='header-table-portlet-section' >		
 	<tr class='header-row-portlet-section'> 
@@ -146,106 +150,128 @@ else {
 	</tr>
 </table>
 
-<div class="object-details-div">
-	<table class="object-details-table">
-	    <tr height='25'>
-	      	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.labelField" /></td>
-	      	<td>&nbsp;</td>
-	      	<td><input class='portlet-form-input-field' type="text" name="label" size="50" value="<%=modVal.getLabel()%>" maxlength="20">&nbsp;*</td>
-	    </tr>
-	  	<tr height='25'>
-	      	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.nameField" /></td>
-	      	<td>&nbsp;</td>
-	      	<td><input class='portlet-form-input-field' type="text" name="name" size="50" value="<%=modVal.getName()%>" maxlength="40">&nbsp;*</td>
-	    </tr>
-	    <tr height='25'>
-	      	<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBIDev.predLov.descriptionField" /></td>
-	      	<td>&nbsp;</td>
-	      	<% 
-	      		String desc = modVal.getDescription();
-	      		if( (desc==null) || (desc.equalsIgnoreCase("null"))  ) {
-	      			desc = "";
-	      		} 
-	      	%>
-	      	<td ><input class='portlet-form-input-field' type="text" name="description" size="50" value="<%=desc%>" maxlength="160"></td>
-	    </tr>
-	    <tr height='25'>
-      		<td align='right' class='portlet-form-field-label'><spagobi:message key = "SBIDev.predLov.input_typeField" /></td>
-      		<td>&nbsp;</td>
-      		<td>
-      			
-      			<% 
-      				String selectDis = " ";
-      				if(modality.equals(SpagoBIConstants.DETAIL_MOD)) { 
-      					selectDis = " disabled ";
-      					String valueHid = modVal.getITypeCd()+","+modVal.getITypeId();
-      				} 
-      			%>	
-      		    
-      	   		<%--select name="input_type" class='portlet-form-input-field' <%= selectDis %> --%>
-      	   		
-      	   		<select name="input_type" id="input_type" class='portlet-form-input-field' onChange="showWizard()">
-      	    	<% 
-      	        	String curr_input_type = modVal.getITypeCd();
-      	        	if(curr_input_type==null) {
-      	        		curr_input_type = "";
-      	        	}
-      	        
-      	    		for (int i=0	; i<list.size(); i++){
-      	       			Domain domain = new Domain();
-      	       			domain = (Domain)list.get(i);
-      	       			String selectedStr = "";
-      	       			if(curr_input_type.equals(domain.getValueCd().toString())) {
-      	       				selectedStr = " selected='selected' ";
-      	       			}
-      	       			//if (curr_input_type.equals("") && domain.getValueCd().equalsIgnoreCase("MAN_IN")) {
-      	       			//	selectedStr = " selected='selected' ";
-      	       			//}
-      	    		%>
-      	    		<option value= "<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <%=selectedStr%>  > 
-      	    			<%= domain.getValueName()%>
-      	    		</option>
 
-      	   			<% 
-      	   			} 
-      	   			%>
-      	 		</select>
-      	 		
-    		</td>
-    	</tr>
-	</table>
+
+<div class='div_background_no_img' >
+
+
+
+
+<div class="div_detail_area_forms_lov">
+	<div class='div_detail_label_lov'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.predLov.labelField" />
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		<input class='portlet-form-input-field' type="text" name="label" 
+	      	   size="50" value="<%=modVal.getLabel()%>" maxlength="20">
+	    &nbsp;*
+	</div>
+	<div class='div_detail_label_lov'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.predLov.nameField" />
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		<input class='portlet-form-input-field' type="text" name="name" 
+	      	   size="50" value="<%=modVal.getName()%>" maxlength="40">
+	    &nbsp;*
+	</div>
+	<div class='div_detail_label_lov'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.predLov.descriptionField" />
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		<% 
+	      String desc = modVal.getDescription();
+	      if((desc==null) || (desc.equalsIgnoreCase("null"))  ) {
+	      		desc = "";
+	      } 
+	    %>
+	    <input class='portlet-form-input-field' type="text" name="description" 
+	      	   size="50" value="<%=desc%>" maxlength="160">
+	</div>
+	<div class='div_detail_label_lov'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.predLov.input_typeField" />
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		<% 
+      		String selectDis = " ";
+      		if(modality.equals(SpagoBIConstants.DETAIL_MOD)) { 
+      			selectDis = " disabled ";
+      			String valueHid = modVal.getITypeCd()+","+modVal.getITypeId();
+      		} 
+      	%>	
+   		<select style='width:180px;' name="input_type" id="input_type" class='portlet-form-input-field' onChange="showWizard()">
+      	<% 
+      	   	String curr_input_type = modVal.getITypeCd();
+      	   	if(curr_input_type==null) {
+      	   		curr_input_type = "";
+      	   	}
+      		for(int i=0; i<list.size(); i++){
+      			Domain domain = new Domain();
+      	       	domain = (Domain)list.get(i);
+      	       	String selectedStr = "";
+      	       	if(curr_input_type.equals(domain.getValueCd().toString())) {
+      	       		selectedStr = " selected='selected' ";
+      	       	}
+   		%>
+      	 	<option value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <%=selectedStr%>  > 
+      	    	<%= domain.getValueName()%>
+      	    </option>
+		<% 
+   			} 
+		%>
+ 		</select>
+	</div>
 </div>
 
-<div class='errors-object-details-div'>
-	<spagobi:error/>
-</div>
 
-<div id="queryWizard" class='object-details-div' style='clear:left;display:<%=queryDisplay%>'>
-	<br/>
-	<span class='portlet-form-field-label'>
+
+
+
+
+
+
+
+<spagobi:error/>
+
+
+
+
+
+<div id="queryWizard" style='width:100%;display:<%=queryDisplay%>'>
+	<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
 		<spagobi:message key = "SBIDev.queryWiz.wizardTitle" />
-	</span>
-	<hr width='100%'/>
+	</div> 
 	<spagobi:queryWizard 
 		connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 
 		visibleColumns='<%= query.getVisibleColumns()!= null ? query.getVisibleColumns().toString() : "" %>' 
 		valueColumns='<%= query.getValueColumns()!= null ? query.getValueColumns().toString() : "" %>' 
 		queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' 
-		/>
+		/> 
 </div>
 
-<div id="lovWizard" class='object-details-div' style='clear:left;display:<%=lovDisplay%>'>
-	<br/>
-	<span class='portlet-form-field-label'>
+
+
+
+
+<div id="lovWizard" style='width:100%;display:<%=lovDisplay%>'>
+	<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
 		<spagobi:message key = "SBIDev.lovWiz.wizardTitle" />
-	</span>
-	<hr width='100%'/>
-	<spagobi:lovWizard 
-		lovProvider='<%= lovProvider!= null ? lovProvider : "" %>' 
-	/>
+	</div> 
+	<spagobi:lovWizard lovProvider='<%= lovProvider!= null ? lovProvider : "" %>' />
 </div>
 
-<div id="scriptWizard" class='object-details-div' style='clear:left;display:<%=scriptDisplay%>'>
+
+
+
+
+<div id="scriptWizard" class='object-details-div' style='display:<%=scriptDisplay%>'>
 	<br/>
 	<span class='portlet-form-field-label'>
 		<spagobi:message key = "SBIDev.scriptWiz.wizardTitle" />
@@ -281,7 +307,7 @@ else {
 		<spagobi:message key = "SBIDev.scriptWiz.showSintax"/>
 	</a>
 	
-	<%--input type="image" src='' class='portlet-form-field-label' id="sintaxButton" onclick="showSintax()" alt='<spagobi:message key = "SBIDev.scriptWiz.showSintax"/>' /--%>
+
 	<br/>
 	
 	<div id="sintax" style="display:none;" >
@@ -350,5 +376,9 @@ else {
 		    </tr>
 		</table>
 	</div>
-	
 </div>
+
+
+
+
+</div> <!-- close background --> 

@@ -82,29 +82,7 @@
 		</div>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
-				<spagobi:message key = "SBIDev.valConst.descriptionField" /><div class="object-details-div">
-	<table class="object-details-table">
-  		<tr height='25'>
-      			<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.valConst.labelField" /> </td>
-      			<td>&nbsp;</td>
-      			<td><input class='portlet-form-input-field' type="text" name="label" value="<%=check.getLabel()%>" size='50' maxlength="20">&nbsp;*</td>
-   		</tr>
-  		<tr height='25'>
-      			<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.valConst.nameField" /> </td>
-      			<td>&nbsp;</td>
-      			<td><input class='portlet-form-input-field' type="text" name="name" value="<%=check.getName()%>" size='50' maxlength="40">&nbsp;*</td>
-   		 </tr>
-  		<tr height='25'>
-      			<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.valConst.descriptionField" /></td>
-      			<td>&nbsp;</td>
-      			<td><input class='portlet-form-input-field' type="text" name="description" value="<%=check.getDescription()%>" size='50' maxlength="160"></td>
-    		</tr>
-	</table>
-</div>
-
-<div class='errors-object-details-div'>
-	<spagobi:error/>
-</div>
+				<spagobi:message key = "SBIDev.valConst.descriptionField" />
 			</span>
 		</div>
 		<div class='div_detail_form'>

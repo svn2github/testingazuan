@@ -262,7 +262,7 @@
 <table width="50%" cellspacing="0" border="0" clear='left'>
  	<tr height='1'>  	
   		<td width="1px"><span>&nbsp;</span></td>
-  		<td width="80px"><span>&nbsp;</s></td>
+  		<td width="80px"><span>&nbsp;</span></td>
   		<td width="20px"><span>&nbsp;</span></td>
   		<td width="4%"><span>&nbsp;</span></td>
   		<td width="30%"><span>&nbsp;</span></td>
@@ -324,7 +324,7 @@
 	                     dom = null; 
 	                     currCheck = 0;
     			         
-    			        while (it1.hasNext()){<spagobi:error/>
+    			        while (it1.hasNext()){
     			       
     			       dom = (it.eng.spagobi.bo.Domain)it1.next();
 			           valueCD = dom.getValueCd();

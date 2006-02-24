@@ -55,11 +55,9 @@ public class QueryWizardTag extends TagSupport {
 	
 	public int doStartTag() throws JspException {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "QueryWizardTag::doStartTag:: invocato");
-		
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
 		renderResponse = (RenderResponse) httpRequest.getAttribute("javax.portlet.response");
-		
 		String connNameField = PortletUtilities.getMessage("SBIDev.queryWiz.connNameField", "messages");
 		String visColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.visColumnsField", "messages");
 		String valueColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.valueColumnsField", "messages");
@@ -69,9 +67,109 @@ public class QueryWizardTag extends TagSupport {
 		String updateFieldsFromQuery = PortletUtilities.getMessage("SBIDev.queryWiz.updateFieldsFromQuery", "messages");
 		String isNotASelect = PortletUtilities.getMessage("SBIDev.queryWiz.isNotASelect", "messages");
 		String incorrectQuery = PortletUtilities.getMessage("SBIDev.queryWiz.incorrectQuery", "messages");
-		
 		StringBuffer output = new StringBuffer();
 		
+		
+		output.append("<div id='queryWizardWithoutJavascript' style='display:inline;'>\n");
+		output.append("	 <div class='div_detail_area_forms_lov'>\n");	
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(connNameField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<select style='width:180px;' class='portlet-form-input-field' name='connName' id='connName'>\n");
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		List dbConnection = config.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
+		Iterator it = dbConnection.iterator();
+		while (it.hasNext()) {
+			SourceBean connectionPool = (SourceBean) it.next();
+			String connectionPoolName = (String) connectionPool.getAttribute("connectionPoolName");
+			String connectionDescription = (String) connectionPool.getAttribute("connectionDescription");
+			if (connectionDescription == null || connectionDescription.trim().equals("")) connectionDescription = connectionPoolName;
+			String connNameSelected = "";
+			if (connectionPoolName.equals(connectionName)) connNameSelected = "selected=\"selected\"";
+			output.append("			<option value='" + connectionPoolName + "' " + connNameSelected + ">" + connectionDescription + "</option>\n");
+		}
+		output.append("			</select>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(visColumnsField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<input class='portlet-form-input-field' type='text' name='visColumns' id='visColumns' size='50' value='"+ visibleColumns + "' maxlength='100'>&nbsp;*\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(valueColumnsField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<input class='portlet-form-input-field' type='text' name='valueColumns' id='valueColumns' size='50' value='"+ valueColumns + "' maxlength='100'>&nbsp;*\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(queryDefField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<textarea class='portlet-text-area-field' name='queryDef' id='queryDef' rows='5' cols='50'>" + queryDef + "</textarea>\n");
+		output.append("		</div>\n");
+		output.append("  </div>\n");
+	    output.append("</div>\n");
+		
+		
+	    output.append("<div id='queryWizardWithJavascript' style='display:none;'>\n");
+	    output.append("	 <div class='div_detail_area_forms_lov'>\n");	
+	    output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(connNameField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<select style='width:180px;' class='portlet-form-input-field' name='connName' id='connName'>\n");
+		it = dbConnection.iterator();
+		while (it.hasNext()) {
+			SourceBean connectionPool = (SourceBean) it.next();
+			String connectionPoolName = (String) connectionPool.getAttribute("connectionPoolName");
+			String connectionDescription = (String) connectionPool.getAttribute("connectionDescription");
+			if (connectionDescription == null || connectionDescription.trim().equals("")) connectionDescription = connectionPoolName;
+			String connNameSelected = "";
+			if (connectionPoolName.equals(connectionName)) connNameSelected = "selected=\"selected\"";
+			output.append("			<option value='" + connectionPoolName + "' " + connNameSelected + ">" + connectionDescription + "</option>\n");
+		}
+		output.append("			</select>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(queryDefField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form' style='height:115px;'>\n");
+		output.append("			<textarea class='portlet-text-area-field' name='queryDefJS' onchange='setQueryDef(this.value)' rows='5' cols='50'>" + queryDef + "</textarea>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			&nbsp;\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<a onclick='' href='javascript:void(0)'>\n");
+		output.append("				<img style='width:20px;height:20px;' src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png") + "' />\n");
+		output.append("			</a>\n");
+		output.append("			<a onclick='' href='javascript:void(0)' class='portlet-form-field-label' style='text-decoration:none;'>\n");
+		output.append("				" + updateFieldsFromQuery + "\n");
+		output.append("			</a>\n");
+		output.append("		</div>\n");
+		output.append("  </div>\n");
+		output.append("</div>\n");
+	    output.append("<div id='fieldsDiv' style=\"width:48%;margin:10px 0px 0px 0px;\"></div>\n");
+		
+		
+		
+		
+		
+		/*
 		output.append("<table class='object-details-table' id='queryWizardWithoutJavascript' style='display:inline;'>\n");
 		output.append("	<tr height='25'>\n");
 		output.append("		<td align='right' class='portlet-form-field-label' >"+ connNameField + "</td>\n");
@@ -106,8 +204,7 @@ public class QueryWizardTag extends TagSupport {
 		output.append("		<td>&nbsp;</td>\n");
 	    output.append("		<td><textarea class='portlet-text-area-field' name='queryDef' id='queryDef' rows='5' cols='50'>" + queryDef + "</textarea></td>\n");
 	    output.append("	</tr>\n");
-	    output.append("</table>\n");
-		
+	    output.append("</table>\n");	
 		output.append("<table class='object-details-table' id='queryWizardWithJavascript' style='display:none;'>\n");
 		output.append("	<tr height='25'>\n");
 		output.append("		<td align='right' class='portlet-form-field-label' >"+ connNameField + "</td>\n");
@@ -144,6 +241,8 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("	</tr>\n");
 	    output.append("</table>\n");
 	    output.append("<div id='fieldsDiv' style=\"width:48%;margin:10px 0px 0px 0px;\"></div>\n");
+	    		*/
+	    
 	    
 	    output.append("<script type='text/javascript'>\n");
 	    output.append("function displayQueryFields() {\n");

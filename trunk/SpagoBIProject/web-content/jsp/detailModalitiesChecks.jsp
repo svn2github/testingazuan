@@ -214,176 +214,135 @@
 	<form method='POST' action='<%= formUrl.toString() %>' name='checkForm2' id='checkForm2'>
 	<input type='hidden' value=<%=(check.getCheckId() != null ? String.valueOf(check.getCheckId().intValue()) : "")%> name='id' />
 
-<div class="div_detail_area_forms">
-		<div class='div_detail_label'>
+	<div class="div_detail_area_forms">
+		<div class='div_detail_label_check'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBIDev.valConst.labelField" />
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input class='portlet-form-input-field' size='50'
+			<input class='portlet-form-input-field' size='42'
 			 	  type="text" name="label" value="<%=check.getLabel()%>" maxlength="20">
 			&nbsp;*
 		</div>
-		<div class='div_detail_label'>
+		<div class='div_detail_label_check'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBIDev.valConst.nameField" />
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input class='portlet-form-input-field' size='50' 
+			<input class='portlet-form-input-field' size='42' 
 			   		type="text" name="name" value="<%=check.getName()%>" maxlength="40">
 			&nbsp;*
 		</div>
-		<div class='div_detail_label'>
+		<div class='div_detail_label_check'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBIDev.valConst.descriptionField" />
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input class='portlet-form-input-field' size='50'
+			<input class='portlet-form-input-field' size='42'
 			   		type="text" name="description" value="<%=check.getDescription()%>" maxlength="160">
 		</div>
-		<div class='div_detail_label'>
+		<div class='div_detail_label_check'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBIDev.ListConfConst.columnCheckType" />
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			&nbsp;
-		</div>
-
-
-
- 
- 
-<div class="object-details-div" style='clear:left'>
-
-<table width="50%" cellspacing="0" border="0" clear='left'>
- 	<tr height='1'>  	
-  		<td width="1px"><span>&nbsp;</span></td>
-  		<td width="80px"><span>&nbsp;</span></td>
-  		<td width="20px"><span>&nbsp;</span></td>
-  		<td width="4%"><span>&nbsp;</span></td>
-  		<td width="30%"><span>&nbsp;</span></td>
-  		<td><span>&nbsp;</span></td>
-  	</tr>
-  	<tr height='25'>
-      		<td>&nbsp;</td>
-      		<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.ListConfConst.columnCheckType" /></td>
-      		<td colspan="4">&nbsp;</td>
-   	</tr> 
-</table>  		
-    
-   
-      
-    
-    <%  
-		actualValueCD = check.getValueTypeCd();
-		// checksTypes = it.eng.spagobi.bo.dao.DAOFactory.getDomainDAO().loadListDomainsByType("CHECK"); 
-		it = checksTypes.iterator();
-	    dom = null;
-	    
-	
-		valueCD = null;
-		valueID = null;
-		fieldValue1Name = null;
-		fieldValue2Name = null;
-		valueForRaddio = null;	
-		int currCheck = 0;
-		String divId = null;
-		
-
-	   
+		<%  
+			actualValueCD = check.getValueTypeCd();
+			it = checksTypes.iterator();
+			int currCheck = 0;
 		%>
-		 
-		 <select class='portlet-form-field' name="checkType" onchange= "showFields()" >
+		 	<select class='portlet-form-field' name="checkType" onchange= "showFields()" >
 		<%  while (it.hasNext()){
-			dom = (it.eng.spagobi.bo.Domain)it.next();
-			valueCD = dom.getValueCd();
-			valueID = String.valueOf(dom.getValueId());
-			valueForRaddio = valueID+";"+valueCD;
-			fieldValue1Name = valueCD +"_value1";
-			fieldValue2Name = valueCD +"_value2";
-			//boolean isFirst = false;
-			//if((currCheck == 0)&&(modality.equals("DETAIL_INS"))){
-			//isFirst = true;
-			//}
+				dom = (it.eng.spagobi.bo.Domain)it.next();
+				valueCD = dom.getValueCd();
+				valueID = String.valueOf(dom.getValueId());
+				valueForRaddio = valueID+";"+valueCD;
+				fieldValue1Name = valueCD +"_value1";
+				fieldValue2Name = valueCD +"_value2";
+	 	%>     
+    			<option value="<%= valueForRaddio  %>" <%if(valueCD.equalsIgnoreCase(actualValueCD)) out.print(" selected='selected' ");%>>
+    				<%=dom.getValueName()%>
+    			</option>
+    	<%
+    			currCheck = currCheck +1; 
+    		}
+    	%>
+    	  	</select>  
+		</div>
+		<%
+			it1 = checksTypes.iterator();
+	        currCheck = 0;
+    		while (it1.hasNext()){
+    		    dom = (Domain)it1.next();
+				valueCD = dom.getValueCd();
+			    valueID = String.valueOf(dom.getValueId());
+			    valueForRaddio = valueID+";"+valueCD;
+			    fieldValue1Name = valueCD +"_value1";
+			    fieldValue2Name = valueCD +"_value2";
+    			String keyLabel = "";
+			    String currDiv = String.valueOf(currCheck); 
+		        String divId  = currDiv ;
+	            String style = null; 
+	            if(valueCD.equalsIgnoreCase(actualValueCD)) {
+	               style = "display:inline";
+	            } else {
+	               style = "display:none";
+	            } 
+	            keyLabel = "SBIDev.valConst." + dom.getValueCd();
+	     %>
+	     <div id="<%= valueForRaddio %>" style='<%=style%>'>
+	     <div class='div_detail_label_check'  >
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "<%=keyLabel%>" />
+			</span>
+		 </div>
+	     <div class='div_detail_form' >
+	     <% 
+	     	if (actualValueCD != null && valueCD.equalsIgnoreCase(actualValueCD) && (check != null)){ 
+	     %>
+    		<input class='portlet-form-input-field' type="text" 
+    		       name="<%=fieldValue1Name %>"
+				   value="<%=(check.getFirstValue() != null ? check.getFirstValue()  : "") %>" 
+				   size='42'  maxlength=50/>
+    	 <% } else { %>
+    		<input class='portlet-form-input-field' type="text" name="<%=fieldValue1Name %>"
+				   value="" size='42' maxlength=50/>
+    	 <% } %>
+	     </div>
+	     <% if(dom.getValueName().equalsIgnoreCase("Range")){ 
+	     		keyLabel = "SBIDev.valConst." + dom.getValueCd()+ ".Value2";
+	     %>
+	      <div class='div_detail_label_check'  >
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "<%=keyLabel%>" />
+			</span>
+		 </div>
+	     <div class='div_detail_form' >
+	     <% if (actualValueCD != null && valueCD.equalsIgnoreCase(actualValueCD) && (check != null)){ %>
+    		<input class='portlet-form-input-field' type="text" name="<%=fieldValue2Name %>"
+				   value="<%=(check.getSecondValue() != null ? check.getSecondValue()  : "") %>" 
+				   size='42' maxlength=50/>
+    	 <% } else { %>
+    	    <input class='portlet-form-input-field' type="text" 
+    	           name="<%=fieldValue2Name %>" value="" size='42'  maxlength=50/>
+    	 <% } %>
+	     </div>
+	     <% } %>
+	     </div>
+	     <% currCheck = currCheck + 1; 
+	     	} 
+	     %>
+	     		
 		
-		
-		 %>     
-  	                
+	<div><!-- chiusura div area forms  -->
+    </form>
+</div> <!-- chiusura div 2 --> 
 
-    				<option value="<%= valueForRaddio  %>" <%if(valueCD.equalsIgnoreCase(actualValueCD)) out.print(" selected='selected' ");%>><%=dom.getValueName()%></option>
-    			    <%currCheck = currCheck +1; } // chiusura del ciclo while per il combo%>
-    			     </select>  
-    			     <br/>
-    			     <br/>
-    			       
-    			       <%it1 = checksTypes.iterator();
-	                     dom = null; 
-	                     currCheck = 0;
-    			         
-    			        while (it1.hasNext()){
-    			       
-    			       dom = (it.eng.spagobi.bo.Domain)it1.next();
-			           valueCD = dom.getValueCd();
-			           valueID = String.valueOf(dom.getValueId());
-			           valueForRaddio = valueID+";"+valueCD;
-			           fieldValue1Name = valueCD +"_value1";
-			           fieldValue2Name = valueCD +"_value2";
-    			       
-    			       String keyLabel = "";
-			           //currCheck = currCheck +1;
-			           String currDiv = String.valueOf(currCheck); 
-		               divId  = currDiv ;
-	                   String style = null; 
-	                   //boolean isFirst = false;
-			           //if((currCheck == 0)&&(modality.equals("DETAIL_INS"))){
-			           //isFirst = true;
-			           //}
-	                   if(valueCD.equalsIgnoreCase(actualValueCD)) {
-	                   style = "display:inline";}
-	                   	else {
-	                   	style = "display:none";
-	                   	} %>
-    				
-    				   
-    				   <div id="<%= valueForRaddio %>" style= '<%=style%>'>
-    		     			<span class='portlet-form-field-label'><% keyLabel = "SBIDev.valConst." + dom.getValueCd();  %>
-    		     			&nbsp;&nbsp;&nbsp;&nbsp;<spagobi:message key = "<%=keyLabel%>" /></span>
-    	         		     <% if (actualValueCD != null && valueCD.equalsIgnoreCase(actualValueCD) && (check != null)){ %>
-    		     			<input style='width:30%;' class='portlet-form-input-field' type="text" name="<%=fieldValue1Name %>"
-						value="<%=(check.getFirstValue() != null ? check.getFirstValue()  : "") %>" size='50'  maxlength=50/>
-    		     			<% } else { %>
-    		        		<input style='width:30%;' class='portlet-form-input-field' type="text" name="<%=fieldValue1Name %>"
-						value="" size='50' maxlength=50/>
-    		     			<% } %>
-    		     	   
-    	    
-    	    <%if (dom.getValueName().equalsIgnoreCase("Range")){ %>
-    		<br/>
-    		<br/>
-    		
-    		<span class='portlet-form-field-label'><%keyLabel = "SBIDev.valConst." + dom.getValueCd()+ ".Value2"; %>
-    		&nbsp;&nbsp;&nbsp;&nbsp;<spagobi:message key = "<%=keyLabel%>" /></span>
-    		
-    		<% if (actualValueCD != null && valueCD.equalsIgnoreCase(actualValueCD) && (check != null)){ %>
-    		<input style='width:30%;' class='portlet-form-input-field' type="text" name="<%=fieldValue2Name %>"
-			value="<%=(check.getSecondValue() != null ? check.getSecondValue()  : "") %>" size='50'  maxlength=50/>
-    	    <% } else { %>
-    	    <input style='width:30%;' class='portlet-form-input-field' type="text" name="<%=fieldValue2Name %>" value="" size='50'  maxlength=50/>
-    	    <% } %>
-    	    
-     <% } %>
-     
-    </div>
-    <%	currCheck = currCheck + 1;
-    } // end while  %>
-    
-</form>
-</div>
-</div>
+
 
 
 
@@ -443,11 +402,8 @@
 
 
 <script>
-    alert('before change');  
- 	//change ('checkDiv1', 'checkDiv2');
-    alert('after change'); 
- 	//setForm();
-    alert('after set form'); 
+ 	change ('checkDiv1', 'checkDiv2');
+ 	setForm();
 </script>
 
 

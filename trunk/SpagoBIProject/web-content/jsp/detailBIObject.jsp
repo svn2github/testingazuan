@@ -405,7 +405,7 @@ return 0;
 	<!-- OPEN COLUMN WITH TREE FUNCTIONALITIES (INSERT MODE) OR TEMPLATE VERSION (MODIFY MODE)  -->	     
 	<td width="60%">
     	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
-    		<div style='padding-left:10px;'>
+    		<div style='padding:10px;'>
     			<spagobi:treeObjects moduleName="DetailBIObjectModule"  
     								 htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.FunctionalitiesTreeInsertObjectHtmlGenerator" />    	
     		</div>

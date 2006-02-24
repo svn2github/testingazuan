@@ -16,6 +16,12 @@
 	height:25px;
 }
 
+.div_detail_label_lov {
+	float:left;
+	width:130px;
+	height:25px;
+}
+
 
 .div_detail_form {
 	height:25px;
@@ -32,10 +38,19 @@
 .div_detail_area_forms {
 	margin: 10px 5px 10px 5px;
 	width:450px;
-        padding-top:5px;
-        padding-left:5px; 
-        border: 1px solid #cccccc;
-        background-color:#fafafa;
+    padding-top:5px;
+    padding-left:5px; 
+    border: 1px solid #cccccc;
+    background-color:#fafafa;
+}
+
+.div_detail_area_forms_lov {
+	margin: 10px 5px 10px 5px;
+	width:600px;
+    padding-top:5px;
+    padding-left:5px; 
+    border: 1px solid #cccccc;
+    background-color:#fafafa;
 }
 
 

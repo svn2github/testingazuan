@@ -1,0 +1,24 @@
+SPAGOBI INSTALLATION ON EXO-ECM
+
+According to the application server on which you are going to install SpagoBI and to the CMS system you prefer you can choose one of the following commands:
+
+Application server	|	CMS system	|	command to run
+----------------------------------------------------------------------------------------------------
+			|			|	
+eXo-Tomcat		|	eXo-CMS		|	mvn -Ptomcat-server,exo-cms package
+			|			|	
+eXo-Tomcat		|	JackRabbit	|	mvn -Ptomcat-server,jackrabbit package
+			|			|	
+eXo-JBoss		|	eXo-CMS		|	mvn -Pjboss-server,exo-cms package
+			|			|	
+eXo-JBoss		|	JackRabbit	|	mvn -Pjboss-server,jackrabbit package
+			|			|	
+eXo-JOnAS		|	eXo-CMS		|	mvn -Pjonas-server,exo-cms package
+			|			|	
+eXo-JOnAS		|	JackRabbit	|	mvn -Pjonas-server,jackrabbit package
+			|			|	
+
+The command must be launched at command line from the folder containing "SpagoBIProject", "SpagoBIDriversAPI" .... folders.
+
+A folder "build" will be created; inside it you will find a folder called "tomcat-server" or "jboss-server" or "jonas-server" according to the application server you chose. 
+Please read the relevant installation file and follow its instructions.

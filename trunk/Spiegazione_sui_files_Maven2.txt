@@ -1,0 +1,13 @@
+I due profili exo-cms e jackrabbit del pom.xml padre eseguono le seguenti operazioni:
+a. il profilo exo-cms:
+	1. prende il file cms.xml per l'utilizzo del cms di exo e lo mette dentro la cartella temporanea "temp/cms.xml"; 
+	2. poi copia le librerie dalla cartella SpagoBIUtilityFiles/libraries (tranne la jackrabbit-0.9-incubating.jar) e le mette dentro la cartella temporanea "temp/libraries";
+b. il profilo jackrabbit:
+	1. prende il file cms-jackrabbit.xml per l'utilizzo di jackrabbit e lo mette dentro la cartella temporanea "temp/cms.xml" rinominandolo a cms.xml; 
+	2. poi copia le librerie dalla cartella SpagoBIUtilityFiles/libraries (compresa la jackrabbit-0.9-incubating.jar) e le mette dentro la cartella temporanea "temp/libraries".
+
+Gli altri 3 profili (tomcat-server, jboss-server, jonas-server), definiti sui pom.xml figli eseguono le seguenti operazioni:
+	1. prendono la cartella con lo stesso nome dentro SpagoBIUtilityFiles e la copiano dentro la cartella "build" (le cartelle "tomcat-server", "jboss-server" e "jonas-server" hanno la stessa struttura dei server omonimi);
+	2. dentro la cartella del server appena copiata ci deployano spagobi e gli engines;
+	3. prendono il file cms.xml messo nella temp/cms.xml e lo mettono dentro SpagoBI;
+	4. prendono le librerie presenti in temp/libraries e le mettono ognuno nella cartella opportuna del server. 

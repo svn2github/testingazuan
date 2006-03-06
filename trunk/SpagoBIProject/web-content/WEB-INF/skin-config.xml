@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin-config>
+  <portlet-style-config>
+    <portlet-name>spagobi/SBIFunctionality</portlet-name>
+    <style name="sbi" url="/user/skin/portlet/welcome-portlet.css"/>
+  </portlet-style-config>
+  <portlet-style-config>
+    <portlet-name>spagobi/SBISettings</portlet-name>
+    <style name="sbisetting" url="/user/skin/portlet/welcome-portlet.css"/>
+  </portlet-style-config>
+</skin-config>

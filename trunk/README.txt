@@ -22,3 +22,12 @@ The command must be launched at command line from the folder containing "SpagoBI
 
 A folder "build" will be created; inside it you will find a folder called "tomcat-server" or "jboss-server" or "jonas-server" according to the application server you chose. 
 Please read the relevant installation file and follow its instructions.
+
+Instead, if you want to produce spagobi.war, SpagoBIJasperResportEngine.war and SpagoBIJPivotEngine.war for exo-bi, run the command:
+
+	mvn -Pbi package
+
+You will find the 3 wars into the folder build/bi. Copy them into the "webapps" folder of your exo-tomcat installation.
+
+At last you can run the command "mvn clean": this command will delete all the "target" directories in the sub-projects, but it will not delete the folder "build" in the main directory.
+After having installed the application you can remove it manually.

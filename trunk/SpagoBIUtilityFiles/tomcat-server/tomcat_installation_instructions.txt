@@ -1,0 +1,14 @@
+If you want to install SpagoBI on your Tomcat server please proceed as follows:
+- copy the content of the folder "tomcat-server" (NOT the directory itself but only its content) inside your Tomcat base directory (we will refer to it as TOMCAT_HOME): overwrite the existing files;
+- delete the jar hsqldb1.8.0.1.jar from TOMCAT_HOME/common/lib.
+
+For css files:
+- go to the folder TOMCAT_HOME/webapps/resources (if this folder is not present create it unzipping the file TOMCAT_HOME/webapps/resources.war and then delete the file resources.war itself);
+- go to TOMCAT_HOME/webapps/resources/community/skin, copy the file jsr168-portlet.css and paste it inside TOMCAT_HOME/webapps/resources/skin/portlet;
+- inside TOMCAT_HOME/webapps/resources/skin/portlet rename the file default-portlet.css with another name and then rename jsr168-portlet.css into default-portlet.css.
+
+If you have chosen the installation using eXo-CMS the installation is now completed.
+If you have chosen the installation using JackRabbit you have also to:
+- open the file jackrabbitSessionFactory.properties in TOMCAT_HOME/webapps/spagobi/WEB-INF/classes and substitute ${SERVER_HOME} with the actual path of TOMCAT_HOME.
+Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);
+- delete the file commons-jcr-0.16.4.1.jar from TOMCAT_HOME/common/lib folder.

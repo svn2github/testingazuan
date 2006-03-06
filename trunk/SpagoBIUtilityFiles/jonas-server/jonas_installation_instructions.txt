@@ -1,0 +1,15 @@
+If you want to install SpagoBI on your JOnAS server please proceed as follows:
+- copy the content of the folder "jonas-server" (NOT the directory itself but only its content) inside your JOnAS base directory (we will refer to it as JONAS_HOME): overwrite the existing files;
+- delete the jar hsqldb.jar from lib/commons/jonas of your JOnAS.
+
+For css files:
+- go to the folder JONAS_HOME/apps/autoload/exoplatform.ear and rename the file resources.war into resources.zip;
+- unzip the file resources.zip into a directory named "resources.war" and then delete the file resources.zip;
+- go to JONAS_HOME/apps/autoload/exoplatform.ear/resources.war/community/skin, copy the file jsr168-portlet.css and paste it inside JONAS_HOME/apps/autoload/exoplatform.ear/resources.war/skin/portlet;
+- inside JONAS_HOME/apps/autoload/exoplatform.ear/resources.war/skin/portlet rename the file default-portlet.css with another name and then rename jsr168-portlet.css into default-portlet.css.
+
+If you have chosen the installation using eXo-CMS the installation is now completed.
+If you have chosen the installation using JackRabbit you have also to:
+- open the file jackrabbitSessionFactory.properties in JONAS_HOME/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/classes and substitute ${SERVER_HOME} with the actual path of JONAS_HOME.
+Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);
+- delete the file commons-jcr-0.16.4.1.jar from JONAS_HOME/lib/apps folder.

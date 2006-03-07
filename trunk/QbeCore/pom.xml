@@ -65,9 +65,7 @@
         <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
-                <version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIJPivotEngine/WebContent/WEB-INF/lib/commons-beanutils-core.jar</systemPath>
+                <version>1.6</version>
         </dependency>
         <dependency>
                 <groupId>dom4j</groupId>

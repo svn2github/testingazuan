@@ -23,12 +23,12 @@ package it.eng.spagobi.bo;
 
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
-import it.eng.spagobi.bo.dao.jdbc.BIObjectDAOImpl;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Defines a Business Intelligence object.
@@ -75,7 +75,8 @@ public class BIObject implements Serializable {
 
 	private List biObjectParameters = null;
 	
-	private List templateVersions = null;
+	//private List templateVersions = null;
+	private TreeMap templateVersions = null;
 	
 	private TemplateVersion currentTemplateVersion = null;
 	
@@ -309,7 +310,8 @@ public class BIObject implements Serializable {
 	 * @return The template versions List
 	 */
 	
-	public List getTemplateVersions() {
+	//public List getTemplateVersions() {
+	public TreeMap getTemplateVersions() {
 		return templateVersions;
 	}
 	/**
@@ -317,7 +319,8 @@ public class BIObject implements Serializable {
 	 * 
 	 * @param templateVersions The list to set.
 	 */
-	public void setTemplateVersions(List templateVersions) {
+	//public void setTemplateVersions(List templateVersions) {
+	public void setTemplateVersions(TreeMap templateVersions) {
 		this.templateVersions = templateVersions;
 	}
 	/**

@@ -17,7 +17,10 @@
 				 it.eng.spagobi.constants.SpagoBIConstants,
 				 it.eng.spagobi.utilities.SpagoBITracer,
 				 it.eng.spagobi.utilities.PortletUtilities,
-				 it.eng.spago.navigation.LightNavigationManager" %>
+				 it.eng.spago.navigation.LightNavigationManager,
+				 java.util.TreeMap,
+				 java.util.Collection,
+				 java.util.ArrayList" %>
 
 <LINK rel='StyleSheet' 
       href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
@@ -265,12 +268,12 @@ return 0;
 		      		%>
 		      		</select>
 				</div>
-				<div class='div_detail_label' style='display:none;'>
+				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBIDev.docConf.docDet.engineField" />
 					</span>
 				</div>
-				<div class='div_detail_form' style='display:none;'>
+				<div class='div_detail_form'>
 					<%
 						String selectDisabled = "";
 						if (obj.getBiObjectTypeCode().equals("DATAMART") || obj.getBiObjectTypeCode().equals("DASH")) {
@@ -418,14 +421,23 @@ return 0;
 				<div style='border: 1px solid black;max-height:160px;overflow:auto;'>
 					<table> 
 		 			<% 
-						List templates = obj.getTemplateVersions();
+						TreeMap templates = obj.getTemplateVersions();
+		 			    if(templates==null)
+		 			    	templates = new TreeMap();
 						String curVer = obj.getCurrentTemplateVersion().getVersionName();
 						int numTemp = templates.size();  
 						if(numTemp == 0) {
 							out.print("<tr class='portlet-section-body'>");
 		      				out.print("<td class='portlet-font'>No Version Found</td></tr>");
 		      			}
-		      			Iterator iterTemp = templates.iterator();
+						Collection versions = templates.values();
+						Iterator iterVers = versions.iterator();
+						ArrayList reverseVersions = new ArrayList();
+						while(iterVers.hasNext()) {
+							Object objVer = iterVers.next();
+							reverseVersions.add(0, objVer);
+						}
+						Iterator iterTemp = reverseVersions.iterator();
 		      			while(iterTemp.hasNext()) {
 		      				TemplateVersion tempVer = (TemplateVersion)iterTemp.next();
 		      		        String checkStr = " ";

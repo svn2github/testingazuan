@@ -54,10 +54,12 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.portlet.ActionRequest;
@@ -81,12 +83,9 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_OBJECT = "BIObjects";
 	public final static String NAME_ATTR_LIST_OBJ_TYPES = "types";
 	public final static String NAME_ATTR_LIST_ENGINES = "engines";
-	public final static String NAME_ATTR_LIST_STATES = "states";
-		
+	public final static String NAME_ATTR_LIST_STATES = "states";		
 	public final static String NAME_ATTR_OBJECT_PAR = "OBJECT_PAR";
-	
 	private String actor = null;
-	
 	private EMFErrorHandler errorHandler = null;
 	
 	SessionContainer session = null;
@@ -412,7 +411,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	    		// if there are some errors, exits without writing into DB
     			selectedParIdStr = "-1";
     			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-    				obj.setTemplateVersions(new ArrayList());
+    				obj.setTemplateVersions(new TreeMap());
     				TemplateVersion tv = new TemplateVersion();
     				tv.setVersionName("");
     				obj.setCurrentTemplateVersion(tv);
@@ -456,13 +455,14 @@ public class DetailBIObjectModule extends AbstractModule {
 	private void reloadCMSInformation(BIObject obj) throws EMFUserError {
 		IBIObjectDAO objDao = DAOFactory.getBIObjectDAO();
 		BIObject temp = objDao.loadBIObjectForDetail(obj.getPath());
-		List templates = temp.getTemplateVersions();
+		TreeMap templates = temp.getTemplateVersions();
 		TemplateVersion currentVersion = temp.getCurrentTemplateVersion();
 		obj.setTemplateVersions(templates);
 		String requiredCurrVerName = obj.getNameCurrentTemplateVersion();
 		if (requiredCurrVerName != null && !requiredCurrVerName.equalsIgnoreCase(currentVersion.getVersionName())) {
 			// it is requested to change the current version template
-			Iterator it = templates.iterator();
+			Collection values = templates.values();
+			Iterator it = values.iterator();
 			while (it.hasNext()) {
 				TemplateVersion template = (TemplateVersion) it.next();
 				if (requiredCurrVerName.equals(template.getVersionName())) {
@@ -532,14 +532,15 @@ public class DetailBIObjectModule extends AbstractModule {
 			biObjPar.setParIdOld(biObjPar.getParID());
 		}
 		// Inverts the BIObject template versions:
-		List templates = obj.getTemplateVersions();
-		if (templates == null) templates = new ArrayList();
-		List invertedTemplates = new ArrayList(templates.size());
-		for (int i = 0; i < templates.size(); i++) {
-			TemplateVersion version = (TemplateVersion) templates.get(templates.size() - 1 - i);
-			invertedTemplates.add(i, version);
-		}
-		obj.setTemplateVersions(invertedTemplates);
+		//TreeMap templates = obj.getTemplateVersions();
+		//if (templates == null) 
+		//	templates = new TreeMap();
+		//List invertedTemplates = new ArrayList(templates.size());
+		//for (int i = 0; i < templates.size(); i++) {
+		//	TemplateVersion version = (TemplateVersion) templates.get(templates.size() - 1 - i);
+		//	invertedTemplates.add(i, version);
+		//}
+		//obj.setTemplateVersions(invertedTemplates);
 		
 		response.setAttribute("selected_par_id", selectedParIdStr);
 		response.setAttribute(NAME_ATTR_OBJECT, obj);
@@ -798,7 +799,7 @@ public class DetailBIObjectModule extends AbstractModule {
             curVer.setVersionName("");
             curVer.setDataLoad("");
             obj.setCurrentTemplateVersion(curVer);
-            obj.setTemplateVersions(new ArrayList());
+            obj.setTemplateVersions(new TreeMap());
             response.setAttribute(NAME_ATTR_OBJECT, obj);
             response.setAttribute(SpagoBIConstants.ACTOR, actor);
             fillResponse(response);

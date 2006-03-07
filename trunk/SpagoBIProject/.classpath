@@ -29,18 +29,15 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/xalan-2.4.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/xml-apis-2.0.2.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/hsqldb1_8_0_2.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/qbe.core-1.7.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/sbi.drivers.api-1.7.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/sbi.drivers.jasperreport-1.7.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/sbi.drivers.jpivot-1.7.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/sbi.security.exo-1.7.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/sbi.securityprovider.api-1.7.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/sbi.utils-1.7.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-httpclient-2.0.2.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.core.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.executionservice.local.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.exo.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jackrabbit.jar"/>
-	<classpathentry kind="var" path="EXO_HOME/common/lib/hibernate-3.1rc2.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jndi.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/hibernate-3.1rc2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/QbeCore"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

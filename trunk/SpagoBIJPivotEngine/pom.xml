@@ -82,17 +82,8 @@
         </dependency>
         <dependency>
                 <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils-bean-collections</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-beanutils-bean-collections.jar</systemPath>
-        </dependency>
-        <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils-core</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-beanutils-core.jar</systemPath>
+                <artifactId>commons-beanutils</artifactId>
+		<version>1.6</version>
         </dependency>
         <dependency>
                 <groupId>commons-collections</groupId>
@@ -115,9 +106,7 @@
         <dependency>
                 <groupId>commons-digester</groupId>
                 <artifactId>commons-digester</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-digester.jar</systemPath>
+		<version>1.5</version>
         </dependency>
         <dependency>
                 <groupId>commons-httpclient</groupId>
@@ -128,17 +117,9 @@
         <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-logging.jar</systemPath>
+		<version>1.0.4</version>
         </dependency>
-       <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging-api</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-logging-api.jar</systemPath>
-        </dependency>
+
         <dependency>
                 <groupId>commons-pool</groupId>
                 <artifactId>commons-pool</artifactId>
@@ -197,16 +178,16 @@
         <dependency>
                 <groupId>jcommon</groupId>
                 <artifactId>jcommon</artifactId>
-                <version>0.9.6</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/jcommon-0.9.6.jar</systemPath>
+                <version>1.0.0</version>
+                <scope>system</scope>
+                <systemPath>${basedir}/WebContent/WEB-INF/lib/jcommon-1.0.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>jfreechart</groupId>
                 <artifactId>jfreechart</artifactId>
-                <version>0.9.21</version>
+                <version>1.0.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/jfreechart-0.9.21.jar</systemPath>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/jfreechart-1.0.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>jpivot</groupId>

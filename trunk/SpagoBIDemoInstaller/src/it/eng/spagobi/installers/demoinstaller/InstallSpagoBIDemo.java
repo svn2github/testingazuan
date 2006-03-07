@@ -47,14 +47,14 @@ public class InstallSpagoBIDemo {
 
 	private static boolean installCommonLibs(String pathsource,	String pathdest) {
 		try {
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/derby.jar");
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/derby.jar");
 			FileUtilities.copy(pathdest + "/common/lib", pathsource
 					+ "/commonlib/ehcache-1.1.jar");
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/jackrabbit-0.9-incubating.jar");
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/xercesImpl-2.6.2.jar");
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/jackrabbit-0.9-incubating.jar");
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/xercesImpl-2.6.2.jar");
 		} catch (Exception exc) {
 			return false;
 		}
@@ -92,10 +92,15 @@ public class InstallSpagoBIDemo {
 			File community = new File(pathdest
 					+ "/webapps/resources/community/skin/community.css");
 			community.delete();
+			File defaultcss = new File(pathdest
+					+ "/webapps/resources/skin/portlet/default-portlet.css");
+			defaultcss.delete();
 			FileUtilities.copy(pathdest + "/webapps/resources/community/skin",
 					pathsource + "/css/community.css");
 			FileUtilities.copy(pathdest + "/webapps/resources/community/skin",
 					pathsource + "/css/jsr168-portlet.css");
+			FileUtilities.copy(pathdest + "/webapps/resources/skin/portlet",
+					pathsource + "/css/default-portlet.css");
 		} catch (Exception exc) {
 			return false;
 		}
@@ -142,12 +147,13 @@ public class InstallSpagoBIDemo {
 	}
 
 	private static boolean installCms(String pathsource, String pathdest) {
+		/*
 		try {
 			FileUtilities.explode(pathdest + "/sbidata", pathsource
 					+ "/cms/jcrRepository.war");
 		} catch (Exception exc) {
 			return false;
-		}
+		}*/
 		return true;
 	}
 	

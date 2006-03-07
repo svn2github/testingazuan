@@ -165,12 +165,12 @@
                 <artifactId>hibernate</artifactId>
                 <version>3.0.5</version>
 		<scope>provided</scope>
-		<!--exclusions>
+		<exclusions>
 			<exclusion>
 				<groupId>javax.transaction</groupId>
 				<artifactId>jta</artifactId>
 			</exclusion>
-		</exclusions-->
+		</exclusions>
         </dependency>
         <dependency>
                 <groupId>com.jamonapi</groupId>

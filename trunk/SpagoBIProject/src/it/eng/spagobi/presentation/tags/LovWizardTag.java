@@ -59,6 +59,28 @@ public class LovWizardTag extends TagSupport {
 		
 		try {
 			
+			String newItemNameField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemNameField", "messages");
+			String newItemValueField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemValueField", "messages");
+			output.append("<div class='div_detail_area_forms_lov'>\n");	
+			output.append("		<div class='div_detail_label_lov'>\n");
+			output.append("			<span class='portlet-form-field-label'>\n");
+			output.append(newItemNameField);
+			output.append("			</span>\n");
+			output.append("		</div>\n");
+			output.append("		<div class='div_detail_form'>\n");
+			output.append("			<input class='portlet-form-input-field' type='text' name='nameOfFixedLovItemNew' size='50' value=''/>&nbsp;*\n");
+			output.append("		</div>\n");
+			output.append("		<div class='div_detail_label_lov'>\n");
+			output.append("			<span class='portlet-form-field-label'>\n");
+			output.append(newItemValueField);
+			output.append("			</span>\n");
+			output.append("		</div>\n");
+			output.append("		<div class='div_detail_form'>\n");
+			output.append("			<input class='portlet-form-input-field' type='text' name='valueOfFixedLovItemNew' size='50' value=''>&nbsp;*\n");
+			output.append("		</div>\n");
+			output.append("</div>\n");
+			
+			/*
 			output.append("<table class='object-details-table'>\n");
 			output.append("	<tr height='25'>\n");
 			String newItemNameField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemNameField", "messages");
@@ -83,7 +105,7 @@ public class LovWizardTag extends TagSupport {
 			output.append("		</td>\n");
 			output.append("	</tr>\n");
 			output.append("</table>\n");
-			
+			*/
 			output.append("<br/>\n");
 			
 			List lovs = new ArrayList();

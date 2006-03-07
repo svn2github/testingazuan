@@ -57,18 +57,16 @@ import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
 import it.eng.spagobi.metadata.SbiObjPar;
 import it.eng.spagobi.metadata.SbiObjects;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
-import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -225,7 +223,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				String currentVerStr = cmsnode.getVersion();
 				List versions = cmsnode.getVersions();
 				Iterator iterVer = versions.iterator();
-				ArrayList templates = new ArrayList();
+				//ArrayList templates = new ArrayList();
+				TreeMap templates = new TreeMap();
 				TemplateVersion currentVer = null;
 				while(iterVer.hasNext()) {
 					CmsVersion ver = (CmsVersion)iterVer.next();
@@ -247,7 +246,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					tempVer.setDataLoad(dateVer);
 					tempVer.setVersionName(nameVer);
 					tempVer.setNameFileTemplate(nameFile);
-					templates.add(tempVer);
+					//templates.add(tempVer);
+					templates.put(nameVer, tempVer);
 					if(nameVer.equalsIgnoreCase(currentVerStr)) {
 						currentVer = tempVer;
 					}
@@ -255,7 +255,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				biObject.setTemplateVersions(templates);
 				biObject.setCurrentTemplateVersion(currentVer);
 			}else{
-				biObject.setTemplateVersions(new ArrayList());
+				biObject.setTemplateVersions(new TreeMap());
 				TemplateVersion tv = new TemplateVersion();
 				tv.setVersionName("");
 				biObject.setCurrentTemplateVersion(tv);

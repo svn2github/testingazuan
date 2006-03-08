@@ -302,7 +302,7 @@
 
 
 
-<table class='header-sub-table-portlet-section' style='margin-top:5px;'>		
+<table class='header-sub-table-portlet-section'>		
 	<tr class='header-sub-row-portlet-section'>
 		<% if (paruse_id != -1) { %>
 		<td class='header-sub-title-column-portlet-section'>
@@ -331,7 +331,7 @@
 
 
 
-<div class="div_detail_area_forms">
+<div class="div_detail_area_sub_forms">
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBIDev.paramUse.labelField" />

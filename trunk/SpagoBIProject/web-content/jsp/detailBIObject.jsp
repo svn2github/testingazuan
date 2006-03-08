@@ -712,7 +712,7 @@ function deleteBIParameterConfirm (message) {
 
 
 
-<div class="div_detail_area_forms">
+<div class="div_detail_area_sub_forms">
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBIDev.docConf.docDetParam.labelField" />

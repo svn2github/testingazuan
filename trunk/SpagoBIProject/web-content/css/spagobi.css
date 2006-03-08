@@ -36,6 +36,15 @@
 
 /* Part with details of an object (engine, parameters, ...) in the SpagoBI portlet*/
 .div_detail_area_forms {
+	margin: 0px 5px 10px 5px;
+	width:450px;
+    padding-top:5px;
+    padding-left:5px; 
+    border: 1px solid #cccccc;
+    background-color:#fafafa;
+}
+
+.div_detail_area_sub_forms {
 	margin: 10px 5px 10px 5px;
 	width:450px;
     padding-top:5px;
@@ -45,7 +54,7 @@
 }
 
 .div_detail_area_forms_lov {
-	margin: 10px 5px 10px 5px;
+	margin: 0px 5px 10px 5px;
 	width:600px;
     padding-top:5px;
     padding-left:5px; 
@@ -55,8 +64,7 @@
 
 .table_detail_fix_lov {
 	margin: 5px;
-	width:607px;
-	cellpaddingleft:5px; 
+	width:600px;
 }
 
 .div_functions_role_associations {
@@ -91,10 +99,14 @@
         background-image:url('/spagobi/img/spagobgimg.jpg');
         background-position: bottom right;
         background-repeat: no-repeat; 
+	padding-top:10px;
+	padding-bottom:10px;
 }
 
 .div_background_no_img {
 	border: 1px solid #cccccc;
+	padding-top:10px;
+	padding-bottom:10px;
 }
 
 .link_main_menu {

@@ -36,9 +36,12 @@
 	
 %>
 
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -71,11 +74,17 @@
 </table>
 
 
-<% if (view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)) { %>
 
+<% if (view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)) { %>
+<div class="div_background">
 		<spagobi:treeObjects moduleName="TreeObjectsModule"  
 			htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.ExecTreeHtmlGenerator" />
-			
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+</div>
 <% } else if (view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_LIST)) {  %>
 
     	<spagobi:listObjects moduleName="TreeObjectsModule"  

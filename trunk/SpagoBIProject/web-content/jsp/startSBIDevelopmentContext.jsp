@@ -10,8 +10,6 @@
 <%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
 <portlet:defineObjects/>
 
-<div class="div_background">
-
 <LINK rel='StyleSheet' 
       href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
       type='text/css' />
@@ -27,7 +25,9 @@
 		</tr>
 	</table>
 	
-    <br/>
+<div class="div_background">
+
+<br/>
 	
 	<table>
 		<tr class="portlet-font">

@@ -40,9 +40,12 @@
 
 <!--br/><br/-->
 
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -78,17 +81,18 @@
 	</tr>
 </table>
 
-<br/>
-
-<div>
+<div class='div_background_no_img' >
 
 		<input type="hidden" value="<%= actor %>" name="<%= SpagoBIConstants.ACTOR %>" />
 		<input type="hidden" value="<%= path %>" name="<%= ObjectsTreeConstants.PATH %>" />
- 	
-	 	<div style="padding-left:20px;width:70px;float:left;">
-	 		<span class='portlet-form-field-label'><spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.roleField" />:</span>
+		
+ 	<div class="div_detail_area_forms">
+	 	<div class='div_detail_label'>
+	 		<span class='portlet-form-field-label'>
+	 			<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.roleField" />:
+	 		</span>
 	 	</div>
-	 	<div style="padding-left:30px;float:left;"> 
+	 	<div class='div_detail_form'> 
 	 	    <select class='portlet-form-field' name="role"  style="width:200px;">
 	 	    <% 
 	 	       while(iterroles.hasNext()) {
@@ -100,8 +104,7 @@
 	 	    %>
 	 	    </select> 
 	 	</div>
-	 	
-<br/>
+	 </div>	
 	 		
 </div>
 

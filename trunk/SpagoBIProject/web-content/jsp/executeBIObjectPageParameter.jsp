@@ -65,15 +65,16 @@
 	
 <form method='POST' action='<%=execUrl.toString()%>' id='paramsValueForm' name='paramsValueForm'>	
 
-<style>
-@IMPORT url("/portal/default-skin.css");
-</style>
-<style>
+<!-- style>
 @IMPORT url("/wsrp/skin/portlet/wsrp-admin-portlet.css");
-</style>
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
+</style-->
+
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
+      type='text/css' />
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      type='text/css' />
 
 <% 
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
@@ -147,17 +148,11 @@
 </table--%>	
 <% } %>
 
-
+<div class='div_background_no_img' >
 	
 <!-- if there aren't parameters dont't show the parameter form  -->
 <% if(!noPars) { %>
-<table width="100%">
-  <tr>    
-	<td>
-	   <spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" />
-	</td>
-  </tr>
-</table>  
+	<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" />
 <% } %>
 
 
@@ -336,7 +331,7 @@
 	  <br/>	
  <% } %>
 
-
+</div>
 
 <!-- if there aren't parameters show the back button -->
 <%-- if( !isSingleObjExec && noPars  ) {  

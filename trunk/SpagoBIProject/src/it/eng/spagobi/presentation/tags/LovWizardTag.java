@@ -61,6 +61,7 @@ public class LovWizardTag extends TagSupport {
 			
 			String newItemNameField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemNameField", "messages");
 			String newItemValueField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemValueField", "messages");
+			output.append("<input type='hidden' id='insertFixLovItem' name='' value=''/>\n");
 			output.append("<div class='div_detail_area_forms_lov'>\n");	
 			output.append("		<div class='div_detail_label_lov'>\n");
 			output.append("			<span class='portlet-form-field-label'>\n");
@@ -87,12 +88,7 @@ public class LovWizardTag extends TagSupport {
 			String addButtMsg = PortletUtilities.getMessage("SBIDev.lovWiz.addButt", "messages");
 			output.append("				title='" + addButtMsg + "' alt='" + addButtMsg + "'\n");
 			output.append("			/>\n");
-			output.append("			<input type='hidden' id='insertFixLovItem' name='' value=''/>\n");
-			output.append("			<a onclick='' href='javascript:" +
-													"document.getElementById(\"insertFixLovItem\").name=\"insertFixLovItem\";" +
-													"document.getElementById(\"insertFixLovItem\").value=\"insertFixLovItem\";" +
-													"document.getElementById(\"modalitiesValueForm\").submit();' " +
-													"class='portlet-form-field-label' style='text-decoration:none;'>\n");
+			output.append("			<a href='javascript:newFixLovItemFormSubmit();' class='portlet-form-field-label' style='text-decoration:none;'>\n");
 			output.append("				" + addButtMsg + "\n");
 			output.append("			</a>\n");
 			output.append("		</div>\n");
@@ -176,6 +172,11 @@ public class LovWizardTag extends TagSupport {
 			output.append(" function setIndexOfFixedLovItemToDelete (i) {\n");
 			output.append("		document.getElementById('indexOfFixedLovItemToDelete').name = 'indexOfFixedLovItemToDelete';\n");
 			output.append("		document.getElementById('indexOfFixedLovItemToDelete').value = i;\n");
+			output.append(" }\n");
+			output.append(" function newFixLovItemFormSubmit () {\n");
+			output.append("		document.getElementById('insertFixLovItem').name = 'insertFixLovItem';\n");
+			output.append("		document.getElementById('insertFixLovItem').value = 'insertFixLovItem';\n");
+			output.append("		document.getElementById('modalitiesValueForm').submit();\n");
 			output.append(" }\n");
 			output.append("</script>\n");
             pageContext.getOut().print(output.toString());

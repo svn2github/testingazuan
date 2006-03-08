@@ -93,13 +93,7 @@ public class DynamicPageTag extends TagSupport {
 		htmlStream.append("	}\n");
 		htmlStream.append("</script>\n");
 		
-		htmlStream.append("<table width='100%'>\n");
-		htmlStream.append("		<tr height='1px'>\n");
-		htmlStream.append("			<td width='30px'>&nbsp;</td>\n");
-		htmlStream.append("			<td width='18%'>&nbsp;</td>\n");
-		htmlStream.append("			<td width='30px'>&nbsp;</td>\n");
-		htmlStream.append("			<td>&nbsp;</td>\n");
-		htmlStream.append("		</tr>\n");
+		htmlStream.append("<div class='div_detail_area_forms'>\n");
         List parameters = obj.getBiObjectParameters();
         Iterator iter = parameters.iterator();
         while(iter.hasNext()) {
@@ -121,39 +115,93 @@ public class DynamicPageTag extends TagSupport {
         			createLabelAndForm = false;
         			List biparValues = biparam.getParameterValues();
         			Object value = biparValues.get(0);
-            		htmlStream.append("<tr height='1px'>\n");
-            		htmlStream.append("<td colspan='4'>\n");
             		htmlStream.append("<input type='hidden' name='"+biparam.getParameterUrlName()+"' value='"+value+"' />\n");
-            		htmlStream.append("</td>\n");
-            		htmlStream.append("</tr>\n");
         		}
         	}        	
         	if(createLabelAndForm) {
-        		htmlStream.append("		<tr height='25px'>\n");
-        		htmlStream.append("			<td>&nbsp;</td>\n");
-        		htmlStream.append("			<td class='portlet-form-field-label'>"+biparam.getLabel()+"</td>\n");
-        		htmlStream.append("			<td>&nbsp;</td>\n");
-        		htmlStream.append("			<td>\n");
+        		htmlStream.append("		<div class='div_detail_label_lov'>\n");
+        		htmlStream.append("			<span class='portlet-form-field-label'>\n");
+        		htmlStream.append(biparam.getLabel());
+        		htmlStream.append("			</span>\n");
+        		htmlStream.append("		</div>\n");
+        		htmlStream.append("		<div class='div_detail_form'>\n");
         		createHTMLForm(biparam, htmlStream);	
-        		htmlStream.append("			</td>\n");
-        		htmlStream.append("		</tr>\n");
+        		htmlStream.append("		</div>\n");
         	}
         }
-		htmlStream.append("		<tr height='25px'>\n");
-		htmlStream.append("			<td>&nbsp;</td>\n");
-		htmlStream.append("			<td>&nbsp;</td>\n");
-		htmlStream.append("			<td>&nbsp;</td>\n");
-		htmlStream.append("			<td>\n");
-//		htmlStream.append("				<input type='image' onclick='clearFields()' " +
-//												"name='resetParameters' value='Reset fields' " +
-//												"src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png") + "'/>\n");
+        
+        htmlStream.append("		<div class='div_detail_label_lov'>\n");
+        htmlStream.append("			&nbsp;\n");
+        htmlStream.append("		</div>\n");
+        htmlStream.append("		<div class='div_detail_form'>\n");
         htmlStream.append("				<a href='javascript:void(0)' onclick='clearFields()' class='portlet-form-field-label'>\n");
         String resetFieldsLbl = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.resetFields", "messages");
         htmlStream.append("					" + resetFieldsLbl + "\n");
         htmlStream.append("				</a>\n");
-		htmlStream.append("			</td>\n");
-		htmlStream.append("		</tr>\n");
-		htmlStream.append("</table>\n");
+        htmlStream.append("		</div>\n");
+		htmlStream.append("</div>\n");
+		
+//		htmlStream.append("<table width='100%'>\n");
+//		htmlStream.append("		<tr height='1px'>\n");
+//		htmlStream.append("			<td width='30px'>&nbsp;</td>\n");
+//		htmlStream.append("			<td width='18%'>&nbsp;</td>\n");
+//		htmlStream.append("			<td width='30px'>&nbsp;</td>\n");
+//		htmlStream.append("			<td>&nbsp;</td>\n");
+//		htmlStream.append("		</tr>\n");
+//        List parameters = obj.getBiObjectParameters();
+//        Iterator iter = parameters.iterator();
+//        while(iter.hasNext()) {
+//        	BIObjectParameter biparam = (BIObjectParameter)iter.next();
+//        	boolean createLabelAndForm = true;
+//        	
+//        	Parameter par = biparam.getParameter();
+//        	ModalitiesValue paruse = par.getModalityValue();
+//        	String inputType = paruse.getITypeCd();
+//        	if(inputType.equalsIgnoreCase("SCRIPT")) {
+//        		String lov = paruse.getLovProvider();
+//        		ScriptDetail scriptDet = null;
+//        		try{
+//        			scriptDet = ScriptDetail.fromXML(lov);
+//        		} catch(Exception e) {
+//        			scriptDet = null;
+//        		}
+//        		if( (scriptDet!=null) && scriptDet.isSingleValue()) {
+//        			createLabelAndForm = false;
+//        			List biparValues = biparam.getParameterValues();
+//        			Object value = biparValues.get(0);
+//            		htmlStream.append("<tr height='1px'>\n");
+//            		htmlStream.append("<td colspan='4'>\n");
+//            		htmlStream.append("<input type='hidden' name='"+biparam.getParameterUrlName()+"' value='"+value+"' />\n");
+//            		htmlStream.append("</td>\n");
+//            		htmlStream.append("</tr>\n");
+//        		}
+//        	}        	
+//        	if(createLabelAndForm) {
+//        		htmlStream.append("		<tr height='25px'>\n");
+//        		htmlStream.append("			<td>&nbsp;</td>\n");
+//        		htmlStream.append("			<td class='portlet-form-field-label'>"+biparam.getLabel()+"</td>\n");
+//        		htmlStream.append("			<td>&nbsp;</td>\n");
+//        		htmlStream.append("			<td>\n");
+//        		createHTMLForm(biparam, htmlStream);	
+//        		htmlStream.append("			</td>\n");
+//        		htmlStream.append("		</tr>\n");
+//        	}
+//        }
+//		htmlStream.append("		<tr height='25px'>\n");
+//		htmlStream.append("			<td>&nbsp;</td>\n");
+//		htmlStream.append("			<td>&nbsp;</td>\n");
+//		htmlStream.append("			<td>&nbsp;</td>\n");
+//		htmlStream.append("			<td>\n");
+////		htmlStream.append("				<input type='image' onclick='clearFields()' " +
+////												"name='resetParameters' value='Reset fields' " +
+////												"src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png") + "'/>\n");
+//        htmlStream.append("				<a href='javascript:void(0)' onclick='clearFields()' class='portlet-form-field-label'>\n");
+//        String resetFieldsLbl = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.resetFields", "messages");
+//        htmlStream.append("					" + resetFieldsLbl + "\n");
+//        htmlStream.append("				</a>\n");
+//		htmlStream.append("			</td>\n");
+//		htmlStream.append("		</tr>\n");
+//		htmlStream.append("</table>\n");
         htmlStream.append("<script type='text/javascript'>\n");
         htmlStream.append("function clearFields() {\n");
         iter = parameters.iterator();
@@ -226,7 +274,7 @@ public class DynamicPageTag extends TagSupport {
 		// PARAMETER USE TYPE FIX LOV
 		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {
 			try{
-				htmlStream.append("<select style='width:200;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' class='portlet-form-field' >\n");
+				htmlStream.append("<select style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' class='portlet-form-field' >\n");
 				String stringXMLValues = modVal.getLovProvider();
 				stringXMLValues = PortletUtilities.cleanString(stringXMLValues);
 				SourceBean sbXMLValues = SourceBean.fromXMLString(stringXMLValues); 
@@ -253,7 +301,7 @@ public class DynamicPageTag extends TagSupport {
 			
 		// PARAMETER USE TYPE MANUAL INPUT
 		} else if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
-			htmlStream.append("<input type='text' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' value='" + value + "' class='portlet-form-input-field' style='width:200;' />\n");
+			htmlStream.append("<input style='width:230px;' type='text' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' value='" + value + "' class='portlet-form-input-field' />\n");
 		} 
 		
 		
@@ -267,7 +315,7 @@ public class DynamicPageTag extends TagSupport {
 //			if(modality.equalsIgnoreCase(SpagoBIConstants.EXECUTION_MODALITY)){
 //				lookupURL.setParameter("ORIGINAL_PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 //			}
-			htmlStream.append("<input type='text' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' class='portlet-form-input-field' readonly='true' style='width:200;' value='"+value+"'/>\n");
+			htmlStream.append("<input type='text' style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' class='portlet-form-input-field' readonly='true' value='"+value+"'/>\n");
 			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getParID() + "\")' \n");
 			htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
 			htmlStream.append("		title='Lookup' alt='Lookup' \n");

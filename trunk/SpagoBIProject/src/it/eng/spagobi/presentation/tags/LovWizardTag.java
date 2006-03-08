@@ -78,6 +78,24 @@ public class LovWizardTag extends TagSupport {
 			output.append("		<div class='div_detail_form'>\n");
 			output.append("			<input class='portlet-form-input-field' type='text' name='valueOfFixedLovItemNew' size='50' value=''>&nbsp;*\n");
 			output.append("		</div>\n");
+			output.append("		<div class='div_detail_label_lov'>\n");
+			output.append("			&nbsp;\n");
+			output.append("		</div>\n");
+			output.append("		<div class='div_detail_form'>\n");
+			output.append("			<input type='image' name='insertFixLovItem' value='insertFixLovItem'\n");
+			output.append("				src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/attach.gif") + "'\n");
+			String addButtMsg = PortletUtilities.getMessage("SBIDev.lovWiz.addButt", "messages");
+			output.append("				title='" + addButtMsg + "' alt='" + addButtMsg + "'\n");
+			output.append("			/>\n");
+			output.append("			<input type='hidden' id='insertFixLovItem' name='' value=''/>\n");
+			output.append("			<a onclick='' href='javascript:" +
+													"document.getElementById(\"insertFixLovItem\").name=\"insertFixLovItem\";" +
+													"document.getElementById(\"insertFixLovItem\").value=\"insertFixLovItem\";" +
+													"document.getElementById(\"modalitiesValueForm\").submit();' " +
+													"class='portlet-form-field-label' style='text-decoration:none;'>\n");
+			output.append("				" + addButtMsg + "\n");
+			output.append("			</a>\n");
+			output.append("		</div>\n");
 			output.append("</div>\n");
 			
 			/*
@@ -106,13 +124,13 @@ public class LovWizardTag extends TagSupport {
 			output.append("	</tr>\n");
 			output.append("</table>\n");
 			*/
-			output.append("<br/>\n");
+			//output.append("<br/>\n");
 			
 			List lovs = new ArrayList();
 			if (lovProvider != null  &&  !lovProvider.equals("")){
 				lovs = LovDetailList.fromXML(lovProvider).getLovs();
 			}
-			output.append("<table style='width:50%;' class='object-details-table'>\n");
+			output.append("<table class=\"table_detail_fix_lov\">\n");
 		  	output.append("	<tr>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
 		  	String tableCol1 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol1", "messages");

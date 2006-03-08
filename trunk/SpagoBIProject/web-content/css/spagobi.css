@@ -53,6 +53,11 @@
     background-color:#fafafa;
 }
 
+.table_detail_fix_lov {
+	margin: 5px;
+	width:607px;
+	cellpaddingleft:5px; 
+}
 
 .div_functions_role_associations {
 	margin-left:5px;

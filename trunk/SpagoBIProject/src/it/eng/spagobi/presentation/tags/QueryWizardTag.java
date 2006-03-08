@@ -261,7 +261,7 @@ public class QueryWizardTag extends TagSupport {
 	    
 	    output.append("function generateHTML(fields, valueColumn, visibleColumns) {\n");
 	    output.append("	var strHTML ='';\n");
-	    output.append("	strHTML += '<table width=\"100%\" class=\"object-details-table\">';\n");
+	    output.append("	strHTML += '<table class=\"object-details-table\" style=\"margin:5px;width:100%;\">';\n");
 	    output.append("	strHTML += '<tr>';\n");
 	    output.append("	strHTML += '<td class=\"portlet-section-header\">' + '" + columnsField + "' + '</td>';\n");
 	    output.append("	strHTML += '<td class=\"portlet-section-header\" style=\"text-align:center;width:100px;\">' + '" + valueColumnsField + "' + '</td>';\n");

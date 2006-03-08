@@ -271,12 +271,10 @@
 
 
 
-<div id="scriptWizard" class='object-details-div' style='display:<%=scriptDisplay%>'>
-	<br/>
-	<span class='portlet-form-field-label'>
+<div id="scriptWizard" style='width:100%;display:<%=scriptDisplay%>'>
+	<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
 		<spagobi:message key = "SBIDev.scriptWiz.wizardTitle" />
-	</span>
-	<hr width='100%'/>
+	</div> 
 	<spagobi:scriptWizard 
 		script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' 
 		isListOfValues='<%= scriptDet.isListOfValues() ? "true" : "false" %>' 

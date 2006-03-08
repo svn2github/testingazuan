@@ -237,12 +237,12 @@ return 0;
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
 							name="relname" id="relname" value="<%=relName%>" maxlength="400">
 				</div>
-				<div class='div_detail_label' style='display:none;'>
+				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBIDev.docConf.docDet.typeField" />
 					</span>
 				</div>
-				<div class='div_detail_form' style='display:none;'>
+				<div class='div_detail_form'>
 					<select class='portlet-form-input-field' style='width:230px;' 
 							name="type" id="type" onchange = 'showEngField()'>
 		      		<% 

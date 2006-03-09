@@ -7,6 +7,24 @@
 		<copyright></copyright>
 		<lastBuildDate>10 Feb 2006 09:13:00 GMT</lastBuildDate>
 		<generator>RSS generator</generator>
+		<item>
+           	<title>SpagoBI roadmap</title>
+			<description>
+				The new SpagoBI roadmap for 2006 is out, we hope answering your needs. You can see the new plan to the http://spagobi.eng.it/SpagoBISiteENG/target/docs/roadmap.html link. If you want to contribute to reach it, don’t hesitate to write us ! 
+		     </description>
+			<link>http://localhost:8080/portal</link>
+			<guid isPermaLink="false">summary-1054822375</guid>
+			<pubDate>10 Feb 2006 09:13:00 GMT</pubDate>
+		</item>
+		<item>
+           	<title>Business Intelligence with SpagoBI</title>
+			<description>
+				The SpagoBI team activated training courses on the platform broaching the Business Intelligence themes. First editions will take place in France and in Italy, others will be planned during the year. 
+		     </description>
+			<link>http://localhost:8080/portal</link>
+			<guid isPermaLink="false">summary-1054822376</guid>
+			<pubDate>10 Feb 2006 09:13:00 GMT</pubDate>
+		</item>
      		<item>
                 	<title>SpagoBI version 1.8 released: eXo platform v2</title>
 			<description>
@@ -19,7 +37,7 @@
 		<item>
                 	<title>SpagoBI version 1.8 released: maven 2 compilation</title>
 			<description>
-				The compilation and packaging of the SpagoBI 1.8 version source code is based on maven2. The compilation can be done for different environment and makes easier the installation process.
+				The compilation and packaging of the SpagoBI 1.8 version source code is based on maven2. The compilation can be done for different application servers and makes easier the installation process.
 		        </description>
 			<link>http://localhost:8080/portal</link>
 			<guid isPermaLink="false">summary-1054822378</guid>

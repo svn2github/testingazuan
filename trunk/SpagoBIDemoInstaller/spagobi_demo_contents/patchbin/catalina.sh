@@ -67,7 +67,8 @@ PRGDIR=`dirname "$PRG"`
 #####################################################################################
 LOG_OPTS="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog"
 SECURITY_OPTS="-Djava.security.auth.login.config=$PRGDIR/../conf/jaas.conf"
-JAVA_OPTS="$LOG_OPTS $SECURITY_OPTS $JAVA_OPTS"
+MEMORY_OPTS="-Xmx256m"
+JAVA_OPTS="$LOG_OPTS $SECURITY_OPTS $MEMORY_OPTS $JAVA_OPTS"
 ####################################################################################
 #                     END  EXO CONFIGURATION                                        #
 #####################################################################################

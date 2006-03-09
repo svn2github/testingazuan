@@ -35,13 +35,6 @@
  		<res-type>javax.sql.DataSource</res-type>
  		<res-auth>Container</res-auth>
     </resource-ref>
-	
-    <resource-ref>
- 		<description>Spagobi Cms</description>
- 		<res-ref-name>cms/spagobicms</res-ref-name>
- 		<res-type>it.eng.javax.jcr.Repository</res-type>
- 		<res-auth>Container</res-auth>
-    </resource-ref>
     
 </web-app>
 

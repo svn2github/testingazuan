@@ -19,7 +19,8 @@
 
 	<table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
-			<td class='header-title-column-portlet-section-no-buttons'>
+			<td class='header-title-column-portlet-section-no-buttons' 
+			    style='vertical-align:middle;padding-left:5px;'>
 				<spagobi:message key = "SBIDev.titleMenu" />
 			</td>
 		</tr>

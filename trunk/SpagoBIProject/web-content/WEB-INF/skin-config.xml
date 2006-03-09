@@ -8,4 +8,8 @@
     <portlet-name>spagobi/SBISettings</portlet-name>
     <style name="sbisetting" url="/user/skin/portlet/welcome-portlet.css"/>
   </portlet-style-config>
+  <portlet-style-config>
+    <portlet-name>/spagobi/SBIDevelopmentContext</portlet-name>
+    <style name="sbisetting" url="/user/skin/portlet/welcome-portlet.css"/>
+  </portlet-style-config>
 </skin-config>

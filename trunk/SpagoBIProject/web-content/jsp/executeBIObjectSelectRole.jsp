@@ -49,7 +49,7 @@
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section'>
+		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.Title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>

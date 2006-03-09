@@ -59,7 +59,8 @@
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section'>
+		<td class='header-title-column-portlet-section'
+		    style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBISet.Funct.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
@@ -78,7 +79,7 @@
 
 
 
-<div class='div_background_no_img' >
+<div class='div_background_no_img' style='padding-top:5px;padding-left:5px;' >
 
 
     

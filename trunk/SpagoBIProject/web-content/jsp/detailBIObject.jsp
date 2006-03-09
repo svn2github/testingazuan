@@ -138,7 +138,8 @@ return 0;
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section'>
+		<td class='header-title-column-portlet-section' 
+		    style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBIDev.docConf.docDet.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
@@ -408,13 +409,13 @@ return 0;
 	<!-- OPEN COLUMN WITH TREE FUNCTIONALITIES (INSERT MODE) OR TEMPLATE VERSION (MODIFY MODE)  -->	     
 	<td width="60%">
     	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
-    		<div style='padding:10px;'>
+    		<div style='padding:5px;'>
     			<spagobi:treeObjects moduleName="DetailBIObjectModule"  
     								 htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.FunctionalitiesTreeInsertObjectHtmlGenerator" />    	
     		</div>
 		<% } %>
      	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { %>
-    		<div style='padding:5px;'>
+    		<div style='padding-left:5px;padding-right:5px;padding-bottom:5px;'>
 				<span class='portlet-form-field-label'>
 					<spagobi:message key = "SBIDev.docConf.docDet.templateVersionField" />
 				</span>

@@ -34,14 +34,13 @@ tr.header-sub-row-portlet-section {
 
 /* Column with the header title for each section of the SpagoBI portlet*/
 td.header-title-column-portlet-section {
-	padding: 0px 0px 0px 1px;
+	/*padding: 0px 0px 0px 1px;*/
 	background-color: #cccccc;
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
 	color: #074B88;
-	horizontal-align: left;
-	vertical-align: middle;
+	/*text-align: left;*/
 	background-image: url('/spagobi/img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
@@ -56,9 +55,8 @@ td.header-title-column-single-object-execution-portlet-section {
 	background-color: rgb(228, 236, 242);
 	color: #074B88;
 	height: 25px;
-	vertical-align: middle;
 	border-top: 1px solid #bbb;
-	horizontal-align: left;
+	text-align: left;
 	background-image: url('/spagobi/img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
@@ -87,8 +85,7 @@ td.header-title-column-portlet-section-no-buttons {
 	font-size: 13px;
 	font-weight: 600;
 	color: #074B88;
-	horizontal-align: left;
-	vertical-align: middle;
+	text-align: left;
 }
 
 /* Column with the header title for sections without buttons of the SpagoBI portlet*/

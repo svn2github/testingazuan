@@ -181,7 +181,7 @@ public class LookupListTag extends TagSupport {
 		}
 		
 		_htmlStream.append(" <table class='header-table-portlet-section'>\n");		
-		_htmlStream.append("	<tr class='header-row-portlet-section'>\n");
+		_htmlStream.append("	<tr class='header-row-portlet-section' style='vertical-align:middle;padding-left:5px;'>\n");
 		_htmlStream.append("			<td class='header-title-column-portlet-section'>" + title + "</td>\n");
 		_htmlStream.append("			<td class=\"header-empty-column-portlet-section\">&nbsp;</td>\n");
 		_htmlStream.append(				makeButton() + "\n");

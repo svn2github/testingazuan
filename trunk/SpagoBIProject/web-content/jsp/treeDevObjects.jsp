@@ -50,7 +50,7 @@
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section'>
+		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
 			<% if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_LIST)) {  %>
 				<spagobi:message key = "SBISet.devObjects.titleList" />
 			<%   } else if(view.equals(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)) { %>

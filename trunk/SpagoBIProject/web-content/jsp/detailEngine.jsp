@@ -33,7 +33,8 @@
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section'>
+		<td class='header-title-column-portlet-section' 
+		    style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBISet.eng.titleMenu" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
@@ -52,10 +53,10 @@
 
 
 
-<div class='div_background' >
+<div class='div_background' style='padding-top:5px;padding-left:5px;'>
 
 
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" >
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.eng.LabelField" />

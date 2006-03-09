@@ -107,7 +107,7 @@
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
-    	<td class='header-title-column-portlet-section'>
+    	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
            <%=title%>
        </td>
        <td class='header-empty-column-portlet-section'>&nbsp;</td>
@@ -158,7 +158,7 @@
 
 <table width='100%' cellspacing='0' border='0'>
 	<tr>
-		<td class='header-title-column-single-object-execution-portlet-section'>
+		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
 			<%=title%>
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>

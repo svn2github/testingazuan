@@ -5,30 +5,30 @@
 		<link>http://spagobi.eng.it</link>
 		<description>SpagoBi News</description>
 		<copyright></copyright>
-		<lastBuildDate>30 Jan 2006 09:13:00 GMT</lastBuildDate>
+		<lastBuildDate>10 Feb 2006 09:13:00 GMT</lastBuildDate>
 		<generator>RSS generator</generator>
      		<item>
-                	<title>SpagoBI version 1.7 released</title>
+                	<title>SpagoBI version 1.8 released: eXo platform v2</title>
 			<description>
-				The SpagoBI platform 1.7 has been released on 30 january 2006. The new version contains many usability improvements, the Query By Example (QBE), which is a visual tool for the data inquiry and a Quick Start document, to give users a simple guide to start using SpagoBI.
+				The SpagoBI platform 1.8 has been released on 10 february 2006. The new version is based on eXo platform v2 and it can use the eXo jsr 170 implementation. 
 		        </description>
 			<link>http://localhost:8080/portal</link>
 			<guid isPermaLink="false">summary-1054822377</guid>
-			<pubDate>30 Jan 2006 09:13:00 GMT</pubDate>
+			<pubDate>10 Feb 2006 09:13:00 GMT</pubDate>
 		</item>
 		<item>
-                	<title>Next SpagoBI release over eXo platform version 2:</title>
+                	<title>SpagoBI version 1.8 released: maven 2 compilation</title>
 			<description>
-				The next SpagoBI's version will use the eXo platform 2 portal server and the eXo 2 jcr 170 repository implementation.
+				The compilation and packaging of the SpagoBI 1.8 version source code is based on maven2. The compilation can be done for different environment and makes easier the installation process.
 		        </description>
 			<link>http://localhost:8080/portal</link>
 			<guid isPermaLink="false">summary-1054822378</guid>
-			<pubDate>30 Jan 2006 09:13:00 GMT</pubDate>
+			<pubDate>10 Feb 2006 09:13:00 GMT</pubDate>
 		</item>
      		<item>
-                	<title>SpagoBI version 1.7: Tomcat, JBoss and JOnAS certificated</title>
+                	<title>SpagoBI platform: Tomcat, JBoss and JOnAS certificated</title>
 			<description>
-				The new version has been tested with JOnAS, Tomcat and JBoss. For JOnAS application server has been released a step by step installation guide and a package containing all the useful installation files, in order to facilitate the task. 
+				SpagoBI has been tested with JOnAS, Tomcat and JBoss. For each application server has been released a step by step installation guide and a package containing all the useful installation files, in order to facilitate the task. 
 		        </description>
 			<link>http://localhost:8080/portal</link>
 			<guid isPermaLink="false">summary-1054822379</guid>

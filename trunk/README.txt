@@ -1,6 +1,9 @@
-SPAGOBI INSTALLATION ON EXO-ECM
+SPAGOBI BUILD AND INSTALLATION ON EXO-ECM
 
-According to the application server on which you are going to install SpagoBI and to the CMS system you prefer you can choose one of the following commands:
+PRE-REQUIREMENTS:	Maven 2
+			eXo ECM 1.0
+
+According to the application server on which you are going to install SpagoBI and to the CMS system you prefer you can choose one of the following Maven 2 commands:
 
 Application server	|	CMS system	|	command to run
 ----------------------------------------------------------------------------------------------------

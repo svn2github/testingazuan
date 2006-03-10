@@ -428,7 +428,7 @@
 
 
 
-<table>
+<table style="margin-bottom:5px;width:100%;">
 	<tr>
 		<td colspan="3" align="left" class='portlet-section-header'>
   	   		<spagobi:message key = "SBIDev.paramUse.valTab3" />
@@ -493,7 +493,7 @@
 
 
 
-<table width="100%">
+<table style="width:100%;">
 	<tr>
   		<td colspan="3" align="left" class='portlet-section-header'>
   	    	<spagobi:message key = "SBIDev.paramUse.valTab2" />

@@ -1,4 +1,6 @@
-If you want to install SpagoBI on your JBoss server please proceed as follows:
+THIS DOCUMENT FOLLOWS THE FILE README.TXT IN THE SPAGOBI ROOT DIRECTORY.
+
+If you want to install SpagoBI on your JBoss server, after having launched Maven 2 command, please proceed as follows:
 - copy the content of the folder "jboss-server" (NOT the directory itself but only its content) inside your JBoss base directory (we will refer to it as JBOSS_HOME): overwrite the existing files;
 - delete the jar hsqldb.jar from JBOSS_HOME/server/default/lib;
 

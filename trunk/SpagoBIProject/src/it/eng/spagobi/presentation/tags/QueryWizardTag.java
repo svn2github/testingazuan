@@ -129,7 +129,7 @@ public class QueryWizardTag extends TagSupport {
 		output.append("			</span>\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_form'>\n");
-		output.append("			<select style='width:180px;' class='portlet-form-input-field' name='connName' id='connName'>\n");
+		output.append("			<select style='width:180px;' class='portlet-form-input-field' name='connNameJS' id='connNameJS' onchange='setConnName(this.selectedIndex)'>\n");
 		it = dbConnection.iterator();
 		while (it.hasNext()) {
 			SourceBean connectionPool = (SourceBean) it.next();
@@ -169,7 +169,7 @@ public class QueryWizardTag extends TagSupport {
 		
 		
 		
-		/*
+	    /*
 		output.append("<table class='object-details-table' id='queryWizardWithoutJavascript' style='display:inline;'>\n");
 		output.append("	<tr height='25'>\n");
 		output.append("		<td align='right' class='portlet-form-field-label' >"+ connNameField + "</td>\n");
@@ -188,6 +188,7 @@ public class QueryWizardTag extends TagSupport {
 			output.append("			<option value='" + connectionPoolName + "' " + connNameSelected + ">" + connectionDescription + "</option>\n");
 		}
 		output.append("		</select></td>\n");
+		
 	    output.append("	</tr>\n");
 		output.append("	<tr height='25'>\n");
 		output.append("		<td align='right' class='portlet-form-field-label' >" + visColumnsField + "</td>\n");

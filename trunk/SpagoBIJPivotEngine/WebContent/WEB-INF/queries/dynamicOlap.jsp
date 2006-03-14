@@ -3,26 +3,52 @@
 		 import="org.dom4j.Document,
 				 org.dom4j.Node,
 				 java.io.InputStreamReader,
+				 java.util.List,
 				 com.thoughtworks.xstream.XStream,
 				 it.eng.spagobi.bean.AnalysisBean,
 				 it.eng.spagobi.util.SessionObjectRemoval,
 				 it.eng.spagobi.utilities.SpagoBIAccessUtils,
 				 it.eng.spagobi.bean.SaveAnalysisBean,
-				 com.tonbeller.wcf.form.FormComponent" %>
+				 com.tonbeller.wcf.form.FormComponent,
+				 mondrian.olap.*" %>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+
+<%! 
+	private String substituteQueryParameters(String queryStr, List parameters, javax.servlet.http.HttpServletRequest request, String connectionStr) {
+		Connection connection = DriverManager.getConnection(connectionStr, getServletContext(), true);
+		Query queryObj = connection.parseQuery(queryStr);	
+		if (parameters != null && parameters.size() > 0) {
+	    	for (int i = 0; i < parameters.size(); i++) {
+	    		Node parameter = (Node) parameters.get(i);
+	    		String name = "";
+	    		String as = "";
+	    		if (parameter != null) {
+	    			name = parameter.valueOf("@name");
+	    			as = parameter.valueOf("@as");
+	    		}
+	    		String parameterValue = request.getParameter(name);
+				queryObj.setParameter(as, parameterValue);
+	    	}
+	    }
+		queryStr = queryObj.toMdx();
+		connection.close();
+	    return queryStr;
+	}
+%>
+
+
 
 <%
 
 SessionObjectRemoval.removeSessionObjects(session);
 
-Node parameter = null;
+List parameters = null;
 try{
 	
-	java.io.File jcr = null;
 	java.io.InputStream is = null;
-	String reference = null, nameConnection = null, query= null, name = null, as = null;
+	String reference = null, nameConnection = null, query= null;
 	AnalysisBean analysis = null;
 	SaveAnalysisBean analysisBean = new SaveAnalysisBean();
 	// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
@@ -73,13 +99,7 @@ try{
 		query = document.selectSingleNode("//olap/MDXquery").getStringValue();
 		Node cube = document.selectSingleNode("//olap/cube");
 		reference = cube.valueOf("@reference");
-		parameter = document.selectSingleNode("//olap/MDXquery/parameter");
-		name = "";
-		as = "";
-		if (parameter != null){
-			name = parameter.valueOf("@name");
-			as = parameter.valueOf("@as");
-		}
+		parameters = document.selectNodes("//olap/MDXquery/parameter");
 		analysis = new AnalysisBean();
 		analysis.setConnectionName(nameConnection);
 		analysis.setCatalogUri(reference);
@@ -109,33 +129,25 @@ try{
 	if(jndi.equalsIgnoreCase("true")) { 
 	    String iniCont = connectionDef.valueOf("@initialContext");
 	    String resName = connectionDef.valueOf("@resourceName");
-	    if(parameter != null){ %>
-	    <jp:setParam query="query01" httpParam="<%=name %>" mdxParam="<%=as%>">
-			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
-				<%=query%>
-			</jp:mondrianQuery>
-		</jp:setParam>
-	    <% } else {%>
-	    	<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
-				<%=query%>
-			</jp:mondrianQuery>
-	<%    } 
+	    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+reference+";";
+	    query = substituteQueryParameters(query, parameters, request, connectionStr);
+	    %>
+    	<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+			<%=query%>
+		</jp:mondrianQuery>
+		<%
 	} else {
 		String driver = connectionDef.valueOf("@driver");
 		String url = connectionDef.valueOf("@jdbcUrl");
 		String usr = connectionDef.valueOf("@user");
 		String pwd = connectionDef.valueOf("@password");
-	    if(parameter != null){ %>
-	    <jp:setParam query="query01" httpParam="<%=name %>" mdxParam="<%=as%>">
-			<jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=reference%>" >
-				<%=query%>
-			</jp:mondrianQuery>	
-		</jp:setParam>
-	   <% } else {%>
+	    String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+reference+";";
+	    query = substituteQueryParameters(query, parameters, request, connectionStr);
+		%>
 	    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=reference%>" >
-				<%=query%>
+			<%=query%>
 		</jp:mondrianQuery>	
-	   <% } 
+		<%
 	}
 	
 	if (nameSubObject != null) {
@@ -148,10 +160,3 @@ try{
 } catch (Exception e){
 	e.printStackTrace();
 }%>
-
-
-
-
-
-
-

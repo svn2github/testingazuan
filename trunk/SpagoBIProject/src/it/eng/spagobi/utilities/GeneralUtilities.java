@@ -28,26 +28,16 @@ package it.eng.spagobi.utilities;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.UtilitiesConstants;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.spec.EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -165,7 +155,7 @@ public class GeneralUtilities {
 	 * @return A String with SpagoBI's context adderss
 	 */
 	public static String getSpagoBiContextAddress(){
-		RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+		//RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 		return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	
@@ -184,7 +174,7 @@ public class GeneralUtilities {
 	
 	
 	/**
-	 * Get all the possible profile attributes of the users.
+	 * Get all the shared profile attributes of the users.
 	 * The attributes are contained into a configuration file which contains the name 
 	 * of the attribute and the test value of the attribute. The test value is used during 
 	 * the test of a script that use the attribute. 
@@ -214,6 +204,44 @@ public class GeneralUtilities {
 		return attrsMap;
 	}
 	
+	/**
+	 * Get all the predefined profile attributes of the user with the given unique identifier passed as String.
+	 * The attributes are contained into a configuration file which contains the name 
+	 * of the attribute and the test value of the attribute. The test value is used during 
+	 * the test of a script that use the attribute. 
+	 * 
+	 * @return HashMap of the attributes. HashMap keys are profile attribute.
+	 * HashMap values are test values. 
+	 * 
+	 */
+	public static HashMap getPredefinedProfileAttributes(String userUniqueIdentifier) {
+		SourceBean profileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("PROFILE_ATTRIBUTES.USER-PROFILES.USER", "name", userUniqueIdentifier);
+		List profileAttrs = profileAttrsSB.getAttributeAsList("ATTRIBUTE");
+		HashMap attrsMap = new HashMap();
+		if (profileAttrs == null || profileAttrs.size() == 0) {
+			SpagoBITracer.info("SpagoBIUtilities", GeneralUtilities.class.getName(), "getPredefinedProfileAttributes()", 
+				"The user with unique identifer '" + userUniqueIdentifier + 
+				"' has no predefined profile attributes.");
+			return attrsMap;
+		}
+		Iterator iterAttrs = profileAttrs.iterator();
+		SourceBean attrSB = null;
+		String nameattr = null;
+		String attrvalue = null;
+		while(iterAttrs.hasNext()) {
+			attrSB = (SourceBean) iterAttrs.next();
+			if (attrSB == null)
+				continue;
+			nameattr = attrSB.getAttribute("name").toString();
+		    attrvalue = attrSB.getAttribute("valuefortest").toString();
+		    attrsMap.put(nameattr, attrvalue);
+		}
+		SpagoBITracer.info("SpagoBIUtilities", GeneralUtilities.class.getName(), "getPredefinedProfileAttributes()", 
+				"The user with unique identifer '" + userUniqueIdentifier + 
+				"' has the following predefined profile attributes:\n" + attrsMap.toString());
+		return attrsMap;
+	}
+	
 	
 	public static Binding fillBinding(HashMap attrs) {
 		Binding bind = new Binding();
@@ -230,25 +258,51 @@ public class GeneralUtilities {
 	}
 	
 	
-	public static Binding fillBinding(IEngUserProfile profile) {
+	public static Binding fillBinding(IEngUserProfile profile) throws EMFInternalError {
 		
-		Binding bind = new Binding();
-		HashMap allAttrs = getAllProfileAttributes();
-		Set setattrs = allAttrs.keySet();
-		Iterator iterattrs = setattrs.iterator();
-		String key = null;
-		Object valueobj = null;
-		while(iterattrs.hasNext()) {
-			key = iterattrs.next().toString();
-			try {
-				valueobj = profile.getUserAttribute(key);
-			} catch (Exception e) {
-				valueobj = null;
-			}
-			if(valueobj!=null)
-				bind.setVariable(key, valueobj.toString());
-		}
-		return bind;
+		HashMap allAttrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+		if (allAttrs == null) return null;
+		return fillBinding(allAttrs);
+//		HashMap allAttrs = getAllProfileAttributes();
+//		Set setattrs = allAttrs.keySet();
+//		Iterator iterattrs = setattrs.iterator();
+//		String key = null;
+//		Object valueobj = null;
+//		while(iterattrs.hasNext()) {
+//			key = iterattrs.next().toString();
+//			try {
+//				valueobj = profile.getUserAttribute(key);
+//			} catch (Exception e) {
+//				valueobj = null;
+//			}
+//			if(valueobj!=null)
+//				bind.setVariable(key, valueobj.toString());
+//		}
+//		return bind;
+	}
+	
+	
+	/**
+	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the query statement passed at input.
+	 * 
+	 * @param statement The query statement string to be modified
+	 * @param profileattrs The profile attributes HashMap
+	 * @param profileAttributeStartIndex The start index for query parsing (useful for recursive calling)
+	 * @return The statement with profile attributes replaced by their values.
+	 * @throws Exception
+	 */
+	public static String substituteProfileAttributesInQuery(String statement, HashMap profileattrs, int profileAttributeStartIndex) throws Exception {
+		int profileAttributeEndIndex = statement.indexOf("}");
+		if (profileAttributeEndIndex == -1) throw new Exception("Not closed profile attribute: '}' expected.");
+		if (profileAttributeEndIndex < profileAttributeEndIndex) throw new Exception("Not opened profile attribute: '${' expected.");
+		String attributeName = statement.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex);
+		Object attributeValueObj = profileattrs.get(attributeName);
+		if (attributeValueObj == null) throw new Exception("Profile attribute '" + attributeName + "' not existing.");
+		else statement = statement.replace("${" + attributeName + "}", attributeValueObj.toString());
+		profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
+		if (profileAttributeStartIndex != -1) 
+			statement = substituteProfileAttributesInQuery(statement, profileattrs, profileAttributeStartIndex);
+		return statement;
 	}
 	
 	

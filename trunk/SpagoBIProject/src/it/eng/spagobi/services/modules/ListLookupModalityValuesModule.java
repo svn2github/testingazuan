@@ -25,7 +25,6 @@ import groovy.lang.Binding;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
@@ -42,7 +41,6 @@ import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
-import it.eng.spagobi.services.commons.LookupScriptDelegatedBasicListService;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -79,6 +77,10 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 	 * @return ListIFace 
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+		
+		RequestContainer reqCont = getRequestContainer();
+		SessionContainer session = reqCont.getSessionContainer();
+		SessionContainer permSess = session.getPermanentContainer();
 		
 		// laod the parameter use
 		Integer idModVal = Integer.valueOf((String)request.getAttribute("mod_val_id"));
@@ -124,6 +126,12 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 					.getAttribute("VALUE-COLUMN")).getCharacters();
 			String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
 			String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
+			int profileAttributeStartIndex = statement.indexOf("${");
+			if (profileAttributeStartIndex != -1) {
+				IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+				statement = GeneralUtilities.substituteProfileAttributesInQuery(statement, profileattrs, profileAttributeStartIndex);
+			}
 			
 			Vector columns = findVisibleColumns(visibleColumns);
 			
@@ -168,9 +176,6 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 			
 		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
 			
-			RequestContainer reqCont = getRequestContainer();
-			SessionContainer session = reqCont.getSessionContainer();
-			SessionContainer permSess = session.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			String lov = modVal.getLovProvider();
 			ScriptDetail scriptDet = ScriptDetail.fromXML(lov);

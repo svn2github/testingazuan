@@ -3,4 +3,22 @@
 	<ATTRIBUTE name="divisione" valuefortest="divisionetest" />
 	<ATTRIBUTE name="direzione" valuefortest="direzionetest" />
 	<ATTRIBUTE name="filiale" valuefortest="filialetest" />
+	
+	<USER-PROFILES>
+
+		<USER name="biadmin">
+			<ATTRIBUTE name="struttura" valuefortest="biadmin-struttura-test" />
+		</USER>
+		
+		<USER name="bidev">
+			<ATTRIBUTE name="struttura" valuefortest="bidev-struttura-test" />
+		</USER>
+		
+		<USER name="bitest">
+			<ATTRIBUTE name="struttura" valuefortest="bitest-struttura-test" />
+		</USER>
+	
+	</USER-PROFILES>
+	
 </PROFILE_ATTRIBUTES>
+

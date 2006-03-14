@@ -38,10 +38,14 @@ import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spagobi.utilities.GeneralUtilities;
 
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -93,9 +97,16 @@ public class ListTestQueryModule extends AbstractBasicListModule {
 		PaginatorIFace paginator = new GenericPaginator();
 		String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
 		String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
-		
+
 		SourceBean rowsSourceBean = null;
+		
 		try {
+			int profileAttributeStartIndex = statement.indexOf("${");
+			if (profileAttributeStartIndex != -1) {
+				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+				statement = GeneralUtilities.substituteProfileAttributesInQuery(statement, profileattrs, profileAttributeStartIndex);
+			}
 			rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement);
 		} catch (Exception e) {
 			String stacktrace = e.toString();
@@ -125,7 +136,7 @@ public class ListTestQueryModule extends AbstractBasicListModule {
 		return list;
 		
 	}
-	
+
 	/**
 	 * Executes a select statement.
 	 * 

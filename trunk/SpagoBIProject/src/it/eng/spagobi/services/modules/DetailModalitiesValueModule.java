@@ -33,6 +33,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.LovDetailList;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -142,7 +143,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					modVal);
 			loadValuesDomain(response);
 
-			HashMap attrs = GeneralUtilities.getAllProfileAttributes();
+			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
 			response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
 
 			if (modVal.getITypeCd().equals("FIX_LOV")) {
@@ -202,7 +204,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						modVal);
 				response.setAttribute(SpagoBIConstants.MODALITY, mod);
 				loadValuesDomain(response);
-				HashMap attrs = GeneralUtilities.getAllProfileAttributes();
+				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	    		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
 				response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
 				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 				// exits without writing into DB and without loop
@@ -420,13 +423,15 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param response The SourceBean to set
 	 * @throws SourceBeanException
 	 * @throws EMFUserError
+	 * @throws EMFInternalError 
 	 */
 
-	private void prepareDetailModalitiesValuePage (ModalitiesValue modVal, String mod, SourceBean response) throws SourceBeanException, EMFUserError {
+	private void prepareDetailModalitiesValuePage (ModalitiesValue modVal, String mod, SourceBean response) throws SourceBeanException, EMFUserError, EMFInternalError {
 		response.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
 		response.setAttribute(SpagoBIConstants.MODALITY, mod);	
 		loadValuesDomain(response);
-		HashMap attrs = GeneralUtilities.getAllProfileAttributes();
+		IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
 		response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
 	}
 	
@@ -475,7 +480,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
     		if (scriptDet.isSingleValue()) {
     			response.setAttribute("testedObject", "SCRIPT_SINGLE_VALUE");
             	try{
-            		HashMap profileattrs = GeneralUtilities.getAllProfileAttributes();
+        			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+            		HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
             		Binding bind = GeneralUtilities.fillBinding(profileattrs);
             		String resultTest = GeneralUtilities.testScript(scriptDet.getScript(), bind);
             		response.setAttribute("result", resultTest);
@@ -541,7 +547,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	private void newDetailModValue(SourceBean response) throws EMFUserError {
 		try {
 			
-			HashMap attrs = GeneralUtilities.getAllProfileAttributes();
+			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
 			response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
 			
 			response.setAttribute(SpagoBIConstants.MODALITY,

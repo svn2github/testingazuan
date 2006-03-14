@@ -216,6 +216,8 @@ public class GeneralUtilities {
 	 */
 	public static HashMap getPredefinedProfileAttributes(String userUniqueIdentifier) {
 		SourceBean profileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("PROFILE_ATTRIBUTES.USER-PROFILES.USER", "name", userUniqueIdentifier);
+		if(profileAttrsSB==null)
+			return new HashMap();
 		List profileAttrs = profileAttrsSB.getAttributeAsList("ATTRIBUTE");
 		HashMap attrsMap = new HashMap();
 		if (profileAttrs == null || profileAttrs.size() == 0) {

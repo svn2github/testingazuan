@@ -7,15 +7,15 @@
 	<USER-PROFILES>
 
 		<USER name="biadmin">
-			<ATTRIBUTE name="struttura" valuefortest="biadmin-struttura-test" />
+			<ATTRIBUTE name="product" valuefortest="food" />
 		</USER>
 		
 		<USER name="bidev">
-			<ATTRIBUTE name="struttura" valuefortest="bidev-struttura-test" />
+			<ATTRIBUTE name="product" valuefortest="drink" />
 		</USER>
 		
-		<USER name="bitest">
-			<ATTRIBUTE name="struttura" valuefortest="bitest-struttura-test" />
+		<USER name="biuser">
+			<ATTRIBUTE name="product" valuefortest="food" />
 		</USER>
 	
 	</USER-PROFILES>

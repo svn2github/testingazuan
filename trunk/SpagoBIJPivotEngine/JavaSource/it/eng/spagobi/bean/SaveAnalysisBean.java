@@ -78,7 +78,7 @@ public class SaveAnalysisBean {
 		        sbiutils.saveSubObject(spagoBIBaseUrl, jcrPath, analysisName, 
 		        		analysisDescription, user, visibilityBoolean, xmlString); 
 		    } catch (GenericSavingException gse) {		
-		    	// TODO manage exception
+		    	gse.printStackTrace();
 		    }   
 		}
 	}

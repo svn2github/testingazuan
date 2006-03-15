@@ -89,6 +89,9 @@ public class JasperReportRunner {
 			if (f.isDirectory()){
 				String[] jarFiles = f.list();
 				for (int i=0; i < jarFiles.length; i++){
+					String namefile = jarFiles[i];
+					if(!namefile.endsWith("jar"))
+						continue; // the inclusion of txt files causes problems
 					fileToAppend = webinflibPath + System.getProperty("file.separator")+ jarFiles[i];
 					logger.debug("Engines"+ this.getClass().getName()+ "runReport() Appending to Jasper Report ClassPath jar file [" + fileToAppend + "]");
 					jasperReportClassPathStringBuffer.append(fileToAppend);

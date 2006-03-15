@@ -127,8 +127,7 @@
     			<name>maxWait</name>
     			<value>-1</value>
   		</parameter>
-	</ResourceParams>
-	<!-- 
+	</ResourceParams> 
     <Resource name="cms/spagobicms" auth="Container" type="it.eng.javax.jcr.Repository"/> 
 	<ResourceParams name="cms/spagobicms">
   		<parameter>
@@ -144,7 +143,6 @@
     			<value>${cmshome}</value>
   		</parameter>
 	</ResourceParams>
-    -->
 
     <!-- ********************************************************************************** --> 
     <!-- ********************************************************************************** --> 

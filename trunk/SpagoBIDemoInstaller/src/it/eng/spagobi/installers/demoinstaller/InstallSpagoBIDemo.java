@@ -49,16 +49,18 @@ public class InstallSpagoBIDemo {
 		try {
 			FileUtilities.copy(pathdest + "/common/lib", pathsource
 					+ "/commonlib/ehcache-1.1.jar");
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/exo-jcr.services.jcr.impl-1.0.jar");
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/exo-jcr.services.jcr.api-1.0.jar");
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/exo-jcr.services.jcr.impl-1.0.jar");
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/exo-jcr.services.jcr.api-1.0.jar");
 			FileUtilities.copy(pathdest + "/common/lib", pathsource
 					+ "/commonlib/xercesImpl-2.6.2.jar");
-			//FileUtilities.copy(pathdest + "/common/lib", pathsource
-			//		+ "/commonlib/derby.jar");
-			//FileUtilities.copy(pathdest + "/common/lib", pathsource
-			//		+ "/commonlib/jackrabbit-0.9-incubating.jar");			
+			FileUtilities.copy(pathdest + "/common/lib", pathsource
+					+ "/commonlib/derby.jar");
+			FileUtilities.copy(pathdest + "/common/lib", pathsource
+					+ "/commonlib/jackrabbit-0.9-incubating.jar");	
+			File oldjcrimple = new File(pathdest + "/common/lib/commons-jcr-0.16.4.1.jar");
+			oldjcrimple.delete();
 		} catch (Exception exc) {
 			return false;
 		}
@@ -160,12 +162,12 @@ public class InstallSpagoBIDemo {
 		try {
 			//FileUtilities.copy(pathdest + "/temp/data", 
 			//		pathsource + "/cms/cms.log");
-			FileUtilities.copy(pathdest + "/temp/data", 
-					pathsource + "/cms/cms.properties");
-			FileUtilities.copy(pathdest + "/temp/data", 
-					pathsource + "/cms/cms.script");
-			//FileUtilities.explode(pathdest + "/sbidata", pathsource
-			//		+ "/cms/jcrRepository.war");
+			//FileUtilities.copy(pathdest + "/temp/data", 
+			//		pathsource + "/cms/cms.properties");
+			//FileUtilities.copy(pathdest + "/temp/data", 
+			//		pathsource + "/cms/cms.script");
+			FileUtilities.explode(pathdest + "/sbidata", pathsource
+					+ "/cms/jcrRepository.war");
 		} catch (Exception exc) {
 			return false;
 		}
@@ -183,11 +185,11 @@ public class InstallSpagoBIDemo {
 			// delete the exo-tomcat server.xml file
 			File servconf = new File(pathdest + "/conf/server.xml");
 			servconf.delete();
-			FileUtilities.copy(pathdest + "/conf", 
-					   pathsource + "/jndi/server.xml");
+			//FileUtilities.copy(pathdest + "/conf", 
+			//		   pathsource + "/jndi/server.xml");
             
 			//******* FOR JACKRABBIT *************************************
-			/*
+			
 			// read into a string buffer the installation server.xml file 
 			servconf = new File(pathsource + "/jndi/server.xml");
 			FileReader reader = new FileReader(servconf);
@@ -212,7 +214,7 @@ public class InstallSpagoBIDemo {
 			fos.write(servbuf.toString().getBytes());
 			fos.flush();
 			fos.close();
-			*/
+			
 		} catch (Exception exc) {
 			System.out.println(exc);
 			return false;

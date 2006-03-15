@@ -2,5 +2,5 @@
   	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
   	<ResourceLink name="jdbc/spagobi" type="javax.sql.DataSource" global="jdbc/spagobi"/>
   	<ResourceLink name="jdbc/sbifoodmart" type="javax.sql.DataSource" global="jdbc/sbifoodmart"/>
-  	<!-- <ResourceLink name="cms/spagobicms" type="it.eng.javax.jcr.Repository" global="cms/spagobicms"/> -->
+  	<ResourceLink name="cms/spagobicms" type="it.eng.javax.jcr.Repository" global="cms/spagobicms"/>
   </Context>

@@ -1,23 +1,17 @@
 <PROFILE_ATTRIBUTES>
-	<ATTRIBUTE name="area" valuefortest="areatest" />
-	<ATTRIBUTE name="divisione" valuefortest="divisionetest" />
-	<ATTRIBUTE name="direzione" valuefortest="direzionetest" />
-	<ATTRIBUTE name="filiale" valuefortest="filialetest" />
-	
-	<USER-PROFILES>
+	<ATTRIBUTE name="month" valuefortest="9" />
+	<ATTRIBUTE name="limit" valuefortest="5" />
 
+	<USER-PROFILES>
 		<USER name="biadmin">
-			<ATTRIBUTE name="product" valuefortest="food" />
+			<ATTRIBUTE name="product" valuefortest="Food" />
 		</USER>
-		
 		<USER name="bidev">
-			<ATTRIBUTE name="product" valuefortest="drink" />
+			<ATTRIBUTE name="product" valuefortest="Drink" />
 		</USER>
-		
 		<USER name="biuser">
-			<ATTRIBUTE name="product" valuefortest="food" />
+			<ATTRIBUTE name="product" valuefortest="Food" />
 		</USER>
-	
 	</USER-PROFILES>
 	
 </PROFILE_ATTRIBUTES>

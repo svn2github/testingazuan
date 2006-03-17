@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeMap;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -226,10 +227,10 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 					"Wed Jul 20 18:40:32 CEST 2005",
 					"Thu Jul 21 17:07:48 CEST 2005",
 					"Wed Aug 03 17:56:22 CEST 2005" };
-			List templateVersions = biobj.getTemplateVersions();
+			TreeMap templateVersions = biobj.getTemplateVersions();
 			assertEquals(4, templateVersions.size());
 			for (int i = 0; i < templateVersions.size(); i++) {
-				TemplateVersion tv = (TemplateVersion) templateVersions.get(i);
+				TemplateVersion tv = (TemplateVersion) templateVersions.get(templateVersionNames[i]);
 				assertEquals(templateFileNames[i], tv.getNameFileTemplate());
 				assertEquals(templateVersionNames[i], tv.getVersionName());
 				assertEquals(templateDatas[i], tv.getDataLoad());
@@ -270,10 +271,10 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 					"Wed Jul 20 18:40:32 CEST 2005",
 					"Thu Jul 21 17:07:48 CEST 2005",
 					"Wed Aug 03 17:56:22 CEST 2005" };
-			List templateVersions = biobj.getTemplateVersions();
+			TreeMap templateVersions = biobj.getTemplateVersions();
 			assertEquals(4, templateVersions.size());
 			for (int i = 0; i < templateVersions.size(); i++) {
-				TemplateVersion tv = (TemplateVersion) templateVersions.get(i);
+				TemplateVersion tv = (TemplateVersion) templateVersions.get(templateVersionNames[i]);
 				assertEquals(templateFileNames[i], tv.getNameFileTemplate());
 				assertEquals(templateVersionNames[i], tv.getVersionName());
 				assertEquals(templateDatas[i], tv.getDataLoad());
@@ -317,7 +318,7 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 			TemplateVersion currentTemplateVersion = biobj
 					.getCurrentTemplateVersion();
 			assertEquals(null, currentTemplateVersion);
-			List templateVersions = biobj.getTemplateVersions();
+			TreeMap templateVersions = biobj.getTemplateVersions();
 			assertEquals(null, templateVersions);
 		} catch (EMFUserError e) {
 			e.printStackTrace();
@@ -343,7 +344,7 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 		Integer idBiobjToModify = new Integer(14);
 		try {
 			biobj = biobjectDAO.loadBIObjectForDetail(path);
-			biobjectDAO.fillBIObjectTemplate(biobj);
+			biobj.loadTemplate();
 			biobj.setId(idBiobjToModify);
 			biobj.setPath(newPath);
 			biobj.setLabel(newLabel);
@@ -353,9 +354,9 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 			biobjectDAO.modifyBIObject(biobj);
 
 			modBiobj = biobjectDAO.loadBIObjectForDetail(newPath);
-			biobjectDAO.fillBIObjectTemplate(modBiobj);
+			modBiobj.loadTemplate();
 			biobj = biobjectDAO.loadBIObjectForDetail(path);
-			biobjectDAO.fillBIObjectTemplate(biobj);
+			biobj.loadTemplate();
 			assertEquals(newLabel, modBiobj.getLabel());
 			assertEquals(idBiobjToModify, modBiobj.getId());
 			assertEquals(biobj.getTemplate().getFileName(), modBiobj
@@ -433,8 +434,8 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 		current.setDataLoad(new Date().toString());
 		current.setNameFileTemplate("Report.temp");
 		current.setVersionName("23.1");
-		List versions = new ArrayList();
-		versions.add(current);
+		TreeMap versions = new TreeMap();
+		versions.put(current.getVersionName(), current);
 
 		BIObject biobj = null;
 		BIObject reloaded = null;
@@ -454,7 +455,7 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 
 			biobj.setTemplate(template);
 			reloaded = biobjectDAO.loadBIObjectForDetail(path);
-			biobjectDAO.fillBIObjectTemplate(reloaded);
+			reloaded.loadTemplate();
 		} catch (EMFUserError e) {
 			e.printStackTrace();
 			fail("Unexpected exception occurred!");
@@ -475,7 +476,7 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 		byte[] actualContent = reloaded.getTemplate().getFileContent();
 		for (int i = 0; i < actualContent.length; i++)
 			assertEquals(content[i], actualContent[i]);
-		List actualVersions = biobj.getTemplateVersions();
+		TreeMap actualVersions = biobj.getTemplateVersions();
 		assertEquals(versions.size(), actualVersions.size());
 		TemplateVersion version = biobj.getCurrentTemplateVersion();
 		assertEquals(current.getDataLoad(), version.getDataLoad());
@@ -522,7 +523,7 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 			String path = "/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting/REPORT_RPT_CUST_01";
 			BIObject biobj = new BIObject();
 			biobj.setPath(path);
-			biobjectDAO.fillBIObjectTemplate(biobj);
+			biobj.loadTemplate();
 			UploadedFile template = biobj.getTemplate();
 			assertEquals("customerProfilesList.jrxml", template.getFileName());
 		} finally {
@@ -688,8 +689,8 @@ public class BIObjectDAOHibImplDbUnitTest extends DBConnectionTestCase {
 		current.setDataLoad(new Date().toString());
 		current.setNameFileTemplate("Report.temp");
 		current.setVersionName("23.1");
-		List versions = new ArrayList();
-		versions.add(current);
+		TreeMap versions = new TreeMap();
+		versions.put(current.getVersionName(), current);
 
 		BIObject biobj = null;
 

@@ -2,22 +2,28 @@ package it.eng.spagobi.services.modules;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.service.DefaultRequestContext;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.paginator.basic.ListIFace;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
+import it.eng.spagobi.mockObjects.EngUserProfileImplMock;
 import it.eng.spagobi.test.dbunit.utility.DBConnectionTestCase;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ListLookupModalityValuesModuleDbUnitTest extends
 		DBConnectionTestCase {
 
 	private SourceBean request = null, response = null;
+	
+	private SessionContainer sessionCont = null;
 
 	private ListLookupModalityValuesModule listLookupModalityValuesModule = null;
 
@@ -30,6 +36,8 @@ public class ListLookupModalityValuesModuleDbUnitTest extends
 		}
 		RequestContainer reqContainer = new RequestContainer();
 		ResponseContainer resContainer = new ResponseContainer();
+		sessionCont = new SessionContainer(true);
+		reqContainer.setSessionContainer(sessionCont);
 		DefaultRequestContext defaultRequestContext = new DefaultRequestContext(
 				reqContainer, resContainer);
 		reqContainer.setServiceRequest(request);
@@ -37,6 +45,10 @@ public class ListLookupModalityValuesModuleDbUnitTest extends
 		resContainer.setErrorHandler(new EMFErrorHandler());
 		listLookupModalityValuesModule = new ListLookupModalityValuesModule();
 		listLookupModalityValuesModule.setRequestContext(defaultRequestContext);
+		EngUserProfileImplMock profile = new EngUserProfileImplMock();
+		profile.setUserAttribute("PROFILE_ATTRIBUTES", new HashMap());
+		SessionContainer permSession = sessionCont.getPermanentContainer();
+		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 		super.setUp();	
 	}
 

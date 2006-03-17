@@ -13,6 +13,7 @@
 	<CONFIGURATOR path="tracing.xml" />
 	<CONFIGURATOR path="cms.xml" />
 	<CONFIGURATOR path="portletinitializers.xml" />
+	<CONFIGURATOR path="profileattributes.xml" />
 	<CONFIGURATOR path="spagobi/spagobi.xml" />
 	<CONFIGURATOR path="validators.xml" />
 	<CONFIGURATOR path="validation.xml" />

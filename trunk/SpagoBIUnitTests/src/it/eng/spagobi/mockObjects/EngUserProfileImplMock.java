@@ -4,13 +4,16 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 public class EngUserProfileImplMock implements IEngUserProfile {
 
 	private Collection roles = null;
 	private String userUniqueIdentifier = null;
+	private HashMap attributes; 
 	
 	public EngUserProfileImplMock() {
+		attributes = new HashMap();
 	}
 
 	public Object getUserUniqueIdentifier() {
@@ -19,6 +22,7 @@ public class EngUserProfileImplMock implements IEngUserProfile {
 
 	public Object getUserAttribute(String attributeName)
 			throws EMFInternalError {
+		if (attributeName != null) return attributes.get(attributeName);
 		return null;
 	}
 
@@ -52,4 +56,7 @@ public class EngUserProfileImplMock implements IEngUserProfile {
 		this.roles = roles;
 	}
 
+	public void setUserAttribute(String attrName, Object attr) {
+		if (attrName != null && attr != null) attributes.put(attrName, attr);
+	}
 }

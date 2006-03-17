@@ -8,16 +8,19 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.service.DefaultRequestContext;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LovDetail;
 import it.eng.spagobi.bo.LovDetailList;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.dao.hibernate.LovDAOHibImpl;
 import it.eng.spagobi.constants.AdmintoolsConstants;
+import it.eng.spagobi.mockObjects.EngUserProfileImplMock;
 import it.eng.spagobi.mockObjects.PortletRequestImplMock;
 import it.eng.spagobi.mockObjects.PortletSessionImplMock;
 import it.eng.spagobi.test.dbunit.utility.DBConnectionTestCase;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,7 +56,11 @@ public class DetailModalitiesValueModuleDbUnitTest extends DBConnectionTestCase 
 		portletRequest.setPortletSession(portletSession);
 		reqContainer.setAttribute("PORTLET_REQUEST", portletRequest);
 		modvalModule = new DetailModalitiesValueModule();
-		modvalModule.setRequestContext(defaultRequestContext);
+		modvalModule.setRequestContext(defaultRequestContext);		
+		EngUserProfileImplMock profile = new EngUserProfileImplMock();
+		profile.setUserAttribute("PROFILE_ATTRIBUTES", new HashMap());
+		SessionContainer permSession = sessionCont.getPermanentContainer();
+		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 		super.setUp();
 	}
 

@@ -1,5 +1,6 @@
 package it.eng.spagobi.services.modules;
 
+import java.util.HashMap;
 import java.util.List;
 
 import it.eng.spago.base.RequestContainer;
@@ -11,8 +12,10 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.service.DefaultRequestContext;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.paginator.basic.ListIFace;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.mockObjects.EngUserProfileImplMock;
 import it.eng.spagobi.test.dbunit.utility.DBConnectionTestCase;
 
 public class ListTestScriptModuleDbUnitTest extends DBConnectionTestCase {
@@ -41,6 +44,10 @@ public class ListTestScriptModuleDbUnitTest extends DBConnectionTestCase {
 		listTestScriptModule.setRequestContext(defaultRequestContext);
 		session = new SessionContainer(true);
 		reqContainer.setSessionContainer(session);
+		EngUserProfileImplMock profile = new EngUserProfileImplMock();
+		profile.setUserAttribute("PROFILE_ATTRIBUTES", new HashMap());
+		SessionContainer permSession = session.getPermanentContainer();
+		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 		super.setUp();
 		
 	}

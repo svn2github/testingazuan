@@ -5,20 +5,16 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.cms.CmsManager;
+import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.exceptions.BuildOperationException;
 import it.eng.spago.cms.exceptions.OperationExecutionException;
-import it.eng.spago.cms.exec.CMSConnection;
-import it.eng.spago.cms.exec.OperationExecutor;
-import it.eng.spago.cms.exec.OperationExecutorManager;
-import it.eng.spago.cms.exec.operations.GetOperation;
-import it.eng.spago.cms.exec.operations.OperationBuilder;
-import it.eng.spago.cms.exec.results.ElementDescriptor;
 import it.eng.spago.cms.init.CMSInitializer;
 import it.eng.spago.cms.init.CMSManager;
+import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.cms.util.CMSRecovery;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LowFunctionality;
@@ -426,18 +422,24 @@ public class LowFunctionalityDAOHibImplDbUnitTest extends DBConnectionTestCase {
 			CMSRecovery.setCmsModified(false);
 		}
 		
-		CMSConnection connection = null;
+//		CMSConnection connection = null;
 		try {
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(path);
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			SourceBean descSB = desc.getDescriptor();
-			assertNull(descSB);
-		} catch (EMFInternalError e) {
-			e.printStackTrace();
-			fail("Unexpected exception occurred!");
+//			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
+//			connection = CMSManager.getInstance().getConnection();
+//			GetOperation get = OperationBuilder.buildGetOperation();
+//			get.setPath(path);
+//			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
+//			SourceBean descSB = desc.getDescriptor();
+//			assertNull(descSB);
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(path);
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetriveChildsInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			assertNull(cmsnode);
 		} catch (BuildOperationException e) {
 			e.printStackTrace();
 			fail("Unexpected exception occurred!");
@@ -500,23 +502,30 @@ public class LowFunctionalityDAOHibImplDbUnitTest extends DBConnectionTestCase {
 			CMSRecovery.setCmsModified(false);
 		}
 
-		CMSConnection connection = null;
+//		CMSConnection connection = null;
 		try {
-			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
-			connection = CMSManager.getInstance().getConnection();
-			GetOperation get = OperationBuilder.buildGetOperation();
-			get.setPath(path);
-			get.setRetriveContentInformation("true");
-			get.setRetrivePropertiesInformation("true");
-			get.setRetriveVersionsInformation("true");
-			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
-			SourceBean descSB = desc.getDescriptor();
-			assertNotNull(descSB);
-			assertEquals("Business Departments",descSB.getAttribute("name"));
-			assertEquals("container",descSB.getAttribute("type"));
-		} catch (EMFInternalError e) {
-			e.printStackTrace();
-			fail("Unexpected exception occurred!");
+//			OperationExecutor executor = OperationExecutorManager.getOperationExecutor();
+//			connection = CMSManager.getInstance().getConnection();
+//			GetOperation get = OperationBuilder.buildGetOperation();
+//			get.setPath(path);
+//			get.setRetriveContentInformation("true");
+//			get.setRetrivePropertiesInformation("true");
+//			get.setRetriveVersionsInformation("true");
+//			ElementDescriptor desc = executor.getObject(connection, get, profile, true);
+//			SourceBean descSB = desc.getDescriptor();
+//			assertNotNull(descSB);
+//			assertEquals("Business Departments",descSB.getAttribute("name"));
+//			assertEquals("container",descSB.getAttribute("type"));
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(path);
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetriveChildsInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			assertEquals("Business Departments",cmsnode.getName());
+			assertEquals("container",cmsnode.getType());
 		} catch (BuildOperationException e) {
 			e.printStackTrace();
 			fail("Unexpected exception occurred!");

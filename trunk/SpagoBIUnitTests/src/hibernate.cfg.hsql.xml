@@ -4,7 +4,7 @@
 "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory name="HibernateSessionFactoryMySQL">
-        <property name="hibernate.connection.url">jdbc:hsqldb:file:${base_directory}/SpagoBIUnitTests/HSQLDB/spagobi</property>
+        <property name="hibernate.connection.url">jdbc:hsqldb:hsql://localhost/spagobi</property>
         <property name="hibernate.cglib.use_reflection_optimizer">false</property>
         <property name="hibernate.connection.password"></property>
         <property name="hibernate.connection.username">sa</property>

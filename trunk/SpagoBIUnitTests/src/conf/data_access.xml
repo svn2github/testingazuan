@@ -7,7 +7,7 @@
    <!-- HSQLDB -->
    
    <CONNECTION-POOL connectionPoolName="spagobi" connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.DBCPConnectionPoolFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:hsqldb:file:/home/zerbetto/SpagoBI-OW/trunk/SpagoBIUnitTests/HSQLDB/spagobi" parameterType=""/>
+      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:hsqldb:hsql://localhost/spagobi" parameterType=""/>
       <CONNECTION-POOL-PARAMETER parameterName="driverClass" parameterValue="org.hsqldb.jdbcDriver" parameterType=""/>
       <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.0" parameterType=""/>
       <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="sa" parameterType=""/>

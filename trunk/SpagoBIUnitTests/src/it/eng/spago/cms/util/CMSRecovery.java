@@ -52,7 +52,6 @@ public class CMSRecovery {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			// recoveryDirectory(repository_zip, newDirectory);
 		}
 	}
 
@@ -92,41 +91,17 @@ public class CMSRecovery {
 				File file = files[i];
 				if (file.isFile()) {
 					boolean deletion = file.delete();
-					if (!deletion)
-						throw new IOException("Error deleting file");
+					if (!deletion) {
+						throw new IOException("Error deleting file " + file.getAbsolutePath());	
+					}
 				} else
 					deleteDirectory(file);
 			}
 		}
 		boolean deletion = directory.delete();
 		if (!deletion)
-			throw new IOException("Error deleting file");
+			throw new IOException("Error deleting file " + directory.getAbsolutePath());
 	}
-
-	// private static void recoveryDirectory(File directoryToWrite,
-	// File newDirectory) throws IOException {
-	// if (directoryToWrite.isDirectory()) {
-	// boolean newdirCreation = newDirectory.mkdir();
-	// if (!newdirCreation)
-	// throw new IOException("Error creating directory");
-	// File[] files = directoryToWrite.listFiles();
-	// for (int i = 0; i < files.length; i++) {
-	// File file = files[i];
-	// File newFile = new File(newDirectory.getAbsolutePath()
-	// + File.separator + file.getName());
-	// recoveryDirectory(file, newFile);
-	// }
-	// } else {
-	// FileInputStream inStream = new FileInputStream(directoryToWrite);
-	// FileOutputStream outStream = new FileOutputStream(newDirectory);
-	// int i;
-	// while ((i = inStream.read()) != -1) {
-	// outStream.write(i);
-	// }
-	// inStream.close();
-	// outStream.close();
-	// }
-	// }
 
 	public static boolean isCmsModified() {
 		return cmsModified;

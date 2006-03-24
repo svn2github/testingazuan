@@ -45,8 +45,8 @@ public class TreeObjectsModuleDbUnitTest extends DBConnectionTestCase {
 	
 	protected void tearDown() throws Exception{
 		super.tearDown();
-		CMSRecovery.setupCms();
 		CMSManager.destroyInstance();
+		CMSRecovery.setupCms();
 	}
 	
 	protected void setupContext() throws Exception {

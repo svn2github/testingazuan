@@ -6,21 +6,26 @@
 </head>
 <body>
 
-<h1>How to use</h1>
-<span><b>Prerequirements: it is assumed that, before starting the test procedure described here below, you have compiled <font face="Courier">SpagoBI 1.7.0</font> and external packages with <font face="Courier">Maven 1.0.2</font>.</b></span>
-</br>
-</br>
-After download of <font face="Courier">SpagoBITest-src-1.3.zip</font> from SpagoBI Project download site, unzip it in the same folder where you put the source code of <font face="Courier">SpagoBI 1.7.0</font> and other packages; in this way you will have <font face="Courier">SpagoBIProject</font>, <font face="Courier">SpagoBIUnitTests</font>, <font face="Courier">QbeCore</font> and all other external packages folders in the same folder. In the following we will refer to this folder as “base directory”.
-<br/>
-Before starting the test, you have to prepare your environment. In the first step you have to configure the test properties files to see the HSQLDB testing database, that is the default.
-The files involved in this operation are:
-<ul> 
-<font face="Courier">
-<li>SpagoBIUnitTests/src/conf/data_access.xml
-<li>SpagoBIUnitTests/src/hibernate.cfg.hsql.xml
-</font>
+<h1>Software Requirements</h1>
+<ul>
+<li>Java Development Kit Version 1.4.2_08;
+<li>SpagoBI 1.8.0 and its external packages;
+<li>Maven 2.0.2.
 </ul>
-You need to udpate the uri with the absolute path where the folder HSQLDB was unzipped (you have only to type the base directory in both files where requested).
+<h1>How to use</h1>
+<span><b>Prerequirements: it is assumed that, before starting the test procedure described here below, you have compiled <font face="Courier">SpagoBI 1.8.0</font> and external packages with <font face="Courier">Maven 2.0.2</font> and you have not deleted all the <font face="Courier">target</font> folders created by Maven 2.</b></span>
+</br>
+</br>
+After download of <font face="Courier">SpagoBITest-src-1.4.zip</font> from SpagoBI Project download site, unzip it in the same folder where you put the source code of <font face="Courier">SpagoBI 1.8.0</font> and other packages; in this way you will have <font face="Courier">SpagoBIProject</font>, <font face="Courier">SpagoBIUnitTests</font>, <font face="Courier">QbeCore</font> and all other external packages folders in the same folder. In the following we will refer to this folder as “base directory”.
+<br/>
+The Maven plugin <font face="Courier">surefire-report-maven-plugin-2.0-beta-1</font>, that produces the html reports, works only with American number format. For this reason you have to:
+<ul>
+<li>in Unix environment: from command line launch: <br/><font face="Courier">export LANG=en_US.UTF-8</font>;
+<li>in Windows environment: go to Control Panel, then open International settings and set English [USA] locale.
+</ul>
+<h2>Tests on SpagoBIProject</h2>
+Before starting tests, you have to start the database: at <font face="Courier">SpagoBIUnitTest/HSQLDB</font> folder launch the command <font face="Courier">start.bat</font> (for Windows users) or <font face="Courier">start.sh</font> (for Unix users). Don't stop the database before all tests on SpagoBIProject are executed.
+<br>
 <br>
 <i>[<b> Note:</b> If you want to run tests on your own database, you need the following files for setting up your database connection: 
 <ul>
@@ -38,59 +43,59 @@ You need also to configure the CMS: in <font face="Courier">SpagoBIUnitTest/src/
 <ul>
 <li>type the absolute path of the base directory in <font face="Courier">repository_path</font> and in <font face="Courier">zip_repository_file_for_recovery</font>, where requested.
 </ul>
-Finally digit <font face="Courier">maven test-launch</font> from the command line at the base directory.
+To run test on SpagoBIProject launch <font face="Courier">mvn surefire-report:report</font> from the command line inside <font face="Courier">SpagoBIUnitTest</font> folder (for Unix users: the command must be lanched in the same session in which you have previously launched the <font face="Courier">export</font> command).
+Maven will resolve all the dependencies, compile test classes, run tests and produce the junit reports. 
+<br/> After Maven command execution, you can shutdown the database and see an overview-summary of test-results in file <font face="Courier">SpagoBIUnitTests/target/html/surefire-report.html</font>.
+<br/> You must pay attention to the fact that, if a test involving CMS is abruptly interrupted, CMS environment should be restored to avoid further test failures: so, before re-starting the tests, you have to delete the content of the folder <font face="Courier">SpagoBIUnitTests/jackrabbitRepositoriesForTest/spagobi_demo</font> and then re-starting <font face="Courier">mvn surefire-report:report</font> command.
 <br/>
-Maven will resolve all the dependencies, compile test classes, run tests and produce the junit reports for both SpagoBI and QbeCore tests. After Maven script execution, you can see an overview-summary of test-results in files <font face="Courier">SpagoBIUnitTests/target/docs/junit-report.html</font> (for tests on SpagoBI) and in  <font face="Courier">QbeCore/target/docs/junit-report.html</font> (for tests on QbeCore).
-You must pay attention to the fact that, if a test involving CMS is abruptly interrupted, CMS environment should be restored to avoid further test failures. So, before re-starting the tests, you have to delete the content of the folder <font face="Courier">SpagoBIUnitTests/jackrabbitRepositoriesForTest/spagobi_demo</font> and then re-starting <font face="Courier">maven test-launch</font> command.
-<h1>Project's dependancies</h1>
+<h2>Tests on QbeCore</h2>
+To run test on QbeCore move the file <font face="Courier">Qbe-tests-pom.xml</font> from <font face="Courier">SpagoBIUnitTest</font> to <font face="Courier">QbeCore</font> and digit <br/><font face="Courier">mvn -f Qbe-tests-pom.xml surefire-report:report</font><br/> from the command line inside <font face="Courier">QbeCore</font> folder (for Unix users: the command must be lanched in the same session in which you have previously launched the <font face="Courier">export</font> command).
+<br/>After Maven command execution, you can see an overview-summary of test-results in files <font face="Courier">QbeCore/target/html/surefire-report.html</font>.
+
+<h2>Project's dependancies</h2>
 The following is a list of dependencies for this project. Maven will try to resolve them automatically.<br>
 Dependencies required to compile the application:
 <ul><font face="Courier">
-<li>junit-3.8.1.jar
+<li>commons-pool-1.2.jar
 <li>dbunit-2.1.jar
-<li>spago-core-2.0.0.jar
-<li>spago-web-2.0.0.jar
 <li>hibernate-3.0.5.jar
-<li>spagocms.renamejcr.jar
-<li>sbi.securityprovider.api-1.7.jar
+<li>jackrabbit-0.16.4.1-dev.jar
+<li>jcr.1.0.jar
+<li>junit-3.8.1.jar
 <li>portlet-api-1.0.jar
-<li>spagobi-1.7.jar
 <li>servlet-api-2.4.jar
-<li>spagoportlet.jar</font></ul>
+<li>sbi.securityprovider.api-1.8.jar
+<li>SpagoBIProject 1.8 compiled classes
+<li>spago-core-2.0.0.jar
+<li>spagoportlet.jar
+</font></ul>
 Dependencies required to run the application:
 <ul><font face="Courier">
-<li>hsqldb-1.8.0.1.jar
-<li>eng.jackrabbit-0.16.4.1-dev.jar
-<li>eng.jcr.1.0.jar
-<li>sbi.cmsfactory.jackrabbit-1.7.jar
-<li>asm-attrs-1.5.3.jar
-<li>asm-1.5.3.jar
-<li>cglib-2.1_2.jar
-<li>sbi.drivers.api-1.7.jar
-<li>sbi.drivers.jpivot-1.7.jar
-<li>sbi.drivers.jasperreport-1.7.jar
-<li>sbi.security.exo-1.7.jar
-<li>qbe.core-1.7.jar
-<li>geronimo-spec-jta-1.0-M1.jar
-<li>sbi.cmsfactory.api-1.7.jar
 <li>antlr-2.7.5H3.jar
+<li>asm-1.5.3.jar
+<li>asm-attrs-1.5.3.jar
+<li>cglib-2.1_2.jar
 <li>commons-collections-3.1.jar
 <li>commons-dbcp-1.2.1.jar
-<li>commons-logging-api.jar
-<li>commons-logging.jar
-<li>commons-pool-1.2.jar
+<li>commons-fileupload-1.1-dev.jar
+<li>commons-logging-1.0.jar
+<li>commons-validator-1.1.4.jar
 <li>concurrent-1.3.4.jar
 <li>dom4j-1.6.jar
 <li>ehcache-1.1.jar
+<li>geronimo-spec-jta-1.0-M1.jar
+<li>groovy-all-1.0-jsr-03.jar
+<li>hsqldb-1.8.0.1.jar
+<li>jakarta-oro-2.0.8.jar
+<li>jamon-1.0.jar
 <li>log4j-1.2.8.jar
 <li>lucene-1.4.3.jar
+<li>qbe.core-1.8.jar
+<li>sbi.drivers.api-1.8.jar
+<li>sbi.drivers.jasperreport-1.8.jar
+<li>sbi.drivers.jpivot-1.8.jar
 <li>xercesImpl-2.6.2.jar
 <li>xml-apis-2.0.2.jar
-<li>jamon-1.0.jar
-<li>commons-fileupload-1.1-dev.jar
-<li>commons-validator-1.1.4.jar
-<li>jakarta-oro-2.0.8.jar
-<li>groovy-all-1.0-jsr-03.jar
 </font>
 </ul>
 </body>

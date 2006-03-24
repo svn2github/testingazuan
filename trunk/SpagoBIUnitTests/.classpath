@@ -1,45 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/antlr-2.7.5H3.jar"/>
-	<classpathentry kind="lib" path="lib/cglib-2.1_2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-dbcp-1.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-fileupload-1.1-dev.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-api.jar"/>
-	<classpathentry kind="lib" path="lib/commons-pool-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-validator-1.1.4.jar"/>
-	<classpathentry kind="lib" path="lib/concurrent-1.3.4.jar"/>
 	<classpathentry kind="lib" path="lib/dbunit-2.1.jar"/>
-	<classpathentry kind="lib" path="lib/dom4j-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/ehcache-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/eng.jackrabbit-0.16.4.1-dev.jar"/>
-	<classpathentry kind="lib" path="lib/eng.jcr.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/geronimo-spec-jta-1.0-M1.jar"/>
-	<classpathentry kind="lib" path="lib/jakarta-oro-2.0.8.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-1.4.3.jar"/>
-	<classpathentry kind="lib" path="lib/portlet-api-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/spagocms.renamejcr.jar"/>
-	<classpathentry sourcepath="/home/zerbetto/Spago/spago2.0.0-src/spago-core/src" kind="lib" path="lib/spago-core-2.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/spagoportlet.jar"/>
-	<classpathentry kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/asm-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/asm-attrs-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-3.0.5.jar"/>
-	<classpathentry kind="lib" path="lib/hsqldb-1.7.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/jamon-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
-	<classpathentry kind="lib" path="lib/servlet-api-2.4.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBICMSFactoryAPI"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIJasperReportDriver"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIJasperReportEngine"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIJPivotDriver"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIJPivotEngine"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spago-core-2.0.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_02"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/portlet-api-1.0.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spagoportlet.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-3.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/jcr-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackrabbit-0.16.4.1-dev.jar"/>
+	<classpathentry kind="lib" path="lib/commons-pool-1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

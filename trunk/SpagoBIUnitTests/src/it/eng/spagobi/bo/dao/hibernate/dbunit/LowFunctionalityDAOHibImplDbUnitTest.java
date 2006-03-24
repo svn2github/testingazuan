@@ -53,8 +53,8 @@ public class LowFunctionalityDAOHibImplDbUnitTest extends DBConnectionTestCase {
 
 	protected void tearDown() throws Exception{
 		super.tearDown();
-		CMSRecovery.setupCms();
 		CMSManager.destroyInstance();
+		CMSRecovery.setupCms();
 	}
 	
 	private void setupContext() {

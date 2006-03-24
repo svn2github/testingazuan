@@ -1,0 +1,5 @@
+To launch tests in Eclipse environment you have to set the run configuration as follows:
+1. in Arguments --> VM arguments write:
+	-DAF_ROOT_PATH="/path/to/SpagoBIUnitTests/src/conf/"
+	-DAF_CONFIG_FILE="master.xml"
+2. put all runtime dependancy in Classpath --> User Entries (not Bootstrap Entries)

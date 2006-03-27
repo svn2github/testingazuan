@@ -4,10 +4,8 @@ package it.eng.qbe.action;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.IQbeMessageHelper;
 import it.eng.qbe.utility.Logger;
-import it.eng.qbe.utility.QbeWebMessageHelper;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISelectClause;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereField;
 import it.eng.qbe.wizard.WizardConstants;
@@ -18,10 +16,9 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
 
-import java.util.List;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
 
@@ -153,10 +150,14 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 				Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 			
 				Query aQuery = aSession.createQuery(finalQueryString);
-											
+								
+				aQuery.setFirstResult(1);
+				aQuery.setMaxResults(5);
+				
 				try{
 				
 					aQuery.list();
+					
 					aSession.close();
 										
 				}catch (HibernateException he) {
@@ -193,6 +194,8 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 		
 			Query aQuery = aSession.createQuery(finalQueryString);
 				
+			aQuery.setFirstResult(1);
+			aQuery.setMaxResults(5);
 							
 			try{
 				

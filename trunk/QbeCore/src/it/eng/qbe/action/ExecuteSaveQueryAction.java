@@ -4,10 +4,8 @@ package it.eng.qbe.action;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.IQbeMessageHelper;
 import it.eng.qbe.utility.Logger;
-import it.eng.qbe.utility.QbeWebMessageHelper;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISelectClause;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereField;
 import it.eng.qbe.wizard.WizardConstants;
@@ -37,7 +35,7 @@ import org.hibernate.Session;
 public class ExecuteSaveQueryAction extends AbstractAction {
 	
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
-	
+		
 	
 	/**
 	 * @param wizObj
@@ -125,6 +123,17 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 		String previewMode = (String)request.getAttribute("previewModeFromQueryResult"); 
 		String source = (String)request.getAttribute("SOURCE_FROM_QUERY_RESULT");
 		String pageNumberString = (String) request.getAttribute("pageNumber");
+        int pageNumber;
+        if(pageNumberString == null || pageNumberString.length() == 0) {
+        	pageNumber = 0;
+        } else {
+            try {
+            	pageNumber = Integer.parseInt(pageNumberString);
+            } catch (NumberFormatException nfe) {
+            	Logger.error(ExecuteSaveQueryAction.class, nfe);
+                pageNumber = 0;
+            }
+        }
 		String ignoreJoins = (String) request.getAttribute("ignoreJoins");
 		
 		if ("QUERY_RESULT".equalsIgnoreCase(source)){
@@ -184,47 +193,57 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 			
 			}else{
 			
+				
 				DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
 			
 				Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
-			
-				Query aQuery = aSession.createQuery(finalQueryString);
-					
-				int pageNumber = 0;
 				
-				if (pageNumberString != null) {
-					pageNumber = Integer.valueOf(pageNumberString).intValue();
-				}
-				/* NUOVO */
-				else{
-					pageNumber = 0;
-				}
+				//Query rowsNumberQuery = aSession.createQuery(COUNT_PREFIX + finalQueryString);
+				
+				//int numberOfRows = ((Integer) rowsNumberQuery.iterate().next()).intValue();
+
+				Query aQuery = aSession.createQuery(finalQueryString);
+				
+				String pageSizeStr = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.page-size");
+				int pageSize = 30;
+				if (pageSizeStr != null) pageSize = new Integer(pageSizeStr).intValue();
+				int firstRow = pageNumber * pageSize;
+				
+				aQuery.setFirstResult(firstRow < 0 ? 0 : firstRow);
+				aQuery.setMaxResults(pageSize);
 				
 				try{
 				
 					List result = aQuery.list();
 					
-					int pageSize = 30;
-					int initItem = pageNumber * 30;
-					int endItem = initItem + (pageSize - 1);
+//					int lastRow = firstRow + (pageSize - 1);
 					boolean hasNextPage = true;
 					boolean hasPrevPage = true;
-					if (endItem > result.size()){
-						endItem = result.size();
-						hasNextPage = false;
-					}
+					
+					aQuery.setFirstResult(firstRow + pageSize < 0 ? 0 : firstRow + pageSize);
+					aQuery.setMaxResults(1);
+					
+					List secondPage = aQuery.list();
+					
+//					if (lastRow > numberOfRows){
+//						lastRow = numberOfRows;
+//						hasNextPage = false;
+//					}
+					
+					if (secondPage == null || secondPage.size() == 0) hasNextPage = false;
 					
 					if (pageNumber == 0){
-						initItem = 0;
+						firstRow = 0;
 						hasPrevPage = false;
 					}
-					List toReturn = result.subList(initItem, endItem);
+					//List toReturn = result.subList(initItem, endItem);
 					
 					aSession.close();
 					
 					SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
 					queryResponseSourceBean.setAttribute("query", finalQueryString);
-					queryResponseSourceBean.setAttribute("list", toReturn);
+					//queryResponseSourceBean.setAttribute("list", toReturn);
+					queryResponseSourceBean.setAttribute("list", result);
 					queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
 					queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
 					queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));

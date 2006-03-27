@@ -9,4 +9,4 @@ sbidata/databases folder inside Exo-Tomcat directory (Pay attention to execution
 bin folder inside Exo-Tomcat directory.
 
 Connect, with your browser (Explorer/Firefox), to the address
-http://localhost:8080/ecm
+http://localhost:8080/sbiportal

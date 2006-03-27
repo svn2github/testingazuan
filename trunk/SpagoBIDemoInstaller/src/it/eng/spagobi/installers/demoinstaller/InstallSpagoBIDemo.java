@@ -53,14 +53,22 @@ public class InstallSpagoBIDemo {
 			//		+ "/commonlib/exo-jcr.services.jcr.impl-1.0.jar");
 			//FileUtilities.copy(pathdest + "/common/lib", pathsource
 			//		+ "/commonlib/exo-jcr.services.jcr.api-1.0.jar");
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/xercesImpl-2.6.2.jar");
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/derby.jar");
-			FileUtilities.copy(pathdest + "/common/lib", pathsource
-					+ "/commonlib/jackrabbit-0.9-incubating.jar");	
-			File oldjcrimple = new File(pathdest + "/common/lib/commons-jcr-0.16.4.1.jar");
-			oldjcrimple.delete();
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/xercesImpl-2.6.2.jar");
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/derby.jar");
+			//FileUtilities.copy(pathdest + "/common/lib", pathsource
+			//		+ "/commonlib/jackrabbit-0.9-incubating.jar");	
+			//File oldjcrimple = new File(pathdest + "/common/lib/commons-jcr-0.16.4.1.jar");
+			//oldjcrimple.delete();
+			FileUtilities.copy(pathdest + "/common/lib", pathsource 
+					+ "/commonlib/concurrent-1.3.2.jar");
+			FileUtilities.copy(pathdest + "/common/lib", pathsource 
+					+ "/commonlib/jackrabbit-0.16.4.1-dev.jar");
+			FileUtilities.copy(pathdest + "/common/lib", pathsource 
+					+ "/commonlib/jcr-1.0.jar");
+			FileUtilities.copy(pathdest + "/common/lib", pathsource 
+					+ "/commonlib/log4j-1.2.8.jar");	
 		} catch (Exception exc) {
 			return false;
 		}
@@ -99,18 +107,18 @@ public class InstallSpagoBIDemo {
 
 	private static boolean installCss(String pathsource, String pathdest) {
 		try {
-			FileUtilities.explode(pathdest + "/webapps/resources", pathdest
-					+ "/webapps/resources.war");
-			File community = new File(pathdest
-					+ "/webapps/resources/community/skin/community.css");
-			community.delete();
+			//FileUtilities.explode(pathdest + "/webapps/resources", pathdest
+			//		+ "/webapps/resources.war");
+			//File community = new File(pathdest
+			//		+ "/webapps/resources/community/skin/community.css");
+			//community.delete();
 			//File defaultcss = new File(pathdest
 			//		+ "/webapps/resources/skin/portlet/default-portlet.css");
 			//defaultcss.delete();
-			FileUtilities.copy(pathdest + "/webapps/resources/community/skin",
-					pathsource + "/css/community.css");
-			FileUtilities.copy(pathdest + "/webapps/resources/community/skin",
-					pathsource + "/css/jsr168-portlet.css");
+			//FileUtilities.copy(pathdest + "/webapps/resources/community/skin",
+			//		pathsource + "/css/community.css");
+			//FileUtilities.copy(pathdest + "/webapps/resources/community/skin",
+			//		pathsource + "/css/jsr168-portlet.css");
 			//FileUtilities.copy(pathdest + "/webapps/resources/skin/portlet",
 			//		pathsource + "/css/default-portlet.css");
 		} catch (Exception exc) {
@@ -148,10 +156,12 @@ public class InstallSpagoBIDemo {
 
 	private static boolean installPortalApplication(String pathsource, String pathdest) {
 		try {
-			File portalwar = new File(pathdest + "/webapps/ecm.war");
-			portalwar.delete();
-			FileUtilities.explode(pathdest + "/webapps/ecm", pathsource
-					+ "/wars/ecm.war");
+			//File portalwar = new File(pathdest + "/webapps/ecm.war");
+			//portalwar.delete();
+			//FileUtilities.explode(pathdest + "/webapps/ecm", pathsource
+			//		+ "/wars/ecm.war");
+			FileUtilities.explode(pathdest + "/webapps/sbiportal", pathsource
+					+ "/wars/sbiportal.war");
 		} catch (Exception exc) {
 			return false;
 		}
@@ -167,7 +177,7 @@ public class InstallSpagoBIDemo {
 			//FileUtilities.copy(pathdest + "/temp/data", 
 			//		pathsource + "/cms/cms.script");
 			FileUtilities.explode(pathdest + "/sbidata", pathsource
-					+ "/cms/jcrRepository.war");
+					+ "/cms/jcrRepositoryFS-0.16.4.war");
 		} catch (Exception exc) {
 			return false;
 		}
@@ -177,7 +187,9 @@ public class InstallSpagoBIDemo {
 	private static boolean installJndiConfiguration(String pathsource, String pathdest) {
 		try {
 			FileUtilities.copy(pathdest + "/conf/Catalina/localhost", 
-							   pathsource + "/jndi/spagobi.xml");
+					   pathsource + "/jndi/sbiportal.xml");
+			FileUtilities.copy(pathdest + "/conf/Catalina/localhost", 
+					   pathsource + "/jndi/spagobi.xml");
 			FileUtilities.copy(pathdest + "/conf/Catalina/localhost", 
 					   pathsource + "/jndi/SpagoBIJPivotEngine.xml");
 			FileUtilities.copy(pathdest + "/conf/Catalina/localhost", 
@@ -204,7 +216,7 @@ public class InstallSpagoBIDemo {
 			reader.close();
 			// replace the path of the cms root and file config
 		    int startcmshome = servbuf.indexOf("${cmshome}");
-		    servbuf.replace(startcmshome, startcmshome+10, pathdest+"/sbidata/jcrRepository");
+		    servbuf.replace(startcmshome, startcmshome+10, pathdest+"/sbidata/jcrRepositoryFS");
 		    int startconffile = servbuf.indexOf("${confrepfile}");
 		    servbuf.replace(startconffile, startconffile+14, 
 		    		        pathdest+"/webapps/spagobi/WEB-INF/classes/repository.xml");
@@ -214,7 +226,6 @@ public class InstallSpagoBIDemo {
 			fos.write(servbuf.toString().getBytes());
 			fos.flush();
 			fos.close();
-			
 		} catch (Exception exc) {
 			System.out.println(exc);
 			return false;

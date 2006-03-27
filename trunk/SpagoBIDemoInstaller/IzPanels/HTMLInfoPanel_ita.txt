@@ -9,4 +9,4 @@ sbidata/databases di Exo-Tomcat (Controllare i permessi di esecuzione);
 bin di Exo-Tomcat.
 
 Collegati, con il tuo browser (Explorer/Firefox) all'indirizzo 
-http://localhost:8080/ecm
+http://localhost:8080/sbiportal

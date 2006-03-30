@@ -21,7 +21,7 @@ public class Logger {
 	 * @param o
 	 */
 	public static void debug(Class clazz, Object o){
-		TracerSingleton.log("SPAGO", TracerSingleton.DEBUG, o.toString());
+		TracerSingleton.log("SPAGOBI-QBE", TracerSingleton.DEBUG, o.toString());
 	}
 	
 	/**
@@ -29,28 +29,28 @@ public class Logger {
 	 * @param o
 	 */
 	public static void info(Class clazz, Object o){
-		TracerSingleton.log("SPAGO", TracerSingleton.INFORMATION, o.toString());
+		TracerSingleton.log("SPAGOBI-QBE", TracerSingleton.INFORMATION, o.toString());
 	}
 	/**
 	 * @param clazz
 	 * @param o
 	 */
 	public static void error(Class clazz, Object o){
-		TracerSingleton.log("SPAGO", TracerSingleton.CRITICAL, o.toString());
+		TracerSingleton.log("SPAGOBI-QBE", TracerSingleton.CRITICAL, o.toString());
 	}
 	/**
 	 * @param clazz
 	 * @param o
 	 */
 	public static void warn(Class clazz, Object o){
-		TracerSingleton.log("SPAGO", TracerSingleton.WARNING, o.toString());
+		TracerSingleton.log("SPAGOBI-QBE", TracerSingleton.WARNING, o.toString());
 	}
 	/**
 	 * @param clazz
 	 * @param o
 	 */
 	public static void critical(Class clazz, Object o){
-		TracerSingleton.log("SPAGO", TracerSingleton.CRITICAL, o.toString());
+		TracerSingleton.log("SPAGOBI-QBE", TracerSingleton.CRITICAL, o.toString());
 	}
 	
 }

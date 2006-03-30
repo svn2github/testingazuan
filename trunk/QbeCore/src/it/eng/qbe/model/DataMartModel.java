@@ -3,6 +3,7 @@ package it.eng.qbe.model;
 import it.eng.qbe.utility.IDataMartModelRetriever;
 import it.eng.qbe.utility.IQueryPersister;
 import it.eng.qbe.utility.Logger;
+import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.configuration.ConfigSingleton;
 
@@ -100,16 +101,18 @@ public class DataMartModel implements Serializable {
 	 * @return the hibernate Configuration
 	 */
 	public SessionFactory createSessionFactory(){
+		Logger.debug(this.getClass(), "createSessionFactory: start method createSessionFactory");
 		Configuration cfg = createHibernateConfiguration();
+		Logger.debug(this.getClass(), "createSessionFactory: hibernate configuration created: " + cfg);
 		try{
 			File jarFile = getJarFile();
-		
+			Logger.debug(this.getClass(), "createSessionFactory: jar file obtained: " + jarFile);
 			updateCurrentClassLoader(jarFile);
-		
+			Logger.debug(this.getClass(), "createSessionFactory: current class loader updated");
 			cfg.addJar(jarFile);
-		
+			Logger.debug(this.getClass(), "createSessionFactory: add jar file to configuration");
 			SessionFactory sf = cfg.buildSessionFactory();
-		
+			Logger.debug(this.getClass(), "createSessionFactory: session factory built: " + sf);
 			return sf;
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);

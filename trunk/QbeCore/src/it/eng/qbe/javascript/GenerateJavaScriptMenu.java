@@ -332,26 +332,29 @@ public class GenerateJavaScriptMenu {
 	 * @return the node counter the counter of the node
 	 */
 	public final int writeSelectionTree(StringBuffer aStringBuffer, String nomeAlberoJavaScript, String labelSottoAlberoFunzioni, int rootNode, int nodeCounter, boolean generateFieldsNode){
-		
+		Logger.debug(this.getClass(), "writeSelectionTree: start method writeSelectionTree");
 		ApplicationContainer application = ApplicationContainer.getInstance();
+		Logger.debug(this.getClass(), "writeSelectionTree: application container retrived: " + application);
 		SessionFactory sf = Utils.getSessionFactory(dataMartModel,application);
+		Logger.debug(this.getClass(), "writeSelectionTree: session factory retrived: " + sf);
+		if(sf==null){
+			Logger.critical(this.getClass(), "writeSelectionTree: session factory NULL");
+			return 0;
+		}
 		Map aMap = sf.getAllClassMetadata();
-		
-		
+		if(aMap==null){
+			Logger.critical(this.getClass(), "writeSelectionTree: map metadata classes NULL");
+			return 0;
+		}
+		Logger.debug(this.getClass(), "writeSelectionTree: metadata class map retrived: " + aMap);
 		Object o = null;
-		
 		String classCompleteName = "";
-	
-		
 		for (Iterator it = aMap.keySet().iterator(); it.hasNext(); ){
 			o  = it.next();
-			
 			//Logger.debug(GenerateJavaScriptMenu.class,o.getClass().getName());
 			classCompleteName = (String)o;
-			
 			nodeCounter = writeTreeReachableFromClass(aStringBuffer,nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForSelectionURLGenerator(classCompleteName, qbeUrlGenerator, httpRequest));
 		}		 
-		
 		return nodeCounter;
 	}
 	

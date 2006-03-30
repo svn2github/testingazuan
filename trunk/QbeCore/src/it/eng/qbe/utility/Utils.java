@@ -27,12 +27,17 @@ public class Utils {
 	 * @return: the session Factory associated with a given datamart
 	 */
 	public static SessionFactory getSessionFactory(DataMartModel dm, ApplicationContainer application){
-		
+		Logger.debug(Utils.class, "getSessionFactory: start method getSessionFactory");
 		if (application.getAttribute(dm.getPath()) != null){
+			Logger.debug(Utils.class, "getSessionFactory: return session factory contained into application container");
 			return (SessionFactory)application.getAttribute(dm.getPath());
 		}else{
+			Logger.debug(Utils.class, "getSessionFactory: session factory not contained into application container," +
+					"it's necessary to create a new session factory");
 			SessionFactory sf = dm.createSessionFactory();
+			Logger.debug(Utils.class, "getSessionFactory: session factory created: " + sf);
 			application.setAttribute(dm.getPath(), sf);
+			Logger.debug(Utils.class, "getSessionFactory: session factory stored into application context: " + sf);
 			return sf;
 		}
 		

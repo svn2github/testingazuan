@@ -1,0 +1,65 @@
+<table align="center" width="80%">
+
+  <tr>
+
+    <td style="text-align: justify">
+	
+	<h3>Funzioni per lo sviluppatore</h3>
+
+	Dopo aver realizzato il proprio documento analitico, lo sviluppatore dovrà censirlo e configurarlo all'interno di SpagoBI, in termini di parametri di attivazione, modalità di presentazione degli stessi e controlli da applicare ai valori inseriti, in relazione al ruolo dell'utente finale.<br><br>
+	
+	<h4>Liste predefinite di valori</h4>
+	Lo sviluppatore potrà definire le tecniche di recupero dei valori da mostrare all'utente nella fase di inserimento dei parametri. È disponibile una vista sintetica di tutte le definizioni registrate, con la possibilità aggiungerne di nuove, cancellare quelle esistenti o accedere alle informazioni di dettaglio per variarle. Oltre ad alcuni dati identificativi (etichetta, nome e descrizione), è possibile usufruire di differenti tipologie di composizione e presentazione dei parametri:
+	<ul>
+	<li>input manuale, che abilita la libera imputazione dei valori;</li>
+	<li>query, che permette di reperire dal database i valori da mostrare per la scelta;</li>
+	<li>fixed list, che permette di strutturate una lista arbitraria di valori;</li>
+	<li>method, che permette di censire metodi e classi a cui delegare il reperimento dei valori da proporre.</li>
+	</ul>
+	A seconda della tipologia scelta, è disponibile un wizard per facilitarne la composizione specifica, utile soprattutto in presenza di elenchi arbitrari.<br><br>
+	
+	<h4>Controlli predefiniti</h4>
+	E' possibile censire alcune tipologie di controlli formali da applicare ai valori inseriti nei parametri di attivazione dei documenti. È disponibile una vista sintetica di tutti i controlli predefiniti ed una lista dei controlli personalizzabili. Tra questi ultimi è possibile aggiungerne di nuovi, cancellare quelli esistenti o accedere alle informazioni di dettaglio per variarle. Oltre ad alcuni dati identificativi (etichetta, nome e descrizione), è possibile configurare diverse tipologie di controllo:
+	<ul>
+	<li>date: controllo di formato sulle date;</li>
+	<li>regexp: controllo attraverso regular expression;</li>
+	<li>min length: limite minimo di caratteri nei valori inseriti;</li>
+	<li>max length: limite massimo di caratteri nei valori inseriti;</li>
+	<li>range: controllo per valore compreso tra due estremi;</li>
+	<li>decimal: controllo sulle cifre decimali.</li>
+	</ul>
+	
+	<h4>Registrazione parametri</h4>
+	SpagoBI gestisce i parametri come entità autonome, con un proprio comportamento 
+	regolato sui ruoli dell'utente. E' quindi possibile associare loro 
+	diverse modalità di presentazione: le <i>Liste predefinite</i> di valori e 
+	i <i>Controlli Predefiniti</i>. È disponibile una lista sintetica di 
+	tutti i parametri censiti che permette di aggiungerne di nuovi, 
+	cancellare quelli esistenti o accedere alle informazioni di dettaglio per 
+	variarle. Dalla pagina di dettaglio è possibile accedere alle modalità 
+	di utilizzo del parametro attraverso una struttura ad elenco-dettaglio 
+	che ne governa l'associazione con le possibilità di presentazione e 
+	quelle di controllo, in relazione ad i ruoli. Un ruolo potrà utilizzare 
+	un singolo parametro in una unica modalità. In questo modo è possibile 
+	censire un'unica volta i controlli e le viste tipiche, per poi 
+	combinarle sui parametri, con un forte riutilizzo ed una vasta gamma 
+	di possibili differenziazioni nei comportamenti in fase di esecuzione.<br><br>
+	
+	<h4>Registrazione documenti</h4>
+	I documenti analitici sviluppati devono essere censiti su SpagoBI; a tale scopo è disponibile sia una lista sintetica che una vista ad albero per una loro suddivisione funzionale. Da entrambe le visualizzazioni è possibile aggiungere nuovi documenti, cancellare quelli esistenti o accedere alle informazioni di dettaglio per variarle.<br>
+	I principali attributi di censimento di un nuovo documento sono:
+	<ul>
+	<li>dati identificativi (etichetta, nome e descrizione);</li>
+	<li>motore di esecuzione;</li>
+	<li>template del documento;</li>
+	<li>posizione del documento nell'alberatura funzionale.</li>
+	</ul>
+	Dopo aver censito un documento, viene mantenuta la storia dei template caricati ed è sempre possibile ripristinare una versione precedente. Dalla vista di dettaglio è possibile accedere alla pagina che governa l'associazione ai parametri per l'esecuzione. Attraverso una ulteriore struttura a lista e dettaglio è possibile scegliere tra i parametri già censiti, specificando l'intestazione che si desidera impostare nella maschera di input prodotta in fase di esecuzione. In questa fase non è necessario specificare altre informazioni sui ruoli utente, in quanto sono già completamente governati attraverso le regole di visibilità sull'alberatura funzionale e la descrizione comportamentale dei parametri.<br>
+	Un documento appena censito entra in stato DEV (sviluppo) e dopo la prima esecuzione (che è a carico dello sviluppatore che lo ha appena censito) potrà passare in stato di TEST in attesa di una certificazione formale di correttezza.
+	
+    </td>
+  </tr>
+</table>
+
+
+

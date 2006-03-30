@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+  <component>
+    <key>org.exoplatform.services.templates.velocity.VelocityService</key>
+    <type>org.exoplatform.services.templates.velocity.impl.VelocityServiceImpl</type>
+    <init-params>
+      <values-param>
+        <name>velocity.directives</name>
+        <description>Velocity System Directives</description>
+        <value>org.apache.velocity.runtime.directive.Foreach</value>
+        <value>org.apache.velocity.runtime.directive.Include</value>
+        <value>org.apache.velocity.runtime.directive.Parse</value>
+        <value>org.apache.velocity.runtime.directive.Macro</value>
+        <value>org.apache.velocity.runtime.directive.Literal</value>
+
+        <value>org.exoplatform.velocity.directive.IfNull</value>
+        <value>org.exoplatform.velocity.directive.IfNotNull</value>
+        
+        <value>org.exoplatform.velocity.directive.JSFRenderChild</value>
+        <value>org.exoplatform.velocity.directive.JSFRenderChildren</value>
+        <value>org.exoplatform.velocity.directive.JSFRenderComponent</value>
+        <value>org.exoplatform.velocity.directive.JSFLink</value>
+        <value>org.exoplatform.velocity.directive.JSFResLink</value>
+        <value>org.exoplatform.velocity.directive.JSFForm</value>
+        <value>org.exoplatform.velocity.directive.JSFFormField</value>
+        <value>org.exoplatform.velocity.directive.JSFFormButton</value>
+        <value>org.exoplatform.velocity.directive.TR</value>
+        <value>org.exoplatform.velocity.directive.Res</value>
+      </values-param>
+      <properties-param>
+        <name>velocity.properties</name>
+        <description>Velocity Properties</description>
+        <property name="directive.foreach.counter.name" value="velocityCount"/>
+        <property name="directive.foreach.counter.initial.value" value="1"/>
+
+        <property name="directive.include.output.errormsg.start" value="/**Include error :"/>
+        <property name="directive.include.output.errormsg.end" value="see error log **/"/>
+
+        <property  name="velocimacro.library" 
+                  value="velocity/lib/_portal.vm"/>
+        <property name="velocimacro.permissions.allow.inline" value="true"/>
+        <property name="velocimacro.permissions.allow.inline.to.replace.global" value="false"/>
+        <property name="velocimacro.permissions.allow.inline.local.scope" value="true"/>
+        <property name="velocimacro.context.localscope" value="false"/>
+        <property name="velocimacro.library.autoreload" value="true"/>
+
+        <property name="runtime.interpolate.string.literals" value="true"/>
+
+        <property name="runtime.introspector.uberspect" 
+          value="org.apache.velocity.util.introspection.UberspectImpl"/>
+
+        <property name="input.encoding" value="UTF-8"/>
+        <property name="output.encoding" value="UTF-8"/>
+      </properties-param>
+    </init-params>
+  </component>
+
+  <component>
+    <type>org.exoplatform.services.templates.velocity.impl.StaticResourceLoaderImpl</type>
+    <init-params>
+      <value-param>
+        <name>check.modified.resource</name>
+        <description>check for the resource modification</description>
+        <value>true</value>
+      </value-param>
+      <values-param>
+        <name>velocity.template.path</name>
+        <description>Template search paths</description>
+        <value>.</value>
+      </values-param>
+    </init-params>
+  </component>
+</configuration>

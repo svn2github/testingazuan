@@ -1,0 +1,30 @@
+﻿<div>
+<p>
+<b>
+eXo platform&#153;
+</b>
+有两个版本的发行 - <i>express</i> 和 <i>enterprise</i> 版本。 您根据您的需求和资源来选择其一。
+</p>
+<p>
+两个版本都基于由若干模块组成的相同的体系结构。
+</p>
+<center><img src="/portal/images/layers.jpg"/></center>
+<ul>
+<li><b>Services 容器。 </b>
+它提供一个逆向控制
+(<a href="http://www.objectmentor.com/resources/articles/dip.pdf">IoC</a>)
+机制以运许高效的服务依赖解决方案。
+每一个中间件组件 - 例如数据库和Enterprise JavaBean (EJB) 访问service - 都被抽象出来并且和它们的实现相分离。 这个强大的体系结构运许一个组件的松散耦合堆栈，这就增强了整个平台的可维护性。</li>
+<li><b>Content Management System (CMS). </b> 它提供了一个继承性的二进制对象的组织，可以被存储在任何数据库或者文件系统内，仅需要少量简单的代码来实现每一种存储系统。 换言之，要存储 XML 文档，可以使用一个本地的 XML 数据库，而对象既可以存储在一个关系数据库，也可以存储在一个对象数据库。
+请注意，eXo platform&#153; 研发团队将实现该领域的 Java 标准规范
+(<a href="http://www.jcp.org/en/jsr/detail?id=170">JSR 170</a>) 在它们完成可用的时候。</li>
+<li><b>Portlet Container。 </b> 它是一个通过认证的
+<a href="http://jcp.org/aboutJava/communityprocess/final/jsr168/index.html">
+portlet API 标准
+</a>
+(JSR 168) 的开源实现。有模块管理portlet组件的生命周期和懒惰实例化。该实现经过了缓存，池化的优化，并且共享session的特性和高效的监视能力来提供一个强大的产品环境。 </li>
+<li><b>Portal。 </b>我们的portal 是基于 Java Server Faces
+(<a href="http://www.jcp.org/en/jsr/detail?id=127">JSR-127</a>)，它是一个新的web 框架范例。它提供一个完全的 Model-View-Controller (MVC) 参考结构，来运许开发者以处理富Swing客户端的方式来处理web层上的组件和事件。门户和portlet容器交互来得到portlet的内容，然后负责组合一个页面内的这些web组件。</li>
+</ul>
+<center><img src="/portal/images/platform2.jpg"/></center>
+</div>

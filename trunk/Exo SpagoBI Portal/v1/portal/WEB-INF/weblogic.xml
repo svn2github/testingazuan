@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE weblogic-web-app PUBLIC "-//BEA Systems, Inc.//DTD Web Application 7.0//EN" "http://www.bea.com/servers/wls700/dtd/weblogic700-web-jar.dtd">
+
+<weblogic-web-app>
+  <reference-descriptor>
+    <resource-description>
+      <res-ref-name>jdbc/ExoDS</res-ref-name>
+      <jndi-name>jdbc/ExoDS</jndi-name>
+    </resource-description>
+    <resource-description>
+      <res-ref-name>jdbc/WorkflowDS</res-ref-name>
+      <jndi-name>jdbc/WorkflowDS</jndi-name>
+    </resource-description>
+  </reference-descriptor>
+	
+  <session-descriptor>
+    <session-param>
+      <param-name>TrackingEnabled</param-name>
+      <param-value>true</param-value>
+    </session-param>
+    <session-param>
+      <param-name>PersistentStoreType</param-name>
+      <param-value>file</param-value>
+    </session-param>      
+    <session-param>
+      <param-name>PersistentStoreDir</param-name>
+      <param-value>/java/exo-weblogic/user_projects/temp</param-value>
+    </session-param>      
+          
+  </session-descriptor>	
+	
+</weblogic-web-app>

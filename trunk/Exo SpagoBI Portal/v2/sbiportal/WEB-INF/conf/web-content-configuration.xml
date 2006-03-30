@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+
+ <component>
+  	<key>org.exoplatform.services.portal.content.PortalContentService</key>
+  	<type>org.exoplatform.services.portal.content.impl.PortalContentServiceImpl</type>
+  </component>
+  
+  <external-component-plugins>
+  	<target-component>org.exoplatform.services.portal.content.PortalContentService</target-component>
+  	<component-plugin>      
+		  <name>SharedStaticContent</name>
+		  <set-method>addContentPlugin</set-method>
+		  <type>org.exoplatform.services.portal.content.ContentPlugin</type>
+		  <description>add ContentPlugin to PortalContentService</description>
+	    <init-params>
+	  		<value-param>
+		      <name>content.owner</name>
+	        <description>All content of this plugin is managed by this owner</description>
+		      <value>admin</value>      
+		    </value-param>
+	  		<values-param>
+		      <name>war.content.ids</name>
+	        <description>All content start with war is shared by portal</description>
+		      <value>war:/web-content/banner.html</value>
+		      <value>war:/web-content/footer.html</value>
+		      <value>war:/web-content/download</value>
+		      <value>war:/web-content/home/news</value>
+		      <value>war:/web-content/home/exoplatform</value>
+					<value>war:/spagobi-static-content/banner.html</value>
+					<value>war:/spagobi-static-content/footer.html</value>
+					<value>war:/spagobi-static-content/loghelp.html</value>
+					<value>war:/spagobi-static-content/spagobi_download</value>
+					<value>war:/spagobi-static-content/home-intro</value>
+					<value>war:/spagobi-static-content/impl_notes</value>
+					<value>war:/spagobi-static-content/manual_admin</value>
+					<value>war:/spagobi-static-content/manual_dev</value>
+					<value>war:/spagobi-static-content/manual_test</value>
+					<value>war:/spagobi-static-content/manual_user</value>
+					<value>war:/spagobi-static-content/spagobi_website</value>
+		    </values-param>
+	  	</init-params>   
+    </component-plugin> 
+  </external-component-plugins>  
+</configuration>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portal-config decorator="community">
+  <owner>spagobi</owner>
+  <locale>en</locale>
+  <viewPermission group="/guest" membership="*"/>
+  <portalLayout>
+    <container renderer="ContainerColumnRenderer" decorator="community-toolbar">
+      <portlet>
+        <windowId>spagobi:/content/DisplayStaticContent/banner</windowId>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>default</name>
+            <value>id=war:/spagobi-static-content/banner.html</value>
+          </preference>
+        </portlet-preferences>
+      </portlet>
+      <portlet>
+      <windowId>spagobi:/content/DisplayStaticContent/footer</windowId>
+      <showInfoBar>false</showInfoBar>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>id=war:/spagobi-static-content/footer.html</value>
+        </preference>
+      </portlet-preferences>
+    </portlet> 
+    </container>
+    <container renderer="ContainerColumnRenderer" decorator="community-toolbar">
+      <portlet>
+        <windowId>spagobi:/web/NavigationPortlet/community-toolbar</windowId>
+        <portlet-style>community-toolbar</portlet-style>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>template</name>
+            <value>community/navigation/horizontal/popup.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>      
+        </portlet-preferences>            
+      </portlet>
+      <portlet width="325px">
+        <title>Login</title>
+        <windowId>spagobi:/user/WelcomePortlet/welcome-user</windowId>
+        <portlet-style>community-login</portlet-style>
+        <showInfoBar>false</showInfoBar>
+      </portlet>
+    </container>
+    <container renderer="ContainerColumnRenderer">
+    <portlet width="85%">
+      <windowId>spagobi:/web/PortalInfoPortlet/breadcumbs</windowId>
+      <showInfoBar>false</showInfoBar>
+      <portlet-preferences>
+        <preference>
+          <name>template</name>
+          <value>community/breadcumbs.vm</value>
+          <read-only>false</read-only>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+    <portlet width="15%">
+      <windowId>spagobi:/web/LanguageSelector/languageSelector</windowId>
+      <portlet-style>spagobistyleLS</portlet-style>
+      <showInfoBar>false</showInfoBar>
+    </portlet>
+    </container>
+    <container height="2px">
+    </container>
+    <container renderer="ContainerColumnRenderer">
+      <container>        
+        <body>
+          <componentType>page-node</componentType>
+          <componentId>/</componentId>
+        </body>
+      </container>
+    </container>
+  </portalLayout>
+</portal-config>

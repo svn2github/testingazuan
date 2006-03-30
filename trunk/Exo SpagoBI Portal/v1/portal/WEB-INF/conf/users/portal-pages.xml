@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <owner>portal</owner>
+    <name>/home</name>
+    <title>Home</title>    
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Home</title>
+      <windowId>portal:/content/DisplayStaticContent/intro</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>Introduction</name>
+          <value>title=Introduction</value>
+          <value>uri=war:/portal/static-content/home-intro</value>
+          <value>encoding=UTF-8</value>
+          <read-only>false</read-only>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>portal</owner>
+    <name>/portal/page1</name>
+    <title>Products</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet width="*">
+      <portlet-style>exo-content</portlet-style>
+      <title>Page 1</title>
+      <windowId>portal:/content/DisplayContent/page1</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=/products/product</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+</page-set>

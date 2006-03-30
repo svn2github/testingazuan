@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+  <owner>@owner@</owner>
+  <node>
+    <uri>/</uri>
+    <name>home</name>
+    <label>#{home}</label>
+    <viewPermission>owner</viewPermission>
+    <editPermission>owner</editPermission>
+    <description>/</description>
+    <pageReference>@owner@:/home</pageReference>
+    <node>
+      <uri>/home/community</uri>
+      <name>community</name>
+      <label>#{community}</label>
+      <description>Community Page</description>
+      <pageReference>@owner@:/home/community</pageReference>
+      <node>
+        <uri>/home/community/forum</uri>
+        <name>forum</name>
+        <label>#{forum}</label>
+        <description>Forum</description>
+        <pageReference>@owner@:/home/community/forum</pageReference>
+      </node>
+      <node>
+        <uri>/home/community/wiki</uri>
+        <name>wiki</name>
+        <label>#{wiki}</label>
+        <description>wiki</description>
+        <pageReference>@owner@:/home/community/wiki</pageReference>
+      </node>
+    </node>
+    <node>
+      <uri>/home/demo</uri>
+      <name>demo</name>
+      <label>#{demo}</label>
+      <description>demo Page</description>
+      <pageReference>@owner@:/home/demo</pageReference>
+      <node>
+        <uri>/home/demo/workflow</uri>
+        <name>workflow</name>
+        <label>#{workflow}</label>
+        <description>workflow</description>
+        <pageReference>@owner@:/home/demo/workflow</pageReference>
+      </node>
+      <node>
+        <uri>/home/demo/resources</uri>
+        <name>resources</name>
+        <label>#{resources}</label>
+        <description>resources</description>
+        <pageReference>@owner@:/home/demo/resources</pageReference>
+      </node>
+      <node>
+        <uri>/home/demo/explorer</uri>
+        <name>jcr-explorer</name>
+        <label>#{jcr-explorer}</label>
+        <description>jcr explorer</description>
+        <pageReference>@owner@:/home/demo/explorer/jcr</pageReference>
+      </node>
+      <node>
+        <uri>/home/demo/file</uri>
+        <name>file-explorer</name>
+        <label>#{file-explorer}</label>
+        <description>file explorer</description>
+        <pageReference>@owner@:/home/demo/explorer/file</pageReference>
+      </node>
+      <node>
+        <uri>/home/demo/wsrp</uri>
+        <name>wsrp</name>
+        <label>#{wsrp}</label>
+        <description>wsrp</description>
+        <pageReference>@owner@:/home/demo/wsrp</pageReference>
+      </node>
+      <node>
+        <uri>/home/demo/exomvc</uri>
+        <name>exomvc</name>
+        <label>#{exomvc}</label>
+        <description>exo mvc framework  that support velocity, groovy, jsp..</description>
+        <pageReference>@owner@:/home/demo/exomvc</pageReference>
+      </node>
+      <node>
+        <uri>/home/demo/mail</uri>
+        <name>mail</name>
+        <label>#{mail}</label>
+        <description>mail</description>
+        <pageReference>@owner@:/home/demo/mail/message-center</pageReference>
+      </node>
+      <node>
+        <uri>/home/demo/sms</uri>
+        <name>#{sms}</name>
+        <label>SMS</label>
+        <description>sms</description>
+        <pageReference>@owner@:/home/demo/sms</pageReference>
+      </node>
+    </node>
+    <node>
+      <uri>/home/profile</uri>
+      <name>profile</name>
+      <label>#{profile}</label>
+      <viewPermission>any</viewPermission>
+      <description>Profile Page</description>
+      <pageReference type="text/xhtml" visible="false">@owner@:/home/profile</pageReference>
+      <pageReference type="application/vnd.wap.xhtml+xml" visible="false">@owner@:/home/profile</pageReference>
+    </node>       
+    <node>
+      <uri>/home/search</uri>
+      <name>search</name>
+      <label>#{search}</label>
+      <viewPermission>any</viewPermission>
+      <description>Seach Page</description>
+      <pageReference type="text/xhtml" visible="true">@owner@:/home/search</pageReference>
+      <pageReference type="application/vnd.wap.xhtml+xml" visible="false">@owner@:/home/search</pageReference>
+    </node>        
+    <node>
+      <uri>/home/sitemap</uri>
+      <name>sitemap</name>
+      <label>#{sitemap}</label>
+      <description>Sitemap Page</description>
+      <pageReference>@owner@:/home/sitemap</pageReference>
+    </node>
+  </node>
+</node-navigation>

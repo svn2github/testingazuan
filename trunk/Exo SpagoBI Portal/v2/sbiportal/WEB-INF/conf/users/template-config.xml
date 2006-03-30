@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portal-config decorator="community">
+  <owner>@owner@</owner>
+  <locale>en</locale>
+  <viewPermission group="/guest" membership="*"/>
+
+  <portalLayout>
+    <portlet>
+      <windowId>@owner@:/content/DisplayStaticContent/banner</windowId>
+      <showInfoBar>false</showInfoBar>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/resources/community/web-content/banner.html</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+
+    <container renderer="ContainerColumnRenderer" decorator="community-toolbar">
+      <portlet>
+        <windowId>@owner@:/web/NavigationPortlet/community-toolbar</windowId>
+        <portlet-style>community-toolbar</portlet-style>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>template</name>
+            <value>community/navigation/horizontal/popup.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>      
+        </portlet-preferences>            
+      </portlet>
+      <portlet width="325px">
+        <title>Login</title>
+        <windowId>@owner@:/user/WelcomePortlet/welcome-user</windowId>
+        <portlet-style>community-login</portlet-style>
+        <showInfoBar>false</showInfoBar>
+      </portlet>
+    </container>
+   
+    <container renderer="ContainerColumnRenderer">
+      <container>        
+        <body>
+          <componentType>page-node</componentType>
+          <componentId>/</componentId>
+        </body>
+      </container>
+    </container>
+    <portlet>
+      <windowId>@owner@:/content/DisplayStaticContent/footer</windowId>
+      <showInfoBar>false</showInfoBar>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/resources/community/web-content/footer.html</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>   
+  </portalLayout>
+</portal-config>

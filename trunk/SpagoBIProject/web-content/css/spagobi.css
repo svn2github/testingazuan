@@ -100,12 +100,14 @@
         background-repeat: no-repeat; 
 	padding-top:10px;
 	padding-bottom:10px;
+	margin-top:1px;
 }
 
 .div_background_no_img {
 	border: 1px solid #cccccc;
 	padding-top:10px;
 	padding-bottom:10px;
+	margin-top:1px;
 }
 
 .link_main_menu {

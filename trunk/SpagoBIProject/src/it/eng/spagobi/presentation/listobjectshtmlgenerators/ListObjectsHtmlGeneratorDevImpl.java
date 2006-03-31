@@ -156,7 +156,7 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
 	 *
 	 */
 	protected void makeColumns()  {
-		htmlStream.append("<TABLE width='100%'>\n");
+		htmlStream.append("<TABLE style='width:100%;margin-top:1px'>\n");
 		htmlStream.append("	<TR>\n");
 		for(int i=0; i<columns.size(); i++) {
 			String nameColumn = (String) ((SourceBean) columns.elementAt(i)).getAttribute("LABEL");
@@ -372,12 +372,9 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
 					lightNavigatorDisabled);
 		}
 		
-		String valueFilter = (String) httpRequest
-			.getParameter(SpagoBIConstants.VALUE_FILTER);
-		String columnFilter = (String) httpRequest
-				.getParameter(SpagoBIConstants.COLUMN_FILTER);
-		String typeFilter = (String) httpRequest
-				.getParameter(SpagoBIConstants.TYPE_FILTER );
+		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+		String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER );
 
 		if (valueFilter != null && columnFilter != null && typeFilter != null) {
 			// the filter form was submitted

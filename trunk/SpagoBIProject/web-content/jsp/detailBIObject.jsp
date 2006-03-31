@@ -510,7 +510,7 @@ return 0;
 
 	
 <div style='width:100%;visibility:visible;' class='UITabs' id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
-	<div class="first-tab-level">
+	<div class="first-tab-level" style="background-color:#f8f8f8">
 		<div style="overflow: hidden; width:  100%">
 			<input type='hidden' id='selected_par_id' name='' value=''/>
 <%
@@ -529,7 +529,8 @@ return 0;
 		else linkClass = "tab";
 	%>
 					<div class='<%= linkClass%>'>
-						<a href='javascript:changeBIParameter("<%= biObjPar.getParID().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'> 
+						<a href='javascript:changeBIParameter("<%= biObjPar.getParID().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
+						   style="color:black;" > 
 							<%= biObjPar.getLabel()%>
 						</a>
 					</div>
@@ -540,7 +541,8 @@ return 0;
 		linkClass = "tab";
 %>
 					<div class='<%= linkClass%>'>
-						<a href='javascript:changeBIParameter("-1", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'> 
+						<a href='javascript:changeBIParameter("-1", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
+						   style="color:black;" > 
 							<spagobi:message key = "SBIDev.docConf.docDet.newBIParameter" />
 					    </a>
 					</div>

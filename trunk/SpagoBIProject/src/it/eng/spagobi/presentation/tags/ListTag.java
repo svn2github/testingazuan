@@ -237,7 +237,7 @@ public class ListTag extends TagSupport
 			throw new JspException("Columns names not defined");
 		} 
 		
-		_htmlStream.append("<TABLE width='100%'>\n");
+		_htmlStream.append("<TABLE style='width:100%;margin-top:1px'>\n");
 		_htmlStream.append("	<TR>\n");
 
 		for (int i = 0; i < _columns.size(); i++) {

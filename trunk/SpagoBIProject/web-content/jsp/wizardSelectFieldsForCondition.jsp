@@ -20,37 +20,25 @@
 <%}%>
  
 
- <table width="100%">
-		<tr>
-			<td width="100%">
-				<TABLE WIDTH = "100%">
-					<TR>
-						<TD width="5">&nbsp;</TD>
-						<TD width="90%" CLASS = "TESTATA">
-							<%= dm.getName() %> : <%=dm.getDescription() %> - <%= qbeMsg.getMessage(requestContainer,"QBE.Title.Conditions") %>
-						</TD>
-						<%@include file="../jsp/qbe_headers.jsp"%>
-					</TR>
-					<TR>
-						<TD>
-						</TD>
-						<TD colspan="2">
-							<TABLE class=LAYMENU width='100%' cellpadding='1' border='0' cellspacing='1'>
-								<TR height='6'>
-									<TD></TD>
-								</TR>
-								<%@include file="../jsp/testata.jsp" %>
-							</TABLE>
-						</TD>
-					</TR>
-				</TABLE>
-			</td>
-		</tr> 
 
-<%-- if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)){--%> 
-   		<tr>
-   			<td width="100%"> <%-- INIZIO SESSIONE --%>
-	   			<table width="100%">
+<table class='header-table-portlet-section'>		
+	<tr class='header-row-portlet-section'>
+		<td class='header-title-column-portlet-section' 
+		    style='vertical-align:middle;padding-left:5px;'>
+			<%= dm.getName() %> : <%=dm.getDescription() %> - <%= qbeMsg.getMessage(requestContainer,"QBE.Title.Conditions") %>
+		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<%@include file="../jsp/qbe_headers.jsp"%>
+	</tr>
+</table>
+
+
+<%@include file="../jsp/testata.jsp" %>
+ 
+ 
+<div class='div_background_no_img'>
+ 
+	<table width="100%">
 
 		<% 	
 			java.util.Map sParams = new java.util.HashMap();
@@ -279,11 +267,7 @@
    			</tr>
 		  	
 		  </table>
-		 </td> <%-- INIZIO SESSIONE --%>
-  </tr>
 <%--} else { %>
-  <tr>
-   			<td width="100%">
 	   			<table width="100%">
 	  			<tr>
 	  				<td width="100%" valign="top">
@@ -291,13 +275,15 @@
   					</td>
   				</tr>
   				</table>
-  			</td>
-  </tr>
+
 <%} --%>
-</table>
+
+
+
 <% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
 </body>
 <%}%>
+
 <div id="divSpanCurrent">
 	<span id="currentScreen">DIV_FIELD_CONDITION</span>
 </div>
@@ -307,15 +293,6 @@
 		<%= jsMenu.condTreeSelectJoin(aWizardObject,treeSelection) %>
 </div>
 <%@include file="../jsp/qbefooter.jsp" %>
-	
-	
-	
- 
-   
-    		
-    	
-			
-		
-	
-			
 
+
+</div>

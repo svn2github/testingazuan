@@ -7,6 +7,6 @@
 
     <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.utility.SpagoBICmsDataMartModelRetriever"/>
 	<QUERY-PERSISTER className="it.eng.qbe.utility.SpagoBICmsQueryPersister"/>
-	<QBE-MODE mode="PORTLET"/>
+	<QBE-MODE mode="PORTLET" page-size="10"/>
 	
 </QBE>

@@ -47,47 +47,33 @@
 <% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
 <body>
 <%}%>
-<table width="100%">
-	<tr>
-		
-			<td width="100%">
-				<TABLE WIDTH = "100%">
-					<TR>
-						<TD width="5">&nbsp;</TD>
-						<TD width="90%" CLASS = "TESTATA">
-							<%= dm.getName() %> : <%=dm.getDescription() %> - <%=qbeMsg.getMessage(requestContainer, "QBE.Title.Result.Preview") %>
-						</TD>
-						<%@include file="../jsp/qbe_headers.jsp"%>
-					</TR>
-					<TR>
-						<TD>
-						</TD>
-						<TD colspan="2">
-							<TABLE class=LAYMENU width='100%' cellpadding='1' border='0' cellspacing='1'>
-								<TR height='6'>
-									<TD></TD>
-								</TR>
-								<%@include file="../jsp/testata.jsp" %>
-							</TABLE>
-						</TD>
-					</TR>
-				</TABLE>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				&nbsp;
-			</td>
 
-		</tr>
+
+<table class='header-table-portlet-section'>		
+	<tr class='header-row-portlet-section'>
+		<td class='header-title-column-portlet-section' 
+		    style='vertical-align:middle;padding-left:5px;'>
+			<%= dm.getName() %> : <%=dm.getDescription() %> - <%=qbeMsg.getMessage(requestContainer, "QBE.Title.Result.Preview") %>
+		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<%@include file="../jsp/qbe_headers.jsp"%>
+	</tr>
+</table>
+
+
+<%@include file="../jsp/testata.jsp" %>
+
+
+<div class='div_background_no_img'>
+
+
+<table width="100%">
+	<tbody>
 		<tr>
-			<td width="100%">
-				<table width="100%">
-				  <tbody>
-				   	<tr>
-				  	 <td width="3%"></td>
-				  	 <td width="77%">
-				  <form id="formUpdateExpertMode" name="formUpdateExpertMode" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+			<td width="3%">
+			</td>
+  	 		<td width="77%">
+				<form id="formUpdateExpertMode" name="formUpdateExpertMode" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
 					<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality")%></span>
 							&nbsp;
 				 			<input type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
@@ -102,82 +88,78 @@
 								&nbsp;
 								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" onclick="javascript:submitUpdatePreviewFromQueryResult()" > <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview")%>
 							<%}%>
-							</form>
-						</td>	
-						<td width="10%">
-							&nbsp;
-						</td>
-						<td width="10%">
-							<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip") %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip") %>" onclick="javascript:showQueryInQueryResult(event)" />	
-						</td>
-						</tr>	
-					</tbody>
-				</table>
+				</form>
+			</td>	
+			<td width="10%">
+				&nbsp;
 			</td>
-		</tr>
+			<td width="10%">
+				<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip") %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip") %>" onclick="javascript:showQueryInQueryResult(event)" />	
+			</td>
+		</tr>	
+	</tbody>
+</table>
 		
 <% if (!flagErrors){ %>
 
-		
-		<tr>
-	   		<td width="100%">
-				<table width="100%" valign="top"> 
-				
-					<tr>
-			   			<td width="3%">
-						</td>
-						<td width="97%">
-						</td>
-		   			</tr>
-	   			 	<tr>
-		   				<td></td> <%-- Rientro  --%>
-						<td>
-							<% java.util.Map sParams = new java.util.HashMap();
-				  			   sParams.clear();
-				  			   String urlPrev = "#";
-				  			   String urlNext = "#";
-				  			%>
-							<% if (hasPreviousPage){ 
-									sParams.clear();
-			    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
-			    		   			sParams.put("query",query);
-			    		   			sParams.put("pageNumber",String.valueOf(currentPage-1));
-			    		   			sParams.put("ignoreJoins", "true");
-			    		   			urlPrev = qbeUrl.getUrl(request, sParams);
-			    		   			%>
-								<a href="<%=urlPrev%>"> << </a>
-							<% } %> 
-							<%=qbeMsg.getMessage(requestContainer, "QBE.QueryResult.CurrentPage") %> <%=currentPage+1 %>
-							<% if (hasNextPage){
-								sParams.clear();
-			    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
-			    		   			sParams.put("query",query);
-			    		   			sParams.put("pageNumber",String.valueOf(currentPage+1));
-			    		   			sParams.put("ignoreJoins", "true");
-			    		   			urlNext = qbeUrl.getUrl(request, sParams);%>
-								<a href="<%=urlNext%>"> >> </a>
-							<% } %>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td width="100%">
-				<table width="100%" valign="top">
-				<tr>
-					<td width="3%">
-						&nbsp;						
-					</td>
-					<td width="97%">
-						&nbsp;						
-					</td>					
-				
-				</tr>
-				<tr>
-					<td></td>
-					<td width="97%">
-				<table  cellspacing="5" valign="top">
+<table width="100%" valign="top"> 
+	<tr>
+		<td width="3%">
+		</td>
+		<td width="94%">
+		</td>
+		<td width="3%">
+		</td>
+ 	</tr>
+	<tr>
+ 		<td></td> <%-- Rientro  --%>
+		<td>
+			<% java.util.Map sParams = new java.util.HashMap();
+  			   sParams.clear();
+  			   String urlPrev = "#";
+  			   String urlNext = "#";
+  			%>
+			<% if (hasPreviousPage){ 
+					sParams.clear();
+   		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
+   		   			sParams.put("query",query);
+   		   			sParams.put("pageNumber",String.valueOf(currentPage-1));
+   		   			sParams.put("ignoreJoins", "true");
+   		   			urlPrev = qbeUrl.getUrl(request, sParams);
+   		   			%>
+				<a href="<%=urlPrev%>"> << </a>
+			<% } %> 
+			<%=qbeMsg.getMessage(requestContainer, "QBE.QueryResult.CurrentPage") %> <%=currentPage+1 %>
+			<% if (hasNextPage){
+				sParams.clear();
+   		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
+   		   			sParams.put("query",query);
+   		   			sParams.put("pageNumber",String.valueOf(currentPage+1));
+   		   			sParams.put("ignoreJoins", "true");
+   		   			urlNext = qbeUrl.getUrl(request, sParams);%>
+				<a href="<%=urlNext%>"> >> </a>
+			<% } %>
+		</td>
+		<td></td>
+	</tr>
+</table>
+
+
+<table width="100%" valign="top">
+	<tr>
+		<td width="3%">
+			&nbsp;						
+		</td>
+		<td width="94%">
+			&nbsp;						
+		</td>
+		<td width="3%">
+		</td>					
+	</tr>
+	<tr>
+		<td></td>
+		<td width="94%">
+			<table  cellspacing="5" valign="top">
 
 				<% 
 					Iterator it = null;
@@ -193,7 +175,7 @@
 								   headerName = (String)it.next();
 							%>
 																		
-							<th><%=headerName %></th>
+							<td class='portlet-section-header' style='vertical-align:middle;'><%=headerName %></td>
 							
 							<% } %>
 				
@@ -210,7 +192,7 @@
 							   selField = (ISelectField)it.next();
 							   headerName = (selField.getFieldAlias() != null ? selField.getFieldAlias() : selField.getFieldName()); 
 						%>
-								<th><%=headerName %></th>
+								<td class='portlet-section-header' style='vertical-align:middle;'><%=headerName %></td>
 						<% } %>
 						</tr>
 					</thead>
@@ -221,138 +203,145 @@
 						   it = aList.iterator();
 						   Object o = null;
 						   Object[] row;
-						   String cssClass = "odd";
-						   while (it.hasNext()){%>
-						   		<tr class="<%=cssClass %>">
-						<% 		
+						   String rowClass;
+						   boolean alternate = false;
+						   while (it.hasNext()){
+					            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
+					            alternate = !alternate;  
+						   		%>
+						   		<tr class='portlet-font'>
+								<% 		
 								o = it.next();
 							
 								if (o instanceof Object[]){
 									row = (Object[])o;
 									// Giro le colonne
 									for (int j=0; j < row.length; j++){ 
-										String rowClass = null;
-										if(j%2 == 0) {									
-											rowClass = "portlet-section-alternate";
-										} else {
-											rowClass="portlet-section-body";
-										}	
-											%>
+										%>
 										<td class="<%=rowClass%>"><%=(row[j] != null ? row[j].toString() : "NULL") %></td>
-									<%
+										<%
 									}		
 								 } else { %>
 									<td><%=(o != null ? o.toString() : "NULL") %></td>
 							   <%}%>
-									<%cssClass = (cssClass.equalsIgnoreCase("odd") ? "even" : "odd"); %>
 								</tr>
 						<% } %>
-						<tr>
-							<td width="10%">
-								&nbsp;
-							</td>
-						</tr>
-						</tbody>
-				</table> 
-				</td>
-				</tr>
-				</table>
-			</td>
-		</tr>
-<%}else{ %>
-		<tr>
-	   		<td width="100%">
-				<table width="100%" valign="top"> 	
-	
-	<% String joinMsg =  (String)aServiceResponse.getAttribute("JOIN_WARNINGS");
-				
-			   if (joinMsg != null){ %>
-			   	<tr>
-		   			<td width="3%">
-					</td>
-					<td width="97%">
-					</td>
-	   			</tr>
-				<tr>
-					<td></td>
-	   				<td>
-	   					<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,msg).trim()%></span>
-					</td>
-				</tr>
-				<tr>
-					<td></td>				
-					<td>
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td></td>				
-					<td>
-						<textarea id="txtAreaMsgError" readonly="true" rows="10" cols="80"><%=joinMsg.trim() %></textarea>
-					</td>
-				</tr>
-				
-				<tr>
-					<td>
-						&nbsp;
-					</td>
-				</tr>
-				
-				<tr>
-					<td></td>				
-					<td>
-						<% Map eParams = new java.util.HashMap(); 
-						eParams.put("ACTION_NAME", "EXECUTE_QUERY_AND_SAVE_ACTION");
-						eParams.put("ignoreJoins", "true");
-						%>
-						<a href="<%=qbeUrl.getUrl(request, eParams) %>"><%=qbeMsg.getMessage(requestContainer, "QBE.JoinWarning.Continue") %>
-					</td>
-				</tr>
-				<tr>
-		 		<td >
-						&nbsp;
-					</td>
-				</tr>
-			<% } else {%>
-				<tr>
-		   			<td width="3%">
-					</td>
-					<td width="97%">
-					</td>
-					
-	   			</tr>			
-			
-				<tr>
-					<td></td>					
-	   				<td>
-	   					<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,"QBE.Error.GenericError").trim()%></span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td></td>					
-	   				<td>
-	   					<textarea id="txtAreaMsgError" readonly="true" rows="10" cols="80"><%=qbeMsg.getMessage(requestContainer,msg).trim()%></textarea>
-					</td>
-					
-				</tr>
-				<tr>
-					<td>
-						&nbsp;
-					</td>
-				</tr>
-			<% } %>
-			</table>
+					<tr>
+						<td width="10%">
+							&nbsp;
+						</td>
+					</tr>
+				</tbody>
+			</table> 
 		</td>
+		<td></td>
 	</tr>
+</table>
+				
+<%}else{ %>
+
+<table width="100%" valign="top"> 	
+	
+<% String joinMsg =  (String)aServiceResponse.getAttribute("JOIN_WARNINGS");
+	
+   if (joinMsg != null){ %>
+	<tr>
+		<td width="3%">
+		</td>
+		<td width="94%">
+		</td>
+		<td width="3%">
+		</td>
+ 	</tr>
+	<tr>
+		<td></td>
+ 		<td>
+ 			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,msg).trim()%></span>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>				
+		<td>
+			&nbsp;
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>				
+		<td>
+			<textarea id="txtAreaMsgError" readonly="true" rows="10" cols="80"><%=joinMsg.trim() %></textarea>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			&nbsp;
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>				
+		<td>
+			<% Map eParams = new java.util.HashMap(); 
+			eParams.put("ACTION_NAME", "EXECUTE_QUERY_AND_SAVE_ACTION");
+			eParams.put("ignoreJoins", "true");
+			%>
+			<a href="<%=qbeUrl.getUrl(request, eParams) %>"><%=qbeMsg.getMessage(requestContainer, "QBE.JoinWarning.Continue") %>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			&nbsp;
+		</td>
+		<td></td>
+	</tr>
+<% } else {%>
+	<tr>
+  		<td width="3%">
+		</td>
+		<td width="94%">
+		</td>
+		<td width="3%">
+		</td>
+	</tr>			
+	<tr>
+		<td></td>					
+ 		<td>
+ 			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,"QBE.Error.GenericError").trim()%></span>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			&nbsp;
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>					
+ 		<td>
+ 			<textarea id="txtAreaMsgError" readonly="true" rows="10" cols="80"><%=qbeMsg.getMessage(requestContainer,msg).trim()%></textarea>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			&nbsp;
+		</td>
+		<td></td>
+	</tr>
+<% } %>
+</table>
 <%}%>
-	</table>
+
 		
- <% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
+<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
 </body>
 <%}%>
 <div id="divSpanCurrent">
@@ -371,3 +360,5 @@
 	
 
 <%@include file="../jsp/qbefooter.jsp" %>
+
+</div>

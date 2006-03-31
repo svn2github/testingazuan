@@ -1,8 +1,3 @@
-<%@ page language="java"
-         contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1"
-         session="false"
-%>
 <%@ page import="it.eng.spago.base.*"%>
 
 <%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
@@ -45,11 +40,13 @@
 <html>
 <head>
 <%} %>
-
+ 
 	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/main.css")%>" type="text/css"/>
 	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/index.css")%>" type="text/css"/>
 	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/dtree.css")%>" type="text/css" />
 	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/qbe.css")%>" type="text/css" />
+	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/table.css")%>" type="text/css" />
+	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/spagobi.css")%>" type="text/css" />
 		
 	<%-- 
 	<script language='javascript' src='<%=qbeUrl.conformStaticResourceLink(request,"../js/gestionePulsanti.js")%>'></script>
@@ -163,7 +160,10 @@
 		//alert (screenTrimmed);
 		
 		var tempTd = document.getElementById(screenTrimmed);
-		tempTd.style.backgroundColor='#C0CADB';
+		
+		//tempTd.style.backgroundColor='#C0CADB';
+		
+		tempTd.className = 'tab selected';
 	
 	}
 		

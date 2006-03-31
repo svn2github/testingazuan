@@ -54,63 +54,49 @@
 			%>
 <body>
 <%}%>
-<table width="100%">
-	<tr>
-		<td width="100%">
-		<TABLE WIDTH="100%">
-			<TR>
-				<TD width="5">&nbsp;</TD>
-				<TD width="90%" CLASS="TESTATA"><%=dm.getName()%> : <%=dm.getDescription()%>
-				- <%=qbeMsg.getMessage(requestContainer,
-									"QBE.Title.Savepage")%></TD>
-				<%@include file="../jsp/qbe_headers.jsp"%>
-			</TR>
-			<TR>
-				<TD></TD>
-				<TD colspan="2">
-				<TABLE class=LAYMENU width='100%' cellpadding='1' border='0'
-					cellspacing='1'>
-					<TR height='6'>
-						<TD></TD>
-					</TR>
-					<%@include file="../jsp/testata.jsp"%>
-				</TABLE>
-				</TD>
-			</TR>
-		</TABLE>
+
+
+<table class='header-table-portlet-section'>		
+	<tr class='header-row-portlet-section'>
+		<td class='header-title-column-portlet-section' 
+		    style='vertical-align:middle;padding-left:5px;'>
+			<%=dm.getName()%> : <%=dm.getDescription()%> - <%=qbeMsg.getMessage(requestContainer,"QBE.Title.Savepage")%>
 		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<%@include file="../jsp/qbe_headers.jsp"%>
 	</tr>
+</table>
+
+
+<%@include file="../jsp/testata.jsp" %>
+
+
+<div class='div_background_no_img'>
 
 	<%if ((aWizardObject.getEntityClasses() != null)
 					&& (aWizardObject.getEntityClasses().size() > 0)) {%>
 
+<table width="100%">
 	<tr>
-		<td><%-- WIDTH=100%--%>
-		<table width="100%">
-			<tr>
-				<td width="3%">&nbsp;</td>
-				<td width="47%">&nbsp;</td>
-				<td width="50%">&nbsp;</td>
-			</tr>
-
-
-			<tr>
-				<td width="3%"></td>
-				<%-- Rientro  --%>
-				<td width="47%"><%-- Save --%>
-				<form id="formPersistQuery" name="formPersistQuery"
+		<td width="3%">&nbsp;</td>
+		<td width="47%">&nbsp;</td>
+		<td width="47%">&nbsp;</td>
+		<td width="3%">&nbsp;</td>
+	</tr>
+	<tr>
+		<td width="3%"></td>
+		<%-- Rientro  --%>
+		<td width="47%"><%-- Save --%>
+			<form id="formPersistQuery" name="formPersistQuery"
 					action="<%=qbeUrl.getUrl(request,null) %>" method="POST"><input
 					type="hidden" id="previousQueryId" name="previousQueryId"
 					value="<%= (aWizardObject.getQueryId() != null ? aWizardObject.getQueryId() : "")  %>" />
 				<input type="hidden" name="ACTION_NAME" value="PERSIST_QUERY_ACTION" />
-
 				<table>
-
 					<tr>
 						<td colspan="2"><span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer,
 								"QBE.SavePage.Savings")%></span>
 						</td>
-
 					</tr>
 					<tr>
 						<td colspan="2">&nbsp;</td>
@@ -169,7 +155,7 @@
 									"QBE.Resume.Query.Visibility.Private")%>
 						<%}
 
-				%></td>
+				%>		</td>
 					</tr>
 					<tr>
 						<td colspan="2">&nbsp;</td>
@@ -180,21 +166,18 @@
 							onclick="checkFormPersistQueryAndSubmit();" /></td>
 					</tr>
 				</table>
-				</form>
-				</td>
-				<td width="50%">
-				<table width="100%">
-					<tbody>
-
-						<tr>
-							<td><span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer,
+			</form>
+		</td>
+		<td width="47%">
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td><span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer,
 								"QBE.ValidateQuery.FinalQuery")%></span>
-							</td>
-						</tr>
-
-
-						<tr>
-							<td><%-- Final --%>
+						</td>
+					</tr>
+					<tr>
+						<td><%-- Final --%>
 							<table>
 								<%-- VALIDATION --%>
 
@@ -435,62 +418,46 @@
 								<%}%>
 							</table>
 							<%-- VALIDATION --%></td>
-						</tr>
-					</tbody>
-				</table>
-
-
-
-				</td>
-			</tr>
-		</table>
+					</tr>
+				</tbody>
+			</table>
 		</td>
 	</tr>
+	<td width="3%">&nbsp;</td>
+</table>
 
-	<%} else {
+	<%} else {%>
 
-				%>
+<table width="100%">
+	<tr>
+		<td width="3%">&nbsp;</td>
+		<td width="94%">&nbsp;</td>
+		<td width="3%">&nbsp;</td>
+	</tr>
 
 	<tr>
-		<td width="100%">
-		<table width="100%">
-			<tr>
-				<td width="3%">&nbsp;</td>
-				<td width="97%">&nbsp;</td>
-			</tr>
-
-			<tr>
-				<td></td>
-				<td valign="top"><span class="qbeError"><%=qbeMsg.getMessage(requestContainer,
-								"QBE.Warning.NoFieldSelected")%></span>
-				</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-			</tr>
-		</table>
+		<td></td>
+		<td valign="top"><span class="qbeError"><%=qbeMsg.getMessage(requestContainer,
+						"QBE.Warning.NoFieldSelected")%></span>
 		</td>
 	</tr>
-	<%}
-
-			%>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
 </table>
+<%}%>
 <%-- SAVE --%>
 
 
 <%if (qbeMode.equalsIgnoreCase("WEB")) {
-
-			%>
+%>
 </body>
 <%}%>
 
 <div id="divSpanCurrent"><span id="currentScreen">DIV_SAVE_QUERY</span>
 </div>
 
-
-
-
-
-
-
 <%@include file="../jsp/qbefooter.jsp"%>
+
+
+</div>

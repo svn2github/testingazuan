@@ -249,7 +249,7 @@
 
 <div style='width:100%;visibility:visible;' class='UITabs' 
      id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
-	<div class="first-tab-level">
+	<div class="first-tab-level" style="background-color:#f8f8f8">
 		<div style="overflow: hidden; width:  100%">					
 
 <%
@@ -269,7 +269,8 @@
 %>
 
 			<div class='<%= linkClass%>'>
-				<a href='javascript:changeParameterUse("<%= aParameterUse.getUseID().toString() %>", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")' > 
+				<a href='javascript:changeParameterUse("<%= aParameterUse.getUseID().toString() %>", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")' 
+				   style="color:black;" > 
 						<%= aParameterUse.getLabel()%>
 				</a>
 			</div>
@@ -281,7 +282,8 @@
 %>
 
 			<div class='<%= linkClass%>'>
-				<a href='javascript:changeParameterUse("-1", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")'> 
+				<a href='javascript:changeParameterUse("-1", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")'
+				   style="color:black;" > 
 					<spagobi:message key = "SBIDec.param.newParameterUse" />
 				</a>
 			</div>

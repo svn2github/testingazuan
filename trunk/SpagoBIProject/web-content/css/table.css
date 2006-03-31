@@ -9,8 +9,7 @@ table.header-table-portlet-section {
 	width:100%;
 	cellspacing:0;
 	cellpadding:0;
-	border: 1px solid #cccccc;
-	/*margin-bottom: 4px;*/
+	border: 1px solid #a4abb6;
 }
 
 /* Sub-table with the header title and buttons for each section of the SpagoBI portlet*/
@@ -18,8 +17,7 @@ table.header-sub-table-portlet-section {
 	width:100%;
 	cellspacing:0;
 	cellpadding:0;
-	border: 1px solid lightgrey;
-	/*margin-bottom: 4px;*/
+	border: 1px solid #a4abb6;
 }
 
 /* Row of the table with the header title and buttons for each section of the SpagoBI portlet*/
@@ -35,11 +33,11 @@ tr.header-sub-row-portlet-section {
 /* Column with the header title for each section of the SpagoBI portlet*/
 td.header-title-column-portlet-section {
 	/*padding: 0px 0px 0px 1px;*/
-	background-color: #cccccc;
+	color: #074B88;
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
-	color: #074B88;
+	background-color: #e0e1e6;
 	/*text-align: left;*/
 	background-image: url('/spagobi/img/white_corner.gif');
 	background-position: top right;
@@ -65,7 +63,7 @@ td.header-title-column-single-object-execution-portlet-section {
 /* Column with the header sub-title for each section of the SpagoBI portlet*/
 td.header-sub-title-column-portlet-section {
 	padding: 0px 0px 0px 1px;
-	background-color: lightgrey;
+	background-color: #e0e1e6;
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 12px;
 	font-weight: 500;
@@ -80,7 +78,7 @@ td.header-sub-title-column-portlet-section {
 /* Column with the header title for sections without buttons of the SpagoBI portlet*/
 td.header-title-column-portlet-section-no-buttons {
 	padding: 0px 0px 0px 1px;
-	background-color: #cccccc;
+	background-color: #e0e1e6;
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
@@ -91,7 +89,7 @@ td.header-title-column-portlet-section-no-buttons {
 /* Column with the header title for sections without buttons of the SpagoBI portlet*/
 td.header-sub-title-column-portlet-section-no-buttons {
 	padding: 0px 0px 0px 1px;
-	background-color: lightgrey;
+	background-color: #e0e1e6;
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 12px;
 	font-weight: 500;

@@ -31,7 +31,6 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.DetailBIObjectModule;
@@ -241,7 +240,7 @@ public class ListObjectsHtmlGeneratorAdminImpl implements IListObjectsHtmlGenera
 		 *
 		 */
 	protected void makeColumns()  {
-		htmlStream.append("<TABLE width='100%'>\n");
+		htmlStream.append("<TABLE style='width:100%;margin-top:1px'>\n");
 		htmlStream.append("	<TR>\n");
 		for(int i=0; i<columns.size(); i++) {
 			String nameColumn = (String) ((SourceBean) columns.elementAt(i)).getAttribute("LABEL");
@@ -432,12 +431,9 @@ public class ListObjectsHtmlGeneratorAdminImpl implements IListObjectsHtmlGenera
 					lightNavigatorDisabled);
 		}
 		
-		String valueFilter = (String) httpRequest
-				.getParameter(SpagoBIConstants.VALUE_FILTER);
-		String columnFilter = (String) httpRequest
-				.getParameter(SpagoBIConstants.COLUMN_FILTER);
-		String typeFilter = (String) httpRequest
-				.getParameter(SpagoBIConstants.TYPE_FILTER);
+		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+		String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
 
 		if (valueFilter != null && columnFilter != null && typeFilter != null) {
 			// the filter form was submitted

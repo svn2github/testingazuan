@@ -57,7 +57,7 @@
    	// try to get from the session the heigh of the output area
    	String heightArea = (String)aSessionContainer.getAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA);
    	if( (heightArea==null) || (heightArea.trim().equals("")) )
-   		heightArea = "400";
+   		heightArea = "500";
    	
    	
    	// build the back link

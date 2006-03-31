@@ -57,7 +57,7 @@ public class PortletLoginModule extends AbstractModule {
 		Principal principal = portletRequest.getUserPrincipal();
 		String engUserProfileFactoryClass =  ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
-		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(principal);
+		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);
 		getRequestContainer().getSessionContainer().getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
 	}
 

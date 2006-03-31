@@ -31,6 +31,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.DetailBIObjectModule;
@@ -85,11 +86,15 @@ public class ListObjectsHtmlGeneratorAdminImpl implements IListObjectsHtmlGenera
 	public StringBuffer makeList(ListIFace list, HttpServletRequest httpReq, String listPageStr) {
 		
 		httpRequest = httpReq;
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+				"makeList","http request map parameter :" + httpRequest.getParameterMap());
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
 		htmlStream = new StringBuffer();
 		_requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
 		_serviceRequest = _requestContainer.getServiceRequest();
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+							"makeList","service request :" + _serviceRequest.toXML(false));
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
@@ -104,10 +109,9 @@ public class ListObjectsHtmlGeneratorAdminImpl implements IListObjectsHtmlGenera
 		}
 		
 		// filter the list 
-		String valuefilter = (String) httpRequest.getParameter(SpagoBIConstants.VALUE_FILTER);
-//		if((valuefilter!=null) && !(valuefilter.trim().equals(""))) {
-//			list = filterList(list, valuefilter, request);
-//		}
+		String valuefilter = (String)_serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+				"makeList","value for filter :" + valuefilter);
 		if (valuefilter != null) {
 			list = filterList(list, valuefilter);
 		}
@@ -128,43 +132,66 @@ public class ListObjectsHtmlGeneratorAdminImpl implements IListObjectsHtmlGenera
 	 * @return	The filtered output list
 	 */
 	private ListIFace filterList(ListIFace list, String valuefilter) {
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+				"filterList","start method filterList");
 		valuefilter = valuefilter.toUpperCase();
-		String columnfilter = (String) httpRequest
-				.getParameter(SpagoBIConstants.COLUMN_FILTER);
+		String columnfilter = (String)_serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+				"filterList","column filter : " + columnfilter);
 		if ((columnfilter == null) || (columnfilter.trim().equals(""))) {
 			return list;
 		}
-		String typeFilter = (String) httpRequest
-				.getParameter(SpagoBIConstants.TYPE_FILTER);
+		String typeFilter = (String)_serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+				"filterList","type filter : " + typeFilter);
 		if ((typeFilter == null) || (typeFilter.trim().equals(""))) {
 			return list;
 		}
 		PaginatorIFace newPaginator = new GenericPaginator();
 		newPaginator.setPageSize(list.getPaginator().getPageSize());
 		SourceBean allrowsSB = list.getPaginator().getAll();
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+				"filterList","rows sourcebean obtained \n : " + allrowsSB.toXML(false));
 		List rows = allrowsSB.getAttributeAsList("ROW");
 		Iterator iterRow = rows.iterator();
 		while (iterRow.hasNext()) {
 			SourceBean row = (SourceBean) iterRow.next();
 			String value = (String) row.getAttribute(columnfilter);
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					"filterList","value of the filter column \n : " + value);
 			if (value == null)
 				value = "";
 			value = value.toUpperCase();
 			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER)) {
-				if (value.trim().startsWith(valuefilter))
+				if (value.trim().startsWith(valuefilter)) {
 					newPaginator.addRow(row);
+					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+							"filterList","value added, suitable for start filter  \n : " + value);
+				}
 			} else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER)) {
-				if (value.trim().endsWith(valuefilter))
+				if (value.trim().endsWith(valuefilter)) {
 					newPaginator.addRow(row);
+					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+							"filterList","value added, suitable for end filter  \n : " + value);
+				}
 			} else if (typeFilter
 					.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER)) {
-				if (value.indexOf(valuefilter) != -1)
+				if (value.indexOf(valuefilter) != -1) {
 					newPaginator.addRow(row);
+					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+							"filterList","value added, suitable for contain filter  \n : " + value);
+				}
 			} else if (typeFilter
 					.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER)) {
 				if (value.equals(valuefilter)
-						|| value.trim().equals(valuefilter))
-					newPaginator.addRow(row);
+						|| value.trim().equals(valuefilter)) {
+ 					newPaginator.addRow(row);
+ 					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+							"filterList","value added, suitable for equal filter  \n : " + value);
+				}
+			} else {
+				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+						"filterList","value NOT added, NOT suitable for the filters  \n : " + value);
 			}
 		}
 		ListIFace newList = new GenericList();

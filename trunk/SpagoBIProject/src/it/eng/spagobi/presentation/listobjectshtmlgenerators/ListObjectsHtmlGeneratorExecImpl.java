@@ -457,19 +457,17 @@ public class ListObjectsHtmlGeneratorExecImpl implements IListObjectsHtmlGenerat
 		ListIFace list = new GenericList();
 		list.setPaginator(paginator);
 		
-		String valuefilter = (String) httpRequest.getParameter(SpagoBIConstants.VALUE_FILTER);
+		String valuefilter = (String)_serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
 //		if((valuefilter!=null) && !(valuefilter.trim().equals(""))) {
 //			list = filterList(list, valuefilter, request);
 //		}
 		if (valuefilter != null) {
 			valuefilter = valuefilter.toUpperCase();
-			String columnfilter = (String) httpRequest
-					.getParameter(SpagoBIConstants.COLUMN_FILTER);
+			String columnfilter = (String)_serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
 			if ((columnfilter == null) || (columnfilter.trim().equals(""))) {
 				return list;
 			}
-			String typeFilter = (String) httpRequest
-					.getParameter(SpagoBIConstants.TYPE_FILTER);
+			String typeFilter = (String)_serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
 			if ((typeFilter == null) || (typeFilter.trim().equals(""))) {
 				return list;
 			}

@@ -462,7 +462,7 @@ return 0;
 
    							String pathObj = obj.getPath();
    							String pathTemp = pathObj + "/template";
-   							String downl = "/spagobi/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
+   							String downl = renderRequest.getContextPath() + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
 		      		       
 		      		        if(isCurrentVer) {
 		      		        	out.print("<td class='portlet-font' >&nbsp;</a></td>");

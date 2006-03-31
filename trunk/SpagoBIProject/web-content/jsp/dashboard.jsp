@@ -23,10 +23,18 @@
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
     String title = (String)moduleResponse.getAttribute("title");
     String displayTitleBar = (String)moduleResponse.getAttribute("displayTitleBar");
-    String movie = (String)moduleResponse.getAttribute("movie");
+    String movie = renderRequest.getContextPath();
+    String relMovie = (String)moduleResponse.getAttribute("movie");
+    if(relMovie.startsWith("/"))
+    	movie = movie + relMovie;
+    else movie = movie + "/" + relMovie;
 	String width = (String)moduleResponse.getAttribute("width");
 	String height = (String)moduleResponse.getAttribute("height");
-	String dataurl = (String)moduleResponse.getAttribute("dataurl");
+	String dataurl = renderRequest.getContextPath();
+	String dataurlRel = (String)moduleResponse.getAttribute("dataurl");
+	if(dataurlRel.startsWith("/"))
+		dataurl = dataurl + dataurlRel;
+	else dataurl = dataurl + "/" + dataurlRel;
 	Map confParameters = (Map)moduleResponse.getAttribute("confParameters");
 	Map dataParameters = (Map)moduleResponse.getAttribute("dataParameters");
 	List possibleStateChanges = (List)moduleResponse.getAttribute("possibleStateChanges");

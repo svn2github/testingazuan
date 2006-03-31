@@ -56,6 +56,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	int progrJSTree = 0;
 	private SessionContainer sessionContainer = null;
 	private boolean thereIsOneOrMoreObjectsInTestState = false;
+	protected SourceBean _serviceRequest = null;
 	//ArrayList testRoleNames = new ArrayList();
 	//ArrayList execRoleNames = new ArrayList();
 	/**
@@ -68,6 +69,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		_serviceRequest = requestContainer.getServiceRequest();
 		sessionContainer = requestContainer.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -156,7 +158,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.gif");
 				String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
 				String stateObj = (String)dataTree.getAttribute("state");
-				String onlyTestObjectsView = httpRequest.getParameter("view_only_test_objects");
+				String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 				PortletURL execUrl = renderResponse.createActionURL();
 				execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 				execUrl.setParameter(ObjectsTreeConstants.PATH, path);

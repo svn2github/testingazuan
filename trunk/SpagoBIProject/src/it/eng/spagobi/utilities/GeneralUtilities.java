@@ -155,10 +155,16 @@ public class GeneralUtilities {
 	 * @return A String with SpagoBI's context adderss
 	 */
 	public static String getSpagoBiContextAddress(){
-		//RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+				"getSpagoBiContextAddress", "method invoked");
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
-	
+		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+				"getSpagoBiContextAddress", "portlet request obtained: " + portletRequest);
+		String path ="http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
+		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+				"getSpagoBiContextAddress", "using context path: " + path);
+		return path;
+		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	}
 	
 	/**

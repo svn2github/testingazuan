@@ -29,6 +29,9 @@
 	    			as = parameter.valueOf("@as");
 	    		}
 	    		String parameterValue = request.getParameter(name);
+	    		if((parameterValue==null) || parameterValue.trim().equals("") ){
+	    			continue;
+	    		}
 	    		if (parameterValue == null || parameterValue.trim().equals("")) continue;
 				queryObj.setParameter(as, parameterValue);
 	    	}

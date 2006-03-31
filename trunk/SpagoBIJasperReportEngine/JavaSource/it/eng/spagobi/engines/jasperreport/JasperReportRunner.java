@@ -147,14 +147,14 @@ public class JasperReportRunner {
 				   
 				    
 				    logger.debug("Engines"+ this.getClass().getName()+ "runReport() Exporter Class [" + exporter.getClass().getName()+"]");
-				    logger.debug("Engines"+ this.getClass().getName()+ "runReport() Servlet Response Get Content Type [" + servletResponse.getContentType()+"]");
+				    //logger.debug("Engines"+ this.getClass().getName()+ "runReport() Servlet Response Get Content Type [" + servletResponse.getContentType()+"]");
 				    output = exportReportToBytes(jasperPrint, exporter);
 				    logger.debug("Engines"+ this.getClass().getName()+ "runReport() Report OK");
 				    return output;
 			}else {
 					logger.debug("Engines"+ this.getClass().getName()+ "runReport() Output format PDF");
 					servletResponse.setContentType("application/pdf");
-					logger.debug("Engines"+ this.getClass().getName()+ "runReport() Servlet Response Get Content Type [" + servletResponse.getContentType()+"]");
+					//logger.debug("Engines"+ this.getClass().getName()+ "runReport() Servlet Response Get Content Type [" + servletResponse.getContentType()+"]");
 					
 					return JasperRunManager.runReportToPdf(report, parameters, conn);
 					

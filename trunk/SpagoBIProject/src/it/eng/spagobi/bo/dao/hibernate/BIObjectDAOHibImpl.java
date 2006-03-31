@@ -281,31 +281,46 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#loadBIObjectForTree(java.lang.String)
 	 */
 	public BIObject loadBIObjectForTree(String path) throws EMFUserError {
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
+							"loadBIObjectForTree", "start method for path:" + path);
 		BIObject biObject = null;
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
+					"loadBIObjectForTree", "hibernate session obtained:" + aSession);
 			tx = aSession.beginTransaction();
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
+					"loadBIObjectForTree", "hibernate transaction started");
 			Criterion domainCdCriterrion = Expression.eq("path", path);
 			Criteria criteria = aSession.createCriteria(SbiObjects.class);
 			criteria.add(domainCdCriterrion);
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
+					"loadBIObjectForTree", "hibernate criteria filled:" + criteria);
 			SbiObjects hibObject = (SbiObjects) criteria.uniqueResult();
-			if (hibObject == null) 
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
+					"loadBIObjectForTree", "hibernate object retrived:" + hibObject);
+			if (hibObject == null) {
 				return null;
+			}
 			biObject = toBIObject(hibObject);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null)
 				tx.rollback();
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
+					"loadBIObjectForTree", "hibernate exception:" + he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-		return biObject;
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
+				"loadBIObjectForTree", "end method for path:" + path);
+		return biObject;	
 	}
 
 	

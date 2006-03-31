@@ -24,6 +24,8 @@ package it.eng.spagobi.security;
 import it.eng.spago.security.IEngUserProfile;
 import java.security.Principal;
 
+import javax.portlet.PortletRequest;
+
 
 /**
  * Implementation of the IEngUserProfile interface Factory. Defines methods 
@@ -32,11 +34,13 @@ import java.security.Principal;
 public class ExoPortalUserProfileFactoryImpl implements IUserProfileFactory {
 	
 	/**
-	 * Return an IEngUserProfile implementation starting the Principal of the 
+	 * Return an IEngUserProfile implementation starting from the Portlet Request and the Principal of the 
 	 * user given by exo platform.
+	 * @param request The Portlet Request genrated from the user
 	 * @param principal Principal of the current user
+	 * @return The User Profile Interface implementation object
 	 */
-	public IEngUserProfile createUserProfile(Principal principal){
+	public IEngUserProfile createUserProfile(PortletRequest request, Principal principal){
 		return new ExoPortalEngUserProfileImpl(principal);
 	}
 }

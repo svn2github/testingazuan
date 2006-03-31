@@ -40,20 +40,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.security;
 
 import it.eng.spago.security.IEngUserProfile;
-
 import java.security.Principal;
-
+import javax.portlet.PortletRequest;
 /**
  * The interface for the User Profile Factory, in order to manage user information.
- * 
- * @author Zoppello
  */
 public interface IUserProfileFactory {
 	/**
 	 * Abstract class to create a user profile.
 	 * 
+	 * @param request The Portlet Request genrated from the user
 	 * @param principal The java principal security input object
-	 * @return The User Profile Interface output object
+	 * @return The User Profile Interface implementation object
 	 */
-	public abstract IEngUserProfile createUserProfile(Principal principal);
+	public abstract IEngUserProfile createUserProfile(PortletRequest request,Principal principal);	
 }

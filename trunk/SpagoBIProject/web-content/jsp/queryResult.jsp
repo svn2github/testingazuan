@@ -159,7 +159,7 @@
 	<tr>
 		<td></td>
 		<td width="94%">
-			<table  cellspacing="5" valign="top">
+			<table>
 
 				<% 
 					Iterator it = null;
@@ -222,7 +222,7 @@
 										<%
 									}		
 								 } else { %>
-									<td><%=(o != null ? o.toString() : "NULL") %></td>
+									<td class="<%=rowClass%>"><%=(o != null ? o.toString() : "NULL") %></td>
 							   <%}%>
 								</tr>
 						<% } %>

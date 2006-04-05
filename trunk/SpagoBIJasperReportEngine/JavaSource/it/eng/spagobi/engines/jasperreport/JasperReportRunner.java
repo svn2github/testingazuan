@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +35,8 @@ import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 
 import org.apache.log4j.Logger;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * Jasper Report implementation built to provide all methods to
@@ -75,14 +76,10 @@ public class JasperReportRunner {
 	public byte[] runReport(Connection conn, Map parameters, ServletContext servletContext, 
 			                HttpServletResponse servletResponse, HttpServletRequest servletRequest) throws Exception {
 		try{
-			//logger.debug("Engines"+ this.getClass().getName()+ "runReport():: Getting Connection from database");
-			//conn = ds.getConnection();
-			//logger.debug("Engines"+ this.getClass().getName()+ "runReport() Connection ok");
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
 			logger.debug("Engines"+ this.getClass().getName() + "runReport() Computing the classpath for JasperReport Debugging");
 			String webinflibPath = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 			logger.debug("Engines"+ this.getClass().getName()+"runReport() WEB-INF/lib/ path is ["+this.getClass().getName()+"]");
-			
 			StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
 			File f = new File(webinflibPath);
 			String fileToAppend = null;
@@ -118,7 +115,6 @@ public class JasperReportRunner {
 					jasperPrint = JasperFillManager.fillReport(report, parameters, conn);
 					logger.debug("Engines" +  this.getClass().getName()+ "runReport() Jasper Print Filled OK");
 					JRExporter exporter = null;
-				
 
 				    if (outputType.equalsIgnoreCase("csv")) {
 				    	servletResponse.setContentType("text/plain");
@@ -130,9 +126,12 @@ public class JasperReportRunner {
 				    	exporter.setParameter(JRHtmlExporterParameter.BETWEEN_PAGES_HTML, "");
 				    	// define the map structure for report images
 				    	HashMap m_imagesMap = new HashMap();
-				    	servletRequest.getSession().setAttribute("IMAGES_MAP", m_imagesMap);
+				    	UUIDGenerator generator = UUIDGenerator.getInstance();
+				    	UUID uuid = generator.generateTimeBasedUUID();
+				    	String mapName = uuid.toString();
+				    	servletRequest.getSession().setAttribute(mapName, m_imagesMap);
 				    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP,m_imagesMap);
-				    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image.jsp?image=");
+				    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image.jsp?mapname="+mapName+"&image=");
 				    } else if (outputType.equalsIgnoreCase("xls")) {
 				    	servletResponse.setContentType("application/vnd.ms-excel");
 				    	exporter = new JRXlsExporter();
@@ -147,21 +146,15 @@ public class JasperReportRunner {
 				   
 				    
 				    logger.debug("Engines"+ this.getClass().getName()+ "runReport() Exporter Class [" + exporter.getClass().getName()+"]");
-				    //logger.debug("Engines"+ this.getClass().getName()+ "runReport() Servlet Response Get Content Type [" + servletResponse.getContentType()+"]");
 				    output = exportReportToBytes(jasperPrint, exporter);
 				    logger.debug("Engines"+ this.getClass().getName()+ "runReport() Report OK");
 				    return output;
 			}else {
 					logger.debug("Engines"+ this.getClass().getName()+ "runReport() Output format PDF");
 					servletResponse.setContentType("application/pdf");
-					//logger.debug("Engines"+ this.getClass().getName()+ "runReport() Servlet Response Get Content Type [" + servletResponse.getContentType()+"]");
-					
 					return JasperRunManager.runReportToPdf(report, parameters, conn);
 					
 			}
-			
-			
-			
 		}catch(Exception e){
 			logger.debug("Engines"+ this.getClass().getName()+ "runReport() An exception has occured", e);
 			throw e;

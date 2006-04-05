@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jfreechart-1.0.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/iReport.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jug-lgpl-2.0.0.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

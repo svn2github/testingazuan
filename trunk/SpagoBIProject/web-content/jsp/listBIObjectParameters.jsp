@@ -2,7 +2,6 @@
 <%@ page import="it.eng.spagobi.bo.BIObject,
 				 it.eng.spagobi.bo.dao.IBIObjectDAO,
 				 it.eng.spagobi.bo.dao.DAOFactory" %>
-<!--spagobi:error /-->
 
 <%  String biObj_id = aServiceRequest.getAttribute("OBJECT_ID").toString(); 
 	Integer biObjId = new Integer(biObj_id);
@@ -58,9 +57,5 @@
   		</td>
   	</tr>
   </table>
-
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
 
 <spagobi:listBiParameters moduleName="ListBIObjectParametersModule" />

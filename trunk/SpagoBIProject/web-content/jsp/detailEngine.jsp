@@ -21,13 +21,6 @@
 		
 <form method='POST' action='<%= formUrl.toString() %>' id='engineForm' name='engineForm'>
 <input type='hidden' value='<%= engine.getId() %>' name='id' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
-
 
 
 

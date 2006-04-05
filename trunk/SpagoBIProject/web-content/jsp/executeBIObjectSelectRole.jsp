@@ -32,20 +32,6 @@
 
 <form action="<%= formAct.toString() %>" method="post" id='execRolesForm' name='execRolesForm'>
 
-<!--table width='100%' cellspacing='0' border='0'>		
-	<tr height='40'>
-		<th align='center'><spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.Title" /> </th>
-	</tr>
-</table-->
-
-<!--br/><br/-->
-
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>

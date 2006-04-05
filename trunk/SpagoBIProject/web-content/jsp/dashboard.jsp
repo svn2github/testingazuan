@@ -76,12 +76,6 @@
 %>
 
 
-
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
-
-
 <% 
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR WITH BACK BUTTON
 	if(!isSingleObjExec) {

@@ -12,9 +12,7 @@
                  it.eng.spagobi.services.modules.DetailModalitiesValueModule,
                  javax.portlet.PortletURL"
                  %>
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-<portlet:defineObjects/>
+
 <%
   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
   String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
@@ -102,10 +100,6 @@
 </table>
 
 <form method='POST' action='<%= formUrl.toString() %>' id ='querySelectionWizardForm' name='querySelectionWizardForm'>
-
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>

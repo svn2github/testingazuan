@@ -10,11 +10,6 @@
                  java.util.List,
                  java.util.Iterator" %>
 
-<!-- table width='100%' cellspacing='0' border='0'>		
-	<tr height='40'>
-		<th align='center'><spagobi:message key = "SBIErrorPage.title" /></th>
-	</tr>
-</table-->
 
 <%
    
@@ -62,9 +57,6 @@
     backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 %>
 
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>

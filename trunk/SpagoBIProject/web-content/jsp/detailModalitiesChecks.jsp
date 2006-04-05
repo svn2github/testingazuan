@@ -6,13 +6,6 @@
                  it.eng.spagobi.bo.dao.DAOFactory,
                  it.eng.spagobi.bo.Domain" %>
 
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
-
 <% 
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailChecksModule"); 
 	Check check = (Check)moduleResponse.getAttribute("checkObj");

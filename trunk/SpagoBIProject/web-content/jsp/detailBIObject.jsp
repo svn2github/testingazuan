@@ -22,13 +22,6 @@
 				 java.util.Collection,
 				 java.util.ArrayList" %>
 
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
-
 <%
     SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailBIObjectModule"); 
 	BIObject obj = (BIObject) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_OBJECT);
@@ -529,8 +522,8 @@ return 0;
 		else linkClass = "tab";
 	%>
 					<div class='<%= linkClass%>'>
-						<a href='javascript:changeBIParameter("<%= biObjPar.getParID().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
-						   style="color:black;" > 
+						<a href='javascript:changeBIParameter("<%= biObjPar.getParID().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")' 
+						   style="color:black;"> 
 							<%= biObjPar.getLabel()%>
 						</a>
 					</div>
@@ -542,7 +535,7 @@ return 0;
 %>
 					<div class='<%= linkClass%>'>
 						<a href='javascript:changeBIParameter("-1", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
-						   style="color:black;" > 
+						   style="color:black;"> 
 							<spagobi:message key = "SBIDev.docConf.docDet.newBIParameter" />
 					    </a>
 					</div>

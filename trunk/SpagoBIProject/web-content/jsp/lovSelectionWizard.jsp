@@ -6,9 +6,7 @@
          session="false"
 %>
 
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-<portlet:defineObjects/>
+
 <%@ page import="it.eng.spagobi.constants.AdmintoolsConstants,
 				 it.eng.spagobi.constants.SpagoBIConstants,
 				 it.eng.spagobi.bo.ModalitiesValue,
@@ -138,17 +136,7 @@ function actionConfirm(message, url){
 		
 <form method='POST' action='<%= formUrl.toString() %>' id ='lovSelectionWizardForm' name='lovSelectionWizardForm'>
 
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
-
 <input type='hidden' value='' name='id' />
-
-<%--table width='100%' cellspacing='0' border='0'>		
-	<tr height='40'>
-		<th align='center'><spagobi:message key = "SBIDev.lovWiz.title" /></th>
-	</tr>
-</table--%>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>

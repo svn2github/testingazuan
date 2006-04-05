@@ -65,16 +65,6 @@
 	
 <form method='POST' action='<%=execUrl.toString()%>' id='paramsValueForm' name='paramsValueForm'>	
 
-<!-- style>
-@IMPORT url("/wsrp/skin/portlet/wsrp-admin-portlet.css");
-</style-->
-
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
 
 <% 
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR

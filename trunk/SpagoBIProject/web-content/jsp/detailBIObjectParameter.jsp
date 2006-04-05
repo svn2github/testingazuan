@@ -13,9 +13,6 @@
 				 it.eng.spago.navigation.LightNavigationManager" %>
 
 
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-<portlet:defineObjects/>
 
 <%
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailBIObjectParameterModule"); 
@@ -107,10 +104,6 @@
 </table-->
 
 <form method='POST' action='<%= formUrl.toString() %>' id = 'objectParameterForm' name='objectParameterForm'>
-
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>

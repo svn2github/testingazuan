@@ -49,13 +49,6 @@
 
 
 <form action="<%= formAct.toString() %>" method="post" id='formFunct' name = 'formFunct'>
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
-
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>

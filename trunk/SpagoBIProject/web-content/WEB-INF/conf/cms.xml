@@ -3,7 +3,6 @@
 
 	<EXECUTIONSERVICE class="it.eng.spago.cms.exec.OperationExecutorImpl"/>    
                       
-    <!--   
 	<CONTENTREPOSITORY class="it.eng.spago.cms.JndiRepositoryFactoryImpl" name="jndicms">
 		<PARAMETERS>
 			<JNDICONTEXTNAME name="java:comp/env"/>
@@ -19,9 +18,9 @@
    			<SYSTEMNAMESPACE prefix="appSys" uri="http://it.eng.spago.contentRepository.system" />
    			<USERNAMESPACE prefix="appUsr" uri="http://it.eng.spago.contentRepository.user" />
    		</NAMESPACES>
-	</CONTENTREPOSITORY>
-    -->               
-               
+	</CONTENTREPOSITORY>             
+    
+    <!--            
 	<CONTENTREPOSITORY class="it.eng.spago.cms.ExoRepositoryFactoryImpl" name="exocms">
 		<PARAMETERS>
 			<CONTEXTNAME name="ecm"/>
@@ -37,7 +36,8 @@
    			<USERNAMESPACE prefix="appUsr" uri="http://it.eng.spago.contentRepository.user" />
    		</NAMESPACES>
 	</CONTENTREPOSITORY>
- 
+    -->
+    
     <!-- 
 	<CONTENTREPOSITORY class="it.eng.spago.cms.JackrabbitRepositoryFactoryImpl" name="jackcms">
   		<CONNECTIONDATA user="system" password="" workspace="default" />
@@ -53,7 +53,7 @@
 	</CONTENTREPOSITORY>
  	-->
 
-	<DEFAULTREPOSITORY name="exocms" />
+	<DEFAULTREPOSITORY name="jndicms" />
 
 </CONTENTCONFIGURATION>
 

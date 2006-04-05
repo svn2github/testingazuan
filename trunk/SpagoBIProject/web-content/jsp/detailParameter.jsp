@@ -21,13 +21,6 @@
                  java.util.Iterator" %>
 
 
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/table.css")%>' 
-      type='text/css' />
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
-
 <%
 	SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailParameterModule"); 
 	Parameter parameter = (Parameter) moduleResponse.getAttribute("parametersObj");
@@ -270,7 +263,7 @@
 
 			<div class='<%= linkClass%>'>
 				<a href='javascript:changeParameterUse("<%= aParameterUse.getUseID().toString() %>", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")' 
-				   style="color:black;" > 
+					style="color:black;"> 
 						<%= aParameterUse.getLabel()%>
 				</a>
 			</div>
@@ -282,8 +275,8 @@
 %>
 
 			<div class='<%= linkClass%>'>
-				<a href='javascript:changeParameterUse("-1", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")'
-				   style="color:black;" > 
+				<a href='javascript:changeParameterUse("-1", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")' 
+				   style="color:black;"> 
 					<spagobi:message key = "SBIDec.param.newParameterUse" />
 				</a>
 			</div>

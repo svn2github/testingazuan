@@ -91,27 +91,48 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 		String codeType = null;
 		SourceBean bean = null;
 		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+	            "openRecursively ", "BEGIN [" + path + "]");
+		
 		try {	
 			CmsManager manager = new CmsManager();
 			// set the parameters for the get operation
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "openRecursively ", "set the parameters for the get operation BEGIN");
 			GetOperation getOp = new GetOperation();
 			getOp.setPath(path);
 			getOp.setRetriveChildsInformation("true");
 			getOp.setRetriveContentInformation("false");
 			getOp.setRetrivePropertiesInformation("true");
-			getOp.setRetriveVersionsInformation("false");        	
+			getOp.setRetriveVersionsInformation("false");   
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "openRecursively ", "set the parameters for the get operation OK");
+			
 			// get the cms node descriptor of the functionality
 			CmsNode cmsnode = manager.execGetOperation(getOp);
-			if(cmsnode == null) 
+			if(cmsnode == null) {
+				SpagoBITracer.warning(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+			            "openRecursively ", "CMSNode is null !!!");
 				return null;
-            // get the type of the object
+			}
+            
+			
+			// get the type of the object
 			List properties = cmsnode.getProperties();
+			if(properties == null)
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+			            "openRecursively ", "properties is null !!!");
+			
 			Iterator iterProps = properties.iterator();
 			while(iterProps.hasNext()){
 				CmsProperty prop = (CmsProperty)iterProps.next();
 			    if(prop.getName().equalsIgnoreCase(ObjectsTreeConstants.NODE_CMS_TYPE))
 			    	type = prop.getStringValues()[0];
 			}
+			
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "openRecursively ", "Recovering from database node of type [" + type + "]");
+			
             if(isRoot) {
 				bean = new SourceBean("SystemFunctionalities");
 				bean.setAttribute("name", "tree.rootfolder.name");
@@ -129,16 +150,35 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
             } else if(type.equalsIgnoreCase(SpagoBIConstants.DASH_TYPE_CODE) && !isRoot) {
             	bean = getInformationDash(path); 
             } 
-               
+             
+            if(bean == null){
+            	SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+    		            "openRecursively ", "Impossible to recover node [" + path + "] from database" );
+            	//return null;
+            }
+            
+            SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "openRecursively ", "Processing childs of node " + cmsnode.getName());
+            
             // get the child of the nodes
-			List childs = cmsnode.getChilds();  	 
+			List childs = cmsnode.getChilds(); 
+			if(childs == null) {
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+			            "openRecursively ", "cmsnode.getChilds() == null");
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+			            "openRecursively ", "END [" + path + "]");
+				return bean; 
+			}
+			
 			// for each child
 			Iterator iterchilds = childs.iterator();
 	   		while(iterchilds.hasNext()) {
 	   			CmsNode childnode =  (CmsNode)iterchilds.next();			
-	   		    String pathChild = childnode.getPath();		    
+	   		    String pathChild = childnode.getPath();	
+	   		    SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+			            "openRecursively ", "Child path " + childnode.getPath());
 	   		    SourceBean underBean = openRecursively(pathChild, false);
-	   		    if(underBean != null) {
+	   		    if(bean != null  && underBean != null) {
 	   		    	bean.setAttribute(underBean);
 	   		    }
 	   		}
@@ -146,8 +186,11 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
             
 		} catch (Exception e) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
-		            "openRecursively", "Cannot execute recursive opening", e);
+		            "openRecursively ", "Cannot execute recursive opening", e);
 		}
+		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+	            "openRecursively ", "END [" + path + "]");
 		// return the sourceBean
 		return bean;
 	}
@@ -251,8 +294,23 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 	private SourceBean getInformationOlap(String path) throws EMFUserError {
 		SourceBean bean = null;
 		try {
-        	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
-//        	 LUCA ORIGINAL CODE
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "getInformationOlap ", "BEGIN [" + path + "]");
+			
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
+			
+			if(obj == null){
+					SpagoBITracer.warning(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+				            "getInformationOlap ", "[" + path + "] cannot be recovered from database");
+				return null;
+			}
+			
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "getInformationOlap ", "[" + path + "] loaded succesfully from database");
+			
+			
+			
+        	// LUCA ORIGINAL CODE
 	        //String name = obj.getLabel();
 	    	//
         	String label = obj.getLabel();

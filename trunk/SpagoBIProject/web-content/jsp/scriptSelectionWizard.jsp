@@ -100,16 +100,6 @@
 		
 <form method='POST' action='<%= formUrl.toString() %>' id ='scriptSelectionWizardForm' name='scriptSelectionWizardForm'>
 
-<!--table width='100%' cellspacing='0' border='0'>		
-	<tr height='40'>
-		<th align='center'><spagobi:message key = "SBIDev.scriptWiz.title" /></th>
-	</tr>
-</table-->
-
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
-
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'>

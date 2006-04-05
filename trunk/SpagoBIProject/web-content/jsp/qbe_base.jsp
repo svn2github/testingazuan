@@ -1,9 +1,5 @@
 <%@ page import="it.eng.spago.base.*"%>
-
-<%@ taglib uri="/WEB-INF/tlds/portlet.tld" prefix="portlet" %>
-
-
-
+<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 <% 
 	RequestContainer requestContainer = null;
 	ResponseContainer responseContainer = null;
@@ -40,18 +36,19 @@
 <html>
 <head>
 <%} %>
- 
-	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/main.css")%>" type="text/css"/>
-	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/index.css")%>" type="text/css"/>
-	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/dtree.css")%>" type="text/css" />
-	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/qbe.css")%>" type="text/css" />
-	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/table.css")%>" type="text/css" />
-	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/spagobi.css")%>" type="text/css" />
-		
+
+
+
+	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/spagobi.css")%>" type="text/css"/>
+	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/jsr168.css")%>" type="text/css"/>
+	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/external.css")%>" type="text/css"/>
+	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/dtree.css")%>" type="text/css" />	
 	<%-- 
 	<script language='javascript' src='<%=qbeUrl.conformStaticResourceLink(request,"../js/gestionePulsanti.js")%>'></script>
 	<script language='javascript' src='<%=qbeUrl.conformStaticResourceLink(request,"../js/Layer.js")%>'></script>
 	--%>
+	
+	
 <%  if (qbeMode.equalsIgnoreCase("PORTLET")) { %>	
 	<SCRIPT language=JavaScript>
 			function dTree(objName) {
@@ -160,10 +157,8 @@
 		//alert (screenTrimmed);
 		
 		var tempTd = document.getElementById(screenTrimmed);
-		
 		//tempTd.style.backgroundColor='#C0CADB';
-		
-		tempTd.className = 'tab selected';
+        tempTd.className = 'tab selected';
 	
 	}
 		
@@ -900,35 +895,35 @@
    
 		
 		<form id="frmGoSelection" name="frmGoSelection" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-			<input type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
-			<input type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
+			<input class='qbe' type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
 		</form>		
 		
 		<form id="frmGoCondition" name="frmGoCondition" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-			<input type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
-			<input type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
+			<input class='qbe'type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
+			<input class='qbe' type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
 		</form>	
 		
 		<form id="frmGoOrderBy" name=""frmGoOrderBy"" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-			<input type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
-			<input type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
+			<input class='qbe' type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
 		</form>	
 		
 		<form id="frmGoGroupBy" name="frmGoGroupBy" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-			<input type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
-			<input type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
+			<input class='qbe' type="hidden" name="PUBLISHER_NAME" value="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>
 		</form>	
 	
 		<form id="frmComposeQuery" name="frmComposeQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-			<input type="hidden" name="ACTION_NAME" value="COMPOSE_RESUME_QUERY_ACTION"/>
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="COMPOSE_RESUME_QUERY_ACTION"/>
 		</form>	
 		
 		<form id="frmExecuteQuery" name="frmExecuteQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-			<input type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
 		</form>
 		
 		<form id="frmSaveQuery" name="frmSaveQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-			<input type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_FROM_SAVE_ACTION"/>
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_FROM_SAVE_ACTION"/>
 		</form>
 
      

@@ -41,9 +41,6 @@
 	</tr>
 </table--%>
 
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>

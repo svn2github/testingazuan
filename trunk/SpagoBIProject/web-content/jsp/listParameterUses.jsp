@@ -3,7 +3,6 @@
 				 it.eng.spagobi.bo.dao.IParameterDAO,
 				 it.eng.spagobi.bo.dao.DAOFactory" %>
 
-<!--spagobi:error /-->
 <% String par_id = (String)aServiceRequest.getAttribute("ID_DOMAIN"); 
    Integer parId = new Integer(par_id);
    Parameter param = new Parameter();
@@ -61,9 +60,5 @@
   			</td>
   		</tr>
   </table>
-  
-<style>
-@IMPORT url("/spagobi/css/table.css");
-</style>
   
 <spagobi:list moduleName="ListParameterUsesModule" />

@@ -3,7 +3,7 @@ Introduzione all'installazione di SpagoBiDemo.
 SpagoBIDemo sta per essere installato sul tuo PC.
 Prima di procedere controlla i seguenti requisiti minimi di sistema:
 
-- Nuova distribuzione di Exo-Tomcat Portal Rc6 mai eseguita. 
+- Nuova distribuzione di Exo-Tomcat Portal Rc7 mai eseguita. 
   NOTA BENE: L'installazione su un server Exo-Tomcat preesistente e gia' utilizzato
   ne comportera' la PERDITA DEI DATI.
   Exo-Tomcat può essere scaricato dal repository di Object Web

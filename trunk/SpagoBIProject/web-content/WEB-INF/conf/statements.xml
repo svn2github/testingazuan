@@ -421,7 +421,12 @@
        						ROLE_TYPE_ID,
        						ROLE_TYPE_CD
 					FROM SBI_EXT_ROLES"/>
+					
+	<STATEMENT name="SELECT_DOMAIN_BY_ROLE_ID" 
+               query="select * from SBI_DOMAINS where VALUE_ID = ?"/>
 	
+	<STATEMENT name="SELECT_FUNCT_BY_ROLE_ID" 
+               query="select * from sbi_func_role where role_id = ?"/>
 	<!--
 	<STATEMENT name="SELECT_ALL_FREE_ROLES_FOR_DETAIL" 
                query="SELECT EXT_ROLE_ID,  

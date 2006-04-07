@@ -363,8 +363,47 @@
 	    </CONFIG>
   	</MODULE>
 
+	<MODULE class="it.eng.spagobi.services.modules.ListRolesModule" name="ListRolesModule">
+	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListRoles.title" >
+	      <QUERIES>
+	        <SELECT_QUERY statement="SELECT_ALL_ROLES"/>
+	        <DELETE_QUERY statement="DELETE_REPORT_ENGINE">
+	          <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="id"/>
+	        </DELETE_QUERY>
+	      </QUERIES>
+	      <COLUMNS>
+	        <COLUMN label="ID" name="EXT_ROLE_ID" hidden="true" />
+	        <COLUMN label="SBISet.ListRoles.columnName" name="NAME" />
+	        <COLUMN label="SBISet.ListRoles.columnDescr" name="DESCR" />
+	        <COLUMN label="ROLE_TYPE_ID" name="ROLE_TYPE_ID" hidden="true" />
+	      </COLUMNS>
+	      <CAPTIONS>
+	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBISet.ListRoles.deleteCaption">
+	          <PARAMETER name="EXT_ROLE_ID" scope="LOCAL" type="RELATIVE" value="EXT_ROLE_ID"/>
+	          <PARAMETER name="ROLE_TYPE_ID" scope="LOCAL" type="RELATIVE" value="ROLE_TYPE_ID"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailRolesPage"/>
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
+	        </DELETE_CAPTION>
+	      </CAPTIONS>
+	      <BUTTONS>
+	        <INSERT_BUTTON confirm="TRUE" image="/img/updateState.png" label="SBISet.ListRoles.synchButton">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="ROLES_SYNCH"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="detailRolesPage"/>
+	        </INSERT_BUTTON>
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBISet.ListRoles.backButton">
+	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
+	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBISettingsPublisher"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
+	        </BACK_BUTTON>
+	      </BUTTONS>
+	    </CONFIG>
+  	</MODULE>
 
   	<MODULE class="it.eng.spagobi.services.modules.DetailEngineModule" name="DetailEngineModule">
+     	<CONFIG/>
+    </MODULE>
+    
+    <MODULE class="it.eng.spagobi.services.modules.DetailRolesModule" name="DetailRolesModule">
      	<CONFIG/>
     </MODULE>
     

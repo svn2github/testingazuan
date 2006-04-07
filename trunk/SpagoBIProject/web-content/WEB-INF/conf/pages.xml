@@ -68,6 +68,18 @@
     	</MODULES>
   	</PAGE>
   	
+  	<PAGE name="ListRolesPage" scope="REQUEST" title="Roles Management" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ListRolesPage" target="ListRolesModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListRolesModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
   	<PAGE name="ListParametersPage" scope="REQUEST">
     	<DEPENDENCIES>
       		<DEPENDENCE source="ListParametersPage" target="ListParametersModule">
@@ -134,6 +146,18 @@
     	</DEPENDENCIES>
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" name="DetailEngineModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
+  	<PAGE name="DetailRolesPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DetailRolesPage" target="DetailRolesModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailRolesModule"/>
     	</MODULES>
   	</PAGE>
   	

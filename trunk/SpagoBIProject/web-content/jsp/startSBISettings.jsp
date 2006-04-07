@@ -83,6 +83,23 @@
 				</a>
 			</td>
 		</tr>
+		<tr class="portlet-font" vAlign="middle">
+			<td width="100" align="center">
+				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' />
+			</td>
+			<td width="20">
+				&nbsp;
+			</td>
+			<td vAlign="middle">
+			    <br/> 
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListRolesPage"/></portlet:actionURL>' 
+					class="link_main_menu" >
+					<spagobi:message key = "SBISet.linkRolesSynch" />
+				</a>
+			</td>
+		</tr>
+	
+	
 	</table>
 	<br/>
 </div>

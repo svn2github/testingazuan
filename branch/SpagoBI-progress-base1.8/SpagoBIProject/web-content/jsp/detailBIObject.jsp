@@ -129,7 +129,8 @@ return 0;
 
 <form method='POST' action='<%= formUrl.toString() %>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
 
-<table class='header-table-portlet-section'>
+
+<table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' 
 		    style='vertical-align:middle;padding-left:5px;'>
@@ -376,6 +377,24 @@ return 0;
 		      	     %> 
 		      	   	<input type="radio" name="criptable" value="1" <% if(isCrypt) { out.println(" checked='checked' "); } %> >True</input>
 		      	   	<input type="radio" name="criptable" value="0" <% if(!isCrypt) { out.println(" checked='checked' "); } %> >False</input>
+				</div>
+
+
+			<!-- DISPLAY RADIO BUTTON FOR VISIBLE SELECTION -->
+		    	<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						Visible
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<% 
+		      	      boolean isVisible = false;
+		      	      
+		      	      int visible = (obj.getVisible()!=null)? obj.getVisible().intValue(): 1;
+		      	      if(visible > 0) { isVisible = true; }
+		      	     %> 
+				   	<input type="radio" name="visible" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %>>True</input>
+		      	   	<input type="radio" name="visible" value="0" <% if(!isVisible) { out.println(" checked='checked' "); } %>>False</input>
 				</div>
 
 			<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
@@ -776,8 +795,8 @@ function deleteBIParameterConfirm (message) {
 	</div>
 	<div class='div_detail_form' style='display:none;'>
 	<% 
-    	boolean isVisible = false;
-    	int visible = objPar.getVisible().intValue();
+    	isVisible = false;
+    	visible = objPar.getVisible().intValue();
     	if(visible > 0) { isVisible = true; }
     %> 
 		<input type="radio" name="view_fl" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %> >True</input>

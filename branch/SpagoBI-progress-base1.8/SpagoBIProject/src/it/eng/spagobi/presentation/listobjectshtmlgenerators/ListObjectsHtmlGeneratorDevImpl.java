@@ -107,10 +107,17 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
 		
 		ListIFace list = filterList(listAll);
 		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGenerator", 
+	            "makeList ", "Build list [BEGIN]");
+		
 		generateColumns();
 		makeColumns();
 		makeRows(list);
 		makeNavigationButton(list);
+		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGenerator", 
+	            "makeList ", "Build list [END]");
+		
         return htmlStream;
 	}
 
@@ -179,7 +186,10 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
 	 */
 	protected void makeRows(ListIFace list)	{
 
-	    // js function for item action confirm
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGenerator", 
+	            "makeRows ", "Make Rows [BEGIN]");
+		
+		// js function for item action confirm
         String confirmCaption = PortletUtilities.getMessage("SBISet.devObjects.confirmCaption", "messages");
         htmlStream.append(" <script>\n");
         htmlStream.append("    function actionConfirm(message, url){\n");
@@ -195,6 +205,15 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
         String rowClass;
 		for(int i=0; i<rows.size(); i++) {
 			SourceBean row = (SourceBean) rows.get(i);
+			String stateRow = (String)row.getAttribute("State");
+			Integer visibleRow = (Integer)row.getAttribute("visible");
+			if( visibleRow != null && visibleRow.intValue() == 0 && (stateRow.equalsIgnoreCase("REL") || stateRow.equalsIgnoreCase("TEST"))) {
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGenerator", 
+			            "makeRows ", "NOT visible " + row.getAttribute("name"));
+				continue;
+			}
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGenerator", 
+		            "makeRows ", "VISIBLE " + row.getAttribute("name"));
             
             rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
             alternate = !alternate;
@@ -236,6 +255,10 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
 			}
 		}
 		htmlStream.append(" </table>\n");
+		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGenerator", 
+	            "makeRows ", "Make Rows [END]");
+		
 	} 
 	
 	/**

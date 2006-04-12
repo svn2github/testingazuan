@@ -41,6 +41,7 @@ public class SbiObjects  implements java.io.Serializable {
      private SbiDomains objectType;
      private String objectTypeCode;
      private Short encrypt;
+     private Short visible;
      private String stateCode;
      private Short schedFl;
      private String execModeCode;
@@ -158,7 +159,19 @@ public class SbiObjects  implements java.io.Serializable {
     public void setEncrypt(Short encrypt) {
         this.encrypt = encrypt;
     }
-
+    
+    /**
+     * 
+     */
+    public Short getVisible() {
+        return this.visible;
+    }
+    
+    public void setVisible(Short visible) {
+        this.visible = visible;
+    }
+    
+    
     /**
      * 
      */

@@ -33,6 +33,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.Iterator;
 import java.util.List;
@@ -158,22 +159,33 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.gif");
 				String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
 				String stateObj = (String)dataTree.getAttribute("state");
+				Integer visibleObj = (Integer)dataTree.getAttribute("visible");
 				String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 				PortletURL execUrl = renderResponse.createActionURL();
 				execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 				execUrl.setParameter(ObjectsTreeConstants.PATH, path);
 				execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
-				if(ObjectsAccessVerifier.canTest(stateObj, path, profile)) {
-					//sessionContainer.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
-					thereIsOneOrMoreObjectsInTestState = true;
-					execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
-					htmlStream.append("	treeExecObj.add("+id+", "+pidParent+",'"+name+"', '"+execUrl.toString()+"', '', '', '"+userIconTest+"', '', '', '' );\n");
-				} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
-					//sessionContainer.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
-					execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
-					htmlStream.append("	treeExecObj.add("+id+", "+pidParent+",'"+name+"', '"+execUrl.toString()+"', '', '', '"+userIcon+"', '', '', '' );\n");
-				}
 				
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
+			            "addItemForJSTree ", nameLabel+": "+ stateObj +" - "+ visibleObj);
+				if( visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
+				            "addItemForJSTree ", "NOT visible " + nameLabel);
+				}
+				else {	
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
+				            "addItemForJSTree ", "VISIBLE " + nameLabel);
+					if(ObjectsAccessVerifier.canTest(stateObj, path, profile)) {
+						//sessionContainer.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
+						thereIsOneOrMoreObjectsInTestState = true;
+						execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
+						htmlStream.append("	treeExecObj.add("+id+", "+pidParent+",'"+name+"', '"+execUrl.toString()+"', '', '', '"+userIconTest+"', '', '', '' );\n");
+					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
+						//sessionContainer.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+						execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+						htmlStream.append("	treeExecObj.add("+id+", "+pidParent+",'"+name+"', '"+execUrl.toString()+"', '', '', '"+userIcon+"', '', '', '' );\n");
+					}
+				}
 			}
 		}
 		
@@ -298,24 +310,36 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	    		htmlStream.append("</div>\n");
 			} else {
 				String stateObj = (String)dataTree.getAttribute("state");
+				Integer visibleObj = (Integer)dataTree.getAttribute("visible");
 				String onlyTestObjectsView = httpRequest.getParameter("view_only_test_objects");
 				PortletURL execUrl = renderResponse.createActionURL();
 				execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 				execUrl.setParameter(ObjectsTreeConstants.PATH, path);
 				execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
-				if(ObjectsAccessVerifier.canTest(stateObj, path, profile)) {
-					execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
-					thereIsOneOrMoreObjectsInTestState = true;
-					htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
-					htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objecticontest.gif" )+"' />");
-		    		htmlStream.append("		<span class=\"portlet-item-menu\"><a href='"+execUrl.toString()+"'>"+name+"</a></span>\n");
-		    		htmlStream.append("</div>\n");
-				} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
-					execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
-					htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
-					htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objecticon.gif" )+"' />");
-		    		htmlStream.append("		<span class=\"portlet-item-menu\"><a href='"+execUrl.toString()+"'>"+name+"</a></span>\n");
-		    		htmlStream.append("</div>\n");
+				
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
+			            "addItemForJSTree ", nameLabel+": "+ stateObj +" - "+ visibleObj);
+				if( visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
+				            "addItemForJSTree ", "NOT VISIBLE " + nameLabel);
+				}
+				else {	
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
+				            "addItemForJSTree ", "VISIBLE " + nameLabel);
+					if(ObjectsAccessVerifier.canTest(stateObj, path, profile)) {
+						execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
+						thereIsOneOrMoreObjectsInTestState = true;
+						htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
+						htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objecticontest.gif" )+"' />");
+			    		htmlStream.append("		<span class=\"portlet-item-menu\"><a href='"+execUrl.toString()+"'>"+name+"</a></span>\n");
+			    		htmlStream.append("</div>\n");
+					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
+						execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+						htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
+						htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objecticon.gif" )+"' />");
+			    		htmlStream.append("		<span class=\"portlet-item-menu\"><a href='"+execUrl.toString()+"'>"+name+"</a></span>\n");
+			    		htmlStream.append("</div>\n");
+					}
 				}
 			}
 		}

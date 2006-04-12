@@ -173,6 +173,9 @@ public class ListObjectsHtmlGeneratorExecImpl implements IListObjectsHtmlGenerat
 	 */
 	protected void makeRows(ListIFace list)	{
 
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGeneratorExecImpl", 
+	            "makeRows ", "Make Rows [BEGIN]");
+		
 //	    // js function for item action confirm
 //        String confirmCaption = PortletUtilities.getMessage("SBISet.devObjects.confirmCaption", "messages");
 //        htmlStream.append(" <script>\n");
@@ -190,6 +193,19 @@ public class ListObjectsHtmlGeneratorExecImpl implements IListObjectsHtmlGenerat
 		for(int i=0; i<rows.size(); i++) {
 			SourceBean row = (SourceBean) rows.get(i);
             
+			String stateRow = (String)row.getAttribute("State");
+			Integer visibleRow = (Integer)row.getAttribute("Visible");
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGeneratorExecImpl", 
+		            "makeRows ", row.getAttribute("name") + ": " + stateRow +"; " + visibleRow);
+			if( visibleRow != null && visibleRow.intValue() == 0 && (stateRow.equalsIgnoreCase("REL") || stateRow.equalsIgnoreCase("TEST"))) {
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGeneratorExecImpl", 
+			            "makeRows ", "NOT visible " + row.getAttribute("name"));
+				continue;
+			}
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGeneratorExecImpl", 
+		            "makeRows ", "VISIBLE " + row.getAttribute("name"));
+			
+			
             rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
             alternate = !alternate;
             
@@ -235,6 +251,8 @@ public class ListObjectsHtmlGeneratorExecImpl implements IListObjectsHtmlGenerat
 //			}
 		}
 		htmlStream.append(" </table>\n");
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ListObjectsHtmlGeneratorExecImpl", 
+	            "makeRows ", "Make Rows [END]");
 	} 
 	
 	/**

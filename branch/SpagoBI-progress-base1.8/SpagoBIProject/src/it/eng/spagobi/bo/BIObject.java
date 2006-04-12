@@ -54,6 +54,9 @@ public class BIObject implements Serializable {
 
 	// ENCRYPT NUMBER Y Parameter encryption request.
 	private Integer encrypt = null;
+	
+	// VISIBLE NUMBER Y Parameter visible request.
+	private Integer visible = null;
 
 	// REL_NAME VARCHAR2(256) Y Relative path + file object name
 	private String relName = null;
@@ -147,6 +150,14 @@ public class BIObject implements Serializable {
 		this.encrypt = encrypt;
 	}
 
+	public Integer getVisible() {
+		return visible;
+	}
+
+	public void setVisible(Integer visible) {
+		this.visible = visible;
+	}
+	
 	/**
 	 * @return Returns the engine.
 	 */
@@ -385,6 +396,9 @@ public void setName(String name) {
 			return description;
 		}
 	}
+
+
+	
 
 
 }

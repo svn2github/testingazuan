@@ -75,7 +75,7 @@ public class ListObjectsTransformerTreeImpl implements IListObjectsTransformer {
 	}
 	
 	/**
-	 * Extracts data from the sourse bean and applies the transformation, calling the
+	 * Extracts data from the source bean and applies the transformation, calling the
 	 * <code>transformData</code> method.
 	 * 
 	 * @param data	Input data Source Bean
@@ -121,6 +121,7 @@ public class ListObjectsTransformerTreeImpl implements IListObjectsTransformer {
 			SourceBean row = new SourceBean(DataRow.ROW_TAG);
 			String nameObj = data.getAttribute("name").toString();
 			String state = data.getAttribute("state").toString();
+			Integer visible = (Integer)data.getAttribute("visible");
 			String path = data.getAttribute("path").toString();
 			String label = data.getAttribute("label").toString();
 			String description = data.getAttribute("description").toString();
@@ -129,6 +130,7 @@ public class ListObjectsTransformerTreeImpl implements IListObjectsTransformer {
 		    row.setAttribute("Type", codeType);
 		    row.setAttribute("Name", nameObj);
 		    row.setAttribute("State", state);
+		    row.setAttribute("Visible", visible);
 		    row.setAttribute("Path", path);
 		    row.setAttribute("Label", label);
 		    row.setAttribute("Description", description);

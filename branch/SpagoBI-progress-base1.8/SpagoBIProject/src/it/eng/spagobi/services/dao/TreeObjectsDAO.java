@@ -260,7 +260,9 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 	        String name = obj.getName();
 	        String label = obj.getLabel();
 	        String description = obj.getDescription();
-	    	if(description==null) 
+	        Integer visible = obj.getVisible();
+	    	
+	        if(description==null) 
             	description = "";
 	    	Integer idFunct = obj.getId();
 	    	Integer idType = obj.getBiObjectTypeID();
@@ -275,6 +277,7 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 	    	bean.setAttribute("idType", idType);
 	    	bean.setAttribute("codeType", codeType);
 	    	bean.setAttribute("state", obj.getStateCode());
+	    	bean.setAttribute("visible", visible);
     	} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
 					            "getInformationReport", "Cannot recover detail information from database", ex);
@@ -315,6 +318,7 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 	    	//
         	String label = obj.getLabel();
         	String name = obj.getName();
+        	Integer visible = obj.getVisible();
             // fill bean
         	bean = new SourceBean("Report");
     		String description = obj.getDescription();
@@ -331,6 +335,7 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
     	    bean.setAttribute("idType", idType);
     	    bean.setAttribute("codeType", codeType);
     	    bean.setAttribute("state", obj.getStateCode());
+    	    bean.setAttribute("visible", visible);
 		} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
 					            "getInformationOlap", "Cannot recover detail information from database", ex);
@@ -352,6 +357,7 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
         	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
         	String label = obj.getLabel();
         	String name = obj.getName();
+        	Integer visible = obj.getVisible();
         	bean = new SourceBean("Datamart");
     		String description = obj.getDescription();
     		if(description==null) 
@@ -367,6 +373,7 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
     	    bean.setAttribute("idType", idType);
     	    bean.setAttribute("codeType", codeType);
     	    bean.setAttribute("state", obj.getStateCode());
+    	    bean.setAttribute("visible", visible);
 		} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
 								"TreeObjectsDAO", 
@@ -392,6 +399,7 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
         	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
         	String label = obj.getLabel();
         	String name = obj.getName();
+        	Integer visible = obj.getVisible();
         	bean = new SourceBean("Dash");
     		String description = obj.getDescription();
     		if(description==null) 
@@ -407,6 +415,7 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
     	    bean.setAttribute("idType", idType);
     	    bean.setAttribute("codeType", codeType);
     	    bean.setAttribute("state", obj.getStateCode());
+    	    bean.setAttribute("visible", visible);
 		} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
 								"TreeObjectsDAO", 

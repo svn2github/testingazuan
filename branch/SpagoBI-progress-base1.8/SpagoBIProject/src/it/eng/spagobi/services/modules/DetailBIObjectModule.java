@@ -665,6 +665,8 @@ public class DetailBIObjectModule extends AbstractModule {
 		String relname = (String) request.getAttribute("relname");
 		String criptableStr = (String) request.getAttribute("criptable");
 		Integer encrypt = new Integer(criptableStr);
+		String visibleStr = (String) request.getAttribute("visible");
+		Integer visible = new Integer(visibleStr);
 		String typeAttr = (String) request.getAttribute("type");
 		StringTokenizer tokentype = new StringTokenizer(typeAttr, ",");
 		String typeIdStr = tokentype.nextToken();
@@ -718,6 +720,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		obj.setBiObjectTypeID(typeIdInt);
 		obj.setDescription(description);
 		obj.setEncrypt(encrypt);
+		obj.setVisible(visible);
 		obj.setEngine(engine);
 		obj.setId(id);
 		obj.setName(name);

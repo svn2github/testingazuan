@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ENGINE-CONFIGURATION>
+	
+	<!-- ====================================================================================== -->
+	<!--  General settings 																		--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		tmpdir = base directory used as temporary storing area for generated reports 
+	-->
+	<!-- ====================================================================================== -->
+	<GENERALSETTINGS tmpdir="C:\Programmi\SpagoBIDemo-1.8\webapps\SpagoBIJasperReportEngine\WEB-INF\temp"/>
+
+
+	<!-- ====================================================================================== -->
+	<!--  Connection settings 																	--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		name 	= 	name of the connection
+		isJNDI 	= 	true iff the connection is defined in the jndi nemespace of the server 
+	-->
+	<!-- ====================================================================================== -->
+	<CONNECTIONS default="oracleSH">
+		<CONNECTION name="defaultDWH" 
+					isJNDI="true"
+					initialContext="java:comp/env"
+					resourceName="jdbc/sbifoodmart"/>
+		<CONNECTION name="oracleSH" 
+					isJNDI="true"
+					initialContext="java:comp/env"
+					resourceName="jdbc/oracleSH"/>
+	</CONNECTIONS>
+
+	
+	
+	<!-- ====================================================================================== -->
+	<!--  Exporter settings 																	--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		settings for html, pdf, csv, xls, xml and txt exporters are hardcoded in the engine code. 
+		You can override them here or simple add new exporter for other format. 
+	-->
+	<!-- ====================================================================================== -->
+	  
+	<!--
+	<EXPORTERS default="html">
+		
+		<EXPORTER 	format="html" 
+					mime="text/html"
+					class="net.sf.jasperreports.engine.export.JRHtmlExporter"/>			
+		
+		
+		<EXPORTER 	format="pdf" 
+					mime="application/pdf"
+					class="net.sf.jasperreports.engine.export.JRPdfExporter"/>
+		
+	</EXPORTERS>
+	-->
+	
+	<!-- ====================================================================================== -->
+	<!--  Virtualization settings 																--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		  set active parameter to true if you think to work with big report. For more
+		  info on virtualization check jasper documentation.
+	-->
+	<!-- ====================================================================================== -->
+	<VIRTUALIZER active="true" 
+				maxSize="10"
+				dir="C:\Programmi\SpagoBIDemo-1.8\webapps\SpagoBIJasperReportEngine\WEB-INF\temp"/>
+
+</ENGINE-CONFIGURATION>

@@ -82,15 +82,11 @@ public class JasperReportRunner {
 		/* TODO Since this is the back-end (logic) part of the JasperEngine the direct use of  HttpServletResponse, 
 		 * HttpServletRequest and ServletContext objects shuold be pushed back to JasperReportServlet that is 
 		 * the front-end (control) part of the engine */
-		
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
-			
 			// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 			String webinflibPath = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 			logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
-			
-			
 			// get all jar file names in the classpath
 			logger.debug("Reading jar files from lib-dir...");
 			StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
@@ -110,23 +106,17 @@ public class JasperReportRunner {
 			}
 			String jasperReportClassPath = jasperReportClassPathStringBuffer.toString();
 			jasperReportClassPath = jasperReportClassPath.substring(0, jasperReportClassPath.length() - 1);
-			
 			// set classpath property
 			System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
 			logger.debug("Set [jasper.reports.compile.class.path properties] to value [" + System.getProperty("jasper.reports.compile.class.path")+"]");
-			
 			// set tmpdir property
 			System.setProperty("jasper.reports.compile.temp", tmpDirectory);
 			logger.debug("Set [jasper.reports.compile.temp] to value [" + System.getProperty("jasper.reports.compile.temp")+"]");
-			
-			
 			byte[] jcrContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, this.templatePath);
 			InputStream is = new java.io.ByteArrayInputStream(jcrContent);						
 			logger.debug("Compiling template file ...");
 			JasperReport report  = JasperCompileManager.compileReport(is);
 			logger.debug("Template file compiled  succesfully");
-			
-			
 			// Create the virtualizer
 			JRFileVirtualizer virtualizer = null; 
 			boolean isVirtualizationActive = false;
@@ -141,8 +131,15 @@ public class JasperReportRunner {
 				if(maxSizeStr!=null) maxSize = Integer.parseInt(maxSizeStr);
 				String dir = (String)config.getAttribute("VIRTUALIZER.dir");
 				if(dir == null){
-					//dir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "jrcache";
 					dir = tmpDirectory;
+				} else {
+					if(!dir.startsWith("/")) {
+						String contRealPath = servletContext.getRealPath("/");
+						if(contRealPath.endsWith("\\")||contRealPath.endsWith("/")) {
+							contRealPath = contRealPath.substring(0, contRealPath.length()-1);
+						}
+						dir = contRealPath + "/" + dir;
+					}
 				}
 				dir = dir + System.getProperty("file.separator") + "jrcache";
 				File file = new File(dir);

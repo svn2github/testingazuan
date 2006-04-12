@@ -5,10 +5,14 @@
 	<!--  General settings 																		--> 
 	<!-- ====================================================================================== -->
 	<!--  
-		tmpdir = base directory used as temporary storing area for generated reports 
+		tmpdir = base directory used as temporary storing area for generated reports. 
+		The path must be write in unix form (only with / folder separator and without 
+		any drive letter at the beginning, example: /folder/folder/folder).
+		If the path start with / it will be considered an absolute path, otherwise if it start with 
+		another letter or symbol it will be considered relative to the folder of the jasper report application 
 	-->
 	<!-- ====================================================================================== -->
-	<GENERALSETTINGS tmpdir="C:\Programmi\SpagoBIDemo-1.8\webapps\SpagoBIJasperReportEngine\WEB-INF\temp"/>
+	<GENERALSETTINGS tmpdir="tmpdir"/>
 
 
 	<!-- ====================================================================================== -->
@@ -19,15 +23,11 @@
 		isJNDI 	= 	true iff the connection is defined in the jndi nemespace of the server 
 	-->
 	<!-- ====================================================================================== -->
-	<CONNECTIONS default="oracleSH">
+	<CONNECTIONS default="defaultDWH">
 		<CONNECTION name="defaultDWH" 
 					isJNDI="true"
 					initialContext="java:comp/env"
 					resourceName="jdbc/sbifoodmart"/>
-		<CONNECTION name="oracleSH" 
-					isJNDI="true"
-					initialContext="java:comp/env"
-					resourceName="jdbc/oracleSH"/>
 	</CONNECTIONS>
 
 	
@@ -62,10 +62,15 @@
 	<!--  
 		  set active parameter to true if you think to work with big report. For more
 		  info on virtualization check jasper documentation.
+		  dir = folder where the temp file for virtualization are created
+		  The dir path must be write in unix form (only with / folder separator and without 
+		  any drive letter at the beginning, example: /folder/folder/folder).
+		  If the path start with / it will be considered an absolute path, otherwise if it start with 
+	      another letter or symbol it will be considered relative to the folder of the jasper report application 
 	-->
 	<!-- ====================================================================================== -->
 	<VIRTUALIZER active="true" 
 				maxSize="10"
-				dir="C:\Programmi\SpagoBIDemo-1.8\webapps\SpagoBIJasperReportEngine\WEB-INF\temp"/>
+				dir="tmpdir"/>
 
 </ENGINE-CONFIGURATION>

@@ -31,7 +31,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -50,26 +49,42 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-import org.xml.sax.InputSource;
 
 import sun.misc.BASE64Decoder;
 
+/**
+ * Process jasper report execution requests and returns bytes of the filled reports 
+ */
 public class JasperReportServlet extends HttpServlet {
 
+	/**
+	 * Logger component
+	 */
 	private static transient Logger logger = Logger.getLogger(JasperReportServlet.class);
-
+    /**
+     * SpagoBI Public Key 
+     */
 	private transient PublicKey publicKeyDSASbi = null;
 
+	/**
+	 * security check able or not
+	 */
 	private transient boolean securityAble = true;
 
+	
+	
+	
+	
+	/**
+	 * Initialize the engine 
+	 */
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		
-		logger.debug("Initializing SpagoBI JasperReport Engine...");
+		logger.debug(this.getClass().getName() +":init:Initializing SpagoBI JasperReport Engine...");
 		String secAblePar = config.getInitParameter("SECURITY_ABLE");
 		if (!secAblePar.equalsIgnoreCase("true")) {
 			securityAble = false;
-			logger.info("Disable security mode");
+			logger.info(this.getClass().getName() +":init:Disable security mode");
 		}
 		if (securityAble) {
 			// get spagobi public key
@@ -79,70 +94,74 @@ public class JasperReportServlet extends HttpServlet {
 			// set into the context
 			ServletContext context = this.getServletContext();
 			context.setAttribute("IDENTITIES", identities);
-			logger.info("Enable security mode");
+			logger.info(this.getClass().getName() +":init:Enable security mode");
 		}		
-		
-		logger.debug("Inizialization of SpagoBI JasperReport Engine ended succesfully");
+		logger.debug(this.getClass().getName() +":init:Inizialization " +
+				      "of SpagoBI JasperReport Engine ended succesfully");
 	}
 
+	
+	
+	/**
+	 * process jasper report execution requests
+	 */
 	public void service(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		
-		logger.debug("Start processing a new request...");
-		
+		logger.debug(this.getClass().getName() +":service:Start processing a new request...");
 		Map params = new HashMap();
 		Enumeration enumer = request.getParameterNames();
 		String parName = null;
 		String parValue = null;
-		logger.debug("Reading request parameters...");
+		logger.debug(this.getClass().getName() +":service:Reading request parameters...");
 		while (enumer.hasMoreElements()) {
 			parName = (String) enumer.nextElement();
 			parValue = request.getParameter(parName);
 			params.put(parName, parValue);
-			logger.debug("Read parameter [" + parName + "] with value [" + parValue + "] from request");
+			logger.debug(this.getClass().getName() +":service:Read " +
+					"parameter [" + parName + "] with value [" + parValue + "] from request");
 		}
-		logger.debug("Request parameters read sucesfully");
-
-		if (securityAble) logger.debug("Trying to authenticate the caller..."); 	
-		
+		logger.debug(this.getClass().getName() +":service:Request parameters read sucesfully" + params);
 		if (securityAble && !authenticate(request, response)) {
 			PrintWriter writer = response.getWriter();
 			String resp = "<html><body><center><h2>Unauthorized</h2></center></body></html>";
-			logger.error("Authentication failed");
+			logger.error(this.getClass().getName() +":service:Authentication failed");
 			writer.write(resp);
 			writer.flush();
 			writer.close();
 			return;
 		} else {
-			if (securityAble) logger.info("Caller authenticated succesfully"); 	
-			
+			if(securityAble) 
+				logger.info(this.getClass().getName() +":service:Caller authenticated succesfully"); 	
 			String template = (String) params.get("templatePath");
 			String spagobibase = (String) params.get("spagobiurl");
 			JasperReportRunner jasperReportRunner = new JasperReportRunner(spagobibase, template);
 			Connection con = getConnection(request.getParameter("connectionName"));
-			
 			if (con == null) {
-				logger.error("Cannot obtain"
+				logger.error(this.getClass().getName() +":service:Cannot obtain"
 						+ " connection for engine ["
 						+ this.getClass().getName() + "] control"
 						+ " configuration in engine-config.xml config file");
 				return;
 			}
-			
 			try {
 				String outputType = (String) params.get("param_output_format");
 				String tmpdir = (String)JasperReportConf.getInstance().getConfig().getAttribute("GENERALSETTINGS.tmpdir");
+				if(!tmpdir.startsWith("/")){
+					String contRealPath = getServletContext().getRealPath("/");
+					if(contRealPath.endsWith("\\")||contRealPath.endsWith("/")) {
+						contRealPath = contRealPath.substring(0, contRealPath.length()-1);
+					}
+					tmpdir = contRealPath + "/" + tmpdir;
+				}
 				tmpdir = tmpdir + System.getProperty("file.separator") + "reports";
 				File dir = new File(tmpdir);
 				dir.mkdirs();
-				
 				File tmpFile = File.createTempFile("report", "." + outputType, dir);
 				OutputStream out = new FileOutputStream(tmpFile);
 				jasperReportRunner.runReport(con, params,out, getServletContext(), response, request);
 				out.flush();
 				out.close();
 				response.setContentLength((int)tmpFile.length());
-			
 				BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmpFile));			
 				int b = -1;
 				while((b = in.read()) != -1) {
@@ -153,34 +172,34 @@ public class JasperReportServlet extends HttpServlet {
 				// istant cleaning
 				tmpFile.delete();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(this.getClass().getName() +":service:error " +
+			      			"during report production \n\n " + e);
+			    return;
 			}
 		}
-		
-		logger.info("Request processed");
+		logger.info(this.getClass().getName() +":service:Request processed");
 	}
 
+	
+	
+	
+	
 	/**
-	 * This methos see in spagbi.xml config file ( in section <ENGINE
-	 * className=engineName> if a connection is configured if null is pass to
-	 * this method a default datasource is returned if exist
-	 * 
-	 * @param connectionName
-	 * @return
+	 * This method, based on the engine-config.xml configuration, gets a 
+	 * database connection and return it 
+	 * @param connectionName Logical name of the connection configuration (defined into engine-config.xml)
+	 * @return the database connection
 	 */
 	public Connection getConnection(String connectionName) {
-
 		String engineClassName = this.getClass().getName();
 		logger.debug("Try to retrieve configuration settings for engine ["
 						+ engineClassName + "]");
-		
 		SourceBean config = JasperReportConf.getInstance().getConfig();					
 		String defaultConnectionName = (String)config.getAttribute("CONNECTIONS.default");
 		if(defaultConnectionName == null)
 			logger.warn("'default' attribute not specified in tag connections");
 		else
 			logger.debug("default connection name is [" + defaultConnectionName + "]");
-		
 		SourceBean defaultConnectionConfig = (SourceBean)config.getFilteredSourceBeanAttribute ("CONNECTIONS.CONNECTION", "name", defaultConnectionName);
 		SourceBean connectionConfig = null;
 		if(connectionName == null) {
@@ -208,8 +227,6 @@ public class JasperReportServlet extends HttpServlet {
 					return null;
 			}
 		}
-		
-		
 		// if configuration is jndi get datasource from jndi context
 		String jndi = (String)connectionConfig.getAttribute("isJNDI");
 		if (jndi.equalsIgnoreCase("true")) {
@@ -219,11 +236,12 @@ public class JasperReportServlet extends HttpServlet {
 		}
 	}
 
+	
+	
+	
 	/**
 	 * Get the connection from JNDI
-	 * 
-	 * @param connectionConfig
-	 *            SourceBean describing data connection
+	 * @param connectionConfig SourceBean describing data connection
 	 * @return Connection to database
 	 */
 	private Connection getConnectionFromJndiDS(SourceBean connectionConfig) {
@@ -244,11 +262,13 @@ public class JasperReportServlet extends HttpServlet {
 		return connection;
 	}
 
+	
+	
+	
+	
 	/**
-	 * Get the connection using jdbc (connection string direct to database)
-	 * 
-	 * @param connectionConfig
-	 *            SourceBean describing data connection
+	 * Get the connection using jdbc 
+	 * @param connectionConfig SourceBean describing data connection
 	 * @return Connection to database
 	 */
 	private Connection getDirectConnection(SourceBean connectionConfig) {
@@ -269,25 +289,17 @@ public class JasperReportServlet extends HttpServlet {
 		return connection;
 	}
 
+	
+	
+	
 	/**
 	 * Authenticate the caller (must be SpagoBI)
-	 * 
-	 * @param request
-	 *            HttpRequest
-	 * @param response
-	 *            HttpResponse
+	 * @param request HttpRequest
+	 * @param response HttpResponse
 	 * @return boolean, true if autheticated false otherwise
 	 */
 	private boolean authenticate(HttpServletRequest request,
 			HttpServletResponse response) {
-		// String tokenClear64 = (String)request.getParameter("TOKEN_CLEAR");
-		// if( (tokenClear64==null) || (tokenClear64.trim().equals("")) ) {
-		// logger.error("Engines"+ this.getClass().getName()+ "authenticate:"+
-		// "Token clear null or empty");
-		// return false;
-		// }
-		// decode base 64
-		// byte[] tokenClear = decodeBase64(tokenClear64);
 		String tokenClearStr = (String) request.getParameter("TOKEN_CLEAR");
 		if ((tokenClearStr == null) || (tokenClearStr.trim().equals(""))) {
 			logger.error("Token clear null or empty");
@@ -318,9 +330,12 @@ public class JasperReportServlet extends HttpServlet {
 		return sign;
 	}
 
+	
+	
+	
+	
 	/**
 	 * Get the SpagoBI Public Key for a DSA alghoritm
-	 * 
 	 * @return Public Key for SpagoBI (DSA alghoritm)
 	 */
 	private PublicKey getPublicKey() {
@@ -362,11 +377,12 @@ public class JasperReportServlet extends HttpServlet {
 		return pubKey;
 	}
 
+	
+	
+	
 	/**
 	 * Decode a Base64 String into a byte array
-	 * 
-	 * @param encoded
-	 *            String encoded with Base64 algorithm
+	 * @param encoded String encoded with Base64 algorithm
 	 * @return byte array decoded
 	 */
 	private byte[] decodeBase64(String encoded) {
@@ -381,14 +397,14 @@ public class JasperReportServlet extends HttpServlet {
 		return clear;
 	}
 
+	
+	
+	
 	/**
 	 * Verify the signature
-	 * 
-	 * @param tokenclear
-	 *            Clear data
-	 * @param tokensign
-	 *            Signed data
-	 * @return
+	 * @param tokenclear Clear data
+	 * @param tokensign Signed data
+	 * @return true if the signature is verified false otherwise
 	 */
 	private boolean verifySignature(byte[] tokenclear, byte[] tokensign) {
 		try {

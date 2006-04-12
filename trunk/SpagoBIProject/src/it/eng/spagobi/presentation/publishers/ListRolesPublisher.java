@@ -28,9 +28,9 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 /**
- * Publishes the results of a list information request for engines
+ * Publishes the results of a list information request for roles
  * into the correct jsp page according to what contained into request. If Any errors occurred during the 
- * execution of the <code>ListEnginesModule</code> class, the publisher
+ * execution of the <code>ListRolesModule</code> class, the publisher
  * is able to call the error page with the error message caught before and put into 
  * the error handler. If the input information don't fall into any of the cases declared,
  * another error is generated. 

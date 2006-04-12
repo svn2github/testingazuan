@@ -390,6 +390,16 @@ public class RoleDAOImpl extends AbstractJdbcDAO implements IRoleDAO {
 		}
 	
 	}
+
+	public List LoadFunctionalitiesAssociated(Integer roleID) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List LoadParUsesAssociated(Integer roleID) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

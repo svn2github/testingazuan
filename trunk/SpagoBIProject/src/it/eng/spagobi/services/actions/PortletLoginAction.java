@@ -27,12 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.services.actions;
 
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.constants.SecurityConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -55,7 +54,7 @@ public class PortletLoginAction extends AbstractAction{
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
 		String remoteUser = portletRequest.getRemoteUser();
-		SpagoBITracer.debug(SecurityConstants.NAME_MODULE, this.getClass().getName(),"service()", "USER CONNECTED IS [" + remoteUser+"]");
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", "USER CONNECTED IS [" + remoteUser+"]");
 		Principal principal = portletRequest.getUserPrincipal();
 		String engUserProfileFactoryClass =  ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();

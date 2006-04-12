@@ -401,7 +401,6 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 	 */
 	public Role toRole(SbiExtRoles hibRole){
 		Role role = new Role();
-		
 		role.setCode(hibRole.getCode());
 		role.setDescription(hibRole.getDescr());
 		role.setId(hibRole.getExtRoleId());
@@ -409,7 +408,78 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		role.setRoleTypeCD(hibRole.getRoleTypeCode());
 		role.setRoleTypeID(hibRole.getRoleType().getValueId());
 		return role;
-		
 	}
 
+	
+	
+	/**
+	 * Gets all the functionalities associated to the role.
+	 * @param roleID The role id
+	 * @return	The functionalities associated to the role
+	 * @throws EMFUserError
+	 */
+	public List LoadFunctionalitiesAssociated(Integer roleID) throws EMFUserError {
+		List functs = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "select f from SbiFunctions f, SbiFuncRole fr, SbiExtRoles r "
+						+" where f.functId = fr.id.function.functId " 
+						+" and r.extRoleId = fr.id.role.extRoleId "
+						+" and r.extRoleId = " + roleID; 
+			Query hqlQuery = aSession.createQuery(hql);
+			functs = hqlQuery.list();
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return functs;
+	}
+	
+	
+	
+	/**
+	 * Gets all the parameter uses associated to the role.
+	 * @param roleID	The role id
+	 * @return	The parameter uses associated to the role
+	 * @throws EMFUserError
+	 */
+	public List LoadParUsesAssociated(Integer roleID) throws EMFUserError {
+		List uses = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "select pu from SbiParuseDet pud, SbiParuse pu, SbiExtRoles r "
+						+" where pu.useId = pud.id.sbiParuse.useId " 
+						+" and r.extRoleId = pud.id.sbiExtRoles.extRoleId "
+						+" and r.extRoleId = " + roleID; 
+			Query hqlQuery = aSession.createQuery(hql);
+			uses = hqlQuery.list();
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return uses;
+	}
+	
+	
+	
 }

@@ -128,4 +128,22 @@ public interface IRoleDAO {
 	 */
 	public List loadAllFreeRolesForDetail(Integer parUseID) throws EMFUserError;
 	
+	
+	/**
+	 * Gets all the functionalities associated to the role.
+	 * @param roleID	The role id
+	 * @return	The functionalities associated to the role
+	 * @throws EMFUserError
+	 */
+	public List LoadFunctionalitiesAssociated(Integer roleID) throws EMFUserError;
+	
+	
+	/**
+	 * Gets all the parameter uses associated to the role.
+	 * @param roleID	The role id
+	 * @return	The parameter uses associated to the role
+	 * @throws EMFUserError
+	 */
+	public List LoadParUsesAssociated(Integer roleID) throws EMFUserError;
+	
 }

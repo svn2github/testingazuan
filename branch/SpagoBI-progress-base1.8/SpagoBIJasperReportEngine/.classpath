@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="JavaSource"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/log4j-1.2.8.jar"/>
-	<classpathentry kind="src" path="/SpagoBIUtils"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jaxen-full.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/dom4j.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
@@ -27,5 +26,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/iReport.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jug-lgpl-2.0.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spago-core-2.0.0.jar"/>
+	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.utils-1.8.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

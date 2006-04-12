@@ -367,9 +367,6 @@
 	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListRoles.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_ROLES"/>
-	        <DELETE_QUERY statement="DELETE_REPORT_ENGINE">
-	          <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="id"/>
-	        </DELETE_QUERY>
 	      </QUERIES>
 	      <COLUMNS>
 	        <COLUMN label="ID" name="EXT_ROLE_ID" hidden="true" />

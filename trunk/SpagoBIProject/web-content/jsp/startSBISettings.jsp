@@ -85,7 +85,7 @@
 		</tr>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' />
+				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;

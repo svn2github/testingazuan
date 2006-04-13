@@ -129,8 +129,7 @@ return 0;
 
 <form method='POST' action='<%= formUrl.toString() %>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
 
-
-<table class='header-table-portlet-section'>
+<table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' 
 		    style='vertical-align:middle;padding-left:5px;'>
@@ -524,30 +523,30 @@ return 0;
 <div style='width:100%;visibility:visible;' class='UITabs' id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
 	<div class="first-tab-level" style="background-color:#f8f8f8">
 		<div style="overflow: hidden; width:  100%">
-			<input type='hidden' id='selected_par_id' name='' value=''/>
+			<input type='hidden' id='selected_obj_par_id' name='' value=''/>
 <%
 	List biObjParams = obj.getBiObjectParameters();
-	String par_idStr = (String) moduleResponse.getAttribute("selected_par_id");
-	Integer par_idInt = new Integer(par_idStr);
-	int par_id = Integer.parseInt(par_idStr);
+	String obj_par_idStr = (String) moduleResponse.getAttribute("selected_obj_par_id");
+	Integer obj_par_idInt = new Integer(obj_par_idStr);
+	int obj_par_id = Integer.parseInt(obj_par_idStr);
 	String linkClass = "tab";
 	boolean foundSelectedParId = false;
 	for (int i = 0; i < biObjParams.size(); i++){
 		BIObjectParameter biObjPar = (BIObjectParameter) biObjParams.get(i);
-		if (biObjPar.getParID().equals(par_idInt)) {
+		if (biObjPar.getId().equals(obj_par_idInt)) {
 			linkClass = "tab selected";
 			foundSelectedParId = true;
 		}
 		else linkClass = "tab";
 	%>
 					<div class='<%= linkClass%>'>
-						<a href='javascript:changeBIParameter("<%= biObjPar.getParID().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")' 
-						   style="color:black;"> 
+						<a href='javascript:changeBIParameter("<%= biObjPar.getId().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
+						   style="color:black;" > 
 							<%= biObjPar.getLabel()%>
 						</a>
 					</div>
 <%	}
-	if (par_id < 0 || !foundSelectedParId) 
+	if (obj_par_id < 0 || !foundSelectedParId) 
 		linkClass = "tab selected";
 	else 
 		linkClass = "tab";
@@ -586,12 +585,12 @@ function fileToUploadInserted() {
 	fileUploadChanged = 'true';
 }
 
-function changeBIParameter (parId, message) {
+function changeBIParameter (objParId, message) {
 
 	var biobjParFormModified = 'false';
 	
-	document.getElementById('selected_par_id').name = 'selected_par_id';
-	document.getElementById('selected_par_id').value = parId;
+	document.getElementById('selected_obj_par_id').name = 'selected_obj_par_id';
+	document.getElementById('selected_obj_par_id').value = objParId;
 	
 	var objParLabel = document.getElementById('objParLabel').value;
 	var par_Id = document.getElementById('par_Id').value;
@@ -680,7 +679,7 @@ function deleteVersionConfirm(message, url){
 function deleteBIParameterConfirm (message) {
 	if (confirm(message)) {
 		document.getElementById('deleteBIObjectParameter').name = 'deleteBIObjectParameter';
-		document.getElementById('deleteBIObjectParameter').value = '<%= objPar.getParIdOld() %>';
+		document.getElementById('deleteBIObjectParameter').value = '<%= objPar.getId() %>';
         	document.getElementById('objectForm').submit();
         }
 }
@@ -699,7 +698,7 @@ function deleteBIParameterConfirm (message) {
 
 <table  class='header-sub-table-portlet-section' >		
 	<tr class='header-sub-row-portlet-section'>
-		<% if (par_id != -1) { %>
+		<% if (obj_par_id != -1) { %>
 		<td class='header-sub-title-column-portlet-section'>
 			<spagobi:message key = "SBIDev.docConf.docDetParam.title" />
 		</td>
@@ -721,7 +720,7 @@ function deleteBIParameterConfirm (message) {
 
 
 
-<input type='hidden' name='objParIdOld' value='<%= objPar.getParIdOld() != null ? objPar.getParIdOld().toString() : "-1" %>' />
+<input type='hidden' name='objParId' value='<%= objPar.getId() != null ? objPar.getId().toString() : "-1" %>' />
 <input type='hidden' name='' value='' id='deleteBIObjectParameter' />
 		
 
@@ -762,7 +761,7 @@ function deleteBIParameterConfirm (message) {
 	    	   name="parameterName" value='<%= parameter != null ? parameter.getName() : "" %>' 
 			   	maxlength="100" readonly>
       	<input type='hidden' id='par_Id' 
-			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />
+			   value='<%= parameter != null ? parameter.getId().toString() : "-1" %>' name='par_Id' />
      <%
 		PortletURL parametersLookupURL = renderResponse.createActionURL();
   		parametersLookupURL.setParameter("PAGE", "parametersLookupPage"); 
@@ -796,7 +795,7 @@ function deleteBIParameterConfirm (message) {
 	<div class='div_detail_form' style='display:none;'>
 	<% 
     	isVisible = false;
-    	visible = objPar.getVisible().intValue();
+    	int visible = objPar.getVisible().intValue();
     	if(visible > 0) { isVisible = true; }
     %> 
 		<input type="radio" name="view_fl" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %> >True</input>

@@ -96,7 +96,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			biObject = loadBIObjectForDetail(path);
-			String hql = "from SbiObjPar s where s.id.sbiObjects.biobjId = " + biObject.getId();
+			String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObject.getId();
 			Query hqlQuery = aSession.createQuery(hql);
 			List hibObjectPars = hqlQuery.list();
 			SbiObjPar hibObjPar = null;
@@ -111,6 +111,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				tmpBIObjectParameter = aBIObjectParameterDAOHibImpl.toBIObjectParameter(hibObjPar);
 				aParameter = aParameterDAO.loadForExecutionByParameterIDandRoleName(
 								tmpBIObjectParameter.getParID(), role);
+				tmpBIObjectParameter.setParID(aParameter.getId());
 				tmpBIObjectParameter.setParameter(aParameter);
 				biObjectParameters.add(tmpBIObjectParameter);
 			}
@@ -369,7 +370,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setLabel(biObject.getLabel());
 			hibBIObject.setName(biObject.getName());
 			hibBIObject.setEncrypt(new Short(biObject.getEncrypt().shortValue()));
-			hibBIObject.setVisible(new Short(biObject.getVisible().shortValue()));
 			hibBIObject.setRelName(biObject.getRelName());
 			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class,
 					biObject.getStateID());
@@ -485,8 +485,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setName(biObject.getName());
 			hibBIObject
 					.setEncrypt(new Short(biObject.getEncrypt().shortValue()));
-			hibBIObject
-				.setVisible(new Short(biObject.getVisible().shortValue()));
 			hibBIObject.setRelName(biObject.getRelName());
 			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class,
 					biObject.getStateID());
@@ -684,8 +682,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hql = "select par.parId from " +
 					     "SbiParameters as par, SbiObjects as obj, SbiObjPar as objpar  " + 
 				         "where obj.path = '"+pathReport+"' and " +
-				         "      obj.biobjId = objpar.id.sbiObjects.biobjId and " +
-				         "      par.parId = objpar.id.sbiParameters.parId ";
+				         "      obj.biobjId = objpar.sbiObject.biobjId and " +
+				         "      par.parId = objpar.id.sbiParameter.parId ";
 			hqlQuery = aSession.createQuery(hql);
 			List idParameters = hqlQuery.list();
 			
@@ -764,7 +762,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			aBIObject.setDescription(hibBIObject.getDescr());
 			aBIObject.setEncrypt(new Integer(hibBIObject.getEncrypt().intValue()));
-			aBIObject.setVisible(new Integer(hibBIObject.getVisible().intValue()));
 			
 			aBIObject.setEngine(new EngineDAOHibImpl().toEngine(hibBIObject.getSbiEngines()));
 			

@@ -168,14 +168,14 @@ public class DetailBIObjectParameterModule extends AbstractModule {
 			Integer biObjectParameterID = new Integer(key1);
 			
 			
-			BIObjectParameter objPar = DAOFactory.getBIObjectParameterDAO().loadBIObjectParameterForDetail(biObjectID, biObjectParameterID);
-			
-			
-        	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(objPar.getBiObjectID());
-		
-        	response.setAttribute(ObjectsTreeConstants.PATH, obj.getPath());
-			
-			response.setAttribute(DetailBIObjectParameterModule.NAME_ATTR_OBJECT_PAR, objPar);		
+//			BIObjectParameter objPar = DAOFactory.getBIObjectParameterDAO().loadBIObjectParameterForDetail(biObjectID, biObjectParameterID);
+//			
+//			
+//        	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(objPar.getBiObjectID());
+//		
+//        	response.setAttribute(ObjectsTreeConstants.PATH, obj.getPath());
+//			
+//			response.setAttribute(DetailBIObjectParameterModule.NAME_ATTR_OBJECT_PAR, objPar);		
 			
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectParameterModule","getDetailDomains","Cannot fill response container", ex  );
@@ -206,7 +206,8 @@ public class DetailBIObjectParameterModule extends AbstractModule {
 		String parIdOld = (String)request.getAttribute("parIdOld");
 		
 		Integer parIdOldBD = new Integer(parIdOld);
-		objPar.setParIdOld(parIdOldBD);  }
+		//objPar.setParIdOld(parIdOldBD);  
+		}
 		
 		String id = (String)request.getAttribute("id");
 		
@@ -286,12 +287,12 @@ public class DetailBIObjectParameterModule extends AbstractModule {
 			Integer biObjectID = Integer.valueOf((String)request.getAttribute("BIOBJ_ID"));
 			Integer biObjectParameterID = Integer.valueOf((String)request.getAttribute("PAR_ID"));	
 			IBIObjectParameterDAO biObjectParameterDAO = DAOFactory.getBIObjectParameterDAO();
-			BIObjectParameter objPar = biObjectParameterDAO.loadBIObjectParameterForDetail(biObjectID, biObjectParameterID);
-			biObjectParameterDAO.eraseBIObjectParameter(objPar);
-			
-	    	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(objPar.getBiObjectID());
-	    	response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId());
-			response.setAttribute(ObjectsTreeConstants.PATH, obj.getPath());
+//			BIObjectParameter objPar = biObjectParameterDAO.loadBIObjectParameterForDetail(biObjectID, biObjectParameterID);
+//			biObjectParameterDAO.eraseBIObjectParameter(objPar);
+//			
+//	    	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(objPar.getBiObjectID());
+//	    	response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId());
+//			response.setAttribute(ObjectsTreeConstants.PATH, obj.getPath());
 			
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectParameterModule","delDetailObjPar","Cannot fill response container", ex  );

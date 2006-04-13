@@ -85,11 +85,11 @@ public class DynamicPageTag extends TagSupport {
 		portReq = PortletUtilities.getPortletRequest();
 		
 		// an empty input type hidden and the correspondent JavaScript to popolate it in case there is a lookup call (in case of query or script) 
-		htmlStream.append("<input type='hidden' id='LOOKUP_PARAMETER_ID' name='' value=''/>\n");
+		htmlStream.append("<input type='hidden' id='LOOKUP_OBJ_PAR_ID' name='' value=''/>\n");
 		htmlStream.append("<script type='text/javascript'>\n");
 		htmlStream.append("	function setLookupField(idStr) {\n");
-		htmlStream.append("		document.getElementById('LOOKUP_PARAMETER_ID').value= idStr;\n");
-		htmlStream.append("		document.getElementById('LOOKUP_PARAMETER_ID').name = 'LOOKUP_PARAMETER_ID';\n");
+		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').value= idStr;\n");
+		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').name = 'LOOKUP_OBJ_PAR_ID';\n");
 		htmlStream.append("	}\n");
 		htmlStream.append("</script>\n");
 		
@@ -316,7 +316,7 @@ public class DynamicPageTag extends TagSupport {
 //				lookupURL.setParameter("ORIGINAL_PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 //			}
 			htmlStream.append("<input type='text' style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' class='portlet-form-input-field' readonly='true' value='"+value+"'/>\n");
-			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getParID() + "\")' \n");
+			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\")' \n");
 			htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
 			htmlStream.append("		title='Lookup' alt='Lookup' \n");
 			htmlStream.append("/>\n");

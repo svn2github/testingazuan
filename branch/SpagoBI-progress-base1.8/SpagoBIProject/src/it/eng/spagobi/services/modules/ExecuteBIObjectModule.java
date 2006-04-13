@@ -282,14 +282,14 @@ public class ExecuteBIObjectModule extends AbstractModule
             biparam.setParameterValues(paramvalues);
         }
         
-        Object lookupParameterId = request.getAttribute("LOOKUP_PARAMETER_ID");
-        if (lookupParameterId != null) {
-        	Integer parameterId = new Integer(findBIObjParId(lookupParameterId));
+        Object lookupObjParId = request.getAttribute("LOOKUP_OBJ_PAR_ID");
+        if (lookupObjParId != null) {
+        	Integer objParId = new Integer(findBIObjParId(lookupObjParId));
         	BIObjectParameter lookupBIParameter = null;
         	iterParams = biparams.iterator();
         	while (iterParams.hasNext()) {
         		BIObjectParameter aBIParameter = (BIObjectParameter) iterParams.next();
-        		if (aBIParameter.getParID().equals(parameterId)) {
+        		if (aBIParameter.getId().equals(objParId)) {
         			lookupBIParameter = aBIParameter;
         			break;
         		}
@@ -298,7 +298,7 @@ public class ExecuteBIObjectModule extends AbstractModule
     			SpagoBITracer.major("SPAGOBI", 
             			this.getClass().getName(), 
             			"executionHandler", 
-            			"The BIParameter with Parameter id = " + parameterId.toString() + " and BIObject id = " + obj.getId().toString() + " does not exist.");
+            			"The BIParameter with id = " + objParId.toString() + " does not exist.");
     			throw new EMFUserError(EMFErrorSeverity.ERROR, 1041);
         	}
         	ModalitiesValue modVal = lookupBIParameter.getParameter().getModalityValue();

@@ -7,6 +7,14 @@
         the hibernate.org cfg2hbm engine
 -->
     <class name="it.eng.spagobi.metadata.SbiObjPar" table="sbi_obj_par" >
+        <id name="objParId" type="integer">
+            <column name="obj_par_Id" />
+            <generator class="sequence">
+            	<param name="sequence">sbi_objpar_seq</param> 
+            </generator>
+        </id>
+        
+<!--
         <composite-id name="id" class="it.eng.spagobi.metadata.SbiObjParId">
             <key-many-to-one name="sbiParameters" class="it.eng.spagobi.metadata.SbiParameters">
                 <column name="par_id" />
@@ -18,6 +26,15 @@
                 <column name="prog" />
             </key-property>
         </composite-id>
+-->
+
+        <many-to-one name="sbiParameter" class="it.eng.spagobi.metadata.SbiParameters">
+            <column name="par_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="sbiObject" class="it.eng.spagobi.metadata.SbiObjects">
+            <column name="biobj_id" not-null="true" />
+        </many-to-one>
+
         <property name="reqFl" type="short">
             <column name="req_fl" />
         </property>
@@ -35,6 +52,9 @@
         </property>
         <property name="parurlNm" type="string">
             <column name="parurl_nm" length="20" />
+        </property>
+        <property name="prog" type="integer">
+            <column name="prog" />
         </property>
     </class>
 </hibernate-mapping>

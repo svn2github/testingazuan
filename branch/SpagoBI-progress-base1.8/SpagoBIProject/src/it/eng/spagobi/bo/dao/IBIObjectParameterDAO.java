@@ -44,17 +44,16 @@ public interface IBIObjectParameterDAO {
 	
 	/**
 	 * Loads all detail information for a BI Object Parameter identified by its 
-	 * <code>biObjectId</code> and by its <code>parameterID</code>. All these information,
-	 * achived by a query to the DB, are stored into a <code>BIObjectParameter</code> object, 
-	 * which is returned.
+	 * <code>objParId</code>. 
+	 * All these information, achived by a query to the DB, are stored into a 
+	 * <code>BIObjectParameter</code> object, which is returned.
 	 * 
-	 * @param biObjectID The id for the BI object parameter to load
-	 * @param parameterID The parameter-id for the BI object parameter to load
+	 * @param objParId The id for the BI object parameter to load
 	 * @return	A <code>BIObjectParameter</code> object containing all loaded information
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
-	public BIObjectParameter loadBIObjectParameterForDetail(Integer biObjectID, Integer parameterID) throws EMFUserError;
+	public BIObjectParameter loadForDetailByObjParId(Integer objParId) throws EMFUserError;
 
 	
 

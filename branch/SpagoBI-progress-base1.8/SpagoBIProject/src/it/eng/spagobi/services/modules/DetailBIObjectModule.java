@@ -53,7 +53,6 @@ import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -169,7 +168,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		fillResponse(response);
 		reloadCMSInformation(obj);
-		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getParIdOld().toString(), modality, false, false);
+		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
 		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		
 	}
@@ -194,7 +193,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		fillResponse(response);
 		reloadCMSInformation(obj);
-		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getParIdOld().toString(), modality, false, false);
+		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
 		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 				
 	}
@@ -203,15 +202,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	private void lookupLoadHandler(SourceBean request, String message, SourceBean response) throws EMFUserError, SourceBeanException {
 		
 		BIObject obj = recoverBIObjectDetails(request, message);
-		String parIdStr = (String) request.getAttribute("par_id");
-		Integer parIdInt = null;
-		if (parIdStr == null || parIdStr.trim().equals("")) 
-			parIdInt = new Integer (-1);
-		else parIdInt = new Integer (parIdStr);
-		String parIdOldStr = (String) request.getAttribute("objParIdOld");
-		Integer parIdOldInt = new Integer(parIdOldStr);
-		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, parIdInt, obj.getId());
-		biObjPar.setParIdOld(parIdOldInt);
+		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
 		session.setAttribute("LookupBIObject", obj);
 		session.setAttribute("LookupBIObjectParameter", biObjPar);
 		session.setAttribute("modality", message);
@@ -284,55 +275,50 @@ public class DetailBIObjectModule extends AbstractModule {
 			fillRequestContainer(request, errorHandler);
 			BIObject obj = recoverBIObjectDetails(request, mod);
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
-			String selectedParIdStr = null;
+			String selectedObjParIdStr = null;
 			if (mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
 				BIObjectParameter biObjPar = null;
-				Object selectedParIdObj = request
-						.getAttribute("selected_par_id");
+				Object selectedObjParIdObj = request
+						.getAttribute("selected_obj_par_id");
 				Object deleteBIObjectParameter = request.getAttribute("deleteBIObjectParameter");
 				
-				if (selectedParIdObj != null) {
+				if (selectedObjParIdObj != null) {
 					// it is requested to view another BIObjectParameter than the one visible
-					int selectedParId = findBIObjParId(selectedParIdObj);
-					selectedParIdStr = new Integer (selectedParId).toString();
+					int selectedObjParId = findBIObjParId(selectedObjParIdObj);
+					selectedObjParIdStr = new Integer (selectedObjParId).toString();
 					String saveBIObjectParameter = (String) request.getAttribute("saveBIObjectParameter");
 					if (saveBIObjectParameter != null && saveBIObjectParameter.equalsIgnoreCase("yes")) {
 						// it is requested to save the visible BIObjectParameter
 						validateFields("BIObjectParameterValidation", "PAGE");
-						String parIdOldStr = (String) request.getAttribute("objParIdOld");
-						Integer parIdOldInt = new Integer(parIdOldStr);
-						String parIdStr = (String) request.getAttribute("par_id");
-						Integer parIdInt = null;
-						if (parIdStr == null || parIdStr.trim().equals("")) parIdInt = new Integer(-1);
-						else parIdInt = new Integer (parIdStr);
 						// If it's a new BIObjectParameter or if the Parameter was changed controls 
 						// that the Parameter is not already in use
-						if (!parIdInt.equals(parIdOldInt)) objParControl(request, obj.getId(), parIdInt);
-						biObjPar = recoverBIObjectParameterDetails(request, parIdInt, obj.getId());
-						biObjPar.setParIdOld(parIdOldInt);
+						// 06-04-2006 This control is no more performed in order to have multiple 
+						// instances of the same parameter inside a BIObject
+						//if (!parIdInt.equals(parIdOldInt)) objParControl(request, obj.getId(), parIdInt);
+						biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
 						fillResponse(response);
 						reloadCMSInformation(obj);
 			    		// if there are some errors, exits without writing into DB
 			    		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			    			prepareBIObjectDetailPage(response, obj, biObjPar, parIdOldInt.toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
+			    			prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
 			    			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 							return;
 						}
 						IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
-						if (parIdOldInt.intValue() == -1) {
+						if (biObjPar.getId().intValue() == -1) {
 							// it is requested to insert a new BIObjectParameter
 							objParDAO.insertBIObjectParameter(biObjPar);
 						} else {
 							// it is requested to modify a BIObjectParameter
 							objParDAO.modifyBIObjectParameter(biObjPar);
 						}
-						prepareBIObjectDetailPage(response, obj, null, selectedParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
+						prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
 						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 						return;
 					} else {
 						fillResponse(response);
 						reloadCMSInformation(obj);
-						prepareBIObjectDetailPage(response, obj, null, selectedParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
+						prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
 						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		    			// exits without writing into DB
 		    			return;
@@ -340,52 +326,48 @@ public class DetailBIObjectModule extends AbstractModule {
 					
 				} else if (deleteBIObjectParameter != null) {
 					// it is requested to delete the visible BIObjectParameter
-					int parId = findBIObjParId(deleteBIObjectParameter);
+					int objParId = findBIObjParId(deleteBIObjectParameter);
 					IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
-					BIObjectParameter objPar = objParDAO.loadBIObjectParameterForDetail(obj.getId(), new Integer(parId) );
+					BIObjectParameter objPar = objParDAO.loadForDetailByObjParId(new Integer(objParId));
 					objParDAO.eraseBIObjectParameter(objPar);
-					selectedParIdStr = "";
+					selectedObjParIdStr = "";
 					fillResponse(response);
 					reloadCMSInformation(obj);
-					prepareBIObjectDetailPage(response, obj, null, selectedParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
+					prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
 					response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 					return;
 					
 				} else {
 					// It is request to save the BIObject with also the visible BIObjectParameter
-					String parIdOldStr = (String) request.getAttribute("objParIdOld");
-					Integer parIdOldInt = new Integer(parIdOldStr);
-					String parIdStr = (String) request.getAttribute("par_id");
-					Integer parIdInt = null;
-					if (parIdStr == null || parIdStr.trim().equals("")) parIdInt = new Integer (-1);
-					else parIdInt = new Integer (parIdStr);
-					biObjPar = recoverBIObjectParameterDetails(request, parIdInt, obj.getId());
+					biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
 					// If a new BIParameter was visualized and no fields were inserted, the BIParameter is not validated and saved
 					boolean biParameterToBeSaved = true;
 					if (GenericValidator.isBlankOrNull(biObjPar.getLabel()) 
-							&& GenericValidator.isBlankOrNull(parIdStr)
+							&& biObjPar.getId().intValue() == -1 
 							&& GenericValidator.isBlankOrNull(biObjPar.getParameterUrlName())
-							&& parIdOldInt.intValue() == -1)
+							&& biObjPar.getParID().intValue() == -1)
 						biParameterToBeSaved = false;
 					if (biParameterToBeSaved) {
 						validateFields("BIObjectParameterValidation", "PAGE");
 						// If it's a new BIObjectParameter or if the Parameter
 						// was changed, controls that the Parameter is not already in use
-						if (!parIdInt.equals(parIdOldInt))
-							objParControl(request, obj.getId(), new Integer(
-									parIdStr));
+						// 06-04-2006 This control is no more performed in order to have multiple 
+						// instances of the same parameter inside a BIObject
+//						if (!parIdInt.equals(parIdOldInt))
+//							objParControl(request, obj.getId(), new Integer(
+//									parIdStr));
 					}
 
-					biObjPar.setParIdOld(parIdOldInt);
-					if (biParameterToBeSaved) selectedParIdStr = parIdStr;
-					else selectedParIdStr = "-1";
+					//biObjPar.setParIdOld(parIdOldInt);
+					if (biParameterToBeSaved) selectedObjParIdStr = biObjPar.getParID().toString();
+					else selectedObjParIdStr = "-1";
 
 					validateFields("BIObjectValidation", "PAGE");
 		    		// if there are some errors, exits without writing into DB
 					if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 						reloadCMSInformation(obj);
 						fillResponse(response);
-						prepareBIObjectDetailPage(response, obj, biObjPar, parIdOldInt.toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
+						prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
 						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 						return;
 					}
@@ -396,7 +378,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	    			
 	    			if (biParameterToBeSaved) {
 						IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
-						if (parIdOldInt.intValue() == -1) {
+						if (biObjPar.getId().intValue() == -1) {
 							// it is requested to insert a new BIObjectParameter
 							objParDAO.insertBIObjectParameter(biObjPar);
 						} else {
@@ -409,14 +391,14 @@ public class DetailBIObjectModule extends AbstractModule {
     		} else {
     			validateFields("BIObjectValidation", "PAGE");
 	    		// if there are some errors, exits without writing into DB
-    			selectedParIdStr = "-1";
+    			selectedObjParIdStr = "-1";
     			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
     				obj.setTemplateVersions(new TreeMap());
     				TemplateVersion tv = new TemplateVersion();
     				tv.setVersionName("");
     				obj.setCurrentTemplateVersion(tv);
 					fillResponse(response);
-					prepareBIObjectDetailPage(response, obj, null, selectedParIdStr, ObjectsTreeConstants.DETAIL_INS, false, false);
+					prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_INS, false, false);
 					response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 					return;
 				}
@@ -433,7 +415,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			} else {
 				// it is requested to save and remain in the BIObject detail page
 				fillResponse(response);
-				prepareBIObjectDetailPage(response, obj, null, selectedParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
+				prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
 				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 			}
 			
@@ -486,8 +468,8 @@ public class DetailBIObjectModule extends AbstractModule {
 	 * 
 	 * @param response The response SourceBean to be filled
 	 * @param obj The BIObject to be displayed
-	 * @param biObjPar The BIObjectParameter to be displayed: if it is null the selectedParIdStr will be considered.
-	 * @param selectedParIdStr The id of the Parameter relevant to the BIObjectParameter to be displayed.
+	 * @param biObjPar The BIObjectParameter to be displayed: if it is null the selectedObjParIdStr will be considered.
+	 * @param selectedObjParIdStr The id of the BIObjectParameter to be displayed.
 	 * 			If it is blank or null the first BIObjectParameter will be diplayed but in case the BIObject 
 	 * 			has no BIObjectParameter a new empty BIObjectParameter will be displayed.
 	 * 			If it is "-1" a new empty BIObjectParameter will be displayed.
@@ -500,7 +482,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	 * @throws EMFUserError
 	 */
 	private void prepareBIObjectDetailPage(SourceBean response, BIObject obj,
-			BIObjectParameter biObjPar, String selectedParIdStr,
+			BIObjectParameter biObjPar, String selectedObjParIdStr,
 			String detail_mod, boolean initialBIObject,
 			boolean initialBIObjectParameter) throws SourceBeanException,
 			EMFUserError {
@@ -509,40 +491,29 @@ public class DetailBIObjectModule extends AbstractModule {
 				.loadBIObjectParametersById(obj.getId());
 		obj.setBiObjectParameters(biObjParams);
 		if (biObjPar == null) {
-			if (selectedParIdStr == null || "".equals(selectedParIdStr)) {
+			if (selectedObjParIdStr == null || "".equals(selectedObjParIdStr)) {
 				if (biObjParams == null || biObjParams.size() == 0) {
 					biObjPar = createNewBIObjectParameter(obj.getId());
-					selectedParIdStr = "-1";
+					selectedObjParIdStr = "-1";
 				} else {
 					biObjPar = (BIObjectParameter) biObjParams.get(0);
-					selectedParIdStr = biObjPar.getParID().toString();
+					selectedObjParIdStr = biObjPar.getId().toString();
 				}
-			} else if ("-1".equals(selectedParIdStr)) {
+			} else if ("-1".equals(selectedObjParIdStr)) {
 				biObjPar = createNewBIObjectParameter(obj.getId());
-				selectedParIdStr = "-1";
+				selectedObjParIdStr = "-1";
 			} else {
-				int selectedParId = Integer.parseInt(selectedParIdStr);
+				int selectedObjParId = Integer.parseInt(selectedObjParIdStr);
 				Iterator it = biObjParams.iterator();
 				while (it.hasNext()) {
 					biObjPar = (BIObjectParameter) it.next();
-					if (biObjPar.getParID().equals(new Integer(selectedParId)))
+					if (biObjPar.getId().equals(new Integer(selectedObjParId)))
 						break;
 				}
 			}
-			biObjPar.setParIdOld(biObjPar.getParID());
 		}
-		// Inverts the BIObject template versions:
-		//TreeMap templates = obj.getTemplateVersions();
-		//if (templates == null) 
-		//	templates = new TreeMap();
-		//List invertedTemplates = new ArrayList(templates.size());
-		//for (int i = 0; i < templates.size(); i++) {
-		//	TemplateVersion version = (TemplateVersion) templates.get(templates.size() - 1 - i);
-		//	invertedTemplates.add(i, version);
-		//}
-		//obj.setTemplateVersions(invertedTemplates);
-		
-		response.setAttribute("selected_par_id", selectedParIdStr);
+
+		response.setAttribute("selected_obj_par_id", selectedObjParIdStr);
 		response.setAttribute(NAME_ATTR_OBJECT, obj);
 		response.setAttribute(NAME_ATTR_OBJECT_PAR, biObjPar);
 		response.setAttribute(ObjectsTreeConstants.MODALITY, detail_mod);
@@ -565,6 +536,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		if (biObjPar == null) return null;
 		
 		BIObjectParameter objParClone = new BIObjectParameter();
+		objParClone.setId(biObjPar.getId());
 		objParClone.setBiObjectID(biObjPar.getBiObjectID());
 		objParClone.setLabel(biObjPar.getLabel());
 		objParClone.setModifiable(biObjPar.getModifiable());
@@ -573,7 +545,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		objParClone.setParameterUrlName(biObjPar.getParameterUrlName());
 		objParClone.setParameterValues(biObjPar.getParameterValues());
 		objParClone.setParID(biObjPar.getParID());
-		objParClone.setParIdOld(biObjPar.getParIdOld());
 		objParClone.setProg(biObjPar.getProg());
 		objParClone.setRequired(biObjPar.getRequired());
 		objParClone.setVisible(biObjPar.getVisible());
@@ -606,8 +577,17 @@ public class DetailBIObjectModule extends AbstractModule {
 	}
 
 
-	private BIObjectParameter recoverBIObjectParameterDetails(SourceBean request, Integer parIdInt, Integer biobjIdInt) {
+	private BIObjectParameter recoverBIObjectParameterDetails(SourceBean request, Integer biobjIdInt) {
 
+		String idStr = (String) request.getAttribute("objParId");
+		Integer idInt = null;
+		if (idStr == null || idStr.trim().equals("")) idInt = new Integer (-1);
+		else idInt = new Integer(idStr);
+		String parIdStr = (String) request.getAttribute("par_id");
+		Integer parIdInt = null;
+		if (parIdStr == null || parIdStr.trim().equals("")) 
+			parIdInt = new Integer (-1);
+		else parIdInt = new Integer (parIdStr);
 		String label = (String) request.getAttribute("objParLabel");
 	    String parUrlNm = (String)request.getAttribute("parurl_nm");
 		String reqFl = (String)request.getAttribute("req_fl");
@@ -620,6 +600,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		Integer multFlBD = new Integer(multFl);
 	   
 		BIObjectParameter objPar  = new BIObjectParameter();
+		objPar.setId(idInt);
 		objPar.setBiObjectID(biobjIdInt);
 		objPar.setParID(parIdInt);
         Parameter par = new Parameter();
@@ -638,6 +619,8 @@ public class DetailBIObjectModule extends AbstractModule {
 
 	private BIObjectParameter createNewBIObjectParameter(Integer objId) {
 		BIObjectParameter biObjPar = new BIObjectParameter();
+		biObjPar.setId(new Integer(-1));
+		biObjPar.setParID(new Integer(-1));
 		biObjPar.setBiObjectID(objId);
 		biObjPar.setLabel("");
 		biObjPar.setModifiable(new Integer(0));
@@ -665,8 +648,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		String relname = (String) request.getAttribute("relname");
 		String criptableStr = (String) request.getAttribute("criptable");
 		Integer encrypt = new Integer(criptableStr);
-		String visibleStr = (String) request.getAttribute("visible");
-		Integer visible = new Integer(visibleStr);
 		String typeAttr = (String) request.getAttribute("type");
 		StringTokenizer tokentype = new StringTokenizer(typeAttr, ",");
 		String typeIdStr = tokentype.nextToken();
@@ -720,7 +701,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		obj.setBiObjectTypeID(typeIdInt);
 		obj.setDescription(description);
 		obj.setEncrypt(encrypt);
-		obj.setVisible(visible);
 		obj.setEngine(engine);
 		obj.setId(id);
 		obj.setName(name);
@@ -733,21 +713,21 @@ public class DetailBIObjectModule extends AbstractModule {
 	}
 
 
-	public int findBIObjParId (Object parIdObj) {
-		String parIdStr = "";
-		if (parIdObj instanceof String) {
-			parIdStr = (String) parIdObj;
-		} else if (parIdObj instanceof List) {
-			List parIdList = (List) parIdObj;
-			Iterator it = parIdList.iterator();
+	public int findBIObjParId (Object objParIdObj) {
+		String objParIdStr = "";
+		if (objParIdObj instanceof String) {
+			objParIdStr = (String) objParIdObj;
+		} else if (objParIdObj instanceof List) {
+			List objParIdList = (List) objParIdObj;
+			Iterator it = objParIdList.iterator();
 			while (it.hasNext()) {
 				Object item = it.next();
 				if (item instanceof SourceBean) continue;
-				if (item instanceof String) parIdStr = (String) item;
+				if (item instanceof String) objParIdStr = (String) item;
 			}
 		}
-		int parId = Integer.parseInt(parIdStr);
-		return parId;
+		int objParId = Integer.parseInt(objParIdStr);
+		return objParId;
 	}
 	
 	/**
@@ -900,29 +880,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		_serviceRequest.setAttribute("view_fl", view_fl == null ? "" : view_fl);
 		_serviceRequest.setAttribute("mult_fl", mult_fl == null ? "" : mult_fl);
 	}
-		
-//	/**
-//	 * It is a particular method to validate a BI object. The SpagoBI validator cannot be used
-//	 * directly with BI objects, while some poblems occurred. So a <code>BIObjectValidator</code>
-//	 * class has been written and validation is forced directly into the module, with this
-//	 * method.
-//	 * 
-//	 * @param dinValName The dinamyc validation name
-//	 * @param request The request Source Bean
-//	 * @return True if validation succeeds, false if not
-//	 * @throws Exception
-//	 */
-//	public boolean validateFields(String dinValName, SourceBean request) throws Exception{
-//		ConfigSingleton config = ConfigSingleton.getInstance();
-//		SourceBean source = (SourceBean)config.getFilteredSourceBeanAttribute("VALIDATIONS.DINAMIC_VALIDATIONS.DINAMIC_VALIDATION", "NAME", dinValName);
-//		fillRequestContainer(request, errorHandler);
-//		BIObjectValidator val = new BIObjectValidator("detailBIObjectPage","PAGE");
-//		RequestContainer req = getRequestContainer();
-//		ResponseContainer res = getResponseContainer();
-//		SourceBean validatorSB = (SourceBean)source.getAttribute("SERVICE");
-//		boolean validate = val.validate(req,res,validatorSB);
-//		return validate;
-//	}
 	
 	public boolean validateFields(String businessName, String businessType) throws Exception {
 		RequestContainer requestContainer = getRequestContainer();
@@ -937,8 +894,8 @@ public class DetailBIObjectModule extends AbstractModule {
 		String pathObj = (String)request.getAttribute(SpagoBIConstants.PATH);
 		String pathVer = pathObj + "/template";
 		// get user profile for cms operation
-		SessionContainer permSess = getRequestContainer().getSessionContainer().getPermanentContainer();
-		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		//SessionContainer permSess = getRequestContainer().getSessionContainer().getPermanentContainer();
+		//IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
             // try to delete the version
 			CmsManager manager = new CmsManager();
@@ -967,24 +924,24 @@ public class DetailBIObjectModule extends AbstractModule {
 	 * @param parId The id of the BIObjectParameter
 	 * @throws EMFUserError
 	 */
-	private void objParControl (SourceBean request, Integer biobjId, Integer parId) throws EMFUserError{
-		List list = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(biobjId);
-		Iterator i = list.iterator();
-		while(i.hasNext()){
-			BIObjectParameter BIobjPar = (BIObjectParameter)i.next();
-			Parameter param = BIobjPar.getParameter();
-			Integer paramId = param.getId();
-			if (paramId.equals(parId)){
-				HashMap params = new HashMap();
-				params.put(AdmintoolsConstants.PAGE, ListBIObjectParametersModule.MODULE_PAGE);
-				params.put(AdmintoolsConstants.OBJECT_ID, biobjId);
-				String path = (String) request.getAttribute("path");
-				params.put(ObjectsTreeConstants.PATH,path);
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1026, new Vector(), params);
-				errorHandler.addError(error);
-			}
-		}
-	}
+//	private void objParControl (SourceBean request, Integer biobjId, Integer parId) throws EMFUserError{
+//		List list = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(biobjId);
+//		Iterator i = list.iterator();
+//		while(i.hasNext()){
+//			BIObjectParameter BIobjPar = (BIObjectParameter)i.next();
+//			Parameter param = BIobjPar.getParameter();
+//			Integer paramId = param.getId();
+//			if (paramId.equals(parId)){
+//				HashMap params = new HashMap();
+//				params.put(AdmintoolsConstants.PAGE, ListBIObjectParametersModule.MODULE_PAGE);
+//				params.put(AdmintoolsConstants.OBJECT_ID, biobjId);
+//				String path = (String) request.getAttribute("path");
+//				params.put(ObjectsTreeConstants.PATH,path);
+//				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1026, new Vector(), params);
+//				errorHandler.addError(error);
+//			}
+//		}
+//	}
 	
 	/**
 	 * Clean the SessionContainer from no more useful objects.

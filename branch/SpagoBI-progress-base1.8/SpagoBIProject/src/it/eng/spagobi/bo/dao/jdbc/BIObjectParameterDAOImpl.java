@@ -145,7 +145,7 @@ public class BIObjectParameterDAOImpl extends AbstractJdbcDAO  implements IBIObj
 			String strSql1 = SQLStatements.getStatement("DELETE_BI_OBJECT_PARAMETER");
 			ArrayList parameters = new ArrayList(2);
 			
-			parameters.add(dataConnection.createDataField("par_id", Types.DECIMAL, aBIObjectParameter.getParIdOld()));
+			//parameters.add(dataConnection.createDataField("par_id", Types.DECIMAL, aBIObjectParameter.getParIdOld()));
 			parameters.add(dataConnection.createDataField("biobj_id", Types.DECIMAL, aBIObjectParameter.getBiObjectID()));
 			cmdDel = dataConnection.createDeleteCommand(strSql1);
 			dr = cmdDel.execute(parameters);
@@ -360,6 +360,13 @@ public class BIObjectParameterDAOImpl extends AbstractJdbcDAO  implements IBIObj
 			Utils.releaseResources(dataConnection, cmdSelect, dr);
 		}
 	
+	}
+
+
+
+	public BIObjectParameter loadForDetailByObjParId(Integer objParId) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

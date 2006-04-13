@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.bo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -31,24 +30,21 @@ import java.util.List;
  * @author Zoppello This class map the SBI_OBJ_PAR table
  */
 public class BIObjectParameter implements Serializable {
-	/*
-	 * BIOBJ_ID NUMBER N Business Intelligence Object identifier
-	 */
 	
+	private Integer id = null;
+	
+	/* BIOBJ_ID NUMBER N Business Intelligence Object identifier */
 	private Integer biObjectID = null;
 	
+	/* PAR_ID NUMBER N Parameter identifier */	
 	private Integer parID = null;
 
-	/* PAR_ID NUMBER N Parameter identifier */
 	private Parameter parameter = null;
-
+	
 	/*
 	 * LABEL VARCHAR2(36) Y Parameter label in BIObj use (short textual
 	 * identifier)
 	 */
-	private Integer parIdOld = null;
-	
-	
 	private String label = null;
 
 	/* REQ_FL NUMBER Y Parameter required flag. */
@@ -64,17 +60,28 @@ public class BIObjectParameter implements Serializable {
 	private Integer multivalue = null;
 
 	/*
-	 * PROG NUMBER N Ordinal number of BIObj and Parameter association and input
-	 * form.
+	 * PROG NUMBER N Ordinal number for sorting
 	 */
 	private Integer prog = null;
 
 	/* PARURL_NM VARCHAR2(18) Y Parameter name in HTTP request. */
 	private String parameterUrlName = null;
 
-	/* vALUES LIST OF THE PARAMETER (STRINGS) */
+	/* VALUES LIST OF THE PARAMETER (STRINGS) */
 	private List parameterValues = null;
 	
+	/**
+	 * @return Returns the id of the BIObjectParameter
+	 */
+	public Integer getId() {
+		return id;
+	}
+	/**
+	 * @param id The BIObjectParameter to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	/**
 	 * @return Returns the biObjectID.
 	 */
@@ -124,18 +131,6 @@ public class BIObjectParameter implements Serializable {
 		this.multivalue = multivalue;
 	}
 	/**
-	 * @return Returns the parameter.
-	 */
-	public Parameter getParameter() {
-		return parameter;
-	}
-	/**
-	 * @param parameter The parameter to set.
-	 */
-	public void setParameter(Parameter parameter) {
-		this.parameter = parameter;
-	}
-	/**
 	 * @return Returns the parameterUrlName.
 	 */
 	public String getParameterUrlName() {
@@ -172,18 +167,6 @@ public class BIObjectParameter implements Serializable {
 		this.parID = parID;
 	}
 	/**
-	 * @return Returns the parIdOld.
-	 */
-	public Integer getParIdOld() {
-		return parIdOld;
-	}
-	/**
-	 * @param parIdOld The parIdOld to set.
-	 */
-	public void setParIdOld(Integer parIdOld) {
-		this.parIdOld = parIdOld;
-	}
-	/**
 	 * @return Returns the prog.
 	 */
 	public Integer getProg() {
@@ -218,5 +201,17 @@ public class BIObjectParameter implements Serializable {
 	 */
 	public void setVisible(Integer visible) {
 		this.visible = visible;
+	}
+	/**
+	 * @return the Parameter object
+	 */
+	public Parameter getParameter() {
+		return parameter;
+	}
+	/**
+	 * @param parameter The Parameter to set
+	 */
+	public void setParameter(Parameter parameter) {
+		this.parameter = parameter;
 	}
 }

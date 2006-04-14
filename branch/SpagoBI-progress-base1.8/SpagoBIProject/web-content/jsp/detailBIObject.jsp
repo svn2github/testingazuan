@@ -795,7 +795,7 @@ function deleteBIParameterConfirm (message) {
 	<div class='div_detail_form' style='display:none;'>
 	<% 
     	isVisible = false;
-    	int visible = objPar.getVisible().intValue();
+    	visible = objPar.getVisible().intValue();
     	if(visible > 0) { isVisible = true; }
     %> 
 		<input type="radio" name="view_fl" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %> >True</input>

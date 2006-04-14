@@ -36,8 +36,8 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jackrabbit.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jndi.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/hibernate-3.1rc2.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/qbe.core-1.8.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.drivers.api-1.8.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.securityprovider.api-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/gioia/Documenti/Codice/Java/SpagoBIBranch/SpagoBIProject/web-content/WEB-INF/lib/sbi.securityprovider.api-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/gioia/Documenti/Codice/Java/SpagoBIBranch/SpagoBIProject/web-content/WEB-INF/lib/qbe.core-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/gioia/Documenti/Codice/Java/SpagoBIBranch/SpagoBIProject/web-content/WEB-INF/lib/sbi.drivers.api-1.8.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

@@ -55,6 +55,11 @@ public class DetailBIObjectPublisher implements PublisherDispatcherIFace {
 
 		String publisher = "";
 		
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+	            "DetailBIObjectPublisher", 
+	            "getPublisherName", 
+	            "[BEGIN]");
+		
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
 		// get the module response
@@ -81,13 +86,22 @@ public class DetailBIObjectPublisher implements PublisherDispatcherIFace {
 				
         Object loop = moduleResponse.getAttribute("loopback");
         Object lookupLoop = moduleResponse.getAttribute("lookupLoopback");
+        Object editLoop = moduleResponse.getAttribute("editLoopback");
+        
         if(loop != null) {
         	publisher = new String("detailBIObjectLoop");
 		} else if (lookupLoop != null){
-			return new String("parametersLookupLoop");
+			publisher = new String("parametersLookupLoop");
+		} else if (editLoop != null){
+			publisher = new String("reportsLookupLoop");
 		} else {
 			publisher = new String("detailBIObject");
 		}
+        
+        SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+	            "DetailBIObjectPublisher", 
+	            "getPublisherName", 
+	            "redirect to publisher: " + publisher);
         
 		return publisher;
 	}

@@ -362,6 +362,48 @@
 	      </BUTTONS>
 	    </CONFIG>
   	</MODULE>
+  	
+  	<!-- SUBREPORT LIST -->
+  	<MODULE class="it.eng.spagobi.services.modules.ListLookupReportsModule" name="ListLookupReportsModule">
+	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListParam.ListLookupParameters.title" >
+	      <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="MASTER_ID"/>
+	      <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="SUBREPORTS"/>
+	      
+	      <QUERIES>
+	        <SELECT_QUERY statement="SELECT_REPORTS_LIST"/>
+			<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="obj_id"/>
+	      </QUERIES>
+	      <CAPTIONS></CAPTIONS>
+	      <COLUMNS>
+	        <COLUMN label="OBJ_ID" name="OBJ_ID" hidden="false" />
+	        <COLUMN label="SBIDev.ListParam.columnLabel" name="LABEL" />
+	        <COLUMN label="SBIDev.ListParam.columnName" name="NAME" />
+	        <COLUMN label="SBIDev.ListParam.columnDesc" name="DESCRIPTION"/>
+	      </COLUMNS>
+	      <BUTTONS>
+	      	        
+	        <SAVE_BUTTON confirm="FALSE" name="save" image="/img/save.png" label="SBIDev.ListParamUse.selectCaption">
+          		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
+	          	<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
+	          	<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+        	</SAVE_BUTTON>
+        	
+        	<SAVE_AND_GOBACK_BUTTON confirm="FALSE" name="saveback" image="/img/saveAndGoBack.png" label="SBIDev.ListParamUse.selectCaption">
+          		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
+	          	<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
+	          	<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+        	</SAVE_AND_GOBACK_BUTTON>
+	        
+	        <BACK_BUTTON confirm="FALSE" name="back" image="/img/back.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	      	</BACK_BUTTON>	  
+	      	    
+	      </BUTTONS>
+	      
+	    </CONFIG>
+  	</MODULE>
 
 	<MODULE class="it.eng.spagobi.services.modules.ListRolesModule" name="ListRolesModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListRoles.title" >

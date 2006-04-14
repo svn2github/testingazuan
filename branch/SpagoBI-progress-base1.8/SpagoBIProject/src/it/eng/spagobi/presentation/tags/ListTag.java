@@ -101,7 +101,7 @@ public class ListTag extends TagSupport
 	 */
     
 	public int doStartTag() throws JspException {
-		SpagoBITracer.info("Admintools", "ListTag", "doStartTag", "method invoked");
+		SpagoBITracer.info("Admintools", "ListTag", "doStartTag", " method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest =(RenderRequest)httpRequest.getAttribute("javax.portlet.request");
@@ -131,15 +131,19 @@ public class ListTag extends TagSupport
 		} // if (_actionName != null)
 		else if (_moduleName != null) {
 			_serviceName = _moduleName;
+			SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " Module Name: " + _moduleName);
 			_content = (SourceBean) _serviceResponse.getAttribute(_moduleName);
 			SourceBean moduleBean =
 				(SourceBean) configure.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME", _moduleName);
+			
+			if(moduleBean!=null) SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", _moduleName + " configuration loaded");
 			_layout = (SourceBean) moduleBean.getAttribute("CONFIG");
 			if (_layout == null) {
 				// if the layout is dinamically created it is an attribute of the response
 				_layout = (SourceBean) _serviceResponse.getAttribute(_moduleName + ".CONFIG");
 			}
 			String pageName = (String) _serviceRequest.getAttribute("PAGE");
+			SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " PAGE: " + pageName);
 			_providerURL = "PAGE=" + pageName + "&MODULE=" + _moduleName + "&";
 			_providerUrlMap.put("PAGE", pageName);
 			_providerUrlMap.put("MODULE", _moduleName);

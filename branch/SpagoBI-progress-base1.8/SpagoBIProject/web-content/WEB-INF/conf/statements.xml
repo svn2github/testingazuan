@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <STATEMENTS>
-	<STATEMENT name="SELECT_USEID_FROM_PARUSE" 
+	<STATEMENT reportname="SELECT_USEID_FROM_PARUSE" 
                query="select 
 						P.USE_ID as USE_ID        
 						from        
@@ -199,8 +199,33 @@
   	              PAR_TYPE_CD as TYPE
   	       FROM SBI_PARAMETERS
 		   ORDER BY LABEL,NAME,DESCRIPTION "/>
+		   
+
+
+	<STATEMENT name="SELECT_REPORTS_LIST" 
+  	query="	SELECT 	biobj_id as OBJ_ID,
+  					descr as DESCRIPTION,
+  					label as LABEL,
+  					rel_name as NAME   					
+			FROM sbi_objects
+			ORDER BY LABEL,NAME,DESCRIPTION "/>
+			
+	<STATEMENT name="SELECT_SUBREPORTS_LIST" 
+  	query="	SELECT 	master_rpt_id AS MASTER_ID,
+  					sub_rpt_id AS SUBREPORT_ID  					 					
+			FROM sbi_subreports
+			WHERE master_rpt_id = ?"/>	   
+
+	<STATEMENT name="DELETE_SUBREPORTS" 
+	query="DELETE FROM sbi_subreports 
+		   WHERE master_rpt_id = ?"/> 
  
- 	<STATEMENT name="SELECT_PREDEFINED_CHECKS" 
+ 	 <STATEMENT name="INSERT_SUBREPORTS" 
+               query="INSERT INTO sbi_subreports (master_rpt_id, sub_rpt_id) 
+                      values (?, ?) "/>  
+ 
+ 
+  	<STATEMENT name="SELECT_PREDEFINED_CHECKS" 
   	query="SELECT T.CHECK_ID as ID,
        		T.LABEL as LABEL,
        		T.NAME as NAME,

@@ -56,6 +56,18 @@
     	</MODULES>
   	</PAGE>
   	
+  	<PAGE name="ReportsLookupPage" scope="REQUEST" title="ReportsLookupPage" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ReportsLookupPage" target="ListLookupReportsModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListLookupReportsModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
 	<PAGE name="ListEnginesPage" scope="REQUEST" title="Engines Management" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ListEnginesPage" target="ListEnginesModule">

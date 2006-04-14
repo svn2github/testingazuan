@@ -129,7 +129,8 @@ return 0;
 
 <form method='POST' action='<%= formUrl.toString() %>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
 
-<table class='header-table-portlet-section'>
+
+<table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' 
 		    style='vertical-align:middle;padding-left:5px;'>
@@ -406,6 +407,23 @@ return 0;
 					<input class='portlet-form-input-field' type="file" 
 		      		       name="uploadFile" id="uploadFile" onchange='fileToUploadInserted()'/>
 				</div>	
+             
+            
+            <!-- DISPLAY FORM FOR SUBREPORT MANAGMENT -->
+				<%
+		/**
+		PortletURL parametersLookupURL2 = renderResponse.createActionURL();
+  		parametersLookupURL2.setParameter("PAGE", "parametersLookupPage"); 
+  		**/
+	 %>
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						Subreports
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<input type="submit" name="Edit" value="Edit">
+				</div>	
             </div> 
 
 
@@ -541,7 +559,7 @@ return 0;
 	%>
 					<div class='<%= linkClass%>'>
 						<a href='javascript:changeBIParameter("<%= biObjPar.getId().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
-						   style="color:black;" > 
+						   style="color:black;"> 
 							<%= biObjPar.getLabel()%>
 						</a>
 					</div>
@@ -761,11 +779,16 @@ function deleteBIParameterConfirm (message) {
 	    	   name="parameterName" value='<%= parameter != null ? parameter.getName() : "" %>' 
 			   	maxlength="100" readonly>
       	<input type='hidden' id='par_Id' 
+			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />
+ 
 			   value='<%= parameter != null ? parameter.getId().toString() : "-1" %>' name='par_Id' />
      <%
+		/**
 		PortletURL parametersLookupURL = renderResponse.createActionURL();
   		parametersLookupURL.setParameter("PAGE", "parametersLookupPage"); 
+  		**/
 	 %>
+
   		&nbsp;*&nbsp;
 		<input type='image' name="loadParametersLookup" value="loadParametersLookup" 
 			   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 

@@ -21,20 +21,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.operations.DeleteOperation;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dbaccess.DataConnectionManager;
+import it.eng.spago.dbaccess.SQLStatements;
+import it.eng.spago.dbaccess.Utils;
+import it.eng.spago.dbaccess.sql.DataConnection;
+import it.eng.spago.dbaccess.sql.SQLCommand;
+import it.eng.spago.dbaccess.sql.result.DataResult;
+import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
@@ -53,6 +63,7 @@ import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -103,19 +114,33 @@ public class DetailBIObjectModule extends AbstractModule {
 	 * 
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		
+	
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 		if (PortletFileUpload.isMultipartContent((ActionRequest)portletRequest)){
 			request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
 		}
 		
 		RequestContainer requestContainer = this.getRequestContainer();
+		
 		session = requestContainer.getSessionContainer();
 		
+		// TEST & ERASE
+		List attrs = request.getContainedAttributes();
+		for(int i = 0; i < attrs.size(); i++){
+			SourceBeanAttribute attr = (SourceBeanAttribute)attrs.get(i);
+			if(attr!= null) SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " ATTR -> " + attr.getKey() + "=" + attr.getValue());
+			
+		}
+				
 		String message = (String) request.getAttribute("MESSAGEDET");
 		actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 		Object loadParametersLookup =  request.getAttribute("loadParametersLookup");
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","begin of detail BIObject modify/visualization service with message =" +message);
+		Object editSubreports =  request.getAttribute("Edit");
+		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service"," begin of detail BIObject modify/visualization service with message =" +message);
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " " + loadParametersLookup + " - " + editSubreports);
+		
+		
 		errorHandler = getErrorHandler();
 		
 		try {
@@ -124,11 +149,30 @@ public class DetailBIObjectModule extends AbstractModule {
 				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule", "service", "The message parameter is null");
 				throw userError;
 			} 
+			
 			if (loadParametersLookup != null){
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","loadParametersLookup != null");
 				lookupLoadHandler (request, message, response);
+			} else if(editSubreports != null){
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","editSubreports != null");
+				editSubreportsHandler (request, message, response);
 		    } else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.RETURN_FROM_LOOKUP)){
 				lookupReturnHandler(request, response);	
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.RETURN_BACK_FROM_LOOKUP)){
+				Object attr = null;
+				attr = request.getAttribute("saveback");
+				if(attr != null){
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","SAVE & BACK - " + attr);
+					lookupReportsSaveBackHandler(request,response);
+					return;
+				}
+				attr = request.getAttribute("save");				
+				if(attr != null) {
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","SAVE - " + attr);
+					lookupReturnBackHandler(request,response);
+					return;
+				}
+				
 				lookupReturnBackHandler(request,response);
 			}  else if (message.trim().equalsIgnoreCase(ObjectsTreeConstants.DETAIL_SELECT)) {
 				getDetailObject(request, response);
@@ -154,7 +198,82 @@ public class DetailBIObjectModule extends AbstractModule {
 			return;
 		}
 	}
+	
+	private List getSubreportsId(SourceBean request){
+		List results = new ArrayList();
+		List attrs = request.getContainedAttributes();
+		for(int i = 0; i < attrs.size(); i++){
+			SourceBeanAttribute attr = (SourceBeanAttribute)attrs.get(i);
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " ATTR -> " + attr.getKey() + "=" + attr.getValue());
+			String key = (String)attr.getKey();
+			if(key.startsWith("checkbox")) {
+				String id = key.substring(key.indexOf(':')+1, key.length());
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " ATTR [OK] " + id);
+				results.add(new Integer(id));
+			}
+		}
+		
+		return results;
+	}
+	
+	private void lookupReportsSaveBackHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
 
+		BIObject obj = (BIObject) session.getAttribute("LookupBIObject");
+		BIObjectParameter biObjPar = (BIObjectParameter) session.getAttribute("LookupBIObjectParameter");
+		String modality = (String) session.getAttribute("modality");
+		actor = (String) session.getAttribute("actor");
+		
+		session.delAttribute("LookupBIObject");
+		session.delAttribute("LookupBIObjectParameter");
+		session.delAttribute("modality");
+		session.delAttribute("actor");
+		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " ID: " + obj.getId().intValue());
+				
+		List subreports = getSubreportsId(request);
+		
+		DataConnection dataConnection = null;
+		SQLCommand sqlCommand = null;
+		DataResult dataResult = null;
+		try {
+			DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
+			dataConnection = dataConnectionManager.getConnection("spagobi");
+			String statement = null;
+			
+			statement = SQLStatements.getStatement("DELETE_SUBREPORTS");
+			statement = statement.replaceFirst("\\?", obj.getId().toString());
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " statement: " + statement);
+			sqlCommand = dataConnection.createDeleteCommand(statement);
+			dataResult = sqlCommand.execute();
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " results: " + dataResult.toString());
+		
+			
+			statement = SQLStatements.getStatement("INSERT_SUBREPORTS");			
+			for(int i = 0; i < subreports.size(); i++) {
+				String statementRewrite = statement;
+				statementRewrite = statementRewrite.replaceFirst("\\?", obj.getId().toString());
+				statementRewrite = statementRewrite.replaceFirst("\\?", subreports.get(i).toString());
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " statement: " + statementRewrite);
+				sqlCommand = dataConnection.createInsertCommand(statementRewrite);
+				dataResult = sqlCommand.execute();
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " results: " + dataResult.toString());
+			}
+		} catch (Exception ex) {
+			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "execQuery::executeQuery:", ex);
+		} finally {
+			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
+		} 
+		
+		
+		response.setAttribute(SpagoBIConstants.ACTOR, actor);
+		fillResponse(response);
+		reloadCMSInformation(obj);
+		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
+		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
+	}
+	
+
+	
 	private void lookupReturnBackHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
 
 		BIObject obj = (BIObject) session.getAttribute("LookupBIObject");
@@ -209,6 +328,51 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.setAttribute("actor",actor);
 		response.setAttribute("lookupLoopback", "true");
 		
+	}
+	
+	private void editSubreportsHandler(SourceBean request, String message, SourceBean response) throws EMFUserError, SourceBeanException {
+		
+		BIObject obj = recoverBIObjectDetails(request, message);
+		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
+		
+		session.setAttribute("LookupBIObject", obj);
+		session.setAttribute("LookupBIObjectParameter", biObjPar);
+		session.setAttribute("modality", message);
+		session.setAttribute("actor",actor);
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+	            "DetailBIObjectModule", 
+	            "lookupLoadHandler", 
+	            "[editSubreportsHandler]");
+		
+		DataConnection dataConnection = null;
+		SQLCommand sqlCommand = null;
+		DataResult dataResult = null;
+		SourceBean subreports = null;
+		try {
+			DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
+			dataConnection = dataConnectionManager.getConnection("spagobi");
+			String statement = null;
+						
+			statement = SQLStatements.getStatement("SELECT_SUBREPORTS_LIST");
+			statement = statement.replaceFirst("\\?", obj.getId().toString());
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " statement: " + statement);
+			sqlCommand = dataConnection.createSelectCommand(statement);
+			dataResult = sqlCommand.execute();
+			ScrollableDataResult scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
+			subreports = scrollableDataResult.getSourceBean();
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " results: " + subreports);
+			
+		} catch (Exception ex) {
+			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "execQuery::executeQuery:", ex);
+		} finally {
+			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
+		} 
+		
+		response.setAttribute("editLoopback", "true");	
+		response.setAttribute("MASTER_ID", obj.getId());
+		session.setAttribute("SUBREPORTS", subreports);
+		session.setAttribute("MASTER_ID", obj.getId());
+		session.setAttribute("SUBREPORTS", subreports);
 	}
 
 

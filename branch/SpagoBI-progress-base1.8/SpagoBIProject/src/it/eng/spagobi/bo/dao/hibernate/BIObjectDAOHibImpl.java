@@ -762,7 +762,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			aBIObject.setDescription(hibBIObject.getDescr());
 			aBIObject.setEncrypt(new Integer(hibBIObject.getEncrypt().intValue()));
-			
+			aBIObject.setVisible(new Integer(hibBIObject.getVisible().intValue()));
+									
 			aBIObject.setEngine(new EngineDAOHibImpl().toEngine(hibBIObject.getSbiEngines()));
 			
 			aBIObject.setId(hibBIObject.getBiobjId());

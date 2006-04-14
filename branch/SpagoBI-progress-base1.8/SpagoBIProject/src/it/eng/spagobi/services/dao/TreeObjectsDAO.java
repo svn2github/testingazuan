@@ -252,32 +252,35 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 		try {
             BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);    	
 	        bean = new SourceBean("Report");
-	        // LUCA ORIGINAL CODE
-	        //String name = obj.getLabel();
-	    	//
+	        
+	        SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "getInformationReport", "START");
 	        
 	        // AZ
 	        String name = obj.getName();
 	        String label = obj.getLabel();
 	        String description = obj.getDescription();
 	        Integer visible = obj.getVisible();
-	    	
+	    		        
 	        if(description==null) 
             	description = "";
 	    	Integer idFunct = obj.getId();
 	    	Integer idType = obj.getBiObjectTypeID();
 	    	String codeType = obj.getBiObjectTypeCode();
+	    	    	    	
 	    	bean.setAttribute("id", idFunct);
-	    	// - AZ
 	    	bean.setAttribute("label", label);
-	    	// - AZ
 	    	bean.setAttribute("name", name);
 	    	bean.setAttribute("description", description);
 	    	bean.setAttribute("path", path);
 	    	bean.setAttribute("idType", idType);
 	    	bean.setAttribute("codeType", codeType);
 	    	bean.setAttribute("state", obj.getStateCode());
+	    	SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "getInformationReport", "STEP3 -> visible = " + visible);
 	    	bean.setAttribute("visible", visible);
+	    	SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
+		            "getInformationReport", "STEP3 -> visible [OK]");
     	} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "TreeObjectsDAO", 
 					            "getInformationReport", "Cannot recover detail information from database", ex);

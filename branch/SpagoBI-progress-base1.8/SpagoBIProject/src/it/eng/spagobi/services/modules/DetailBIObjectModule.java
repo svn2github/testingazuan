@@ -160,14 +160,14 @@ public class DetailBIObjectModule extends AbstractModule {
 				if(request.getAttribute("prevPage") != null){
 					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","MOVE TO PREVIOUS PAGE [" + pageNumberStr + " - 1]");
 					// move backwards
-					moveIntoSubreportsList(request,response, false);
+					moveIntoSubreportsListHandler(request,response, false);
 					return;
 				}
 				
 				if(request.getAttribute("nextPage") != null){
 					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","MOVE TO NEXT PAGE [" + pageNumberStr + " + 1]");
 					//move forewards
-					moveIntoSubreportsList(request,response, true);
+					moveIntoSubreportsListHandler(request,response, true);
 					return;
 				}
 				
@@ -217,10 +217,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			errorHandler.addError(internalError);
 			return;
 		}
-	}
-	
-	
-	
+	}	
 	
 	private void setLoopbackContext(SourceBean request, String message) throws EMFUserError{
 		BIObject obj = recoverBIObjectDetails(request, message);
@@ -299,6 +296,36 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute("editLoopback", "true");			
 	}
 	
+	private List getSubreportsId(SourceBean request){
+		List results = new ArrayList();
+		List attrs = request.getContainedAttributes();
+		for(int i = 0; i < attrs.size(); i++){
+			SourceBeanAttribute attr = (SourceBeanAttribute)attrs.get(i);
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " ATTR -> " + attr.getKey() + "=" + attr.getValue());
+			String key = (String)attr.getKey();
+			if(key.startsWith("checkbox")) {
+				String id = key.substring(key.indexOf(':')+1, key.length());
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " ATTR [OK] " + id);
+				results.add(new Integer(id));
+			}
+		}
+		
+		return results;
+	}
+	
+	private void updateSubreports(SourceBean request, SourceBean response, Integer id)throws SourceBeanException{
+		List checkedSubreports = getSubreportsId(request);
+		SourceBean subreports = (SourceBean)session.getAttribute("SUBREPORTS");
+		for(int i = 0; i < checkedSubreports.size(); i++) {
+			SourceBean row = new SourceBean("ROW");
+			row.setAttribute("MASTER_ID", id);
+			row.setAttribute("SUBREPORT_ID", checkedSubreports.get(i));
+			subreports.setAttribute(row);
+		}
+		session.delAttribute("SUBREPORTS");
+		session.setAttribute("SUBREPORTS", subreports);
+	}
+		
 	private void saveSubreportsConfiguration(SourceBean request, SourceBean response) throws SourceBeanException{
 		Integer masterReportId = getBIObjectIdFromLoopbackContext();
 		updateSubreports(request, response, masterReportId);
@@ -387,7 +414,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute("editLoopback", "true");		
 	}
 	
-	private void moveIntoSubreportsList(SourceBean request, SourceBean response, boolean moveNext) throws EMFUserError, SourceBeanException {
+	private void moveIntoSubreportsListHandler(SourceBean request, SourceBean response, boolean moveNext) throws EMFUserError, SourceBeanException {
 		String pageNumberStr = (String)session.getAttribute("PAGE_NUMBER");
 		int pageNumber = 1;
 		if(pageNumberStr!=null){			
@@ -418,23 +445,6 @@ public class DetailBIObjectModule extends AbstractModule {
 	
 	
 	
-	
-	private List getSubreportsId(SourceBean request){
-		List results = new ArrayList();
-		List attrs = request.getContainedAttributes();
-		for(int i = 0; i < attrs.size(); i++){
-			SourceBeanAttribute attr = (SourceBeanAttribute)attrs.get(i);
-			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " ATTR -> " + attr.getKey() + "=" + attr.getValue());
-			String key = (String)attr.getKey();
-			if(key.startsWith("checkbox")) {
-				String id = key.substring(key.indexOf(':')+1, key.length());
-				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service", " ATTR [OK] " + id);
-				results.add(new Integer(id));
-			}
-		}
-		
-		return results;
-	}
 	
 	
 	
@@ -481,29 +491,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 				
 	}
-
-
-	
-	
-	
-	
-	private void updateSubreports(SourceBean request, SourceBean response, Integer id)throws SourceBeanException{
-		List checkedSubreports = getSubreportsId(request);
-		SourceBean subreports = (SourceBean)session.getAttribute("SUBREPORTS");
-		for(int i = 0; i < checkedSubreports.size(); i++) {
-			SourceBean row = new SourceBean("ROW");
-			row.setAttribute("MASTER_ID", id);
-			row.setAttribute("SUBREPORT_ID", checkedSubreports.get(i));
-			subreports.setAttribute(row);
-		}
-		session.delAttribute("SUBREPORTS");
-		session.setAttribute("SUBREPORTS", subreports);
-	}
-	
-	
-	
-	
-
 
 	/**
 	 * Gets the detail of a BI object  choosed by the user from the 

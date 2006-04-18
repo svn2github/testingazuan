@@ -62,5 +62,6 @@ public class AdmintoolsConstants {
 	public static final String REPORT_MODALITIES_LOVID = "REPORT_MODALITIES_LOVID";
 	public static final String RETURN_FROM_LOOKUP = "RETURN_FROM_LOOKUP";
 	public static final String RETURN_BACK_FROM_LOOKUP = "RETURN_BACK_FROM_LOOKUP";
+	public static final String RETURN_FROM_SUBREPORTS_LOOKUP = "RETURN_FROM_SUBREPORTS_LOOKUP";
 	public static final String ROLES_SYNCH = "ROLES_SYNCH";
 }

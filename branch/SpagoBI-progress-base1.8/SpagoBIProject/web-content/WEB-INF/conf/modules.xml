@@ -380,26 +380,25 @@
 	        <COLUMN label="SBIDev.ListParam.columnName" name="NAME" />
 	        <COLUMN label="SBIDev.ListParam.columnDesc" name="DESCRIPTION"/>
 	      </COLUMNS>
-	      <BUTTONS>
-	      	        
-	        <SAVE_BUTTON confirm="FALSE" name="save" image="/img/save.png" label="SBIDev.ListParamUse.selectCaption">
-          		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
-	          	<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
-	          	<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
-        	</SAVE_BUTTON>
-        	
-        	<SAVE_AND_GOBACK_BUTTON confirm="FALSE" name="saveback" image="/img/saveAndGoBack.png" label="SBIDev.ListParamUse.selectCaption">
-          		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
-	          	<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
-	          	<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
-        	</SAVE_AND_GOBACK_BUTTON>
-	        
-	        <BACK_BUTTON confirm="FALSE" name="back" image="/img/back.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
-	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
-	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
-	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
-	      	</BACK_BUTTON>	  
-	      	    
+	      
+	      <BUTTONS PAGE="DetailBIObjectPage" MESSAGEDET="RETURN_FROM_SUBREPORTS_LOOKUP" LIGHT_NAVIGATOR_DISABLED="true">	      	        
+	        <SAVE_BUTTON 
+	        	confirm="FALSE" 
+	        	name="save" 
+	        	image="/img/save.png" 
+	        	label="SBIDev.ListParamUse.selectCaption"/>
+           	
+           	<SAVE_AND_GOBACK_BUTTON 
+           		confirm="FALSE" 
+           		name="saveback" 
+           		image="/img/saveAndGoBack.png" 
+           		label="SBIDev.ListParamUse.selectCaption"/>
+            
+            <BACK_BUTTON 
+            	confirm="FALSE" 
+            	name="back" 
+            	image="/img/back.png" 
+            	label="SBIDev.ListParam.ListLookupParameters.backButton"/>
 	      </BUTTONS>
 	      
 	    </CONFIG>

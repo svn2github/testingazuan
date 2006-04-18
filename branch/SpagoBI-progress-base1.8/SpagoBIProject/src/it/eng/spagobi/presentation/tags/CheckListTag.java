@@ -179,9 +179,8 @@ public class CheckListTag extends TagSupport
 		
 		PortletURL url = renderResponse.createActionURL();
 		url.setParameter("PAGE", "DetailBIObjectPage"); 
-		url.setParameter("MESSAGEDET", "RETURN_BACK_FROM_LOOKUP"); 
-		url.setParameter("LIGHT_NAVIGATOR_DISABLED", "true"); 
-		url.setParameter("TEST", "EraseMeASAP");
+		url.setParameter("MESSAGEDET", "RETURN_FROM_SUBREPORTS_LOOKUP"); 
+		url.setParameter("LIGHT_NAVIGATOR_DISABLED", "true"); 		
 		 
 		_htmlStream.append(" <form method='POST' action='" + url.toString() + "'>\n");
 		makeForm();
@@ -611,7 +610,6 @@ public class CheckListTag extends TagSupport
 									  "class='header-button-image-portlet-section'" + 	
 									  "src ='"+ renderResponse.encodeURL(renderRequest.getContextPath() + img) + "' " +
 									  "alt='" + label + "'>\n");
-			//htmlStream.append("<a href='"+buttonUrl.toString()+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + img)+"' /></a>\n");
 			htmlStream.append("</td>\n");
 		}
 		

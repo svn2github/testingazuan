@@ -160,6 +160,22 @@ public class DetailBIObjectModule extends AbstractModule {
 				lookupReturnHandler(request, response);	
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.RETURN_BACK_FROM_LOOKUP)){
 				Object attr = null;
+				
+				String pageNumberStr = (String)session.getAttribute("PAGE_NUMBER");
+				attr = request.getAttribute("prevPage");
+				if(attr != null){
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","PREVIOUS PAGE - " + pageNumberStr + " - 1");
+					moveIntoSubreports(request,response, false);
+					return;
+				}
+				
+				attr = request.getAttribute("nextPage");
+				if(attr != null){
+					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","NEXT PAGE - " + pageNumberStr + " + 1");
+					moveIntoSubreports(request,response, true);
+					return;
+				}
+				
 				attr = request.getAttribute("saveback");
 				if(attr != null){
 					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","SAVE & BACK - " + attr);
@@ -330,6 +346,27 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 	}
 	
+	private void moveIntoSubreports(SourceBean request, SourceBean response, boolean moveNext) throws EMFUserError, SourceBeanException {
+		String pageNumberStr = (String)session.getAttribute("PAGE_NUMBER");
+		int pageNumber = 1;
+		if(pageNumberStr!=null){			
+			try {
+				pageNumber = Integer.parseInt(pageNumberStr);
+			} 
+			catch (NumberFormatException ex) {
+				TracerSingleton.log(
+					Constants.NOME_MODULO,
+					TracerSingleton.WARNING,
+					"DetailBIObjectModule::moveIntoSubreports:: PAGE_NUMBER nullo");
+			} 
+		}
+		response.setAttribute("editLoopback", "true");			
+		session.setAttribute("MESSAGE", "LIST_PAGE");
+		if(moveNext) pageNumber += 1; 
+		else pageNumber -= 1;
+		session.setAttribute("LIST_PAGE", String.valueOf(pageNumber));		
+	}
+	
 	private void editSubreportsHandler(SourceBean request, String message, SourceBean response) throws EMFUserError, SourceBeanException {
 		
 		BIObject obj = recoverBIObjectDetails(request, message);
@@ -339,11 +376,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.setAttribute("LookupBIObjectParameter", biObjPar);
 		session.setAttribute("modality", message);
 		session.setAttribute("actor",actor);
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-	            "DetailBIObjectModule", 
-	            "lookupLoadHandler", 
-	            "[editSubreportsHandler]");
-		
+				
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;
 		DataResult dataResult = null;
@@ -360,7 +393,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			dataResult = sqlCommand.execute();
 			ScrollableDataResult scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
 			subreports = scrollableDataResult.getSourceBean();
-			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " results: " + subreports);
+			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " results: " + subreports.toXML());
 			
 		} catch (Exception ex) {
 			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "execQuery::executeQuery:", ex);
@@ -369,7 +402,12 @@ public class DetailBIObjectModule extends AbstractModule {
 		} 
 		
 		response.setAttribute("editLoopback", "true");	
-		response.setAttribute("MASTER_ID", obj.getId());
+		response.setAttribute("MASTER_ID", obj.getId());	
+		
+		//session.setAttribute("MESSAGE", "LIST_PAGE");
+		//session.setAttribute("LIST_PAGE", String.valueOf(2));
+		
+		
 		session.setAttribute("SUBREPORTS", subreports);
 		session.setAttribute("MASTER_ID", obj.getId());
 		session.setAttribute("SUBREPORTS", subreports);

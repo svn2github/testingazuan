@@ -21,12 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.SpagoBITracer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Loads the parameters lookup list
@@ -44,6 +49,25 @@ public class ListLookupReportsModule extends AbstractBasicListModule {
 	public ListLookupReportsModule() {
 		super();
 	} 
+	
+	public void service(SourceBean request, SourceBean response) throws Exception {
+		SessionContainer session = this.getRequestContainer().getSessionContainer();
+		
+		String message = (String) session.getAttribute("MESSAGE");		
+		if(message!=null){
+			request.setAttribute("MESSAGE", message);
+			session.delAttribute("MESSAGE");
+		}
+		
+		String page = (String) session.getAttribute("LIST_PAGE");
+		if(page!=null){
+			request.setAttribute("LIST_PAGE", page);
+			session.delAttribute("LIST_PAGE");
+		}
+		super.service(request, response); 
+	}
+	  
+	
 	/**
 	 * Gets the list
 	 * @param request The request SourceBean
@@ -51,14 +75,18 @@ public class ListLookupReportsModule extends AbstractBasicListModule {
 	 * @return ListIFace 
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+		
+		
+		
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
 	            "DetailBIObjectPublisher", 
 	            "getPublisherName", 
 	            "ZZZZZZZZZZZZ REQ: " + request);
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-	            "DetailBIObjectPublisher", 
-	            "getPublisherName", 
-	            "ZZZZZZZZZZZZ RESP: " + request);
+		
+		getSubreportsId(request);
+		
+		
+		
 		return DelegatedBasicListService.getList(this, request, response);
 	} 
 	/**
@@ -71,5 +99,21 @@ public class ListLookupReportsModule extends AbstractBasicListModule {
 		return DelegatedBasicListService.delete(this, request, response);
 	} 
 	
+	private List getSubreportsId(SourceBean request){
+		List results = new ArrayList();
+		List attrs = request.getContainedAttributes();
+		for(int i = 0; i < attrs.size(); i++){
+			SourceBeanAttribute attr = (SourceBeanAttribute)attrs.get(i);
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "ListLookupReportsModule","service", " ATTR -> " + attr.getKey() + "=" + attr.getValue());
+			String key = (String)attr.getKey();
+			if(key.startsWith("checkbox")) {
+				String id = key.substring(key.indexOf(':')+1, key.length());
+				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "ListLookupReportsModule","service", " ATTR [OK] " + id);
+				results.add(new Integer(id));
+			}
+		}
+		
+		return results;
+	}
 	
 }

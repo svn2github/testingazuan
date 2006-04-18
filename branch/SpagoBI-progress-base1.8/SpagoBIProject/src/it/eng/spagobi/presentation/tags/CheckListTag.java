@@ -30,6 +30,7 @@ import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
@@ -275,7 +276,24 @@ public class CheckListTag extends TagSupport
 	
 	
 	
-	
+	private SourceBean getSubreports(Integer id, Map subreportMap){
+		SourceBean subreports = null;
+		try {
+			subreports = new SourceBean("ROWS");
+			Iterator it = subreportMap.keySet().iterator();
+			while(it.hasNext()){
+				String key = (String)it.next();
+				Integer value = (Integer)subreportMap.get(key);
+				SourceBean row = new SourceBean("ROW");
+				row.setAttribute("MASTER_ID", id);
+				row.setAttribute("SUBREPORT_ID", value);
+				subreports.setAttribute(row);
+			}
+		} catch (SourceBeanException e) {
+			e.printStackTrace();
+		}
+		return subreports;
+	}
 	
 	/**
 	 * Builds Table list rows, reading all query information.
@@ -287,10 +305,10 @@ public class CheckListTag extends TagSupport
 	protected void makeRows() throws JspException 
 	{
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
-		// test purpose
-		Integer masterId = (Integer) _serviceResponse.getAttribute("MASTER_ID");
-		SourceBean subreports = (SourceBean) _serviceResponse.getAttribute("SUBREPORTS");
-			    
+				
+		Integer masterId = masterId = (Integer) _session.getAttribute("MASTER_ID");
+		SourceBean subreports = subreports = (SourceBean) _session.getAttribute("SUBREPORTS");
+		
 		TracerSingleton.log(
 				Constants.NOME_MODULO,
 				TracerSingleton.WARNING,
@@ -301,34 +319,7 @@ public class CheckListTag extends TagSupport
 				TracerSingleton.WARNING,
 				"ListTag::makeRows:request: SUBREPORTS = " + subreports);
 		
-		masterId = (Integer) _serviceRequest.getAttribute("MASTER_ID");
-		subreports = (SourceBean) _serviceRequest.getAttribute("SUBREPORTS");
-			    
-		TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeRows:SessionContainer session: MASTER_ID = " + masterId);
-		
-		TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeRows:request: SUBREPORTS = " + subreports);
-		
-		//	test purpose
-		
-		masterId = (Integer) _session.getAttribute("MASTER_ID");
-		subreports = (SourceBean) _session.getAttribute("SUBREPORTS");
-			    
-		TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeRows:SessionContainer session: MASTER_ID = " + masterId);
-		
-		TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeRows:request: SUBREPORTS = " + subreports);
-		
+				
 		List subreportsList = subreports.getAttributeAsList("ROW");
 		Map subreportMap = new HashMap();
 		for(int i = 0; i < subreportsList.size(); i++) {
@@ -339,8 +330,13 @@ public class CheckListTag extends TagSupport
 					Constants.NOME_MODULO,
 					TracerSingleton.WARNING,
 					"ListTag::makeRows:request: SUBREPORT_ID = " + id);
-			subreportMap.put(id.toString(), null);
+			subreportMap.put(id.toString(), id);
 		}
+		
+		TracerSingleton.log(
+				Constants.NOME_MODULO,
+				TracerSingleton.WARNING,
+				"ListTag::makeRows:request: SUBREPORTS = " + getSubreports(masterId, subreportMap));
 		
 		boolean alternate = false;
         String rowClass;
@@ -409,6 +405,10 @@ public class CheckListTag extends TagSupport
 	protected void makeNavigationButton() throws JspException {
 		
 		String pageNumberString = (String) _content.getAttribute("PAGED_LIST.PAGE_NUMBER");
+		if(_session.getAttribute("PAGE_NUMBER") != null) 
+			_session.delAttribute("PAGE_NUMBER");
+		_session.setAttribute("PAGE_NUMBER", pageNumberString);
+		
 		int pageNumber = 1;
 		try {
 			pageNumber = Integer.parseInt(pageNumberString);
@@ -480,7 +480,12 @@ public class CheckListTag extends TagSupport
 		}
 		
 		if(pageNumber != 1) {	
-			_htmlStream.append("		<A href=\""+prevUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+			//_htmlStream.append("		<A href=\""+prevUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "prevPage" + "' " +					  
+					  "src ='"+ renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif") + "' " + 
+					  "align='left' border=0" +
+					  "alt='" + "GO To Previous Page" + "'>\n");
 		} else {
 			_htmlStream.append("		<IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")+"' ALIGN=RIGHT border=0>\n");
 		}		
@@ -555,7 +560,12 @@ public class CheckListTag extends TagSupport
 		// create link for next page
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
 		if(pageNumber != pagesNumber) {	
-			_htmlStream.append("		<A href=\""+nextUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+			//_htmlStream.append("		<A href=\""+nextUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "nextPage" + "' " +
+					  "src ='"+ renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif") + "' " +
+					  "align='right' border='0'" +
+					  "alt='" + "GO To Next Page" + "'>\n");
 		} else {
 			_htmlStream.append("		<IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif")+"' ALIGN=RIGHT border=0>\n");
 		}		
@@ -676,36 +686,6 @@ public class CheckListTag extends TagSupport
 		return url;
 	}
 	
-	/**
-	 * Gets the query parameters from request and puts them into an hashMap.
-	 * 
-	 * @return The hash map containing query parameters.
-	 */
-//	protected HashMap getQueryStringParameter() {
-//		
-//		HashMap params = new HashMap();
-////		StringBuffer queryStringBuffer = new StringBuffer();
-//		List queryParameters = _serviceRequest.getContainedAttributes();
-//		
-//		// The LightNavigator is not modified from entering to leaving the list
-//		for (int i = 0; i < queryParameters.size(); i++) {			
-//			SourceBeanAttribute parameter = (SourceBeanAttribute) queryParameters.get(i);
-//			String parameterKey = parameter.getKey();
-//			if (parameterKey.equalsIgnoreCase("ACTION_NAME")
-//				|| parameterKey.equalsIgnoreCase("PAGE")
-//				|| parameterKey.equalsIgnoreCase("MODULE")
-//				|| parameterKey.equalsIgnoreCase("MESSAGE")
-//				|| parameterKey.equalsIgnoreCase("LIST_PAGE")
-//				|| parameterKey.equalsIgnoreCase("LIST_NOCACHE")
-//				|| parameterKey.equalsIgnoreCase("NAVIGATOR_DISABLED")
-//				|| parameterKey.equalsIgnoreCase("NAVIGATOR_RESET")
-//				|| parameterKey.equalsIgnoreCase("LOOKUP_PARAMETER_ID"))
-//				continue;
-//			String parameterValue = parameter.getValue().toString();
-//			params.put(parameterKey, parameterValue);
-//		} // for (int i = 0; i < queryParameters.size(); i++)
-//		return params;
-//	} // protected String getQueryString()
 
 	
 	/**
@@ -766,122 +746,3 @@ public class CheckListTag extends TagSupport
 		_filter = filter;
 	}
 } // public class ListTag extends TagSupport
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//protected void makeJavaScript() {
-//	_htmlStream.append("<SCRIPT language=\"ButtonHandlerTag\" type=\"text/javascript\">\n");
-//	_htmlStream.append("function goConfirm(url, alertFlag) {\n");
-//	_htmlStream.append("var _url = \"AdapterHTTP?\" + url;\n");
-//	_htmlStream.append("if (alertFlag == 'TRUE' ) {\n");
-//	_htmlStream.append("if (confirm('Confermi operazione'))\n");
-//	_htmlStream.append("window.location = _url;\n");
-//	_htmlStream.append("}\n");
-//	_htmlStream.append("else\n");
-//	_htmlStream.append("window.location = _url;\n");
-//	_htmlStream.append("}\n");
-//	_htmlStream.append("// -->\n");
-//	_htmlStream.append("</SCRIPT>\n");
-//	SourceBean insertButton = (SourceBean) _layout.getAttribute("BUTTONS.INSERT_BUTTON");
-//	SourceBean deleteCaption = (SourceBean) _layout.getAttribute("CAPTIONS.DELETE_CAPTION");
-//	
-//	RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-//	SourceBean request = requestContainer.getServiceRequest();
-//	boolean disableTorna = false;
-//	if (request.containsAttribute(Navigator.NAVIGATOR_RESET))
-//		if (((String)request.getAttribute(Navigator.NAVIGATOR_RESET)).equalsIgnoreCase("TRUE"))
-//			disableTorna = true;
-//		
-//	_htmlStream.append("<SCRIPT>\n");
-//	_htmlStream.append("function inizio() {\n");
-//	if 	(deleteCaption == null)	
-//		_htmlStream.append("	sospendiSingoloPulsante ('ELIMI');\n");
-//	if (insertButton == null)
-//		_htmlStream.append("	sospendiSingoloPulsante ('NUOVO') ;\n");
-//	if (disableTorna)
-//		_htmlStream.append("	sospendiSingoloPulsante ('TORNA') ;\n");
-//	_htmlStream.append("}\n");
-//	
-//	_htmlStream.append("		function reloadPulsanti() {\n");
-//	if 	(deleteCaption != null)	
-//		_htmlStream.append("		   reloadPulsante('ELIMI','listaForm','RB_LISTA');\n");
-//	_htmlStream.append("		   reloadPulsante('MODIF','listaForm','RB_LISTA');\n");
-//	if (!disableTorna)
-//		_htmlStream.append("		   reloadPulsante('TORNA','listaForm','RB_LISTA');\n");
-//	if (insertButton != null)
-//		_htmlStream.append("		   reloadPulsante('NUOVO','listaForm','RB_LISTA');\n");
-//	_htmlStream.append("		}\n");
-//	_htmlStream.append("		function sospendiPulsanti () {\n");
-//	_htmlStream.append("		  sospendiSingoloPulsante ('ELIMI');\n");
-//	_htmlStream.append("		  sospendiSingoloPulsante ('MODIF');\n");
-//	_htmlStream.append("		  sospendiSingoloPulsante ('TORNA');\n");
-//	_htmlStream.append("		  sospendiSingoloPulsante ('NUOVO');\n");
-//	_htmlStream.append("		}\n");
-//	_htmlStream.append("		function inviaRichiesta(pulsante,url,alertFlag) {\n");
-//	_htmlStream.append("			var is_attivo = eval(pulsante+'H');\n");
-//	_htmlStream.append("			if ( is_attivo == 'false') { \n");
-//	_htmlStream.append("				alert ('Operazione disabilitata');\n");
-//	_htmlStream.append("				return;\n");
-//	_htmlStream.append("			}\n");
-//	_htmlStream.append("			var result = getIdSelezionato('listaForm','RB_LISTA');\n");
-//	_htmlStream.append("			if (pulsante == \"ELIMI\") {\n");
-//	_htmlStream.append("               if ((alertFlag == 'TRUE' ) && ((confirm('Confermi cancellazione?')))){\n");
-//	_htmlStream.append("				  sospendiPulsanti ();\n");
-//	_htmlStream.append("				  var _url = 'AdapterHTTP?';\n");
-//	_htmlStream.append("				  _url = _url + result + url;\n");
-//	_htmlStream.append("                  window.location = _url;\n");
-//	_htmlStream.append("				  return ;\n");
-//	_htmlStream.append("			   }\n");
-//	_htmlStream.append("			} else if (pulsante == \"MODIF\") {\n");
-//	_htmlStream.append("				sospendiPulsanti ();\n");
-//	_htmlStream.append("				var _url = 'AdapterHTTP?';\n");
-//	_htmlStream.append("				_url = _url + result + url;\n");
-//	_htmlStream.append("				window.location = _url;\n");
-//	_htmlStream.append("				return ;\n");
-//	_htmlStream.append("			} else if (pulsante == \"TORNA\") {\n");
-//	_htmlStream.append("				sospendiPulsanti();\n");
-//	_htmlStream.append("				window.location = 'AdapterHTTP?NAVIGATOR_BACK=1&LIST_NOCACHE=TRUE';\n");
-//	_htmlStream.append("				return;\n");
-//	_htmlStream.append("			} else if (pulsante == \"NUOVO\") {\n");
-//	_htmlStream.append("				sospendiPulsanti ();\n");
-//	_htmlStream.append("				var _url = 'AdapterHTTP?';\n");
-//	_htmlStream.append("				_url = _url + url;\n");
-//	_htmlStream.append("				window.location = _url;\n");
-//	_htmlStream.append("				return ;\n");
-//	_htmlStream.append("			}\n");
-//	_htmlStream.append("			return;\n");
-//	_htmlStream.append("		}\n");
-//	_htmlStream.append("</SCRIPT>\n");
-//
-//	} // protected void makeJavaScript()
-
-
-
-
-
-

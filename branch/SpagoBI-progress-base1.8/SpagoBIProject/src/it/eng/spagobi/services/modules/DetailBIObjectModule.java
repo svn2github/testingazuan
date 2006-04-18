@@ -726,6 +726,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		objClone.setCurrentTemplateVersion(obj.getCurrentTemplateVersion());
 		objClone.setDescription(obj.getDescription());
 		objClone.setEncrypt(obj.getEncrypt());
+		objClone.setVisible(obj.getVisible());
 		objClone.setEngine(obj.getEngine());
 		objClone.setId(obj.getId());
 		objClone.setLabel(obj.getLabel());
@@ -812,6 +813,9 @@ public class DetailBIObjectModule extends AbstractModule {
 		String relname = (String) request.getAttribute("relname");
 		String criptableStr = (String) request.getAttribute("criptable");
 		Integer encrypt = new Integer(criptableStr);
+		String visibleStr = (String) request.getAttribute("visible");
+		Integer visible = new Integer(visibleStr);
+		
 		String typeAttr = (String) request.getAttribute("type");
 		StringTokenizer tokentype = new StringTokenizer(typeAttr, ",");
 		String typeIdStr = tokentype.nextToken();
@@ -865,6 +869,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		obj.setBiObjectTypeID(typeIdInt);
 		obj.setDescription(description);
 		obj.setEncrypt(encrypt);
+		obj.setVisible(visible);
 		obj.setEngine(engine);
 		obj.setId(id);
 		obj.setName(name);
@@ -937,6 +942,7 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setLabel("");
             obj.setName("");
             obj.setEncrypt(new Integer(0));
+            obj.setVisible(new Integer(1));
             obj.setRelName("");
             obj.setStateID(null);
             obj.setStateCode("");

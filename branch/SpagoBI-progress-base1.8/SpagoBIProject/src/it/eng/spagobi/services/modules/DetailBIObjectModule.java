@@ -68,6 +68,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -246,7 +247,11 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " ID: " + obj.getId().intValue());
 				
-		List subreports = getSubreportsId(request);
+		updateSubreports(request, response, obj.getId());
+		SourceBean subreports = (SourceBean)session.getAttribute("SUBREPORTS");
+		List subreportsList = subreports.getAttributeAsList("ROW");
+		
+		
 		
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;
@@ -265,10 +270,12 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 			
 			statement = SQLStatements.getStatement("INSERT_SUBREPORTS");			
-			for(int i = 0; i < subreports.size(); i++) {
+			for(int i = 0; i < subreportsList.size(); i++) {
+				SourceBean subreport = (SourceBean)subreportsList.get(i);
+				Integer id = (Integer)subreport.getAttribute("SUBREPORT_ID");
 				String statementRewrite = statement;
 				statementRewrite = statementRewrite.replaceFirst("\\?", obj.getId().toString());
-				statementRewrite = statementRewrite.replaceFirst("\\?", subreports.get(i).toString());
+				statementRewrite = statementRewrite.replaceFirst("\\?", id.toString());
 				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " statement: " + statementRewrite);
 				sqlCommand = dataConnection.createInsertCommand(statementRewrite);
 				dataResult = sqlCommand.execute();
@@ -346,6 +353,19 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 	}
 	
+	private void updateSubreports(SourceBean request, SourceBean response, Integer id)throws SourceBeanException{
+		List checkedSubreports = getSubreportsId(request);
+		SourceBean subreports = (SourceBean)session.getAttribute("SUBREPORTS");
+		for(int i = 0; i < checkedSubreports.size(); i++) {
+			SourceBean row = new SourceBean("ROW");
+			row.setAttribute("MASTER_ID", id);
+			row.setAttribute("SUBREPORT_ID", checkedSubreports.get(i));
+			subreports.setAttribute(row);
+		}
+		session.delAttribute("SUBREPORTS");
+		session.setAttribute("SUBREPORTS", subreports);
+	}
+	
 	private void moveIntoSubreports(SourceBean request, SourceBean response, boolean moveNext) throws EMFUserError, SourceBeanException {
 		String pageNumberStr = (String)session.getAttribute("PAGE_NUMBER");
 		int pageNumber = 1;
@@ -360,6 +380,19 @@ public class DetailBIObjectModule extends AbstractModule {
 					"DetailBIObjectModule::moveIntoSubreports:: PAGE_NUMBER nullo");
 			} 
 		}
+		
+		/*
+		SourceBean subreports = (SourceBean)session.getAttribute("SUBREPORTS");
+		List subreportsList = subreports.getAttributeAsList("ROW");
+		Integer id = new Integer(-1);
+		if(subreportsList!= null && subreportsList.size()>0){
+			SourceBean subreport = (SourceBean)subreportsList.get(0);
+			id = subreport.getAttribute("");
+		}
+		*/
+		Integer id = (Integer)session.getAttribute("MASTER_ID");
+		updateSubreports(request, response, id);
+		
 		response.setAttribute("editLoopback", "true");			
 		session.setAttribute("MESSAGE", "LIST_PAGE");
 		if(moveNext) pageNumber += 1; 
@@ -404,10 +437,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute("editLoopback", "true");	
 		response.setAttribute("MASTER_ID", obj.getId());	
 		
-		//session.setAttribute("MESSAGE", "LIST_PAGE");
-		//session.setAttribute("LIST_PAGE", String.valueOf(2));
-		
-		
+				
 		session.setAttribute("SUBREPORTS", subreports);
 		session.setAttribute("MASTER_ID", obj.getId());
 		session.setAttribute("SUBREPORTS", subreports);

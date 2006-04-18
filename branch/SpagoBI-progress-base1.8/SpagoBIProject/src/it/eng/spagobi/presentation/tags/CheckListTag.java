@@ -307,7 +307,7 @@ public class CheckListTag extends TagSupport
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 				
 		Integer masterId = masterId = (Integer) _session.getAttribute("MASTER_ID");
-		SourceBean subreports = subreports = (SourceBean) _session.getAttribute("SUBREPORTS");
+		SourceBean subreports = (SourceBean) _session.getAttribute("SUBREPORTS");
 		
 		TracerSingleton.log(
 				Constants.NOME_MODULO,
@@ -377,6 +377,7 @@ public class CheckListTag extends TagSupport
 			_htmlStream.append(" <td width='20' class='" + rowClass + "'>\n");
 			if(subreportMap.containsKey(rowId)) {
 				_htmlStream.append("<input type='checkbox' name='checkbox:" + rowId + "' checked='true'>");
+				subreportMap.remove(rowId);
 			}
 			else {
 				_htmlStream.append("<input type='checkbox' name='checkbox:" + rowId + "'>");
@@ -387,6 +388,8 @@ public class CheckListTag extends TagSupport
 		}
 		
 		_htmlStream.append(" </table>\n");
+		_session.delAttribute("SUBREPORTS");
+		_session.setAttribute("SUBREPORTS", getSubreports(masterId, subreportMap));
 	} 
 	
 	

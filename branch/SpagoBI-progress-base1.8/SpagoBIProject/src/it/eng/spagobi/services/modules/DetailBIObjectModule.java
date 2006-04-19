@@ -68,7 +68,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -570,12 +569,10 @@ public class DetailBIObjectModule extends AbstractModule {
 					if (saveBIObjectParameter != null && saveBIObjectParameter.equalsIgnoreCase("yes")) {
 						// it is requested to save the visible BIObjectParameter
 						validateFields("BIObjectParameterValidation", "PAGE");
-						// If it's a new BIObjectParameter or if the Parameter was changed controls 
-						// that the Parameter is not already in use
-						// 06-04-2006 This control is no more performed in order to have multiple 
-						// instances of the same parameter inside a BIObject
-						//if (!parIdInt.equals(parIdOldInt)) objParControl(request, obj.getId(), parIdInt);
 						biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
+						// If it's a new BIObjectParameter or if the Parameter was changed controls 
+						// that the BIObjectParameter url name is not already in use
+						urlNameControl(obj.getId(), biObjPar);
 						fillResponse(response);
 						reloadCMSInformation(obj);
 			    		// if there are some errors, exits without writing into DB
@@ -629,18 +626,10 @@ public class DetailBIObjectModule extends AbstractModule {
 						biParameterToBeSaved = false;
 					if (biParameterToBeSaved) {
 						validateFields("BIObjectParameterValidation", "PAGE");
-						// If it's a new BIObjectParameter or if the Parameter
-						// was changed, controls that the Parameter is not already in use
-						// 06-04-2006 This control is no more performed in order to have multiple 
-						// instances of the same parameter inside a BIObject
-//						if (!parIdInt.equals(parIdOldInt))
-//							objParControl(request, obj.getId(), new Integer(
-//									parIdStr));
+						// If it's a new BIObjectParameter or if the Parameter was changed controls 
+						// that the BIObjectParameter url name is not already in use
+						urlNameControl(obj.getId(), biObjPar);
 					}
-
-					//biObjPar.setParIdOld(parIdOldInt);
-					if (biParameterToBeSaved) selectedObjParIdStr = biObjPar.getParID().toString();
-					else selectedObjParIdStr = "-1";
 
 					validateFields("BIObjectValidation", "PAGE");
 		    		// if there are some errors, exits without writing into DB
@@ -661,11 +650,14 @@ public class DetailBIObjectModule extends AbstractModule {
 						if (biObjPar.getId().intValue() == -1) {
 							// it is requested to insert a new BIObjectParameter
 							objParDAO.insertBIObjectParameter(biObjPar);
+							// reload the BIObjectParameter with the given label
+							biObjPar = reloadBIObjectParameter(obj.getId(), biObjPar.getParameterUrlName());
 						} else {
 							// it is requested to modify a BIObjectParameter
 							objParDAO.modifyBIObjectParameter(biObjPar);
 						}
-	    			}
+						selectedObjParIdStr = biObjPar.getId().toString();
+	    			} else selectedObjParIdStr = "-1";
 				}
 
     		} else {
@@ -703,6 +695,62 @@ public class DetailBIObjectModule extends AbstractModule {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","modBIObject","Cannot fill response container", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
+	}
+	
+	/**
+	 * Controls that the BIObjectParameter url name is not in use by another BIObjectParameter
+	 * 
+	 * @param objId The id of the document
+	 * @param biObjPar The BIObjectParameter to control before inserting/modifying
+	 */
+	private void urlNameControl(Integer objId, BIObjectParameter biObjPar) {
+		if (objId == null || objId.intValue() < 0 || biObjPar == null || biObjPar.getParameterUrlName() == null) 
+			return;
+		try {
+			IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
+			List paruses = objParDAO.loadBIObjectParametersById(objId);
+			Iterator it = paruses.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter aBIObjectParameter = (BIObjectParameter) it.next();
+				if (aBIObjectParameter.getParameterUrlName().equals(biObjPar.getParameterUrlName()) 
+						&& !aBIObjectParameter.getId().equals(biObjPar.getId())) {
+					HashMap params = new HashMap();
+					params.put(AdmintoolsConstants.PAGE,
+							DetailBIObjectModule.MODULE_PAGE);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1046,
+							new Vector(), params);
+					errorHandler.addError(error);
+				}
+			}
+		} catch (EMFUserError e) {
+			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectModule","urlNameControl","Error while url name control", e);
+		}
+		
+	}
+	
+	private BIObjectParameter reloadBIObjectParameter(Integer objId, String objParUrlName) throws EMFInternalError {
+		if (objId == null || objId.intValue() < 0 || objParUrlName == null || objParUrlName.trim().equals(""))
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, "Invalid input data for method reloadBIObjectParameter in DetailBIObjectModule");
+		BIObjectParameter objPar = null;
+		try {
+			IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
+			List paruses = objParDAO.loadBIObjectParametersById(objId);
+			Iterator it = paruses.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter aBIObjectParameter = (BIObjectParameter) it.next();
+				if (aBIObjectParameter.getParameterUrlName().equals(objParUrlName)) {
+					objPar = aBIObjectParameter;
+					break;
+				}
+			}
+		} catch (EMFUserError e) {
+			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectModule","reloadBIObjectParameter","Cannot reload BIObjectParameter", e);
+		}
+		if (objPar == null) {
+			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectModule","reloadBIObjectParameter","BIObjectParameter with url name '"+ objParUrlName +"' not found.");
+			objPar = createNewBIObjectParameter(objId);
+		}
+		return objPar;
 	}
 
 	/**

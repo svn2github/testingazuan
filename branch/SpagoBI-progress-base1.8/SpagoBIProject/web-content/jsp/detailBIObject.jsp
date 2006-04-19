@@ -779,8 +779,6 @@ function deleteBIParameterConfirm (message) {
 	    	   name="parameterName" value='<%= parameter != null ? parameter.getName() : "" %>' 
 			   	maxlength="100" readonly>
       	<input type='hidden' id='par_Id' 
-			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />
- 
 			   value='<%= parameter != null ? parameter.getId().toString() : "-1" %>' name='par_Id' />
      <%
 		/**

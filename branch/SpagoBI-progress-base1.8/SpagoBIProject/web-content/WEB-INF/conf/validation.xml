@@ -121,6 +121,7 @@
 		 	 		<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 				<FIELD name="parurl_nm" label="#SBIDev.docConf.docDetParam.parurl_nmField">
+					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
 				</FIELD>	
 			</FIELDS>

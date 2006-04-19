@@ -808,7 +808,7 @@ function deleteBIParameterConfirm (message) {
     	}
     %>
 		<input class='portlet-form-input-field' type="text" size="42" 
-			   name="parurl_nm" id="parurl_nm" value="<%=urlName%>" maxlength="20">
+			   name="parurl_nm" id="parurl_nm" value="<%=urlName%>" maxlength="20">&nbsp;*
 	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>

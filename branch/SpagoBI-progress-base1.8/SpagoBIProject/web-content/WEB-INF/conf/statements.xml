@@ -202,6 +202,7 @@
 		   
 
 
+
 	<STATEMENT name="SELECT_REPORTS_LIST" 
   	query="	SELECT 	biobj_id as OBJ_ID,
   					descr as DESCRIPTION,
@@ -214,7 +215,13 @@
   	query="	SELECT 	master_rpt_id AS MASTER_ID,
   					sub_rpt_id AS SUBREPORT_ID  					 					
 			FROM sbi_subreports
-			WHERE master_rpt_id = ?"/>	   
+			WHERE master_rpt_id = ?"/>
+			
+	<STATEMENT name="SELECT_SUBREPORT_PATH" 
+  	query="	SELECT 	biobj_id as OBJ_ID,
+  					path AS PATH  					 					
+			FROM sbi_objects
+			WHERE biobj_id = ?"/>   
 
 	<STATEMENT name="DELETE_SUBREPORTS" 
 	query="DELETE FROM sbi_subreports 
@@ -223,6 +230,12 @@
  	 <STATEMENT name="INSERT_SUBREPORTS" 
                query="INSERT INTO sbi_subreports (master_rpt_id, sub_rpt_id) 
                       values (?, ?) "/>  
+ 
+ 
+ 
+ 
+ 
+ 
  
  
   	<STATEMENT name="SELECT_PREDEFINED_CHECKS" 

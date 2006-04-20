@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -73,9 +75,7 @@ public class JasperReportRunner {
 		this.spagobibaseurl = spagobibaseurl;
 	}
 	
-	public Map compileSubreports(Map params, File destDir) throws JRException{
-		
-		Map jasperParams = new HashMap();
+	public void compileSubreports(Map params, File destDir) throws JRException{
 		
 		String subrptnumStr = (String)params.get("srptnum");
 		int subrptnum = Integer.parseInt(subrptnumStr);
@@ -112,12 +112,9 @@ public class JasperReportRunner {
 			} catch (FileNotFoundException e) {
 				logger.error("Internal error in compiling subreport method", e);
 			}
-			JasperCompileManager.compileReportToStream(is, fos);
-			//jasperParams.put(jasperDesign.getName()+ ".jasper", JasperCompileManager.compileReport(is));
+			JasperCompileManager.compileReportToStream(is, fos);			
 			logger.debug("Template file compiled  succesfully");
 		}
-		
-		return jasperParams;
 	}
 	
 	/**
@@ -164,44 +161,22 @@ public class JasperReportRunner {
 			String jasperReportClassPath = jasperReportClassPathStringBuffer.toString();
 			jasperReportClassPath = jasperReportClassPath.substring(0, jasperReportClassPath.length() - 1);
 			
-//			// set jasper classpath property
+			// set jasper classpath property
 			System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
 			logger.debug("Set [jasper.reports.compile.class.path properties] to value [" + System.getProperty("jasper.reports.compile.class.path")+"]");
 			
 			
 			// compile subreports
-			String subreportsDir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp";
+			String subreportsDir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp" + System.getProperty("file.separator");
 			File destDir = new File(subreportsDir);
 			destDir.mkdirs();
-			Map jasperParams = compileSubreports(parameters, destDir);
-			
-			// get all subreport file names
-			StringBuffer javaClassPathStringBuffer  = new StringBuffer();
-			javaClassPathStringBuffer.append(System.getProperty("java.class.path") + System.getProperty("path.separator"));
-			/*
-			String[] subreportFiles = destDir.list();
-			for (int i=0; i < subreportFiles.length; i++){
-				String namefile = subreportFiles[i];
-				if(!namefile.endsWith("jasper"))
-					continue; // the inclusion of txt files causes problems
-				fileToAppend = subreportsDir + System.getProperty("file.separator")+ subreportFiles[i];
-				logger.debug("Appending jasper file [" + fileToAppend + "] to Java classpath");
-				javaClassPathStringBuffer.append(fileToAppend);
-				javaClassPathStringBuffer.append(System.getProperty("path.separator"));  
-			}	
-			*/
-			
-			javaClassPathStringBuffer.append(subreportsDir);
-			javaClassPathStringBuffer.append(System.getProperty("path.separator"));  
-			
-			String javaClassPath = javaClassPathStringBuffer.toString();
-			javaClassPath = javaClassPath.substring(0, javaClassPath.length() - 1);
-			
-			// set java classpath property
-			System.setProperty("java.class.path", javaClassPath);
-			logger.debug("Set [java.class.path] to value [" + System.getProperty("java.class.path") +"]");
-			
-			
+			compileSubreports(parameters, destDir);
+									
+			// set classloader
+			ClassLoader previous = Thread.currentThread().getContextClassLoader();
+			ClassLoader current = URLClassLoader.newInstance(new URL[]{destDir.toURL()}, previous);
+			Thread.currentThread().setContextClassLoader(current); 
+						
 			// set tmpdir property
 			System.setProperty("jasper.reports.compile.temp", tmpDirectory);
 			logger.debug("Set [jasper.reports.compile.temp] to value [" + System.getProperty("jasper.reports.compile.temp")+"]");

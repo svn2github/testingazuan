@@ -39,15 +39,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.drivers.jasperreport;
 
+import it.eng.spago.base.Constants;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.dbaccess.DataConnectionManager;
+import it.eng.spago.dbaccess.SQLStatements;
+import it.eng.spago.dbaccess.Utils;
+import it.eng.spago.dbaccess.sql.DataConnection;
+import it.eng.spago.dbaccess.sql.SQLCommand;
+import it.eng.spago.dbaccess.sql.result.DataResult;
+import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -123,11 +136,67 @@ public class JasperReportDriver implements IEngineDriver {
 		Map pars = new Hashtable();
 		pars.put("templatePath",biobj.getPath() + "/template");
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+        pars = addBISubreports(biobj, pars);
         pars = addBIParameters(biobj, pars);
         return pars;
 	} 
  
-         
+	// TODO check all the subreport's hierarchy recursively and not only the first level
+	private Map addBISubreports(BIObject biobj, Map pars) {
+		Integer masterReportId = biobj.getId();
+		
+		DataConnection dataConnection = null;
+		SQLCommand sqlCommand = null;
+		DataResult dataResult = null;
+		SourceBean subreports = null;
+		try {
+			DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
+			dataConnection = dataConnectionManager.getConnection("spagobi");
+			String statement = null;
+						
+			statement = SQLStatements.getStatement("SELECT_SUBREPORTS_LIST");
+			statement = statement.replaceFirst("\\?", masterReportId.toString());
+			SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " statement: " + statement);
+			sqlCommand = dataConnection.createSelectCommand(statement);
+			dataResult = sqlCommand.execute();
+			ScrollableDataResult scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
+			subreports = scrollableDataResult.getSourceBean();
+			SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " results: " + subreports.toXML());
+		
+		
+			List subreportsList = subreports.getAttributeAsList("ROW");			
+			for(int i = 0; i < subreportsList.size(); i++) {
+				SourceBean subreport = (SourceBean)subreportsList.get(i);
+				Integer id = (Integer)subreport.getAttribute("SUBREPORT_ID");	
+				
+				statement = SQLStatements.getStatement("SELECT_SUBREPORT_PATH");
+				statement = statement.replaceFirst("\\?", id.toString());
+				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " statement: " + statement);
+				sqlCommand = dataConnection.createSelectCommand(statement);
+				dataResult = sqlCommand.execute();
+				scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
+				subreport = (SourceBean)scrollableDataResult.getSourceBean().getAttribute("ROW");
+				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " results: " + subreport.toXML());
+				
+				String path = (String)subreport.getAttribute("PATH");
+				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " PATH: " + path);
+				
+				pars.put("subrpt." + (i+1) + ".path", path);
+			}
+			
+			pars.put("srptnum", "" + subreportsList.size());
+		} catch (Exception ex) {
+			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "execQuery::executeQuery:", ex);
+		} finally {
+			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
+		} 		
+		
+		
+		
+		
+		return pars;
+	}
+	
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
      * @param biobj BIOBject to execute

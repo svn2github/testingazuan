@@ -383,7 +383,7 @@ return 0;
 			<!-- DISPLAY RADIO BUTTON FOR VISIBLE SELECTION -->
 		    	<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
-						Visible
+						<spagobi:message key = "SBIDev.docConf.docDet.visibleField" />
 					</span>
 				</div>
 				<div class='div_detail_form'>
@@ -418,11 +418,11 @@ return 0;
 	 %>
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
-						Subreports
+						<spagobi:message key = "SBIDev.docConf.docDet.subreportButton" />
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					<input type="submit" name="Edit" value="Edit">
+					<input class='portlet-form-input-field' type="submit" name="Edit" value="Edit">
 				</div>	
             </div> 
 

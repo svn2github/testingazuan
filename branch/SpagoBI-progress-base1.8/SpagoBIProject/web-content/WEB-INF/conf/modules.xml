@@ -365,7 +365,7 @@
   	
   	<!-- SUBREPORT LIST -->
   	<MODULE class="it.eng.spagobi.services.modules.ListLookupReportsModule" name="ListLookupReportsModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListParam.ListLookupParameters.title" >
+	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListSubreport.ListLookupSubreports.title" >
 	      <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="MASTER_ID"/>
 	      <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="SUBREPORTS"/>
 	      
@@ -375,10 +375,10 @@
 	      </QUERIES>
 	      <CAPTIONS></CAPTIONS>
 	      <COLUMNS>
-	        <COLUMN label="OBJ_ID" name="OBJ_ID" hidden="false" />
-	        <COLUMN label="SBIDev.ListParam.columnLabel" name="LABEL" />
-	        <COLUMN label="SBIDev.ListParam.columnName" name="NAME" />
-	        <COLUMN label="SBIDev.ListParam.columnDesc" name="DESCRIPTION"/>
+	        <COLUMN label="OBJ_ID" name="OBJ_ID" hidden="true" />
+	        <COLUMN label="SBIDev.ListSubreport.columnLabel" name="LABEL" />
+	        <COLUMN label="SBIDev.ListSubreport.columnName" name="NAME" />
+	        <COLUMN label="SBIDev.ListSubreport.columnDesc" name="DESCRIPTION"/>
 	      </COLUMNS>
 	      
 	      <BUTTONS PAGE="DetailBIObjectPage" MESSAGEDET="RETURN_FROM_SUBREPORTS_LOOKUP" LIGHT_NAVIGATOR_DISABLED="true">	      	        
@@ -386,19 +386,19 @@
 	        	confirm="FALSE" 
 	        	name="save" 
 	        	image="/img/save.png" 
-	        	label="SBIDev.ListParamUse.selectCaption"/>
+	        	label="SBIDev.ListSubreport.saveCaption"/>
            	
            	<SAVE_AND_GOBACK_BUTTON 
            		confirm="FALSE" 
            		name="saveback" 
            		image="/img/saveAndGoBack.png" 
-           		label="SBIDev.ListParamUse.selectCaption"/>
+           		label="SBIDev.ListSubreport.savebackCaption"/>
             
             <BACK_BUTTON 
             	confirm="FALSE" 
             	name="back" 
             	image="/img/back.png" 
-            	label="SBIDev.ListParam.ListLookupParameters.backButton"/>
+            	label="SBIDev.ListSubreport.backCaption"/>
 	      </BUTTONS>
 	      
 	    </CONFIG>

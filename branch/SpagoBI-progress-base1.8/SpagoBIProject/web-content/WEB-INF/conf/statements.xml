@@ -207,7 +207,7 @@
   	query="	SELECT 	biobj_id as OBJ_ID,
   					descr as DESCRIPTION,
   					label as LABEL,
-  					rel_name as NAME   					
+  					name as NAME   					
 			FROM sbi_objects
 			ORDER BY LABEL,NAME,DESCRIPTION "/>
 			

@@ -607,6 +607,7 @@ public class CheckListTag extends TagSupport
 			htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 			htmlStream.append("<input type='image' " +
 									  "name='" + name + "' " +
+									  "title='" + label + "' " +
 									  "class='header-button-image-portlet-section'" + 	
 									  "src ='"+ renderResponse.encodeURL(renderRequest.getContextPath() + img) + "' " +
 									  "alt='" + label + "'>\n");

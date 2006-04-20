@@ -9,18 +9,23 @@ package it.eng.spagobi.engines.jasperreport;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
@@ -28,6 +33,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
@@ -36,6 +42,7 @@ import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
@@ -46,7 +53,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * run a report inside SpagoBI. It is the jasper report Engine implementation
  * for SpagoBI.
  * 
- * @author Zoppello
+ * @author Gioia
  */
 public class JasperReportRunner {
 	
@@ -64,6 +71,53 @@ public class JasperReportRunner {
 		super();
 		this.templatePath = templatePath;
 		this.spagobibaseurl = spagobibaseurl;
+	}
+	
+	public Map compileSubreports(Map params, File destDir) throws JRException{
+		
+		Map jasperParams = new HashMap();
+		
+		String subrptnumStr = (String)params.get("srptnum");
+		int subrptnum = Integer.parseInt(subrptnumStr);
+		String[] subreports = new String[subrptnum];
+		
+		Iterator it = params.keySet().iterator();
+		while(it.hasNext()){
+			String parName = (String)it.next();
+			if(parName.startsWith("subrpt")) {
+				int start = parName.indexOf('.') + 1;
+				int end = parName.indexOf('.', start);				
+				String numberStr = parName.substring(start, end);
+				int number = Integer.parseInt(numberStr) - 1;
+				subreports[number] = (String)params.get(parName);
+				logger.debug("JasperReports parse subreport number [" + start + " - " + end + "] : " +  numberStr);
+				logger.debug("JasperReports subreport PATH : " +  params.get(parName));				
+			}
+		}
+				
+		for(int i = 0; i < subreports.length; i++) {
+			InputStream is = null;
+			
+			byte[] jcrContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, subreports[i]);
+						
+			is = new ByteArrayInputStream(jcrContent);
+			JasperDesign  jasperDesign = JRXmlLoader.load(is);
+			
+			is = new java.io.ByteArrayInputStream(jcrContent);						
+			File file = new File(destDir, jasperDesign.getName()+ ".jasper");
+			logger.debug("Compiling template file: " + file);
+			FileOutputStream fos =  null;
+			try {
+				fos = new FileOutputStream(file);
+			} catch (FileNotFoundException e) {
+				logger.error("Internal error in compiling subreport method", e);
+			}
+			JasperCompileManager.compileReportToStream(is, fos);
+			//jasperParams.put(jasperDesign.getName()+ ".jasper", JasperCompileManager.compileReport(is));
+			logger.debug("Template file compiled  succesfully");
+		}
+		
+		return jasperParams;
 	}
 	
 	/**
@@ -84,9 +138,11 @@ public class JasperReportRunner {
 		 * the front-end (control) part of the engine */
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
+			
 			// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 			String webinflibPath = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 			logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
+			
 			// get all jar file names in the classpath
 			logger.debug("Reading jar files from lib-dir...");
 			StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
@@ -104,19 +160,42 @@ public class JasperReportRunner {
 					jasperReportClassPathStringBuffer.append(System.getProperty("path.separator"));  
 				}
 			}
+			
+//			 compile subreports
+			String subreportsDir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp";
+			File destDir = new File(subreportsDir);
+			destDir.mkdirs();
+			Map jasperParams = compileSubreports(parameters, destDir);
+			
+			// get all subreport file names in the classpath
+			String[] subreportFiles = destDir.list();
+			for (int i=0; i < subreportFiles.length; i++){
+				String namefile = subreportFiles[i];
+				if(!namefile.endsWith("jasper"))
+					continue; // the inclusion of txt files causes problems
+				fileToAppend = subreportsDir + System.getProperty("file.separator")+ subreportFiles[i];
+				logger.debug("Appending jasper file [" + fileToAppend + "] to JasperReports classpath");
+				jasperReportClassPathStringBuffer.append(fileToAppend);
+				jasperReportClassPathStringBuffer.append(System.getProperty("path.separator"));  
+			}		
+			
 			String jasperReportClassPath = jasperReportClassPathStringBuffer.toString();
 			jasperReportClassPath = jasperReportClassPath.substring(0, jasperReportClassPath.length() - 1);
+			
 			// set classpath property
 			System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
 			logger.debug("Set [jasper.reports.compile.class.path properties] to value [" + System.getProperty("jasper.reports.compile.class.path")+"]");
+			
 			// set tmpdir property
 			System.setProperty("jasper.reports.compile.temp", tmpDirectory);
 			logger.debug("Set [jasper.reports.compile.temp] to value [" + System.getProperty("jasper.reports.compile.temp")+"]");
+			
 			byte[] jcrContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, this.templatePath);
 			InputStream is = new java.io.ByteArrayInputStream(jcrContent);						
 			logger.debug("Compiling template file ...");
 			JasperReport report  = JasperCompileManager.compileReport(is);
 			logger.debug("Template file compiled  succesfully");
+			
 			// Create the virtualizer
 			JRFileVirtualizer virtualizer = null; 
 			boolean isVirtualizationActive = false;

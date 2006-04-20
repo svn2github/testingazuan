@@ -75,48 +75,6 @@ public class JasperReportRunner {
 		this.spagobibaseurl = spagobibaseurl;
 	}
 	
-	public void compileSubreports(Map params, File destDir) throws JRException{
-		
-		String subrptnumStr = (String)params.get("srptnum");
-		int subrptnum = Integer.parseInt(subrptnumStr);
-		String[] subreports = new String[subrptnum];
-		
-		Iterator it = params.keySet().iterator();
-		while(it.hasNext()){
-			String parName = (String)it.next();
-			if(parName.startsWith("subrpt")) {
-				int start = parName.indexOf('.') + 1;
-				int end = parName.indexOf('.', start);				
-				String numberStr = parName.substring(start, end);
-				int number = Integer.parseInt(numberStr) - 1;
-				subreports[number] = (String)params.get(parName);
-				logger.debug("JasperReports parse subreport number [" + start + " - " + end + "] : " +  numberStr);
-				logger.debug("JasperReports subreport PATH : " +  params.get(parName));				
-			}
-		}
-				
-		for(int i = 0; i < subreports.length; i++) {
-			InputStream is = null;
-			
-			byte[] jcrContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, subreports[i]);
-						
-			is = new ByteArrayInputStream(jcrContent);
-			JasperDesign  jasperDesign = JRXmlLoader.load(is);
-			
-			is = new java.io.ByteArrayInputStream(jcrContent);						
-			File file = new File(destDir, jasperDesign.getName()+ ".jasper");
-			logger.debug("Compiling template file: " + file);
-			FileOutputStream fos =  null;
-			try {
-				fos = new FileOutputStream(file);
-			} catch (FileNotFoundException e) {
-				logger.error("Internal error in compiling subreport method", e);
-			}
-			JasperCompileManager.compileReportToStream(is, fos);			
-			logger.debug("Template file compiled  succesfully");
-		}
-	}
-	
 	/**
 	 * This method, known all input information, runs a report with JasperReport 
 	 * inside SpagoBI. it is the Jasper Report Engine's core method.
@@ -132,7 +90,8 @@ public class JasperReportRunner {
 		
 		/* TODO Since this is the back-end (logic) part of the JasperEngine the direct use of  HttpServletResponse, 
 		 * HttpServletRequest and ServletContext objects shuold be pushed back to JasperReportServlet that is 
-		 * the front-end (control) part of the engine */
+		 * the front-end (control) part of the engine */		
+		File[] compiledSubreports = null;
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
 			
@@ -170,8 +129,8 @@ public class JasperReportRunner {
 			String subreportsDir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp" + System.getProperty("file.separator");
 			File destDir = new File(subreportsDir);
 			destDir.mkdirs();
-			compileSubreports(parameters, destDir);
-									
+			compiledSubreports = compileSubreports(parameters, destDir);
+						
 			// set classloader
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
 			ClassLoader current = URLClassLoader.newInstance(new URL[]{destDir.toURL()}, previous);
@@ -295,17 +254,71 @@ public class JasperReportRunner {
 	        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
 	        exporter.exportReport();
 	        logger.debug("Report exported succesfully");
+	        
+	        
 		}catch(Exception e){
 			logger.error("An exception has occured", e);
 			throw e;
-		}finally{
-			try{
-			if ((conn != null) && (!conn.isClosed()))
-				conn.close();
-			}catch(SQLException sqle){
+		}finally{			
+			// delate compiled subreport if any
+	        if(compiledSubreports != null){
+				for(int i = 0; i < compiledSubreports.length ; i++){
+					File subreport = compiledSubreports[i];
+					if(subreport != null) subreport.delete();
+					logger.debug("Delating subreport file: " + subreport.getName());
+				}
 				
 			}
+	        
+			try{			
+				if ((conn != null) && (!conn.isClosed())) conn.close();
+			}catch(SQLException sqle){}
 			
 		}
 	}	
+	
+	private File[] compileSubreports(Map params, File destDir) throws JRException {
+		
+		String subrptnumStr = (String)params.get("srptnum");
+		int subrptnum = Integer.parseInt(subrptnumStr);
+		String[] subreports = new String[subrptnum];
+		File[] files = new File[subrptnum];
+		
+		Iterator it = params.keySet().iterator();
+		while(it.hasNext()){
+			String parName = (String)it.next();
+			if(parName.startsWith("subrpt")) {
+				int start = parName.indexOf('.') + 1;
+				int end = parName.indexOf('.', start);				
+				String numberStr = parName.substring(start, end);
+				int number = Integer.parseInt(numberStr) - 1;
+				subreports[number] = (String)params.get(parName);
+				//logger.debug("JasperReports parse subreport number [" + start + " - " + end + "] : " +  numberStr);
+				logger.debug("JasperReports subreport PATH : " +  params.get(parName));				
+			}
+		}
+				
+		for(int i = 0; i < subreports.length; i++) {
+			InputStream is = null;
+			
+			byte[] jcrContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, subreports[i]);
+						
+			is = new ByteArrayInputStream(jcrContent);
+			JasperDesign  jasperDesign = JRXmlLoader.load(is);
+			
+			is = new java.io.ByteArrayInputStream(jcrContent);						
+			files[i] = new File(destDir, jasperDesign.getName()+ ".jasper");
+			logger.debug("Compiling template file: " + files[i]);
+			FileOutputStream fos =  null;
+			try {
+				fos = new FileOutputStream(files[i]);
+			} catch (FileNotFoundException e) {
+				logger.error("Internal error in compiling subreport method", e);
+			}
+			JasperCompileManager.compileReportToStream(is, fos);			
+			logger.debug("Template file compiled  succesfully");
+		}
+		
+		return files;
+	}
 }

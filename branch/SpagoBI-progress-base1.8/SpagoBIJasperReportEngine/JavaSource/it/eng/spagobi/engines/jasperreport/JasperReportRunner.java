@@ -143,7 +143,7 @@ public class JasperReportRunner {
 			String webinflibPath = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 			logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
 			
-			// get all jar file names in the classpath
+			// get all jar file names in the jasper classpath
 			logger.debug("Reading jar files from lib-dir...");
 			StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
 			File f = new File(webinflibPath);
@@ -161,30 +161,46 @@ public class JasperReportRunner {
 				}
 			}
 			
-//			 compile subreports
+			String jasperReportClassPath = jasperReportClassPathStringBuffer.toString();
+			jasperReportClassPath = jasperReportClassPath.substring(0, jasperReportClassPath.length() - 1);
+			
+//			// set jasper classpath property
+			System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
+			logger.debug("Set [jasper.reports.compile.class.path properties] to value [" + System.getProperty("jasper.reports.compile.class.path")+"]");
+			
+			
+			// compile subreports
 			String subreportsDir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp";
 			File destDir = new File(subreportsDir);
 			destDir.mkdirs();
 			Map jasperParams = compileSubreports(parameters, destDir);
 			
-			// get all subreport file names in the classpath
+			// get all subreport file names
+			StringBuffer javaClassPathStringBuffer  = new StringBuffer();
+			javaClassPathStringBuffer.append(System.getProperty("java.class.path") + System.getProperty("path.separator"));
+			/*
 			String[] subreportFiles = destDir.list();
 			for (int i=0; i < subreportFiles.length; i++){
 				String namefile = subreportFiles[i];
 				if(!namefile.endsWith("jasper"))
 					continue; // the inclusion of txt files causes problems
 				fileToAppend = subreportsDir + System.getProperty("file.separator")+ subreportFiles[i];
-				logger.debug("Appending jasper file [" + fileToAppend + "] to JasperReports classpath");
-				jasperReportClassPathStringBuffer.append(fileToAppend);
-				jasperReportClassPathStringBuffer.append(System.getProperty("path.separator"));  
-			}		
+				logger.debug("Appending jasper file [" + fileToAppend + "] to Java classpath");
+				javaClassPathStringBuffer.append(fileToAppend);
+				javaClassPathStringBuffer.append(System.getProperty("path.separator"));  
+			}	
+			*/
 			
-			String jasperReportClassPath = jasperReportClassPathStringBuffer.toString();
-			jasperReportClassPath = jasperReportClassPath.substring(0, jasperReportClassPath.length() - 1);
+			javaClassPathStringBuffer.append(subreportsDir);
+			javaClassPathStringBuffer.append(System.getProperty("path.separator"));  
 			
-			// set classpath property
-			System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
-			logger.debug("Set [jasper.reports.compile.class.path properties] to value [" + System.getProperty("jasper.reports.compile.class.path")+"]");
+			String javaClassPath = javaClassPathStringBuffer.toString();
+			javaClassPath = javaClassPath.substring(0, javaClassPath.length() - 1);
+			
+			// set java classpath property
+			System.setProperty("java.class.path", javaClassPath);
+			logger.debug("Set [java.class.path] to value [" + System.getProperty("java.class.path") +"]");
+			
 			
 			// set tmpdir property
 			System.setProperty("jasper.reports.compile.temp", tmpDirectory);

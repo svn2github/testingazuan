@@ -30,6 +30,6 @@
         <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParuseCk.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjState.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjParuse.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiSubreports.hbm.xml" />
+        <!-- mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiSubreports.hbm.xml" /-->
     </session-factory>
 </hibernate-configuration>

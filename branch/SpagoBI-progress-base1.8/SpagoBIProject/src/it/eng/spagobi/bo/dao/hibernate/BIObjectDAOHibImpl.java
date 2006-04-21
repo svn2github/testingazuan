@@ -29,6 +29,7 @@ package it.eng.spagobi.bo.dao.hibernate;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.CmsProperty;
@@ -39,6 +40,12 @@ import it.eng.spago.cms.operations.DeleteOperation;
 import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.cms.operations.RestoreOperation;
 import it.eng.spago.cms.operations.SetOperation;
+import it.eng.spago.dbaccess.DataConnectionManager;
+import it.eng.spago.dbaccess.SQLStatements;
+import it.eng.spago.dbaccess.sql.DataConnection;
+import it.eng.spago.dbaccess.sql.SQLCommand;
+import it.eng.spago.dbaccess.sql.result.DataResult;
+import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -52,6 +59,7 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -598,6 +606,36 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				aSession.delete((SbiObjPar) it.next());
 			}
 			aSession.delete(hibBIObject);
+			
+			// update subreports table 
+			DataConnection dataConnection = null;
+			SQLCommand sqlCommand = null;
+						
+			DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
+			dataConnection = dataConnectionManager.getConnection("spagobi");
+			String statement = null;
+							
+			statement = SQLStatements.getStatement("DELETE_SUBREPORTS");
+			statement = statement.replaceFirst("\\?", obj.getId().toString());
+			SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE,
+					"BIObjectDAOImpl", "eraseBIObject",
+					"Executing statement: " + statement);
+			sqlCommand = dataConnection.createDeleteCommand(statement);
+			sqlCommand.execute();
+			SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE,
+					"BIObjectDAOImpl", "eraseBIObject",
+					"Statement executed succesfully");
+			
+			statement = SQLStatements.getStatement("DELETE_SUBREPORTS_BY_SUBRPTID");
+			statement = statement.replaceFirst("\\?", obj.getId().toString());
+			SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE,
+					"BIObjectDAOImpl", "eraseBIObject",
+					"Executing statement: " + statement);
+			sqlCommand = dataConnection.createDeleteCommand(statement);
+			sqlCommand.execute();	
+			SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE,
+					"BIObjectDAOImpl", "eraseBIObject",
+					"Statement executed succesfully");
 			
 			
             // get profile user

@@ -226,6 +226,10 @@
 	<STATEMENT name="DELETE_SUBREPORTS" 
 	query="DELETE FROM sbi_subreports 
 		   WHERE master_rpt_id = ?"/> 
+		   
+	<STATEMENT name="DELETE_SUBREPORTS_BY_SUBRPTID" 
+	query="DELETE FROM sbi_subreports 
+		   WHERE sub_rpt_id = ?"/> 	   
  
  	 <STATEMENT name="INSERT_SUBREPORTS" 
                query="INSERT INTO sbi_subreports (master_rpt_id, sub_rpt_id) 

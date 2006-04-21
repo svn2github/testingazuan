@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PRESENTATION>
+
+	<MAPPING business_name="ListEnginesPage" business_type="PAGE" publisher_name="ListEnginesPubJ"/>
+	<MAPPING business_name="ListParametersPage" business_type="PAGE" publisher_name="ListParametersPubJ"/>
+	<MAPPING business_name="ListParameterUsesPage" business_type="PAGE" publisher_name="ListParameterUsesPubJ"/>
+	<MAPPING business_name="ListLovsPage" business_type="PAGE" publisher_name="ListLovsPubJ"/>
+	<MAPPING business_name="ListModalitiesChecksPage" business_type="PAGE" publisher_name="ListModalitiesChecksPubJ"/>
+	<MAPPING business_name="ListRolesPage" business_type="PAGE" publisher_name="ListRolesPubJ"/>
+	<MAPPING business_name="DetailEnginePage" business_type="PAGE" publisher_name="DetailEnginePubJ"/>
+	<MAPPING business_name="DetailRolesPage" business_type="PAGE" publisher_name="DetailRolesPubJ"/>
+	<MAPPING business_name="DetailParameterPage" business_type="PAGE" publisher_name="DetailParameterPubJ"/>
+	<MAPPING business_name="DetailFunctionalityPage" business_type="PAGE" publisher_name="DetailFunctionalityPubJ"/>
+	<MAPPING business_name="DetailModalitiesPage" business_type="PAGE" publisher_name="DetailModalitiesPubJ"/>
+	<MAPPING business_name="DetailModalitiesValuePage" business_type="PAGE" publisher_name="DetailModalitiesValuePubJ"/>
+	<MAPPING business_name="DetailModalitiesChecksPage" business_type="PAGE" publisher_name="DetailModalitiesChecksPubJ"/>
+	<MAPPING business_type="ACTION" business_name="START_ACTION" publisher_name="DYN_FORWARD_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_SETTINGS" publisher_name="LoginSBISettingsPublisher"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_DEVELOPMENT_CONTEXT" publisher_name="LoginSBIDevelopmentContextPublisher"/>
+	<MAPPING business_name="DetailBIObjectPage" business_type="PAGE" publisher_name="DetailBIObjectPubJ"/>
+	<MAPPING business_name="ListBIObjectParametersPage" business_type="PAGE" publisher_name="ListBIObjectParametersPubJ"/>
+	<MAPPING business_name="DetailBIObjectParameterPage" business_type="PAGE" publisher_name="DetailBIObjectParameterPubJ"/>
+	<MAPPING business_name="ExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
+	<MAPPING business_name="ValidateExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
+	<MAPPING business_name="TreeObjectsPage" business_type="PAGE" publisher_name="TreeObjectsPubJ"/>
+	<MAPPING business_name="GenericLookupPage" business_type="PAGE" publisher_name="LookupPublisher"/>
+	<MAPPING business_name="LovLookupPage" business_type="PAGE" publisher_name="LovLookupPublisher"/>
+	<MAPPING business_name="ParametersLookupPage" business_type="PAGE" publisher_name="ParametersLookupPublisher"/>
+	<MAPPING business_name="SaveConfigurationPage" business_type="PAGE" publisher_name="SaveConfigurationPubJ"/>
+	<MAPPING business_name="LOGIN_PAGE_SBI_FUNCTIONALITY" business_type="PAGE" publisher_name="TreeObjectsPubJ"/>
+    <MAPPING business_name="SERVICE_CALLER_PAGE" business_type="PAGE" publisher_name="ServiceCallerPublisher"/>
+    <MAPPING business_name="ImportExportPage" business_type="PAGE" publisher_name="ImportExportPubJ"/>
+    
+    
+    
+    <!--  QBE START -->
+	
+	
+	
+	<MAPPING business_type="ACTION" business_name="INIT_WIZARD_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SELECT_DATA_MART_ACTION" publisher_name="DATA_MART_MAIN_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_FIELD_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SELECT_FIELD_FOR_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SELECT_FIELD_FOR_WHERE_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="STORE_VAR_INTO_SESSION_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="UPDATE_FIELD_WHERE_ACTION" publisher_name="LOOPBACK_AFTER_UPDATE_CONDITION"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_FIELD_RESUME_ACTION" publisher_name="LOOPBACK_AFTER_UPDATE_RESUME"/>
+		
+	<MAPPING business_type="ACTION" business_name="COMPOSE_RESUME_QUERY_ACTION"  publisher_name="RESUME_QUERY_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="ALIGN_EXPERT_ACTION"  publisher_name="RESUME_QUERY_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="EXECUTE_QUERY_AND_SAVE_ACTION" publisher_name="QUERY_RESULT_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="EXECUTE_QUERY_AND_SAVE_FROM_SAVE_ACTION" publisher_name="SAVE_QUERY_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="PERSIST_QUERY_ACTION"  publisher_name="SAVE_QUERY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_EXPERT_ACTION"  publisher_name="RESUME_QUERY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_PREVIEW_MODE_ACTION" publisher_name="RESUME_QUERY_PUBLISHER"/>
+		
+	<MAPPING business_type="ACTION" business_name="PUBLISH_ACTION" publisher_name="DYNAMIC_FORWARD_PUBLISHER"/>	
+	<MAPPING business_type="ACTION" business_name="DELETE_FIELD_FROM_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_UP_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="MOVE_UP_WHERE_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_WHERE_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
+	
+	
+	<MAPPING business_type="ACTION" business_name="MOVE_UP_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="MOVE_UP_GROUPBY_ACTION" publisher_name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_GROUPBY_ACTION" publisher_name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="DELETE_FIELD_FROM_WHERE_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="DELETE_FIELD_FOR_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="DELETE_FIELD_FOR_GROUPBY_ACTION" publisher_name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SELECT_FIELD_FOR_GROUPBY_ACTION" publisher_name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>	
+	<MAPPING business_type="ACTION" business_name="SELECT_FIELD_FOR_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	
+	<MAPPING business_type="ACTION" business_name="RECOVER_CL_ACTION" publisher_name="QBE_LOOP_TREEOBJECT_PAGE"/>
+    
+    <!-- QBE END -->
+	
+</PRESENTATION>
+

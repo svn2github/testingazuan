@@ -1,0 +1,897 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PUBLISHERS>
+	<!--  A.Z DYNAMIC JAVA PUBLISHER -->
+	
+	<PUBLISHER name="LookupPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listLookupModalitiesValues.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+	<PUBLISHER name="LovLookupPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listLookupLov.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="lovLookupLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="LovLookupPage" />
+      		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="ParametersLookupPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listLookupParameters.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="parametersLookupLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ParametersLookupPage" />
+      		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+	
+	<PUBLISHER name="DYN_FORWARD_PUBLISHER">
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spagobi.presentation.publishers.DynamicForwardPublisher" />
+			</RESOURCES>
+		</RENDERING>
+
+		<RENDERING channel="PORTLET" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM mode="VIEW"
+					resource="it.eng.spagobi.presentation.publishers.DynamicForwardPublisher" />
+				<ITEM mode="EDIT"
+					resource="it.eng.spagobi.presentation.publishers.DynamicForwardPublisher" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="ListEnginesPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListEnginesPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listEngines">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listEngines.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="ListRolesPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListRolesPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listRoles">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listRoles.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="ListParametersPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListParametersPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listParameters">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listParameters.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="ListParameterUsesPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListParameterUsesPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listParameterUses">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listParameterUses.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+
+	<PUBLISHER name="ListLovsPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListLovsPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listLovs">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listLovs.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="ListModalitiesChecksPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListModalitiesChecksPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listModalitiesChecks">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listModalitiesChecks.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  
+  	<PUBLISHER name="DetailEnginePubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailEnginePublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="detailEngine">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailEngine.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="detailEngineLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListEnginesPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="DetailRolesPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailRolesPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailRolesLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListRolesPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="DetailParameterPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailParameterPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="detailParameter">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailParameter.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailParameterLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParametersPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="DetailModalitiesPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailModalitiesPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailModalitiesLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParameterUsesPage" /> 
+                <PARAMETER name="ID_DOMAIN" type = "RELATIVE" scope ="SERVICE_RESPONSE" value = "DetailModalitiesModule.PAR_ID"/>     		
+                <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" /> 
+                <!--PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesModule.LIGHT_NAVIGATOR_BACK_TO" /--> 
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailModalities">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailModalities.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="LoginSBISettingsPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/startSBISettings.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="treeFunctionalities">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/treeFunctionalities.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="treeExport">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/treeExport.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	  	
+  	<PUBLISHER name="DetailFunctionalityPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailFunctionalityPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="detailFunctionality">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailFunctionality.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="detailFunctionalityLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
+        		<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+        		<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="FUNCTIONALITIES_OPERATION" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+ 
+ 	<PUBLISHER name="DetailModalitiesValuePubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailModalitiesValuePublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailModalitiesValue">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailModalitiesValue.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailModalitiesValueLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListLovsPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.LIGHT_NAVIGATOR_BACK_TO" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+	<PUBLISHER name="detailLovTestResult">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailLovTestResult.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+
+  	<PUBLISHER name="querySelectionWizard">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/querySelectionWizard.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="lovSelectionWizard">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/lovSelectionWizard.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="scriptSelectionWizard">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/scriptSelectionWizard.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="DetailModalitiesChecksPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailModalitiesChecksPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailModalitiesChecks">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailModalitiesChecks.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailModalitiesChecksLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListModalitiesChecksPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+ 
+  	<PUBLISHER name="error">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/error.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	  	
+  	<PUBLISHER name="DetailBIObjectPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailBIObjectPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="detailBIObject">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailBIObject.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+  	<PUBLISHER name="detailBIObjectLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" /> 
+      			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectModule.ACTOR" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="ListBIObjectParametersPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListBIObjectParametersPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ListBIObjectParameters">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listBIObjectParameters.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="DetailBIObjectParameterPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailBIObjectParameterPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="DetailBIObjectParameter">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailBIObjectParameter.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="DetailBIObjectParameterLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListBIObjectParametersPage" /> 
+        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectParameterModule.OBJECT_ID" />
+        		<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectParameterModule.PATH" />  
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="ExecuteBIObjectPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ExecuteBIObjectPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ExecuteBIObjectPageParameter">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/executeBIObjectPageParameter.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ExecuteBIObjectPageExecution">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/executeBIObjectPageExecution.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ExecuteBIObjectSelectRole">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/executeBIObjectSelectRole.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+   	
+  	
+  	<PUBLISHER name="LoginSBIDevelopmentContextPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/startSBIDevelopmentContext.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="TreeObjectsPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.TreeObjectsPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="treeExecObjects">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/treeExecObjects.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="treeDevObjects">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/treeDevObjects.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="treeAdminObjects">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/treeAdminObjects.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="LoopTree">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" /> 
+        		<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ACTOR" /> 
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+	
+	<PUBLISHER name="SaveConfigurationPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.SaveConfigurationPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+	<PUBLISHER name="saveConfiguration">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+  	
+    <PUBLISHER name="DASHBOARD">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/dashboard.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+
+    <PUBLISHER name="loopbackAfterSubObjectDeletion">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+				<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ROLE" /> 
+                <PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.PATH" />
+                <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+
+  	<PUBLISHER name="loopbackSingleObjectExecution">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ACTOR" />
+                <PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.PATH" />
+     			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ROLE" />
+                <PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.MODALITY" />
+                <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+				<PARAMETER name="NEW_SESSION" type="ABSOLUTE" scope="" value="true" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+
+
+
+
+
+
+
+
+  	<!-- QBE -->
+  	
+  	<PUBLISHER name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForSelection.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForSelection.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForSelection.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForCondition.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForCondition.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForSelection.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForOrderBy.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForOrderBy.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForOrderBy.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	
+	<PUBLISHER name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForGroupBy.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForGroupBy.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForGroupBy.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="RESUME_QUERY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/resumeQuery.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/resumeQuery.jsp" />
+        		<ITEM mode="EDIT" resource="/jsp/resumeQuery.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="QUERY_RESULT_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/queryResult.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/queryResult.jsp" />
+        		<ITEM mode="EDIT" resource="/jsp/queryResult.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+
+	<PUBLISHER name="DYNAMIC_FORWARD_PUBLISHER">
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0" resource="it.eng.spago.presentation.DynamicForwardPublisher" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spago.presentation.DynamicForwardPublisher" />
+        		
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	
+	<PUBLISHER name="DATA_MART_MAIN_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/dataMartMain.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/dataMartMain.jsp" />
+        		<ITEM mode="EDIT" resource="/jsp/dataMartMain.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	
+	<PUBLISHER name="MAIN_TAB_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/mainTab.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/mainTab.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/mainTab.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+    	
+	</PUBLISHER>
+	
+	<PUBLISHER name="INDEX_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/index.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/index.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/index.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+  	<PUBLISHER name="LOOPBACK_AFTER_UPDATE_CONDITION">
+  		<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="LOOPBACK_AFTER_UPDATE_RESUME">
+  		<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	<PUBLISHER name="QBE_LOOP_TREEOBJECT_PAGE">
+  		
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="RELATIVE" scope="SERVICE_RESPONSE" value="PAGE" />
+                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ACTOR" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<!-- QBE -->
+  	
+  	
+  	<PUBLISHER name="SAVE_QUERY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/saveQuery.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/saveQuery.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/saveQuery.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="ImportExportPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ImportExportPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+	<PUBLISHER name="ImportExportLoopback">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
+      		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      		<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+      		<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ImportExportRoleAssociation">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/importexportRoleAssociation.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ImportExportEngineAssociation">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/importexportEngineAssociation.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ImportExportConnectionAssociation">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/importexportConnectionAssociation.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	
+</PUBLISHERS>

@@ -1,0 +1,164 @@
+<project name="SpagoBI" default="packaging.test" basedir=".">
+      	<description>Build War file</description>
+
+	        	
+      	<property environment="env"/>
+      	
+	  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	  <!--   DEFINIZIONE FILE DI PROPERTY						      -->
+	  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+		<property file="build.properties"/>	
+
+
+	  	
+	  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	  <!--   DEFINIZIONE CLASSPATH						            -->
+	  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--> 
+		<path id="web.classpath">
+    		<pathelement path="${classpath}"/>
+    		<!-- LIBRERIE SPECIFICHE APPLICATIVO  -->
+    		<fileset dir="${web.lib}">
+          		<include name="**/*.jar"/>
+    		</fileset>
+            <fileset dir="${servlet-api.jar.directory}">
+                <include name="**/servlet-api.jar"/>
+            </fileset>
+			<fileset dir="${jsp-api.jar.directory}">
+			  	<include name="**/jsp-api.jar"/>
+			</fileset>
+            <fileset dir="${portlet_api.jar.directory}">
+               <include name="**/portlet-api-1.0.jar"/>
+            </fileset>
+ 		</path>
+	
+
+	<!--
+     <taskdef name="install"   classname="org.apache.catalina.ant.InstallTask"/>
+    <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"/>
+    <taskdef name="undeploy"    classname="org.apache.catalina.ant.UndeployTask"/>
+    <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"/>
+    <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"/>  
+  <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"/>    
+   <taskdef name="remove"    classname="org.apache.catalina.ant.RemoveTask"/>
+	<taskdef name="list"      classname="org.apache.catalina.ant.ListTask"/>	
+	-->
+	<!--
+    <taskdef resource="checkstyletask.properties" classpath="${web.lib.ext}/checkstyle-all-3.5.jar"/>
+    --> 
+               
+	  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	  <!--   PULIZIA AMBIENTE						            -->
+	  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--> 
+	  <target name="clean" >
+	    <!-- Delete the ${build} and ${dist} directory trees -->
+	    <delete dir="${javadoc}"/>
+	    <delete dir="${build}"/>
+	    <delete dir="${dist}"/>
+	  </target>	   
+	
+	  <target name="init" depends="clean">
+	    <!-- Create the time stamp -->
+	    <tstamp/>
+	    <!-- Create the build directory structure used by compile -->
+	    <mkdir dir="${build}"/>
+        <mkdir dir="${build}/${dinamic.content}/WEB-INF/classes"/>
+	    <mkdir dir="${dist}"/>
+	    <mkdir dir="${javadoc}"/>
+	  </target>
+
+	
+	<!-- MUST UNDERSTAND HOW TO DO WITHOUT THE SVN SERVER
+	  <target name="checkout" depends="init"
+	          description="Sincronizza l'applicazione con il repository">
+
+        <echo message="CANCELLO LE DIRECTORY SRC,WEB,CONFIG"/>
+
+		<delete dir="${src}"/>
+		<mkdir dir="${src}"/>
+		
+		<delete dir="${web.dir}"/>
+		<mkdir dir="${web.dir}"/>
+			
+		<delete dir="${web.conf}"/>
+		<mkdir dir="${web.conf}"/>
+		
+        <echo message="ESEGUO UN UPDATE DA SUBVERSION"/>
+		
+	  	
+	  	<exec dir="${src}" executable="svn" >
+	  			  <arg line="${svn-location_args}"/>
+	  	</exec>							
+	  </target>
+	-->	
+				
+	  
+
+        
+
+
+	  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	  <!--   COMPILAZIONE							     -->
+	  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	  <target name="compile" depends="init" description="compile the source" >
+	    <!-- Compile the java code from ${src} into ${build}/WEB-INF/classes -->
+	    <javac srcdir="${src}" destdir="${build}/${dinamic.content}/WEB-INF/classes">
+	    	<classpath refid="web.classpath"/>
+	    </javac>
+	  </target>
+
+ 
+	<target name="prepare-war" depends="compile">
+
+	        <mkdir dir="${build}/${dinamic.content}/"/>
+
+	       
+	    </target>
+
+	    <!-- Generate the war file -->
+	    <target name="create.war" depends="prepare-war">
+
+	        <war warfile="${build}/${dinamic.content}/${war_name}"
+	             webxml="${web.dir}/WEB-INF/web.xml">
+	        	
+	            
+	        	<classes dir="${web.dir}/WEB-INF/classes">
+	            </classes>
+
+	            <fileset dir="${web.dir}">
+	            </fileset>
+	        </war>
+	    	
+	    	<copy file="${build}/${dinamic.content}/${war_name}" tofile="${dist}/${war_name}" />
+
+	    </target>
+
+  	
+    <target name="javadoc" >    
+	    <javadoc packagenames="*"
+	           sourcepath="${src}"
+	           defaultexcludes="yes"
+	           destdir="${javadoc}"
+	           author="true"
+	           version="true"
+	           use="true"
+	           windowtitle="DPS API">
+		<classpath refid="web.classpath"/>
+	    	<doctitle><![CDATA[<h1>DPS</h1>]]></doctitle>
+	    	<bottom><![CDATA[<i>Copyright &#169; 2004 Engineering S.p.a. All Rights Reserved.</i>]]></bottom>
+	    	<tag name="todo" scope="all" description="To do:" />
+	    	<group title="Classi applicative" packages="com.*"/>
+	    	<group title="Test unit, ftp API" packages="it.*"/>
+	  </javadoc>    
+    </target>
+	
+ 
+ 	
+
+	  <target name="packaging.test" depends="compile,create.war,javadoc">
+	  </target>
+	
+
+	 
+		  	  	  
+</project>
+

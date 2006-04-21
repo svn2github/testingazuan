@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="HibernateSessionFactory">
+        <property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
+        <!-- 
+        <property name="hibernate.connection.url">jdbc:postgresql://192.168.20.223:5432/spagobi</property>
+        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.password">spagobi</property>
+        <property name="hibernate.connection.username">spagobi</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.show_sql">false</property>
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiFuncRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiObjFunc.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiFunctions.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiChecks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiObjState.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-codec-1.3.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-dbcp-1.2.1.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-fileupload-1.1-dev.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-io-1.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-logging-1.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-pool-1.2.jar"/>
@@ -36,8 +35,9 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jackrabbit.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jndi.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/hibernate-3.1rc2.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/qbe.core-1.8.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.drivers.api-1.8.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.securityprovider.api-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/gioia/Documenti/Codice/Java/SpagoBIBranch/SpagoBIProject/web-content/WEB-INF/lib/sbi.securityprovider.api-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/gioia/Documenti/Codice/Java/SpagoBIBranch/SpagoBIProject/web-content/WEB-INF/lib/qbe.core-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/gioia/Documenti/Codice/Java/SpagoBIBranch/SpagoBIProject/web-content/WEB-INF/lib/sbi.drivers.api-1.8.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-fileupload-1.1.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

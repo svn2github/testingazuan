@@ -9,6 +9,7 @@
 				 it.eng.spagobi.bo.Parameter,
 				 java.util.List,
 				 it.eng.spagobi.constants.ObjectsTreeConstants,
+				 it.eng.spagobi.constants.AdmintoolsConstants,
 				 javax.portlet.PortletURL,
 				 it.eng.spagobi.bo.Domain,
 				 java.util.Iterator,
@@ -721,6 +722,24 @@ function deleteBIParameterConfirm (message) {
 			<spagobi:message key = "SBIDev.docConf.docDetParam.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+			<% if (biObjParams != null && biObjParams.size() > 1) { 
+				PortletURL objParusePageUrl = renderResponse.createActionURL();
+				objParusePageUrl.setParameter("PAGE", "ListObjParusePage");
+				objParusePageUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
+				objParusePageUrl.setParameter("obj_par_id", (new Integer(obj_par_id)).toString());
+				objParusePageUrl.setParameter(ObjectsTreeConstants.PATH, obj.getPath());
+				objParusePageUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+				objParusePageUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+				%>
+				<td class='header-button-column-portlet-section'>
+					<a href='<%=objParusePageUrl.toString()%>'>
+						<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Class.gif") %>'
+								title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />' alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
+						/>
+					</a>
+				</td>
+				<%
+			} %>
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:deleteBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.deleteBIParameterConfirm"/>")'>
 				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif") %>'

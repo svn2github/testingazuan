@@ -80,6 +80,16 @@ public class DAOFactory {
 	}
 	
 	/**
+	 * Creates a DAO instance for a Subreport
+	 * 
+	 * @return a DAO instance for the Subreport
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static ISubreportDAO getSubreportDAO() throws EMFUserError {
+		return (ISubreportDAO)createDAOInstance("SubreportDAO");
+	}
+	
+	/**
 	 * Creates BI object DAO instance for cms access
 	 * 
 	 * @return a CMS DAO instance for the BIObject

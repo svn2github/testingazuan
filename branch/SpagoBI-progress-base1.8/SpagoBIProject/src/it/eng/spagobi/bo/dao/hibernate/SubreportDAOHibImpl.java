@@ -25,12 +25,13 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
-import it.eng.spagobi.metadata.SbiParameters;
+import it.eng.spagobi.metadata.SbiObjPar;
 import it.eng.spagobi.metadata.SbiSubreports;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -45,17 +46,62 @@ public class SubreportDAOHibImpl
 extends AbstractHibernateDAO 
 implements ISubreportDAO {
 
-	public List loadAllSubreports() throws EMFUserError {
+	public List loadSubreportsByMasterRptId(Integer master_rpt_id) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
+		String hql = null;
+		Query hqlQuery = null;
+		
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			Query hibQuery = aSession.createQuery(" from SbiSubreports");
-			List hibList = hibQuery.list();
+			hql = " from SbiSubreports as subreport " + 
+	         "where subreport.master_rpt_id = '" + master_rpt_id.toString() + "'";
+			
+			hqlQuery = aSession.createQuery(hql);
+			List hibList = hqlQuery.list();
+			
+			Iterator it = hibList.iterator();
 
+			while (it.hasNext()) {
+				realResult.add(toSubreport((SbiSubreports) it.next()));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
+	}
+	
+	public List loadSubreportsBySubRptId(Integer sub_rpt_id) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		String hql = null;
+		Query hqlQuery = null;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			hql = " from SbiSubreports as subreport " + 
+	         "where subreport.sub_rpt_id = '" + sub_rpt_id.toString() + "'";
+			
+			hqlQuery = aSession.createQuery(hql);
+			List hibList = hqlQuery.list();
+			
 			Iterator it = hibList.iterator();
 
 			while (it.hasNext()) {
@@ -83,14 +129,80 @@ implements ISubreportDAO {
 		
 	}
 
-	public void eraseSubreportByMasterRptId(Integer id) throws EMFUserError {
-		// TODO Auto-generated method stub
-		
+	public void eraseSubreportByMasterRptId(Integer master_rpt_id) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		String hql = null;
+		Query hqlQuery = null;
+		List subreports = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			hql = " from SbiSubreports as subreport " + 
+	         "where subreport.master_rpt_id = '" + master_rpt_id.toString() + "'";
+			
+			hqlQuery = aSession.createQuery(hql);
+			subreports = hqlQuery.list();
+			
+			Iterator it = subreports.iterator();
+			while (it.hasNext()) {
+				aSession.delete((SbiSubreports) it.next());
+			}			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} catch (Exception ex) {
+			logException(ex);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
+		}	finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 	}
 
-	public void eraseSubreportBySubRptId(Integer id) throws EMFUserError {
-		// TODO Auto-generated method stub
-		
+	public void eraseSubreportBySubRptId(Integer sub_rpt_id) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		String hql = null;
+		Query hqlQuery = null;
+		List subreports = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			hql = " from SbiSubreports as subreport " + 
+	         "where subreport.sub_rpt_id = '" + sub_rpt_id.toString() + "'";
+			
+			hqlQuery = aSession.createQuery(hql);
+			subreports = hqlQuery.list();
+			
+			Iterator it = subreports.iterator();
+			while (it.hasNext()) {
+				aSession.delete((SbiSubreports) it.next());
+			}			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} catch (Exception ex) {
+			logException(ex);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
+		}	finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}	
 	}
 	
 	/**

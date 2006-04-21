@@ -4,12 +4,10 @@
 <hibernate-mapping>
 
     <class name="it.eng.spagobi.metadata.SbiSubreports" table="sbi_subreports" schema="public">
-        <property name="master_rpt_id" type="integer">
-            <column name="master_rpt_id" not-null="true" />
-        </property>   
-        <property name="sub_rpt_id" type="integer">
-            <column name="sub_rpt_id" not-null="true" />
-        </property>      
+        <composite-id>
+			<key-property name="master_rpt_id" column="master_rpt_id"/>
+			<key-property name="sub_rpt_id" column="sub_rpt_id"/>
+		</composite-id>        
     </class>
     
 </hibernate-mapping>

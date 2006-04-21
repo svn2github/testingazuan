@@ -51,12 +51,14 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
+import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
+import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -270,6 +272,21 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 		setLoopbackContext(request, message);	
 		Integer masterReportId = getBIObjectIdFromLoopbackContext();		
+		
+		// HIBERNATE TEST
+		Subreport subrpt = null;
+		try {
+			ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
+        	List subrptList =  subrptdao.loadSubreportsByMasterRptId(masterReportId);
+        	for(int i = 0; i < subrptList.size(); i++) {
+        		subrpt = (Subreport)subrptList.get(i);
+        		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","HIBERNATE TEST", subrpt.getMaster_rpt_id().toString() + " - " + subrpt.getSub_rpt_id().toString());
+        	}
+		} catch (Exception ex) {
+			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","delDetailObject","Cannot erase object", ex  );
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		// HIBERNATE TEST
 		
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;

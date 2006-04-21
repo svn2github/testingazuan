@@ -33,7 +33,8 @@ import java.util.List;
  */
 public interface ISubreportDAO {
 
-	public List loadAllSubreports() throws EMFUserError;
+	public List loadSubreportsByMasterRptId(Integer master_rpt_id) throws EMFUserError;
+	public List loadSubreportsBySubRptId(Integer sub_rpt_id) throws EMFUserError;
 	public void insertSubreport(Subreport aSubreport) throws EMFUserError;
 	public void eraseSubreportByMasterRptId(Integer id) throws EMFUserError;
 	public void eraseSubreportBySubRptId(Integer id) throws EMFUserError;

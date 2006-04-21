@@ -46,6 +46,7 @@
 		<DAO name="ModalitiesValueDAO" implementation="it.eng.spagobi.bo.dao.hibernate.LovDAOHibImpl"/>
 		<DAO name="ParameterUseDAO" implementation="it.eng.spagobi.bo.dao.hibernate.ParameterUseDAOHibImpl"/>
 		<DAO name="LowFunctionalityDAO" implementation="it.eng.spagobi.bo.dao.hibernate.LowFunctionalityDAOHibImpl"/>
+		<DAO name="ObjParuseDAO" implementation="it.eng.spagobi.bo.dao.hibernate.ObjParuseDAOHibImpl"/>
 		
 		<!-- CMS DAO IMPLEMENTATION -->
  		<DAO name="BIObjectCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.BIObjectCMSDAOImpl"/>		

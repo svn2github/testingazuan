@@ -49,12 +49,14 @@ import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Engine;
+import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.dao.IDomainDAO;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -116,8 +118,11 @@ public class DetailBIObjectModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		if (PortletFileUpload.isMultipartContent((ActionRequest)portletRequest)){
-			request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
+		if (portletRequest instanceof ActionRequest) {
+			ActionRequest actionRequest = (ActionRequest) portletRequest;
+			if (PortletFileUpload.isMultipartContent(actionRequest)) {
+				request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
+			}
 		}
 		
 		RequestContainer requestContainer = this.getRequestContainer();		
@@ -516,8 +521,14 @@ public class DetailBIObjectModule extends AbstractModule {
 				errorHandler.addError(error);
 				return;
 			}
+			Object selectedObjParIdObj = request.getAttribute("selected_obj_par_id");
+			String selectedObjParIdStr = "";
+			if (selectedObjParIdObj != null) {
+				int selectedObjParId = findBIObjParId(selectedObjParIdObj);
+				selectedObjParIdStr = new Integer(selectedObjParId).toString();
+			}
 			fillResponse(response);
-			prepareBIObjectDetailPage(response, obj, null, "", ObjectsTreeConstants.DETAIL_MOD, true, true);
+			prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
 			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE,
@@ -604,6 +615,17 @@ public class DetailBIObjectModule extends AbstractModule {
 				} else if (deleteBIObjectParameter != null) {
 					// it is requested to delete the visible BIObjectParameter
 					int objParId = findBIObjParId(deleteBIObjectParameter);
+					// deletes all the ObjParuse objects associated to this BIObjectParameter 
+					IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+					List objParuses = objParuseDAO.loadObjParuses(new Integer(objParId));
+					if (objParuses != null && objParuses.size() > 0) {
+						Iterator it = objParuses.iterator();
+						while (it.hasNext()) {
+							ObjParuse objParuse = (ObjParuse) it.next();
+							objParuseDAO.eraseObjParuse(objParuse);
+						}
+					}
+					// then deletes the BIObjectParameter
 					IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
 					BIObjectParameter objPar = objParDAO.loadForDetailByObjParId(new Integer(objParId));
 					objParDAO.eraseBIObjectParameter(objPar);

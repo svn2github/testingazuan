@@ -330,6 +330,16 @@ IMG {
     background-color:#fafafa;
 }
 
+.div_detail_area_forms_objParuse {
+	margin: 0px 5px 10px 5px;
+	width:90%;
+    padding-top:5px;
+    padding-left:5px;
+    padding-bottom:5px;
+    border: 1px solid #cccccc;
+    background-color:#fafafa;
+}
+
 .table_detail_fix_lov {
 	margin: 5px;
 	width:600px;

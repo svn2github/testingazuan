@@ -26,5 +26,6 @@
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiChecks.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiParuseCk.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiObjState.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiObjParuse.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

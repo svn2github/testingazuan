@@ -623,11 +623,33 @@
    	 	</RENDERING>
   	</PUBLISHER>
 
-
-
-
-
-
+  	<PUBLISHER name="ListObjParusePublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListObjParusePublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listObjParuses">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listObjParuse.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="listObjParusesLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="DetailBIObjectPage" />
+        		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
+        		<PARAMETER name="selected_obj_par_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.selected_obj_par_id" />
+        		<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.PATH" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        		<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.ACTOR" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
 
 
 

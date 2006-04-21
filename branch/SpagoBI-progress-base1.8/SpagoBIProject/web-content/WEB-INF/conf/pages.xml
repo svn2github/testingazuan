@@ -378,7 +378,17 @@
     	</MODULES>
   	</PAGE>
   	
-
+  	<PAGE name="ListObjParusePage" scope="REQUEST" title="ObjParuse list page" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ListObjParusePage" target="ListObjParuseModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListObjParuseModule"/>
+    	</MODULES>
+  	</PAGE>
 
 </PAGES>
 

@@ -84,7 +84,6 @@ public class DetailEnginePublisher implements PublisherDispatcherIFace {
 			return "detailEngine";
 		}
 
-
 	}
 
 }

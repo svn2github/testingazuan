@@ -164,10 +164,19 @@ public class DAOFactory {
 	/**
 	 * Creates a DAO instance for a role
 	 * 
-	 * @return a DAO instance for the  prrole
+	 * @return a DAO instance for the role
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IRoleDAO getRoleDAO() throws EMFUserError{
 		return (IRoleDAO)createDAOInstance("RoleDAO");
+	}
+	/**
+	 * Creates a DAO instance for a obj paruse
+	 * 
+	 * @return a DAO instance for the obj paruse
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IObjParuseDAO getObjParuseDAO() throws EMFUserError{
+		return (IObjParuseDAO)createDAOInstance("ObjParuseDAO");
 	}
 }

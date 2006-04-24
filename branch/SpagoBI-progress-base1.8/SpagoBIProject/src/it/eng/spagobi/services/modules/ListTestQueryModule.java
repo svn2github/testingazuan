@@ -44,7 +44,6 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.GeneralUtilities;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -131,7 +130,11 @@ public class ListTestQueryModule extends AbstractBasicListModule {
 		// filter the list 
 		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		if (valuefilter != null) {
-			list = DelegatedBasicListService.filterList(list, valuefilter, request);
+			String columnfilter = (String) request
+					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+			String typeFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_FILTER);
+			list = DelegatedBasicListService.filterList(list, valuefilter, columnfilter, typeFilter);
 		}
 		return list;
 		

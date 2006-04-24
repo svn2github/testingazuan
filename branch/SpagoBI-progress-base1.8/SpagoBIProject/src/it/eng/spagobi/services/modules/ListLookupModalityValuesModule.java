@@ -34,10 +34,14 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
+import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
@@ -93,8 +97,6 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		paramsMap.put("LOOKUP_PARAMETER_NAME", lookupParameterName);
 		paramsMap.put(SpagoBIConstants.ACTOR, actor);
 		paramsMap.put("mod_val_id", idModVal.toString());
-		
-		response.setAttribute("PARAMETERS_MAP", paramsMap);
 		
 		HashMap selectCaptionParams = new HashMap();
 		selectCaptionParams.putAll(paramsMap);
@@ -159,6 +161,41 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 			response.setAttribute(moduleConfig);
 			
 			list = DelegatedBasicListService.getList(this, request, response);
+			
+			String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
+			if (correlatedParuseIdStr != null && !correlatedParuseIdStr.equals("")) {
+				// the parameter is correlated
+				String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
+				Integer objParId = Integer.valueOf(objParIdStr);
+				Integer correlatedParuseId = Integer.valueOf(correlatedParuseIdStr);
+				IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+				ObjParuse objParuse = objParuseDAO.loadObjParuse(objParId, correlatedParuseId);
+				Integer objParFatherId = objParuse.getObjParFatherId();
+				// get object from the session
+				BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		        // find the parameter for the correlation
+				List biparams = obj.getBiObjectParameters();
+				BIObjectParameter objPar = null;
+		        Iterator iterParams = biparams.iterator();
+		        while (iterParams.hasNext()) {
+		        	BIObjectParameter aBIObjectParameter = (BIObjectParameter) iterParams.next();
+		        	if (aBIObjectParameter.getId().equals(objParFatherId)) {
+		        		objPar = aBIObjectParameter;
+		        		break;
+		        	}
+		        }
+				String valueFilter = "";
+				List valuesFilter = objPar.getParameterValues();
+				if (valuesFilter != null && valuesFilter.size() == 1) {
+					valueFilter = (String) valuesFilter.get(0);
+				}
+				
+				list = DelegatedBasicListService.filterList(list, valueFilter, objParuse.getFilterColumn(), objParuse.getFilterOperation());
+				
+				paramsMap.put("correlated_paruse_id", correlatedParuseIdStr);
+				paramsMap.put("LOOKUP_PARAMETER_ID", objParIdStr);
+				
+			}    
 			
 //			String configQuery = modVal.getLovProvider();
 //			configQuery = PortletUtilities.cleanString(configQuery);
@@ -234,7 +271,11 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
     		// filter the list 
     		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
     		if (valuefilter != null) {
-    			list = DelegatedBasicListService.filterList(list, valuefilter, request);
+    			String columnfilter = (String) request
+						.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+				String typeFilter = (String) request
+						.getAttribute(SpagoBIConstants.TYPE_FILTER);
+				list = DelegatedBasicListService.filterList(list, valuefilter, columnfilter, typeFilter);
     		}
     		
 //			list = LookupScriptDelegatedBasicListService.getList(this, request, response, rows);
@@ -256,6 +297,8 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 //			response.setAttribute(moduleConfig);
 //			response.setAttribute("mod_val_id", idModVal);
 		}
+		
+		response.setAttribute("PARAMETERS_MAP", paramsMap);
 		
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
 		

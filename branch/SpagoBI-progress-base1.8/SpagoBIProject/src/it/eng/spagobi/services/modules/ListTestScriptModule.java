@@ -143,7 +143,11 @@ public class ListTestScriptModule extends AbstractBasicListModule {
 		// filter the list 
 		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		if (valuefilter != null) {
-			list = DelegatedBasicListService.filterList(list, valuefilter, request);
+			String columnfilter = (String) request
+					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+			String typeFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_FILTER);
+			list = DelegatedBasicListService.filterList(list, valuefilter, columnfilter, typeFilter);
 		}
 		return list;
 	}

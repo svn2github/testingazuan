@@ -333,6 +333,8 @@
         		<CONSEQUENCES>
         			<PARAMETER name="mod_val_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.mod_val_id" />
         			<PARAMETER name="LOOKUP_PARAMETER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.LOOKUP_PARAMETER_NAME" />
+        			<PARAMETER name="LOOKUP_PARAMETER_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.LOOKUP_PARAMETER_ID" />
+        			<PARAMETER name="correlated_paruse_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.correlated_paruse_id" />
         		</CONSEQUENCES>
       		</DEPENDENCE>
     	</DEPENDENCIES>

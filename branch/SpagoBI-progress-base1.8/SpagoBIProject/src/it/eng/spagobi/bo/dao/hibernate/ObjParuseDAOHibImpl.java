@@ -23,6 +23,7 @@ package it.eng.spagobi.bo.dao.hibernate;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -294,6 +295,45 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 		toReturn.setObjParFatherId(aSbiObjParuse.getSbiObjParFather().getObjParId());
 		toReturn.setFilterColumn(aSbiObjParuse.getFilterColumn());
 		toReturn.setFilterOperation(aSbiObjParuse.getFilterOperation());
+		return toReturn;
+	}
+
+	/** 
+	 * @see it.eng.spagobi.bo.dao.IObjParuseDAO#getDependencies(Integer)
+	 */
+	public List getDependencies(Integer objParFatherId) throws EMFUserError {
+		List toReturn = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			String hql = "from SbiObjParuse s where s.sbiObjParFather=" + objParFatherId;
+			Query query = aSession.createQuery(hql);
+			List objParuses = query.list();
+			
+			if (objParuses == null || objParuses.size() == 0) return toReturn;
+			
+			Iterator it = objParuses.iterator();
+			while (it.hasNext()) {
+				SbiObjParuse objParuseHib = (SbiObjParuse) it.next();
+				Integer objParId = objParuseHib.getId().getSbiObjPar().getObjParId();
+				SbiObjPar hibObjPar = (SbiObjPar) aSession.load(SbiObjPar.class, objParId);
+				toReturn.add(hibObjPar.getLabel());
+			}
+			tx.commit();
+			
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		return toReturn;
 	}
 	

@@ -91,4 +91,15 @@ public interface IObjParuseDAO {
 	 */
 	public List loadObjParuses(Integer objParId) throws EMFUserError;
 
+	/**
+	 * Returns the list of labels of BIObjectParameter objects that have a correlation relationship 
+	 * with the BIObjectParameter at input, given its id.
+	 * 
+	 * @param objParFatherId The id of the BIObjectParameter
+	 * @return the list of BIObjectParameter objects that have a correlation relationship 
+	 * with the BIObjectParameter at input
+	 * @throws EMFUserError
+	 */
+	public List getDependencies(Integer objParFatherId) throws EMFUserError;
+	
 }

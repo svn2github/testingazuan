@@ -26,12 +26,19 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
+import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
+import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.ScriptDetail;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
+import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
@@ -125,8 +132,21 @@ public class DynamicPageTag extends TagSupport {
         		htmlStream.append("			</span>\n");
         		htmlStream.append("		</div>\n");
         		htmlStream.append("		<div class='div_detail_form'>\n");
-        		createHTMLForm(biparam, htmlStream);	
+        		String objParFatherLabel = createHTMLForm(biparam, htmlStream);
         		htmlStream.append("		</div>\n");
+        		if (objParFatherLabel != null) {
+            		htmlStream.append("		<div class='div_detail_label_lov'>\n");
+            		htmlStream.append("			<span class='portlet-form-field-label'>\n");
+            		htmlStream.append("				&nbsp;");
+            		htmlStream.append("			</span>\n");
+            		htmlStream.append("		</div>\n");
+            		htmlStream.append("		<div class='div_detail_form'>\n");
+        			String correlation = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages");
+            		htmlStream.append("			<span class='portlet-form-field-label'>\n");
+            		htmlStream.append(correlation + " " + objParFatherLabel + "\n");
+            		htmlStream.append("			</span>\n");
+            		htmlStream.append("		</div>\n");
+        		}
         	}
         }
         
@@ -259,8 +279,9 @@ public class DynamicPageTag extends TagSupport {
 	 * 
 	 * @param biparam The input BI object parameter
 	 * @param htmlStream The buffer containing all html code 
+	 * @return The label of the BIObjectParameter of dependancy, if any
 	 */
-	private void createHTMLForm(BIObjectParameter biparam, StringBuffer htmlStream) {
+	private String createHTMLForm(BIObjectParameter biparam, StringBuffer htmlStream) {
 		
 		ModalitiesValue modVal = biparam.getParameter().getModalityValue();
 		String typeCode = modVal.getITypeCd();
@@ -296,21 +317,83 @@ public class DynamicPageTag extends TagSupport {
 				ex.printStackTrace();
 			}
 		
-			
+		return null;	
 		
 			
 		// PARAMETER USE TYPE MANUAL INPUT
 		} else if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
 			htmlStream.append("<input style='width:230px;' type='text' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' value='" + value + "' class='portlet-form-input-field' />\n");
+			return null;
 		} 
 		
 		
 		
 		
-		// PARAMETER USE TYPE QUERY OR SCRIPT
-		else if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE) ||
-			   typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
+		// PARAMETER USE TYPE QUERY
+		else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {
 			
+			BIObjectParameter objParFather = null;
+			ObjParuse objParuse = null;
+			try {
+				IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+				IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
+				List objParuses = objParuseDAO.loadObjParuses(biparam.getId());
+				if (objParuses != null && objParuses.size() > 0) {
+					Iterator it = objParuses.iterator();
+					while (it.hasNext()) {
+						ObjParuse aObjParuse = (ObjParuse) it.next();
+						Integer paruseId = aObjParuse.getParuseId();
+						ParameterUse aParameterUse = paruseDAO.loadByUseID(paruseId);
+						Integer idLov = aParameterUse.getIdLov();
+						if (idLov.equals(modVal.getId())) {
+							// the ModalitiesValue of the BIObjectParameter corresponds to a ParameterUse correlated
+							objParuse = aObjParuse;
+							SpagoBITracer.debug("", "DynamicPageTag", "createHTMLForm()", "Found correlation:" +
+									" dependent BIObjectParameter id = " + biparam.getId() + "," +
+									" ParameterUse with id = " + paruseId + ";" +
+									" BIObjectParameter father has id = " + objParuse.getObjParFatherId());
+							// now we have to find the BIObjectParameter father of the correlation
+							Integer objParFatherId = objParuse.getObjParFatherId();
+							List parameters = obj.getBiObjectParameters();
+							Iterator i = parameters.iterator();
+							while (i.hasNext()) {
+								BIObjectParameter aBIObjectParameter = (BIObjectParameter) i.next();
+								if (aBIObjectParameter.getId().equals(objParFatherId)) {
+									objParFather = aBIObjectParameter;
+									break;
+								}
+							}
+							if (objParFather == null) {
+								// the BIObjectParameter father of the correlation was not found
+								SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Cannot find the BIObjectParameter father of the correlation");
+								throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+							}
+							break;
+						}
+					}
+				}
+			} catch (EMFUserError e) {
+				SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Error while retrieving information from db", e);
+				e.printStackTrace();
+			}
+			
+			htmlStream.append("<input type='text' style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' " +
+					"class='portlet-form-input-field' readonly='true' value='"+value+"' />\n");
+			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\")' \n");
+			htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
+			htmlStream.append("		title='Lookup' alt='Lookup' \n");
+			htmlStream.append("/>\n");
+			
+			if (objParFather != null && objParuse != null) {
+				// the BIobjectParameter is correlated to another BIObjectParameter
+				htmlStream.append("<input type='hidden' name='correlatedParuseIdForObjParWithId_" + biparam.getId() + "' value='" + objParuse.getParuseId() + "' />\n");
+				return objParFather.getLabel();
+			} else return null;
+			
+		}
+		
+		// PARAMETER USE TYPE SCRIPT
+		else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
 			String idModVal = String.valueOf(modVal.getId());
 //			if(modality.equalsIgnoreCase(SpagoBIConstants.EXECUTION_MODALITY)){
 //				lookupURL.setParameter("ORIGINAL_PAGE", ExecuteBIObjectModule.MODULE_PAGE);
@@ -326,6 +409,7 @@ public class DynamicPageTag extends TagSupport {
 			//htmlStream.append("<a href='"+lookupURL.toString()+"'>Lookup</a>\n");
 		}
 		
+		return null;
 		
 	}
 	

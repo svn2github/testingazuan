@@ -240,32 +240,37 @@ public class DelegatedBasicListService {
 //			list = filterList(list, valuefilter, request);
 //		}
 		if (valuefilter != null) {
-			list = filterList(list, valuefilter, request);
+			String columnfilter = (String) request
+					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+			String typeFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_FILTER);
+			list = filterList(list, valuefilter, columnfilter, typeFilter);
 		}
 		
 		return list;
 	} // public static ListIFace getList(ServiceIFace service, SourceBean
 
+	
 	/**
 	 * Filters the list
 	 * 
 	 * @param list The list to be filtered
 	 * @param valuefilter The value of the filter
-	 * @param request The request SourceBean
+	 * @param columnfilter The column to be filtered
+	 * @param typeFilter The type of the filter
 	 * @return the filtered list
 	 */
-	public static ListIFace filterList(ListIFace list, String valuefilter, SourceBean request) {
-		valuefilter = valuefilter.toUpperCase();
-		String columnfilter = (String) request
-				.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+	public static ListIFace filterList(ListIFace list, String valuefilter, String columnfilter, String typeFilter) {
+		if ((valuefilter == null) || (valuefilter.equals(""))) {
+			return list;
+		}
 		if ((columnfilter == null) || (columnfilter.trim().equals(""))) {
 			return list;
 		}
-		String typeFilter = (String) request
-				.getAttribute(SpagoBIConstants.TYPE_FILTER);
 		if ((typeFilter == null) || (typeFilter.trim().equals(""))) {
 			return list;
 		}
+		valuefilter = valuefilter.toUpperCase();
 		PaginatorIFace newPaginator = new GenericPaginator();
 		newPaginator.setPageSize(list.getPaginator().getPageSize());
 		SourceBean allrowsSB = list.getPaginator().getAll();

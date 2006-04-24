@@ -632,8 +632,17 @@ public class DetailBIObjectModule extends AbstractModule {
 				} else if (deleteBIObjectParameter != null) {
 					// it is requested to delete the visible BIObjectParameter
 					int objParId = findBIObjParId(deleteBIObjectParameter);
-					// deletes all the ObjParuse objects associated to this BIObjectParameter 
+					Integer objParIdInt = new Integer(objParId);
+					checkForDependancies(objParIdInt);
+					fillResponse(response);
+					reloadCMSInformation(obj);
+		    		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+		    			prepareBIObjectDetailPage(response, obj, biObjPar, objParIdInt.toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
+		    			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
+						return;
+					}
 					IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+					// deletes all the ObjParuse objects associated to this BIObjectParameter 
 					List objParuses = objParuseDAO.loadObjParuses(new Integer(objParId));
 					if (objParuses != null && objParuses.size() > 0) {
 						Iterator it = objParuses.iterator();
@@ -647,8 +656,6 @@ public class DetailBIObjectModule extends AbstractModule {
 					BIObjectParameter objPar = objParDAO.loadForDetailByObjParId(new Integer(objParId));
 					objParDAO.eraseBIObjectParameter(objPar);
 					selectedObjParIdStr = "";
-					fillResponse(response);
-					reloadCMSInformation(obj);
 					prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
 					response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 					return;
@@ -736,6 +743,29 @@ public class DetailBIObjectModule extends AbstractModule {
 		}
 	}
 	
+	/**
+	 * Controls if there are some BIObjectParameter objects that depend by the BIObjectParameter object
+	 * at input, given its id.
+	 * 
+	 * @param objParFatherId The id of the BIObjectParameter object to check
+	 * @throws EMFUserError
+	 */
+	private void checkForDependancies(Integer objParFatherId) throws EMFUserError {
+		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+		List objParametersCorrelated = objParuseDAO.getDependencies(objParFatherId);
+		if (objParametersCorrelated != null && objParametersCorrelated.size() > 0) {
+			HashMap params = new HashMap();
+			params.put(AdmintoolsConstants.PAGE,
+					DetailBIObjectModule.MODULE_PAGE);
+			Vector v = new Vector();
+			v.add(objParametersCorrelated.toString());
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1049,
+					v, params);
+			errorHandler.addError(error);
+		}
+	}
+
+
 	/**
 	 * Controls that the BIObjectParameter url name is not in use by another BIObjectParameter
 	 * 

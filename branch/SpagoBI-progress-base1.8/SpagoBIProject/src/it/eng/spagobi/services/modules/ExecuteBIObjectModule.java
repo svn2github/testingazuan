@@ -306,6 +306,9 @@ public class ExecuteBIObjectModule extends AbstractModule
         	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
         	response.setAttribute("mod_val_id" , modVal.getId().toString());
         	response.setAttribute("LOOKUP_PARAMETER_NAME", lookupBIParameter.getParameterUrlName());
+        	response.setAttribute("LOOKUP_PARAMETER_ID", lookupBIParameter.getId().toString());
+        	String correlatedParuseId = (String) request.getAttribute("correlatedParuseIdForObjParWithId_" + lookupObjParId);
+        	if (correlatedParuseId != null && !correlatedParuseId.equals("")) response.setAttribute("correlated_paruse_id", correlatedParuseId);
         	return;
         }
         

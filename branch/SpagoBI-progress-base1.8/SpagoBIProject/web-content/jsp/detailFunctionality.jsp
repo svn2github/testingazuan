@@ -20,10 +20,14 @@
     formAct.setParameter(AdmintoolsConstants.PAGE, DetailFunctionalityModule.MODULE_PAGE);
     formAct.setParameter(AdmintoolsConstants.MESSAGE_DETAIL, modality);
     String pathParent = "";
+    LowFunctionality parentFunctionality = null; 
+    
     if(modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
     	pathParent = (String)moduleResponse.getAttribute(AdmintoolsConstants.PATH_PARENT);
     	formAct.setParameter(AdmintoolsConstants.PATH_PARENT, pathParent);
     } else {
+    	pathParent = (String)moduleResponse.getAttribute("PARENT_PATH");
+        parentFunctionality = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent);
     	formAct.setParameter(AdmintoolsConstants.FUNCTIONALITY_ID, functionality.getId().toString());
     }
     formAct.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
@@ -176,12 +180,28 @@
 	 			            boolean isDev = false;
 	 			            boolean isTest = false;
 	 			            boolean isExec = false;
-	 			            for(int j=0; j<devRules.length; j++) 
+	 			            boolean isDevParent = false;
+	 			            boolean isTestParent = false;
+	 			            boolean isExecParent = false;
+	 			            DetailFunctionalityModule detFunct = new DetailFunctionalityModule();
+	 			            for(int j=0; j<devRules.length; j++) {
 	 			               if(devRules[j].equals(ruleId)) { isDev = true; }
-	 			            for(int j=0; j<testRules.length; j++) 
-	 			               if(testRules[j].equals(ruleId)) { isTest = true; }
-	 			            for(int j=0; j<execRules.length; j++) 
-	 			               if(execRules[j].equals(ruleId)) { isExec = true; }  
+	 			               		if(!pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !modality.equals(AdmintoolsConstants.DETAIL_INS)){
+	 			               			if(detFunct.isParentRule(ruleId,parentFunctionality,"DEV")){isDevParent = true;}
+										}
+									} 			            
+	 			            for(int j=0; j<testRules.length; j++) {
+	 			               if(testRules[j].equals(ruleId)) { isTest = true; } 
+	 			               		if(!pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !modality.equals(AdmintoolsConstants.DETAIL_INS)){
+	 			               			if(detFunct.isParentRule(ruleId,parentFunctionality,"TEST")){isTestParent = true;}
+	 			            			}
+	 			            		}
+	 			            for(int j=0; j<execRules.length; j++) {
+	 			               if(execRules[j].equals(ruleId)) { isExec = true; }
+	 			               		if(!pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !modality.equals(AdmintoolsConstants.DETAIL_INS)){
+	 			               			if(detFunct.isParentRule(ruleId,parentFunctionality,"EXEC")){isExecParent = true;}
+	 			           				 }
+	 			            		}
 	 			            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
 	 			            alternate = !alternate;
 	 			            %>
@@ -189,13 +209,13 @@
 					 	<td class='portlet-font'><%= ruleName + " (" + ruleDescription + ")" %></td>
 					 	
 					 	<td align="center">
-					 	    <input type="checkbox" name="development" id="development" value="<%=ruleId%>" <%if(isDev) out.print(" checked='checked' ");  %> />
+					 	    <input type="checkbox" name="development" id="development" value="<%=ruleId%>" <%if(isDev) out.print(" checked='checked' ");else if (!isDev && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isDevParent) out.print(" disabled='disabled' ");  %> />
 					 	</td>
 					 	<td align="center">
-					 	    <input type="checkbox" name="test" id="test" value="<%=ruleId%>" <%if(isTest) out.print(" checked='checked' ");  %> />
+					 	    <input type="checkbox" name="test" id="test" value="<%=ruleId%>" <%if(isTest) out.print(" checked='checked' "); else if (!isTest && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isTestParent) out.print(" disabled='disabled' "); %> />
 					 	</td>
 					 	<td align="center">
-					 	    <input type="checkbox" name="execution" id="execution" value="<%=ruleId%>" <%if(isExec) out.print(" checked='checked' ");  %> />
+					 	    <input type="checkbox" name="execution" id="execution" value="<%=ruleId%>" <%if(isExec) out.print(" checked='checked' "); else if (!isExec && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isExecParent) out.print(" disabled='disabled' ");  %> />
 					 	</td> 
 					    <td>
 					    <a onclick = "selectAllInRows('<%=ruleId%>')" title='<spagobi:message key = "SBISet.Funct.selAllRow" />' alt='<spagobi:message key = "SBISet.Funct.selAllRow" />'>

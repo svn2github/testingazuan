@@ -124,6 +124,9 @@ public class DetailFunctionalityModule extends AbstractModule {
 		try {
 			this.modality = AdmintoolsConstants.DETAIL_MOD;
 			String path = (String) request.getAttribute(DetailFunctionalityModule.PATH);
+			int index = path.lastIndexOf("/");
+			String parentPath = path.substring(0,index);
+			response.setAttribute("PARENT_PATH", parentPath);
 			response.setAttribute(AdmintoolsConstants.MODALITY, modality);
 			if (typeFunct.equals("LOW_FUNCT")) {
 				LowFunctionality funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
@@ -342,4 +345,38 @@ public class DetailFunctionalityModule extends AbstractModule {
 		return lowFunct;
 	}
 	
+	public boolean isParentRule(String rule, LowFunctionality parentLowFunct,String roleType){
+		boolean isParent = false;
+		if (roleType.equals("DEV")){
+		Role[] devRolesObj = parentLowFunct.getDevRoles();
+		String[] devRules = new String[devRolesObj.length];
+		for(int i=0; i<devRolesObj.length; i++) {
+			devRules[i] = devRolesObj[i].getId().toString();
+			if (rule.equals(devRules[i])){
+				isParent = true;
+				}
+			}
+		}
+		else if (roleType.equals("EXEC")){
+		Role[] execRolesObj = parentLowFunct.getExecRoles();
+		String[] execRules = new String[execRolesObj.length];
+		for(int i=0; i<execRolesObj.length; i++) {
+			execRules[i] = execRolesObj[i].getId().toString();
+			if (rule.equals(execRules[i]) ){
+				isParent = true;
+				}
+			}
+		}
+		else if (roleType.equals("TEST")){
+		Role[] testRolesObj = parentLowFunct.getTestRoles();
+		String[] testRules = new String[testRolesObj.length];
+		for(int i=0; i<testRolesObj.length; i++) {
+			testRules[i] = testRolesObj[i].getId().toString();
+			if (rule.equals(testRules[i])){
+				isParent = true;
+				}
+			}
+		}
+		return isParent;
+		}
 }

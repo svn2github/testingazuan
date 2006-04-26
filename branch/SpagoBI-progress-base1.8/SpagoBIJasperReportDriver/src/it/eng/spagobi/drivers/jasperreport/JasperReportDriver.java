@@ -39,25 +39,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.drivers.jasperreport;
 
-import it.eng.spago.base.Constants;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.dbaccess.DataConnectionManager;
-import it.eng.spago.dbaccess.SQLStatements;
-import it.eng.spago.dbaccess.Utils;
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
+import it.eng.spagobi.bo.Subreport;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectDAO;
+import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -144,7 +137,33 @@ public class JasperReportDriver implements IEngineDriver {
 	// TODO check all the subreport's hierarchy recursively and not only the first level
 	private Map addBISubreports(BIObject biobj, Map pars) {
 		Integer masterReportId = biobj.getId();
+				 
+		try {
+			ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
+			IBIObjectDAO biobjectdao = DAOFactory.getBIObjectDAO();
+			
+			List subreportList =  subrptdao.loadSubreportsByMasterRptId(masterReportId);
+			for(int i = 0; i < subreportList.size(); i++) {
+				Subreport subreport = (Subreport)subreportList.get(i);
+				BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
+				
+				String path = subrptbiobj.getPath();
+				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " PATH: " + path);
+				
+				pars.put("subrpt." + (i+1) + ".path", path);
+			}
+			pars.put("srptnum", "" + subreportList.size());
+			
+		} catch (EMFUserError e) {
+			SpagoBITracer.warning("ENGINES",
+					  this.getClass().getName(),
+					  "addBISubreports",
+					  "Error while reading subreports",
+					  e);
+		}
 		
+		
+		/*
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;
 		DataResult dataResult = null;
@@ -190,7 +209,7 @@ public class JasperReportDriver implements IEngineDriver {
 		} finally {
 			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		} 		
-		
+		*/
 		
 		
 		

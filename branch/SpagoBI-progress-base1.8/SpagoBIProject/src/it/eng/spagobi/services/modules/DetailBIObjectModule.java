@@ -230,6 +230,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.setAttribute("LookupBIObject", obj);
 		session.setAttribute("LookupBIObjectParameter", biObjPar);
 		session.setAttribute("modality", message);
+		session.setAttribute("modalityBkp", message);
 		session.setAttribute("actor",actor);
 	}
 	
@@ -237,6 +238,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("LookupBIObject");
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
+		session.delAttribute("modalityBkp");
 		session.delAttribute("actor");
 	}
 	
@@ -423,6 +425,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		BIObject obj = (BIObject) session.getAttribute("LookupBIObject");
 		BIObjectParameter biObjPar = (BIObjectParameter) session.getAttribute("LookupBIObjectParameter");
 		String modality = (String) session.getAttribute("modality");
+		if(modality == null) modality = (String)session.getAttribute("modalityBkp");
 		actor = (String) session.getAttribute("actor");
 		
 		if(save) {
@@ -506,10 +509,13 @@ public class DetailBIObjectModule extends AbstractModule {
 		BIObject obj = (BIObject) session.getAttribute("LookupBIObject");
 		BIObjectParameter biObjPar = (BIObjectParameter) session.getAttribute("LookupBIObjectParameter");
 		String modality = (String) session.getAttribute("modality");
+		if(modality == null) modality = (String)session.getAttribute("modalityBkp");
+		
 		actor = (String) session.getAttribute("actor");
 		session.delAttribute("LookupBIObject");
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
+		session.delAttribute("modalityBkp");
 		session.delAttribute("actor");
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		fillResponse(response);
@@ -523,9 +529,24 @@ public class DetailBIObjectModule extends AbstractModule {
 	private void lookupReturnHandler(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
 		
 		BIObject obj = (BIObject) session.getAttribute("LookupBIObject");
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
+				" BIObject = " + obj);
+		
 		BIObjectParameter biObjPar = (BIObjectParameter) session.getAttribute("LookupBIObjectParameter");
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
+				" BIObjectParameter = " + biObjPar);
+		
 		String modality = (String) session.getAttribute("modality");
+		if(modality == null) modality = (String)session.getAttribute("modalityBkp");
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
+				" modality = " + modality);
+		
+		
 		actor = (String) session.getAttribute("actor");
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
+				" actor = " + actor);
+		
+		
 		String newParIdStr = (String) request.getAttribute("PAR_ID");
 		Integer newParIdInt = Integer.valueOf(newParIdStr);
 		Parameter newParameter = new Parameter();
@@ -943,6 +964,10 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute("selected_obj_par_id", selectedObjParIdStr);
 		response.setAttribute(NAME_ATTR_OBJECT, obj);
 		response.setAttribute(NAME_ATTR_OBJECT_PAR, biObjPar);
+		
+		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule", "prepareBIObjectDetailPage", "XXXXXXXXXX " + detail_mod);
+		
+		
 		response.setAttribute(ObjectsTreeConstants.MODALITY, detail_mod);
 		
 		if (initialBIObject) {

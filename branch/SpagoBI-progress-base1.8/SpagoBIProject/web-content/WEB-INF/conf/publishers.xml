@@ -42,7 +42,9 @@
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
       		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ParametersLookupPage" />
+      		<!--  
       		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      		-->
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

@@ -354,10 +354,17 @@
 	        <COLUMN label="SBIDev.ListParam.columnType" name="TYPE"/>
 	      </COLUMNS>
 	      <BUTTONS>
-	          <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
-	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
-	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
+	      <NEW_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
+	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
+	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
+	         <!--
 	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	          -->
+	      </NEW_BUTTON>
+	      <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
+	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
+	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
+	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
 	      </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>
@@ -365,9 +372,9 @@
   	
   	<!-- SUBREPORT LIST -->
   	<MODULE class="it.eng.spagobi.services.modules.ListLookupReportsModule" name="ListLookupReportsModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListSubreport.ListLookupSubreports.title" >
-	      <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="MASTER_ID"/>
-	      <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="SUBREPORTS"/>
+	  <CONFIG pool="spagobi" rows="10" title="SBIDev.ListSubreport.ListLookupSubreports.title" >
+	     <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="MASTER_ID"/>
+	     <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="SUBREPORTS"/>
 	      
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_REPORTS_LIST"/>

@@ -58,6 +58,7 @@ import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
+import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -608,6 +609,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aSession.delete(hibBIObject);
 			
 			// update subreports table 
+			ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
+			subrptdao.eraseSubreportByMasterRptId(obj.getId());
+			subrptdao.eraseSubreportBySubRptId(obj.getId());
+			
+			/*
 			DataConnection dataConnection = null;
 			SQLCommand sqlCommand = null;
 						
@@ -636,7 +642,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE,
 					"BIObjectDAOImpl", "eraseBIObject",
 					"Statement executed succesfully");
-			
+			*/
 			
             // get profile user
 			RequestContainer requestContainer =  RequestContainer.getRequestContainer();

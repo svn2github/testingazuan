@@ -25,13 +25,11 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
-import it.eng.spagobi.metadata.SbiObjPar;
 import it.eng.spagobi.metadata.SbiSubreports;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -125,8 +123,16 @@ implements ISubreportDAO {
 	}
 
 	public void insertSubreport(Subreport aSubreport) throws EMFUserError {
-		// TODO Auto-generated method stub
+		Session aSession = null;
+		Transaction tx = null;
+		aSession = getSession();
 		
+		tx = aSession.beginTransaction();
+		SbiSubreports hibSubreport = new SbiSubreports();
+		hibSubreport.setMaster_rpt_id(aSubreport.getMaster_rpt_id());
+		hibSubreport.setSub_rpt_id(aSubreport.getSub_rpt_id());		
+		aSession.save(hibSubreport);	
+		tx.commit();
 	}
 
 	public void eraseSubreportByMasterRptId(Integer master_rpt_id) throws EMFUserError {

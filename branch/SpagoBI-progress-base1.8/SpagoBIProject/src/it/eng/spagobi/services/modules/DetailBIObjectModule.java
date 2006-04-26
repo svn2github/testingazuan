@@ -37,7 +37,6 @@ import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -267,27 +266,43 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute("lookupLoopback", "true");		
 	}
 	
+	private SourceBean subreportsToSourceBean(List subreportList) {
+		SourceBean subreports = null;
+		try {
+			subreports = new SourceBean("ROWS");
+			for(int i = 0; i < subreportList.size(); i++) {
+	    		Subreport subreport = (Subreport)subreportList.get(i);
+	    		SourceBean row = new SourceBean("ROW");
+				row.setAttribute("MASTER_ID", subreport.getMaster_rpt_id());
+				row.setAttribute("SUBREPORT_ID", subreport.getSub_rpt_id());
+				subreports.setAttribute(row);    		
+			}
+		} catch (SourceBeanException e) {
+			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","subreportsToSourceBean","Cannot create subreports SourceBean", e);
+		}
+		
+		
+		return subreports;
+	}
+	
 	
 	private void startSubreportLookupHandler(SourceBean request, String message, SourceBean response) throws EMFUserError, SourceBeanException {
 		
 		setLoopbackContext(request, message);	
 		Integer masterReportId = getBIObjectIdFromLoopbackContext();		
 		
-		// HIBERNATE TEST
-		Subreport subrpt = null;
+		List subreportList = null;
 		try {
 			ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
-        	List subrptList =  subrptdao.loadSubreportsByMasterRptId(masterReportId);
-        	for(int i = 0; i < subrptList.size(); i++) {
-        		subrpt = (Subreport)subrptList.get(i);
-        		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","HIBERNATE TEST", subrpt.getMaster_rpt_id().toString() + " - " + subrpt.getSub_rpt_id().toString());
-        	}
-		} catch (Exception ex) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","delDetailObject","Cannot erase object", ex  );
+			subreportList =  subrptdao.loadSubreportsByMasterRptId(masterReportId);
+		} catch (Exception e) {
+			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","startSubreportLookupHandler","Cannot read subreport list from db", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
-		// HIBERNATE TEST
 		
+		SourceBean subreports = subreportsToSourceBean(subreportList);
+		
+		/*
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;
 		DataResult dataResult = null;
@@ -311,6 +326,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		} finally {
 			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		} 
+		*/
 		
 		setSubreportsLookupContext(masterReportId, subreports, 1);
 				
@@ -353,6 +369,20 @@ public class DetailBIObjectModule extends AbstractModule {
 		SourceBean subreports = (SourceBean)session.getAttribute("SUBREPORTS");
 		List subreportsList = subreports.getAttributeAsList("ROW");
 				
+		try {
+			ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
+			subrptdao.eraseSubreportByMasterRptId(masterReportId);
+			for(int i = 0; i < subreportsList.size(); i++) {
+				SourceBean subreport = (SourceBean)subreportsList.get(i);
+				Integer subReportId = (Integer)subreport.getAttribute("SUBREPORT_ID");
+				subrptdao.insertSubreport(new Subreport(masterReportId, subReportId));
+			}
+			
+		} catch (Exception e) {
+			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","saveSubreportsConfiguration","Cannot erase/insert subreports from/into db", e);
+		}
+		
+		/*
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;
 		DataResult dataResult = null;
@@ -367,8 +397,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			sqlCommand = dataConnection.createDeleteCommand(statement);
 			dataResult = sqlCommand.execute();
 			SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReportsSaveBackHandler", " results: " + dataResult.toString());
-		
-			
+						
 			statement = SQLStatements.getStatement("INSERT_SUBREPORTS");			
 			for(int i = 0; i < subreportsList.size(); i++) {
 				SourceBean subreport = (SourceBean)subreportsList.get(i);
@@ -386,6 +415,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		} finally {
 			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		} 
+		*/
 	}
 	
 	private void endSubreportLookupHandler(SourceBean request, SourceBean response, boolean save) throws SourceBeanException, EMFUserError {

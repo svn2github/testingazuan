@@ -29,6 +29,13 @@ public class Subreport {
 	private Integer  master_rpt_id;
 	private Integer  sub_rpt_id;
 	
+	public Subreport() {}
+	
+	public Subreport(Integer master_rpt_id, Integer sub_rpt_id) {
+		this.master_rpt_id = master_rpt_id;
+		this.sub_rpt_id = sub_rpt_id;
+	}
+	
 	public Integer getMaster_rpt_id() {
 		return master_rpt_id;
 	}

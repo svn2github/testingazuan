@@ -39,11 +39,14 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -516,7 +519,10 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 		return true;
 	}
 
-	
+	//da implementare
+	public void deleteInconsistentRoles (Set set) throws EMFUserError{
+		
+	}
 	
 
 

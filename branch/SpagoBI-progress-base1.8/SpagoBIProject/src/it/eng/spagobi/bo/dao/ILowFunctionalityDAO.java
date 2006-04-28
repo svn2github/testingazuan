@@ -27,9 +27,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.bo.dao;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LowFunctionality;
+import it.eng.spagobi.metadata.SbiFunctions;
 
 
 /**
@@ -105,4 +109,6 @@ public interface ILowFunctionalityDAO {
 	 * @param path String path of the functionality
 	 */
 	public boolean hasChild(String path) throws EMFUserError;
+	
+	public void deleteInconsistentRoles (Set set) throws EMFUserError;
 }

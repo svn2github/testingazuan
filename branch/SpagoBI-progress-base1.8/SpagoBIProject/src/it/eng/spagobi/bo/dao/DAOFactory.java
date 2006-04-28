@@ -186,6 +186,10 @@ public class DAOFactory {
 	 * @return a DAO instance for the obj paruse
 	 * @throws EMFUserError If an Exception occurred
 	 */
+	public static IFunctionalityCMSDAO getFunctionalityCMSDAO() throws EMFUserError{
+		return (IFunctionalityCMSDAO)createDAOInstance("FunctionalityCMSDAO");
+	}
+	
 	public static IObjParuseDAO getObjParuseDAO() throws EMFUserError{
 		return (IObjParuseDAO)createDAOInstance("ObjParuseDAO");
 	}

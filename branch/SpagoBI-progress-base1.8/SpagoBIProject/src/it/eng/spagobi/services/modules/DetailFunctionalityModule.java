@@ -24,6 +24,8 @@ package it.eng.spagobi.services.modules;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.cms.exceptions.BuildOperationException;
+import it.eng.spago.cms.exceptions.OperationExecutionException;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -38,10 +40,15 @@ import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spago.cms.CmsNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * Implements a module which  handles all  low functionalities management: has methods 
@@ -181,6 +188,13 @@ public class DetailFunctionalityModule extends AbstractModule {
 				DAOFactory.getLowFunctionalityDAO().insertLowFunctionality(lowFunct, profile);
 			} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
 				DAOFactory.getLowFunctionalityDAO().modifyLowFunctionality(lowFunct);
+				//at this point erase inconsistent child roles that have been deleted from parents
+				//prova debug
+				//Set set1 = new HashSet();
+				//loadRolesToErase(lowFunct,set1);
+				Set set = new HashSet();
+				loadRolesToErase(lowFunct,set);
+				DAOFactory.getLowFunctionalityDAO().deleteInconsistentRoles(set);
 			}
      	            
 		} catch (EMFUserError eex) {
@@ -344,7 +358,16 @@ public class DetailFunctionalityModule extends AbstractModule {
 		
 		return lowFunct;
 	}
-	
+	/**
+	 * Controls if a particular role belongs to the parent functionality. It is
+	 * called inside functionalities Jsp in ordet to identify those roles that a child 
+	 * functionality is able to select.
+	 * 
+	 * @param rule    The role id string identifying the role
+	 * @param parentLowFunct the parent low functionality object
+	 * @param roleType The role's type
+	 * @return True if the role belongs to the parent funct, else false
+	 */
 	public boolean isParentRule(String rule, LowFunctionality parentLowFunct,String roleType){
 		boolean isParent = false;
 		if (roleType.equals("DEV")){
@@ -379,4 +402,139 @@ public class DetailFunctionalityModule extends AbstractModule {
 		}
 		return isParent;
 		}
+	/**
+	 * Defines all roles that have to be erased in order to keep functionalities
+	 * tree consistence. When we leave some permissions to a functionality, those
+	 * permissions will not be assignable to all the children functionality. If any child 
+	 * has a permission that his parent anymore has, this permission mus be deleted for all 
+	 * father's children and descendants. 
+	 * This metod recusively scans all father's descendants and saves inside a Set all roles 
+	 * that must be erased from the Database.
+	 * 
+	 * @param lowFuncParent the parent Functionality
+	 * @param rolesToErase the set containing all roles to erase
+	 * @throws EMFUserError if any EMFUserError exception occurs 
+	 * @throws BuildOperationException if any BuildOperationException exception occurs 
+	 * @throws OperationExecutionException if any OperationExecutionException exception occurs 
+	 */
+	public void loadRolesToErase(LowFunctionality lowFuncParent, Set rolesToErase) throws EMFUserError, BuildOperationException, OperationExecutionException{
+		String parentPath = lowFuncParent.getPath();
+		ArrayList childs = DAOFactory.getFunctionalityCMSDAO().recoverChilds(parentPath);
+		if(childs.size()!= 0) {
+		Iterator i = childs.iterator();
+		while (i.hasNext()){
+		    CmsNode childNode = (CmsNode)i.next();
+			String childPath = childNode.getPath();
+			//LowFunctionality lowFuncParent = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(parentPath);
+			LowFunctionality lowFuncChild = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(childPath);
+			if(lowFuncChild != null){
+				//control childs permissions and fathers permissions
+				//remove from childs those persmissions that are not present in the fathers
+				//control for test Roles
+				Role[] testChildRoles = lowFuncChild.getTestRoles();
+				Role[] testParentRoles = lowFuncParent.getTestRoles();
+				//ArrayList newTestChildRoles = new ArrayList();
+				//HashMap rolesToErase = new HashMap();
+				for(int j = 0; j < testChildRoles.length; j++) {
+						String rule = testChildRoles[j].getId().toString();
+						    if(!isParentRule(rule, lowFuncParent,"TEST")){
+						    	ArrayList roles = new ArrayList();
+						    	roles.add(0,lowFuncChild.getId());
+						    	roles.add(1,testChildRoles[j].getId());
+						    	roles.add(2,"TEST");
+						    	rolesToErase.add(roles);
+						    	lowFuncChild = eraseRolesFromFunctionality(lowFuncChild,rule,"TEST");
+						    	//rolesToErase.put(lowFuncChild.getId(),testChildRoles[j].getId());
+								//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,testChildRoles[j].getId());
+							}
+				}
+				//control for development roles	
+				Role[] devChildRoles = lowFuncChild.getDevRoles();
+				Role[] devParentRoles = lowFuncParent.getDevRoles();
+				//ArrayList newDevChildRoles = new ArrayList();
+				for(int j = 0; j < devChildRoles.length; j++) {
+					String rule = devChildRoles[j].getId().toString();
+						    if(!isParentRule(rule, lowFuncParent,"DEV")){
+						    	ArrayList roles = new ArrayList();
+						    	roles.add(0,lowFuncChild.getId());
+						    	roles.add(1,devChildRoles[j].getId());
+						    	roles.add(2,"DEV");
+						    	rolesToErase.add(roles);
+						    	lowFuncChild = eraseRolesFromFunctionality(lowFuncChild,rule,"DEV");
+						    	//rolesToErase.put(lowFuncChild.getId(),devChildRoles[j].getId());
+						    	//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,devChildRoles[j].getId());
+							}
+			    }
+				//control for execution roles
+				Role[] execChildRoles = lowFuncChild.getExecRoles();
+				Role[] execParentRoles = lowFuncParent.getExecRoles();
+				//ArrayList newExecChildRoles = new ArrayList();
+				for(int j = 0; j < execChildRoles.length; j++) {
+					String rule = execChildRoles[j].getId().toString();
+					    if(!isParentRule(rule, lowFuncParent,"EXEC")){
+					    	ArrayList roles = new ArrayList();
+					    	roles.add(0,lowFuncChild.getId());
+					    	roles.add(1,execChildRoles[j].getId());
+					    	roles.add(2,"REL");
+					    	rolesToErase.add(roles);
+					    	lowFuncChild = eraseRolesFromFunctionality(lowFuncChild,rule,"EXEC");
+					    	//rolesToErase.put(lowFuncChild.getId(),execChildRoles[j].getId());
+					    	//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,execChildRoles[j].getId());
+						}
+					}
+				loadRolesToErase(lowFuncChild,rolesToErase);
+			}
+			
+			//loadRolesToErase(childPath,rolesToErase);
+		}
+		
+		}
+		
+		
+	}
+	/**
+	 * Erases the defined input role from a functionality object, if this one
+	 * has the role.The updated functionality object is returned.
+	 * 
+	 * @param func the input functionality object
+	 * @param roleId the role id for the role to erase
+	 * @param roleType the type of the role to erase
+	 * @return the updated functionality
+	 */
+	public LowFunctionality eraseRolesFromFunctionality (LowFunctionality func, String roleId, String roleType){
+		if(roleType.equals("DEV")){
+			Role[] roles = func.getDevRoles();
+			Set devRolesSet = new HashSet();
+			for (int i=0; i<roles.length;i++){
+				if(!roles[i].getId().toString().equals(roleId)){
+					devRolesSet.add(roles[i]);
+				}
+				
+			}func.setDevRoles((Role[])devRolesSet.toArray(new Role[0]));
+			
+		}
+		if(roleType.equals("TEST")){
+			Role[] roles = func.getTestRoles();
+			Set testRolesSet = new HashSet();
+			for (int i=0; i<roles.length;i++){
+				if(!roles[i].getId().toString().equals(roleId)){
+					testRolesSet.add(roles[i]);
+				}
+				
+			}func.setTestRoles((Role[])testRolesSet.toArray(new Role[0]));
+			
+		}
+		if(roleType.equals("EXEC")){
+			Role[] roles = func.getExecRoles();
+			Set execRolesSet = new HashSet();
+			for (int i=0; i<roles.length;i++){
+				if(!roles[i].getId().toString().equals(roleId)){
+					execRolesSet.add(roles[i]);
+				}
+				
+			}func.setExecRoles((Role[])execRolesSet.toArray(new Role[0]));
+			
+		}
+		return func;
+	}
 }

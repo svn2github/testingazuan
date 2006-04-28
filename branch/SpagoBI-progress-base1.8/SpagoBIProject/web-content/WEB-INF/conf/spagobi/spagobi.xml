@@ -51,7 +51,7 @@
 		
 		<!-- CMS DAO IMPLEMENTATION -->
  		<DAO name="BIObjectCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.BIObjectCMSDAOImpl"/>		
-
+		<DAO name="FunctionalityCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.FunctionalityCMSDAOImpl"/>		
 
 		<!--  TO USE JDBC DAO IMPLEMENTATION -->	
 		<!--  <DAO name="BIObjectDAO" implementation="it.eng.spagobi.bo.dao.jdbc.BIObjectDAOImpl"/> -->

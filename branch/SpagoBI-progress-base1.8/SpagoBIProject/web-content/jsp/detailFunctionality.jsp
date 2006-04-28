@@ -186,22 +186,25 @@
 	 			            DetailFunctionalityModule detFunct = new DetailFunctionalityModule();
 	 			            for(int j=0; j<devRules.length; j++) {
 	 			               if(devRules[j].equals(ruleId)) { isDev = true; }
+	 			               		}
 	 			               		if(!pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !modality.equals(AdmintoolsConstants.DETAIL_INS)){
 	 			               			if(detFunct.isParentRule(ruleId,parentFunctionality,"DEV")){isDevParent = true;}
 										}
-									} 			            
+									 			            
 	 			            for(int j=0; j<testRules.length; j++) {
 	 			               if(testRules[j].equals(ruleId)) { isTest = true; } 
+	 			               		}
 	 			               		if(!pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !modality.equals(AdmintoolsConstants.DETAIL_INS)){
 	 			               			if(detFunct.isParentRule(ruleId,parentFunctionality,"TEST")){isTestParent = true;}
 	 			            			}
-	 			            		}
+	 			            		
 	 			            for(int j=0; j<execRules.length; j++) {
 	 			               if(execRules[j].equals(ruleId)) { isExec = true; }
+	 			               		}
 	 			               		if(!pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !modality.equals(AdmintoolsConstants.DETAIL_INS)){
 	 			               			if(detFunct.isParentRule(ruleId,parentFunctionality,"EXEC")){isExecParent = true;}
 	 			           				 }
-	 			            		}
+	 			            		
 	 			            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
 	 			            alternate = !alternate;
 	 			            %>

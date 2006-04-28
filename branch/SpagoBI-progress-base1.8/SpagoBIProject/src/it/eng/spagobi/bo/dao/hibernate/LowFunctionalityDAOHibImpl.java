@@ -44,6 +44,7 @@ import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFuncRole;
 import it.eng.spagobi.metadata.SbiFuncRoleId;
 import it.eng.spagobi.metadata.SbiFunctions;
+import it.eng.spagobi.metadata.SbiSubreports;
 import it.eng.spagobi.services.modules.TreeObjectsModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -57,6 +58,7 @@ import java.util.Vector;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
@@ -501,6 +503,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 
 	/**
+	 *
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#hasChild(java.lang.String)
 	 * 
 	 */
@@ -533,6 +536,60 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1003);
 		}
 	}
-	
+	/**
+	 * Deletes a set of inconsistent roles reference from the database, 
+	 * in order to keep functionalities tree permissions consistence.
+	 * 
+	 * @param rolesSet the set containing the roles to erase
+	 */
+	public void deleteInconsistentRoles (Set rolesSet) throws EMFUserError{
+		
+		Session aSession = null;
+		Transaction tx = null;
+		String hql = null;
+		Query hqlQuery = null;
+		List functions = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			Iterator i = rolesSet.iterator();
+			while (i.hasNext()){
+		ArrayList rolesArray = (ArrayList)i.next();
+		Integer functId = (Integer)rolesArray.get(0);
+		Integer roleId = (Integer)rolesArray.get(1);
+		String stateCD = (String)rolesArray.get(2);
+		SbiFunctions sbiFunct = new SbiFunctions();
+		sbiFunct.setFunctId(functId);
+		
+		hql = " from SbiFuncRole as funcRole " + 
+	         "where funcRole.id.function = '" + sbiFunct.getFunctId() + "' AND  funcRole.id.role = '"+ roleId +"'AND funcRole.stateCd ='"+stateCD+"'"; 
+			
+			hqlQuery = aSession.createQuery(hql);
+			functions = hqlQuery.list();
+			
+			Iterator it = functions.iterator();
+			while (it.hasNext()) {
+				aSession.delete((SbiFuncRole) it.next());
+			}	
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} catch (Exception ex) {
+			logException(ex);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
+		}	finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+	}
 
 }

@@ -148,12 +148,19 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 */
 	private void pageCreationHandler(SourceBean request, SourceBean response) throws Exception {
 		debug("pageCreationHandler", "start pageCreationHandler method");
+		
 		// get the path of the object
 		String path = (String)request.getAttribute(ObjectsTreeConstants.PATH);
 		debug("pageCreationHandler", "using path " + path);
+		
+		// get parameters of the object
+		String parameters = (String)request.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		debug("pageCreationHandler", "using parameters " + parameters);
+		
 		// get the current user profile
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		debug("pageCreationHandler", "user profile retrived " + profile);
+		
 		// get the type of actor 
 		String actor = "";
 		Object actorObj =  request.getAttribute(SpagoBIConstants.ACTOR);
@@ -164,6 +171,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 			actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
 		}
 		debug("pageCreationHandler", "using actor " + actor);
+		
 		// define the variable for execution role
 		String role = "";
        	List correctRoles = null;
@@ -174,6 +182,7 @@ public class ExecuteBIObjectModule extends AbstractModule
        	else
        		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(path);
        	debug("pageCreationHandler", "correct roles for execution retrived " + correctRoles);
+       	
        	// if correct roles is more than one the user has to select one of them
         // put in the response the right inforamtion for publisher in order to show page role selection
 		if( correctRoles.size() > 1 ) {
@@ -183,6 +192,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 			debug("pageCreationHandler", "more than one correct roles for execution, redirect to the" +
 				  " role selection page");
 			return;
+		
 		// if there isn't correct role put in the error stack a new error
 		} else if(correctRoles.size() < 1) {
 			    debug("pageCreationHandler", "no correct role for the object execution");
@@ -192,25 +202,32 @@ public class ExecuteBIObjectModule extends AbstractModule
 						            "Object cannot be executed by no role of the user");
 		   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1006)); 
 		   		return;
+		
 		// the list contains only one role which is the right role
 		} else {
 			role = (String)correctRoles.get(0);
 		}
 		debug("pageCreationHandler", "using role " + role);
+		
 		// NOW THE EXECUTION ROLE IS SELECTED 
 		// put in session the execution role
 		session.setAttribute(SpagoBIConstants.ROLE, role);
+		
 		// based on the role selected (or the only for the user) load the object and put it in session
 		BIObject obj = execContr.prepareBIObjectInSession(session, path, role);
 		debug("pageCreationHandler", "object retrived and setted into session");
+		
 		// get the list of the subObjects
 		List subObjects = getSubObjectsList(obj, profile);
 		debug("pageCreationHandler", "List subobject loaded: " + subObjects);
-        // put in response the list of subobject names
+        
+		// put in response the list of subobject names
 		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+		
 		// load the object into the Execution controller				
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
+		
 		// if the object can be directly executed (because it hasn't any parameter to be
 		// filled by the user) and if the object has no subobject saved then execute it
 		// directly without pass for parameters page 	

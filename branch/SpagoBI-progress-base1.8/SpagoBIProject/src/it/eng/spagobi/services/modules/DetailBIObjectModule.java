@@ -137,7 +137,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service"," ACTOR = " + actor);
 		
 		// these attributes, if defined, represent events triggered by one 
-		// of the submit buttons presnt in the main form 
+		// of the submit buttons present in the main form 
 		boolean parametersLookupButtonClicked =  request.getAttribute("loadParametersLookup") != null;
 		boolean subreportsLookupButtonClicked =  request.getAttribute("Edit") != null;
 				
@@ -1370,36 +1370,6 @@ public class DetailBIObjectModule extends AbstractModule {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
-	
-
-	/**
-	 * Controls if a BI object parameter is associated or not to a 
-	 * parameter already in use by another BI object parameter;
-	 * if it is, the BI Object Parameter cannot be inserted/modified.
-	 * 
-	 * @param request The SourceBean request
-	 * @param biobjId The id of the BIObject
-	 * @param parId The id of the BIObjectParameter
-	 * @throws EMFUserError
-	 */
-//	private void objParControl (SourceBean request, Integer biobjId, Integer parId) throws EMFUserError{
-//		List list = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(biobjId);
-//		Iterator i = list.iterator();
-//		while(i.hasNext()){
-//			BIObjectParameter BIobjPar = (BIObjectParameter)i.next();
-//			Parameter param = BIobjPar.getParameter();
-//			Integer paramId = param.getId();
-//			if (paramId.equals(parId)){
-//				HashMap params = new HashMap();
-//				params.put(AdmintoolsConstants.PAGE, ListBIObjectParametersModule.MODULE_PAGE);
-//				params.put(AdmintoolsConstants.OBJECT_ID, biobjId);
-//				String path = (String) request.getAttribute("path");
-//				params.put(ObjectsTreeConstants.PATH,path);
-//				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1026, new Vector(), params);
-//				errorHandler.addError(error);
-//			}
-//		}
-//	}
 	
 	/**
 	 * Clean the SessionContainer from no more useful objects.

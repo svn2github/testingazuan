@@ -617,6 +617,7 @@
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
                 <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ACTOR" />
                 <PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.PATH" />
+                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.PARAMETERS" />
      			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ROLE" />
                 <PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.MODALITY" />
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />

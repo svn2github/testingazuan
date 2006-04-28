@@ -51,6 +51,7 @@ public class TreeObjectsModule extends AbstractModule {
     private static final String SINGLE_OBJECT = "SINGLE_OBJECT";
     private static final String FILTER_TREE = "FILTER_TREE";
     private static final String PATH_SINGLE_OBJECT = "PATH_SINGLE_OBJECT";
+    private static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
     private static final String PATH_SUBTREE = "PATH_SUBTREE";
     private static final String ROLE_SINGLE_OBJECT = "ROLE_SINGLE_OBJECT";
     private static final String HEIGHT_AREA = "HEIGHT_AREA";
@@ -86,11 +87,13 @@ public class TreeObjectsModule extends AbstractModule {
 			PortletPreferences prefs = portReq.getPreferences();
             debug("service", "portlet preferences retrived");
             String modality = (String)prefs.getValue(MODALITY, "");
+            String path = (String)prefs.getValue(PATH_SUBTREE, "");
+            
             debug("service", "using "+modality+" modality");
             if(modality.equalsIgnoreCase(SINGLE_OBJECT)) {
             	singleObjectModalityHandler(request, response, prefs, actor);
             } else if(modality.equalsIgnoreCase(FILTER_TREE)) {
-            	filterTreeModalityHandler(request, response);
+            	filterTreeModalityHandler(request, response, actor, profile, path);
             } else {
             	defaultModalityHandler(request, response, actor, profile);
             }
@@ -116,29 +119,42 @@ public class TreeObjectsModule extends AbstractModule {
 			                                 PortletPreferences prefs, String actor) 
 											 throws Exception {
 		debug("singleObjectModalityHandler", "enter singleObjectModalityHandler");
+		
 		// get from preferences the path of the object
 		String path = prefs.getValue(PATH_SINGLE_OBJECT, "");
 		debug("singleObjectModalityHandler", "using object path " + path);
+		
 		// if path is not set then throw an exception
 		if(path.equals("")) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 								"TreeObjectsMOdule", 
-								"singleObjectModalityHandler", 
+								"singleObjectModalityHandler",  
 								"Object's path not found");
         	throw new Exception("Path not found");
         }
+		
+		// get from preferences the parameters used by the object during execution
+		String parameters = prefs.getValue(PARAMETERS_SINGLE_OBJECT, "");
+		debug("singleObjectModalityHandler", "using parameters " + parameters);
+		
 		// get from preferences the height of the area
 		String heightArea = prefs.getValue(HEIGHT_AREA, "");
 		debug("singleObjectModalityHandler", "using height of area " + heightArea);
-        // set into the reponse the publisher name for object execution
+        
+		// set into the reponse the publisher name for object execution
         response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
         					  SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);
+        
         // set into the response the righr inforamtion for loopback
         response.setAttribute(SpagoBIConstants.ACTOR, actor);
         response.setAttribute(SpagoBIConstants.PATH, path);
+        response.setAttribute(SpagoBIConstants.PATH, path);
+        if(parameters != null) response.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
+        
         // put in session the modality and the actor
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
         		                      SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
+        
         // if the height of the area in set put it into the session
         if(!heightArea.equals("")) 
         	sessionContainer.setAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA, heightArea);
@@ -151,11 +167,33 @@ public class TreeObjectsModule extends AbstractModule {
 	 * @param request The Request SourceBean
 	 * @param response The Response SourceBean
 	 */
-	private void filterTreeModalityHandler(SourceBean request, SourceBean response) throws SourceBeanException {
+	private void filterTreeModalityHandler(SourceBean request, SourceBean response, 
+            String actor, IEngUserProfile profile, String path)  throws SourceBeanException {
+		
 		debug("filterTreeModalityHandler", "enter filterTreeModalityHandler");
-		// put in session the modality
+		SourceBean dataResponseSysFunct = getFunctioanlitiesTree(profile, path);
+		
+		debug("filterTreeModalityHandler", "SourceBean of the tree retrived: \n " + dataResponseSysFunct.toXML(false));
+		response.setAttribute(dataResponseSysFunct);
+		response.setAttribute(SpagoBIConstants.ACTOR, actor);
+		response.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.FILTER_TREE_MODALITY);
+		
+		Object objview = request.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
+		if(objview!=null) {
+			response.setAttribute(SpagoBIConstants.OBJECTS_VIEW, objview);
+			debug("filterTreeModalityHandler", "using tree view");
+		}
+		Object listPage = request.getAttribute(SpagoBIConstants.LIST_PAGE);
+		if(listPage!=null) {
+			response.setAttribute(SpagoBIConstants.LIST_PAGE, listPage);
+			debug("defaultModalityHandler", "using list view");
+		}
+		debug("filterTreeModalityHandler", "end set data into reponse");
+        
+		// put in session the modality and the actor
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
         		                      SpagoBIConstants.FILTER_TREE_MODALITY);
+        debug("filterTreeModalityHandler", "end set data into session");
 	}
 	
 	
@@ -206,6 +244,22 @@ public class TreeObjectsModule extends AbstractModule {
 	    debug("getFunctioanlitiesTree", "using intial path" + pathSysFunct);
 	    TreeObjectsDAO objDao = new TreeObjectsDAO();
         SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct, profile);
+        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
+        return dataResponseSysFunct;
+	}
+	
+	/**
+	 * Load the sourceBean of the entire object tree
+	 * @param profile User Profile
+	 * @return SourceBean of the entire objects tree
+	 */
+	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile, String path) {
+		//debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
+		//SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
+	    //String pathSysFunct = pathSysFunctSB.getCharacters();
+	    debug("getFunctioanlitiesTree", "using intial path" + path);
+	    TreeObjectsDAO objDao = new TreeObjectsDAO();
+        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(path, profile);
         debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
         return dataResponseSysFunct;
 	}

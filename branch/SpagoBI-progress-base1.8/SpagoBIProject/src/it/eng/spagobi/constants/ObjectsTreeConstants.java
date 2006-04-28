@@ -47,6 +47,7 @@ public class ObjectsTreeConstants {
 	public static final String EXEC_PHASE_RUN = "EXEC_PHASE_RUN";
 	
 	public static final String PATH = "PATH";
+	public static final String PARAMETERS = "PARAMETERS";
 	
 	public static final String PROFILE = "PROFILE";
 	public static final String ROLE = "ROLE";

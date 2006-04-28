@@ -90,6 +90,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<name>MODALITY</name>
         		<value>(SINGLE_OBJECT/FILTER_TREE)</value>
         	</preference>
+            
             <!--  
 				The path of the single object to exec
 			--> 
@@ -97,6 +98,15 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<name>PATH_SINGLE_OBJECT</name>
         		<value>path of the single object to execute in modality SINGLE_OBJECT</value>
         	</preference>
+        	
+        	<!--  
+				The parameters of the single object to exec
+			--> 
+            <preference> 
+        		<name>PARAMETERS_SINGLE_OBJECT</name>
+        		<value>par1=value</value>
+        	</preference>
+            
             <!--
  			The path of the subtree to show
 			-->
@@ -104,6 +114,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<name>PATH_SUBTREE</name>
         		<value>paths of the subTree in modality FILTER_TREE</value>
         	</preference>
+			
 			<!--
             the height of the area that shows the object output 
   			-->

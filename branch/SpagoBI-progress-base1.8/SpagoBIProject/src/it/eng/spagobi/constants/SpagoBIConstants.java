@@ -94,6 +94,7 @@ public class SpagoBIConstants {
 	
 	public static final String VERSION = "VERSION";
 	public static final String PATH = "PATH";
+	public static final String PARAMETERS = "PARAMETERS";	
 	
 	public static final String PROFILE_ATTRS = "PROFILE_ATTRS";
 	

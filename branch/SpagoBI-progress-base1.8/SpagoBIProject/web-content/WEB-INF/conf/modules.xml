@@ -340,10 +340,16 @@
 	      <CAPTIONS>
 	        <SELECT_CAPTION confirm="FALSE" image="/img/button_ok.png" label="SBIDev.ListParam.ListLookupParameters.selectCaption">
 	          <PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ParametersLookupPage"/>
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="EXIT_FROM_MODULE"/>
+	          <PARAMETER name="RETURN_STATE" scope="" type="ABSOLUTE" value="SELECT"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>		          
+	          <!-- 
+	          <PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
-	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_FROM_LOOKUP"/>
-	          <!--PARAMETER name="PAR_ID" scope="" type="ABSOLUTE" value=""/-->
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_FROM_LOOKUP"/>	          
 	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	          -->
 	        </SELECT_CAPTION>
 	     </CAPTIONS>
 	      <COLUMNS>
@@ -356,16 +362,18 @@
 	      <BUTTONS>
 	      <NEW_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
 	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
-	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
-	         <!--
-	          <PARAMETER name="LIGHT_NAVIGATOR_MARK" scope="" type="ABSOLUTE" value="pippo"/>
-	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
-	          -->
+	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>	         
 	      </NEW_BUTTON>
 	      <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
+	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ParametersLookupPage"/>
+	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="EXIT_FROM_MODULE"/>
+	        <PARAMETER name="RETURN_STATE" scope="" type="ABSOLUTE" value="BACK"/>
+	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	        <!-- 
 	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
 	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
 	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	      	-->
 	      </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>

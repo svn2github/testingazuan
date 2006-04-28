@@ -132,9 +132,17 @@ public class DetailBIObjectModule extends AbstractModule {
 		// get attributes from request		
 		String message = (String) request.getAttribute("MESSAGEDET");
 		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service"," MESSAGEDET = " + message);
-		
+				
 		actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service"," ACTOR = " + actor);
+		
+		// get attribute from session
+		String moduleName = (String)session.getAttribute("RETURN_FROM");
+		if(moduleName != null) {
+			returnBackHandler(request, response, moduleName);
+			session.delAttribute("RETURN_FROM");
+			return;
+		}
 		
 		// these attributes, if defined, represent events triggered by one 
 		// of the submit buttons present in the main form 
@@ -149,7 +157,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule", "service", "The message parameter is null");
 				throw userError;
 			} 
-			
+						
 			// check for events first...
 			if (parametersLookupButtonClicked){
 				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","loadParametersLookup != null");
@@ -194,11 +202,6 @@ public class DetailBIObjectModule extends AbstractModule {
 					endSubreportLookupHandler(request,response, false);
 					return;
 				}
-			}
-			else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.RETURN_FROM_LOOKUP)){
-				lookupReturnHandler(request, response);	
-			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.RETURN_BACK_FROM_LOOKUP)){				
-				lookupReturnBackHandler(request,response);
 			}  else if (message.trim().equalsIgnoreCase(ObjectsTreeConstants.DETAIL_SELECT)) {
 				getDetailObject(request, response);
 			} else if (message.trim().equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
@@ -223,6 +226,18 @@ public class DetailBIObjectModule extends AbstractModule {
 			return;
 		}
 	}	
+	
+	private void returnBackHandler(SourceBean request, SourceBean response, String moduleName) throws EMFUserError, SourceBeanException {
+		if(moduleName.equalsIgnoreCase("ListLookupParametersModule")) {
+			String returnState = (String)session.getAttribute("RETURN_STATE");
+			if(returnState.equalsIgnoreCase("SELECT"))
+				lookupReturnHandler(request, response);	
+			else
+				lookupReturnBackHandler(request,response);
+			session.delAttribute("RETURN_STATE");
+		}
+	}
+	
 	
 	private void setLoopbackContext(SourceBean request, String message) throws EMFUserError{
 		BIObject obj = recoverBIObjectDetails(request, message);
@@ -547,7 +562,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				" actor = " + actor);
 		
 		
-		String newParIdStr = (String) request.getAttribute("PAR_ID");
+		String newParIdStr = (String) session.getAttribute("PAR_ID");
 		Integer newParIdInt = Integer.valueOf(newParIdStr);
 		Parameter newParameter = new Parameter();
 		newParameter.setId(newParIdInt);
@@ -561,7 +576,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		reloadCMSInformation(obj);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
 		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-				
+		session.delAttribute("PAR_ID");
 	}
 
 	/**

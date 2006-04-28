@@ -29,6 +29,21 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	<!--  MODIFICHE -->
+  	
+  	<!-- Publisher dispatcher -->
+  	<PUBLISHER name="DynamicPublisher">
+		<RENDERING channel="PORTLET" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM mode="VIEW"
+					resource="it.eng.spagobi.presentation.publishers.DynamicPublisher" />
+				<ITEM mode="EDIT"
+					resource="it.eng.spagobi.presentation.publishers.DynamicPublisher" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+  	
+  	<!-- The real JSP publisher -->
   	<PUBLISHER name="ParametersLookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -37,6 +52,21 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
+  	  
+  	<!-- General purpose callback publisher -->	
+  	<PUBLISHER name="ReturnBackPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ParametersLookupPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />      														
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	<!--  MODIFICHE -->
+  	
+  	
   	
   	<PUBLISHER name="parametersLookupLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">

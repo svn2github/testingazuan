@@ -21,10 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spagobi.utilities.SpagoBITracer;
 
 /**
  * Loads the parameters lookup list
@@ -42,6 +46,29 @@ public class ListLookupParametersModule extends AbstractBasicListModule {
 	public ListLookupParametersModule() {
 		super();
 	} 
+	
+	public void service(SourceBean request, SourceBean response) throws Exception {
+		String message = (String) request.getAttribute("MESSAGEDET");		
+		if(message != null && message.equalsIgnoreCase("EXIT_FROM_MODULE")) {
+			String returnState = (String) request.getAttribute("RETURN_STATE");
+			response.setAttribute("PUBLISHER_NAME",  "ReturnBackPublisher");			
+			RequestContainer requestContainer = this.getRequestContainer();	
+			SessionContainer session = requestContainer.getSessionContainer();
+			session.setAttribute("RETURN_FROM", "ListLookupParametersModule");
+			session.setAttribute("RETURN_STATE", returnState);
+			if(returnState.equalsIgnoreCase("SELECT"))
+				session.setAttribute("PAR_ID", request.getAttribute("PAR_ID"));	
+			
+			return;
+		}
+				
+		super.service(request, response); 
+		
+		response.setAttribute("PUBLISHER_NAME",  "ParametersLookupPublisher");
+		SpagoBITracer.debug(MODULE_PAGE, "ListLookupParametersModule","service",
+				"PUBLISHER_NAME = " + "ParametersLookupPublisher");
+	}
+	
 	/**
 	 * Gets the list
 	 * @param request The request SourceBean

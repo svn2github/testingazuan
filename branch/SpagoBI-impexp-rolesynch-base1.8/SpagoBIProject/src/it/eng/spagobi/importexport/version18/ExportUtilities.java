@@ -8,6 +8,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -114,8 +115,5 @@ public class ExportUtilities {
 	}
 	
 	
-	
-	
-	
-	
+
 }

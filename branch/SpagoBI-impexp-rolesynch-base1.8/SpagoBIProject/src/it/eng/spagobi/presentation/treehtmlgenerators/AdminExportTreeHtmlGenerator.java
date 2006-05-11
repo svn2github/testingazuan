@@ -65,6 +65,9 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 				renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+
 				renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("		menu");
+		htmlStream.append("</div>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
 		htmlStream.append("		<td width='10px'>&nbsp;</td>");
@@ -79,6 +82,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	   	htmlStream.append("	        	treeCMS.add(0,-1,'"+nameTree+"');\n");
         addItemForJSTree(htmlStream, dataTree, 0, true);
     	htmlStream.append("				document.write(treeCMS);\n");
+    	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
 		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
@@ -106,15 +110,15 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		String codeType = (String)dataTree.getAttribute("codeType");
 		int id = ++progrJSTree;
 		if(isRoot) {
-			htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', '', '', '', '', '', 'true');\n");
+			htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu(event, \\'"+path+"\\')');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', '', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', '');\n");
+				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+path+"\\')');\n");
 			} else {
 				String icon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.png");
-				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', '', '', '', '', '', '', '', '"+SpagoBIConstants.PATH+"', '"+path+"');\n");
+				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', '', '"+SpagoBIConstants.PATH+"', '"+path+"');\n");
 			}	
 		}
 		Iterator iter = childs.iterator();
@@ -126,6 +130,47 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	}
 
 	
+	
+	
+	protected void makeJSFunctionForMenu(StringBuffer htmlStream) {
+		htmlStream.append("		function menu(event, pathFather) {\n");
+		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
+		htmlStream.append("			divM.innerHTML = '';\n");
+		String capSelect = PortletUtilities.getMessage("SBISet.importexport.selectall", "messages");
+		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:select(\\''+pathFather+'\\')\">"+capSelect+"</a></div>';\n");
+		String capDeselect = PortletUtilities.getMessage("SBISet.importexport.deselectall", "messages");
+		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:deselect(\\''+pathFather+'\\')\">"+capDeselect+"</a></div>';\n");
+		htmlStream.append("			showMenu(event, divM);\n");
+		htmlStream.append("		}\n");
+
+		
+		htmlStream.append("		function linkEmpty() {\n");
+		htmlStream.append("		}\n");
+		
+		htmlStream.append("		function select(path) {\n");
+		htmlStream.append("			var checkColl = document.getElementsByName('"+SpagoBIConstants.PATH+"');\n");
+		htmlStream.append("		    for(var i=0; i< checkColl.length; i++){\n");
+		htmlStream.append("             value = checkColl[i].value;\n"); 
+		htmlStream.append("             if(value.indexOf(path)!= -1) {\n"); 
+		htmlStream.append("		    		if(!checkColl[i].checked){\n");
+		htmlStream.append("		    			checkColl[i].click();\n");
+		htmlStream.append("		    		}\n");
+		htmlStream.append("		    	}\n");
+		htmlStream.append("		    }\n");
+		htmlStream.append("		}\n");
+		
+		htmlStream.append("		function deselect(path) {\n");
+		htmlStream.append("			var checkColl = document.getElementsByName('"+SpagoBIConstants.PATH+"');\n");
+		htmlStream.append("		    for(var i=0; i< checkColl.length; i++){\n");
+		htmlStream.append("             value = checkColl[i].value;\n"); 
+		htmlStream.append("             if(value.indexOf(path)!= -1) {\n"); 
+		htmlStream.append("		    		if(checkColl[i].checked){\n");
+		htmlStream.append("		    			checkColl[i].click();\n");
+		htmlStream.append("		    		}\n");
+		htmlStream.append("		    	}\n");
+		htmlStream.append("		    }\n");
+		htmlStream.append("		}\n");
+	}
 	
 	
 	

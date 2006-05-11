@@ -12,15 +12,16 @@
 	List curRoles = (List)moduleResponse.getAttribute(SpagoBIConstants.LIST_CURRENT_ROLES);
 	List expRoles = (List)moduleResponse.getAttribute(SpagoBIConstants.LIST_EXPORTED_ROLES);
     Iterator iterExpRoles = expRoles.iterator();
-    
-   	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("ACTION_NAME", "START_ACTION");
-   	backUrl.setParameter("PUBLISHER_NAME", "LoginSBISettingsPublisher");
-  	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
    
+  	PortletURL exitUrl = renderResponse.createActionURL();
+   	exitUrl.setParameter("PAGE", "ImportExportPage");
+   	exitUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_EXIT);
+  	exitUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+  	
   	PortletURL formUrl = renderResponse.createActionURL();
   	formUrl.setParameter("PAGE", "ImportExportPage");
    	formUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_ROLE_ASSOCIATION);
+   	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
 %>
 
@@ -31,11 +32,11 @@
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%= exitUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.back" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.back" />' />
+      				 title='<spagobi:message key = "Sbi.exit" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/stop.png")%>' 
+      				 alt='<spagobi:message key = "Sbi.exit" />' />
 			</a>
 		</td>
 	</tr>
@@ -66,10 +67,34 @@
 				<td class='portlet-form-field-label'><%=role.getName()%></td>
 				<td>
 				    <input type="hidden" name="expRole" value="<%=role.getId()%>" />
+				    <% 
+						Iterator iterCurRoles = curRoles.iterator();
+						boolean disabled = false;
+						Integer idAssRole = null;
+						while(iterCurRoles.hasNext()) {
+							Role roleCur = (Role)iterCurRoles.next();
+							if(roleCur.getName().equalsIgnoreCase(role.getName())){
+								disabled = true;
+								idAssRole = roleCur.getId();
+								break;
+							}
+						}
+					%>
+					<%
+						if(disabled) {
+					%>
+					<input type="hidden" name="roleAssociated<%=role.getId()%>" value="<%=idAssRole%>"> 
+					<select style="width:250px" disabled>
+					<%
+						} else { 
+					%>
 					<select style="width:250px" name="roleAssociated<%=role.getId()%>" >
+					<%
+						}					
+					%>	
 						<option value=""></option>
 						<% 
-							Iterator iterCurRoles = curRoles.iterator();
+							iterCurRoles = curRoles.iterator();
 							String selected = null;
 							while(iterCurRoles.hasNext()) {
 								selected = "";
@@ -87,7 +112,11 @@
 	</div>
 	
 	<div style="float:left;">
-		<input type="submit" name="submit" value="Next" />
+		<input type="image" 
+		       name="submit" 
+		       title='<spagobi:message key="Sbi.next"/>' 
+		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/next.png")%>' 
+		       alt='<spagobi:message key="Sbi.next"/>' />
 	</div>
 	</form>
 	

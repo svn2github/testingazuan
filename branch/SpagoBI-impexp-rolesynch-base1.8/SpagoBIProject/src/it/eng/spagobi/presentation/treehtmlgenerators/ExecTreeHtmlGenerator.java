@@ -173,7 +173,6 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 					htmlStream.append("	treeExecObj.add("+id+", "+pidParent+",'"+name+"', '"+execUrl.toString()+"', '', '', '"+userIcon+"', '', '', '' );\n");
 				}
-				
 			}
 		}
 		

@@ -1,7 +1,7 @@
 package it.eng.spagobi.importexport.version18;
 
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Check;
@@ -42,7 +42,7 @@ import org.hibernate.Transaction;
 
 public class ExporterMetadata {
 
-	public void insertEngine(Engine engine, Session session) throws EMFInternalError {
+	public void insertEngine(Engine engine, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiEngines where engineId = " + engine.getId());
@@ -64,15 +64,14 @@ public class ExporterMetadata {
 			tx.commit();
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertEngine",
-					"Error while insertinf engine into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting engine " +
-					engine.getName() + " into export database");
+					"Error while inserting engine into export database " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
-	public void insertBIObject(BIObject biobj, Session session) throws EMFInternalError {
+	public void insertBIObject(BIObject biobj, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiObjects where biobjId = " + biobj.getId());
@@ -80,12 +79,10 @@ public class ExporterMetadata {
 			if(!hibList.isEmpty()) {
 				return;
 			}
-			
 			Engine engine = biobj.getEngine();	
 			SbiEngines hibEngine = (SbiEngines)session.load(SbiEngines.class, engine.getId());
 			SbiDomains hibState = (SbiDomains)session.load(SbiDomains.class, biobj.getStateID());
 			SbiDomains hibObjectType = (SbiDomains)session.load(SbiDomains.class, biobj.getBiObjectTypeID());
-			
 			SbiObjects hibBIObj = new SbiObjects(biobj.getId());
 			hibBIObj.setSbiEngines(hibEngine); 
 			hibBIObj.setDescr(biobj.getDescription());
@@ -103,14 +100,13 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
 					"Error while inserting biobject into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting biobject " +
-					biobj.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
-	public void insertBIObjectParameter(BIObjectParameter biobjpar, BIObject biobj, Session session) throws EMFInternalError {
+	public void insertBIObjectParameter(BIObjectParameter biobjpar, BIObject biobj, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer parid = biobjpar.getParameter().getId();
@@ -143,8 +139,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertBIObjectParameter",
 					               "Error while inserting BIObjectParameter into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting BIObjectParameter " +
-					               biobj.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
@@ -153,7 +148,7 @@ public class ExporterMetadata {
 	
 	
 	
-	public void insertParameter(Parameter param, Session session) throws EMFInternalError {
+	public void insertParameter(Parameter param, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiParameters where parId = " + param.getId());
@@ -175,15 +170,14 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParameter",
 					"Error while inserting parameter into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting parameter " +
-					param.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
 	
-	public void insertParUse(ParameterUse parUse, Session session) throws EMFInternalError {
+	public void insertParUse(ParameterUse parUse, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiParuse where useId = " + parUse.getUseID());
@@ -206,8 +200,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParUse",
 					"Error while inserting parameter use into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting parameter use " +
-					parUse.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
@@ -215,7 +208,7 @@ public class ExporterMetadata {
 	
 	
 	
-	public void insertLov(ModalitiesValue lov, Session session) throws EMFInternalError {
+	public void insertLov(ModalitiesValue lov, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiLov where lovId = " + lov.getId());
@@ -236,15 +229,14 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertLov",
 					"Error while inserting lov into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting lov " +
-					lov.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
 	
-	public void insertCheck(Check check, Session session) throws EMFInternalError {
+	public void insertCheck(Check check, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiChecks where checkId = " + check.getCheckId());
@@ -266,14 +258,13 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertCheck",
 					"Error while inserting check into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting check " +
-					check.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
-	public void insertParuseCheck(ParameterUse parUse, Check check, Session session) throws EMFInternalError {
+	public void insertParuseCheck(ParameterUse parUse, Check check, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer paruseId = parUse.getUseID();
@@ -298,15 +289,14 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParuseCheck",
 					               "Error while inserting paruse and check association into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting paruse and check association" +
-					               " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
 	
-	public void insertParuseRole(ParameterUse parUse, Role role, Session session) throws EMFInternalError {
+	public void insertParuseRole(ParameterUse parUse, Role role, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer paruseId = parUse.getUseID();
@@ -330,15 +320,14 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParuseDet",
 					               "Error while inserting paruse and role association into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting paruse and role association" +
-					               " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
 	
-	public void insertFunctionality(LowFunctionality funct, Session session) throws EMFInternalError {
+	public void insertFunctionality(LowFunctionality funct, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiFunctions where funct_id = " + funct.getId());
@@ -362,8 +351,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertFunctionality",
 					"Error while inserting Functionality into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting Functionality " +
-					funct.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
@@ -372,7 +360,7 @@ public class ExporterMetadata {
 	
 	
 	
-	public void insertRole(Role role, Session session) throws EMFInternalError {
+	public void insertRole(Role role, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiExtRoles where extRoleId = " + role.getId());
@@ -392,15 +380,14 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertRole",
 					"Error while inserting role into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting role " +
-					role.getName() + " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	
 	
 	
 	
-	public void insertFunctRole(Role role, LowFunctionality funct, Integer stateId, String stateCD, Session session) throws EMFInternalError {
+	public void insertFunctRole(Role role, LowFunctionality funct, Integer stateId, String stateCD, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer roleid = role.getId();
@@ -427,8 +414,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertFunctRole",
 					               "Error while inserting function and role association into export database " + e);
-			throw new EMFInternalError(EMFErrorSeverity.ERROR, "error while inserting function and role association" +
-					               " into export database");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
 		}
 	}
 	

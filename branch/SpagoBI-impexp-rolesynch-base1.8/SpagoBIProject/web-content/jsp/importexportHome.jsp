@@ -1,9 +1,13 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager" %>
+				it.eng.spago.navigation.LightNavigationManager,
+				it.eng.spagobi.constants.SpagoBIConstants" %>
 
 <%  
+   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
+   String exportFilePath = (String)moduleResponse.getAttribute(SpagoBIConstants.EXPORT_FILE_PATH);
+
    PortletURL backUrl = renderResponse.createActionURL();
    backUrl.setParameter("ACTION_NAME", "START_ACTION");
    backUrl.setParameter("PUBLISHER_NAME", "LoginSBISettingsPublisher");
@@ -12,11 +16,11 @@
    PortletURL formExportUrl = renderResponse.createActionURL();
    formExportUrl.setParameter("PAGE", "ImportExportPage");
    formExportUrl.setParameter("MESSAGEDET", "Export");
-   
+   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+  
    PortletURL formImportUrl = renderResponse.createActionURL();
    formImportUrl.setParameter("PAGE", "ImportExportPage");
-   formImportUrl.setParameter("MESSAGEDET", "Import");
-   
+
 %>
 
 <table class='header-table-portlet-section'>
@@ -37,25 +41,52 @@
 </table>
 
 
+<script>
+	function submitExportForm() {
+		var divprog = document.getElementById('divProgress');
+		divprog.style.display='inline';
+		document.getElementById('exportForm').submit();
+		var divprog = document.getElementById('divDownload');
+		divprog.style.display='none';
+	}
+</script>
 
 
 
 
 <div class="div_background_no_img">
 
-  <form method='POST' action='<%=formExportUrl.toString()%>' id='exportForm' name='importForm'>
+ 
+  <form method='POST' action='<%=formExportUrl.toString()%>' id='exportForm' name='exportForm'> 
 	<div style="float:left;width:50%;" class="div_detail_area_forms">
-		<div class='portlet-section-header' style="float:left;width:88%;">
+		<div class='portlet-section-header' style="float:left;width:88%;">	
 				Export
 		</div>
 		<div style="float:left;width:10%;">
 		  <center>
-			<a href="javascript:document.getElementById('exportForm').submit()">
+			 <a href="javascript:submitExportForm()">
 					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/importexport32.png") %>'
 						title='<spagobi:message key = "SBISet.export" />' 
 						alt='<spagobi:message key = "SBISet.export" />' />
 				</a>
-			</center>
+		  </center>
+		</div>
+		<div id="divProgress" style="clear:left;margin-left:15px;padding-top:15px;display:none">
+			Operation in Progress ... (Please wait)
+		</div>
+		<div id="divDownload" style="clear:left;margin-left:15px;padding-top:15px;display:none">
+		<%
+			String downloadUrl = renderRequest.getContextPath() + "/ExportService";
+		    downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
+		%>
+			Operation Complete <a href='<%=downloadUrl%>'>Download</a>
+		</div>
+		<div style="clear:left;margin-left:15px;padding-top:10px;">
+			Name Export: <input type="text" name="exportFileName" size="30" />
+			<!-- Version 1.8 doesn't allow to export subobject
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			Export SubObjects: <input type="checkbox" name="exportSubObj" />
+			-->
 		</div>
 		<div style="clear:left;margin-bottom:10px;">
 			<spagobi:treeObjects moduleName="TreeObjectsModule"  
@@ -64,7 +95,7 @@
 	</div>
 	</form>
 
-    <form method='POST' action='<%=formImportUrl.toString()%>' id='importForm' name='importForm'>
+    <form method='POST' action='<%=formImportUrl.toString()%>' id='importForm' name='importForm' enctype="multipart/form-data">
 	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">
 				Import
@@ -79,7 +110,8 @@
 			</center>
 		</div>
 		<div style="clear:left;margin-bottom:10px;padding-top:10px;">
-			Export Archive: <input type="file" />
+			Export Archive: <input type="file"  name="exportedArchive" />
+			<input type='hidden' name='MESSAGEDET' value='Import' />
 		</div>
 	</div>
 	</form>
@@ -90,7 +122,18 @@
 	</div>
 
 
-
+<%
+	if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
+%>
+	<script>
+		var divprog = document.getElementById('divProgress');
+		divprog.style.display='none';
+		var divprog = document.getElementById('divDownload');
+		divprog.style.display='inline';
+	</script>
+<% 
+	}
+%>
 
 
 

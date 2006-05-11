@@ -359,6 +359,106 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	
 	
 	
+	/**
+	 * Gets the list of all the subObjects which belongs to a biobject. The list contains 
+	 * BIObject.SubObjectDetail objects
+	 * 
+	 * @param pathParent cms path of the father biobject
+	 * @return List of BIObject.SubObjectDetail objects each one containing the information
+	 * about a subObject of the biObject
+	 */
+	public List getSubObjects(String pathParent) {
+		List subObjects = new ArrayList();
+		try{
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(pathParent + "/subobjects");
+			getOp.setRetriveContentInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			getOp.setRetriveChildsInformation("true");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			if(cmsnode == null)
+				return subObjects;
+			if(cmsnode.getChilds() == null)
+				return subObjects;
+			List childs = cmsnode.getChilds();
+			Iterator iterChilds = childs.iterator();
+			while(iterChilds.hasNext()) {
+				CmsNode child = (CmsNode)iterChilds.next();
+				String pathChild = child.getPath();
+				getOp.setPath(pathChild);
+			    getOp.setRetriveContentInformation("false");
+				getOp.setRetrivePropertiesInformation("true");
+				getOp.setRetriveVersionsInformation("false");
+				getOp.setRetriveChildsInformation("false");
+				CmsNode cmsnodechild = manager.execGetOperation(getOp);
+				List properties = cmsnodechild.getProperties();
+				Iterator iterProps = properties.iterator();
+				String owner = "";
+				String publicVisStr = "";
+				String name = "";
+				String description = "";
+				while(iterProps.hasNext()) {
+					CmsProperty prop = (CmsProperty)iterProps.next();
+					String nameprop = prop.getName();
+					if(nameprop.equalsIgnoreCase("owner")) {
+						owner = prop.getStringValues()[0];
+					}
+					if(nameprop.equalsIgnoreCase("public")) {
+						publicVisStr = prop.getStringValues()[0];
+					}
+					if(nameprop.equalsIgnoreCase("name")) {
+						name = prop.getStringValues()[0];
+					}
+					if(nameprop.equalsIgnoreCase("description")) {
+						description = prop.getStringValues()[0];
+					}
+				}
+				boolean publicVis = false;
+				if(publicVisStr.equalsIgnoreCase("true"))
+					publicVis = true;
+				BIObject biobj = new BIObject();
+				BIObject.SubObjectDetail subDet = biobj.new SubObjectDetail(name, pathChild, owner, description, publicVis );
+				subObjects.add(subDet);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "getSubObjects", "Cannot retrive subobjects List", e);
+		} finally {}
+		return subObjects;
+	}
+
+	
+	
+	/**
+	 * Gets the inputStream of the subObject content
+	 * 
+	 * @param pathParent cms path of the parent object
+	 * @param name name of the subObject
+	 * @return InputStream of the subObject content
+	 */
+	public InputStream getSubObject(String pathParent, String name) {
+		InputStream isTemp = null;
+		try {
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(pathParent + "/subobjects/" + name);
+			getOp.setRetriveContentInformation("true");
+			getOp.setRetriveChildsInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			isTemp = cmsnode.getContent();
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "getSubObject", "Cannot retrive subobject template", e);
+		} finally {}
+		return isTemp;
+	}
+	
+	
+	
 }
 
 

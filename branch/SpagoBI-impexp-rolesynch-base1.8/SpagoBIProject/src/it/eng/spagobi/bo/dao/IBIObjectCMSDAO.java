@@ -73,6 +73,15 @@ public interface IBIObjectCMSDAO {
 	 */
 	public List getAccessibleSubObjects(String pathParent, IEngUserProfile profile);
 	
+	
+	/**
+	 * Gets the detail of all the biobject subobjects 
+	 * 
+	 * @param pathParent Cms path of the object
+	 * @return List of BIObject.SubObjectDetail objects 
+	 */
+	public List getSubObjects(String pathParent);
+	
 	/**
 	 * Gets the InputStream of the subobjects content
 	 * 
@@ -83,6 +92,15 @@ public interface IBIObjectCMSDAO {
 	 */
 	public InputStream getSubObject(String pathParent, String name, IEngUserProfile profile);
 	
+	
+	/**
+	 * Gets the InputStream of the subobjects content
+	 * 
+	 * @param pathParent cms path of the object parent
+	 * @param name name of the subobject
+	 * @param profile of the user
+	 */
+	public InputStream getSubObject(String pathParent, String name);
 	
 	/**
 	 * Delete a subObject

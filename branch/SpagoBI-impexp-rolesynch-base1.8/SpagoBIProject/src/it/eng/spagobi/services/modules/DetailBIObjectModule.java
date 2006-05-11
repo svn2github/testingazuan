@@ -106,7 +106,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		if (PortletFileUpload.isMultipartContent((ActionRequest)portletRequest)){
+		if(PortletFileUpload.isMultipartContent((ActionRequest)portletRequest)){
 			request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
 		}
 		

@@ -13,14 +13,25 @@
 	List expEngines = (List)moduleResponse.getAttribute(SpagoBIConstants.LIST_EXPORTED_ENGINES);
     Iterator iterExpEngines = expEngines.iterator();
     
-   	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("ACTION_NAME", "START_ACTION");
-   	backUrl.setParameter("PUBLISHER_NAME", "LoginSBISettingsPublisher");
-  	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+   	//PortletURL backUrl = renderResponse.createActionURL();
+   	//backUrl.setParameter("ACTION_NAME", "START_ACTION");
+   	//backUrl.setParameter("PUBLISHER_NAME", "LoginSBISettingsPublisher");
+  	//backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+  	
+  	PortletURL backUrl = renderResponse.createActionURL();
+   	backUrl.setParameter("PAGE", "ImportExportPage");
+   	backUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_BACK_ENGINE_ASS);
+  	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+  	
+  	PortletURL exitUrl = renderResponse.createActionURL();
+   	exitUrl.setParameter("PAGE", "ImportExportPage");
+   	exitUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_EXIT);
+  	exitUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
   	PortletURL formUrl = renderResponse.createActionURL();
   	formUrl.setParameter("PAGE", "ImportExportPage");
    	formUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_ENGINE_ASSOCIATION);
+   	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
 %>
 
@@ -36,6 +47,15 @@
       				 title='<spagobi:message key = "Sbi.back" />' 
       				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
       				 alt='<spagobi:message key = "Sbi.back" />' />
+			</a>
+		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<a href='<%= exitUrl.toString() %>'> 
+      			<img class='header-button-image-portlet-section' 
+      				 title='<spagobi:message key = "Sbi.exit" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/stop.png")%>' 
+      				 alt='<spagobi:message key = "Sbi.exit" />' />
 			</a>
 		</td>
 	</tr>
@@ -66,13 +86,13 @@
 				<td>
 					<span class='portlet-form-field-label'><%=engine.getName()%></span>
 					<br/>
-					<span><%=engine.getDescription()%></span>
-					<span><%=engine.getUrl()%></span>
-					<span><%=engine.getDriverName()%></span>
+					<%=engine.getDescription()%><br/>
+					<%=engine.getUrl()%><br/>
+					<%=engine.getDriverName()%><br/>
 				</td>
 				<td>
 				    <input type="hidden" name="expEngine" value="<%=engine.getId()%>" />
-					<select style="width:250px" name="engineAssociated<%=engine.getId()%>" >
+					<select style="width:250px;margin-top:5px;" name="engineAssociated<%=engine.getId()%>" >
 						<option value=""></option>
 						<% 
 							Iterator iterCurEngines = curEngines.iterator();
@@ -89,7 +109,11 @@
 	</div>
 	
 	<div style="float:left;">
-		<input type="submit" name="submit" value="Next" />
+		<input type="image" 
+		       name="submit" 
+		       title='<spagobi:message key="Sbi.next"/>' 
+		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/next.png")%>' 
+		       alt='<spagobi:message key="Sbi.next"/>' />
 	</div>
 	</form>
 	

@@ -89,7 +89,7 @@ public class TreeObjectsPublisher implements PublisherDispatcherIFace {
 			} else if(operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) {
 				pubName = new String("treeFunctionalities");
 			} else if(operation.equals(SpagoBIConstants.IMPORTEXPORT_OPERATION)) {
-				pubName = new String("treeExport");
+				pubName = new String("importexportHome");
 			}
 		} else if(actor.equals(SpagoBIConstants.DEV_ACTOR)) {
 			pubName = new String("treeDevObjects");

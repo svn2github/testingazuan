@@ -276,10 +276,10 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
-  	<PUBLISHER name="treeExport">
+  	<PUBLISHER name="importexportHome">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/treeExport.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/importexportHome.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
@@ -860,10 +860,24 @@
 	<PUBLISHER name="ImportExportLoopback">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-      		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
-      		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-      		<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
-      		<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
+      			<PARAMETER name="EXPORT_FILE_PATH" 
+      					   type="RELATIVE" 
+      					   scope="SERVICE_RESPONSE" 
+      					   value="IMPORTEXPORTMODULE.EXPORT_FILE_PATH"/>
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ImportExportLoopbackStopImport">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -887,6 +901,14 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/importexportConnectionAssociation.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="ImportExportExistingMetadataAssociation">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/importexportExistingMetadataAssociation.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
       		</RESOURCES>
     	</RENDERING>

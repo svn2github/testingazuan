@@ -147,7 +147,10 @@ public class ListTestScriptModule extends AbstractBasicListModule {
 					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
 			String typeFilter = (String) request
 					.getAttribute(SpagoBIConstants.TYPE_FILTER);
-			list = DelegatedBasicListService.filterList(list, valuefilter, columnfilter, typeFilter);
+			String typeValueFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+			list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, columnfilter, 
+					typeFilter, getResponseContainer().getErrorHandler());
 		}
 		return list;
 	}

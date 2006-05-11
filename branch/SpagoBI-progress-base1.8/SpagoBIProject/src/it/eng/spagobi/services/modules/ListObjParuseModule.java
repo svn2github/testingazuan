@@ -141,7 +141,6 @@ public class ListObjParuseModule extends AbstractModule {
 			String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 			String objParIdStr = (String) request.getAttribute("obj_par_id");
 			Integer objParId = new Integer (objParIdStr);
-			//BIObjectParameter objParameter = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(objParId);
 			// load the previous ObjParuse objects
 			List oldObjParuses = DAOFactory.getObjParuseDAO().loadObjParuses(objParId);
 			if (oldObjParuses == null) oldObjParuses = new ArrayList();

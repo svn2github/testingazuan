@@ -38,10 +38,12 @@ import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.ObjParuse;
+import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
+import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
@@ -175,22 +177,28 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 				BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		        // find the parameter for the correlation
 				List biparams = obj.getBiObjectParameters();
-				BIObjectParameter objPar = null;
+				BIObjectParameter objParFather = null;
 		        Iterator iterParams = biparams.iterator();
 		        while (iterParams.hasNext()) {
 		        	BIObjectParameter aBIObjectParameter = (BIObjectParameter) iterParams.next();
 		        	if (aBIObjectParameter.getId().equals(objParFatherId)) {
-		        		objPar = aBIObjectParameter;
+		        		objParFather = aBIObjectParameter;
 		        		break;
 		        	}
 		        }
+		        IParameterDAO parameterDAO = DAOFactory.getParameterDAO();
+		        Parameter parameter = parameterDAO.loadForDetailByParameterID(objParFather.getParID());
+		        String valueTypeFilter = parameter.getType();
+		        
 				String valueFilter = "";
-				List valuesFilter = objPar.getParameterValues();
+				List valuesFilter = objParFather.getParameterValues();
 				if (valuesFilter != null && valuesFilter.size() == 1) {
-					valueFilter = (String) valuesFilter.get(0);
+					valueFilter = valuesFilter.get(0).toString();
 				}
 				
-				list = DelegatedBasicListService.filterList(list, valueFilter, objParuse.getFilterColumn(), objParuse.getFilterOperation());
+				list = DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
+						objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
+						getResponseContainer().getErrorHandler());
 				
 				paramsMap.put("correlated_paruse_id", correlatedParuseIdStr);
 				paramsMap.put("LOOKUP_PARAMETER_ID", objParIdStr);
@@ -275,7 +283,10 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 						.getAttribute(SpagoBIConstants.COLUMN_FILTER);
 				String typeFilter = (String) request
 						.getAttribute(SpagoBIConstants.TYPE_FILTER);
-				list = DelegatedBasicListService.filterList(list, valuefilter, columnfilter, typeFilter);
+				String typeValueFilter = (String) request
+						.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+				list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, 
+						columnfilter, typeFilter, getResponseContainer().getErrorHandler());
     		}
     		
 //			list = LookupScriptDelegatedBasicListService.getList(this, request, response, rows);

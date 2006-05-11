@@ -70,6 +70,7 @@ public class TreeObjectsModule extends AbstractModule {
 	 * @param response The response Source Bean
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		
 		try{
 			debug("service", "enter service method");
 			errorHandler = getErrorHandler();
@@ -148,14 +149,16 @@ public class TreeObjectsModule extends AbstractModule {
         // set into the response the righr inforamtion for loopback
         response.setAttribute(SpagoBIConstants.ACTOR, actor);
         response.setAttribute(SpagoBIConstants.PATH, path);
-        response.setAttribute(SpagoBIConstants.PATH, path);
-        if(parameters != null) response.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
-        
+                
         // put in session the modality and the actor
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
         		                      SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
         
-        // if the height of the area in set put it into the session
+        // if the parameters is set put it into the session
+        if(!parameters.equals("")) 
+        	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
+        
+        // if the height of the area is set put it into the session
         if(!heightArea.equals("")) 
         	sessionContainer.setAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA, heightArea);
         debug("singleObjectModalityHandler", "data stored into response");

@@ -154,7 +154,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		debug("pageCreationHandler", "using path " + path);
 		
 		// get parameters of the object
-		String parameters = (String)request.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		String parameters = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
 		debug("pageCreationHandler", "using parameters " + parameters);
 		
 		// get the current user profile
@@ -189,6 +189,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 			response.setAttribute("selectionRoleForExecution", "true");
 			response.setAttribute("roles", correctRoles);
 			response.setAttribute("path", path);
+			response.setAttribute("parameters", parameters);
 			debug("pageCreationHandler", "more than one correct roles for execution, redirect to the" +
 				  " role selection page");
 			return;
@@ -213,9 +214,13 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// put in session the execution role
 		session.setAttribute(SpagoBIConstants.ROLE, role);
 		
+				
 		// based on the role selected (or the only for the user) load the object and put it in session
-		BIObject obj = execContr.prepareBIObjectInSession(session, path, role);
+		BIObject obj = execContr.prepareBIObjectInSession(session, path, role, parameters);
 		debug("pageCreationHandler", "object retrived and setted into session");
+		
+		
+		
 		
 		// get the list of the subObjects
 		List subObjects = getSubObjectsList(obj, profile);
@@ -223,7 +228,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         
 		// put in response the list of subobject names
 		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-		
+				
 		// load the object into the Execution controller				
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
@@ -415,7 +420,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// get the path of the object
 		String path = (String)request.getAttribute(ObjectsTreeConstants.PATH);
 		// prepare the object in session
-		BIObject obj = execContr.prepareBIObjectInSession(session, path, role);
+		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);		
+		BIObject obj = execContr.prepareBIObjectInSession(session, path, role, userProvidedParametersStr);		
         // get the current user profile
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		// get the list of the subObjects
@@ -592,6 +598,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 			} else {
 				mapPars = aEngineDriver.getParameterMap(obj);
 			}
+						
+			
             // set into the reponse the parameters map	
 			response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
 		} catch (Exception e) {

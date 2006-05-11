@@ -70,6 +70,9 @@ public class BIObjectParameter implements Serializable {
 	/* VALUES LIST OF THE PARAMETER (STRINGS) */
 	private List parameterValues = null;
 	
+	/* transient flag. set to true for parameters buil on the fly */
+	private boolean transientParmeters = false;
+	
 	/**
 	 * @return Returns the id of the BIObjectParameter
 	 */
@@ -213,5 +216,11 @@ public class BIObjectParameter implements Serializable {
 	 */
 	public void setParameter(Parameter parameter) {
 		this.parameter = parameter;
+	}
+	public boolean isTransientParmeters() {
+		return transientParmeters;
+	}
+	public void setTransientParmeters(boolean transientParmeters) {
+		this.transientParmeters = transientParmeters;
 	}
 }

@@ -12,8 +12,10 @@ import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class ExecutionController {
 
@@ -44,8 +46,12 @@ public class ExecutionController {
         while (iterPars.hasNext()){
 			biParameter = (BIObjectParameter)iterPars.next();
             Parameter par = biParameter.getParameter();
-            if(par==null)
+            if(par==null){
+            	if(biParameter.isTransientParmeters())
+            		countHidePar ++;
             	continue;
+            }
+            	
             paruse = par.getModalityValue();
             if(paruse==null)
             	continue;
@@ -68,6 +74,52 @@ public class ExecutionController {
 	}
 	
 	
+	private void refreshParameters(BIObject obj, String userProvidedParametersStr){
+		if(userProvidedParametersStr != null) {
+		
+			List parameterList = obj.getBiObjectParameters();
+			BIObjectParameter parameter = null;
+			Map paramMap = new HashMap();
+			for(int i = 0; i < parameterList.size(); i++) {
+				parameter = (BIObjectParameter)parameterList.get(i);
+				paramMap.put(parameter.getParameterUrlName(), parameter);
+				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
+		 				"ExecuteBIObjectMOdule", 
+		 				"refreshParameters", 
+		 				"Parameter [IN]: " + parameter);
+			}
+			
+			parameterList.clear();
+					
+			String[] userProvidedParameters = userProvidedParametersStr.split("&");
+			for(int i = 0; i < userProvidedParameters.length; i++) {
+				String[] chunks = userProvidedParameters[i].split("=");
+				parameter = new BIObjectParameter();
+				parameter.setParameterUrlName(chunks[0]);
+				List parameterValues = new ArrayList();
+				parameterValues.add(chunks[1]);
+				parameter.setParameterValues(parameterValues);
+				parameter.setTransientParmeters(true);
+				paramMap.put(parameter.getParameterUrlName(), parameter);
+				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
+		 				"ExecuteBIObjectMOdule", 
+		 				"refreshParameters", 
+		 				"Parameter [NEW]: " + parameter);
+			}
+			
+			Iterator it = paramMap.entrySet().iterator();
+			while(it.hasNext()){
+				parameter = (BIObjectParameter)((Map.Entry)it.next()).getValue();
+				parameterList.add(parameter);
+				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
+		 				"ExecuteBIObjectMOdule", 
+		 				"refreshParameters", 
+		 				"Parameter [FINISH]: " + parameter);
+			}
+			
+			obj.setBiObjectParameters(parameterList);
+		}
+	}
 	
 	
 	/**
@@ -77,8 +129,9 @@ public class ExecutionController {
 	 * @throws EMFUserError
 	 */
 	public BIObject prepareBIObjectInSession(SessionContainer aSessionContainer, String aPath, 
-					String aRoleName) throws EMFUserError {
+					String aRoleName, String userProvidedParametersStr) throws EMFUserError {
 		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByPathAndRole(aPath, aRoleName);
+		refreshParameters(obj, userProvidedParametersStr);
 		aSessionContainer.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 		SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
 		String serviceName = "ValidateExecuteBIObjectPage";
@@ -112,19 +165,21 @@ public class ExecutionController {
 				// if the value of the parameter is retrived with a script
 				// control if the script return an unique value and preload it
 				Parameter par = aBIObjectParameter.getParameter();
-				ModalitiesValue paruse = par.getModalityValue();
-				String type = paruse.getITypeCd();
-				if(type.equalsIgnoreCase("SCRIPT")) {
-					String lovProv = paruse.getLovProvider();
-					ScriptDetail scriptdet = ScriptDetail.fromXML(lovProv);
-					if(scriptdet.isSingleValue()) {
-						String script = scriptdet.getScript();
-						IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-						Binding bind = GeneralUtilities.fillBinding(profile);
-						String value = GeneralUtilities.testScript(script, bind);
-						List biparvals = new ArrayList();
-						biparvals.add(value);
-						aBIObjectParameter.setParameterValues(biparvals);
+				if(par != null) {
+					ModalitiesValue paruse = par.getModalityValue();
+					String type = paruse.getITypeCd();
+					if(type.equalsIgnoreCase("SCRIPT")) {
+						String lovProv = paruse.getLovProvider();
+						ScriptDetail scriptdet = ScriptDetail.fromXML(lovProv);
+						if(scriptdet.isSingleValue()) {
+							String script = scriptdet.getScript();
+							IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+							Binding bind = GeneralUtilities.fillBinding(profile);
+							String value = GeneralUtilities.testScript(script, bind);
+							List biparvals = new ArrayList();
+							biparvals.add(value);
+							aBIObjectParameter.setParameterValues(biparvals);
+						}
 					}
 				}
 				fieldSourceBean = createValidableFieldSourceBean(aBIObjectParameter);
@@ -159,6 +214,7 @@ public class ExecutionController {
 	 */
 	public SourceBean createValidableFieldSourceBean(BIObjectParameter aBIObjectParameter) throws SourceBeanException {
 		
+		if(aBIObjectParameter.isTransientParmeters()) return null;
 		List checks = aBIObjectParameter.getParameter().getChecks();
 		if (checks == null || checks.size() == 0){
 			return null;

@@ -23,7 +23,6 @@ package it.eng.spagobi.bo.dao.hibernate;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;

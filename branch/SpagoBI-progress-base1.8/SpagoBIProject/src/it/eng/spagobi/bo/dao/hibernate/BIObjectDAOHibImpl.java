@@ -105,7 +105,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			biObject = loadBIObjectForDetail(path);
-			String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObject.getId();
+			String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObject.getId() + " order by s.priority asc";
 			Query hqlQuery = aSession.createQuery(hql);
 			List hibObjectPars = hqlQuery.list();
 			SbiObjPar hibObjPar = null;

@@ -83,48 +83,6 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 		return toReturn;
 	}
 	
-	
-	/** 
-	 * @see it.eng.spagobi.bo.dao.IBIObjectParameterDAO#loadBIObjectParameterForDetail(java.lang.Integer, java.lang.Integer)
-	 */
-//	public BIObjectParameter loadBIObjectParameterForDetail(Integer biObjectID, Integer paramaterID) throws EMFUserError {
-//		
-//		BIObjectParameter toReturn = null;
-//		Session aSession = null;
-//		Transaction tx = null;
-//		try {
-//			aSession = getSession();
-//			tx = aSession.beginTransaction();
-//		
-//			
-//			Criterion aCriterion = Expression.and(
-//											  Expression.eq("id.sbiObjects.biobjId", biObjectID), 
-//											  Expression.eq("id.sbiParameters.parId", paramaterID));
-//			Criteria aCriteria = aSession.createCriteria(SbiObjPar.class);
-//			aCriteria.add(aCriterion);
-//			SbiObjPar hibObjectParameter = (SbiObjPar)aCriteria.uniqueResult();
-//			if (hibObjectParameter == null) return null;
-//			
-//			toReturn = toBIObjectParameter(hibObjectParameter);
-//			tx.commit();
-//			
-//		} catch (HibernateException he) {
-//			logException(he);
-//
-//			if (tx != null)
-//				tx.rollback();
-//
-//			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-//
-//		} finally {
-//			if (aSession!=null){
-//				if (aSession.isOpen()) aSession.close();
-//			}
-//		}
-//		return toReturn;
-//	}
-
-	
 
 	/**
 	 * @see it.eng.spagobi.bo.dao.IBIObjectParameterDAO#modifyBIObjectParameter(it.eng.spagobi.bo.BIObjectParameter)
@@ -158,6 +116,22 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			hibObjPar.setViewFl(new Short(aBIObjectParameter.getVisible().shortValue()));
 			hibObjPar.setMultFl(new Short(aBIObjectParameter.getMultivalue().shortValue()));
 			hibObjPar.setParurlNm(aBIObjectParameter.getParameterUrlName());
+			Integer oldPriority = hibObjPar.getPriority();
+			Integer newPriority = aBIObjectParameter.getPriority();
+			if (!oldPriority.equals(newPriority)) {
+				Query query = null;
+				if (oldPriority.intValue() > newPriority.intValue()) {
+					String hqlUpdateShiftRight = "update SbiObjPar set priority = (priority + 1) where priority >= " 
+						+ newPriority + " and priority < " + oldPriority;
+					query = aSession.createQuery(hqlUpdateShiftRight);
+				} else {
+					String hqlUpdateShiftLeft = "update SbiObjPar set priority = (priority - 1) where priority > " 
+						+ oldPriority + " and priority <= " + newPriority;
+					query = aSession.createQuery(hqlUpdateShiftLeft);
+				}
+				query.executeUpdate();
+			}
+			hibObjPar.setPriority(newPriority);
 			hibObjPar.setProg(new Integer(1));
 			
 			tx.commit();
@@ -172,6 +146,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			}
 		}
 	}
+
 
 	/**
 	 * @see it.eng.spagobi.bo.dao.IBIObjectParameterDAO#insertBIObjectParameter(it.eng.spagobi.bo.BIObjectParameter)
@@ -198,7 +173,15 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			hibObjectParameterNew.setMultFl(new Short(aBIObjectParameter.getMultivalue().shortValue()));
 			hibObjectParameterNew.setParurlNm(aBIObjectParameter.getParameterUrlName());
 			
+			String hqlUpdateShiftRight = "update SbiObjPar set priority = (priority + 1) where priority >= " 
+				+ aBIObjectParameter.getPriority();
+			Query query = aSession.createQuery(hqlUpdateShiftRight);
+			query.executeUpdate();
+			
+			hibObjectParameterNew.setPriority(aBIObjectParameter.getPriority());
+			
 			aSession.save(hibObjectParameterNew);
+			
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -240,6 +223,11 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			
 			aSession.delete(hibObjPar);
+			
+			String hqlUpdateShiftRight = "update SbiObjPar set priority = (priority - 1) where priority >= " 
+				+ aBIObjectParameter.getPriority();
+			Query query = aSession.createQuery(hqlUpdateShiftRight);
+			query.executeUpdate();
 			
 			tx.commit();
 		} catch (HibernateException he) {
@@ -300,7 +288,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObjectID;
+			String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObjectID + " order by s.priority asc";
 
 			Query hqlQuery = aSession.createQuery(hql);
 			List hibObjectPars = hqlQuery.list();
@@ -340,6 +328,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 		aBIObjectParameter.setParID(hiObjPar.getSbiParameter().getParId());
 		aBIObjectParameter.setRequired(new Integer(hiObjPar.getReqFl().intValue()));
 		aBIObjectParameter.setVisible(new Integer(hiObjPar.getViewFl().intValue()));
+		aBIObjectParameter.setPriority(hiObjPar.getPriority());
 		Parameter parameter = new Parameter();
 		parameter.setId(hiObjPar.getSbiParameter().getParId());
 		aBIObjectParameter.setParameter(parameter);

@@ -30,6 +30,9 @@ import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFAbstractError;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
@@ -37,6 +40,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +75,7 @@ public class ListTag extends TagSupport
 	protected SourceBean _serviceRequest = null;
 	protected ResponseContainer _responseContainer = null;
 	protected SourceBean _serviceResponse = null;
+	protected EMFErrorHandler _errorHandler = null;
 	protected StringBuffer _htmlStream = null;
 	protected Vector _columns = null;
     protected String labelLinkSaltoPagina;
@@ -110,6 +115,7 @@ public class ListTag extends TagSupport
 		_serviceRequest = _requestContainer.getServiceRequest();
 		_responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
 		_serviceResponse = _responseContainer.getServiceResponse();
+		_errorHandler = _responseContainer.getErrorHandler();
 		ConfigSingleton configure = ConfigSingleton.getInstance();
 		if (_actionName != null) {
 			_serviceName = _actionName;
@@ -418,17 +424,21 @@ public class ListTag extends TagSupport
 		String formId = "formFilter";
 		
 		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
 		String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
 		String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
 		if (valueFilter != null && columnFilter != null && typeFilter != null) {
 			prevUrl.setParameter(SpagoBIConstants.VALUE_FILTER, valueFilter);
+			prevUrl.setParameter(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			prevUrl.setParameter(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			prevUrl.setParameter(SpagoBIConstants.TYPE_FILTER, typeFilter);
 			nextUrl.setParameter(SpagoBIConstants.VALUE_FILTER, valueFilter);
+			nextUrl.setParameter(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			nextUrl.setParameter(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			nextUrl.setParameter(SpagoBIConstants.TYPE_FILTER , typeFilter);
 		} else {
 			valueFilter = "";
+			typeValueFilter = "";
 			columnFilter = "";
 			typeFilter = "";
 		}
@@ -457,10 +467,18 @@ public class ListTag extends TagSupport
 			PortletURL filterURL = createUrl(_providerUrlMap);
 			
 			String label = PortletUtilities.getMessage("SBIListLookPage.labelFilter", "messages");
-			String labelStart = PortletUtilities.getMessage("SBIListLookPage.startWith", "messages");;
-			String labelEnd = PortletUtilities.getMessage("SBIListLookPage.endWith", "messages");;
-			String labelContain = PortletUtilities.getMessage("SBIListLookPage.contains", "messages");;
-			String labelEqual = PortletUtilities.getMessage("SBIListLookPage.isEquals", "messages");;
+			String labelTypeValueFilter = PortletUtilities.getMessage("SBIListLookPage.labelTypeValueFilter", "messages");
+			String labelNumber = PortletUtilities.getMessage("SBIListLookPage.labelNumber", "messages");
+			String labelString = PortletUtilities.getMessage("SBIListLookPage.labelString", "messages");
+			String labelDate = PortletUtilities.getMessage("SBIListLookPage.labelDate", "messages");
+			String labelStart = PortletUtilities.getMessage("SBIListLookPage.startWith", "messages");
+			String labelEnd = PortletUtilities.getMessage("SBIListLookPage.endWith", "messages");
+			String labelContain = PortletUtilities.getMessage("SBIListLookPage.contains", "messages");
+			String labelEqual = PortletUtilities.getMessage("SBIListLookPage.isEquals", "messages");
+			String labelIsLessThan = PortletUtilities.getMessage("SBIListLookPage.isLessThan", "messages");
+			String labelIsLessOrEqualThan = PortletUtilities.getMessage("SBIListLookPage.isLessOrEqualThan", "messages");
+			String labelIsGreaterThan = PortletUtilities.getMessage("SBIListLookPage.isGreaterThan", "messages");
+			String labelIsGreaterOrEqualThan = PortletUtilities.getMessage("SBIListLookPage.isGreaterOrEqualThan", "messages");
 			String labelFilter = PortletUtilities.getMessage("SBIListLookPage.filter", "messages");
 			String labelAll = PortletUtilities.getMessage("SBIListLookPage.all", "messages");
 			
@@ -481,6 +499,21 @@ public class ListTag extends TagSupport
 			}
 			String selected = "";
 			_htmlStream.append("						    </select>\n");
+			_htmlStream.append("						    "+labelTypeValueFilter+"\n");
+			_htmlStream.append("						    <select name='" + SpagoBIConstants.TYPE_VALUE_FILTER + "'>\n");
+			if (typeValueFilter.equalsIgnoreCase(SpagoBIConstants.STRING_TYPE_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.STRING_TYPE_FILTER +"' "+selected+" >"+labelString+"</option>\n");
+			if (typeValueFilter.equalsIgnoreCase(SpagoBIConstants.NUMBER_TYPE_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.NUMBER_TYPE_FILTER +"' "+selected+" >"+labelNumber+"</option>\n");
+			if (typeValueFilter.equalsIgnoreCase(SpagoBIConstants.DATE_TYPE_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.DATE_TYPE_FILTER +"' "+selected+" >"+labelDate+"</option>\n");
+			_htmlStream.append("						    </select>\n");
 			_htmlStream.append("						    <select name='" + SpagoBIConstants.TYPE_FILTER + "'>\n");
 			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER))
 				selected = " selected='selected' ";
@@ -490,22 +523,54 @@ public class ListTag extends TagSupport
 				selected = " selected='selected' ";
 			else selected = "";
 			_htmlStream.append("						    	<option value='"+SpagoBIConstants.END_FILTER +"' "+selected+" >"+labelEnd+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.EQUAL_FILTER +"' "+selected+" >"+labelEqual+"</option>\n");
 			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER))
 				selected = " selected='selected' ";
 			else selected = "";
 			_htmlStream.append("						    	<option value='"+SpagoBIConstants.CONTAIN_FILTER +"' "+selected+" >"+labelContain+"</option>\n");
+			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.EQUAL_FILTER +"' "+selected+" >"+labelEqual+"</option>\n");
+			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.LESS_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.LESS_FILTER +"' "+selected+" >"+labelIsLessThan+"</option>\n");
+			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.LESS_OR_EQUAL_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.LESS_OR_EQUAL_FILTER +"' "+selected+" >"+labelIsLessOrEqualThan+"</option>\n");
+			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.GREATER_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.GREATER_FILTER +"' "+selected+" >"+labelIsGreaterThan+"</option>\n");
+			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.GREATER_OR_EQUAL_FILTER))
+				selected = " selected='selected' ";
+			else selected = "";
+			_htmlStream.append("						    	<option value='"+SpagoBIConstants.GREATER_OR_EQUAL_FILTER +"' "+selected+" >"+labelIsGreaterOrEqualThan+"</option>\n");
 			_htmlStream.append("						    </select>\n");
 			_htmlStream.append("						    <input type=\"text\" name=\"" + SpagoBIConstants.VALUE_FILTER + "\" size=\"10\" value=\""+valueFilter+"\" /> \n");
 			_htmlStream.append("						    <a href='javascript:document.getElementById(\"" + formId +"\").submit()'>"+labelFilter+"</a> \n");
 			_htmlStream.append(" <a href='"+allUrl.toString()+"'>"+labelAll+"</a> \n");
 			_htmlStream.append("						    </form> \n");
 			
-		}
+			if (_errorHandler != null && !_errorHandler.isOKBySeverity(EMFErrorSeverity.WARNING)) {
+				Collection errors = _errorHandler.getErrors();
+				_htmlStream.append("	<div class='filter-list-errors'>\n");
+		    	EMFAbstractError error = null;
+		    	String description = "";
+		    	Iterator iter = errors.iterator();
+		    	while(iter.hasNext()) {
+		    		error = (EMFAbstractError) iter.next();
+		    		if (EMFErrorSeverity.WARNING.equalsIgnoreCase(error.getSeverity())) {
+			    	 	description = error.getDescription();
+			    	 	_htmlStream.append("		" + description + "<br/>\n");
+		    		}
+		    	}
+		    	_htmlStream.append("	</div>\n");
+			}
 			
+		}
+		_htmlStream.append("		</TD>\n");	
 		// create link for next page
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
 		if(pageNumber != pagesNumber) {	

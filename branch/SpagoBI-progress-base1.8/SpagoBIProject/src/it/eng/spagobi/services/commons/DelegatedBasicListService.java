@@ -26,6 +26,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
@@ -48,9 +49,14 @@ import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.QueryExecutor;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.PortletUtilities;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Provides all methods to handle a list of objects. Its methods are called from a list
@@ -244,7 +250,9 @@ public class DelegatedBasicListService {
 					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
 			String typeFilter = (String) request
 					.getAttribute(SpagoBIConstants.TYPE_FILTER);
-			list = filterList(list, valuefilter, columnfilter, typeFilter);
+			String typeValueFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+			list = filterList(list, valuefilter, typeValueFilter, columnfilter, typeFilter, serviceRequestContext.getErrorHandler());
 		}
 		
 		return list;
@@ -256,11 +264,14 @@ public class DelegatedBasicListService {
 	 * 
 	 * @param list The list to be filtered
 	 * @param valuefilter The value of the filter
+	 * @param valuetypefilter The type of the value of the filter (STRING/NUM/DATE)
 	 * @param columnfilter The column to be filtered
 	 * @param typeFilter The type of the filter
+	 * @param errorHandler The EMFErrorHandler object, in which errors are stored if they occurs
 	 * @return the filtered list
 	 */
-	public static ListIFace filterList(ListIFace list, String valuefilter, String columnfilter, String typeFilter) {
+	public static ListIFace filterList(ListIFace list, String valuefilter, String valuetypefilter, String columnfilter, 
+						String typeFilter, EMFErrorHandler errorHandler) {
 		if ((valuefilter == null) || (valuefilter.equals(""))) {
 			return list;
 		}
@@ -270,7 +281,9 @@ public class DelegatedBasicListService {
 		if ((typeFilter == null) || (typeFilter.trim().equals(""))) {
 			return list;
 		}
-		valuefilter = valuefilter.toUpperCase();
+		if ((valuetypefilter == null) || (valuetypefilter.trim().equals(""))) {
+			return list;
+		}
 		PaginatorIFace newPaginator = new GenericPaginator();
 		newPaginator.setPageSize(list.getPaginator().getPageSize());
 		SourceBean allrowsSB = list.getPaginator().getAll();
@@ -283,27 +296,248 @@ public class DelegatedBasicListService {
 			String value = attribute.toString();
 			if (value == null)
 				value = "";
-			value = value.toUpperCase();
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER)) {
-				if (value.trim().startsWith(valuefilter))
-					newPaginator.addRow(row);
-			} else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER)) {
-				if (value.trim().endsWith(valuefilter))
-					newPaginator.addRow(row);
-			} else if (typeFilter
-					.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER)) {
-				if (value.indexOf(valuefilter) != -1)
-					newPaginator.addRow(row);
-			} else if (typeFilter
-					.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER)) {
-				if (value.equals(valuefilter)
-						|| value.trim().equals(valuefilter))
-					newPaginator.addRow(row);
+			// case of string filtering
+			if (valuetypefilter.equalsIgnoreCase(SpagoBIConstants.STRING_TYPE_FILTER)) {
+				valuefilter = valuefilter.toUpperCase();
+				value = value.toUpperCase();
+				if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER)) {
+					if (value.trim().startsWith(valuefilter))
+						newPaginator.addRow(row);
+				} else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER)) {
+					if (value.trim().endsWith(valuefilter))
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER)) {
+					if (value.indexOf(valuefilter) != -1)
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER)) {
+					if (value.equals(valuefilter)
+							|| value.trim().equals(valuefilter))
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.LESS_FILTER)) {
+					if (value.trim().compareToIgnoreCase(valuefilter) < 0) 
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.LESS_OR_EQUAL_FILTER)) {
+					if (value.trim().compareToIgnoreCase(valuefilter) <= 0) 
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.GREATER_FILTER)) {
+					if (value.trim().compareToIgnoreCase(valuefilter) > 0) 
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.GREATER_OR_EQUAL_FILTER)) {
+					if (value.trim().compareToIgnoreCase(valuefilter) >= 0) 
+						newPaginator.addRow(row);
+				}
+			}
+			// case of number filtering
+			if (valuetypefilter.equalsIgnoreCase(SpagoBIConstants.NUMBER_TYPE_FILTER)) {
+				if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER)
+						|| typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER)
+						|| typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER)) {
+					TracerSingleton.log(
+							Constants.NOME_MODULO,
+							TracerSingleton.WARNING,
+							"DelegatedBasicListService::filterList: the filter type " + typeFilter + " is not applicable to numbers.");
+					String labelTypeFilter = "";
+					if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER))
+						labelTypeFilter = PortletUtilities.getMessage("SBIListLookPage.startWith", "messages");
+					else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER))
+						labelTypeFilter = PortletUtilities.getMessage("SBIListLookPage.endWith", "messages");
+					else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER))
+						labelTypeFilter = PortletUtilities.getMessage("SBIListLookPage.contains", "messages");
+					HashMap params = new HashMap();
+					params.put(Constants.NOME_MODULO,
+							"DelegatedBasicListService::filterList");
+					Vector v = new Vector();
+					v.add(labelTypeFilter);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.WARNING, 1050, v, params);
+					errorHandler.addError(error);
+					return list;
+				}
+				Double valueDouble = null;
+				Double valueFilterDouble = null;
+				try {
+					valueDouble = new Double(value);
+				} catch (Exception e) {
+					TracerSingleton.log(
+							Constants.NOME_MODULO,
+							TracerSingleton.WARNING,
+							"DelegatedBasicListService::filterList: the string value is not a recognizable number representations: value to be filtered = " + value, e);
+					HashMap params = new HashMap();
+					params.put(Constants.NOME_MODULO,
+							"DelegatedBasicListService::filterList");
+					Vector v = new Vector();
+					v.add(value);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.WARNING, 1051, v, params);
+					errorHandler.addError(error);
+					return list;
+				}
+				try {
+					valueFilterDouble = new Double(valuefilter);
+				} catch (Exception e) {
+					TracerSingleton.log(
+							Constants.NOME_MODULO,
+							TracerSingleton.WARNING,
+							"DelegatedBasicListService::filterList: input string value is not a recognizable number representations: filter value = " + valuefilter, e);
+					HashMap params = new HashMap();
+					params.put(Constants.NOME_MODULO,
+							"DelegatedBasicListService::filterList");
+					Vector v = new Vector();
+					v.add(valuefilter);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.WARNING, 1052, v, params);
+					errorHandler.addError(error);
+					return list;
+				}
+				
+				if (valueDouble == null || valueFilterDouble == null) return list;
+				
+				if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER)) {
+					if (valueDouble.doubleValue() == valueFilterDouble.doubleValue())
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.LESS_FILTER)) {
+					if (valueDouble.doubleValue() < valueFilterDouble.doubleValue())
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.LESS_OR_EQUAL_FILTER)) {
+					if (valueDouble.doubleValue() <= valueFilterDouble.doubleValue())
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.GREATER_FILTER)) {
+					if (valueDouble.doubleValue() > valueFilterDouble.doubleValue())
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.GREATER_OR_EQUAL_FILTER)) {
+					if (valueDouble.doubleValue() >= valueFilterDouble.doubleValue())
+						newPaginator.addRow(row);
+				}
+			}
+			// case of date filtering
+			if (valuetypefilter.equalsIgnoreCase(SpagoBIConstants.DATE_TYPE_FILTER)) {
+				if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER)
+						|| typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER)
+						|| typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER)) {
+					TracerSingleton.log(
+							Constants.NOME_MODULO,
+							TracerSingleton.WARNING,
+							"DelegatedBasicListService::filterList: the filter type " + typeFilter + " is not applicable to date.");
+					String labelTypeFilter = "";
+					if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER))
+						labelTypeFilter = PortletUtilities.getMessage("SBIListLookPage.startWith", "messages");
+					else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER))
+						labelTypeFilter = PortletUtilities.getMessage("SBIListLookPage.endWith", "messages");
+					else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER))
+						labelTypeFilter = PortletUtilities.getMessage("SBIListLookPage.contains", "messages");
+					HashMap params = new HashMap();
+					params.put(Constants.NOME_MODULO,
+							"DelegatedBasicListService::filterList");
+					Vector v = new Vector();
+					v.add(labelTypeFilter);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.WARNING, 1053, v, params);
+					errorHandler.addError(error);
+					return list;
+				}
+		        ConfigSingleton config = ConfigSingleton.getInstance();
+			    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
+			    String format = (String) formatSB.getAttribute("format");
+			    TracerSingleton.log(
+						Constants.NOME_MODULO,
+						TracerSingleton.WARNING,
+						"DelegatedBasicListService::filterList: applying date format " + format + " for filtering.");
+			    format = format.replaceAll("D", "d");
+			    format = format.replaceAll("m", "M");
+			    format = format.replaceAll("Y", "y");
+		        Date valueDate = null;
+		        Date valueFilterDate = null;
+				try {
+					valueDate = toDate(value, format);
+		        } catch (Exception e) { 
+					TracerSingleton.log(
+							Constants.NOME_MODULO,
+							TracerSingleton.WARNING,
+							"DelegatedBasicListService::filterList: the string value is not a valid date representation according to the format " + format + ": value to be filtered = " + value, e);
+					HashMap params = new HashMap();
+					params.put(Constants.NOME_MODULO,
+							"DelegatedBasicListService::filterList");
+					Vector v = new Vector();
+					v.add(value);
+					v.add(format);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.WARNING, 1054, v, params);
+					errorHandler.addError(error);
+					return list;
+		        }
+				try {
+					valueFilterDate = toDate(valuefilter, format);
+		        } catch (Exception e) { 
+					TracerSingleton.log(
+							Constants.NOME_MODULO,
+							TracerSingleton.WARNING,
+							"DelegatedBasicListService::filterList: input string is not a valid date representation according to the format " + format + ": filter value = " + valuefilter, e);
+					HashMap params = new HashMap();
+					params.put(Constants.NOME_MODULO,
+							"DelegatedBasicListService::filterList");
+					Vector v = new Vector();
+					v.add(valuefilter);
+					v.add(format);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.WARNING, 1055, v, params);
+					errorHandler.addError(error);
+					return list;
+		        }
+		        
+		        if (valueDate == null || valueFilterDate == null) return list;
+		        
+				if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER)) {
+					if (valueDate.compareTo(valueFilterDate) == 0)
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.LESS_FILTER)) {
+					if (valueDate.compareTo(valueFilterDate) < 0)
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.LESS_OR_EQUAL_FILTER)) {
+					if (valueDate.compareTo(valueFilterDate) <= 0)
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.GREATER_FILTER)) {
+					if (valueDate.compareTo(valueFilterDate) > 0)
+						newPaginator.addRow(row);
+				} else if (typeFilter
+						.equalsIgnoreCase(SpagoBIConstants.GREATER_OR_EQUAL_FILTER)) {
+					if (valueDate.compareTo(valueFilterDate) >= 0)
+						newPaginator.addRow(row);
+				}
 			}
 		}
 		ListIFace newList = new GenericList();
 		newList.setPaginator(newPaginator);
 		return newList;
+	}
+	
+	/**
+	 * Converts a String representing a date into a Date object, given the date format.
+	 * 
+	 * @param dateStr The String representing the date
+	 * @param format The date format
+	 * @return the relevant Date object
+	 * @throws Exception if any parsing exception occurs
+	 */
+	public static Date toDate(String dateStr, String format) throws Exception {
+		SimpleDateFormat dateFormat = new SimpleDateFormat();
+        Date date = null;
+		try {
+            dateFormat.applyPattern(format);
+            dateFormat.setLenient(false);
+            date = dateFormat.parse(dateStr);
+        } catch (Exception e) { 
+        	throw e;
+        }
+        return date;
 	}
 	
 	/**
@@ -340,7 +574,6 @@ public class DelegatedBasicListService {
 		return result;
 	}
 	
-	// request, SourceBean response) throws Exception
 	/**
 	 * Function that controls if the deletion of a row in a DB table has success or not.
 	 * 

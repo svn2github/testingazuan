@@ -126,7 +126,7 @@ public class DynamicPageTag extends TagSupport {
         		}
         	}        	
         	if(createLabelAndForm) {
-        		htmlStream.append("		<div class='div_detail_label_lov'>\n");
+        		htmlStream.append("		<div class='div_detail_label_lov' style='clear:left;'>\n");
         		htmlStream.append("			<span class='portlet-form-field-label'>\n");
         		htmlStream.append(biparam.getLabel());
         		htmlStream.append("			</span>\n");

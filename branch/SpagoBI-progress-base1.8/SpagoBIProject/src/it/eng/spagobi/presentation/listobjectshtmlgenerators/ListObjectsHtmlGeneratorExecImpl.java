@@ -417,14 +417,14 @@ public class ListObjectsHtmlGeneratorExecImpl implements IListObjectsHtmlGenerat
 			selected = " selected='selected' ";
 		else selected = "";
 		htmlStream.append("						    	<option value='"+SpagoBIConstants.END_FILTER+"' "+selected+" >"+labelEnd+"</option>\n");
+		if (typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER))
+			selected = " selected='selected' ";
+		else selected = "";
+		htmlStream.append("						    	<option value='"+SpagoBIConstants.CONTAIN_FILTER+"' "+selected+" >"+labelContain+"</option>\n");		
 		if (typeFilter.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER))
 			selected = " selected='selected' ";
 		else selected = "";
 		htmlStream.append("						    	<option value='"+SpagoBIConstants.EQUAL_FILTER+"' "+selected+" >"+labelEqual+"</option>\n");
-		if (typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER))
-			selected = " selected='selected' ";
-		else selected = "";
-		htmlStream.append("						    	<option value='"+SpagoBIConstants.CONTAIN_FILTER+"' "+selected+" >"+labelContain+"</option>\n");
 		htmlStream.append("						    </select>\n");
 		htmlStream.append("						    <input type='text' name='" + SpagoBIConstants.VALUE_FILTER + "' size='10' value='"+valueFilter+"' /> \n");
 		htmlStream.append("						    <a href='javascript:document.getElementById(\"" + formId +"\").submit()'>"+labelFilter+"</a> \n");

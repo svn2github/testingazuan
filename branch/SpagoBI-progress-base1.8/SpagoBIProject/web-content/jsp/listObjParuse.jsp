@@ -98,18 +98,18 @@
 				<th align="center">
 					<spagobi:message key = "SBIDev.listObjParuses.activeDependancies" /> 
 				</th>
-				<th>
+				<th align="left">
 					<spagobi:message key = "SBIDev.listObjParuses.modality" /> 
 				</th>
-				<th>
+				<th align="left">
 					<spagobi:message key = "SBIDev.listObjParuses.filterOperation" /> 
 				</th>
-				<th>
+				<th align="left">
 					<spagobi:message key = "SBIDev.listObjParuses.filterColumn" /> 
 				</th>
-				<th>
+				<th align="left">
 					<spagobi:message key = "SBIDev.listObjParuses.objParFather" /> 
-				</th>												
+				</th>										
 			</tr>
 		
 		<%
@@ -117,13 +117,13 @@
 		Iterator it = allParuses.iterator();
 		while (it.hasNext()) {
 			ParameterUse paruse = (ParameterUse) it.next();
-			ObjParuse correlatedObjParuseCorrelated = null;
+			ObjParuse correlatedObjParuse = null;
 			if (objParuses != null && objParuses.size() > 0) {
 				Iterator objParusesIt = objParuses.iterator();
 				while (objParusesIt.hasNext()) {
 					ObjParuse aObjParuse = (ObjParuse) objParusesIt.next();
 					if (aObjParuse.getParuseId().equals(paruse.getUseID())) {
-						correlatedObjParuseCorrelated = aObjParuse;
+						correlatedObjParuse = aObjParuse;
 						break;
 					}
 				}
@@ -133,7 +133,7 @@
 				<td align="center">
 					<%
 					String checked = "";
-					if (correlatedObjParuseCorrelated != null) checked = "checked=\"checked\"";
+					if (correlatedObjParuse != null) checked = "checked=\"checked\"";
 					%>
 					<input type="checkbox" name="paruse_id" value="<%=paruse.getUseID()%>" <%=checked%>/>
 				</td>
@@ -143,7 +143,7 @@
 				<td>
 					<%
 					String typeFilterSelected = "";
-					if (correlatedObjParuseCorrelated != null) typeFilterSelected = correlatedObjParuseCorrelated.getFilterOperation();
+					if (correlatedObjParuse != null) typeFilterSelected = correlatedObjParuse.getFilterOperation();
 					%>
 					<select name='<%=SpagoBIConstants.TYPE_FILTER + "_" + paruse.getUseID()%>'>
 						<option value='<%=SpagoBIConstants.START_FILTER%>' <% if (SpagoBIConstants.START_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
@@ -152,18 +152,30 @@
 						<option value='<%=SpagoBIConstants.END_FILTER%>' <% if (SpagoBIConstants.END_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
 							<spagobi:message key = "SBIListLookPage.endWith" />
 						</option>
+						<option value='<%=SpagoBIConstants.CONTAIN_FILTER%>' <% if (SpagoBIConstants.CONTAIN_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
+							<spagobi:message key = "SBIListLookPage.contains" />
+						</option>
 						<option value='<%=SpagoBIConstants.EQUAL_FILTER%>' <% if (SpagoBIConstants.EQUAL_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
 							<spagobi:message key = "SBIListLookPage.isEquals" />
 						</option>
-						<option value='<%=SpagoBIConstants.CONTAIN_FILTER%>' <% if (SpagoBIConstants.CONTAIN_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
-							<spagobi:message key = "SBIListLookPage.contains" />
+						<option value='<%=SpagoBIConstants.LESS_FILTER%>' <% if (SpagoBIConstants.LESS_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
+							<spagobi:message key = "SBIListLookPage.isLessThan" />
+						</option>
+						<option value='<%=SpagoBIConstants.LESS_OR_EQUAL_FILTER%>' <% if (SpagoBIConstants.LESS_OR_EQUAL_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
+							<spagobi:message key = "SBIListLookPage.isLessOrEqualThan" />
+						</option>
+						<option value='<%=SpagoBIConstants.GREATER_FILTER%>' <% if (SpagoBIConstants.GREATER_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
+							<spagobi:message key = "SBIListLookPage.isGreaterThan" />
+						</option>
+						<option value='<%=SpagoBIConstants.GREATER_OR_EQUAL_FILTER%>' <% if (SpagoBIConstants.GREATER_OR_EQUAL_FILTER.equalsIgnoreCase(typeFilterSelected)) out.print(" selected=\"selected\""); %>>
+							<spagobi:message key = "SBIListLookPage.isGreaterOrEqualThan" />
 						</option>
 					</select>
 				</td>
 				<td>
 					<%
 					String columnFilterSelected = "";
-					if (correlatedObjParuseCorrelated != null) columnFilterSelected = correlatedObjParuseCorrelated.getFilterColumn();
+					if (correlatedObjParuse != null) columnFilterSelected = correlatedObjParuse.getFilterColumn();
 					%>
 					<select name='<%=SpagoBIConstants.COLUMN_FILTER + "_" + paruse.getUseID()%>' style='width:150px;'>
 					<%
@@ -189,7 +201,7 @@
 				<td>
 					<%
 					Integer objParFatherId = new Integer(-1);
-					if (correlatedObjParuseCorrelated != null) objParFatherId = correlatedObjParuseCorrelated.getObjParFatherId();
+					if (correlatedObjParuse != null) objParFatherId = correlatedObjParuse.getObjParFatherId();
 					%>
 					<select name='<%="OBJ_PAR_FATHER_ID" + "_" + paruse.getUseID()%>'>
 						<%

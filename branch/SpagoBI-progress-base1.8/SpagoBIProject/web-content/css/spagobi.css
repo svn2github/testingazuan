@@ -245,7 +245,15 @@ ul.errors-object-details-ul {
 	type: square;
 }
 
-
+/* Part with the list filter errors in the SpagoBI portlets*/
+div.filter-list-errors {
+	padding: 5px;
+	text-decoration: none;
+	text-align: center;
+	color: red;
+	font-size: 8pt;
+	font-family: "Arial","Tahoma","Helvetica","sans-serif";
+}
 
 
 
@@ -285,6 +293,7 @@ IMG {
 }
 
 .div_detail_label_lov {
+	clear:left;
 	float:left;
 	width:130px;
 	height:25px;

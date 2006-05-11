@@ -722,24 +722,48 @@ function deleteBIParameterConfirm (message) {
 			<spagobi:message key = "SBIDev.docConf.docDetParam.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-			<% if (biObjParams != null && biObjParams.size() > 1) { 
-				PortletURL objParusePageUrl = renderResponse.createActionURL();
-				objParusePageUrl.setParameter("PAGE", "ListObjParusePage");
-				objParusePageUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
-				objParusePageUrl.setParameter("obj_par_id", (new Integer(obj_par_id)).toString());
-				objParusePageUrl.setParameter(ObjectsTreeConstants.PATH, obj.getPath());
-				objParusePageUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-				objParusePageUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-				%>
-				<td class='header-button-column-portlet-section'>
-					<a href='<%=objParusePageUrl.toString()%>'>
-						<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Class.gif") %>'
-								title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />' alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
-						/>
-					</a>
-				</td>
-				<%
-			} %>
+		<% 
+		int objParPriority = objPar.getPriority().intValue();
+		if (objParPriority > 1) { %>
+		<td class='header-button-column-portlet-section'>
+			<a href='javascript:void(0);'
+			   onclick='document.getElementById("priority").selectedIndex=<%= objParPriority - 2 %>;document.getElementById("objectForm").submit();'>
+				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Back.gif") %>'
+					title='<spagobi:message key = "SBIDev.docConf.docDetParam.increasePriority" />' 
+					alt='<spagobi:message key = "SBIDev.docConf.docDetParam.increasePriority" />'
+				/>
+			</a>
+		</td>
+		<% } %>
+		<% if (objParPriority < biObjParams.size()) { %>
+		<td class='header-button-column-portlet-section'>
+			<a href='javascript:void(0);' 
+			   onclick='document.getElementById("priority").selectedIndex=<%= objParPriority %>;document.getElementById("objectForm").submit();'>
+				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Forward.gif") %>'
+					title='<spagobi:message key = "SBIDev.docConf.docDetParam.reducePriority" />' 
+					alt='<spagobi:message key = "SBIDev.docConf.docDetParam.reducePriority" />'
+				/>
+			</a>
+		</td>
+		<% } %>
+		<% if (biObjParams != null && biObjParams.size() > 1) { 
+			PortletURL objParusePageUrl = renderResponse.createActionURL();
+			objParusePageUrl.setParameter("PAGE", "ListObjParusePage");
+			objParusePageUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
+			objParusePageUrl.setParameter("obj_par_id", (new Integer(obj_par_id)).toString());
+			objParusePageUrl.setParameter(ObjectsTreeConstants.PATH, obj.getPath());
+			objParusePageUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			objParusePageUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+			%>
+			<td class='header-button-column-portlet-section'>
+				<a href='<%=objParusePageUrl.toString()%>'>
+					<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Class.gif") %>'
+							title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />' alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
+					/>
+				</a>
+			</td>
+		<%
+		} %>
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:deleteBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.deleteBIParameterConfirm"/>")'>
 				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif") %>'
@@ -820,13 +844,38 @@ function deleteBIParameterConfirm (message) {
 	<div class='div_detail_form'>
 	<% 
     	String urlName = objPar.getParameterUrlName();
-    	if(urlName==null) {
+    	if (urlName==null) {
     		urlName = "";
     	}
     %>
 		<input class='portlet-form-input-field' type="text" size="42" 
 			   name="parurl_nm" id="parurl_nm" value="<%=urlName%>" maxlength="20">&nbsp;*
 	</div>
+	
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.docConf.docDetParam.priorityField" />
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		<select class='portlet-form-input-field' name="priority" id="priority">
+		<%
+			int objParsnumber = biObjParams.size();
+			for (int i = 0; i < objParsnumber; i++) {
+				%>
+				<option value="<%=i + 1%>" <% if (objPar.getPriority() != null && objPar.getPriority().intValue() == i + 1) out.print(" selected='selected' ");  %>><%=i+1%></option>
+				<%
+			}
+			if (obj_par_id < 0) {
+				%>
+				<option value="<%=objParsnumber+1%>" selected="selected"><%=objParsnumber+1%></option>
+				<%
+			} else 
+		%>
+		</select>
+	</div>
+	
+	
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBIDev.docConf.docDetParam.view_flField" />

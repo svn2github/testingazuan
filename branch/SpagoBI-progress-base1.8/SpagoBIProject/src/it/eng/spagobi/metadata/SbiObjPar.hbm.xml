@@ -54,5 +54,8 @@
         <property name="prog" type="integer">
             <column name="prog" />
         </property>
+        <property name="priority" type="integer">
+            <column name="priority" />
+        </property>
     </class>
 </hibernate-mapping>

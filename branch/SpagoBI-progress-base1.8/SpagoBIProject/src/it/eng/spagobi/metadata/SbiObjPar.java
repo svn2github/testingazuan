@@ -39,6 +39,7 @@ public class SbiObjPar  implements java.io.Serializable {
      private String label;
      private String parurlNm;
      private Integer prog;
+     private Integer priority;
 
 
     // Constructors
@@ -133,6 +134,14 @@ public class SbiObjPar  implements java.io.Serializable {
 
 	public void setViewFl(Short viewFl) {
 		this.viewFl = viewFl;
+	}
+
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
 	}
    
 }

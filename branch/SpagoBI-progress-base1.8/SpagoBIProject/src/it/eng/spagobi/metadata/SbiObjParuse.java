@@ -30,7 +30,7 @@ public class SbiObjParuse implements java.io.Serializable {
     
     // Constructors
 
-    /** default constructor */
+	/** default constructor */
     public SbiObjParuse() {
     }
     
@@ -70,6 +70,5 @@ public class SbiObjParuse implements java.io.Serializable {
 	public void setSbiObjParFather(SbiObjPar sbiObjParFather) {
 		this.sbiObjParFather = sbiObjParFather;
 	}
-    
-    
+	
 }

@@ -863,7 +863,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 	}
 	
-	private BIObjectParameter reloadBIObjectParameter(Integer objId, String objParUrlName) throws EMFInternalError {
+	private BIObjectParameter reloadBIObjectParameter(Integer objId, String objParUrlName) throws EMFInternalError, EMFUserError {
 		if (objId == null || objId.intValue() < 0 || objParUrlName == null || objParUrlName.trim().equals(""))
 			throw new EMFInternalError(EMFErrorSeverity.ERROR, "Invalid input data for method reloadBIObjectParameter in DetailBIObjectModule");
 		BIObjectParameter objPar = null;
@@ -1058,6 +1058,8 @@ public class DetailBIObjectModule extends AbstractModule {
 		else parIdInt = new Integer (parIdStr);
 		String label = (String) request.getAttribute("objParLabel");
 	    String parUrlNm = (String)request.getAttribute("parurl_nm");
+		String priorityStr = (String)request.getAttribute("priority");
+		Integer priority = new Integer(priorityStr);
 		String reqFl = (String)request.getAttribute("req_fl");
 		Integer reqFlBD = new Integer(reqFl);
 		String modFl = (String) request.getAttribute("mod_fl");
@@ -1080,12 +1082,13 @@ public class DetailBIObjectModule extends AbstractModule {
         objPar.setModifiable(modFlBD);
         objPar.setVisible(viewFlBD);
         objPar.setMultivalue(multFlBD);
+        objPar.setPriority(priority);
  
 		return objPar;
 	}
 
 
-	private BIObjectParameter createNewBIObjectParameter(Integer objId) {
+	private BIObjectParameter createNewBIObjectParameter(Integer objId) throws EMFUserError {
 		BIObjectParameter biObjPar = new BIObjectParameter();
 		biObjPar.setId(new Integer(-1));
 		biObjPar.setParID(new Integer(-1));
@@ -1098,6 +1101,11 @@ public class DetailBIObjectModule extends AbstractModule {
 		biObjPar.setProg(new Integer(0));
 		biObjPar.setRequired(new Integer(0));
 		biObjPar.setVisible(new Integer(0));
+		int objParsNumber = 0;
+		IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
+		List objPars = objParDAO.loadBIObjectParametersById(objId);
+		if (objPars != null) objParsNumber = objPars.size();
+		biObjPar.setPriority(new Integer(objParsNumber + 1));
 		return biObjPar;
 	}
 

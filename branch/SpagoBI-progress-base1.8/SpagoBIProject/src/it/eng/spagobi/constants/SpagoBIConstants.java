@@ -85,10 +85,18 @@ public class SpagoBIConstants {
 	public static final String TYPE_FILTER = "typeFilter";
 	public static final String VALUE_FILTER = "valueFilter";
 	public static final String COLUMN_FILTER = "columnFilter";
+	public static final String TYPE_VALUE_FILTER = "typeValueFilter";
 	public static final String START_FILTER = "start";
 	public static final String END_FILTER = "end";
 	public static final String EQUAL_FILTER = "equal";
 	public static final String CONTAIN_FILTER= "contain";
+	public static final String LESS_FILTER= "<";
+	public static final String LESS_OR_EQUAL_FILTER= "<=";
+	public static final String GREATER_FILTER= ">";
+	public static final String GREATER_OR_EQUAL_FILTER= ">=";
+	public static final String NUMBER_TYPE_FILTER= "NUM";
+	public static final String STRING_TYPE_FILTER= "STRING";
+	public static final String DATE_TYPE_FILTER= "DATE";
 	
 	public static final String ERASE_VERSION = "ERASE_VERSION";
 	

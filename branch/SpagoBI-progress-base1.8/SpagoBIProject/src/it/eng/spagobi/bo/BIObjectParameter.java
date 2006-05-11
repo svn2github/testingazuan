@@ -64,6 +64,11 @@ public class BIObjectParameter implements Serializable {
 	 */
 	private Integer prog = null;
 
+	/*
+	 * PRIORITY NUMBER N Ordinal number for sorting BIObjectParameters relative to one BIObject
+	 */
+	private Integer priority = null;
+	
 	/* PARURL_NM VARCHAR2(18) Y Parameter name in HTTP request. */
 	private String parameterUrlName = null;
 
@@ -217,10 +222,25 @@ public class BIObjectParameter implements Serializable {
 	public void setParameter(Parameter parameter) {
 		this.parameter = parameter;
 	}
+	/**
+	 * @return Returns the priority
+	 */
+	public Integer getPriority() {
+		return priority;
+	}
+	/**
+	 * @param priority The priority to set
+	 */
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+	}
+	
 	public boolean isTransientParmeters() {
 		return transientParmeters;
 	}
+	
 	public void setTransientParmeters(boolean transientParmeters) {
 		this.transientParmeters = transientParmeters;
 	}
+	
 }

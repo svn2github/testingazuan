@@ -47,6 +47,7 @@ import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiDomains;
+import it.eng.spagobi.metadata.SbiLov;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
@@ -225,8 +226,22 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 			
 			if(parUseAssociated.size() == 1) {
 				SbiParuse hibParuse = (SbiParuse)parUseAssociated.get(0);
+				SbiLov sbiLov = hibParuse.getSbiLov();
+				
+				//if modval is null, then the parameter always has a man_in modality
+				//force the man_in modality to the parameter
+				Integer man_in = hibParuse.getManualInput();
+				//Integer sbiLovId = sbiLov.getLovId();
+				if(man_in.intValue() == 1){
+					ModalitiesValue manInModVal = new ModalitiesValue();
+					manInModVal.setITypeCd("MAN_IN");
+					manInModVal.setITypeId("37");
+					parameter.setModalityValue(manInModVal);
+					
+				}else{
 				ModalitiesValue modVal  = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(hibParuse.getSbiLov().getLovId());
 				parameter.setModalityValue(modVal);
+				}
 				ParameterUse aParameterUse = DAOFactory.getParameterUseDAO().loadByUseID(hibParuse.getUseId());
 				parameter.setChecks(aParameterUse.getAssociatedChecks());  
 			} else {

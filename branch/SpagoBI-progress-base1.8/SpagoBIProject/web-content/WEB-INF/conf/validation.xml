@@ -158,7 +158,7 @@
 	</SERVICE>
 
 	<SERVICE name="ParameterUseValidation" type="PAGE">
-		<VALIDATION blocking="false" validators="">
+		<!-- VALIDATION blocking="false" validators="">
 			<CONDITIONS/>
 			<FIELDS>
 				<FIELD name="paruseName" label="#SBIDev.paramUse.nameField">
@@ -174,6 +174,54 @@
 				</FIELD>
 				<FIELD name="paruseLovId" label="#SBIDev.ListParamUse.parInfo.Name">
 					<VALIDATOR validatorName="MANDATORY"/>
+			    </FIELD>
+				<FIELD name="paruseExtRoleId" label="#SBIDev.paramUse.valTab3">
+					<VALIDATOR validatorName="MANDATORY"/>
+			    </FIELD>
+			</FIELDS>
+		</VALIDATION-->
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="valueSelection" scope="SERVICE_REQUEST" value="lov"/>
+			</CONDITIONS>
+		<FIELDS>
+				<FIELD name="paruseName" label="#SBIDev.paramUse.nameField">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				   	<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
+				</FIELD>
+				<FIELD name="paruseLabel" label="#SBIDev.paramUse.labelField">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				   	<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+				</FIELD>
+				<FIELD name="paruseDescription" label="#SBIDev.paramUse.descriptionField">
+					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
+				</FIELD>
+				<FIELD name="paruseLovId" label="#SBIDev.ListParamUse.parInfo.Name">
+					<VALIDATOR validatorName="MANDATORY"/>
+			    </FIELD>
+				<FIELD name="paruseExtRoleId" label="#SBIDev.paramUse.valTab3">
+					<VALIDATOR validatorName="MANDATORY"/>
+			    </FIELD>
+			</FIELDS>
+		</VALIDATION>
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="valueSelection" scope="SERVICE_REQUEST" value="man_in"/>
+			</CONDITIONS>
+		<FIELDS>
+				<FIELD name="paruseName" label="#SBIDev.paramUse.nameField">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				   	<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
+				</FIELD>
+				<FIELD name="paruseLabel" label="#SBIDev.paramUse.labelField">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				   	<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+				</FIELD>
+				<FIELD name="paruseDescription" label="#SBIDev.paramUse.descriptionField">
+					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
+				</FIELD>
+				<FIELD name="paruseLovId" label="#SBIDev.ListParamUse.parInfo.Name">
+					<!-- VALIDATOR validatorName="MANDATORY"/-->
 			    </FIELD>
 				<FIELD name="paruseExtRoleId" label="#SBIDev.paramUse.valTab3">
 					<VALIDATOR validatorName="MANDATORY"/>

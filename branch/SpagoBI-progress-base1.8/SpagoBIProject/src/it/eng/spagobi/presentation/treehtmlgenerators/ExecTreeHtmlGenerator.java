@@ -145,6 +145,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
 		String path = (String)dataTree.getAttribute("path");
 		String codeType = (String)dataTree.getAttribute("codeType");
+		boolean addItemFlag = false;
 
 		int id = ++progrJSTree;
 		
@@ -154,7 +155,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+				if(ObjectsAccessVerifier.canTest(path,profile)||ObjectsAccessVerifier.canExec(path,profile)){
+					addItemFlag = true;
 				htmlStream.append("	treeExecObj.add("+id+", "+pidParent+",'"+name+"', '', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', '');\n");
+				}
 			} else {
 				String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.gif");
 				String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
@@ -193,7 +197,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		while(iter.hasNext()) {
 			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
 			SourceBean itemSB = (SourceBean)itemSBA.getValue();
-			addItemForJSTree(htmlStream, itemSB, id, false);
+			if(addItemFlag || isRoot){
+			addItemForJSTree(htmlStream, itemSB, id, false);}
 		}
 		
 	}

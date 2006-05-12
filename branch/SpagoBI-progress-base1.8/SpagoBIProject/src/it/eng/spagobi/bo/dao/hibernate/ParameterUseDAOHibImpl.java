@@ -184,9 +184,20 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			hibParuse.setLabel(aParameterUse.getLabel());
 			hibParuse.setName(aParameterUse.getName());
 			hibParuse.setDescr(aParameterUse.getDescription());
+			hibParuse.setManualInput(aParameterUse.getManualInput());
 			
 			SbiLov hibSbiLov = (SbiLov)aSession.load(SbiLov.class, aParameterUse.getIdLov());
-			hibParuse.setSbiLov(hibSbiLov);
+            //if the lov id is 0 (-1) then the modality is manual input
+			//insert into the DB a null lov_id
+			//if the user selected modality is manual input,and before it was a 
+			//lov, we don't need a lov_id and so we can delete it
+			if(hibSbiLov.getLovId().intValue()== -1 || aParameterUse.getManualInput().intValue() == 1){
+			hibParuse.setSbiLov(null);
+			}
+			else{
+			hibParuse.setSbiLov(hibSbiLov);}
+			
+			//hibParuse.setSbiLov(hibSbiLov);
 
 			Set parUseDets = hibParuse.getSbiParuseDets();
 			for (Iterator it = parUseDets.iterator(); it.hasNext();) {
@@ -274,11 +285,18 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			
 			// Set the relation with idLov 
 			SbiLov hibLov = (SbiLov)aSession.load(SbiLov.class, aParameterUse.getIdLov());
-			hibParuse.setSbiLov(hibLov);
+			//if the lov id is 0 (-1) then the modality is manual input
+			//insert into the DB a null lov_id
+			if(hibLov.getLovId().intValue()== -1)
+			{hibParuse.setSbiLov(null);
+			}
+			else{
+			hibParuse.setSbiLov(hibLov);}
 			
 			hibParuse.setLabel(aParameterUse.getLabel());
 			hibParuse.setName(aParameterUse.getName());
 			hibParuse.setDescr(aParameterUse.getDescription());
+			hibParuse.setManualInput(aParameterUse.getManualInput());
 			Integer useId = (Integer)aSession.save(hibParuse);
 			
 			
@@ -457,7 +475,14 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			aParameterUse.setId(hibParUse.getSbiParameters().getParId());
 			aParameterUse.setLabel(hibParUse.getLabel());
 			aParameterUse.setName(hibParUse.getName());
+			//if the sbi_lov is null, then we have a man in modality
+			if(hibParUse.getSbiLov()==null){
+				aParameterUse.setIdLov(null);
+			}
+			else{
 			aParameterUse.setIdLov(hibParUse.getSbiLov().getLovId());
+			}
+			aParameterUse.setManualInput(hibParUse.getManualInput());
 			
 			Set hibParUseCheks = hibParUse.getSbiParuseCks();
 			SbiParuseCk aSbiParuseCk = null; 

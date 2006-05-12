@@ -360,6 +360,7 @@
 							U.LABEL as LABEL,
 							U.NAME as NAME,
 							U.DESCR as DESCRIPTION,
+							U.MAN_IN as MANUAL_INPUT,
 							(select count(*) from sbi_paruse_det  p where P.USE_ID = U.USE_ID) as ROLES 
 							FROM SBI_PARUSE U
 							where U.PAR_ID = ? "/>
@@ -387,7 +388,8 @@
   				  P.PAR_ID as ID, 
   				  P.LOV_ID as ID_LOV, 
   				  P.LABEL as NAME, 
-  				  P.DESCR as DESCRIPTION
+  				  P.DESCR as DESCRIPTION,
+  				  P.MAN_IN as MANUAL_INPUT
 				  from 
 				  SBI_PARUSE P 
 				  WHERE P.PAR_ID = ? and P.LOV_ID = ?"/> 
@@ -399,7 +401,8 @@
   				  P.LOV_ID as ID_LOV, 
   				  P.LABEL as LABEL, 
   				  P.NAME as NAME, 
-  				  P.DESCR as DESCRIPTION
+  				  P.DESCR as DESCRIPTION,
+  				  P.MAN_IN as MANUAL_INPUT
 				  from 
 				  SBI_PARUSE P 
 				  WHERE P.PAR_ID = ? "/>    
@@ -422,7 +425,8 @@
   				  P.LOV_ID as ID_LOV, 
   				  P.LABEL as LABEL 
   				  P.NAME as NAME, 
-  				  P.DESCR as DESCRIPTION
+  				  P.DESCR as DESCRIPTION,
+  				  P.MAN_IN as MANUAL_INPUT
 				  from 
 				  SBI_PARUSE P 
 				  WHERE P.USE_ID=?"/> 

@@ -44,6 +44,8 @@ public class ParameterUse  implements Serializable  {
 	List associatedRoles = null;
 	List associatedChecks = null;
 	
+	Integer manualInput;
+	
 	/**
 	 * @return Returns the description.
 	 */
@@ -135,5 +137,17 @@ public class ParameterUse  implements Serializable  {
 	}
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	/**
+	 * @return Returns the manualInput.
+	 */
+	public Integer getManualInput() {
+		return manualInput;
+	}
+	/**
+	 * @param manualInput The manualInput to set.
+	 */
+	public void setManualInput(Integer manualInput) {
+		this.manualInput = manualInput;
 	}
 }

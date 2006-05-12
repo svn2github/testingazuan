@@ -250,7 +250,11 @@ public class DetailParameterModule extends AbstractModule {
 		paruseClone.setLabel(paruse.getLabel());
 		paruseClone.setName(paruse.getName());
 		paruseClone.setDescription(paruse.getDescription());
+		if(paruse.getIdLov()== null){
+			paruse.setIdLov(Integer.valueOf("-1"));
+		}
 		paruseClone.setIdLov(paruse.getIdLov());
+		paruseClone.setManualInput(paruse.getManualInput());
 		
 		List checks = paruse.getAssociatedChecks();
 		List checksClone = new ArrayList();
@@ -275,6 +279,7 @@ public class DetailParameterModule extends AbstractModule {
 		paruse.setName("");
 		paruse.setDescription("");
 		paruse.setLabel("");
+		paruse.setManualInput(new Integer(0));
 	    List listRoles = new ArrayList();
 	    paruse.setAssociatedRoles(listRoles);
 	    List listChecks = new ArrayList();
@@ -528,13 +533,17 @@ public class DetailParameterModule extends AbstractModule {
 		String description = (String) request.getAttribute("paruseDescription");
 		String name = (String) request.getAttribute("paruseName");
 		String label = (String) request.getAttribute("paruseLabel");
+		String manInFlag = (String) request.getAttribute("valueSelection");
 		paruse.setName(name);
 		paruse.setDescription(description);
 		paruse.setLabel(label);
+		if(manInFlag.equals("man_in")){
+		paruse.setManualInput(Integer.valueOf("1"));}
+		else{paruse.setManualInput(Integer.valueOf("0"));}
 		if (idLovStr == null || idLovStr.trim().equals(""))
 			paruse.setIdLov(Integer.valueOf("-1"));
 		else
-			paruse.setIdLov(Integer.valueOf(idLovStr));
+		paruse.setIdLov(Integer.valueOf(idLovStr));
 		paruse.setAssociatedRoles(roles);
 		paruse.setAssociatedChecks(toLoadInParUseCheckList);
 		return paruse;

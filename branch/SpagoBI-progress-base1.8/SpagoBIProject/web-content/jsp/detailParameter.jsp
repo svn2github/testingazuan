@@ -164,9 +164,11 @@
 
 
 
+
+
+
+
 <spagobi:error/>
-
-
 
 
 
@@ -359,65 +361,56 @@
 			<spagobi:message key = "SBIDev.ListParamUse.parInfo.Name"/>
 		</span>
 	</div>
-	<div class='div_detail_form'>
+	<div class='div_detail_form' id = 'divForm' >
 	<% String lovName = null;
   	   Integer idLov = null;
   	   idLov = paruse.getIdLov();
   	   Integer idLovInit = new Integer(-1);
+  	   if(idLov!= null){
   	   if(!idLov.toString().equals(idLovInit.toString())) {
   		   	ModalitiesValue modVal  = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(idLov);
   			lovName = modVal.getName();
   	   }
+  	   }
+  	   
   	%>
+  		<% 
+    	boolean isManualInput = false;
+    	boolean isLov = false;
+    	int manual = 0;
+    	if(paruse.getManualInput()!= null){
+    	manual = paruse.getManualInput().intValue();}
+    	if(manual > 0) { isManualInput = true; }
+    	else {isLov = true;}
+    %> 
+  		<input type="radio" name="valueSelection"  id = "valueSelection" value="lov" <% if(isLov) { out.println(" checked='checked' "); } %> onClick = "lovControl()" />
+  	
 		<input 	class='portlet-form-input-field' type="text" id="paruseLovName" 
-		   		name="paruseLovName" size="50" 
-				value="<%= lovName != null ? lovName : "" %>" maxlength="100" readonly>
-  		<input 	type='hidden' id='paruseLovId' value='<%=idLov.intValue() != -1 ? idLov.toString() : "" %>' 
+		   		name="paruseLovName" size="40" 
+				value="<%= lovName != null ? lovName : "" %>" maxlength="100" readonly <%if(!isLov) {out.println("disabled = 'disabled'");} %>>
+  		
+  		<input 	type='hidden' id='paruseLovId' value='<%=(idLov != null?(idLov.intValue() != -1 ? idLov.toString() : ""):"") %>' 
            		name='paruseLovId' />
   		<% 	PortletURL lovLookupURL = renderResponse.createActionURL();
   	   		lovLookupURL.setParameter("PAGE", "lovLookupPage"); 
   		%>
   		&nbsp;*&nbsp;
-    	<input 	type='image' name="loadLovLookup" value="LovLookup" 
+    	<input 	type='image' name="loadLovLookup"  id="loadLovLookup" value="LovLookup" style='<%if(isLov) {out.println("display:inline;");} else {out.println("display:none;");} %>'
 		   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
-		   		title='Lov Lookup' alt='Lov Lookup' />
+		   		title='Lov Lookup' alt='Lov Lookup'/>
+	</div>
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.paramUse.manInputCheck" />
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		
+		<input type="radio" name="valueSelection" id = "valueSelection" value="man_in" <% if(isManualInput) { out.println(" checked='checked' "); } %> onClick = "lovControl()" ></input>
+    	
+
 	</div>
 </div>
-
-
-
-<!-- 
-<div class='portlet-section-header'>
-	Roles Associations 
-</div>
-<div style='width:33%;float:left;'>1</div>
-<div style='width:33%;float:left;'>2</div>
-<div style='width:33%;float:left;'>3</div>
-<div style='width:33%;clear:left;float:left;'>4</div>
-<div style='width:33%;float:left;'>5</div>
-<div style='width:33%;float:left;'>6</div>
-<div style='clear:left;'>7</div>
-
-<table style='border: 1px solid red'> 
-<tr>
-  	    <td colspan='3' align="left" >
-  	    	Roles Associations 
-  	    </td>
-  	</tr>  		<tr>
-<td >   <input type='checkbox' name='paruseExtRoleId' value='129' />/spagobi/admin</td>
-<td ><input type='checkbox' name='paruseExtRoleId' value='130' />/spagobi/dev</td>
-<td >   <input type='checkbox' name='paruseExtRoleId' value='131' />/spagobi/share</td>
-</tr>
-<tr >
-<td >   <input type='checkbox' name='paruseExtRoleId' value='132' />/spagobi/test</td>
-<td >   <input type='checkbox' name='paruseExtRoleId' value='133' />/spagobi/user</td>
-<td >luca</td>
-</tr>
-    	</table> 
--->
-
-
-
 
 
 <table style="margin-bottom:5px;width:100%;">
@@ -708,6 +701,21 @@ function deleteParameterUseConfirm (message) {
         	document.getElementById('parametersForm').submit();
     	}
 }
+
+function lovControl(){
+var var1 = document.getElementById('loadLovLookup');
+var var2 = document.getElementById('paruseLovName');
+if(var1.style.display != 'inline'){
+   var1.style.display = 'inline';
+   var2.disabled = false;
+ }
+ else {
+ var1.style.display = 'none';
+ var2.disabled = true;
+ }
+ }
+ 
+ 
 
 </script>
 

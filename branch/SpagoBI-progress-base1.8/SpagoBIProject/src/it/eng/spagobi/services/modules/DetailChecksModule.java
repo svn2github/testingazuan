@@ -28,6 +28,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spagobi.bo.Check;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.dao.DAOFactory;
@@ -122,7 +123,6 @@ public class DetailChecksModule extends AbstractModule {
 			response.setAttribute("modality", modalita);	
 			Check aCheck= DAOFactory.getChecksDAO().loadCheckByID(new Integer(key));
 			response.setAttribute("checkObj", aCheck);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DettaglioEngineModule","getDettaglioEngine","Cannot fill response container", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -152,7 +152,6 @@ public class DetailChecksModule extends AbstractModule {
 			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 				response.setAttribute("checkObj", aCheck);
 				response.setAttribute("modality", mod);
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 				return;
 			}
 			
@@ -267,7 +266,6 @@ public class DetailChecksModule extends AbstractModule {
 				aCheck.setValueTypeCd(domain.getValueCd());
 			}
 			response.setAttribute("checkObj", aCheck);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailEngineModule","newDetailEngine","Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -290,7 +288,7 @@ public class DetailChecksModule extends AbstractModule {
 			if (aCheck.getLabel().equals(label) && !aCheck.getCheckId().equals(checkId)) {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListChecksModule.MODULE_PAGE);
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR,
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR,
 						1029, new Vector(), params);
 				getErrorHandler().addError(error);
 			}

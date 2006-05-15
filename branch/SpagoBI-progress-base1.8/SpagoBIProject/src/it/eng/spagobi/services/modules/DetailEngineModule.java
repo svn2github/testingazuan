@@ -28,13 +28,14 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IEngineDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -112,7 +113,6 @@ public class DetailEngineModule extends AbstractModule {
 			response.setAttribute("modality", modalita);
 			Engine engine = DAOFactory.getEngineDAO().loadEngineByID(new Integer(key));
 			response.setAttribute("engineObj", engine);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DettaglioEngineModule","getDettaglioEngine","Cannot fill response container", ex  );
 			HashMap params = new HashMap();
@@ -140,14 +140,19 @@ public class DetailEngineModule extends AbstractModule {
 			Engine engine = recoverEngineDetails(request);
 			EMFErrorHandler errorHandler = getErrorHandler();
 			
-			// if there are some errors into the errorHandler does not write into DB
-			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-				response.setAttribute("engineObj", engine);
-				response.setAttribute("modality", mod);
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-				return;
+			// if there are some validation errors into the errorHandler does not write into DB
+			Collection errors = errorHandler.getErrors();
+			if (errors != null && errors.size() > 0) {
+				Iterator iterator = errors.iterator();
+				while (iterator.hasNext()) {
+					Object error = iterator.next();
+					if (error instanceof EMFValidationError) {
+						response.setAttribute("engineObj", engine);
+						response.setAttribute("modality", mod);
+						return;
+					}
+				}
 			}
-			//**********************************************************************
 			
 			if (mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 				DAOFactory.getEngineDAO().insertEngine(engine);
@@ -234,7 +239,6 @@ public class DetailEngineModule extends AbstractModule {
 			engine.setUrl("");
 			engine.setDriverName("");
 			response.setAttribute("engineObj", engine);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailEngineModule","newDetailEngine","Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -277,7 +281,7 @@ public class DetailEngineModule extends AbstractModule {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE,
 						ListEnginesModule.MODULE_PAGE);
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR,
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR,
 						1011, new Vector(), params);
 				getErrorHandler().addError(error);
 			}

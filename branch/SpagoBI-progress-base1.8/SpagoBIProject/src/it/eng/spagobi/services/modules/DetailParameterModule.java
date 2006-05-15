@@ -31,6 +31,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Parameter;
@@ -44,6 +45,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -143,7 +145,6 @@ public class DetailParameterModule extends AbstractModule {
 			this.modalita = AdmintoolsConstants.DETAIL_MOD;	
 			Parameter parameter = DAOFactory.getParameterDAO().loadForDetailByParameterID(new Integer(key));
 			prepareParameterDetailPage(response, parameter, null, "", modalita, true, true);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","getDetailParameter","Cannot fill response container", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -322,13 +323,21 @@ public class DetailParameterModule extends AbstractModule {
 						// it is requested to save the visible ParameterUse
 						validateFields("ParameterUseValidation", "PAGE");
 						parameterUseLabelControl(paruse, mod);
-			    		// if there are some errors, exits without writing into DB
-			    		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			    			prepareParameterDetailPage(response, parameter, paruse, paruseIdStr, 
-			    					ObjectsTreeConstants.DETAIL_MOD, false, false);
-			    			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-							return;
+						
+						// if there are some validation errors into the errorHandler does not write into DB
+						Collection errors = errorHandler.getErrors();
+						if (errors != null && errors.size() > 0) {
+							Iterator iterator = errors.iterator();
+							while (iterator.hasNext()) {
+								Object error = iterator.next();
+								if (error instanceof EMFValidationError) {
+					    			prepareParameterDetailPage(response, parameter, paruse, paruseIdStr, 
+					    					ObjectsTreeConstants.DETAIL_MOD, false, false);
+									return;
+								}
+							}
 						}
+
 						IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
 						if (paruseIdInt.intValue() == -1) {
 							// it is requested to insert a new ParameterUse
@@ -339,12 +348,10 @@ public class DetailParameterModule extends AbstractModule {
 						}
 						prepareParameterDetailPage(response, parameter, null, selectedParuseIdStr, 
 								ObjectsTreeConstants.DETAIL_MOD, false, true);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 						return;
 					} else {
 						prepareParameterDetailPage(response, parameter, null, selectedParuseIdStr, 
 								ObjectsTreeConstants.DETAIL_MOD, false, true);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		    			return;
 					}
 					
@@ -357,7 +364,6 @@ public class DetailParameterModule extends AbstractModule {
 					selectedParuseIdStr = "";
 					prepareParameterDetailPage(response, parameter, null, selectedParuseIdStr, 
 							ObjectsTreeConstants.DETAIL_MOD, false, true);
-					response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 					return;
 					
 				} else {
@@ -379,13 +385,21 @@ public class DetailParameterModule extends AbstractModule {
 
 					validateFields("ParameterValidation", "PAGE");
 					parameterLabelControl(parameter, mod);
-		    		// if there are some errors, exits without writing into DB
-					if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-						prepareParameterDetailPage(response, parameter, paruse, paruseIdInt.toString(), 
-								ObjectsTreeConstants.DETAIL_MOD, false, false);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-						return;
+		    		
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								prepareParameterDetailPage(response, parameter, paruse, paruseIdInt.toString(), 
+										ObjectsTreeConstants.DETAIL_MOD, false, false);
+								return;
+							}
+						}
 					}
+
 					// it is requested to modify the Parameter
 					DAOFactory.getParameterDAO().modifyParameter(parameter);
 	    			
@@ -409,12 +423,21 @@ public class DetailParameterModule extends AbstractModule {
     			parameterLabelControl(parameter, mod);
 	    		// if there are some errors, exits without writing into DB
     			selectedParuseIdStr = "-1";
-    			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-					prepareParameterDetailPage(response, parameter, null, selectedParuseIdStr, 
-							ObjectsTreeConstants.DETAIL_INS, false, false);
-					response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-					return;
+    			
+				// if there are some validation errors into the errorHandler does not write into DB
+				Collection errors = errorHandler.getErrors();
+				if (errors != null && errors.size() > 0) {
+					Iterator iterator = errors.iterator();
+					while (iterator.hasNext()) {
+						Object error = iterator.next();
+						if (error instanceof EMFValidationError) {
+							prepareParameterDetailPage(response, parameter, null, selectedParuseIdStr, 
+									ObjectsTreeConstants.DETAIL_INS, false, false);
+							return;
+						}
+					}
 				}
+
     			// inserts into DB the new Parameter
     			DAOFactory.getParameterDAO().insertParameter(parameter);
     			// reload the Parameter with the correct id
@@ -429,7 +452,6 @@ public class DetailParameterModule extends AbstractModule {
 				// it is requested to save and remain in the Parameter detail page
 				prepareParameterDetailPage(response, parameter, null, selectedParuseIdStr, 
 						ObjectsTreeConstants.DETAIL_MOD, true, true);
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 			}
             
 		} catch (Exception ex) {			
@@ -638,7 +660,7 @@ public class DetailParameterModule extends AbstractModule {
 			if (hasObject){
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1017, new Vector(), params);
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1017, new Vector(), params);
 				errorHandler.addError(error);
 				return;
 			}
@@ -674,7 +696,6 @@ public class DetailParameterModule extends AbstractModule {
 				parameter.setTypeId(domain.getValueId());
 			}
 			response.setAttribute("parametersObj", parameter);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","newDetailParameter","Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -739,7 +760,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListParametersModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1031,
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1031,
 							new Vector(), params);
 					errorHandler.addError(error);
 				}
@@ -756,7 +777,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListParametersModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1031,
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1031,
 							new Vector(), params);
 					errorHandler.addError(error);
 				}
@@ -786,7 +807,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
 					params.put(AdmintoolsConstants.ID_DOMAIN, parId);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1025, new Vector(), params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1025, new Vector(), params);
 					errorHandler.addError(error);
 				}
 			}
@@ -802,7 +823,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
 					params.put(AdmintoolsConstants.ID_DOMAIN, parId);
-					EMFUserError error = new EMFUserError (EMFErrorSeverity.ERROR, 1025, new Vector(), params);
+					EMFValidationError error = new EMFValidationError (EMFErrorSeverity.ERROR, 1025, new Vector(), params);
 					errorHandler.addError(error);
 				}
 			}

@@ -23,10 +23,13 @@ package it.eng.spagobi.presentation.publishers;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
+
+import java.util.Collection;
+import java.util.Iterator;
 /**
  * Publishes the results of a list information request for roles
  * into the correct jsp page according to what contained into request. If Any errors occurred during the 
@@ -50,8 +53,24 @@ public class ListRolesPublisher implements PublisherDispatcherIFace {
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
 
-		SourceBean serviceRequest = requestContainer.getServiceRequest();
+		//SourceBean serviceRequest = requestContainer.getServiceRequest();
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
+		
+		boolean hasOnlyValidationErrors = true;
+		Collection errors = errorHandler.getErrors();
+		if (errors != null && errors.size() > 0) {
+			Iterator iterator = errors.iterator();
+			while (iterator.hasNext()) {
+				Object error = iterator.next();
+				if (!(error instanceof EMFValidationError)) {
+					hasOnlyValidationErrors = false;
+					break;
+				}
+			}
+			if (hasOnlyValidationErrors) return "listRoles";
+		}
+		
+		
 		if (errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR))
 			return new String("listRoles");
 		else

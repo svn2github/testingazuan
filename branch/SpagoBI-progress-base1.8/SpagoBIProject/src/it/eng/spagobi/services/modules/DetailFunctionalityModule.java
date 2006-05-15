@@ -24,6 +24,7 @@ package it.eng.spagobi.services.modules;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.exceptions.BuildOperationException;
 import it.eng.spago.cms.exceptions.OperationExecutionException;
 import it.eng.spago.dispatching.module.AbstractModule;
@@ -31,8 +32,8 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.dao.DAOFactory;
@@ -40,15 +41,15 @@ import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
-import it.eng.spago.cms.CmsNode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Iterator;
 
 /**
  * Implements a module which  handles all  low functionalities management: has methods 
@@ -138,7 +139,6 @@ public class DetailFunctionalityModule extends AbstractModule {
 			if (typeFunct.equals("LOW_FUNCT")) {
 				LowFunctionality funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
 				response.setAttribute(FUNCTIONALITY_OBJ, funct);
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 			}	
 		} catch (EMFUserError eex) {
 			EMFErrorHandler errorHandler = getErrorHandler();
@@ -175,12 +175,21 @@ public class DetailFunctionalityModule extends AbstractModule {
 				response.setAttribute(AdmintoolsConstants.PATH_PARENT, pathParent);
 			}
 			
-			// if there are some errors into the errorHandler does not write into DB
-			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-				return;
+			// if there are some validation errors into the errorHandler does not write into DB
+			Collection errors = errorHandler.getErrors();
+			if (errors != null && errors.size() > 0) {
+				Iterator iterator = errors.iterator();
+				while (iterator.hasNext()) {
+					Object error = iterator.next();
+					if (error instanceof EMFValidationError) {
+						String path = lowFunct.getPath();
+						int index = path.lastIndexOf("/");
+						String parentPath = path.substring(0,index);
+						response.setAttribute("PARENT_PATH", parentPath);
+						return;
+					}
+				}
 			}
-			//**********************************************************************
 
 			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 				SessionContainer permSess = getRequestContainer().getSessionContainer().getPermanentContainer();
@@ -273,7 +282,6 @@ public class DetailFunctionalityModule extends AbstractModule {
 			    funct.setDevRoles(devRoles);
 			    funct.setExecRoles(execRoles);
 				response.setAttribute(FUNCTIONALITY_OBJ, funct);
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 			}
 			
 		} catch (EMFUserError eex) {
@@ -318,18 +326,18 @@ public class DetailFunctionalityModule extends AbstractModule {
 		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 			String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
 			String newPath = pathParent + "/" + code;
-			SourceBean dataLoad = new SourceBean("dataLoad");
+			//SourceBean dataLoad = new SourceBean("dataLoad");
 			LowFunctionality funct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(newPath);
 			if(funct != null) {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
 				params.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 				params.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1005, new Vector(), params );
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1005, new Vector(), params );
 				getErrorHandler().addError(error);
 			}
 			if(DAOFactory.getLowFunctionalityDAO().existByCode(code)!=null) {
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1027);
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1027);
 				getErrorHandler().addError(error);
 			}
 			lowFunct = new LowFunctionality();
@@ -344,7 +352,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			String idFunct = (String)request.getAttribute(AdmintoolsConstants.FUNCTIONALITY_ID);
 			Integer idFunctWithSameCode =DAOFactory.getLowFunctionalityDAO().existByCode(code);
 			if((idFunctWithSameCode!=null) && !(idFunctWithSameCode.equals(new Integer(idFunct)))) {
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1027);
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1027);
 				getErrorHandler().addError(error);
 			}
 			lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(new Integer(idFunct));

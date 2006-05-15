@@ -48,7 +48,7 @@ import java.util.Vector;
  */
 public class DetailRolesModule extends AbstractModule {
 	
-	private String modalita = "";
+	//private String modalita = "";
 	
 	public void init(SourceBean config) {
 	}

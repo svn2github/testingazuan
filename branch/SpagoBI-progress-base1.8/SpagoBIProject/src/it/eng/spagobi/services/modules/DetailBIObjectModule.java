@@ -31,17 +31,12 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.operations.DeleteOperation;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.dbaccess.DataConnectionManager;
-import it.eng.spago.dbaccess.SQLStatements;
-import it.eng.spago.dbaccess.Utils;
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
@@ -454,7 +449,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		fillResponse(response);
 		reloadCMSInformation(obj);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
-		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");		
 	}
 	
 	
@@ -536,7 +530,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		fillResponse(response);
 		reloadCMSInformation(obj);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
-		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		
 	}
 
@@ -575,7 +568,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		fillResponse(response);
 		reloadCMSInformation(obj);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
-		response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		session.delAttribute("PAR_ID");
 	}
 
@@ -612,7 +604,6 @@ public class DetailBIObjectModule extends AbstractModule {
 			}
 			fillResponse(response);
 			prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE,
 					"DetailBIObjectModule", "getDetailObject",
@@ -669,12 +660,21 @@ public class DetailBIObjectModule extends AbstractModule {
 						urlNameControl(obj.getId(), biObjPar);
 						fillResponse(response);
 						reloadCMSInformation(obj);
-			    		// if there are some errors, exits without writing into DB
-			    		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			    			prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
-			    			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-							return;
+						
+						// if there are some validation errors into the errorHandler does not write into DB
+						Collection errors = errorHandler.getErrors();
+						if (errors != null && errors.size() > 0) {
+							Iterator iterator = errors.iterator();
+							while (iterator.hasNext()) {
+								Object error = iterator.next();
+								if (error instanceof EMFValidationError) {
+									prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), 
+											ObjectsTreeConstants.DETAIL_MOD, false, false);
+									return;
+								}
+							}
 						}
+
 						IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
 						if (biObjPar.getId().intValue() == -1) {
 							// it is requested to insert a new BIObjectParameter
@@ -684,13 +684,11 @@ public class DetailBIObjectModule extends AbstractModule {
 							objParDAO.modifyBIObjectParameter(biObjPar);
 						}
 						prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 						return;
 					} else {
 						fillResponse(response);
 						reloadCMSInformation(obj);
 						prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		    			// exits without writing into DB
 		    			return;
 					}
@@ -702,11 +700,21 @@ public class DetailBIObjectModule extends AbstractModule {
 					checkForDependancies(objParIdInt);
 					fillResponse(response);
 					reloadCMSInformation(obj);
-		    		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-		    			prepareBIObjectDetailPage(response, obj, biObjPar, objParIdInt.toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
-		    			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-						return;
+					
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								prepareBIObjectDetailPage(response, obj, biObjPar, objParIdInt.toString(), 
+										ObjectsTreeConstants.DETAIL_MOD, false, false);
+								return;
+							}
+						}
 					}
+
 					IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
 					// deletes all the ObjParuse objects associated to this BIObjectParameter 
 					List objParuses = objParuseDAO.loadObjParuses(new Integer(objParId));
@@ -723,7 +731,6 @@ public class DetailBIObjectModule extends AbstractModule {
 					objParDAO.eraseBIObjectParameter(objPar);
 					selectedObjParIdStr = "";
 					prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, false, true);
-					response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 					return;
 					
 				} else {
@@ -744,14 +751,23 @@ public class DetailBIObjectModule extends AbstractModule {
 					}
 
 					validateFields("BIObjectValidation", "PAGE");
-		    		// if there are some errors, exits without writing into DB
-					if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-						reloadCMSInformation(obj);
-						fillResponse(response);
-						prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-						return;
+					
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								reloadCMSInformation(obj);
+								fillResponse(response);
+								prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), 
+										ObjectsTreeConstants.DETAIL_MOD, false, false);
+								return;
+							}
+						}
 					}
+					
 					// it is requested to modify the main values of the BIObject
 					DAOFactory.getBIObjectDAO().modifyBIObject(obj);
 	    			// reloads the BIObject with the updated CMS information
@@ -774,18 +790,27 @@ public class DetailBIObjectModule extends AbstractModule {
 
     		} else {
     			validateFields("BIObjectValidation", "PAGE");
-	    		// if there are some errors, exits without writing into DB
     			selectedObjParIdStr = "-1";
-    			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-    				obj.setTemplateVersions(new TreeMap());
-    				TemplateVersion tv = new TemplateVersion();
-    				tv.setVersionName("");
-    				obj.setCurrentTemplateVersion(tv);
-					fillResponse(response);
-					prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_INS, false, false);
-					response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-					return;
+    			
+				// if there are some validation errors into the errorHandler does not write into DB
+				Collection errors = errorHandler.getErrors();
+				if (errors != null && errors.size() > 0) {
+					Iterator iterator = errors.iterator();
+					while (iterator.hasNext()) {
+						Object error = iterator.next();
+						if (error instanceof EMFValidationError) {
+		    				obj.setTemplateVersions(new TreeMap());
+		    				TemplateVersion tv = new TemplateVersion();
+		    				tv.setVersionName("");
+		    				obj.setCurrentTemplateVersion(tv);
+							fillResponse(response);
+							prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, 
+									ObjectsTreeConstants.DETAIL_INS, false, false);
+							return;
+						}
+					}
 				}
+    			
     			// inserts into DB the new BIObject
     			DAOFactory.getBIObjectDAO().insertBIObject(obj);
     			// reloads the BIObject with the correct Id and empty CMS information
@@ -800,7 +825,6 @@ public class DetailBIObjectModule extends AbstractModule {
 				// it is requested to save and remain in the BIObject detail page
 				fillResponse(response);
 				prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 			}
 			
 		} catch (Exception ex) {			
@@ -825,7 +849,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					DetailBIObjectModule.MODULE_PAGE);
 			Vector v = new Vector();
 			v.add(objParametersCorrelated.toString());
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1049,
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1049,
 					v, params);
 			errorHandler.addError(error);
 		}
@@ -852,7 +876,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							DetailBIObjectModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1046,
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1046,
 							new Vector(), params);
 					errorHandler.addError(error);
 				}
@@ -1155,11 +1179,11 @@ public class DetailBIObjectModule extends AbstractModule {
 				HashMap errorParams = new HashMap();
 				errorParams.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
 				errorParams.put(SpagoBIConstants.ACTOR, actor);
-				EMFUserError error = null;
+				EMFValidationError error = null;
 				if(parentPaths.size()<1) {
-					error = new EMFUserError(EMFErrorSeverity.ERROR, 1008, new Vector(), errorParams);
+					error = new EMFValidationError(EMFErrorSeverity.ERROR, 1008, new Vector(), errorParams);
 				} else {
-					error = new EMFUserError(EMFErrorSeverity.ERROR, 1009, new Vector(), errorParams);
+					error = new EMFValidationError(EMFErrorSeverity.ERROR, 1009, new Vector(), errorParams);
 				}
 				getErrorHandler().addError(error);
 			} else {
@@ -1266,9 +1290,7 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setTemplateVersions(new TreeMap());
             response.setAttribute(NAME_ATTR_OBJECT, obj);
             response.setAttribute(SpagoBIConstants.ACTOR, actor);
-            fillResponse(response);
-            response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-       
+            fillResponse(response);       
 		} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","newBIObject","Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -1332,7 +1354,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		String mult_fl = (String) request.getAttribute("mult_fl");
 		Object pathParentObj = request.getAttribute("PATH_PARENT");
 		if( (pathParentObj != null) && (!(pathParentObj instanceof String))) {
-			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1032));
+			errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, 1032));
 		}else {
 			String pathParent = (String)pathParentObj;
 			if(pathParent != null){
@@ -1387,7 +1409,6 @@ public class DetailBIObjectModule extends AbstractModule {
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	        fillResponse(response);
 	        prepareBIObjectDetailPage(response, obj, null, "", ObjectsTreeConstants.DETAIL_MOD, false, false);
-	        response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception e) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","eraseVersion","Cannot erase version", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);

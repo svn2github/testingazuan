@@ -32,7 +32,7 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
@@ -176,6 +176,9 @@ public class ListTag extends TagSupport
 		if (lightNavigatorDisabledObj != null) {
 			String lightNavigatorDisabled = (String) lightNavigatorDisabledObj;
 			_providerUrlMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, lightNavigatorDisabled);
+		} else {
+			// if the LightNavigator is abled, its LIGHT_NAVIGATOR_REPLACE_LAST function will be used while navigating the list
+			_providerUrlMap.put(LightNavigationManager.LIGHT_NAVIGATOR_REPLACE_LAST, "true");
 		}
 		_htmlStream = new StringBuffer();
 		makeForm();
@@ -553,21 +556,28 @@ public class ListTag extends TagSupport
 			_htmlStream.append(" <a href='"+allUrl.toString()+"'>"+labelAll+"</a> \n");
 			_htmlStream.append("						    </form> \n");
 			
-			if (_errorHandler != null && !_errorHandler.isOKBySeverity(EMFErrorSeverity.WARNING)) {
+			// visualize any validation error present in the errorHandler
+			boolean thereAreValidationErrors = false;
+			StringBuffer errorsHtmlString = new StringBuffer("");
+			if (_errorHandler != null) {
 				Collection errors = _errorHandler.getErrors();
-				_htmlStream.append("	<div class='filter-list-errors'>\n");
-		    	EMFAbstractError error = null;
-		    	String description = "";
-		    	Iterator iter = errors.iterator();
-		    	while(iter.hasNext()) {
-		    		error = (EMFAbstractError) iter.next();
-		    		if (EMFErrorSeverity.WARNING.equalsIgnoreCase(error.getSeverity())) {
-			    	 	description = error.getDescription();
-			    	 	_htmlStream.append("		" + description + "<br/>\n");
-		    		}
-		    	}
-		    	_htmlStream.append("	</div>\n");
+				if (errors != null && errors.size() > 0) {
+					errorsHtmlString.append("	<div class='filter-list-errors'>\n");
+					Iterator iterator = errors.iterator();
+					EMFAbstractError error = null;
+					String description = "";
+					while (iterator.hasNext()) {
+						error = (EMFAbstractError) iterator.next();
+						if (error instanceof EMFValidationError) {
+				    	 	description = error.getDescription();
+				    	 	errorsHtmlString.append("		" + description + "<br/>\n");
+				    	 	thereAreValidationErrors = true;
+						}
+					}
+					errorsHtmlString.append("	</div>\n");
+				}
 			}
+			if (thereAreValidationErrors) _htmlStream.append(errorsHtmlString);
 			
 		}
 		_htmlStream.append("		</TD>\n");	

@@ -32,6 +32,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
@@ -46,6 +47,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -154,7 +156,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
 						modVal);
 			}
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
@@ -207,7 +208,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	    		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
 				response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
-				response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 				// exits without writing into DB and without loop
 				return;
 			}
@@ -249,12 +249,17 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					labelControl(request, mod);
 					validateFields("ModalitiesValueValidation", "PAGE");
 
-					// if there are some errors, exits without writing into DB
-					// and without loop
-					if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-						return;
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								prepareDetailModalitiesValuePage(modVal, mod, response);
+								return;
+							}
+						}
 					}
 
 					// control if user wants to test the manual input
@@ -278,12 +283,17 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					validateFields("ModalitiesValueValidation", "PAGE");
 					validateFields("QueryWizardValidation", "PAGE");
 
-					// if there are some errors, exits without writing into DB
-					// and without loop
-					if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-						return;
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								prepareDetailModalitiesValuePage(modVal, mod, response);
+								return;
+							}
+						}
 					}
 
 					// control if user wants to test the query
@@ -310,7 +320,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						String lovProvider = lovDetailList.toXML();
 						modVal.setLovProvider(lovProvider);
 						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 						// exits without writing into DB and without loop
 						return;
 					}
@@ -329,11 +338,24 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						// If there are no errors, add the new item in the
 						// Lov
 						validateFields("FixLovWizardValidation", "PAGE");
-						if (errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+						
+						// if there are some validation errors into the errorHandler does not add the new values
+						Collection errors = errorHandler.getErrors();
+						boolean hasValidationErrors = false;
+						if (errors != null && errors.size() > 0) {
+							Iterator iterator = errors.iterator();
+							while (iterator.hasNext()) {
+								Object error = iterator.next();
+								if (error instanceof EMFValidationError) {
+									hasValidationErrors = true;
+									break;
+								}
+							}
+						}
+						if (!hasValidationErrors) {
 							addFixLovItem(request, modVal);
 						}
 						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 						// exits without writing into DB and without loop
 						return;
 					}
@@ -341,12 +363,17 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					labelControl(request, mod);
 					validateFields("ModalitiesValueValidation", "PAGE");
 
-					// if there are some errors, exits without writing into
-					// DB and without loop
-					if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-						return;
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								prepareDetailModalitiesValuePage(modVal, mod, response);
+								return;
+							}
+						}
 					}
 
 					// control if user wants to test the fix lov
@@ -370,12 +397,17 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					validateFields("ModalitiesValueValidation", "PAGE");
 					validateFields("ScriptWizardValidation", "PAGE");
 					
-					// if there are some errors, exits without writing into DB
-					// and without loop
-					if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
-						return;
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								prepareDetailModalitiesValuePage(modVal, mod, response);
+								return;
+							}
+						}
 					}
 
 					// control if user wants to test the script
@@ -516,7 +548,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			if (hasPar){
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListLovsModule.MODULE_PAGE);
-				EMFUserError error = new EMFUserError (EMFErrorSeverity.ERROR, 1023, new Vector(), params);
+				EMFValidationError error = new EMFValidationError (EMFErrorSeverity.ERROR, 1023, new Vector(), params);
 				getErrorHandler().addError(error);
 				return;
 		    }
@@ -563,7 +595,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			loadValuesDomain(response);
 			response.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
 					modVal);
-			response.setAttribute(SpagoBIConstants.RESPONSE_COMPLETE, "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
 					"DetailModalitiesValueModule", "newDetailModValue",
@@ -735,7 +766,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListLovsModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1024,
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1024,
 							new Vector(), params);
 					errorHandler.addError(error);
 				}
@@ -752,7 +783,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListLovsModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1024,
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1024,
 							new Vector(), params);
 					errorHandler.addError(error);
 				}

@@ -134,11 +134,5 @@ public class SpagoBIConstants {
 	public static final String PUBLISHER_NAME = "PUBLISHER_NAME";
 	public static final String PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT = "loopbackAfterSubObjectDeletion";
 	public static final String PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC = "loopbackSingleObjectExecution";
-	
-	/**
-	 * if the response has an attribute with key RESPONSE_COMPLETE valued
-	 * "true" it means that the response is complete for a correct visualization
-	*/
-	public static final String RESPONSE_COMPLETE = "RESPONSE_COMPLETE"; 
 
 }

@@ -121,12 +121,12 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			if (!oldPriority.equals(newPriority)) {
 				Query query = null;
 				if (oldPriority.intValue() > newPriority.intValue()) {
-					String hqlUpdateShiftRight = "update SbiObjPar set priority = (priority + 1) where priority >= " 
-						+ newPriority + " and priority < " + oldPriority;
+					String hqlUpdateShiftRight = "update SbiObjPar s set s.priority = (s.priority + 1) where s.priority >= " 
+						+ newPriority + " and s.priority < " + oldPriority + "and s.sbiObject.biobjId = " + aSbiObject.getBiobjId();
 					query = aSession.createQuery(hqlUpdateShiftRight);
 				} else {
-					String hqlUpdateShiftLeft = "update SbiObjPar set priority = (priority - 1) where priority > " 
-						+ oldPriority + " and priority <= " + newPriority;
+					String hqlUpdateShiftLeft = "update SbiObjPar s set s.priority = (s.priority - 1) where s.priority > " 
+						+ oldPriority + " and s.priority <= " + newPriority + "and s.sbiObject.biobjId = " + aSbiObject.getBiobjId();
 					query = aSession.createQuery(hqlUpdateShiftLeft);
 				}
 				query.executeUpdate();
@@ -173,8 +173,8 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			hibObjectParameterNew.setMultFl(new Short(aBIObjectParameter.getMultivalue().shortValue()));
 			hibObjectParameterNew.setParurlNm(aBIObjectParameter.getParameterUrlName());
 			
-			String hqlUpdateShiftRight = "update SbiObjPar set priority = (priority + 1) where priority >= " 
-				+ aBIObjectParameter.getPriority();
+			String hqlUpdateShiftRight = "update SbiObjPar s set s.priority = (s.priority + 1) where s.priority >= " 
+				+ aBIObjectParameter.getPriority() + "and s.sbiObject.biobjId = " + aSbiObject.getBiobjId();
 			Query query = aSession.createQuery(hqlUpdateShiftRight);
 			query.executeUpdate();
 			
@@ -224,8 +224,10 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			
 			aSession.delete(hibObjPar);
 			
-			String hqlUpdateShiftRight = "update SbiObjPar set priority = (priority - 1) where priority >= " 
-				+ aBIObjectParameter.getPriority();
+			Integer biobjId = hibObjPar.getSbiObject().getBiobjId();
+			
+			String hqlUpdateShiftRight = "update SbiObjPar s set s.priority = (s.priority - 1) where s.priority >= " 
+				+ aBIObjectParameter.getPriority() + "and s.sbiObject.biobjId = " + biobjId;
 			Query query = aSession.createQuery(hqlUpdateShiftRight);
 			query.executeUpdate();
 			

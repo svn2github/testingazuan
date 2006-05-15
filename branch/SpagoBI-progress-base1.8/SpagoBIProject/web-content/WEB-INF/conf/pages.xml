@@ -103,7 +103,8 @@
       		<MODULE keep_instance="false" keep_response="false" name="ListParametersModule"/>
     	</MODULES>
   	</PAGE>
-  	
+
+<!-- 
   	<PAGE name="ListParameterUsesPage" scope="REQUEST" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ListParameterUsesPage" target="ListParameterUsesModule">
@@ -115,6 +116,7 @@
       		<MODULE keep_instance="false" keep_response="false" name="ListParameterUsesModule"/>
     	</MODULES>
   	</PAGE>
+-->  	
   	
   	<PAGE name="ListLovsPage" scope="REQUEST" >
     	<DEPENDENCIES>
@@ -251,7 +253,7 @@
     	</MODULES>
   	</PAGE>
   	
-  	
+<!--
 	<PAGE name="DetailModalitiesPage" scope="REQUEST" title="Domain Detail" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="DetailModalitiesPage" target="DetailModalitiesModule">
@@ -263,6 +265,7 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailModalitiesModule"/>
     	</MODULES>
   	</PAGE>
+-->  	
   	
     <PAGE name="DetailBIObjectPage" scope="REQUEST" title="BIObject Detail" >
     	<DEPENDENCIES>
@@ -276,6 +279,7 @@
     	</MODULES>
   	</PAGE>
   	
+<!-- 
   	<PAGE name="ListBIObjectParametersPage" scope="REQUEST" title="BIObject Parameters Management" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ListBIObjectParametersPage" target="ListBIObjectParametersModule">
@@ -287,7 +291,9 @@
       		<MODULE keep_instance="false" keep_response="false" name="ListBIObjectParametersModule"/>
     	</MODULES>
   	</PAGE>
-  	
+-->
+
+<!-- 
   	<PAGE name="DetailBIObjectParameterPage" scope="REQUEST" title="BIObjectParameter Detail" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="DetailBIObjectParameterPage" target="DetailBIObjectParameterModule">
@@ -299,7 +305,8 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailBIObjectParameterModule"/>
     	</MODULES>
   	</PAGE>
-  	
+ -->
+   	
   	<PAGE name="ExecuteBIObjectPage" scope="REQUEST" title="Execute BIObject" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ExecuteBIObjectPage" target="ExecuteBIObjectModule">

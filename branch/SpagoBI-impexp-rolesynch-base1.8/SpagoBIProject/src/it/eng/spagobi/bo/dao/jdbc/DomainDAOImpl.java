@@ -163,6 +163,13 @@ public class DomainDAOImpl extends AbstractJdbcDAO implements IDomainDAO {
 			Utils.releaseResources(dataConnection, cmdSelect, dr);
 		}
 	}
+
+
+
+	public List loadListDomains() throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 	

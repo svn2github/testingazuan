@@ -69,6 +69,10 @@ public class ExportManager implements IExportManager {
 		}
 		pathBaseFolder = pathExportFolder + "/" + nameExportFile;
 		File baseFold = new File(pathBaseFolder); 
+		// if folder exist delete it
+		if(baseFold.exists()){
+			ImpExpGeneralUtilities.deleteDir(baseFold);
+		}
 	    baseFold.mkdirs();
 	    pathDBFolder =  pathBaseFolder + "/metadata";
 	    File dbFold = new File(pathDBFolder); 
@@ -96,6 +100,7 @@ public class ExportManager implements IExportManager {
 	public String exportObjects(List objPaths) throws EMFUserError {
 		
 		exportPropertiesFile();
+		exportDomains();
 		Iterator iterObjs = objPaths.iterator();
 		while(iterObjs.hasNext()){
 			String path = (String)iterObjs.next();
@@ -119,6 +124,10 @@ public class ExportManager implements IExportManager {
 	
 	private String createExportArchive() throws EMFUserError {
 		String archivePath = pathExportFolder + "/" + nameExportFile + ".zip";
+		File archiveFile = new File(archivePath);
+		if(archiveFile.exists()){
+			archiveFile.delete();
+		}
 		try{
 			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(archivePath));
 			compressFolder(pathBaseFolder, out);
@@ -188,7 +197,14 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-	
+	private void exportDomains() throws EMFUserError {
+		List domains = DAOFactory.getDomainDAO().loadListDomains();
+		Iterator itDom = domains.iterator();
+		while(itDom.hasNext()) {
+			Domain dom = (Domain)itDom.next();
+			exporter.insertDomain(dom, session);
+		}
+	}
 	
 	
 

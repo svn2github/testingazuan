@@ -32,6 +32,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.metadata.SbiDomains;
+import it.eng.spagobi.metadata.SbiEngines;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
@@ -159,7 +161,41 @@ public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 		aDomain.setValueCd(hibDomain.getValueCd());
 		aDomain.setValueId(hibDomain.getValueId());
 		aDomain.setValueName(hibDomain.getValueNm());
+		aDomain.setDomainCode(hibDomain.getDomainCd());
+		aDomain.setDomainName(hibDomain.getDomainNm());
+		aDomain.setValueDescription(hibDomain.getValueDs());
 		return aDomain;
+	}
+
+	
+	
+	
+	public List loadListDomains() throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List domains = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Query hibQuery = aSession.createQuery(" from SbiDomains");
+			List hibList = hibQuery.list();
+			Iterator it = hibList.iterator();
+			while (it.hasNext()) {
+				Domain dom = toDomain((SbiDomains)it.next());
+				domains.add(dom);
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return domains;
 	}
 
 }

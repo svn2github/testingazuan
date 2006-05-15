@@ -42,6 +42,31 @@ import org.hibernate.Transaction;
 
 public class ExporterMetadata {
 
+	
+	public void insertDomain(Domain domain, Session session) throws EMFUserError {
+		try {
+			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiDomains where valueId = " + domain.getValueId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			SbiDomains hibDomain = new SbiDomains(domain.getValueId());
+			hibDomain.setDomainCd(domain.getDomainCode());
+			hibDomain.setDomainNm(domain.getDomainName());
+			hibDomain.setValueCd(domain.getValueCd());
+			hibDomain.setValueDs(domain.getValueDescription());
+			hibDomain.setValueNm(domain.getValueName());
+			session.save(hibDomain);
+			tx.commit();
+		} catch (Exception e) {
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertDomain",
+					"Error while inserting domain into export database " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+		}
+	}
+	
+	
 	public void insertEngine(Engine engine, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();

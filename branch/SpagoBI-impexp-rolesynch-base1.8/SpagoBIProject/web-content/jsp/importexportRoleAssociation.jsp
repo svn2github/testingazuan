@@ -50,15 +50,20 @@
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='roleAssForm' name='roleAssForm'>
-	<div style="float:left;width:50%;" class="div_detail_area_forms">
+	<div style="float:left;width:59%;" class="div_detail_area_forms">
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header'>Exported Roles</td>
-				<td class='portlet-section-header'>System Role Associations</td>
+				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedRoles" /></td>
+				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.currentRoles" /></td>
 			</tr>
 			<tr>
 				<td colspan="2">&nbsp;</td>
 			</tr>
+			<%if(expRoles.isEmpty()) { %>
+			<tr>
+				<td colspan="2" style="color:#074B88;"><spagobi:message key="SBISet.impexp.noRoleExported"/></td>
+			</tr>
+			<% } %>
 		    <%
 		    while(iterExpRoles.hasNext()) {
 		    	Role role = (Role)iterExpRoles.next();
@@ -92,7 +97,9 @@
 					<%
 						}					
 					%>	
-						<option value=""></option>
+						<option value="">
+							<spagobi:message key="Sbi.selectcombo"/>
+						</option>
 						<% 
 							iterCurRoles = curRoles.iterator();
 							String selected = null;
@@ -111,12 +118,18 @@
 		</table>
 	</div>
 	
-	<div style="float:left;">
+	<div style="float:left;width:39%;">
 		<input type="image" 
 		       name="submit" 
 		       title='<spagobi:message key="Sbi.next"/>' 
 		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/next.png")%>' 
 		       alt='<spagobi:message key="Sbi.next"/>' />
+		<br/>
+		<ul style="color:#074B88;">
+			<li><spagobi:message key = "SBISet.impexp.rolerule1" /></li>
+			<li><spagobi:message key = "SBISet.impexp.rolerule2" /></li>
+			<li><spagobi:message key = "SBISet.impexp.rolerule3" /></li>
+		</ul>
 	</div>
 	</form>
 	

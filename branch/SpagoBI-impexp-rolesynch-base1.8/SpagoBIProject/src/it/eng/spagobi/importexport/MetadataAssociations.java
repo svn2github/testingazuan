@@ -1,6 +1,7 @@
 package it.eng.spagobi.importexport;
 
 import it.eng.spagobi.metadata.SbiChecks;
+import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
 import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFunctions;
@@ -8,12 +9,11 @@ import it.eng.spagobi.metadata.SbiLov;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
-import it.eng.spagobi.metadata.SbiParuseCk;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExistingMetadata {
+public class MetadataAssociations {
 
 	private Map parameterIDAssociation = new HashMap();
 	private Map parameterAssociation = new HashMap();
@@ -31,58 +31,81 @@ public class ExistingMetadata {
 	private Map checkAssociation = new HashMap();
 	private Map paruseIDAssociation = new HashMap();
 	private Map paruseAssociation = new HashMap();
+	private Map domainIDAssociation = new HashMap();
+	private Map domainAssociation = new HashMap();
+	private Map connectionsAssociation = new HashMap();
 	
 	
 	public boolean isEmpty() {
-		if(!parameterIDAssociation.keySet().isEmpty())
+		if(!parameterAssociation.keySet().isEmpty())
 			return false;
-		if(!roleIDAssociation.keySet().isEmpty())
+		if(!roleAssociation.keySet().isEmpty())
 			return false;
-		if(!biobjIDAssociation.keySet().isEmpty())
+		if(!biobjAssociation.keySet().isEmpty())
 			return false;
-		if(!lovIDAssociation.keySet().isEmpty())
+		if(!lovAssociation.keySet().isEmpty())
 			return false;
-		if(!functIDAssociation.keySet().isEmpty())
+		if(!functAssociation.keySet().isEmpty())
 			return false;
-		if(!engineIDAssociation.keySet().isEmpty())
+		if(!engineAssociation.keySet().isEmpty())
 			return false;
-		if(!checkIDAssociation.keySet().isEmpty())
+		if(!checkAssociation.keySet().isEmpty())
 			return false;
-		if(!paruseIDAssociation.keySet().isEmpty())
+		if(!paruseAssociation.keySet().isEmpty())
 			return false;
 		return true;
 	}
 	
+	public void clear() {
+		parameterIDAssociation = new HashMap();
+		parameterAssociation = new HashMap();
+		roleIDAssociation = new HashMap();
+		roleAssociation = new HashMap();
+		biobjIDAssociation = new HashMap();
+		biobjAssociation = new HashMap();
+		lovIDAssociation = new HashMap();
+		lovAssociation = new HashMap();
+		functIDAssociation = new HashMap();
+		functAssociation = new HashMap();
+		engineIDAssociation = new HashMap();
+		engineAssociation = new HashMap();
+		checkIDAssociation = new HashMap();
+		checkAssociation = new HashMap();
+		paruseIDAssociation = new HashMap();
+		paruseAssociation = new HashMap();
+		connectionsAssociation = new HashMap();
+	}
+	
 	public boolean isParameterAssEmpty(){
-		return parameterIDAssociation.keySet().isEmpty();
+		return parameterAssociation.keySet().isEmpty();
 	}
 	
 	public boolean isRoleAssEmpty(){
-		return roleIDAssociation.keySet().isEmpty();
+		return roleAssociation.keySet().isEmpty();
 	}
 	
 	public boolean isBIObjAssEmpty(){
-		return biobjIDAssociation.keySet().isEmpty();
+		return biobjAssociation.keySet().isEmpty();
 	}
 	
 	public boolean isLovAssEmpty(){
-		return lovIDAssociation.keySet().isEmpty();
+		return lovAssociation.keySet().isEmpty();
 	}
 	
 	public boolean isFunctAssEmpty(){
-		return functIDAssociation.keySet().isEmpty();
+		return functAssociation.keySet().isEmpty();
 	}
 	
 	public boolean isEngineAssEmpty(){
-		return engineIDAssociation.keySet().isEmpty();
+		return engineAssociation.keySet().isEmpty();
 	}
 	
 	public boolean isCheckAssEmpty(){
-		return checkIDAssociation.keySet().isEmpty();
+		return checkAssociation.keySet().isEmpty();
 	}
 	
 	public boolean isParuseAssEmpty(){
-		return paruseIDAssociation.keySet().isEmpty();
+		return paruseAssociation.keySet().isEmpty();
 	}
 	
 	
@@ -95,8 +118,12 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleParameter(SbiParameters exp, SbiParameters curr) {
-		parameterIDAssociation.put(exp.getParId().toString(), curr.getParId().toString());
+		//parameterIDAssociation.put(exp.getParId().toString(), curr.getParId().toString());
 		parameterAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleParameter(Integer exp, Integer curr) {
+		parameterIDAssociation.put(exp, curr);
 	}
 	
 	public Map getRoleIDAssociation() {
@@ -108,8 +135,12 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleRole(SbiExtRoles exp, SbiExtRoles curr) {
-		parameterIDAssociation.put(exp.getExtRoleId().toString(), curr.getExtRoleId().toString());
-		parameterAssociation.put(exp, curr);
+		//roleIDAssociation.put(exp.getExtRoleId().toString(), curr.getExtRoleId().toString());
+		roleAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleRole(Integer exp, Integer curr) {
+		roleIDAssociation.put(exp, curr);
 	}
 
 	public Map getBIobjIDAssociation() {
@@ -121,8 +152,12 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleBIObj(SbiObjects exp, SbiObjects curr) {
-		biobjIDAssociation.put(exp.getBiobjId().toString(), curr.getBiobjId().toString());
+		//biobjIDAssociation.put(exp.getBiobjId().toString(), curr.getBiobjId().toString());
 		biobjAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleBIObj(Integer exp, Integer curr) {
+		biobjIDAssociation.put(exp, curr);
 	}
 	
 	public Map getLovIDAssociation() {
@@ -134,8 +169,12 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleLov(SbiLov exp, SbiLov curr) {
-		lovIDAssociation.put(exp.getLovId().toString(), curr.getLovId().toString());
+		//lovIDAssociation.put(exp.getLovId().toString(), curr.getLovId().toString());
 		lovAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleLov(Integer exp, Integer curr) {
+		lovIDAssociation.put(exp, curr);
 	}
 	
 	public Map getFunctIDAssociation() {
@@ -147,8 +186,12 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleFunct(SbiFunctions exp, SbiFunctions curr) {
-		functIDAssociation.put(exp.getFunctId().toString(), curr.getFunctId().toString());
+		//functIDAssociation.put(exp.getFunctId().toString(), curr.getFunctId().toString());
 		functAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleFunct(Integer exp, Integer curr) {
+		functIDAssociation.put(exp, curr);
 	}
 
 	public Map getEngineIDAssociation() {
@@ -160,8 +203,12 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleEngine(SbiEngines exp, SbiEngines curr) {
-		engineIDAssociation.put(exp.getEngineId().toString(), curr.getEngineId().toString());
+		//engineIDAssociation.put(exp.getEngineId().toString(), curr.getEngineId().toString());
 		engineAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleEngine(Integer exp, Integer curr) {
+		engineIDAssociation.put(exp, curr);
 	}
 	
 	public Map getCheckIDAssociation() {
@@ -173,8 +220,12 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleCheck(SbiChecks exp, SbiChecks curr) {
-		checkIDAssociation.put(exp.getCheckId().toString(), curr.getCheckId().toString());
+		//checkIDAssociation.put(exp.getCheckId().toString(), curr.getCheckId().toString());
 		checkAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleCheck(Integer exp, Integer curr) {
+		checkIDAssociation.put(exp, curr);
 	}
 	
 	public Map getParuseIDAssociation() {
@@ -186,9 +237,37 @@ public class ExistingMetadata {
 	}
 	
 	public void insertCoupleParuse(SbiParuse exp, SbiParuse curr) {
-		paruseIDAssociation.put(exp.getUseId().toString(), curr.getUseId().toString());
+		//paruseIDAssociation.put(exp.getUseId().toString(), curr.getUseId().toString());
 		paruseAssociation.put(exp, curr);
 	}
 	
+	public void insertCoupleParuse(Integer exp, Integer curr) {
+		paruseIDAssociation.put(exp, curr);
+	}
+	
+	public Map getDomainIDAssociation() {
+		return domainIDAssociation;
+	}
+	
+	public Map getDomainAssociation() {
+		return domainAssociation;
+	}
+	
+	public void insertCoupleDomain(SbiDomains exp, SbiDomains curr) {
+		domainAssociation.put(exp, curr);
+	}
+	
+	public void insertCoupleDomain(Integer exp, Integer curr) {
+		domainIDAssociation.put(exp, curr);
+	}
 
+	public Map getConnectionAssociation() {
+		return connectionsAssociation;
+	}
+	
+	public void insertCoupleConnections(String exp, String curr) {
+		connectionsAssociation.put(exp, curr);
+	}
+	
+	
 }

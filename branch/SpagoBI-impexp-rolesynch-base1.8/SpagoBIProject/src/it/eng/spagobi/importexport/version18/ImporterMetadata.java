@@ -14,6 +14,7 @@ import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiChecks;
+import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
 import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFuncRole;
@@ -119,121 +120,7 @@ public class ImporterMetadata {
 		}
 		
 		
-		
-		
-		
-		public void updateReferences(Map associations, Transaction tx, Session session, Class objClass) throws EMFUserError {
-			try {
-				Set assKeys = associations.keySet();
-				Iterator iterAssKeys = assKeys.iterator();
-				while(iterAssKeys.hasNext()) {
-					String expId = (String)iterAssKeys.next();
-					String assId = (String)associations.get(expId);
-					Object obj = session.load(objClass, new Integer(expId));
-					if(obj instanceof SbiEngines) {
-						 SbiEngines hibEngine = (SbiEngines)obj;
-						 session.delete(hibEngine);
-						 String hqlUpdate = "update SbiObjects o set o.sbiEngines.engineId = " +
-						 					":newEngine where o.sbiEngines.engineId = :oldEngine";
-						 int updatedEntities = session.createQuery( hqlUpdate )
-				         					.setInteger("newEngine", new Integer(assId).intValue() )
-				         					.setInteger( "oldEngine", new Integer(expId).intValue() )
-				         					.executeUpdate();
-					} else if(obj instanceof SbiExtRoles) {
-						SbiExtRoles hibRole = (SbiExtRoles)obj;
-						session.delete(hibRole);
-						String hqlUpdate = "update SbiFuncRole fc set fc.id.role.extRoleId = " +
-										   ":newRole where fc.id.role.extRoleId = :oldRole";
-					    int updatedEntities = session.createQuery( hqlUpdate )
-					         .setInteger("newRole", new Integer(assId).intValue() )
-					         .setInteger("oldRole", new Integer(expId).intValue() )
-					         .executeUpdate();
-					    hqlUpdate = "update SbiParuseDet pd set pd.id.sbiExtRoles.extRoleId = " +
-					    			":newRole where pd.id.sbiExtRoles.extRoleId = :oldRole";
-					    updatedEntities = session.createQuery( hqlUpdate )
-				         .setInteger("newRole", new Integer(assId).intValue() )
-				         .setInteger("oldRole", new Integer(expId).intValue() )
-				         .executeUpdate();
-					} else if(obj instanceof SbiLov) {
-						 SbiLov hibLov = (SbiLov)obj;
-						 session.delete(hibLov);
-						 String hqlUpdate = "update SbiParuse pu set pu.sbiLov.lovId = " +
-						 					":newLov where pu.sbiLov.lovId = :oldLov";
-						 int updatedEntities = session.createQuery( hqlUpdate )
-				         					.setInteger("newLov", new Integer(assId).intValue() )
-				         					.setInteger( "oldLov", new Integer(expId).intValue() )
-				         					.executeUpdate();
-						 
-						 
-						List list = getAllExportedSbiObjects(tx, session, "SbiLov");
-						List listp = getAllExportedSbiObjects(tx, session, "SbiParuse");
-						 int i = 0;
-						 
-					}  else if(obj instanceof SbiChecks) {
-						 SbiChecks hibCheck = (SbiChecks)obj;
-						 session.delete(hibCheck);
-						 String hqlUpdate = "update SbiParuseCk puc set puc.id.sbiChecks.checkId = " +
-						 					":new where puc.id.sbiChecks.checkId = :old";
-						 int updatedEntities = session.createQuery( hqlUpdate )
-				         					.setInteger("new", new Integer(assId).intValue() )
-				         					.setInteger( "old", new Integer(expId).intValue() )
-				         					.executeUpdate();
-					} else if(obj instanceof SbiParuse) {
-						 SbiParuse hibParuse = (SbiParuse)obj;
-						 session.delete(hibParuse);
-						 String hqlUpdate = "update SbiParuseCk puc set puc.id.sbiParuse.useId = " +
-						 					":new where puc.id.sbiParuse.useId = :old";
-						 int updatedEntities = session.createQuery( hqlUpdate )
-				         					.setInteger("new", new Integer(assId).intValue() )
-				         					.setInteger( "old", new Integer(expId).intValue() )
-				         					.executeUpdate();
-						 hqlUpdate = "update SbiParuseDet pud set pud.id.sbiParuse.useId = " +
-		 							 ":new where pud.id.sbiParuse.useId = :old";
-						 updatedEntities = session.createQuery( hqlUpdate )
-      					     			   .setInteger("new", new Integer(assId).intValue() )
-      									   .setInteger("old", new Integer(expId).intValue() )
-      									   .executeUpdate();
-					} else if(obj instanceof SbiParameters) {
-						 SbiParameters hibParam = (SbiParameters)obj;
-						 session.delete(hibParam);
-						 String hqlUpdate = "update SbiParuse pu set pu.sbiParameters.parId = " +
-						 					":new where pu.sbiParameters.parId = :old";
-						 int updatedEntities = session.createQuery( hqlUpdate )
-				         					.setInteger("new", new Integer(assId).intValue() )
-				         					.setInteger( "old", new Integer(expId).intValue() )
-				         					.executeUpdate();
-						 hqlUpdate = "update SbiObjPar op set op.id.sbiParameters.parId = " +
-		 							 ":new where op.id.sbiParameters.parId = :old";
-						 updatedEntities = session.createQuery( hqlUpdate )
-      					     			   .setInteger("new", new Integer(assId).intValue() )
-      									   .setInteger("old", new Integer(expId).intValue() )
-      									   .executeUpdate();
-					} else if(obj instanceof SbiFunctions) {
-						 SbiFunctions hibFunct = (SbiFunctions)obj;
-						 session.delete(hibFunct);
-						 String hqlUpdate = "update SbiFuncRole fr set fr.id.function.functId = " +
-						 					":new where fr.id.function.functId = :old";
-						 int updatedEntities = session.createQuery( hqlUpdate )
-				         					.setInteger("new", new Integer(assId).intValue() )
-				         					.setInteger( "old", new Integer(expId).intValue() )
-				         					.executeUpdate();
-					} else if(obj instanceof SbiObjects) {
-						 SbiObjects hibObj = (SbiObjects)obj;
-						 session.delete(hibObj);
-						 String hqlUpdate = "update SbiObjPar op set op.id.sbiObjects.biobjId = " +
-						 					":new where op.id.sbiObjects.biobjId = :old";
-						 int updatedEntities = session.createQuery( hqlUpdate )
-				         					.setInteger("new", new Integer(assId).intValue() )
-				         					.setInteger( "old", new Integer(expId).intValue() )
-				         					.executeUpdate();
-					}
-				}
-			} catch (HibernateException he) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "updateReferences",
-			                           "Error while updating references " + he);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
-			} 
-		}
+			
 		
 		
 		public void updateConnRefs(Map associations, Transaction tx, Session session) throws EMFUserError {
@@ -459,7 +346,15 @@ public class ImporterMetadata {
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiObjPar hibObjPar = (SbiObjPar)hqlQuery.uniqueResult();
 				return hibObjPar;
-			} 
+			} else if(hibObj instanceof SbiDomains) {
+				Map uniqueMap = (Map)unique;
+				String valuecd = (String)uniqueMap.get("valuecd");
+				String domaincd = (String)uniqueMap.get("domaincd");
+				hql = "from SbiDomains dom where dom.valueCd='"+valuecd+"' and dom.domainCd='"+domaincd+"'";
+				hqlQuery = sessionCurrDB.createQuery(hql);
+				SbiDomains hibDom = (SbiDomains)hqlQuery.uniqueResult();
+				return hibDom;
+			}
 			return null;
 		}
 		

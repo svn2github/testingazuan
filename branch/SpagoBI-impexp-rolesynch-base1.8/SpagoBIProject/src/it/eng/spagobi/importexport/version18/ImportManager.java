@@ -5,26 +5,29 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.bo.ParameterUse;
-import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.importexport.ExistingMetadata;
 import it.eng.spagobi.importexport.IImportManager;
 import it.eng.spagobi.importexport.JdbcConnection;
 import it.eng.spagobi.importexport.JndiConnection;
+import it.eng.spagobi.importexport.MetadataAssociations;
 import it.eng.spagobi.metadata.HibernateUtil;
 import it.eng.spagobi.metadata.SbiChecks;
+import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
 import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFuncRole;
+import it.eng.spagobi.metadata.SbiFuncRoleId;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiLov;
 import it.eng.spagobi.metadata.SbiObjPar;
+import it.eng.spagobi.metadata.SbiObjParId;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
 import it.eng.spagobi.metadata.SbiParuseCk;
+import it.eng.spagobi.metadata.SbiParuseCkId;
 import it.eng.spagobi.metadata.SbiParuseDet;
+import it.eng.spagobi.metadata.SbiParuseDetId;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -55,11 +58,11 @@ public class ImportManager implements IImportManager {
 	private ImporterMetadata importer = null;
 	private Properties props = null;
 	private SessionFactory sessionFactoryExpDB = null;
-	private static Session sessionExpDB = null;
-	private static Transaction txExpDB = null;
-	private static Session sessionCurrDB = null;
-	private static Transaction txCurrDB = null;
-	
+	private Session sessionExpDB = null;
+	private Transaction txExpDB = null;
+	private Session sessionCurrDB = null;
+	private Transaction txCurrDB = null;
+	private MetadataAssociations metaAss = null;
 	
 	
 	public void prepareImport(String pathImpTmpFold, String archiveName, byte[] archiveContent) throws EMFUserError {
@@ -107,6 +110,7 @@ public class ImportManager implements IImportManager {
 		txExpDB = sessionExpDB.beginTransaction();
 		sessionCurrDB = HibernateUtil.currentSession();
 		txCurrDB = sessionCurrDB.beginTransaction();
+		metaAss = new MetadataAssociations();
 	}
 	
 	
@@ -164,39 +168,24 @@ public class ImportManager implements IImportManager {
 
 	
 	
-	public void updateRoleReferences(Map roleAssociations) throws EMFUserError {
-		/* 
-		 * The key of the map are the id of the exported roles
-		 * Each key value is the id of the system role associate
-		 */
+	public void checkRoleReferences(Map roleAssociations) throws EMFUserError {
 		// each exported role should be associate only to one system role
 		Set rolesAssKeys = roleAssociations.keySet();
 		Iterator iterRoleAssKeys1 = rolesAssKeys.iterator();
 		while(iterRoleAssKeys1.hasNext()) {
-			String roleExpId = (String)iterRoleAssKeys1.next();
-			String roleAssId = (String)roleAssociations.get(roleExpId);
+			Integer roleExpId = (Integer)iterRoleAssKeys1.next();
+			Integer roleAssId = (Integer)roleAssociations.get(roleExpId);
 			Iterator iterRoleAssKeys2 = rolesAssKeys.iterator();
 			while(iterRoleAssKeys2.hasNext()) {
-				String otherRoleExpId = (String)iterRoleAssKeys2.next();
-				if(!otherRoleExpId.equals(roleExpId)) {
-					String otherRoleAssId = (String)roleAssociations.get(otherRoleExpId);
-					if(otherRoleAssId.equals(roleAssId)){
+				Integer otherRoleExpId = (Integer)iterRoleAssKeys2.next();
+				if(otherRoleExpId.compareTo(roleExpId)!=0) {
+					Integer otherRoleAssId = (Integer)roleAssociations.get(otherRoleExpId);
+					if(otherRoleAssId.compareTo(roleAssId)==0){
 						throw new EMFUserError(EMFErrorSeverity.ERROR, 8001);
 					}
 				}
 			}
-		}
-		importer.updateReferences(roleAssociations, txExpDB, sessionExpDB, SbiExtRoles.class);		
-	}
-	
-	
-	
-	public void updateEngineReferences(Map roleAssociations) throws EMFUserError {
-		/* 
-		 * The key of the map are the id of the exported engines
-		 * Each key value is the id of the system engine associate
-		 */
-		importer.updateReferences(roleAssociations, txExpDB, sessionExpDB, SbiEngines.class);
+		}	
 	}
 	
 	
@@ -206,18 +195,6 @@ public class ImportManager implements IImportManager {
 		 * Each key value is the name of the current system connection associate
 		 */
 		importer.updateConnRefs(connAssociations, txExpDB, sessionExpDB);
-	}
-	
-	
-	public void updateMetadataReferences(ExistingMetadata emd) throws EMFUserError {
-		importer.updateReferences(emd.getParuseIDAssociation(), txExpDB, sessionExpDB, SbiParuse.class);
-		importer.updateReferences(emd.getBIobjIDAssociation(), txExpDB, sessionExpDB, SbiObjects.class);
-		importer.updateReferences(emd.getRoleIDAssociation(), txExpDB, sessionExpDB, SbiExtRoles.class);
-		importer.updateReferences(emd.getLovIDAssociation(), txExpDB, sessionExpDB, SbiLov.class);
-		importer.updateReferences(emd.getFunctIDAssociation(), txExpDB, sessionExpDB, SbiFunctions.class);
-		importer.updateReferences(emd.getEngineIDAssociation(), txExpDB, sessionExpDB, SbiEngines.class);
-		importer.updateReferences(emd.getCheckIDAssociation(), txExpDB, sessionExpDB, SbiChecks.class);
-		importer.updateReferences(emd.getParameterIDAssociation(), txExpDB, sessionExpDB, SbiParameters.class);	
 	}
 	
 	
@@ -260,23 +237,26 @@ public class ImportManager implements IImportManager {
 		txCurrDB.commit();
 		closeSession();
 		closeSessionFactory();
+		metaAss.clear();
 		ImpExpGeneralUtilities.deleteDir(new File(pathBaseFolder));
 	}
 	
 		
 	
 	public void importObjects() throws EMFUserError {
+		checkRoleReferences(metaAss.getRoleIDAssociation());
+		updateConnectionReferences(metaAss.getConnectionAssociation());
 		importRoles();
 		importEngines();
 		importFunctionalities();
-		importFunctRoles();
-		importLovs();
 		importChecks();
 		importParameters();
+		importLovs();
 		importParuse();
+		importBIObjects();
+		importFunctRoles();
 		importParuseDet();
 		importParuseCheck();
-		importBIObjects();
 		importBIObjPar();
 	}
 	
@@ -285,18 +265,28 @@ public class ImportManager implements IImportManager {
 		try{
 			List exportedRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiExtRoles");
 			Iterator iterSbiRoles = exportedRoles.iterator();
-			Map roleAss = new HashMap();
 			while(iterSbiRoles.hasNext()){
 				SbiExtRoles role = (SbiExtRoles)iterSbiRoles.next();
-				role.setSbiParuseDets(new HashSet());
-				role.setSbiFuncRoles(new HashSet());
 				Integer oldId = role.getExtRoleId();
-			    importer.insertObject(role, sessionCurrDB);
-			    Integer newId = role.getExtRoleId();
-			    sessionExpDB.evict(role);
-			    roleAss.put(oldId.toString(), newId.toString());
+				Map roleIdAss = metaAss.getRoleIDAssociation();
+			    Set roleIdAssSet = roleIdAss.keySet();
+				if(roleIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiExtRoles newRole = ImportUtilities.makeNewSbiExtRole(role);
+				String roleCd = role.getRoleTypeCode();
+				Map unique = new HashMap();
+				unique.put("valuecd", roleCd);
+				unique.put("domaincd", "ROLE_TYPE");
+				SbiDomains existDom = (SbiDomains)importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+				if(existDom!=null) {
+					newRole.setRoleType(existDom);
+					newRole.setRoleTypeCode(existDom.getValueCd());
+				}
+				importer.insertObject(newRole, sessionCurrDB);
+			    Integer newId = newRole.getExtRoleId();
+			    metaAss.insertCoupleRole(oldId, newId);
 			}
-			importer.updateReferences(roleAss, txExpDB, sessionExpDB, SbiExtRoles.class);
 		} finally {}
 	}
 	
@@ -310,12 +300,16 @@ public class ImportManager implements IImportManager {
 			while(iterSbiEngines.hasNext()){
 				SbiEngines engine = (SbiEngines)iterSbiEngines.next();
 				Integer oldId = engine.getEngineId();
-			    importer.insertObject(engine, sessionCurrDB);
-			    Integer newId = engine.getEngineId();
-			    sessionExpDB.evict(engine);
-			    engineAss.put(oldId.toString(), newId.toString());
+				Map engIdAss = metaAss.getEngineIDAssociation();
+			    Set engIdAssSet = engIdAss.keySet();
+				if(engIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine);
+			    importer.insertObject(newEng, sessionCurrDB);
+			    Integer newId = newEng.getEngineId();
+			    metaAss.insertCoupleEngine(oldId, newId);
 			}
-			importer.updateReferences(engineAss, txExpDB, sessionExpDB, SbiEngines.class);
 		} finally {}
 	}
 	
@@ -338,12 +332,25 @@ public class ImportManager implements IImportManager {
 				funct.setSbiFuncRoles(new HashSet());
 				funct.setSbiObjFuncs(new HashSet());
 				Integer oldId = funct.getFunctId();
-			    importer.insertObject(funct, sessionCurrDB);
-			    Integer newId = funct.getFunctId(); 
-			    sessionExpDB.evict(funct);
-			    functAss.put(oldId.toString(), newId.toString());
+				Map functIdAss = metaAss.getFunctIDAssociation();
+			    Set functIdAssSet = functIdAss.keySet();
+				if(functIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiFunctions newFunct = ImportUtilities.makeNewSbiFunction(funct);
+				String functCd = funct.getFunctTypeCd();
+				Map unique = new HashMap();
+				unique.put("valuecd", functCd);
+				unique.put("domaincd", "FUNCT_TYPE");
+				SbiDomains existDom = (SbiDomains)importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+				if(existDom!=null) {
+					newFunct.setFunctType(existDom);
+					newFunct.setFunctTypeCd(existDom.getValueCd());
+				}
+			    importer.insertObject(newFunct, sessionCurrDB);
+			    Integer newId = newFunct.getFunctId(); 
+			    metaAss.insertCoupleFunct(oldId, newId);
 			}
-			importer.updateReferences(functAss, txExpDB, sessionExpDB, SbiFunctions.class);
 		} finally {}
 	}
 	
@@ -357,12 +364,25 @@ public class ImportManager implements IImportManager {
 			while(iterSbiLovs.hasNext()){
 				SbiLov lov = (SbiLov)iterSbiLovs.next();
 				Integer oldId = lov.getLovId();
-			    importer.insertObject(lov, sessionCurrDB);
-			    Integer newId = lov.getLovId(); 
-			    sessionExpDB.evict(lov);
-			    lovAss.put(oldId.toString(), newId.toString());
+				Map lovIdAss = metaAss.getLovIDAssociation();
+				Set lovIdAssSet = lovIdAss.keySet();
+				if(lovIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiLov newlov = ImportUtilities.makeNewSbiLov(lov);
+				String inpTypeCd = lov.getInputTypeCd();
+				Map unique = new HashMap();
+				unique.put("valuecd", inpTypeCd);
+				unique.put("domaincd", "INPUT_TYPE");
+				SbiDomains existDom = (SbiDomains)importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+				if(existDom!=null) {
+					newlov.setInputType(existDom);
+					newlov.setInputTypeCd(existDom.getValueCd());
+				}
+			    importer.insertObject(newlov, sessionCurrDB);
+			    Integer newId = newlov.getLovId(); 
+			    metaAss.insertCoupleLov(oldId, newId);
 			}
-			importer.updateReferences(lovAss, txExpDB, sessionExpDB, SbiLov.class);
 		} finally {}
 	}
 	
@@ -376,12 +396,25 @@ public class ImportManager implements IImportManager {
 			while(iterSbiChecks.hasNext()){
 				SbiChecks check = (SbiChecks)iterSbiChecks.next();
 				Integer oldId = check.getCheckId();
-			    importer.insertObject(check, sessionCurrDB);
-			    Integer newId = check.getCheckId();
-			    sessionExpDB.evict(check);
-			    checkAss.put(oldId.toString(), newId.toString());
+				Map checkIdAss = metaAss.getCheckIDAssociation();
+			    Set checkIdAssSet = checkIdAss.keySet();
+				if(checkIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiChecks newck = ImportUtilities.makeNewSbiCheck(check);
+				String valueCd = check.getValueTypeCd();
+				Map unique = new HashMap();
+				unique.put("valuecd", valueCd);
+				unique.put("domaincd", "CHECK");
+				SbiDomains existDom = (SbiDomains)importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+				if(existDom!=null) {
+					newck.setCheckType(existDom);
+					newck.setValueTypeCd(existDom.getValueCd());
+				}
+			    importer.insertObject(newck, sessionCurrDB);
+			    Integer newId = newck.getCheckId();
+			    metaAss.insertCoupleCheck(oldId, newId);
 			}
-			importer.updateReferences(checkAss, txExpDB, sessionExpDB, SbiChecks.class);
 		} finally {}
 	}
 	
@@ -394,15 +427,75 @@ public class ImportManager implements IImportManager {
 			Map paramAss = new HashMap();
 			while(iterSbiParams.hasNext()){
 				SbiParameters param = (SbiParameters)iterSbiParams.next();
-				param.setSbiObjPars(new HashSet());
-				param.setSbiParuses(new HashSet());
 				Integer oldId = param.getParId();
-			    importer.insertObject(param, sessionCurrDB);
-			    Integer newId = param.getParId();
-			    sessionExpDB.evict(param);
-			    paramAss.put(oldId.toString(), newId.toString());
+				Map paramIdAss = metaAss.getParameterIDAssociation();
+			    Set paramIdAssSet = paramIdAss.keySet();
+				if(paramIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiParameters newPar = ImportUtilities.makeNewSbiParameter(param);
+				String typeCd = param.getParameterTypeCode();
+				Map unique = new HashMap();
+				unique.put("valuecd", typeCd);
+				unique.put("domaincd", "PAR_TYPE");
+				SbiDomains existDom = (SbiDomains)importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+				if(existDom!=null) {
+					newPar.setParameterType(existDom);
+					newPar.setParameterTypeCode(existDom.getValueCd());
+				}
+			    importer.insertObject(newPar, sessionCurrDB);
+			    Integer newId = newPar.getParId();
+			    metaAss.insertCoupleParameter(oldId, newId);
 			}
-			importer.updateReferences(paramAss, txExpDB, sessionExpDB, SbiParameters.class);
+		} finally {}
+	}
+	
+	
+	
+	private void importBIObjects() throws EMFUserError {
+		try{
+			List exportedBIObjs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
+			Iterator iterSbiObjs = exportedBIObjs.iterator();
+			Map objAss = new HashMap();
+			while(iterSbiObjs.hasNext()){
+				SbiObjects obj = (SbiObjects)iterSbiObjs.next();
+				SbiEngines engine = obj.getSbiEngines();
+				Integer oldEngId = engine.getEngineId();
+				Map assEngs = metaAss.getEngineIDAssociation();
+                Integer newEngId = (Integer)assEngs.get(oldEngId);
+				if(newEngId!=null) {
+					SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine, newEngId);
+					obj.setSbiEngines(newEng);
+				}
+				Integer oldId = obj.getBiobjId();
+				Map objIdAss = metaAss.getBIobjIDAssociation();
+			    Set objIdAssSet = objIdAss.keySet();
+				if(objIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiObjects newObj = ImportUtilities.makeNewSbiObject(obj);
+				String typeCd = obj.getObjectTypeCode();
+				Map unique = new HashMap();
+				unique.put("valuecd", typeCd);
+				unique.put("domaincd", "BIOBJ_TYPE");
+				SbiDomains existDom = (SbiDomains)importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+				if(existDom!=null) {
+					newObj.setObjectType(existDom);
+					newObj.setObjectTypeCode(existDom.getValueCd());
+				}
+				String stateCd = obj.getStateCode();
+				unique = new HashMap();
+				unique.put("valuecd", stateCd);
+				unique.put("domaincd", "STATE");
+				SbiDomains existDomSt = (SbiDomains)importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+				if(existDomSt!=null) {
+					newObj.setState(existDomSt);
+					newObj.setStateCode(existDomSt.getValueCd());
+				}
+				obj = importer.insertBIObject(newObj, pathContentFolder, sessionCurrDB);
+			    Integer newId = newObj.getBiobjId(); 
+			    metaAss.insertCoupleBIObj(oldId, newId);
+			}
 		} finally {}
 	}
 	
@@ -415,15 +508,34 @@ public class ImportManager implements IImportManager {
 			Map paruseAss = new HashMap();
 			while(iterSbiParuses.hasNext()){
 				SbiParuse paruse = (SbiParuse)iterSbiParuses.next();
-				paruse.setSbiParuseCks(new HashSet());
-				paruse.setSbiParuseDets(new HashSet());
+				SbiParameters param = paruse.getSbiParameters();
+				SbiLov lov = paruse.getSbiLov();
+				Integer oldParamId = param.getParId();
+				Integer oldLovId = lov.getLovId();
+				Map assLovs = metaAss.getLovIDAssociation();
+				Map assParams = metaAss.getParameterIDAssociation();
+				Integer newParamId = (Integer)assParams.get(oldParamId);
+				Integer newLovId = (Integer)assLovs.get(oldLovId);
+				if(newParamId!=null) {
+					SbiParameters newParam = ImportUtilities.makeNewSbiParameter(param, newParamId);
+					paruse.setSbiParameters(newParam);
+				}
+				if(newLovId!=null){
+					SbiLov newlov = ImportUtilities.makeNewSbiLov(lov, newLovId);
+					paruse.setSbiLov(newlov);
+				}
 				Integer oldId = paruse.getUseId();
-			    importer.insertObject(paruse, sessionCurrDB);
-			    Integer newId = paruse.getUseId();
+				Map paruseIdAss = metaAss.getParuseIDAssociation();
+			    Set paruseIdAssSet = paruseIdAss.keySet();
+				if(paruseIdAssSet.contains(oldId)){
+					continue;
+				}
+				SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(paruse);
+			    importer.insertObject(newParuse, sessionCurrDB);
+			    Integer newId = newParuse.getUseId();
 			    sessionExpDB.evict(paruse);
-			    paruseAss.put(oldId.toString(), newId.toString());
+			    metaAss.insertCoupleParuse(oldId, newId);
 			}
-			importer.updateReferences(paruseAss, txExpDB, sessionExpDB, SbiParuse.class);
 		} finally {}
 	}
 	
@@ -434,16 +546,38 @@ public class ImportManager implements IImportManager {
 			Iterator iterSbiParuseDets = exportedParuseDets.iterator();
 			while(iterSbiParuseDets.hasNext()){
 				SbiParuseDet parusedet = (SbiParuseDet)iterSbiParuseDets.next();
+				// get ids of exported role and paruse associzted
+				Integer paruseid = parusedet.getId().getSbiParuse().getUseId();
+				Integer roleid = parusedet.getId().getSbiExtRoles().getExtRoleId();
+				// get association of roles and paruses
+				Map paruseIdAss = metaAss.getParuseIDAssociation();
+				Map roleIdAss = metaAss.getRoleIDAssociation();
+				// try to get from association the id associate to the exported metadata
+				Integer newParuseid = (Integer)paruseIdAss.get(paruseid);
+				Integer newRoleid = (Integer)roleIdAss.get(roleid);
+				// build a new id for the SbiParuseDet
+				SbiParuseDetId parusedetid = parusedet.getId();
+				if(newParuseid!=null) {
+					SbiParuse sbiparuse = parusedetid.getSbiParuse();
+					SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(sbiparuse, newParuseid);				
+					parusedetid.setSbiParuse(newParuse);
+					paruseid = newParuseid;
+				}
+				if(newRoleid!=null){
+					SbiExtRoles sbirole = parusedetid.getSbiExtRoles();
+					SbiExtRoles newRole = ImportUtilities.makeNewSbiExtRole(sbirole, newRoleid);
+					parusedetid.setSbiExtRoles(newRole);
+					roleid=newRoleid;
+				}
+				parusedet.setId(parusedetid);
+				// check if the association between metadata already exist
 				Map unique = new HashMap();
-				unique.put("paruseid", parusedet.getId().getSbiParuse().getUseId());
-				unique.put("roleid", parusedet.getId().getSbiExtRoles().getExtRoleId());
+				unique.put("paruseid", paruseid);
+				unique.put("roleid", roleid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuseDet());
 				if(existObj==null)
 					importer.insertObject(parusedet, sessionCurrDB);
-				
-				
 			}
-			txCurrDB = sessionCurrDB.beginTransaction();
 		} finally {}
 	}
 	
@@ -454,9 +588,34 @@ public class ImportManager implements IImportManager {
 			Iterator iterSbiParuseChecks = exportedParuseChecks.iterator();
 			while(iterSbiParuseChecks.hasNext()){
 				SbiParuseCk paruseck = (SbiParuseCk)iterSbiParuseChecks.next();
+				// get ids of exported paruse and check associzted
+				Integer paruseid = paruseck.getId().getSbiParuse().getUseId();
+				Integer checkid = paruseck.getId().getSbiChecks().getCheckId();
+				// get association of checks and paruses
+				Map paruseIdAss = metaAss.getParuseIDAssociation();
+				Map checkIdAss = metaAss.getCheckIDAssociation();
+				// try to get from association the id associate to the exported metadata
+				Integer newParuseid = (Integer)paruseIdAss.get(paruseid);
+				Integer newCheckid = (Integer)checkIdAss.get(checkid);
+				// build a new id for the SbiParuseCheck
+				SbiParuseCkId parusecheckid = paruseck.getId();
+				if(newParuseid!=null) {
+					SbiParuse sbiparuse = parusecheckid.getSbiParuse();
+					SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(sbiparuse, newParuseid);				
+					parusecheckid.setSbiParuse(newParuse);
+					paruseid = newParuseid;
+				}
+				if(newCheckid!=null){
+					SbiChecks sbicheck = parusecheckid.getSbiChecks();
+					SbiChecks newCheck = ImportUtilities.makeNewSbiCheck(sbicheck, newCheckid);
+					parusecheckid.setSbiChecks(newCheck);
+					checkid=newCheckid;
+				}
+				paruseck.setId(parusecheckid);
+				// check if the association between metadata already exist
 				Map unique = new HashMap();
-				unique.put("paruseid", paruseck.getId().getSbiParuse().getUseId());
-				unique.put("checkid", paruseck.getId().getSbiChecks().getCheckId());
+				unique.put("paruseid", paruseid);
+				unique.put("checkid", checkid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuseCk());
 				if(existObj==null)
 					importer.insertObject(paruseck, sessionCurrDB);
@@ -471,10 +630,46 @@ public class ImportManager implements IImportManager {
 			Iterator iterSbiFunctRoles = exportedFunctRoles.iterator();
 			while(iterSbiFunctRoles.hasNext()){
 				SbiFuncRole functrole = (SbiFuncRole)iterSbiFunctRoles.next();
+				// get ids of exported role, function and state associzted
+				Integer functid = functrole.getId().getFunction().getFunctId();
+				Integer roleid = functrole.getId().getRole().getExtRoleId();
+				Integer stateid = functrole.getId().getState().getValueId();
+				// get association of roles and paruses
+				Map functIdAss = metaAss.getFunctIDAssociation();
+				Map roleIdAss = metaAss.getRoleIDAssociation();
+				// try to get from association the id associate to the exported metadata
+				Integer newFunctid = (Integer)functIdAss.get(functid);
+				Integer newRoleid = (Integer)roleIdAss.get(roleid);
+				// build a new id for the SbiFunctRole
+				SbiFuncRoleId functroleid = functrole.getId();
+				if(newFunctid!=null) {
+					SbiFunctions sbifunct = functroleid.getFunction();
+					SbiFunctions newFunct = ImportUtilities.makeNewSbiFunction(sbifunct, newFunctid);
+					functroleid.setFunction(newFunct);
+					functid = newFunctid;
+				}
+				if(newRoleid!=null){
+					SbiExtRoles sbirole = functroleid.getRole();
+					SbiExtRoles newRole = ImportUtilities.makeNewSbiExtRole(sbirole, newRoleid);
+					functroleid.setRole(newRole);
+					roleid=newRoleid;
+				}
+				// get sbiomain of the current system
+				String stateCd = functrole.getStateCd();
+				Map uniqueDom = new HashMap();
+				uniqueDom.put("valuecd", stateCd);
+				uniqueDom.put("domaincd", "STATE");
+				SbiDomains existDom = (SbiDomains)importer.checkExistence(uniqueDom, sessionCurrDB, new SbiDomains());
+				if(existDom!=null) {
+					functroleid.setState(existDom);
+				}
+				functrole.setId(functroleid);
+				functrole.setStateCd(existDom.getValueCd());
+				// check if the association between metadata already exist
 				Map unique = new HashMap();
-				unique.put("stateid", functrole.getId().getState().getValueId());
-				unique.put("roleid", functrole.getId().getRole().getExtRoleId());
-				unique.put("functionid", functrole.getId().getFunction().getFunctId());
+				unique.put("stateid", stateid);
+				unique.put("roleid", roleid);
+				unique.put("functionid", functid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiFuncRole());
 				if(existObj==null)
 					importer.insertObject(functrole, sessionCurrDB);
@@ -482,40 +677,43 @@ public class ImportManager implements IImportManager {
 		} finally {}
 	}
 	
-	
-	
-	private void importBIObjects() throws EMFUserError {
-		try{
-			List exportedBIObjs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
-			Iterator iterSbiObjs = exportedBIObjs.iterator();
-			Map objAss = new HashMap();
-			while(iterSbiObjs.hasNext()){
-				SbiObjects obj = (SbiObjects)iterSbiObjs.next();
-				Integer oldId = obj.getBiobjId();
-				obj.setSbiObjFuncs(new HashSet());
-				obj.setSbiObjPars(new HashSet());
-				obj.setSbiObjStates(new HashSet());
-				obj = importer.insertBIObject(obj, pathContentFolder, sessionCurrDB);
-			    Integer newId = obj.getBiobjId(); 
-			    sessionExpDB.evict(obj);
-			    objAss.put(oldId.toString(), newId.toString());
-			}
-			importer.updateReferences(objAss, txExpDB, sessionExpDB, SbiObjects.class);
-		} finally {}
-	}
-	
-	
-	
+		
 	private void importBIObjPar() throws EMFUserError {
 		try{
 			List exportedObjPars = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjPar");
 			Iterator iterSbiObjPar = exportedObjPars.iterator();
 			while(iterSbiObjPar.hasNext()){
 				SbiObjPar objpar = (SbiObjPar)iterSbiObjPar.next();
+				// get ids of exported param, object and prog associzted
+				Integer paramid = objpar.getId().getSbiParameters().getParId();
+				Integer biobjid = objpar.getId().getSbiObjects().getBiobjId();
+				Integer prog = objpar.getId().getProg();
+				// get association of biobj and params 
+				Map paramIdAss = metaAss.getParameterIDAssociation();
+				Map objIdAss = metaAss.getBIobjIDAssociation();
+				// try to get from association the id associate to the exported metadata
+				Integer newParamid = (Integer)paramIdAss.get(paramid);
+				Integer newObjid = (Integer)objIdAss.get(biobjid);
+				// build a new id for the SbiObjPar
+				SbiObjParId objparid = objpar.getId();
+				if(newParamid!=null) {
+					SbiParameters sbiparam = objparid.getSbiParameters();
+					SbiParameters newParam = ImportUtilities.makeNewSbiParameter(sbiparam, newParamid);
+					objparid.setSbiParameters(newParam);
+					paramid = newParamid;
+				}
+				if(newObjid!=null){
+					SbiObjects sbiobj = objparid.getSbiObjects();
+					SbiObjects newObj = ImportUtilities.makeNewSbiObject(sbiobj, newObjid);
+					objparid.setSbiObjects(newObj);
+					biobjid = newObjid;
+				}
+				objpar.setId(objparid);
+				// check if the association between metadata already exist
 				Map unique = new HashMap();
-				unique.put("paramid", objpar.getId().getSbiParameters().getParId());
-				unique.put("biobjid", objpar.getId().getSbiObjects().getBiobjId());
-				unique.put("prog", objpar.getId().getProg());
+				unique.put("paramid", paramid);
+				unique.put("biobjid", biobjid);
+				unique.put("prog", prog);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiObjPar());
 				if(existObj==null)
 					importer.insertObject(objpar, sessionCurrDB);
@@ -526,6 +724,7 @@ public class ImportManager implements IImportManager {
 	
 	
 	public void stopImport() {
+		metaAss.clear();
 		rollback();
 		ImpExpGeneralUtilities.deleteDir(new File(pathBaseFolder));
 	}
@@ -597,9 +796,25 @@ public class ImportManager implements IImportManager {
 
 
 
-	public ExistingMetadata checkExistingMetadata() throws EMFUserError {
-		
-		ExistingMetadata existMD = new ExistingMetadata();
+	public void checkExistingMetadata() throws EMFUserError {
+		/*
+		List exportedDomains = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiDomains");
+		Iterator iterSbiDomains = exportedDomains.iterator();
+		while(iterSbiDomains.hasNext()){
+			SbiDomains domExp = (SbiDomains)iterSbiDomains.next();
+			String valuecd = domExp.getValueCd();
+			String domcd = domExp.getDomainCd();
+			Map unique = new HashMap();
+			unique.put("valuecd", valuecd);
+			unique.put("domaincd", domcd);
+			Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+			if(existObj!=null) {
+				SbiDomains domCurr = (SbiDomains)existObj;
+				metaAss.insertCoupleDomain(domExp.getValueId(), domCurr.getValueId());
+				metaAss.insertCoupleDomain(domExp, domCurr);
+			}
+		}
+		*/
 		List exportedParams = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParameters");
 		Iterator iterSbiParams = exportedParams.iterator();
 		while(iterSbiParams.hasNext()){
@@ -608,7 +823,8 @@ public class ImportManager implements IImportManager {
 			Object existObj = importer.checkExistence(labelPar, sessionCurrDB, new SbiParameters());
 			if(existObj!=null) {
 				SbiParameters paramCurr = (SbiParameters)existObj;
-				existMD.insertCoupleParameter(paramExp, paramCurr);
+				metaAss.insertCoupleParameter(paramExp.getParId(), paramCurr.getParId());
+				metaAss.insertCoupleParameter(paramExp, paramCurr);
 			}
 		}
 		List exportedRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiExtRoles");
@@ -616,10 +832,16 @@ public class ImportManager implements IImportManager {
 		while(iterSbiRoles.hasNext()){
 			SbiExtRoles roleExp = (SbiExtRoles)iterSbiRoles.next();
 			String roleName = roleExp.getName();
+			Integer expRoleId = roleExp.getExtRoleId();
+			Map rolesAss = metaAss.getRoleIDAssociation();
+			Set keysExpRoleAss = rolesAss.keySet();
+			if(keysExpRoleAss.contains(expRoleId))
+				continue;
 			Object existObj = importer.checkExistence(roleName, sessionCurrDB, new SbiExtRoles());
 			if(existObj!=null) {
 				SbiExtRoles roleCurr = (SbiExtRoles)existObj;
-				existMD.insertCoupleRole(roleExp, roleCurr);
+				metaAss.insertCoupleRole(roleExp.getExtRoleId(), roleCurr.getExtRoleId());
+				metaAss.insertCoupleRole(roleExp, roleCurr);
 			}
 		}
 		List exportedParuse = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuse");
@@ -629,15 +851,20 @@ public class ImportManager implements IImportManager {
 			String label = paruseExp.getLabel();          
 			SbiParameters par = paruseExp.getSbiParameters();
 			Integer idPar = par.getParId();
+			// check if the parameter has been associated to a current system parameter
+			Map paramsAss = metaAss.getParameterIDAssociation();
+			Integer idParAss = (Integer)paramsAss.get(idPar);
+			if(idParAss!=null)
+				idPar = idParAss;
 			Map unique = new HashMap();
 			unique.put("label", label);
 			unique.put("idpar", idPar);
 			Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuse());
 			if(existObj!=null) {
 				SbiParuse paruseCurr = (SbiParuse)existObj;
-				existMD.insertCoupleParuse(paruseExp, paruseCurr);
+				metaAss.insertCoupleParuse(paruseExp.getUseId(), paruseCurr.getUseId());
+				metaAss.insertCoupleParuse(paruseExp, paruseCurr);
 			}
-			sessionExpDB.evict(paruseExp);
 		}
 		List exportedBiobj = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
 		Iterator iterSbiBiobj = exportedBiobj.iterator();
@@ -647,7 +874,8 @@ public class ImportManager implements IImportManager {
 			Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiObjects());
 			if(existObj!=null) {
 				SbiObjects objCurr = (SbiObjects)existObj;
-				existMD.insertCoupleBIObj(objExp, objCurr);
+				metaAss.insertCoupleBIObj(objExp.getBiobjId(), objCurr.getBiobjId());
+				metaAss.insertCoupleBIObj(objExp, objCurr);
 			}
 		}
 		List exportedLov = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiLov");
@@ -658,7 +886,8 @@ public class ImportManager implements IImportManager {
 			Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiLov());
 			if(existObj!=null) {
 				SbiLov lovCurr = (SbiLov)existObj;
-				existMD.insertCoupleLov(lovExp, lovCurr);
+				metaAss.insertCoupleLov(lovExp.getLovId(), lovCurr.getLovId());
+				metaAss.insertCoupleLov(lovExp, lovCurr);
 			}
 		}
 		List exportedFunct = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiFunctions");
@@ -669,7 +898,8 @@ public class ImportManager implements IImportManager {
 			Object existObj = importer.checkExistence(code, sessionCurrDB, new SbiFunctions());
 			if(existObj!=null) {
 				SbiFunctions functCurr = (SbiFunctions)existObj;
-				existMD.insertCoupleFunct(functExp, functCurr);
+				metaAss.insertCoupleFunct(functExp.getFunctId(), functCurr.getFunctId());
+				metaAss.insertCoupleFunct(functExp, functCurr);
 			}
 		}
 		List exportedEngine = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiEngines");
@@ -677,10 +907,16 @@ public class ImportManager implements IImportManager {
 		while(iterSbiEng.hasNext()){
 			SbiEngines engExp = (SbiEngines)iterSbiEng.next();
 			String label = engExp.getLabel();
+			Integer expEngineId = engExp.getEngineId();
+			Map engAss = metaAss.getEngineIDAssociation();
+			Set keysExpEngAss = engAss.keySet();
+			if(keysExpEngAss.contains(expEngineId))
+				continue;
 			Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiEngines());
 			if(existObj!=null) {
 				SbiEngines engCurr = (SbiEngines)existObj;
-				existMD.insertCoupleEngine(engExp, engCurr);
+				metaAss.insertCoupleEngine(engExp.getEngineId(), engCurr.getEngineId());
+				metaAss.insertCoupleEngine(engExp, engCurr);
 			}
 		}
 		List exportedCheck = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiChecks");
@@ -691,10 +927,17 @@ public class ImportManager implements IImportManager {
 			Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiChecks());
 			if(existObj!=null) {
 				SbiChecks checkCurr = (SbiChecks)existObj;
-				existMD.insertCoupleCheck(checkExp, checkCurr);
+				metaAss.insertCoupleCheck(checkExp.getCheckId(), checkCurr.getCheckId());
+				metaAss.insertCoupleCheck(checkExp, checkCurr);
 			}
 		}
-		return existMD;
+	}
+
+
+
+
+	public MetadataAssociations getMetadataAssociation() {
+		return metaAss;
 	}
 	
 	

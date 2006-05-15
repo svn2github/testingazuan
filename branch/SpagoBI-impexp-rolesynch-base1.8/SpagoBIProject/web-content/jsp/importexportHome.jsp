@@ -21,6 +21,12 @@
    PortletURL formImportUrl = renderResponse.createActionURL();
    formImportUrl.setParameter("PAGE", "ImportExportPage");
 
+   String downloadUrl = renderRequest.getContextPath() + "/ExportService";
+   if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
+	   downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
+   }
+   
+   
 %>
 
 <table class='header-table-portlet-section'>
@@ -49,6 +55,14 @@
 		var divprog = document.getElementById('divDownload');
 		divprog.style.display='none';
 	}
+	
+	function submitDownloadForm(actionurl) {
+		downform = document.getElementById('downForm');
+		var divdown = document.getElementById('divDownload');
+		divdown.style.display='none';
+		downform.submit();
+	}
+	
 </script>
 
 
@@ -60,7 +74,7 @@
   <form method='POST' action='<%=formExportUrl.toString()%>' id='exportForm' name='exportForm'> 
 	<div style="float:left;width:50%;" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">	
-				Export
+				<spagobi:message key = "SBISet.export" />
 		</div>
 		<div style="float:left;width:10%;">
 		  <center>
@@ -71,18 +85,19 @@
 				</a>
 		  </center>
 		</div>
-		<div id="divProgress" style="clear:left;margin-left:15px;padding-top:15px;display:none">
-			Operation in Progress ... (Please wait)
+		<div id="divProgress"  
+			 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">
+			<spagobi:message key = "SBISet.importexport.opProg" />
 		</div>
-		<div id="divDownload" style="clear:left;margin-left:15px;padding-top:15px;display:none">
-		<%
-			String downloadUrl = renderRequest.getContextPath() + "/ExportService";
-		    downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
-		%>
-			Operation Complete <a href='<%=downloadUrl%>'>Download</a>
+		<div id="divDownload" 
+			 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">	 
+			<spagobi:message key = "SBISet.importexport.opComplete" />
+			<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadForm()">
+				<spagobi:message key = "Sbi.download" />
+			</a>
 		</div>
 		<div style="clear:left;margin-left:15px;padding-top:10px;">
-			Name Export: <input type="text" name="exportFileName" size="30" />
+			<spagobi:message key = "SBISet.importexport.nameExp" />: <input type="text" name="exportFileName" size="30" />
 			<!-- Version 1.8 doesn't allow to export subobject
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			Export SubObjects: <input type="checkbox" name="exportSubObj" />
@@ -95,10 +110,17 @@
 	</div>
 	</form>
 
+
+
+	<form method='POST' action='<%=downloadUrl%>' id='downForm' name='downForm'>
+	</form>
+
+
+
     <form method='POST' action='<%=formImportUrl.toString()%>' id='importForm' name='importForm' enctype="multipart/form-data">
 	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">
-				Import
+				<spagobi:message key = "SBISet.import" />
 		</div>
 		<div style="float:left;width:10%;">
 		  <center>
@@ -110,7 +132,7 @@
 			</center>
 		</div>
 		<div style="clear:left;margin-bottom:10px;padding-top:10px;">
-			Export Archive: <input type="file"  name="exportedArchive" />
+			<spagobi:message key = "SBISet.importexport.fileArchive" />: <input type="file"  name="exportedArchive" />
 			<input type='hidden' name='MESSAGEDET' value='Import' />
 		</div>
 	</div>

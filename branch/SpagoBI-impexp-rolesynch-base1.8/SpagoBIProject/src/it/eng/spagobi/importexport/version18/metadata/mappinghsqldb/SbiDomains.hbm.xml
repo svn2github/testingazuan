@@ -9,9 +9,6 @@
     <class name="it.eng.spagobi.metadata.SbiDomains" table="sbi_domains">
         <id name="valueId" type="integer">
             <column name="value_id" />
-             <generator class="identity">
-            	
-            </generator>
         </id>
         <property name="domainCd" type="string">
             <column name="domain_cd" length="20" />

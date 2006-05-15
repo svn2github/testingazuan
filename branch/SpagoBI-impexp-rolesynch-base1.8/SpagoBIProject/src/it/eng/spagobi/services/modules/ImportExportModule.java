@@ -21,26 +21,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IEngineDAO;
 import it.eng.spagobi.bo.dao.IRoleDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.importexport.ExistingMetadata;
 import it.eng.spagobi.importexport.IExportManager;
 import it.eng.spagobi.importexport.IImportManager;
+import it.eng.spagobi.importexport.MetadataAssociations;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,12 +55,6 @@ import org.apache.commons.fileupload.portlet.PortletFileUpload;
  * This class implements a module which  handles the import / export operations
  */
 public class ImportExportModule extends AbstractModule {
-	
-	private static IImportManager impManager = null; 
-	private static Map roleAssociations = null;
-	private static Map engineAssociations = null;
-	private static ExistingMetadata existMD = null;
-	private static Map connAssociations = null;
 	
     /**
      * Initialize the module 
@@ -129,13 +123,13 @@ public class ImportExportModule extends AbstractModule {
 	
 	private void exportConf(SourceBean request, SourceBean response) throws EMFUserError {
 		IExportManager expManager = null;
+		String exportFileName = (String)request.getAttribute("exportFileName");
+		if((exportFileName==null) || (exportFileName.trim().equals(""))) {
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "exportConf",
+     							  "Missing name of the exported file");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8006);
+		}
 		try{
-			String exportFileName = (String)request.getAttribute("exportFileName");
-			if((exportFileName==null) || (exportFileName.trim().equals(""))) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "exportConf",
-									  "Missing name of the exported file");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8006);
-			}
 			String exportSubObject = (String)request.getAttribute("exportSubObj");
 			boolean expSubObj = false;
 			if(exportSubObject!=null) {
@@ -182,6 +176,16 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void importConf(SourceBean request, SourceBean response) throws EMFUserError {
+		IImportManager impManager = null;
+		// get content and name of the uploaded archive
+		UploadedFile archive = (UploadedFile)request.getAttribute("UPLOADED_FILE");
+		String archiveName = archive.getFileName();
+		if(archiveName.trim().equals("")){
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "importConf",
+			  					   "Missing exported file");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8007);
+		}
+		byte[]archiveBytes = archive.getFileContent();
 		try{
 			// get path of the import tmp directory
 			ConfigSingleton conf = ConfigSingleton.getInstance();
@@ -191,10 +195,6 @@ public class ImportExportModule extends AbstractModule {
 				String pathcont = ConfigSingleton.getRootPath();
 				pathImpTmpFolder = pathcont + "/" + pathImpTmpFolder;
 			}
-			// get content and name of the uploaded archive
-			UploadedFile archive = (UploadedFile)request.getAttribute("UPLOADED_FILE");
-			String archiveName = archive.getFileName();
-			byte[]archiveBytes = archive.getFileContent();
 			// instance the importer class
 			String impClassName = (String)importerSB.getAttribute("class");
 	        Class impClass = Class.forName(impClassName);
@@ -208,6 +208,9 @@ public class ImportExportModule extends AbstractModule {
 			IRoleDAO roleDAO = DAOFactory.getRoleDAO();
 			List currentRoles = roleDAO.loadAllRoles();
 			try{
+				RequestContainer requestContainer = this.getRequestContainer();
+				SessionContainer session = requestContainer.getSessionContainer();
+				session.setAttribute(SpagoBIConstants.IMPORT_MANAGER, impManager);
 				response.setAttribute(SpagoBIConstants.LIST_EXPORTED_ROLES, exportedRoles);
 				response.setAttribute(SpagoBIConstants.LIST_CURRENT_ROLES, currentRoles);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ImportExportRoleAssociation");
@@ -217,22 +220,26 @@ public class ImportExportModule extends AbstractModule {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);	
 			}
 		} catch (EMFUserError emfue) {
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw emfue;
 		} catch (ClassNotFoundException cnde) {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "importConf",
 					"Importer class not found" + cnde);
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 		} catch (InstantiationException ie) {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "importConf",
 					"Cannot create an instance of importer class " + ie);
-			impManager.stopImport();
+			if(impManager!=null)	
+				impManager.stopImport();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 		} catch (IllegalAccessException iae) {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "importConf",
 					"Cannot create an instance of importer class " + iae);
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 		}
 	}
@@ -240,17 +247,20 @@ public class ImportExportModule extends AbstractModule {
 
 	
 	private void associateRoles(SourceBean request, SourceBean response) throws EMFUserError {
-		roleAssociations = new HashMap();
+		IImportManager impManager = null;
 		try{
+			RequestContainer requestContainer = this.getRequestContainer();
+			SessionContainer session = requestContainer.getSessionContainer();
+			impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
+			MetadataAssociations metaAss = impManager.getMetadataAssociation();
 			List expRoleIds = request.getAttributeAsList("expRole");
 			Iterator iterExpRoles = expRoleIds.iterator();
 			while(iterExpRoles.hasNext()){
 				String expRoleId = (String)iterExpRoles.next();
 				String roleAssociateId = (String)request.getAttribute("roleAssociated"+expRoleId);
 				if(!roleAssociateId.trim().equals(""))
-					roleAssociations.put(expRoleId, roleAssociateId);
+					metaAss.insertCoupleRole(new Integer(expRoleId), new Integer(roleAssociateId));
 			}
-			//impManager.updateRoleReferences(associations);
             List exportedEngines = impManager.getExportedEngines();
 			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 			List currentEngines = engineDAO.loadAllEngines();
@@ -264,12 +274,14 @@ public class ImportExportModule extends AbstractModule {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 			}
 		} catch (EMFUserError emfue) {
-			impManager.stopImport();
+			if(impManager!=null)	
+				impManager.stopImport();
 			throw emfue;
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateRoles",
 		                        "Error while getting role association " + e);
-			impManager.stopImport();
+			if(impManager!=null)	
+				impManager.stopImport();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 		}
 	}
@@ -278,15 +290,19 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void associateEngines(SourceBean request, SourceBean response) throws EMFUserError {
-		engineAssociations = new HashMap();
+		IImportManager impManager = null;
 		try{
+			RequestContainer requestContainer = this.getRequestContainer();
+			SessionContainer session = requestContainer.getSessionContainer();
+			impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
+			MetadataAssociations metaAss = impManager.getMetadataAssociation();
 			List expEngineIds = request.getAttributeAsList("expEngine");
 			Iterator iterExpEngines = expEngineIds.iterator();
 			while(iterExpEngines.hasNext()){
 				String expEngineId = (String)iterExpEngines.next();
 				String engineAssociateId = (String)request.getAttribute("engineAssociated"+expEngineId);
 				if(!engineAssociateId.trim().equals(""))
-					engineAssociations.put(expEngineId, engineAssociateId);
+					metaAss.insertCoupleEngine(new Integer(expEngineId), new Integer(engineAssociateId));
 			}
 			List exportedConnection = impManager.getExportedConnections();
 			Map currentConnections = getCurrentConnectionInfo();
@@ -301,12 +317,14 @@ public class ImportExportModule extends AbstractModule {
 			}
 			
 		} catch (EMFUserError emfue) {
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw emfue;
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateEngines",
 		                        "Error while getting engine association " + e);
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 		}
 	}
@@ -315,15 +333,19 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void associateConnections(SourceBean request, SourceBean response) throws EMFUserError {
-		connAssociations = new HashMap();
+		IImportManager impManager = null;
 		try{
+			RequestContainer requestContainer = this.getRequestContainer();
+			SessionContainer session = requestContainer.getSessionContainer();
+			impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
+			MetadataAssociations metaAss = impManager.getMetadataAssociation();
 			List expConnNameList = request.getAttributeAsList("expConn");
 			Iterator iterExpConn = expConnNameList.iterator();
 			while(iterExpConn.hasNext()){
 				String expConnName= (String)iterExpConn.next();
 				String connNameAss = (String)request.getAttribute("connAssociated"+ expConnName);
 				if(!connNameAss.equals("")) {
-					connAssociations.put(expConnName, connNameAss);
+					metaAss.insertCoupleConnections(expConnName, connNameAss);
 				} else {
 					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateConnections",
 	                        			"Exported connection " +expConnName+" is not associate to a current " +
@@ -331,16 +353,12 @@ public class ImportExportModule extends AbstractModule {
 					throw new EMFUserError(EMFErrorSeverity.ERROR, 8002);
 				}
 			}
-			impManager.updateRoleReferences(roleAssociations);
-			impManager.updateEngineReferences(engineAssociations);
-			impManager.updateConnectionReferences(connAssociations);
-			existMD = impManager.checkExistingMetadata();
-			if(existMD.isEmpty()) {
+			impManager.checkExistingMetadata();
+			if(metaAss.isEmpty()) {
 				impManager.importObjects();
 				impManager.commitAllChanges(); 
 			} else {
 				try{
-					response.setAttribute(SpagoBIConstants.EXISTING_METADATA, existMD);
 					response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ImportExportExistingMetadataAssociation");
 				} catch (SourceBeanException sbe) {
 					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateConnections",
@@ -349,12 +367,14 @@ public class ImportExportModule extends AbstractModule {
 				}
 			}
 		} catch (EMFUserError emfue) {
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw emfue; 
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateConnections",
                     			"Error while getting connection association " + e);
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8003);
 		}
 		
@@ -364,12 +384,17 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void associateMetadata(SourceBean request, SourceBean response) throws EMFUserError {
+		IImportManager impManager = null;
 		try{
-			impManager.updateMetadataReferences(existMD);
+			RequestContainer requestContainer = this.getRequestContainer();
+			SessionContainer session = requestContainer.getSessionContainer();
+			impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
+			MetadataAssociations metaAss = impManager.getMetadataAssociation();
 			impManager.importObjects();
 			impManager.commitAllChanges();
 		} catch (EMFUserError emfue) {
-			impManager.stopImport();
+			if(impManager!=null)
+				impManager.stopImport();
 			throw emfue; 
 		}	
 	}
@@ -380,6 +405,9 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void exitImport(SourceBean request, SourceBean response) throws EMFUserError {
+		RequestContainer requestContainer = this.getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		IImportManager impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
 		impManager.stopImport();
 		try{
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ImportExportLoopbackStopImport");
@@ -393,6 +421,9 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void backEngineAssociation(SourceBean request, SourceBean response) throws EMFUserError {
+		RequestContainer requestContainer = this.getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		IImportManager impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
 		List exportedRoles = impManager.getExportedRoles();
 		IRoleDAO roleDAO = DAOFactory.getRoleDAO();
 		List currentRoles = roleDAO.loadAllRoles();
@@ -411,6 +442,9 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void backConnAssociation(SourceBean request, SourceBean response) throws EMFUserError {
+		RequestContainer requestContainer = this.getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		IImportManager impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
 		List exportedEngines = impManager.getExportedEngines();
 		IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 		List currentEngines = engineDAO.loadAllEngines();
@@ -429,6 +463,9 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	private void backMetadataAssociation(SourceBean request, SourceBean response) throws EMFUserError {
+		RequestContainer requestContainer = this.getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		IImportManager impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
 		List exportedConnection = impManager.getExportedConnections();
 		Map currentConnections = getCurrentConnectionInfo();
 		try{

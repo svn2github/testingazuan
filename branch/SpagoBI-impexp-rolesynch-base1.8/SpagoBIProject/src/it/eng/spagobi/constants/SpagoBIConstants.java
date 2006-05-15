@@ -145,7 +145,7 @@ public class SpagoBIConstants {
 	public static final String LIST_CURRENT_ENGINES = "LIST_CURRENT_ROLES"; 
 	public static final String IMPEXP_ENGINE_ASSOCIATION = "IMPEXP_ENGINE_ASSOCIATION";
 	public static final String IMPEXP_CONNECTION_ASSOCIATION = "IMPEXP_CONNECTION_ASSOCIATION";
-	public static final String IMPEXP_METADATA_ASS = "IMPEXP_BACK_CONN_ASS";
+	public static final String IMPEXP_METADATA_ASS = "IMPEXP_METADATA_ASS";
 	public static final String EXPORT_FILE_PATH = "EXPORT_FILE_PATH";
 	public static final String EXPORT_FILE_URL = "EXPORT_FILE_URL";
 	public static final String IMPEXP_EXIT = "IMPEXP_EXIT";
@@ -155,5 +155,6 @@ public class SpagoBIConstants {
 	public static final String LIST_EXPORTED_CONNECTIONS = "LIST_EXPORTED_CONNECTIONS"; 
 	public static final String MAP_CURRENT_CONNECTIONS = "MAP_CURRENT_CONNECTIONS"; 
 	public static final String EXISTING_METADATA = "EXISTING_METADATA"; 
+	public static final String IMPORT_MANAGER = "IMPORT_MANAGER"; 
 
 }

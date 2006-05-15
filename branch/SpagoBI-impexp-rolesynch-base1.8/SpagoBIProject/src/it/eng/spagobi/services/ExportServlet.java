@@ -83,22 +83,30 @@ public class ExportServlet extends HttpServlet{
 			String exportFilePath = (String)request.getParameter("PATH");
 			File exportedFile = new File(exportFilePath);
 			String exportFileName = exportedFile.getName();
-			FileInputStream fis = new FileInputStream(exportFilePath);
-			byte[] exportContent = GeneralUtilities.getByteArrayFromInputStream(fis);
 			response.setHeader("Content-Disposition","attachment; filename=\"" + exportFileName + "\";");
+			byte[] exportContent = "".getBytes();
+			FileInputStream fis = null;
+			try{
+				fis = new FileInputStream(exportFilePath);
+				exportContent = GeneralUtilities.getByteArrayFromInputStream(fis);
+			} catch (IOException ioe) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "manageDownload",
+                        			  "Cannot get bytes of the exported file" + ioe);
+			}
  			response.setContentLength(exportContent.length);
 		 	response.getOutputStream().write(exportContent);
 		 	response.getOutputStream().flush();
-		 	fis.close();
+		 	if(fis!=null)
+		 		fis.close();
 		 	exportedFile.delete();
 		} catch (IOException ioe) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "manageDownload",
 		                           "Cannot flush response" + ioe);
-			sendError(request, response, ioe);
+			//sendError(request, response, ioe);
 		} finally {	}
 	}
 
-	
+	/*
 	private void sendError(HttpServletRequest request, HttpServletResponse response, Exception e){
 		String respStr = "<html><body><center>";
 		respStr += "<h1>Error</h1>";
@@ -112,7 +120,7 @@ public class ExportServlet extends HttpServlet{
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "sendError",
 					               "Cannot flush response" + ex);
 		}
-	}
+	}*/
 	
 
 }	

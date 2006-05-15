@@ -68,15 +68,20 @@
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='connAssForm' name='connAssForm'>
-	<div style="float:left;width:70%;" class="div_detail_area_forms">
+	<div style="float:left;width:69%;" class="div_detail_area_forms">
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header'>Exported Connections</td>
-				<td class='portlet-section-header'>System Connection Associations</td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedConn"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentConn"/></td>
 			</tr>
 			<tr>
 				<td colspan="2">&nbsp;</td>
 			</tr>
+			<%if(expConns.isEmpty()) { %>
+			<tr>
+				<td colspan="2" style="color:#074B88;"><spagobi:message key="SBISet.impexp.noConnExported"/></td>
+			</tr>
+			<% } %>
 			<%
 		    while(iterExpConn.hasNext()) {
 		    	Object connObj = iterExpConn.next();
@@ -109,7 +114,9 @@
 				<td>
 				    <input type="hidden" name="expConn" value="<%=connName%>" />
 					<select style="width:250px;margin-top:5px;" name="connAssociated<%=connName%>" >
-						<option value=""></option>
+						<option value="">
+							<spagobi:message key="Sbi.selectcombo"/>
+						</option>
 						<% 
 							Set curConnNames = curConns.keySet();	
 							Iterator iterCurConnNames = curConnNames.iterator();
@@ -126,12 +133,16 @@
 		</table>
 	</div>
 	
-	<div style="float:left;">
+	<div style="float:left;width:29%;">
 		<input type="image" 
 		       name="submit" 
 		       title='<spagobi:message key="Sbi.next"/>' 
 		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/next.png")%>' 
 		       alt='<spagobi:message key="Sbi.next"/>' />
+		<br/>
+		<ul style="color:#074B88;">
+			<li><spagobi:message key = "SBISet.impexp.connrule1" /></li>
+		</ul>
 	</div>
 	</form>
 	

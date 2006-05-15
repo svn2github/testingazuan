@@ -7,7 +7,7 @@
 				java.util.Map,
 				java.util.Set,
 				java.util.Iterator,
-				it.eng.spagobi.importexport.ExistingMetadata,
+				it.eng.spagobi.importexport.MetadataAssociations,
 				it.eng.spagobi.metadata.SbiLov,
 				it.eng.spagobi.metadata.SbiExtRoles,
 				it.eng.spagobi.metadata.SbiObjects,
@@ -15,11 +15,13 @@
 				it.eng.spagobi.metadata.SbiFunctions,
 				it.eng.spagobi.metadata.SbiEngines,
 				it.eng.spagobi.metadata.SbiChecks,
-				it.eng.spagobi.metadata.SbiParuse" %>
+				it.eng.spagobi.metadata.SbiParuse,
+				it.eng.spagobi.importexport.IImportManager" %>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
-	ExistingMetadata existMD = (ExistingMetadata)moduleResponse.getAttribute(SpagoBIConstants.EXISTING_METADATA);
+	IImportManager impMan = (IImportManager)aSessionContainer.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
+    MetadataAssociations metaAss = impMan.getMetadataAssociation();
 	
     PortletURL backUrl = renderResponse.createActionURL();
    	backUrl.setParameter("PAGE", "ImportExportPage");
@@ -72,8 +74,9 @@
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='connAssForm' name='connAssForm'>
-	<div style="float:left;width:70%;" class="div_detail_area_forms">
-		<%if(!existMD.getRoleIDAssociation().keySet().isEmpty()) { %>
+	<div style="float:left;width:69%;" class="div_detail_area_forms">
+		<%--
+		<%if(!metaAss.getRoleIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
 				<td class='portlet-section-header' colspan="2">Roles</td>
@@ -83,7 +86,7 @@
 				<td class='portlet-section-header'>Existing roles</td>
 			</tr>
 			<%
-				Map rolesAss = existMD.getRoleAssociation();
+				Map rolesAss = metaAss.getRoleAssociation();
 				Set rolesExp = rolesAss.keySet();
 			    Iterator iterExp =  rolesExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -108,17 +111,18 @@
 			%>
 		</table>
 		<% } %>
-		<%if(!existMD.getLovIDAssociation().keySet().isEmpty()) { %>
+		--%>
+		<%if(!metaAss.getLovIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2">List of values</td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.lovs" /></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'>Exported List of values</td>
-				<td class='portlet-section-header'>Existing List of values</td>
+				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedLovs" /></td>
+				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.currentLovs" /></td>
 			</tr>
 			<%
-				Map lovsAss = existMD.getLovAssociation();
+				Map lovsAss = metaAss.getLovAssociation();
 				Set lovsExp = lovsAss.keySet();
 			    Iterator iterExp =  lovsExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -145,17 +149,17 @@
 			%>
 		</table>
 		<% } %>
-		<%if(!existMD.getFunctIDAssociation().keySet().isEmpty()) { %>
+		<%if(!metaAss.getFunctIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2">Functionalities</td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.functionalities" /></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'>Exported Functionalities</td>
-				<td class='portlet-section-header'>Existing Functionalities</td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedFunctionalities"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentFunctionalities"/></td>
 			</tr>
 			<%
-				Map functsAss = existMD.getFunctAssociation();
+				Map functsAss = metaAss.getFunctAssociation();
 				Set functsExp = functsAss.keySet();
 			    Iterator iterExp =  functsExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -184,17 +188,17 @@
 			%>
 		</table>
 		<% } %>
-		<%if(!existMD.getEngineIDAssociation().keySet().isEmpty()) { %>
+		<%if(!metaAss.getEngineIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2">Engines</td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.engines" /></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'>Exported Engines</td>
-				<td class='portlet-section-header'>Existing Engines</td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedEngines"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentEngines"/></td>
 			</tr>
 			<%
-				Map engsAss = existMD.getEngineAssociation();
+				Map engsAss = metaAss.getEngineAssociation();
 				Set engsExp = engsAss.keySet();
 			    Iterator iterExp =  engsExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -223,17 +227,17 @@
 			%>
 		</table>
 		<% } %>
-		<%if(!existMD.getCheckIDAssociation().keySet().isEmpty()) { %>
+		<%if(!metaAss.getCheckIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2">Checks</td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.checks" /></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'>Exported Checks</td>
-				<td class='portlet-section-header'>Existing Checks</td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedChecks"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentChecks"/></td>
 			</tr>
 			<%
-				Map checksAss = existMD.getCheckAssociation();
+				Map checksAss = metaAss.getCheckAssociation();
 				Set checksExp = checksAss.keySet();
 			    Iterator iterExp =  checksExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -260,17 +264,17 @@
 			%>
 		</table>
 		<% } %>
-		<%if(!existMD.getParameterIDAssociation().keySet().isEmpty()) { %>
+		<%if(!metaAss.getParameterIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2">Parameters</td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.parameters" /></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'>Exported Parameters</td>
-				<td class='portlet-section-header'>Existing Parameters</td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedParameters"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentParameters"/></td>
 			</tr>
 			<%
-				Map paramsAss = existMD.getParameterAssociation();
+				Map paramsAss = metaAss.getParameterAssociation();
 				Set paramsExp = paramsAss.keySet();
 			    Iterator iterExp =  paramsExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -297,17 +301,17 @@
 			%>
 		</table>
 		<% } %>
-		<%if(!existMD.getParuseIDAssociation().keySet().isEmpty()) { %>
+		<%if(!metaAss.getParuseIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2">Parameter uses</td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.paruses" /></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'>Exported Parameter uses</td>
-				<td class='portlet-section-header'>Existing Parameter uses</td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedParuses"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentParuses"/></td>
 			</tr>
 			<%
-				Map parusesAss = existMD.getParuseAssociation();
+				Map parusesAss = metaAss.getParuseAssociation();
 				Set parusesExp = parusesAss.keySet();
 			    Iterator iterExp =  parusesExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -334,17 +338,17 @@
 			%>
 		</table>
 		<% } %>
-		<%if(!existMD.getBIobjIDAssociation().keySet().isEmpty()) { %>
+		<%if(!metaAss.getBIobjIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2">Objects</td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.objects" /></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'>Exported object</td>
-				<td class='portlet-section-header'>Existing objects</td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedObjects"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentObjects"/></td>
 			</tr>
 			<%
-				Map biobjsAss = existMD.getBIObjAssociation();
+				Map biobjsAss = metaAss.getBIObjAssociation();
 				Set biobjsExp = biobjsAss.keySet();
 			    Iterator iterExp =  biobjsExp.iterator();
 			    while(iterExp.hasNext()) {
@@ -374,12 +378,19 @@
 		
 	</div>
 	
-	<div style="float:left;">
+	<div style="float:left;width:29%;">
 		<input type="image" 
 		       name="submit" 
 		       title='<spagobi:message key="Sbi.next"/>' 
 		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/next.png")%>' 
 		       alt='<spagobi:message key="Sbi.next"/>' />
+		<br/>
+		<ul style="color:#074B88;">
+			<li><spagobi:message key = "SBISet.impexp.metadatarule1" /></li>
+			<li><spagobi:message key = "SBISet.impexp.metadatarule2" /></li>
+			<li><spagobi:message key = "SBISet.impexp.metadatarule3" /></li>
+			<li><spagobi:message key = "SBISet.impexp.metadatarule4" /></li>
+		</ul>
 	</div>
 	</form>
 	

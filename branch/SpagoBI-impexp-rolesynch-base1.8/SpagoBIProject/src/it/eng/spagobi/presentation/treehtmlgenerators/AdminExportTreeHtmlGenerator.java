@@ -65,7 +65,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 				renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+
 				renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
-		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("<div id='divmenuFunct' style='width:150px;' class='dtreemenu' onmouseout='hideMenu(event);' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
 		htmlStream.append("<table width='100%'>");

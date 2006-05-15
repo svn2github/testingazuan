@@ -35,6 +35,9 @@ public class Domain  implements Serializable  {
 	private Integer valueId ;
 	private String valueCd = "";
 	private String valueName = "";
+	private String valueDescription = "";
+	private String domainCode = "";
+	private String domainName = "";
 
 	/**
 	 * @return Returns the valueCd.
@@ -73,12 +76,30 @@ public class Domain  implements Serializable  {
 		this.valueName = valueName;
 	}
 	
-	/*
-	public static Domain getDomain(String codeDomain, String codeValue) throws EMFUserError {
-		DomainDAOImpl domaindao = new DomainDAOImpl();
-	    return domaindao.load(codeDomain, codeValue);
+	public String getDomainCode() {
+		return domainCode;
 	}
-	*/
+	
+	public void setDomainCode(String domainCode) {
+		this.domainCode = domainCode;
+	}
+	
+	public String getDomainName() {
+		return domainName;
+	}
+	
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+	
+	public String getValueDescription() {
+		return valueDescription;
+	}
+	
+	public void setValueDescription(String valueDescription) {
+		this.valueDescription = valueDescription;
+	}
+	
 }
 	
 	

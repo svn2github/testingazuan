@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.importexport.version18;
 
 import it.eng.spago.base.SourceBeanException;
@@ -21,7 +42,6 @@ import it.eng.spagobi.metadata.SbiFuncRole;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiLov;
 import it.eng.spagobi.metadata.SbiObjPar;
-import it.eng.spagobi.metadata.SbiObjParId;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
@@ -44,9 +64,19 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-
+/**
+ * Implements methods to gather information from exported database 
+ * and to make some checks into the current SpagoBI database
+ */
 public class ImporterMetadata {
 
+		/**
+		 * Get the list of exported hibernate role objects 
+		 * @param tx Hiberante transaction for the exported database
+		 * @param session Hiberante session for the exported database
+		 * @return The list of exported hibernate roles
+		 * @throws EMFUserError
+		 */
 		public List getAllExportedRoles(Transaction tx, Session session) throws EMFUserError {
 			List roles = new ArrayList();
 			try {
@@ -73,7 +103,13 @@ public class ImporterMetadata {
 		}
 		
 		
-		
+		/**
+		 * Get the list of exported hibernate engine objects 
+		 * @param tx Hibernate transaction for the exported database
+		 * @param session Hibernate session for the exported database
+		 * @return The list of exported hibernate engines
+		 * @throws EMFUserError
+		 */
 		public List getAllExportedEngines(Transaction tx, Session session) throws EMFUserError {
 			List engines = new ArrayList();
 			try {
@@ -105,7 +141,14 @@ public class ImporterMetadata {
 		}
 		
 		
-				
+		/**
+		 * Get the list of exported hibernate objects
+		 * @param tx Hibernate transaction for the exported database
+		 * @param session Hibernate session for the exported database
+		 * @param table The name of the table corresponding to the hibernate objects to gather
+		 * @return The list of exported hibernate objects
+		 * @throws EMFUserError
+		 */		
 		public List getAllExportedSbiObjects(Transaction tx, Session session, String table) throws EMFUserError {
 			List hibList = null;
 			try {
@@ -122,8 +165,17 @@ public class ImporterMetadata {
 		
 			
 		
-		
-		public void updateConnRefs(Map associations, Transaction tx, Session session) throws EMFUserError {
+		/**
+		 * Upadates the connection name into the query lov objects based on the 
+		 * assocaition defined by the user between exported and current SpagoBI connection
+		 * @param associations Map of associations between exported connections 
+		 * and connections of the current SpagoBI platform
+		 * @param tx Hibernate transaction for the exported database
+		 * @param session Hibernate session for the exported database
+		 * @throws EMFUserError
+		 */
+		public void updateConnRefs(Map associations, Transaction tx, 
+				                   Session session, MetadataLogger log) throws EMFUserError {
 			try {
 				List lovs = getAllExportedSbiObjects(tx, session, "SbiLov");
 				Set assKeys = associations.keySet();
@@ -137,10 +189,13 @@ public class ImporterMetadata {
 						if(lov.getInputTypeCd().equalsIgnoreCase("QUERY")) {
 							String lovProv = lov.getLovProvider();
 							QueryDetail qDet = QueryDetail.fromXML(lovProv);
+							String oldConnName = qDet.getConnectionName();
 							qDet.setConnectionName(assConnName);
 							lovProv = qDet.toXML();
 							lov.setLovProvider(lovProv);
-							session.save(lov); 
+							session.save(lov);
+							log.log("Changed the connection name from "+oldConnName+" to " +
+									assConnName + " for the lov " + lov.getName());
 						}
 					}
 				}
@@ -152,7 +207,12 @@ public class ImporterMetadata {
 		}
 		
 		
-		
+		/**
+		 * Insert a generic Hibernate object into the exported database
+		 * @param hibObj The object to insert
+		 * @param session Hibernate session for the exported database
+		 * @throws EMFUserError
+		 */
 		public void insertObject(Object hibObj, Session session) throws EMFUserError {
 			try{
 				Serializable serId = session.save(hibObj);
@@ -166,7 +226,12 @@ public class ImporterMetadata {
 		
 		
 		
-		
+		/**
+		 * Insert a functionality into the database and current cms repository 
+		 * @param curBaseFold The import temporary base folder 
+		 * @param relExpPath The path of the functionality to insert
+		 * @throws EMFUserError
+		 */
 		public void insertCmsFunctionality(String curBaseFold, String relExpPath) throws EMFUserError {
 			if(relExpPath.startsWith("/"))
 				relExpPath = relExpPath.substring(1);
@@ -203,11 +268,14 @@ public class ImporterMetadata {
 		
 		
 		
-		
-		
-		
-		
-		
+		/**
+		 * Insert a BIObject into the database and cms repository
+		 * @param obj The Hiberante BIObject to insert
+		 * @param pathContent The path of the temporary contents directory
+		 * @param session Hibernate session for the exported database
+		 * @return The Hibernate BIObject inserted
+		 * @throws EMFUserError
+		 */
 		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
 			CmsNode cmsnode = null;
 			CmsManager manager = new CmsManager();
@@ -252,7 +320,15 @@ public class ImporterMetadata {
 		
 		
 		
-		
+		/**
+		 * Check the existance of an object, based on his unique constraints, 
+		 * into the current SpagoBI database
+		 * @param unique The object which contains the unique constraints for the object
+		 * @param sessionCurrDB Hibernate session for the current SpagoBI database
+		 * @param hibObj An empty object usefull to identify  the kind of object to analize
+		 * @return The existing Object or null if it doesn't exist 
+		 * @throws EMFUserError
+		 */
 		public Object checkExistence(Object unique, Session sessionCurrDB, Object hibObj) throws EMFUserError {
 			String hql = null;
 			Query hqlQuery = null;

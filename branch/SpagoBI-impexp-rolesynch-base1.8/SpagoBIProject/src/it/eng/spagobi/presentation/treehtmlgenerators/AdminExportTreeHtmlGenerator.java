@@ -38,10 +38,14 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Implements method to build the tree of objects to export
+ */
+
 public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 
 	/**
-	 * Builds theJavaScript object to make the tree. All code is appended into a 
+	 * Builds the JavaScript object to make the tree. All code is appended into a 
 	 * String Buffer, which is then returned. 
 	 * @param dataTree The tree data Source Bean
 	 * @param httpReq The http Servlet Request 
@@ -131,7 +135,10 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 
 	
 	
-	
+	/**
+	 * Add the javascript function to manage the tree context menu, the selection and deselection of a 
+	 * particular branch
+	 */
 	protected void makeJSFunctionForMenu(StringBuffer htmlStream) {
 		htmlStream.append("		function menu(event, pathFather) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");

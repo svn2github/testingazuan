@@ -93,16 +93,7 @@ public class TreeObjectsModule extends AbstractModule {
             	filterTreeModalityHandler(request, response);
             } else {
             	defaultModalityHandler(request, response, actor, profile);
-            }
-            
-            // manage parameters based on operation 
-            String operation = (String)request.getAttribute(SpagoBIConstants.OPERATION);
-            if((operation!=null) && operation.equals(SpagoBIConstants.IMPORTEXPORT_OPERATION)) {
-				String expFilePath = (String)request.getAttribute(SpagoBIConstants.EXPORT_FILE_PATH);
-				if(expFilePath!=null)
-					response.setAttribute(SpagoBIConstants.EXPORT_FILE_PATH, expFilePath);
-            }
-            
+            }            
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 								"TreeObjectsMOdule", 

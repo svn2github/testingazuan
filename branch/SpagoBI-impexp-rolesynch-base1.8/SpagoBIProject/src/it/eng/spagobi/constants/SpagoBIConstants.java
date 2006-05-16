@@ -156,5 +156,6 @@ public class SpagoBIConstants {
 	public static final String MAP_CURRENT_CONNECTIONS = "MAP_CURRENT_CONNECTIONS"; 
 	public static final String EXISTING_METADATA = "EXISTING_METADATA"; 
 	public static final String IMPORT_MANAGER = "IMPORT_MANAGER"; 
+	public static final String IMPORT_LOG_FILE_PATH = "IMPORT_LOG_FILE_PATH";
 
 }

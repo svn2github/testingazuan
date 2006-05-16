@@ -868,6 +868,10 @@
       					   type="RELATIVE" 
       					   scope="SERVICE_RESPONSE" 
       					   value="IMPORTEXPORTMODULE.EXPORT_FILE_PATH"/>
+      			<PARAMETER name="IMPORT_LOG_FILE_PATH" 
+      					   type="RELATIVE" 
+      					   scope="SERVICE_RESPONSE" 
+      					   value="IMPORTEXPORTMODULE.IMPORT_LOG_FILE_PATH"/>
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

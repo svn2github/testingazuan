@@ -1,3 +1,24 @@
+<!--
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+
+
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="javax.portlet.PortletURL,
@@ -6,7 +27,8 @@
 
 <%  
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
-   String exportFilePath = (String)moduleResponse.getAttribute(SpagoBIConstants.EXPORT_FILE_PATH);
+   String exportFilePath = (String)aServiceRequest.getAttribute(SpagoBIConstants.EXPORT_FILE_PATH);
+   String importLogFilePath = (String)aServiceRequest.getAttribute(SpagoBIConstants.IMPORT_LOG_FILE_PATH);
 
    PortletURL backUrl = renderResponse.createActionURL();
    backUrl.setParameter("ACTION_NAME", "START_ACTION");
@@ -24,6 +46,11 @@
    String downloadUrl = renderRequest.getContextPath() + "/ExportService";
    if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
 	   downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
+   }
+   
+   String downloadLogUrl = renderRequest.getContextPath() + "/ExportService";
+   if((importLogFilePath!=null) && !importLogFilePath.trim().equalsIgnoreCase("") ) {
+	   downloadLogUrl += "?OPERATION=downloadLog&PATH="+  importLogFilePath;
    }
    
    
@@ -63,6 +90,12 @@
 		downform.submit();
 	}
 	
+	function submitDownloadLogForm(actionurl) {
+		downLogform = document.getElementById('downLogForm');
+		var divLogdown = document.getElementById('divLogDownload');
+		divLogdown.style.display='none';
+		downLogform.submit();
+	}
 </script>
 
 
@@ -115,7 +148,8 @@
 	<form method='POST' action='<%=downloadUrl%>' id='downForm' name='downForm'>
 	</form>
 
-
+    <form method='POST' action='<%=downloadLogUrl%>' id='downLogForm' name='downLogForm'>
+	</form>
 
     <form method='POST' action='<%=formImportUrl.toString()%>' id='importForm' name='importForm' enctype="multipart/form-data">
 	<div style="float:left;width:45%" class="div_detail_area_forms">
@@ -134,6 +168,13 @@
 		<div style="clear:left;margin-bottom:10px;padding-top:10px;">
 			<spagobi:message key = "SBISet.importexport.fileArchive" />: <input type="file"  name="exportedArchive" />
 			<input type='hidden' name='MESSAGEDET' value='Import' />
+		</div>
+		<div id="divLogDownload" 
+			 style="clear:left;display:none;color:#074B88;">	 
+			<spagobi:message key = "SBISet.importexport.opComplete" />
+			<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadLogForm()">
+				<spagobi:message key = "Sbi.downloadLog" />
+			</a>
 		</div>
 	</div>
 	</form>
@@ -157,6 +198,17 @@
 	}
 %>
 
+
+<%
+	if((importLogFilePath!=null) && !importLogFilePath.trim().equalsIgnoreCase("") ) {
+%>
+	<script>
+		var divLogDown = document.getElementById('divLogDownload');
+		divLogDown.style.display='inline';
+	</script>
+<% 
+	}
+%>
 
 
 

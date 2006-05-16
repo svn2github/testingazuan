@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.importexport.version18;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -27,6 +48,12 @@ import org.hibernate.cfg.Configuration;
 
 public class ImportUtilities {
 
+	/**
+	 * Decompress the export compress file
+	 * @param pathImpTmpFolder The path of the import directory 
+	 * @param pathArchiveFile The path of the exported archive
+	 * @throws EMFUserError
+	 */
 	public static void decompressArchive(String pathImpTmpFolder, String pathArchiveFile) throws EMFUserError {
 		File tmpFolder = new File(pathImpTmpFolder);
 		tmpFolder.mkdirs();
@@ -60,7 +87,12 @@ public class ImportUtilities {
 	
 	
 	
-	
+	/**
+	 * Creates an Hibernate session factory for the exported database
+	 * @param pathDBFolder The path of the folder which contains the exported database
+	 * @return The Hibernate session factory
+	 * @throws EMFUserError
+	 */
 	public static SessionFactory getHibSessionExportDB(String pathDBFolder) throws EMFUserError {
 		Configuration conf = new Configuration();
 		String resource = "it/eng/spagobi/importexport/version18/hibernate.cfg.hsql.export.xml";
@@ -72,6 +104,11 @@ public class ImportUtilities {
 	}
 	
 	
+	/**
+	 * Creates a new hibernate role object
+	 * @param role old hibernate role object
+	 * @return the new hibernate role object
+	 */
 	public static SbiExtRoles makeNewSbiExtRole(SbiExtRoles role){
 		SbiExtRoles newRole = new SbiExtRoles();
 		newRole.setCode(role.getCode());
@@ -84,6 +121,12 @@ public class ImportUtilities {
 		return newRole;
 	}
 	
+	/**
+	 * Creates a new hibernate role object
+	 * @param role old hibernate role object
+	 * @param the id to assign to the new created role
+	 * @return the new hibernate role object
+	 */
 	public static SbiExtRoles makeNewSbiExtRole(SbiExtRoles role, Integer id){
 		SbiExtRoles newRole = makeNewSbiExtRole(role);
 		newRole.setExtRoleId(id);
@@ -91,6 +134,11 @@ public class ImportUtilities {
 	}
 	
 	
+	/**
+	 * Creates a new hibernate engine object
+	 * @param engine old hibernate engine object
+	 * @return the new hibernate engine object
+	 */
 	public static SbiEngines makeNewSbiEngine(SbiEngines engine){
 		SbiEngines newEng = new SbiEngines();
 		newEng.setDescr(engine.getDescr());
@@ -105,6 +153,12 @@ public class ImportUtilities {
 		return newEng;
 	}
 	
+	/**
+	 * Creates a new hibernate engine object
+	 * @param engine old hibernate engine object
+	 * @param the id to assign to the new created engine
+	 * @return the new hibernate engine object
+	 */
 	public static SbiEngines makeNewSbiEngine(SbiEngines engine, Integer id){
 		SbiEngines newEng = makeNewSbiEngine(engine);
 		newEng.setEngineId(id);
@@ -112,6 +166,11 @@ public class ImportUtilities {
 	}
 	
 	
+	/**
+	 * Creates a new hibernate functionality object
+	 * @param functionality old hibernate functionality object
+	 * @return the new hibernate functionality object
+	 */
 	public static SbiFunctions makeNewSbiFunction(SbiFunctions funct){
 		SbiFunctions newFunct = new SbiFunctions();
 		newFunct.setCode(funct.getCode());
@@ -125,7 +184,13 @@ public class ImportUtilities {
 		newFunct.setSbiObjFuncs(new HashSet());
 		return newFunct;
 	}
-	
+
+	/**
+	 * Creates a new hibernate functionality object
+	 * @param functionality old hibernate functionality object
+	 * @param the id to assign to the new created functionality
+	 * @return the new hibernate functionality object
+	 */
 	public static SbiFunctions makeNewSbiFunction(SbiFunctions funct, Integer id){
 		SbiFunctions newFunct = makeNewSbiFunction(funct);
 		newFunct.setFunctId(id);
@@ -133,6 +198,11 @@ public class ImportUtilities {
 	}
 	
 	
+	/**
+	 * Creates a new hibernate lov object
+	 * @param lov old hibernate lov object
+	 * @return the new hibernate lov object
+	 */
 	public static SbiLov makeNewSbiLov(SbiLov lov){
 		SbiLov newlov = new SbiLov();
 		newlov.setDefaultVal(lov.getDefaultVal());
@@ -145,7 +215,13 @@ public class ImportUtilities {
 		newlov.setProfileAttr(lov.getProfileAttr());
 		return newlov;
 	}
-	
+
+	/**
+	 * Creates a new hibernate lov object
+	 * @param lov old hibernate lov object
+	 * @param the id to assign to the new created lov
+	 * @return the new hibernate lov object
+	 */
 	public static SbiLov makeNewSbiLov(SbiLov lov, Integer id){
 		SbiLov newlov = makeNewSbiLov(lov);
 		newlov.setLovId(id);
@@ -153,7 +229,11 @@ public class ImportUtilities {
 	}
 	
 	
-	
+	/**
+	 * Creates a new hibernate check object
+	 * @param check old hibernate check object
+	 * @return the new hibernate check object
+	 */
 	public static SbiChecks makeNewSbiCheck(SbiChecks check){
 		SbiChecks newck = new SbiChecks();
 		newck.setCheckType(check.getCheckType());
@@ -166,6 +246,12 @@ public class ImportUtilities {
 		return newck;
 	}
 	
+	/**
+	 * Creates a new hibernate check object
+	 * @param check old hibernate check object
+	 * @param the id to assign to the new created check
+	 * @return the new hibernate check object
+	 */
 	public static SbiChecks makeNewSbiCheck(SbiChecks check, Integer id){
 		SbiChecks newCk = makeNewSbiCheck(check);
 		newCk.setCheckId(id);
@@ -173,6 +259,11 @@ public class ImportUtilities {
 	}
 	
 	
+	/**
+	 * Creates a new hibernate parameter object
+	 * @param parameter old hibernate parameter object
+	 * @return the new hibernate parameter object
+	 */
 	public static SbiParameters makeNewSbiParameter(SbiParameters param){
 		SbiParameters newPar = new SbiParameters();
 		newPar.setDescr(param.getDescr());
@@ -187,13 +278,23 @@ public class ImportUtilities {
 		return newPar;
 	}
 	
+	/**
+	 * Creates a new hibernate parameter object
+	 * @param parameter old hibernate parameter object
+	 * @param the id to assign to the new created parameter
+	 * @return the new hibernate parameter object
+	 */
 	public static SbiParameters makeNewSbiParameter(SbiParameters param, Integer id){
 		SbiParameters newPar = makeNewSbiParameter(param);
 		newPar.setParId(id);
 		return newPar;
 	}
 	
-	
+	/**
+	 * Creates a new hibernate parameter use object
+	 * @param parameter use old hibernate parameter use object
+	 * @return the new hibernate parameter use object
+	 */
 	public static SbiParuse makeNewSbiParuse(SbiParuse paruse){
 		SbiParuse newParuse = new SbiParuse();
 		newParuse.setDescr(paruse.getDescr());
@@ -206,14 +307,24 @@ public class ImportUtilities {
 		return newParuse;
 	}
 	
-	
+
+	/**
+	 * Creates a new hibernate parameter use object
+	 * @param parameter use old hibernate parameter use object
+	 * @param the id to assign to the new created parameter use
+	 * @return the new hibernate parameter use object
+	 */
 	public static SbiParuse makeNewSbiParuse(SbiParuse paruse, Integer id){
 		SbiParuse newParuse = makeNewSbiParuse(paruse);
 		newParuse.setUseId(id);
 		return newParuse;
 	}
 	
-	
+	/**
+	 * Creates a new hibernate biobject
+	 * @param obj old hibernate biobject
+	 * @return the new hibernate biobject
+	 */
 	public static SbiObjects makeNewSbiObject(SbiObjects obj){
 		SbiObjects newObj = new SbiObjects();
 		newObj.setDescr(obj.getDescr());
@@ -238,7 +349,13 @@ public class ImportUtilities {
 		return newObj;
 	}
 	
-	
+
+	/**
+	 * Creates a new hibernate biobject
+	 * @param obj old hibernate biobject
+	 * @param the id to assign to the new created biobject
+	 * @return the new hibernate biobject
+	 */
 	public static SbiObjects makeNewSbiObject(SbiObjects obj, Integer id){
 		SbiObjects newObj = makeNewSbiObject(obj);
 		newObj.setBiobjId(id);

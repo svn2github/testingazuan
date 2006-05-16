@@ -32,7 +32,7 @@ import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 /**
- * A particular publisher used to save configuration.
+ * A publisher used to lead execution flow after a import / export service.
  */
 public class ImportExportPublisher implements PublisherDispatcherIFace {
 

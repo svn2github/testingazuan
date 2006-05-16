@@ -1,3 +1,23 @@
+/**
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.importexport.version18;
 
 import it.eng.spago.base.SourceBean;
@@ -45,6 +65,9 @@ import java.util.zip.ZipOutputStream;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+/**
+ * Implements the interface which defines methods for managing the export requests
+ */
 public class ExportManager implements IExportManager {
 
 	private String nameExportFile = "";
@@ -59,7 +82,12 @@ public class ExportManager implements IExportManager {
 	SourceBean connections = null;
 	
 	
-	
+	/**
+	 * Prepare the environment for export
+	 * @param pathExpFold Path of the export folder
+	 * @param nameExpFile the name to give to the exported file
+	 * @param expSubObj Flag which tells if it's necessary to export subobjects
+	 */
 	public void prepareExport(String pathExpFold, String nameExpFile, boolean expSubObj) throws EMFUserError {
 		nameExportFile = nameExpFile;
 		pathExportFolder = pathExpFold;
@@ -96,9 +124,11 @@ public class ExportManager implements IExportManager {
 	
 	
 	
-	
-	public String exportObjects(List objPaths) throws EMFUserError {
-		
+	/**
+	 * Exports objects and creates the archive export file
+	 * @param objPaths List of path of the objects to export
+	 */
+	public String exportObjects(List objPaths) throws EMFUserError {	
 		exportPropertiesFile();
 		exportDomains();
 		Iterator iterObjs = objPaths.iterator();
@@ -114,6 +144,9 @@ public class ExportManager implements IExportManager {
 	}	
 		
 	
+	/**
+	 * Delete the temporary folder created for export purpose
+	 */
 	private void deleteTmpFolder() {
 		String folderTmpPath = pathExportFolder + "/" + nameExportFile;
 		File folderTmp = new File(folderTmpPath);
@@ -121,7 +154,11 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-	
+	/**
+	 * Creates the compress export file
+	 * @return The path of the exported compress file
+	 * @throws EMFUserError
+	 */
 	private String createExportArchive() throws EMFUserError {
 		String archivePath = pathExportFolder + "/" + nameExportFile + ".zip";
 		File archiveFile = new File(archivePath);
@@ -142,6 +179,12 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
+	/**
+	 * Compress contents of a folder into an output stream
+	 * @param pathFolder The path of the folder to compress
+	 * @param out The Compress output stream
+	 * @throws EMFUserError
+	 */
 	private void compressFolder(String pathFolder, ZipOutputStream out) throws EMFUserError {
 		File folder = new File(pathFolder);
 		String[] entries = folder.list();
@@ -176,7 +219,10 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-	
+	/**
+	 * Creates the export properties file
+	 * @throws EMFUserError
+	 */
 	private void exportPropertiesFile() throws EMFUserError {
 		try{
 			ConfigSingleton conf = ConfigSingleton.getInstance();
@@ -196,7 +242,10 @@ public class ExportManager implements IExportManager {
 		}
 	}
 	
-	
+	/**
+	 * Exports SpagoBI Domain Objects
+	 * @throws EMFUserError
+	 */
 	private void exportDomains() throws EMFUserError {
 		List domains = DAOFactory.getDomainDAO().loadListDomains();
 		Iterator itDom = domains.iterator();
@@ -207,7 +256,11 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-
+    /**
+     * Export A single SpagoBI BiObject
+     * @param path The path of the biobject to export
+     * @throws EMFUserError
+     */
 	private void exportSingleObj(String path) throws EMFUserError {
 		if((path==null) || path.trim().equals(""))
 			return;
@@ -226,7 +279,12 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-	
+	/**
+	 * Export the template of a single SpagoBI Object
+	 * @param biobj The BIObject to which the template belongs 
+	 * @param path The path of the SpagoBI BIObject
+	 * @throws EMFUserError
+	 */
 	private void exportTemplate(BIObject biobj, String path) throws EMFUserError {
 		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 		cmsdao.fillBIObjectTemplate(biobj);
@@ -250,7 +308,12 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-	
+	/**
+	 * Export the subobjects of a single SpagoBI Object
+	 * @param biobj The BIObject to which the template belongs 
+	 * @param path The path of the SpagoBI BIObject
+	 * @throws EMFUserError
+	 */
 	private void exportSubObjects(BIObject biobj, String path) throws EMFUserError {
 		try{
 			String folderSubObjPath = pathContentFolder + path + "/subobjects";
@@ -288,7 +351,12 @@ public class ExportManager implements IExportManager {
 	
 	
 	
-	
+	/**
+	 * Exports the BIParameters of a BIObject 
+	 * @param biparams List ot the BIParameters belonging to the BIObject
+	 * @param biobj The BIObject to which the parametes belong
+	 * @throws EMFUserError
+	 */
 	private void exportBIParamsBIObj(List biparams, BIObject biobj) throws EMFUserError {
 		Iterator iterBIParams = biparams.iterator();
 		while(iterBIParams.hasNext()) {
@@ -306,7 +374,11 @@ public class ExportManager implements IExportManager {
 	
 	
 	
-	
+	/**
+	 * Export a list ot Parameter use Objects
+	 * @param paruses The list of parameter use objects
+	 * @throws EMFUserError
+	 */
 	private void exportParUses(List paruses) throws EMFUserError {
 		Iterator iterUses = paruses.iterator();
 		while(iterUses.hasNext()){
@@ -335,7 +407,13 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-	
+	/**
+	 * Checks if a list of value object is a query type and in this case 
+	 * exports the name of the SpagoBI connection pool associated to the query
+	 * @param lov List of values Object
+	 * @param conns SourceBean that defines the connection pools of the current SpagoBI platform
+	 * @throws EMFUserError
+	 */
 	private void checkConnection(ModalitiesValue lov, SourceBean conns) throws EMFUserError {
 		try {
 			String type = lov.getITypeCd();
@@ -367,7 +445,11 @@ public class ExportManager implements IExportManager {
 	
 	
 	
-    
+    /**
+     * Export a single functionality
+     * @param path The path of the fuctionality to export
+     * @throws EMFUserError
+     */
 	private void exportFunctionalities(String path) throws EMFUserError {
 		List pathFuncts = new ArrayList();
 		String pathTmp = path;
@@ -405,7 +487,13 @@ public class ExportManager implements IExportManager {
 	
 	
 	
-	
+	/**
+	 * Export an association between a functionality and a list of roles
+	 * @param roles The list of roles to associate to the functionality
+	 * @param funct The functionality which is part of the association
+	 * @param state The state of the association
+	 * @throws EMFUserError
+	 */
 	private void exportFunctRoles(List roles, LowFunctionality funct, String state) throws EMFUserError {
 		IDomainDAO domDAO = DAOFactory.getDomainDAO();
 		Domain stateDom = domDAO.loadDomainByCodeAndValue("STATE", state);
@@ -419,7 +507,11 @@ public class ExportManager implements IExportManager {
 	
 		
 	
-	
+	/**
+	 * Export a list of SpagoBI roles
+	 * @param roles The list of roles to export
+	 * @throws EMFUserError
+	 */
 	private void exportRoles(List roles) throws EMFUserError {
 		Iterator iterRoles = roles.iterator();
 		while(iterRoles.hasNext()) {
@@ -430,7 +522,11 @@ public class ExportManager implements IExportManager {
 	
 	
 	
-	
+	/**
+	 * Creates the file describing the connections expoted
+	 * @param conns SourceBean describing the connections to export
+	 * @throws EMFUserError
+	 */
 	private void exportConnectionFile(SourceBean conns) throws EMFUserError {
 		try{
 			String connFilePath = pathBaseFolder + "/connections.xml";
@@ -448,7 +544,9 @@ public class ExportManager implements IExportManager {
 
 	
 	
-	
+	/**
+	 * Close hibernate session and session factory relative to the export database
+	 */
 	private void closeSession() {
 		if(session!=null){
 			if(session.isOpen())
@@ -461,7 +559,9 @@ public class ExportManager implements IExportManager {
 
 
 
-
+	/**
+	 * Clean the export environment (close sessions and delete temporary files)
+	 */
 	public void cleanExportEnvironment() {
 		closeSession();
 		deleteTmpFolder();

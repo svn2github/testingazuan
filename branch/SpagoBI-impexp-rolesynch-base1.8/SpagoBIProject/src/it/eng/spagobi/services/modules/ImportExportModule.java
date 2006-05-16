@@ -19,6 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
+
 package it.eng.spagobi.services.modules;
 
 import it.eng.spago.base.RequestContainer;
@@ -120,7 +121,12 @@ public class ImportExportModule extends AbstractModule {
 		}
 	}
 	
-	
+	/**
+	 * Manages the request of the user to export some selected objects
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void exportConf(SourceBean request, SourceBean response) throws EMFUserError {
 		IExportManager expManager = null;
 		String exportFileName = (String)request.getAttribute("exportFileName");
@@ -174,7 +180,12 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	
-	
+	/**
+	 * Manages the request of the user to import contents of an exported archive
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void importConf(SourceBean request, SourceBean response) throws EMFUserError {
 		IImportManager impManager = null;
 		// get content and name of the uploaded archive
@@ -245,7 +256,13 @@ public class ImportExportModule extends AbstractModule {
 	}
 	
 
-	
+	/**
+	 * Manages the request of the user to associate some exported roles 
+	 * to the roles of the portal in use
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void associateRoles(SourceBean request, SourceBean response) throws EMFUserError {
 		IImportManager impManager = null;
 		try{
@@ -288,7 +305,13 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	
-	
+	/**
+	 * Manages the request of the user to associate some exported engines 
+	 * to the engines of the portal in use
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void associateEngines(SourceBean request, SourceBean response) throws EMFUserError {
 		IImportManager impManager = null;
 		try{
@@ -331,7 +354,13 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	
-	
+	/**
+	 * Manages the request of the user to associate some exported connections 
+	 * to the connections of the portal in use
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void associateConnections(SourceBean request, SourceBean response) throws EMFUserError {
 		IImportManager impManager = null;
 		try{
@@ -356,7 +385,8 @@ public class ImportExportModule extends AbstractModule {
 			impManager.checkExistingMetadata();
 			if(metaAss.isEmpty()) {
 				impManager.importObjects();
-				impManager.commitAllChanges(); 
+				String logFilePath = impManager.commitAllChanges(); 
+				response.setAttribute(SpagoBIConstants.IMPORT_LOG_FILE_PATH, logFilePath);	
 			} else {
 				try{
 					response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ImportExportExistingMetadataAssociation");
@@ -370,6 +400,10 @@ public class ImportExportModule extends AbstractModule {
 			if(impManager!=null)
 				impManager.stopImport();
 			throw emfue; 
+		} catch (SourceBeanException sbe) {
+			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateConnections",
+					"Cannot populate response " + sbe);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateConnections",
                     			"Error while getting connection association " + e);
@@ -382,7 +416,12 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	
-	
+	/**
+	 * Manages the associations between the exported metadata and the one of the portal in use
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void associateMetadata(SourceBean request, SourceBean response) throws EMFUserError {
 		IImportManager impManager = null;
 		try{
@@ -391,11 +430,16 @@ public class ImportExportModule extends AbstractModule {
 			impManager = (IImportManager)session.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
 			MetadataAssociations metaAss = impManager.getMetadataAssociation();
 			impManager.importObjects();
-			impManager.commitAllChanges();
+			String logFilePath = impManager.commitAllChanges();
+			response.setAttribute(SpagoBIConstants.IMPORT_LOG_FILE_PATH, logFilePath);	
 		} catch (EMFUserError emfue) {
 			if(impManager!=null)
 				impManager.stopImport();
 			throw emfue; 
+		} catch (SourceBeanException sbe) {
+			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "associateMetadata",
+					"Cannot populate response " + sbe);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 		}	
 	}
 	
@@ -403,7 +447,12 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	
-	
+	/**
+	 * Manages the request of the user to exit from the import procedure
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void exitImport(SourceBean request, SourceBean response) throws EMFUserError {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
@@ -419,7 +468,12 @@ public class ImportExportModule extends AbstractModule {
 	}
 	
 	
-	
+	/**
+	 * Manages the request of the user to go back from the engines association to the roles association
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void backEngineAssociation(SourceBean request, SourceBean response) throws EMFUserError {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
@@ -440,7 +494,13 @@ public class ImportExportModule extends AbstractModule {
 	}
 	
 	
-	
+	/**
+	 * Manages the request of the user to go back from the connections association 
+	 * to the engines association
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void backConnAssociation(SourceBean request, SourceBean response) throws EMFUserError {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
@@ -462,6 +522,13 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	
+	/**
+	 * Manages the request of the user to go back from the metadata association 
+	 * to the connections association
+	 * @param request Spago SourceBean request 
+	 * @param response Spago SourceBean response
+	 * @throws EMFUserError
+	 */
 	private void backMetadataAssociation(SourceBean request, SourceBean response) throws EMFUserError {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
@@ -481,6 +548,12 @@ public class ImportExportModule extends AbstractModule {
 	
 	
 	
+	
+	/**
+	 * Gather information about the connections defined into the current SpagoBI platform.
+	 * @return Map A map containing the name of the connection pools as keys and 
+	 * their description as value
+	 */
 	private Map getCurrentConnectionInfo() {
 		Map curConns = new HashMap();
 		ConfigSingleton conf = ConfigSingleton.getInstance();

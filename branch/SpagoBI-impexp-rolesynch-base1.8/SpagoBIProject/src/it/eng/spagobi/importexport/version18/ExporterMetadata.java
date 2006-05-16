@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.importexport.version18;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -40,9 +61,17 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+/**
+ * Implements methods to insert exported metadata into the exported database 
+ */
 public class ExporterMetadata {
 
-	
+	/**
+	 * Insert a domain into the exported database
+	 * @param domain Domain object to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertDomain(Domain domain, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -66,7 +95,12 @@ public class ExporterMetadata {
 		}
 	}
 	
-	
+	/**
+	 * Insert an engine into the exported database
+	 * @param engine Engine Object to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertEngine(Engine engine, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -95,7 +129,12 @@ public class ExporterMetadata {
 	}
 	
 	
-	
+	/**
+	 * Insert a biobject into the exported database
+	 * @param biobj BIObject to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertBIObject(BIObject biobj, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -130,7 +169,13 @@ public class ExporterMetadata {
 	}
 	
 	
-	
+	/**
+	 * Insert a BIObject Parameter into the exported database
+	 * @param biobjpar BIObject parameter to insert
+	 * @param biobj BIObject to which the parameter belongs
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertBIObjectParameter(BIObjectParameter biobjpar, BIObject biobj, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -172,7 +217,12 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert a parameter into the exported database
+	 * @param param The param object to insert
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertParameter(Parameter param, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -201,7 +251,12 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert a parameter use into the exported database
+	 * @param parUse The Parameter use object to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertParUse(ParameterUse parUse, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -232,7 +287,12 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert a list of value into the exported database
+	 * @param lov The list of values object to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertLov(ModalitiesValue lov, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -260,7 +320,12 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert a check into the exported database
+	 * @param check The check object to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertCheck(Check check, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -288,7 +353,13 @@ public class ExporterMetadata {
 	}
 	
 	
-	
+	/**
+	 * Insert an association between a parameter use and a check into the exported database
+	 * @param parUse The paruse object which is an element of the association
+	 * @param check The check object which is an element of the association
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertParuseCheck(ParameterUse parUse, Check check, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -320,7 +391,13 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert an association between a parameter use and a role into the exported database
+	 * @param parUse The paruse object which is an element of the association
+	 * @param role The role object which is an element of the association
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertParuseRole(ParameterUse parUse, Role role, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -351,7 +428,12 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert a functionality into the exported database
+	 * @param funct Functionality Object to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertFunctionality(LowFunctionality funct, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -384,7 +466,12 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert a role into the exported database
+	 * @param role The role object to export
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertRole(Role role, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
@@ -411,7 +498,15 @@ public class ExporterMetadata {
 	
 	
 	
-	
+	/**
+	 * Insert an association between a functionality and a role into the exported database
+	 * @param role The role object which is an element of the association
+	 * @param funct The functionality object which is an element of the association
+	 * @param stateId The id of the State associated to the couple role / functionality
+	 * @param stateCD The code of the State associated to the couple role / functionality
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
 	public void insertFunctRole(Role role, LowFunctionality funct, Integer stateId, String stateCD, Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();

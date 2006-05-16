@@ -62,7 +62,8 @@ public class ExportServlet extends HttpServlet{
      } 
 	
     /**
-     * Service method definition
+     * Service method definition which, based on a particular parameter, 
+     * redirects the execution to a specific handler
      * 
      * @param request The http servlet request
      * @param response The http servlet response
@@ -74,10 +75,20 @@ public class ExportServlet extends HttpServlet{
 			if((operation!=null) && (operation.equalsIgnoreCase("download"))){
 				manageDownload(request, response);
 				return;
-			} 
+			} else if((operation!=null) && (operation.equalsIgnoreCase("downloadLog"))) {
+				manageDownload(request, response);
+				return;
+			}
 		} finally {}
 	}
 		
+	
+	/**
+	 * Handle a download request of an eported file. Reads the file, sends it as an http response attachment 
+	 * and in the end deletes the file.
+	 * @param request the http request
+	 * @param response the http response
+	 */
 	private void manageDownload(HttpServletRequest request, HttpServletResponse response) {
 		try{	
 			String exportFilePath = (String)request.getParameter("PATH");
@@ -102,7 +113,6 @@ public class ExportServlet extends HttpServlet{
 		} catch (IOException ioe) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "manageDownload",
 		                           "Cannot flush response" + ioe);
-			//sendError(request, response, ioe);
 		} finally {	}
 	}
 

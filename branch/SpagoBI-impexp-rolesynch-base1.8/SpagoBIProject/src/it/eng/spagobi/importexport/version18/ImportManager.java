@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.importexport.version18;
 
 import it.eng.spago.base.SourceBean;
@@ -49,6 +70,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+/**
+ * Implements the interface which defines methods for managing the import requests
+ */
 public class ImportManager implements IImportManager {
 
 	private String pathImportTmpFolder = "";
@@ -63,8 +87,16 @@ public class ImportManager implements IImportManager {
 	private Session sessionCurrDB = null;
 	private Transaction txCurrDB = null;
 	private MetadataAssociations metaAss = null;
+	private MetadataLogger metaLog = null;
+	private String exportedFileName = "";
 	
 	
+	/**
+	 * Prepare the environment for the import procedure
+	 * @param pathImpTmpFold The path of the temporary import folder
+	 * @param archiveName the name of the compress exported file
+	 * @param archiveContent the bytes of the compress exported file 
+	 */
 	public void prepareImport(String pathImpTmpFold, String archiveName, byte[] archiveContent) throws EMFUserError {
 		// create directories of the tmp import folder
 		File impTmpFold = new File(pathImpTmpFold);
@@ -72,6 +104,7 @@ public class ImportManager implements IImportManager {
 		// write content uploaded into a tmp archive
 		String pathArchiveFile = pathImpTmpFold + "/" +archiveName;
 		File archive = new File(pathArchiveFile);
+		exportedFileName = archiveName;
 		try{
 			FileOutputStream fos = new FileOutputStream(archive); 
 			fos.write(archiveContent);
@@ -111,17 +144,24 @@ public class ImportManager implements IImportManager {
 		sessionCurrDB = HibernateUtil.currentSession();
 		txCurrDB = sessionCurrDB.beginTransaction();
 		metaAss = new MetadataAssociations();
+		metaLog = new MetadataLogger();
 	}
 	
 	
 	
-	
+	/**
+	 * Gets the SpagoBI version of the exported file
+	 * @return The SpagoBI version of the exported file
+	 */
 	public String getExportVersion() {
 		return props.getProperty("spagobi-version");
 	}
 	
 	
-	
+	/**
+	 * Gets the current SpagobI version
+	 * @return The current SpagoBI version
+	 */
 	public String getCurrentVersion() {
 		ConfigSingleton conf = ConfigSingleton.getInstance();
 		SourceBean curVerSB = (SourceBean)conf.getAttribute("IMPORTEXPORT.CURRENTVERSION");
@@ -130,13 +170,20 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Gets the path of the cms base folder of the exported archive
+	 * @return The path of the cms base folder of the exported archive
+	 */
 	private String getExportedCmsBaseFolder() {
 		return props.getProperty("cms-basefolder");
 	}
 	
 	
-	
+	/**
+	 * Gets the path of the cms base folder of the current SpagoBI cms repository 
+	 * @return the path of the cms base folder of the current SpagoBI cms repository 
+	 * @throws EMFUserError
+	 */
 	private String getCurrentCmsBaseFolder()throws EMFUserError {
 		String pathSysFunct = "";
 		try{
@@ -152,14 +199,20 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Gets the list of all exported roles
+	 * @return The list of exported roles
+	 */
 	public List getExportedRoles() throws EMFUserError {
 		List exportedRoles = null;
 		exportedRoles = importer.getAllExportedRoles(txExpDB, sessionExpDB);
 		return exportedRoles;
 	}
 
-	
+	/**
+	 * Gets the list of all exported engines
+	 * @return The list of exported engines
+	 */
 	public List getExportedEngines() throws EMFUserError {
 		List exportedEngines = null;
 		exportedEngines = importer.getAllExportedEngines(txExpDB, sessionExpDB);
@@ -167,7 +220,13 @@ public class ImportManager implements IImportManager {
 	}
 
 	
-	
+	/**
+	 * checks if two or more exported roles are associate to the same current role
+	 * @param roleAssociations Map of assocaition between exported roles and 
+	 * roles of the portal in use
+	 * @throws EMFUserError if two ore more exported roles are associate
+	 * to the same current role
+	 */
 	public void checkRoleReferences(Map roleAssociations) throws EMFUserError {
 		// each exported role should be associate only to one system role
 		Set rolesAssKeys = roleAssociations.keySet();
@@ -189,15 +248,25 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
+	/**
+	 * Update the connection name for each list of values of type query 
+	 * based on association between exported connections and current system connections
+	 * @param connAssociations Map of the associations between exported connections
+	 * and current system connections
+	 * @throws EMFUserError
+	 */
 	public void updateConnectionReferences(Map connAssociations) throws EMFUserError {
 		/* 
 		 * The key of the map are the name of the exported connections
 		 * Each key value is the name of the current system connection associate
 		 */
-		importer.updateConnRefs(connAssociations, txExpDB, sessionExpDB);
+		importer.updateConnRefs(connAssociations, txExpDB, sessionExpDB, metaLog);
 	}
 	
 	
+	/**
+	 * Closes Hibernate session factory for the exported database
+	 */
 	private void closeSessionFactory() {
 		if(sessionFactoryExpDB!=null){
 			sessionFactoryExpDB.close();
@@ -205,6 +274,9 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
+	/**
+	 * Close Hibernate sessions for exported and current database
+	 */
 	private void closeSession() {
 		if(sessionExpDB!=null){
 			if(sessionExpDB.isOpen()) {
@@ -220,7 +292,9 @@ public class ImportManager implements IImportManager {
 
 	
 	
-	
+	/**
+	 * Rollbacks each previous changes made on exported and current databases
+	 */
 	private void rollback() {
 		if(txExpDB!=null)
 			txExpDB.rollback();
@@ -232,17 +306,36 @@ public class ImportManager implements IImportManager {
 	
 	
 	
-	public void commitAllChanges() throws EMFUserError {
+	/**
+	 * Commits all changes made on exported and current databases
+	 */
+	public String commitAllChanges() throws EMFUserError {
 		txExpDB.commit();
 		txCurrDB.commit();
 		closeSession();
 		closeSessionFactory();
 		metaAss.clear();
 		ImpExpGeneralUtilities.deleteDir(new File(pathBaseFolder));
+	    File logFile = new File(pathImportTmpFolder + "/" + exportedFileName + ".log");
+	    if(logFile.exists())
+	    	logFile.delete();
+		try{
+		    FileOutputStream fos = new FileOutputStream(logFile);
+		    fos.write(metaLog.getLogBytes());
+		    fos.flush();
+		    fos.close();
+		} catch (Exception e) {
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "commitAllChanges",
+		                           "Error while writing log file " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+		}
+	    return logFile.getPath();
 	}
 	
 		
-	
+	/**
+	 * Imports the exported objects
+	 */
 	public void importObjects() throws EMFUserError {
 		checkRoleReferences(metaAss.getRoleIDAssociation());
 		updateConnectionReferences(metaAss.getConnectionAssociation());
@@ -260,7 +353,11 @@ public class ImportManager implements IImportManager {
 		importBIObjPar();
 	}
 	
-
+   
+	/**
+	 * Import exported roles
+	 * @throws EMFUserError
+	 */
 	private void importRoles() throws EMFUserError {
 		try{
 			List exportedRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiExtRoles");
@@ -271,6 +368,9 @@ public class ImportManager implements IImportManager {
 				Map roleIdAss = metaAss.getRoleIDAssociation();
 			    Set roleIdAssSet = roleIdAss.keySet();
 				if(roleIdAssSet.contains(oldId)){
+					metaLog.log("Exported role "+role.getName()+" not inserted" +
+							" because it has been associated to an existing role or it has the same name " +
+							" of an existing role");
 					continue;
 				}
 				SbiExtRoles newRole = ImportUtilities.makeNewSbiExtRole(role);
@@ -284,6 +384,7 @@ public class ImportManager implements IImportManager {
 					newRole.setRoleTypeCode(existDom.getValueCd());
 				}
 				importer.insertObject(newRole, sessionCurrDB);
+				metaLog.log("Inserted new role " + newRole.getName());
 			    Integer newId = newRole.getExtRoleId();
 			    metaAss.insertCoupleRole(oldId, newId);
 			}
@@ -291,7 +392,10 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Imports exported engines
+	 * @throws EMFUserError
+	 */
 	private void importEngines() throws EMFUserError  {
 		try{
 			List exportedEngines = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiEngines");
@@ -303,10 +407,14 @@ public class ImportManager implements IImportManager {
 				Map engIdAss = metaAss.getEngineIDAssociation();
 			    Set engIdAssSet = engIdAss.keySet();
 				if(engIdAssSet.contains(oldId)){
+					metaLog.log("Exported engine "+engine.getName()+" not inserted" +
+							" because it has been associated to an existing engine or it has the same label " +
+							" of an existing engine");
 					continue;
 				}
 				SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine);
 			    importer.insertObject(newEng, sessionCurrDB);
+			    metaLog.log("Inserted new engine " + engine.getName());
 			    Integer newId = newEng.getEngineId();
 			    metaAss.insertCoupleEngine(oldId, newId);
 			}
@@ -314,7 +422,10 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Imports exported functionalities
+	 * @throws EMFUserError
+	 */
 	private void importFunctionalities() throws EMFUserError {
 		try{
 			List exportedFuncts = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiFunctions");
@@ -335,6 +446,8 @@ public class ImportManager implements IImportManager {
 				Map functIdAss = metaAss.getFunctIDAssociation();
 			    Set functIdAssSet = functIdAss.keySet();
 				if(functIdAssSet.contains(oldId)){
+					metaLog.log("Exported functionality "+funct.getName()+" not inserted" +
+							" because it has the same label (and the same path) of an existing functionality");
 					continue;
 				}
 				SbiFunctions newFunct = ImportUtilities.makeNewSbiFunction(funct);
@@ -348,6 +461,8 @@ public class ImportManager implements IImportManager {
 					newFunct.setFunctTypeCd(existDom.getValueCd());
 				}
 			    importer.insertObject(newFunct, sessionCurrDB);
+			    metaLog.log("Inserted new functionality " + newFunct.getName() + 
+			    		" with path " + newFunct.getPath());
 			    Integer newId = newFunct.getFunctId(); 
 			    metaAss.insertCoupleFunct(oldId, newId);
 			}
@@ -355,7 +470,10 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Import exported lovs
+	 * @throws EMFUserError
+	 */
 	private void importLovs() throws EMFUserError {
 		try{
 			List exportedLovs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiLov");
@@ -367,6 +485,8 @@ public class ImportManager implements IImportManager {
 				Map lovIdAss = metaAss.getLovIDAssociation();
 				Set lovIdAssSet = lovIdAss.keySet();
 				if(lovIdAssSet.contains(oldId)){
+					metaLog.log("Exported lov "+lov.getName()+" not inserted" +
+								" because it has the same label of an existing lov");
 					continue;
 				}
 				SbiLov newlov = ImportUtilities.makeNewSbiLov(lov);
@@ -380,6 +500,7 @@ public class ImportManager implements IImportManager {
 					newlov.setInputTypeCd(existDom.getValueCd());
 				}
 			    importer.insertObject(newlov, sessionCurrDB);
+			    metaLog.log("Inserted new lov " + newlov.getName());
 			    Integer newId = newlov.getLovId(); 
 			    metaAss.insertCoupleLov(oldId, newId);
 			}
@@ -387,7 +508,10 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Import exported checks
+	 * @throws EMFUserError
+	 */
 	private void importChecks() throws EMFUserError {
 		try{
 			List exportedChecks = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiChecks");
@@ -399,6 +523,8 @@ public class ImportManager implements IImportManager {
 				Map checkIdAss = metaAss.getCheckIDAssociation();
 			    Set checkIdAssSet = checkIdAss.keySet();
 				if(checkIdAssSet.contains(oldId)){
+					metaLog.log("Exported check "+check.getName()+" not inserted" +
+								" because it has the same label of an existing check");
 					continue;
 				}
 				SbiChecks newck = ImportUtilities.makeNewSbiCheck(check);
@@ -412,6 +538,7 @@ public class ImportManager implements IImportManager {
 					newck.setValueTypeCd(existDom.getValueCd());
 				}
 			    importer.insertObject(newck, sessionCurrDB);
+			    metaLog.log("Inserted new check " + newck.getName());
 			    Integer newId = newck.getCheckId();
 			    metaAss.insertCoupleCheck(oldId, newId);
 			}
@@ -419,7 +546,10 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Import exported parameters
+	 * @throws EMFUserError
+	 */
 	private void importParameters() throws EMFUserError {
 		try{
 			List exportedParams = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParameters");
@@ -431,6 +561,8 @@ public class ImportManager implements IImportManager {
 				Map paramIdAss = metaAss.getParameterIDAssociation();
 			    Set paramIdAssSet = paramIdAss.keySet();
 				if(paramIdAssSet.contains(oldId)){
+					metaLog.log("Exported parameter "+param.getName()+" not inserted" +
+								" because it has the same label of an existing parameter");
 					continue;
 				}
 				SbiParameters newPar = ImportUtilities.makeNewSbiParameter(param);
@@ -444,6 +576,7 @@ public class ImportManager implements IImportManager {
 					newPar.setParameterTypeCode(existDom.getValueCd());
 				}
 			    importer.insertObject(newPar, sessionCurrDB);
+			    metaLog.log("Inserted new parameter " + newPar.getName());
 			    Integer newId = newPar.getParId();
 			    metaAss.insertCoupleParameter(oldId, newId);
 			}
@@ -451,7 +584,10 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * import exported biobjects
+	 * @throws EMFUserError
+	 */
 	private void importBIObjects() throws EMFUserError {
 		try{
 			List exportedBIObjs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
@@ -471,6 +607,8 @@ public class ImportManager implements IImportManager {
 				Map objIdAss = metaAss.getBIobjIDAssociation();
 			    Set objIdAssSet = objIdAss.keySet();
 				if(objIdAssSet.contains(oldId)){
+					metaLog.log("Exported biobject "+obj.getName()+" not inserted" +
+								" because it has the same label of an existing biobject");
 					continue;
 				}
 				SbiObjects newObj = ImportUtilities.makeNewSbiObject(obj);
@@ -493,6 +631,7 @@ public class ImportManager implements IImportManager {
 					newObj.setStateCode(existDomSt.getValueCd());
 				}
 				obj = importer.insertBIObject(newObj, pathContentFolder, sessionCurrDB);
+				 metaLog.log("Inserted new biobject " + newObj.getName());
 			    Integer newId = newObj.getBiobjId(); 
 			    metaAss.insertCoupleBIObj(oldId, newId);
 			}
@@ -500,7 +639,10 @@ public class ImportManager implements IImportManager {
 	}
 	
 	
-	
+	/**
+	 * Imports exported paruses
+	 * @throws EMFUserError
+	 */
 	private void importParuse() throws EMFUserError {
 		try{
 			List exportedParuses = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuse");
@@ -528,10 +670,13 @@ public class ImportManager implements IImportManager {
 				Map paruseIdAss = metaAss.getParuseIDAssociation();
 			    Set paruseIdAssSet = paruseIdAss.keySet();
 				if(paruseIdAssSet.contains(oldId)){
+					metaLog.log("Exported parameter use "+paruse.getName()+" not inserted" +
+								" because it has the same label of an existing parameter use");
 					continue;
 				}
 				SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(paruse);
 			    importer.insertObject(newParuse, sessionCurrDB);
+			    metaLog.log("Inserted new parameter use " + newParuse.getName() + " for param " + param.getName());
 			    Integer newId = newParuse.getUseId();
 			    sessionExpDB.evict(paruse);
 			    metaAss.insertCoupleParuse(oldId, newId);
@@ -539,7 +684,10 @@ public class ImportManager implements IImportManager {
 		} finally {}
 	}
 	
-	
+	/**
+	 * Importa exported paruse details
+	 * @throws EMFUserError
+	 */
 	private void importParuseDet() throws EMFUserError {
 		try{
 			List exportedParuseDets = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuseDet");
@@ -575,13 +723,20 @@ public class ImportManager implements IImportManager {
 				unique.put("paruseid", paruseid);
 				unique.put("roleid", roleid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuseDet());
-				if(existObj==null)
+				if(existObj==null) {
 					importer.insertObject(parusedet, sessionCurrDB);
+					metaLog.log("Inserted new association between paruse " + 
+					     	      parusedet.getId().getSbiParuse().getName() + 
+						        " and role " +  parusedet.getId().getSbiExtRoles().getName());
+				}
 			}
 		} finally {}
 	}
 	
-	
+	/**
+	 * Imports associations between parameter uses and checks
+	 * @throws EMFUserError
+	 */
 	private void importParuseCheck() throws EMFUserError {
 		try{
 			List exportedParuseChecks = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuseCk");
@@ -617,13 +772,20 @@ public class ImportManager implements IImportManager {
 				unique.put("paruseid", paruseid);
 				unique.put("checkid", checkid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuseCk());
-				if(existObj==null)
+				if(existObj==null) {
 					importer.insertObject(paruseck, sessionCurrDB);
+					metaLog.log("Inserted new association between paruse " + 
+				     	      paruseck.getId().getSbiParuse().getName() + 
+					        " and check " +  paruseck.getId().getSbiChecks().getName());
+				}
 			}
 		} finally {}
 	}
 	
-	
+	/**
+	 * Imports associations between functionalities and roles
+	 * @throws EMFUserError
+	 */
 	private void importFunctRoles() throws EMFUserError {
 		try{
 			List exportedFunctRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiFuncRole");
@@ -671,13 +833,21 @@ public class ImportManager implements IImportManager {
 				unique.put("roleid", roleid);
 				unique.put("functionid", functid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiFuncRole());
-				if(existObj==null)
+				if(existObj==null) {
 					importer.insertObject(functrole, sessionCurrDB);
+					metaLog.log("Inserted new association between function " + 
+							    functrole.getId().getFunction().getName() + 
+					            " and role " + functrole.getId().getRole().getName());
+				}
 			}
 		} finally {}
 	}
 	
-		
+	
+	/**
+	 * Imports associations between exported biobjects and parameters
+	 * @throws EMFUserError
+	 */
 	private void importBIObjPar() throws EMFUserError {
 		try{
 			List exportedObjPars = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjPar");
@@ -715,14 +885,20 @@ public class ImportManager implements IImportManager {
 				unique.put("biobjid", biobjid);
 				unique.put("prog", prog);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiObjPar());
-				if(existObj==null)
+				if(existObj==null) {
 					importer.insertObject(objpar, sessionCurrDB);
+					metaLog.log("Inserted new association between param " + 
+							    objpar.getId().getSbiParameters().getName() + 
+				                " and biobject " + objpar.getId().getSbiObjects().getName());
+				}
 			}
 		} finally {}
 	}
 
 	
-	
+	/**
+	 * Ends the import procedure
+	 */
 	public void stopImport() {
 		metaAss.clear();
 		rollback();
@@ -730,7 +906,10 @@ public class ImportManager implements IImportManager {
 	}
 
 	
-	
+	/**
+	 * Gets the list of exported connections
+	 * @return List of the exported connections
+	 */
 	public List getExportedConnections() throws EMFUserError {
 		List connections = new ArrayList();
 		String connFilePath = pathBaseFolder + "/connections.xml";
@@ -795,7 +974,10 @@ public class ImportManager implements IImportManager {
 
 
 
-
+    /**
+     * Check the existance of the exported metadata into the current system metadata
+     * and insert their associations into the association object MeatadataAssociation
+     */
 	public void checkExistingMetadata() throws EMFUserError {
 		/*
 		List exportedDomains = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiDomains");
@@ -825,6 +1007,8 @@ public class ImportManager implements IImportManager {
 				SbiParameters paramCurr = (SbiParameters)existObj;
 				metaAss.insertCoupleParameter(paramExp.getParId(), paramCurr.getParId());
 				metaAss.insertCoupleParameter(paramExp, paramCurr);
+				metaLog.log("Found an existing Parameter "+paramCurr.getName() +" with " +
+						    "the same label of the exported parameter " + paramExp.getName());
 			}
 		}
 		List exportedRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiExtRoles");
@@ -842,6 +1026,8 @@ public class ImportManager implements IImportManager {
 				SbiExtRoles roleCurr = (SbiExtRoles)existObj;
 				metaAss.insertCoupleRole(roleExp.getExtRoleId(), roleCurr.getExtRoleId());
 				metaAss.insertCoupleRole(roleExp, roleCurr);
+				metaLog.log("Found an existing Role "+roleCurr.getName() +" with " +
+					        "the same name of the exported role " + roleExp.getName());
 			}
 		}
 		List exportedParuse = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuse");
@@ -864,6 +1050,8 @@ public class ImportManager implements IImportManager {
 				SbiParuse paruseCurr = (SbiParuse)existObj;
 				metaAss.insertCoupleParuse(paruseExp.getUseId(), paruseCurr.getUseId());
 				metaAss.insertCoupleParuse(paruseExp, paruseCurr);
+				metaLog.log("Found an existing Parameter use "+paruseCurr.getName() +" with " +
+					        "the same label of the exported parameter use " + paruseExp.getName());
 			}
 		}
 		List exportedBiobj = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
@@ -876,6 +1064,8 @@ public class ImportManager implements IImportManager {
 				SbiObjects objCurr = (SbiObjects)existObj;
 				metaAss.insertCoupleBIObj(objExp.getBiobjId(), objCurr.getBiobjId());
 				metaAss.insertCoupleBIObj(objExp, objCurr);
+				metaLog.log("Found an existing BIObject "+objCurr.getName() +" with " +
+					        "the same label and path of the exported BIObject " + objExp.getName());
 			}
 		}
 		List exportedLov = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiLov");
@@ -888,6 +1078,8 @@ public class ImportManager implements IImportManager {
 				SbiLov lovCurr = (SbiLov)existObj;
 				metaAss.insertCoupleLov(lovExp.getLovId(), lovCurr.getLovId());
 				metaAss.insertCoupleLov(lovExp, lovCurr);
+				metaLog.log("Found an existing Lov "+lovCurr.getName() +" with " +
+					    "the same label of the exported lov " + lovExp.getName());
 			}
 		}
 		List exportedFunct = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiFunctions");
@@ -900,6 +1092,8 @@ public class ImportManager implements IImportManager {
 				SbiFunctions functCurr = (SbiFunctions)existObj;
 				metaAss.insertCoupleFunct(functExp.getFunctId(), functCurr.getFunctId());
 				metaAss.insertCoupleFunct(functExp, functCurr);
+				metaLog.log("Found an existing Functionality "+functCurr.getName() +" with " +
+					    "the same label and path of the exported functionality " + functExp.getName());
 			}
 		}
 		List exportedEngine = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiEngines");
@@ -917,6 +1111,8 @@ public class ImportManager implements IImportManager {
 				SbiEngines engCurr = (SbiEngines)existObj;
 				metaAss.insertCoupleEngine(engExp.getEngineId(), engCurr.getEngineId());
 				metaAss.insertCoupleEngine(engExp, engCurr);
+				metaLog.log("Found an existing Engine "+engCurr.getName() +" with " +
+					    "the same label of the exported engine " + engExp.getName());
 			}
 		}
 		List exportedCheck = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiChecks");
@@ -929,13 +1125,20 @@ public class ImportManager implements IImportManager {
 				SbiChecks checkCurr = (SbiChecks)existObj;
 				metaAss.insertCoupleCheck(checkExp.getCheckId(), checkCurr.getCheckId());
 				metaAss.insertCoupleCheck(checkExp, checkCurr);
+				metaLog.log("Found an existing check "+checkCurr.getName() +" with " +
+					    "the same label of the exported check " + checkExp.getName());
 			}
 		}
 	}
 
 
 
-
+    /**
+     * Gets the object which contains the association between exported metadata 
+     * and the current system metadata
+     * @return MetadataAssociation the object which contains the association 
+     * between exported metadata and the current system metadata
+     */
 	public MetadataAssociations getMetadataAssociation() {
 		return metaAss;
 	}

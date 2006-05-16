@@ -39,30 +39,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.drivers.weka;
 
-import it.eng.spago.error.EMFUserError;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.Signature;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.Subreport;
-import it.eng.spagobi.bo.dao.DAOFactory;
-import it.eng.spagobi.bo.dao.IBIObjectDAO;
-import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.SecurityUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
-
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 
 
 /**
  * Driver Implementation (IEngineDriver Interface) for Jasper Report Engine. 
  */
-public class JasperReportDriver implements IEngineDriver {
-
+public class WekaDriverTokenSign implements IEngineDriver {
 	
     /**
 	 * Return a map of parameters which will be sended in the request to the 
@@ -83,7 +83,8 @@ public class JasperReportDriver implements IEngineDriver {
 					cce);
 		} 
 		return map;
-	}			
+	}		
+	
 	/**
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
@@ -127,95 +128,14 @@ public class JasperReportDriver implements IEngineDriver {
      */    
 	private Map getMap(BIObject biobj) {
 		Map pars = new Hashtable();
-		pars.put("templatePath",biobj.getPath() + "/template");
+		pars.put("templatePath", biobj.getPath() + "/template");
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-        pars = addBISubreports(biobj, pars);
         pars = addBIParameters(biobj, pars);
+        pars = addSecurityToken(pars);
         return pars;
 	} 
  
-	// TODO check all the subreport's hierarchy recursively and not only the first level
-	private Map addBISubreports(BIObject biobj, Map pars) {
-		Integer masterReportId = biobj.getId();
-				 
-		try {
-			ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
-			IBIObjectDAO biobjectdao = DAOFactory.getBIObjectDAO();
-			
-			List subreportList =  subrptdao.loadSubreportsByMasterRptId(masterReportId);
-			for(int i = 0; i < subreportList.size(); i++) {
-				Subreport subreport = (Subreport)subreportList.get(i);
-				BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
-				
-				String path = subrptbiobj.getPath();
-				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " PATH: " + path);
-				
-				pars.put("subrpt." + (i+1) + ".path", path);
-			}
-			pars.put("srptnum", "" + subreportList.size());
-			
-		} catch (EMFUserError e) {
-			SpagoBITracer.warning("ENGINES",
-					  this.getClass().getName(),
-					  "addBISubreports",
-					  "Error while reading subreports",
-					  e);
-		}
-		
-		
-		/*
-		DataConnection dataConnection = null;
-		SQLCommand sqlCommand = null;
-		DataResult dataResult = null;
-		SourceBean subreports = null;
-		try {
-			DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
-			dataConnection = dataConnectionManager.getConnection("spagobi");
-			String statement = null;
-						
-			statement = SQLStatements.getStatement("SELECT_SUBREPORTS_LIST");
-			statement = statement.replaceFirst("\\?", masterReportId.toString());
-			SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " statement: " + statement);
-			sqlCommand = dataConnection.createSelectCommand(statement);
-			dataResult = sqlCommand.execute();
-			ScrollableDataResult scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
-			subreports = scrollableDataResult.getSourceBean();
-			SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " results: " + subreports.toXML());
-		
-		
-			List subreportsList = subreports.getAttributeAsList("ROW");			
-			for(int i = 0; i < subreportsList.size(); i++) {
-				SourceBean subreport = (SourceBean)subreportsList.get(i);
-				Integer id = (Integer)subreport.getAttribute("SUBREPORT_ID");	
-				
-				statement = SQLStatements.getStatement("SELECT_SUBREPORT_PATH");
-				statement = statement.replaceFirst("\\?", id.toString());
-				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " statement: " + statement);
-				sqlCommand = dataConnection.createSelectCommand(statement);
-				dataResult = sqlCommand.execute();
-				scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
-				subreport = (SourceBean)scrollableDataResult.getSourceBean().getAttribute("ROW");
-				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " results: " + subreport.toXML());
-				
-				String path = (String)subreport.getAttribute("PATH");
-				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " PATH: " + path);
-				
-				pars.put("subrpt." + (i+1) + ".path", path);
-			}
-			
-			pars.put("srptnum", "" + subreportsList.size());
-		} catch (Exception ex) {
-			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "execQuery::executeQuery:", ex);
-		} finally {
-			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
-		} 		
-		*/
-		
-		
-		
-		return pars;
-	}
-	
+         
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
      * @param biobj BIOBject to execute
@@ -250,5 +170,56 @@ public class JasperReportDriver implements IEngineDriver {
   		return pars;
 	}
 
+	
+	/**
+	 * Add to the map parameters the authethication token
+	 * @param pars Map of the parameters
+	 * @return Map of the parameters containing the security information
+	 */
+	private Map addSecurityToken(Map pars) {
+		SecurityUtilities secUt = new SecurityUtilities();
+        String queryString = "";
+        Set keys = pars.keySet();
+		Iterator iterKeys = keys.iterator();
+        while(iterKeys.hasNext()) {
+        	String key = (String)iterKeys.next();
+        	String value = (String)pars.get(key);
+            queryString = queryString + key + "=" + value + "&";
+        }
+        byte[] challenge = queryString.getBytes();
+        //String template = (String)pars.get("templatePath");
+        //byte[] challenge = template.getBytes();
+		//byte[] challenge = secUt.generateRandomChallenge();
+		//if(challenge==null) {
+		//	SpagoBITracer.warning("ENGINES",
+		//						  this.getClass().getName(),
+		//						  "addSecurityToken",
+		//						  "challenge byte array null");
+		//	return pars;
+		//}
+		//String challenge64 = secUt.encodeBase64(challenge);
+        byte[] encoded = secUt.signDSA(challenge);
+        if(encoded==null) {
+			SpagoBITracer.warning("ENGINES",
+								  this.getClass().getName(),
+								  "addSecurityToken",
+								  "encoded challenge byte array null");
+			return pars;
+		}
+        String encoded64 = secUt.encodeBase64(encoded);
+	    pars.put("TOKEN_CLEAR", queryString);
+	    pars.put("TOKEN_SIGN", encoded64);
+	    // generate identity
+	    int parhash = pars.hashCode();
+	    Date date = new Date();
+	    long time = date.getTime();
+	    String identity = "" + parhash + "|" + time;
+	    pars.put("IDENTITY", identity);
+	    return pars;
+	}
+
+
+	
+	
 }
 

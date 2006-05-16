@@ -27,5 +27,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/weka.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

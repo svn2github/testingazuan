@@ -149,6 +149,8 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
             	bean = getInformationDatamart(path); 
             } else if(type.equalsIgnoreCase(SpagoBIConstants.DASH_TYPE_CODE) && !isRoot) {
             	bean = getInformationDash(path); 
+            } else if(type.equalsIgnoreCase(SpagoBIConstants.DATA_MINING_TYPE_CODE) && !isRoot) {
+            	bean = getInformationMining(path); 
             } 
              
             if(bean == null){
@@ -430,7 +432,45 @@ public class TreeObjectsDAO implements ITreeObjectsDAO {
 	}
 	
 	
-	
+	/**
+	 * Gets DATA MINING Object information starting from the biobject cms path
+	 * 
+	 * @param path The biobject cms path
+	 * @return a SourceBean containing all the biobject data mining information
+	 * @throws EMFUserError If any exception occurs
+	 */
+	private SourceBean getInformationMining(String path) throws EMFUserError {
+		SourceBean bean = null;
+		try {
+        	BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
+        	String label = obj.getLabel();
+        	String name = obj.getName();
+        	Integer visible = obj.getVisible();
+        	bean = new SourceBean("Data_Mining");
+    		String description = obj.getDescription();
+    		if(description==null) 
+            	description = "";
+    		Integer idFunct = obj.getId();
+    		Integer idType = obj.getBiObjectTypeID();
+    		String codeType = obj.getBiObjectTypeCode();
+    		bean.setAttribute("id", idFunct);
+            bean.setAttribute("name", name);
+            bean.setAttribute("label", label);
+            bean.setAttribute("description", description);
+    	    bean.setAttribute("path", path);
+    	    bean.setAttribute("idType", idType);
+    	    bean.setAttribute("codeType", codeType);
+    	    bean.setAttribute("state", obj.getStateCode());
+    	    bean.setAttribute("visible", visible);
+		} catch (Exception ex) {
+			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+								"TreeObjectsDAO", 
+					            "getInformationMining", 
+					            "Cannot recover detail information from database", ex);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+    	return bean;
+	}
 	
 	
 	

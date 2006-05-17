@@ -213,15 +213,9 @@ function showEngField(docType) {
 		      		    	if(BIobjTypecode.equals(currTypecode)){
 		      		    		isType = true;   
 							}
-		      		    	boolean passType = false;
-		      		    	if(type.getValueName().toString().equals("Data mining model")){
-		      		    		passType = true;
-		      		    	}
-		      		    	if(!passType){
 		      		%>
 		      			<option value="<%=type.getValueId() + "," + type.getValueCd()  %>"<%if(isType) out.print(" selected='selected' ");  %>><%=type.getValueName()%></option>
 		      		<% 
-		      		   		}
 		      		    }
 		      		%>
 		      		</select>

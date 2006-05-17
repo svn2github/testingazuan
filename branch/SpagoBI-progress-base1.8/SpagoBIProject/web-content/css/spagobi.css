@@ -282,6 +282,7 @@ IMG {
 
 .div_detail_label {
 	float:left;
+	clear:left;
 	width:100px;
 	height:25px;
 }

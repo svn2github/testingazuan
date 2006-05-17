@@ -29,6 +29,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.error.EMFValidationError;
+import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IEngineDAO;
@@ -137,6 +138,11 @@ public class DetailEngineModule extends AbstractModule {
 		
 		try {
 			//**********************************************************************
+			
+			String engineType = (String) request.getAttribute("engineType");
+			if ("EXT".equalsIgnoreCase(engineType)) ValidationCoordinator.validate("ExternalEngineDetailPage", "PAGE", this);
+			else ValidationCoordinator.validate("InternalEngineDetailPage", "PAGE", this);
+			
 			Engine engine = recoverEngineDetails(request);
 			EMFErrorHandler errorHandler = getErrorHandler();
 			
@@ -238,6 +244,9 @@ public class DetailEngineModule extends AbstractModule {
 			engine.setName("");
 			engine.setUrl("");
 			engine.setDriverName("");
+			engine.setEngineType("EXT");
+			engine.setClassName("");
+			engine.setBiobjTypeId(new Integer(-1));
 			response.setAttribute("engineObj", engine);
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailEngineModule","newDetailEngine","Cannot prepare page for the insertion", ex  );
@@ -253,13 +262,25 @@ public class DetailEngineModule extends AbstractModule {
 		String description = (String)request.getAttribute("description");
 		String label = (String)request.getAttribute("label");
 		String name = (String)request.getAttribute("name");
-		String url = (String) request.getAttribute("url");
+		String engineType = (String)request.getAttribute("engineType");
+		String url = "";
+		String driverName = "";
+		String className = "";
+		if ("EXT".equalsIgnoreCase(engineType)) {
+			// in case of external engine url and driverName are considered
+			url = (String) request.getAttribute("url");
+			driverName = (String)request.getAttribute("driverName");
+		} else {
+			// in case of internal engine only className is considered
+			className = (String)request.getAttribute("className");
+		}
 		String secondaryUrl = (String)request.getAttribute("secondaryUrl");
 		String dirUpload = (String)request.getAttribute("dirUpload");
 		String dirUsable = (String)request.getAttribute("dirUsable");
-		String driverName = (String)request.getAttribute("driverName");
 		String criptableStr = (String)request.getAttribute("criptable");
 		Integer criptable = new Integer(criptableStr);
+		String biobjTypeStr = (String)request.getAttribute("biobjType");
+		Integer biobjType = new Integer(biobjTypeStr);
 		
 		Engine engine  = new Engine();
         engine.setCriptable(criptable);
@@ -272,6 +293,9 @@ public class DetailEngineModule extends AbstractModule {
 		engine.setName(name);
 		engine.setUrl(url);
 		engine.setDriverName(driverName);
+		engine.setEngineType(engineType);
+		engine.setClassName(className);
+		engine.setBiobjTypeId(biobjType);
 		
         List enginesList = DAOFactory.getEngineDAO().loadAllEngines();
 		Iterator i = enginesList.listIterator();
@@ -290,10 +314,6 @@ public class DetailEngineModule extends AbstractModule {
 		return engine;
 		
 	}
-	
-	
-	
-	
 	
 	
 	

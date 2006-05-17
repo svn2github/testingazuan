@@ -23,7 +23,6 @@ package it.eng.spagobi.services.modules;
 
 import groovy.lang.Binding;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -247,7 +246,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					modVal.setLovProvider(lovProvider);
 
 					labelControl(request, mod);
-					validateFields("ModalitiesValueValidation", "PAGE");
+					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
 
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -280,8 +279,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					modVal.setLovProvider(lovProvider);
 
 					labelControl(request, mod);
-					validateFields("ModalitiesValueValidation", "PAGE");
-					validateFields("QueryWizardValidation", "PAGE");
+					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
+					ValidationCoordinator.validate("QueryWizardValidation", "PAGE", this);
 
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -337,7 +336,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						// it is requested to add a Fix Lov item.
 						// If there are no errors, add the new item in the
 						// Lov
-						validateFields("FixLovWizardValidation", "PAGE");
+						ValidationCoordinator.validate("FixLovWizardValidation", "PAGE", this);
 						
 						// if there are some validation errors into the errorHandler does not add the new values
 						Collection errors = errorHandler.getErrors();
@@ -361,7 +360,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					}
 
 					labelControl(request, mod);
-					validateFields("ModalitiesValueValidation", "PAGE");
+					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
 
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -394,8 +393,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					modVal.setLovProvider(lovProvider);
 
 					labelControl(request, mod);
-					validateFields("ModalitiesValueValidation", "PAGE");
-					validateFields("ScriptWizardValidation", "PAGE");
+					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
+					ValidationCoordinator.validate("ScriptWizardValidation", "PAGE", this);
 					
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -789,15 +788,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				}
 			}
 		}
-	}
-	
-	public boolean validateFields(String businessName, String businessType) throws Exception {
-		
-		RequestContainer requestContainer = getRequestContainer();
-		ResponseContainer responseContainer = getResponseContainer();
-		boolean validate = ValidationCoordinator.validate(businessType, businessName, requestContainer, responseContainer);
-		return validate;
-		
 	}
 	
 }

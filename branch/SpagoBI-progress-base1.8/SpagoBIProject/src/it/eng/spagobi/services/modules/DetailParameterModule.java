@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.modules;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -41,7 +40,6 @@ import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
-import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -321,7 +319,7 @@ public class DetailParameterModule extends AbstractModule {
 					String saveParameterUse = (String) request.getAttribute("saveParameterUse");
 					if (saveParameterUse != null && saveParameterUse.equalsIgnoreCase("yes")) {
 						// it is requested to save the visible ParameterUse
-						validateFields("ParameterUseValidation", "PAGE");
+						ValidationCoordinator.validate("ParameterUseValidation", "PAGE", this);
 						parameterUseLabelControl(paruse, mod);
 						
 						// if there are some validation errors into the errorHandler does not write into DB
@@ -378,12 +376,12 @@ public class DetailParameterModule extends AbstractModule {
 							&& paruse.getAssociatedRoles().size() == 0)
 						paruseToBeSaved = false;
 					if (paruseToBeSaved) {
-						validateFields("ParameterUseValidation",
-								"PAGE");
+						ValidationCoordinator.validate("ParameterUseValidation",
+								"PAGE", this);
 						parameterUseLabelControl(paruse, mod);
 					}
 
-					validateFields("ParameterValidation", "PAGE");
+					ValidationCoordinator.validate("ParameterValidation", "PAGE", this);
 					parameterLabelControl(parameter, mod);
 		    		
 					// if there are some validation errors into the errorHandler does not write into DB
@@ -419,7 +417,7 @@ public class DetailParameterModule extends AbstractModule {
 				}
 
     		} else {
-    			validateFields("ParameterValidation","PAGE");
+    			ValidationCoordinator.validate("ParameterValidation","PAGE", this);
     			parameterLabelControl(parameter, mod);
 	    		// if there are some errors, exits without writing into DB
     			selectedParuseIdStr = "-1";
@@ -571,15 +569,6 @@ public class DetailParameterModule extends AbstractModule {
 		return paruse;
 	}
 
-	public boolean validateFields(String businessName, String businessType) throws Exception {
-		
-		RequestContainer requestContainer = getRequestContainer();
-		ResponseContainer responseContainer = getResponseContainer();
-		boolean validate = ValidationCoordinator.validate(businessType, businessName, requestContainer, responseContainer);
-		return validate;
-		
-	}
-	
 	public int findParuseId (Object paruseIdObj) {
 		String paruseIdStr = "";
 		if (paruseIdObj instanceof String) {

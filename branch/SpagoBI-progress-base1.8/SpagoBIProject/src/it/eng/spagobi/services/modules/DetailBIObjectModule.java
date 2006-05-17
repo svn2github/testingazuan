@@ -23,7 +23,6 @@ package it.eng.spagobi.services.modules;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
@@ -653,7 +652,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					String saveBIObjectParameter = (String) request.getAttribute("saveBIObjectParameter");
 					if (saveBIObjectParameter != null && saveBIObjectParameter.equalsIgnoreCase("yes")) {
 						// it is requested to save the visible BIObjectParameter
-						validateFields("BIObjectParameterValidation", "PAGE");
+						ValidationCoordinator.validate("BIObjectParameterValidation", "PAGE", this);
 						biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
 						// If it's a new BIObjectParameter or if the Parameter was changed controls 
 						// that the BIObjectParameter url name is not already in use
@@ -744,13 +743,13 @@ public class DetailBIObjectModule extends AbstractModule {
 							&& biObjPar.getParID().intValue() == -1)
 						biParameterToBeSaved = false;
 					if (biParameterToBeSaved) {
-						validateFields("BIObjectParameterValidation", "PAGE");
+						ValidationCoordinator.validate("BIObjectParameterValidation", "PAGE", this);
 						// If it's a new BIObjectParameter or if the Parameter was changed controls 
 						// that the BIObjectParameter url name is not already in use
 						urlNameControl(obj.getId(), biObjPar);
 					}
 
-					validateFields("BIObjectValidation", "PAGE");
+					ValidationCoordinator.validate("BIObjectValidation", "PAGE", this);
 					
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -789,7 +788,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 
     		} else {
-    			validateFields("BIObjectValidation", "PAGE");
+    			ValidationCoordinator.validate("BIObjectValidation", "PAGE", this);
     			selectedObjParIdStr = "-1";
     			
 				// if there are some validation errors into the errorHandler does not write into DB
@@ -1382,13 +1381,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		_serviceRequest.setAttribute("mod_fl", mod_fl == null ? "" : mod_fl);
 		_serviceRequest.setAttribute("view_fl", view_fl == null ? "" : view_fl);
 		_serviceRequest.setAttribute("mult_fl", mult_fl == null ? "" : mult_fl);
-	}
-	
-	public boolean validateFields(String businessName, String businessType) throws Exception {
-		RequestContainer requestContainer = getRequestContainer();
-		ResponseContainer responseContainer = getResponseContainer();
-		boolean validate = ValidationCoordinator.validate(businessType, businessName, requestContainer, responseContainer);
-		return validate;
 	}
 	
 	public void eraseVersion(SourceBean request, SourceBean response) throws EMFUserError {

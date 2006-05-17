@@ -162,4 +162,39 @@ public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 		return aDomain;
 	}
 
+	/**
+	 * @see it.eng.spagobi.bo.dao.IDomainDAO#loadDomainById(java.lang.Integer)
+	 */
+	public Domain loadDomainById(Integer id) throws EMFUserError {
+		
+		Domain toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			SbiDomains hibDomain = (SbiDomains) aSession.load(SbiDomains.class, id);
+			
+			toReturn = toDomain(hibDomain);
+			tx.commit();
+			
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+		return toReturn;
+	}
+
 }

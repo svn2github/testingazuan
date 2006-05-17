@@ -3,7 +3,6 @@
 <%@ page import="it.eng.spagobi.bo.BIObject,
 				 it.eng.spagobi.bo.BIObjectParameter,
 				 it.eng.spagobi.services.modules.DetailBIObjectModule,
-				 it.eng.spagobi.services.modules.DetailBIObjectParameterModule,
 				 it.eng.spagobi.bo.dao.IParameterDAO,
 				 it.eng.spagobi.bo.dao.DAOFactory,
 				 it.eng.spagobi.bo.Parameter,
@@ -32,13 +31,6 @@
 	String modality = (String) moduleResponse.getAttribute(ObjectsTreeConstants.MODALITY);
 	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
 	
-	Engine firstEngine = null;
-	String firstEngineId = "";
-	if (listEngines.size() > 0) {
-		firstEngine = (Engine) listEngines.get(0);
-		firstEngineId = firstEngine.getId().toString();
-	}
-
 	PortletURL formUrl = renderResponse.createActionURL();
    	formUrl.setParameter("PAGE", "detailBIObjectPage");
    	if (modality != null){
@@ -59,61 +51,31 @@
 
 
 <script>
-function showEngField () {
+function showEngField(docType) {
 
-	var selIndex = document.objectForm.type.selectedIndex;
-	var selValue = document.objectForm.type[selIndex].value;
-	var ind = selValue.indexOf(",");
-	var type = selValue.substring(ind+1);
+	var ind = docType.indexOf(",");
+	var type = docType.substring(ind+1);
+	
+	var engines = document.objectForm.engine.options;
+	engines.length = 0;
 
-	if(type == 'REPORT'){
-		engines = document.getElementById('engine');
-		var i;
-		for (i=0; i < engines.length ; i++) {
-			en = engines[i];
-			if (en.text == '') {
-				engines.remove(i);
-			}
+	<%
+	for (int i = 0; i < listEngines.size(); i++) {
+		Engine en = (Engine) listEngines.get(i);
+		out.print("var engine_" + i + " = new Option('" + en.getName() + "', '" + en.getId().toString() + "');\n");
+		Integer biobjTypeId = en.getBiobjTypeId();
+		Domain aDomain = DAOFactory.getDomainDAO().loadDomainById(biobjTypeId);
+		out.print("if ('" + aDomain.getValueCd() + "' == type) {\n");
+		out.print("	engines[engines.length] = engine_" + i + ";\n");
+		if (obj.getEngine() != null) {
+			out.print("	if ('" + en.getId().toString() + "' == '" + obj.getEngine().getId().toString() + "') {\n");
+			out.print("		document.getElementById('engine').selectedIndex = engines.length -1;\n");
+			out.print("	}\n");
 		}
-		document.getElementById('engine').disabled = false;
-		document.objectForm.engine.selectedIndex=findIndexOf('Jasper Report Rel');
+		out.print("}\n");
 	}
-	if(type == 'OLAP'){
-		engines = document.getElementById('engine');
-		var i;
-		for (i=0; i < engines.length; i++) {
-			en = engines[i];
-			if (en.text == '') {
-				engines.remove(i);
-			}
-		}
-		document.getElementById('engine').disabled = false;
-		document.objectForm.engine.selectedIndex=findIndexOf('Jpivot-Mondrian Rel');
-	}
-	if(type == 'DATAMART'){
-		engines = document.objectForm.engine.options;
-		document.getElementById('engine').disabled = true;
-		engines[engines.length] = new Option('','<%=firstEngineId%>');
-		document.objectForm.engine.selectedIndex=engines.length-1;
-	}
-	if(type == 'DASH'){
-		engines = document.objectForm.engine.options;
-		document.getElementById('engine').disabled = true;
-		engines[engines.length] = new Option('','<%=firstEngineId%>');
-		document.objectForm.engine.selectedIndex=engines.length-1;
-	}
-}
-
-function findIndexOf (labelToFind) {
-engines = document.objectForm.engine.options;
-var c;
-for (c = 0; c<engines.length;c++) {
-   en = engines[c];
-   if (en.text.match(labelToFind)) {
-     return c;
-   }
-}
-return 0;
+	%>
+	
 }
 
 </script>
@@ -240,7 +202,7 @@ return 0;
 				</div>
 				<div class='div_detail_form'>
 					<select class='portlet-form-input-field' style='width:230px;' 
-							name="type" id="type" onchange = 'showEngField()'>
+							name="type" id="type" onchange = 'showEngField(this.value)'>
 		      		<% 
 		      		    Iterator iterdom = listTypes.iterator();
 		      		    while(iterdom.hasNext()) {
@@ -270,21 +232,9 @@ return 0;
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					<%
-						String selectDisabled = "";
-						if (obj.getBiObjectTypeCode().equals("DATAMART") || obj.getBiObjectTypeCode().equals("DASH")) {
-					 		selectDisabled = "disabled";
-						}
-					%>
 		      		<select class='portlet-form-input-field' style='width:230px;' 
-							name="engine" id="engine" <%=selectDisabled%>>
+							name="engine" id="engine" >
 					<%
-				
-						if (obj.getBiObjectTypeCode().equals("DATAMART") || obj.getBiObjectTypeCode().equals("DASH")) {
-					%>
-					 	<option value='<%=firstEngineId%>' selected='selected'></option>
-					<%
-						}
 						Iterator itereng = listEngines.iterator();
 		      			while(itereng.hasNext()) {
 		      		    	Engine engine = (Engine)itereng.next();
@@ -298,16 +248,17 @@ return 0;
 		      		    		isEngine = true; 
 							}
 		      		%>
-		      			<option value="<%=engine.getId().toString() %>"<%if(isEngine) out.print(" selected='selected' ");  %>><%=engine.getName()%></option>
+		      			<option value="<%=engine.getId().toString() %>"<%if (isEngine) out.print(" selected='selected' ");  %>><%=engine.getName()%></option>
 		      		<% 	
 		      			}
 		      		%>
 		      		</select>
 				</div>
  
-        	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
-				<script>showEngField()</script>
-			<% } %>
+				<script>
+					var pos = document.getElementById('type').selectedIndex;
+					showEngField(document.getElementById('type').options[pos].value);
+				</script>
 
 			<!-- DISPLAY COMBO FOR STATE SELECTION -->
 			<!-- IF THE USER IS A DEV ACTOR THE COMBO FOR THE STATE SELECTION CONTAINS ONLY A VALUE

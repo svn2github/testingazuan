@@ -1,6 +1,75 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <VALIDATIONS>
 
+	<SERVICE name="ExternalEngineDetailPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="label" label="#SBISet.eng.LabelField">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+				</FIELD>
+				<FIELD name="name" label="#SBISet.eng.NameField">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
+				</FIELD>
+				<FIELD name="description" label="#SBISet.eng.descriptionField">
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
+				</FIELD>
+				<FIELD name="url" label="#SBISet.eng.urlField">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="URL"/>
+				</FIELD>
+				<FIELD name="secondaryUrl" label="#SBISet.eng.secondaryUrlField">
+					<VALIDATOR validatorName="URL"/>
+				</FIELD>
+				<FIELD name="criptable" label="#SBISet.eng.criptableField">
+					<VALIDATOR validatorName="NUMERIC"/>
+				</FIELD>
+				<FIELD name="driverName" label="#SBISet.eng.driverNameField">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>	
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+
+
+	<SERVICE name="InternalEngineDetailPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="label" label="#SBISet.eng.LabelField">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+				</FIELD>
+				<FIELD name="name" label="#SBISet.eng.NameField">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
+				</FIELD>
+				<FIELD name="description" label="#SBISet.eng.descriptionField">
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
+				</FIELD>
+				<FIELD name="className" label="#SBISet.eng.classNameField">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="secondaryUrl" label="#SBISet.eng.secondaryUrlField">
+					<VALIDATOR validatorName="URL"/>
+				</FIELD>
+				<FIELD name="criptable" label="#SBISet.eng.criptableField">
+					<VALIDATOR validatorName="NUMERIC"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	
+
+<!-- 
 	<SERVICE name="DetailEnginePage" type="PAGE">
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
@@ -33,12 +102,7 @@
 				</FIELD>
 				<FIELD name="driverName" label="#SBISet.eng.driverNameField">
 					<VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>
-				<!--  
-				dirUpload
-				dirUsable
-				driverName
-				-->		
+				</FIELD>	
 			</FIELDS>
 		</VALIDATION>
 		<VALIDATION blocking="false" validators="">
@@ -76,6 +140,8 @@
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+-->
+
 
 	<SERVICE name="BIObjectValidation" type="PAGE">
 		<VALIDATION blocking="false" validators="">
@@ -107,6 +173,7 @@
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+
 
 	<SERVICE name="BIObjectParameterValidation" type="PAGE">
 		<VALIDATION blocking="false" validators="">

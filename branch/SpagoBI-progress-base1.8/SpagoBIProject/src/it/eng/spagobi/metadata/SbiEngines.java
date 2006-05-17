@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.metadata;
 
-import java.util.*;
 
 
 
@@ -43,12 +42,14 @@ public class SbiEngines  implements java.io.Serializable {
      private String objUseDir;
      private String driverNm;
      private String label;
-     
+     private String engineType;
+     private String classNm;
+     private SbiDomains biobjType; 
 
 
     // Constructors
 
-    /** default constructor */
+	/** default constructor */
     public SbiEngines() {
     }
     
@@ -161,14 +162,34 @@ public class SbiEngines  implements java.io.Serializable {
         this.driverNm = driverNm;
     }
 
-   
-
-
-
 	public String getLabel() {
 		return label;
 	}
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	
+    public SbiDomains getBiobjType() {
+		return biobjType;
+	}
+
+	public void setBiobjType(SbiDomains biobjType) {
+		this.biobjType = biobjType;
+	}
+
+	public String getClassNm() {
+		return classNm;
+	}
+
+	public void setClassNm(String classNm) {
+		this.classNm = classNm;
+	}
+
+	public String getEngineType() {
+		return engineType;
+	}
+
+	public void setEngineType(String engineType) {
+		this.engineType = engineType;
 	}
 }

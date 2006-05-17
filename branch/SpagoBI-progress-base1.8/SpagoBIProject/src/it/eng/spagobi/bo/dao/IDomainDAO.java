@@ -52,6 +52,16 @@ public interface IDomainDAO {
 	
 	public List loadListDomainsByType(String domainType) throws EMFUserError;
 
+	/**
+	 * Returns the domain identified by the input parameter <code>id</code>,
+	 * storing it in a <code>Domain</code> object.
+	 * 
+	 * @param id	The identifier domain id
+	 * @return	The <code>Domain</code> object storing the domain
+	 * @throws EMFUserError	if an Exception occurs
+	 */
+	public  Domain loadDomainById(Integer id)
+			throws EMFUserError;
 	
 	/**
 	 * Returns the domain identified by the two input parameters <code>codeDomain</code>

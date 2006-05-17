@@ -2,6 +2,8 @@
 
 <%@ page import="it.eng.spagobi.bo.Engine,
                  javax.portlet.PortletURL,
+                 it.eng.spagobi.bo.dao.DAOFactory,
+                 it.eng.spagobi.bo.Domain,
                  it.eng.spago.navigation.LightNavigationManager" %>
 
 <%
@@ -86,13 +88,77 @@
 	</div>
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.eng.urlField" />
+			<spagobi:message key = "SBISet.eng.biobjTypeField" />
 		</span>
-	</div>
+	</div>	
 	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" name="url" 
-			   size="50" value="<%=engine.getUrl()%>" maxlength="260">
-        &nbsp;*
+		<select class='portlet-form-field' name="biobjType" onchange= "" >
+			<%
+			java.util.List biobjTypes = DAOFactory.getDomainDAO().loadListDomainsByType("BIOBJ_TYPE");
+			java.util.Iterator it = biobjTypes.iterator();
+			while (it.hasNext()) {
+				Domain domain = (it.eng.spagobi.bo.Domain) it.next();
+				String valueId = String.valueOf(domain.getValueId());
+				String actualValueId = engine.getBiobjTypeId().toString();
+			 	%>     
+    			<option value="<%= valueId  %>" <% if (valueId.equalsIgnoreCase(actualValueId)) out.print(" selected='selected' ");%>>
+    				<%=domain.getValueName()%>
+    			</option>
+    			<%
+			}
+			%>
+		</select>
+	</div>
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.eng.engineTypeField" />
+		</span>
+	</div>	
+	<div class='div_detail_form'>
+		<select class='portlet-form-field' name="engineType" onchange= "changeEngineType(this.value)" id="engineType">
+			<option value="EXT" <% if ("EXT".equalsIgnoreCase(engine.getEngineType())) out.print(" selected='selected' "); %>>
+				<spagobi:message key = "SBISet.eng.externalEngine" />
+			</option>
+			<option value="INT" <% if ("INT".equalsIgnoreCase(engine.getEngineType())) out.print(" selected='selected' "); %>>
+				<spagobi:message key = "SBISet.eng.internalEngine" />
+			</option>
+		</select>
+	</div>
+	<div id="className" style='display:<%= ("INT".equalsIgnoreCase(engine.getEngineType())) ? "inline;" : "none;" %>'>
+		<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.eng.classNameField" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input class='portlet-form-input-field' type="text" name="className"  
+			   	size="50" value="<%=engine.getClassName()%>" maxlength="260">
+			&nbsp;*			   
+		</div>
+	</div>
+	<div id="url" style='display:<%= ("EXT".equalsIgnoreCase(engine.getEngineType())) ? "inline;" : "none;" %>'>
+		<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.eng.urlField" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input class='portlet-form-input-field' type="text" name="url"  
+			   	size="50" value="<%=engine.getUrl()%>" maxlength="260">
+			&nbsp;*
+		</div>
+	</div>
+	<div id="driverName" style='display:<%= ("EXT".equalsIgnoreCase(engine.getEngineType())) ? "inline;" : "none;" %>'>
+		<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.eng.driverNameField" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input class='portlet-form-input-field' type="text" name="driverName"
+					size="50" value="<%=engine.getDriverName()%>" maxlength="260">
+			&nbsp;*				
+		</div>
 	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
@@ -136,16 +202,6 @@
 		<input class='portlet-form-input-field' type="text" name="dirUsable" 
 			   size="50" value="<%=dirUse%>" maxlength="260">
 	</div>
-	<div class='div_detail_label'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.eng.driverNameField" />
-		</span>
-	</div>
-	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" name="driverName" 
-			   size="50" value="<%=engine.getDriverName()%>" maxlength="260">
-        &nbsp;*
-	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.eng.criptableField" />
@@ -172,10 +228,28 @@
 <spagobi:error/>
 
 
+</div>
+
 
 </form>
 
+<script>
+
+function changeEngineType(value){
+	if (value == 'EXT') {
+		document.getElementById('url').style.display = 'inline';
+		document.getElementById('driverName').style.display = 'inline';
+		document.getElementById('className').style.display = 'none';		
+	}
+	if (value == 'INT') {
+		document.getElementById('url').style.display = 'none';
+		document.getElementById('driverName').style.display = 'none';
+		document.getElementById('className').style.display = 'inline';		
+	}
+}
+
+</script>
  
-</div>
+
 
 

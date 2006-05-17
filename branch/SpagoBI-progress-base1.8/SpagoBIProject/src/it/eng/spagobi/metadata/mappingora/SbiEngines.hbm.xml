@@ -29,7 +29,7 @@
             <column name="descr" length="160" />
         </property>
         <property name="mainUrl" type="string">
-            <column name="main_url" length="400" not-null="true" />
+            <column name="main_url" length="400" />
         </property>
         <property name="secnUrl" type="string">
             <column name="secn_url" length="400" />
@@ -41,7 +41,16 @@
             <column name="obj_use_dir" length="400" />
         </property>
         <property name="driverNm" type="string">
-            <column name="driver_nm" length="400" not-null="true" />
+            <column name="driver_nm" length="400" />
         </property>
+        <property name="engineType" type="string">
+            <column name="engine_type" length="10" not-null="true" />
+        </property>
+        <property name="classNm" type="string">
+            <column name="class_nm" length="400" />
+        </property>
+        <many-to-one name="biobjType" class="it.eng.spagobi.metadata.SbiDomains">
+            <column name="biobj_type" not-null="true" />
+        </many-to-one>        
     </class>
 </hibernate-mapping>

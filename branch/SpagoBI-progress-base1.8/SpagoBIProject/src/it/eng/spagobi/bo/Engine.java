@@ -44,6 +44,9 @@ public class Engine implements Serializable {
 	private String dirUsable = "";
 	private String driverName = "";	
 	private String label = "";
+	private String className = "";
+	private Integer biobjTypeId;
+	private String engineType = "";
 
 	/**
 	 * @return Returns the criptable.
@@ -158,5 +161,23 @@ public class Engine implements Serializable {
 	}
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	public String getEngineType() {
+		return engineType;
+	}
+	public void setEngineType(String engineType) {
+		this.engineType = engineType;
+	}
+	public String getClassName() {
+		return className;
+	}
+	public void setClassName(String className) {
+		this.className = className;
+	}
+	public Integer getBiobjTypeId() {
+		return biobjTypeId;
+	}
+	public void setBiobjTypeId(Integer biobjTypeId) {
+		this.biobjTypeId = biobjTypeId;
 	}
 }

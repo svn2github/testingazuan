@@ -24,7 +24,6 @@ package it.eng.spago.error;
 
 import it.eng.spago.base.CloneableObject;
 import it.eng.spago.base.Constants;
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.tracing.TracerSingleton;
@@ -34,8 +33,6 @@ import java.io.Serializable;
 import java.util.Vector;
 
 import javax.portlet.PortletRequest;
-
-import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
 
 /**
 * Un'istanza di <code>EMFUserError</code> rappresenta un errore codificato. Questo significa che esiste un
@@ -88,6 +85,18 @@ public EMFUserError(String severity, int code, Vector params) {
 } // public EMFUserError(String severity, int code, Vector params)
 
 /**
+ * build an <code>EMFUserError</code> object defining it by means of a severity, an error code and a parameters vector
+ * @param severity severity of the error.
+ * @param code error code.
+ * @param params Vector of parameters for error description string
+ * @param boundleName Name of the properties file containing codes and their values 
+ */
+public EMFUserError(String severity, int code, Vector params, String boundleName) {
+    super();
+    init(severity, code, params, null, boundleName);
+} 
+
+/**
  * Costruisce un oggetto di tipo <code>EMFUserError</code> identificandolo  tramite  una severity ,un
  * codice di errore , una collezione di parametri che andranno a sostituire i caratteri <em>%</em> nella
  * stringa di descrizione e un oggetto di qualsiasi natura.
@@ -100,6 +109,20 @@ public EMFUserError(String severity, int code, Vector params, Object additionalI
     super();
     init(severity, code, params, additionalInfo, null);
 } // public EMFUserError(String severity, int code, Vector params, Object additionalInfo)
+
+/**
+ * build an <code>EMFUserError</code> object defining it by means of a severity, an error code, a parameters vector 
+ * and an additional object
+ * @param severity severity of the error.
+ * @param code error code.
+ * @param params Vector of parameters for error description string
+ * @param additionalInfo Additional object with error additional information 
+ * @param boundleName Name of the properties file containing codes and their values 
+ */
+public EMFUserError(String severity, int code, Vector params, Object additionalInfo, String boundleName) {
+    super();
+    init(severity, code, params, additionalInfo, boundleName);
+} 
 
 /**
  * Costruisce un oggetto di tipo <code>EMFUserError</code> utilizzando lo stato del parametro

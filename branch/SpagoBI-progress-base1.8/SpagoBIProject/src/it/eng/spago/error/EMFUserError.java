@@ -35,6 +35,8 @@ import java.util.Vector;
 
 import javax.portlet.PortletRequest;
 
+import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
+
 /**
 * Un'istanza di <code>EMFUserError</code> rappresenta un errore codificato. Questo significa che esiste un
 * repository contenente il riferimento a questo errore e la sua descrizione.
@@ -56,8 +58,21 @@ private Vector _params = null;
  */
 public EMFUserError(String severity, int code) {
     super();
-    init(severity, code, null, null);
+    init(severity, code, null, null, null);
 } // public EMFUserError(String severity, int code)
+
+
+/**
+ * build an <code>EMFUserError</code> object defining it by means of a severity and an error code
+ * @param severity severity of the error.
+ * @param code error code.
+ * @param boundleName Name of the properties file containing codes and their values 
+ */
+public EMFUserError(String severity, int code, String boundleName) {
+    super();
+    init(severity, code, null, null, boundleName);
+} 
+
 
 /**
  * Costruisce un oggetto di tipo <code>EMFUserError</code> identificandolo  tramite  una severity ,un
@@ -69,7 +84,7 @@ public EMFUserError(String severity, int code) {
  */
 public EMFUserError(String severity, int code, Vector params) {
     super();
-    init(severity, code, params, null);
+    init(severity, code, params, null, null);
 } // public EMFUserError(String severity, int code, Vector params)
 
 /**
@@ -83,7 +98,7 @@ public EMFUserError(String severity, int code, Vector params) {
  */
 public EMFUserError(String severity, int code, Vector params, Object additionalInfo) {
     super();
-    init(severity, code, params, additionalInfo);
+    init(severity, code, params, additionalInfo, null);
 } // public EMFUserError(String severity, int code, Vector params, Object additionalInfo)
 
 /**
@@ -109,8 +124,8 @@ public CloneableObject cloneObject() {
  * Questo metodo ha il compito di inizializzare lo stato dell'oggetto,viene invocato da tutti i costruttori
  * di <code>EMFUserError</code>.
  */
-private void init(String severity, int code, Vector params, Object additionalInfo) {
-    TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "EMFUserError::init: invocato");
+private void init(String severity, int code, Vector params, Object additionalInfo, String boundleName) {
+	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "EMFUserError::init: invocato");
     setSeverity(severity);
     TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG,
         "EMFUserError::init: severity [" + getSeverity() + "]");
@@ -121,8 +136,11 @@ private void init(String severity, int code, Vector params, Object additionalInf
     
     PortletRequest portReq = null;
     String description = null;
-   	//portReq = PortletUtilities.getPortletRequest();
-   	description = PortletUtilities.getMessage(String.valueOf(code), "messages");
+   	
+    if(boundleName==null){
+    	boundleName = "messages";
+    }
+   	description = PortletUtilities.getMessage(String.valueOf(code), boundleName);
 
     setDescription(description);
     if ((params != null) && (description != null)) {

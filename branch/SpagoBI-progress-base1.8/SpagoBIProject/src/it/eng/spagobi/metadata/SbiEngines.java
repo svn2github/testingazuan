@@ -42,7 +42,7 @@ public class SbiEngines  implements java.io.Serializable {
      private String objUseDir;
      private String driverNm;
      private String label;
-     private String engineType;
+     private SbiDomains engineType;
      private String classNm;
      private SbiDomains biobjType; 
 
@@ -185,11 +185,11 @@ public class SbiEngines  implements java.io.Serializable {
 		this.classNm = classNm;
 	}
 
-	public String getEngineType() {
+	public SbiDomains getEngineType() {
 		return engineType;
 	}
 
-	public void setEngineType(String engineType) {
+	public void setEngineType(SbiDomains engineType) {
 		this.engineType = engineType;
 	}
 }

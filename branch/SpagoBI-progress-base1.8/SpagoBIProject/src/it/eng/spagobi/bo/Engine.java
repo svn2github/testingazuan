@@ -46,7 +46,7 @@ public class Engine implements Serializable {
 	private String label = "";
 	private String className = "";
 	private Integer biobjTypeId;
-	private String engineType = "";
+	private Integer engineTypeId;
 
 	/**
 	 * @return Returns the criptable.
@@ -162,11 +162,11 @@ public class Engine implements Serializable {
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	public String getEngineType() {
-		return engineType;
+	public Integer getEngineTypeId() {
+		return engineTypeId;
 	}
-	public void setEngineType(String engineType) {
-		this.engineType = engineType;
+	public void setEngineTypeId(Integer engineTypeId) {
+		this.engineTypeId = engineTypeId;
 	}
 	public String getClassName() {
 		return className;

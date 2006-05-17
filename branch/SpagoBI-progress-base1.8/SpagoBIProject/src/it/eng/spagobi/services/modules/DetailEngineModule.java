@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
+import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IEngineDAO;
@@ -139,8 +140,11 @@ public class DetailEngineModule extends AbstractModule {
 		try {
 			//**********************************************************************
 			
-			String engineType = (String) request.getAttribute("engineType");
-			if ("EXT".equalsIgnoreCase(engineType)) ValidationCoordinator.validate("ExternalEngineDetailPage", "PAGE", this);
+			String engineTypeIdStr = (String) request.getAttribute("engineTypeId");
+			Integer engineTypeId = new Integer(engineTypeIdStr);
+			Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engineTypeId);
+			
+			if ("EXT".equalsIgnoreCase(engineType.getValueCd())) ValidationCoordinator.validate("ExternalEngineDetailPage", "PAGE", this);
 			else ValidationCoordinator.validate("InternalEngineDetailPage", "PAGE", this);
 			
 			Engine engine = recoverEngineDetails(request);
@@ -244,7 +248,7 @@ public class DetailEngineModule extends AbstractModule {
 			engine.setName("");
 			engine.setUrl("");
 			engine.setDriverName("");
-			engine.setEngineType("EXT");
+			engine.setEngineTypeId(new Integer(-1));
 			engine.setClassName("");
 			engine.setBiobjTypeId(new Integer(-1));
 			response.setAttribute("engineObj", engine);
@@ -262,11 +266,15 @@ public class DetailEngineModule extends AbstractModule {
 		String description = (String)request.getAttribute("description");
 		String label = (String)request.getAttribute("label");
 		String name = (String)request.getAttribute("name");
-		String engineType = (String)request.getAttribute("engineType");
+		
+		String engineTypeIdStr = (String) request.getAttribute("engineTypeId");
+		Integer engineTypeId = new Integer(engineTypeIdStr);
+		Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engineTypeId);
+		
 		String url = "";
 		String driverName = "";
 		String className = "";
-		if ("EXT".equalsIgnoreCase(engineType)) {
+		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
 			// in case of external engine url and driverName are considered
 			url = (String) request.getAttribute("url");
 			driverName = (String)request.getAttribute("driverName");
@@ -279,8 +287,8 @@ public class DetailEngineModule extends AbstractModule {
 		String dirUsable = (String)request.getAttribute("dirUsable");
 		String criptableStr = (String)request.getAttribute("criptable");
 		Integer criptable = new Integer(criptableStr);
-		String biobjTypeStr = (String)request.getAttribute("biobjType");
-		Integer biobjType = new Integer(biobjTypeStr);
+		String biobjTypeIdStr = (String)request.getAttribute("biobjTypeId");
+		Integer biobjTypeId = new Integer(biobjTypeIdStr);
 		
 		Engine engine  = new Engine();
         engine.setCriptable(criptable);
@@ -293,9 +301,9 @@ public class DetailEngineModule extends AbstractModule {
 		engine.setName(name);
 		engine.setUrl(url);
 		engine.setDriverName(driverName);
-		engine.setEngineType(engineType);
+		engine.setEngineTypeId(engineTypeId);
 		engine.setClassName(className);
-		engine.setBiobjTypeId(biobjType);
+		engine.setBiobjTypeId(biobjTypeId);
 		
         List enginesList = DAOFactory.getEngineDAO().loadAllEngines();
 		Iterator i = enginesList.listIterator();

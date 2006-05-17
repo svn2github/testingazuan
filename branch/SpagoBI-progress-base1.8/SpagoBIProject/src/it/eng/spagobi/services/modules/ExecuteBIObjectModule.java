@@ -41,6 +41,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Domain;
+import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ExecutionController;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
@@ -51,6 +52,7 @@ import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
+import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -60,6 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * Executes a report, according to four phases; each phase is identified by a message string.
@@ -571,44 +574,133 @@ public class ExecuteBIObjectModule extends AbstractModule
 	private void execute(BIObject obj, SourceBean response) {
 		debug("execute", "start execute");
 		EMFErrorHandler errorHandler = getErrorHandler();
-		try{
-            String type = obj.getBiObjectTypeCode();
-			// if object is a datamart, exec an internal logic  
-			if(type.equalsIgnoreCase("DATAMART")) {
-				execQbe(obj, response, null);
-				return;
-			}
-			// if object is a dashboard, exec an internal logic
-			if(type.equalsIgnoreCase("DASH")) {
-				execDash(obj, response);
-				return;
-			}
-            // if object is not a datamart
-			response.setAttribute("EXECUTION", "true");
-			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-			// instance the driver class
-			String driverClassName = obj.getEngine().getDriverName();
-			IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
-		    // get the map of the parameters
-			Map mapPars = null;
-			if(type.equalsIgnoreCase("OLAP")) {
-				// get the user profile
-				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			    mapPars = aEngineDriver.getParameterMap(obj, profile);
-			} else {
-				mapPars = aEngineDriver.getParameterMap(obj);
-			}
-						
-			
-            // set into the reponse the parameters map	
-			response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
-		} catch (Exception e) {
+		Engine engine = obj.getEngine();
+		Domain engineType = null;
+		try {
+			engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
+		} catch (EMFUserError error) {
 			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-					 				this.getClass().getName(), 
-					 				"execute", 
-					 				"Error During object execution", e);
-		   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+		 				this.getClass().getName(), 
+		 				"execute", 
+		 				"Error retrieving document's engine information", error);
+			 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+			 return;
 		}
+		
+		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
+			
+			try {
+				
+				response.setAttribute("EXECUTION", "true");
+				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+				// instance the driver class
+				String driverClassName = obj.getEngine().getDriverName();
+				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
+			    // get the map of the parameters
+				Map mapPars = null;
+				String type = obj.getBiObjectTypeCode();
+				if(type.equalsIgnoreCase("OLAP")) {
+					// get the user profile
+					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				    mapPars = aEngineDriver.getParameterMap(obj, profile);
+				} else {
+					mapPars = aEngineDriver.getParameterMap(obj);
+				}
+			
+				// set into the reponse the parameters map	
+				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
+			
+			} catch (Exception e) {
+				 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+						 				this.getClass().getName(), 
+						 				"execute", 
+						 				"Error During object execution", e);
+			   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+			}	
+			
+		} else {
+			
+			String className = engine.getClassName();
+			debug("execute", "Try instantiating class " + className + " for internal engine " + engine.getName() + "...");
+			InternalEngineIFace internalEngine = null;
+			// tries to instantiate the class for the internal engine
+			try {
+				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
+			} catch (ClassNotFoundException cnfe) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+			 				this.getClass().getName(), 
+			 				"execute", 
+			 				"The class " + className + " for internal engine " + engine.getName() + " was not found.", cnfe);
+				Vector params = new Vector();
+				params.add(className);
+				params.add(engine.getName());
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params)); 
+			} catch (Exception e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"execute", 
+		 				"Error while instantiating class " + className, e);
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+			}
+			
+			debug("execute", "Class " + className + " instantiated successfully. Now engine's execution starts.");
+			
+			// starts engine's execution
+			try {
+				internalEngine.execute(this.getRequestContainer(), obj, response);
+			} catch (EMFUserError e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"execute", 
+		 				"Error while engine execution", e);
+				errorHandler.addError(e);
+			} catch (Exception e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"execute", 
+		 				"Error while engine execution", e);
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+			}
+			
+		}
+//		try{
+//            String type = obj.getBiObjectTypeCode();
+//			// if object is a datamart, exec an internal logic  
+//			if(type.equalsIgnoreCase("DATAMART")) {
+//				execQbe(obj, response, null);
+//				return;
+//			}
+//			// if object is a dashboard, exec an internal logic
+//			if(type.equalsIgnoreCase("DASH")) {
+//				execDash(obj, response);
+//				return;
+//			}
+//            // if object is not a datamart
+//			response.setAttribute("EXECUTION", "true");
+//			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+//			// instance the driver class
+//			String driverClassName = obj.getEngine().getDriverName();
+//			IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
+//		    // get the map of the parameters
+//			Map mapPars = null;
+//			if(type.equalsIgnoreCase("OLAP")) {
+//				// get the user profile
+//				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//			    mapPars = aEngineDriver.getParameterMap(obj, profile);
+//			} else {
+//				mapPars = aEngineDriver.getParameterMap(obj);
+//			}
+//						
+//			
+//            // set into the reponse the parameters map	
+//			response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
+//		} catch (Exception e) {
+//			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+//					 				this.getClass().getName(), 
+//					 				"execute", 
+//					 				"Error During object execution", e);
+//		   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+//		}
 	}
 	
 	

@@ -92,19 +92,19 @@
 		</span>
 	</div>	
 	<div class='div_detail_form'>
-		<select class='portlet-form-field' name="biobjType" onchange= "" >
+		<select class='portlet-form-field' name="biobjTypeId" >
 			<%
 			java.util.List biobjTypes = DAOFactory.getDomainDAO().loadListDomainsByType("BIOBJ_TYPE");
 			java.util.Iterator it = biobjTypes.iterator();
 			while (it.hasNext()) {
-				Domain domain = (it.eng.spagobi.bo.Domain) it.next();
+				Domain domain = (Domain) it.next();
 				String valueId = String.valueOf(domain.getValueId());
 				String actualValueId = engine.getBiobjTypeId().toString();
 			 	%>     
-    			<option value="<%= valueId  %>" <% if (valueId.equalsIgnoreCase(actualValueId)) out.print(" selected='selected' ");%>>
-    				<%=domain.getValueName()%>
-    			</option>
-    			<%
+    				<option value="<%= valueId  %>" <% if (valueId.equalsIgnoreCase(actualValueId)) out.print(" selected='selected' ");%>>
+    					<%=domain.getValueName()%>
+    				</option>
+    				<%
 			}
 			%>
 		</select>
@@ -115,16 +115,36 @@
 		</span>
 	</div>	
 	<div class='div_detail_form'>
-		<select class='portlet-form-field' name="engineType" onchange= "changeEngineType(this.value)" id="engineType">
-			<option value="EXT" <% if ("EXT".equalsIgnoreCase(engine.getEngineType())) out.print(" selected='selected' "); %>>
-				<spagobi:message key = "SBISet.eng.externalEngine" />
-			</option>
-			<option value="INT" <% if ("INT".equalsIgnoreCase(engine.getEngineType())) out.print(" selected='selected' "); %>>
-				<spagobi:message key = "SBISet.eng.internalEngine" />
-			</option>
+		<select class='portlet-form-field' name="engineTypeId" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType">
+			<%
+			java.util.List engineTypes = DAOFactory.getDomainDAO().loadListDomainsByType("ENGINE_TYPE");
+			java.util.Iterator engineTypesIt = engineTypes.iterator();
+			String engineType = "EXT"; // default value
+			while (engineTypesIt.hasNext()) {
+				Domain domain = (Domain) engineTypesIt.next();
+				String valueId = String.valueOf(domain.getValueId());
+				String actualValueId = engine.getEngineTypeId().toString();
+				String selected = "";
+				if (valueId.equalsIgnoreCase(actualValueId)) {
+					selected = "selected='selected'";
+					engineType = domain.getValueCd();
+				}
+			 	%>     
+    				<option value="<%= valueId  %>" label="<%= domain.getValueCd() %>" <%= selected %>>
+    					<%
+					if ("EXT".equalsIgnoreCase(domain.getValueCd())) {
+						%> <spagobi:message key = "SBISet.eng.externalEngine" /> <%
+					} else {
+						%> <spagobi:message key = "SBISet.eng.internalEngine" /> <%
+					}
+					%>
+    				</option>
+    				<%
+			}
+			%>
 		</select>
 	</div>
-	<div id="className" style='display:<%= ("INT".equalsIgnoreCase(engine.getEngineType())) ? "inline;" : "none;" %>'>
+	<div id="className" style='display:<%= ("INT".equalsIgnoreCase(engineType)) ? "inline;" : "none;" %>'>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBISet.eng.classNameField" />
@@ -136,7 +156,7 @@
 			&nbsp;*			   
 		</div>
 	</div>
-	<div id="url" style='display:<%= ("EXT".equalsIgnoreCase(engine.getEngineType())) ? "inline;" : "none;" %>'>
+	<div id="url" style='display:<%= ("EXT".equalsIgnoreCase(engineType)) ? "inline;" : "none;" %>'>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBISet.eng.urlField" />
@@ -148,7 +168,7 @@
 			&nbsp;*
 		</div>
 	</div>
-	<div id="driverName" style='display:<%= ("EXT".equalsIgnoreCase(engine.getEngineType())) ? "inline;" : "none;" %>'>
+	<div id="driverName" style='display:<%= ("EXT".equalsIgnoreCase(engineType)) ? "inline;" : "none;" %>'>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBISet.eng.driverNameField" />

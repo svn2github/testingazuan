@@ -133,8 +133,10 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 
 			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,
 					aEngine.getId());
-			SbiDomains hibDomain = (SbiDomains) aSession.load(SbiDomains.class,
+			SbiDomains hibDomainBiobjType = (SbiDomains) aSession.load(SbiDomains.class,
 					aEngine.getBiobjTypeId());
+			SbiDomains hibDomainEngineType = (SbiDomains) aSession.load(SbiDomains.class,
+					aEngine.getEngineTypeId());
 			hibEngine.setName(aEngine.getName());
 			hibEngine.setLabel(aEngine.getLabel());
 			hibEngine.setDescr(aEngine.getDescription());
@@ -145,9 +147,9 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			hibEngine.setObjUplDir(aEngine.getDirUpload());
 			hibEngine.setObjUseDir(aEngine.getDirUsable());
 			hibEngine.setSecnUrl(aEngine.getSecondaryUrl());
-			hibEngine.setEngineType(aEngine.getEngineType());
+			hibEngine.setEngineType(hibDomainEngineType);
 			hibEngine.setClassNm(aEngine.getClassName());
-			hibEngine.setBiobjType(hibDomain);
+			hibEngine.setBiobjType(hibDomainBiobjType);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -174,8 +176,10 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiDomains hibDomain = (SbiDomains) aSession.load(SbiDomains.class,
+			SbiDomains hibDomainBiobjType = (SbiDomains) aSession.load(SbiDomains.class,
 					aEngine.getBiobjTypeId());
+			SbiDomains hibDomainEngineType = (SbiDomains) aSession.load(SbiDomains.class,
+					aEngine.getEngineTypeId());
 			SbiEngines hibEngine = new SbiEngines();
 			hibEngine.setName(aEngine.getName());
 			hibEngine.setLabel(aEngine.getLabel());
@@ -187,9 +191,9 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			hibEngine.setObjUplDir(aEngine.getDirUpload());
 			hibEngine.setObjUseDir(aEngine.getDirUsable());
 			hibEngine.setSecnUrl(aEngine.getSecondaryUrl());
-			hibEngine.setEngineType(aEngine.getEngineType());
+			hibEngine.setEngineType(hibDomainEngineType);
 			hibEngine.setClassNm(aEngine.getClassName());
-			hibEngine.setBiobjType(hibDomain);
+			hibEngine.setBiobjType(hibDomainBiobjType);
 			aSession.save(hibEngine);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -257,7 +261,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		eng.setSecondaryUrl(hibEngine.getSecnUrl());
 		eng.setUrl(hibEngine.getMainUrl());
 		eng.setLabel(hibEngine.getLabel());
-		eng.setEngineType(hibEngine.getEngineType());
+		eng.setEngineTypeId(hibEngine.getEngineType().getValueId());
 		eng.setClassName(hibEngine.getClassNm());
 		eng.setBiobjTypeId(hibEngine.getBiobjType().getValueId());
 		return eng;

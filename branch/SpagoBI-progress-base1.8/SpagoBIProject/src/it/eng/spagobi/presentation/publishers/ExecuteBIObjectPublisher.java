@@ -124,13 +124,6 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 			selRole = true;
 		}
 
-		boolean datamartExecution = false;
-		Object datamartExecutionObj = executeModuleResponse == null ? null: executeModuleResponse
-				.getAttribute("DATAMART_EXECUTION");
-		if (datamartExecutionObj != null) {
-			datamartExecution = true;
-		}
-
 		boolean publisherNameSet = false;
 		Object publisherNameSetObj = executeModuleResponse == null ? null: executeModuleResponse
 				.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
@@ -160,11 +153,6 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 				return new String("LoopTree");
 				// return new String("LoopTreeExec");
 			}
-		}
-
-		if (datamartExecution) {
-			return new String("SELECT_FIELDS_FOR_SELECTION_PUBLISHER");
-			// return new String("DATA_MART_MAIN_PUBLISHER");
 		}
 
 		if (!execute) {

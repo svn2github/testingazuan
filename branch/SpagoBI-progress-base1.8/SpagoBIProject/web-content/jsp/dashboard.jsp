@@ -88,10 +88,10 @@
        			<td class='header-empty-column-portlet-section'>&nbsp;</td>
        			<td class='header-button-column-portlet-section'>
            			<a href='<%= backUrl.toString() %>'>
-                 		<img title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
+                 		<img title='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' 
                       		 class='header-button-image-portlet-section'
                       		 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
-                      		 alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
+                      		 alt='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' />
            			</a>
        			</td>
 		   		<% if (!possibleStateChanges.isEmpty()) {
@@ -114,7 +114,7 @@
       				</select>
       			</td>
       			<td class='header-select-column-portlet-section'>
-      				<input type='image' class='header-button-image-portlet-section' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
+      				<input type='image' class='header-button-image-portlet-section' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />'/> 
       			</td>
         		</form>
        			<% } %>

@@ -23,9 +23,7 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/jdom-1.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/lucene-1.4.3.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-core-2.0.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagoportlet.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-web-2.0.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/xalan-2.4.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/xml-apis-2.0.2.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/hsqldb1_8_0_2.jar"/>
@@ -39,5 +37,7 @@
 	<classpathentry kind="lib" path="/ProjectsDependencies/lib/qbe.core-1.8.jar"/>
 	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.drivers.api-1.8.jar"/>
 	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.securityprovider.api-1.8.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-core-2.0.2.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-web-2.0.2.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

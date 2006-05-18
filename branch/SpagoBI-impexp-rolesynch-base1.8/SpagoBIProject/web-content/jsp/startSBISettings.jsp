@@ -128,7 +128,7 @@
 								<portlet:param name="OPERATION" value="<%=SpagoBIConstants.IMPORTEXPORT_OPERATION %>"/>
 						</portlet:actionURL>' 
 					class="link_main_menu" >
-					<spagobi:message key = "SBISet.importexport"  bundle="component_impexp_messages"/>
+					<spagobi:message key = "SBISet.importexport" />
 				</a>
 			</td>
 		</tr>

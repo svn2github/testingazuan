@@ -4,7 +4,6 @@
          pageEncoding="ISO-8859-1"
          session="false" 
          import="it.eng.spagobi.constants.SpagoBIConstants,
-                 it.eng.spagobi.importexport.ImportExportConstants,
                  it.eng.spago.configuration.ConfigSingleton,
                  it.eng.spago.base.SourceBean"
 %>
@@ -126,7 +125,7 @@
 				<a href='<portlet:actionURL>
 				                <portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/>
 								<portlet:param name="PAGE" value="TreeObjectsPage"/>
-								<portlet:param name="OPERATION" value="<%=ImportExportConstants.IMPORTEXPORT_OPERATION %>"/>
+								<portlet:param name="OPERATION" value="<%=SpagoBIConstants.IMPORTEXPORT_OPERATION %>"/>
 						</portlet:actionURL>' 
 					class="link_main_menu" >
 					<spagobi:message key = "SBISet.importexport"  bundle="component_impexp_messages"/>

@@ -132,4 +132,6 @@ public class SpagoBIConstants {
 	*/
 	public static final String RESPONSE_COMPLETE = "RESPONSE_COMPLETE"; 
 	
+	public static final String IMPORTEXPORT_OPERATION = "IMPORTEXPORT_OPERATION";
+	
 }

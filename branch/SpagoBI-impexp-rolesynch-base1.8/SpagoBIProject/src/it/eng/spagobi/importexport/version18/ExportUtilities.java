@@ -26,9 +26,8 @@ import it.eng.spago.dbaccess.sql.mappers.SQLMapper;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
-
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -64,9 +63,9 @@ public class ExportUtilities {
 	        fos.close();
 	        ismetadata.close();
         } catch (Exception e) {
-        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
+        	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
         			"Error during the copy of the metadata exportdatabase script " + e);
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
         }
 	}
 	
@@ -93,9 +92,9 @@ public class ExportUtilities {
 	        fos.close();
 	        ismetadata.close();
         } catch (Exception e) {
-        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScriptProperties",
+        	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScriptProperties",
         			"Error during the copy of the metadata exportdatabase properties " + e);
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
         }
 	}
 	
@@ -134,9 +133,9 @@ public class ExportUtilities {
 	        String password = "";
 	         sqlconn = DriverManager.getConnection(url, username, password);
         } catch (Exception e) {
-        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
+        	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
         			"Error while getting connection to export database " + e);
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
         }
         return sqlconn;
 	}
@@ -155,7 +154,7 @@ public class ExportUtilities {
 			SQLMapper sqlMapper = (SQLMapper)mapperClass.newInstance();
 			dataCon = new DataConnection(con, "2.1", sqlMapper);
 		} catch(Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "ExportUtilities" , "getDataConnection",
+			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "getDataConnection",
         			"Error while getting Spago  DataConnection " + e);
 			throw new EMFInternalError(EMFErrorSeverity.ERROR, "cannot build DataConnection object");
 		}

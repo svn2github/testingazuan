@@ -28,8 +28,8 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 /**
  * Publishes the results of a list information request for parameter use modes
@@ -38,8 +38,6 @@ import it.eng.spagobi.utilities.SpagoBITracer;
  * is able to call the error page with the error message caught before and put into 
  * the error handler. If the input information don't fall into any of the cases declared,
  * another error is generated. 
- * 
- * @author sulis
  */
 public class TreeObjectsPublisher implements PublisherDispatcherIFace {
 
@@ -88,7 +86,7 @@ public class TreeObjectsPublisher implements PublisherDispatcherIFace {
 				pubName = new String("treeAdminObjects");
 			} else if(operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) {
 				pubName = new String("treeFunctionalities");
-			} else if(operation.equals(SpagoBIConstants.IMPORTEXPORT_OPERATION)) {
+			} else if(operation.equals(ImportExportConstants.IMPORTEXPORT_OPERATION)) {
 				pubName = new String("importexportHome");
 			}
 		} else if(actor.equals(SpagoBIConstants.DEV_ACTOR)) {

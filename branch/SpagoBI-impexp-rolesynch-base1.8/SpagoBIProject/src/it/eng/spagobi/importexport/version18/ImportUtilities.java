@@ -23,7 +23,7 @@ package it.eng.spagobi.importexport.version18;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiEngines;
 import it.eng.spagobi.metadata.SbiExtRoles;
@@ -79,9 +79,9 @@ public class ImportUtilities {
 	         }
 	         zis.close();
 	      } catch(Exception e) {
-	    	  SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "ImportUtilities" , "decompressArchive",
+	    	  SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ImportUtilities" , "decompressArchive",
 	        			          "Error during the decompression of the exported file " + e);
-	        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+	        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
 	      }
 	}
 	

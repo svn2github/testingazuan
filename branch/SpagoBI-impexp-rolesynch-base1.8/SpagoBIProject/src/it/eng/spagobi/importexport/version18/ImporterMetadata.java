@@ -33,7 +33,7 @@ import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.QueryDetail;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -95,9 +95,9 @@ public class ImporterMetadata {
 					roles.add(role);
 				}
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedRoles",
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedRoles",
 						               "Error while getting exported roles " + he);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 			} 
 			return roles;
 		}
@@ -133,9 +133,9 @@ public class ImporterMetadata {
 					engines.add(eng);
 				}
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedEngines",
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedEngines",
 						               "Error while getting exported engine " + he);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 			} 
 			return engines;
 		}
@@ -155,9 +155,9 @@ public class ImporterMetadata {
 				Query hibQuery = session.createQuery(" from " + table);
 				hibList = hibQuery.list();
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedSbiObjects",
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedSbiObjects",
 						               "Error while getting exported sbi objects " + he);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 			} 
 			return hibList;
 		}
@@ -200,9 +200,9 @@ public class ImporterMetadata {
 					}
 				}
 			} catch (SourceBeanException sbe) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "updateConnRefs",
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "updateConnRefs",
 									   "Error while updating connection references " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 			}	 
 		}
 		
@@ -217,9 +217,9 @@ public class ImporterMetadata {
 			try{
 				Serializable serId = session.save(hibObj);
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertObject",
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObject",
                         			   "Error while inserting object " + he);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 			}
 		}
 		
@@ -258,9 +258,9 @@ public class ImporterMetadata {
 						manager.execSetOperation(setOp);
 					}
 				} catch (Exception e) {
-					SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertCmsFunctionality",
+					SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertCmsFunctionality",
              			   				   "Error while inserting functionality into cms " + e);
-					throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 				}
 			}
 			
@@ -311,9 +311,9 @@ public class ImporterMetadata {
 				insertObject(obj, session);
 				objToReturn = obj;
 			} catch (Exception e) {
-					SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
+					SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
              			   				   "Error while inserting business objects " + e);
-					throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 			}
 			return objToReturn;
 		}

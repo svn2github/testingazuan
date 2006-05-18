@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.treehtmlgenerators;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
@@ -31,8 +28,11 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
+
+import java.util.Iterator;
+import java.util.List;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -64,7 +64,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 				renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+
 				"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
+		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"component_impexp_messages");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+
 				renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+
@@ -109,7 +109,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	protected void addItemForJSTree(StringBuffer htmlStream, SourceBean dataTree, int pidParent, boolean isRoot) {
 		List childs = dataTree.getContainedSourceBeanAttributes();
 		String nameLabel = (String)dataTree.getAttribute("name");
-		String name = PortletUtilities.getMessage(nameLabel, "messages");
+		String name = PortletUtilities.getMessage(nameLabel, "component_impexp_messages");
 		String path = (String)dataTree.getAttribute("path");
 		String codeType = (String)dataTree.getAttribute("codeType");
 		int id = ++progrJSTree;
@@ -122,7 +122,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+path+"\\')');\n");
 			} else {
 				String icon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.png");
-				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', '', '"+SpagoBIConstants.PATH+"', '"+path+"');\n");
+				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', '', '"+ImportExportConstants.PATH+"', '"+path+"');\n");
 			}	
 		}
 		Iterator iter = childs.iterator();
@@ -143,9 +143,9 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("		function menu(event, pathFather) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
-		String capSelect = PortletUtilities.getMessage("SBISet.importexport.selectall", "messages");
+		String capSelect = PortletUtilities.getMessage("SBISet.importexport.selectall", "component_impexp_messages");
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:select(\\''+pathFather+'\\')\">"+capSelect+"</a></div>';\n");
-		String capDeselect = PortletUtilities.getMessage("SBISet.importexport.deselectall", "messages");
+		String capDeselect = PortletUtilities.getMessage("SBISet.importexport.deselectall", "component_impexp_messages");
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:deselect(\\''+pathFather+'\\')\">"+capDeselect+"</a></div>';\n");
 		htmlStream.append("			showMenu(event, divM);\n");
 		htmlStream.append("		}\n");
@@ -155,7 +155,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("		}\n");
 		
 		htmlStream.append("		function select(path) {\n");
-		htmlStream.append("			var checkColl = document.getElementsByName('"+SpagoBIConstants.PATH+"');\n");
+		htmlStream.append("			var checkColl = document.getElementsByName('"+ImportExportConstants.PATH+"');\n");
 		htmlStream.append("		    for(var i=0; i< checkColl.length; i++){\n");
 		htmlStream.append("             value = checkColl[i].value;\n"); 
 		htmlStream.append("             if(value.indexOf(path)!= -1) {\n"); 
@@ -167,7 +167,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("		}\n");
 		
 		htmlStream.append("		function deselect(path) {\n");
-		htmlStream.append("			var checkColl = document.getElementsByName('"+SpagoBIConstants.PATH+"');\n");
+		htmlStream.append("			var checkColl = document.getElementsByName('"+ImportExportConstants.PATH+"');\n");
 		htmlStream.append("		    for(var i=0; i< checkColl.length; i++){\n");
 		htmlStream.append("             value = checkColl[i].value;\n"); 
 		htmlStream.append("             if(value.indexOf(path)!= -1) {\n"); 

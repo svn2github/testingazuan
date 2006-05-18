@@ -29,7 +29,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 /**
  * A publisher used to lead execution flow after a import / export service.
@@ -48,14 +48,14 @@ public class ImportExportPublisher implements PublisherDispatcherIFace {
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("ImportExportModule");
 		if(moduleResponse==null) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "getPublisherName", "Module response null");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10);
+			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getPublisherName", "Module response null");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10, "component_impexp_messages");
 			errorHandler.addError(error);
 			return "error";
 		}
 		
 		if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			String pubName = (String)moduleResponse.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
+			String pubName = (String)moduleResponse.getAttribute(ImportExportConstants.PUBLISHER_NAME);
 			if((pubName!=null) && !(pubName.trim().equals("")))
 				return pubName;
 			else return new String("ImportExportLoopback");

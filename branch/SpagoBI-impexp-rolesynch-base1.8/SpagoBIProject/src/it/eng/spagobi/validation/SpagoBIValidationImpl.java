@@ -6,6 +6,23 @@
  */
 package it.eng.spagobi.validation;
 
+import it.eng.spago.base.Constants;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.service.RequestContextIFace;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spago.util.ContextScooping;
+import it.eng.spago.validation.ValidationEngineIFace;
+import it.eng.spago.validation.ValidatorLocator;
+import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,29 +33,13 @@ import java.util.Vector;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.commons.validator.UrlValidator;
 
-import it.eng.spago.base.Constants;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spago.util.ContextScooping;
-import it.eng.spago.validation.ValidationIFace;
-import it.eng.spago.validation.ValidatorLocator;
-import it.eng.spagobi.utilities.PortletUtilities;
-import it.eng.spagobi.utilities.SpagoBITracer;
-
 /**
  * @author zoppello
  *
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class SpagoBIValidationImpl implements ValidationIFace {
+public class SpagoBIValidationImpl implements ValidationEngineIFace {
 
 	private String _serviceName = null;
 	private String _serviceType = null;
@@ -90,8 +91,9 @@ public class SpagoBIValidationImpl implements ValidationIFace {
 	 * @return	a boolean value which says if conditions are verified.
 	 * @throws Exception if an exception occurs.
 	 */
-	public boolean validate(String serviceType, String serviceName,  RequestContainer requestContainer,
-			ResponseContainer responseContainer)  {
+	public boolean validate(String serviceType, String serviceName,  RequestContextIFace context)  {
+		RequestContainer requestContainer = context.getRequestContainer();
+		ResponseContainer responseContainer = context.getResponseContainer();
 		_serviceName = serviceName;
 		_serviceType = serviceType;
 		ConfigSingleton config = ConfigSingleton.getInstance();

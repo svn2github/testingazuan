@@ -764,7 +764,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		
 		RequestContainer requestContainer = getRequestContainer();
 		ResponseContainer responseContainer = getResponseContainer();
-		boolean validate = ValidationCoordinator.validate(businessType, businessName, requestContainer, responseContainer);
+		boolean validate = ValidationCoordinator.validate(businessType, businessName, this);
 		return validate;
 		
 	}

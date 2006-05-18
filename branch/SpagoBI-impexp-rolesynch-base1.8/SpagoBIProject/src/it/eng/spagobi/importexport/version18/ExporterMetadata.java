@@ -35,7 +35,7 @@ import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IDomainDAO;
-import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -89,9 +89,9 @@ public class ExporterMetadata {
 			session.save(hibDomain);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertDomain",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertDomain",
 					"Error while inserting domain into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -122,9 +122,9 @@ public class ExporterMetadata {
 			session.save(hibEngine);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertEngine",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertEngine",
 					"Error while inserting engine into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -162,9 +162,9 @@ public class ExporterMetadata {
 			session.save(hibBIObj);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
 					"Error while inserting biobject into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -207,9 +207,9 @@ public class ExporterMetadata {
 			session.save(hibBIObjPar);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertBIObjectParameter",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObjectParameter",
 					               "Error while inserting BIObjectParameter into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -243,9 +243,9 @@ public class ExporterMetadata {
 			session.save(hibParam);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParameter",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParameter",
 					"Error while inserting parameter into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -278,9 +278,9 @@ public class ExporterMetadata {
 			session.save(hibParuse);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParUse",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParUse",
 					"Error while inserting parameter use into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -312,9 +312,9 @@ public class ExporterMetadata {
 			session.save(hibLov);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertLov",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertLov",
 					"Error while inserting lov into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -346,9 +346,9 @@ public class ExporterMetadata {
 			session.save(hibCheck);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertCheck",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertCheck",
 					"Error while inserting check into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -383,9 +383,9 @@ public class ExporterMetadata {
 			session.save(hibParuseCheck);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParuseCheck",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParuseCheck",
 					               "Error while inserting paruse and check association into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -420,9 +420,9 @@ public class ExporterMetadata {
 			session.save(hibParuseDet);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertParuseDet",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParuseDet",
 					               "Error while inserting paruse and role association into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -456,9 +456,9 @@ public class ExporterMetadata {
 			session.save(hibFunct);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertFunctionality",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertFunctionality",
 					"Error while inserting Functionality into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -490,9 +490,9 @@ public class ExporterMetadata {
 			session.save(hibRole);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertRole",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertRole",
 					"Error while inserting role into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	
@@ -532,9 +532,9 @@ public class ExporterMetadata {
 			session.save(hibFunctRole);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "insertFunctRole",
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertFunctRole",
 					               "Error while inserting function and role association into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
 	

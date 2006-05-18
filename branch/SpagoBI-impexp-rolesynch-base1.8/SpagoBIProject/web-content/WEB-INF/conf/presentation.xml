@@ -29,7 +29,6 @@
 	<MAPPING business_name="SaveConfigurationPage" business_type="PAGE" publisher_name="SaveConfigurationPubJ"/>
 	<MAPPING business_name="LOGIN_PAGE_SBI_FUNCTIONALITY" business_type="PAGE" publisher_name="TreeObjectsPubJ"/>
     <MAPPING business_name="SERVICE_CALLER_PAGE" business_type="PAGE" publisher_name="ServiceCallerPublisher"/>
-    <MAPPING business_name="ImportExportPage" business_type="PAGE" publisher_name="ImportExportPubJ"/>
     
     
     

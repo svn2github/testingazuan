@@ -447,8 +447,4 @@
      	<CONFIG/>
     </MODULE>
     
-    <MODULE class="it.eng.spagobi.services.modules.ImportExportModule" name="ImportExportModule">
-     	<CONFIG/>
-    </MODULE>
-    
 </MODULES>

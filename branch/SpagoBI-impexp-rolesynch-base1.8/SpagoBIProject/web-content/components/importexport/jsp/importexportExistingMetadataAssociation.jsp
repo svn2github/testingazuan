@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page import="javax.portlet.PortletURL,
 				it.eng.spago.navigation.LightNavigationManager,
-				it.eng.spagobi.constants.SpagoBIConstants,
+				it.eng.spagobi.importexport.ImportExportConstants,
 				java.util.List,
 				java.util.Map,
 				java.util.Set,
@@ -40,22 +40,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
-	IImportManager impMan = (IImportManager)aSessionContainer.getAttribute(SpagoBIConstants.IMPORT_MANAGER);
+	IImportManager impMan = (IImportManager)aSessionContainer.getAttribute(ImportExportConstants.IMPORT_MANAGER);
     MetadataAssociations metaAss = impMan.getMetadataAssociation();
 	
     PortletURL backUrl = renderResponse.createActionURL();
    	backUrl.setParameter("PAGE", "ImportExportPage");
-   	backUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_BACK_METADATA_ASS);
+   	backUrl.setParameter("MESSAGEDET", ImportExportConstants.IMPEXP_BACK_METADATA_ASS);
   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
   	
   	PortletURL exitUrl = renderResponse.createActionURL();
    	exitUrl.setParameter("PAGE", "ImportExportPage");
-   	exitUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_EXIT);
+   	exitUrl.setParameter("MESSAGEDET", ImportExportConstants.IMPEXP_EXIT);
   	exitUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
       
   	PortletURL formUrl = renderResponse.createActionURL();
   	formUrl.setParameter("PAGE", "ImportExportPage");
-   	formUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_METADATA_ASS);
+   	formUrl.setParameter("MESSAGEDET", ImportExportConstants.IMPEXP_METADATA_ASS);
    	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
 %>
@@ -63,24 +63,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "SBISet.connectionAssociation" />
+			<spagobi:message key = "SBISet.connectionAssociation"  bundle="component_impexp_messages"/>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.back" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.back" />' />
+      				 title='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/back.png")%>' 
+      				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= exitUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.exit" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/stop.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.exit" />' />
+      				 title='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.png")%>' 
+      				 alt='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
 	</tr>
@@ -135,11 +135,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%if(!metaAss.getLovIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.lovs" /></td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.lovs"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedLovs" /></td>
-				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.currentLovs" /></td>
+				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedLovs"  bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.currentLovs"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<%
 				Map lovsAss = metaAss.getLovAssociation();
@@ -172,11 +172,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%if(!metaAss.getFunctIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.functionalities" /></td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.functionalities"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedFunctionalities"/></td>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentFunctionalities"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedFunctionalities"  bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentFunctionalities"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<%
 				Map functsAss = metaAss.getFunctAssociation();
@@ -211,11 +211,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%if(!metaAss.getEngineIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.engines" /></td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.engines"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedEngines"/></td>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentEngines"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedEngines"  bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentEngines" bundle="component_impexp_messages"/></td>
 			</tr>
 			<%
 				Map engsAss = metaAss.getEngineAssociation();
@@ -250,11 +250,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%if(!metaAss.getCheckIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.checks" /></td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.checks"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedChecks"/></td>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentChecks"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedChecks" bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentChecks" bundle="component_impexp_messages"/></td>
 			</tr>
 			<%
 				Map checksAss = metaAss.getCheckAssociation();
@@ -287,11 +287,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%if(!metaAss.getParameterIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.parameters" /></td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.parameters"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedParameters"/></td>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentParameters"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedParameters" bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentParameters" bundle="component_impexp_messages"/></td>
 			</tr>
 			<%
 				Map paramsAss = metaAss.getParameterAssociation();
@@ -324,11 +324,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%if(!metaAss.getParuseIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.paruses" /></td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.paruses"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedParuses"/></td>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentParuses"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedParuses"  bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentParuses"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<%
 				Map parusesAss = metaAss.getParuseAssociation();
@@ -361,11 +361,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%if(!metaAss.getBIobjIDAssociation().keySet().isEmpty()) { %>
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.objects" /></td>
+				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.objects"  bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedObjects"/></td>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentObjects"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedObjects" bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentObjects" bundle="component_impexp_messages"/></td>
 			</tr>
 			<%
 				Map biobjsAss = metaAss.getBIObjAssociation();
@@ -401,15 +401,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div style="float:left;width:29%;">
 		<input type="image" 
 		       name="submit" 
-		       title='<spagobi:message key="Sbi.next"/>' 
-		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/next.png")%>' 
-		       alt='<spagobi:message key="Sbi.next"/>' />
+		       title='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' 
+		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.png")%>' 
+		       alt='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' />
 		<br/>
 		<ul style="color:#074B88;">
-			<li><spagobi:message key = "SBISet.impexp.metadatarule1" /></li>
-			<li><spagobi:message key = "SBISet.impexp.metadatarule2" /></li>
-			<li><spagobi:message key = "SBISet.impexp.metadatarule3" /></li>
-			<li><spagobi:message key = "SBISet.impexp.metadatarule4" /></li>
+			<li><spagobi:message key = "SBISet.impexp.metadatarule1"  bundle="component_impexp_messages"/></li>
+			<li><spagobi:message key = "SBISet.impexp.metadatarule2"  bundle="component_impexp_messages"/></li>
+			<li><spagobi:message key = "SBISet.impexp.metadatarule3"  bundle="component_impexp_messages"/></li>
+			<li><spagobi:message key = "SBISet.impexp.metadatarule4"  bundle="component_impexp_messages"/></li>
 		</ul>
 	</div>
 	</form>

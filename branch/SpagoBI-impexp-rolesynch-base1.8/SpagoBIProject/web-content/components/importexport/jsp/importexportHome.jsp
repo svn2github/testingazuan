@@ -23,12 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page import="javax.portlet.PortletURL,
 				it.eng.spago.navigation.LightNavigationManager,
-				it.eng.spagobi.constants.SpagoBIConstants" %>
+				it.eng.spagobi.importexport.ImportExportConstants" %>
 
 <%  
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
-   String exportFilePath = (String)aServiceRequest.getAttribute(SpagoBIConstants.EXPORT_FILE_PATH);
-   String importLogFilePath = (String)aServiceRequest.getAttribute(SpagoBIConstants.IMPORT_LOG_FILE_PATH);
+   String exportFilePath = (String)aServiceRequest.getAttribute(ImportExportConstants.EXPORT_FILE_PATH);
+   String importLogFilePath = (String)aServiceRequest.getAttribute(ImportExportConstants.IMPORT_LOG_FILE_PATH);
 
    PortletURL backUrl = renderResponse.createActionURL();
    backUrl.setParameter("ACTION_NAME", "START_ACTION");
@@ -59,15 +59,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "SBISet.importexport" />
+			<spagobi:message key = "SBISet.importexport" bundle="component_impexp_messages"/>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.back" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.back" />' />
+      				 title='<spagobi:message key = "Sbi.back" bundle="component_impexp_messages" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/back.png")%>' 
+      				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
 	</tr>
@@ -107,30 +107,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   <form method='POST' action='<%=formExportUrl.toString()%>' id='exportForm' name='exportForm'> 
 	<div style="float:left;width:50%;" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">	
-				<spagobi:message key = "SBISet.export" />
+				<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>
 		</div>
 		<div style="float:left;width:10%;">
 		  <center>
 			 <a href="javascript:submitExportForm()">
-					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/importexport32.png") %>'
-						title='<spagobi:message key = "SBISet.export" />' 
-						alt='<spagobi:message key = "SBISet.export" />' />
+					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.png") %>'
+						title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
+						alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
 				</a>
 		  </center>
 		</div>
 		<div id="divProgress"  
 			 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">
-			<spagobi:message key = "SBISet.importexport.opProg" />
+			<spagobi:message key = "SBISet.importexport.opProg" bundle="component_impexp_messages"/>
 		</div>
 		<div id="divDownload" 
 			 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">	 
-			<spagobi:message key = "SBISet.importexport.opComplete" />
+			<spagobi:message key = "SBISet.importexport.opComplete"  bundle="component_impexp_messages"/>
 			<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadForm()">
-				<spagobi:message key = "Sbi.download" />
+				<spagobi:message key = "Sbi.download" bundle="component_impexp_messages"/>
 			</a>
 		</div>
 		<div style="clear:left;margin-left:15px;padding-top:10px;">
-			<spagobi:message key = "SBISet.importexport.nameExp" />: <input type="text" name="exportFileName" size="30" />
+			<spagobi:message key = "SBISet.importexport.nameExp" bundle="component_impexp_messages"/>
+			: 
+			<input type="text" name="exportFileName" size="30" />
 			<!-- Version 1.8 doesn't allow to export subobject
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			Export SubObjects: <input type="checkbox" name="exportSubObj" />
@@ -154,26 +156,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     <form method='POST' action='<%=formImportUrl.toString()%>' id='importForm' name='importForm' enctype="multipart/form-data">
 	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">
-				<spagobi:message key = "SBISet.import" />
+				<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>
 		</div>
 		<div style="float:left;width:10%;">
 		  <center>
 			<a href="javascript:document.getElementById('importForm').submit()">
-					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/importexport32.png") %>'
-						title='<spagobi:message key = "SBISet.import" />' 
-						alt='<spagobi:message key = "SBISet.import" />' />
+					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.png") %>'
+						title='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' 
+						alt='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' />
 				</a>
 			</center>
 		</div>
 		<div style="clear:left;margin-bottom:10px;padding-top:10px;">
-			<spagobi:message key = "SBISet.importexport.fileArchive" />: <input type="file"  name="exportedArchive" />
+			<spagobi:message key = "SBISet.importexport.fileArchive" bundle="component_impexp_messages"/>
+			: 
+			<input type="file"  name="exportedArchive" />
 			<input type='hidden' name='MESSAGEDET' value='Import' />
 		</div>
 		<div id="divLogDownload" 
 			 style="clear:left;display:none;color:#074B88;">	 
-			<spagobi:message key = "SBISet.importexport.opComplete" />
+			<spagobi:message key = "SBISet.importexport.opComplete" bundle="component_impexp_messages"/>
 			<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadLogForm()">
-				<spagobi:message key = "Sbi.downloadLog" />
+				<spagobi:message key = "Sbi.downloadLog" bundle="component_impexp_messages"/>
 			</a>
 		</div>
 	</div>

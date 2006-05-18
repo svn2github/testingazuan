@@ -3,7 +3,10 @@
          contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1"
          session="false" 
-         import="it.eng.spagobi.constants.SpagoBIConstants"
+         import="it.eng.spagobi.constants.SpagoBIConstants,
+                 it.eng.spagobi.importexport.ImportExportConstants,
+                 it.eng.spago.configuration.ConfigSingleton,
+                 it.eng.spago.base.SourceBean"
 %>
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
@@ -99,9 +102,21 @@
 				</a>
 			</td>
 		</tr> --%>
+		<%
+			boolean impexpInst = false;
+			ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+			SourceBean moduleSB = (SourceBean)spagoConfig.getFilteredSourceBeanAttribute("SPAGOBI_COMPONENTS.SPAGOBI_COMPONENT", "name", "importexport");
+			if(moduleSB!=null){
+				String inst = (String)moduleSB.getAttribute("installed");
+				if((inst!=null) && inst.equalsIgnoreCase("true")) {
+					impexpInst = true;
+				}
+			}
+			if(impexpInst) {
+		%>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/importexport64.png")%>' />
+				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport64.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;
@@ -111,13 +126,16 @@
 				<a href='<portlet:actionURL>
 				                <portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/>
 								<portlet:param name="PAGE" value="TreeObjectsPage"/>
-								<portlet:param name="OPERATION" value="<%= SpagoBIConstants.IMPORTEXPORT_OPERATION %>"/>
+								<portlet:param name="OPERATION" value="<%=ImportExportConstants.IMPORTEXPORT_OPERATION %>"/>
 						</portlet:actionURL>' 
 					class="link_main_menu" >
-					<spagobi:message key = "SBISet.importexport" />
+					<spagobi:message key = "SBISet.importexport"  bundle="component_impexp_messages"/>
 				</a>
 			</td>
 		</tr>
+		<%
+			}
+		%>
 	
 	
 	</table>

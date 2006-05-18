@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page import="javax.portlet.PortletURL,
 				it.eng.spago.navigation.LightNavigationManager,
-				it.eng.spagobi.constants.SpagoBIConstants,
+				it.eng.spagobi.importexport.ImportExportConstants,
 				java.util.List,
 				java.util.Map,
 				java.util.Set,
@@ -33,23 +33,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
-	List expConns = (List)moduleResponse.getAttribute(SpagoBIConstants.LIST_EXPORTED_CONNECTIONS);
-	Map curConns = (Map)moduleResponse.getAttribute(SpagoBIConstants.MAP_CURRENT_CONNECTIONS);
+	List expConns = (List)moduleResponse.getAttribute(ImportExportConstants.LIST_EXPORTED_CONNECTIONS);
+	Map curConns = (Map)moduleResponse.getAttribute(ImportExportConstants.MAP_CURRENT_CONNECTIONS);
     Iterator iterExpConn = expConns.iterator();
 	
     PortletURL backUrl = renderResponse.createActionURL();
    	backUrl.setParameter("PAGE", "ImportExportPage");
-   	backUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_BACK_CONN_ASS);
+   	backUrl.setParameter("MESSAGEDET", ImportExportConstants.IMPEXP_BACK_CONN_ASS);
   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
   	
   	PortletURL exitUrl = renderResponse.createActionURL();
    	exitUrl.setParameter("PAGE", "ImportExportPage");
-   	exitUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_EXIT);
+   	exitUrl.setParameter("MESSAGEDET", ImportExportConstants.IMPEXP_EXIT);
   	exitUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
       
   	PortletURL formUrl = renderResponse.createActionURL();
   	formUrl.setParameter("PAGE", "ImportExportPage");
-   	formUrl.setParameter("MESSAGEDET", SpagoBIConstants.IMPEXP_CONNECTION_ASSOCIATION);
+   	formUrl.setParameter("MESSAGEDET", ImportExportConstants.IMPEXP_CONNECTION_ASSOCIATION);
    	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
 %>
@@ -57,24 +57,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "SBISet.connectionAssociation" />
+			<spagobi:message key = "SBISet.connectionAssociation"  bundle="component_impexp_messages"/>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.back" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.back" />' />
+      				 title='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/back.png")%>' 
+      				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= exitUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.exit" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/stop.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.exit" />' />
+      				 title='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.png")%>' 
+      				 alt='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
 	</tr>
@@ -91,15 +91,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div style="float:left;width:69%;" class="div_detail_area_forms">
 		<table style="margin:10px;" cellspacing="5px">
 			<tr>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedConn"/></td>
-				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentConn"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedConn" bundle="component_impexp_messages"/></td>
+				<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentConn" bundle="component_impexp_messages"/></td>
 			</tr>
 			<tr>
 				<td colspan="2">&nbsp;</td>
 			</tr>
 			<%if(expConns.isEmpty()) { %>
 			<tr>
-				<td colspan="2" style="color:#074B88;"><spagobi:message key="SBISet.impexp.noConnExported"/></td>
+				<td colspan="2" style="color:#074B88;"><spagobi:message key="SBISet.impexp.noConnExported" bundle="component_impexp_messages"/></td>
 			</tr>
 			<% } %>
 			<%
@@ -135,7 +135,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    <input type="hidden" name="expConn" value="<%=connName%>" />
 					<select style="width:250px;margin-top:5px;" name="connAssociated<%=connName%>" >
 						<option value="">
-							<spagobi:message key="Sbi.selectcombo"/>
+							<spagobi:message key="Sbi.selectcombo" bundle="component_impexp_messages"/>
 						</option>
 						<% 
 							Set curConnNames = curConns.keySet();	
@@ -156,12 +156,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div style="float:left;width:29%;">
 		<input type="image" 
 		       name="submit" 
-		       title='<spagobi:message key="Sbi.next"/>' 
-		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/next.png")%>' 
-		       alt='<spagobi:message key="Sbi.next"/>' />
+		       title='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' 
+		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.png")%>' 
+		       alt='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' />
 		<br/>
 		<ul style="color:#074B88;">
-			<li><spagobi:message key = "SBISet.impexp.connrule1" /></li>
+			<li><spagobi:message key = "SBISet.impexp.connrule1"  bundle="component_impexp_messages"/></li>
 		</ul>
 	</div>
 	</form>

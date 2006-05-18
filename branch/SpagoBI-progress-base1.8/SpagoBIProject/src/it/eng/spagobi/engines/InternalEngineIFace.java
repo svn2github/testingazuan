@@ -44,4 +44,14 @@ public interface InternalEngineIFace {
 	 */
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError;
 
+	/**
+	 * Executes the subobject of the document and populates the response 
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param obj The <code>BIObject</code> representing the document
+	 * @param response The response <code>SourceBean</code> to be populated
+	 * @param subObjectInfo An object describing the subobject to be executed
+	 */
+	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError;
+	
 }

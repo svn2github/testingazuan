@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app id="SpagoBIJasperReportEngine">
-    <display-name>SpagoBIJasperReportEngine</display-name>
+<web-app id="SpagoBIWekaEngine">
+    <display-name>SpagoBIWekaEngine</display-name>
     <description>
         This application is a portlet. It can not be used outside a portal.
 	</description>
 	
 	<servlet>
-        <servlet-name>JasperReportServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.engines.jasperreport.JasperReportServlet</servlet-class>
+        <servlet-name>WekaServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.engines.weka.WekaServlet</servlet-class>
     	<init-param>
             <param-name>SECURITY_ABLE</param-name>
             <param-value>FALSE</param-value>
@@ -16,8 +16,8 @@
     </servlet>
     
     <servlet-mapping>
-        <servlet-name>JasperReportServlet</servlet-name>
-        <url-pattern>/JasperReportServlet</url-pattern>
+        <servlet-name>WekaServlet</servlet-name>
+        <url-pattern>/WekaServlet</url-pattern>
     </servlet-mapping>
     
     <welcome-file-list>

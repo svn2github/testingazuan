@@ -8,14 +8,9 @@ package it.eng.spagobi.engines.weka;
 
 import it.eng.spago.base.SourceBean;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -106,6 +101,8 @@ public class WekaServlet extends HttpServlet {
 				+ "of SpagoBI Weka Engine ended succesfully");
 	}
 
+	Map params = null;
+	
 	/**
 	 * process weka execution requests
 	 */
@@ -118,7 +115,7 @@ public class WekaServlet extends HttpServlet {
 		logger.debug(this.getClass().getName()
 				+ ":service:Reading request parameters...");
 		
-		Map params = new HashMap();
+		params = new HashMap();
 		Enumeration enumer = request.getParameterNames();
 		String parName = null;
 		String parValue = null;
@@ -148,25 +145,53 @@ public class WekaServlet extends HttpServlet {
 			
 			if (securityAble)
 				logger.info(this.getClass().getName() + ":service:Caller authenticated succesfully");
-			
-			String template = (String) params.get("templatePath");
-			String spagobibase = (String) params.get("spagobiurl");
-			
-			WekaRunner wekaRunner = new WekaRunner(spagobibase, template);
 									
-			try {
-				
-				wekaRunner.runReport(params);
-				
-			} catch (Exception e) {
-				logger.error(this.getClass().getName() + ":service:error "
-						+ "during report production \n\n " + e);
-				return;
-			}
+			Thread runner = new Thread() {			    				
+				public void run() {
+					logger.info(this.getClass().getName() + ":service: Runner thread started succesfully");
+					
+					String template = (String) params.get("templatePath");
+					String spagobibase = (String) params.get("spagobiurl");
+					WekaRunner wekaRunner = new WekaRunner(spagobibase, template);					
+					try {
+						wekaRunner.runReport(params);
+						
+					} catch (Exception e) {
+						logger.error(this.getClass().getName() + ":service:error "
+								+ "duri ng report production \n\n " + e);
+						return;
+					}
+			    }
+			};
+			runner.start();		
+			
+			logger.info(this.getClass().getName() + ":service: Return the default waiting message");
+			
+			
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<html>\n");
+			buffer.append("<head><title>Service Response</title></head>\n");
+			buffer.append("<body>");
+			buffer.append("Please wait! The engine is working hard for you at this moment\n");
+			buffer.append("</body>\n");
+			buffer.append("</html>\n");
+			
+			response.setContentLength(buffer.length());			
+			response.setContentType("text/html");
+			PrintWriter writer = response.getWriter();
+			writer.print(buffer.toString());
+			writer.flush();			
 		}
 		logger.info(this.getClass().getName() + ":service:Request processed");
 	}
 
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * This method, based on the engine-config.xml configuration, gets a
 	 * database connection and return it

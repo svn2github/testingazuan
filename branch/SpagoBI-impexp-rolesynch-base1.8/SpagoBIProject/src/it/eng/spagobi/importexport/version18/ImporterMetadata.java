@@ -417,8 +417,8 @@ public class ImporterMetadata {
 				Integer biobjid = (Integer)uniqueMap.get("biobjid");
 				Integer prog = (Integer)uniqueMap.get("prog");
 				hql = "from SbiObjPar op where op.id.sbiParameters.parId = " + paramid +
-					  " and op.id.sbiObjects.biobjId = " + biobjid +
-					  " and op.id.prog = " + prog;
+					  " and op.id.sbiObjects.biobjId = " + biobjid;
+				// +  " and op.id.prog = " + prog;
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiObjPar hibObjPar = (SbiObjPar)hqlQuery.uniqueResult();
 				return hibObjPar;

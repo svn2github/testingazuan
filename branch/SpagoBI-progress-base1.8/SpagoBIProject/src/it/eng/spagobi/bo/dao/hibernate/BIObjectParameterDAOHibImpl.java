@@ -296,9 +296,31 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			List hibObjectPars = hqlQuery.list();
 
 			Iterator it = hibObjectPars.iterator();
+			int count = 1;
 			while (it.hasNext()) {
-				resultList.add(toBIObjectParameter((SbiObjPar) it.next()));
+				BIObjectParameter aBIObjectParameter = toBIObjectParameter((SbiObjPar) it.next());
+				//*****************************************************************
+				//**************** START PRIORITY CONTROL *************************
+				//*****************************************************************
+				Integer priority = aBIObjectParameter.getPriority();
+				// if the priority is different from the value expected, 
+				// recalculates it for all the parameter of the document
+				if (priority == null || priority.intValue() != count) {
+					SpagoBITracer.minor(SpagoBIConstants.NAME_MODULE, 
+						    "BIObjectParameterDAOHibImpl", 
+						    "loadBIObjectParametersById", 
+						    "The priorities of the biparameters for the document with id = " + biObjectID + " are not sorted. Priority recalculation starts.");
+					recalculateBiParametersPriority(biObjectID, aSession);
+					// restarts this method in order to load updated priorities
+					aBIObjectParameter.setPriority(new Integer(count));
+				}
+				count++;
+				//*****************************************************************
+				//**************** END PRIORITY CONTROL ***************************
+				//*****************************************************************
+				resultList.add(aBIObjectParameter);
 			}
+			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null)
@@ -312,6 +334,28 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 		return resultList;
 	 }
 	
+	/**
+	 * Recalculates the priority of all the BiParameters of the document, identified by its biObjectID,
+	 * in the Hibernate session passed at input
+	 * 
+	 * @param biObjectID The id of the document
+	 * @param aSession The Hibernate session
+	 */
+	public void recalculateBiParametersPriority(Integer biObjectID, Session aSession) {
+			String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObjectID + " order by s.priority asc";
+			Query hqlQuery = aSession.createQuery(hql);
+			List hibObjectPars = hqlQuery.list();
+			Iterator it = hibObjectPars.iterator();
+			int count = 1;
+			while (it.hasNext()) {
+				SbiObjPar aSbiObjPar = (SbiObjPar) it.next();
+				aSbiObjPar.setPriority(new Integer(count));
+				count++;
+				aSession.save(aSbiObjPar);
+			}
+	}
+
+
 	/**
 	 * From the hibernate BI object parameter at input, gives
 	 * the corrispondent <code>BIObjectParameter</code> object.
@@ -336,5 +380,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 		aBIObjectParameter.setParameter(parameter);
 		return aBIObjectParameter;
 	}
+	
+	
 	
 }

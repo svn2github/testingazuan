@@ -29,7 +29,6 @@ package it.eng.spagobi.bo.dao.hibernate;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.CmsProperty;
@@ -40,12 +39,6 @@ import it.eng.spago.cms.operations.DeleteOperation;
 import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.cms.operations.RestoreOperation;
 import it.eng.spago.cms.operations.SetOperation;
-import it.eng.spago.dbaccess.DataConnectionManager;
-import it.eng.spago.dbaccess.SQLStatements;
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -60,7 +53,6 @@ import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -115,9 +107,28 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			IParameterDAO aParameterDAO = DAOFactory.getParameterDAO();
 			List biObjectParameters = new ArrayList();
 			Parameter aParameter = null;
+			int count = 1;
 			while (it.hasNext()) {
 				hibObjPar = (SbiObjPar) it.next();
 				tmpBIObjectParameter = aBIObjectParameterDAOHibImpl.toBIObjectParameter(hibObjPar);
+				
+				//*****************************************************************
+				//**************** START PRIORITY RECALCULATION *******************
+				//*****************************************************************
+				Integer priority = tmpBIObjectParameter.getPriority();
+				if (priority == null || priority.intValue() != count) {
+					SpagoBITracer.minor(SpagoBIConstants.NAME_MODULE, 
+						    "BIObjectDAOHibImpl", 
+						    "loadBIObjectForExecutionByPathAndRole", 
+						    "The priorities of the biparameters for the document with id = " + biObject.getId() + " are not sorted. Priority recalculation starts.");
+					aBIObjectParameterDAOHibImpl.recalculateBiParametersPriority(biObject.getId(), aSession);
+					tmpBIObjectParameter.setPriority(new Integer(count));
+				}
+				count++;
+				//*****************************************************************
+				//**************** END PRIORITY RECALCULATION *******************
+				//*****************************************************************
+				
 				aParameter = aParameterDAO.loadForExecutionByParameterIDandRoleName(
 								tmpBIObjectParameter.getParID(), role);
 				tmpBIObjectParameter.setParID(aParameter.getId());

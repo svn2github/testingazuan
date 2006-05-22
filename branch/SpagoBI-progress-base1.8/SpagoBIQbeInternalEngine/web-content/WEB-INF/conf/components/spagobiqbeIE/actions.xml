@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+
+	<ACTION name="SELECT_DATA_MART_ACTION" class="it.eng.qbe.action.SelectDataMartAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="INIT_WIZARD_ACTION" class="it.eng.qbe.action.InitWizardAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SELECT_FIELD_FOR_SELECT_ACTION" class="it.eng.qbe.action.SelectFieldForSelectAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SELECT_FIELD_FOR_WHERE_ACTION" class="it.eng.qbe.action.SelectFieldForWhereAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SELECT_FIELD_FOR_GROUPBY_ACTION" class="it.eng.qbe.action.SelectFieldForGroupByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SELECT_FIELD_FOR_ORDERBY_ACTION" class="it.eng.qbe.action.SelectFieldForOrderByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="UPDATE_FIELD_SELECT_ACTION" class="it.eng.qbe.action.UpdateFieldsForSelectAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION> 
+	
+	<ACTION name="UPDATE_FIELD_WHERE_ACTION" class="it.eng.qbe.action.UpdateFieldsForWhereAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION> 
+
+	<ACTION name="UPDATE_FIELD_RESUME_ACTION" class="it.eng.qbe.action.UpdateFieldsForResumeAction" scope="REQUEST">	
+		<CONFIG></CONFIG>
+	</ACTION> 
+	
+	<ACTION name="COMPOSE_RESUME_QUERY_ACTION" class="it.eng.qbe.action.ComposeResumeQueryAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION> 
+	
+	<ACTION name="EXECUTE_QUERY_AND_SAVE_ACTION" class="it.eng.qbe.action.ExecuteSaveQueryAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION> 
+
+	<ACTION name="EXECUTE_QUERY_AND_SAVE_FROM_SAVE_ACTION" class="it.eng.qbe.action.ExecuteSaveQueryFromSaveAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION> 	
+
+	<ACTION name="DELETE_FIELD_FROM_SELECT_ACTION" class="it.eng.qbe.action.DeleteFieldFromSelectAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_FIELD_FROM_WHERE_ACTION" class="it.eng.qbe.action.DeleteFieldFromWhereAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_FIELD_FOR_ORDERBY_ACTION" class="it.eng.qbe.action.DeleteFieldFromOrderByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_FIELD_FOR_GROUPBY_ACTION" class="it.eng.qbe.action.DeleteFieldFromGroupByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_UP_ACTION" class="it.eng.qbe.action.MoveUpAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_DOWN_ACTION" class="it.eng.qbe.action.MoveDownAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="PERSIST_QUERY_ACTION" class="it.eng.qbe.action.PersistQueryAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	 <ACTION name="UPDATE_EXPERT_ACTION" class="it.eng.qbe.action.UpdateExpertAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+		
+	<ACTION name="UPDATE_PREVIEW_MODE_ACTION" class="it.eng.qbe.action.UpdatePreviewModeAction"  scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="PUBLISH_ACTION" class="it.eng.spago.dispatching.action.util.PublishAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_UP_WHERE_ACTION" class="it.eng.qbe.action.MoveUpWhereAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_DOWN_WHERE_ACTION" class="it.eng.qbe.action.MoveDownWhereAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_UP_GROUPBY_ACTION" class="it.eng.qbe.action.MoveUpGroupByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_DOWN_GROUPBY_ACTION" class="it.eng.qbe.action.MoveDownGroupByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_UP_ORDERBY_ACTION" class="it.eng.qbe.action.MoveUpOrderByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MOVE_DOWN_ORDERBY_ACTION" class="it.eng.qbe.action.MoveDownOrderByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="RECOVER_CL_ACTION" class="it.eng.qbe.action.RecoverClassLoaderAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="ALIGN_EXPERT_ACTION" class="it.eng.qbe.action.AlignExpertAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+</ACTIONS>

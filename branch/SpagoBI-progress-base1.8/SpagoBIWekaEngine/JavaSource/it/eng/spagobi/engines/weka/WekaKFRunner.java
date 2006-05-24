@@ -199,7 +199,7 @@ public class WekaKFRunner {
 				// fino a che tutte le instanze non sono state scritte sul db. 
 				// In futuro sarebbe meglio sostituire gli oggetti databaseSaver con
 				// un oggetto custom per la scrittura su db più sofisticato
-				databaseSaver.setRetrieval(databaseSaver.BATCH);
+				//databaseSaver.setRetrieval(databaseSaver.BATCH);
 				
 				// l'url del db, il nome utente e la password non sono 
 				// memorizzati nel tempalte file quindi è necessario riinserirli a

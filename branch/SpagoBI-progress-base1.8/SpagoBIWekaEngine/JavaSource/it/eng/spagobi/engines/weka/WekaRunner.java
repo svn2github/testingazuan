@@ -45,34 +45,6 @@ public class WekaRunner {
 	 * @throws Exception
 	 */
 	public void runReport(Map parameters) throws Exception {
-		
-		// testa il classloader
-		try {
-			logger.debug("Class: " + ClassLoader.getSystemClassLoader());
-									
-			URL url = ClassLoader.getSystemResource(".");
-			logger.debug("Root dir (.): " + url);
-			
-			url = ClassLoader.getSystemResource("/");
-			logger.debug("Root dir (/): " + url);
-			
-			url = ClassLoader.getSystemResource("");
-			logger.debug("Root dir (): " + url);
-			
-			url = ClassLoader.getSystemResource("weka/core/version.txt");
-			logger.debug("Root dir (weka/core/version.txt): " + url);
-						
-		    InputStream inR = 
-		          ClassLoader.getSystemResourceAsStream("weka/core/version.txt");
-		        LineNumberReader lnr = new LineNumberReader(new InputStreamReader(inR));
-		        
-		    String line = lnr.readLine();
-		    logger.debug("Version: " + line);
-		} catch (Exception ex) {
-			logger.debug("Non funziona");
-		}
-		
-		
 		String templatePath = (String) parameters.get("templatePath");
 		String spagobibaseurl = (String) parameters.get("spagobiurl");
 		byte[] template = new SpagoBIAccessUtils().getContent(spagobibaseurl, templatePath);

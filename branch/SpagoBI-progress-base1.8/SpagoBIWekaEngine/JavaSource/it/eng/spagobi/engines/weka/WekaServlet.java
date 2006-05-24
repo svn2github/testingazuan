@@ -7,10 +7,15 @@
 package it.eng.spagobi.engines.weka;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.utilities.SpagoBIAccessUtils;
+import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -145,8 +150,39 @@ public class WekaServlet extends HttpServlet {
 			
 			if (securityAble)
 				logger.info(this.getClass().getName() + ":service:Caller authenticated succesfully");
-			
-			
+				
+				logger.info(this.getClass().getName() + ":service:reading template file ...");
+				String templatePath = (String) params.get("templatePath");
+				String cr_manager_url = (String) params.get("cr_manager_url");				
+				byte[] template = new SpagoBIAccessUtils().getContent(cr_manager_url, templatePath);
+				logger.info(this.getClass().getName() + ":service:template file has been read succesfully");
+				
+				logger.info(this.getClass().getName() + ":service:saving tamplete file to local temp dir ...");
+				File file = File.createTempFile("weka", null);
+				OutputStream out = new FileOutputStream(file);
+				out.write(template);
+				out.flush();
+				out.close();
+				logger.info(this.getClass().getName() + ":service:template file saved succesfully to a local temp dir");
+				
+				WekaKFRunner kfRunner = new WekaKFRunner();
+				
+				logger.debug(this.getClass().getName() + ":service:Start parsing file: " + file);
+				try {
+					kfRunner.loadKFTemplate(file);
+				} catch (Exception e) {
+					logger.error("Impossible to load/parse templete file", e);					
+				}
+				kfRunner.setupSavers();
+				kfRunner.setupLoaders();
+				logger.debug(this.getClass().getName() + ":service:Getting loaders & savers infos ...");
+				logger.debug( Utils.getLoderDesc(kfRunner.getLoaders()) );
+				logger.debug( Utils.getSaverDesc(kfRunner.getSavers()) );
+				logger.debug(this.getClass().getName() + ":service:Executing knowledge flow ...");
+				kfRunner.run(false);
+						
+				file.delete();		
+			/*
 			WekaRunner wekaRunner = new WekaRunner();
 			//String template = (String) params.get("templatePath");
 			//String spagobibase = (String) params.get("spagobiurl");
@@ -157,7 +193,7 @@ public class WekaServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			*/
 			
 			/*
 			Thread runner = new Thread() {			    				
@@ -180,9 +216,14 @@ public class WekaServlet extends HttpServlet {
 			runner.start();		
 			*/
 			
+			String events_manager_url = (String) params.get("events_manager_url");
+			EventsAccessUtils eventsAccessUtils = new EventsAccessUtils(events_manager_url);	
+			String eventId = (String) params.get("event");
+			String user = (String) params.get("user");
+			eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated succesfully", null);
+						
 			logger.info(this.getClass().getName() + ":service: Return the default waiting message");
-			
-			
+								
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("<html>\n");
 			buffer.append("<head><title>Service Response</title></head>\n");

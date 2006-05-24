@@ -25,7 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.constants.SecurityConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -74,18 +74,18 @@ public class ExoPortalEngUserProfileImpl implements IEngUserProfile {
 			String loadUserProfileAttrs = loadUserProfileAttrsSB.getCharacters();
 			HashMap predefinedProfileAttributes = new HashMap();
 			if (loadUserProfileAttrs != null && loadUserProfileAttrs.trim().toUpperCase().equals("YES")) {
-				SpagoBITracer.info(SecurityConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>",
+				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>",
 						"Trying to load predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"'.");
 				predefinedProfileAttributes = GeneralUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
 			} else {
-				SpagoBITracer.info(SecurityConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>",
+				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>",
 						"Predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"' will not be loaded.");
 			}
 			//add the predefined attributes for the current user (already existing attributes are overwritten)
 			profileAttributes.putAll(predefinedProfileAttributes);
 			userAttributes.put("PROFILE_ATTRIBUTES", profileAttributes);
 		} catch(Exception e){
-			SpagoBITracer.major(SecurityConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>", "Exception ",e);
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>", "Exception ",e);
 		}
 	}
 

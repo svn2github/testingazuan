@@ -132,7 +132,8 @@ public class WekaDriver implements IEngineDriver {
 	private Map getMap(BIObject biobj) {
 		Map pars = new Hashtable();
 		pars.put("templatePath",biobj.getPath() + "/template");
-        pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+		pars.put("cr_manager_url", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+    	pars.put("events_manager_url", GeneralUtilities.getSpagoBiEventsManagerServlet());
         pars = addBIParameters(biobj, pars);
         return pars;
 	} 

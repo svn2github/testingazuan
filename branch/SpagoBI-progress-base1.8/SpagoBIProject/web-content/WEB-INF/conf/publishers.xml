@@ -319,6 +319,15 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	<PUBLISHER name="EventsMonitorPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/eventsMonitor.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
   	<PUBLISHER name="treeFunctionalities">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>

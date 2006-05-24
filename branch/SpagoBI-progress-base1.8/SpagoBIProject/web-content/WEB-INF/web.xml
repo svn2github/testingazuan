@@ -32,6 +32,11 @@
     </servlet>
     
     <servlet>
+        <servlet-name>EventsManagerServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.services.EventsManagerServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
         <servlet-name>IReportServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.IReportPluginServlet</servlet-class>
         <!-- the drivers parameter contains all the drivers complete class name that an object 
@@ -73,6 +78,11 @@
     <servlet-mapping>
         <servlet-name>ContentRepositoryServlet</servlet-name>
         <url-pattern>/ContentRepositoryServlet</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>EventsManagerServlet</servlet-name>
+        <url-pattern>/EventsManagerServlet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

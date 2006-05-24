@@ -501,6 +501,10 @@
      	<CONFIG/>
     </MODULE>
     
+    <MODULE class="it.eng.spagobi.services.modules.PortletEventsMonitorModule" name="PortletEventsMonitorModule">
+     	<CONFIG/>
+    </MODULE>
+    
     <MODULE class="it.eng.spagobi.services.modules.ListObjParuseModule" name="ListObjParuseModule">
      	<CONFIG/>
     </MODULE>

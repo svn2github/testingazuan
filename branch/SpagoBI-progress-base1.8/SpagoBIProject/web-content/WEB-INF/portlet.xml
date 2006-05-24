@@ -6,6 +6,46 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
   Please fill the missing values before deploying this portlet
 -->
 
+<portlet>
+        <description>Events Monitor</description>		
+        <portlet-name>EventsMonitor</portlet-name>		
+        <display-name>Events Monitor</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>EVENTS_MONITOR_PAGE</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>-1</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>     
+		<portlet-info>
+        	<title>Events Monitor</title>
+        	<short-title>Events Monitor</short-title>
+        	<keywords>Events Monitor</keywords>
+        </portlet-info>
+        <portlet-preferences>
+        	<preference>
+        		<name>language</name>
+        		<value>en</value>
+        		<value>US</value>
+        	</preference>
+        </portlet-preferences>
+	</portlet>
+
+
+
 
    <portlet>
         <description>Static Settings</description>		

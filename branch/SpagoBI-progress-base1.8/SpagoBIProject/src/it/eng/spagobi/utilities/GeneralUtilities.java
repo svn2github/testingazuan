@@ -177,6 +177,16 @@ public class GeneralUtilities {
 	    return getSpagoBiContextAddress() + "/ContentRepositoryServlet";
 	}
 	
+	/**
+	 * Gets the spagoBI's EventManager servlet information as a string.
+	 * 
+	 * @return A string containing spagoBI's EventManager servlet information
+	 */
+	public static String getSpagoBiEventsManagerServlet(){
+		
+	    return getSpagoBiContextAddress() + "/EventsManagerServlet";
+	}
+	
 	
 	
 	/**

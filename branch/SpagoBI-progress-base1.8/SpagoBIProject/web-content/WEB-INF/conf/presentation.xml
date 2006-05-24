@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PRESENTATION>
-
+	<MAPPING business_name="EVENTS_MONITOR_PAGE" business_type="PAGE" publisher_name="EventsMonitorPublisher"/>
+    
 	<MAPPING business_name="ListEnginesPage" business_type="PAGE" publisher_name="ListEnginesPubJ"/>
 	<MAPPING business_name="ListParametersPage" business_type="PAGE" publisher_name="ListParametersPubJ"/>
 	<!--MAPPING business_name="ListParameterUsesPage" business_type="PAGE" publisher_name="ListParameterUsesPubJ"/-->
@@ -16,6 +17,7 @@
 	<MAPPING business_name="DetailModalitiesChecksPage" business_type="PAGE" publisher_name="DetailModalitiesChecksPubJ"/>
 	<MAPPING business_type="ACTION" business_name="START_ACTION" publisher_name="DYN_FORWARD_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_SETTINGS" publisher_name="LoginSBISettingsPublisher"/>
+
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_DEVELOPMENT_CONTEXT" publisher_name="LoginSBIDevelopmentContextPublisher"/>
 	<MAPPING business_name="DetailBIObjectPage" business_type="PAGE" publisher_name="DetailBIObjectPubJ"/>
 	<!--MAPPING business_name="ListBIObjectParametersPage" business_type="PAGE" publisher_name="ListBIObjectParametersPubJ"/-->

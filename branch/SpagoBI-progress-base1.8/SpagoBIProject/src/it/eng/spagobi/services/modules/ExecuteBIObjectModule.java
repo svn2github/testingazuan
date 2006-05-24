@@ -53,6 +53,7 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.engines.InternalEngineIFace;
+import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -606,7 +607,14 @@ public class ExecuteBIObjectModule extends AbstractModule
 				} else {
 					mapPars = aEngineDriver.getParameterMap(obj);
 				}
-			
+				
+				// callback event id
+				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			    String user = (String)profile.getUserUniqueIdentifier();
+				String id =  EventsManager.getInstance().registerEvent(user);
+			    mapPars.put("event", id);
+			    mapPars.put("user", user);
+			    
 				// set into the reponse the parameters map	
 				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
 			

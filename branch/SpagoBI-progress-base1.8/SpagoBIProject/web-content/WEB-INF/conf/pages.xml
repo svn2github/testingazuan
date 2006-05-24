@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
 	
+	<PAGE name="EVENTS_MONITOR_PAGE" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="EVENTS_MONITOR_PAGE" target="ListLookupLovModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="PortletEventsMonitorModule"/>
+    	</MODULES>
+  	</PAGE>
+	
 	<PAGE name="LOGIN_PAGE_SBI_FUNCTIONALITY" scope="REQUEST" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="LOGIN_PAGE_SBI_FUNCTIONALITY" target="PortletLoginModule">

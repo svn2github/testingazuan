@@ -3,7 +3,7 @@
 	
 	<PAGE name="EVENTS_MONITOR_PAGE" scope="REQUEST" >
     	<DEPENDENCIES>
-      		<DEPENDENCE source="EVENTS_MONITOR_PAGE" target="ListLookupLovModule">
+      		<DEPENDENCE source="EVENTS_MONITOR_PAGE" target="PortletEventsMonitorModule">
         		<CONDITIONS/>
         		<CONSEQUENCES/>
       		</DEPENDENCE>

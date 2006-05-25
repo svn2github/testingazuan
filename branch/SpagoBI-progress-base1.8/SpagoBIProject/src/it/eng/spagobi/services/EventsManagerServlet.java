@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services;
 
+import it.eng.spagobi.bo.EventLog;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +79,7 @@ public class EventsManagerServlet extends HttpServlet{
 	 				Map params = parseParamsStr(paramStr);
 	 				
 	 				if(eventId != null && user != null) {
-	 					EventsManager.getInstance().fireEvent(eventId, user, desc, null);
+	 					EventsManager.getInstance().fireEvent(eventId, user, desc, params);
 		 				returnValue = RETURN_STATUS_KO;
 		 				SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "operation " + FIRE_EVENT + " executed succesfully");					
 	 				}
@@ -121,12 +121,12 @@ public class EventsManagerServlet extends HttpServlet{
 	private String getFiredEventsCsvStr(List firedEventsList) {
 		StringBuffer buffer = new StringBuffer();
 		for(int i = 0; i < firedEventsList.size(); i++) {
-			EventsManager.FiredEvent firedEvent = (EventsManager.FiredEvent)firedEventsList.get(i);
-			buffer.append(firedEvent.id + "," + 
-					firedEvent.user + "," + 
-					firedEvent.date + "," + 
-					firedEvent.desc + "," + 
-					firedEvent.params + "\n");
+			EventLog firedEvent = (EventLog)firedEventsList.get(i);
+			buffer.append(firedEvent.getId() + "," + 
+					firedEvent.getUser() + "," + 
+					firedEvent.getDate() + "," + 
+					firedEvent.getDesc() + "," + 
+					firedEvent.getParams() + "\n");
 		}
 		return buffer.toString();
 	}

@@ -21,95 +21,129 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.events;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.bo.EventLog;
+import it.eng.spagobi.bo.dao.hibernate.EventDAOHibImpl;
+import it.eng.spagobi.bo.dao.hibernate.EventLogDAOHibImpl;
+
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
+ * This class menage SpagoBI Event System
+ * 
  * @author Gioia
- *
+ * 
+ * TODO add logging
  */
 public class EventsManager {
 	
-	private Map events  = new HashMap();	
-	private Map firedEvents  = new HashMap();
+	private EventDAOHibImpl eventDAO = new EventDAOHibImpl();
+	private EventLogDAOHibImpl eventLogDAO = new EventLogDAOHibImpl();
 	
-	private long nextFreeId = 0;
 	
-	public static class Event {
-		public String id;
-		public String user;
-	}
-	
-	public static class FiredEvent {
-		public String id;
-		public String user;
-		public Date date;
-		public String desc; 
-		public String params;		
-	}
-	
+	/**
+	 *  Singleton design pattern
+	 */
 	private static EventsManager instance = null;
 	
 	public static EventsManager getInstance(){
 		if(instance == null) instance = new EventsManager();
 		return instance;
 	}
-	
+		
 	private EventsManager(){}
 	
-	public String registerEvent(String user) {
-		Event event = new Event();
-		event.id = "" + nextFreeId;
-		event.user = user;
-		events.put("" + nextFreeId, event);
-		nextFreeId++;
-		return event.id;
+	
+	
+	/**
+	 * Register a new event for the given user
+	 * 
+	 * @param user User who want to register the new event
+	 * @return The unique id of the newly generated event
+	 */
+	public Integer registerEvent(String user) {
+		Integer id = null;
+		try {
+			id = eventDAO.registerEvent(user);
+		} catch (EMFUserError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		System.out.println("registerEvent: " + id);
+		return id;
 	}
 	
-	public void registerHandler(long eventId, Object handler) {
+	/**
+	 * Associate an handler to the given event. Every time an event is fired all the handlers 
+	 * associteted to it are executed by the EventManager.
+	 * 
+	 * To be implemented .... 
+	 * 
+	 * @param id the event unique id to which the handler is associated
+	 * @param handler the handler to execute when the event is fired
+	 * 
+	 * TODO decide EventHandler interface
+	 * TODO decide EventHandler execution order policy
+	 * TODO implement some default EventHandler (i.e. NotificationHandler, HousekeepingHandler, ecc...)
+	 */
+	public void registerHandler(long id, Object handler) {
 		
 	}
 	
-	public void fireEvent(String eventId, String user, String desc, Map params) {
-		Event event = (Event)events.get(eventId);
-		FiredEvent firedEvent = new FiredEvent();
-		firedEvent.id = event.id;
-		firedEvent.user = event.user;
-		firedEvent.date = new Date();
-		firedEvent.desc = desc;
-		firedEvents.put(eventId, firedEvent);
+	/**
+	 * Fire a registered event
+	 * 
+	 * @param id the event unique id
+	 * @param user the user that have registered the event
+	 * @param desc a description provided by the agent that fired the event
+	 * @param params parameters provided by the agent that fired the event (usefull for the handlers configuration)
+	 */
+	public void fireEvent(String eventId, String user, String desc, Map params) {	
+		
+		EventLog eventLog = new EventLog();
+		eventLog.setId(new Integer(eventId));
+		eventLog.setUser(user);
+		eventLog.setDesc(desc);
+		eventLog.setDate(new Timestamp(System.currentTimeMillis()));
+		eventLog.setParams("null");
+		
+		try {
+			eventLogDAO.insertEventLog(eventLog);
+		} catch (EMFUserError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("fireEvent: " + eventLog.getId() + ", "  + eventLog.getUser() + ", " + eventLog.getDate() + ", " + eventLog.getDesc());
 	}
 	
+	/**
+	 * Get a list of all fired events registered by the given user and 
+	 * ordered by date
+	 * @param user 
+	 * @return
+	 */
 	public List getFiredEvents(String user) {
-		List firedEventsList = new ArrayList();
-		Iterator it = firedEvents.keySet().iterator();
-		while(it.hasNext()){
-			FiredEvent firedEvent = (FiredEvent)firedEvents.get(it.next());
-			if(firedEvent.user.equalsIgnoreCase(user))
-				firedEventsList.add(firedEvent);
-		}
-		return firedEventsList;
-	}
-	
-	public List getFiredEventsOrdered(String user) {
-		List firedEventsList = new ArrayList();
-		Iterator it = firedEvents.keySet().iterator();
-		TreeMap tree = new TreeMap();
-		while(it.hasNext()){
-			FiredEvent firedEvent = (FiredEvent)firedEvents.get(it.next());
-			if(firedEvent.user.equalsIgnoreCase(user))
-				tree.put(firedEvent.date, firedEvent);
-		}
 		
-		it = tree.keySet().iterator();
+		List firedEventsList = null;
+		System.out.println("getFiredEventsOrdered: ");
+				
+		
+		try {
+			firedEventsList = eventLogDAO.loadEventsLogByUser(user);
+		} catch (EMFUserError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
+		
+		Iterator it = firedEventsList.iterator();
 		while(it.hasNext()){
-			FiredEvent firedEvent = (FiredEvent)tree.get(it.next());
-			firedEventsList.add(firedEvent);
+			EventLog eventLog = (EventLog)it.next();
+			System.out.println(" - " + eventLog.getId() + ", "  + eventLog.getUser() + ", " + eventLog.getDate() + ", " + eventLog.getDesc());
 		}
 		
 		return firedEventsList;

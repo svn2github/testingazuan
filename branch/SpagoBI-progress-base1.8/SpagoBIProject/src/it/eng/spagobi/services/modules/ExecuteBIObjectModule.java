@@ -100,6 +100,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception 
 	{
+		System.out.println(">>> ExecuteBIObjectModule <<<");
+		
 		debug("service", "start service method");
 		String messageExec = (String)request.getAttribute(SpagoBIConstants.MESSAGEDET);
 		debug("service", "using message" + messageExec);
@@ -611,8 +613,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 				// callback event id
 				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			    String user = (String)profile.getUserUniqueIdentifier();
-				String id =  EventsManager.getInstance().registerEvent(user);
-			    mapPars.put("event", id);
+			    System.out.println("Registering event for user: " + user);
+				Integer id =  EventsManager.getInstance().registerEvent(user);
+				System.out.println("Event id: " + id);
+			    mapPars.put("event", id.toString());
 			    mapPars.put("user", user);
 			    
 				// set into the reponse the parameters map	

@@ -23,7 +23,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <name>light_navigation</name>
             <value>ENABLED</value>
         </init-param>		        
-        <expiration-cache>-1</expiration-cache>
+        <expiration-cache>0</expiration-cache>
         <supports>
 	    	<mime-type>text/html</mime-type>
             <portlet-mode>VIEW</portlet-mode>
@@ -64,7 +64,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <name>light_navigation</name>
             <value>ENABLED</value>
         </init-param>		        
-        <expiration-cache>-1</expiration-cache>
+        <expiration-cache>0</expiration-cache>
         <supports>
 	    	<mime-type>text/html</mime-type>
             <portlet-mode>VIEW</portlet-mode>
@@ -107,7 +107,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <name>light_navigation</name>
             <value>ENABLED</value>
         </init-param>	        
-        <expiration-cache>-1</expiration-cache>
+        <expiration-cache>0</expiration-cache>
         <supports>
 	    	<mime-type>text/html</mime-type>
             <portlet-mode>VIEW</portlet-mode>
@@ -189,7 +189,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <name>light_navigation</name>
             <value>ENABLED</value>
         </init-param>		        
-        <expiration-cache>-1</expiration-cache>
+        <expiration-cache>0</expiration-cache>
         <supports>
 	    	<mime-type>text/html</mime-type>
             <portlet-mode>VIEW</portlet-mode>

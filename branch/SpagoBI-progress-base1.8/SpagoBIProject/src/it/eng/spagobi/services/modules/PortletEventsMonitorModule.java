@@ -43,6 +43,8 @@ import javax.portlet.PortletRequest;
 public class PortletEventsMonitorModule extends AbstractModule{
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		System.out.println(">>> ExecuteBIObjectModule <<<");
+		
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
 		Principal principal = portletRequest.getUserPrincipal();
 		String engUserProfileFactoryClass =  ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
@@ -50,7 +52,7 @@ public class PortletEventsMonitorModule extends AbstractModule{
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);
 		String user = (String)userProfile.getUserUniqueIdentifier();
 		
-		EventsManager eventsManager = EventsManager.getInstance();
+		EventsManager eventsManager = EventsManager.getInstance();		
 		List firedEventsList = eventsManager.getFiredEvents(user);
 		response.setAttribute("firedEventsList", firedEventsList);	
 	}

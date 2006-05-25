@@ -2,6 +2,7 @@
 
 <%@ page import="it.eng.spagobi.constants.SpagoBIConstants,
          		it.eng.spagobi.events.EventsManager,
+         		it.eng.spagobi.bo.EventLog,
          		it.eng.spago.base.SourceBean,
          		java.util.List"
 %>
@@ -14,19 +15,18 @@
 		System.err.println(aServiceResponse.toXML(false));
 %>
 	<P><H3>ERRORE !!!</H3>
-	<P> <%= aServiceResponse.toXML(false) %>
 <%
 	} else {
 		List firedEventsList = (List) moduleResponse.getAttribute("firedEventsList");
 		if(firedEventsList.size() == 0) {
 %>
-	<P><H3><I>Events log is empty !!!</I></H3>H3>
+	<P><H3><I>Events log is empty !!!</I></H3>
 <%
 		} else {
 			for(int i = 0; i < firedEventsList.size(); i++) {
-				EventsManager.FiredEvent firedEvent = (EventsManager.FiredEvent)firedEventsList.get(i);
+				EventLog firedEvent = (EventLog)firedEventsList.get(i);
 %>
-	<P> <%=firedEvent.id%> - <%=firedEvent.user%> - <%=firedEvent.desc%>
+	<P> <%=firedEvent.getId()%> - <%=firedEvent.getDate()%> - <%=firedEvent.getUser()%> - <%=firedEvent.getDesc()%>
 <%		
 			}
 		}

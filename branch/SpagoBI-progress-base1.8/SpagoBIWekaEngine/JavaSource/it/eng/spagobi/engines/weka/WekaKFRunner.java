@@ -195,12 +195,7 @@ public class WekaKFRunner {
 			String className = saver.getSaver().getClass().getName();
 			if(className.equalsIgnoreCase(DatabaseSaver.class.getName())) {
 				DatabaseSaver databaseSaver = (DatabaseSaver)saver.getSaver();
-				// forzando la modalità di scrittura BATCH il metodo run non torna 
-				// fino a che tutte le instanze non sono state scritte sul db. 
-				// In futuro sarebbe meglio sostituire gli oggetti databaseSaver con
-				// un oggetto custom per la scrittura su db più sofisticato
-				//databaseSaver.setRetrieval(databaseSaver.BATCH);
-				
+						
 				// l'url del db, il nome utente e la password non sono 
 				// memorizzati nel tempalte file quindi è necessario riinserirli a
 				// mano al termine del processo di parsing
@@ -216,10 +211,10 @@ public class WekaKFRunner {
 	}
 		
 	public void run() {
-		run(true);
+		run(true, true);
 	}
 	
-	public void run(boolean forceSetup) {
+	public void run(boolean forceSetup, boolean forceBlocking) {
 		if(forceSetup) {
 			log("Configuring loaders & savers ...");
 			setupLoaders();
@@ -231,5 +226,13 @@ public class WekaKFRunner {
 			log("Start loading: " + loader );			
 			loader.startLoading();			
 		}		
+		
+		if(forceBlocking) {
+			for(int i = 0; i < savers.size(); i++) {
+				Saver saver = (Saver)savers.get(i);
+				log("Start blocking on: " + savers );			
+				saver.waitUntilFinish();			
+			}	
+		}
 	}	
 }

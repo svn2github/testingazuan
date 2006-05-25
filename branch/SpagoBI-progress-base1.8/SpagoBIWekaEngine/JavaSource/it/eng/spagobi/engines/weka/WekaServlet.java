@@ -57,7 +57,7 @@ import sun.misc.BASE64Decoder;
  * reports
  */
 public class WekaServlet extends HttpServlet {
-
+	
 	/**
 	 * Logger component
 	 */
@@ -68,12 +68,63 @@ public class WekaServlet extends HttpServlet {
 	 * SpagoBI Public Key
 	 */
 	private transient PublicKey publicKeyDSASbi = null;
-
+		
 	/**
 	 * security check able or not
 	 */
 	private transient boolean securityAble = true;
 
+
+	/**
+	 * Input parameters map
+	 */
+	private Map params = null;	
+	
+	public static final String TEMPLATE_PATH = "templatePath"; 
+	public static final String CR_MANAGER_URL = "cr_manager_url"; 
+	public static final String EVENTS_MANAGER_URL = "events_manager_url"; 
+	public static final String EVENT = "event"; 
+	public static final String USER = "user"; 
+	
+	
+	public class RunnerThread extends Thread {
+		private File file = null;
+		
+		public RunnerThread(File file) {
+			this.file = file;
+		}
+		
+		public void run() {
+			logger.info(this.getClass().getName() + ":service: Runner thread started succesfully");
+			
+			String events_manager_url = (String) params.get(EVENTS_MANAGER_URL);
+			EventsAccessUtils eventsAccessUtils = new EventsAccessUtils(events_manager_url);	
+			String eventId = (String) params.get(EVENT);
+			String user = (String) params.get(USER);
+			
+			WekaKFRunner kfRunner = new WekaKFRunner();
+			
+			logger.debug(this.getClass().getName() + ":service:Start parsing file: " + file);
+			try {
+				kfRunner.loadKFTemplate(file);
+				kfRunner.setupSavers();
+				kfRunner.setupLoaders();
+				logger.debug(this.getClass().getName() + ":service:Getting loaders & savers infos ...");
+				logger.debug( "\n" + Utils.getLoderDesc(kfRunner.getLoaders()) );
+				logger.debug( "\n" + Utils.getSaverDesc(kfRunner.getSavers()) );
+				logger.debug(this.getClass().getName() + ":service:Executing knowledge flow ...");
+				kfRunner.run(false, true);
+				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated succesfully", null);
+			} catch (Exception e) {
+				logger.error("Impossible to load/parse templete file", e);	
+				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated with errors", null);
+			}
+					
+			file.delete();						
+	    }				
+	}
+	
+	
 	/**
 	 * Initialize the engine
 	 */
@@ -105,8 +156,6 @@ public class WekaServlet extends HttpServlet {
 		logger.debug(this.getClass().getName() + ":init:Inizialization "
 				+ "of SpagoBI Weka Engine ended succesfully");
 	}
-
-	Map params = null;
 	
 	/**
 	 * process weka execution requests
@@ -151,76 +200,23 @@ public class WekaServlet extends HttpServlet {
 			if (securityAble)
 				logger.info(this.getClass().getName() + ":service:Caller authenticated succesfully");
 				
-				logger.info(this.getClass().getName() + ":service:reading template file ...");
-				String templatePath = (String) params.get("templatePath");
-				String cr_manager_url = (String) params.get("cr_manager_url");				
-				byte[] template = new SpagoBIAccessUtils().getContent(cr_manager_url, templatePath);
-				logger.info(this.getClass().getName() + ":service:template file has been read succesfully");
+			logger.info(this.getClass().getName() + ":service:reading template file ...");
+			String templatePath = (String) params.get(TEMPLATE_PATH);
+			String cr_manager_url = (String) params.get(CR_MANAGER_URL);				
+			byte[] template = new SpagoBIAccessUtils().getContent(cr_manager_url, templatePath);
+			logger.info(this.getClass().getName() + ":service:template file has been read succesfully");
 				
-				logger.info(this.getClass().getName() + ":service:saving tamplete file to local temp dir ...");
-				File file = File.createTempFile("weka", null);
-				OutputStream out = new FileOutputStream(file);
-				out.write(template);
-				out.flush();
-				out.close();
-				logger.info(this.getClass().getName() + ":service:template file saved succesfully to a local temp dir");
-				
-				WekaKFRunner kfRunner = new WekaKFRunner();
-				
-				logger.debug(this.getClass().getName() + ":service:Start parsing file: " + file);
-				try {
-					kfRunner.loadKFTemplate(file);
-				} catch (Exception e) {
-					logger.error("Impossible to load/parse templete file", e);					
-				}
-				kfRunner.setupSavers();
-				kfRunner.setupLoaders();
-				logger.debug(this.getClass().getName() + ":service:Getting loaders & savers infos ...");
-				logger.debug( Utils.getLoderDesc(kfRunner.getLoaders()) );
-				logger.debug( Utils.getSaverDesc(kfRunner.getSavers()) );
-				logger.debug(this.getClass().getName() + ":service:Executing knowledge flow ...");
-				kfRunner.run(false);
-						
-				file.delete();		
-			/*
-			WekaRunner wekaRunner = new WekaRunner();
-			//String template = (String) params.get("templatePath");
-			//String spagobibase = (String) params.get("spagobiurl");
-			//WekaRunnerBkp wekaRunner = new WekaRunnerBkp(spagobibase, template);
-			try {
-				wekaRunner.runReport(params);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
+			logger.info(this.getClass().getName() + ":service:saving tamplete file to local temp dir ...");
+			File file = File.createTempFile("weka", null);
+			OutputStream out = new FileOutputStream(file);
+			out.write(template);
+			out.flush();
+			out.close();
+			logger.info(this.getClass().getName() + ":service:template file saved succesfully to a local temp dir");
 			
-			/*
-			Thread runner = new Thread() {			    				
-				public void run() {
-					logger.info(this.getClass().getName() + ":service: Runner thread started succesfully");
-					
-					String template = (String) params.get("templatePath");
-					String spagobibase = (String) params.get("spagobiurl");
-					WekaRunnerBkp wekaRunner = new WekaRunnerBkp(spagobibase, template);					
-					try {
-						wekaRunner.runReport(params);
-						
-					} catch (Exception e) {
-						logger.error(this.getClass().getName() + ":service:error "
-								+ "duri ng report production \n\n " + e);
-						return;
-					}
-			    }
-			};
-			runner.start();		
-			*/
-			
-			String events_manager_url = (String) params.get("events_manager_url");
-			EventsAccessUtils eventsAccessUtils = new EventsAccessUtils(events_manager_url);	
-			String eventId = (String) params.get("event");
-			String user = (String) params.get("user");
-			eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated succesfully", null);
+			// fork
+			Thread runner = new RunnerThread(file);
+			runner.start();				
 						
 			logger.info(this.getClass().getName() + ":service: Return the default waiting message");
 								

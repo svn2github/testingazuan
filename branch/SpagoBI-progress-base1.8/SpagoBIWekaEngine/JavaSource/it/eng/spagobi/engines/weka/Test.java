@@ -76,7 +76,7 @@ public class Test {
 		log( Utils.getLoderDesc(runner.getLoaders()) );
 		log( Utils.getSaverDesc(runner.getSavers()) );
 		log("Executing knowledge flow ...");
-		runner.run(false);
+		runner.run(false, true);
 		log("Knowledge flow executed successfully (at least i hope so ;-))");
 	}
 

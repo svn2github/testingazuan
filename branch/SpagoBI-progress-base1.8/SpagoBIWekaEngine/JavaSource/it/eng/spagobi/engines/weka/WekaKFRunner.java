@@ -24,6 +24,7 @@ package it.eng.spagobi.engines.weka;
 import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.File;
+import java.sql.Connection;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -51,6 +52,12 @@ public class WekaKFRunner {
 	protected Vector loaders;
 	protected Vector savers;
 	
+	// Connections to db for Loaders and Savers
+	Connection inConnection;
+	Connection outConnection;
+	
+	protected String writeMode; 
+	
 	//	Connection parameters for db Loaders and Savers
 	protected String dbUrl = DEFAULT_DB_URL;
 	protected String dbUser = DEFAULT_DB_USER;
@@ -67,7 +74,15 @@ public class WekaKFRunner {
 	}
 	
 	
-	public WekaKFRunner() { }
+	public WekaKFRunner() { 
+		inConnection = null;
+		outConnection = null;		
+	}
+	
+	public WekaKFRunner(Connection inConnection, Connection outConnection) { 
+		this.inConnection = inConnection;
+		this.outConnection = outConnection;		
+	}
 	
 	public Vector getLoaders() {
 		return loaders;
@@ -164,7 +179,7 @@ public class WekaKFRunner {
 			
 			if(className.equalsIgnoreCase(DatabaseLoader.class.getName())) {
 				DatabaseLoader databaseLoader = (DatabaseLoader)loader.getLoader();
-				
+								
 				// l'url del db, il nome utente e la password non sono 
 				// memorizzati nel tempalte file quindi è necessario riinserirli a
 				// mano al termine del processo di parsing
@@ -195,13 +210,20 @@ public class WekaKFRunner {
 			String className = saver.getSaver().getClass().getName();
 			if(className.equalsIgnoreCase(DatabaseSaver.class.getName())) {
 				DatabaseSaver databaseSaver = (DatabaseSaver)saver.getSaver();
-						
-				// l'url del db, il nome utente e la password non sono 
-				// memorizzati nel tempalte file quindi è necessario riinserirli a
-				// mano al termine del processo di parsing
-				databaseSaver.setUrl(dbUrl);
-				databaseSaver.setUser(dbUser);
-				databaseSaver.setPassword(dbPassword);						
+				
+				databaseSaver.setDbWriteMode(writeMode);
+				
+				if(inConnection != null) {
+					databaseSaver.setDestination(inConnection);
+				}
+				else {				
+					// l'url del db, il nome utente e la password non sono 
+					// memorizzati nel tempalte file quindi è necessario riinserirli a
+					// mano al termine del processo di parsing
+					databaseSaver.setUrl(dbUrl);
+					databaseSaver.setUser(dbUser);
+					databaseSaver.setPassword(dbPassword);		
+				}
 			}			
 			else if(className.equalsIgnoreCase(ArffSaver.class.getName())) {
 				ArffSaver arffSaver = (ArffSaver)saver.getSaver();				
@@ -234,5 +256,35 @@ public class WekaKFRunner {
 				saver.waitUntilFinish();			
 			}	
 		}
+	}
+
+
+	public Connection getInConnection() {
+		return inConnection;
+	}
+
+
+	public void setInConnection(Connection inConnection) {
+		this.inConnection = inConnection;
+	}
+
+
+	public Connection getOutConnection() {
+		return outConnection;
+	}
+
+
+	public void setOutConnection(Connection outConnection) {
+		this.outConnection = outConnection;
+	}
+
+
+	public String getWriteMode() {
+		return writeMode;
+	}
+
+
+	public void setWriteMode(String writeMode) {
+		this.writeMode = writeMode;
 	}	
 }

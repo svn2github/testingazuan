@@ -135,11 +135,11 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
     }
   }
   
-  public synchronized void waitUntilFinish() {
+  public void waitUntilFinish() {
 	  while(status != TERMINATED) {
 		  try {
 		        Thread.currentThread().sleep(1000);
-		        System.out.println("keep waiting ...");
+		        System.out.println("[" + status + "] keep waiting ...");
 		  } catch (InterruptedException e) {}
 		  
 	  }	  

@@ -78,17 +78,23 @@ public class WekaServlet extends HttpServlet {
 	/**
 	 * Input parameters map
 	 */
-	private Map params = null;	
+	private Map params = null;
+	
+	
 	
 	public static final String TEMPLATE_PATH = "templatePath"; 
 	public static final String CR_MANAGER_URL = "cr_manager_url"; 
 	public static final String EVENTS_MANAGER_URL = "events_manager_url"; 
 	public static final String EVENT = "event"; 
 	public static final String USER = "user"; 
+	public static final String CONNECTION = "connectionName"; 
+	public static final String INPUT_CONNECTION = "inputConnectionName"; 
+	public static final String OUTPUT_CONNECTION = "outputConnectionName"; 
+	public static final String WRITE_MODE = "writeMode"; 
 	
 	
 	public class RunnerThread extends Thread {
-		private File file = null;
+		private File file = null;		
 		
 		public RunnerThread(File file) {
 			this.file = file;
@@ -102,11 +108,24 @@ public class WekaServlet extends HttpServlet {
 			String eventId = (String) params.get(EVENT);
 			String user = (String) params.get(USER);
 			
-			WekaKFRunner kfRunner = new WekaKFRunner();
+			Connection con = getConnection((String)params.get(CONNECTION));
+			Connection incon = (con!=null)?con: getConnection((String)params.get(INPUT_CONNECTION));
+			Connection outcon = (con!=null)?con: getConnection((String)params.get(OUTPUT_CONNECTION));
+			
+			if (incon == null || outcon == null) {
+				logger.error(this.getClass().getName() +":service:Cannot obtain"
+						+ " connection for engine ["
+						+ this.getClass().getName() + "] control"
+						+ " configuration in engine-config.xml config file");
+				return;
+			}
+			
+			WekaKFRunner kfRunner = new WekaKFRunner(incon, outcon);
 			
 			logger.debug(this.getClass().getName() + ":service:Start parsing file: " + file);
 			try {
 				kfRunner.loadKFTemplate(file);
+				kfRunner.setWriteMode((String)params.get(WRITE_MODE));
 				kfRunner.setupSavers();
 				kfRunner.setupLoaders();
 				logger.debug(this.getClass().getName() + ":service:Getting loaders & savers infos ...");
@@ -120,7 +139,14 @@ public class WekaServlet extends HttpServlet {
 				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated with errors", null);
 			}
 					
-			file.delete();						
+			file.delete();		
+			// TODO put this block in a finally block
+			try {	
+				// is it correct to close connection retrived as JNDI resoureces ?
+				if ((con != null) && (!con.isClosed())) con.close();
+				if ((incon != null) && (!incon.isClosed())) incon.close();
+				if ((outcon != null) && (!outcon.isClosed())) outcon.close();
+			} catch(SQLException sqle){}
 	    }				
 	}
 	

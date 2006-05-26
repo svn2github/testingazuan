@@ -23,7 +23,7 @@ public class WekaConf {
 			config = SourceBean.fromXMLStream(
 					new InputSource(getClass().getResourceAsStream("/engine-config.xml")));
 		} catch (SourceBeanException e) {
-			logger.error("Impossible to load configuration for jasper report engine", e);
+			logger.error("Impossible to load configuration for weka engine", e);
 		}
 	}
 	

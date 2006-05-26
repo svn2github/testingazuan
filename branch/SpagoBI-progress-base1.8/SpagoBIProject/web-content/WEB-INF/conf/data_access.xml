@@ -3,19 +3,10 @@
    <DATE-FORMAT format="DD-MM-YYYY"/>
    <TIMESTAMP-FORMAT format="DD-MM-YYYY hh:mm:ss"/>
    
-
-   <!-- JNDI -->
-   <CONNECTION-POOL connectionPoolName="spagobi" 
-   				    connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
-   					connectionPoolType="native" connectionDescription="SpagoBI Metadata DB">
-      <CONNECTION-POOL-PARAMETER parameterName="initialContext" parameterValue="java:comp/env"/>
-      <CONNECTION-POOL-PARAMETER parameterName="resourceName" parameterValue="jdbc/spagobi"/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" 
-      							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
-      							 parameterType=""/>
-   </CONNECTION-POOL>
-   <CONNECTION-POOL connectionPoolName="dwh" 
+	<!-- ====================================================================================== -->
+	<!--  Foodmart on HSQL db																	--> 
+	<!-- ====================================================================================== -->
+	 <CONNECTION-POOL connectionPoolName="hsqlfoodmart" 
    					connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
    					connectionPoolType="native" connectionDescription="Foodmart Data Warehouse">
       <CONNECTION-POOL-PARAMETER parameterName="initialContext" parameterValue="java:comp/env"/>
@@ -24,119 +15,61 @@
       <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" 
       							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
       							 parameterType=""/>
-   </CONNECTION-POOL> 
-
-
-
-
-   <!-- POSTGRESQL -->
-   <!--
-   <CONNECTION-POOL connectionPoolName="spagobi" connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.DBCPConnectionPoolFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:postgresql://192.168.20.223:5432/spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverClass" parameterValue="org.postgresql.Driver" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="userPassword" parameterValue="spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMinLimit" parameterValue="1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMaxLimit" parameterValue="10" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="cacheTimeToLiveTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheInactivityTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType=""/>
-   </CONNECTION-POOL>
-   <CONNECTION-POOL connectionPoolName="dwh" connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.DBCPConnectionPoolFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:postgresql://192.168.20.223:5432/foodmart" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverClass" parameterValue="org.postgresql.Driver" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="foodmart" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="userPassword" parameterValue="smartfood" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMinLimit" parameterValue="1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMaxLimit" parameterValue="10" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="cacheTimeToLiveTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheInactivityTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType=""/>
-   </CONNECTION-POOL> 
-   -->
-
+   	</CONNECTION-POOL> 
    
-   <!-- ORACLE -->
-   <!--  
-   <CONNECTION-POOL connectionPoolName="spagobi" connectionPoolFactoryClass="it.eng.spago.dbaccess.factory.OracleConnectionPoolDataSourceFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:oracle:thin:@192.168.20.213:1521:REPO" parameterType=""/>
+   	<!-- ====================================================================================== -->
+	<!--  Foodmart on MySQL db																	--> 
+	<!-- ====================================================================================== -->
+	 <CONNECTION-POOL connectionPoolName="mysqlfoodmart" 
+   					connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
+   					connectionPoolType="native" connectionDescription="Foodmart Data Warehouse">
+      <CONNECTION-POOL-PARAMETER parameterName="initialContext" parameterValue="java:comp/env"/>
+      <CONNECTION-POOL-PARAMETER parameterName="resourceName" parameterValue="jdbc/mysqlfoodmart"/>
       <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="userPassword" parameterValue="bispago" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMinLimit" parameterValue="1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMaxLimit" parameterValue="10" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="cacheTimeToLiveTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheInactivityTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheScheme" parameterValue="DYNAMIC_SCHEME" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType=""/>
+      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" 
+      							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
+      							 parameterType=""/>
+	</CONNECTION-POOL> 
+   
+   	<!-- ====================================================================================== -->
+	<!--  OracleSH																				--> 
+	<!-- ====================================================================================== -->
+	<CONNECTION-POOL connectionPoolName="oraclesh" 
+   					connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
+   					connectionPoolType="native" connectionDescription="Oracle SH Data Warehouse">
+      <CONNECTION-POOL-PARAMETER parameterName="initialContext" parameterValue="java:comp/env"/>
+      <CONNECTION-POOL-PARAMETER parameterName="resourceName" parameterValue="jdbc/oracleSH"/>
+      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
+      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" 
+      							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
+      							 parameterType=""/>
+   	</CONNECTION-POOL> 
+
+
+  	<!-- ====================================================================================== -->
+	<!--  SpagoBI metadata db																	--> 
+	<!-- ====================================================================================== -->
+   	<CONNECTION-POOL	connectionPoolName="spagobi" 
+   				    	connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
+   						connectionPoolType="native" connectionDescription="SpagoBI Metadata DB">
+    <CONNECTION-POOL-PARAMETER parameterName="initialContext" parameterValue="java:comp/env"/>
+    <CONNECTION-POOL-PARAMETER parameterName="resourceName" parameterValue="jdbc/spagobi"/>
+    <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
+    <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" 
+      						   parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
+      						   parameterType=""/>
    </CONNECTION-POOL>
-   -->
    
   
-   <!-- MYSQL
-   <CONNECTION-POOL connectionPoolName="spagobi" connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.DBCPConnectionPoolFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:postgresql://192.168.20.223:5432/spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverClass" parameterValue="org.postgresql.Driver" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="userPassword" parameterValue="spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMinLimit" parameterValue="1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMaxLimit" parameterValue="10" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="cacheTimeToLiveTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheInactivityTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType=""/>
-   </CONNECTION-POOL>
-   -->
-   <!--  
-    <CONNECTION-POOL connectionPoolName="spagobi" connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.DBCPConnectionPoolFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:mysql://192.168.20.223:3306/spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverClass" parameterValue="com.mysql.jdbc.Driver" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="userPassword" parameterValue="bispago" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMinLimit" parameterValue="1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMaxLimit" parameterValue="10" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="cacheTimeToLiveTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheInactivityTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType=""/>
-   </CONNECTION-POOL>
-   -->
 
 
-
-   <!-- HSQLDB -->
-   <!--
-   <CONNECTION-POOL connectionPoolName="spagobi" connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.DBCPConnectionPoolFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:hsqldb:hsql://localhost/spagobi" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverClass" parameterValue="org.hsqldb.jdbcDriver" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="sa" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="userPassword" parameterValue="" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMinLimit" parameterValue="1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMaxLimit" parameterValue="10" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="cacheTimeToLiveTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheInactivityTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType=""/>
-   </CONNECTION-POOL>
-   <CONNECTION-POOL connectionPoolName="dwh" connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.DBCPConnectionPoolFactory" connectionPoolType="native">
-      <CONNECTION-POOL-PARAMETER parameterName="connectionString" parameterValue="jdbc:hsqldb:hsql://localhost/foodmart" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverClass" parameterValue="org.hsqldb.jdbcDriver" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="user" parameterValue="sa" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="userPassword" parameterValue="" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMinLimit" parameterValue="1" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="poolMaxLimit" parameterValue="10" parameterType=""/>
-      <CONNECTION-POOL-PARAMETER parameterName="cacheTimeToLiveTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="cacheInactivityTimeout" parameterValue="10" parameterType="" />
-      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType=""/>
-   </CONNECTION-POOL> 
-   -->
 
    <CONNECTION-MANAGER>
+      <REGISTER-POOL registeredPoolName="hsqlfoodmart"/>
+      <REGISTER-POOL registeredPoolName="mysqlfoodmart"/>
+      <REGISTER-POOL registeredPoolName="oraclesh"/>
       <REGISTER-POOL registeredPoolName="spagobi"/>
-      <REGISTER-POOL registeredPoolName="dwh"/>
    </CONNECTION-MANAGER>
+   
 </DATA-ACCESS>
 

@@ -20,6 +20,7 @@ public class JasperReportConf {
 	
 	private JasperReportConf() {
 		try {
+			logger.debug("Resource: " + getClass().getResource("/engine-config.xml"));
 			config = SourceBean.fromXMLStream(
 					new InputSource(getClass().getResourceAsStream("/engine-config.xml")));
 		} catch (SourceBeanException e) {

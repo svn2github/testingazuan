@@ -147,8 +147,8 @@ public class ExecutionController {
 			internalValidationSourceBean = new SourceBean("VALIDATION");
 			internalValidationSourceBean.setAttribute("blocking","false");
 			String conditionsSrt = "<CONDITIONS>";
-			conditionsSrt += "	<PARAMETER name=\"LOOKUP_PARAMETER_ID\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
-			conditionsSrt += "	<PARAMETER name=\"LOOKUP_VALUE\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
+			conditionsSrt += "	<PARAMETER name=\"LOOKUP_OBJ_PAR_ID\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
+			conditionsSrt += "	<PARAMETER name=\"LOOKUP_PARAMETER_NAME\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
 			conditionsSrt += "	<PARAMETER name=\"MESSAGE\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
 			conditionsSrt += "	<PARAMETER name=\"valueFilter\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
 			conditionsSrt += "</CONDITIONS>";

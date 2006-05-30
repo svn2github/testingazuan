@@ -17,5 +17,17 @@
 	<CONFIGURATOR path="/WEB-INF/conf/validators.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/validation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/profileattributes.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/qbe/qbe.xml" />
+	
+	<!-- START DASHBOARD -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />
+	<!-- END DASHBOARD -->
+	
+	<!-- START QBE -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/qbe.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/publishers.xml" />
+	<!-- END QBE -->
+	
+	
 </MASTER>

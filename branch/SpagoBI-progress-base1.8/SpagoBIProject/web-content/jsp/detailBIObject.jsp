@@ -107,7 +107,7 @@ function showEngField(docType) {
 			/>
 		</td>
 		<td class='header-button-column-portlet-section'>
-			<input type='image' name='saveAndGoBack' value='true' class='header-button-image-portlet-section'
+			<input type='image' name='saveAndGoBack' id='saveAndGoBack' value='true' class='header-button-image-portlet-section'
 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/saveAndGoBack.png") %>'
       				title='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />'
 			/> 
@@ -134,7 +134,6 @@ function showEngField(docType) {
 <input type='hidden' value='<%= obj.getId() %>' name='id' />
 <input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
 <input type='hidden' value='<%= actor %>' name='<%= SpagoBIConstants.ACTOR %>' />
-<input type='hidden' value='' name='' id='saveAndGoBack'>
 <input type='hidden' value='' name='' id='saveBIObjectParameter'>
 	
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { %>
@@ -615,17 +614,14 @@ function saveAndGoBackConfirm(message, url){
 		var parurl_nm = document.getElementById('parurl_nm').value;
 		
 		if ((objParLabel != '<%=initialBIObjectParameter.getLabel()%>')
-			|| (par_Id != '<%=initialBIObjectParameter.getParID() == null ? "" : initialBIObjectParameter.getParID().toString()%>')
+			|| (par_Id != '<%=(initialBIObjectParameter.getParID() == null || initialBIObjectParameter.getParID().intValue() == -1) ? "" : initialBIObjectParameter.getParID().toString()%>')
 			|| (parurl_nm != '<%=initialBIObjectParameter.getParameterUrlName()%>') ) {
 			
 			biobjParFormModified = 'true';
 		}
-		
 		if (biobjFormModified == 'true' || biobjParFormModified == 'true') {
 			if (confirm(message)) {
-				document.getElementById('saveAndGoBack').name = 'saveAndGoBack';
-				document.getElementById('saveAndGoBack').value= 'true';
-				document.getElementById('objectForm').submit();
+				document.getElementById('saveAndGoBack').click();
 			} else {
 				location.href = url;
 			}

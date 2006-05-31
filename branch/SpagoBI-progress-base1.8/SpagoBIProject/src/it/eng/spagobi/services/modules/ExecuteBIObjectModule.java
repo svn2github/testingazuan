@@ -21,18 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
-import it.eng.qbe.action.RecoverClassLoaderAction;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.Logger;
-import it.eng.qbe.utility.SpagoBICmsDataMartModelRetriever;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -47,7 +38,6 @@ import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
-import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -55,10 +45,8 @@ import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.SpagoBITracer;
-import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -244,7 +232,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// directly without pass for parameters page 	
 		if( controller.directExecution() &&  (subObjects.size() == 0) ) {
 			debug("pageCreationHandler", "object hasn't any parameter to fill and no subObjects");
-            execute(obj, response);
+            execute(obj, null, response);
 		}
 		if(controller.directExecution()) {
 			debug("pageCreationHandler", "object has only subobjects but not parameter to fill");
@@ -355,7 +343,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         // load the template of the object
         obj.loadTemplate();
         // call the execution method        
-        execute(obj, response);
+        execute(obj, null, response);
 	}
 	
 	public int findBIObjParId (Object parIdObj) {
@@ -442,7 +430,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// directly without pass for parameters page 	
 		if( controller.directExecution() &&  (subObjects.size() == 0) ) {
 			obj.loadTemplate();
-            execute(obj, response);
+            execute(obj, null, response);
 		}
 		if(controller.directExecution()) {
 			response.setAttribute("NO_PARAMETERS", "TRUE");
@@ -478,67 +466,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         response.setAttribute(SpagoBIConstants.ROLE , role);
 	}
 	
-	
-	
-	/*
-	private void execQbe(BIObject obj, SourceBean response, String nameQuery) {
-		EMFErrorHandler errorHandler = getErrorHandler();
-        try{
-        	String jndiDataSourceName = "";
-        	String dialect = "";
-        	List parameters = obj.getBiObjectParameters();
-        	Iterator iterPar = parameters.iterator();
-        	BIObjectParameter parameter = null;
-        	String urlName = null;
-        	while(iterPar.hasNext()) {
-        		parameter = (BIObjectParameter)iterPar.next();
-        		urlName = parameter.getParameterUrlName();
-        		if(urlName.equalsIgnoreCase("JNDI_DS")) {
-        			jndiDataSourceName = (String)parameter.getParameterValues().get(0);
-        		}
-        		if(urlName.equalsIgnoreCase("DIALECT")) {
-        			dialect = (String)parameter.getParameterValues().get(0);
-        		}   
-        	}
-        	session.setAttribute(SpagoBICmsDataMartModelRetriever.REFRESH_DATAMART, "TRUE");
-        	String dmName = obj.getName();
-        	String dmDescription = obj.getDescription();
-        	String dmLabel = obj.getLabel();
-        	String dmPath = obj.getPath();
-        	DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
-        	dmModel.setName(dmName);
-        	dmModel.setDescription(dmDescription);
-        	dmModel.setLabel(dmLabel);
-        	session.setAttribute("dataMartModel", dmModel);
-        	ISingleDataMartWizardObject aWizardObject = null;
-        	if(nameQuery==null) {
-        		aWizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
-        	} else {
-        		aWizardObject = dmModel.getQuery(nameQuery);
-        		session.setAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP", String.valueOf(System.currentTimeMillis()));
-        		session.setAttribute("QBE_LAST_UPDATE_TIMESTAMP", String.valueOf(System.currentTimeMillis()));
-        	}
-        	session.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
-        	response.setAttribute("DATAMART_EXECUTION", "true");
-        	ClassLoader toRecoverClassLoader = Thread.currentThread().getContextClassLoader(); 
-        	Logger.debug(RecoverClassLoaderAction.class, "Saving Class Loader for recovering " + toRecoverClassLoader.toString());
-        	if (ApplicationContainer.getInstance().getAttribute("CURRENT_THREAD_CONTEXT_LOADER") == null){
-        		ApplicationContainer.getInstance().setAttribute("CURRENT_THREAD_CONTEXT_LOADER", toRecoverClassLoader);
-        	}
-        	return;
-        } catch (Exception e) {
-                SpagoBITracer.major("SPAGOBI", 
-                                            "ExecuteBIObjectMOdule", 
-                                            "execQbe", 
-                                            "Cannot exec the subObject", e);
-                   errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
-                   return;
-        }
-	}
-	*/
-	
-	
-	
+
 	/**
 	 * Get the list of subObjects of a BIObject for the current user
 	 * @param obj BIObject container of the subObjects 
@@ -559,35 +487,52 @@ public class ExecuteBIObjectModule extends AbstractModule
 		}
 		return subObjects;
 	}
-		
-	
-	
-	
-	
-	
 	
 	
 	/**
-	 * Based on the object type lauch the right execution mechanism. For object executed 
-	 * by an external engine instances the driver for execution, get the execution call parameters map,
-	 * add in reponse the map of the parameters.
+	 * Based on the object type launches the right execution mechanism. For objects executed 
+	 * by an external engine instantiates the driver for execution, gets the execution call parameters map,
+	 * adds in reponse the map of the parameters. For objects executed by an internal engine, instantiates 
+	 * the engine class and launches execution method.
 	 * @param obj The BIobject
+	 * @param subObj The SubObjectDetail subObject to be executed (in case it is not null)
 	 * @param response The response Source Bean
 	 */
-	private void execute(BIObject obj, SourceBean response) {
+	private void execute(BIObject obj, SubObjectDetail subObj, SourceBean response) {
 		debug("execute", "start execute");
 		EMFErrorHandler errorHandler = getErrorHandler();
 		Engine engine = obj.getEngine();
 		Domain engineType = null;
+		Domain compatibleBiobjType = null;
 		try {
 			engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
+			compatibleBiobjType = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 		} catch (EMFUserError error) {
 			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
 		 				this.getClass().getName(), 
 		 				"execute", 
 		 				"Error retrieving document's engine information", error);
-			 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+			 errorHandler.addError(error);
 			 return;
+		}
+		
+		String compatibleBiobjTypeCd = compatibleBiobjType.getValueCd();
+		String biobjTypeCd = obj.getBiObjectTypeCode();
+		
+		if (!compatibleBiobjTypeCd.equalsIgnoreCase(biobjTypeCd)) {
+			// the engine document type and the biobject type are not compatible
+			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"execute", 
+		 				"Engine cannot execute input document type: " +
+		 				"the engine " + engine.getName() + " can execute '" + compatibleBiobjTypeCd + "' type documents " +
+		 						"while the input document is a '" + biobjTypeCd + "'.");
+			Vector params = new Vector();
+			params.add(engine.getName());
+			params.add(compatibleBiobjTypeCd);
+			params.add(biobjTypeCd);
+			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2002, params));
+			return;
 		}
 		
 		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
@@ -605,9 +550,11 @@ public class ExecuteBIObjectModule extends AbstractModule
 				if(type.equalsIgnoreCase("OLAP")) {
 					// get the user profile
 					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-				    mapPars = aEngineDriver.getParameterMap(obj, profile);
+				    if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
+				    else mapPars = aEngineDriver.getParameterMap(obj, profile);
 				} else {
-					mapPars = aEngineDriver.getParameterMap(obj);
+					if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
+					else mapPars = aEngineDriver.getParameterMap(obj);
 				}
 				
 				// callback event id
@@ -659,7 +606,9 @@ public class ExecuteBIObjectModule extends AbstractModule
 			
 			// starts engine's execution
 			try {
-				internalEngine.execute(this.getRequestContainer(), obj, response);
+				if (subObj != null) 
+					internalEngine.executeSubObject(this.getRequestContainer(), obj, response, subObj); 
+				else internalEngine.execute(this.getRequestContainer(), obj, response);
 			} catch (EMFUserError e) {
 				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
 		 				this.getClass().getName(), 
@@ -675,44 +624,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 			}
 			
 		}
-//		try{
-//            String type = obj.getBiObjectTypeCode();
-//			// if object is a datamart, exec an internal logic  
-//			if(type.equalsIgnoreCase("DATAMART")) {
-//				execQbe(obj, response, null);
-//				return;
-//			}
-//			// if object is a dashboard, exec an internal logic
-//			if(type.equalsIgnoreCase("DASH")) {
-//				execDash(obj, response);
-//				return;
-//			}
-//            // if object is not a datamart
-//			response.setAttribute("EXECUTION", "true");
-//			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-//			// instance the driver class
-//			String driverClassName = obj.getEngine().getDriverName();
-//			IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
-//		    // get the map of the parameters
-//			Map mapPars = null;
-//			if(type.equalsIgnoreCase("OLAP")) {
-//				// get the user profile
-//				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-//			    mapPars = aEngineDriver.getParameterMap(obj, profile);
-//			} else {
-//				mapPars = aEngineDriver.getParameterMap(obj);
-//			}
-//						
-//			
-//            // set into the reponse the parameters map	
-//			response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
-//		} catch (Exception e) {
-//			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-//					 				this.getClass().getName(), 
-//					 				"execute", 
-//					 				"Error During object execution", e);
-//		   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
-//		}
+
 	}
 	
 	
@@ -749,225 +661,12 @@ public class ExecuteBIObjectModule extends AbstractModule
         		biparam.setParameterValues(paramvalues);
         	}
         }
-        // different kind of object need different kind of subexecution
-        // if the object is a datamart exec the internal logic
-        String type = obj.getBiObjectTypeCode();
-        if(type.equalsIgnoreCase("DATAMART"))  {
-        	execQbe(obj, response, subObjName);
-            return;
-        } 
-        // if the object is not a datamart instances the driver and get the parameter map
-        response.setAttribute("EXECUTION", "true");
-		response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-		String driverClassName = obj.getEngine().getDriverName();
-		IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
-		Map mapPars = null;
-		if(type.equalsIgnoreCase("OLAP")) {
-			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    mapPars = aEngineDriver.getParameterMap(obj, subObj,  profile);
-		} else {
-			mapPars = aEngineDriver.getParameterMap(obj, subObj);
-		}
-        // set into the reponse the parameters map	
-		response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);        
+        
+        execute(obj, subObj, response);
+       
 	}
 	
-	
-	
-	
-	
-	/**
-	 * Exec the SpagoBI internal logic for execution and presentation of the QBE.
-	 * The method exec a new composition of the BIObject datamart or a previously saved query of
-	 * the BIObject, nased on the value of the last parameter
-	 * 
-	 * @param obj Datamart BIObject to execute
-	 * @param response The Response SourceBean
-	 * @param nameQuery Name of the eventual subObject query to execute
-	 */
-	private void execQbe(BIObject obj, SourceBean response, String nameQuery) {
-		EMFErrorHandler errorHandler = getErrorHandler();
-		try {
-			String jndiDataSourceName = "";
-			String dialect = "";
-			List parameters = obj.getBiObjectParameters();
-			Iterator iterPar = parameters.iterator();
-			BIObjectParameter parameter = null;
-			String urlName = null;
-			while(iterPar.hasNext()) {
-				parameter = (BIObjectParameter)iterPar.next();
-				urlName = parameter.getParameterUrlName();
-			    if(urlName.equalsIgnoreCase("JNDI_DS")) {
-				   	jndiDataSourceName = (String)parameter.getParameterValues().get(0);
-			    }
-			    if(urlName.equalsIgnoreCase("DIALECT")) {
-			    	dialect = (String)parameter.getParameterValues().get(0);
-			    }   
-			}
-			session.setAttribute(SpagoBICmsDataMartModelRetriever.REFRESH_DATAMART, "TRUE");
-			String dmName = obj.getName();
-			String dmDescription = obj.getDescription();
-			String dmLabel = obj.getLabel();
-			
-			String dmPath = obj.getPath();
-			DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
-			dmModel.setName(dmName);
-			dmModel.setDescription(dmDescription);
-			dmModel.setLabel(dmLabel);
-			//ApplicationContainer application = ApplicationContainer.getInstance();
-			//SessionFactory sf = Utils.getSessionFactory(dmModel, application);
-			session.setAttribute("dataMartModel", dmModel);
-			ISingleDataMartWizardObject aWizardObject = null;
-			if(nameQuery==null) {
-				aWizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
-			} else {
-				aWizardObject = dmModel.getQuery(nameQuery);
-			}
-			
-			String cTM = String.valueOf(System.currentTimeMillis());
-			session.setAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);
-			session.setAttribute("QBE_LAST_UPDATE_TIMESTAMP", cTM);
-			
-			Logger.debug(ExecuteBIObjectModule.class, (String)session.getAttribute("QBE_LAST_UPDATE_TIMESTAMP"));
-			session.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
-			response.setAttribute("DATAMART_EXECUTION", "true");
-			
-			ClassLoader toRecoverClassLoader = Thread.currentThread().getContextClassLoader(); 
-			Logger.debug(RecoverClassLoaderAction.class, "Saving Class Loader for recovering " + toRecoverClassLoader.toString());
-			if (ApplicationContainer.getInstance().getAttribute("CURRENT_THREAD_CONTEXT_LOADER") == null){
-				ApplicationContainer.getInstance().setAttribute("CURRENT_THREAD_CONTEXT_LOADER", toRecoverClassLoader);
-			}
-			return;
-		} catch (Exception e) {
-			SpagoBITracer.major("SPAGOBI", 
-					            "ExecuteBIObjectMOdule", 
-					            "execQbe", 
-					            "Cannot exec the subObject", e);
-	   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
-	   		return;
-		}
-	}
 
-	
-	
-	
-	
-	/**
-	 * Exec the SpagoBI internal logic for execution and presentation of a dashboard.
-	 * @param obj Dashboard BIObject to execute
-	 * @param response The Response SourceBean
-	 */
-	private void execDash(BIObject obj, SourceBean response) {
-		EMFErrorHandler errorHandler = getErrorHandler();
-		try {
-			obj.loadTemplate();
-			// get the template of the object
-			UploadedFile template = obj.getTemplate();
-			if(template==null) { 
-				SpagoBITracer.major("ExecuteBIObjectModule",
-						            this.getClass().getName(),
-						            "execDash",
-						            "Template biobject null");
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
-				return;
-			}
-			// get bytes of template and transform it into a SourceBean
-			SourceBean content = null;
-			try {
-				byte[] contentBytes = template.getFileContent();
-				String contentStr = new String(contentBytes);
-				content = SourceBean.fromXMLString(contentStr);
-			} catch (Exception e) {
-				SpagoBITracer.major("ExecuteBIObjectModule",
-			            			this.getClass().getName(),
-			            			"execDash",
-			            			"Error while converting the Template bytes into a SourceBean object");
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
-				return;
-			}
-			// get information from the conf SourceBean and pass them into the response
-			String displayTitleBar = (String)content.getAttribute("displayTitleBar");
-			String movie = (String)content.getAttribute("movie");
-			String width = (String)content.getAttribute("DIMENSION.width");
-			String height = (String)content.getAttribute("DIMENSION.height");
-			String dataurl = (String)content.getAttribute("DATA.url");
-			// get all the parameters for data url
-			Map dataParameters = new HashMap();
-			SourceBean dataSB = (SourceBean)content.getAttribute("DATA");
-			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
-			Iterator dataAttrsIter = dataAttrsList.iterator();
-			while(dataAttrsIter.hasNext()) {
-				SourceBeanAttribute paramSBA = (SourceBeanAttribute)dataAttrsIter.next();
-				SourceBean param = (SourceBean)paramSBA.getValue();
-				String nameParam = (String)param.getAttribute("name");
-				String valueParam = (String)param.getAttribute("value");
-				dataParameters.put(nameParam, valueParam);
-			}
-			// get all the parameters for dash configuration
-			Map confParameters = new HashMap();
-			SourceBean confSB = (SourceBean)content.getAttribute("CONF");
-			List confAttrsList = confSB.getContainedSourceBeanAttributes();
-			Iterator confAttrsIter = confAttrsList.iterator();
-			while(confAttrsIter.hasNext()) {
-				SourceBeanAttribute paramSBA = (SourceBeanAttribute)confAttrsIter.next();
-				SourceBean param = (SourceBean)paramSBA.getValue();
-				String nameParam = (String)param.getAttribute("name");
-				String valueParam = (String)param.getAttribute("value");
-				confParameters.put(nameParam, valueParam);
-			}
-			// create the title
-			String title = "";
-			title += obj.getName();
-			String objDescr = obj.getDescription();
-			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
-				title += ": " + objDescr;
-			}
-			 // get the actor
-			SessionContainer session = getRequestContainer().getSessionContainer();
-			String actor = (String)session.getAttribute(SpagoBIConstants.ACTOR);
-			// get the possible state changes
-			IDomainDAO domaindao = DAOFactory.getDomainDAO();
-			List states = domaindao.loadListDomainsByType("STATE");
-		    List possibleStates = new ArrayList();
-		    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
-		    	Iterator it = states.iterator();
-		    	 while(it.hasNext()) {
-		      		    	Domain state = (Domain)it.next();
-		      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){ 
-		      					possibleStates.add(state);
-		      				}
-		      	}  
-		    } else if (actor.equalsIgnoreCase(it.eng.spagobi.constants.SpagoBIConstants.TESTER_ACTOR)){
-		    	Iterator it = states.iterator();
-		    	 while(it.hasNext()) {
-		      		    	Domain state = (Domain)it.next();
-		      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) { 
-		      					possibleStates.add(state);
-		      				}
-		      	}  
-		    } 
- 			// set information into reponse
-			response.setAttribute("movie", movie);
-			response.setAttribute("dataurl", dataurl);
-			response.setAttribute("width", width);
-			response.setAttribute("height", height);
-			response.setAttribute("displayTitleBar", displayTitleBar);
-			response.setAttribute("title", title);
-			response.setAttribute("confParameters", confParameters);
-			response.setAttribute("dataParameters", dataParameters);
-			response.setAttribute("possibleStateChanges", possibleStates);
-			// set information for the publisher
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DASHBOARD");
-		} catch (Exception e) {
-			SpagoBITracer.major("SPAGOBI", 
-					            "ExecuteBIObjectMOdule", 
-					            "execDash", 
-					            "Cannot exec the dashboard", e);
-	   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
-	   		return;
-		}
-	}
-	
 	
 	/**
 	 * Trace a debug message into the log

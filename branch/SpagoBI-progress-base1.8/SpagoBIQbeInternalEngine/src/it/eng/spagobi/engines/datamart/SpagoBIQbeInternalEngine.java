@@ -36,6 +36,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
@@ -74,7 +75,9 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, 
 			SourceBean response, Object subObjectInfo) throws EMFUserError {
 		
-		String nameQuery = subObjectInfo == null ? null : subObjectInfo.toString();
+		SubObjectDetail subObject = (SubObjectDetail) subObjectInfo;
+		
+		String nameQuery = subObject == null ? null : subObject.getName();
 		
 		SpagoBITracer.debug("SpagoBIQbeInternalEngine",
 	            this.getClass().getName(),

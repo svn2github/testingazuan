@@ -26,6 +26,7 @@ import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,11 +76,12 @@ public class EventsManagerServlet extends HttpServlet{
 	 				String eventId = request.getParameter("eventId");
 	 				String user = request.getParameter("user");
 	 				String desc = request.getParameter("desc");
-	 				String paramStr = request.getParameter("paramstr");
-	 				Map params = parseParamsStr(paramStr);
+	 				String paramStr = request.getParameter("parameters");	 				
+	 				
+	 				System.out.println(paramStr);
 	 				
 	 				if(eventId != null && user != null) {
-	 					EventsManager.getInstance().fireEvent(eventId, user, desc, params);
+	 					EventsManager.getInstance().fireEvent(eventId, user, desc, paramStr);
 		 				returnValue = RETURN_STATUS_KO;
 		 				SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "operation " + FIRE_EVENT + " executed succesfully");					
 	 				}
@@ -114,9 +116,7 @@ public class EventsManagerServlet extends HttpServlet{
 	 	}
 	}
 	
-	private Map parseParamsStr(String str) {
-		return null;
-	}
+	
 			
 	private String getFiredEventsCsvStr(List firedEventsList) {
 		StringBuffer buffer = new StringBuffer();

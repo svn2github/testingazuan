@@ -27,11 +27,15 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-public class DynamicPublisher implements PublisherDispatcherIFace {
+/**
+ * @author Gioia
+ *
+ */
+public class DetailEventLogPublisher implements PublisherDispatcherIFace {
 	/**
 	 * Class constructor
 	 */
-	public DynamicPublisher() {
+	public DetailEventLogPublisher() {
 		super();
 
 	}
@@ -48,11 +52,11 @@ public class DynamicPublisher implements PublisherDispatcherIFace {
 			ResponseContainer response) {
 		
 		// get the module response
-		SourceBean moduleResponse = (SourceBean)response.getServiceResponse().getAttribute("ListLookupParametersModule");
+		SourceBean moduleResponse = (SourceBean)response.getServiceResponse().getAttribute("DetailEventLogModule");
 			
 		String publisherName = (String) moduleResponse.getAttribute("PUBLISHER_NAME");
 		
-		SpagoBITracer.debug("", "DynamicPublisher","service",
+		SpagoBITracer.debug("", "DetailEventLogPublisher","service",
 				" PUBLISHER_NAME = "  + publisherName);
 		
 		if (publisherName != null) {
@@ -62,4 +66,3 @@ public class DynamicPublisher implements PublisherDispatcherIFace {
 		}
 	}
 }
-

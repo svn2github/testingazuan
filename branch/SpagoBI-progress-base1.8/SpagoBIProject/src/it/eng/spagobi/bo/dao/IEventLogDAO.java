@@ -24,6 +24,7 @@ package it.eng.spagobi.bo.dao;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.EventLog;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -35,6 +36,16 @@ import java.util.List;
  */
 public interface IEventLogDAO {
 		
+	/**
+	 * Loads  an event log
+	 * 
+	 * @param user The user that has registered the events
+	 * @return	A <code>List</code> of <code>EventLog</code> containing all loaded information
+	 * @throws	EMFUserError If an Exception occurred
+	 */
+	public EventLog loadEventLog(String id, String user,  String date) throws EMFUserError;
+		
+	
 	/**
 	 * Loads a list of all logs associated to events registered by the specified  <code>user</code>
 	 * 

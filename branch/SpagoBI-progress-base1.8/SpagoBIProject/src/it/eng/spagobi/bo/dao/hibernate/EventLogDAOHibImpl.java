@@ -27,6 +27,7 @@ import it.eng.spagobi.bo.EventLog;
 import it.eng.spagobi.bo.dao.IEventLogDAO;
 import it.eng.spagobi.metadata.SbiEventsLog;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,51 @@ import org.hibernate.Transaction;
  *
  */
 public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLogDAO {
+	
+	public EventLog loadEventLog(String id, String user, String date) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		EventLog realResult = null;
+		String hql = null;
+		Query hqlQuery = null;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			hql = "from SbiEventsLog as eventlog " + 
+	         "where eventlog.user = '" + user + "' and " + 
+	         "eventlog.id = '" + id + "' and " +
+	         "eventlog.date = '" + date + "'";
+			
+			System.out.println(hql);
+			
+			hqlQuery = aSession.createQuery(hql);
+			List hibList = hqlQuery.list();
+			
+			System.out.println("query executed");
+			
+			if(hibList.size() == 1)
+				realResult = toEventsLog((SbiEventsLog)hibList.get(0));
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
+	}
+
+	
 	
 	public List loadEventsLogByUser(String user) throws EMFUserError {
 		Session aSession = null;

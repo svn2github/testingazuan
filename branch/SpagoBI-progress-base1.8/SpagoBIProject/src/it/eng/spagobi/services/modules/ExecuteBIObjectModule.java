@@ -141,15 +141,17 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The Spago Response SourceBean
 	 */
 	private void pageCreationHandler(SourceBean request, SourceBean response) throws Exception {
+		System.out.println("pageCreationHandler");
+		
 		debug("pageCreationHandler", "start pageCreationHandler method");
 		
 		// get the path of the object
 		String path = (String)request.getAttribute(ObjectsTreeConstants.PATH);
 		debug("pageCreationHandler", "using path " + path);
 		
-		// get parameters of the object
-		String parameters = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
-		debug("pageCreationHandler", "using parameters " + parameters);
+		// get parameters statically defined in portlet config file
+		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		debug("pageCreationHandler", "using parameters " + userProvidedParametersStr);
 		
 		// get the current user profile
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -183,9 +185,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 			response.setAttribute("selectionRoleForExecution", "true");
 			response.setAttribute("roles", correctRoles);
 			response.setAttribute("path", path);
-			response.setAttribute("parameters", parameters);
 			debug("pageCreationHandler", "more than one correct roles for execution, redirect to the" +
-				  " role selection page");
+				  " role selection page"); 		
 			return;
 		
 		// if there isn't correct role put in the error stack a new error
@@ -210,7 +211,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 				
 		// based on the role selected (or the only for the user) load the object and put it in session
-		BIObject obj = execContr.prepareBIObjectInSession(session, path, role, parameters);
+		BIObject obj = execContr.prepareBIObjectInSession(session, path, role, userProvidedParametersStr);
+		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
 		debug("pageCreationHandler", "object retrived and setted into session");
 		
 		
@@ -277,6 +279,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void executionHandler(SourceBean request, SourceBean response) throws Exception {
+		System.out.println("executionHandler");
 		// get object from the session
 		BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
         // for each parameter of the object control if in the request are
@@ -369,11 +372,13 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void lookUpReturnHandler(SourceBean request, SourceBean response) throws Exception {
+		System.out.println("lookUpReturnHandler");
 		// get the object from the session
 		BIObject obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		// get the parameter name and value from the request
 		String parameterNameFromLookUp = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
 		String parameterValueFromLookUp = (String)request.getAttribute("LOOKUP_VALUE");
+		System.out.println(parameterNameFromLookUp + " = " + parameterValueFromLookUp);
         // Create a List that will contains the value returned 
 		ArrayList paramvalues = new ArrayList();
 		paramvalues.add(parameterValueFromLookUp);
@@ -414,7 +419,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// get the path of the object
 		String path = (String)request.getAttribute(ObjectsTreeConstants.PATH);
 		// prepare the object in session
-		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);		
+		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);	
+		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
 		BIObject obj = execContr.prepareBIObjectInSession(session, path, role, userProvidedParametersStr);		
         // get the current user profile
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -498,7 +504,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param subObj The SubObjectDetail subObject to be executed (in case it is not null)
 	 * @param response The response Source Bean
 	 */
-	private void execute(BIObject obj, SubObjectDetail subObj, SourceBean response) {
+	private void execute(BIObject obj, SourceBean response) {
 		debug("execute", "start execute");
 		EMFErrorHandler errorHandler = getErrorHandler();
 		Engine engine = obj.getEngine();

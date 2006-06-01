@@ -27,6 +27,7 @@ import it.eng.spagobi.bo.dao.hibernate.EventDAOHibImpl;
 import it.eng.spagobi.bo.dao.hibernate.EventLogDAOHibImpl;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,14 +103,14 @@ public class EventsManager {
 	 * @param desc a description provided by the agent that fired the event
 	 * @param params parameters provided by the agent that fired the event (usefull for the handlers configuration)
 	 */
-	public void fireEvent(String eventId, String user, String desc, Map params) {	
+	public void fireEvent(String eventId, String user, String desc, String params) {	
 		
 		EventLog eventLog = new EventLog();
 		eventLog.setId(new Integer(eventId));
 		eventLog.setUser(user);
 		eventLog.setDesc(desc);
 		eventLog.setDate(new Timestamp(System.currentTimeMillis()));
-		eventLog.setParams("null");
+		eventLog.setParams(params);
 		
 		try {
 			eventLogDAO.insertEventLog(eventLog);
@@ -119,6 +120,18 @@ public class EventsManager {
 		}
 		
 		System.out.println("fireEvent: " + eventLog.getId() + ", "  + eventLog.getUser() + ", " + eventLog.getDate() + ", " + eventLog.getDesc());
+	}
+	
+	/**
+	 * Fire a registered event
+	 * 
+	 * @param id the event unique id
+	 * @param user the user that have registered the event
+	 * @param desc a description provided by the agent that fired the event
+	 * @param params parameters provided by the agent that fired the event (usefull for the handlers configuration)
+	 */
+	public void fireEvent(String eventId, String user, String desc, Map params) {	
+		fireEvent(eventId, user, desc, getParamsStr(params));
 	}
 	
 	/**
@@ -150,4 +163,29 @@ public class EventsManager {
 	}
 	
 	
+	public static String getParamsStr(Map params) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator it = params.keySet().iterator();
+		boolean isFirstParameter = true;
+		while(it.hasNext()) {
+			String pname = (String)it.next();
+			String pvalue = (String)params.get(pname);
+			if(!isFirstParameter) buffer.append("&");
+			else isFirstParameter = false;
+			buffer.append(pname + "=" + pvalue);
+		}
+		return buffer.toString();
+	}
+	
+	public static Map parseParamsStr(String str) {
+		Map params = new HashMap();
+		System.out.println(str);
+		String[] parameterPairs = str.split("&");
+		for(int i = 0; i < parameterPairs.length; i++) {
+			String[] chunks = parameterPairs[i].split("=");
+			System.out.println(chunks[0] + " = " + chunks[1]);
+			params.put(chunks[0], chunks[1]);
+		}
+		return params;
+	}
 }

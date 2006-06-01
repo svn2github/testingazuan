@@ -59,6 +59,7 @@ public class PortletLoginModule extends AbstractModule {
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);
 		getRequestContainer().getSessionContainer().getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
+		System.out.println(">>> PortletLoginModule <<<" + userProfile);
 	}
 
 }

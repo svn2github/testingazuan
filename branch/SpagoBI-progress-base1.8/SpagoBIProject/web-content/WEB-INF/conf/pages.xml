@@ -12,6 +12,18 @@
       		<MODULE keep_instance="false" keep_response="false" name="PortletEventsMonitorModule"/>
     	</MODULES>
   	</PAGE>
+  	
+  	<PAGE name="DetailEventLogPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DetailEventLogPage" target="DetailEventLogModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailEventLogModule"/>
+    	</MODULES>
+  	</PAGE>
 	
 	<PAGE name="LOGIN_PAGE_SBI_FUNCTIONALITY" scope="REQUEST" >
     	<DEPENDENCIES>

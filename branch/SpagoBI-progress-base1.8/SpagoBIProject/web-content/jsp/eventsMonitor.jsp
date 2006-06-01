@@ -4,11 +4,13 @@
          		it.eng.spagobi.events.EventsManager,
          		it.eng.spagobi.bo.EventLog,
          		it.eng.spago.base.SourceBean,
-         		java.util.List"
+         		java.util.List,
+         		javax.portlet.PortletURL,
+         		it.eng.spago.navigation.LightNavigationManager,
+         		it.eng.spagobi.constants.SpagoBIConstants,
+         		it.eng.spagobi.utilities.PortletUtilities"
 %>
 
-<H1>Event Monitor</H1>
-<P>
 <%
 	SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("PortletEventsMonitorModule"); 
 	if(moduleResponse == null) {
@@ -18,17 +20,76 @@
 <%
 	} else {
 		List firedEventsList = (List) moduleResponse.getAttribute("firedEventsList");
-		if(firedEventsList.size() == 0) {
+		if(firedEventsList.size() == 0) {			
 %>
 	<P><H3><I>Events log is empty !!!</I></H3>
 <%
 		} else {
-			for(int i = 0; i < firedEventsList.size(); i++) {
-				EventLog firedEvent = (EventLog)firedEventsList.get(i);
+			// build the refresh button
+			PortletURL refreshUrl = renderResponse.createActionURL();
+			refreshUrl.setParameter("PAGE", "EVENTS_MONITOR_PAGE");			
+			refreshUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 %>
-	<P> <%=firedEvent.getId()%> - <%=firedEvent.getDate()%> - <%=firedEvent.getUser()%> - <%=firedEvent.getDesc()%>
+
+
+<table class='header-table-portlet-section'>
+	<tr class='header-row-portlet-section'>
+		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
+			Events Monitor
+		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<a style="text-decoration:none;" href='<%=refreshUrl.toString()%>'> 
+				<img width="20px" height="20px"
+					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' 
+					name='refresh' 
+					alt='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' 
+					title='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' /> 
+			</a>
+		</td>
+	</tr>
+</table>
+
+<TABLE style='width:100%;margin-top:1px'>
+<TR>
+<TD class='portlet-section-header' valign='center' align=left >Id</TD>
+<TD class='portlet-section-header' valign='center' align=left >Date</TD>
+<TD class='portlet-section-header' valign='center' align=left >User</TD>
+<TD class='portlet-section-header' valign='center' align=left >Description</TD>
+<TD class='portlet-section-header' valign='center' align=left >&nbsp;</TD>
+</TR>
+<%
+		
+			PortletURL detailUrl = renderResponse.createActionURL();
+   			detailUrl.setParameter("PAGE", "DetailEventLogPage");   	
+   			detailUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "false");
+			boolean alternate = false;
+        	String rowClass;
+			for(int i = 0; i < firedEventsList.size(); i++) {
+				rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
+            	alternate = !alternate;
+				EventLog firedEvent = (EventLog)firedEventsList.get(i);
+				detailUrl.setParameter("id", firedEvent.getId().toString());
+				detailUrl.setParameter("user", firedEvent.getUser());
+				detailUrl.setParameter("date", firedEvent.getDate().toString());
+%>
+	<tr>
+		<td class='<%=rowClass%>' valign='top' ><%=firedEvent.getId()%></td>
+		<td class='<%=rowClass%>' valign='top' ><%=firedEvent.getDate()%></td>
+		<td class='<%=rowClass%>' valign='top' ><%=firedEvent.getUser()%></td>
+		<td class='<%=rowClass%>' valign='top' ><%=firedEvent.getDesc()%></td>
+		<td class='<%=rowClass%>' valign='top' >
+			<a title="Detail" class="linkOperation" href="<%=detailUrl.toString() %>">		
+				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>'/>
+			</a>
+		</td>
+	</tr>
 <%		
 			}
+%>
+	</table>
+<%
 		}
 	}
 %>
+

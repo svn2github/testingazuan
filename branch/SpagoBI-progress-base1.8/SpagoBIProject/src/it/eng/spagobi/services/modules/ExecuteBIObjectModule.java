@@ -504,7 +504,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param subObj The SubObjectDetail subObject to be executed (in case it is not null)
 	 * @param response The response Source Bean
 	 */
-	private void execute(BIObject obj, SourceBean response) {
+	private void execute(BIObject obj, SubObjectDetail subObj, SourceBean response) {
 		debug("execute", "start execute");
 		EMFErrorHandler errorHandler = getErrorHandler();
 		Engine engine = obj.getEngine();

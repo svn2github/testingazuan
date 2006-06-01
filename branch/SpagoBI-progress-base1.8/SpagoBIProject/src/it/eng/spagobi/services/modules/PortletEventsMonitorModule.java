@@ -21,13 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.security.Principal;
 import java.util.List;
@@ -43,14 +46,19 @@ import javax.portlet.PortletRequest;
 public class PortletEventsMonitorModule extends AbstractModule{
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		System.out.println(">>> ExecuteBIObjectModule <<<");
-		
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
+		String remoteUser = portletRequest.getRemoteUser();
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", "USER CONNECTED IS [" + remoteUser+"]");
 		Principal principal = portletRequest.getUserPrincipal();
 		String engUserProfileFactoryClass =  ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);
-		String user = (String)userProfile.getUserUniqueIdentifier();
+		getRequestContainer().getSessionContainer().getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
+		String user = (String)userProfile.getUserUniqueIdentifier();		
+				
+		SessionContainer permanentSession =  getRequestContainer().getSessionContainer().getPermanentContainer();
+		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				
 		
 		EventsManager eventsManager = EventsManager.getInstance();		
 		List firedEventsList = eventsManager.getFiredEvents(user);

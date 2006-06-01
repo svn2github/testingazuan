@@ -22,22 +22,23 @@
 
 package weka.core.converters;
 
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Attribute;
-import weka.core.Utils;
-import weka.core.Option;
-import weka.core.FastVector;
-import weka.core.OptionHandler;
 import java.io.File;
 import java.io.IOException;
-import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
-import java.sql.*;
+
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.OptionHandler;
+import weka.core.Utils;
 
 /**
  * Writes to a database (tested with MySQL, InstantDB, HSQLDB).
@@ -112,6 +113,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	protected static Properties PROPERTIES;
 
 	protected int dbWriteMode = DELETE_INSERT;
+	protected boolean versioning = false;
+	protected String versionColumnName;
+	protected String version;
 
 	public static final int DROP_INSERT = 0;
 	public static final int DELETE_INSERT = 1;
@@ -488,7 +492,19 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			if (i != structure.numAttributes() - 1)
 				query.append(", ");
 		}
+		
+		if(versioning) {
+			query.append(", ");
+			if (databaseConnection.getUpperCase())
+				query.append(versionColumnName.toUpperCase());
+			else
+				query.append(versionColumnName);
+			query.append(" " + m_createText);
+		}
+		
 		query.append(" )");
+		
+		System.out.println(query);
 
 		databaseConnection.execute(query.toString());
 		if (!databaseConnection.tableExists(m_tableName)) {
@@ -537,10 +553,16 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			System.out.println("Table " + m_tableName + " deleated successfully");
 			break;
 		case INSERT:
-			System.out.println("Write mode: DELETE_INSERT");
+			System.out.println("Write mode: INSERT");
 			if (!databaseConnection.tableExists(m_tableName))
 				writeStructure();
 			break;
+		case UPDATE_INSERT:
+			System.out.println("Write mode: UPDATE_INSERT");
+			if (!databaseConnection.tableExists(m_tableName))
+				writeStructure();
+			break;
+			
 		default:
 			System.out.println("Write mode: DEFAULT (DELETE_INSERT)");
 			if (!databaseConnection.tableExists(m_tableName))
@@ -548,18 +570,62 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			break;
 		}
 	}
-
+	
+	private String columnNamesStr = "";
+	private String[] columnNames = null;
+	
+	private void setColumnNamesStr() throws Exception {
+		Instances structure = getInstances();
+		
+		if (structure.numAttributes() == 0)
+			throw new Exception("Instances have no attribute.");		
+			
+		int j = 0;
+		
+		if (m_id) {
+			columnNames = new String[structure.numAttributes()+1];
+			if (databaseConnection.getUpperCase())
+				m_idColumn = m_idColumn.toUpperCase();
+			columnNames[j++] = m_idColumn;			
+		}
+		else {
+			columnNames = new String[structure.numAttributes()];
+		}
+		
+		for (int i = 0; i < structure.numAttributes(); i++) {
+			Attribute att = structure.attribute(i);
+			String attName = att.name();
+			attName = attName.replaceAll("[^\\w]", "_");
+			if (databaseConnection.getUpperCase())
+				columnNames[j++] = attName.toUpperCase();
+			else
+				columnNames[j++] = attName;
+			
+		}		
+		
+		columnNamesStr += "(";
+		for(int i = 0; i < columnNames.length; i++) {
+			if(i != 0) columnNamesStr += ", ";
+			columnNamesStr += columnNames[i];
+		}
+		if(versioning) columnNamesStr += ", " + versionColumnName;
+		columnNamesStr += ")";
+	}
+	
 	private void writeInstance(Instance inst) throws Exception {
 
 		StringBuffer insert = new StringBuffer();
 		insert.append("INSERT INTO ");
 		insert.append(m_tableName);
+		insert.append(" " + columnNamesStr );
 		insert.append(" VALUES ( ");
+			
 		if (m_id) {
 			insert.append(m_count);
 			insert.append(", ");
 			m_count++;
 		}
+		
 		for (int j = 0; j < inst.numAttributes(); j++) {
 			if (inst.isMissing(j))
 				insert.append("NULL");
@@ -575,6 +641,10 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			if (j != inst.numAttributes() - 1)
 				insert.append(", ");
 		}
+		
+		if(versioning)
+			insert.append(", '" + version + "'");
+		
 		insert.append(" )");
 		System.out.println(" - " + insert.toString());
 		databaseConnection.fastExecute(insert.toString());
@@ -584,6 +654,50 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			throw new IOException("Tuple cannot be inserted.");
 		}
 		*/
+	}
+	
+	private void updateInstance(Instance inst) throws Exception {
+
+		StringBuffer select = new StringBuffer();
+		select.append("SELECT FROM ");
+		select.append(m_tableName);
+		select.append(" WHERE ");
+		for(int i = 0; i < columnNames.length; i++) {
+			if(i!=0) select.append(" AND");
+			select.append(" " + columnNames[i]);
+			select.append(" = ");
+			if ((inst.attribute(i)).isNumeric())
+				select.append(inst.value(i));
+			else {
+				String stringInsert = "'" + inst.stringValue(i) + "'";
+				stringInsert = stringInsert.replaceAll("''", "'");
+				select.append(stringInsert);
+			}
+		}
+		if(versioning){
+			select.append(" AND " + versionColumnName + " = " + version);
+		}
+		
+		System.out.println(select.toString());
+		
+		if(!databaseConnection.fastExecute(select.toString())) {
+			writeInstance(inst);
+			System.out.println("-----------> WRITE");
+			return;
+		}
+		
+		System.out.println("-----------> UPDATE");
+		
+		StringBuffer update = new StringBuffer();
+		update.append("UPDATE ");
+		update.append(m_tableName);
+		update.append(" SET ");
+		update.append(" " + columnNamesStr );
+		update.append(" VALUES ( ");
+			
+		
+		
+	
 	}
 
 	/**
@@ -656,6 +770,13 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	public void writeBatch() throws IOException {
 
 		Instances instances = getInstances();
+		try {
+			setColumnNamesStr();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (instances == null)
 			throw new IOException("No instances to save");
 		if (getRetrieval() == INCREMENTAL)
@@ -854,6 +975,30 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 
 	public void setDbWriteMode(int dbWriteMode) {
 		this.dbWriteMode = dbWriteMode;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getVersionColumnName() {
+		return versionColumnName;
+	}
+
+	public void setVersionColumnName(String versionColumnName) {
+		this.versionColumnName = versionColumnName;
+	}
+
+	public boolean isVersioning() {
+		return versioning;
+	}
+
+	public void setVersioning(boolean versioning) {
+		this.versioning = versioning;
 	}
 
 }

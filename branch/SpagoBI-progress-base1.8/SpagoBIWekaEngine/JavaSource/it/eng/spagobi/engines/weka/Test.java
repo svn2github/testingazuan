@@ -22,10 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.weka;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Gioia
@@ -33,7 +31,7 @@ import java.net.URL;
  */
 public class Test {
 	
-	static private String pathStr = "C:\\Documents and Settings\\gioia\\Documenti\\Codice\\Java\\Misc\\WekaKFRunner\\kflow";
+	static private String pathStr = "C:\\Documents and Settings\\gioia\\Documenti\\Codice\\Java\\SpagoBIBranch\\SpagoBIWekaEngine\\JavaSource";
 	static private File path = new File(pathStr);
 	
 	static private void log(String msg) {
@@ -50,7 +48,7 @@ public class Test {
 		if(inputFile == null || !inputFile.exists()) {
 			log("No input file!");
 			log("Default file will be used just for test pourpose.");
-			inputFile = new File(path, "clusterer_flow_filtered.kfml");
+			inputFile = new File(path, "clusterer_flow_filtered_params.kfml");
 			//inputFile = new File(path b, "simple_flow.kfml");
 			//inputFile = new File(path, "complex_flow.kfml");
 			
@@ -68,8 +66,13 @@ public class Test {
 		WekaKFRunner runner = new WekaKFRunner();
 		
 		File inputFile = getTemplateFile(args);
+		File filledInputFile = new File(path, "out.xml");
+		Map params = new HashMap();
+		params.put("clusterNum", "15");
+		params.put("clusterer", "weka.clusterers.SimpleKMeans");
+		ParametersFiller.fill(inputFile, filledInputFile, params);
 		log("Starting parsing file: " + inputFile);
-		runner.loadKFTemplate(inputFile);
+		runner.loadKFTemplate(filledInputFile);
 		runner.setupSavers();
 		runner.setupLoaders();
 		log("\nGetting loaders & savers infos ...\n");

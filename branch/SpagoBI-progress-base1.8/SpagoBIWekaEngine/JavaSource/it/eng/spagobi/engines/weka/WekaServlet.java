@@ -13,10 +13,12 @@ import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -91,6 +93,9 @@ public class WekaServlet extends HttpServlet {
 	public static final String INPUT_CONNECTION = "inputConnectionName"; 
 	public static final String OUTPUT_CONNECTION = "outputConnectionName"; 
 	public static final String WRITE_MODE = "writeMode"; 
+	public static final String VERSIONING = "versioning";
+	public static final String VERSION_COLUMN_NAME = "versionColumnName";
+	public static final String VERSION = "version";
 	
 	
 	public class RunnerThread extends Thread {
@@ -126,6 +131,19 @@ public class WekaServlet extends HttpServlet {
 			try {
 				kfRunner.loadKFTemplate(file);
 				kfRunner.setWriteMode((String)params.get(WRITE_MODE));
+				String versioning = (String)params.get(VERSIONING);
+				if(versioning != null && versioning.equalsIgnoreCase("true")){
+					logger.debug(this.getClass().getName() + ":service:versioning activated");
+					kfRunner.setVersioning(true);
+					String str;
+					if( (str = (String)params.get(VERSION_COLUMN_NAME)) != null) 
+						kfRunner.setVersionColumnName(str);
+					logger.debug(this.getClass().getName() + ":service:version column name is " + kfRunner.getVersionColumnName());
+					if( (str = (String)params.get(VERSION)) != null) 
+						kfRunner.setVersion(str);
+					logger.debug(this.getClass().getName() + ":service:version is " + kfRunner.getVersion());
+					
+				}
 				kfRunner.setupSavers();
 				kfRunner.setupLoaders();
 				logger.debug(this.getClass().getName() + ":service:Getting loaders & savers infos ...");
@@ -133,7 +151,11 @@ public class WekaServlet extends HttpServlet {
 				logger.debug( "\n" + Utils.getSaverDesc(kfRunner.getSavers()) );
 				logger.debug(this.getClass().getName() + ":service:Executing knowledge flow ...");
 				kfRunner.run(false, true);
-				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated succesfully", null);
+				Map eventParams = new HashMap();				
+				eventParams.put("operation-type", "biobj-execution");
+				eventParams.put("operation-exit-status", "success");
+				eventParams.put("biobj-path", params.get(TEMPLATE_PATH));
+				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated", eventParams);
 			} catch (Exception e) {
 				logger.error("Impossible to load/parse templete file", e);	
 				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated with errors", null);
@@ -234,10 +256,8 @@ public class WekaServlet extends HttpServlet {
 				
 			logger.info(this.getClass().getName() + ":service:saving tamplete file to local temp dir ...");
 			File file = File.createTempFile("weka", null);
-			OutputStream out = new FileOutputStream(file);
-			out.write(template);
-			out.flush();
-			out.close();
+			ParametersFiller.fill(new StringReader(new String(template)), new FileWriter(file), params);
+						
 			logger.info(this.getClass().getName() + ":service:template file saved succesfully to a local temp dir");
 			
 			// fork

@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.weka;
 
+import it.eng.spagobi.engines.weka.configurators.WekaBeanConfiguratorFactory;
+
 import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.File;
@@ -57,6 +59,9 @@ public class WekaKFRunner {
 	Connection outConnection;
 	
 	protected String writeMode; 
+	protected boolean versioning;
+	protected String versionColumnName;
+	protected String version;
 	
 	//	Connection parameters for db Loaders and Savers
 	protected String dbUrl = DEFAULT_DB_URL;
@@ -70,16 +75,19 @@ public class WekaKFRunner {
 	private static transient Logger logger = Logger.getLogger(WekaKFRunner.class);
 	
 	static private void log(String msg) {
-		logger.debug("WekaKFRunner:" + msg);
+		//logger.debug("WekaKFRunner:" + msg);
+		System.out.println("WekaKFRunner:" + msg);
 	}
 	
 	
 	public WekaKFRunner() { 
-		inConnection = null;
-		outConnection = null;		
+		this(null, null);
 	}
 	
 	public WekaKFRunner(Connection inConnection, Connection outConnection) { 
+		versioning = false;
+		versionColumnName = "version";
+		version = "base-version";
 		this.inConnection = inConnection;
 		this.outConnection = outConnection;		
 	}
@@ -154,6 +162,8 @@ public class WekaKFRunner {
 				savers.add(bean.getBean());
 			}	
 			
+			WekaBeanConfiguratorFactory.setup(bean.getBean());
+			
 			if (bean.getBean() instanceof BeanContextChild) {
 				log("    - BeanContextChild" );
 				beanContextSupport.add(bean.getBean());
@@ -212,6 +222,11 @@ public class WekaKFRunner {
 				DatabaseSaver databaseSaver = (DatabaseSaver)saver.getSaver();
 				
 				databaseSaver.setDbWriteMode(writeMode);
+				if(versioning) {
+					databaseSaver.setVersioning(true);
+					databaseSaver.setVersionColumnName(versionColumnName);
+					databaseSaver.setVersion(version);
+				}
 				
 				if(inConnection != null) {
 					databaseSaver.setDestination(inConnection);
@@ -286,5 +301,35 @@ public class WekaKFRunner {
 
 	public void setWriteMode(String writeMode) {
 		this.writeMode = writeMode;
+	}
+
+
+	public String getVersion() {
+		return version;
+	}
+
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+
+	public String getVersionColumnName() {
+		return versionColumnName;
+	}
+
+
+	public void setVersionColumnName(String versionColumnName) {
+		this.versionColumnName = versionColumnName;
+	}
+
+
+	public boolean isVersioning() {
+		return versioning;
+	}
+
+
+	public void setVersioning(boolean versioning) {
+		this.versioning = versioning;
 	}	
 }

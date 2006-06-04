@@ -113,6 +113,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	protected static Properties PROPERTIES;
 
 	protected int dbWriteMode = DELETE_INSERT;
+	protected String[] keyColumnNames = null;
 	protected boolean versioning = false;
 	protected String versionColumnName;
 	protected String version;
@@ -659,28 +660,30 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	private void updateInstance(Instance inst) throws Exception {
 
 		StringBuffer select = new StringBuffer();
-		select.append("SELECT FROM ");
+		StringBuffer where = new StringBuffer();
+		select.append("SELECT * FROM ");
 		select.append(m_tableName);
-		select.append(" WHERE ");
+		where.append(" WHERE ");
 		for(int i = 0; i < columnNames.length; i++) {
-			if(i!=0) select.append(" AND");
-			select.append(" " + columnNames[i]);
-			select.append(" = ");
-			if ((inst.attribute(i)).isNumeric())
-				select.append(inst.value(i));
-			else {
-				String stringInsert = "'" + inst.stringValue(i) + "'";
-				stringInsert = stringInsert.replaceAll("''", "'");
-				select.append(stringInsert);
+			if(isKeyColumnName(columnNames[i])) {
+				if(i!=0) where.append(" AND");
+				where.append(" " + columnNames[i]);
+				where.append(" = ");
+				if ((inst.attribute(i)).isNumeric())
+					where.append(inst.value(i));
+				else {
+					String stringInsert = "'" + inst.stringValue(i) + "'";
+					stringInsert = stringInsert.replaceAll("''", "'");
+					where.append(stringInsert);
+				}
 			}
 		}
-		if(versioning){
-			select.append(" AND " + versionColumnName + " = " + version);
+		if(versioning && isKeyColumnName(versionColumnName)){
+			where.append(" AND " + versionColumnName + " = '" + version + "'");
 		}
 		
-		System.out.println(select.toString());
-		
-		if(!databaseConnection.fastExecute(select.toString())) {
+		System.out.println(select.toString() + where.toString());		
+		if(!databaseConnection.fastExecute(select.toString() + where.toString())) {
 			writeInstance(inst);
 			System.out.println("-----------> WRITE");
 			return;
@@ -692,12 +695,21 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		update.append("UPDATE ");
 		update.append(m_tableName);
 		update.append(" SET ");
-		update.append(" " + columnNamesStr );
-		update.append(" VALUES ( ");
-			
+		for(int i = 0; i < columnNames.length; i++) {
+			if(i!=0) update.append(" ,");
+			update.append(" " + columnNames[i]);
+			update.append(" = ");
+			if ((inst.attribute(i)).isNumeric())
+				update.append(inst.value(i));
+			else {
+				String stringInsert = "'" + inst.stringValue(i) + "'";
+				stringInsert = stringInsert.replaceAll("''", "'");
+				update.append(stringInsert);
+			}
+		}
 		
-		
-	
+		System.out.println(update.toString() + where.toString());
+		databaseConnection.fastExecute(update.toString() + where.toString());	
 	}
 
 	/**
@@ -792,8 +804,15 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			prepareStructure();
 			System.out.println("Writing instances to db ...");
 			for (int i = 0; i < instances.numInstances(); i++) {
-				System.out.println("Inserting instance into db (" + (i+1)+ "/" + instances.numInstances() + ")");
-				writeInstance(instances.instance(i));
+				if(dbWriteMode != UPDATE_INSERT) {
+					System.out.println("Inserting instance into db (" + (i+1)+ "/" + instances.numInstances() + ")");
+					writeInstance(instances.instance(i));
+				}
+				else {
+					System.out.println("Updating instance (" + (i+1)+ "/" + instances.numInstances() + ")");
+					updateInstance(instances.instance(i));
+				}
+				
 			}
 			databaseConnection.disconnectFromDatabase();
 			setWriteMode(WAIT);
@@ -999,6 +1018,21 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 
 	public void setVersioning(boolean versioning) {
 		this.versioning = versioning;
+	}
+
+	public String[] getKeyColumnNames() {
+		return keyColumnNames;
+	}
+
+	public void setKeyColumnNames(String[] keyColumnNames) {
+		this.keyColumnNames = keyColumnNames;
+	}
+	
+	public boolean isKeyColumnName(String columnName) {
+		for(int i = 0; i < keyColumnNames.length; i++) {
+			if(columnName.equalsIgnoreCase(keyColumnNames[i])) return true;
+		}
+		return false;
 	}
 
 }

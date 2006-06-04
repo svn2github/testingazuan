@@ -54,7 +54,7 @@
             <object class="weka.filters.unsupervised.attribute.AddCluster" name="filter">
                <object array="yes" class="java.lang.String" name="options">
                   <object class="java.lang.String" name="0">-W</object>
-                  <object class="java.lang.String" name="1">weka.clusterers.SimpleKMeans -N 15 -S 10</object>
+                  <object class="java.lang.String" name="1">weka.clusterers.SimpleKMeans -N 35 -S 10</object>
                   <object class="java.lang.String" name="2">-I</object>
                   <object class="java.lang.String" name="3">first</object>
                   <object class="java.lang.String" name="4"/>

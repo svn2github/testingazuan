@@ -32,10 +32,6 @@
 					isJNDI="true"
 					initialContext="java:comp/env"
 					resourceName="jdbc/mysqlfoodmart"/>
-		<CONNECTION name="oraclesh" 
-					isJNDI="true"
-					initialContext="java:comp/env"
-					resourceName="jdbc/oracleSH"/>
 	</CONNECTIONS>	
 	
 

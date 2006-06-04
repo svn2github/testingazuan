@@ -54,15 +54,17 @@ public class WekaKFRunner {
 	protected Vector loaders;
 	protected Vector savers;
 	
-	// Connections to db for Loaders and Savers
-	Connection inConnection;
-	Connection outConnection;
-	
+	// Write modality options
 	protected String writeMode; 
+	protected String[] keyColumnNames = null;
 	protected boolean versioning;
 	protected String versionColumnName;
 	protected String version;
 	
+	// Connections to db for Loaders and Savers
+	protected Connection inConnection;
+	protected Connection outConnection;
+		
 	//	Connection parameters for db Loaders and Savers
 	protected String dbUrl = DEFAULT_DB_URL;
 	protected String dbUser = DEFAULT_DB_USER;
@@ -131,6 +133,65 @@ public class WekaKFRunner {
 		this.loaders = new Vector();
 		this.savers = new Vector();
 	}
+	
+	public Connection getInConnection() {
+		return inConnection;
+	}
+
+
+	public void setInConnection(Connection inConnection) {
+		this.inConnection = inConnection;
+	}
+
+
+	public Connection getOutConnection() {
+		return outConnection;
+	}
+
+
+	public void setOutConnection(Connection outConnection) {
+		this.outConnection = outConnection;
+	}
+
+
+	public String getWriteMode() {
+		return writeMode;
+	}
+
+
+	public void setWriteMode(String writeMode) {
+		this.writeMode = writeMode;
+	}
+
+
+	public String getVersion() {
+		return version;
+	}
+
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+
+	public String getVersionColumnName() {
+		return versionColumnName;
+	}
+
+
+	public void setVersionColumnName(String versionColumnName) {
+		this.versionColumnName = versionColumnName;
+	}
+
+
+	public boolean isVersioning() {
+		return versioning;
+	}
+
+
+	public void setVersioning(boolean versioning) {
+		this.versioning = versioning;
+	}	
 	
 	public void loadKFTemplate(File template) throws Exception {
 		reset();
@@ -222,6 +283,8 @@ public class WekaKFRunner {
 				DatabaseSaver databaseSaver = (DatabaseSaver)saver.getSaver();
 				
 				databaseSaver.setDbWriteMode(writeMode);
+				databaseSaver.setKeyColumnNames(this.keyColumnNames);
+				
 				if(versioning) {
 					databaseSaver.setVersioning(true);
 					databaseSaver.setVersionColumnName(versionColumnName);
@@ -274,62 +337,12 @@ public class WekaKFRunner {
 	}
 
 
-	public Connection getInConnection() {
-		return inConnection;
+	public String[] getKeyColumnNames() {
+		return keyColumnNames;
 	}
 
 
-	public void setInConnection(Connection inConnection) {
-		this.inConnection = inConnection;
-	}
-
-
-	public Connection getOutConnection() {
-		return outConnection;
-	}
-
-
-	public void setOutConnection(Connection outConnection) {
-		this.outConnection = outConnection;
-	}
-
-
-	public String getWriteMode() {
-		return writeMode;
-	}
-
-
-	public void setWriteMode(String writeMode) {
-		this.writeMode = writeMode;
-	}
-
-
-	public String getVersion() {
-		return version;
-	}
-
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-
-	public String getVersionColumnName() {
-		return versionColumnName;
-	}
-
-
-	public void setVersionColumnName(String versionColumnName) {
-		this.versionColumnName = versionColumnName;
-	}
-
-
-	public boolean isVersioning() {
-		return versioning;
-	}
-
-
-	public void setVersioning(boolean versioning) {
-		this.versioning = versioning;
+	public void setKeyColumnNames(String[] keyColumnNames) {
+		this.keyColumnNames = keyColumnNames;
 	}	
 }

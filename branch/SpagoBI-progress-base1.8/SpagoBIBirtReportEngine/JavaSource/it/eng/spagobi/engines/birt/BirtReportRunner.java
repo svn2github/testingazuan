@@ -53,6 +53,9 @@ public class BirtReportRunner {
 		super();
 		this.templatePath = templatePath;
 		this.spagobibaseurl = spagobibaseurl;
+		dateformat = dateformat.replaceAll("D", "d");
+		dateformat = dateformat.replaceAll("m", "M");
+		dateformat = dateformat.replaceAll("Y", "y");
 		this.dateformat = dateformat;
 		config = new EngineConfig();
 	}
@@ -97,6 +100,7 @@ public class BirtReportRunner {
 			((HTMLRenderOption) options).setEmbeddable(true);
 			options.setOutputStream((OutputStream) servletResponse.getOutputStream());
 		} else {
+			logger.debug("Engines"+ this.getClass().getName()+ "runReport() Output format parameter not set or not valid. Using default output format: HTML.");
 			options = new HTMLRenderOption();
 			HashMap appContext = prepareHtmlRendering(servletContext, servletRequest);
 			task.setAppContext(appContext);

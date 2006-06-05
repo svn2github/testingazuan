@@ -64,6 +64,8 @@ public class BirtReportRunnerGivenConnection extends BirtReportRunner {
 			options.setOutputStream((OutputStream) servletResponse.getOutputStream());
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("fo")) {
 			options = new FORenderOption();
+			servletResponse.setContentType("text/html");
+			options.setOutputStream((OutputStream) servletResponse.getOutputStream());
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("html")) {
 			options = new HTMLRenderOption();
 			HashMap htmlAppContext = prepareHtmlRendering(servletContext, servletRequest);

@@ -51,18 +51,26 @@ public class BirtReportServletGivenConnection extends BirtReportServlet {
 	 		String spagobibase = (String)params.get("spagobiurl");
 	 		String dateformat = (String)params.get("dateformat");
 	 		BirtReportRunnerGivenConnection birtReportRunner = new BirtReportRunnerGivenConnection(spagobibase, template, dateformat);
-	 		Connection con = getConnection(request.getParameter("connectionName"));
-	 		if (con == null){
+	 		Connection connection = getConnection(request.getParameter("connectionName"));
+	 		if (connection == null){
 	 			logger.error("Engines "+this.getClass().getName()+ " service() Cannot obtain" +
 	 				     " connection for engine ["+this.getClass().getName()+"] control" +
 	 				     " configuration in engine-config.xml config file");
 	 			return;
 	 		}
 	 		try {
-	 			birtReportRunner.runReport(con, params, getServletContext(), response, request);
-	 		} catch (Exception e){
+	 			birtReportRunner.runReport(connection, params, getServletContext(), response, request);
+	 		} catch (Exception e) {
 	 			e.printStackTrace();
-	 		}
+	 		} finally {
+				try {
+					if (connection != null && !connection.isClosed()) 
+						connection.close();
+				} catch (SQLException sqle) {
+					sqle.printStackTrace();
+					connection = null;
+				}
+			}
 	 	}
 
 	}

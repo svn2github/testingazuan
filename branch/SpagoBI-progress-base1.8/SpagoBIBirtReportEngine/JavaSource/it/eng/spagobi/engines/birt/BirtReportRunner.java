@@ -91,10 +91,6 @@ public class BirtReportRunner {
 			options = new FORenderOption();
 			servletResponse.setContentType("application/pdf");
 			options.setOutputStream((OutputStream) servletResponse.getOutputStream());
-		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("fo")) {
-			options = new FORenderOption();
-			servletResponse.setContentType("text/html");
-			options.setOutputStream((OutputStream) servletResponse.getOutputStream());
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("html")) {
 			options = new HTMLRenderOption();
 			HashMap appContext = prepareHtmlRendering(servletContext, servletRequest);
@@ -124,7 +120,7 @@ public class BirtReportRunner {
 			IScalarParameterDefn param = (IScalarParameterDefn) it.next();
 			String paramName = param.getName();
 			String paramValueString = parameters.get(paramName).toString();
-			if (paramValueString == null) {
+			if (paramValueString == null || paramValueString.trim().equals("")) {
 				logger.debug("Engines"+ this.getClass().getName()+ "findReportParams() The report parameter " + paramName + " has no values set.");
 				continue;
 			}

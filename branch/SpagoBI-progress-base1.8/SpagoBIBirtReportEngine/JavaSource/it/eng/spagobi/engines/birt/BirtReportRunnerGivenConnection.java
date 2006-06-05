@@ -30,7 +30,7 @@ public class BirtReportRunnerGivenConnection extends BirtReportRunner {
 	public void runReport(Connection connection, Map parameters,
 			ServletContext servletContext, HttpServletResponse servletResponse,
 			HttpServletRequest servletRequest) throws Exception {
-
+			
 		config.setEngineHome("");
 		String pluginUrl = "http://" + servletRequest.getServerName() 
 				+ ":" + servletRequest.getServerPort() + servletRequest.getContextPath() + "/plugins/";
@@ -71,6 +71,7 @@ public class BirtReportRunnerGivenConnection extends BirtReportRunner {
 			((HTMLRenderOption) options).setEmbeddable(true);
 			options.setOutputStream((OutputStream) servletResponse.getOutputStream());
 		} else {
+			logger.debug("Engines"+ this.getClass().getName()+ "runReport() Output format parameter not set or not valid. Using default output format: HTML.");
 			options = new HTMLRenderOption();
 			HashMap htmlAppContext = prepareHtmlRendering(servletContext, servletRequest);
 			appContext.putAll(htmlAppContext);

@@ -86,6 +86,7 @@ public class DashboardServlet extends HttpServlet{
             			int indFirstTag = resStr.indexOf("<");
             			resStr = resStr.substring(indFirstTag);
             		}
+            		resStr = resStr.toLowerCase();
             		out.write(resStr.getBytes());
     		 		out.flush();
                 } else if(type.equalsIgnoreCase("SCRIPT")) {

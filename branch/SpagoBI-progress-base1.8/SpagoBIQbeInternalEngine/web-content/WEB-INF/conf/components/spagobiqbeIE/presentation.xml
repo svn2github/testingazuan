@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PRESENTATION>
 	
+	<MAPPING business_type="ACTION" business_name="EXPORT_ACTION" publisher_name="EXPORT_PUBLISHER"/>
+		
+	
 	<MAPPING business_type="ACTION" business_name="INIT_WIZARD_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="SELECT_DATA_MART_ACTION" publisher_name="DATA_MART_MAIN_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="UPDATE_FIELD_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>

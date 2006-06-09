@@ -669,12 +669,14 @@
 			}
 			
 						
-			//alert("current Screen Txt" + currentScreenTxt);
-			
 			var formUpdCond = document.getElementById('formUpdateConditions');
 			
+			//alert("current Screen Txt " + currentScreenTxt);
+			
 			if ((currentScreenTxt == 'DIV_FIELD_CONDITION') && (formUpdCond != null)){
-									
+			
+					alert("current Screen Txt 1 " + currentScreenTxt);
+											
 					var inputNextActionAfterSaveCondition = document.getElementById('nextActionAfterSaveCondition');
 					var inputNextPublisherAfterSaveCondition = document.getElementById('nextPublisherAfterSaveCondition');
 					var inputParameter = document.getElementById('Parameter');
@@ -749,6 +751,12 @@
 						return true;
 					}
 					
+					if (divTxt == 'DIV_EXPORT'){
+						inputNextActionAfterSaveCondition.value='EXPORT_ACTION';
+						formUpdCond.submit();
+						return true;
+					}
+					
 					
 					if (divTxt == 'DIV_SAVE_QUERY'){
 
@@ -760,6 +768,8 @@
 			
 			}else if ((currentScreenTxt == 'DIV_RESUME_QUERY_SELECT_OK') && (formUpdCond != null)){
 			
+					alert("current Screen Txt 2 " + currentScreenTxt);
+					
 					var expertSelectTextArea = document.getElementById('expertSelectTextArea');
 					var inputTA = document.getElementById('expertDisplayedForUpdate');
 					inputTA.value = expertSelectTextArea.value;
@@ -814,6 +824,12 @@
 						return true;
 					}
 					
+					if (divTxt == 'DIV_EXPORT'){
+						inputNextActionAfterSaveCondition.value='EXPORT_ACTION';
+						formUpdCond.submit();
+						return true;
+					}
+					
 					
 					if (divTxt == 'DIV_SAVE_QUERY'){
 
@@ -824,12 +840,16 @@
 				
 			}else{
 			
+				alert("currentScreenTxt " + currentScreenTxt);
+				alert("divTxt " + divTxt);
+				
 				var frmGoSelectionF = document.getElementById('frmGoSelection');
 				var frmGoConditionF = document.getElementById('frmGoCondition');
 				var frmGoOrderByF = document.getElementById('frmGoOrderBy');
 				var frmGoGroupByF = document.getElementById('frmGoGroupBy');
 				var frmComposeQueryF = document.getElementById('frmComposeQuery');
 				var frmExecuteQueryF = document.getElementById('frmExecuteQuery');
+				var frmExportResultF = document.getElementById('frmExportResult');
 				var frmSaveQueryF = document.getElementById('frmSaveQuery');
 			
 				if (divTxt == 'DIV_FIELD_SELECTION'){
@@ -862,6 +882,11 @@
 					frmExecuteQueryF.submit();
 					return true;
 				
+				}
+				
+				if (divTxt == 'DIV_EXPORT'){
+					frmExportResultF.submit();
+					return true;				
 				}
 				
 				
@@ -921,6 +946,10 @@
 		
 		<form id="frmExecuteQuery" name="frmExecuteQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
+		</form>
+		
+		<form id="frmExportResult" name="frmExportResult" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXPORT_ACTION"/>
 		</form>
 		
 		<form id="frmSaveQuery" name="frmSaveQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">

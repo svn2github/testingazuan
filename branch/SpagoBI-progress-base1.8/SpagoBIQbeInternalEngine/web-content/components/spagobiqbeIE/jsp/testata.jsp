@@ -136,6 +136,15 @@
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Preview", bundle) %>
 				</a>
 			</div>
+			<div class='tab' id='DIV_EXPORT'>
+				<a href='javascript:void(0)' 
+				   onclick="vediSchermo('Export','DIV_EXPORT')" 
+				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.ExportTooltip", bundle)%> " 
+				   style="color:black;"
+				   >
+					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Export", bundle) %>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

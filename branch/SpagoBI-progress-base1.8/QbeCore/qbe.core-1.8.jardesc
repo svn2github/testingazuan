@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+<jar path="C:/Documents and Settings/gioia/Documenti/Codice/Java/SpagoBIBranch/SpagoBIProject/web-content/WEB-INF/lib/qbe.core-1.8.jar"/>
+<options buildIfNeeded="true" compress="false" descriptionLocation="/QbeCore/qbe.core-1.8.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" useSourceFolders="false"/>
+<manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+<sealing sealJar="false">
+<packagesToSeal/>
+<packagesToUnSeal/>
+</sealing>
+</manifest>
+<selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+<javaElement handleIdentifier="=QbeCore"/>
+</selectedElements>
+</jardesc>

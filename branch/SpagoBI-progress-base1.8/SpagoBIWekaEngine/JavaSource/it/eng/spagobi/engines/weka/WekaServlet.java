@@ -93,6 +93,7 @@ public class WekaServlet extends HttpServlet {
 	public static final String INPUT_CONNECTION = "inputConnectionName"; 
 	public static final String OUTPUT_CONNECTION = "outputConnectionName"; 
 	public static final String WRITE_MODE = "writeMode"; 
+	public static final String KEYS = "keys";
 	public static final String VERSIONING = "versioning";
 	public static final String VERSION_COLUMN_NAME = "versionColumnName";
 	public static final String VERSION = "version";
@@ -131,6 +132,7 @@ public class WekaServlet extends HttpServlet {
 			try {
 				kfRunner.loadKFTemplate(file);
 				kfRunner.setWriteMode((String)params.get(WRITE_MODE));
+				kfRunner.setKeyColumnNames(parseKeysProp((String)params.get(KEYS)));
 				String versioning = (String)params.get(VERSIONING);
 				if(versioning != null && versioning.equalsIgnoreCase("true")){
 					logger.debug(this.getClass().getName() + ":service:versioning activated");
@@ -162,6 +164,7 @@ public class WekaServlet extends HttpServlet {
 			}
 					
 			file.delete();		
+			
 			// TODO put this block in a finally block
 			try {	
 				// is it correct to close connection retrived as JNDI resoureces ?
@@ -529,6 +532,11 @@ public class WekaServlet extends HttpServlet {
 			logger.error("Error while verifing the exception", e);
 			return false;
 		}
+	}
+	
+	private String[] parseKeysProp(String keysStr) {
+		if(keysStr == null) return null;
+		return keysStr.split(",");
 	}
 
 }

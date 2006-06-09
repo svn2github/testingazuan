@@ -437,8 +437,11 @@ public class DatabaseConnection implements Serializable {
 		
 	}
 	
+	private Statement stmt = null;
+	
 	public boolean fastExecute(String query) throws SQLException {
-		Statement stmt = connection.createStatement();	
+		//Statement stmt = connection.createStatement();	
+		if(stmt == null) stmt = connection.createStatement();
 		return (stmt.execute(query));
 	}
 	

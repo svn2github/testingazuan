@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
 	
+	<PAGE name="CheckLinksPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="CheckLinksPage" target="CheckLinksModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="CheckLinksModule"/>
+    	</MODULES>
+  	</PAGE>	
+	
 	<PAGE name="EVENTS_MONITOR_PAGE" scope="REQUEST" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="EVENTS_MONITOR_PAGE" target="PortletEventsMonitorModule">

@@ -180,6 +180,7 @@ public class ListTag extends TagSupport
 			// if the LightNavigator is abled, its LIGHT_NAVIGATOR_REPLACE_LAST function will be used while navigating the list
 			_providerUrlMap.put(LightNavigationManager.LIGHT_NAVIGATOR_REPLACE_LAST, "true");
 		}
+		
 		_htmlStream = new StringBuffer();
 		makeForm();
 		try {

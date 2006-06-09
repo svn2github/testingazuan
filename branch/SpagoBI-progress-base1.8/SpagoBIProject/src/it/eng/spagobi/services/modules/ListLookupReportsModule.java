@@ -81,7 +81,7 @@ public class ListLookupReportsModule extends AbstractBasicListModule {
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
 	            "DetailBIObjectPublisher", 
 	            "getPublisherName", 
-	            "ZZZZZZZZZZZZ REQ: " + request);
+	            "REQ: " + request);
 		
 		getSubreportsId(request);
 		

@@ -45,6 +45,22 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+	<tag>
+        <name>checkbox</name>
+        <tag-class>it.eng.spagobi.presentation.tags.CheckBoxTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of a check list</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>filter</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     <tag>
         <name>listBiParameters</name>
         <tag-class>it.eng.spagobi.presentation.tags.ListBIParametersTag</tag-class>

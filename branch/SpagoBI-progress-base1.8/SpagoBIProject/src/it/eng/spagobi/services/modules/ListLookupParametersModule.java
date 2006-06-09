@@ -54,8 +54,8 @@ public class ListLookupParametersModule extends AbstractBasicListModule {
 			response.setAttribute("PUBLISHER_NAME",  "ReturnBackPublisher");			
 			RequestContainer requestContainer = this.getRequestContainer();	
 			SessionContainer session = requestContainer.getSessionContainer();
-			session.setAttribute("RETURN_FROM", "ListLookupParametersModule");
-			session.setAttribute("RETURN_STATE", returnState);
+			session.setAttribute("RETURN_FROM_MODULE", "ListLookupParametersModule");
+			session.setAttribute("RETURN_STATUS", returnState);
 			if(returnState.equalsIgnoreCase("SELECT"))
 				session.setAttribute("PAR_ID", request.getAttribute("PAR_ID"));	
 			

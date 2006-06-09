@@ -37,7 +37,7 @@
 	<classpathentry kind="lib" path="/ProjectsDependencies/lib/qbe.core-1.8.jar"/>
 	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.drivers.api-1.8.jar"/>
 	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.securityprovider.api-1.8.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-core-2.0.2.jar"/>
+	<classpathentry sourcepath="/Spago-2.0.3" kind="lib" path="web-content/WEB-INF/lib/spago-core-2.0.2.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-web-2.0.2.jar"/>
 	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.utils-1.8.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/sbi.drivers.weka-1.8.jar"/>

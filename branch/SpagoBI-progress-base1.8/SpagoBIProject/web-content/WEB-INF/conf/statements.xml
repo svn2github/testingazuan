@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <STATEMENTS>
+	<!-- TEST -->
+				
+	<STATEMENT 	name="SELECT_OBJECT_LIST" 
+  				query="	SELECT biobj_id AS OBJ_ID,
+  							descr AS DESCRIPTION,
+  							label AS LABEL,
+  							name AS NAME   					
+						FROM sbi_objects
+						ORDER BY LABEL,NAME,DESCRIPTION "/>
+	 		
+	<STATEMENT name="SELECT_CHECKED_OBJECT_LIST" 
+  				query="SELECT sub_rpt_id AS OBJ_ID  					 					
+				FROM sbi_subreports
+				WHERE master_rpt_id = ?"/>
+	
+	<!-- TEST -->
+	
+	
 	<STATEMENT reportname="SELECT_USEID_FROM_PARUSE" 
                query="select 
 						P.USE_ID as USE_ID        

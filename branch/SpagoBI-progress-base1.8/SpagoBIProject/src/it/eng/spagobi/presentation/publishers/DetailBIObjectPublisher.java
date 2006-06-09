@@ -103,15 +103,16 @@ public class DetailBIObjectPublisher implements PublisherDispatcherIFace {
 		}
 				
         Object loop = moduleResponse.getAttribute("loopback");
-        Object lookupLoop = moduleResponse.getAttribute("lookupLoopback");
-        Object editLoop = moduleResponse.getAttribute("editLoopback");
+        Object parametersLookupLoop = moduleResponse.getAttribute("parametersLookup");
+        Object linksLookupLoop = moduleResponse.getAttribute("linksLookup");
         
+               
         if(loop != null) {
         	publisher = new String("detailBIObjectLoop");
-		} else if (lookupLoop != null){
+		} else if (parametersLookupLoop != null){
 			publisher = new String("parametersLookupLoop");
-		} else if (editLoop != null){
-			publisher = new String("reportsLookupLoop");
+		} else if (linksLookupLoop != null){
+			publisher = new String("linksLookupLoop");
 		} else {
 			publisher = new String("detailBIObject");
 		}

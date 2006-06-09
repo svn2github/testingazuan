@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
-	<!--  A.Z DYNAMIC JAVA PUBLISHER -->
+		
+	<!-- HOOK publischer for caller modules -->
+	<PUBLISHER name="linksLookupLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="CheckLinksPage" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>	
+		
+	<!-- DISPATCHER publischer -->	
+	<PUBLISHER name="CheckLinksDispatcherPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.CheckLinksDispatcherPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<!-- STANDARD publischer -->	
+  	<PUBLISHER name="CheckLinksDefaultPublischer">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/checklist.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+	
+	
+	
+	
+	
+	
+	
 	
 	<PUBLISHER name="LookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
@@ -88,6 +122,7 @@
     	</RENDERING>
   	</PUBLISHER>
   	
+  	<!--  ERASE
   	<PUBLISHER name="reportsLookupLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -96,7 +131,7 @@
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-	
+	-->
 	<PUBLISHER name="DYN_FORWARD_PUBLISHER">
 		<RENDERING channel="HTTP" type="JAVA" mode="">
 			<RESOURCES>

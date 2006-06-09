@@ -354,21 +354,16 @@ function showEngField(docType) {
 				</div>	
              
             
-            <!-- DISPLAY FORM FOR SUBREPORT MANAGMENT -->
-				<%
-		/**
-		PortletURL parametersLookupURL2 = renderResponse.createActionURL();
-  		parametersLookupURL2.setParameter("PAGE", "parametersLookupPage"); 
-  		**/
-	 %>
+            <!-- DISPLAY FORM FOR LINKS MANAGMENT -->
+				
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key = "SBIDev.docConf.docDet.subreportButton" />
+						<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					<input class='portlet-form-input-field' type="submit" name="Edit" value="Edit">
-				</div>	
+					<input class='portlet-form-input-field' type="submit" name="loadLinksLookup" value="Edit">
+				</div>					 
             </div> 
 
 

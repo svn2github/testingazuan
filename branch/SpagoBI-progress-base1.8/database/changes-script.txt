@@ -32,5 +32,8 @@ UPDATE sbi_engines SET ENGINE_TYPE = (SELECT  VALUE_ID  FROM SBI_DOMAINS WHERE V
 UPDATE sbi_engines SET BIOBJ_TYPE = (SELECT  VALUE_ID  FROM SBI_DOMAINS WHERE VALUE_CD = 'REPORT');
 
 COMMENT: columns ENGINE_TYPE and BIOBJ_TYPE are set to 'EXT' and to 'REPORT' respectively as default values. After script execution it is necessary to go to the engine detail page (for each engine) and set correct values.
+ALTER TABLE sbi_paruse ADD COLUMN man_in numeric;
 
 COMMIT; 
+
+

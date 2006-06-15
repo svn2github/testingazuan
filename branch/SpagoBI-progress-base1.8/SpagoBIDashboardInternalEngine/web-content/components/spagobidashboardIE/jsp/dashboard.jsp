@@ -69,7 +69,7 @@
 	
 	// build the back link
    	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "TreeObjectsPage");
+	backUrl.setParameter("PAGE", "BIObjectsPage");
 	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 	

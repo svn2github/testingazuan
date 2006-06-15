@@ -330,26 +330,38 @@ public class ListTag extends TagSupport
 			while (iter.hasNext()) {
 				SourceBeanAttribute captionSBA = (SourceBeanAttribute)iter.next();
 				SourceBean captionSB = (SourceBean)captionSBA.getValue();
+				SourceBean conditionsSB = (SourceBean) captionSB.getAttribute("CONDITIONS");
+				boolean conditionsVerified = verifyConditions(conditionsSB, row);
+				if (!conditionsVerified) {
+					// if conditions are not verified puts an empty column
+					_htmlStream.append(" <td width='40px' class='" + rowClass + "' >&nbsp;</td>\n");
+					continue;
+				}
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
-				HashMap paramsMap = getParametersMap(parameters, row);
-				String img = (String)captionSB.getAttribute("image");
-				String labelCode = (String)captionSB.getAttribute("label");
-				String label = PortletUtilities.getMessage(labelCode, "messages");
-				PortletURL buttonUrl = createUrl(paramsMap);
-				boolean confirm = false;
-				if (captionSB.getAttribute("confirm") != null &&
-						((String)captionSB.getAttribute("confirm")).equalsIgnoreCase("TRUE")){
-					confirm = true;
+				if (parameters == null || parameters.size() == 0) {
+					// if there are no parameters puts an empty column
+					_htmlStream.append(" <td width='40px' class='" + rowClass + "' >&nbsp;</td>\n");
+				} else {
+					HashMap paramsMap = getParametersMap(parameters, row);
+					String img = (String)captionSB.getAttribute("image");
+					String labelCode = (String)captionSB.getAttribute("label");
+					String label = PortletUtilities.getMessage(labelCode, "messages");
+					PortletURL buttonUrl = createUrl(paramsMap);
+					boolean confirm = false;
+					if (captionSB.getAttribute("confirm") != null &&
+							((String)captionSB.getAttribute("confirm")).equalsIgnoreCase("TRUE")){
+						confirm = true;
+					}
+					_htmlStream.append(" <td width='40px' class='" + rowClass + "'>\n");
+					if (confirm){
+						_htmlStream.append("     <a href='javascript:actionConfirm(\"" + label + "\", \"" + buttonUrl.toString() + "\");'>\n");	
+					}else{
+						_htmlStream.append("     <a href='"+buttonUrl.toString()+"'>\n");	
+					}
+					_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + img)+"' />\n");
+					_htmlStream.append("     </a>\n");
+					_htmlStream.append(" </td>\n");
 				}
-				_htmlStream.append(" <td width='20' class='" + rowClass + "'>\n");
-				if (confirm){
-					_htmlStream.append("     <a href='javascript:actionConfirm(\"" + label + "\", \"" + buttonUrl.toString() + "\");'>\n");	
-				}else{
-					_htmlStream.append("     <a href='"+buttonUrl.toString()+"'>\n");	
-				}
-				_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + img)+"' />\n");
-				_htmlStream.append("     </a>\n");
-				_htmlStream.append(" </td>\n");
 			}
 			_htmlStream.append(" </tr>\n");
 		}
@@ -357,7 +369,55 @@ public class ListTag extends TagSupport
 		_htmlStream.append(" </table>\n");
 	} 
 	
-	
+	protected boolean verifyConditions (SourceBean conditionsSB, SourceBean row) throws JspException {
+		boolean conditionVerified = true;
+		if (conditionsSB != null) {
+			List conditions = conditionsSB.getAttributeAsList("PARAMETER");
+			if (conditions != null && conditions.size() > 0) {
+				for (int j = 0; j < conditions.size(); j++) {
+					SourceBean condition = (SourceBean) conditions.get(j);
+					String parameterName = (String) condition.getAttribute("NAME");
+					String parameterScope = (String) condition.getAttribute("SCOPE");
+					String parameterValue = (String) condition.getAttribute("VALUE");
+					String inParameterValue = null;
+					Object parameterValueObject = null;
+					if (parameterScope != null && parameterScope.equalsIgnoreCase("LOCAL")) {
+						if (row == null) {
+							SpagoBITracer.critical("adminTools", "ListTag", "verifyConditions", "Impossible to associate LOCAL scope: the row is null");
+							throw new JspException("Impossible to associate LOCAL scope: the row is null");
+						} // if (row == null)
+						parameterValueObject = row.getAttribute(parameterName);
+					} else {
+						parameterValueObject = ContextScooping
+						.getScopedParameter(_requestContainer,
+								_responseContainer, parameterName,
+								parameterScope);
+					}
+					if (parameterValueObject != null)
+						inParameterValue = parameterValueObject.toString();
+					if (parameterValue.equalsIgnoreCase("AF_DEFINED")) {
+						if (inParameterValue == null) {
+							conditionVerified = false;
+							break;
+						} // if (inParameterValue == null)
+						continue;
+					} // if (parameterValue.equalsIgnoreCase("AF_DEFINED"))
+					if (parameterValue.equalsIgnoreCase("AF_NOT_DEFINED")) {
+						if (inParameterValue != null) {
+							conditionVerified = false;
+							break;
+						} // if (inParameterValue != null)
+						continue;
+					} // if (parameterValue.equalsIgnoreCase("AF_NOT_DEFINED"))
+					if (!(parameterValue.equalsIgnoreCase(inParameterValue))) {
+						conditionVerified = false;
+						break;
+					} // if (!(parameterValue.equalsIgnoreCase(inParameterValue)))
+				} 
+			}
+		}
+		return conditionVerified;
+	}
 	
 	
 	/**

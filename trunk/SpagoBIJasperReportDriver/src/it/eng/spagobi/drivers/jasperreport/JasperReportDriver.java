@@ -39,10 +39,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.drivers.jasperreport;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.IEngineDriver;
+import it.eng.spagobi.services.modules.DetailBIObjectModule;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -57,7 +60,6 @@ import java.util.Map;
  */
 public class JasperReportDriver implements IEngineDriver {
 
-	
     /**
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
@@ -120,11 +122,16 @@ public class JasperReportDriver implements IEngineDriver {
      * @return Map The map of the execution call parameters
      */    
 	private Map getMap(BIObject biobj) {
-		Map pars = new Hashtable();
-		pars.put("templatePath",biobj.getPath() + "/template");
+   		Map pars = new Hashtable();
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(DetailBIObjectModule.CMS_BIOBJECTS_PATH);
+		String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+		String path = biobjectsPath + "/" + biobj.getUuid() + "/template";
+		pars.put("templatePath", path);
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
         pars = addBIParameters(biobj, pars);
         return pars;
+        
 	} 
  
          

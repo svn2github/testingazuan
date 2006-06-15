@@ -54,8 +54,8 @@
     </servlet>
     
     <servlet>
-        <servlet-name>BirtReportServletGivenConnection</servlet-name>
-        <servlet-class>it.eng.spagobi.engines.birt.BirtReportServletGivenConnection</servlet-class>
+        <servlet-name>BirtReportServletODA</servlet-name>
+        <servlet-class>it.eng.spagobi.engines.birt.BirtReportServletODA</servlet-class>
     	<init-param>
             <param-name>SECURITY_ABLE</param-name>
             <param-value>FALSE</param-value>
@@ -63,8 +63,8 @@
     </servlet>
     
     <servlet-mapping>
-        <servlet-name>BirtReportServletGivenConnection</servlet-name>
-        <url-pattern>/BirtReportServletGivenConnection</url-pattern>
+        <servlet-name>BirtReportServletODA</servlet-name>
+        <url-pattern>/BirtReportServletODA</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

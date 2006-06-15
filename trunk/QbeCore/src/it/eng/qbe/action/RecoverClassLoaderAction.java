@@ -33,7 +33,7 @@ public class RecoverClassLoaderAction extends AbstractAction {
 				Thread.currentThread().setContextClassLoader(toRecoverClassLoader);
 			}
 			String actor = (String)getRequestContainer().getSessionContainer().getAttribute("ACTOR");
-			response.setAttribute("PAGE", "TreeObjectsPage");
+			response.setAttribute("PAGE", "BIObjectsPage");
 			response.setAttribute("ACTOR", actor);
 		}catch (SourceBeanException sbe){
 			sbe.printStackTrace();

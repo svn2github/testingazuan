@@ -22,6 +22,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.ManyToOneType;
+import org.hibernate.type.SetType;
 import org.hibernate.type.Type;
 
 /**
@@ -515,8 +516,8 @@ public class GenerateJavaScriptMenu {
 			 		RelationField aRelationField = new RelationField( completeFieldName, ((ManyToOneType)aHibType).getAssociatedEntityName()); 
 			 		
 			 		associatedClassesArrayList.add(aRelationField);																   
-			 	}else{
-			 		//Logger.debug(GenerateJavaScriptMenu.class," HibType Class" + aHibType.getClass());
+			 	}else if (!(aHibType instanceof SetType)){
+			 		Logger.debug(GenerateJavaScriptMenu.class," HibType Class" + aHibType.getClass());
 			 		nodeCounter++;
 			 		completeFieldName = metaPropertyNames[i];
 			 		

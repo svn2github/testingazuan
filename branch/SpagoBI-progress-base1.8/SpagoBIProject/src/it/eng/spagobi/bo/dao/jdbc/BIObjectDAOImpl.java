@@ -947,6 +947,51 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 	   return correctRoles;
 	}
 
+	public BIObject loadBIObjectForExecutionByIdAndRole(Integer id, String role) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public BIObject loadBIObjectById(Integer biObjectID) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List loadAllBIObjects() throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List getCorrectRolesForExecution(Integer id, IEngUserProfile profile) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List getCorrectRolesForExecution(Integer id) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public BIObject loadBIObjectForTree(Integer id) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void eraseBIObject(BIObject obj, Integer idFunct) throws EMFUserError {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public BIObject loadBIObjectByLabel(String label) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List loadAllBIObjectsFromInitialPath(String initialPath) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 	
 	

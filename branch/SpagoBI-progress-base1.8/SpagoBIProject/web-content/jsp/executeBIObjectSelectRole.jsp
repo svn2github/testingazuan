@@ -18,7 +18,7 @@
     List roles = (List)moduleResponse.getAttribute("roles");
     Iterator iterroles = roles.iterator();
     // get the path of the object
-	String path = (String)moduleResponse.getAttribute("path");
+	Integer id = (Integer) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_ID);
 
 	// build the form url	
 	PortletURL formAct = renderResponse.createActionURL();
@@ -49,7 +49,7 @@
 				// build the back url (the actor parameter must be passed because the module take it from the request
     			// not from the session)
     			PortletURL backUrl = renderResponse.createActionURL();
-				backUrl.setParameter("PAGE", "TreeObjectsPage");
+				backUrl.setParameter("PAGE", "BIObjectsPage");
 				backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 				backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 				%>
@@ -70,7 +70,7 @@
 <div class='div_background_no_img' >
 
 		<input type="hidden" value="<%= actor %>" name="<%= SpagoBIConstants.ACTOR %>" />
-		<input type="hidden" value="<%= path %>" name="<%= ObjectsTreeConstants.PATH %>" />
+		<input type="hidden" value="<%= id %>" name="<%= ObjectsTreeConstants.OBJECT_ID %>" />
 		
  	<div class="div_detail_area_forms">
 	 	<div class='div_detail_label'>

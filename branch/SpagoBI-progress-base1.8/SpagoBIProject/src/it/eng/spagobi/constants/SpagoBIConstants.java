@@ -42,6 +42,7 @@ public class SpagoBIConstants {
 	
 	public static final String OPERATION = "OPERATION";
 	public static final String FUNCTIONALITIES_OPERATION = "FUNCTIONALITIES_OPERATION";
+	public static final String FUNCTIONALITIES_LIST = "FUNCTIONALITIES_LIST";
 
 	public static final String OBJECTS_VIEW = "OBJECTS_VIEW";
 	public static final String VIEW_OBJECTS_AS_LIST = "VIEW_OBJECTS_AS_LIST";

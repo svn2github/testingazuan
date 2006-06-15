@@ -24,9 +24,9 @@ package it.eng.spagobi.presentation.treehtmlgenerators;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.DetailBIObjectModule;
@@ -58,6 +58,8 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	//ArrayList execRoleNames = new ArrayList();
 	IEngUserProfile profile = null;
 	PortletRequest portReq = null;
+	private int dTreeRootId = -100;
+	private int dTreeObjects = -1000;
 	
 	/**
 	 * Builds theJavaScript object to make the tree. All code is appended into a 
@@ -67,47 +69,47 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param httpReq The http Servlet Request 
 	 *  
 	 */
-	public StringBuffer makeTree(SourceBean dataTree, HttpServletRequest httpReq) {
-		
-		
-		httpRequest = httpReq;
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		portReq = PortletUtilities.getPortletRequest();
-		SessionContainer sessionContainer = requestContainer.getSessionContainer();
-		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
-        profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
-		makeConfigurationDtree(htmlStream);
-		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
-		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
-		htmlStream.append("		menu");
-		htmlStream.append("</div>");
-		htmlStream.append("<table width='100%'>");
-		htmlStream.append("	<tr height='1px'>");
-		htmlStream.append("		<td width='10px'>&nbsp;</td>");
-		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("	</tr>");
-		htmlStream.append("	<tr>");
-		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
-		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
-	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
-	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
-	   	htmlStream.append("	        	treeCMS.add(0,-1,'"+nameTree+"');\n");
-        addItemForJSTree(htmlStream, dataTree, 0, true);
-    	htmlStream.append("				document.write(treeCMS);\n");
-    	makeJSFunctionForMenu(htmlStream);	
-		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
-		htmlStream.append("	</tr>");
-		htmlStream.append("</table>");
-		return htmlStream;
-	}
+//	public StringBuffer makeTree(SourceBean dataTree, HttpServletRequest httpReq) {
+//		
+//		
+//		httpRequest = httpReq;
+//		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
+//		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
+//		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+//		portReq = PortletUtilities.getPortletRequest();
+//		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+//		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+//        profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//		StringBuffer htmlStream = new StringBuffer();
+//		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+//		makeConfigurationDtree(htmlStream);
+//		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
+//		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
+//		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
+//		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+//		htmlStream.append("		menu");
+//		htmlStream.append("</div>");
+//		htmlStream.append("<table width='100%'>");
+//		htmlStream.append("	<tr height='1px'>");
+//		htmlStream.append("		<td width='10px'>&nbsp;</td>");
+//		htmlStream.append("		<td>&nbsp;</td>");
+//		htmlStream.append("	</tr>");
+//		htmlStream.append("	<tr>");
+//		htmlStream.append("		<td>&nbsp;</td>");
+//		htmlStream.append("		<td>");
+//		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
+//	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
+//	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
+//	   	htmlStream.append("	        	treeCMS.add(0,-1,'"+nameTree+"');\n");
+//        addItemForJSTree(htmlStream, dataTree, 0, true);
+//    	htmlStream.append("				document.write(treeCMS);\n");
+//    	makeJSFunctionForMenu(htmlStream);	
+//		htmlStream.append("			</script>\n");
+//		htmlStream.append("		</td>");
+//		htmlStream.append("	</tr>");
+//		htmlStream.append("</table>");
+//		return htmlStream;
+//	}
 
 	/**
 	 * Adds an item to the data tree, using input needed information like
@@ -119,50 +121,50 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param pidParent	The parent's node ID
 	 * @param isRoot A boolean to control if the item is a root
 	 */
-	private void addItemForJSTree(StringBuffer htmlStream, SourceBean dataTree, int pidParent, boolean isRoot) {
-		
-		List childs = dataTree.getContainedSourceBeanAttributes();
-		String nameLabel = (String)dataTree.getAttribute("name");
-		String name = PortletUtilities.getMessage(nameLabel, "messages");
-		String path = (String)dataTree.getAttribute("path");
-		String codeType = (String)dataTree.getAttribute("codeType");
-
-		int id = ++progrJSTree;
-		
-		if(isRoot) {
-			htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', '', '', '', '', '', 'true');\n");
-		} else {
-			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', '', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', '');\n");
-				//htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'\\', \\'\\')');\n");
-				//execRoleNames = new ArrayList();
-				//String execRolesStr = (String)dataTree.getAttribute("execRoles");
-				//StringTokenizer strTok = new StringTokenizer(execRolesStr, "---");
-				//while(strTok.hasMoreTokens()) {
-				//	execRoleNames.add(strTok.nextToken());
-				//}
-			} else {
-				String icon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.png");
-				String stateObj = (String)dataTree.getAttribute("state");
-				if(ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
-					htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'"+createExecuteObjectLink(path)+"\\', \\'"+createDetailObjectLink(path)+"\\', \\'"+createEraseObjectLink(path)+"\\')' );\n");
-				} else {
-					htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'\\', \\'"+createDetailObjectLink(path)+"\\', \\'"+createEraseObjectLink(path)+"\\')' );\n");
-				}
-			}
-			
-		}
-		
-		Iterator iter = childs.iterator();
-		while(iter.hasNext()) {
-			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
-			SourceBean itemSB = (SourceBean)itemSBA.getValue();
-			addItemForJSTree(htmlStream, itemSB, id, false);
-		}
-		
-	}
+//	private void addItemForJSTree(StringBuffer htmlStream, SourceBean dataTree, int pidParent, boolean isRoot) {
+//		
+//		List childs = dataTree.getContainedSourceBeanAttributes();
+//		String nameLabel = (String)dataTree.getAttribute("name");
+//		String name = PortletUtilities.getMessage(nameLabel, "messages");
+//		String path = (String)dataTree.getAttribute("path");
+//		String codeType = (String)dataTree.getAttribute("codeType");
+//
+//		int id = ++progrJSTree;
+//		
+//		if(isRoot) {
+//			htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', '', '', '', '', '', 'true');\n");
+//		} else {
+//			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+//				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
+//				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+//				htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', '', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', '');\n");
+//				//htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'\\', \\'\\')');\n");
+//				//execRoleNames = new ArrayList();
+//				//String execRolesStr = (String)dataTree.getAttribute("execRoles");
+//				//StringTokenizer strTok = new StringTokenizer(execRolesStr, "---");
+//				//while(strTok.hasMoreTokens()) {
+//				//	execRoleNames.add(strTok.nextToken());
+//				//}
+//			} else {
+//				String icon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.png");
+//				String stateObj = (String)dataTree.getAttribute("state");
+//				if(ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
+//					htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'"+createExecuteObjectLink(path)+"\\', \\'"+createDetailObjectLink(path)+"\\', \\'"+createEraseObjectLink(path)+"\\')' );\n");
+//				} else {
+//					htmlStream.append("	treeCMS.add("+id+", "+pidParent+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'\\', \\'"+createDetailObjectLink(path)+"\\', \\'"+createEraseObjectLink(path)+"\\')' );\n");
+//				}
+//			}
+//			
+//		}
+//		
+//		Iterator iter = childs.iterator();
+//		while(iter.hasNext()) {
+//			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
+//			SourceBean itemSB = (SourceBean)itemSBA.getValue();
+//			addItemForJSTree(htmlStream, itemSB, id, false);
+//		}
+//		
+//	}
 
 	/**
 	 * Creates the Dtree configuration, in oder to inser into jsp pages cookies,
@@ -267,42 +269,42 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param path	The object tree path String
 	 * @return	The Portlet URL string element for detail
 	 */
-	private String createDetailObjectLink(String path) {
-		PortletURL detUrl = renderResponse.createActionURL();
-		detUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
-		detUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_SELECT);
-		detUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-		detUrl.setParameter(ObjectsTreeConstants.PATH, path);
-        return detUrl.toString();
-	}
+//	private String createDetailObjectLink(String path) {
+//		PortletURL detUrl = renderResponse.createActionURL();
+//		detUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
+//		detUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_SELECT);
+//		detUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+//		detUrl.setParameter(ObjectsTreeConstants.PATH, path);
+//        return detUrl.toString();
+//	}
 	/**
 	 * Contains Portlet URL methods to make object tree execution.
 	 * 
 	 * @param path	The object tree path String
 	 * @return	The Portlet URL string element for execution
 	 */
-	private String createExecuteObjectLink(String path) {
-		PortletURL execUrl = renderResponse.createActionURL();
-		execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
-		execUrl.setParameter(ObjectsTreeConstants.PATH, path);
-		execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-		execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
-		return execUrl.toString();
-	}
+//	private String createExecuteObjectLink(String path) {
+//		PortletURL execUrl = renderResponse.createActionURL();
+//		execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+//		execUrl.setParameter(ObjectsTreeConstants.PATH, path);
+//		execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+//		execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+//		return execUrl.toString();
+//	}
 	/**
 	 * Contains Portlet URL methods to make object tree erasing.
 	 * 
 	 * @param path	The object tree path String
 	 * @return	The Portlet URL string element for erasing
 	 */
-	private String createEraseObjectLink(String path) {
-		PortletURL addUrl = renderResponse.createActionURL();
-		addUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
-		addUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_DEL);
-		addUrl.setParameter(ObjectsTreeConstants.PATH, path);
-		addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-        return addUrl.toString();
-	}
+//	private String createEraseObjectLink(String path) {
+//		PortletURL addUrl = renderResponse.createActionURL();
+//		addUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
+//		addUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_DEL);
+//		addUrl.setParameter(ObjectsTreeConstants.PATH, path);
+//		addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+//        return addUrl.toString();
+//	}
 	
 	
 	/**
@@ -314,15 +316,15 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @return The output string buffer
 	 * 
 	 */
-	public StringBuffer makeAccessibleTree(SourceBean dataTree, HttpServletRequest httpRequest) {
-		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<div id='divAccessibleTree'>\n");
-        addItemForAccessibleTree(htmlStream, dataTree, 0, true);
-		htmlStream.append("</div>\n");
-		//htmlStream.append("<br/><br/>\n");
-		makeJSFunctionForHideAccessibleTree(htmlStream);
-		return htmlStream;
-	}
+//	public StringBuffer makeAccessibleTree(SourceBean dataTree, HttpServletRequest httpRequest) {
+//		StringBuffer htmlStream = new StringBuffer();
+//		htmlStream.append("<div id='divAccessibleTree'>\n");
+//        addItemForAccessibleTree(htmlStream, dataTree, 0, true);
+//		htmlStream.append("</div>\n");
+//		//htmlStream.append("<br/><br/>\n");
+//		makeJSFunctionForHideAccessibleTree(htmlStream);
+//		return htmlStream;
+//	}
 	
 	/**
 	 * Adds an item to the accessible tree. 
@@ -332,58 +334,58 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param spaceLeft The left space to leave when an item is added
 	 * @param isRoot Boolean to know is the item is a root 	
 	 */
-	private void addItemForAccessibleTree(StringBuffer htmlStream, SourceBean dataTree, int spaceLeft, boolean isRoot) {
-		List childs = dataTree.getContainedSourceBeanAttributes();		
-		String name = (String)dataTree.getAttribute("name");
-		String path = (String)dataTree.getAttribute("path");
-		String codeType = (String)dataTree.getAttribute("codeType");
-		if(isRoot) {
-			htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
-			htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
-			htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
-			htmlStream.append("</div>");
-		} else {
-			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
-				htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
-	    		htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
-	    		htmlStream.append("</div>\n");
-			} else {
-				htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
-				htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objecticon.gif" )+"' />");
-	    		htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
-	    		htmlStream.append("		<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>\n");
-	    		htmlStream.append("		<span>\n");
-	    		String stateObj = (String)dataTree.getAttribute("state");
-	    		if(ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
-		    		createExecuteObjectLink(path, htmlStream);
-	    		} 
-	    		createDetailObjectLink(path, htmlStream);
-	    		createEraseObjectLink(path, htmlStream);
-	    		htmlStream.append("		</span>\n");
-	    		htmlStream.append("</div>\n");
-			}
-		}
-				
-		Iterator iter = childs.iterator();
-		while(iter.hasNext()) {
-			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
-			SourceBean itemSB = (SourceBean)itemSBA.getValue();
-			addItemForAccessibleTree(htmlStream, itemSB, (spaceLeft + 40), false);
-		}
-	}
+//	private void addItemForAccessibleTree(StringBuffer htmlStream, SourceBean dataTree, int spaceLeft, boolean isRoot) {
+//		List childs = dataTree.getContainedSourceBeanAttributes();		
+//		String name = (String)dataTree.getAttribute("name");
+//		String path = (String)dataTree.getAttribute("path");
+//		String codeType = (String)dataTree.getAttribute("codeType");
+//		if(isRoot) {
+//			htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
+//			htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
+//			htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
+//			htmlStream.append("</div>");
+//		} else {
+//			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+//				htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
+//				htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
+//	    		htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
+//	    		htmlStream.append("</div>\n");
+//			} else {
+//				htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
+//				htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objecticon.gif" )+"' />");
+//	    		htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
+//	    		htmlStream.append("		<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>\n");
+//	    		htmlStream.append("		<span>\n");
+//	    		String stateObj = (String)dataTree.getAttribute("state");
+//	    		if(ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
+//		    		createExecuteObjectLink(path, htmlStream);
+//	    		} 
+//	    		createDetailObjectLink(path, htmlStream);
+//	    		createEraseObjectLink(path, htmlStream);
+//	    		htmlStream.append("		</span>\n");
+//	    		htmlStream.append("</div>\n");
+//			}
+//		}
+//				
+//		Iterator iter = childs.iterator();
+//		while(iter.hasNext()) {
+//			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
+//			SourceBean itemSB = (SourceBean)itemSBA.getValue();
+//			addItemForAccessibleTree(htmlStream, itemSB, (spaceLeft + 40), false);
+//		}
+//	}
 	
 	/**
 	 * When Java Script mode is on, this method hides the accessible tree. 
 	 * 
 	 * @param htmlStream The html stream input buffer
 	 */
-	private void makeJSFunctionForHideAccessibleTree(StringBuffer htmlStream) {
-		htmlStream.append("<SCRIPT>\n");
-		htmlStream.append("		divM = document.getElementById('divAccessibleTree');\n");
-		htmlStream.append("		divM.style.display='none';\n");
-		htmlStream.append("</SCRIPT>\n");
-	}
+//	private void makeJSFunctionForHideAccessibleTree(StringBuffer htmlStream) {
+//		htmlStream.append("<SCRIPT>\n");
+//		htmlStream.append("		divM = document.getElementById('divAccessibleTree');\n");
+//		htmlStream.append("		divM.style.display='none';\n");
+//		htmlStream.append("</SCRIPT>\n");
+//	}
 	
 	
 	/**
@@ -393,16 +395,16 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param path	The object tree path String
 	 * @param htmlStream The html stream input buffer
 	 */
-	private void createDetailObjectLink(String path, StringBuffer htmlStream) {
-		PortletURL addUrl = renderResponse.createActionURL();
-		addUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
-		addUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_SELECT);
-		addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-		addUrl.setParameter(ObjectsTreeConstants.PATH, path);
-		htmlStream.append("<a title=\"Detail Object\" class=\"linkOperation\" href=\""+addUrl.toString()+"\">\n");
-        htmlStream.append("<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif" )+"' /></a>\n");
-		htmlStream.append("<span>&nbsp;&nbsp;&nbsp;</span>\n");
-	}
+//	private void createDetailObjectLink(String path, StringBuffer htmlStream) {
+//		PortletURL addUrl = renderResponse.createActionURL();
+//		addUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
+//		addUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_SELECT);
+//		addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+//		addUrl.setParameter(ObjectsTreeConstants.PATH, path);
+//		htmlStream.append("<a title=\"Detail Object\" class=\"linkOperation\" href=\""+addUrl.toString()+"\">\n");
+//        htmlStream.append("<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif" )+"' /></a>\n");
+//		htmlStream.append("<span>&nbsp;&nbsp;&nbsp;</span>\n");
+//	}
 	/**
 	 * Contains Portlet URL methods to make object tree execution for the accessible tree. It is
 	 * obtained by appending directly the html code into the html Stream buffer.
@@ -410,16 +412,16 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param path	The object tree path String
 	 * @param htmlStream The html stream input buffer
 	 */
-	private void createExecuteObjectLink(String path, StringBuffer htmlStream) {
-		PortletURL execUrl = renderResponse.createActionURL();
-		execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
-		execUrl.setParameter(ObjectsTreeConstants.PATH, path);
-		execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-		execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
-		htmlStream.append("<a title=\"Exec Object\" class=\"linkOperation\" href=\""+execUrl.toString()+"\">\n");
-        htmlStream.append("<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/execObject.gif" )+"' /></a>\n");
-		htmlStream.append("<span>&nbsp;&nbsp;&nbsp;</span>\n");
-	}
+//	private void createExecuteObjectLink(String path, StringBuffer htmlStream) {
+//		PortletURL execUrl = renderResponse.createActionURL();
+//		execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+//		execUrl.setParameter(ObjectsTreeConstants.PATH, path);
+//		execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+//		execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+//		htmlStream.append("<a title=\"Exec Object\" class=\"linkOperation\" href=\""+execUrl.toString()+"\">\n");
+//        htmlStream.append("<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/execObject.gif" )+"' /></a>\n");
+//		htmlStream.append("<span>&nbsp;&nbsp;&nbsp;</span>\n");
+//	}
 	/**
 	 * Contains Portlet URL methods to make object tree erasing for the accessible tree. It is
 	 * obtained by appending directly the html code into the html Stream buffer.
@@ -427,29 +429,131 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param path	The object tree path String
 	 * @param htmlStream The html stream input buffer
 	 */
-	private void createEraseObjectLink(String path, StringBuffer htmlStream) {
-		PortletURL addUrl = renderResponse.createActionURL();
-		addUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
-		addUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_DEL);
-		addUrl.setParameter(ObjectsTreeConstants.PATH, path);
-		addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-		htmlStream.append("<a title=\"Erase Object\" class=\"linkOperation\" href=\""+addUrl.toString()+"\">\n");
-        htmlStream.append("<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif" )+"' /></a>\n");
-		htmlStream.append("<span>&nbsp;&nbsp;&nbsp;</span>\n");
+//	private void createEraseObjectLink(String path, StringBuffer htmlStream) {
+//		PortletURL addUrl = renderResponse.createActionURL();
+//		addUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
+//		addUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_DEL);
+//		addUrl.setParameter(ObjectsTreeConstants.PATH, path);
+//		addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+//		htmlStream.append("<a title=\"Erase Object\" class=\"linkOperation\" href=\""+addUrl.toString()+"\">\n");
+//        htmlStream.append("<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif" )+"' /></a>\n");
+//		htmlStream.append("<span>&nbsp;&nbsp;&nbsp;</span>\n");
+//	}
+	
+	
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		
+		httpRequest = httpReq;
+		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
+		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
+		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		portReq = PortletUtilities.getPortletRequest();
+		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+        profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		StringBuffer htmlStream = new StringBuffer();
+		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+		makeConfigurationDtree(htmlStream);
+		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("		menu");
+		htmlStream.append("</div>");
+		htmlStream.append("<table width='100%'>");
+		htmlStream.append("	<tr height='1px'>");
+		htmlStream.append("		<td width='10px'>&nbsp;</td>");
+		htmlStream.append("		<td>&nbsp;</td>");
+		htmlStream.append("	</tr>");
+		htmlStream.append("	<tr>");
+		htmlStream.append("		<td>&nbsp;</td>");
+		htmlStream.append("		<td>");
+		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
+	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
+	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
+	   	htmlStream.append("	        	treeCMS.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
+	   	Iterator it = objectsList.iterator();
+	   	while (it.hasNext()) {
+	   		LowFunctionality folder = (LowFunctionality) it.next();
+	   		if (initialPath != null) {
+	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);
+	   			else addItemForJSTree(htmlStream, folder, false);
+	   		} else {
+	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true);
+	   			else addItemForJSTree(htmlStream, folder, false);
+	   		}
+	   	}
+    	htmlStream.append("				document.write(treeCMS);\n");
+    	makeJSFunctionForMenu(htmlStream);	
+		htmlStream.append("			</script>\n");
+		htmlStream.append("		</td>");
+		htmlStream.append("	</tr>");
+		htmlStream.append("</table>");
+		return htmlStream;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
+		
+		String nameLabel = folder.getName();
+		String name = PortletUtilities.getMessage(nameLabel, "messages");
+		String path = folder.getPath();
+		String codeType = folder.getCodType();
+		Integer idFolder = folder.getId();
+		Integer parentId = folder.getParentId();
 
+		if (isRoot) {
+			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
+		} else {
+			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
+				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
+				List objects = folder.getBiObjects();
+				for (Iterator it = objects.iterator(); it.hasNext(); ) {
+					BIObject obj = (BIObject) it.next();
+					Integer idObj = obj.getId();					
+					String stateObj = obj.getStateCode();
+					if (ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
+						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+					} else {
+						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+					}
+				}
+			}
+		}
+	}
+	
+	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private String createExecuteObjectLink(Integer id) {
+		PortletURL execUrl = renderResponse.createActionURL();
+		execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+		execUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+		execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+		return execUrl.toString();
+	}
+
+	private String createDetailObjectLink(Integer id) {
+		PortletURL detUrl = renderResponse.createActionURL();
+		detUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
+		detUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_SELECT);
+		detUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		detUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+		return detUrl.toString();
+	}
+	
+	private String createEraseObjectLink(Integer idObj, Integer idFunct) {
+		PortletURL delUrl = renderResponse.createActionURL();
+		delUrl.setParameter(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
+		delUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_DEL);
+		delUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
+		delUrl.setParameter(ObjectsTreeConstants.FUNCT_ID, idFunct.toString());
+		delUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+		return delUrl.toString();
+	}
 	
 }

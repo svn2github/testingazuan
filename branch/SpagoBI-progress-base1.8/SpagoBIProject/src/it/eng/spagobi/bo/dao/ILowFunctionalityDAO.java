@@ -27,13 +27,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.bo.dao;
 
-import java.util.HashMap;
-import java.util.Set;
-
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LowFunctionality;
-import it.eng.spagobi.metadata.SbiFunctions;
+
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -104,11 +103,30 @@ public interface ILowFunctionalityDAO {
 	public Integer existByCode(String code) throws EMFUserError;
 	
 	/**
-	 * Control if the functionality with the given path has childs
+	 * Control if the functionality with the given id has childs
 	 * 
-	 * @param path String path of the functionality
+	 * @param id Integer id of the functionality
 	 */
-	public boolean hasChild(String path) throws EMFUserError;
+	public boolean hasChild(Integer id) throws EMFUserError;
 	
 	public void deleteInconsistentRoles (Set set) throws EMFUserError;
+	
+	/**
+	 * Loads all the functionalities
+	 * @param recoverBIObjects If true each <code>LowFunctionality</code> at output will have the 
+	 * list of contained <code>BIObject</code> objects
+	 * @return the list of functionalities
+	 * @throws EMFUserError
+	 */
+	public List loadAllLowFunctionalities(boolean recoverBIObjects) throws EMFUserError;
+	
+	/**
+	 * Loads all the sub functionalities of the given initial path 
+	 * @param initialPath The String representing the initial path
+	 * @param recoverBIObjects If true each <code>LowFunctionality</code> at output will have the 
+	 * list of contained <code>BIObject</code> objects
+	 * @return the list of functionalities
+	 * @throws EMFUserError
+	 */
+	public List loadSubLowFunctionalities(String initialPath, boolean recoverBIObjects) throws EMFUserError;
 }

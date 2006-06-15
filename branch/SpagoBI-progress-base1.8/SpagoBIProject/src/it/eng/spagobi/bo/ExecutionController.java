@@ -128,9 +128,9 @@ public class ExecutionController {
 	 * @param aRoleName
 	 * @throws EMFUserError
 	 */
-	public BIObject prepareBIObjectInSession(SessionContainer aSessionContainer, String aPath, 
+	public BIObject prepareBIObjectInSession(SessionContainer aSessionContainer, Integer id, 
 					String aRoleName, String userProvidedParametersStr) throws EMFUserError {
-		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByPathAndRole(aPath, aRoleName);
+		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(id, aRoleName);
 		refreshParameters(obj, userProvidedParametersStr);
 		aSessionContainer.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 		SessionContainer permanentSession = aSessionContainer.getPermanentContainer();

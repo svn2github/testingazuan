@@ -62,7 +62,7 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OPERATION" value="<%= SpagoBIConstants.FUNCTIONALITIES_OPERATION %>"/></portlet:actionURL>' 
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OPERATION" value="<%= SpagoBIConstants.FUNCTIONALITIES_OPERATION %>"/></portlet:actionURL>' 
 					class="link_main_menu" >
 					<spagobi:message key = "SBISet.linkFunctMan" />
 				</a>
@@ -77,7 +77,7 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OBJECTS_VIEW" value="<%= SpagoBIConstants.VIEW_OBJECTS_AS_LIST %>"/><portlet:param name="OBJECTS_VIEW" value="<%= SpagoBIConstants.VIEW_OBJECTS_AS_LIST %>"/></portlet:actionURL>' 
+				<a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/></portlet:actionURL>' 
 					class="link_main_menu" >
 					<spagobi:message key = "SBISet.linkDocMan" />
 				</a>

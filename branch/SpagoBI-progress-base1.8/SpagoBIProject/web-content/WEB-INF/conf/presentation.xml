@@ -28,7 +28,7 @@
 	<!--MAPPING business_name="DetailBIObjectParameterPage" business_type="PAGE" publisher_name="DetailBIObjectParameterPubJ"/-->
 	<MAPPING business_name="ExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
 	<MAPPING business_name="ValidateExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
-	<MAPPING business_name="TreeObjectsPage" business_type="PAGE" publisher_name="TreeObjectsPubJ"/>
+	<MAPPING business_name="BIObjectsPage" business_type="PAGE" publisher_name="TreeObjectsPubJ"/>
 	<MAPPING business_name="GenericLookupPage" business_type="PAGE" publisher_name="LookupPublisher"/>
 	<MAPPING business_name="LovLookupPage" business_type="PAGE" publisher_name="LovLookupPublisher"/>
 	<MAPPING business_name="ParametersLookupPage" business_type="PAGE" publisher_name="DynamicPublisher"/>

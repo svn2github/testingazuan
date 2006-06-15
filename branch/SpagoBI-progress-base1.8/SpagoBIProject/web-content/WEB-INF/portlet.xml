@@ -82,6 +82,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<value>en</value>
         		<value>US</value>
         	</preference>
+        	<preference>
+        		<name>OBJECTS_VIEW</name>
+        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
+        	</preference>
         </portlet-preferences>
 	</portlet>
 	
@@ -135,8 +139,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 				The path of the single object to exec
 			--> 
             <preference> 
-        		<name>PATH_SINGLE_OBJECT</name>
-        		<value>path of the single object to execute in modality SINGLE_OBJECT</value>
+        		<name>LABEL_SINGLE_OBJECT</name>
+        		<value>label of the single object to execute in modality SINGLE_OBJECT</value>
         	</preference>
         	
         	<!--  
@@ -161,6 +165,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <preference> 
         		<name>HEIGHT_AREA</name>
         		<value>the height of the area that shows the object output</value>
+        	</preference>
+        	
+        	<preference>
+        		<name>OBJECTS_VIEW</name>
+        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
         	</preference>
         </portlet-preferences>
 	</portlet>
@@ -207,6 +216,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<value>en</value>
         		<value>US</value>
         	</preference>
+        	<preference>
+        		<name>OBJECTS_VIEW</name>
+        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
+        	</preference>        	
         </portlet-preferences>
 	</portlet>
 

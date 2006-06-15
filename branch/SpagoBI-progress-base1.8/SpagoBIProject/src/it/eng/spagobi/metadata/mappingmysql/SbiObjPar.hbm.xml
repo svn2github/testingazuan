@@ -8,7 +8,7 @@
 -->
     <class name="it.eng.spagobi.metadata.SbiObjPar" table="sbi_obj_par" >
         <id name="objParId" type="integer">
-            <column name="obj_par_Id" />
+            <column name="obj_par_id" />
             <generator class="identity">
             </generator>
         </id>    

@@ -82,5 +82,8 @@
             </key>
             <one-to-many class="it.eng.spagobi.metadata.SbiObjState" />
         </set>
+        <property name="uuid" type="string">
+            <column name="UUID" length="40" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

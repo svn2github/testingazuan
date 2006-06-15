@@ -18,6 +18,8 @@
 				 it.eng.spagobi.utilities.SpagoBITracer,
 				 it.eng.spagobi.utilities.PortletUtilities,
 				 it.eng.spago.navigation.LightNavigationManager,
+				 it.eng.spago.base.SourceBean,
+				 it.eng.spago.configuration.ConfigSingleton,
 				 java.util.TreeMap,
 				 java.util.Collection,
 				 java.util.ArrayList" %>
@@ -377,39 +379,62 @@ function showEngField(docType) {
 
 	<!-- OPEN COLUMN WITH TREE FUNCTIONALITIES (INSERT MODE) OR TEMPLATE VERSION (MODIFY MODE)  -->	     
 	<td width="60%">
-    	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
-    		<div style='padding:5px;'>
-    			<spagobi:treeObjects moduleName="DetailBIObjectModule"  
-    								 htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.FunctionalitiesTreeInsertObjectHtmlGenerator" />    	
-    		</div>
-		<% } %>
-     	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { %>
-    		<div style='padding-left:5px;padding-right:5px;padding-bottom:5px;'>
-				<span class='portlet-form-field-label'>
-					<spagobi:message key = "SBIDev.docConf.docDet.templateVersionField" />
-				</span>
-				<div style='border: 1px solid black;max-height:160px;overflow:auto;'>
-					<table> 
-		 			<% 
-						TreeMap templates = obj.getTemplateVersions();
-		 			    if(templates==null)
-		 			    	templates = new TreeMap();
-						String curVer = obj.getCurrentTemplateVersion().getVersionName();
-						int numTemp = templates.size();  
-						if(numTemp == 0) {
-							out.print("<tr class='portlet-section-body'>");
-		      				out.print("<td class='portlet-font'>No Version Found</td></tr>");
-		      			}
-						Collection versions = templates.values();
-						Iterator iterVers = versions.iterator();
-						ArrayList reverseVersions = new ArrayList();
-						while(iterVers.hasNext()) {
-							Object objVer = iterVers.next();
-							reverseVersions.add(0, objVer);
-						}
-						Iterator iterTemp = reverseVersions.iterator();
-		      			while(iterTemp.hasNext()) {
-		      				TemplateVersion tempVer = (TemplateVersion)iterTemp.next();
+	<div style='padding:5px;'>
+		<a href='javascript:void(0)' onclick='switchView()' id='switchView'>
+			<spagobi:message key = "SBIDev.docConf.docDet.showTemplates" />
+		</a>
+	</div>
+	
+	<script>
+	function switchView() {
+		var treeView = document.getElementById('folderTree').style.display;
+		if (treeView == 'inline') {
+			document.getElementById('folderTree').style.display = 'none';
+			document.getElementById('versionTable').style.display = 'inline';
+			document.getElementById('switchView').innerHTML = '<spagobi:message key = "SBIDev.docConf.docDet.showFolderTree" />';
+		}
+		else {
+			document.getElementById('folderTree').style.display = 'inline';
+			document.getElementById('versionTable').style.display = 'none';
+			document.getElementById('switchView').innerHTML = '<spagobi:message key = "SBIDev.docConf.docDet.showTemplates" />';
+		}
+	}
+	</script>
+	
+    	<div style='padding:5px;display:inline;' id='folderTree'>
+    		<spagobi:treeObjects moduleName="DetailBIObjectModule"  
+    			 htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.FunctionalitiesTreeInsertObjectHtmlGenerator" />    	
+    	</div>
+	
+	
+    	<div style='padding-left:5px;padding-right:5px;padding-bottom:5px;display:none;' id='versionTable'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.docConf.docDet.templateVersionField" />
+		</span>
+		<div style='border: 1px solid black;max-height:160px;overflow:auto;'>
+			<table> 
+				<% 
+				TreeMap templates = obj.getTemplateVersions();
+		 		if(templates==null)
+		 			templates = new TreeMap();
+				String curVer = "";
+				if (obj.getCurrentTemplateVersion() != null) 
+					curVer = obj.getCurrentTemplateVersion().getVersionName();
+				int numTemp = templates.size();  
+				if(numTemp == 0) {
+					out.print("<tr class='portlet-section-body'>");
+		      			out.print("<td class='portlet-font'>No Version Found</td></tr>");
+		      		}
+				Collection versions = templates.values();
+				Iterator iterVers = versions.iterator();
+				ArrayList reverseVersions = new ArrayList();
+				while(iterVers.hasNext()) {
+					Object objVer = iterVers.next();
+					reverseVersions.add(0, objVer);
+				}
+				Iterator iterTemp = reverseVersions.iterator();
+		      		while(iterTemp.hasNext()) {
+		      			TemplateVersion tempVer = (TemplateVersion)iterTemp.next();
 		      		        String checkStr = " ";
 		      		        boolean isCurrentVer = false;
 		      		        if(curVer.equalsIgnoreCase(tempVer.getVersionName())) {
@@ -422,16 +447,17 @@ function showEngField(docType) {
 		      		        out.print("<td class='portlet-font' width='150px'>"+tempVer.getNameFileTemplate()+"</td>");
 		      		        
 		      		        PortletURL eraseVerUrl = renderResponse.createActionURL();
-   							eraseVerUrl.setParameter("PAGE", "detailBIObjectPage");
-   							eraseVerUrl.setParameter("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
-   							eraseVerUrl.setParameter(SpagoBIConstants.VERSION, tempVer.getVersionName());
-   							eraseVerUrl.setParameter(SpagoBIConstants.PATH, obj.getPath());
-   							eraseVerUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-							eraseVerUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-
-   							String pathObj = obj.getPath();
-   							String pathTemp = pathObj + "/template";
-   							String downl = renderRequest.getContextPath() + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
+   					eraseVerUrl.setParameter("PAGE", "detailBIObjectPage");
+   					eraseVerUrl.setParameter("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
+   					eraseVerUrl.setParameter(SpagoBIConstants.VERSION, tempVer.getVersionName());
+   					eraseVerUrl.setParameter(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
+   					eraseVerUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+					eraseVerUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+					SourceBean biObjectsPathSB = (SourceBean)
+ConfigSingleton.getInstance().getAttribute("CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH");
+					String biObjectsPath = (String) biObjectsPathSB.getAttribute("path");
+   					String pathTemp = biObjectsPath + "/" + obj.getUuid() + "/template";
+   					String downl = renderRequest.getContextPath() + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
 		      		       
 		      		        if(isCurrentVer) {
 		      		        	out.print("<td class='portlet-font' >&nbsp;</a></td>");
@@ -449,8 +475,8 @@ function showEngField(docType) {
 		      		}
 		      		%>    
 		      	</table>
-			</div>
-		<% } %>
+		</div>
+	</div>
      	</td>
       </tr>
    </table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
@@ -687,7 +713,7 @@ function deleteBIParameterConfirm (message) {
 			objParusePageUrl.setParameter("PAGE", "ListObjParusePage");
 			objParusePageUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
 			objParusePageUrl.setParameter("obj_par_id", (new Integer(obj_par_id)).toString());
-			objParusePageUrl.setParameter(ObjectsTreeConstants.PATH, obj.getPath());
+			objParusePageUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
 			objParusePageUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			objParusePageUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 			%>

@@ -43,16 +43,29 @@ public interface IBIObjectDAO {
 
 	/**
 	 * Loads all  information for the execution of a BI Object identified by its 
-	 * <code>path</code> and its <code>role</code>. All these information,
+	 * <code>id</code> and its <code>role</code>. All these information,
 	 * achived by a query to the DB, are stored into a <code>BIObject</code> object, 
 	 * which is returned.
 	 * 
-	 * @param path	The BI object path
+	 * @param id	The BI object id
 	 * @param role	The BI object role
 	 * @return The BIobject execution information, stored into a <code>BIObject</code>
 	 * @throws EMFUserError If an Exception occurs
 	 */
-	public BIObject loadBIObjectForExecutionByPathAndRole(String path, String role)
+	public BIObject loadBIObjectForExecutionByIdAndRole(Integer id, String role)
+			throws EMFUserError;
+	
+	/**
+	 * Loads all  detail information  for a BI Object identified by its 
+	 * <code>label</code> identifier. All these information,
+	 * achived by a query to the DB, are stored into a <code>BIObject</code> object, 
+	 * which is returned.
+	 * 
+	 * @param label The BI object label identifier
+	 * @return The BI object detail information, stored into a <code>BIObject</code>
+	 * @throws EMFUserError If an Exception occurs
+	 */
+	public BIObject loadBIObjectByLabel(String label)
 			throws EMFUserError;
 	
 	/**
@@ -65,32 +78,32 @@ public interface IBIObjectDAO {
 	 * @return The BI object detail information, stored into a <code>BIObject</code>
 	 * @throws EMFUserError If an Exception occurs
 	 */
-	public  BIObject loadBIObjectForDetail(Integer biObjectID) throws EMFUserError;
+	public  BIObject loadBIObjectById(Integer biObjectID) throws EMFUserError;
 
 	
 	/**
 	 * Loads all  detail information  for a BI Object identified by its 
-	 * <code>path</code> identifier string. All these information,
+	 * <code>id</code> identifier integer. All these information,
 	 * achived by a query to the DB, are stored into a <code>BIObject</code> object, 
 	 * which is returned.
 	 * 
-	 * @param  path  the BI object path string
+	 * @param  id  The Integer representing the BI object id
 	 * @return The BI object detail information, stored into a <code>BIObject</code>
 	 * @throws EMFUserError If an Exception occurs
 	 */
-	public  BIObject loadBIObjectForDetail(String path) throws EMFUserError;
+	public  BIObject loadBIObjectForDetail(Integer id) throws EMFUserError;
 	
 	/**
 	 * Loads all  tree information  for a BI Object identified by its 
-	 * <code>path</code> identifier string. All these information,
+	 * <code>id</code> identifier Integer. All these information,
 	 * achived by a query to the DB, are stored into a <code>BIObject</code> object, 
 	 * which is returned.
 	 * 
-	 * @param  path  the BI object path string
+	 * @param  id  The Integer representing the BI object id
 	 * @return The BI object tree information, stored into a <code>BIObject</code>
 	 * @throws EMFUserError If an Exception occurs
 	 */
-	public BIObject loadBIObjectForTree(String path) throws EMFUserError;
+	public BIObject loadBIObjectForTree(Integer id) throws EMFUserError;
 	
 	
 	/**
@@ -122,33 +135,48 @@ public interface IBIObjectDAO {
 	public void insertBIObject(BIObject obj) throws EMFUserError;
 
 	/**
-	 * Implements the query to erase a BI Object. All information needed is stored 
-	 * into the input <code>BIObject</code> object.
+	 * Deletes a BIObject from a functionality. Then, if the BIObject is no more referenced in any 
+	 * functionality, deletes it completely from db and from CMS
 	 * 
 	 * @param obj The object containing all delete information
+	 * @param idFunct The Integer representing the functionality id
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void eraseBIObject(BIObject obj) throws EMFUserError;
+	public void eraseBIObject(BIObject obj, Integer idFunct) throws EMFUserError;
 
 	
 	/**
-	 * Given the path String for a report and th User profile, gets the corret roles for 
+	 * Given the id for a report and the user profile, gets the corret roles for 
 	 * execution.
 	 * 
-	 * @param pathReport	The String path for the report
+	 * @param id	The Integer id for the report
 	 * @param profile	The user profile
 	 * @return	The list of correct roles for execution
 	 * @throws EMFUserError	If an Exception occurred
 	 */
-	public List getCorrectRolesForExecution(String pathReport, IEngUserProfile profile) throws EMFUserError;
+	public List getCorrectRolesForExecution(Integer id, IEngUserProfile profile) throws EMFUserError;
 	
 	/**
-	 * Gets the correct roles for Report execution, given only the Report's path.
+	 * Gets the correct roles for Report execution, given only the Report's id.
 	 * 
-	 * @param pathReport	The String path for the report
+	 * @param id	The Integer id for the report
 	 * @return	The list of correct roles for execution
 	 * @throws EMFUserError	If an Exception occurred
 	 */
-	public List getCorrectRolesForExecution(String pathReport) throws EMFUserError;
+	public List getCorrectRolesForExecution(Integer id) throws EMFUserError;
+	
+	/**
+	 * Loads all the BIObjects
+	 * @return the list of BIObjects
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadAllBIObjects() throws EMFUserError;
+	
+	/**
+	 * Loads all the BIObjects that belong to sub functionalities of the given functionality path 
+	 * @return the list of BIObjects
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadAllBIObjectsFromInitialPath(String initialPath) throws EMFUserError;
 	
 }

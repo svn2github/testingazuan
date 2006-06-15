@@ -89,7 +89,11 @@ public class BIObject implements Serializable {
 
 	private String path = null;
 	
+	private String uuid = null;
 	
+	private List functionalities = null;
+
+
 	/**
 	 * @return Returns the id.
 	 */
@@ -352,14 +356,28 @@ public class BIObject implements Serializable {
 	}
 	
 	
-	
-public String getName() {
-	return name;
-}
-public void setName(String name) {
-	this.name = name;
-}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public List getFunctionalities() {
+		return functionalities;
+	}
+
+	public void setFunctionalities(List functionalities) {
+		this.functionalities = functionalities;
+	}
 
 	public class SubObjectDetail implements Serializable {
 		private String path = null;
@@ -396,9 +414,5 @@ public void setName(String name) {
 			return description;
 		}
 	}
-
-
-	
-
 
 }

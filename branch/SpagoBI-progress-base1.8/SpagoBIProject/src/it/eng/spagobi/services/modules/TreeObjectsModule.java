@@ -21,39 +21,42 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.services.dao.TreeObjectsDAO;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
 
 /**
  * Loads an objects hyerarchy (Tree) or set inforamtion for a single object execution
  */
 public class TreeObjectsModule extends AbstractModule {
 
-    public static final String MODULE_PAGE = "TreeObjectsPage";
-    private static final String PATH_SYS_FUNCT = "SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH";
+    public static final String MODULE_PAGE = "BIObjectsPage";
+    //private static final String PATH_SYS_FUNCT = "SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH";
     private static final String MODALITY = "MODALITY";
     private static final String SINGLE_OBJECT = "SINGLE_OBJECT";
     private static final String FILTER_TREE = "FILTER_TREE";
-    private static final String PATH_SINGLE_OBJECT = "PATH_SINGLE_OBJECT";
+    private static final String LABEL_SINGLE_OBJECT = "LABEL_SINGLE_OBJECT";
     private static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
-    private static final String PATH_SUBTREE = "PATH_SUBTREE";
-    private static final String ROLE_SINGLE_OBJECT = "ROLE_SINGLE_OBJECT";
+    public static final String PATH_SUBTREE = "PATH_SUBTREE";
+    //private static final String ROLE_SINGLE_OBJECT = "ROLE_SINGLE_OBJECT";
     private static final String HEIGHT_AREA = "HEIGHT_AREA";
 	
     SessionContainer sessionContainer = null;
@@ -121,17 +124,17 @@ public class TreeObjectsModule extends AbstractModule {
 											 throws Exception {
 		debug("singleObjectModalityHandler", "enter singleObjectModalityHandler");
 		
-		// get from preferences the path of the object
-		String path = prefs.getValue(PATH_SINGLE_OBJECT, "");
-		debug("singleObjectModalityHandler", "using object path " + path);
+		// get from preferences the label of the object
+		String label = prefs.getValue(LABEL_SINGLE_OBJECT, "");
+		debug("singleObjectModalityHandler", "using object label " + label);
 		
-		// if path is not set then throw an exception
-		if(path.equals("")) {
+		// if label is not set then throw an exception
+		if(label.trim().equals("")) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 								"TreeObjectsMOdule", 
 								"singleObjectModalityHandler",  
-								"Object's path not found");
-        	throw new Exception("Path not found");
+								"Object's label not set");
+        	throw new Exception("Label not set");
         }
 		
 		// get from preferences the parameters used by the object during execution
@@ -148,7 +151,8 @@ public class TreeObjectsModule extends AbstractModule {
         
         // set into the response the righr inforamtion for loopback
         response.setAttribute(SpagoBIConstants.ACTOR, actor);
-        response.setAttribute(SpagoBIConstants.PATH, path);
+        BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+        response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
                 
         // put in session the modality and the actor
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
@@ -174,29 +178,47 @@ public class TreeObjectsModule extends AbstractModule {
             String actor, IEngUserProfile profile, String path)  throws SourceBeanException {
 		
 		debug("filterTreeModalityHandler", "enter filterTreeModalityHandler");
-		SourceBean dataResponseSysFunct = getFunctioanlitiesTree(profile, path);
+		//SourceBean dataResponseSysFunct = getFunctioanlitiesTree(profile, path);
+		//debug("filterTreeModalityHandler", "SourceBean of the tree retrived: \n " + dataResponseSysFunct.toXML(false));
+		//response.setAttribute(dataResponseSysFunct);
 		
-		debug("filterTreeModalityHandler", "SourceBean of the tree retrived: \n " + dataResponseSysFunct.toXML(false));
-		response.setAttribute(dataResponseSysFunct);
+		List functionalities = new ArrayList();
+		boolean recoverBIObjects = true;
+		String operation = (String) request.getAttribute(SpagoBIConstants.OPERATION);
+		if (operation != null && operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) {
+			// it means that only the functionalities will be displayed
+			recoverBIObjects = false;
+		}
+		try {
+			functionalities = DAOFactory.getLowFunctionalityDAO().loadSubLowFunctionalities(path, recoverBIObjects);
+		} catch (EMFUserError e) {
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+					"TreeObjectsMOdule", 
+					"defaultModalityHandler", 
+					"Error loading functionalities", e);
+		}
+		response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		response.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.FILTER_TREE_MODALITY);
+		response.setAttribute(TreeObjectsModule.PATH_SUBTREE, path);
 		
-		Object objview = request.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
-		if(objview!=null) {
-			response.setAttribute(SpagoBIConstants.OBJECTS_VIEW, objview);
-			debug("filterTreeModalityHandler", "using tree view");
-		}
-		Object listPage = request.getAttribute(SpagoBIConstants.LIST_PAGE);
-		if(listPage!=null) {
-			response.setAttribute(SpagoBIConstants.LIST_PAGE, listPage);
-			debug("defaultModalityHandler", "using list view");
-		}
+//		Object objview = request.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
+//		if(objview!=null) {
+//			response.setAttribute(SpagoBIConstants.OBJECTS_VIEW, objview);
+//			debug("filterTreeModalityHandler", "using tree view");
+//		}
+//		Object listPage = request.getAttribute(SpagoBIConstants.LIST_PAGE);
+//		if(listPage!=null) {
+//			response.setAttribute(SpagoBIConstants.LIST_PAGE, listPage);
+//			debug("defaultModalityHandler", "using list view");
+//		}
 		debug("filterTreeModalityHandler", "end set data into reponse");
         
 		// put in session the modality and the actor
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
         		                      SpagoBIConstants.FILTER_TREE_MODALITY);
         debug("filterTreeModalityHandler", "end set data into session");
+
 	}
 	
 	
@@ -211,21 +233,37 @@ public class TreeObjectsModule extends AbstractModule {
 			                            String actor, IEngUserProfile profile) 
 										throws SourceBeanException {
 		debug("defaultModalityHandler", "enter defaultModalityHandler");
-		SourceBean dataResponseSysFunct = getFunctioanlitiesTree(profile);
-		debug("defaultModalityHandler", "SourceBean of the tree retrived: \n " + dataResponseSysFunct.toXML(false));
-		response.setAttribute(dataResponseSysFunct);
+		//SourceBean dataResponseSysFunct = getFunctioanlitiesTree(profile);
+		//debug("defaultModalityHandler", "SourceBean of the tree retrived: \n " + dataResponseSysFunct.toXML(false));
+		//response.setAttribute(dataResponseSysFunct);
+		List functionalities = new ArrayList();
+		boolean recoverBIObjects = true;
+		String operation = (String) request.getAttribute(SpagoBIConstants.OPERATION);
+		if (operation != null && operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) {
+			// it means that only the functionalities will be displayed
+			recoverBIObjects = false;
+		}
+		try {
+			functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(recoverBIObjects);
+		} catch (EMFUserError e) {
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+					"TreeObjectsMOdule", 
+					"defaultModalityHandler", 
+					"Error loading functionalities", e);
+		}
+		response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		response.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.ENTIRE_TREE_MODALITY);
-		Object objview = request.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
-		if(objview!=null) {
-			response.setAttribute(SpagoBIConstants.OBJECTS_VIEW, objview);
-			debug("defaultModalityHandler", "using tree view");
-		}
-		Object listPage = request.getAttribute(SpagoBIConstants.LIST_PAGE);
-		if(listPage!=null) {
-			response.setAttribute(SpagoBIConstants.LIST_PAGE, listPage);
-			debug("defaultModalityHandler", "using list view");
-		}
+//		Object objview = request.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
+//		if(objview!=null) {
+//			response.setAttribute(SpagoBIConstants.OBJECTS_VIEW, objview);
+//			debug("defaultModalityHandler", "using tree view");
+//		}
+//		Object listPage = request.getAttribute(SpagoBIConstants.LIST_PAGE);
+//		if(listPage!=null) {
+//			response.setAttribute(SpagoBIConstants.LIST_PAGE, listPage);
+//			debug("defaultModalityHandler", "using list view");
+//		}
 		debug("defaultModalityHandler", "end set data into reponse");
         // put in session the modality and the actor
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
@@ -240,32 +278,32 @@ public class TreeObjectsModule extends AbstractModule {
 	 * @param profile User Profile
 	 * @return SourceBean of the entire objects tree
 	 */
-	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile) {
-		debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
-		SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
-	    String pathSysFunct = pathSysFunctSB.getCharacters();
-	    debug("getFunctioanlitiesTree", "using intial path" + pathSysFunct);
-	    TreeObjectsDAO objDao = new TreeObjectsDAO();
-        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct, profile);
-        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
-        return dataResponseSysFunct;
-	}
+//	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile) {
+//		debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
+//		SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
+//	    String pathSysFunct = pathSysFunctSB.getCharacters();
+//	    debug("getFunctioanlitiesTree", "using intial path" + pathSysFunct);
+//	    TreeObjectsDAO objDao = new TreeObjectsDAO();
+//        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct, profile);
+//        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
+//        return dataResponseSysFunct;
+//	}
 	
 	/**
 	 * Load the sourceBean of the entire object tree
 	 * @param profile User Profile
 	 * @return SourceBean of the entire objects tree
 	 */
-	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile, String path) {
-		//debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
-		//SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
-	    //String pathSysFunct = pathSysFunctSB.getCharacters();
-	    debug("getFunctioanlitiesTree", "using intial path" + path);
-	    TreeObjectsDAO objDao = new TreeObjectsDAO();
-        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(path, profile);
-        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
-        return dataResponseSysFunct;
-	}
+//	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile, String path) {
+//		//debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
+//		//SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
+//	    //String pathSysFunct = pathSysFunctSB.getCharacters();
+//	    debug("getFunctioanlitiesTree", "using intial path" + path);
+//	    TreeObjectsDAO objDao = new TreeObjectsDAO();
+//        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(path, profile);
+//        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
+//        return dataResponseSysFunct;
+//	}
 	
 	
 	
@@ -276,7 +314,7 @@ public class TreeObjectsModule extends AbstractModule {
 	 */
 	private void debug(String method, String message) {
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-							"TreeObjectsMOdule", 
+							"TreeObjectsModule", 
 							method, 
         					message);
 	}

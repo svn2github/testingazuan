@@ -756,7 +756,7 @@
 			</FIELD>
 			<FIELD name="code" label="#SBISet.Funct.codefield">
 				<VALIDATOR validatorName="MANDATORY"/>
-				<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+				<VALIDATOR validatorName="MAXLENGTH" arg0="30"/>
 			</FIELD>	
 		</FIELDS>
 	</VALIDATION>
@@ -776,7 +776,7 @@
 			</FIELD>
 			<FIELD name="code" label="#SBISet.Funct.codefield">
 				<VALIDATOR validatorName="MANDATORY"/>
-				<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+				<VALIDATOR validatorName="MAXLENGTH" arg0="30"/>
 			</FIELD>	
 		</FIELDS>
 	</VALIDATION>

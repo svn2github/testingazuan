@@ -390,7 +390,7 @@
   	<PUBLISHER name="detailFunctionalityLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
         		<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
         		<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="FUNCTIONALITIES_OPERATION" />
         		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
@@ -512,7 +512,7 @@
   	<PUBLISHER name="detailBIObjectLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" /> 
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" /> 
       			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectModule.ACTOR" />
       			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
@@ -639,10 +639,18 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	<PUBLISHER name="listBIObjects">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/listBIObjects.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>  	
   	<PUBLISHER name="LoopTree">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" /> 
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" /> 
         		<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ACTOR" /> 
         		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
@@ -663,7 +671,7 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
-  	</PUBLISHER>
+  	</PUBLISHER>  	
 
     <PUBLISHER name="loopbackAfterSubObjectDeletion">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
@@ -671,7 +679,7 @@
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
 				<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ROLE" /> 
-                <PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.PATH" />
+                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.OBJECT_ID" />
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
 			</RESOURCES>
    	 	</RENDERING>
@@ -684,7 +692,7 @@
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
                 <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ACTOR" />
-                <PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.PATH" />
+                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.OBJECT_ID" />
                 <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.PARAMETERS" />
      			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ROLE" />
                 <PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.MODALITY" />

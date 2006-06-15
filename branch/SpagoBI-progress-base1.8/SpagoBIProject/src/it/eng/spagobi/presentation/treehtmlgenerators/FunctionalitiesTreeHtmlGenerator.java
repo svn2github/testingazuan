@@ -26,6 +26,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.DetailFunctionalityModule;
@@ -52,6 +53,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	HttpServletRequest httpRequest = null;
 	int progrJSTree = 0;
 	PortletRequest portReq = null;
+	private int dTreeRootId = -100;
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.
 	 * AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
@@ -382,17 +384,77 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
         htmlStream.append("<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif" )+"' /></a>\n");
 		htmlStream.append("<span>&nbsp;&nbsp;&nbsp;</span>\n");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		httpRequest = httpReq;
+		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
+		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
+		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		portReq = PortletUtilities.getPortletRequest();
+		StringBuffer htmlStream = new StringBuffer();
+		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+		makeConfigurationDtree(htmlStream);
+		String nameTree = PortletUtilities.getMessage("tree.functtree.name" ,"messages");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("		menu");
+		htmlStream.append("</div>");
+		htmlStream.append("<table width='100%'>");
+		htmlStream.append("	<tr height='1px'>");
+		htmlStream.append("		<td width='10px'>&nbsp;</td>");
+		htmlStream.append("		<td>&nbsp;</td>");
+		htmlStream.append("	</tr>");
+		htmlStream.append("	<tr>");
+		htmlStream.append("		<td>&nbsp;</td>");
+		htmlStream.append("		<td>");
+		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
+	   	htmlStream.append("				var nameTree = 'treeFunct';\n");
+	   	htmlStream.append("				treeFunct = new dTree('treeFunct');\n");
+	   	htmlStream.append("	        	treeFunct.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
+	   	Iterator it = objectsList.iterator();
+	   	while (it.hasNext()) {
+	   		LowFunctionality folder = (LowFunctionality) it.next();
+	   		if (initialPath != null) {
+	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);
+	   			else addItemForJSTree(htmlStream, folder, false);
+	   		} else {
+	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true);
+	   			else addItemForJSTree(htmlStream, folder, false);
+	   		}
+	   	}
+    	htmlStream.append("				document.write(treeFunct);\n");
+    	makeJSFunctionForMenu(htmlStream);	
+		htmlStream.append("			</script>\n");
+		htmlStream.append("		</td>");
+		htmlStream.append("	</tr>");
+		htmlStream.append("</table>");
+		return htmlStream;
+	}
+
+	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
+		
+		String nameLabel = folder.getName();
+		String name = PortletUtilities.getMessage(nameLabel, "messages");
+		String path = folder.getPath();
+		String codeType = folder.getCodType();
+		Integer id = folder.getId();
+		Integer parentId = folder.getParentId();
+
+		if (isRoot) {
+			htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'\\')');\n");
+		} else {
+			if (codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
+				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'"+createDetailFunctionalityLink(path)+"\\', \\'"+createRemoveFunctionalityLink(path)+"\\')');\n");
+			} 
+		}
+	}
+
+	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

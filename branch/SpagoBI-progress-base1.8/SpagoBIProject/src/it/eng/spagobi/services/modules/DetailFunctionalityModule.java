@@ -263,7 +263,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			response.setAttribute(AdmintoolsConstants.MODALITY, modality);
 			response.setAttribute(AdmintoolsConstants.PATH_PARENT, pathParent);
 			
-			if(typeFunct.equals("LOW_FUNCT")) {
+			if (typeFunct.equals("LOW_FUNCT")) {
 				LowFunctionality funct = new LowFunctionality();
 				funct.setDescription("");
 				funct.setId(new Integer(0));
@@ -348,6 +348,8 @@ public class DetailFunctionalityModule extends AbstractModule {
 			lowFunct.setDevRoles(devRoles);
 			lowFunct.setExecRoles(execRoles);
 			lowFunct.setTestRoles(testRoles);
+			LowFunctionality parentFunct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent);
+			if (parentFunct != null) lowFunct.setParentId(parentFunct.getId());
 		} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
 			String idFunct = (String)request.getAttribute(AdmintoolsConstants.FUNCTIONALITY_ID);
 			Integer idFunctWithSameCode =DAOFactory.getLowFunctionalityDAO().existByCode(code);
@@ -427,58 +429,59 @@ public class DetailFunctionalityModule extends AbstractModule {
 	 */
 	public void loadRolesToErase(LowFunctionality lowFuncParent, Set rolesToErase) throws EMFUserError, BuildOperationException, OperationExecutionException{
 		String parentPath = lowFuncParent.getPath();
-		ArrayList childs = DAOFactory.getFunctionalityCMSDAO().recoverChilds(parentPath);
+		//ArrayList childs = DAOFactory.getFunctionalityCMSDAO().recoverChilds(parentPath);
+		List childs = DAOFactory.getLowFunctionalityDAO().loadSubLowFunctionalities(parentPath, false);
 		if(childs.size()!= 0) {
-		Iterator i = childs.iterator();
-		while (i.hasNext()){
-		    CmsNode childNode = (CmsNode)i.next();
-			String childPath = childNode.getPath();
-			//LowFunctionality lowFuncParent = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(parentPath);
-			LowFunctionality lowFuncChild = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(childPath);
-			if(lowFuncChild != null){
-				//control childs permissions and fathers permissions
-				//remove from childs those persmissions that are not present in the fathers
-				//control for test Roles
-				Role[] testChildRoles = lowFuncChild.getTestRoles();
-				Role[] testParentRoles = lowFuncParent.getTestRoles();
-				//ArrayList newTestChildRoles = new ArrayList();
-				//HashMap rolesToErase = new HashMap();
-				for(int j = 0; j < testChildRoles.length; j++) {
-						String rule = testChildRoles[j].getId().toString();
-						    if(!isParentRule(rule, lowFuncParent,"TEST")){
-						    	ArrayList roles = new ArrayList();
-						    	roles.add(0,lowFuncChild.getId());
-						    	roles.add(1,testChildRoles[j].getId());
-						    	roles.add(2,"TEST");
-						    	rolesToErase.add(roles);
-						    	lowFuncChild = eraseRolesFromFunctionality(lowFuncChild,rule,"TEST");
-						    	//rolesToErase.put(lowFuncChild.getId(),testChildRoles[j].getId());
-								//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,testChildRoles[j].getId());
-							}
-				}
-				//control for development roles	
-				Role[] devChildRoles = lowFuncChild.getDevRoles();
-				Role[] devParentRoles = lowFuncParent.getDevRoles();
-				//ArrayList newDevChildRoles = new ArrayList();
-				for(int j = 0; j < devChildRoles.length; j++) {
-					String rule = devChildRoles[j].getId().toString();
-						    if(!isParentRule(rule, lowFuncParent,"DEV")){
-						    	ArrayList roles = new ArrayList();
-						    	roles.add(0,lowFuncChild.getId());
-						    	roles.add(1,devChildRoles[j].getId());
-						    	roles.add(2,"DEV");
-						    	rolesToErase.add(roles);
-						    	lowFuncChild = eraseRolesFromFunctionality(lowFuncChild,rule,"DEV");
-						    	//rolesToErase.put(lowFuncChild.getId(),devChildRoles[j].getId());
-						    	//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,devChildRoles[j].getId());
-							}
-			    }
-				//control for execution roles
-				Role[] execChildRoles = lowFuncChild.getExecRoles();
-				Role[] execParentRoles = lowFuncParent.getExecRoles();
-				//ArrayList newExecChildRoles = new ArrayList();
-				for(int j = 0; j < execChildRoles.length; j++) {
-					String rule = execChildRoles[j].getId().toString();
+			Iterator i = childs.iterator();
+			while (i.hasNext()){
+				LowFunctionality childNode = (LowFunctionality) i.next();
+				String childPath = childNode.getPath();
+				//LowFunctionality lowFuncParent = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(parentPath);
+				LowFunctionality lowFuncChild = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(childPath);
+				if(lowFuncChild != null){
+					//control childs permissions and fathers permissions
+					//remove from childs those persmissions that are not present in the fathers
+					//control for test Roles
+					Role[] testChildRoles = lowFuncChild.getTestRoles();
+					//Role[] testParentRoles = lowFuncParent.getTestRoles();
+					//ArrayList newTestChildRoles = new ArrayList();
+					//HashMap rolesToErase = new HashMap();
+					for(int j = 0; j < testChildRoles.length; j++) {
+							String rule = testChildRoles[j].getId().toString();
+							    if(!isParentRule(rule, lowFuncParent,"TEST")){
+							    	ArrayList roles = new ArrayList();
+							    	roles.add(0,lowFuncChild.getId());
+							    	roles.add(1,testChildRoles[j].getId());
+							    	roles.add(2,"TEST");
+							    	rolesToErase.add(roles);
+							    	lowFuncChild = eraseRolesFromFunctionality(lowFuncChild,rule,"TEST");
+							    	//rolesToErase.put(lowFuncChild.getId(),testChildRoles[j].getId());
+									//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,testChildRoles[j].getId());
+								}
+					}
+					//control for development roles	
+					Role[] devChildRoles = lowFuncChild.getDevRoles();
+					//Role[] devParentRoles = lowFuncParent.getDevRoles();
+					//ArrayList newDevChildRoles = new ArrayList();
+					for(int j = 0; j < devChildRoles.length; j++) {
+						String rule = devChildRoles[j].getId().toString();
+							    if(!isParentRule(rule, lowFuncParent,"DEV")){
+							    	ArrayList roles = new ArrayList();
+							    	roles.add(0,lowFuncChild.getId());
+							    	roles.add(1,devChildRoles[j].getId());
+							    	roles.add(2,"DEV");
+							    	rolesToErase.add(roles);
+							    	lowFuncChild = eraseRolesFromFunctionality(lowFuncChild,rule,"DEV");
+							    	//rolesToErase.put(lowFuncChild.getId(),devChildRoles[j].getId());
+							    	//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,devChildRoles[j].getId());
+								}
+				    }
+					//control for execution roles
+					Role[] execChildRoles = lowFuncChild.getExecRoles();
+					//Role[] execParentRoles = lowFuncParent.getExecRoles();
+					//ArrayList newExecChildRoles = new ArrayList();
+					for(int j = 0; j < execChildRoles.length; j++) {
+						String rule = execChildRoles[j].getId().toString();
 					    if(!isParentRule(rule, lowFuncParent,"EXEC")){
 					    	ArrayList roles = new ArrayList();
 					    	roles.add(0,lowFuncChild.getId());
@@ -490,11 +493,11 @@ public class DetailFunctionalityModule extends AbstractModule {
 					    	//DAOFactory.getLowFunctionalityDAO().deleteFunctionalityRole(lowFuncChild,execChildRoles[j].getId());
 						}
 					}
-				loadRolesToErase(lowFuncChild,rolesToErase);
+					//loadRolesToErase(lowFuncChild,rolesToErase);
+				}
+				
+				//loadRolesToErase(childPath,rolesToErase);
 			}
-			
-			//loadRolesToErase(childPath,rolesToErase);
-		}
 		
 		}
 		

@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
 	
+	<PAGE name="BIObjectsPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+    		<DEPENDENCE source="BIObjectsPage" target="BIObjectsModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+      		<DEPENDENCE source="BIObjectsModule" target="TreeObjectsModule">
+        		<CONDITIONS>
+        			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_TREE" />
+        		</CONDITIONS>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+      		<DEPENDENCE source="BIObjectsModule" target="ListBIObjectsModule">
+        		<CONDITIONS>
+        			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_LIST" />
+        		</CONDITIONS>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+    		<MODULE keep_instance="false" keep_response="false" name="BIObjectsModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="TreeObjectsModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="ListBIObjectsModule"/>    		
+    	</MODULES>
+  	</PAGE>
+	
 	<PAGE name="CheckLinksPage" scope="REQUEST" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="CheckLinksPage" target="CheckLinksModule">
@@ -43,16 +69,32 @@
         		<CONDITIONS/>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
-      		<DEPENDENCE source="LOGIN_PAGE_SBI_FUNCTIONALITY" target="TreeObjectsModule">
+      		<DEPENDENCE source="LOGIN_PAGE_SBI_FUNCTIONALITY" target="BIObjectsModule">
         		<CONDITIONS/>
+				<CONSEQUENCES/>
+      		</DEPENDENCE>
+      		<DEPENDENCE source="BIObjectsModule" target="TreeObjectsModule">
+        		<CONDITIONS>
+        			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_TREE" />
+        		</CONDITIONS>
         		<CONSEQUENCES>
         			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="USER_ACTOR"/>
-  				</CONSEQUENCES>
+  				</CONSEQUENCES>        		
       		</DEPENDENCE>
+      		<DEPENDENCE source="BIObjectsModule" target="ListBIObjectsModule">
+        		<CONDITIONS>
+        			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_LIST" />
+        		</CONDITIONS>
+        		<CONSEQUENCES>
+        			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="USER_ACTOR"/>
+  				</CONSEQUENCES> 
+      		</DEPENDENCE>      		
     	</DEPENDENCIES>
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" name="PortletLoginModule"/>
-      		<MODULE keep_instance="false" keep_response="false" name="TreeObjectsModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="BIObjectsModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="TreeObjectsModule"/> 
+      		<MODULE keep_instance="false" keep_response="false" name="ListBIObjectsModule"/> 
     	</MODULES>
   	</PAGE>
 	
@@ -386,7 +428,8 @@
       		<MODULE keep_instance="false" keep_response="false" name="ListLookupModalityValuesModule"/>
     	</MODULES>
   	</PAGE>
-  	
+
+<!--
   	<PAGE name="TreeObjectsPage" scope="REQUEST" title="BI Objects Tree" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="TreeObjectsPage" target="TreeObjectsModule">
@@ -398,7 +441,8 @@
       		<MODULE keep_instance="false" keep_response="false" name="TreeObjectsModule"/>
     	</MODULES>
   	</PAGE>
-  	
+-->  	
+
   	<PAGE name="ListBIObjectsPage" scope="REQUEST" title="BI Objects List" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ListBIObjectsPage" target="ListBIObjectsModule">

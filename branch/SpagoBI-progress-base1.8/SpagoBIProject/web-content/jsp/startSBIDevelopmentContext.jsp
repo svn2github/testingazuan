@@ -88,7 +88,7 @@
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-			    <a href='<portlet:actionURL><portlet:param name="PAGE" value="TreeObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.DEV_ACTOR %>"/></portlet:actionURL>' 
+			    <a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.DEV_ACTOR %>"/></portlet:actionURL>' 
 					class="link_main_menu" >
 					<spagobi:message key = "SBIDev.linkDoc" /></a>
 			</td>

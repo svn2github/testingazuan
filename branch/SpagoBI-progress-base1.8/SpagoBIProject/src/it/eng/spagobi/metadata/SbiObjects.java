@@ -54,11 +54,11 @@ public class SbiObjects  implements java.io.Serializable {
      private Set sbiObjPars;
      private Set sbiObjFuncs;
      private Set sbiObjStates;
-
+     private String uuid;
 
     // Constructors
 
-    /** default constructor */
+	/** default constructor */
     public SbiObjects() {
     }
     
@@ -72,6 +72,14 @@ public class SbiObjects  implements java.io.Serializable {
 
     // Property accessors
 
+    public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+    
     /**
      * 
      */

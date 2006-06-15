@@ -22,14 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.bo.dao.cms;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.CmsProperty;
 import it.eng.spago.cms.operations.DeleteOperation;
 import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.cms.operations.SetOperation;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -55,6 +55,8 @@ import java.util.Vector;
 
 public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 
+	protected String CMS_BIOBJECTS_PATH = "CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH";
+	
 	/**
 	 * Get the template of the object
 	 * 
@@ -328,7 +330,11 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		try{
 			CmsManager manager = new CmsManager();
 			GetOperation getOp = new GetOperation(); 
-			getOp.setPath(obj.getPath() + "/template" );
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(CMS_BIOBJECTS_PATH);
+			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+			String path = biobjectsPath + "/" + obj.getUuid() + "/template";
+			getOp.setPath(path);
 			getOp.setRetriveContentInformation("true");
 			getOp.setRetrivePropertiesInformation("true");
 			getOp.setRetriveVersionsInformation("true");

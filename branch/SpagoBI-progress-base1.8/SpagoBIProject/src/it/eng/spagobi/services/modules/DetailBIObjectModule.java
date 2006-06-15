@@ -50,12 +50,13 @@ import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.services.dao.TreeObjectsDAO;
+import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SessionMonitor;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,8 +88,10 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_LIST_ENGINES = "engines";
 	public final static String NAME_ATTR_LIST_STATES = "states";		
 	public final static String NAME_ATTR_OBJECT_PAR = "OBJECT_PAR";
+	public final static String CMS_BIOBJECTS_PATH = "CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH";
 	private String actor = null;
 	private EMFErrorHandler errorHandler = null;
+	protected IEngUserProfile profile;
 	
 	SessionContainer session = null;
 	
@@ -117,7 +120,9 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 		RequestContainer requestContainer = this.getRequestContainer();		
 		session = requestContainer.getSessionContainer();
-				
+		SessionContainer permanentSession = session.getPermanentContainer();
+		profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		
 		// get attributes from request		
 		String message = (String) request.getAttribute("MESSAGEDET");
 		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service"," MESSAGEDET = " + message);
@@ -306,14 +311,15 @@ public class DetailBIObjectModule extends AbstractModule {
 			throws EMFUserError {
 		try {
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
-			String path = (String) request
-					.getAttribute(ObjectsTreeConstants.PATH);
+			String idStr = (String) request
+					.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+			Integer id = new Integer(idStr);
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(
-					path);
+					id);
 			if (obj == null) {
 				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE,
 						"DetailBIObjectModule", "getDetailObject",
-						"BIObject with path "+path+" cannot be retrieved.");
+						"BIObject with id "+id+" cannot be retrieved.");
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1040);
 				errorHandler.addError(error);
 				return;
@@ -493,14 +499,14 @@ public class DetailBIObjectModule extends AbstractModule {
 					// it is requested to modify the main values of the BIObject
 					DAOFactory.getBIObjectDAO().modifyBIObject(obj);
 	    			// reloads the BIObject with the updated CMS information
-	    			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getPath());
+	    			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getId());
 	    			
 	    			if (biParameterToBeSaved) {
 						IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
 						if (biObjPar.getId().intValue() == -1) {
 							// it is requested to insert a new BIObjectParameter
 							objParDAO.insertBIObjectParameter(biObjPar);
-							// reload the BIObjectParameter with the given label
+							// reload the BIObjectParameter with the given url name
 							biObjPar = reloadBIObjectParameter(obj.getId(), biObjPar.getParameterUrlName());
 						} else {
 							// it is requested to modify a BIObjectParameter
@@ -536,7 +542,7 @@ public class DetailBIObjectModule extends AbstractModule {
     			// inserts into DB the new BIObject
     			DAOFactory.getBIObjectDAO().insertBIObject(obj);
     			// reloads the BIObject with the correct Id and empty CMS information
-    			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getPath());
+    			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getId());
     		}
 			
 			Object saveAndGoBack = request.getAttribute("saveAndGoBack");
@@ -645,7 +651,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	 */
 	private void reloadCMSInformation(BIObject obj) throws EMFUserError {
 		IBIObjectDAO objDao = DAOFactory.getBIObjectDAO();
-		BIObject temp = objDao.loadBIObjectForDetail(obj.getPath());
+		BIObject temp = objDao.loadBIObjectForDetail(obj.getId());
 		TreeMap templates = temp.getTemplateVersions();
 		TemplateVersion currentVersion = temp.getCurrentTemplateVersion();
 		obj.setTemplateVersions(templates);
@@ -894,27 +900,50 @@ public class DetailBIObjectModule extends AbstractModule {
 		Integer stateId = new Integer(stateIdStr);
 		String stateCode = tokenState.nextToken();
 		
-		if (mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) {
-			String pathParent = "";
-			List parentPaths = request.getAttributeAsList(ObjectsTreeConstants.PATH_PARENT);
-			if(parentPaths.size() != 1) {
-				HashMap errorParams = new HashMap();
-				errorParams.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
-				errorParams.put(SpagoBIConstants.ACTOR, actor);
-				EMFValidationError error = null;
-				if(parentPaths.size()<1) {
-					error = new EMFValidationError(EMFErrorSeverity.ERROR, 1008, new Vector(), errorParams);
-				} else {
-					error = new EMFValidationError(EMFErrorSeverity.ERROR, 1009, new Vector(), errorParams);
-				}
-				getErrorHandler().addError(error);
-			} else {
-				pathParent = (String)parentPaths.get(0);
-			}				
-			obj.setPath(pathParent + "/" + typeCode + "_" + label);
+		List functionalities = new ArrayList();
+		List functionalitiesStr = request.getAttributeAsList(ObjectsTreeConstants.FUNCT_ID);
+		if (functionalitiesStr.size() == 0) {
+			HashMap errorParams = new HashMap();
+			errorParams.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
+			errorParams.put(SpagoBIConstants.ACTOR, actor);
+			EMFValidationError error = null;
+			error = new EMFValidationError(EMFErrorSeverity.ERROR, 1008, new Vector(), errorParams);
+			getErrorHandler().addError(error);
 		} else {
-			String pathObj = (String) request.getAttribute(ObjectsTreeConstants.PATH);
-			obj.setPath(pathObj);
+			for (Iterator it = functionalitiesStr.iterator(); it.hasNext(); ) {
+				String functIdStr = (String) it.next();
+				Integer functId = new Integer (functIdStr);
+				functionalities.add(functId);
+			}
+		}
+		
+		// label control
+		BIObject aBIObject = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+		if (aBIObject != null && !aBIObject.getId().equals(id)) {
+			HashMap params = new HashMap();
+			params.put(AdmintoolsConstants.PAGE,
+					DetailBIObjectModule.MODULE_PAGE);
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR,
+					1056, new Vector(), params);
+			getErrorHandler().addError(error);
+		}
+		
+		// in case the user is an administrator, he can see all the functionalities and all the documents inside them
+		if (!SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) && mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
+			// folder where the user is not a developer must remain
+			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
+			BIObject prevObj = objDAO.loadBIObjectById(id);
+			List prevFuncsId = prevObj.getFunctionalities();
+			for (Iterator it = prevFuncsId.iterator(); it.hasNext(); ) {
+				Integer funcId = (Integer) it.next();
+				if (!ObjectsAccessVerifier.canDev(stateCode, funcId, profile)) {
+					functionalities.add(funcId);
+				}
+			}
+		}
+		obj.setFunctionalities(functionalities);
+
+		if (mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
 			String nameCurTempVer = (String) request.getAttribute("versionTemplate");
 			if (nameCurTempVer != null) {
 				obj.setNameCurrentTemplateVersion(nameCurTempVer);
@@ -957,7 +986,10 @@ public class DetailBIObjectModule extends AbstractModule {
 	}
 	
 	/**
-	 * Deletes a BI Object choosed by user from the engines list.
+	 * Deletes a BI Object choosed by user. If the folder id is specified, it deletes only the instance 
+	 * of the object in that folder. If the folder id is not specified: if the user is an administrator 
+	 * the object is deleted from all the folders, else it is deleted from the folder on which the user 
+	 * is a developer.
 	 * 
 	 * @param request	The request SourceBean
 	 * @param mod	A request string used to differentiate delete operation
@@ -969,16 +1001,46 @@ public class DetailBIObjectModule extends AbstractModule {
 		throws EMFUserError, SourceBeanException {
 		BIObject obj = null;
 		try {
-			String path = (String)request.getAttribute(ObjectsTreeConstants.PATH);
-        	IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
-			obj = objdao.loadBIObjectForDetail(path);
-			objdao.eraseBIObject(obj);
+			String idObjStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+			Integer idObj = new Integer(idObjStr);
+			IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
+			obj = objdao.loadBIObjectById(idObj);
+			String idFunctStr = (String) request.getAttribute(ObjectsTreeConstants.FUNCT_ID);
+			if (idFunctStr != null) {
+				Integer idFunct = new Integer(idFunctStr);
+				if (SpagoBIConstants.ADMIN_ACTOR.equals(actor)) {
+					// deletes the document from the specified folder, no matter the permissions
+					objdao.eraseBIObject(obj, idFunct);
+				} else {
+					// deletes the document from the specified folder if the profile is a developer for that folder
+					if (ObjectsAccessVerifier.canDev(obj.getStateCode(), idFunct, profile)) {
+						objdao.eraseBIObject(obj, idFunct);
+					}
+				}
+			} else {
+				if (SpagoBIConstants.ADMIN_ACTOR.equals(actor)) {
+					// deletes the document from all the folders, no matter the permissions
+					List funcsId = obj.getFunctionalities();
+					for (Iterator it = funcsId.iterator(); it.hasNext(); ) {
+						Integer idFunct = (Integer) it.next();
+						objdao.eraseBIObject(obj, idFunct);
+					}
+				} else {
+					// deletes the document from all the folders on which the profile is a developer
+					List funcsId = obj.getFunctionalities();
+					for (Iterator it = funcsId.iterator(); it.hasNext(); ) {
+						Integer idFunct = (Integer) it.next();
+						if (ObjectsAccessVerifier.canDev(obj.getStateCode(), idFunct, profile)) {
+							objdao.eraseBIObject(obj, idFunct);
+						}
+					}
+				}
+			}
 		} catch (Exception ex) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","delDetailObject","Cannot erase object", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 		response.setAttribute("loopback", "true");
-		response.setAttribute(ObjectsTreeConstants.PATH_PARENT, obj.getPath());
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	}
 	
@@ -1005,6 +1067,8 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setStateCode("");
             obj.setBiObjectTypeID(null);
             obj.setBiObjectTypeCode("");
+            List functionalitites = new ArrayList();
+            obj.setFunctionalities(functionalitites);
             TemplateVersion curVer = new TemplateVersion();
             curVer.setVersionName("");
             curVer.setDataLoad("");
@@ -1035,16 +1099,27 @@ public class DetailBIObjectModule extends AbstractModule {
 		    response.setAttribute(NAME_ATTR_LIST_OBJ_TYPES, types);
 		    response.setAttribute(NAME_ATTR_LIST_STATES, states);
 		    
-		    String ATTR_PATH_SYS_FUNCT = "SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH";
-            RequestContainer requestContainer = getRequestContainer();
-            SessionContainer sessionContainer = requestContainer.getSessionContainer();
-            SessionContainer permanentSession = sessionContainer.getPermanentContainer();
-            IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(ATTR_PATH_SYS_FUNCT);
-		    String pathSysFunct = pathSysFunctSB.getCharacters();
-	        TreeObjectsDAO objDao = new TreeObjectsDAO();
-	        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct, profile);
-			response.setAttribute(dataResponseSysFunct);
+//		    String ATTR_PATH_SYS_FUNCT = "SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH";
+//          RequestContainer requestContainer = getRequestContainer();
+//          SessionContainer sessionContainer = requestContainer.getSessionContainer();
+//          SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+//          IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//		    SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(ATTR_PATH_SYS_FUNCT);
+//		    String pathSysFunct = pathSysFunctSB.getCharacters();
+//	        TreeObjectsDAO objDao = new TreeObjectsDAO();
+//	        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct, profile);
+//			response.setAttribute(dataResponseSysFunct);
+		    
+			List functionalities = new ArrayList();
+			try {
+				functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+			} catch (EMFUserError e) {
+				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+						"DetailBIObjectsMOdule", 
+						"fillResponse", 
+						"Error loading functionalities", e);
+			}
+			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 		    
 		} catch (Exception e) {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","fillResponse","Cannot fill the response ", e  );
@@ -1107,20 +1182,25 @@ public class DetailBIObjectModule extends AbstractModule {
 	}
 	
 	public void eraseVersion(SourceBean request, SourceBean response) throws EMFUserError {
-		// get path object and name version
+		// get object' id and name version
 		String ver = (String)request.getAttribute(SpagoBIConstants.VERSION);
-		String pathObj = (String)request.getAttribute(SpagoBIConstants.PATH);
-		String pathVer = pathObj + "/template";
+		String idStr = (String)request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+		Integer id = new Integer (idStr);
 		// get user profile for cms operation
 		//SessionContainer permSess = getRequestContainer().getSessionContainer().getPermanentContainer();
 		//IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
-            // try to delete the version
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(id);
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(CMS_BIOBJECTS_PATH);
+			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+			String pathVer = biobjectsPath + "/" + obj.getUuid() + "/template";
+			// try to delete the version
 			CmsManager manager = new CmsManager();
 			DeleteOperation delOp = new DeleteOperation(pathVer, ver);
             manager.execDeleteOperation(delOp);
-			// populate response
-			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(pathObj);
+            // populate response
+            obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(id);
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	        fillResponse(response);
 	        prepareBIObjectDetailPage(response, obj, null, "", ObjectsTreeConstants.DETAIL_MOD, false, false);

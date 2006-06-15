@@ -60,10 +60,9 @@ public class TreeObjectsPublisher implements PublisherDispatcherIFace {
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		// if there are some errors into the errorHandler  return the name for the errors publisher
 		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			return new String("error");
+			return "error";
 		}
-        // if passed the error check get the response of the module
-		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("TreeObjectsModule");
+		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("BIObjectsModule");
 		// if the module response is null throws an error and return the name of the errors publisher
 		if(moduleResponse==null) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
@@ -72,30 +71,50 @@ public class TreeObjectsPublisher implements PublisherDispatcherIFace {
 					            "Module response null");
 			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
 			errorHandler.addError(error);
-			return new String("error");
+			return "error";
 		}
-		// if passed the module response control if the response has already a publisher name setted
-	    String publisherName = (String)moduleResponse.getAttribute(SpagoBIConstants.PUBLISHER_NAME );
-	    if( (publisherName!=null) &&  !(publisherName.trim().equals(""))  ) {
-	       	return publisherName;
-		} 
-        // if no publisher name is set get the actor		
-		String actor = (String)moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
-        // based on actor type return different publisher names           
-		if(actor.equals(SpagoBIConstants.ADMIN_ACTOR)) {
-			String operation = (String)serviceRequest.getAttribute(SpagoBIConstants.OPERATION);
-			if( (operation!=null) && (operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) ) {
-				pubName = new String("treeFunctionalities");
-			} else {
-				pubName = new String("treeAdminObjects");
+		
+		String objectView = (String) moduleResponse.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
+		
+		if (SpagoBIConstants.VIEW_OBJECTS_AS_TREE.equalsIgnoreCase(objectView)) {
+	        // if passed the error check get the response of the module
+			SourceBean treeModuleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("TreeObjectsModule");
+			// if the module response is null throws an error and return the name of the errors publisher
+			if(treeModuleResponse==null) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+						            "TreeObjectsPublisher", 
+						            "getPublisherName", 
+						            "Tree module response null");
+				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
+				errorHandler.addError(error);
+				return "error";
 			}
-		} else if(actor.equals(SpagoBIConstants.DEV_ACTOR)) {
-			pubName = new String("treeDevObjects");
-		} else if(actor.equals(SpagoBIConstants.USER_ACTOR)) {
-			pubName = new String("treeExecObjects");
-		} else if(actor.equals(SpagoBIConstants.TESTER_ACTOR)) {
-			pubName = new String("treeExecObjects");
+			// if passed the module response control if the response has already a publisher name setted
+		    String publisherName = (String)treeModuleResponse.getAttribute(SpagoBIConstants.PUBLISHER_NAME );
+		    if( (publisherName!=null) &&  !(publisherName.trim().equals(""))  ) {
+		       	return publisherName;
+			} 
+	        // if no publisher name is set get the actor		
+			String actor = (String)treeModuleResponse.getAttribute(SpagoBIConstants.ACTOR);
+	        // based on actor type return different publisher names           
+			if(actor.equals(SpagoBIConstants.ADMIN_ACTOR)) {
+				String operation = (String)serviceRequest.getAttribute(SpagoBIConstants.OPERATION);
+				if( (operation!=null) && (operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) ) {
+					pubName = "treeFunctionalities";
+				} else {
+					pubName = "treeAdminObjects";
+				}
+			} else if(actor.equals(SpagoBIConstants.DEV_ACTOR)) {
+				pubName = "treeDevObjects";
+			} else if(actor.equals(SpagoBIConstants.USER_ACTOR)) {
+				pubName = "treeExecObjects";
+			} else if(actor.equals(SpagoBIConstants.TESTER_ACTOR)) {
+				pubName = "treeExecObjects";
+			}
+		} else {
+			pubName = "listBIObjects";
 		}
+
 		return pubName;
 	}
 

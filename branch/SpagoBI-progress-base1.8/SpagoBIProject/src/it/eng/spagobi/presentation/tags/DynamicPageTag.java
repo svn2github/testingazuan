@@ -428,7 +428,7 @@ public class DynamicPageTag extends TagSupport {
 		String backLabel = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.backButt", "messages");
 		
 		PortletURL backUrl = renderResponse.createActionURL();
-		backUrl.setParameter("PAGE", "TreeObjectsPage");
+		backUrl.setParameter("PAGE", "BIObjectsPage");
 		backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 		
 		htmlStream.append("<table>\n");

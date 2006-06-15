@@ -1,6 +1,5 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
 
@@ -21,19 +20,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.bo.dao.hibernate;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.cms.CmsManager;
-import it.eng.spago.cms.CmsNode;
-import it.eng.spago.cms.CmsProperty;
-import it.eng.spago.cms.exceptions.BuildOperationException;
-import it.eng.spago.cms.exceptions.OperationExecutionException;
-import it.eng.spago.cms.operations.DeleteOperation;
-import it.eng.spago.cms.operations.GetOperation;
-import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
@@ -44,7 +34,7 @@ import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFuncRole;
 import it.eng.spagobi.metadata.SbiFuncRoleId;
 import it.eng.spagobi.metadata.SbiFunctions;
-import it.eng.spagobi.metadata.SbiSubreports;
+import it.eng.spagobi.metadata.SbiObjFunc;
 import it.eng.spagobi.services.modules.TreeObjectsModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -85,7 +75,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, functionalityID);
-			funct = toLowFunctionality(hibFunct);
+			funct = toLowFunctionality(hibFunct, false);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -125,7 +115,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
 			if (hibFunct == null) return null;
 			
-			lowFunctionaliy = toLowFunctionality(hibFunct);
+			lowFunctionaliy = toLowFunctionality(hibFunct, false);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -194,6 +184,21 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			hibFunct.setFunctTypeCd(aLowFunctionality.getCodType());
 			hibFunct.setName(aLowFunctionality.getName());
 			hibFunct.setPath(aLowFunctionality.getPath());
+			
+			Integer parentId = aLowFunctionality.getParentId();
+			Criteria parentCriteria = aSession.createCriteria(SbiFunctions.class);
+			Criterion parentCriterion = Expression.eq("functId", parentId);
+			parentCriteria.add(parentCriterion);
+			SbiFunctions hibParentFunct = (SbiFunctions) parentCriteria.uniqueResult();
+			if (hibParentFunct == null){
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+					    "LowFunctionalityDAOHibImpl", 
+					    "modifyLowFunctionality", 
+					    "The parent Functionality with id = " + parentId + " does not exist.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1037);
+			}
+			hibFunct.setParentFunct(hibParentFunct);
+			
 			// commit all changes
 			tx.commit();
 		} catch (HibernateException he) {
@@ -297,6 +302,26 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			hibFunct.setFunctTypeCd(aLowFunctionality.getCodType());
 			hibFunct.setName(aLowFunctionality.getName());
 			hibFunct.setPath(aLowFunctionality.getPath());
+			
+			Integer parentId = aLowFunctionality.getParentId();
+			SbiFunctions hibParentFunct = null;
+			if (parentId != null) {
+				// if it is not the root controls if the parent functionality exists
+				Criteria parentCriteria = aSession.createCriteria(SbiFunctions.class);
+				Criterion parentCriterion = Expression.eq("functId", parentId);
+				parentCriteria.add(parentCriterion);
+				hibParentFunct = (SbiFunctions) parentCriteria.uniqueResult();
+				if (hibParentFunct == null){
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+						    "LowFunctionalityDAOHibImpl", 
+						    "insertLowFunctionality", 
+						    "The parent Functionality with id = " + parentId + " does not exist.");
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 1038);
+				}
+			}
+			// if it is the root the parent functionality is null
+			hibFunct.setParentFunct(hibParentFunct);
+
 			aSession.save(hibFunct);
 			// save roles functionality
 			Set functRoleToSave = new HashSet();
@@ -309,30 +334,30 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// set new roles into sbiFunctions
 			hibFunct.setSbiFuncRoles(functRoleToSave);
 
-            CmsManager manager = new CmsManager();
-			SetOperation setOp = new SetOperation(); 
-			setOp.setPath(aLowFunctionality.getPath());
-			setOp.setType(SetOperation.TYPE_CONTAINER);
-			setOp.setEraseOldProperties(true);
-			List properties = new ArrayList();
-			String[] typePropValues = new String[] { AdmintoolsConstants.LOW_FUNCTIONALITY_TYPE };
-			CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
-            properties.add(proptype);
-            setOp.setProperties(properties);
-			manager.execSetOperation(setOp);
+//          CmsManager manager = new CmsManager();
+//			SetOperation setOp = new SetOperation(); 
+//			setOp.setPath(aLowFunctionality.getPath());
+//			setOp.setType(SetOperation.TYPE_CONTAINER);
+//			setOp.setEraseOldProperties(true);
+//			List properties = new ArrayList();
+//			String[] typePropValues = new String[] { AdmintoolsConstants.LOW_FUNCTIONALITY_TYPE };
+//			CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
+//          properties.add(proptype);
+//          setOp.setProperties(properties);
+//			manager.execSetOperation(setOp);
 			tx.commit();
-		} catch (OperationExecutionException oee) {
-			logException(oee);
-			if (tx != null)
-				tx.rollback();
-
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} catch (BuildOperationException boe) {
-			logException(boe);
-			if (tx != null)
-				tx.rollback();
-
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+//		} catch (OperationExecutionException oee) {
+//			logException(oee);
+//			if (tx != null)
+//				tx.rollback();
+//
+//			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+//		} catch (BuildOperationException boe) {
+//			logException(boe);
+//			if (tx != null)
+//				tx.rollback();
+//
+//			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -357,7 +382,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		Session aSession = null;
 		Transaction tx = null;
 		try {
-			if(hasChild(aLowFunctionality.getPath())) {
+			if(hasChild(aLowFunctionality.getId())) {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
 				params.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
@@ -376,10 +401,10 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			aSession.delete(hibFunct);
 			
-			CmsManager manager = new CmsManager();
-			DeleteOperation delOp = new DeleteOperation();
-			delOp.setPath(aLowFunctionality.getPath());
-			manager.execDeleteOperation(delOp);
+//			CmsManager manager = new CmsManager();
+//			DeleteOperation delOp = new DeleteOperation();
+//			delOp.setPath(aLowFunctionality.getPath());
+//			manager.execDeleteOperation(delOp);
 			
 			tx.commit();
 		} catch (HibernateException he) {
@@ -411,10 +436,12 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * From the Hibernate Low Functionality object at input, gives the corrispondent 
 	 * <code>LowFunctionality</code> object.
 	 * 
-	 * @param hibBIObject	The Hibernate BI object
-	 * @return the corrispondent output <code>BIObject</code>
+	 * @param hibFunct	The Hibernate Low Functionality object
+	 * @param recoverBIObjects If true the <code>LowFunctionality</code> at output will have the 
+	 * list of contained <code>BIObject</code> objects
+	 * @return the corrispondent output <code>LowFunctionality</code>
 	 */
-	private LowFunctionality toLowFunctionality(SbiFunctions hibFunct){
+	public LowFunctionality toLowFunctionality(SbiFunctions hibFunct, boolean recoverBIObjects){
 		
 		LowFunctionality lowFunct = new LowFunctionality();
 		lowFunct.setId(hibFunct.getFunctId());
@@ -423,6 +450,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		lowFunct.setDescription(hibFunct.getDescr());
 		lowFunct.setName(hibFunct.getName());
 		lowFunct.setPath(hibFunct.getPath());
+		SbiFunctions parentFuntionality = hibFunct.getParentFunct();
+		if (parentFuntionality != null)	
+			// if it is not the root find the id of the parent functionality
+			lowFunct.setParentId(parentFuntionality.getFunctId());
+		else 
+			// if it is the root set the parent id to null
+			lowFunct.setParentId(null);
 		
 		List devRolesList = new ArrayList();
 		List testRolesList = new ArrayList();
@@ -462,6 +496,19 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		lowFunct.setDevRoles(devRoles);
 		lowFunct.setTestRoles(testRoles);
 		lowFunct.setExecRoles(execRoles);
+		
+		List biObjects = new ArrayList();
+		if (recoverBIObjects) {
+			BIObjectDAOHibImpl objDAO = new BIObjectDAOHibImpl();
+			Set hibObjFuncs = hibFunct.getSbiObjFuncs();
+			for (Iterator it = hibObjFuncs.iterator(); it.hasNext(); ) {
+				SbiObjFunc hibObjFunc = (SbiObjFunc) it.next();
+				BIObject object = objDAO.toBIObject(hibObjFunc.getId().getSbiObjects());
+				biObjects.add(object);
+			}
+		}
+		
+		lowFunct.setBiObjects(biObjects);
 		
 		return lowFunct;
 	}
@@ -503,38 +550,163 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 
 	/**
+	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(boolean)
+	 * 
+	 */
+	public List loadAllLowFunctionalities(boolean recoverBIObjects) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Query hibQuery = aSession.createQuery(" from SbiFunctions");
+			List hibList = hibQuery.list();
+			
+			Iterator it = hibList.iterator();
+
+			while (it.hasNext()) {
+				realResult.add(toLowFunctionality((SbiFunctions) it.next(), recoverBIObjects));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
+	}
+	
+	/**
+	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadSubLowFunctionalities(java.lang.String, boolean)
+	 * 
+	 */
+	public List loadSubLowFunctionalities(String initialPath, boolean recoverBIObjects) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			// loads folder corresponding to initial path
+			Criterion domainCdCriterrion = Expression.eq("path",
+					initialPath);
+			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
+			criteria.add(domainCdCriterrion);
+			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
+			if (hibFunct == null) return null;
+			realResult.add(toLowFunctionality(hibFunct, recoverBIObjects));
+					
+			// loads sub functionalities
+			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.path like '" + initialPath + "/%' ");
+			List hibList = hibQuery.list();
+			Iterator it = hibList.iterator();
+			while (it.hasNext()) {
+				realResult.add(toLowFunctionality((SbiFunctions) it.next(), recoverBIObjects));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
+	}
+	
+	/**
 	 *
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#hasChild(java.lang.String)
 	 * 
 	 */
-	public boolean hasChild(String path) throws EMFUserError {
-		try{
-			RequestContainer reqCont = RequestContainer.getRequestContainer();
-			SessionContainer sessCont = reqCont.getSessionContainer();
-			SessionContainer permSess = sessCont.getPermanentContainer();
-			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	public boolean hasChild(Integer id) throws EMFUserError {
+		
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
 			
-			CmsManager manager = new CmsManager();
-            GetOperation getOp = new GetOperation();
-			getOp.setPath(path);
-			getOp.setRetriveChildsInformation("true");
-			getOp.setRetriveContentInformation("false");
-			getOp.setRetrivePropertiesInformation("false");
-			getOp.setRetriveVersionsInformation("false");
-			CmsNode cmsnode = manager.execGetOperation(getOp);
-			List childs = cmsnode.getChilds();
-			if(!childs.isEmpty()) {
-				return true;
-			} else {
-				return false;
+			// controls if there are sub folders
+			Criterion parentChildCriterion = Expression.eq("parentFunct.functId", id);
+			Criteria parentCriteria = aSession.createCriteria(SbiFunctions.class);
+			parentCriteria.add(parentChildCriterion);
+			List childFunctions = parentCriteria.list();
+			if (childFunctions != null && childFunctions.size() > 0) return true;
+			
+			// controls if there are objects inside
+			SbiFunctions hibFunct = (SbiFunctions) aSession.load(SbiFunctions.class, id);
+			Set hibObjfunctions = hibFunct.getSbiObjFuncs();
+			if (hibObjfunctions != null && hibObjfunctions.size() > 0) return true;
+//			Criterion objectChildCriterion = Expression.eq("sbiFunction.functId", id);
+//			Criteria objectCriteria = aSession.createCriteria(SbiObjFunc.class);
+//			objectCriteria.add(objectChildCriterion);
+//			List childObjects = objectCriteria.list();
+//			if (childObjects != null && childObjects.size() > 0) return true;
+			
+			tx.commit();
+			
+			return false;
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
 			}
-		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					"LowFunctionalityDAOImpl", 
-					"existByCode", 
-					"Error during recorer of the functionality by code", e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 1003);
 		}
+		
+		
+		
+//		try{
+//			RequestContainer reqCont = RequestContainer.getRequestContainer();
+//			SessionContainer sessCont = reqCont.getSessionContainer();
+//			SessionContainer permSess = sessCont.getPermanentContainer();
+//			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//			
+//			CmsManager manager = new CmsManager();
+//            GetOperation getOp = new GetOperation();
+//			getOp.setPath(path);
+//			getOp.setRetriveChildsInformation("true");
+//			getOp.setRetriveContentInformation("false");
+//			getOp.setRetrivePropertiesInformation("false");
+//			getOp.setRetriveVersionsInformation("false");
+//			CmsNode cmsnode = manager.execGetOperation(getOp);
+//			List childs = cmsnode.getChilds();
+//			if(!childs.isEmpty()) {
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		} catch (Exception e) {
+//			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+//					"LowFunctionalityDAOImpl", 
+//					"hasChild", 
+//					"Error during recovering childs of the functionality", e);
+//			throw new EMFUserError(EMFErrorSeverity.ERROR, 1003);
+//		}
 	}
 	/**
 	 * Deletes a set of inconsistent roles reference from the database, 
@@ -555,23 +727,23 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		
 			Iterator i = rolesSet.iterator();
 			while (i.hasNext()){
-		ArrayList rolesArray = (ArrayList)i.next();
-		Integer functId = (Integer)rolesArray.get(0);
-		Integer roleId = (Integer)rolesArray.get(1);
-		String stateCD = (String)rolesArray.get(2);
-		SbiFunctions sbiFunct = new SbiFunctions();
-		sbiFunct.setFunctId(functId);
+				ArrayList rolesArray = (ArrayList)i.next();
+				Integer functId = (Integer)rolesArray.get(0);
+				Integer roleId = (Integer)rolesArray.get(1);
+				String stateCD = (String)rolesArray.get(2);
+				SbiFunctions sbiFunct = new SbiFunctions();
+				sbiFunct.setFunctId(functId);
 		
-		hql = " from SbiFuncRole as funcRole " + 
-	         "where funcRole.id.function = '" + sbiFunct.getFunctId() + "' AND  funcRole.id.role = '"+ roleId +"'AND funcRole.stateCd ='"+stateCD+"'"; 
+				hql = " from SbiFuncRole as funcRole where funcRole.id.function = '" + sbiFunct.getFunctId() + 
+				"' AND  funcRole.id.role = '"+ roleId +"'AND funcRole.stateCd ='"+stateCD+"'"; 
 			
-			hqlQuery = aSession.createQuery(hql);
-			functions = hqlQuery.list();
+				hqlQuery = aSession.createQuery(hql);
+				functions = hqlQuery.list();
 			
-			Iterator it = functions.iterator();
-			while (it.hasNext()) {
-				aSession.delete((SbiFuncRole) it.next());
-			}	
+				Iterator it = functions.iterator();
+				while (it.hasNext()) {
+					aSession.delete((SbiFuncRole) it.next());
+				}	
 			}
 			tx.commit();
 		} catch (HibernateException he) {

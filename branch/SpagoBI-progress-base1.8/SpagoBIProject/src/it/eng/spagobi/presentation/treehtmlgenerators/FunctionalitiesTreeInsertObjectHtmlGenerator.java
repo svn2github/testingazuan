@@ -24,12 +24,17 @@ package it.eng.spagobi.presentation.treehtmlgenerators;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.services.modules.DetailBIObjectModule;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.PortletUtilities;
 
@@ -53,6 +58,8 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	HttpServletRequest httpRequest = null;
 	int progrJSTree = 0;
 	private IEngUserProfile profile = null;
+	private int dTreeRootId = -100;
+	private String actor = null;
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.
 	 * AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
@@ -66,7 +73,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		
+        
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
@@ -203,7 +210,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	private void addItemForAccessibleTree(StringBuffer htmlStream, SourceBean dataTree, int spaceLeft, boolean isRoot) {
 		List childs = dataTree.getContainedSourceBeanAttributes();		
 		String name = (String)dataTree.getAttribute("name");
-		String path = (String)dataTree.getAttribute("path");
+		//String path = (String)dataTree.getAttribute("path");
 		String codeType = (String)dataTree.getAttribute("codeType");
 		if(isRoot) {
 			htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
@@ -237,6 +244,95 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		htmlStream.append("		divM.style.display='none';\n");
 		htmlStream.append("</SCRIPT>\n");
 	}
+	
+	
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
+		httpRequest = httpReq;
+		renderResponse = (RenderResponse)httpRequest.getAttribute("javax.portlet.response");
+		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
+		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		SourceBean serviceRequest = requestContainer.getServiceRequest();
+		actor = (String) serviceRequest.getAttribute(SpagoBIConstants.ACTOR);
+		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+        profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		ResponseContainer responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+		SourceBean serviceResponse = responseContainer.getServiceResponse();
+		BIObject obj = (BIObject) serviceResponse.getAttribute("DetailBIObjectModule." + DetailBIObjectModule.NAME_ATTR_OBJECT);
+        
+		StringBuffer htmlStream = new StringBuffer();
+		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+		makeConfigurationDtree(htmlStream);
+		String nameTree = PortletUtilities.getMessage("tree.functtree.name" ,"messages");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
+		htmlStream.append("<div id='divmenuFunctIns' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("		menu");
+		htmlStream.append("</div>");
+		htmlStream.append("<table width='100%'>");
+		htmlStream.append("	<tr >");
+		htmlStream.append("		<td width='40px'>&nbsp;</td>");
+		htmlStream.append("		<td>");
+		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
+	   	htmlStream.append("				var nameTree = 'treeFunctIns';\n");
+	   	htmlStream.append("				treeFunctIns = new dTree('treeFunctIns');\n");
+	   	htmlStream.append("	        	treeFunctIns.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
+	   	Iterator it = objectsList.iterator();
+	   	while (it.hasNext()) {
+	   		LowFunctionality folder = (LowFunctionality) it.next();
+	   		if (initialPath != null) {
+	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, obj, true);
+	   			else addItemForJSTree(htmlStream, folder, obj, false);
+	   		} else {
+	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, obj, true);
+	   			else addItemForJSTree(htmlStream, folder, obj, false);
+	   		}
+	   	}
+	   	htmlStream.append("				document.write(treeFunctIns);\n");
+		htmlStream.append("			</script>\n");
+		htmlStream.append("		</td>");
+		htmlStream.append("	</tr>");
+		htmlStream.append("</table>");
+		return htmlStream;
+		
+	}
+
+	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, BIObject obj, boolean isRoot) {
+		
+		String nameLabel = folder.getName();
+		String name = PortletUtilities.getMessage(nameLabel, "messages");
+		String path = folder.getPath();
+		String codeType = folder.getCodType();
+		Integer id = folder.getId();
+		Integer parentId = folder.getParentId();
+
+		if (isRoot) {
+			htmlStream.append("	treeFunctIns.add(" + id + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
+		} else {
+			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
+				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+				if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) || ObjectsAccessVerifier.canDev(path, profile)) {
+					boolean checked = false;
+					if (obj != null) {
+						List funcs = obj.getFunctionalities();
+						if (funcs.contains(id)) checked = true;
+					}
+					htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
+						          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
+						          "', '', '', '" + ObjectsTreeConstants.FUNCT_ID + "', '" + id + "'," + checked + ");\n");
+				} else {
+					htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
+					          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
+					          "', '', '', '', '',false);\n");
+				}
+			} 
+		}
+	}
+
+	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

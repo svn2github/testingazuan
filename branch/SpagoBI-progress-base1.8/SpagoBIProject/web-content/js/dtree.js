@@ -9,7 +9,7 @@
 |--------------------------------------------------*/
 
 // Node object
-function Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue) {
+function Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue, checked) {
 	this.id = id;
 	this.pid = pid;
 	this.name = name;
@@ -23,6 +23,7 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, 
 	this.onclick = onclick;
 	this.checkName = checkName;
 	this.checkValue = checkValue;
+	this.checked = checked;
 	
 	this._is = false;
 	this._ls = false;
@@ -70,8 +71,8 @@ function dTree(objName) {
 };
 */
 // Adds a new node to the node array
-dTree.prototype.add = function(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue) {
-	this.aNodes[this.aNodes.length] = new Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue);
+dTree.prototype.add = function(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue, checked) {
+	this.aNodes[this.aNodes.length] = new Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue, checked);
 };
 
 // Open/close all nodes
@@ -136,7 +137,12 @@ dTree.prototype.node = function(node, nodeId) {
 		if( (node.checkName!='') & (node.checkName!=null) ) {
 			//alert('nodeCheckName' + node.checkName);
 			if( (node.checkValue!='') & (node.checkValue!=null) ) {
-				str += '<input type="checkbox" name="'+node.checkName+'" value="'+node.checkValue+'" /> ';
+				if (node.checked) {
+					str += '<input type="checkbox" name="'+node.checkName+'" value="'+node.checkValue+'" checked="checked" /> ';
+				}
+				else {
+					str += '<input type="checkbox" name="'+node.checkName+'" value="'+node.checkValue+'" /> ';
+				}
 			} else {
 				str += '<input type="checkbox" name="'+node.checkName+'" /> ';
 			}

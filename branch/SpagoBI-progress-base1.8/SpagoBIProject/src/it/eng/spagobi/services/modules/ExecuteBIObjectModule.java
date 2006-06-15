@@ -24,6 +24,7 @@ package it.eng.spagobi.services.modules;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -76,6 +77,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	RequestContainer requestContainer = null;
 	SessionContainer session = null;
 	SessionContainer permanentSession = null;
+	protected String biobjectsPath = null;
 	
 	public void init(SourceBean config) {}
 	
@@ -99,6 +101,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 		permanentSession = session.getPermanentContainer();
 		debug("service", "errorHanlder, requestContainer, session, permanentSession retrived ");
         execContr = new ExecutionController(); 
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(DetailBIObjectModule.CMS_BIOBJECTS_PATH);
+		biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+        
 		try{
 			if(messageExec == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
@@ -145,9 +151,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 		debug("pageCreationHandler", "start pageCreationHandler method");
 		
-		// get the path of the object
-		String path = (String)request.getAttribute(ObjectsTreeConstants.PATH);
-		debug("pageCreationHandler", "using path " + path);
+		// get the id of the object
+		String idStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+		Integer id = new Integer(idStr);
+		debug("pageCreationHandler", "BIObject id = " + id);
 		
 		// get parameters statically defined in portlet config file
 		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
@@ -174,9 +181,9 @@ public class ExecuteBIObjectModule extends AbstractModule
        	if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
        	    (actor.equalsIgnoreCase(SpagoBIConstants.USER_ACTOR)) || 
        		(actor.equalsIgnoreCase(SpagoBIConstants.ADMIN_ACTOR)) )
-       		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(path, profile);
+       		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id, profile);
        	else
-       		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(path);
+       		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id);
        	debug("pageCreationHandler", "correct roles for execution retrived " + correctRoles);
        	
        	// if correct roles is more than one the user has to select one of them
@@ -184,7 +191,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		if( correctRoles.size() > 1 ) {
 			response.setAttribute("selectionRoleForExecution", "true");
 			response.setAttribute("roles", correctRoles);
-			response.setAttribute("path", path);
+			response.setAttribute(ObjectsTreeConstants.OBJECT_ID, id);
 			debug("pageCreationHandler", "more than one correct roles for execution, redirect to the" +
 				  " role selection page"); 		
 			return;
@@ -211,7 +218,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 				
 		// based on the role selected (or the only for the user) load the object and put it in session
-		BIObject obj = execContr.prepareBIObjectInSession(session, path, role, userProvidedParametersStr);
+		BIObject obj = execContr.prepareBIObjectInSession(session, id, role, userProvidedParametersStr);
 		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
 		debug("pageCreationHandler", "object retrived and setted into session");
 		
@@ -416,12 +423,13 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// get the role selected from request
 		String role = (String)request.getAttribute("role");
 		session.setAttribute(SpagoBIConstants.ROLE, role);
-		// get the path of the object
-		String path = (String)request.getAttribute(ObjectsTreeConstants.PATH);
+		// get the id of the object
+		String idStr = (String)request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+		Integer id = new Integer(idStr);
 		// prepare the object in session
 		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);	
 		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
-		BIObject obj = execContr.prepareBIObjectInSession(session, path, role, userProvidedParametersStr);		
+		BIObject obj = execContr.prepareBIObjectInSession(session, id, role, userProvidedParametersStr);		
         // get the current user profile
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		// get the list of the subObjects
@@ -458,7 +466,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         // get name of the subobject
         String subObjName = (String)request.getAttribute("NAME_SUB_OBJECT");
         // get path of the parent object 
-        String path = obj.getPath();
+        String path = biobjectsPath + "/" + obj.getUuid();
         // get cms dao for biobject
         IBIObjectCMSDAO cmsDao = DAOFactory.getBIObjectCMSDAO();
         // delete subobject
@@ -466,7 +474,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         // get from the session the execution role
         String role = (String)session.getAttribute(SpagoBIConstants.ROLE);
         // set data in response
-        response.setAttribute(SpagoBIConstants.PATH , path);
+        response.setAttribute(ObjectsTreeConstants.OBJECT_ID , obj.getId().toString());
         response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
         		 			  SpagoBIConstants.PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT);
         response.setAttribute(SpagoBIConstants.ROLE , role);
@@ -483,7 +491,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		List subObjects = new ArrayList();
 		try {
 			IBIObjectCMSDAO biObjCmsDAO = DAOFactory.getBIObjectCMSDAO();
-			String objectPath = obj.getPath();
+			String objectPath = biobjectsPath + "/" + obj.getUuid();
 			subObjects =  biObjCmsDAO.getAccessibleSubObjects(objectPath, profile);
 		} catch (Exception e) {
 			SpagoBITracer.major("SPAGOBI", 
@@ -668,11 +676,130 @@ public class ExecuteBIObjectModule extends AbstractModule
         	}
         }
         
-        execute(obj, subObj, response);
-       
+		Engine engine = obj.getEngine();
+		Domain engineType = null;
+		try {
+			engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
+		} catch (EMFUserError error) {
+			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"executionSubObjectHandler", 
+		 				"Error retrieving document's engine information", error);
+			 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+			 return;
+		}
+		
+		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
+			
+			try {
+				
+				response.setAttribute("EXECUTION", "true");
+				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+				// instance the driver class
+				String driverClassName = obj.getEngine().getDriverName();
+				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
+			    // get the map of the parameters
+				Map mapPars = null;
+				String type = obj.getBiObjectTypeCode();
+				if(type.equalsIgnoreCase("OLAP")) {
+					// get the user profile
+					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				    mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
+				} else {
+					mapPars = aEngineDriver.getParameterMap(obj, subObj);
+				}
+				
+				// callback event id
+				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			    String user = (String)profile.getUserUniqueIdentifier();
+			    System.out.println("Registering event for user: " + user);
+				Integer id =  EventsManager.getInstance().registerEvent(user);
+				System.out.println("Event id: " + id);
+			    mapPars.put("event", id.toString());
+			    mapPars.put("user", user);
+			    
+				// set into the reponse the parameters map	
+				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
+			
+			} catch (Exception e) {
+				 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+						 				this.getClass().getName(), 
+						 				"executionSubObjectHandler", 
+						 				"Error During object execution", e);
+			   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+			}	
+			
+		} else {
+			
+			String className = engine.getClassName();
+			debug("executionSubObjectHandler", "Try instantiating class " + className + " for internal engine " + engine.getName() + "...");
+			InternalEngineIFace internalEngine = null;
+			// tries to instantiate the class for the internal engine
+			try {
+				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
+			} catch (ClassNotFoundException cnfe) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+			 				this.getClass().getName(), 
+			 				"executionSubObjectHandler", 
+			 				"The class " + className + " for internal engine " + engine.getName() + " was not found.", cnfe);
+				Vector params = new Vector();
+				params.add(className);
+				params.add(engine.getName());
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params)); 
+			} catch (Exception e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"executionSubObjectHandler", 
+		 				"Error while instantiating class " + className, e);
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+			}
+			
+			debug("executionSubObjectHandler", "Class " + className + " instantiated successfully. Now engine's execution starts.");
+			
+			// starts engine's execution
+			try {
+				internalEngine.executeSubObject(this.getRequestContainer(), obj, response, subObj);
+			} catch (EMFUserError e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"executionSubObjectHandler", 
+		 				"Error while engine execution", e);
+				errorHandler.addError(e);
+			} catch (Exception e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+		 				this.getClass().getName(), 
+		 				"executionSubObjectHandler", 
+		 				"Error while engine execution", e);
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+			}
+			
+		}
+        
+        
+        
+        // different kind of object need different kind of subexecution
+        // if the object is a datamart exec the internal logic
+//        String type = obj.getBiObjectTypeCode();
+//        if(type.equalsIgnoreCase("DATAMART"))  {
+//        	execQbe(obj, response, subObjName);
+//            return;
+//        } 
+//        // if the object is not a datamart instances the driver and get the parameter map
+//        response.setAttribute("EXECUTION", "true");
+//		response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+//		String driverClassName = obj.getEngine().getDriverName();
+//		IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
+//		Map mapPars = null;
+//		if(type.equalsIgnoreCase("OLAP")) {
+//			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//		    mapPars = aEngineDriver.getParameterMap(obj, subObj,  profile);
+//		} else {
+//			mapPars = aEngineDriver.getParameterMap(obj, subObj);
+//		}
+//        // set into the reponse the parameters map	
+//		response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);        
 	}
 	
-
 	
 	/**
 	 * Trace a debug message into the log

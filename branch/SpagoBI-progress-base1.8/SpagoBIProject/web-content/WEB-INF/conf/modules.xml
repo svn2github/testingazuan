@@ -545,8 +545,15 @@
      	<CONFIG/>
     </MODULE>
     
+    <MODULE class="it.eng.spagobi.services.modules.BIObjectsModule" name="BIObjectsModule">
+     	<CONFIG/>
+    </MODULE>
+    
     <MODULE class="it.eng.spagobi.services.modules.TreeObjectsModule" name="TreeObjectsModule">
      	<CONFIG/>
+    </MODULE>
+    
+    <MODULE class="it.eng.spagobi.services.modules.ListBIObjectsModule" name="ListBIObjectsModule">
     </MODULE>
     
     <MODULE class="it.eng.spagobi.services.modules.SaveConfigurationModule" name="SaveConfigurationModule">

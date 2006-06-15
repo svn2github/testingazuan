@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.bo;
 
 import java.io.Serializable;
+import java.util.List;
 
 import it.eng.spago.security.IEngUserProfile;
 
@@ -33,6 +34,8 @@ import it.eng.spago.security.IEngUserProfile;
 public class LowFunctionality  implements Serializable  {
 
 	private Integer id;
+	
+	private Integer parentId;
 
 	private String name = "";
 
@@ -51,6 +54,8 @@ public class LowFunctionality  implements Serializable  {
 	private Role[] testRoles = null;
 
 	private IEngUserProfile profile = null;
+	
+	private List biObjects = null;
 	
 	/**
 	 * 
@@ -191,6 +196,22 @@ public class LowFunctionality  implements Serializable  {
 	 */
 	public void setTestRoles(Role[] testRoles) {
 		this.testRoles = testRoles;
+	}
+
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
+
+	public List getBiObjects() {
+		return biObjects;
+	}
+
+	public void setBiObjects(List biObjects) {
+		this.biObjects = biObjects;
 	}
 
 	

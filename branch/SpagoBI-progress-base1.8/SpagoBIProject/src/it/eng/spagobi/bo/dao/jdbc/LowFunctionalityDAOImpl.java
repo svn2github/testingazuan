@@ -523,6 +523,31 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 	public void deleteInconsistentRoles (Set set) throws EMFUserError{
 		
 	}
+
+	public boolean hasChild(Integer id) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public List loadAllLowFunctionalities() throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List loadSubLowFunctionalities(String initialPath) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List loadAllLowFunctionalities(boolean recoverBIObjects) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List loadSubLowFunctionalities(String initialPath, boolean recoverBIObjects) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 

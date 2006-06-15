@@ -32,6 +32,7 @@ import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
@@ -39,6 +40,7 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.InternalEngineIFace;
+import it.eng.spagobi.services.modules.DetailBIObjectModule;
 import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -138,8 +140,10 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 			String dmName = obj.getName();
 			String dmDescription = obj.getDescription();
 			String dmLabel = obj.getLabel();
-			
-			String dmPath = obj.getPath();
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(DetailBIObjectModule.CMS_BIOBJECTS_PATH);
+			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+			String dmPath = biobjectsPath + "/" + obj.getUuid();
 			DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
 			dmModel.setName(dmName);
 			dmModel.setDescription(dmDescription);

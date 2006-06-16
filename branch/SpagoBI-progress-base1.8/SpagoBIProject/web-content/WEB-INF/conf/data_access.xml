@@ -6,7 +6,7 @@
 	<!-- ====================================================================================== -->
 	<!--  Foodmart on HSQL db																	--> 
 	<!-- ====================================================================================== -->
-	 <CONNECTION-POOL connectionPoolName="hsqlfoodmart" 
+	 <CONNECTION-POOL connectionPoolName="dwh" 
    					connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
    					connectionPoolType="native" connectionDescription="Foodmart Data Warehouse on HSQL DB">
       <CONNECTION-POOL-PARAMETER parameterName="initialContext" parameterValue="java:comp/env"/>
@@ -20,6 +20,7 @@
    	<!-- ====================================================================================== -->
 	<!--  Foodmart on MySQL db																	--> 
 	<!-- ====================================================================================== -->
+	<!-- 
 	 <CONNECTION-POOL connectionPoolName="mysqlfoodmart" 
    					connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
    					connectionPoolType="native" connectionDescription="Foodmart Data Warehouse on MySQL DB">
@@ -30,10 +31,12 @@
       							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
       							 parameterType=""/>
 	</CONNECTION-POOL> 
+    -->
    
    	<!-- ====================================================================================== -->
 	<!--  OracleSH																				--> 
 	<!-- ====================================================================================== -->
+	<!-- 
 	<CONNECTION-POOL connectionPoolName="oraclesh" 
    					connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
    					connectionPoolType="native" connectionDescription="Oracle SH Data Warehouse">
@@ -44,7 +47,7 @@
       							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
       							 parameterType=""/>
    	</CONNECTION-POOL> 
-
+    -->
 
   	<!-- ====================================================================================== -->
 	<!--  SpagoBI metadata db																	--> 
@@ -65,9 +68,11 @@
 
 
    <CONNECTION-MANAGER>
-      <REGISTER-POOL registeredPoolName="hsqlfoodmart"/>
+      <REGISTER-POOL registeredPoolName="dwh"/>
+      <!-- 
       <REGISTER-POOL registeredPoolName="mysqlfoodmart"/>
       <REGISTER-POOL registeredPoolName="oraclesh"/>
+      -->
       <REGISTER-POOL registeredPoolName="spagobi"/>
    </CONNECTION-MANAGER>
    

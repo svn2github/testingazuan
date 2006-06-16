@@ -71,14 +71,10 @@ public class HJasperRunner {
 		buildPdfReportFromTemplate();
 	}
 	
-	public void buildPdfReportFromQuery(File file) {
-		System.out.println("buildPdfReportFromQuery ...");
+	public void buildPdfReportFromQuery(File file) {		
 		templateFile = file;
-		buildTemplateFromQuery();
-		System.out.println("... buildTemplateFromQuery");
-		buildPdfReportFromTemplate();
-		System.out.println("... buildPdfReportFromTemplate()");
-		System.out.println("... buildPdfReportFromQuery");
+		buildTemplateFromQuery();		
+		buildPdfReportFromTemplate();		
 	}
 	
 	public void buildTemplateFromQuery() {			
@@ -91,16 +87,13 @@ public class HJasperRunner {
 	}
 	
 	public JasperReport compileReport(){
-		JasperReport report  = null;
-		
-		System.out.println("compilling report " + templateFile);
+		JasperReport report  = null;		
 		
 		try {
 			report = JasperCompileManager.compileReport(templateFile.toString());
 		} catch (JRException e) {
 			e.printStackTrace();
-		}
-		System.out.println("report compiled " + report);
+		}		
 		return report;
 	}
 	
@@ -110,24 +103,18 @@ public class HJasperRunner {
 		Session session = getHibernateSessionFactory().openSession();
 		params = new HashMap();
 		params.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);	
-		System.out.println("parameter getted");
 		return params;
 	}
 	
 	public void runReportToPdfFile(JasperReport report, Map params, File outFile) {
-		
-		System.out.println("runReportToPdfFile");
-		
+						
 		byte[] output = null;
 		try {
-			System.out.println(report);
-			System.out.println(params.get(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION));
 			output = JasperRunManager.runReportToPdf(report, params);
 		} catch (JRException e) {
 			e.printStackTrace();
 			System.exit(1);
-		}
-		System.out.println("Filling ended succesfully");
+		}		
 				
 		try {
 			FileOutputStream writer = new FileOutputStream(outFile);
@@ -138,8 +125,6 @@ public class HJasperRunner {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
-		System.out.println("Report saved succesfully to file " + outFile);
 	}
 	
 	public void updateCurrentClassLoader(){
@@ -156,8 +141,7 @@ public class HJasperRunner {
 		
 		// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 		String webinflibPath = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
-		System.out.println("webinflibPath" + webinflibPath);
-		
+				
 		// get all jar file names in the jasper classpath		
 		StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
 		File f = new File(webinflibPath);
@@ -180,13 +164,11 @@ public class HJasperRunner {
 		
 		
 		jasperReportClassPath = System.getProperty("jasper.reports.compile.class.path");
-		System.err.println("jasper.reports.compile.class.path [OLD]: " + System.getProperty("jasper.reports.compile.class.path"));
-
+		
 		if(jasperReportClassPath != null && !jasperReportClassPath.equalsIgnoreCase("")) 
 			jasperReportClassPath += System.getProperty("path.separator");
 		jasperReportClassPath += jarFile.toString();		
 		System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
-		System.out.println("jasper.reports.compile.class.path: " + System.getProperty("jasper.reports.compile.class.path"));
 	}
 	
 	public SessionFactory getHibernateSessionFactory() {
@@ -255,9 +237,6 @@ public class HJasperRunner {
 		fileName += "." + newExtension; 
 		
 		newFile = new File(fileName);
-		
-		System.out.println("Old file: " + file);
-		System.out.println("New file: " + newFile);
 		
 		return newFile;
 	}

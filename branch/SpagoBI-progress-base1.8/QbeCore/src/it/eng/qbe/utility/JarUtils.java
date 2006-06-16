@@ -77,8 +77,6 @@ public class JarUtils {
 
 				ZipEntry ze = (ZipEntry) jarEntries.nextElement();
 				
-				//System.out.print(ze.getName());
-				//System.out.println(" -> " + getFileName(ze.getName()));
 				
 				String fileName = getFileName(ze.getName());
 				

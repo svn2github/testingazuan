@@ -36,7 +36,6 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		templateStr = replaceParam(templateStr, "query", query);
 		templateStr = replaceParam(templateStr, "fields", getFieldsBlock());
 		templateStr = replaceParam(templateStr, "body", getColumnHeaderBlock() + getDetailsBlock());
-		System.out.println(templateStr);
 		return templateStr;
 	}
 	

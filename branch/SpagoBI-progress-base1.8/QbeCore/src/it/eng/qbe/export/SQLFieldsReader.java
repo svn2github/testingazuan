@@ -48,7 +48,6 @@ public class SQLFieldsReader implements IFieldsReader {
                          getJdbcTypeClass(rsmd, i) );
                  
             	 queryFields.add( field );
-            	 System.out.println(field.getName() + ", "+ field.getClassType());
              }
          }
          catch(Exception e) {

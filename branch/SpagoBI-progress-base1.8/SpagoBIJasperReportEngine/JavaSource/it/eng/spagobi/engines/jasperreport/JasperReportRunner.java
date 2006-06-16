@@ -6,10 +6,15 @@
  */
 package it.eng.spagobi.engines.jasperreport;
 
+import it.businesslogic.ireport.Report;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,8 +24,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -37,6 +44,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
+import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
@@ -49,6 +58,11 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+
+import sun.misc.BASE64Encoder;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * Jasper Report implementation built to provide all methods to
@@ -235,8 +249,17 @@ public class JasperReportRunner {
 		    	if(mimeType == null) mimeType = "application/pdf";
 		    	servletResponse.setContentType(mimeType);
 		    	if(exporter == null) exporter = new JRPdfExporter(); 	
-		    } 		
-		    else {
+		    } else if (outputType.equalsIgnoreCase("JPG"))	{	
+		    	byte[] bytes = getImageBytes(report, jasperPrint);
+		    	if(mimeType == null) mimeType = "application/jpeg";
+		        out.write(bytes);
+		    	return;
+		    } else if (outputType.equalsIgnoreCase("JPGBASE64"))	{	
+		    	byte[] bytes = getImagesBase64Bytes(report, jasperPrint);
+		    	if(mimeType == null) mimeType = "text/plain";
+		        out.write(bytes);
+		    	return;
+		    } else {
 		    	if(mimeType != null && exporter != null) servletResponse.setContentType(mimeType);
 		    	else {
 		    		logger.warn("Impossible to load exporter for type " + outputType);
@@ -276,6 +299,117 @@ public class JasperReportRunner {
 			
 		}
 	}	
+	
+	
+	
+	private byte[] getImagesBase64Bytes(JasperReport report, JasperPrint jasperPrint) {
+		byte[] bytes = new byte[0];
+		try {
+			String message = "<IMAGES>";
+			List bufferedImages = generateReportImages(report, jasperPrint);
+			Iterator iterImgs = bufferedImages.iterator();
+			int count = 1;
+			while(iterImgs.hasNext()){
+				message += "<IMAGE page=\""+count+"\">";
+				BufferedImage image = (BufferedImage)iterImgs.next();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(baos);
+				encoder.encode(image);
+				byte[] byteImg = baos.toByteArray();
+				baos.close();
+				BASE64Encoder encoder64 = new BASE64Encoder();
+				String encodedImage = encoder64.encode(byteImg);
+				message += encodedImage;
+				message += "</IMAGE>";
+				count ++;
+			}
+			message += "</IMAGES>";
+			bytes = message.getBytes();
+		} catch (Exception e) {
+			logger.error("Error while producing byte64 encoding of the report images", e);
+		}
+		return bytes;
+	}
+	
+	
+	
+	private byte[] getImageBytes(JasperReport report, JasperPrint jasperPrint) {
+		byte[] bytes = new byte[0];
+		try {
+			List bufferedImages = generateReportImages(report, jasperPrint);
+			// calculate dimension of the final page
+			Iterator iterImgs = bufferedImages.iterator();
+			int totalHeight = 0;
+			int totalWidth = 0;
+			while(iterImgs.hasNext()){
+				BufferedImage image = (BufferedImage)iterImgs.next();
+				int hei = image.getHeight();
+				int wid = image.getWidth();
+				totalHeight += hei;
+				totalWidth = wid;
+			}
+			// create an unique buffer image
+			BufferedImage finalImage = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+			Graphics2D finalGr2 = finalImage.createGraphics();
+			// append all images to the final
+			iterImgs = bufferedImages.iterator();
+			int y = 0;
+			int x = 0;
+			while(iterImgs.hasNext()){
+				BufferedImage image = (BufferedImage)iterImgs.next();
+				int hei = image.getHeight();
+				finalGr2.drawImage(image, new AffineTransform(1f,0f,0f,1f,x,y), null);
+				y += hei;
+			}
+			// gets byte of the jpeg image 
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(baos);
+			encoder.encode(finalImage);
+			bytes = baos.toByteArray();
+			baos.close();
+		} catch (Exception e) {
+			logger.error("Error while producing jpg image of the report", e);
+		}
+		return bytes;
+	}
+	
+	
+	
+	
+	
+	private List generateReportImages(JasperReport report, JasperPrint jasperPrint) {
+		List bufferedImages = new ArrayList();
+		try{
+			int height = report.getPageHeight();
+			int width = report.getPageWidth();
+	    	boolean export = true;
+			int index = 0;
+			while(export==true){
+				BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		    	Graphics2D gr2 = image.createGraphics();
+		    	JRExporter exporter = new JRGraphics2DExporter();
+		    	exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+		    	exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, gr2 );
+				exporter.setParameter(JRGraphics2DExporterParameter.PAGE_INDEX, new Integer(index));
+				try{
+					exporter.exportReport();
+				} catch(Exception e) {
+					export = false;
+					continue;
+				}
+				index++;
+				bufferedImages.add(image);	
+			}
+		} catch (Exception e) {
+			logger.error("Error while producing jpg images of the report", e);
+		}
+		return bufferedImages;
+	}
+	
+	
+	
+	
+	
 	
 	private File[] compileSubreports(Map params, File destDir) throws JRException {
 		

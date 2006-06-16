@@ -45,8 +45,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 	</portlet>
 
 
-
-
    <portlet>
         <description>Static Settings</description>		
         <portlet-name>SBISettings</portlet-name>		

@@ -955,7 +955,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aBIObject.setLabel(hibBIObject.getLabel());
 			aBIObject.setName(hibBIObject.getName());
 			
-			//aBIObject.setPath(hibBIObject.getPath());
+			aBIObject.setPath(hibBIObject.getPath());
 			aBIObject.setUuid(hibBIObject.getUuid());
 			aBIObject.setRelName(hibBIObject.getRelName());
 			aBIObject.setStateCode(hibBIObject.getStateCode());
@@ -1063,6 +1063,37 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 		}
 		return realResult;
+	}
+
+
+
+
+
+	public BIObject loadBIObjectForDetail(String path) throws EMFUserError {
+		BIObject biObject = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = " from SbiObjects where path = '" + path + "'";
+			Query hqlQuery = aSession.createQuery(hql);
+			SbiObjects hibObject = (SbiObjects)hqlQuery.uniqueResult();
+			if (hibObject == null) return null;
+			biObject = toBIObject(hibObject);
+			gatherCMSInformation(biObject);
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return biObject;
 	}
 
 }

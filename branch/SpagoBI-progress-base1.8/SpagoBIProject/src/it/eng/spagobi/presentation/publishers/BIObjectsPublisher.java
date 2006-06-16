@@ -28,7 +28,6 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 /**
@@ -41,7 +40,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
  * 
  * @author sulis
  */
-public class TreeObjectsPublisher implements PublisherDispatcherIFace {
+public class BIObjectsPublisher implements PublisherDispatcherIFace {
 
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
@@ -62,17 +61,22 @@ public class TreeObjectsPublisher implements PublisherDispatcherIFace {
 		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			return "error";
 		}
-		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("BIObjectsModule");
+		SourceBean moduleResponse = (SourceBean) responseContainer.getServiceResponse().getAttribute("BIObjectsModule");
 		// if the module response is null throws an error and return the name of the errors publisher
-		if(moduleResponse==null) {
+		if (moduleResponse == null) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					            "TreeObjectsPublisher", 
+					            "BIObjectsPublisher", 
 					            "getPublisherName", 
 					            "Module response null");
 			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
 			errorHandler.addError(error);
 			return "error";
 		}
+		
+	    String publisherName = (String) moduleResponse.getAttribute(SpagoBIConstants.PUBLISHER_NAME );
+	    if (publisherName != null &&  !publisherName.trim().equals("")) {
+	       	return publisherName;
+		} 
 		
 		String objectView = (String) moduleResponse.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
 		
@@ -82,18 +86,13 @@ public class TreeObjectsPublisher implements PublisherDispatcherIFace {
 			// if the module response is null throws an error and return the name of the errors publisher
 			if(treeModuleResponse==null) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-						            "TreeObjectsPublisher", 
+						            "BIObjectsPublisher", 
 						            "getPublisherName", 
 						            "Tree module response null");
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
 				errorHandler.addError(error);
 				return "error";
 			}
-			// if passed the module response control if the response has already a publisher name setted
-		    String publisherName = (String)treeModuleResponse.getAttribute(SpagoBIConstants.PUBLISHER_NAME );
-		    if( (publisherName!=null) &&  !(publisherName.trim().equals(""))  ) {
-		       	return publisherName;
-			} 
 	        // if no publisher name is set get the actor		
 			String actor = (String)treeModuleResponse.getAttribute(SpagoBIConstants.ACTOR);
 	        // based on actor type return different publisher names           

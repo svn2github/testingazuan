@@ -31,7 +31,7 @@
    addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
   
    PortletURL viewListUrl = renderResponse.createActionURL();
-   viewListUrl.setParameter("PAGE", "BIObjectsPage");
+   viewListUrl.setParameter("PAGE", it.eng.spagobi.services.modules.BIObjectsModule.MODULE_PAGE);
    viewListUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
    viewListUrl.setParameter(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
 

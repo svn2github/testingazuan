@@ -11,13 +11,19 @@
         		<CONDITIONS>
         			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_TREE" />
         		</CONDITIONS>
-        		<CONSEQUENCES/>
+        		<CONSEQUENCES>
+        			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ACTOR"/>
+        			<PARAMETER name="PATH_SUBTREE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.PATH_SUBTREE"/>
+  				</CONSEQUENCES> 
       		</DEPENDENCE>
       		<DEPENDENCE source="BIObjectsModule" target="ListBIObjectsModule">
         		<CONDITIONS>
         			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_LIST" />
         		</CONDITIONS>
-        		<CONSEQUENCES/>
+        		<CONSEQUENCES>
+        			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ACTOR"/>
+        			<PARAMETER name="PATH_SUBTREE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.PATH_SUBTREE"/>
+  				</CONSEQUENCES> 
       		</DEPENDENCE>
     	</DEPENDENCIES>
     	<MODULES>
@@ -71,14 +77,17 @@
       		</DEPENDENCE>
       		<DEPENDENCE source="LOGIN_PAGE_SBI_FUNCTIONALITY" target="BIObjectsModule">
         		<CONDITIONS/>
-				<CONSEQUENCES/>
+        		<CONSEQUENCES>
+        			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="USER_ACTOR"/>
+  				</CONSEQUENCES> 
       		</DEPENDENCE>
       		<DEPENDENCE source="BIObjectsModule" target="TreeObjectsModule">
         		<CONDITIONS>
         			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_TREE" />
         		</CONDITIONS>
         		<CONSEQUENCES>
-        			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="USER_ACTOR"/>
+        			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ACTOR"/>
+        			<PARAMETER name="PATH_SUBTREE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.PATH_SUBTREE"/>
   				</CONSEQUENCES>        		
       		</DEPENDENCE>
       		<DEPENDENCE source="BIObjectsModule" target="ListBIObjectsModule">
@@ -86,7 +95,8 @@
         			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_LIST" />
         		</CONDITIONS>
         		<CONSEQUENCES>
-        			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="USER_ACTOR"/>
+        			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ACTOR"/>
+        			<PARAMETER name="PATH_SUBTREE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.PATH_SUBTREE"/>
   				</CONSEQUENCES> 
       		</DEPENDENCE>      		
     	</DEPENDENCIES>

@@ -608,10 +608,10 @@
   	</PUBLISHER>
   	
   	
-  	<PUBLISHER name="TreeObjectsPubJ">
+  	<PUBLISHER name="BIObjectsPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.TreeObjectsPublisher"/>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.BIObjectsPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -691,11 +691,11 @@
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
-                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ACTOR" />
-                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.OBJECT_ID" />
-                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.PARAMETERS" />
-     			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.ROLE" />
-                <PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="TreeObjectsModule.MODALITY" />
+                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ACTOR" />
+                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.OBJECT_ID" />
+                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.PARAMETERS" />
+     			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ROLE" />
+                <PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.MODALITY" />
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
 				<PARAMETER name="NEW_SESSION" type="ABSOLUTE" scope="" value="true" />
 			</RESOURCES>

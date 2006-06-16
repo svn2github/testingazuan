@@ -32,6 +32,8 @@ import it.eng.spago.security.IEngUserProfile;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controls the Anonymous CMS User Profile.
@@ -43,18 +45,16 @@ public class AnonymousCMSUserProfile implements IEngUserProfile{
 
 	private String userUniqueIdentifier = null;
 	private Collection roles = null;
-	public AnonymousCMSUserProfile(){
-		this.userUniqueIdentifier = "anonymous";
-		this.roles = new ArrayList();
-		this.roles.add("anonymous");
-	}
+	private Map userAttributes = new HashMap();
+	
 	
 	public AnonymousCMSUserProfile(String userName){
 		this.userUniqueIdentifier = userName;
 		this.roles = new ArrayList();
 		this.roles.add("anonymous");
+		
+		this.userAttributes.put("password", userName);
 	}
-	
 	
 	/**
 	 * @see it.eng.spago.security.IEngUserProfile#getUserUniqueIdentifier()
@@ -67,8 +67,7 @@ public class AnonymousCMSUserProfile implements IEngUserProfile{
 	 * @see it.eng.spago.security.IEngUserProfile#getUserAttribute(java.lang.String)
 	 */
 	public Object getUserAttribute(String arg0) throws EMFInternalError {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userAttributes.get(arg0);
 	}
 
 	/**
@@ -116,6 +115,11 @@ public class AnonymousCMSUserProfile implements IEngUserProfile{
 	public void setApplication(String arg0) throws EMFInternalError {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Collection getUserAttributeNames() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

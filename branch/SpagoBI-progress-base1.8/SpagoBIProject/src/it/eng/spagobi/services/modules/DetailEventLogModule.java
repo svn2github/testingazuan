@@ -46,14 +46,12 @@ public class DetailEventLogModule extends AbstractModule {
 	}
 	
 		
-	public void service(SourceBean request, SourceBean response) throws Exception {
+	public void service(SourceBean request, SourceBean response) throws Exception {	
 		
-		System.out.println(">>> DetailEventLogModule <<<");
 		SessionContainer permanentSession =  getRequestContainer().getSessionContainer().getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		System.out.println("DetailEventLogModule ---> " + profile);
 		
-		
+				
 		String idStr = (String)request.getAttribute("id");
 		String userStr = (String)request.getAttribute("user");
 		String dateStr = (String)request.getAttribute("date");

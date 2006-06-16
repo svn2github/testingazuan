@@ -22,6 +22,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.presentation.listobjectshtmlgenerators;
 
 import it.eng.spago.paginator.basic.ListIFace;
+<<<<<<< .mine
+import it.eng.spago.paginator.basic.PaginatorIFace;
+import it.eng.spago.paginator.basic.impl.GenericList;
+import it.eng.spago.paginator.basic.impl.GenericPaginator;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.services.modules.BIObjectsModule;
+import it.eng.spagobi.services.modules.DetailBIObjectModule;
+import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
+import it.eng.spagobi.services.modules.TreeObjectsModule;
+import it.eng.spagobi.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
 
 import javax.servlet.http.HttpServletRequest;
 

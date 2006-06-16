@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.presentation.listobjectshtmlgenerators;
 
 import it.eng.spago.paginator.basic.ListIFace;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -463,42 +462,7 @@ public class ListObjectsHtmlGeneratorExecImpl implements IListObjectsHtmlGenerat
 //			if ((columnfilter == null) || (columnfilter.trim().equals(""))) {
 //				return list;
 //			}
-//			String typeFilter = (String)_serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
-//			if ((typeFilter == null) || (typeFilter.trim().equals(""))) {
-//				return list;
-//			}
-//			PaginatorIFace newPaginator = new GenericPaginator();
-//			newPaginator.setPageSize(paginator.getPageSize());
-//			SourceBean allrowsSB = paginator.getAll();
-//			rows = allrowsSB.getAttributeAsList("ROW");
-//			Iterator iterRow = rows.iterator();
-//			while (iterRow.hasNext()) {
-//				SourceBean row = (SourceBean) iterRow.next();
-//				String value = (String) row.getAttribute(columnfilter);
-//				if (value == null)
-//					value = "";
-//				value = value.toUpperCase();
-//				if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER)) {
-//					if (value.trim().startsWith(valuefilter))
-//						newPaginator.addRow(row);
-//				} else if (typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER)) {
-//					if (value.trim().endsWith(valuefilter))
-//						newPaginator.addRow(row);
-//				} else if (typeFilter
-//						.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER)) {
-//					if (value.indexOf(valuefilter) != -1)
-//						newPaginator.addRow(row);
-//				} else if (typeFilter
-//						.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER)) {
-//					if (value.equals(valuefilter)
-//							|| value.trim().equals(valuefilter))
-//						newPaginator.addRow(row);
-//				}
-//			}
-//			
-//			list = new GenericList();
-//			list.setPaginator(newPaginator);
-//			
+
 //		}
 //		
 //		return list;

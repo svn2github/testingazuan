@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.presentation.listobjectshtmlgenerators;
 
 import it.eng.spago.paginator.basic.ListIFace;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -222,6 +221,7 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
 //				htmlStream.append(" <td width='40px' class='" + rowClass + "' valign='top'>\n");
 //				createExecuteObjectLink(path, htmlStream);
 //				htmlStream.append(" </td>\n");
+
 //				htmlStream.append(" <td width='40px' class='" + rowClass + "' valign='top'>\n");
 //				createDetailObjectLink(path, htmlStream);
 //				htmlStream.append(" </td>\n");
@@ -232,6 +232,7 @@ public class ListObjectsHtmlGeneratorDevImpl implements IListObjectsHtmlGenerato
 //				createEraseObjectLink(path, htmlStream);
 //				htmlStream.append(" </td>\n");
 //			}
+
 //		}
 //		htmlStream.append(" </table>\n");
 //		

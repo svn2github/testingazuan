@@ -32,7 +32,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
-import it.eng.spago.validation.ValidatorLocator;
+import it.eng.spago.validation.impl.ValidatorLocator;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.validation.SpagoURLValidator;
 

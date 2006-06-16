@@ -34,6 +34,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.UtilitiesConstants;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -45,16 +46,8 @@ import java.util.Set;
 
 import javax.portlet.PortletRequest;
 
-
-
-
-
 /**
- * 
  * Contains some SpagoBI's general utilities.
- * 
- * @author zoppello
- *
  */
 public class GeneralUtilities {
 	/**
@@ -365,5 +358,42 @@ public class GeneralUtilities {
         */
 	}
 	
+	
+	/**
+	 * Delete a folder and its contents
+	 * @param dir The java file object of the directory 
+	 * @return the result of the operation 
+	 */ 
+	public static boolean deleteDir(File dir) {
+		 if(dir.isDirectory()) {
+			 String[] children = dir.list();
+			 for (int i=0; i<children.length; i++) {
+				 boolean success = deleteDir(new File(dir, children[i]));
+				 if (!success) {
+					 return false;
+				 }
+			 }
+		 }
+		 return dir.delete();
+	 }
+	
+	
+	/**
+	 * Delete contents of a directory
+	 * @param dir The java file object of the directory 
+	 * @return the result of the operation 
+	 */ 
+	public static boolean deleteContentDir(File dir) {
+		 if(dir.isDirectory()) {
+			 String[] children = dir.list();
+			 for (int i=0; i<children.length; i++) {
+				 boolean success = deleteDir(new File(dir, children[i]));
+				 if (!success) {
+					 return false;
+				 }
+			 }
+		 }
+		 return true;
+	 }
 	
 }

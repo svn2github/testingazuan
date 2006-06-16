@@ -135,5 +135,7 @@ public class SpagoBIConstants {
 	public static final String PUBLISHER_NAME = "PUBLISHER_NAME";
 	public static final String PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT = "loopbackAfterSubObjectDeletion";
 	public static final String PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC = "loopbackSingleObjectExecution";
+	
+	public final static String CMS_BIOBJECTS_PATH = "CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH";
 
 }

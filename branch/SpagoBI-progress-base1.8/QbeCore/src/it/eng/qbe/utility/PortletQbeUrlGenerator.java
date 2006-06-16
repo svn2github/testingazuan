@@ -1,6 +1,5 @@
 package it.eng.qbe.utility;
 
-import it.eng.qbe.wizard.SelectClauseSourceBeanImpl;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
 

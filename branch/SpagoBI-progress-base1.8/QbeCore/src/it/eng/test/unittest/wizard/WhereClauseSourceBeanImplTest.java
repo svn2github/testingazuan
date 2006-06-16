@@ -1,12 +1,13 @@
 package it.eng.test.unittest.wizard;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.qbe.wizard.IWhereClause;
 import it.eng.qbe.wizard.IWhereField;
 import it.eng.qbe.wizard.WhereClauseSourceBeanImpl;
 import it.eng.qbe.wizard.WhereFieldSourceBeanImpl;
+
+import java.util.Iterator;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class WhereClauseSourceBeanImplTest extends TestCase {

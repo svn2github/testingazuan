@@ -1,12 +1,13 @@
 package it.eng.test.unittest.wizard;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.qbe.wizard.GroupByClauseSourceBeanImpl;
 import it.eng.qbe.wizard.GroupByFieldSourceBeanImpl;
 import it.eng.qbe.wizard.IGroupByClause;
 import it.eng.qbe.wizard.IOrderGroupByField;
+
+import java.util.Iterator;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class GroupByClauseSourceBeanImplTest extends TestCase {

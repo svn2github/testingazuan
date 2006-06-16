@@ -1,8 +1,5 @@
 package it.eng.test.unittest.action;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.qbe.action.DeleteFieldFromGroupByAction;
 import it.eng.qbe.wizard.GroupByFieldSourceBeanImpl;
 import it.eng.qbe.wizard.IGroupByClause;
@@ -16,6 +13,10 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.service.DefaultRequestContext;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.test.utilities.CreateInitialSingleDataMartWizardObject;
+
+import java.util.Iterator;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class DeleteFieldFromGroupByActionTest extends TestCase {

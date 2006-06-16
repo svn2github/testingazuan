@@ -18,7 +18,6 @@ import it.eng.spago.dispatching.action.AbstractAction;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
 

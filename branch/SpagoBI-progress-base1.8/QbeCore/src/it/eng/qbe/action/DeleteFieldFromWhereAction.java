@@ -1,9 +1,6 @@
 
 package it.eng.qbe.action;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereClause;

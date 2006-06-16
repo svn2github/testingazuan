@@ -2,8 +2,8 @@ package it.eng.qbe.model;
 
 import it.eng.qbe.utility.IDataMartModelRetriever;
 import it.eng.qbe.utility.IQueryPersister;
+import it.eng.qbe.utility.JarUtils;
 import it.eng.qbe.utility.Logger;
-import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.configuration.ConfigSingleton;
 
@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
 
 /**
  * @author Andrea Zoppello
@@ -69,13 +70,12 @@ public class DataMartModel implements Serializable {
 	 * to the datamart
 	 * @return the hibernate Configuration
 	 */
-	public Configuration createHibernateConfiguration(){
+	private Configuration createHibernateConfiguration(){
 		Configuration cfg = new Configuration();
 		if ( jndiDataSourceName != null){
 			cfg.setProperty("hibernate.dialect", dialect);
 			cfg.setProperty("hibernate.connection.datasource", jndiDataSourceName);
-			cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");
-			
+			cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
 		}
 		return cfg;
 	}
@@ -102,23 +102,51 @@ public class DataMartModel implements Serializable {
 	 */
 	public SessionFactory createSessionFactory(){
 		Logger.debug(this.getClass(), "createSessionFactory: start method createSessionFactory");
-		Configuration cfg = createHibernateConfiguration();
-		Logger.debug(this.getClass(), "createSessionFactory: hibernate configuration created: " + cfg);
-		try{
+		
+		SessionFactory sf = null;
+		Configuration cfg = null;
+		
+		if (jndiDataSourceName != null && !jndiDataSourceName.equalsIgnoreCase("")) {
+			Logger.debug(this.getClass(), "createSessionFactory: OLD SCHOOL");
+			
+			cfg = new Configuration();
+			cfg.setProperty("hibernate.dialect", dialect);
+			cfg.setProperty("hibernate.connection.datasource", jndiDataSourceName);
+			cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
+			
 			File jarFile = getJarFile();
 			Logger.debug(this.getClass(), "createSessionFactory: jar file obtained: " + jarFile);
 			updateCurrentClassLoader(jarFile);
 			Logger.debug(this.getClass(), "createSessionFactory: current class loader updated");
 			cfg.addJar(jarFile);
-			Logger.debug(this.getClass(), "createSessionFactory: add jar file to configuration");
-			SessionFactory sf = cfg.buildSessionFactory();
-			Logger.debug(this.getClass(), "createSessionFactory: session factory built: " + sf);
-			return sf;
-		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
-			return null;
+			Logger.debug(this.getClass(), "createSessionFactory: add jar file to configuration");			
+		}
+		else {
+			Logger.debug(this.getClass(), "createSessionFactory: NEW SCHOOL");
+			
+			File jarFile = getJarFile();			
+			Logger.debug(this.getClass(), "createSessionFactory: jar file obtained: " + jarFile);
+			updateCurrentClassLoader(jarFile);
+			Logger.debug(this.getClass(), "createSessionFactory: current class loader updated");
+			
+			Logger.debug(this.getClass(), "createSessionFactory: trying to read configuration from hibernate.cfg.xml file");
+			URL url = this.getClass().getClassLoader().getResource("hibernate.cfg.xml");
+			URL newURL = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+			Logger.debug(this.getClass(), "createSessionFactory: configuration file found at " + url);
+			Logger.debug(this.getClass(), "createSessionFactory: new configuration file found at " + newURL);
+			 
+			cfg = new Configuration().configure(newURL);
 		}
 		
+		if(cfg != null){
+			sf = cfg.buildSessionFactory();
+			Logger.debug(this.getClass(), "createSessionFactory: session factory built: " + sf);
+		}
+		else {
+			Logger.error(this.getClass(), "createSessionFactory: impossible to build session factory");
+		}
+		
+		return sf;
 	}
 	
 	/**

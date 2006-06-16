@@ -1,8 +1,5 @@
 package it.eng.test.unittest.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISelectClause;
 import it.eng.qbe.wizard.ISelectField;
@@ -14,6 +11,10 @@ import it.eng.qbe.wizard.SelectFieldSourceBeanImpl;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 import it.eng.qbe.wizard.WhereClauseSourceBeanImpl;
 import it.eng.qbe.wizard.WhereFieldSourceBeanImpl;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class SingleDataMartWizardObjectSourceBeanImplTest extends TestCase {

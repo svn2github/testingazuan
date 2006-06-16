@@ -78,9 +78,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	public void setGroupByClause(IGroupByClause groupByClause) {
-		this.groupByClause = groupByClause;
-		
-		
+		this.groupByClause = groupByClause;		
 	}
 
 	

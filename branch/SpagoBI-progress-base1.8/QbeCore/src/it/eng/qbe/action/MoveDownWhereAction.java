@@ -2,12 +2,9 @@
 package it.eng.qbe.action;
 
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISelectClause;
-import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereClause;
 import it.eng.qbe.wizard.IWhereField;
-import it.eng.qbe.wizard.SelectFieldSourceBeanImpl;
 import it.eng.qbe.wizard.WhereFieldSourceBeanImpl;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;

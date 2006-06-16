@@ -35,6 +35,7 @@ import it.eng.spagobi.metadata.SbiFuncRole;
 import it.eng.spagobi.metadata.SbiFuncRoleId;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiObjFunc;
+import it.eng.spagobi.services.modules.BIObjectsModule;
 import it.eng.spagobi.services.modules.TreeObjectsModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -384,7 +385,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			if(hasChild(aLowFunctionality.getId())) {
 				HashMap params = new HashMap();
-				params.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
+				params.put(AdmintoolsConstants.PAGE, BIObjectsModule.MODULE_PAGE);
 				params.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 				params.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1000, new Vector(), params);

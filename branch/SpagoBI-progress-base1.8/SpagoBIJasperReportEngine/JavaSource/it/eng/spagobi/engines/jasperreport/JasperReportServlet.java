@@ -169,7 +169,7 @@ public class JasperReportServlet extends HttpServlet {
 				}
 				response.getOutputStream().flush();
 				in.close();
-				// istant cleaning
+				// instant cleaning
 				tmpFile.delete();
 			} catch (Exception e) {
 				logger.error(this.getClass().getName() +":service:error " +

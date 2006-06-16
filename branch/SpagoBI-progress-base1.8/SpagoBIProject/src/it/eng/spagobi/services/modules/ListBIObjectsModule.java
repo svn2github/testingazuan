@@ -41,15 +41,10 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.utilities.PortletUtilities;
-import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
 
 public class ListBIObjectsModule extends AbstractBasicListModule {
 	
@@ -62,10 +57,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
-        PortletRequest portReq = PortletUtilities.getPortletRequest();
-		PortletPreferences prefs = portReq.getPreferences();
-        debug("getList", "portlet preferences retrived");
-        String path = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
+        String initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
 		
 		SourceBean moduleConfig = null;
 		if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor)) {
@@ -80,8 +72,8 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		PaginatorIFace paginator = new GenericPaginator();		
 		IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 		List objectsList = null;
-		if (!path.equals("")) {
-			objectsList = objDAO.loadAllBIObjectsFromInitialPath(path);
+		if (initialPath != null && !initialPath.trim().equals("")) {
+			objectsList = objDAO.loadAllBIObjectsFromInitialPath(initialPath);
 		} else {
 			objectsList = objDAO.loadAllBIObjects();
 		}
@@ -369,18 +361,6 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "</CONFIG>";
 		SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
 		return moduleConfig;
-	}
-
-	/**
-	 * Trace a debug message into the log
-	 * @param method Name of the method to store into the log
-	 * @param message Message to store into the log
-	 */
-	private void debug(String method, String message) {
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-							"ListBIObjectsModule", 
-							method, 
-        					message);
 	}
 	
 }

@@ -24,7 +24,6 @@ package it.eng.spagobi.services.modules;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.exceptions.BuildOperationException;
 import it.eng.spago.cms.exceptions.OperationExecutionException;
 import it.eng.spago.dispatching.module.AbstractModule;
@@ -330,7 +329,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			LowFunctionality funct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(newPath);
 			if(funct != null) {
 				HashMap params = new HashMap();
-				params.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
+				params.put(AdmintoolsConstants.PAGE, BIObjectsModule.MODULE_PAGE);
 				params.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 				params.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
 				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1005, new Vector(), params );

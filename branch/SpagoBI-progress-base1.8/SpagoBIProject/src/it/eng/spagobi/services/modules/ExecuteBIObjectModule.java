@@ -102,7 +102,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		debug("service", "errorHanlder, requestContainer, session, permanentSession retrived ");
         execContr = new ExecutionController(); 
 		ConfigSingleton config = ConfigSingleton.getInstance();
-		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(DetailBIObjectModule.CMS_BIOBJECTS_PATH);
+		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
 		biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
         
 		try{
@@ -676,104 +676,106 @@ public class ExecuteBIObjectModule extends AbstractModule
         	}
         }
         
-		Engine engine = obj.getEngine();
-		Domain engineType = null;
-		try {
-			engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
-		} catch (EMFUserError error) {
-			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"executionSubObjectHandler", 
-		 				"Error retrieving document's engine information", error);
-			 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
-			 return;
-		}
-		
-		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
-			
-			try {
-				
-				response.setAttribute("EXECUTION", "true");
-				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-				// instance the driver class
-				String driverClassName = obj.getEngine().getDriverName();
-				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
-			    // get the map of the parameters
-				Map mapPars = null;
-				String type = obj.getBiObjectTypeCode();
-				if(type.equalsIgnoreCase("OLAP")) {
-					// get the user profile
-					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-				    mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
-				} else {
-					mapPars = aEngineDriver.getParameterMap(obj, subObj);
-				}
-				
-				// callback event id
-				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			    String user = (String)profile.getUserUniqueIdentifier();
-			    System.out.println("Registering event for user: " + user);
-				Integer id =  EventsManager.getInstance().registerEvent(user);
-				System.out.println("Event id: " + id);
-			    mapPars.put("event", id.toString());
-			    mapPars.put("user", user);
-			    
-				// set into the reponse the parameters map	
-				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
-			
-			} catch (Exception e) {
-				 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-						 				this.getClass().getName(), 
-						 				"executionSubObjectHandler", 
-						 				"Error During object execution", e);
-			   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
-			}	
-			
-		} else {
-			
-			String className = engine.getClassName();
-			debug("executionSubObjectHandler", "Try instantiating class " + className + " for internal engine " + engine.getName() + "...");
-			InternalEngineIFace internalEngine = null;
-			// tries to instantiate the class for the internal engine
-			try {
-				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
-			} catch (ClassNotFoundException cnfe) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-			 				this.getClass().getName(), 
-			 				"executionSubObjectHandler", 
-			 				"The class " + className + " for internal engine " + engine.getName() + " was not found.", cnfe);
-				Vector params = new Vector();
-				params.add(className);
-				params.add(engine.getName());
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params)); 
-			} catch (Exception e) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"executionSubObjectHandler", 
-		 				"Error while instantiating class " + className, e);
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
-			}
-			
-			debug("executionSubObjectHandler", "Class " + className + " instantiated successfully. Now engine's execution starts.");
-			
-			// starts engine's execution
-			try {
-				internalEngine.executeSubObject(this.getRequestContainer(), obj, response, subObj);
-			} catch (EMFUserError e) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"executionSubObjectHandler", 
-		 				"Error while engine execution", e);
-				errorHandler.addError(e);
-			} catch (Exception e) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"executionSubObjectHandler", 
-		 				"Error while engine execution", e);
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
-			}
-			
-		}
+        execute(obj, subObj, response);
+        
+//		Engine engine = obj.getEngine();
+//		Domain engineType = null;
+//		try {
+//			engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
+//		} catch (EMFUserError error) {
+//			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+//		 				this.getClass().getName(), 
+//		 				"executionSubObjectHandler", 
+//		 				"Error retrieving document's engine information", error);
+//			 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+//			 return;
+//		}
+//		
+//		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
+//			
+//			try {
+//				
+//				response.setAttribute("EXECUTION", "true");
+//				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+//				// instance the driver class
+//				String driverClassName = obj.getEngine().getDriverName();
+//				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
+//			    // get the map of the parameters
+//				Map mapPars = null;
+//				String type = obj.getBiObjectTypeCode();
+//				if(type.equalsIgnoreCase("OLAP")) {
+//					// get the user profile
+//					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//				    mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
+//				} else {
+//					mapPars = aEngineDriver.getParameterMap(obj, subObj);
+//				}
+//				
+//				// callback event id
+//				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//			    String user = (String)profile.getUserUniqueIdentifier();
+//			    System.out.println("Registering event for user: " + user);
+//				Integer id =  EventsManager.getInstance().registerEvent(user);
+//				System.out.println("Event id: " + id);
+//			    mapPars.put("event", id.toString());
+//			    mapPars.put("user", user);
+//			    
+//				// set into the reponse the parameters map	
+//				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
+//			
+//			} catch (Exception e) {
+//				 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+//						 				this.getClass().getName(), 
+//						 				"executionSubObjectHandler", 
+//						 				"Error During object execution", e);
+//			   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+//			}	
+//			
+//		} else {
+//			
+//			String className = engine.getClassName();
+//			debug("executionSubObjectHandler", "Try instantiating class " + className + " for internal engine " + engine.getName() + "...");
+//			InternalEngineIFace internalEngine = null;
+//			// tries to instantiate the class for the internal engine
+//			try {
+//				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
+//			} catch (ClassNotFoundException cnfe) {
+//				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+//			 				this.getClass().getName(), 
+//			 				"executionSubObjectHandler", 
+//			 				"The class " + className + " for internal engine " + engine.getName() + " was not found.", cnfe);
+//				Vector params = new Vector();
+//				params.add(className);
+//				params.add(engine.getName());
+//				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params)); 
+//			} catch (Exception e) {
+//				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+//		 				this.getClass().getName(), 
+//		 				"executionSubObjectHandler", 
+//		 				"Error while instantiating class " + className, e);
+//				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+//			}
+//			
+//			debug("executionSubObjectHandler", "Class " + className + " instantiated successfully. Now engine's execution starts.");
+//			
+//			// starts engine's execution
+//			try {
+//				internalEngine.executeSubObject(this.getRequestContainer(), obj, response, subObj);
+//			} catch (EMFUserError e) {
+//				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+//		 				this.getClass().getName(), 
+//		 				"executionSubObjectHandler", 
+//		 				"Error while engine execution", e);
+//				errorHandler.addError(e);
+//			} catch (Exception e) {
+//				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
+//		 				this.getClass().getName(), 
+//		 				"executionSubObjectHandler", 
+//		 				"Error while engine execution", e);
+//				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+//			}
+//			
+//		}
         
         
         

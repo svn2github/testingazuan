@@ -88,7 +88,6 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_LIST_ENGINES = "engines";
 	public final static String NAME_ATTR_LIST_STATES = "states";		
 	public final static String NAME_ATTR_OBJECT_PAR = "OBJECT_PAR";
-	public final static String CMS_BIOBJECTS_PATH = "CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH";
 	private String actor = null;
 	private EMFErrorHandler errorHandler = null;
 	protected IEngUserProfile profile;
@@ -904,7 +903,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		List functionalitiesStr = request.getAttributeAsList(ObjectsTreeConstants.FUNCT_ID);
 		if (functionalitiesStr.size() == 0) {
 			HashMap errorParams = new HashMap();
-			errorParams.put(AdmintoolsConstants.PAGE, TreeObjectsModule.MODULE_PAGE);
+			errorParams.put(AdmintoolsConstants.PAGE, BIObjectsModule.MODULE_PAGE);
 			errorParams.put(SpagoBIConstants.ACTOR, actor);
 			EMFValidationError error = null;
 			error = new EMFValidationError(EMFErrorSeverity.ERROR, 1008, new Vector(), errorParams);
@@ -1192,7 +1191,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		try {
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(id);
 			ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(CMS_BIOBJECTS_PATH);
+			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
 			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
 			String pathVer = biobjectsPath + "/" + obj.getUuid() + "/template";
 			// try to delete the version

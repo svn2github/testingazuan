@@ -21,9 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spagobi.utilities.PortletUtilities;
 
@@ -45,7 +50,24 @@ public class SaveConfigurationModule extends AbstractModule {
 	 */
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
-        /*
+        
+		List attributes = request.getContainedAttributes();
+		PortletRequest portReq = PortletUtilities.getPortletRequest();
+		PortletPreferences pref = portReq.getPreferences();
+		String prefPrefix = "PORTLET_PREF_";
+		Iterator it = attributes.iterator();
+		while (it.hasNext()) {
+			SourceBeanAttribute attribute = (SourceBeanAttribute) it.next();
+			String key = attribute.getKey();
+			if (key != null && key.startsWith(prefPrefix)) {
+				String prefName = key.substring(prefPrefix.length());
+				String prefValues = (String) attribute.getValue();
+				String[] values = prefValues.split(",");
+				pref.setValues(prefName, values);
+			}
+		}
+		pref.store();
+		/*
 		SessionContainer session = getRequestContainer().getSessionContainer();
 		RequestContainer requestContainer = this.getRequestContainer();
 		PortletRequest portReq = PortletUtilities.getPortletRequest();

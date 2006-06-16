@@ -121,28 +121,33 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 			}
 			
 			SpagoBITracer.debug("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "JNDI data source name: " + jndiDataSourceName + ".");
-			
+			/*
 			if (jndiDataSourceName == null || "".equalsIgnoreCase(jndiDataSourceName)) {
 				SpagoBITracer.major("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "The name of the JNDI data source is missing.");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1002, messageBundle);
 			}
-			
+			*/
 			SpagoBITracer.debug("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "Hibernate dialect: " + dialect + ".");
-			
+			/*
 			if (dialect == null || "".equalsIgnoreCase(dialect)) {
 				SpagoBITracer.major("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "The Hibernate dialect is missing.");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1003, messageBundle);
 			}
-			
+			*/
 			SessionContainer session = requestContainer.getSessionContainer();
 			session.setAttribute(SpagoBICmsDataMartModelRetriever.REFRESH_DATAMART, "TRUE");
 			String dmName = obj.getName();
 			String dmDescription = obj.getDescription();
 			String dmLabel = obj.getLabel();
+			
+			String dmPath = obj.getPath();
+			/*
 			ConfigSingleton config = ConfigSingleton.getInstance();
 			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
 			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
 			String dmPath = biobjectsPath + "/" + obj.getUuid();
+			
+			*/
 			DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
 			dmModel.setName(dmName);
 			dmModel.setDescription(dmDescription);

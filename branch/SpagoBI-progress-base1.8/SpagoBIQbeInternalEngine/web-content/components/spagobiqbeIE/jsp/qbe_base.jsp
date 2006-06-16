@@ -603,18 +603,22 @@
 		}
 		
 		
-		function showQueryInQueryResult(event) {
+		function showQueryInQueryResult(event, type) {
 		
-			var showQueryDiv = document.getElementById('divQuery');
+			var showQueryDiv = document.getElementById(type);
+			var qbeQueryDiv = document.getElementById('divQbeQuery');
+			var expertQueryDiv = document.getElementById('divExpertQuery');
 
 			var isVis = showQueryDiv.style.display;
+			
+			qbeQueryDiv.style.display = 'none';
+			expertQueryDiv.style.display = 'none';
 				
 			if (isVis=='inline') showQueryDiv.style.display = 'none';
-			else showQueryDiv.style.display = 'inline';
+			else showQueryDiv.style.display = 'inline';		
 			
-			showQueryDiv.style.top = event.clientY + 20 +  'px';
-			showQueryDiv.style.left = event.clientX - 340 + 'px';
-			
+			showQueryDiv.style.top = event.clientY + 10 + 'px';
+			showQueryDiv.style.left = event.clientX + 10 + 'px';			
 		}
 		
 		
@@ -655,8 +659,8 @@
 	
 		function vediSchermo(msg, divTxt){
 			
-			//alert ("msg" + msg);
-			//alert ("divTxt" + divTxt);
+			//alert ("msg: " + msg);
+			//alert ("divTxt: " + divTxt);
 			
 			var spanCurrentScreen = document.getElementById('currentScreen');
 			
@@ -673,9 +677,8 @@
 			
 			//alert("current Screen Txt " + currentScreenTxt);
 			
-			if ((currentScreenTxt == 'DIV_FIELD_CONDITION') && (formUpdCond != null)){
-			
-					alert("current Screen Txt 1 " + currentScreenTxt);
+			if ((currentScreenTxt == 'DIV_FIELD_CONDITION') && (formUpdCond != null)){					
+					//alert ("Branch 1");
 											
 					var inputNextActionAfterSaveCondition = document.getElementById('nextActionAfterSaveCondition');
 					var inputNextPublisherAfterSaveCondition = document.getElementById('nextPublisherAfterSaveCondition');
@@ -767,9 +770,8 @@
 					
 			
 			}else if ((currentScreenTxt == 'DIV_RESUME_QUERY_SELECT_OK') && (formUpdCond != null)){
-			
-					alert("current Screen Txt 2 " + currentScreenTxt);
-					
+					//alert ("Branch 2");
+							
 					var expertSelectTextArea = document.getElementById('expertSelectTextArea');
 					var inputTA = document.getElementById('expertDisplayedForUpdate');
 					inputTA.value = expertSelectTextArea.value;
@@ -838,11 +840,9 @@
 						return true;
 					}
 				
-			}else{
-			
-				alert("currentScreenTxt " + currentScreenTxt);
-				alert("divTxt " + divTxt);
-				
+			}else{	
+				//alert ("Branch 3");
+					
 				var frmGoSelectionF = document.getElementById('frmGoSelection');
 				var frmGoConditionF = document.getElementById('frmGoCondition');
 				var frmGoOrderByF = document.getElementById('frmGoOrderBy');

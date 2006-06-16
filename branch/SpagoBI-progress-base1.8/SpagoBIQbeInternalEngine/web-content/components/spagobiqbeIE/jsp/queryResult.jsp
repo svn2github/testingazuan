@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
-<%@ page import="it.eng.spago.base.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.spago.base.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*, it.eng.spagobi.utilities.*"%>
 <%@ page import="java.util.*"%>
 
 
@@ -34,14 +34,17 @@
 	   hasPreviousPage = ((Boolean)listResponse.getAttribute("hasPreviousPage")).booleanValue();
 	   hasNextPage = ((Boolean)listResponse.getAttribute("hasNextPage")).booleanValue();
    }
-  		
+  	String qbeQuery = aWizardObject.getFinalQuery();;
+  	String expertQuery = aWizardObject.getExpertQueryDisplayed();
+  			
 	String finalQueryString = null;
 	if (aWizardObject.isUseExpertedVersion()){
-		finalQueryString = aWizardObject.getExpertQueryDisplayed();
+		finalQueryString = expertQuery;
 	}else{
-		 finalQueryString = aWizardObject.getFinalQuery();
+		 finalQueryString = qbeQuery;
 	} 
-  
+	
+  	String jarFilePath = dm.getJarFile().toString();
 %>
 
 <% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
@@ -72,30 +75,96 @@
 		<tr>
 			<td width="3%">
 			</td>
-  	 		<td width="77%">
+  	 		<td width="64%">
 				<form id="formUpdateExpertMode" name="formUpdateExpertMode" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+				<table> <tr>				
+					<td rowspan="2" width="30%">
 					<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality", bundle)%></span>
-							&nbsp;
 				 			<input type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
 							<input type="hidden" name="SOURCE_FROM_QUERY_RESULT" value="QUERY_RESULT"/>
-																																				
+					</td>																																			
 							<% if (aWizardObject.isUseExpertedVersion()) { %>
-								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" onclick="javascript:submitUpdatePreviewFromQueryResult()"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
-								&nbsp;
-								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+								<td width="20%">	
+								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
+									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+								</input>
+								</td>	
+								
+								<td>
+								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
+								</td>
+								
+								<td width="50%">&nbsp;</td>								
+								</tr>	
+								
+								<tr>
+								<td width="20%">	
+								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
+									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+								</input>
+								</td>	
+								<td>
+								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
+								</td>
+								</tr>
 							<%} else {%>
-								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
-								&nbsp;
-								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" onclick="javascript:submitUpdatePreviewFromQueryResult()" > <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+								<td width="20%px">	
+								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
+									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+								</input>
+								</td>	
+								
+								<td>
+								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
+								</td>
+								<td width="50%">&nbsp;</td>
+								</tr>
+								
+								<tr>
+								<td width="20%">	
+								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
+									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+								</input>
+								</td>	
+								<td>
+								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
+								</td>
+								</tr>
 							<%}%>
+				</table>
 				</form>
 			</td>	
-			<td width="10%">
-				&nbsp;
+			<td width="30%">
+				<form 	id="formExport" 
+						name="formExport" 
+						action="<%=GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet?jarfilepath=" + jarFilePath + "&query=" + finalQueryString%>" 
+						method="post">				
+				<table>
+				<td width="40%"><span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExportFormatTitle", bundle)%></span></td>
+				
+				<td width="40%">
+				<select name="format" >
+				<option value="application/pdf" selected="selected">PDF</option>   				
+   				<option value="application/vnd.ms-excel">XLS</option>
+   				<option value="application/rtf">RTF</option>
+   				<option value="text/html">HTML</option>
+   				<option value="text/xml">XML</option>
+   				<option value="text/plain">TXT</option>
+   				<option value="text/csv">CSV</option>
+  				</select>
+ 				</fieldset>
+				</td>
+				
+				<td width="20%">					
+					<input 	type="image" src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>" value="submit" 
+							alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
+							title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"/>	
+				</td>
+				</table>
+				</form>
 			</td>
-			<td width="10%">
-				<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event)" />	
-			</td>
+			
+			<td width="3%"></td>			
 		</tr>	
 	</tbody>
 </table>
@@ -348,6 +417,27 @@
 <span id="currentScreen">DIV_EXEC</span>	
 </div>
 	
+<div id="divQbeQuery" style="position:absolute; padding:5px;display:none; z-index:1000">
+	<table>
+	 <tr>
+	  <td>
+	   <textarea rows="10" cols="50" readonly="true"><%=qbeQuery%></textarea>		
+	  </td>
+	 </tr>
+	</table>
+</div>
+
+<div id="divExpertQuery" style="position:absolute; padding:5px;display:none; z-index:1000">
+	<table>
+	 <tr>
+	  <td>
+	   <textarea rows="10" cols="50" readonly="true"><%=expertQuery%></textarea>		
+	  </td>
+	 </tr>
+	</table>
+</div>
+
+<!--  
 <div id="divQuery">
 	<table>
 	 <tr>
@@ -357,7 +447,7 @@
 	 </tr>
 	</table>
 </div>
-	
+-->	
 
 <%@include file="../jsp/qbefooter.jsp" %>
 

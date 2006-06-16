@@ -28,12 +28,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services;
 
 import groovy.lang.Binding;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.QueryDetail;
 import it.eng.spagobi.bo.ScriptDetail;
@@ -61,6 +65,7 @@ public class DashboardServlet extends HttpServlet{
 
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		OutputStream out = null;
+		DataConnection dataConnection = null;
 	 	try{
 	 		out = response.getOutputStream();
 		 	String dataName = (String)request.getParameter("dataname");
@@ -74,7 +79,13 @@ public class DashboardServlet extends HttpServlet{
                 	String pool = queryDet.getConnectionName();
             		String statement = queryDet.getQueryDefinition();
             		DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
-        			DataConnection dataConnection = dataConnectionManager.getConnection(pool);
+        			dataConnection = dataConnectionManager.getConnection(pool);
+        			RequestContainer reqcont = RequestContainer.getRequestContainer();
+        			SessionContainer sessCont = reqcont.getSessionContainer();
+        			SessionContainer permSess = sessCont.getPermanentContainer();
+        			IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        			HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+        			GeneralUtilities.substituteProfileAttributesInQuery(statement, profileattrs, 0);
         			SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
         			DataResult dataResult = sqlCommand.execute();
                     ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
@@ -108,6 +119,14 @@ public class DashboardServlet extends HttpServlet{
 		 	}
 	 	}catch(Exception e){
 	 		SpagoBITracer.critical("SpagoBI",getClass().getName(),"service","Exception", e);
+	 	} finally {
+	 		if (dataConnection != null)
+				try {
+					dataConnection.close();
+				} catch (EMFInternalError e) {
+                	SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+				             "Service", "Error while processing dashboard request", e);
+				}
 	 	}
 	 }
 	

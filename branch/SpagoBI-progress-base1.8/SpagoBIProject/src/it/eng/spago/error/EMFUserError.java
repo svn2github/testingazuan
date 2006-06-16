@@ -229,4 +229,10 @@ public SourceBean getSourceBean() {
     } // catch (SourceBeanException ex) try
     return errorBean;
 } // public SourceBean getSourceBean()
+
+
+public String getCategory() {
+	// TODO Auto-generated method stub
+	return null;
+}
 } // public class EMFUserError extends EMFAbstractError implements Serializable

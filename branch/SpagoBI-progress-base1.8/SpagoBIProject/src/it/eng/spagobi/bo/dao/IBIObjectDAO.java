@@ -94,6 +94,18 @@ public interface IBIObjectDAO {
 	public  BIObject loadBIObjectForDetail(Integer id) throws EMFUserError;
 	
 	/**
+	 * Loads all  detail information  for a BI Object identified by its 
+	 * <code>path</code> in the cms. All these information,
+	 * achived by a query to the DB, are stored into a <code>BIObject</code> object, 
+	 * which is returned.
+	 * 
+	 * @param  id  The Integer representing the BI object id
+	 * @return The BI object detail information, stored into a <code>BIObject</code>
+	 * @throws EMFUserError If an Exception occurs
+	 */
+	public  BIObject loadBIObjectForDetail(String path) throws EMFUserError;
+	
+	/**
 	 * Loads all  tree information  for a BI Object identified by its 
 	 * <code>id</code> identifier Integer. All these information,
 	 * achived by a query to the DB, are stored into a <code>BIObject</code> object, 

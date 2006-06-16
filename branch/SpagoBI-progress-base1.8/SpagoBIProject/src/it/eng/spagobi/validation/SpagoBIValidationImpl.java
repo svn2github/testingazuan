@@ -19,7 +19,7 @@ import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.ValidationEngineIFace;
-import it.eng.spago.validation.ValidatorLocator;
+import it.eng.spago.validation.impl.ValidatorLocator;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 

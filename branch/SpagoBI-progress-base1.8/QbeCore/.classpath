@@ -66,3 +66,4 @@
 	<classpathentry kind="lib" path="lib/iReport.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
+

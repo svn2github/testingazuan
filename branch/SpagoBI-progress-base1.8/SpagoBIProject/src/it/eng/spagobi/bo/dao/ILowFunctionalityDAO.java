@@ -51,10 +51,12 @@ public interface ILowFunctionalityDAO {
 	 * returned.
 	 * 
 	 * @param functionalityID The id for the low functionality to load
+	 * @param recoverBIObjects If true the <code>LowFunctionality</code> at output will have the 
+	 * list of contained <code>BIObject</code> objects
 	 * @return	A <code>LowFunctionality</code> object containing all loaded information
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID) throws EMFUserError;
+	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError;
 	
 	/**
 	 * Loads all information for a low functionality identified by its 
@@ -63,10 +65,12 @@ public interface ILowFunctionalityDAO {
 	 * returned.
 	 * 
 	 * @param functionalityPath The path for the low functionality to load
+	 * @param recoverBIObjects If true the <code>LowFunctionality</code> at output will have the 
+	 * list of contained <code>BIObject</code> objects
 	 * @return	A <code>LowFunctionality</code> object containing all loaded information
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath) throws EMFUserError;
+	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath, boolean recoverBIObjects) throws EMFUserError;
 	
 	/**
 	 * Implements the query to modify a low functionality. All information needed is stored 
@@ -129,4 +133,15 @@ public interface ILowFunctionalityDAO {
 	 * @throws EMFUserError
 	 */
 	public List loadSubLowFunctionalities(String initialPath, boolean recoverBIObjects) throws EMFUserError;
+	
+	/**
+	 * Loads all the child functionalities of the given parent functionality 
+	 * @param parentId The Integer representing the parent id
+	 * @param recoverBIObjects If true each <code>LowFunctionality</code> at output will have the 
+	 * list of contained <code>BIObject</code> objects
+	 * @return the list of functionalities
+	 * @throws EMFUserError
+	 */
+	public List loadChildFunctionalities(Integer parentId, boolean recoverBIObjects) throws EMFUserError;
+	
 }

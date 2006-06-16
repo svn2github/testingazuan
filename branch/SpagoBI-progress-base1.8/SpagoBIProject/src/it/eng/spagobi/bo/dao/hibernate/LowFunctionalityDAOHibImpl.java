@@ -36,7 +36,6 @@ import it.eng.spagobi.metadata.SbiFuncRoleId;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiObjFunc;
 import it.eng.spagobi.services.modules.BIObjectsModule;
-import it.eng.spagobi.services.modules.TreeObjectsModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadLowFunctionalityByID(java.lang.Integer)
 	 * 
 	 */
-	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID) throws EMFUserError {
+	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError {
 		LowFunctionality funct = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -76,7 +75,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, functionalityID);
-			funct = toLowFunctionality(hibFunct, false);
+			funct = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -100,7 +99,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadLowFunctionalityByPath(java.lang.String)
 	 * 
 	 */
-	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath)
+	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath, boolean recoverBIObjects)
 			throws EMFUserError {
 		
 		LowFunctionality lowFunctionaliy = null;
@@ -116,7 +115,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
 			if (hibFunct == null) return null;
 			
-			lowFunctionaliy = toLowFunctionality(hibFunct, false);
+			lowFunctionaliy = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -763,6 +762,40 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 		}
 		
+	}
+
+
+
+	public List loadChildFunctionalities(Integer parentId, boolean recoverBIObjects) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+					
+			// loads sub functionalities
+			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.parentFunct.functId = " + parentId);
+			List hibList = hibQuery.list();
+			Iterator it = hibList.iterator();
+			while (it.hasNext()) {
+				realResult.add(toLowFunctionality((SbiFunctions) it.next(), recoverBIObjects));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
 	}
 
 }

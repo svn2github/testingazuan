@@ -28,7 +28,6 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
@@ -64,80 +63,80 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.
 	 * AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
 	 */
-	public StringBuffer makeTree(SourceBean dataTree, HttpServletRequest httpReq) {
-		
-		httpRequest = httpReq;
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		SessionContainer sessionContainer = requestContainer.getSessionContainer();
-		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
-        profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        
-		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
-		makeConfigurationDtree(htmlStream);
-		String nameTree = PortletUtilities.getMessage("tree.functtree.name" ,"messages");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
-		htmlStream.append("<div id='divmenuFunctIns' class='dtreemenu' onmouseout='hideMenu(event);' >");
-		htmlStream.append("		menu");
-		htmlStream.append("</div>");
-		htmlStream.append("<table width='100%'>");
-		htmlStream.append("	<tr >");
-		htmlStream.append("		<td width='40px'>&nbsp;</td>");
-		htmlStream.append("		<td>");
-		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
-	   	htmlStream.append("				var nameTree = 'treeFunctIns';\n");
-	   	htmlStream.append("				treeFunctIns = new dTree('treeFunctIns');\n");
-	   	htmlStream.append("	        	treeFunctIns.add(0,-1,'"+nameTree+"');\n");
-        addItemForJSTree(htmlStream, dataTree, 0, true);
-    	htmlStream.append("				document.write(treeFunctIns);\n");
-		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
-		htmlStream.append("	</tr>");
-		htmlStream.append("</table>");
-		return htmlStream;
-	}
+//	public StringBuffer makeTree(SourceBean dataTree, HttpServletRequest httpReq) {
+//		
+//		httpRequest = httpReq;
+//		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
+//		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
+//		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+//		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+//		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+//        profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//        
+//		StringBuffer htmlStream = new StringBuffer();
+//		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+//		makeConfigurationDtree(htmlStream);
+//		String nameTree = PortletUtilities.getMessage("tree.functtree.name" ,"messages");
+//		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
+//		htmlStream.append("<div id='divmenuFunctIns' class='dtreemenu' onmouseout='hideMenu(event);' >");
+//		htmlStream.append("		menu");
+//		htmlStream.append("</div>");
+//		htmlStream.append("<table width='100%'>");
+//		htmlStream.append("	<tr >");
+//		htmlStream.append("		<td width='40px'>&nbsp;</td>");
+//		htmlStream.append("		<td>");
+//		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
+//	   	htmlStream.append("				var nameTree = 'treeFunctIns';\n");
+//	   	htmlStream.append("				treeFunctIns = new dTree('treeFunctIns');\n");
+//	   	htmlStream.append("	        	treeFunctIns.add(0,-1,'"+nameTree+"');\n");
+//        addItemForJSTree(htmlStream, dataTree, 0, true);
+//    	htmlStream.append("				document.write(treeFunctIns);\n");
+//		htmlStream.append("			</script>\n");
+//		htmlStream.append("		</td>");
+//		htmlStream.append("	</tr>");
+//		htmlStream.append("</table>");
+//		return htmlStream;
+//	}
 
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#addItemForJSTree(java.lang.StringBuffer, it.eng.spago.base.SourceBean, int, boolean)
 	 */
-	private void addItemForJSTree(StringBuffer htmlStream, SourceBean dataTree, int pidParent, boolean isRoot) {
-		
-		List childs = dataTree.getContainedSourceBeanAttributes();
-		String nameLabel = (String)dataTree.getAttribute("name");
-		String name = PortletUtilities.getMessage(nameLabel, "messages");
-		String path = (String)dataTree.getAttribute("path");
-		String codeType = (String)dataTree.getAttribute("codeType");
-
-		int id = ++progrJSTree;
-		
-		if(isRoot) {
-			htmlStream.append("	treeFunctIns.add("+id+", "+pidParent+",'"+name+"', '', '', '', '', '', 'true');\n");
-		} else {
-			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				if(ObjectsAccessVerifier.canDev(path, profile)) {
-					htmlStream.append("	treeFunctIns.add("+id+", "+pidParent+",'"+name+
-						          "', '', '', '', '"+imgFolder+"', '"+imgFolderOp+
-						          "', '', '', '"+ObjectsTreeConstants.PATH_PARENT+"', '"+path+"');\n");
-				} else {
-					htmlStream.append("	treeFunctIns.add("+id+", "+pidParent+",'"+name+
-					          "', '', '', '', '"+imgFolder+"', '"+imgFolderOp+
-					          "', '', '', '', '');\n");
-				}
-			} 
-		}
-		
-		Iterator iter = childs.iterator();
-		while(iter.hasNext()) {
-			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
-			SourceBean itemSB = (SourceBean)itemSBA.getValue();
-			addItemForJSTree(htmlStream, itemSB, id, false);
-		}
-		
-	}
+//	private void addItemForJSTree(StringBuffer htmlStream, SourceBean dataTree, int pidParent, boolean isRoot) {
+//		
+//		List childs = dataTree.getContainedSourceBeanAttributes();
+//		String nameLabel = (String)dataTree.getAttribute("name");
+//		String name = PortletUtilities.getMessage(nameLabel, "messages");
+//		String path = (String)dataTree.getAttribute("path");
+//		String codeType = (String)dataTree.getAttribute("codeType");
+//
+//		int id = ++progrJSTree;
+//		
+//		if(isRoot) {
+//			htmlStream.append("	treeFunctIns.add("+id+", "+pidParent+",'"+name+"', '', '', '', '', '', 'true');\n");
+//		} else {
+//			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+//				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
+//				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+//				if(ObjectsAccessVerifier.canDev(path, profile)) {
+//					htmlStream.append("	treeFunctIns.add("+id+", "+pidParent+",'"+name+
+//						          "', '', '', '', '"+imgFolder+"', '"+imgFolderOp+
+//						          "', '', '', '"+ObjectsTreeConstants.PATH_PARENT+"', '"+path+"');\n");
+//				} else {
+//					htmlStream.append("	treeFunctIns.add("+id+", "+pidParent+",'"+name+
+//					          "', '', '', '', '"+imgFolder+"', '"+imgFolderOp+
+//					          "', '', '', '', '');\n");
+//				}
+//			} 
+//		}
+//		
+//		Iterator iter = childs.iterator();
+//		while(iter.hasNext()) {
+//			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
+//			SourceBean itemSB = (SourceBean)itemSBA.getValue();
+//			addItemForJSTree(htmlStream, itemSB, id, false);
+//		}
+//		
+//	}
 
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeConfigurationDtree(java.lang.StringBuffer)
@@ -194,56 +193,56 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	 * @return The output string buffer
 	 * 
 	 */
-	public StringBuffer makeAccessibleTree(SourceBean dataTree, HttpServletRequest httpRequest) {
-		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<div id='divAccessibleTreeFunctIns'>\n");
-        addItemForAccessibleTree(htmlStream, dataTree, 20, true);
-		htmlStream.append("</div>\n");
-		htmlStream.append("<br/><br/>\n");
-		makeJSFunctionForHideAccessibleTree(htmlStream);
-		return htmlStream;
-	}
+//	public StringBuffer makeAccessibleTree(SourceBean dataTree, HttpServletRequest httpRequest) {
+//		StringBuffer htmlStream = new StringBuffer();
+//		htmlStream.append("<div id='divAccessibleTreeFunctIns'>\n");
+//        addItemForAccessibleTree(htmlStream, dataTree, 20, true);
+//		htmlStream.append("</div>\n");
+//		htmlStream.append("<br/><br/>\n");
+//		makeJSFunctionForHideAccessibleTree(htmlStream);
+//		return htmlStream;
+//	}
 	
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#addItemForAccessibleTree(java.lang.StringBuffer, it.eng.spago.base.SourceBean, int, boolean)
 	 */
-	private void addItemForAccessibleTree(StringBuffer htmlStream, SourceBean dataTree, int spaceLeft, boolean isRoot) {
-		List childs = dataTree.getContainedSourceBeanAttributes();		
-		String name = (String)dataTree.getAttribute("name");
-		//String path = (String)dataTree.getAttribute("path");
-		String codeType = (String)dataTree.getAttribute("codeType");
-		if(isRoot) {
-			htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
-			htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
-			htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
-			htmlStream.append("</div>");
-		} else {
-			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
-				htmlStream.append("		<input type='checkbox' name='pathParent' />\n");
-				htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
-	    		htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
-	    		htmlStream.append("</div>\n");
-			} 
-		}
-				
-		Iterator iter = childs.iterator();
-		while(iter.hasNext()) {
-			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
-			SourceBean itemSB = (SourceBean)itemSBA.getValue();
-			addItemForAccessibleTree(htmlStream, itemSB, (spaceLeft + 40), false);
-		}
-	}
+//	private void addItemForAccessibleTree(StringBuffer htmlStream, SourceBean dataTree, int spaceLeft, boolean isRoot) {
+//		List childs = dataTree.getContainedSourceBeanAttributes();		
+//		String name = (String)dataTree.getAttribute("name");
+//		//String path = (String)dataTree.getAttribute("path");
+//		String codeType = (String)dataTree.getAttribute("codeType");
+//		if(isRoot) {
+//			htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
+//			htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
+//			htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
+//			htmlStream.append("</div>");
+//		} else {
+//			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+//				htmlStream.append("<div style=\"padding-left:"+spaceLeft+"px;\">\n");
+//				htmlStream.append("		<input type='checkbox' name='pathParent' />\n");
+//				htmlStream.append("		<img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderopen.gif" )+"' />");
+//	    		htmlStream.append("		<span class=\"portlet-item-menu\">"+name+"</span>\n");
+//	    		htmlStream.append("</div>\n");
+//			} 
+//		}
+//				
+//		Iterator iter = childs.iterator();
+//		while(iter.hasNext()) {
+//			SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
+//			SourceBean itemSB = (SourceBean)itemSBA.getValue();
+//			addItemForAccessibleTree(htmlStream, itemSB, (spaceLeft + 40), false);
+//		}
+//	}
 	
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeJSFunctionForHideAccessibleTree(java.lang.StringBuffer)
 	 */
-	private void makeJSFunctionForHideAccessibleTree(StringBuffer htmlStream) {
-		htmlStream.append("<SCRIPT>\n");
-		htmlStream.append("		divM = document.getElementById('divAccessibleTreeFunctIns');\n");
-		htmlStream.append("		divM.style.display='none';\n");
-		htmlStream.append("</SCRIPT>\n");
-	}
+//	private void makeJSFunctionForHideAccessibleTree(StringBuffer htmlStream) {
+//		htmlStream.append("<SCRIPT>\n");
+//		htmlStream.append("		divM = document.getElementById('divAccessibleTreeFunctIns');\n");
+//		htmlStream.append("		divM.style.display='none';\n");
+//		htmlStream.append("</SCRIPT>\n");
+//	}
 	
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
@@ -301,7 +300,6 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		
 		String nameLabel = folder.getName();
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
-		String path = folder.getPath();
 		String codeType = folder.getCodType();
 		Integer id = folder.getId();
 		Integer parentId = folder.getParentId();
@@ -312,7 +310,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) || ObjectsAccessVerifier.canDev(path, profile)) {
+				if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) || ObjectsAccessVerifier.canDev(id, profile)) {
 					boolean checked = false;
 					if (obj != null) {
 						List funcs = obj.getFunctionalities();

@@ -466,22 +466,16 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		
 		String nameLabel = folder.getName();
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
-		String path = folder.getPath();
-		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
-//		boolean addItemFlag = false;
 		
 		if (isRoot) {
 			htmlStream.append("	treeExecObj.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
-			if (codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+			if (ObjectsAccessVerifier.canTest(idFolder, profile) || ObjectsAccessVerifier.canExec(idFolder, profile)) {
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				if (ObjectsAccessVerifier.canTest(path, profile) || ObjectsAccessVerifier.canExec(path, profile)){
-//					addItemFlag = true;
-					htmlStream.append("	treeExecObj.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
-				}
+				htmlStream.append("	treeExecObj.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
@@ -491,7 +485,6 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.gif");
 					String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
 					String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
-
 					PortletURL execUrl = renderResponse.createActionURL();
 					execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 					execUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
@@ -504,13 +497,11 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					} else {
 						SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
 					            "addItemForJSTree ", "VISIBLE " + obj.getName());
-						if (ObjectsAccessVerifier.canTest(stateObj, path, profile)) {
-							//sessionContainer.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
+						if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile)) {
 							thereIsOneOrMoreObjectsInTestState = true;
 							execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
 							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIconTest + "', '', '', '' );\n");
-						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
-							//sessionContainer.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 							execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						}

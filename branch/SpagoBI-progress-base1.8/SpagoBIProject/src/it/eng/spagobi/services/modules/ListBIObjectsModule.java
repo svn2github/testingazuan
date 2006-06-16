@@ -33,10 +33,8 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
-import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
-import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
@@ -125,16 +123,13 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 			return null;
 		}
 		String actor = null;
-		ILowFunctionalityDAO funcDAO = DAOFactory.getLowFunctionalityDAO();
 		List functionalities = obj.getFunctionalities();
 		for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext(); ) {
 			Integer funcId = (Integer) funcIt.next();
-			LowFunctionality func = funcDAO.loadLowFunctionalityByID(funcId);
-			String path = func.getPath();
-			if (ObjectsAccessVerifier.canTest(obj.getStateCode(), path, profile)) {
+			if (ObjectsAccessVerifier.canTest(obj.getStateCode(), funcId, profile)) {
 				actor = SpagoBIConstants.TESTER_ACTOR;
 				break;
-			} else if (ObjectsAccessVerifier.canExec(obj.getStateCode(), path, profile)) {
+			} else if (ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
 				actor = SpagoBIConstants.USER_ACTOR;
 				break;
 			}

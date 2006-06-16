@@ -548,6 +548,21 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public List loadChildFunctionalities(Integer parentId, boolean recoverBIObjects) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath, boolean recoverBIObjects) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 

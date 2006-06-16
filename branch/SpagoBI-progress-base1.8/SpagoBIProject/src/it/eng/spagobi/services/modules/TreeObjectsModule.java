@@ -72,7 +72,6 @@ public class TreeObjectsModule extends AbstractModule {
 		}
 		response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
-		response.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.ENTIRE_TREE_MODALITY);
 	}
 	
 	

@@ -136,7 +136,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			response.setAttribute("PARENT_PATH", parentPath);
 			response.setAttribute(AdmintoolsConstants.MODALITY, modality);
 			if (typeFunct.equals("LOW_FUNCT")) {
-				LowFunctionality funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
+				LowFunctionality funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path, false);
 				response.setAttribute(FUNCTIONALITY_OBJ, funct);
 			}	
 		} catch (EMFUserError eex) {
@@ -232,7 +232,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			if(typeFunct.equals("LOW_FUNCT")) {
 				String path = (String)request.getAttribute(PATH);
 				ILowFunctionalityDAO funcdao = DAOFactory.getLowFunctionalityDAO();
-				LowFunctionality funct = funcdao.loadLowFunctionalityByPath(path);
+				LowFunctionality funct = funcdao.loadLowFunctionalityByPath(path, false);
 				SessionContainer permSess = getRequestContainer().getSessionContainer().getPermanentContainer();
 				IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);		
 				funcdao.eraseLowFunctionality(funct, profile);
@@ -268,7 +268,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 				funct.setId(new Integer(0));
 				funct.setCode("");
                 funct.setName("");
-				LowFunctionality parentFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent);
+				LowFunctionality parentFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
 			    Role[] execRoles = new Role[0];
 			    Role[] devRoles = new Role[0];
 			    Role[] testRoles = new Role[0];
@@ -326,7 +326,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
 			String newPath = pathParent + "/" + code;
 			//SourceBean dataLoad = new SourceBean("dataLoad");
-			LowFunctionality funct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(newPath);
+			LowFunctionality funct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(newPath, false);
 			if(funct != null) {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, BIObjectsModule.MODULE_PAGE);
@@ -347,7 +347,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			lowFunct.setDevRoles(devRoles);
 			lowFunct.setExecRoles(execRoles);
 			lowFunct.setTestRoles(testRoles);
-			LowFunctionality parentFunct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent);
+			LowFunctionality parentFunct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
 			if (parentFunct != null) lowFunct.setParentId(parentFunct.getId());
 		} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
 			String idFunct = (String)request.getAttribute(AdmintoolsConstants.FUNCTIONALITY_ID);
@@ -356,7 +356,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1027);
 				getErrorHandler().addError(error);
 			}
-			lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(new Integer(idFunct));
+			lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(new Integer(idFunct), false);
 			lowFunct.setCode(code);
 			lowFunct.setDescription(description);
 			lowFunct.setName(name);
@@ -436,7 +436,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 				LowFunctionality childNode = (LowFunctionality) i.next();
 				String childPath = childNode.getPath();
 				//LowFunctionality lowFuncParent = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(parentPath);
-				LowFunctionality lowFuncChild = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(childPath);
+				LowFunctionality lowFuncChild = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(childPath, false);
 				if(lowFuncChild != null){
 					//control childs permissions and fathers permissions
 					//remove from childs those persmissions that are not present in the fathers

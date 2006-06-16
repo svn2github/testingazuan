@@ -496,7 +496,6 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		
 		String nameLabel = folder.getName();
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
-		String path = folder.getPath();
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
@@ -513,7 +512,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 					BIObject obj = (BIObject) it.next();
 					Integer idObj = obj.getId();					
 					String stateObj = obj.getStateCode();
-					if (ObjectsAccessVerifier.canExec(stateObj, path, profile)) {
+					if (ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					} else {
 						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");

@@ -81,7 +81,7 @@ public class TreeInitializer implements InitializerIFace {
 					functionality.setPath(parentPath + "/" + code);
 					if (parentPath != null && !parentPath.trim().equals("")) {
 						// if it is not the root load the id of the parent path and set not permissions
-						LowFunctionality parentFunctionality = functionalityDAO.loadLowFunctionalityByPath(parentPath);
+						LowFunctionality parentFunctionality = functionalityDAO.loadLowFunctionalityByPath(parentPath, false);
 						functionality.setParentId(parentFunctionality.getId());
 						functionality.setDevRoles(new Role[0]);
 						functionality.setExecRoles(new Role[0]);

@@ -48,14 +48,14 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	public static boolean canDev(String state, String path, IEngUserProfile profile) {
-		if(!state.equals("DEV")) {
-			return false;		
-		}
-		//String pathFunct = path.substring(0, path.lastIndexOf('/'));
-		//return canDevInternal(pathFunct,profile);
-		return canDevInternal(path, profile);
-	}
+//	public static boolean canDev(String state, String path, IEngUserProfile profile) {
+//		if(!state.equals("DEV")) {
+//			return false;		
+//		}
+//		//String pathFunct = path.substring(0, path.lastIndexOf('/'));
+//		//return canDevInternal(pathFunct,profile);
+//		return canDevInternal(path, profile);
+//	}
 	
 	
 	
@@ -69,14 +69,14 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	public static boolean canExec(String state, String path, IEngUserProfile profile) {
-		if(!state.equals("REL")) {
-			return false;
-		}
-		//String pathFunct = path.substring(0, path.lastIndexOf('/'));
-		//return canExecInternal(pathFunct,profile);
-		return canExecInternal(path, profile);
-	}
+//	public static boolean canExec(String state, String path, IEngUserProfile profile) {
+//		if(!state.equals("REL")) {
+//			return false;
+//		}
+//		//String pathFunct = path.substring(0, path.lastIndexOf('/'));
+//		//return canExecInternal(pathFunct,profile);
+//		return canExecInternal(path, profile);
+//	}
 	
 	
 	
@@ -89,16 +89,16 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	public static boolean canTest(String state, String path, IEngUserProfile profile) {
-		if(!state.equals("TEST")) {
-			return false;		
-		}
-//		String pathFunct = path.substring(0, path.lastIndexOf('/'));
-//		return canTestInternal(pathFunct,profile);
-		return canTestInternal(path, profile);
-		
-		
-	}
+//	public static boolean canTest(String state, String path, IEngUserProfile profile) {
+//		if(!state.equals("TEST")) {
+//			return false;		
+//		}
+////		String pathFunct = path.substring(0, path.lastIndexOf('/'));
+////		return canTestInternal(pathFunct,profile);
+//		return canTestInternal(path, profile);
+//		
+//		
+//	}
 	
 	
 	/**
@@ -108,10 +108,10 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	public static boolean canDev(String path, IEngUserProfile profile) {
-
-		return canDevInternal(path, profile);
-	}
+//	public static boolean canDev(String path, IEngUserProfile profile) {
+//
+//		return canDevInternal(path, profile);
+//	}
 	/**
 	 * Control if the current user can test new object into the functionality path
 	 * 
@@ -119,11 +119,11 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	public static boolean canTest(String path, IEngUserProfile profile) {
-		
-		return canTestInternal (path, profile);
-		
-	}
+//	public static boolean canTest(String path, IEngUserProfile profile) {
+//		
+//		return canTestInternal (path, profile);
+//		
+//	}
 	/**
 	 * Control if the current user can execute new object into the functionality path
 	 * 
@@ -131,10 +131,10 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	public static boolean canExec(String path, IEngUserProfile profile) {
-
-		return canExecInternal(path,profile);
-	}
+//	public static boolean canExec(String path, IEngUserProfile profile) {
+//
+//		return canExecInternal(path,profile);
+//	}
 	/**
 	 * Private method called by the corrispondent public method canExec. Executes roles
 	 * functionalities control .
@@ -142,39 +142,39 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	private static boolean canExecInternal (String path, IEngUserProfile profile){
-		Collection roles = null;
-		try {
-			roles = profile.getRoles();
-		} catch (EMFInternalError emfie) {
-			return false;
-		}
-		
-		LowFunctionality funct = null;
-		try{
-			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
-		} catch (Exception e) {
-			return false;
-		}
-		Role[] execRoles = funct.getExecRoles();
-		List execRoleNames = new ArrayList();
-		for(int i=0; i<execRoles.length; i++) {
-			Role role = execRoles[i];
-			execRoleNames.add(role.getName());
-		}
-		
-		Iterator iterRoles = roles.iterator();
-		String roleName = "";
-		while(iterRoles.hasNext()) {
-			roleName = (String)iterRoles.next();
-			if(execRoleNames.contains(roleName)) {
-				return true;
-			}
-		}
-		return false;
-		
-		
-	}
+//	private static boolean canExecInternal (String path, IEngUserProfile profile){
+//		Collection roles = null;
+//		try {
+//			roles = profile.getRoles();
+//		} catch (EMFInternalError emfie) {
+//			return false;
+//		}
+//		
+//		LowFunctionality funct = null;
+//		try{
+//			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
+//		} catch (Exception e) {
+//			return false;
+//		}
+//		Role[] execRoles = funct.getExecRoles();
+//		List execRoleNames = new ArrayList();
+//		for(int i=0; i<execRoles.length; i++) {
+//			Role role = execRoles[i];
+//			execRoleNames.add(role.getName());
+//		}
+//		
+//		Iterator iterRoles = roles.iterator();
+//		String roleName = "";
+//		while(iterRoles.hasNext()) {
+//			roleName = (String)iterRoles.next();
+//			if(execRoleNames.contains(roleName)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//		
+//		
+//	}
 	/**
 	 * Private method called by the corrispondent public method canTest. Executes roles
 	 * functionalities control .
@@ -182,38 +182,38 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	private static boolean canTestInternal(String path, IEngUserProfile profile){
-		Collection roles = null;
-		try {
-			roles = profile.getRoles();
-		} catch (EMFInternalError emfie) {
-			return false;
-		}
-		
-		LowFunctionality funct = null;
-		try{
-			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
-		} catch (Exception e) {
-			return false;
-		}
-		Role[] testRoles = funct.getTestRoles();
-		List testRoleNames = new ArrayList();
-		for(int i=0; i<testRoles.length; i++) {
-			Role role = testRoles[i];
-			testRoleNames.add(role.getName());
-		}
-		
-		Iterator iterRoles = roles.iterator();
-		String roleName = "";
-		while(iterRoles.hasNext()) {
-			roleName = (String)iterRoles.next();
-			if(testRoleNames.contains(roleName)) {
-				return true;
-			}
-		}
-		return false;
-		
-	}
+//	private static boolean canTestInternal(String path, IEngUserProfile profile){
+//		Collection roles = null;
+//		try {
+//			roles = profile.getRoles();
+//		} catch (EMFInternalError emfie) {
+//			return false;
+//		}
+//		
+//		LowFunctionality funct = null;
+//		try{
+//			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
+//		} catch (Exception e) {
+//			return false;
+//		}
+//		Role[] testRoles = funct.getTestRoles();
+//		List testRoleNames = new ArrayList();
+//		for(int i=0; i<testRoles.length; i++) {
+//			Role role = testRoles[i];
+//			testRoleNames.add(role.getName());
+//		}
+//		
+//		Iterator iterRoles = roles.iterator();
+//		String roleName = "";
+//		while(iterRoles.hasNext()) {
+//			roleName = (String)iterRoles.next();
+//			if(testRoleNames.contains(roleName)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//		
+//	}
 	/**
 	 * Private method called by the corrispondent public method canDev. Executes roles
 	 * functionalities control .
@@ -221,38 +221,38 @@ public class ObjectsAccessVerifier {
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	private static boolean canDevInternal(String path, IEngUserProfile profile){
-		Collection roles = null;
-		try {
-			roles = profile.getRoles();
-		} catch (EMFInternalError emfie) {
-			return false;
-		}
-		
-		LowFunctionality funct = null;
-		try{
-			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
-		} catch (Exception e) {
-			return false;
-		}
-		Role[] devRoles = funct.getDevRoles();
-		List devRoleNames = new ArrayList();
-		for(int i=0; i<devRoles.length; i++) {
-			Role role = devRoles[i];
-			devRoleNames.add(role.getName());
-		}
-		
-		Iterator iterRoles = roles.iterator();
-		String roleName = "";
-		while(iterRoles.hasNext()) {
-			roleName = (String)iterRoles.next();
-			if(devRoleNames.contains(roleName)) {
-				return true;
-			}
-		}
-		return false;
-		
-	}
+//	private static boolean canDevInternal(String path, IEngUserProfile profile){
+//		Collection roles = null;
+//		try {
+//			roles = profile.getRoles();
+//		} catch (EMFInternalError emfie) {
+//			return false;
+//		}
+//		
+//		LowFunctionality funct = null;
+//		try{
+//			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path);
+//		} catch (Exception e) {
+//			return false;
+//		}
+//		Role[] devRoles = funct.getDevRoles();
+//		List devRoleNames = new ArrayList();
+//		for(int i=0; i<devRoles.length; i++) {
+//			Role role = devRoles[i];
+//			devRoleNames.add(role.getName());
+//		}
+//		
+//		Iterator iterRoles = roles.iterator();
+//		String roleName = "";
+//		while(iterRoles.hasNext()) {
+//			roleName = (String)iterRoles.next();
+//			if(devRoleNames.contains(roleName)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//		
+//	}
 	
 	/**
 	 * 
@@ -369,7 +369,7 @@ public class ObjectsAccessVerifier {
 		
 		LowFunctionality funct = null;
 		try{
-			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId);
+			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
 		} catch (Exception e) {
 			return false;
 		}
@@ -409,7 +409,7 @@ public class ObjectsAccessVerifier {
 		
 		LowFunctionality funct = null;
 		try{
-			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId);
+			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
 		} catch (Exception e) {
 			return false;
 		}
@@ -448,7 +448,7 @@ public class ObjectsAccessVerifier {
 		
 		LowFunctionality funct = null;
 		try{
-			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId);
+			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
 		} catch (Exception e) {
 			return false;
 		}

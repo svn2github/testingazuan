@@ -58,8 +58,8 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	//ArrayList execRoleNames = new ArrayList();
 	IEngUserProfile profile = null;
 	PortletRequest portReq = null;
-	private int dTreeRootId = -100;
-	private int dTreeObjects = -1000;
+	protected int dTreeRootId = -100;
+	protected int dTreeObjects = -1000;
 	
 	/**
 	 * Builds theJavaScript object to make the tree. All code is appended into a 
@@ -172,7 +172,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * 
 	 * @param htmlStream	The input String Buffer
 	 */
-	private void makeConfigurationDtree(StringBuffer htmlStream) {
+	protected void makeConfigurationDtree(StringBuffer htmlStream) {
 		
 		htmlStream.append("<SCRIPT language=JavaScript>\n");
 		htmlStream.append("		function dTree(objName) {\n");

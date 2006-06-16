@@ -93,6 +93,13 @@ public class BIObjectsPublisher implements PublisherDispatcherIFace {
 				errorHandler.addError(error);
 				return "error";
 			}
+			
+			publisherName = (String) treeModuleResponse.getAttribute(SpagoBIConstants.PUBLISHER_NAME );
+			if (publisherName != null &&  !publisherName.trim().equals("")) {
+			   	return publisherName;
+			} 
+			
+			
 	        // if no publisher name is set get the actor		
 			String actor = (String)treeModuleResponse.getAttribute(SpagoBIConstants.ACTOR);
 	        // based on actor type return different publisher names           

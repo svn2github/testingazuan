@@ -1,0 +1,8 @@
+Requirements:
+
+- OpenOffice 2.x running as a server
+  To run open office as a server exec the following command from the opeoffice-install-dir/program directory
+  soffice -accept="socket,host=localhost,port=9000;urp;StarOffice.ServiceManager"
+  
+- Shark 1.1.2 installed 
+

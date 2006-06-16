@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAMPHLETS>
+   <BASE_CMS_NODE path="/Pamphlets" />
+   <PATH_TMP_FOLDER path="/mytemp" />
+   <OFFICECONNECTION host="localhost" port="9000" />
+</PAMPHLETS>
+

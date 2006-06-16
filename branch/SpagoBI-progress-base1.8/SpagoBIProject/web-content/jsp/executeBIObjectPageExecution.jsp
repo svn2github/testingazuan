@@ -11,7 +11,7 @@
                  it.eng.spagobi.bo.dao.IDomainDAO,
                  it.eng.spagobi.bo.dao.DAOFactory,
                  it.eng.spagobi.constants.SpagoBIConstants,
-                 it.eng.spagobi.services.modules.TreeObjectsModule,
+                 it.eng.spagobi.services.modules.BIObjectsModule,
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
                  it.eng.spagobi.utilities.PortletUtilities,
                  it.eng.spago.navigation.LightNavigationManager,
@@ -68,7 +68,7 @@
 	
 	// build the refresh button
 	PortletURL refreshUrl = renderResponse.createActionURL();
-	refreshUrl.setParameter("PAGE", TreeObjectsModule.MODULE_PAGE);
+	refreshUrl.setParameter("PAGE", BIObjectsModule.MODULE_PAGE);
 	refreshUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 	refreshUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	

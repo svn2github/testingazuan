@@ -1,6 +1,7 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="javax.portlet.PortletURL,
+				 it.eng.spagobi.utilities.PortletUtilities" %>
 
 
 <table width='100%' cellspacing='0' border='0'>		
@@ -12,15 +13,64 @@
 <%
     PortletURL formUrl = renderResponse.createActionURL();
     formUrl.setParameter("PAGE", "SaveConfigurationPage");  
-    boolean it = false;
-    boolean en = false;
-	String[] langPref = renderRequest.getPreferences().getValues("language", null);	
-    if(langPref[0].equals("it")) {
-    	it = true;
-    } else {
-    	en = true;
-    }
+    //boolean it = false;
+    //boolean en = false;
+	//String[] langPref = renderRequest.getPreferences().getValues("language", null);	
+    //if(langPref[0].equals("it")) {
+    //	it = true;
+    //} else {
+    //	en = true;
+    //}
 %>
+
+
+<form action="<%= formUrl.toString() %>" method="POST" > 
+<table width="100%" cellspacing="0" border="0" >
+  	<tr height='1'>
+  		<td width="30px"><span>&nbsp;</span></td>
+  		<td width="70px"><span>&nbsp;</span></td>
+  		<td width="30px"><span>&nbsp;</span></td>
+  		<td><span>&nbsp;</span></td>
+  	</tr>
+  	
+  	<%
+  	javax.portlet.PortletRequest portReq = PortletUtilities.getPortletRequest();
+  	javax.portlet.PortletPreferences prefs = portReq.getPreferences();
+  	String prefPrefix = "PORTLET_PREF_";
+  	java.util.Enumeration names = prefs.getNames();
+	while (names.hasMoreElements()) {
+		String prefName = (String) names.nextElement();
+		//String prefValue = prefs.getValue(prefName, "");
+		String[] prefValues = prefs.getValues(prefName, null);
+		String prefValue = prefValues[0];
+		for (int i = 1; i < prefValues.length; i++) {
+			prefValue += "," + prefValues[i];
+		}
+		%>
+		<tr height='40'>
+      		<td>&nbsp;</td>
+      		<td class='portlet-form-field-label' ><%=prefName%>:</td>
+      		<td>&nbsp;</td>
+      		<td>	
+      			<input type="text" name="<%=prefPrefix+prefName%>" value="<%=prefValue%>" />
+      		</td>
+   		</tr>
+		<%	
+	}
+	%>
+    <tr height='10'>
+		<td colspan="4">&nbsp;</td>
+	</tr>
+	<tr height='40'>
+		<td>&nbsp;</td>
+		<td colspan="3">
+			<input type="submit" value="<spagobi:message key="editConf.save"/>"/>
+		</td>
+	</tr>
+</table>
+</form>
+
+
 
 
 
@@ -73,13 +123,13 @@
 <!-- ************************************************************* -->
 
 <br/><br/>
-
+<!-- 
 <div width="100%" align="center">
 	<span class='portlet-form-field-label' ><spagobi:message key="editConf.noConfiguration"/></span>
 </div>
 
 <br/><br/>
-
+-->
 
 
 

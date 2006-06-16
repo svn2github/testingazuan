@@ -48,7 +48,7 @@ public interface IBIObjectCMSDAO {
 	 * @param profile User Profile
 	 * @return InputStream of the template contents
 	 */ 
-	public InputStream getTemplate(String path, IEngUserProfile profile); 
+	public InputStream getTemplate(String path); 
 	
 	/**
 	 * Save a subObject of the object

@@ -34,8 +34,6 @@ import java.util.List;
 
 /**
  * Defines the interfaces for all methods needed to operate with a domain.
- * 
- * @author Zoppello
  */
 public interface IDomainDAO {
 	
@@ -74,4 +72,16 @@ public interface IDomainDAO {
 	 */
 	public  Domain loadDomainByCodeAndValue(String codeDomain, String codeValue)
 			throws EMFUserError;
+	
+	
+	/**
+	 * Loads all possible domain, storing each
+	 * of them into a <code>Domain</objects> and after putting all objects into
+	 * a list, which is returned.
+	 * @return	The list of all domains
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	
+	public List loadListDomains() throws EMFUserError;
+	
 }

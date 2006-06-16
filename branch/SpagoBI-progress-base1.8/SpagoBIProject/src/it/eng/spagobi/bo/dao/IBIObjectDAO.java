@@ -178,6 +178,14 @@ public interface IBIObjectDAO {
 	public List getCorrectRolesForExecution(Integer id) throws EMFUserError;
 	
 	/**
+	 * Gets the biparameters associated with to a biobject 
+	 * @param aBIObject BIObject the biobject to analize
+	 * @return List, list of the biparameters associated with the biobject
+	 * @throws EMFUserError
+	 */
+	public List getBIObjectParameters(BIObject aBIObject) throws EMFUserError;
+	
+	/**
 	 * Loads all the BIObjects
 	 * @return the list of BIObjects
 	 * @throws EMFUserError If an Exception occurred

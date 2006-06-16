@@ -170,6 +170,13 @@ public class DomainDAOImpl extends AbstractJdbcDAO implements IDomainDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+	public List loadListDomains() throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 	

@@ -50,6 +50,7 @@ import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
+import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
@@ -1025,6 +1026,21 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		}
 		return realResult;
 	}
+
+
+
+	/**
+	 * Gets the biparameters associated with to a biobject 
+	 * @param aBIObject BIObject the biobject to analize
+	 * @return List, list of the biparameters associated with the biobject
+	 * @throws EMFUserError
+	 */
+	public List getBIObjectParameters(BIObject aBIObject) throws EMFUserError {
+		IBIObjectParameterDAO biobjDAO = DAOFactory.getBIObjectParameterDAO();
+		List biparams = biobjDAO.loadBIObjectParametersById(aBIObject.getId());
+		return biparams;
+	}
+
 
 
 	public List loadAllBIObjectsFromInitialPath(String initialPath) throws EMFUserError {

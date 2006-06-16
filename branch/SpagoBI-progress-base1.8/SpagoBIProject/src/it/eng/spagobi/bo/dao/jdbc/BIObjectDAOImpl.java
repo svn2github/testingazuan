@@ -947,6 +947,12 @@ public class BIObjectDAOImpl extends AbstractJdbcDAO implements IBIObjectDAO {
 	   return correctRoles;
 	}
 
+
+	public List getBIObjectParameters(BIObject aBIObject) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public BIObject loadBIObjectForExecutionByIdAndRole(Integer id, String role) throws EMFUserError {
 		// TODO Auto-generated method stub
 		return null;

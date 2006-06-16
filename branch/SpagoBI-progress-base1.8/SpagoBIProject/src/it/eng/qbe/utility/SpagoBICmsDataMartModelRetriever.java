@@ -40,7 +40,7 @@ public class SpagoBICmsDataMartModelRetriever implements IDataMartModelRetriever
 					modelFile.delete();
 			    }
 			    IBIObjectCMSDAO cmsDao = DAOFactory.getBIObjectCMSDAO();
-				InputStream is = cmsDao.getTemplate(dataMartPath, profile);
+				InputStream is = cmsDao.getTemplate(dataMartPath);
                 modelFile = new File(pathModelFile);
 				FileOutputStream fos = new FileOutputStream(modelFile);
 				byte[] buffer = new byte[1024];

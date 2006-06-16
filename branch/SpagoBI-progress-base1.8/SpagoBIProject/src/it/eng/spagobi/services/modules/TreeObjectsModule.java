@@ -54,6 +54,10 @@ public class TreeObjectsModule extends AbstractModule {
 		if (operation != null && operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) {
 			// it means that only the functionalities will be displayed
 			recoverBIObjects = false;
+		} else if (operation != null && operation.equals(SpagoBIConstants.IMPORTEXPORT_OPERATION)) {
+			// it means that all the tree documents and functionalities will be displayed
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "importexportHome");
+			recoverBIObjects = true;
 		}
 		try {
 			if (initialPath != null && !initialPath.trim().equals("")) {
@@ -284,11 +288,18 @@ public class TreeObjectsModule extends AbstractModule {
 	
 	
 	
-	/**
-	 * Load the sourceBean of the entire object tree
-	 * @param profile User Profile
-	 * @return SourceBean of the entire objects tree
-	 */
+    /*
+	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile) {
+		debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
+		SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
+	    String pathSysFunct = pathSysFunctSB.getCharacters();
+	    debug("getFunctioanlitiesTree", "using intial path" + pathSysFunct);
+	    TreeObjectsDAO objDao = new TreeObjectsDAO();
+        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct);
+        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
+        return dataResponseSysFunct;
+	}*/
+
 //	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile) {
 //		debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
 //		SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
@@ -299,12 +310,21 @@ public class TreeObjectsModule extends AbstractModule {
 //        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
 //        return dataResponseSysFunct;
 //	}
+
 	
-	/**
-	 * Load the sourceBean of the entire object tree
-	 * @param profile User Profile
-	 * @return SourceBean of the entire objects tree
-	 */
+  /*
+	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile, String path) {
+		//debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
+		//SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
+	    //String pathSysFunct = pathSysFunctSB.getCharacters();
+	    debug("getFunctioanlitiesTree", "using intial path" + path);
+	    TreeObjectsDAO objDao = new TreeObjectsDAO();
+        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(path);
+        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
+        return dataResponseSysFunct;
+	}
+	*/
+
 //	private SourceBean getFunctioanlitiesTree(IEngUserProfile profile, String path) {
 //		//debug("getFunctioanlitiesTree", "enter getFunctioanlitiesTree");
 //		//SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(PATH_SYS_FUNCT);
@@ -315,6 +335,7 @@ public class TreeObjectsModule extends AbstractModule {
 //        debug("getFunctioanlitiesTree", "objects tree sourceBean loaded: \n" + dataResponseSysFunct.toXML(false));
 //        return dataResponseSysFunct;
 //	}
+
 	
 	
 	

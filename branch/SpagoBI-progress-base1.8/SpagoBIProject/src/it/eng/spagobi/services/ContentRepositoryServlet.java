@@ -49,8 +49,6 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * A servlet used to manage and control the content repository
- * 
- * @author Zoppello
  */
 public class ContentRepositoryServlet extends HttpServlet{
 	
@@ -79,8 +77,7 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 			jcrPath = jcrPath.substring(0, lastslash);
 	 		 		}
 	 		 		IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
-	 		 		IEngUserProfile profile = new AnonymousCMSUserProfile();
-	 		 		InputStream jcrContentStream = biObjCMSDAO.getTemplate(jcrPath, profile);
+	 		 		InputStream jcrContentStream = biObjCMSDAO.getTemplate(jcrPath);
 		 			byte[] jcrContent = GeneralUtilities.getByteArrayFromInputStream(jcrContentStream);
 		 			response.setContentLength(jcrContent.length);
 				 	response.getOutputStream().write(jcrContent);

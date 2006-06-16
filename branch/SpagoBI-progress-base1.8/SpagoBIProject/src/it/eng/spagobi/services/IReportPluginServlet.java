@@ -27,18 +27,14 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.CmsProperty;
-import it.eng.spago.cms.init.CMSManager;
 import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.security.AnonymousCMSUserProfile;
 import it.eng.spagobi.security.IPortalSecurityProvider;
-import it.eng.spagobi.services.dao.TreeObjectsDAO;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -163,7 +159,6 @@ public class IReportPluginServlet extends HttpServlet{
 	   	// get the content from the cms
 	   	path += "/template";
 	    InputStream jcrContentStream = null;
-	    IEngUserProfile userProfile = new AnonymousCMSUserProfile();
 		try{
             CmsManager manager = new CmsManager();
 			GetOperation getOp = new GetOperation();
@@ -287,22 +282,22 @@ public class IReportPluginServlet extends HttpServlet{
            	return;
         } 
 	    // get the sourcebean of the cms tree
-	    TreeObjectsDAO treedao = new TreeObjectsDAO();
-        IEngUserProfile userProf = new AnonymousCMSUserProfile();
+	    //TreeObjectsDAO treedao = new TreeObjectsDAO();
         ConfigSingleton config = ConfigSingleton.getInstance();
 	    SourceBean pathSysFunctSB = (SourceBean)config.getAttribute(ATTR_PATH_SYS_FUNCT);
 	    String pathSysFunct = pathSysFunctSB.getCharacters();
-        SourceBean treeSB = treedao.getXmlTreeObjects(pathSysFunct, userProf);
+        //SourceBean treeSB = treedao.getXmlTreeObjects(pathSysFunct);
         // filter the sourcebean  
-        String filterTree = filterTree(treeSB, roles);
+        //String filterTree = filterTree(treeSB, roles);
         // if the tree is null return error
-        if(filterTree==null) {
+        /*
+	    if(filterTree==null) {
         	String msgErr = createErrorMessage(this.TREE_GEN_ERROR, this.TREE_GEN_ERROR_MSG);
      		flushOut(msgErr, out);
            	return;
-        }
-        String respMsg = createResponseMessage(filterTree);
-	        flushOut(respMsg, out);
+        }*/
+       // String respMsg = createResponseMessage(filterTree);
+	   //     flushOut(respMsg, out);
 	}
 	
 	
@@ -372,7 +367,7 @@ public class IReportPluginServlet extends HttpServlet{
 			} else if(codeType.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE)) {
 				BIObject obj = null;
 				try {
-					obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
+					//obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
 				} catch (Exception e) {
 					System.out.println(e);
 					SpagoBITracer.warning("SPAGOBI", this.getClass().getName(),

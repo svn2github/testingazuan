@@ -1097,7 +1097,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		    response.setAttribute(NAME_ATTR_LIST_ENGINES, engines);
 		    response.setAttribute(NAME_ATTR_LIST_OBJ_TYPES, types);
 		    response.setAttribute(NAME_ATTR_LIST_STATES, states);
-		    
 //		    String ATTR_PATH_SYS_FUNCT = "SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH";
 //          RequestContainer requestContainer = getRequestContainer();
 //          SessionContainer sessionContainer = requestContainer.getSessionContainer();
@@ -1108,6 +1107,7 @@ public class DetailBIObjectModule extends AbstractModule {
 //	        TreeObjectsDAO objDao = new TreeObjectsDAO();
 //	        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct, profile);
 //			response.setAttribute(dataResponseSysFunct);
+
 		    
 			List functionalities = new ArrayList();
 			try {

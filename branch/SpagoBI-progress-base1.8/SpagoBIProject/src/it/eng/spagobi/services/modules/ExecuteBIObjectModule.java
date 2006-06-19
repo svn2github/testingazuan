@@ -24,7 +24,6 @@ package it.eng.spagobi.services.modules;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -77,7 +76,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 	RequestContainer requestContainer = null;
 	SessionContainer session = null;
 	SessionContainer permanentSession = null;
-	protected String biobjectsPath = null;
 	
 	public void init(SourceBean config) {}
 	
@@ -101,9 +99,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 		permanentSession = session.getPermanentContainer();
 		debug("service", "errorHanlder, requestContainer, session, permanentSession retrived ");
         execContr = new ExecutionController(); 
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-		biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
         
 		try{
 			if(messageExec == null) {
@@ -466,7 +461,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         // get name of the subobject
         String subObjName = (String)request.getAttribute("NAME_SUB_OBJECT");
         // get path of the parent object 
-        String path = biobjectsPath + "/" + obj.getUuid();
+        String path = obj.getPath();
         // get cms dao for biobject
         IBIObjectCMSDAO cmsDao = DAOFactory.getBIObjectCMSDAO();
         // delete subobject
@@ -491,7 +486,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		List subObjects = new ArrayList();
 		try {
 			IBIObjectCMSDAO biObjCmsDAO = DAOFactory.getBIObjectCMSDAO();
-			String objectPath = biobjectsPath + "/" + obj.getUuid();
+			String objectPath =  obj.getPath();
 			subObjects =  biObjCmsDAO.getAccessibleSubObjects(objectPath, profile);
 		} catch (Exception e) {
 			SpagoBITracer.major("SPAGOBI", 

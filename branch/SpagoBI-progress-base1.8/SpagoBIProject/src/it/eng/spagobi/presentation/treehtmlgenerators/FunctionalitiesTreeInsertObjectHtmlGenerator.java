@@ -319,7 +319,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 					htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
 						          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
 						          "', '', '', '" + ObjectsTreeConstants.FUNCT_ID + "', '" + id + "'," + checked + ");\n");
-				} else {
+				} else if (ObjectsAccessVerifier.canExec(id, profile)) {
 					htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
 					          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
 					          "', '', '', '', '',false);\n");

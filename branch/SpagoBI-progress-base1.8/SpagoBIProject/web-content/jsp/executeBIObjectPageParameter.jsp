@@ -204,6 +204,7 @@
 	   		execNewCompUrl.setParameter("PAGE", "ValidateExecuteBIObjectPage");
 	   		execNewCompUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
 	   		execNewCompUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+	   		execNewCompUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    %>
    <%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages")%>&nbsp;
    <a href='<%=execUrl.toString()%>'><%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages")%></a>
@@ -278,6 +279,7 @@
     	                execSubObjUrl.setParameter("NAME_SUB_OBJECT", nameSub);
     	                execSubObjUrl.setParameter("DESCRIPTION_SUB_OBJECT", descr);
     	                execSubObjUrl.setParameter("VISIBILITY_SUB_OBJECT", visib);
+    	                execSubObjUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
     	                
     	                deleteSubObjUrl = renderResponse.createActionURL();
     	                deleteSubObjUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );

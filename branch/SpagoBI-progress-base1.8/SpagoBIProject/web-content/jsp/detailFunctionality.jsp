@@ -20,15 +20,12 @@
 	PortletURL formAct = renderResponse.createActionURL();
     formAct.setParameter(AdmintoolsConstants.PAGE, DetailFunctionalityModule.MODULE_PAGE);
     formAct.setParameter(AdmintoolsConstants.MESSAGE_DETAIL, modality);
-    String pathParent = "";
-    LowFunctionality parentFunctionality = null; 
+    String pathParent = (String) moduleResponse.getAttribute(AdmintoolsConstants.PATH_PARENT);
+    LowFunctionality parentFunctionality = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
     
-    if(modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-    	pathParent = (String)moduleResponse.getAttribute(AdmintoolsConstants.PATH_PARENT);
+    if (modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
     	formAct.setParameter(AdmintoolsConstants.PATH_PARENT, pathParent);
     } else {
-    	pathParent = (String)moduleResponse.getAttribute("PARENT_PATH");
-        parentFunctionality = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
     	formAct.setParameter(AdmintoolsConstants.FUNCTIONALITY_ID, functionality.getId().toString());
     }
     formAct.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
@@ -95,8 +92,7 @@
 	  }
     %>
     	<input class='portlet-form-input-field' type="text" 
-	      	   size="50" name="code" id="" value="<%= code %>" 
-	      	   <%  if(modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) { out.print(" readonly "); } %> />
+	      	   size="50" name="code" id="" value="<%= code %>" />
 	    &nbsp;* 
 	</div>
 	<div class='div_detail_label'>
@@ -220,7 +216,7 @@
 					 	    	<%
 					 	    		if(isDev) out.print(" checked='checked' ");
 					 	    		//else if (!isDev && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isDevParent) out.print(" disabled='disabled' ");
-					 	    		else if (!isDevParent) out.print(" disabled='disabled' ");
+					 	    		else if (!isDevParent && parentFunctionality.getParentId() != null) out.print(" disabled='disabled' ");
 					 	    	%> 
 					 	    />
 					 	</td>
@@ -229,7 +225,7 @@
 					 	    <%
 					 	    	if(isTest) out.print(" checked='checked' "); 
 					 	    	//else if (!isTest && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isTestParent) out.print(" disabled='disabled' ");
-					 	    	else if (!isTestParent) out.print(" disabled='disabled' ");
+					 	    	else if (!isTestParent && parentFunctionality.getParentId() != null) out.print(" disabled='disabled' ");
 					 	    %> 
 					 	    />
 					 	</td>
@@ -238,7 +234,7 @@
 					 	    <%
 					 	    	if(isExec) out.print(" checked='checked' ");
 					 	    	//else if (!isExec && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isExecParent) out.print(" disabled='disabled' "); 
-					 	    	else if (!isExecParent) out.print(" disabled='disabled' "); 
+					 	    	else if (!isExecParent && parentFunctionality.getParentId() != null) out.print(" disabled='disabled' "); 
 					 	    %> 
 					 	    />
 					 	</td> 

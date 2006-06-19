@@ -89,7 +89,7 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			
 			conn = getConnectionToDatabase(pathImpTmpFolder, archiveName);
 			stmt = conn.createStatement();
-			sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+idFunctRoot+" WHERE PARENT_FUNCT_ID = NULL";
+			sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+idFunctRoot+" WHERE PARENT_FUNCT_ID IS NULL";
 			stmt.executeUpdate(sql);
 			conn.commit();
 			conn.close();	

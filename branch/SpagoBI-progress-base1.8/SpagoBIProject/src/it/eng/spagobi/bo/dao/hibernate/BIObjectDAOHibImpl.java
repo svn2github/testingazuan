@@ -268,11 +268,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 //		SessionContainer permSession = session.getPermanentContainer();
 //		IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
-			ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
 			GetOperation getOp = new GetOperation();
-			String path = biobjectsPath + "/" + biObject.getUuid() + "/template";
+			String path = biObject.getPath() + "/template";
 			getOp.setPath(path);
 			getOp.setRetriveContentInformation("true");
 			getOp.setRetrivePropertiesInformation("true");
@@ -474,15 +471,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			CmsManager manager = new CmsManager();
 			if (version) {
-				ConfigSingleton config = ConfigSingleton.getInstance();
-				SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-				String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
 				// if user has load a file template update the cms reporitory
 				if(biObject.getTemplate().getFileContent().length > 0) {
 					SetOperation setOp = new SetOperation();
 					setOp.setContent(new ByteArrayInputStream(biObject.getTemplate().getFileContent()));
 					setOp.setType(SetOperation.TYPE_CONTENT);
-					String path = biobjectsPath + "/" + hibBIObject.getUuid() + "/template";
+					String path = hibBIObject.getPath() + "/template";
 					setOp.setPath(path);
 					// define properties list
 					List properties = new ArrayList();
@@ -498,7 +492,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					manager.execSetOperation(setOp);
 				} else if (biObject.getNameCurrentTemplateVersion() != null) {
 					GetOperation getOp = new GetOperation();
-					getOp.setPath(biobjectsPath + "/" + hibBIObject.getUuid() + "/template" );
+					getOp.setPath(hibBIObject.getPath() + "/template" );
 					getOp.setRetriveChildsInformation("false");
 					getOp.setRetriveContentInformation("false");
 					getOp.setRetrivePropertiesInformation("false");
@@ -507,7 +501,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					String verName = cmsnode.getVersion();
 					if(!biObject.getNameCurrentTemplateVersion().equals(verName)) {
 						RestoreOperation resOp = new RestoreOperation();
-						resOp.setPath(biobjectsPath + "/" + hibBIObject.getUuid() + "/template");
+						resOp.setPath(hibBIObject.getPath() + "/template");
 						resOp.setVersion(biObject.getNameCurrentTemplateVersion());
 						manager.execRestoreOperation(resOp);
 					}
@@ -786,12 +780,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 //				SessionContainer permSession = session.getPermanentContainer();
 //				IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 				// erase from cms
-				ConfigSingleton config = ConfigSingleton.getInstance();
-				SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-				String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
 				CmsManager manager = new CmsManager();
 				DeleteOperation delOp = new DeleteOperation();
-				delOp.setPath(biobjectsPath + "/" + obj.getUuid());
+				delOp.setPath(obj.getPath());
 				manager.execDeleteOperation(delOp);
 			}
 		} catch (HibernateException he) {

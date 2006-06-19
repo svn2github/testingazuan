@@ -19,26 +19,20 @@
 	<CONFIGURATOR path="/WEB-INF/conf/profileattributes.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/spagobi/spagobi_components.xml" />
 	<!-- START DASHBOARD -->
-	<!--
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />
-	-->
 	<!-- END DASHBOARD -->
 	<!-- START QBE -->
-	<!--
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/qbe.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/publishers.xml" />
-	-->
 	<!-- END QBE -->
 	<!-- start import export module -->
-	<!--
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/importexport.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
-	-->
 	<!-- end import export module -->
 	
 </MASTER>

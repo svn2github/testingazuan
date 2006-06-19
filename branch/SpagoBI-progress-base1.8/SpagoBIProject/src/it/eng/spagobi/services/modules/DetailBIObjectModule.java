@@ -27,7 +27,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.operations.DeleteOperation;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -1190,10 +1189,11 @@ public class DetailBIObjectModule extends AbstractModule {
 		//IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(id);
-			ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-			String pathVer = biobjectsPath + "/" + obj.getUuid() + "/template";
+//			ConfigSingleton config = ConfigSingleton.getInstance();
+//			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
+//			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+//			String pathVer = biobjectsPath + "/" + obj.getUuid() + "/template";
+			String pathVer = obj.getPath() + "/template";
 			// try to delete the version
 			CmsManager manager = new CmsManager();
 			DeleteOperation delOp = new DeleteOperation(pathVer, ver);

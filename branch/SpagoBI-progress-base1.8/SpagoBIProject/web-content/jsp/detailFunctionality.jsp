@@ -9,7 +9,8 @@
                  it.eng.spagobi.services.modules.TreeObjectsModule,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.bo.dao.DAOFactory,
-                 it.eng.spago.navigation.LightNavigationManager" %>
+                 it.eng.spago.navigation.LightNavigationManager,
+                 it.eng.spagobi.services.modules.BIObjectsModule" %>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailFunctionalityModule"); 
@@ -27,13 +28,13 @@
     	formAct.setParameter(AdmintoolsConstants.PATH_PARENT, pathParent);
     } else {
     	pathParent = (String)moduleResponse.getAttribute("PARENT_PATH");
-        parentFunctionality = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent);
+        parentFunctionality = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
     	formAct.setParameter(AdmintoolsConstants.FUNCTIONALITY_ID, functionality.getId().toString());
     }
     formAct.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 
     PortletURL backUrl = renderResponse.createActionURL();
-    backUrl.setParameter("PAGE", TreeObjectsModule.MODULE_PAGE);
+    backUrl.setParameter("PAGE", BIObjectsModule.MODULE_PAGE);
     backUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
     backUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
     backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");

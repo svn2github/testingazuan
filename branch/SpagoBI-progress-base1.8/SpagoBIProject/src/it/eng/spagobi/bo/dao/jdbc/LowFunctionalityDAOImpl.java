@@ -563,6 +563,11 @@ public class LowFunctionalityDAOImpl extends AbstractJdbcDAO  implements ILowFun
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public LowFunctionality loadRootFunctionality() throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 

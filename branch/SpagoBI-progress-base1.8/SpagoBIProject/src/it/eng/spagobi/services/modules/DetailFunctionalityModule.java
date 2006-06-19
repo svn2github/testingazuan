@@ -133,7 +133,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			String path = (String) request.getAttribute(DetailFunctionalityModule.PATH);
 			int index = path.lastIndexOf("/");
 			String parentPath = path.substring(0,index);
-			response.setAttribute("PARENT_PATH", parentPath);
+			response.setAttribute(AdmintoolsConstants.PATH_PARENT, parentPath);
 			response.setAttribute(AdmintoolsConstants.MODALITY, modality);
 			if (typeFunct.equals("LOW_FUNCT")) {
 				LowFunctionality funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(path, false);
@@ -184,7 +184,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 						String path = lowFunct.getPath();
 						int index = path.lastIndexOf("/");
 						String parentPath = path.substring(0,index);
-						response.setAttribute("PARENT_PATH", parentPath);
+						response.setAttribute(AdmintoolsConstants.PATH_PARENT, parentPath);
 						return;
 					}
 				}

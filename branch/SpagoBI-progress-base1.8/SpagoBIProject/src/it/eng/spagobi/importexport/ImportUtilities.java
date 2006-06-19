@@ -36,6 +36,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -78,10 +79,13 @@ public class ImportUtilities {
 	            dest.close();
 	         }
 	         zis.close();
+	      } catch (EOFException eofe) {
+	    	  SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, "ImportUtilities" , "decompressArchive",
+			          "Error during the decompression of the exported file " + eofe);
 	      } catch(Exception e) {
 	    	  SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ImportUtilities" , "decompressArchive",
 	        			          "Error during the decompression of the exported file " + e);
-	        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
+	    	  throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
 	      }
 	}
 	
@@ -95,7 +99,7 @@ public class ImportUtilities {
 	 */
 	public static SessionFactory getHibSessionExportDB(String pathDBFolder) throws EMFUserError {
 		Configuration conf = new Configuration();
-		String resource = "it/eng/spagobi/importexport/version18/hibernate.cfg.hsql.export.xml";
+		String resource = "it/eng/spagobi/importexport/metadata/hibernate.cfg.hsql.export.xml";
 		conf = conf.configure(resource);
 		String hsqlJdbcString = "jdbc:hsqldb:file:" + pathDBFolder + "/metadata;shutdown=true";
 		conf.setProperty("hibernate.connection.url",hsqlJdbcString);
@@ -150,6 +154,9 @@ public class ImportUtilities {
 		newEng.setObjUplDir(engine.getObjUplDir());
 		newEng.setObjUseDir(engine.getObjUseDir());
 		newEng.setSecnUrl(engine.getSecnUrl());
+		newEng.setEngineType(engine.getEngineType());
+		newEng.setBiobjType(engine.getBiobjType());
+		newEng.setClassNm(engine.getClassNm());
 		return newEng;
 	}
 	

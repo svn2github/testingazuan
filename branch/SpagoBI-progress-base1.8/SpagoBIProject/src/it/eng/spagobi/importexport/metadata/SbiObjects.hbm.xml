@@ -9,9 +9,6 @@
     <class name="it.eng.spagobi.metadata.SbiObjects" table="sbi_objects">
         <id name="biobjId" type="integer">
             <column name="biobj_id" />
-            <generator class="identity">
-           
-            </generator>
         </id>
         <many-to-one name="sbiEngines" class="it.eng.spagobi.metadata.SbiEngines">
             <column name="engine_id" not-null="true" />
@@ -65,7 +62,7 @@
             <column name="rel_name" length="400" />
         </property>
         <property name="uuid" type="string">
-            <column name="UUID" length="40" not-null="true"/>
+            <column name="uuid" length="40" />
         </property>
         <set name="sbiObjPars" inverse="true">
             <key>

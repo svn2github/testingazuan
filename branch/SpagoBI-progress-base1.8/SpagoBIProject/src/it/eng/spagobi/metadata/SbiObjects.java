@@ -72,14 +72,14 @@ public class SbiObjects  implements java.io.Serializable {
 
     // Property accessors
 
-    public String getUuid() {
-		return uuid;
-	}
+	  public String getUuid() {
+			return uuid;
+		}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-    
+		public void setUuid(String uuid) {
+			this.uuid = uuid;
+		}
+	
     /**
      * 
      */

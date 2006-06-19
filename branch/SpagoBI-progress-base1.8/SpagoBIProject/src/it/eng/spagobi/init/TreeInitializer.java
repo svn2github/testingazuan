@@ -80,21 +80,17 @@ public class TreeInitializer implements InitializerIFace {
 					functionality.setCodType(codeType);
 					functionality.setPath(parentPath + "/" + code);
 					if (parentPath != null && !parentPath.trim().equals("")) {
-						// if it is not the root load the id of the parent path and set not permissions
+						// if it is not the root load the id of the parent path
 						LowFunctionality parentFunctionality = functionalityDAO.loadLowFunctionalityByPath(parentPath, false);
 						functionality.setParentId(parentFunctionality.getId());
-						functionality.setDevRoles(new Role[0]);
-						functionality.setExecRoles(new Role[0]);
-						functionality.setTestRoles(new Role[0]);
 					} else {
-						// if it is the root the parent path id is set to null and set all permissions
+						// if it is the root the parent path id is set to null
 						functionality.setParentId(null);
-						List allRoles = DAOFactory.getRoleDAO().loadAllRoles();
-						Role[] roles = (Role[]) allRoles.toArray(new Role[allRoles.size()]);
-						functionality.setDevRoles(roles);
-						functionality.setExecRoles(roles);
-						functionality.setTestRoles(roles);
 					}
+					// sets no permissions
+					functionality.setDevRoles(new Role[0]);
+					functionality.setExecRoles(new Role[0]);
+					functionality.setTestRoles(new Role[0]);
 					functionalityDAO.insertLowFunctionality(functionality, null);
 				}
 			}

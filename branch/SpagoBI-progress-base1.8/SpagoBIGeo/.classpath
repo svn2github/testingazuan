@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/activation.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-awt-util.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-bridge.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-css.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-dom.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-ext.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-extension.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-gui-util.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-gvt.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-parser.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-script.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-svg-dom.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-svggen.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-swing.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-transcoder.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-util.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/batik-xml.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/commons-codec-1.2.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/commons-validator-1.1.4.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/jakarta-oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/jamon.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/jce1_2_2.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/js.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/mail.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/postgresql-8.0-311.jdbc2.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/soap-2.3.jar"/>
+	<classpathentry sourcepath="C:/Documents and Settings/Administrator/Documenti/download/Spago/2.0.3/spago2.0.3-src.zip" kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/spago-core-2.0.1.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/spago-web-2.0.1.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xalan-2.4.0.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/crimson.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/pdf-transcoder.jar"/>
+	<classpathentry kind="output" path="SpagoBIGeoEngine/WEB-INF/classes"/>
+</classpath>

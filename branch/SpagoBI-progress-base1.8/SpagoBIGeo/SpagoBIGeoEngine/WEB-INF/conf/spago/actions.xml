@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+  <ACTION
+     class="it.eng.geo.test.action.GeoTestAction"
+     name="GEO_TEST"
+     scope="REQUEST">
+    <CONFIG/>
+  </ACTION>
+</ACTIONS>

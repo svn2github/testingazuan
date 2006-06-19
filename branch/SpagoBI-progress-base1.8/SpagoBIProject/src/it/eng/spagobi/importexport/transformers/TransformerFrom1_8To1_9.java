@@ -1,5 +1,6 @@
 package it.eng.spagobi.importexport.transformers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,7 +34,6 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		
 		
 		// delete tmp dir content
 		File tmpDir = new File(pathImpTmpFolder);
@@ -169,13 +169,12 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			archiveFile.delete();
 		}
 		try{
-			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(archivePath));
-			compressFolder(pathExportFolder, out);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ZipOutputStream out = new ZipOutputStream(baos);
+			compressFolder(pathExportFolder, pathExportFolder, out);
 			out.flush();
+			content = baos.toByteArray();
 			out.close();
-			FileInputStream fis = new FileInputStream(archivePath);
-			content = GeneralUtilities.getByteArrayFromInputStream(fis);
-			fis.close();
 		} catch (Exception e){
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "createExportArchive",
 					   			   "Error while creating archive file " + e);
@@ -191,7 +190,7 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 	 * @param out The Compress output stream
 	 * @throws EMFUserError
 	 */
-	private void compressFolder(String pathFolder, ZipOutputStream out) throws EMFUserError {
+	private void compressFolder(String pathBase, String pathFolder, ZipOutputStream out) throws EMFUserError {
 		File folder = new File(pathFolder);
 		String[] entries = folder.list();
 	    byte[] buffer = new byte[4096];   
@@ -200,14 +199,14 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		    for(int i = 0; i < entries.length; i++) {
 		      File f = new File(folder, entries[i]);
 		      if(f.isDirectory()) {  
-		    	  compressFolder(pathFolder + "/" + f.getName(), out); 
+		    	  compressFolder(pathBase, pathFolder + "/" + f.getName(), out); 
 		      } else {
 		    	  FileInputStream in = new FileInputStream(f); 
 		    	  String completeFileName = pathFolder + "/" + f.getName();
 		    	  String relativeFileName = f.getName();
-		    	  if(completeFileName.lastIndexOf(pathFolder)!=-1) {
-		    		  int index = completeFileName.lastIndexOf(pathFolder);
-		    		  int len = pathFolder.length();
+		    	  if(completeFileName.lastIndexOf(pathBase)!=-1) {
+		    		  int index = completeFileName.lastIndexOf(pathBase);
+		    		  int len = pathBase.length();
 		    		  relativeFileName = completeFileName.substring(index + len + 1);
 		    	  }
 		    	  ZipEntry entry = new ZipEntry(relativeFileName);  

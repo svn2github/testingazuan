@@ -27,11 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.security;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import it.eng.spago.base.*;
+import it.eng.spago.base.Constants;
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
@@ -46,6 +43,11 @@ import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.IRoleDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -117,6 +119,7 @@ public class RoleSynchronizer {
             			roleDAO.insertRole(aRole);
             			SpagoBITracer.info(SpagoBIConstants.NAME_MODULE,this.getClass().toString(), 
             			"Synchronize()", " Portal Role [" + aRole.getName()+"] INSERTED OK");
+
             		}
             	}
             } 

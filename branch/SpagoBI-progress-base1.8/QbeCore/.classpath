@@ -64,6 +64,6 @@
 	<classpathentry kind="lib" path="lib/jasperreports-1.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jasperreports-1.2.0-applet.jar"/>
 	<classpathentry kind="lib" path="lib/iReport.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
-

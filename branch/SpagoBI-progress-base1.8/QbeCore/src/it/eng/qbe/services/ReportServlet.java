@@ -26,7 +26,7 @@ import it.eng.qbe.export.IQueryRewriter;
 import it.eng.qbe.export.ITemplateBuilder;
 import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLTemplateBuilder;
-import it.eng.qbe.utility.JarUtils;
+import it.eng.qbe.model.DataMartModel;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.hibernate.cfg.Configuration;
 
 /**
  * @author Gioia
@@ -64,19 +63,20 @@ public class ReportServlet extends HttpServlet{
 		String action = (String)request.getParameter("action");
 		query = (String)request.getParameter("query");
 		String jarFileStr = (String)request.getParameter("jarfilepath");
+		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
+		String dialect = (String)request.getParameter("dialect");
 		String format = (String)request.getParameter("format");
 		if(format == null) format = "application/pdf";
 		
 		jarFile = new File(jarFileStr);
 		updateCurrentClassLoader();
-		session = getHibernateSession();
+		session = getHibernateSession(jndiDataSourceName, dialect);
 		connection = session.connection();		
 						
 		setJasperClasspath();		
 		
-		// TODO build this file in a way to be sure that they are unique over multiple request
-		File templateFile = new File("report.jrxml");
-		File reportFile = new File("report");
+		File templateFile = File.createTempFile("report", ".jrxml"); //new File("report.jrxml");
+		File reportFile = File.createTempFile("report", ".rpt"); //new File("report.rpt");
 		File resultFile = null;
 		
 		buildTemplateFromSQLQuery(templateFile);
@@ -88,31 +88,38 @@ public class ReportServlet extends HttpServlet{
 			ReportRunner runner = new ReportRunner();		
 			runner.run(templateFile, reportFile, format, connection);
 			resultFile = reportFile;
-		}
-		
+		}		
 				
-		response.setContentType(format);
-		response.setContentLength((int)resultFile.length());
-		BufferedInputStream in = new BufferedInputStream(new FileInputStream(resultFile));			
+		copyFileToResponse(response, resultFile, format);
+		
+		// instant cleaning
+		templateFile.delete();
+		reportFile.delete();
+	}
+	
+	
+	private void copyFileToResponse(HttpServletResponse response, File file, String fileFormat) throws IOException {
+		response.setContentType(fileFormat);
+		response.setContentLength((int)file.length());
+		BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));			
 		int b = -1;
 		while((b = in.read()) != -1) {
 			response.getOutputStream().write(b);
 		}
 		response.getOutputStream().flush();
 		in.close();
-		
-		// instant cleaning
-		templateFile.delete();
-		reportFile.delete();
 	}
-
-	private Session getHibernateSession() {
+	
+	private Session getHibernateSession(String jndiDataSourceName, String dialect) {
+		/*
 		URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml");
 		Configuration cfg = new Configuration().configure(url);		
 		return cfg.buildSessionFactory().openSession();
+		*/
+		return DataMartModel.getHibernateConfiguration(jarFile, jndiDataSourceName, dialect).buildSessionFactory().openSession();
 	}
-
-	public void buildTemplateFromSQLQuery(File templateFile) {
+	
+	private void buildTemplateFromSQLQuery(File templateFile) {
 		IQueryRewriter queryRevriter = new HqlToSqlQueryRewriter(session);	
 		String sqlQuery = queryRevriter.rewrite(query);
 		try {
@@ -123,7 +130,7 @@ public class ReportServlet extends HttpServlet{
 		}
 	}
 	
-	public void updateCurrentClassLoader(){
+	private void updateCurrentClassLoader(){
 		try{
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
 			ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
@@ -133,7 +140,7 @@ public class ReportServlet extends HttpServlet{
 		}
 	}
 	
-	public void setJasperClasspath(){
+	private void setJasperClasspath(){
 		// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 		String webinflibPath = this.getServletContext().getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 		//logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");

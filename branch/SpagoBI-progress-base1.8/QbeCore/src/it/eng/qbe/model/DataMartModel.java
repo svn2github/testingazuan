@@ -105,7 +105,7 @@ public class DataMartModel implements Serializable {
 		
 		SessionFactory sf = null;
 		Configuration cfg = null;
-		
+		/*
 		if (jndiDataSourceName != null && !jndiDataSourceName.equalsIgnoreCase("")) {
 			Logger.debug(this.getClass(), "createSessionFactory: OLD SCHOOL");
 			
@@ -130,12 +130,10 @@ public class DataMartModel implements Serializable {
 			Logger.debug(this.getClass(), "createSessionFactory: current class loader updated");
 			
 			Logger.debug(this.getClass(), "createSessionFactory: trying to read configuration from hibernate.cfg.xml file");
-			URL url = this.getClass().getClassLoader().getResource("hibernate.cfg.xml");
-			URL newURL = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+			URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
 			Logger.debug(this.getClass(), "createSessionFactory: configuration file found at " + url);
-			Logger.debug(this.getClass(), "createSessionFactory: new configuration file found at " + newURL);
 			 
-			cfg = new Configuration().configure(newURL);
+			cfg = new Configuration().configure(url);
 		}
 		
 		if(cfg != null){
@@ -145,8 +143,52 @@ public class DataMartModel implements Serializable {
 		else {
 			Logger.error(this.getClass(), "createSessionFactory: impossible to build session factory");
 		}
+		*/
+		cfg = getHibernateConfiguration(getJarFile(), jndiDataSourceName, dialect);
+		sf = cfg.buildSessionFactory();
 		
 		return sf;
+	}
+	
+	public static Configuration getHibernateConfiguration(File jarFile, String jndiDataSourceName, String dialect) {
+		Configuration cfg = null;
+		
+		if (jndiDataSourceName != null && !jndiDataSourceName.equalsIgnoreCase("")) {
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: connection properties defined by hand");
+			
+			cfg = new Configuration();
+			cfg.setProperty("hibernate.dialect", dialect);
+			cfg.setProperty("hibernate.connection.datasource", jndiDataSourceName);
+			cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
+			
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
+			updateCurrentClassLoader(jarFile);
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
+			cfg.addJar(jarFile);
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: add jar file to configuration");			
+		}
+		else {
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: connection properties defined in hibernate.cfg.xml");
+							
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
+			updateCurrentClassLoader(jarFile);
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
+			
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: trying to read configuration from hibernate.cfg.xml file");
+			URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: configuration file found at " + url);
+			 
+			cfg = new Configuration().configure(url);
+		}
+		
+		if(cfg != null){
+			Logger.debug(DataMartModel.class, "getHibernateConfiguration: session factory built: " + cfg);
+		}
+		else {
+			Logger.error(DataMartModel.class, "getHibernateConfiguration: impossible to build configuration");
+		}
+		
+		return cfg;
 	}
 	
 	/**
@@ -173,7 +215,7 @@ public class DataMartModel implements Serializable {
 	 * This method update the Thread Context ClassLoader adding to the class loader the jarFile
 	 * @param jarFile
 	 */
-	public void updateCurrentClassLoader(File jarFile){
+	public static void updateCurrentClassLoader(File jarFile){
 		try{
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
 			ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);

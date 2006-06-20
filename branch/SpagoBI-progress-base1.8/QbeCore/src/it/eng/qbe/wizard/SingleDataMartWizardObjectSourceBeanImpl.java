@@ -253,7 +253,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		IWhereClause aWhereClause = this.getWhereClause();  
 		afterFirst = false;
 		if (aWhereClause != null){
-		 	finalQuery.append("where\n");
+		 	finalQuery.append("where \n");
 		 	java.util.List l= aWhereClause.getWhereFields();
 		 	Iterator it = l.iterator();
 		 	

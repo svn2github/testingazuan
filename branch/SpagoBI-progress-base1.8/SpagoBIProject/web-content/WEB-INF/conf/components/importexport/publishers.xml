@@ -20,9 +20,10 @@
 	<PUBLISHER name="ImportExportLoopback">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
       			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
       			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+      			<PARAMETER name="OBJECTS_VIEW" type="ABSOLUTE" scope="" value="VIEW_OBJECTS_AS_TREE" />
       			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
       			<PARAMETER name="EXPORT_FILE_PATH" 
       					   type="RELATIVE" 
@@ -38,10 +39,11 @@
   	<PUBLISHER name="ImportExportLoopbackStopImport">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TreeObjectsPage" />
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
       			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
       			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
       			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
+      			<PARAMETER name="OBJECTS_VIEW" type="ABSOLUTE" scope="" value="VIEW_OBJECTS_AS_TREE" />
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

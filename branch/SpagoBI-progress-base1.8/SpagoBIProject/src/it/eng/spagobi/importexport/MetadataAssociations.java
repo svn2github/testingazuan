@@ -27,6 +27,7 @@ import it.eng.spagobi.metadata.SbiEngines;
 import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiLov;
+import it.eng.spagobi.metadata.SbiObjPar;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
@@ -54,6 +55,8 @@ public class MetadataAssociations {
 	private Map paruseAssociation = new HashMap();
 	private Map domainIDAssociation = new HashMap();
 	private Map domainAssociation = new HashMap();
+	private Map objparIDAssociation = new HashMap();
+	private Map objparAssociation = new HashMap();
 	private Map connectionsAssociation = new HashMap();
 	
 	/**
@@ -446,6 +449,37 @@ public class MetadataAssociations {
 		domainIDAssociation.put(exp, curr);
 	}
 
+	
+	/**
+	 * Gets the Map of associations between current and exported objpar id
+	 * @return Map of associations
+	 */
+	public Map getObjparIDAssociation() {
+		return objparIDAssociation;
+	}
+	
+	/**
+	 * Gets the Map of associations between current and exported objpars
+	 * @return Map of associations
+	 */
+	public Map getObjparAssociation() {
+		return objparAssociation;
+	}
+	
+	/**
+	 * Inserts a couple of objpar into the associations 
+	 */
+	public void insertCoupleObjpar(SbiObjPar exp, SbiObjPar curr) {
+		objparAssociation.put(exp, curr);
+	}
+	
+	/**
+	 * Inserts a couple of objpar id into the associations 
+	 */
+	public void insertCoupleObjpar(Integer exp, Integer curr) {
+		objparIDAssociation.put(exp, curr);
+	}
+	
 	/**
 	 * Gets the Map of associations between current and exported connections
 	 * @return Map of associations

@@ -29,6 +29,7 @@ import it.eng.spagobi.metadata.SbiEngines;
 import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiLov;
+import it.eng.spagobi.metadata.SbiObjPar;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
@@ -311,6 +312,7 @@ public class ImportUtilities {
 		newParuse.setSbiParameters(paruse.getSbiParameters());
 		newParuse.setSbiParuseCks(new HashSet());
 		newParuse.setSbiParuseDets(new HashSet());
+		newParuse.setManualInput(paruse.getManualInput());
 		return newParuse;
 	}
 	
@@ -353,6 +355,8 @@ public class ImportUtilities {
 		newObj.setStateCode(obj.getStateCode());
 		newObj.setStateConsideration(obj.getStateConsideration());
 		newObj.setStateConsiderationCode(obj.getStateConsiderationCode());
+		newObj.setVisible(obj.getVisible());
+		newObj.setUuid(obj.getUuid());
 		return newObj;
 	}
 	
@@ -367,6 +371,35 @@ public class ImportUtilities {
 		SbiObjects newObj = makeNewSbiObject(obj);
 		newObj.setBiobjId(id);
 		return newObj;
+	}
+	
+	
+	
+	/**
+	 * Creates a new hibernate biobject parameter object
+	 */
+	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar){
+		SbiObjPar newObjPar = new SbiObjPar();
+		newObjPar.setLabel(objpar.getLabel());
+		newObjPar.setModFl(objpar.getModFl());
+		newObjPar.setMultFl(objpar.getMultFl());
+		newObjPar.setParurlNm(objpar.getParurlNm());
+		newObjPar.setPriority(objpar.getPriority());
+		newObjPar.setProg(objpar.getProg());
+		newObjPar.setReqFl(objpar.getReqFl());
+		newObjPar.setSbiObject(objpar.getSbiObject());
+		newObjPar.setSbiParameter(objpar.getSbiParameter());
+		newObjPar.setViewFl(objpar.getViewFl());
+		return newObjPar;
+	}
+	
+	/**
+	 * Creates a new hibernate biobject parameter object
+	 */
+	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar, Integer id){
+		SbiObjPar newObjPar = makeNewSbiObjpar(objpar);
+		newObjPar.setObjParId(id);
+		return newObjPar;
 	}
 	
 }

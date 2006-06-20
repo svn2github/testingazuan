@@ -29,6 +29,7 @@ public class ImportExportConstants {
 	public static final String NAME_MODULE = "SpagoBI(ImportExport Module)";
 	public static final String PATH = "PATH";
 	public static final String OBJECT_ID = "OBJECT_ID";
+	public static final String OBJECT_ID_PATHFUNCT = "OBJECT_ID_PATHFUNCT";
 	public static final String PUBLISHER_NAME = "PUBLISHER_NAME";
 	public static final String LIST_EXPORTED_ROLES = "LIST_EXPORTED_ROLES"; 
 	public static final String LIST_CURRENT_ROLES = "LIST_CURRENT_ROLES"; 

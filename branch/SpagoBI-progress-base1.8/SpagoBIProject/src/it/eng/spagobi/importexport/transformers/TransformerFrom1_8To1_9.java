@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,14 +39,22 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		}
 		archiveName = archiveName.substring(0, archiveName.lastIndexOf('.'));
 		changeDatabase(pathImpTmpFolder, archiveName);
-		updateFunctionalitiesReference(pathImpTmpFolder, archiveName);	
-		
+		String baseCmsFolder = "";
+		try {
+			baseCmsFolder = getCmsBaseFolder(pathImpTmpFolder, archiveName);
+		} catch(Exception e) {
+			System.out.println(e);
+		}	
+		// associate objects with functionalities
+		createObjectsFunctsAssociations(pathImpTmpFolder, archiveName);
+		// update path of functionalitie
+		updateFunctionalityPaths(baseCmsFolder, pathImpTmpFolder, archiveName);
+		// compress archive
 		try {
 			content = createExportArchive(pathImpTmpFolder, archiveName);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		
 		// delete tmp dir content
 		File tmpDir = new File(pathImpTmpFolder);
 		GeneralUtilities.deleteContentDir(tmpDir);
@@ -53,10 +62,38 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 	}
 
 	
-	private void updateFunctionalitiesReference(String pathImpTmpFolder, String archiveName) {
+	private void createObjectsFunctsAssociations(String pathImpTmpFold, String archiveName) {
 		Connection conn = null;
 		try{
-			conn = getConnectionToDatabase(pathImpTmpFolder, archiveName);
+			conn = getConnectionToDatabase(pathImpTmpFold, archiveName);
+			String sql = "SELECT * FROM SBI_OBJECTS";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs1 = null;
+			while(rs.next()) {
+				String path = rs.getString("PATH");
+				int objectID = rs.getInt("BIOBJ_ID");
+				String functPath = path.substring(0, path.lastIndexOf('/'));
+				sql =  "SELECT * FROM SBI_FUNCTIONS WHERE PATH = '"+functPath+"'";
+				rs1 = stmt.executeQuery(sql);
+				if(rs1.next()) {
+					int functID = rs1.getInt("FUNCT_ID");
+					sql = "INSERT INTO SBI_OBJ_FUNC (BIOBJ_ID, FUNCT_ID, PROG) VALUES ("+objectID+", "+functID+", 0)";
+					stmt.execute(sql);
+				}
+			}
+			conn.commit();
+			conn.close();
+		} catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	
+	private void updateFunctionalityPaths(String baseCmsPath, String pathImpTmpFold, String archiveName){
+		Connection conn = null;
+		try{
+			conn = getConnectionToDatabase(pathImpTmpFold, archiveName);
 			String sql = "SELECT * FROM SBI_FUNCTIONS";
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
@@ -64,41 +101,33 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			while(rs.next()) {
 				String path = rs.getString("PATH");
 				int functId = rs.getInt("FUNCT_ID");
-				String parentPath = path.substring(0, path.lastIndexOf('/'));
-				if((parentPath!=null)&&!parentPath.trim().equals("")) {
-					sql = "SELECT FUNCT_ID FROM SBI_FUNCTIONS WHERE PATH = '"+parentPath+"'";
-					rs1 = stmt.executeQuery(sql);
-					if(rs1.next()) {
-						int parFunctId = rs1.getInt("FUNCT_ID");
-						sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+parFunctId+" WHERE FUNCT_ID = " + functId;
-						stmt.executeUpdate(sql);
-					}
-				}
+				String relativePath = path.substring(baseCmsPath.length());
+				String newPath = "/Functionalities" + relativePath;
+				sql = "UPDATE SBI_FUNCTIONS SET PATH = '"+newPath+"' WHERE FUNCT_ID = " + functId;
+				stmt.executeUpdate(sql);
 			}
 			conn.commit();
-			conn.close();	
-			
-			
-			Session sess = HibernateUtil.currentSession();
-			Transaction tx = sess.beginTransaction();
-			Query hibQuery = sess.createQuery("from SbiFunctions where parentFunct is null");
-			SbiFunctions functRoot = (SbiFunctions)hibQuery.uniqueResult();
-			Integer idFunctRoot = functRoot.getFunctId();
-			tx.commit();
-			sess.close();
-			
-			conn = getConnectionToDatabase(pathImpTmpFolder, archiveName);
-			stmt = conn.createStatement();
-			sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+idFunctRoot+" WHERE PARENT_FUNCT_ID IS NULL";
-			stmt.executeUpdate(sql);
-			conn.commit();
-			conn.close();	
-			
-			
-		} catch (Exception e) {
+			conn.close();
+		} catch(Exception e) {
 			System.out.println(e);
 		}
 	}
+	
+	
+	
+
+	private String getCmsBaseFolder(String pathImpTmpFold, String archiveName) throws Exception {
+		//get exported properties
+		String pathBaseFolder = pathImpTmpFold + "/" + archiveName;
+	    String propFilePath = pathBaseFolder + "/export.properties";
+	    FileInputStream fis = new FileInputStream(propFilePath);
+		Properties props = new Properties();
+		props.load(fis);
+		fis.close();
+		return props.getProperty("cms-basefolder");
+	}
+	
+	
 	
 	private void changeDatabase(String pathImpTmpFolder, String archiveName) {
 		Connection conn = null;
@@ -259,6 +288,12 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 
 	
 	
+	/**
+	 * Compress contents of a folder into an output stream
+	 * @param pathFolder The path of the folder to compress
+	 * @param out The Compress output stream
+	 * @throws EMFUserError
+	 */
 	private void compressFolder(String pathExportFolder, String pathFolder, ZipOutputStream out) throws EMFUserError {
 		File folder = new File(pathFolder);
 		String[] entries = folder.list();
@@ -293,44 +328,62 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 	}
 	
 	
-	/**
-	 * Compress contents of a folder into an output stream
-	 * @param pathFolder The path of the folder to compress
-	 * @param out The Compress output stream
-	 * @throws EMFUserError
-	 */
+	
+	
+	
+	
+	
+	
+	
+	
 	/*
-	private void compressFolder(String pathBase, String pathFolder, ZipOutputStream out) throws EMFUserError {
-		File folder = new File(pathFolder);
-		String[] entries = folder.list();
-	    byte[] buffer = new byte[4096];   
-	    int bytes_read;
-	    try{
-		    for(int i = 0; i < entries.length; i++) {
-		      File f = new File(folder, entries[i]);
-		      if(f.isDirectory()) {  
-		    	  compressFolder(pathBase, pathFolder + "/" + f.getName(), out); 
-		      } else {
-		    	  FileInputStream in = new FileInputStream(f); 
-		    	  String completeFileName = pathFolder + "/" + f.getName();
-		    	  String relativeFileName = f.getName();
-		    	  if(completeFileName.lastIndexOf(pathBase)!=-1) {
-		    		  int index = completeFileName.lastIndexOf(pathBase);
-		    		  int len = pathBase.length();
-		    		  relativeFileName = completeFileName.substring(index + len + 1);
-		    	  }
-		    	  ZipEntry entry = new ZipEntry(relativeFileName);  
-		    	  out.putNextEntry(entry);                     
-		    	  while((bytes_read = in.read(buffer)) != -1)  
-		    		  out.write(buffer, 0, bytes_read);
-		    	  in.close();
-		      }
-		    }
-	    } catch (Exception e) {
-	    	SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "compressSingleFolder",
-	    						   "Error while creating archive file " + e);
-	    	throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
-	    }
+	private void updateFunctionalitiesReference(String pathImpTmpFolder, String archiveName) {
+		Connection conn = null;
+		try{
+			conn = getConnectionToDatabase(pathImpTmpFolder, archiveName);
+			String sql = "SELECT * FROM SBI_FUNCTIONS";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs1 = null;
+			while(rs.next()) {
+				String path = rs.getString("PATH");
+				int functId = rs.getInt("FUNCT_ID");
+				String parentPath = path.substring(0, path.lastIndexOf('/'));
+				if((parentPath!=null)&&!parentPath.trim().equals("")) {
+					sql = "SELECT FUNCT_ID FROM SBI_FUNCTIONS WHERE PATH = '"+parentPath+"'";
+					rs1 = stmt.executeQuery(sql);
+					if(rs1.next()) {
+						int parFunctId = rs1.getInt("FUNCT_ID");
+						sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+parFunctId+" WHERE FUNCT_ID = " + functId;
+						stmt.executeUpdate(sql);
+					}
+				}
+			}
+			conn.commit();
+			conn.close();	
+			
+			
+			Session sess = HibernateUtil.currentSession();
+			Transaction tx = sess.beginTransaction();
+			Query hibQuery = sess.createQuery("from SbiFunctions where parentFunct is null");
+			SbiFunctions functRoot = (SbiFunctions)hibQuery.uniqueResult();
+			Integer idFunctRoot = functRoot.getFunctId();
+			tx.commit();
+			sess.close();
+			conn = getConnectionToDatabase(pathImpTmpFolder, archiveName);
+			stmt = conn.createStatement();
+			sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+idFunctRoot+" WHERE PARENT_FUNCT_ID IS NULL";
+			stmt.executeUpdate(sql);
+			conn.commit();
+			conn.close();	
+		   
+			
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
-	*/
+	 */
+	
+	
 }

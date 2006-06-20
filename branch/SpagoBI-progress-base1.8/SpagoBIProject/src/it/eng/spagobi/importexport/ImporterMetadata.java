@@ -21,19 +21,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.importexport;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.CmsProperty;
 import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.cms.operations.SetOperation;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.QueryDetail;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -41,6 +43,7 @@ import it.eng.spagobi.metadata.SbiExtRoles;
 import it.eng.spagobi.metadata.SbiFuncRole;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiLov;
+import it.eng.spagobi.metadata.SbiObjFunc;
 import it.eng.spagobi.metadata.SbiObjPar;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
@@ -63,6 +66,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * Implements methods to gather information from exported database 
@@ -277,28 +282,46 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
-			CmsNode cmsnode = null;
 			CmsManager manager = new CmsManager();
 			SbiObjects objToReturn = null;
+			SetOperation setOp = null;
 			try {
-				SetOperation setOp = new SetOperation(obj.getPath(), SetOperation.TYPE_CONTAINER, false);
-				List properties = new ArrayList();
-				String[] typePropValues = new String[] { obj.getObjectTypeCode() };
-				CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
-				properties.add(proptype);
-				setOp.setProperties(properties);
-				manager.execSetOperation(setOp);
-				// get the template imputstream
+				// get the inpust stream of the template
 				String pathTempFolder = pathContent + obj.getPath();
 				File tempFolder = new File(pathTempFolder);
 				File[] files = tempFolder.listFiles();
 				File template = files[0];
 				String fileTempName = template.getName();
 				FileInputStream fis = new FileInputStream(template);
-				setOp = new SetOperation(obj.getPath() + "/template", SetOperation.TYPE_CONTENT, false);
+				// generate an uuid and set it into the object
+				UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
+				UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
+				String uuid = uuidObj.toString();
+				obj.setUuid(uuid);
+				// generate the cms path and set it into the object
+				ConfigSingleton config = ConfigSingleton.getInstance();
+				SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
+				String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+				String path = biobjectsPath + "/" + uuid;
+				obj.setPath(path);
+				// insert node object into the cms
+				setOp = new SetOperation();
+				setOp.setPath(path);
+				setOp.setType(SetOperation.TYPE_CONTAINER);
+				setOp.setEraseOldProperties(true);
+				List properties = new ArrayList();
+				String[] typePropValues = new String[] { obj.getObjectTypeCode() };
+				CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
+				properties.add(proptype);
+				setOp.setProperties(properties);
+				manager.execSetOperation(setOp);
+				// insert the template node into the cms
+				setOp = new SetOperation();
 				setOp.setContent(fis);
+				setOp.setType(SetOperation.TYPE_CONTENT);
+				setOp.setPath(path + "/template");
 				properties =  new ArrayList();
-				String[] nameFilePropValues = new String[] {fileTempName};
+				String[] nameFilePropValues = new String[] { fileTempName };
 				String today = new Date().toString();
 				String[] datePropValues = new String[] { today };
 				CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
@@ -415,10 +438,10 @@ public class ImporterMetadata {
 				Map uniqueMap = (Map)unique;
 				Integer paramid = (Integer)uniqueMap.get("paramid");
 				Integer biobjid = (Integer)uniqueMap.get("biobjid");
-				Integer prog = (Integer)uniqueMap.get("prog");
-				hql = "from SbiObjPar op where op.id.sbiParameters.parId = " + paramid +
-					  " and op.id.sbiObjects.biobjId = " + biobjid;
-				// +  " and op.id.prog = " + prog;
+				String urlname = (String)uniqueMap.get("urlname");
+				hql = "from SbiObjPar op where op.sbiParameter.parId = " + paramid +
+					  " and op.sbiObject.biobjId = " + biobjid + 
+				      " and op.parurlNm = '" + urlname + "'";
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiObjPar hibObjPar = (SbiObjPar)hqlQuery.uniqueResult();
 				return hibObjPar;
@@ -430,7 +453,17 @@ public class ImporterMetadata {
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiDomains hibDom = (SbiDomains)hqlQuery.uniqueResult();
 				return hibDom;
-			}
+			} else if(hibObj instanceof SbiObjFunc) {
+				Map uniqueMap = (Map)unique;
+				Integer objid = (Integer)uniqueMap.get("objectid");
+				Integer functionid = (Integer)uniqueMap.get("functionid");
+				hql = "from SbiObjFunc objfun where objfun.id.sbiObjects.biobjId = " + objid +
+					  " and objfun.id.sbiFunctions.functId = " + functionid;
+				hqlQuery = sessionCurrDB.createQuery(hql);
+				SbiObjFunc hibObjFunct = (SbiObjFunc)hqlQuery.uniqueResult();
+				return hibObjFunct;
+			} 
+			
 			return null;
 		}
 		

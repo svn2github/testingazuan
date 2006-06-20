@@ -122,25 +122,28 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 			// the document is not visible
 			return null;
 		}
-		String actor = null;
+		
 		List functionalities = obj.getFunctionalities();
+		int visibleInstances = 0;
 		for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext(); ) {
 			Integer funcId = (Integer) funcIt.next();
-			if (ObjectsAccessVerifier.canTest(obj.getStateCode(), funcId, profile)) {
-				actor = SpagoBIConstants.TESTER_ACTOR;
-				break;
-			} else if (ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
-				actor = SpagoBIConstants.USER_ACTOR;
-				break;
+			if (ObjectsAccessVerifier.canTest(obj.getStateCode(), funcId, profile) 
+					|| ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
+				visibleInstances++;
 			}
 		}
 		
-		if (actor == null) {
+		if (visibleInstances == 0) {
 			// the document does not belong to any folder where the profile has the rigth permissions
 			// (i.e.: the document is in REL state but belongs to folders where the profile cannot execute it
 			// OR the document is in TEST state but belongs to folders where the profile cannot test it)
 			return null;
 		}
+		
+		String actor = null;
+		// at this point the document is in REL or TEST state and there is one or more visible instances
+		if (obj.getStateCode().equalsIgnoreCase("REL")) actor = SpagoBIConstants.USER_ACTOR;
+		else actor = SpagoBIConstants.TESTER_ACTOR;
 		
 		String rowSBStr = "<ROW ";
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
@@ -150,6 +153,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
 		rowSBStr += "		ACTOR=\"" + actor + "\"";
+		rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
 		rowSBStr += " 		/>";
 		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
 		return rowSB;
@@ -163,26 +167,30 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		DESCRIPTION=\"" + obj.getDescription() + "\"";
 		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
-		Boolean canDev = null;
 		
+		int visibleInstances = 0;
 		List functionalities = obj.getFunctionalities();
 		for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext(); ) {
 			Integer funcId = (Integer) funcIt.next();
-			if (ObjectsAccessVerifier.canDev(obj.getStateCode(), funcId, profile)) {
-				canDev = new Boolean (true);
-				break;
-			} else if (ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
-				canDev = new Boolean (false);
-				break;
+			if (ObjectsAccessVerifier.canDev(obj.getStateCode(), funcId, profile)
+					|| ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
+				visibleInstances++;
 			}
 		}
-		if (canDev == null) {
+		
+		if (visibleInstances == 0) {
 			// the document does not belong to any folder where the profile has the rigth permissions
 			// (i.e.: the document is in REL state but belongs to folders where the profile cannot execute it
 			// OR the document is in DEV state but belongs to folders where the profile cannot develope it)
 			return null;
 		}
-		rowSBStr += "		canDev=\"" + canDev.booleanValue() + "\"";
+		
+		// at this point the document is in DEV or REL state and there is one or more visible instances
+		boolean canDev = true;
+		if (obj.getStateCode().equalsIgnoreCase("REL")) canDev = false;
+		
+		rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
+		rowSBStr += "		canDev=\"" + canDev + "\"";
 		rowSBStr += " 		/>";
 		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
 		return rowSB;
@@ -205,6 +213,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 				break;
 			}
 		}
+		rowSBStr += "		INSTANCES=\"" + functionalities.size() + "\"";
 		rowSBStr += "		canExec=\"" + canExec + "\"";
 		rowSBStr += " 		/>";
 		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
@@ -223,6 +232,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnType\" name=\"TYPE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnState\" name=\"STATE\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.instancesNumber\" name=\"INSTANCES\" horizontal-align=\"center\"/>";
 		moduleConfigStr += "	</COLUMNS>";
 		moduleConfigStr += "	<CAPTIONS>";
 		moduleConfigStr += "	<EXEC_CAPTION  confirm=\"FALSE\" image=\"/img/execObject.gif\" label=\"SBISet.objects.captionExecute\">" +
@@ -256,6 +266,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnType\" name=\"TYPE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnState\" name=\"STATE\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.instancesNumber\" name=\"INSTANCES\" horizontal-align=\"center\"/>";
 		moduleConfigStr += "	</COLUMNS>";
 		moduleConfigStr += "	<CAPTIONS>";
 		moduleConfigStr += "	<EXEC_CAPTION  confirm=\"FALSE\" image=\"/img/execObject.gif\" label=\"SBISet.objects.captionExecute\">" +
@@ -317,6 +328,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnType\" name=\"TYPE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnState\" name=\"STATE\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.instancesNumber\" name=\"INSTANCES\" horizontal-align=\"center\"/>";
 		moduleConfigStr += "	</COLUMNS>";
 		moduleConfigStr += "	<CAPTIONS>";
 		moduleConfigStr += "	<EXEC_CAPTION  confirm=\"FALSE\" image=\"/img/execObject.gif\" label=\"SBISet.objects.captionExecute\">" +

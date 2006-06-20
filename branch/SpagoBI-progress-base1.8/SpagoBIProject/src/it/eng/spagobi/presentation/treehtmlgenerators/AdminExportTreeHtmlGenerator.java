@@ -119,14 +119,15 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				//htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				htmlStream.append("	treeCMS.add("+idFolder+", "+parentId+",'"+name+"', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+path+"\\')');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
-					Integer idObj = obj.getId();					
+					String nameObj = obj.getName();
+					Integer idObj = obj.getId();
+					obj.getFunctionalities();
 					String stateObj = obj.getStateCode();
-					htmlStream.append("	treeCMS.add("+dTreeObjects--+", "+idFolder+",'"+name+"', 'javascript:linkEmpty()', '', '', '', '', '', '', '"+ImportExportConstants.OBJECT_ID+"', '"+idObj+"');\n");
+					htmlStream.append("	treeCMS.add("+dTreeObjects--+", "+idFolder+",'"+nameObj+"', 'javascript:linkEmpty()', '', '', '', '', '', '', '"+ImportExportConstants.OBJECT_ID_PATHFUNCT+"', '"+idObj+"_"+path+"');\n");
 				}
 			}
 		}
@@ -154,7 +155,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("		}\n");
 		
 		htmlStream.append("		function select(path) {\n");
-		htmlStream.append("			var checkColl = document.getElementsByName('"+ImportExportConstants.PATH+"');\n");
+		htmlStream.append("			var checkColl = document.getElementsByName('"+ImportExportConstants.OBJECT_ID_PATHFUNCT+"');\n");
 		htmlStream.append("		    for(var i=0; i< checkColl.length; i++){\n");
 		htmlStream.append("             value = checkColl[i].value;\n"); 
 		htmlStream.append("             if(value.indexOf(path)!= -1) {\n"); 
@@ -166,7 +167,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("		}\n");
 		
 		htmlStream.append("		function deselect(path) {\n");
-		htmlStream.append("			var checkColl = document.getElementsByName('"+ImportExportConstants.PATH+"');\n");
+		htmlStream.append("			var checkColl = document.getElementsByName('"+ImportExportConstants.OBJECT_ID_PATHFUNCT+"');\n");
 		htmlStream.append("		    for(var i=0; i< checkColl.length; i++){\n");
 		htmlStream.append("             value = checkColl[i].value;\n"); 
 		htmlStream.append("             if(value.indexOf(path)!= -1) {\n"); 

@@ -3,7 +3,7 @@
 
 
 
-<%@include file="../jsp/qbe_base.jsp"%>
+<%@include file="../jsp/qbe_base.jsp"%>  
 <%
 it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
 it.eng.qbe.wizard.ISingleDataMartWizardObject aWizardObject = null;

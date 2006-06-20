@@ -78,20 +78,17 @@ public interface IBIObjectCMSDAO {
 	 * 
 	 * @param pathParent cms path of the object parent
 	 * @param name name of the subobject
-	 * @param profile of the user
 	 * @return InputStream of the subobject content
 	 */
-	public InputStream getSubObject(String pathParent, String name, IEngUserProfile profile);
+	public InputStream getSubObject(String pathParent, String name);
 	
 	
 	/**
 	 * Delete a subObject
-	 * 
 	 * @param pathParent path of the parent object
 	 * @param name name of the subObject
-	 * @param profile Profile of the user
 	 */
-	public void deleteSubObject(String pathParent, String name, IEngUserProfile profile) throws EMFUserError;
+	public void deleteSubObject(String pathParent, String name) throws EMFUserError;
 	
 	
 	
@@ -102,4 +99,13 @@ public interface IBIObjectCMSDAO {
 	 */
 	public void fillBIObjectTemplate(BIObject obj);
 	
+	
+	
+	/**
+	 * Gets the detail of all the biobject subobjects 
+	 * 
+	 * @param pathParent Cms path of the object
+	 * @return List of BIObject.SubObjectDetail objects 
+	 */
+	public List getSubObjects(String pathParent);
 }

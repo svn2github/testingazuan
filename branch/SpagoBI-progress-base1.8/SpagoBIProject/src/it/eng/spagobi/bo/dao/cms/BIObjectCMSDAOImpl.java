@@ -116,7 +116,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		if(publicVisibility) 
 			visibilityStr = "true";
 		try {
-			controlForSubObjectsNode(pathParent, profile);
+			controlForSubObjectsNode(pathParent);
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 					            "saveSubObject", "Error while contolling subobjects node", e);
@@ -234,19 +234,12 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	
 	/**
 	 * Gets the inputStream of the subObject content
-	 * 
 	 * @param pathParent cms path of the parent object
 	 * @param name name of the subObject
-	 * @param profile Profile of the current user
 	 * @return InputStream of the subObject content
 	 * 
 	 */
-	public InputStream getSubObject(String pathParent, String name, IEngUserProfile profile) {
-		// each subobject into the cms file will be store under
-		// pathObject/subobjects/nameuser_name 
-		// in this manner it's possible that two users give the same name to different queries
-		Object userIdObj = profile.getUserUniqueIdentifier();
-		String userId = userIdObj.toString();
+	public InputStream getSubObject(String pathParent, String name) {
 		InputStream isTemp = null;
 		try {
 			GetOperation getOp = new GetOperation();
@@ -268,12 +261,10 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	
 	/**
 	 * Delete a subObject
-	 * 
 	 * @param pathParent path of the parent object
 	 * @param name name of the subObject
-	 * @param profile Profile of the user
 	 */
-	public void deleteSubObject(String pathParent, String name, IEngUserProfile profile) throws EMFUserError {
+	public void deleteSubObject(String pathParent, String name) throws EMFUserError {
 		
 		String pathTodel = pathParent + "/subobjects/" + name;
 		try {
@@ -295,12 +286,10 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	
 	/**
 	 * Control if the PATH_PARENT/subobjects node of the biobjectt exists and if not it will create it
-	 * 
 	 * @param pathParent cms path of the parent biobject
-	 * @param profile Profile of the current user
 	 * @throws Exception
 	 */
-	private void controlForSubObjectsNode(String pathParent, IEngUserProfile profile) throws Exception {
+	private void controlForSubObjectsNode(String pathParent) throws Exception {
 		try {
 			GetOperation getOp = new GetOperation();
 			getOp.setPath(pathParent + "/subobjects");
@@ -435,33 +424,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		return subObjects;
 	}
 
-	
-	
-	/**
-	 * Gets the inputStream of the subObject content
-	 * 
-	 * @param pathParent cms path of the parent object
-	 * @param name name of the subObject
-	 * @return InputStream of the subObject content
-	 */
-	public InputStream getSubObject(String pathParent, String name) {
-		InputStream isTemp = null;
-		try {
-			GetOperation getOp = new GetOperation();
-			getOp.setPath(pathParent + "/subobjects/" + name);
-			getOp.setRetriveContentInformation("true");
-			getOp.setRetriveChildsInformation("false");
-			getOp.setRetrivePropertiesInformation("false");
-			getOp.setRetriveVersionsInformation("false");
-			CmsManager manager = new CmsManager();
-			CmsNode cmsnode = manager.execGetOperation(getOp);
-			isTemp = cmsnode.getContent();
-		} catch (Exception e) {
-			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-					            "getSubObject", "Cannot retrive subobject template", e);
-		} finally {}
-		return isTemp;
-	}
+
 }
 
 

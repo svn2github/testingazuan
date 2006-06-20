@@ -212,10 +212,6 @@ public class ImportExportModule extends AbstractModule {
 			TransformManager transManager = new TransformManager();
 			archiveBytes = transManager.applyTransformations(archiveBytes, archiveName, pathImpTmpFolder);
 			
-			
-			
-			
-			
 			// instance the importer class
 			String impClassName = (String)importerSB.getAttribute("class");
 	        Class impClass = Class.forName(impClassName);

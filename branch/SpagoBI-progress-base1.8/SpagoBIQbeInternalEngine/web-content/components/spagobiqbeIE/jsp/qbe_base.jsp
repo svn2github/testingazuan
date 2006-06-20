@@ -841,7 +841,7 @@
 					}
 				
 			}else{	
-				//alert ("Branch 3");
+				//alert ("Branch 3 -> " + divTxt);
 					
 				var frmGoSelectionF = document.getElementById('frmGoSelection');
 				var frmGoConditionF = document.getElementById('frmGoCondition');
@@ -880,8 +880,7 @@
 				
 				if (divTxt == 'DIV_EXEC'){
 					frmExecuteQueryF.submit();
-					return true;
-				
+					return true;				
 				}
 				
 				if (divTxt == 'DIV_EXPORT'){
@@ -948,7 +947,7 @@
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
 		</form>
 		
-		<form id="frmExportResult" name="frmExportResult" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+		<form id="frmExportResult" name="frmExportResult" action="<%=qbeUrl.getUrl(request,null)%>" method="post">
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXPORT_ACTION"/>
 		</form>
 		

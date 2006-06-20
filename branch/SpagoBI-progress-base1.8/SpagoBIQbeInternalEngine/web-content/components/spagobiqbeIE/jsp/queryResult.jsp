@@ -45,6 +45,12 @@
 	} 
 	
   	String jarFilePath = dm.getJarFile().toString();
+  	String exportFormUrl = GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet";
+  	exportFormUrl += "?jarfilepath=" + jarFilePath;
+  	exportFormUrl += "&query=" + finalQueryString ;
+  	exportFormUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
+  	exportFormUrl += "&dialect=" + dm.getDialect() ;
+						
 %>
 
 <% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
@@ -137,7 +143,7 @@
 			<td width="30%">
 				<form 	id="formExport" 
 						name="formExport" 
-						action="<%=GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet?jarfilepath=" + jarFilePath + "&query=" + finalQueryString%>" 
+						action="<%=exportFormUrl%>" 
 						method="post">				
 				<table>
 				<td width="40%"><span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExportFormatTitle", bundle)%></span></td>

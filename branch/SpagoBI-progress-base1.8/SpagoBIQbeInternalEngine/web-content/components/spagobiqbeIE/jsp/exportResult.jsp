@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java"%>
-<%@ page
+ <%@ page
 	import="it.eng.spago.base.*, it.eng.spagobi.utilities.*,
 	       it.eng.qbe.utility.*,it.eng.qbe.javascript.*,it.eng.qbe.wizard.*"%>
 <%@ page import="java.util.*"%>

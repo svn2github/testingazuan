@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java"%>
-<%@ page
+ <%@ page
 	import="it.eng.spago.base.*, it.eng.spagobi.utilities.*,
 	       it.eng.qbe.utility.*,it.eng.qbe.javascript.*,it.eng.qbe.wizard.*"%>
 <%@ page import="java.util.*"%>
@@ -29,6 +29,18 @@
 	}
 	
 	jarFilePath = dm.getJarFile().toString();
+	String saveFormUrl = GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet";
+  	saveFormUrl += "?action=buildTemplate";
+  	saveFormUrl += "&jarfilepath=" + jarFilePath;
+  	saveFormUrl += "&query=" + finalQueryString ;
+  	saveFormUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
+  	saveFormUrl += "&dialect=" + dm.getDialect() ;
+  	
+  	String iframeUrl = GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet";
+  	iframeUrl += "?jarfilepath=" + jarFilePath;
+  	iframeUrl += "&query=" + finalQueryString ;
+  	iframeUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
+  	iframeUrl += "&dialect=" + dm.getDialect() ;
 %>
 
 
@@ -61,7 +73,7 @@
 
 <form 	id="formSave" 
 		name="formSave" 
-		action="<%=GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet?action=buildTemplate&jarfilepath=" + jarFilePath + "&query=" + finalQueryString%>" 
+		action="<%=saveFormUrl%>" 
 		method="post">				
 
 	<table width="100%">
@@ -86,7 +98,7 @@
 <P><span class="qbeTitle">Report Preview</span>	
 <P>
 <IFRAME STYLE="display:inline;" 
-		SRC="<%=GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet?jarfilepath=" + jarFilePath + "&query=" + finalQueryString%>" 
+		SRC="<%=iframeUrl%>" 
 		TITLE="Report" WIDTH="80%" HEIGHT="500">
 </IFRAME>
 </center>

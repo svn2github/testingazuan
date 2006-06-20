@@ -1,4 +1,4 @@
-<div style='visibility:visible;width:100%' class='UITabs'>
+ <div style='visibility:visible;width:100%' class='UITabs'>
 	<div class="first-tab-level" style="background-color:#f8f8f8">
 		<div style="overflow: hidden;width:100%">
 			<div class='tab' id='DIV_FIELD_SELECTION'>

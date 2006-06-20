@@ -94,7 +94,7 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		String user = request.getParameter("user");
 	 		 		IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
 	 		 		IEngUserProfile profile = new AnonymousCMSUserProfile(user);
-	 		 		InputStream jcrContentStream = biObjCMSDAO.getSubObject(jcrPath, nameSubObj, profile);
+	 		 		InputStream jcrContentStream = biObjCMSDAO.getSubObject(jcrPath, nameSubObj);
 	 		 		byte[] jcrContent = GeneralUtilities.getByteArrayFromInputStream(jcrContentStream);
 		 			response.setContentLength(jcrContent.length);
 				 	response.getOutputStream().write(jcrContent);

@@ -465,7 +465,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         // get cms dao for biobject
         IBIObjectCMSDAO cmsDao = DAOFactory.getBIObjectCMSDAO();
         // delete subobject
-        cmsDao.deleteSubObject(path, subObjName, profile);
+        cmsDao.deleteSubObject(path, subObjName);
         // get from the session the execution role
         String role = (String)session.getAttribute(SpagoBIConstants.ROLE);
         // set data in response

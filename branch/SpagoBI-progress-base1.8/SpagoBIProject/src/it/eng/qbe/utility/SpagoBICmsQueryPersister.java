@@ -100,7 +100,7 @@ public class SpagoBICmsQueryPersister implements
 		ISingleDataMartWizardObject o = null;
 		try {
 			IBIObjectCMSDAO cmsDao = DAOFactory.getBIObjectCMSDAO();
-			InputStream is = cmsDao.getSubObject(pathObj, key, profile);
+			InputStream is = cmsDao.getSubObject(pathObj, key);
 			// decode content and return object
 			XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(is));
 			o = (ISingleDataMartWizardObject)decoder.readObject();

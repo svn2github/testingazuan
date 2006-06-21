@@ -35,12 +35,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRRtfExporter;
 
 import org.hibernate.Session;
 
@@ -55,12 +60,34 @@ public class ReportServlet extends HttpServlet{
 	Session session;
 	Connection connection;
 	
+	static Map extensions;
+	static {
+		extensions = new HashMap();
+		extensions.put("text/jrxml", "jrxml");
+		extensions.put("text/html", "html");
+		extensions.put("text/xml", "xml");
+		extensions.put("text/plain", "txt");
+		extensions.put("text/csv", "csv");
+		extensions.put("application/pdf", "pdf");
+		extensions.put("application/rtf", "rtf");
+		extensions.put("application/vnd.ms-excel", "xls");
+	}
+	
+	
 	public void init(ServletConfig config) throws ServletException {
         super.init(config);
      } 
-		
+	
+	/**
+	 * Handle an export request of a QBE query resultset. First generates a jasper report template. Than compile &
+	 * fill it. In the end exports the filled report to the target export format. If the parameter <i>action</i> is equal
+	 * to <i>buildTemplate</i> it juat return the report template
+	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String action = (String)request.getParameter("action");
+		String inlineStr = (String)request.getParameter("inline");
+		boolean inline = (inlineStr != null && inlineStr.equals("true"));
+		String queryName = (String)request.getParameter("queryName");
 		query = (String)request.getParameter("query");
 		String jarFileStr = (String)request.getParameter("jarfilepath");
 		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
@@ -83,14 +110,16 @@ public class ReportServlet extends HttpServlet{
 		if(action != null && action.equals("buildTemplate")){
 			resultFile = templateFile;
 			format = "text/jrxml";
+			if(queryName == null) queryName = "reportTemplate";
 		}
 		else {
 			ReportRunner runner = new ReportRunner();		
 			runner.run(templateFile, reportFile, format, connection);
 			resultFile = reportFile;
+			if(queryName == null) queryName = "queryResults";
 		}		
 				
-		copyFileToResponse(response, resultFile, format);
+		copyFileToResponse(response, inline, resultFile, queryName, format);
 		
 		// instant cleaning
 		templateFile.delete();
@@ -98,7 +127,8 @@ public class ReportServlet extends HttpServlet{
 	}
 	
 	
-	private void copyFileToResponse(HttpServletResponse response, File file, String fileFormat) throws IOException {
+	private void copyFileToResponse(HttpServletResponse response, boolean inline, File file, String fileName, String fileFormat) throws IOException {
+		response.setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + fileName + "." + extensions.get(fileFormat) + "\";");
 		response.setContentType(fileFormat);
 		response.setContentLength((int)file.length());
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));			

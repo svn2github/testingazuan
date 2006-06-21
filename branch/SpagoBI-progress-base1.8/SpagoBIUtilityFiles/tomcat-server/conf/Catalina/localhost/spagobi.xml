@@ -1,0 +1,7 @@
+  <Context path="/spagobi" docBase="${catalina.home}/webapps/spagobi" debug="0" privileged="true">
+  	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
+  	<ResourceLink name="jdbc/spagobi" type="javax.sql.DataSource" global="jdbc/spagobi"/>
+<!--
+  	<ResourceLink name="jdbc/sbifoodmart" type="javax.sql.DataSource" global="jdbc/sbifoodmart"/>
+-->
+  </Context>

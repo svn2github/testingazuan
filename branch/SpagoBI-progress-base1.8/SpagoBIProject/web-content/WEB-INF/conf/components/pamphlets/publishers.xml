@@ -68,7 +68,7 @@
   	<PUBLISHER name="PamphletsCollaborationPub">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletsCollaborationHome.jsp"/>
+        		<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletCollaborationHome.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>

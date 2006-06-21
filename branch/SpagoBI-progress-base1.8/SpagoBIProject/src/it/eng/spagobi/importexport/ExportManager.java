@@ -266,8 +266,7 @@ public class ExportManager implements IExportManager {
 			return;
 		IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
 		BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
-		String uuid = biobj.getUuid();
-		exportTemplate(biobj, uuid);
+		exportTemplate(biobj);
 		/*
 		if(exportSubObjects){
 			exportSubObjects(biobj, path);
@@ -296,17 +295,16 @@ public class ExportManager implements IExportManager {
 	/**
 	 * Export the template of a single SpagoBI Object
 	 * @param biobj The BIObject to which the template belongs 
-	 * @param path The path of the SpagoBI BIObject
 	 * @throws EMFUserError
 	 */
-	private void exportTemplate(BIObject biobj, String uuid) throws EMFUserError {
+	private void exportTemplate(BIObject biobj) throws EMFUserError {
 		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 		cmsdao.fillBIObjectTemplate(biobj);
 		UploadedFile tempFile = biobj.getTemplate();
 		byte[] tempFileCont = tempFile.getFileContent();
 		String tempFileName = tempFile.getFileName();
 		
-		String folderTempFilePath = pathContentFolder + "/" + uuid;
+		String folderTempFilePath = pathContentFolder + biobj.getPath();
 		File folderTempFile = new File(folderTempFilePath);
 		folderTempFile.mkdirs();
 		try{

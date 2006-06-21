@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.8</version>
+    <version>1.9RC</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIJasperReportEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.8</version>
+  <version>1.9RC</version>
   <name>SpagoBIJasperReportEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -65,25 +65,11 @@
 		<version>1.5.1</version>
         </dependency>
         <dependency>
-            <groupId>ClassScriptlet</groupId>
-            <artifactId>ClassScriptlet</artifactId>
-			<version>1.0</version>
+                <groupId>ClassScriptlet</groupId>
+                <artifactId>ClassScriptlet</artifactId>
+		<version>1.0</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/ClassScriptlet.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>spago-core</groupId>
-            <artifactId>spago-core</artifactId>
-			<version>2.0.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/spago-core-2.0.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>jug-lgpl</groupId>
-            <artifactId>jug-lgpl</artifactId>
-			<version>2.0.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/WebContent/WEB-INF/lib/jug-lgpl-2.0.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -126,6 +112,13 @@
 		<version>1.0</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/dom4j.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>iReport</groupId>
+                <artifactId>iReport</artifactId>
+		<version>1.2.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/iReport.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>itext</groupId>
@@ -173,12 +166,13 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>jsp-api</artifactId>
                 <version>2.0</version>
-		<exclusions>
-			<exclusion>
-				<groupId>gnujaxp</groupId>
-				<artifactId>gnujaxp</artifactId>
-			</exclusion>
-		</exclusions>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>gnujaxp</groupId>
+						<artifactId>gnujaxp</artifactId>
+					</exclusion>
+				</exclusions>
         </dependency>
         <dependency>
                 <groupId>log4j</groupId>
@@ -190,15 +184,23 @@
                 <artifactId>poi</artifactId>
                 <version>2.5.1-final-20040804</version>
         </dependency>
+       <dependency>
+                <groupId>spago</groupId>
+                <artifactId>spago-core</artifactId>
+		<version>2.0.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/spago-core-2.0.0.jar</systemPath>
+        </dependency>        
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.utils</artifactId>
-                <version>1.8</version>
+                <version>1.9RC</version>
         </dependency>
         <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>servlet-api</artifactId>
                 <version>2.4</version>
+		<scope>provided</scope>
         </dependency>
         <dependency>
                 <groupId>xalan</groupId>
@@ -220,6 +222,13 @@
 		<version>1.0</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/xml-apis.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jug-lgpl</groupId>
+            <artifactId>jug-lgpl</artifactId>
+			<version>2.0.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/jug-lgpl-2.0.0.jar</systemPath>
         </dependency>
   </dependencies>
 </project>

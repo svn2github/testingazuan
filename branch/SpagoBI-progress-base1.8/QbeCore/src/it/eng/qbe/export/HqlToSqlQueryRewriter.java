@@ -21,6 +21,8 @@
  **/
 package it.eng.qbe.export;
 
+import it.eng.qbe.utility.Logger;
+
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -45,6 +47,8 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	
 	public String rewrite(String query) {
 		String sqlQuery = null;		
+		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
+		System.out.println("HQL query to convert: " + query);
 		
 		Query hibQuery = session.createQuery(query);
 		SessionFactory sessFact = session.getSessionFactory();
@@ -54,8 +58,46 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 				.getQueryString(), Collections.EMPTY_MAP, imple);
 		trans.compile(new HashMap(), false);
 		sqlQuery = trans.getSQLString();
-
-		return sqlQuery;
+		
+		Logger.debug(this.getClass(), "rewrite: generated SQL query: " + sqlQuery);		
+		System.out.println("generated SQL query: " + sqlQuery);
+		return rewriteWithAlias(query, sqlQuery);
+		//return sqlQuery;
+	}
+	
+	private String getSelectClause(String query) {
+		String selectClause = query.substring(query.indexOf("select") + "select".length(),
+				query.indexOf("from"));
+		return selectClause;
+	}
+	
+	public String rewriteWithAlias(String hqlQuery,String sqlQuery) {
+		String selectHqlBody = getSelectClause(hqlQuery);
+		String[] fields = selectHqlBody.split(",");
+		String[] fieldNames = new String[fields.length];
+		for(int i = 0; i < fields.length; i++) {
+			fieldNames[i] = fields[i];
+			if(fieldNames[i].indexOf("as") != -1) {
+				fieldNames[i] = fieldNames[i].substring(fieldNames[i].indexOf("as")+2, fieldNames[i].length());
+			} else {
+				if(fieldNames[i].lastIndexOf('.') != -1) {
+					fieldNames[i] = fieldNames[i].substring(fieldNames[i].lastIndexOf('.') + 1, fieldNames[i].length());
+				}
+			}
+		}
+		
+		String selectSqlBody = getSelectClause(sqlQuery);
+		fields = selectSqlBody.split(",");
+		String newSelectBody = "";
+		for(int i = 0; i < fields.length; i++) {
+			String selectItem = fields[i];
+			selectItem = selectItem.substring(0, selectItem.indexOf("as")+2);
+			selectItem += " " + fieldNames[i];
+			newSelectBody += ((i!=0)?", ":" ") + selectItem;
+		}		
+		String newQueryWithAlias = "select " + newSelectBody + sqlQuery.substring(sqlQuery.indexOf("from"), sqlQuery.length());
+				
+		return newQueryWithAlias;
 	}
 
 }

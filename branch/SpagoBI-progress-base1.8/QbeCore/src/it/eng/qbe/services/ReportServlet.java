@@ -27,6 +27,7 @@ import it.eng.qbe.export.ITemplateBuilder;
 import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLTemplateBuilder;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -73,10 +74,15 @@ public class ReportServlet extends HttpServlet{
 		extensions.put("application/vnd.ms-excel", "xls");
 	}
 	
+	public static final String ACTION_PARAMETER = "action";
 	
 	public void init(ServletConfig config) throws ServletException {
         super.init(config);
      } 
+	
+	public String getActionParameter(HttpServletRequest request) {
+		return (String)request.getParameter("ACTION_PARAMETER");
+	}
 	
 	/**
 	 * Handle an export request of a QBE query resultset. First generates a jasper report template. Than compile &
@@ -84,7 +90,8 @@ public class ReportServlet extends HttpServlet{
 	 * to <i>buildTemplate</i> it juat return the report template
 	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String action = (String)request.getParameter("action");
+		Logger.debug(this.getClass(), "service: start method service");		
+		String action = getActionParameter(request);
 		String inlineStr = (String)request.getParameter("inline");
 		boolean inline = (inlineStr != null && inlineStr.equals("true"));
 		String queryName = (String)request.getParameter("queryName");
@@ -102,8 +109,8 @@ public class ReportServlet extends HttpServlet{
 						
 		setJasperClasspath();		
 		
-		File templateFile = File.createTempFile("report", ".jrxml"); //new File("report.jrxml");
-		File reportFile = File.createTempFile("report", ".rpt"); //new File("report.rpt");
+		File templateFile = File.createTempFile("report", ".jrxml"); 
+		File reportFile = File.createTempFile("report", ".rpt"); 
 		File resultFile = null;
 		
 		buildTemplateFromSQLQuery(templateFile);

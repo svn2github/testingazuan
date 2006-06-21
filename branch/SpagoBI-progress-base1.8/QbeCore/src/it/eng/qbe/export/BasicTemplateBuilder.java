@@ -71,7 +71,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 						  "width=\"" + (int)(DETAIL_WIDTH/queryFields.size()) + "\" " + 
 						  "height=\"" + DETAIL_HEIGHT + "\" " + 
 						  "forecolor=\"" + "#000000" + "\" " + 
-						  "backcolor=\"" + "#CCFFCC" + "\" " + 
+						  "backcolor=\"" + "#E1E1FC" + "\" " + 
 						  "key=\"textField\">\n");
 			buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 == 0)]]></printWhenExpression>");
 			buffer.append("</reportElement>");
@@ -91,7 +91,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 						  "width=\"" + (int)(DETAIL_WIDTH/queryFields.size()) + "\" " + 
 						  "height=\"" + DETAIL_HEIGHT + "\" " + 
 						  "forecolor=\"" + "#000000" + "\" " + 
-						  "backcolor=\"" + "#FFFFCC" + "\" " + 
+						  "backcolor=\"" + "#FFFFFF" + "\" " + 
 						  "key=\"textField\">\n");
 			buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 != 0)]]></printWhenExpression>");
 			buffer.append("</reportElement>");

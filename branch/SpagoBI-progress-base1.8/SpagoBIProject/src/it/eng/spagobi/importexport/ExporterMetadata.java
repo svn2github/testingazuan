@@ -43,6 +43,9 @@ import it.eng.spagobi.metadata.SbiFuncRole;
 import it.eng.spagobi.metadata.SbiFuncRoleId;
 import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiLov;
+import it.eng.spagobi.metadata.SbiObjFunc;
+import it.eng.spagobi.metadata.SbiObjFuncId;
+import it.eng.spagobi.metadata.SbiObjPar;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
@@ -116,6 +119,11 @@ public class ExporterMetadata {
 			hibEngine.setObjUplDir(engine.getDirUpload());
 			hibEngine.setObjUseDir(engine.getDirUsable());
 			hibEngine.setSecnUrl(engine.getSecondaryUrl());
+			SbiDomains objTypeDom = (SbiDomains)session.load(SbiDomains.class, engine.getBiobjTypeId());
+			hibEngine.setBiobjType(objTypeDom);
+			hibEngine.setClassNm(engine.getClassName());
+			SbiDomains engineTypeDom = (SbiDomains)session.load(SbiDomains.class, engine.getEngineTypeId());
+			hibEngine.setEngineType(engineTypeDom);
 			session.save(hibEngine);
 			tx.commit();
 		} catch (Exception e) {
@@ -156,6 +164,10 @@ public class ExporterMetadata {
 			hibBIObj.setObjectType(hibObjectType);
 			hibBIObj.setObjectTypeCode(biobj.getBiObjectTypeCode());
 			hibBIObj.setPath(biobj.getPath());
+			hibBIObj.setUuid(biobj.getUuid());
+			Integer visFlagIn = biobj.getVisible();
+			Short visFlagSh = new Short(visFlagIn.toString());
+			hibBIObj.setVisible(visFlagSh);
 			session.save(hibBIObj);
 			tx.commit();
 		} catch (Exception e) {
@@ -169,14 +181,18 @@ public class ExporterMetadata {
 	/**
 	 * Insert a BIObject Parameter into the exported database
 	 * @param biobjpar BIObject parameter to insert
-	 * @param biobj BIObject to which the parameter belongs
 	 * @param session Hibernate session for the exported database
 	 * @throws EMFUserError
 	 */
-	public void insertBIObjectParameter(BIObjectParameter biobjpar, BIObject biobj, Session session) throws EMFUserError {
-		/*
+	public void insertBIObjectParameter(BIObjectParameter biobjpar,  Session session) throws EMFUserError {
 		try {
 			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiObjPar where objParId = " + biobjpar.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			/*
 			Integer parid = biobjpar.getParameter().getId();
 			Integer objid = biobj.getId();
 			String query = " from SbiObjPar where id.sbiParameters.parId = " + parid +
@@ -193,23 +209,33 @@ public class ExporterMetadata {
 			hibBIObjParId.setSbiObjects(hibBIObject);
 			hibBIObjParId.setSbiParameters(hibParameter);
 			hibBIObjParId.setProg(new Integer(0));
+			*/
+			
 			// build BI Object Parameter
-			SbiObjPar hibBIObjPar = new SbiObjPar(hibBIObjParId);
+			SbiObjPar hibBIObjPar = new SbiObjPar(biobjpar.getId());
 			hibBIObjPar.setLabel(biobjpar.getLabel());
 			hibBIObjPar.setReqFl(new Short(biobjpar.getRequired().shortValue()));
 			hibBIObjPar.setModFl(new Short(biobjpar.getModifiable().shortValue()));
 			hibBIObjPar.setViewFl(new Short(biobjpar.getVisible().shortValue()));
 			hibBIObjPar.setMultFl(new Short(biobjpar.getMultivalue().shortValue()));
 			hibBIObjPar.setParurlNm(biobjpar.getParameterUrlName());
+			hibBIObjPar.setPriority(biobjpar.getPriority());
+			hibBIObjPar.setProg(biobjpar.getProg());
+			Integer biobjid = biobjpar.getBiObjectID();
+			SbiObjects sbiob = (SbiObjects)session.load(SbiObjects.class, biobjid);
+			Integer parid = biobjpar.getParID();			
+			SbiParameters sbipar = (SbiParameters)session.load(SbiParameters.class, parid);
+			hibBIObjPar.setSbiObject(sbiob);
+			hibBIObjPar.setSbiParameter(sbipar);
 			// save the BI Object Parameter
 			session.save(hibBIObjPar);
 			tx.commit();
+		
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObjectParameter",
 					               "Error while inserting BIObjectParameter into export database " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
-		*/
 	}
 	
 	
@@ -274,6 +300,7 @@ public class ExporterMetadata {
 			hibParuse.setLabel(parUse.getLabel());
 			hibParuse.setName(parUse.getName());
 			hibParuse.setDescr(parUse.getDescription());
+			hibParuse.setManualInput(parUse.getManualInput());
 			session.save(hibParuse);
 			tx.commit();
 		} catch (Exception e) {
@@ -537,6 +564,43 @@ public class ExporterMetadata {
 		}
 	}
 	
+	
+	
+	/**
+	 * Insert an association between a functionality and a biobject into the exported database
+	 * @param biobj The BIObject which is an element of the association
+	 * @param funct The functionality object which is an element of the association
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
+	public void insertObjFunct(BIObject biobj, LowFunctionality funct, Session session) throws EMFUserError {
+		try {
+			Transaction tx = session.beginTransaction();
+			Integer biobjid = biobj.getId();
+			Integer functid = funct.getId();
+			String query = " from SbiObjFunc where id.sbiFunctions = " + functid +
+						   " and id.sbiObjects = " + biobjid;
+			Query hibQuery = session.createQuery(query);
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			// built key
+			SbiObjFuncId hibObjFunctId = new SbiObjFuncId();
+			SbiFunctions hibFunct = (SbiFunctions)session.load(SbiFunctions.class, funct.getId());
+			SbiObjects hibObj = (SbiObjects)session.load(SbiObjects.class, biobj.getId());
+			hibObjFunctId.setSbiObjects(hibObj);
+			hibObjFunctId.setSbiFunctions(hibFunct);
+			SbiObjFunc hibObjFunct = new SbiObjFunc(hibObjFunctId);
+			hibObjFunct.setProg(new Integer(0));
+			session.save(hibObjFunct);
+			tx.commit();
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObjFunct",
+					               "Error while inserting function and object association into export database " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+		}
+	}
 	
 	
 	

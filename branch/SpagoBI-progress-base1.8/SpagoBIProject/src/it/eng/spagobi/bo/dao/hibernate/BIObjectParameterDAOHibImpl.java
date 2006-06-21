@@ -375,6 +375,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 		aBIObjectParameter.setRequired(new Integer(hiObjPar.getReqFl().intValue()));
 		aBIObjectParameter.setVisible(new Integer(hiObjPar.getViewFl().intValue()));
 		aBIObjectParameter.setPriority(hiObjPar.getPriority());
+		aBIObjectParameter.setProg(hiObjPar.getProg());
 		Parameter parameter = new Parameter();
 		parameter.setId(hiObjPar.getSbiParameter().getParId());
 		aBIObjectParameter.setParameter(parameter);

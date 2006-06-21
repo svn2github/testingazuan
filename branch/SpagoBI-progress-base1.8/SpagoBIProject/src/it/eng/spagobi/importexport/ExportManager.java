@@ -128,13 +128,13 @@ public class ExportManager implements IExportManager {
 	 * Exports objects and creates the archive export file
 	 * @param objPaths List of path of the objects to export
 	 */
-	public String exportObjects(List objPaths) throws EMFUserError {	
+	public String exportObjects(List objIds) throws EMFUserError {	
 		exportPropertiesFile();
 		exportDomains();
-		Iterator iterObjs = objPaths.iterator();
+		Iterator iterObjs = objIds.iterator();
 		while(iterObjs.hasNext()){
-			String path = (String)iterObjs.next();
-			exportSingleObj(path);
+			String idobj = (String)iterObjs.next();
+			exportSingleObj(idobj);
 		}
 	    closeSession();
 		exportConnectionFile(connections);
@@ -230,7 +230,7 @@ public class ExportManager implements IExportManager {
 		    String pathSysFunct = pathSysFunctSB.getCharacters();
 			String propFilePath = pathBaseFolder + "/export.properties";
 			FileOutputStream fos = new FileOutputStream(propFilePath);
-			String properties = "spagobi-version=1.8\n"+
+			String properties = "spagobi-version=1.9\n"+
 								"cms-basefolder="+pathSysFunct+"\n";
 			fos.write(properties.getBytes());
 			fos.flush();
@@ -261,19 +261,33 @@ public class ExportManager implements IExportManager {
      * @param path The path of the biobject to export
      * @throws EMFUserError
      */
-	private void exportSingleObj(String path) throws EMFUserError {
-		if((path==null) || path.trim().equals(""))
+	private void exportSingleObj(String idObj) throws EMFUserError {
+		if((idObj==null) || idObj.trim().equals(""))
 			return;
 		IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
-		BIObject biobj = biobjDAO.loadBIObjectForDetail(path);
-		exportTemplate(biobj, path);
+		BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
+		String uuid = biobj.getUuid();
+		exportTemplate(biobj, uuid);
+		/*
 		if(exportSubObjects){
 			exportSubObjects(biobj, path);
 		}
+		*/
 		Engine engine = biobj.getEngine();		
 		exporter.insertEngine(engine, session);
 		exporter.insertBIObject(biobj, session);
-		exportFunctionalities(path);
+		
+		// insert functionalities and association with object
+		List functs = biobj.getFunctionalities();
+		Iterator iterFunct = functs.iterator();
+		while(iterFunct.hasNext()) {
+			Integer functId = (Integer)iterFunct.next();
+			ILowFunctionalityDAO lowFunctDAO = DAOFactory.getLowFunctionalityDAO();
+			LowFunctionality funct = lowFunctDAO.loadLowFunctionalityByID(functId, false);
+			exporter.insertFunctionality(funct, session);
+			exporter.insertObjFunct(biobj, funct, session);
+		}
+		// export parameters
 		List biparams = biobjDAO.getBIObjectParameters(biobj);
 		exportBIParamsBIObj(biparams, biobj);
 	}
@@ -285,14 +299,14 @@ public class ExportManager implements IExportManager {
 	 * @param path The path of the SpagoBI BIObject
 	 * @throws EMFUserError
 	 */
-	private void exportTemplate(BIObject biobj, String path) throws EMFUserError {
+	private void exportTemplate(BIObject biobj, String uuid) throws EMFUserError {
 		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 		cmsdao.fillBIObjectTemplate(biobj);
 		UploadedFile tempFile = biobj.getTemplate();
 		byte[] tempFileCont = tempFile.getFileContent();
 		String tempFileName = tempFile.getFileName();
 		
-		String folderTempFilePath = pathContentFolder + path;
+		String folderTempFilePath = pathContentFolder + "/" + uuid;
 		File folderTempFile = new File(folderTempFilePath);
 		folderTempFile.mkdirs();
 		try{
@@ -314,6 +328,7 @@ public class ExportManager implements IExportManager {
 	 * @param path The path of the SpagoBI BIObject
 	 * @throws EMFUserError
 	 */
+	/*
 	private void exportSubObjects(BIObject biobj, String path) throws EMFUserError {
 		try{
 			String folderSubObjPath = pathContentFolder + path + "/subobjects";
@@ -348,7 +363,7 @@ public class ExportManager implements IExportManager {
             throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
-	
+	*/
 	
 	
 	/**
@@ -361,10 +376,10 @@ public class ExportManager implements IExportManager {
 		Iterator iterBIParams = biparams.iterator();
 		while(iterBIParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter)iterBIParams.next();
-			exporter.insertBIObjectParameter(biparam, biobj, session);
 			IParameterDAO parDAO = DAOFactory.getParameterDAO();
 			Parameter param = parDAO.loadForDetailByParameterID(biparam.getParameter().getId());
 			exporter.insertParameter(param, session);
+			exporter.insertBIObjectParameter(biparam, session);
 			IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
 			List paruses = paruseDAO.loadParametersUseByParId(param.getId());
 		    exportParUses(paruses);

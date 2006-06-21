@@ -44,6 +44,7 @@ import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -150,13 +151,14 @@ public class ImportExportModule extends AbstractModule {
 				String pathcont = ConfigSingleton.getRootPath();
 				pathExportFolder = pathcont + "/" + pathExportFolder;
 			}
-			List paths = request.getAttributeAsList(ImportExportConstants.PATH);
+			List id_paths = request.getAttributeAsList(ImportExportConstants.OBJECT_ID_PATHFUNCT);
+			List ids = extractObjId(id_paths);
 			String expClassName = (String)exporterSB.getAttribute("class");
 	        Class expClass = Class.forName(expClassName);
 			expManager = (IExportManager)expClass.newInstance();
 			expManager.prepareExport(pathExportFolder, exportFileName, expSubObj);
 			String exportedFilePath = "";
-			exportedFilePath = expManager.exportObjects(paths);
+			exportedFilePath = expManager.exportObjects(ids);
 			response.setAttribute(ImportExportConstants.EXPORT_FILE_PATH, exportedFilePath);	
 		} catch (EMFUserError emfue) {
 			expManager.cleanExportEnvironment();
@@ -180,6 +182,16 @@ public class ImportExportModule extends AbstractModule {
 		}
 	}
 	
+	private List extractObjId(List requests) {
+		List toReturn = new ArrayList();
+		Iterator iter = requests.iterator();
+		while(iter.hasNext()) {
+			String id_path = (String)iter.next();
+			String id = id_path.substring(0, id_path.indexOf('_'));
+			toReturn.add(id);
+		}
+		return toReturn;
+	}
 	
 	
 	/**

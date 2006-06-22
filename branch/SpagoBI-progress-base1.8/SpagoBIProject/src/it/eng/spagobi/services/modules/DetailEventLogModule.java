@@ -69,8 +69,8 @@ public class DetailEventLogModule extends AbstractModule {
 	 		int lastslash = jcrPath.lastIndexOf("/");
 	 		jcrPath = jcrPath.substring(0, lastslash);
 	 	}
-		//BIObject biObject = biObjectDAO.loadBIObjectForDetail(jcrPath);
-		BIObject biObject = null;
+		BIObject biObject = biObjectDAO.loadBIObjectForDetail(jcrPath);
+		//BIObject biObject = null;
 		response.setAttribute("biobject", biObject);
 		SubreportDAOHibImpl subreportDAOHibImpl = new SubreportDAOHibImpl();
 		List list = subreportDAOHibImpl.loadSubreportsByMasterRptId(biObject.getId());

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<LEVELS>
-	<LEVEL name="1" threshold="0"    hue="RGB(216,249,252)"/>
-	<LEVEL name="2" threshold="2000" hue="RGB(148,238,245)"/>
-	<LEVEL name="3" threshold="4000" hue="RGB(20,205,220)"/>
-	<LEVEL name="4" threshold="6000" hue="RGB(14,143,154)"/>
-	<LEVEL name="5" threshold="8000" hue="RGB(10,96,103)"/>
-</LEVELS>

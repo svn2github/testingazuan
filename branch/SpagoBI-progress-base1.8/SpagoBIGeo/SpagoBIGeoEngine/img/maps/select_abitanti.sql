@@ -1,1 +1,0 @@
-select path_id ,num_abitanti from path_id_abitanti pa,abitanti a where a.cod_istat = pa.cod_istat

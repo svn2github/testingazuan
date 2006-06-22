@@ -528,6 +528,12 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		switch (dbWriteMode) {
 		case DROP_INSERT:
 			System.out.println("Write mode: DROP_INSERT");
+			try {
+				databaseConnection.execute("DROP TABLE " + m_tableName);
+			} catch(Exception e) {
+				System.err.println("Table cannot be dropped.");
+			}
+			/*
 			if (databaseConnection.tableExists(m_tableName)) {
 				databaseConnection.execute("DROP TABLE " + m_tableName);
 				if (databaseConnection.tableExists(m_tableName)) {
@@ -535,6 +541,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 					throw new Exception();
 				}
 			}
+			*/
 			writeStructure();
 			break;
 		case DELETE_INSERT:

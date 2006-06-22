@@ -139,11 +139,9 @@ public class ReportServlet extends HttpServlet{
 		SourceBean config = (SourceBean)ConfigSingleton.getInstance();
 		List params = config.getAttributeAsList("QBE.TEMPLATE-BUILDER.PARAMETERS.PARAMETER");
 		for(int i = 0; i < params.size(); i++) {
-			SourceBean param = (SourceBean)params.get(i);
-			System.out.println(param);
+			SourceBean param = (SourceBean)params.get(i);			
 			String pname = (String)param.getAttribute("name");
-			String pvalue = (String)param.getAttribute("value");
-			System.out.println(pname + " = " + pvalue);
+			String pvalue = (String)param.getAttribute("value");			
 			map.put(pname, pvalue);
 		}
 		return map;

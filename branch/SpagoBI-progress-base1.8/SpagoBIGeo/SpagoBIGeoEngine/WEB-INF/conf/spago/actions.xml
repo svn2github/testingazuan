@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ACTIONS>
   <ACTION
-     class="it.eng.geo.test.action.GeoTestAction"
-     name="GEO_TEST"
+     class="it.eng.geo.action.GeoAction"
+     name="GEO_ACTION"
      scope="REQUEST">
     <CONFIG/>
   </ACTION>

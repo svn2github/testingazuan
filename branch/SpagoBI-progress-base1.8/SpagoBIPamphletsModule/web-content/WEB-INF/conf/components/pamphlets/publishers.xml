@@ -68,7 +68,7 @@
   	<PUBLISHER name="PamphletsCollaborationPub">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletsCollaborationHome.jsp"/>
+        		<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletCollaborationHome.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
@@ -138,7 +138,7 @@
 	<PUBLISHER name="WORKLIST_PUBLISHER">
   		<RENDERING channel="PORTLET" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletsCollaborationHome.jsp" />
+				<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletCollaborationHome.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>

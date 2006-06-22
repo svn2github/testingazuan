@@ -119,7 +119,9 @@ public class BirtReportRunnerODA {
 		while (it.hasNext()) {
 			IScalarParameterDefn param = (IScalarParameterDefn) it.next();
 			String paramName = param.getName();
-			String paramValueString = parameters.get(paramName).toString();
+			Object paramValueObj = parameters.get(paramName);
+			String paramValueString = null;
+			if (paramValueObj != null) paramValueString = paramValueObj.toString();
 			if (paramValueString == null || paramValueString.trim().equals("")) {
 				logger.debug("Engines"+ this.getClass().getName()+ "findReportParams() The report parameter " + paramName + " has no values set.");
 				continue;

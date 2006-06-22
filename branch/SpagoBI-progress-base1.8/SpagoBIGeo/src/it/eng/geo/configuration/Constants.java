@@ -52,4 +52,37 @@ public class Constants {
 
 	public static final String CLASS_NAME = "CLASS_NAME";
 
+	public static final String TYPE = "type";
+
+	public static final String SVG = "svg";
+
+	public static final String SVG_MIME_TYPE = "image/svg+xml";
+
+	public static final String JPEG = "jpeg";
+
+	public static final String JPEG_MIME_TYPE = "image/jpeg";
+
+	public static final String PDF = "pdf";
+	
+	public static final String PDF_MIME_TYPE = "application/pdf";
+
+	public static final String GIF = "gif";
+	
+	public static final String GIF_MIME_TYPE = "image/gif";
+
+	public static final String BMP = "bmp";
+	
+	public static final String BMP_MIME_TYPE = "image/bmp";
+
+	public static final String X_PNG = "x-png";
+	
+	public static final String X_PNG_MIME_TYPE = "image/x-png";
+
+	public static final String XML = "xml";
+	
+	public static final String XML_MIME_TYPE = "image/xml";
+
+	public static final String HTML = "html";
+	
+	public static final String HTML_MIME_TYPE = "image/html";
 }

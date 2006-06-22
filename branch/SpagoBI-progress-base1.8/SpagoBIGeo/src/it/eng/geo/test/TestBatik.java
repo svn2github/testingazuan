@@ -8,18 +8,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.svggen.SVGConverter;
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.svg2svg.PrettyPrinter;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
@@ -30,7 +26,6 @@ import org.w3c.dom.svg.SVGDocument;
  */
 public class TestBatik {
 
-    private static final String HTTP = "http://";
 
     public static void main(String[] args) throws IOException {
 

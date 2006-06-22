@@ -10,8 +10,15 @@ import it.eng.geo.map.MapProviderFactory;
 import it.eng.geo.map.MapProviderIFace;
 import it.eng.spago.base.SourceBean;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.w3c.dom.Element;
 
 /**
@@ -24,8 +31,17 @@ import org.w3c.dom.Element;
 public class MapRenderer {
 
 	/**
+	 * <p>
+	 * Represents mimeType
+	 * </p>
+	 */
+	private String contentType = null;
+
+	/**
 	 * <code>service</code> Metodo contenente la logica per l'esecuzione del
 	 * comando
+	 * 
+	 * @param outputSream
 	 * 
 	 * @param arg0
 	 *            di tipo <code>String</code>
@@ -36,6 +52,8 @@ public class MapRenderer {
 	public byte[] renderMap(byte[] template) throws Exception {
 
 		MapConfiguration mapConfiguration = new MapConfiguration(template);
+
+		setContentType(mapConfiguration.getType());
 
 		SourceBean mapProviderConfiguration = mapConfiguration
 				.getMapProviderConfiguration();
@@ -63,28 +81,53 @@ public class MapRenderer {
 			String style = mapConfiguration.getStyle(Integer.parseInt(value));
 			element.setAttribute(Constants.STYLE, style);
 		}
-
-		// // mapConfiguration.addLegend(xMLDocument);
-		// XercesXMLDocument legend = mapConfiguration.getLegend();
-		// Node legendNode = (Node)legend.getDocumentElement();
-		// // Node svgNode = xMLDocument.getDocumentElement();
-		// Document svgDoc = xMLDocument.getDocument();
-		// System.out.println(legendNode.getNodeName());
-		// NodeList nodeList = legendNode.getChildNodes();
-		// for (int i = 0; i < nodeList.getLength(); i++) {
-		// Node node = nodeList.item(i);
-		// System.out.println(node.getFirstChild().getNodeName());
-		// svgDoc.adoptNode(node);
-		// xMLDocument.appendChild(node.getFirstChild(),"svg");
-		//
-		// // svgNode.appendChild(node);
-		// }
-		// soluzione di backup
 		String mapString = xMLDocument.getDocumentAsXMLString();
 		String legendString = mapConfiguration.getLegend();
 		mapString = mapString.substring(0, mapString.indexOf("</svg>"))
 				+ legendString + "</svg>";
 		return mapString.getBytes();
+	}
 
+	public void sVGToJPEGTransform(InputStream inputStream,
+			OutputStream outputStream) throws Exception {
+		// create a JPEG transcoder
+		JPEGTranscoder t = new JPEGTranscoder();
+		// set the transcoding hints
+		t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY, new Float(.8));
+		// create the transcoder input
+		Reader reader = new InputStreamReader(inputStream);
+		TranscoderInput input = new TranscoderInput(reader);
+		// create the transcoder output
+		TranscoderOutput output = new TranscoderOutput(outputStream);
+		// save the image
+		t.transcode(input, output);
+
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	/*
+	 * This Method sets the right MIME type for a particular format <p> @param
+	 * String format ex: xml or HTML etc. @return String MIMEtype
+	 */
+	public void setContentType(String type) {
+		if (type.equalsIgnoreCase(Constants.SVG))
+			this.contentType = Constants.SVG_MIME_TYPE;
+		else if (type.equalsIgnoreCase(Constants.PDF))
+			this.contentType = Constants.PDF_MIME_TYPE;
+		else if (type.equalsIgnoreCase(Constants.GIF))
+			this.contentType = Constants.GIF_MIME_TYPE;
+		else if (type.equalsIgnoreCase(Constants.JPEG))
+			this.contentType = Constants.JPEG_MIME_TYPE;
+		else if (type.equalsIgnoreCase(Constants.BMP))
+			this.contentType = Constants.BMP_MIME_TYPE;
+		else if (type.equalsIgnoreCase(Constants.X_PNG))
+			this.contentType = Constants.X_PNG_MIME_TYPE;
+		else if (type.equalsIgnoreCase(Constants.HTML))
+			this.contentType = Constants.HTML_MIME_TYPE;
+		else if (type.equalsIgnoreCase(Constants.XML))
+			this.contentType = Constants.XML_MIME_TYPE;
 	}
 }

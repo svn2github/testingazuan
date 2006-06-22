@@ -6,10 +6,6 @@ package it.eng.geo.document;
 public class SVGMapDocument {
 
 
-	public SVGMapDocument(byte[] content) throws XMLDocumentException {
-		
-	}
-	
     /**
      * @param risorsa
      * @throws XMLDocumentException

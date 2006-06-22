@@ -12,7 +12,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class AbstractXMLDocument implements XMLDocumentIFace {
 
-	protected Document document;
+	private Document document;
 
 	private String documentAsXMLString = null;
 

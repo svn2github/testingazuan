@@ -2,7 +2,6 @@ package it.eng.geo.test;
 
 import it.eng.geo.document.XMLDocumentException;
 import it.eng.geo.document.XercesXMLDocument;
-import it.eng.geo.render.MapRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -25,7 +24,6 @@ import org.w3c.dom.NodeList;
 public class TestMapRenderer {
 
 	public static void main(String[] args) throws IOException, XMLDocumentException {
-		MapRenderer mapRenderer = new MapRenderer();
 		InputStream inputStream = null;
 		String uRI = "file:///C:/Progetti/Regione_Veneto/Georeferenziazione/g/VE_comuni/ve_comuni.svg";
 		URL uRL = null;

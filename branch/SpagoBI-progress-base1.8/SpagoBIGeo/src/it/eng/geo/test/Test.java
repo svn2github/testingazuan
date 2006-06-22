@@ -1,8 +1,5 @@
 package it.eng.geo.test;
 
-import it.eng.geo.document.SVGMapDocument;
-import it.eng.geo.document.XMLDocumentException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -83,13 +80,13 @@ public class Test {
         System.out.println("SchedulerInitializer::init: FINE " + new String(byteArrayOutputStream.toByteArray()));
 
         
-        SVGMapDocument sVGMapDocument = null;
-        try {
-            sVGMapDocument = new SVGMapDocument(baos.toByteArray());
-        } catch (XMLDocumentException e2) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
-        }
+//        SVGMapDocument sVGMapDocument = null;
+//        try {
+//            sVGMapDocument = new SVGMapDocument(baos.toByteArray());
+//        } catch (XMLDocumentException e2) {
+//            // TODO Auto-generated catch block
+//            e2.printStackTrace();
+//        }
 
     }
 

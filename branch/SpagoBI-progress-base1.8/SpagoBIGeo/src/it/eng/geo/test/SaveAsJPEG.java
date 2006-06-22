@@ -15,10 +15,10 @@ public class SaveAsJPEG {
         t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
                              new Float(.8));
         // create the transcoder input
-        String svgURI = "file:///C:/Progetti/Regione_Veneto/Georeferenziazione/g/VE_comuni/ve_comuni_rv1.svg";
+        String svgURI = "file:///C:/Temp/ve_comuni_legend_pubblicato.svg";
         TranscoderInput input = new TranscoderInput(svgURI);
         // create the transcoder output
-        OutputStream ostream = new FileOutputStream("c:/temp/out.jpg");
+        OutputStream ostream = new FileOutputStream("C:/Temp/ve_comuni_legend_pubblicato.jpg");
         TranscoderOutput output = new TranscoderOutput(ostream);
         // save the image
         t.transcode(input, output);

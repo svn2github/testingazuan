@@ -21,8 +21,8 @@ public class CrimsonXMLDocument extends AbstractXMLDocument {
 		try {
 			DocumentBuilderFactoryImpl dbf = new DocumentBuilderFactoryImpl();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			this.document = db.parse(new InputSource(new ByteArrayInputStream(
-					document)));
+			setDocument(db.parse(new InputSource(new ByteArrayInputStream(
+					document))));
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 			throw new XMLDocumentException(e.getClass().getName() + " "

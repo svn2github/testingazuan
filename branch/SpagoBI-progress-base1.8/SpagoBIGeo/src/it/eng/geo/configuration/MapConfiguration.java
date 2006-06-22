@@ -41,6 +41,13 @@ public class MapConfiguration {
 
 	/**
 	 * <p>
+	 * Represents type
+	 * </p>
+	 */
+	private String type = null;
+
+	/**
+	 * <p>
 	 * Constructor
 	 * </p>
 	 * 
@@ -68,6 +75,21 @@ public class MapConfiguration {
 		if (map == null) {
 			throw new ConfigurationException(
 					"Impossibile configurare la mappa richiesta; nel template deve essere presente una ed una sola mappa ENABLED");
+		}
+//		String name =  "";
+//		// NAME
+//		try {
+//			name = (String) map.getAttribute(Constants.NAME);
+//		} catch (Exception e) {
+//			throw new ConfigurationException(
+//					"Impossibile recuperare il mime type");
+//		}
+		// MIME TYPE
+		try {
+			type = (String) map.getAttribute(Constants.TYPE);
+		} catch (Exception e) {
+			throw new ConfigurationException(
+					"Impossibile recuperare il mime type");
 		}
 		// LEGENDA
 		try {
@@ -218,5 +240,13 @@ public class MapConfiguration {
 
 	public void setMapProviderConfiguration(SourceBean mapProviderConfiguration) {
 		this.mapProviderConfiguration = mapProviderConfiguration;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

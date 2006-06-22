@@ -10,7 +10,8 @@
          		it.eng.spagobi.constants.SpagoBIConstants,
          		it.eng.spagobi.bo.Subreport,
          		it.eng.spagobi.bo.BIObject,
-         		it.eng.spagobi.utilities.PortletUtilities"
+         		it.eng.spagobi.utilities.PortletUtilities,
+         		it.eng.spagobi.constants.ObjectsTreeConstants"
 %>
 
 <%
@@ -69,7 +70,7 @@
 				PortletURL formUrl = renderResponse.createActionURL();
    				formUrl.setParameter("PAGE", "ExecuteBIObjectPage"); 
    				formUrl.setParameter("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");  
-   				formUrl.setParameter("PATH", biObject.getPath());
+   				formUrl.setParameter("OBJECT_ID", biObject.getId().toString());
    				formUrl.setParameter("ACTOR", "USER_ACTOR");
 				
 %>

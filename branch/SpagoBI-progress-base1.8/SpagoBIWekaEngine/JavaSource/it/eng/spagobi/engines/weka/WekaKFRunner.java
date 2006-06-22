@@ -250,13 +250,18 @@ public class WekaKFRunner {
 			
 			if(className.equalsIgnoreCase(DatabaseLoader.class.getName())) {
 				DatabaseLoader databaseLoader = (DatabaseLoader)loader.getLoader();
-								
-				// l'url del db, il nome utente e la password non sono 
-				// memorizzati nel tempalte file quindi è necessario riinserirli a
-				// mano al termine del processo di parsing
-				databaseLoader.setUrl(dbUrl);
-				databaseLoader.setUser(dbUser);
-				databaseLoader.setPassword(dbPassword);		
+				
+				if(inConnection != null) {
+					databaseLoader.setSource(inConnection);
+				}
+				else {
+					// l'url del db, il nome utente e la password non sono 
+					// memorizzati nel tempalte file quindi è necessario riinserirli a
+					// mano al termine del processo di parsing
+					databaseLoader.setUrl(dbUrl);
+					databaseLoader.setUser(dbUser);
+					databaseLoader.setPassword(dbPassword);	
+				}
 			}
 			else if(className.equalsIgnoreCase(ArffLoader.class.getName())) {
 				ArffLoader arffLoader = (ArffLoader)loader.getLoader();
@@ -291,8 +296,8 @@ public class WekaKFRunner {
 					databaseSaver.setVersion(version);
 				}
 				
-				if(inConnection != null) {
-					databaseSaver.setDestination(inConnection);
+				if(outConnection != null) {
+					databaseSaver.setDestination(outConnection);
 				}
 				else {				
 					// l'url del db, il nome utente e la password non sono 

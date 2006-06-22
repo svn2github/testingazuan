@@ -363,6 +363,17 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       }    
   }
   
+  /** Sets the database url using the given connection */
+	public void setSource(Connection connection) {
+
+		try {
+			m_DataBaseConnection = new DatabaseConnection();
+			m_DataBaseConnection.setConnection(connection);
+		} catch (Exception ex) {
+			printException(ex);
+		}
+	}
+  
   /** Sets the database url
    * @param url the database url
    */  

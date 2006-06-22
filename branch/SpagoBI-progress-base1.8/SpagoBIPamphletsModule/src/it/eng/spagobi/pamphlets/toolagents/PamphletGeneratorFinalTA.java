@@ -56,10 +56,19 @@ public class PamphletGeneratorFinalTA {
 		String pathTmpFold = null;
 		try{
 			String pathPamphlet = param1.the_value.toString();
+			
+			debug("execute", "Path Pamphlet =" + pathPamphlet);
+			
 			ConfigSingleton config = ConfigSingleton.getInstance();
 			SourceBean pathTmpFoldSB = (SourceBean)config.getAttribute("PAMPHLETS.PATH_TMP_FOLDER");
 			pathTmpFold = (String)pathTmpFoldSB.getAttribute("path");
+			
+			debug("execute", "Path tmp =" + pathTmpFold);
+			
 			String pathTmpFoldPamp = pathTmpFold + pathPamphlet;
+			
+			debug("execute", "Path tmp folder pamphlet =" + pathTmpFoldPamp);
+			
 			File tempDir = new File(pathTmpFoldPamp); 
 			tempDir.mkdirs();
 			// initialize openoffice environment
@@ -91,6 +100,7 @@ public class PamphletGeneratorFinalTA {
 	        fosTemplate.close();
             XComponentLoader xComponentLoader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class, xdesktop);
 	        // load the template into openoffice
+            debug("execute", "Path template = " + templateFile.getAbsolutePath());
             xComponent = openTemplate(xComponentLoader, "file:///" + templateFile.getAbsolutePath());	
             XMultiServiceFactory xServiceFactory = (XMultiServiceFactory)UnoRuntime.queryInterface(XMultiServiceFactory.class, xComponent);
             // get draw pages
@@ -129,6 +139,9 @@ public class PamphletGeneratorFinalTA {
             			xShapeNew.setSize(size);
                     	// write the corresponding image into file system
             			String pathTmpImgFolder = pathTmpFoldPamp + "/tmpImgs/";
+            			
+            			debug("execute", "Path tmp images = " + pathTmpImgFolder);
+            			
             			File fileTmpImgFolder = new File(pathTmpImgFolder);
             			fileTmpImgFolder.mkdirs();
             			String pathTmpImg = pathTmpImgFolder + nameImg + ".jpg";
@@ -142,6 +155,9 @@ public class PamphletGeneratorFinalTA {
             			XPropertySet xSPS = (XPropertySet)UnoRuntime.queryInterface(XPropertySet.class, xShapeNew);
             			try {  
             				 String fileoopath = transformPathForOpenOffice(fileTmpImg);
+            				 
+            				 debug("execute", "Path image loaded into openoffice = " + fileoopath);
+            				 
             				 xSPS.setPropertyValue("GraphicURL", "file:///" + fileoopath);            
             			} catch (Exception e) {                 
             				e.printStackTrace(System.err);
@@ -184,6 +200,9 @@ public class PamphletGeneratorFinalTA {
             // save final document
             String namePamp = pampDao.getPamphletName(pathPamphlet);
             String pathFinalDoc = pathTmpFoldPamp + "/" + namePamp + ".ppt";
+            
+            debug("execute", "Path final document = " + pathFinalDoc);
+            
             File fileFinalDoc = new File(pathFinalDoc);
             String fileoopath = transformPathForOpenOffice(fileFinalDoc);
             if(fileoopath.equals(""))
@@ -195,6 +214,7 @@ public class PamphletGeneratorFinalTA {
             documentProperties[0].Name = "Overwrite";
             documentProperties[0].Value = new Boolean(true);
             try {
+            	 debug("execute", "Path document stored = " + "file:///" + fileoopath);
                 xStorable.storeAsURL("file:///" + fileoopath , documentProperties);
             } catch (IOException e) {
                 System.out.println(e);
@@ -272,6 +292,12 @@ public class PamphletGeneratorFinalTA {
 		}
 		return path;
 	}
+	
+	
+	private static void debug(String method, String message) {
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, PamphletGeneratorFinalTA.class.getName(), method, message);
+	}
+
 	
 	
 }

@@ -38,7 +38,6 @@ import it.eng.spago.workflow.api.IWorkflowEngine;
 import it.eng.spago.workflow.api.IWorkflowProcess;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
@@ -50,14 +49,10 @@ import it.eng.spagobi.pamphlets.bo.WorkflowConfiguration;
 import it.eng.spagobi.pamphlets.constants.PamphletsConstants;
 import it.eng.spagobi.pamphlets.dao.IPamphletsCmsDao;
 import it.eng.spagobi.pamphlets.dao.PamphletsCmsDaoImpl;
-import it.eng.spagobi.security.AnonymousCMSUserProfile;
-import it.eng.spagobi.security.IUserProfileFactory;
-import it.eng.spagobi.services.dao.TreeObjectsDAO;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -155,7 +150,7 @@ public class PamphletsManagementModule extends AbstractModule {
 		
 	}
 	
-	private void pamphletsDetailHandler(SourceBean request, SourceBean response) throws SourceBeanException {
+	private void pamphletsDetailHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
 		String pathPamp = (String)request.getAttribute(PamphletsConstants.PATH_PAMPHLET);
 		IPamphletsCmsDao pampDao = new PamphletsCmsDaoImpl();
 		List roleList = null;
@@ -170,11 +165,21 @@ public class PamphletsManagementModule extends AbstractModule {
 		// get list of the configured document
 		List confDoc = pampDao.getConfiguredDocumentList(pathPamp);
 		WorkflowConfiguration workConf = pampDao.getWorkflowConfiguration(pathPamp);
-		SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH");
-	    String pathSysFunct = pathSysFunctSB.getCharacters();
-	    TreeObjectsDAO objDao = new TreeObjectsDAO();
-        SourceBean objectsSB = objDao.getXmlTreeObjects(pathSysFunct);
-        response.setAttribute(objectsSB);
+//		SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH");
+//	    String pathSysFunct = pathSysFunctSB.getCharacters();
+//	    TreeObjectsDAO objDao = new TreeObjectsDAO();
+//        SourceBean objectsSB = objDao.getXmlTreeObjects(pathSysFunct);
+		List functionalities;
+		try {
+			functionalities = DAOFactory.getLowFunctionalityDAO()
+					.loadAllLowFunctionalities(true);
+		} catch (EMFUserError e) {
+			SpagoBITracer.major(PamphletsConstants.NAME_MODULE, this.getClass()
+					.getName(), "pamphletsDetailHandler", "Error while loading documents tree", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+        //response.setAttribute(objectsSB);
         response.setAttribute(PamphletsConstants.CONFIGURED_DOCUMENT_LIST, confDoc);
 		response.setAttribute(PamphletsConstants.ROLE_LIST, roleList);
 		response.setAttribute(PamphletsConstants.PUBLISHER_NAME, "PamphletDetail");

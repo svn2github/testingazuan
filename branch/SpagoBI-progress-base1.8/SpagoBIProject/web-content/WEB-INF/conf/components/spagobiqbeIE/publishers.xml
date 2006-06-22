@@ -203,7 +203,7 @@
   		
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-        		<PARAMETER name="PAGE" type="RELATIVE" scope="SERVICE_RESPONSE" value="PAGE" />
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
                 <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ACTOR" />
 			</RESOURCES>
    	 	</RENDERING>

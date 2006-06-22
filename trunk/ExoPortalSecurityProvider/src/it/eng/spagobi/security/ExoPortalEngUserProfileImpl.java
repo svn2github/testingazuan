@@ -144,4 +144,8 @@ public class ExoPortalEngUserProfileImpl implements IEngUserProfile {
 	public void setApplication(String arg0) throws EMFInternalError {	
 	}
 
+	public Collection getUserAttributeNames() {
+		return userAttributes.keySet();
+	}
+
 }

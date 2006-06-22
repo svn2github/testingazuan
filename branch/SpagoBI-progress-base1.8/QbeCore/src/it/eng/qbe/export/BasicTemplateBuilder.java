@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -18,15 +19,17 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	String query;
 	String queryLanguage;
 	Vector queryFields;
+	Map params;
 	
 	public static final String SQL_LANGUAGE = "sql";
 	public static final String HQL_LANGUAGE = "hql";
 	
 	
-	public BasicTemplateBuilder(String query, String queryLanguage, Vector queryFields) {
+	public BasicTemplateBuilder(String query, String queryLanguage, Vector queryFields, Map params) {
 		this.query = query;
 		this.queryLanguage = queryLanguage;
 		this.queryFields = queryFields;
+		this.params = params;
 	}
 	
 	public String buildTemplate() {
@@ -70,8 +73,8 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 						  "y=\"" + 0 + "\" " + 
 						  "width=\"" + (int)(DETAIL_WIDTH/queryFields.size()) + "\" " + 
 						  "height=\"" + DETAIL_HEIGHT + "\" " + 
-						  "forecolor=\"" + "#000000" + "\" " + 
-						  "backcolor=\"" + "#E1E1FC" + "\" " + 
+						  "forecolor=\"" + params.get("evenRowsForegroundColor") /*"#000000"*/ + "\" " + 
+						  "backcolor=\"" + params.get("evenRowsBackgroundColor")/*"#E1E1FC"*/ + "\" " + 
 						  "key=\"textField\">\n");
 			buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 == 0)]]></printWhenExpression>");
 			buffer.append("</reportElement>");
@@ -90,8 +93,8 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 						  "y=\"" + 0 + "\" " + 
 						  "width=\"" + (int)(DETAIL_WIDTH/queryFields.size()) + "\" " + 
 						  "height=\"" + DETAIL_HEIGHT + "\" " + 
-						  "forecolor=\"" + "#000000" + "\" " + 
-						  "backcolor=\"" + "#FFFFFF" + "\" " + 
+						  "forecolor=\"" + params.get("oddRowsForegroundColor") /*"#000000"*/ + "\" " + 
+						  "backcolor=\"" + params.get("oddRowsBackgroundColor") /*"#FFFFFF"*/ + "\" " + 
 						  "key=\"textField\">\n");
 			buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 != 0)]]></printWhenExpression>");
 			buffer.append("</reportElement>");
@@ -127,8 +130,8 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 						  "y=\"" + 0 + "\" " + 
 						  "width=\"" + (int)(DETAIL_WIDTH/queryFields.size()) + "\" " + 
 						  "height=\"" + (DETAIL_HEIGHT + 20) + "\" " + 
-						  "forecolor=\"" + "#FFFFFF" + "\" " + 
-						  "backcolor=\"" + "#006666" + "\" " + 
+						  "forecolor=\"" + params.get("columnHeaderForegroundColor") /*FFFFFF"*/ + "\" " + 
+						  "backcolor=\"" + params.get("columnHeaderBackgroundColor") /*"#006666"*/ + "\" " + 
 						  "key=\"staticText\"/>\n");	
 			
 			buffer.append("<box topBorder=\"None\" topBorderColor=\"#000000\" leftBorder=\"None\" leftBorderColor=\"#000000\" rightBorder=\"None\" rightBorderColor=\"#000000\" bottomBorder=\"None\" bottomBorderColor=\"#000000\"/>\n");

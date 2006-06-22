@@ -28,6 +28,8 @@ import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLTemplateBuilder;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Logger;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -37,6 +39,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -44,9 +47,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRRtfExporter;
 
 import org.hibernate.Session;
 
@@ -134,6 +134,21 @@ public class ReportServlet extends HttpServlet{
 	}
 	
 	
+	public Map getParams() {
+		Map map = new HashMap();
+		SourceBean config = (SourceBean)ConfigSingleton.getInstance();
+		List params = config.getAttributeAsList("QBE.TEMPLATE-BUILDER.PARAMETERS.PARAMETER");
+		for(int i = 0; i < params.size(); i++) {
+			SourceBean param = (SourceBean)params.get(i);
+			System.out.println(param);
+			String pname = (String)param.getAttribute("name");
+			String pvalue = (String)param.getAttribute("value");
+			System.out.println(pname + " = " + pvalue);
+			map.put(pname, pvalue);
+		}
+		return map;
+	}
+	
 	private void copyFileToResponse(HttpServletResponse response, boolean inline, File file, String fileName, String fileFormat) throws IOException {
 		response.setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + fileName + "." + extensions.get(fileFormat) + "\";");
 		response.setContentType(fileFormat);
@@ -160,7 +175,7 @@ public class ReportServlet extends HttpServlet{
 		IQueryRewriter queryRevriter = new HqlToSqlQueryRewriter(session);	
 		String sqlQuery = queryRevriter.rewrite(query);
 		try {
-			ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection);
+			ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
 			templateBuilder.buildTemplateToFile(templateFile);
 		} catch (Exception e) {
 			e.printStackTrace();

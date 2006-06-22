@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="HibernateSessionFactoryMySQL">
+        <property name="hibernate.connection.url">jdbc:mysql://giobbe:3306/spagobi</property>
+        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.password">bispago</property>
+        <property name="hibernate.connection.username">spagobi</property>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.show_sql">false</property>
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiFuncRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjFunc.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiFunctions.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiChecks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjState.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

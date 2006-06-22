@@ -1,0 +1,37 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure 1.2//EN" "http://jetty.mortbay.org/configure_1_2.dtd">
+
+<!--
+This is the jetty specific web application configuration file.  When starting
+a Web Application, the WEB-INF/jetty-web.xml file is looked for and if found, treated
+as a org.mortbay.xml.XmlConfiguration file and is applied to the
+org.mortbay.jetty.servlet.WebApplicationContext objet
+-->
+
+<Configure class="org.mortbay.jetty.servlet.WebApplicationContext">
+  <Set name="statsOn" type="boolean">true</Set>
+  <Set name="Realm">
+    <New class="org.mortbay.jaas.JAASUserRealm">
+      <Set name="Name">exo-domain</Set>
+      <Set name="LoginModuleName">exo-domain</Set>
+      <Set name="RoleCheckPolicy">
+        <New class="org.mortbay.jaas.StrictRoleCheckPolicy"/>        
+      </Set>
+      <Set name="CallbackHandler">
+        <New class="org.mortbay.jaas.callback.DefaultCallbackHandler"/>
+      </Set>
+    </New>
+  </Set>
+
+  <Call name="getWebApplicationHandler">
+    <Set name="usingCookies">true</Set>
+  </Call>
+
+  <Call name="getServletHandler">
+    <Call name="getSessionManager">
+      <Call name="setUseRequestedId">
+        <Arg type="boolean">true</Arg>
+      </Call>
+    </Call>
+  </Call>
+</Configure>

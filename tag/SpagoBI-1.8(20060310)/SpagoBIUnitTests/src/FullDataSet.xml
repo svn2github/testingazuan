@@ -1,0 +1,270 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE dataset SYSTEM "src/FullDataSet.dtd">
+<dataset>
+  <sbi_domains value_id="36" value_cd="QUERY" value_nm="Query statement" domain_cd="INPUT_TYPE" domain_nm="Input mode and values" value_ds="Query statement to load list of values to choose in"/>
+  <sbi_domains value_id="37" value_cd="MAN_IN" value_nm="Manual input" domain_cd="INPUT_TYPE" domain_nm="Input mode and values" value_ds="Not predefined values but manual input"/>
+  <sbi_domains value_id="38" value_cd="SCRIPT" value_nm="Script to load values" domain_cd="INPUT_TYPE" domain_nm="Input mode and values" value_ds="Script to load predefined values"/>
+  <sbi_domains value_id="39" value_cd="FIX_LOV" value_nm="Fixed list of values" domain_cd="INPUT_TYPE" domain_nm="Input mode and values" value_ds="Predefined and hard coded list of values to choose in"/>
+  <sbi_domains value_id="40" value_cd="REPORT" value_nm="Report" domain_cd="BIOBJ_TYPE" domain_nm="BI Object types" value_ds="Basic business intelligence objects type"/>
+  <sbi_domains value_id="41" value_cd="OLAP" value_nm="On-line analytical processing" domain_cd="BIOBJ_TYPE" domain_nm="BI Object types" value_ds="Dimensional analysis of significant facts"/>
+  <sbi_domains value_id="42" value_cd="DATA_MINING" value_nm="Data mining model" domain_cd="BIOBJ_TYPE" domain_nm="BI Object types" value_ds="Model to find out hidden information in data"/>
+  <sbi_domains value_id="43" value_cd="DASH" value_nm="DASHBOARD" domain_cd="BIOBJ_TYPE" domain_nm="BI Object types" value_ds="Dashboard to monitor perfomance indicators"/>
+  <sbi_domains value_id="44" value_cd="BOOL" value_nm="Boolean" domain_cd="VALUE_TYPE" domain_nm="Input value types to check" value_ds="Boolean input value type"/>
+  <sbi_domains value_id="45" value_cd="SINGLE" value_nm="Single value" domain_cd="VALUE_TYPE" domain_nm="Input value types to check" value_ds="Only single value allowed"/>
+  <sbi_domains value_id="46" value_cd="MULTI" value_nm="Multivalue" domain_cd="VALUE_TYPE" domain_nm="Input value types to check" value_ds="Many values are allowed"/>
+  <sbi_domains value_id="47" value_cd="DATE" value_nm="Date" domain_cd="PAR_TYPE" domain_nm="Parameter type" value_ds="Parameter expects date values"/>
+  <sbi_domains value_id="48" value_cd="NUM" value_nm="Number" domain_cd="PAR_TYPE" domain_nm="Parameter type" value_ds="Parameter expects numerical values"/>
+  <sbi_domains value_id="49" value_cd="STRING" value_nm="String" domain_cd="PAR_TYPE" domain_nm="Parameter type" value_ds="Parameter expects textual values"/>
+  <sbi_domains value_id="50" value_cd="FUNCT" value_nm="Functional role" domain_cd="ROLE_TYPE" domain_nm="User role type" value_ds="Functional role for end users"/>
+  <sbi_domains value_id="51" value_cd="ADMIN" value_nm="Administrative role" domain_cd="ROLE_TYPE" domain_nm="User role type" value_ds="Administrative role for developer users"/>
+  <sbi_domains value_id="52" value_cd="SUSP" value_nm="Suspended" domain_cd="STATE" domain_nm="Object state" value_ds="Document temporanlly not in use"/>
+  <sbi_domains value_id="53" value_cd="PORTAL" value_nm="External portal roles" domain_cd="ROLE_TYPE" domain_nm="User role type" value_ds="Predefined roles in BI portal"/>
+  <sbi_domains value_id="54" value_cd="LOW_FUNCT" value_nm="Low level functionality" domain_cd="FUNCT_TYPE" domain_nm="Functionality" value_ds="BI Functionality joined to categories tree"/>
+  <sbi_domains value_id="55" value_cd="DEV" value_nm="Development" domain_cd="STATE" domain_nm="Object state" value_ds="Document in development phase"/>
+  <sbi_domains value_id="56" value_cd="TEST" value_nm="Test" domain_cd="STATE" domain_nm="Object state" value_ds="Document in testing phase"/>
+  <sbi_domains value_id="57" value_cd="REL" value_nm="Released" domain_cd="STATE" domain_nm="Object state" value_ds="Document released for end users use"/>
+  <sbi_domains value_id="58" value_cd="DATE" value_nm="Date" domain_cd="CHECK" domain_nm="Check" value_ds="Date"/>
+  <sbi_domains value_id="59" value_cd="REGEXP" value_nm="Regexp" domain_cd="CHECK" domain_nm="Check" value_ds="Regular Expression "/>
+  <sbi_domains value_id="60" value_cd="MAXLENGTH" value_nm="Max Length" domain_cd="CHECK" domain_nm="Check" value_ds="Max Length"/>
+  <sbi_domains value_id="61" value_cd="RANGE" value_nm="Range" domain_cd="CHECK" domain_nm="Check" value_ds="Range"/>
+  <sbi_domains value_id="62" value_cd="DECIMALS" value_nm="Decimal" domain_cd="CHECK" domain_nm="Check" value_ds="Decimal"/>
+  <sbi_domains value_id="63" value_cd="MINLENGTH" value_nm="Min Length" domain_cd="CHECK" domain_nm="Check" value_ds="Min Length"/>
+  <sbi_domains value_id="64" value_cd="INTERNET ADDRESS" value_nm="Internet Address" domain_cd="PRED_CHECK" domain_nm="Pred Check" value_ds="Internet Address"/>
+  <sbi_domains value_id="65" value_cd="NUMERIC" value_nm="Numeric" domain_cd="PRED_CHECK" domain_nm="Pred Check" value_ds="Numeric"/>
+  <sbi_domains value_id="66" value_cd="ALFANUMERIC" value_nm="Alfanumeric" domain_cd="PRED_CHECK" domain_nm="Pred Check" value_ds="Alfanumeric"/>
+  <sbi_domains value_id="67" value_cd="LETTERSTRING" value_nm="Letter String" domain_cd="PRED_CHECK" domain_nm="Pred Check" value_ds="Letter"/>
+  <sbi_domains value_id="68" value_cd="MANDATORY" value_nm="Mandatory" domain_cd="PRED_CHECK" domain_nm="Check" value_ds="Mandatory"/>
+  <sbi_domains value_id="69" value_cd="FISCALCODE" value_nm="Fiscal Code" domain_cd="PRED_CHECK" domain_nm="Pred Check" value_ds="Fiscal Code"/>
+  <sbi_domains value_id="70" value_cd="EMAIL" value_nm="E-Mail" domain_cd="PRED_CHECK" domain_nm="Pred Check" value_ds="E-Mail"/>
+  <sbi_checks check_id="30" descr="Control if parameter is an Internet Address" label="CK-FIX-01" value_type_cd="INTERNET ADDRESS" value_type_id="64" name="Internet Address"/>
+  <sbi_checks check_id="31" descr="Control if  a parameter is Numeric" label="CK-FIX-02" value_type_cd="NUMERIC" value_type_id="65" name="Numeric"/>
+  <sbi_checks check_id="32" descr="Control if  a parameter is Alfanumeric" label="CK-FIX-03" value_type_cd="ALFANUMERIC" value_type_id="66" name="Alfanumeric"/>
+  <sbi_checks check_id="33" descr="Control if a parameter is a letter string" label="CK-FIX-04" value_type_cd="LETTERSTRING" value_type_id="67" name="Letter String"/>
+  <sbi_checks check_id="34" descr="Control if the parameter is present" label="CK-FIX-05" value_type_cd="MANDATORY" value_type_id="68" name="Mandatory"/>
+  <sbi_checks check_id="35" descr="Control if parameter is a Fiscal Code" label="CK-FIX-06" value_type_cd="FISCALCODE" value_type_id="69" name="Fiscal Code"/>
+  <sbi_checks check_id="36" descr="Control if parameter is a E-Mail" label="CK-FIX-07" value_type_cd="EMAIL" value_type_id="70" name="E-Mail"/>
+  <sbi_checks check_id="37" descr="The format of american Date" label="CK-CUS-01" value_type_cd="DATE" value_type_id="58" value_1="yyyy/MM/dd" name="American Date"/>
+  <sbi_checks check_id="38" descr="Define the format of the italy date" label="CK-CUS-02" value_type_cd="DATE" value_type_id="58" value_1="dd/MM/yyyy" name="Italian Date"/>
+  <sbi_checks check_id="39" descr="MaxLenght20" label="CK-CUS-03" value_type_cd="MAXLENGTH" value_type_id="60" value_1="20" name="MaxLenght20"/>
+  <sbi_checks check_id="40" descr="Length 30 characters" label="CK-CUS-04" value_type_cd="MAXLENGTH" value_type_id="60" value_1="30" name="MaxLenght30"/>
+  <sbi_checks check_id="41" descr="Value between 10-20" label="CK-CUS-05" value_type_cd="RANGE" value_type_id="61" value_1="10" value_2="20" name="Range 10-20"/>
+  <sbi_checks check_id="42" descr="2 decimal places" label="CK-CUS-06" value_type_cd="DECIMALS" value_type_id="62" value_1="2" name="2 decimal places"/>
+  <sbi_engines engine_id="7" encrypt="0" name="Jpivot-Mondrian Dev" descr="Jpivot-Mondrian Olap Engine in Development Environment" main_url="http://localhost:8080/SpagoBIJPivotEngine/jpivotOlap.jsp" secn_url="" obj_upl_dir="" obj_use_dir="" driver_nm="it.eng.spagobi.drivers.jpivot.JPivotDriver" label="OLAP-JP-MD-DEV"/>
+  <sbi_engines engine_id="8" encrypt="0" name="Jpivot-Mondrian Rel" descr="Jpivot-Mondrian Olap Engine in Release Environment" main_url="http://web.eng.it:58080/SpagoBIJPivotEngine/jpivotOlap.jsp" secn_url="" obj_upl_dir="" obj_use_dir="" driver_nm="it.eng.spagobi.drivers.jpivot.JPivotDriver" label="OLAP-JP-MD-REL"/>
+  <sbi_engines engine_id="9" encrypt="0" name="Jasper Report Rel" descr="Jasper Report Engine for static reporting in Release Environment" main_url="http://web.eng.it:58080/SpagoBIJasperReportEngine/JasperReportServlet" secn_url="" obj_upl_dir="" obj_use_dir="" driver_nm="it.eng.spagobi.drivers.jasperreport.JasperReportDriver" label="REP-JASP-REL"/>
+  <sbi_engines engine_id="10" encrypt="0" name="Jasper Report Dev" descr="Jasper Report Engine for static reporting in Development Environment" main_url="http://localhost:8080/SpagoBIJasperReportEngine/JasperReportServlet" secn_url="" obj_upl_dir="" obj_use_dir="" driver_nm="it.eng.spagobi.drivers.jasperreport.JasperReportDriver" label="REP-JASP-DEV"/>
+  <sbi_engines engine_id="11" encrypt="0" name="Business Objects DEV" descr="Business Objects Engine for Development Environment" main_url="http://localhost:8080/SpagoBIBOOlapEngine/BOServlet" secn_url="" obj_upl_dir="" obj_use_dir="" driver_nm="it.eng.spagobi.drivers.businessobjects.BODriver" label="OLAP-BO-DEV"/>
+  <sbi_engines engine_id="12" encrypt="0" name="Custom Oracle Engine DEV" descr="Custom engine for Oracle rdbms in Development Environment" main_url="http://localhost:8080/SpagoBICSTOraEngine/CSTOraServlet" secn_url="" obj_upl_dir="" obj_use_dir="" driver_nm="it.eng.spagobi.drivers.cstoracle.CSTOracleDriver" label="OLAP-CST-ORA-DEV"/>
+  <sbi_engines engine_id="13" encrypt="0" name="Birt Report Engine DEV" descr="Eclipse Birt Report Engine in Development Context" main_url="http://localhost:8080/SpagoBIBirtReportEngine/BirtReportServlet" secn_url="" obj_upl_dir="" obj_use_dir="" driver_nm="it.eng.spagobi.drivers.birtreport.BirtReportDriver" label="REP-BIRT-DEV"/>
+  <sbi_ext_roles ext_role_id="1" name="/admin" descr="The admin group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="2" name="/guest" descr="The guest group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="3" name="/portal" descr="The portal group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="4" name="/portal/admin" descr="The portal admin group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="5" name="/portal/share" descr="The portal share group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="6" name="/portal/site" descr="The portal site group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="7" name="/user" descr="The user group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="14" name="/SpagoBiDev" descr="The spagobi developers group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="15" name="/SpagoBiTest" descr="The spagobi testers group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_ext_roles ext_role_id="16" name="/SpagoBiUser" descr="The spagobi users group" role_type_cd="PORTAL" role_type_id="53"/>
+  <sbi_functions funct_id="1" funct_type_cd="LOW_FUNCT" name="Nuova Funz" descr="Nuova Funz" path="/Functionalities/SystemFunctionalities/Nuova Funz" code="Nuova Funz" funct_type_id="54"/>
+  <sbi_functions funct_id="5" funct_type_cd="LOW_FUNCT" name="Business Departments" descr="Functional Classification" path="/Functionalities/SystemFunctionalities/Business Departments" code="FUNC" funct_type_id="54"/>
+  <sbi_functions funct_id="6" funct_type_cd="LOW_FUNCT" name="Analytical Areas" descr="Structural Classification" path="/Functionalities/SystemFunctionalities/Analytical Areas" code="TYPE" funct_type_id="54"/>
+  <sbi_functions funct_id="7" funct_type_cd="LOW_FUNCT" name="Static Reporting" descr="Static Reporting" path="/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting" code="REPORT" funct_type_id="54"/>
+  <sbi_functions funct_id="8" funct_type_cd="LOW_FUNCT" name="Dimensional Analysis" descr="Dimensional Analysis" path="/Functionalities/SystemFunctionalities/Analytical Areas/Dimensional Analysis" code="OLAP" funct_type_id="54"/>
+  <sbi_functions funct_id="9" funct_type_cd="LOW_FUNCT" name="Data Mining Models" descr="Data Mining Models" path="/Functionalities/SystemFunctionalities/Analytical Areas/Data Mining Models" code="DATA_MINING" funct_type_id="54"/>
+  <sbi_functions funct_id="10" funct_type_cd="LOW_FUNCT" name="Dashboards" descr="Dashboards" path="/Functionalities/SystemFunctionalities/Analytical Areas/Dashboards" code="DASH" funct_type_id="54"/>
+  <sbi_func_role role_id="1" funct_id="1" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="2" funct_id="1" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="3" funct_id="1" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="4" funct_id="1" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="5" funct_id="1" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="6" funct_id="1" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="7" funct_id="1" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="1" funct_id="1" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="2" funct_id="1" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="3" funct_id="1" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="4" funct_id="1" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="5" funct_id="1" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="6" funct_id="1" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="7" funct_id="1" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="1" funct_id="1" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="2" funct_id="1" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="3" funct_id="1" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="4" funct_id="1" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="5" funct_id="1" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="6" funct_id="1" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="7" funct_id="1" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="1" funct_id="5" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="14" funct_id="5" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="1" funct_id="5" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="15" funct_id="5" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="1" funct_id="5" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="16" funct_id="5" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="1" funct_id="6" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="14" funct_id="6" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="1" funct_id="6" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="15" funct_id="6" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="1" funct_id="6" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="16" funct_id="6" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="1" funct_id="7" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="14" funct_id="7" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="1" funct_id="7" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="15" funct_id="7" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="1" funct_id="7" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="16" funct_id="7" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="1" funct_id="8" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="14" funct_id="8" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="1" funct_id="8" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="15" funct_id="8" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="1" funct_id="8" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="16" funct_id="8" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="1" funct_id="9" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="14" funct_id="9" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="1" funct_id="9" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="15" funct_id="9" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="1" funct_id="9" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="16" funct_id="9" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="1" funct_id="10" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="14" funct_id="10" state_cd="DEV" state_id="55"/>
+  <sbi_func_role role_id="1" funct_id="10" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="15" funct_id="10" state_cd="TEST" state_id="56"/>
+  <sbi_func_role role_id="1" funct_id="10" state_cd="REL" state_id="57"/>
+  <sbi_func_role role_id="16" funct_id="10" state_cd="REL" state_id="57"/>
+  <sbi_lov lov_id="18" descr="Country List of Values Managed by Query" label="COUNTRY_QY_01" input_type_cd="QUERY" lov_provider="&lt;QUERY&gt;&lt;CONNECTION&gt;dwh&lt;/CONNECTION&gt;&lt;STMT&gt;select distinct country from customer&lt;/STMT&gt;&lt;VALUE-COLUMN&gt;country&lt;/VALUE-COLUMN&gt;&lt;VISIBLE-COLUMNS&gt;country&lt;/VISIBLE-COLUMNS&gt;&lt;/QUERY&gt;" input_type_id="36" name="Country by Query"/>
+  <sbi_lov lov_id="19" descr="City List of Values Managed by Query" label="CITY_QY_01" input_type_cd="QUERY" lov_provider="&lt;QUERY&gt;&lt;CONNECTION&gt;dwh&lt;/CONNECTION&gt;&lt;STMT&gt;      			 select distinct city, state_province, country from customer
+      		&lt;/STMT&gt;&lt;VALUE-COLUMN&gt;city&lt;/VALUE-COLUMN&gt;&lt;VISIBLE-COLUMNS&gt;city, state_province, country&lt;/VISIBLE-COLUMNS&gt;&lt;/QUERY&gt;" input_type_id="36" name="City by Query"/>
+  <sbi_lov lov_id="20" descr="Gender values by predefined list" label="GENDER_FX_01" input_type_cd="FIX_LOV" lov_provider="&lt;LOV&gt;&lt;LOV-ELEMENT DESC = &quot;Male&quot; VALUE = &quot;M&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;Female&quot; VALUE = &quot;F&quot;/&gt;&lt;/LOV&gt;" input_type_id="39" name="Gender by Fixed Value"/>
+  <sbi_lov lov_id="21" descr="Employment Position Title Managed by Query" label="EMPPOS_QY_01" input_type_cd="QUERY" lov_provider="&lt;QUERY&gt;&lt;CONNECTION&gt;dwh&lt;/CONNECTION&gt;&lt;STMT&gt;select distinct position_title from employee&lt;/STMT&gt;&lt;VALUE-COLUMN&gt;position_title&lt;/VALUE-COLUMN&gt;&lt;VISIBLE-COLUMNS&gt;position_title&lt;/VISIBLE-COLUMNS&gt;&lt;/QUERY&gt;" input_type_id="36" name="Employment Position by Query"/>
+  <sbi_lov lov_id="22" descr="Department Descritption Managed by Query" label="DEPA_QY_01" input_type_cd="QUERY" lov_provider="&lt;QUERY&gt;&lt;CONNECTION&gt;dwh&lt;/CONNECTION&gt;&lt;STMT&gt;select department_description from department&lt;/STMT&gt;&lt;VALUE-COLUMN&gt;department_description&lt;/VALUE-COLUMN&gt;&lt;VISIBLE-COLUMNS&gt;department_description&lt;/VISIBLE-COLUMNS&gt;&lt;/QUERY&gt;" input_type_id="36" name="Department by Query"/>
+  <sbi_lov lov_id="23" descr="Product Code managed by Predefined List of value" label="PROD_FX_01" input_type_cd="FIX_LOV" lov_provider="&lt;LOV&gt;&lt;LOV-ELEMENT DESC = &quot;Non Consumable&quot; VALUE = &quot;[Product].[All Products].[Non-Consumable]&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;Food&quot; VALUE = &quot;[Product].[All Products].[Food]&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;Drink&quot; VALUE = &quot;[Product].[All Products].[Drink]&quot;/&gt;&lt;/LOV&gt;" input_type_id="39" name="Product by Fixed Lov"/>
+  <sbi_lov lov_id="24" descr="Document output type managed by fixed list of values" label="OUTTYP_FX_01" input_type_cd="FIX_LOV" lov_provider="&lt;LOV&gt;&lt;LOV-ELEMENT DESC = &quot;HTML&quot; VALUE = &quot;HTML&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;PDF&quot; VALUE = &quot;PDF&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;XLS&quot; VALUE = &quot;XLS&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;CSV&quot; VALUE = &quot;CSV&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;TXT&quot; VALUE = &quot;TXT&quot;/&gt;&lt;LOV-ELEMENT DESC = &quot;XML&quot; VALUE = &quot;XML&quot;/&gt;&lt;/LOV&gt;" input_type_id="39" name="Output Type"/>
+  <sbi_lov lov_id="25" descr="Document output in PDF format" label="OUT_FX_PDF" input_type_cd="FIX_LOV" lov_provider="&lt;LOV&gt;&lt;LOV-ELEMENT DESC = &quot;PDF&quot; VALUE = &quot;PDF&quot;/&gt;&lt;/LOV&gt;" input_type_id="39" name="Output PDF"/>
+  <sbi_lov lov_id="26" descr="Document output in HTML format" label="OUT_FX_HTML" input_type_cd="FIX_LOV" lov_provider="&lt;LOV&gt;&lt;LOV-ELEMENT DESC = &quot;HTML&quot; VALUE = &quot;HTML&quot;/&gt;&lt;/LOV&gt;" input_type_id="39" name="Output HTML"/>
+  <sbi_lov lov_id="27" descr="Predefined value Food" label="PROD_FIX_02" input_type_cd="FIX_LOV" lov_provider="&lt;LOV&gt;&lt;LOV-ELEMENT DESC = &quot;Food&quot; VALUE = &quot;[Product].[All Products].[Food]&quot;/&gt;&lt;/LOV&gt;" input_type_id="39" name="Product Code"/>
+  <sbi_lov lov_id="28" descr="City in Canada by query statement" label="CITY_QY_02" input_type_cd="QUERY" lov_provider="&lt;QUERY&gt;&lt;CONNECTION&gt;dwh&lt;/CONNECTION&gt;&lt;STMT&gt;      			 select distinct city, state_province from customer where country =&apos;Canada&apos;
+      		&lt;/STMT&gt;&lt;VALUE-COLUMN&gt;city&lt;/VALUE-COLUMN&gt;&lt;VISIBLE-COLUMNS&gt;city, state_province&lt;/VISIBLE-COLUMNS&gt;&lt;/QUERY&gt;" input_type_id="36" name="City in Canada"/>
+  <sbi_lov lov_id="29" descr="Country by fixed value" label="COUNTRY_FX_01" input_type_cd="FIX_LOV" lov_provider="&lt;LOV&gt;&lt;LOV-ELEMENT DESC = &quot;Canada&quot; VALUE = &quot;Canada&quot;/&gt;&lt;/LOV&gt;" input_type_id="39" name="Country Canada"/>
+  <sbi_obj_func/>
+  <sbi_objects biobj_id="12" engine_id="8" descr="Product Cost and Sales Olap Analysis" label="OLAP-PROD-COS-01" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Dimensional Analysis/OLAP_OLAP-PROD-COS-01" rel_name="" state_id="55" state_cd="DEV" biobj_type_cd="OLAP" biobj_type_id="41" name="Product Cost 01"/>
+  <sbi_objects biobj_id="13" engine_id="9" descr="Report about Customer Profiles" label="RPT-CUST-01" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting/REPORT_RPT_CUST_01" rel_name="" state_id="55" state_cd="DEV" biobj_type_cd="REPORT" biobj_type_id="40" name="Customer Profile 01"/>
+  <sbi_objects biobj_id="14" engine_id="9" descr="Report about Employee Positions" label="RPT-EMPL-01" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting/REPORT_RPT-EMPL-01" rel_name="" state_id="55" state_cd="DEV" biobj_type_cd="REPORT" biobj_type_id="40" name="Employee 01"/>
+  <sbi_objects biobj_id="18" engine_id="9" descr="Customer profile report" label="RPT-CST-PRF-02" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting/REPORT_RPT-CST-PRF-02" rel_name="" state_id="57" state_cd="REL" biobj_type_cd="REPORT" biobj_type_id="40" name="Customer profile 02"/>
+  <sbi_objects biobj_id="19" engine_id="9" descr="Reporting about Employee position " label="RPT-EMP-02" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting/REPORT_RPT-EMP-02" rel_name="" state_id="57" state_cd="REL" biobj_type_cd="REPORT" biobj_type_id="40" name="Employee pos 02"/>
+  <sbi_objects biobj_id="20" engine_id="9" descr="Report for Customer profiling" label="REP-CST-PRF-03" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting/REPORT_CST-PRF-03" rel_name="" state_id="56" state_cd="TEST" biobj_type_cd="REPORT" biobj_type_id="40" name="Customer Profile 03"/>
+  <sbi_objects biobj_id="21" engine_id="9" descr="Reporting about employee position" label="RPT-EMP-03" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Static Reporting/REPORT_RPT-EMP-03" rel_name="" state_id="56" state_cd="TEST" biobj_type_cd="REPORT" biobj_type_id="40" name="Employee Position 03"/>
+  <sbi_objects biobj_id="22" engine_id="8" descr="Online analysis about product sales" label="OLAP-PROD-02" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Dimensional Analysis/OLAP_OLAP-PROD-02" rel_name="" state_id="56" state_cd="TEST" biobj_type_cd="OLAP" biobj_type_id="41" name="Product Analysis 02"/>
+  <sbi_objects biobj_id="23" engine_id="8" descr="Online analysis about product sales" label="OLAP-PROD-03" encrypt="0" path="/Functionalities/SystemFunctionalities/Analytical Areas/Dimensional Analysis/OLAP_OLAP-PROD-03" rel_name="" state_id="57" state_cd="REL" biobj_type_cd="OLAP" biobj_type_id="41" name="Product analysis 03"/>
+  <sbi_parameters par_id="8" descr="Parameter for Country Code selection" length="0" label="COUNTRY_CD" par_type_cd="STRING" mask="" par_type_id="49" name="Country Code"/>
+  <sbi_parameters par_id="9" descr="Parameter for City Code Selection" length="0" label="CITY_CD" par_type_cd="STRING" mask="" par_type_id="49" name="City Code"/>
+  <sbi_parameters par_id="10" descr="Parameter for Geder Code selection" length="0" label="GENDER_CD" par_type_cd="STRING" mask="" par_type_id="49" name="Gender Code"/>
+  <sbi_parameters par_id="11" descr="Parameter for Department Description Selection" length="0" label="DEPAR_DESC" par_type_cd="STRING" mask="" par_type_id="49" name="Department Description"/>
+  <sbi_parameters par_id="12" descr="Parameter for Employment Position selection" length="0" label="EMPPOS_CD" par_type_cd="STRING" mask="" par_type_id="49" name="Employment Position Code"/>
+  <sbi_parameters par_id="13" descr="Parameter for Product Code selection" length="0" label="PROD_CD" par_type_cd="STRING" mask="" par_type_id="49" name="Product Code"/>
+  <sbi_parameters par_id="14" descr="Parameter fo Output Type selection" length="0" label="OUT_TP" par_type_cd="STRING" mask="" par_type_id="49" name="Output Type"/>
+  <sbi_obj_par par_id="13" biobj_id="12" label="Choose product" req_fl="0" mod_fl="0" view_fl="0" mult_fl="0" prog="1" parurl_nm="prdCd"/>
+  <sbi_obj_par par_id="8" biobj_id="13" label="Choose Country" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_country"/>
+  <sbi_obj_par par_id="10" biobj_id="13" label="Choose Gender" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_gender"/>
+  <sbi_obj_par par_id="14" biobj_id="13" label="Choose output format" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_output_format"/>
+  <sbi_obj_par par_id="11" biobj_id="14" label="Choose department " req_fl="0" mod_fl="0" view_fl="0" mult_fl="0" prog="1" parurl_nm="param_dep_des"/>
+  <sbi_obj_par par_id="12" biobj_id="14" label="Choose Employee Pos" req_fl="0" mod_fl="0" view_fl="0" mult_fl="0" prog="1" parurl_nm="param_position_title"/>
+  <sbi_obj_par par_id="14" biobj_id="14" label="Choose output format" req_fl="0" mod_fl="0" view_fl="0" mult_fl="0" prog="1" parurl_nm="param_output_format"/>
+  <sbi_obj_par par_id="8" biobj_id="18" label="Choose country" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_country"/>
+  <sbi_obj_par par_id="10" biobj_id="18" label="Choose Gender" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_gender"/>
+  <sbi_obj_par par_id="14" biobj_id="18" label="Choose output format" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_output_format"/>
+  <sbi_obj_par par_id="11" biobj_id="19" label="Choose department" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_dep_des"/>
+  <sbi_obj_par par_id="12" biobj_id="19" label="Choose position" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_position_title"/>
+  <sbi_obj_par par_id="14" biobj_id="19" label="Choose output format" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_output_format"/>
+  <sbi_obj_par par_id="8" biobj_id="20" label="Choose Country" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_country"/>
+  <sbi_obj_par par_id="10" biobj_id="20" label="Choose Gender" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_gender"/>
+  <sbi_obj_par par_id="14" biobj_id="20" label="Choose output format" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_output_format"/>
+  <sbi_obj_par par_id="11" biobj_id="21" label="Choose department" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_dep_des"/>
+  <sbi_obj_par par_id="12" biobj_id="21" label="Choose position" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_position_title"/>
+  <sbi_obj_par par_id="14" biobj_id="21" label="Output format" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="param_output_format"/>
+  <sbi_obj_par par_id="13" biobj_id="22" label="Product family" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="prdCd"/>
+  <sbi_obj_par par_id="13" biobj_id="23" label="Product family" req_fl="0" mod_fl="0" view_fl="1" mult_fl="0" prog="1" parurl_nm="prdCd"/>
+  <sbi_obj_state/>
+  <sbi_paruse use_id="13" lov_id="24" label="OUT_FREE" descr="Output Format to choose" par_id="14" name="Output Format "/>
+  <sbi_paruse use_id="14" lov_id="25" label="OUT_PDF" descr="Document output only in PDF format" par_id="14" name="Output PDF"/>
+  <sbi_paruse use_id="15" lov_id="26" label="OUT_HTML" descr="Document output only in HTML format" par_id="14" name="Output HTML"/>
+  <sbi_paruse use_id="16" lov_id="23" label="PROD_LIST" descr="Product from predefined list of values" par_id="13" name="Product from list"/>
+  <sbi_paruse use_id="17" lov_id="27" label="PROD_FOOD" descr="Predefined and fixed product selection - Food" par_id="13" name="Product Food"/>
+  <sbi_paruse use_id="18" lov_id="18" label="STATE_FREE" descr="State to choose from predefined list of values" par_id="8" name="State from list"/>
+  <sbi_paruse use_id="19" lov_id="29" label="STATE_CANADA" descr="Fixed selection for Canada coutry" par_id="8" name="State of Canada"/>
+  <sbi_paruse use_id="20" lov_id="20" label="GENDER" descr="Gender selection" par_id="10" name="Gender"/>
+  <sbi_paruse use_id="21" lov_id="19" label="CITY_FREE" descr="City to choose from predefined list of values" par_id="9" name="City from list"/>
+  <sbi_paruse use_id="22" lov_id="28" label="CITY_CANADA" descr="Free selection from predefined list of Canada cities" par_id="9" name="City in Canada"/>
+  <sbi_paruse use_id="23" lov_id="22" label="DEPA_FREE" descr="Free choose from predefined list of values" par_id="11" name="Department from list"/>
+  <sbi_paruse use_id="24" lov_id="21" label="EMPPO_FREE" descr="Free choose of employee position from a predefined list of values" par_id="12" name="Employee postion from list"/>
+  <sbi_paruse_ck check_id="32" use_id="13"/>
+  <sbi_paruse_ck check_id="39" use_id="13"/>
+  <sbi_paruse_det ext_role_id="1" use_id="13"/>
+  <sbi_paruse_det ext_role_id="14" use_id="13"/>
+  <sbi_paruse_det ext_role_id="15" use_id="13"/>
+  <sbi_paruse_det ext_role_id="16" use_id="13"/>
+  <sbi_paruse_det ext_role_id="2" use_id="14"/>
+  <sbi_paruse_det ext_role_id="4" use_id="14"/>
+  <sbi_paruse_det ext_role_id="6" use_id="14"/>
+  <sbi_paruse_det ext_role_id="3" use_id="15"/>
+  <sbi_paruse_det ext_role_id="5" use_id="15"/>
+  <sbi_paruse_det ext_role_id="7" use_id="15"/>
+  <sbi_paruse_det ext_role_id="1" use_id="16"/>
+  <sbi_paruse_det ext_role_id="4" use_id="16"/>
+  <sbi_paruse_det ext_role_id="14" use_id="16"/>
+  <sbi_paruse_det ext_role_id="15" use_id="16"/>
+  <sbi_paruse_det ext_role_id="16" use_id="16"/>
+  <sbi_paruse_det ext_role_id="2" use_id="17"/>
+  <sbi_paruse_det ext_role_id="3" use_id="17"/>
+  <sbi_paruse_det ext_role_id="5" use_id="17"/>
+  <sbi_paruse_det ext_role_id="6" use_id="17"/>
+  <sbi_paruse_det ext_role_id="7" use_id="17"/>
+  <sbi_paruse_det ext_role_id="7" use_id="18"/>
+  <sbi_paruse_det ext_role_id="14" use_id="18"/>
+  <sbi_paruse_det ext_role_id="15" use_id="18"/>
+  <sbi_paruse_det ext_role_id="16" use_id="18"/>
+  <sbi_paruse_det ext_role_id="1" use_id="19"/>
+  <sbi_paruse_det ext_role_id="2" use_id="19"/>
+  <sbi_paruse_det ext_role_id="3" use_id="19"/>
+  <sbi_paruse_det ext_role_id="4" use_id="19"/>
+  <sbi_paruse_det ext_role_id="5" use_id="19"/>
+  <sbi_paruse_det ext_role_id="6" use_id="19"/>
+  <sbi_paruse_det ext_role_id="1" use_id="20"/>
+  <sbi_paruse_det ext_role_id="2" use_id="20"/>
+  <sbi_paruse_det ext_role_id="3" use_id="20"/>
+  <sbi_paruse_det ext_role_id="4" use_id="20"/>
+  <sbi_paruse_det ext_role_id="5" use_id="20"/>
+  <sbi_paruse_det ext_role_id="6" use_id="20"/>
+  <sbi_paruse_det ext_role_id="7" use_id="20"/>
+  <sbi_paruse_det ext_role_id="14" use_id="20"/>
+  <sbi_paruse_det ext_role_id="15" use_id="20"/>
+  <sbi_paruse_det ext_role_id="16" use_id="20"/>
+  <sbi_paruse_det ext_role_id="7" use_id="21"/>
+  <sbi_paruse_det ext_role_id="14" use_id="21"/>
+  <sbi_paruse_det ext_role_id="16" use_id="21"/>
+  <sbi_paruse_det ext_role_id="1" use_id="22"/>
+  <sbi_paruse_det ext_role_id="2" use_id="22"/>
+  <sbi_paruse_det ext_role_id="3" use_id="22"/>
+  <sbi_paruse_det ext_role_id="4" use_id="22"/>
+  <sbi_paruse_det ext_role_id="5" use_id="22"/>
+  <sbi_paruse_det ext_role_id="6" use_id="22"/>
+  <sbi_paruse_det ext_role_id="15" use_id="22"/>
+  <sbi_paruse_det ext_role_id="1" use_id="23"/>
+  <sbi_paruse_det ext_role_id="2" use_id="23"/>
+  <sbi_paruse_det ext_role_id="3" use_id="23"/>
+  <sbi_paruse_det ext_role_id="4" use_id="23"/>
+  <sbi_paruse_det ext_role_id="5" use_id="23"/>
+  <sbi_paruse_det ext_role_id="6" use_id="23"/>
+  <sbi_paruse_det ext_role_id="7" use_id="23"/>
+  <sbi_paruse_det ext_role_id="14" use_id="23"/>
+  <sbi_paruse_det ext_role_id="15" use_id="23"/>
+  <sbi_paruse_det ext_role_id="16" use_id="23"/>
+  <sbi_paruse_det ext_role_id="1" use_id="24"/>
+  <sbi_paruse_det ext_role_id="2" use_id="24"/>
+  <sbi_paruse_det ext_role_id="3" use_id="24"/>
+  <sbi_paruse_det ext_role_id="4" use_id="24"/>
+  <sbi_paruse_det ext_role_id="5" use_id="24"/>
+  <sbi_paruse_det ext_role_id="6" use_id="24"/>
+  <sbi_paruse_det ext_role_id="7" use_id="24"/>
+  <sbi_paruse_det ext_role_id="14" use_id="24"/>
+  <sbi_paruse_det ext_role_id="15" use_id="24"/>
+  <sbi_paruse_det ext_role_id="16" use_id="24"/>
+</dataset>

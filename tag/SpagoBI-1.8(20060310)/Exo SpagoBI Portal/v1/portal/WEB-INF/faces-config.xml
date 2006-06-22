@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_0.dtd">
+<faces-config>
+
+  <application>
+    <locale-config>
+      <default-locale>en</default-locale>
+    </locale-config>
+  </application>
+
+  <component>
+    <component-type>UIPortal</component-type>
+    <component-class>org.exoplatform.portal.faces.component.UIPortal</component-class>
+  </component>
+
+  <component>
+    <component-type>UISinglePage</component-type>
+    <component-class>org.exoplatform.portal.faces.component.UISinglePage</component-class>
+  </component>
+
+  <component>
+    <component-type>UIMobilePage</component-type>
+    <component-class>org.exoplatform.portal.faces.component.UIMobilePage</component-class>
+  </component>
+
+  <render-kit>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortal</component-family>
+      <renderer-type>PortalRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.portal.PortalRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPage</component-family>
+      <renderer-type>PageRowRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.page.PageRowRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPage</component-family>
+      <renderer-type>PageColumnRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.page.PageColumnRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UISinglePage</component-family>
+      <renderer-type>SinglePageRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.page.SinglePageRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIMobilePage</component-family>
+      <renderer-type>MobilePageRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.page.MobilePageRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPagePreview</component-family>
+      <renderer-type>PagePreviewRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.page.PagePreviewRenderer</renderer-class>
+    </renderer>      
+    
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIContainer</component-family>
+      <renderer-type>ContainerColumnRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.container.ContainerColumnRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIContainer</component-family>
+      <renderer-type>ContainerRowRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.container.ContainerRowRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIContainer</component-family>
+      <renderer-type>TabRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.container.TabRenderer</renderer-class>
+    </renderer>
+    
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortlet</component-family>
+      <renderer-type>PortletRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.portlet.PortletRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortlet</component-family>
+      <renderer-type>InfoPortletRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.portlet.InfoPortletRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortlet</component-family>
+      <renderer-type>BoxPortletRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.portlet.BoxPortletRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortletCategories</component-family>
+      <renderer-type>PortletCategoriesRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.portlet.PortletCategoriesRenderer</renderer-class>
+    </renderer>      
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortletCategory</component-family>
+      <renderer-type>PortletCategoryRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.portlet.PortletCategoryRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortletInfo</component-family>
+      <renderer-type>PortletInfoRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.html.portlet.PortletInfoRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UITextArea</component-family>
+      <renderer-type>TextAreaRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.html.TextAreaRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UIStringInput</component-family>
+      <renderer-type>StringInputRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.html.StringInputRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UISimpleForm</component-family>
+      <renderer-type>SimpleFormRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.html.SimpleFormRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UIToolbar</component-family>
+      <renderer-type>ToolbarRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.html.ToolbarRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UIExoComponent</component-family>
+      <renderer-type>ChildrenRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.html.ChildrenRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UIGrid</component-family>
+      <renderer-type>GridRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.html.GridRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UIPageListIterator</component-family>
+      <renderer-type>PageListIteratorRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.html.PageListIteratorRenderer</renderer-class>
+    </renderer>
+  </render-kit>
+
+  <render-kit>
+    <render-kit-id>xhtmlmp</render-kit-id>
+    <render-kit-class>com.sun.faces.renderkit.RenderKitImpl</render-kit-class>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortal</component-family>
+      <renderer-type>PortalRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.portal.PortalRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPage</component-family>
+      <renderer-type>PageRowRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.page.PageRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPage</component-family>
+      <renderer-type>PageColumnRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.page.PageRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIContainer</component-family>
+      <renderer-type>ContainerRowRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.container.ContainerRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIContainer</component-family>
+      <renderer-type>ContainerColumnRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.container.ContainerRenderer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortlet</component-family>
+      <renderer-type>PortletRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.portlet.PortletRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortlet</component-family>
+      <renderer-type>InfoPortletRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.portlet.PortletRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.portal.faces.component.UIPortlet</component-family>
+      <renderer-type>BoxPortletRenderer</renderer-type>
+      <renderer-class>org.exoplatform.portal.faces.renderer.xhtmlmp.portlet.PortletRenderer</renderer-class>
+    </renderer>
+    <renderer>
+      <component-family>org.exoplatform.faces.core.component.UISimpleForm</component-family>
+      <renderer-type>TextAreaRenderer</renderer-type>
+      <renderer-class>org.exoplatform.faces.core.renderer.xhtmlmp.SimpleFormRenderer</renderer-class>
+    </renderer>
+  </render-kit>
+</faces-config>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portal-config decorator="community">
+  <owner>exo</owner>
+  <locale>en</locale>
+  <viewPermission group="/guest" membership="*"/>
+
+  <portalLayout>  
+    <container renderer="ContainerColumnRenderer">
+      <portlet>
+        <windowId>exo:/content/DisplayStaticContent/bannersbi</windowId>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>default</name>
+            <value>id=war:/spagobi-static-content/banner.html</value>
+          </preference>
+        </portlet-preferences>
+      </portlet>
+      <portlet>
+        <windowId>exo:/content/DisplayStaticContent/footer</windowId>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>default</name>
+            <value>id=war:/spagobi-static-content/footer.html</value>
+          </preference>
+        </portlet-preferences>
+      </portlet> 
+    </container>
+    <container renderer="ContainerColumnRenderer" decorator="community-toolbar">
+      <portlet>
+        <windowId>exo:/web/NavigationPortlet/community-toolbar</windowId>
+        <portlet-style>community-toolbar</portlet-style>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>template</name>
+            <value>community/navigation/horizontal/popup.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>      
+        </portlet-preferences>            
+      </portlet>
+      <portlet width="325px">
+        <title>Login</title>
+        <windowId>exo:/user/WelcomePortlet/welcome-user</windowId>
+        <portlet-style>community-login</portlet-style>
+        <showInfoBar>false</showInfoBar>
+      </portlet>
+    </container>
+
+    <portlet>
+      <windowId>exo:/web/PortalModePortlet/portal-edit-mode</windowId>
+      <portlet-style>portal-mode</portlet-style>
+      <showInfoBar>false</showInfoBar>
+    </portlet>
+
+    <container renderer="ContainerColumnRenderer" decorator="community-toolbar">
+    <portlet width="100%">
+      <windowId>exo:/web/PortalInfoPortlet/breadcumbs</windowId>
+      <showInfoBar>false</showInfoBar>
+      <portlet-preferences>
+        <preference>
+          <name>template</name>
+          <value>community/breadcumbs.vm</value>
+          <read-only>false</read-only>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+    </container>
+
+    <container renderer="ContainerColumnRenderer" height="100%">
+      <container width="1%">
+      </container>
+      <container width="72%">
+          <body>
+            <componentType>page-node</componentType>
+            <componentId>/</componentId>
+          </body>
+      </container>
+      <container width="1%">
+      </container>
+      <container width="25%" renderer="ContainerRowRenderer" >
+        <portlet decorator="community" renderer="default">
+          <windowId>exo:/content/DisplayStaticContent/loghelp</windowId>
+         <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>default</name>
+              <value>id=war:/spagobi-static-content/loghelp.html</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <container height="5px">
+        </container>
+        <portlet decorator="community" renderer="default">
+          <windowId>exo:/content/DisplayStaticContent/spagobi_download</windowId>
+         <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>default</name>
+              <value>id=war:/spagobi-static-content/spagobi_download</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <container height="5px">
+        </container>
+        <portlet>
+          <windowId>spagobi:/web/LanguageSelector/languageSelector</windowId>
+          <portlet-style>spagobistyleLS</portlet-style>
+          <showInfoBar>false</showInfoBar>
+        </portlet>
+      </container>
+      <container width="1%">
+      </container>
+    </container>
+  </portalLayout>
+</portal-config>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  <display-name>portal</display-name>
+  <context-param>
+    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+    <param-value>server</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>com.sun.faces.validateXml</param-name>
+    <param-value>true</param-value>
+    <description>
+      Set this flag to true if you want the JavaServer Faces
+      Reference Implementation to validate the XML in your
+      faces-config.xml resources against the DTD.  Default
+      value is false.
+    </description>
+  </context-param>
+
+  <filter>
+    <filter-name>PublicRequestFilter</filter-name>
+    <filter-class>org.exoplatform.portal.filter.PublicRequestFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>PrivateRequestFilter</filter-name>
+    <filter-class>org.exoplatform.portal.filter.PrivateRequestFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>AdminRequestFilter</filter-name>
+    <filter-class>org.exoplatform.portal.filter.AdminRequestFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>PublicRequestFilter</filter-name>
+    <url-pattern>/faces/public/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>PrivateRequestFilter</filter-name>
+    <url-pattern>/faces/private/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>AdminRequestFilter</filter-name>
+    <url-pattern>/faces/admin/*</url-pattern>
+  </filter-mapping>
+  <!-- ================================================================== -->
+  <!--           LISTENER                                                 -->
+  <!-- ================================================================== -->
+  <listener>
+    <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.exoplatform.portal.launcher.PortalContextListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.exoplatform.portal.launcher.PortalSessionListener</listener-class>
+  </listener>
+  <!-- ================================================================== -->
+  <!--           SERVLET                                                  -->
+  <!-- ================================================================== -->
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!-- ================================================================== -->
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/faces/private/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/faces/public/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/faces/admin/*</url-pattern>
+  </servlet-mapping>
+
+  <session-config>
+    <session-timeout>15</session-timeout>
+  </session-config>
+  <!-- ================================================================== -->
+  <!--           MINME MAPPING                                            -->
+  <!-- ================================================================== -->  
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  <!-- ================================================================== -->
+  <!--           TAGLIB                                                   -->
+  <!-- ================================================================== -->
+  <taglib>
+    <taglib-uri>exo</taglib-uri>
+    <taglib-location>/WEB-INF/tlds/exo.tld</taglib-location>
+  </taglib>
+  <taglib>
+    <taglib-uri>http://java.sun.com/jsf/core</taglib-uri>
+    <taglib-location>/WEB-INF/tlds/jsf_core.tld</taglib-location>
+  </taglib>
+
+  @resource.ref@
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>user authentication</web-resource-name>
+      <url-pattern>/faces/private/*</url-pattern>
+      
+      <http-method>POST</http-method>
+      <http-method>GET</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>NONE</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <realm-name>exo-domain</realm-name>
+    <form-login-config>
+      <form-login-page>/login.jsp</form-login-page>
+      <form-error-page>/login-error.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+  <security-role>
+    <description>a simple user role</description>
+    <role-name>user</role-name>
+  </security-role>
+  
+  <security-role>
+    <description>the admin role</description>
+    <role-name>admin</role-name>
+  </security-role>  
+
+</web-app>

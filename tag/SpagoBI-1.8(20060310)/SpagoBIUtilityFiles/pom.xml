@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+ * Copyright 2001-2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>spagobi</groupId>
+  <version>1.8</version>
+  <artifactId>Installation_utilities</artifactId>
+  <packaging>pom</packaging>
+  <name>SpagoUtilityFiles</name>
+  <profiles>
+    <profile>
+      <id>tomcat-server</id>
+      <build>
+        <plugins>
+      	  <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+
+		    <!-- copy the required files in the correct server folders structure -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/"/>
+		    <copy todir="${basedir}/../build/tomcat-server/">
+  		      <fileset dir="${basedir}/tomcat-server/"/>
+ 		    </copy>
+
+		    <!-- copy the libraries requested by the exo-cms or jackrabbit profile into common/lib -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/common/lib"/>
+		    <copy todir="${basedir}/../build/tomcat-server/common/lib">
+  		      <fileset dir="${basedir}/../temp/libraries/"/>
+ 		    </copy>
+
+		    <!-- move the instructions file -->
+		    <move file="${basedir}/../build/tomcat-server/tomcat_installation_instructions.txt"
+			  tofile="${basedir}/../build/tomcat_installation_instructions.txt" />
+
+		    <!-- unzip spagobi -->
+		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi-1.8.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/spagobi"/>
+
+		    <!-- put the correct cms.xml required by the exo-cms or jackrabbit profile -->
+		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms.xml"/>
+		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms-jackrabbit.xml"/>
+		    <copy file="${basedir}/../temp/cms.xml/cms.xml"
+			  tofile="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms.xml"/>
+
+		    <!-- put external spagobi packages into SpagoBI -->
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.8.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.8.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.8.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+
+		    <!-- delete hibernate configuration file for JOnAS -->
+		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>
+
+		    <!-- unzip SpagoBIJasperReportEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine"/>
+                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine-1.8.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine"/>
+
+		    <!-- unzip SpagoBIJPivotEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine"/>
+                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine-1.8.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine"/>
+
+		    <!-- delete temp folder -->
+		    <delete dir="${basedir}/../temp"/>
+
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jboss-server</id>
+      <build>
+        <plugins>
+      	  <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+
+		    <!-- copy the required files in the correct server folders structure -->
+		    <mkdir dir="${basedir}/../build/jboss-server/"/>
+		    <copy todir="${basedir}/../build/jboss-server/">
+  		      <fileset dir="${basedir}/jboss-server/" />
+ 		    </copy>
+
+		    <!-- copy the libraries requested by the exo-cms or jackrabbit profile into server/default/deploy/exoplatform.sar -->
+		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar"/>
+		    <copy todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar">
+  		      <fileset dir="${basedir}/../temp/libraries/"/>
+ 		    </copy>
+
+		    <!-- move the instructions file -->
+		    <move file="${basedir}/../build/jboss-server/jboss_installation_instructions.txt"
+			  tofile="${basedir}/../build/jboss_installation_instructions.txt" />
+
+		    <!-- unzip spagobi -->
+		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi-1.8.war" 
+			   dest="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war"/>
+
+		    <!-- put the correct cms.xml required by the exo-cms or jackrabbit profile -->
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"/>
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms-jackrabbit.xml"/>
+		    <copy file="${basedir}/../temp/cms.xml/cms.xml"
+			  tofile="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"/>
+
+		    <!-- put external spagobi packages into SpagoBI -->
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.8.jar"
+			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.8.jar"
+			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.8.jar"
+			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
+
+		    <!-- delete commons-logging library -->
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
+
+		    <!-- delete hibernate configuration file for JOnAS -->
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>
+
+		    <!-- unzip SpagoBIJasperReportEngine -->
+		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war"/>
+                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine-1.8.war" 
+			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war"/>
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/commons-logging-1.0.2.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/commons-logging-api-1.0.2.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/xalan.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/xercesImpl.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/xmlParserAPIs.jar" />
+
+		    <!-- unzip SpagoBIJPivotEngine -->
+		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy"/>
+                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine-1.8.war" 
+			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war"/>
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war/WEB-INF/lib/commons-logging.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war/WEB-INF/lib/commons-logging-api.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
+
+		    <!-- delete temp folder -->
+		    <delete dir="${basedir}/../temp"/>
+
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jonas-server</id>
+      <build>
+        <plugins>
+      	  <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+
+		    <!-- copy the required files in the correct server folders structure -->
+		    <mkdir dir="${basedir}/../build/jonas-server/"/>
+		    <copy todir="${basedir}/../build/jonas-server/">
+  		      <fileset dir="${basedir}/jonas-server/" />
+ 		    </copy>
+
+		    <!-- copy the libraries requested by the exo-cms or jackrabbit profile into lib/apps -->
+		    <mkdir dir="${basedir}/../build/jonas-server/lib/apps"/>
+		    <copy todir="${basedir}/../build/jonas-server/lib/apps">
+  		      <fileset dir="${basedir}/../temp/libraries/"/>
+ 		    </copy>
+
+		    <!-- move the instructions file -->
+		    <move file="${basedir}/../build/jonas-server/jonas_installation_instructions.txt"
+			  tofile="${basedir}/../build/jonas_installation_instructions.txt" />
+
+		    <!-- unzip spagobi -->
+		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi-1.8.war" 
+			   dest="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war"/>
+
+		    <!-- put the correct cms.xml required by the exo-cms or jackrabbit profile -->
+		    <delete file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/conf/cms.xml"/>
+		    <delete file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/conf/cms-jackrabbit.xml"/>
+		    <copy file="${basedir}/../temp/cms.xml/cms.xml"
+			  tofile="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/conf/cms.xml"/>
+
+		    <!-- put external spagobi packages into SpagoBI -->
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.8.jar"
+			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.8.jar"
+			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.8.jar"
+			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
+
+		    <!-- delete commons-logging library -->
+		    <delete file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
+
+		    <!-- overwrite the hibernate configuration file for Tomcat with the correct file for JOnAS -->
+		    <move file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"
+			  tofile="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/classes/hibernate.cfg.hsql.xml"
+			  overwrite="true"/>
+
+		    <!-- unzip SpagoBIJasperReportEngine -->
+		    <mkdir dir="${basedir}/../build/jonas-server/webapps/autoload"/>
+                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine-1.8.war" 
+			   dest="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJasperReportEngine.war"/>
+		    <delete file="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJasperReportEngine.war/WEB-INF/lib/commons-logging-1.0.2.jar" />
+		    <delete file="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJasperReportEngine.war/WEB-INF/lib/commons-logging-api-1.0.2.jar" />
+		    <delete file="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJasperReportEngine.war/WEB-INF/lib/xalan.jar" />
+		    <delete file="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJasperReportEngine.war/WEB-INF/lib/xmlParserAPIs.jar" />
+
+		    <!-- unzip SpagoBIJPivotEngine -->
+		    <mkdir dir="${basedir}/../build/jonas-server/webapps/autoload"/>
+                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine-1.8.war" 
+			   dest="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJPivotEngine.war"/>
+		    <delete file="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJPivotEngine.war/WEB-INF/lib/commons-logging.jar" />
+		    <delete file="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIJPivotEngine.war/WEB-INF/lib/commons-logging-api.jar" />
+
+		    <!-- delete temp folder -->
+		    <delete dir="${basedir}/../temp"/>
+
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>bi</id>
+      <build>
+        <plugins>
+      	  <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+
+		    <!-- unzip spagobi -->
+		    <mkdir dir="${basedir}/../build/bi/spagobi"/>
+		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi-1.8.war" 
+			   dest="${basedir}/../build/bi/spagobi"/>
+
+		    <!-- delete hibernate configuration file for JOnAS -->
+		    <delete file="${basedir}/../build/bi/spagobi/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>
+
+		    <!-- delete cms configuration file for jackrabbit -->
+		    <delete file="${basedir}/../build/bi/spagobi/WEB-INF/conf/cms-jackrabbit.xml"/>
+
+		    <!-- unzip SpagoBIJasperReportEngine -->
+		    <mkdir dir="${basedir}/../build/bi/SpagoBIJasperReportEngine"/>
+		    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine-1.8.war" 
+			   dest="${basedir}/../build/bi/SpagoBIJasperReportEngine"/>
+
+		    <!-- unzip SpagoBIJPivotEngine -->
+		    <mkdir dir="${basedir}/../build/bi/SpagoBIJPivotEngine"/>
+		    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine-1.8.war" 
+			   dest="${basedir}/../build/bi/SpagoBIJPivotEngine"/>
+
+		    <!-- copy and overwrite the required files -->
+		    <copy todir="${basedir}/../build/bi/" overwrite="true">
+  		      <fileset dir="${basedir}/bi/" />
+ 		    </copy>
+
+		    <!-- put external spagobi packages into SpagoBI -->
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.8.jar"
+			  todir="${basedir}/../build/bi/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.8.jar"
+			  todir="${basedir}/../build/bi/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.8.jar"
+			  todir="${basedir}/../build/bi/spagobi/WEB-INF/lib"/>
+
+		    <!-- redo the spagobi.war -->
+		    <zip destfile="${basedir}/../build/bi/spagobi.war" 
+			 basedir="${basedir}/../build/bi/spagobi/" />
+		    <delete dir="${basedir}/../build/bi/spagobi/" />
+
+		    <!-- redo the SpagoBIJasperReportEngine.war -->
+		    <zip destfile="${basedir}/../build/bi/SpagoBIJasperReportEngine.war" 
+			 basedir="${basedir}/../build/bi/SpagoBIJasperReportEngine/" />
+		    <delete dir="${basedir}/../build/bi/SpagoBIJasperReportEngine/" />
+
+		    <!-- redo the SpagoBIJPivotEngine.war -->
+		    <zip destfile="${basedir}/../build/bi/SpagoBIJPivotEngine.war" 
+			 basedir="${basedir}/../build/bi/SpagoBIJPivotEngine/" />
+		    <delete dir="${basedir}/../build/bi/SpagoBIJPivotEngine/" />
+
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

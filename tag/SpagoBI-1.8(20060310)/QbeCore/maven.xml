@@ -1,0 +1,21 @@
+<project	default="QueryByExampleCore"
+			xmlns:j="jelly:core"
+			xmlns:maven="jelly:maven"
+			xmlns:ant="jelly:ant">
+
+  <goal name="QueryByExampleCore">
+	<attainGoal name="jar:install"/>
+	<ant:copy todir="${basedir}/">
+                <ant:fileset dir="${basedir}/target/">
+                    <ant:include name="**/*.jar"/>
+                </ant:fileset>
+        </ant:copy>	
+	<attainGoal name="clean:clean"/>  
+  </goal>
+
+  <goal name="test-launch-QbeCore">
+    <attainGoal name="maven-junit-report-plugin:report"/>
+    <attainGoal name="xdoc"/>
+  </goal>
+
+</project>

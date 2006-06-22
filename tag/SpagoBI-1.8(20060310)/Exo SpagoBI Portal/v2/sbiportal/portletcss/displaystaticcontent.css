@@ -1,0 +1,52 @@
+.spagobistyleDSC-portlet {
+	background-color: #f7f9f9;
+	padding:5px;
+	margin-top:4px;
+	border: 1px solid gray;
+	color:#7d7d7d;
+}
+
+.spagobistyleDSC-portlet h3 {
+	color: #4b5b8b;
+	font-family:arial;
+	font-size:15px;
+	margin-top:5px;
+	margin-bottom:20px;
+}
+
+.spagobistyleDSC-portlet h4 {
+	font-size:12px;
+	color: #4b5b8b;
+}
+
+.spagobistyleDSC-portlet b {
+	color: #6e8491;
+}
+
+.spagobistyleDSC-portlet li {
+	list-style-image: url(/sbiportal/spagobi-static-content/arrow.gif);
+}
+
+.spagobistyleDSC-portlet .loghelptitle {
+	color:#4b5b8b;
+	font-weight:bold;
+	font-family:arial;
+}
+
+.spagobistyleDSC-portlet .downloadtitle {
+	color:#4b5b8b;
+	font-weight:bold;
+	font-family:arial;
+	text-align:justify;
+}
+
+.spagobistyleDSC-portlet strong {
+	color:#4b5b8b;
+	font-family:arial;
+}
+
+.spagobistyleDSC-portlet a {
+	color: #6e8491;
+	font-weight:bold;
+	font-family:arial;
+}

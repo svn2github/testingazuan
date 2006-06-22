@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ENGINE-CONFIGURATION>
+	<CONNECTION name="exoDWH" 
+		    isDefault="true"
+		    isJNDI="true" 
+		    initialContext="java:comp/env"
+		    resourceName="jdbc/exobi"/>
+</ENGINE-CONFIGURATION>

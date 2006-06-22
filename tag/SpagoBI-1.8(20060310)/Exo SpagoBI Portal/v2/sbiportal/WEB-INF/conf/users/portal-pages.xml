@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page renderer="PageColumnRenderer">
+    <owner>portal</owner>
+    <name>/home</name>
+    <title>Home</title>
+    <viewPermission group="/guest" membership="*"/>
+
+    <container width="200px" decorator="menu-column">
+      <portlet>
+        <windowId>portal:/web/NavigationPortlet/menu</windowId>
+        <portlet-style>menu</portlet-style>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>template</name>
+            <value>community/navigation/vertical/popup.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>      
+        </portlet-preferences>            
+      </portlet>
+      <portlet decorator="default">
+	      <windowId>portal:/content/DisplayStaticContent/download</windowId>
+	      <showInfoBar>false</showInfoBar>
+	      <portlet-preferences>
+	        <preference>
+	          <name>default</name>
+	          <value>title=Default Content</value>
+	          <value>uri=war:/resources/community/web-content/download</value>
+	          <value>encoding=UTF-8</value>
+	        </preference>
+	      </portlet-preferences>
+	    </portlet>
+	    <portlet>
+	      <windowId>portal:/web/PortalInfoPortlet/visited-page</windowId>
+	      <showInfoBar>false</showInfoBar>
+	      <portlet-preferences>
+          <preference>
+            <name>template</name>
+            <value>community/visited-page.html</value>
+            <read-only>false</read-only>
+          </preference>      
+        </portlet-preferences>	      
+	    </portlet>
+    </container>
+
+    <container renderer="FirstLevelTabRenderer" decorator="page" id="news">      
+      <portlet decorator="community" >
+        <title>News</title>
+        <windowId>portal:/content/DisplayStaticContent/new2</windowId>
+        <showInfoBar>true</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>Introduction</name>
+            <value>title=content.title.introduction</value>
+            <value>uri=war:/resources/community/web-content/home/news</value>
+            <value>encoding=UTF-8</value>
+            <read-only>false</read-only>
+          </preference>
+        </portlet-preferences>
+      </portlet>      
+      <portlet decorator="community" >
+				<title>eXo platform</title>
+				<windowId>portal:/content/DisplayStaticContent/new1</windowId>
+				<showInfoBar>true</showInfoBar>
+				<portlet-preferences>
+					<preference>
+						<name>Introduction</name>
+						<value>title=content.title.introduction</value>
+						<value>uri=war:/resources/community/web-content/home/exoplatform</value>
+						<value>encoding=UTF-8</value>
+						<read-only>false</read-only>
+					</preference>
+				</portlet-preferences>
+      </portlet>
+    </container>
+  </page>
+	
+  <page>
+    <owner>portal</owner>
+    <name>/home/search</name>
+    <title>Search</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet>
+      <title>Search</title>
+      <windowId>portal:/content/SearchPortlet/search</windowId>
+      <portlet-style>search</portlet-style>
+    </portlet>
+  </page>  
+
+  <page>
+    <owner>portal</owner>
+    <name>/home/my-portal</name>
+    <title>My Portal</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet>
+      <title>My Portal</title>
+      <windowId>portal:/user/RegisterPortlet/window-register</windowId>
+      <portlet-style>register</portlet-style>
+    </portlet>
+  </page>
+  
+  <page>
+    <owner>portal</owner>
+    <name>/home/sitemap</name>
+    <title>Site Map</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet>
+      <windowId>portal:/web/PortalInfoPortlet/sitemap</windowId>
+      <showInfoBar>false</showInfoBar>
+      <portlet-preferences>
+        <preference>
+          <name>template</name>
+          <value>community/sitemap.vm</value>
+          <read-only>true</read-only>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+</page-set>

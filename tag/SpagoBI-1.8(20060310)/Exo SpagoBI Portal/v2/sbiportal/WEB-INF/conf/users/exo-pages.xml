@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+
+  <page renderer="PageColumnRenderer">
+    <owner>exo</owner>
+    <name>/home</name>
+    <title>Home</title>
+    <viewPermission group="/guest" membership="*"/>
+    <container width="67%" renderer="ContainerColumnRenderer">
+      <container width="67%" renderer="FirstLevelTabRenderer" decorator="page">
+        <portlet>
+          <title>SpagoBI News</title>
+          <windowId>exo:/web/RssPortlet/RssPortletSpagobi</windowId>
+          <portlet-style>spagobistyleRSS</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>  
+            <preference>
+              <name>#{description}</name>
+              <value>This is spagobi news</value>
+            </preference>
+            <preference>
+              <name>url</name>
+              <value>/spagobinews.xml</value>
+            </preference>
+            <preference>
+              <name>channel</name>
+              <value>News</value>
+            </preference>
+            <preference>
+              <name>item-to-show</name>
+              <value>5</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <portlet decorator="community" renderer="default">>
+          <title>#{Introduction}</title>
+          <windowId>exo:/content/DisplayStaticContent/home-intro</windowId>
+          <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>d</name>
+              <value>id=war:/spagobi-static-content/home-intro</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <portlet>
+          <title>#{Implementation_Notes}</title>
+          <windowId>exo:/content/DisplayStaticContent/implNotes</windowId>
+          <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>a</name>
+              <value>id=war:/spagobi-static-content/impl_notes</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <portlet>
+          <title>#{Administrator}</title>
+          <windowId>exo:/content/DisplayStaticContent/adminmanual</windowId>
+          <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>c</name>
+              <value>id=war:/spagobi-static-content/manual_admin</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <portlet>
+          <title>#{Developer}</title>
+          <windowId>exo:/content/DisplayStaticContent/devmanual</windowId>
+          <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>f</name>
+              <value>id=war:/spagobi-static-content/manual_dev</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <portlet>
+          <title>#{Tester}</title>
+          <windowId>exo:/content/DisplayStaticContent/testmanual</windowId>
+          <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>b</name>
+              <value>id=war:/spagobi-static-content/manual_test</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+        <portlet>
+          <title>#{User}</title>
+          <windowId>exo:/content/DisplayStaticContent/usermanual</windowId>
+          <portlet-style>spagobistyleDSC</portlet-style>
+          <showInfoBar>false</showInfoBar>
+          <portlet-preferences>
+            <preference>
+              <name>e</name>
+              <value>id=war:/spagobi-static-content/manual_user</value>
+            </preference>
+          </portlet-preferences>
+        </portlet>
+      </container>
+    </container>
+  </page>
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/sitemap</name>
+    <title>Site Map</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet>
+      <windowId>exo:/web/PortalInfoPortlet/sitemap</windowId>
+      <showInfoBar>false</showInfoBar>
+      <portlet-preferences>
+        <preference>
+          <name>template</name>
+          <value>community/sitemap.vm</value>
+          <read-only>true</read-only>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+
+  <page>
+    <owner>exo</owner>
+    <name>/home/sbisite</name>
+    <title>SpagoBI Web Site</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet width="*">
+      <title>SpagoBI Web Site</title>
+      <windowId>exo:/content/DisplayStaticContent/sbisite</windowId>
+      <portlet-style>spagobistyleDSC</portlet-style>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>id=war:/spagobi-static-content/spagobi_website</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page>
+
+  <!--page renderer="PageColumnRenderer">
+    <owner>exo</owner>
+    <name>/home</name>
+    <title>Home</title>
+    <viewPermission group="/guest" membership="*"/>
+    <container width="200px" decorator="menu-column">
+      <portlet>
+        <windowId>exo:/web/NavigationPortlet/menu</windowId>
+        <portlet-style>menu</portlet-style>
+        <showInfoBar>false</showInfoBar>
+        <portlet-preferences>
+          <preference>
+            <name>template</name>
+            <value>community/navigation/vertical/popup.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>      
+        </portlet-preferences>            
+      </portlet>
+      <portlet>
+        <title>News</title>
+        <windowId>exo:/cms-content/DisplayContent/dynamicNews</windowId>
+        <portlet-style>exo-config-content</portlet-style>            
+        <showInfoBar>true</showInfoBar>                    
+        <portlet-preferences>
+        <preference>
+          <name>layout</name>
+          <value>list</value>
+          <read-only>false</read-only>
+       </preference>          
+       <preference>
+         <name>Introduction</name>
+         <value>configType=reference</value>  
+         <value>uri=/news.html</value>                         
+         <value>position=0</value>
+         <read-only>false</read-only>
+       </preference>
+     </portlet-preferences>
+   </portlet>                           
+  </container>     
+      <portlet decorator="community" >
+        <title>eXo platform</title>
+	<windowId>exo:/content/DisplayStaticContent/new1</windowId>
+	<showInfoBar>true</showInfoBar>
+	<portlet-preferences>
+	  <preference>
+	    <name>Introduction</name>
+	    <value>title=content.title.introduction</value>
+	    <value>uri=war:/resources/community/web-content/home/exoplatform</value>
+	    <value>encoding=UTF-8</value>
+	    <read-only>false</read-only>
+	  </preference>
+	</portlet-preferences>
+      </portlet>
+  </page-->
+
+  <!--page>
+    <owner>exo</owner>
+    <name>/home/my-portal</name>
+    <title>My Portal</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet>
+      <title>My Portal</title>
+      <windowId>exo:/user/RegisterPortlet/window-register</windowId>
+      <portlet-style>register</portlet-style>
+    </portlet>
+  </page -->
+  
+  <!--page>
+    <owner>exo</owner>
+    <name>/home/cms</name>
+    <title>cms</title>
+    <viewPermission group="/user" membership="owner"/>
+    <portlet>
+      <title>CMS File Explorer</title>
+      <windowId>exo:/cms-content/JCRExplorer/jcr</windowId>
+      <portlet-style>explorer</portlet-style>
+    </portlet>
+  </page>  
+  
+  <page>
+    <owner>exo</owner>
+    <name>/home/search</name>
+    <title>Search</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet>
+      <title>Search</title>
+      <windowId>exo:/content/SearchPortlet/search</windowId>
+      <portlet-style>search</portlet-style>
+    </portlet>
+  </page>  
+
+  <page>
+    <owner>exo</owner>
+    <name>/mobile</name>
+    <title>Mobile</title>
+    <viewPermission group="/guest" membership="*"/>
+    <portlet>
+      <title>Home</title>
+      <windowId>exo:/content/DisplayStaticContent/mobile</windowId>
+      <portlet-preferences>
+        <preference>
+          <name>default</name>
+          <value>title=Default Content</value>
+          <value>uri=war:/cms/static-content/mobile-home</value>
+          <value>encoding=UTF-8</value>
+        </preference>
+      </portlet-preferences>
+    </portlet>
+  </page-->
+</page-set>

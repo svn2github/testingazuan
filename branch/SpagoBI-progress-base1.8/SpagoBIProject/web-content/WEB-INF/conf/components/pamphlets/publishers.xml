@@ -138,7 +138,7 @@
 	<PUBLISHER name="WORKLIST_PUBLISHER">
   		<RENDERING channel="PORTLET" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletsCollaborationHome.jsp" />
+				<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletCollaborationHome.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>

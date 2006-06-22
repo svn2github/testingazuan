@@ -170,9 +170,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	public DatabaseSaver() throws Exception {
 
 		resetOptions();
-		m_createText = PROPERTIES.getProperty("CREATE_STRING");
-		m_createDouble = PROPERTIES.getProperty("CREATE_DOUBLE");
-		m_createInt = PROPERTIES.getProperty("CREATE_INT");
+		m_createText = "VARCHAR"; // PROPERTIES.getProperty("CREATE_STRING");
+		m_createDouble = "FLOAT"; //PROPERTIES.getProperty("CREATE_DOUBLE");
+		m_createInt = "INTEGER"; //PROPERTIES.getProperty("CREATE_INT");
 		m_idColumn = PROPERTIES.getProperty("idColumn");
 	}
 

@@ -508,9 +508,11 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		System.out.println(query);
 
 		databaseConnection.execute(query.toString());
+		/*
 		if (!databaseConnection.tableExists(m_tableName)) {
 			throw new IOException("Table cannot be built.");
 		}
+		*/
 	}
 
 	private void prepareStructure() throws Exception {

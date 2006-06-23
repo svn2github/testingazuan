@@ -107,7 +107,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	private boolean m_tabName;
 
 	/** The property file for the database connection */
-	protected static String PROPERTY_FILE = "weka/experiment/DatabaseUtils.props";
+	protected static String PROPERTY_FILE = "database.properties";
 
 	/** Properties associated with the database connection */
 	protected static Properties PROPERTIES;
@@ -170,9 +170,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	public DatabaseSaver() throws Exception {
 
 		resetOptions();
-		m_createText = "VARCHAR"; // PROPERTIES.getProperty("CREATE_STRING");
-		m_createDouble = "FLOAT"; //PROPERTIES.getProperty("CREATE_DOUBLE");
-		m_createInt = "INTEGER"; //PROPERTIES.getProperty("CREATE_INT");
+		m_createText =  PROPERTIES.getProperty("CREATE_STRING");
+		m_createDouble = PROPERTIES.getProperty("CREATE_DOUBLE");
+		m_createInt = PROPERTIES.getProperty("CREATE_INT");
 		m_idColumn = PROPERTIES.getProperty("idColumn");
 	}
 
@@ -526,6 +526,8 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			m_createText = m_createText.toUpperCase();
 		}
 		m_tableName = m_tableName.replaceAll("[^\\w]", "_");
+		
+		System.out.println("-----------------> table name: " + m_tableName);
 
 		switch (dbWriteMode) {
 		case DROP_INSERT:

@@ -52,7 +52,7 @@ public class DatabaseConnection implements Serializable {
 	private boolean connectionMenagedByExternalPool;
 
 	/** The name of the properties file */
-	protected static String PROPERTY_FILE = "weka/experiment/DatabaseUtils.props";
+	protected static String PROPERTY_FILE = "database.properties";
 
 	/** Holds the jdbc drivers to be used (only to stop them being gc'ed) */
 	protected static Vector DRIVERS = new Vector();

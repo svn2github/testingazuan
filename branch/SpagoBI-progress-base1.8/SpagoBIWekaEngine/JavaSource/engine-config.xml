@@ -23,7 +23,7 @@
 		isJNDI 	= 	true iff the connection is defined in the jndi nemespace of the server 
 	-->
 	<!-- ====================================================================================== -->
-	<CONNECTIONS default="mysqlfoodmart">
+	<CONNECTIONS default="hsqlfoodmart">
 		<CONNECTION name="hsqlfoodmart" 
 					isJNDI="true"
 					initialContext="java:comp/env"

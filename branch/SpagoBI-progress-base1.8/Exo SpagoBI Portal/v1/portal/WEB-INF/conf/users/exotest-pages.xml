@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <owner>exotest</owner>
+    <name>/home</name>
+    <title>${home}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <container width="200px">
+      <portlet>
+        <title>Welcome</title>
+        <windowId>exotest:/hello/HelloWorld/p1</windowId>
+      </portlet>
+      <portlet>
+        <title>Need support?</title>
+        <windowId>exotest:/hello/PortalAPI/p2</windowId>
+      </portlet>
+      <portlet>
+        <title>Download page</title>
+        <windowId>exotest:/hello/HelloWorld/p3</windowId>
+      </portlet>
+    </container>
+    <portlet width="*">
+      <title>What's new...</title>
+      <windowId>exotest:/hello/HelloWorld/p4</windowId>
+      <showInfoBar>true</showInfoBar>
+      <showWindowState>true</showWindowState>
+    </portlet>
+  </page>
+
+  <page>
+    <owner>exotest</owner>
+    <name>/overview</name>
+    <title>${overview}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <container width="200px">
+      <portlet>
+        <title>What's new...</title>
+        <windowId>exotest:/hello/HelloWorld/p5</windowId>
+      </portlet>
+      <portlet>
+        <title>What's new...</title>
+        <windowId>exotest:/hello/HelloWorld/p8</windowId>
+      </portlet>
+    </container>
+    <container width="*">
+      <renderer>ContainerColumnRenderer</renderer>
+      <portlet>
+        <title>Welcome</title>
+        <windowId>exotest:/hello/HelloWorld/p9</windowId>
+      </portlet>
+      <portlet>
+        <title>Need support?</title>
+        <windowId>exotest:/hello/HelloWorld/p10</windowId>
+      </portlet>
+    </container>
+  </page>
+
+  <page>
+    <owner>exotest</owner>
+    <name>/admin</name>
+    <title>${customization}</title>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <portlet>
+      <title>Customization</title>
+      <windowId>exotest:/hello/HelloWorld/p11</windowId>
+    </portlet>
+  </page>
+</page-set>

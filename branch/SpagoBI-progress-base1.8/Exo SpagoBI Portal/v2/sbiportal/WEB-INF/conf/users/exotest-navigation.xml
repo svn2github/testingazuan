@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+  <owner>exotest</owner>
+  <node>
+    <uri>/</uri>
+    <name>home</name>
+    <label>Home</label>
+    <viewPermission group="/guest" membership="*"/>
+    <pageReference type="text/xhtml" visible="true">exotest:/home</pageReference>
+    <description>Home Node</description>
+  </node>
+</node-navigation>

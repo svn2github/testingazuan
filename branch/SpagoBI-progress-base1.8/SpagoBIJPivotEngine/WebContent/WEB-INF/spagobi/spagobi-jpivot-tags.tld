@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>spagobi-jpivot</short-name>
+	<uri>http://spagobi.eng.it</uri>
+	<display-name>spagobi-jpivot</display-name>
+	<description>
+	    SpagoBI JPivot Tag Library.
+	</description>
+	<tag>
+	<name>spagoBIMondrianQuery</name>
+		<tag-class>it.eng.spagobi.olap.tags.SpagoBIMondrianOlapModelTag</tag-class>
+		<body-content>tagdependent</body-content>
+		<description>
+		      Creates a session attribute that allows access to a Mondrian query, its result and navigations.
+		      The attribute is always created, if the attribute already existst it will be replaced.
+		      So one has to take care that this tag creates the attribute only if it should, e.g. by
+		      using JSTL &lt;c:if ... &gt; tags or similar.
+		      
+		      Its possible to use a predefined JSBC DataSource from the application server or to
+		      specify the individual JDBC parameters with this tag.
+		</description>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>Name of the Session Attribute that is created by this tag</description>
+		</attribute>
+		<attribute>
+			<name>jdbcDriver</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Java class name of the JDBC driver</description>
+		</attribute>
+		<attribute>
+			<name>jdbcUrl</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Connection parameters, these are database specific</description>
+		</attribute>
+		<attribute>
+			<name>jdbcUser</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>user name to connect to the database</description>
+		</attribute>
+		<attribute>
+			<name>jdbcPassword</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>password to connect to the database</description>
+		</attribute>
+		<attribute>
+			<name>dataSource</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>JNDI name of a preconfigured JDBC DataSource, e.g. jdbc/SironTDI. Must not be used with the other JDBC attributes</description>
+		</attribute>
+		<attribute>
+			<name>catalogUri</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Path of the Mondrian schema, relative to the application context, e.g. /WEB-INF/FoodMart.xml</description>
+		</attribute>
+		<attribute>
+			<name>config</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>internal use only</description>
+		</attribute>
+		<attribute>
+			<name>role</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Role from Mondrian Schema</description>
+		</attribute>
+		<attribute>
+			<name>dynResolver</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>class resolving Mondrian Schema dynamic variables</description>
+		</attribute>
+		<attribute>
+			<name>query</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>MDX query to execute</description>
+		</attribute>
+	</tag>
+</taglib>

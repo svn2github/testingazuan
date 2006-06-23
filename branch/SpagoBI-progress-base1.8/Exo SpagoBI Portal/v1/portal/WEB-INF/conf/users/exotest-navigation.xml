@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+  <owner>exotest</owner>
+  <node>
+    <uri>/</uri>
+    <name>root</name>
+    <label>root</label>
+    <description>/</description>
+    <pageReference>exotest:/home</pageReference>
+    <node>
+      <uri>/home</uri>
+      <name>home</name>
+      <label>home</label>
+      <description>Home Page</description>
+      <pageReference>exotest:/home</pageReference>
+      <node>
+        <uri>/home/overview</uri>
+        <name>overview</name>
+        <label>overview</label>
+        <description>Overview Page</description>
+        <pageReference>exotest:/overview</pageReference>
+      </node>
+    </node>
+    <node>
+      <uri>/admin</uri>
+      <name>admin</name>
+      <label>admin</label>
+      <description>Customization Page</description>
+      <pageReference>exotest:/admin</pageReference>
+    </node>
+  </node>
+</node-navigation>

@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+    <component-plugin>
+      <name>new.user.event.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.services.organization.impl.NewUserEventListener</type>
+      <description>this listener assign group and membership to a new created user</description>
+      <init-params>
+        <object-param>
+          <name>configuration</name>
+          <description>description</description>
+          <object type="org.exoplatform.services.organization.impl.NewUserConfig">
+            <field  name="group">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.organization.impl.NewUserConfig$JoinGroup">
+                    <field  name="groupId"><string>/user</string></field>
+                    <field  name="membership"><string>member</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.impl.NewUserConfig$JoinGroup">
+                    <field  name="groupId"><string>/portal/share</string></field>
+                    <field  name="membership"><string>member</string></field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+            <field  name="ignoredUser">
+              <collection type="java.util.HashSet">
+                <value><string>admin</string></value>
+                <value><string>exo</string></value>
+                <value><string>portal</string></value>
+                <value><string>exotest</string></value>
+                <value><string>demo</string></value>
+                <value><string>spagobi</string></value>
+                <value><string>biadmin</string></value>
+                <value><string>bidev</string></value>
+                <value><string>bitest</string></value>
+                <value><string>biuser</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+
+    <component-plugin>
+      <name>init.service.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.services.organization.OrganizationDatabaseInitializer</type>
+      <description>this listener populate organization data for the first launch</description>
+      <init-params>      
+        <value-param>
+          <name>checkDatabaseAlgorithm</name>
+          <description>check database</description>
+          <value>empty</value>
+        </value-param>      
+        <value-param>
+	  <name>printInformation</name>
+	  <description>Print information init database</description>
+	  <value>false</value>
+        </value-param> 
+        <object-param>
+          <name>configuration</name>
+          <description>description</description>
+          <object type="org.exoplatform.services.organization.OrganizationConfig">
+            <field  name="membershipType">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$MembershipType">
+                    <field  name="type"><string>member</string></field>
+                    <field  name="description"><string>member membershipt type</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$MembershipType">
+                    <field  name="type"><string>owner</string></field>
+                    <field  name="description"><string>owner membership type</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$MembershipType">
+                    <field  name="type"><string>validator</string></field>
+                    <field  name="description"><string>validator membershipt type</string></field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+
+            <field  name="group">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>portal</string></field>
+                    <field  name="parentId"><string></string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /portal group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>site</string></field>
+                    <field  name="parentId"><string>/portal</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /portal/site group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>admin</string></field>
+                    <field  name="parentId"><string>/portal</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /portal/admin group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>share</string></field>
+                    <field  name="parentId"><string>/portal</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /portal/share group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>admin</string></field>
+                    <field  name="parentId"><string></string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /admin group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>user</string></field>
+                    <field  name="parentId"><string></string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /user group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>guest</string></field>
+                    <field  name="parentId"><string></string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /guest group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>community</string></field>
+                    <field  name="parentId"><string></string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /community group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>direction</string></field>
+                    <field  name="parentId"><string>/community</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /community/direction group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>hr</string></field>
+                    <field  name="parentId"><string>/community</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /community/hr group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>editors</string></field>
+                    <field  name="parentId"><string>/community</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /community/editors group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>spagobi</string></field>
+                    <field  name="parentId"><string></string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /spagobi group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>share</string></field>
+                    <field  name="parentId"><string>/spagobi</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /spagobi/share group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>admin</string></field>
+                    <field  name="parentId"><string>/spagobi</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /spagobi/admin group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>dev</string></field>
+                    <field  name="parentId"><string>/spagobi</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /spagobi/dev group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>test</string></field>
+                    <field  name="parentId"><string>/spagobi</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /spagobi/test group</string></field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>user</string></field>
+                    <field  name="parentId"><string>/spagobi</string></field>
+                    <field  name="type"><string>hierachy</string></field>
+                    <field  name="description"><string>the /spagobi/user group</string></field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+
+            <field  name="user">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>admin</string></field>
+                    <field  name="password"><string>exo</string></field>
+                    <field  name="firstName"><string>admin</string></field>
+                    <field  name="lastName"><string>admin</string></field>
+                    <field  name="email"><string>admin@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/admin, member:/user, member:/portal/admin,member:/community/direction</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>exo</string></field>
+                    <field  name="password"><string>exo</string></field>
+                    <field  name="firstName"><string>exo</string></field>
+                    <field  name="lastName"><string>exo</string></field>
+                    <field  name="email"><string>exo@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/portal/site</string>
+                    </field>
+                  </object>
+                </value>
+
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>portal</string></field>
+                    <field  name="password"><string>exo</string></field>
+                    <field  name="firstName"><string>portal</string></field>
+                    <field  name="lastName"><string>portal</string></field>
+                    <field  name="email"><string>portal@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/portal/admin</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>demo</string></field>
+                    <field  name="password"><string>exo</string></field>
+                    <field  name="firstName"><string>demo</string></field>
+                    <field  name="lastName"><string>demo</string></field>
+                    <field  name="email"><string>demo@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/portal/share</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>exotest</string></field>
+                    <field  name="password"><string>exo</string></field>
+                    <field  name="firstName"><string>exotest</string></field>
+                    <field  name="lastName"><string>exotest</string></field>
+                    <field  name="email"><string>exotest@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/portal/site</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>spagobi</string></field>
+                    <field  name="password"><string>spagobi</string></field>
+                    <field  name="firstName"><string>spagobi</string></field>
+                    <field  name="lastName"><string>spagobi</string></field>
+                    <field  name="email"><string>spagobi@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/spagobi/share</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>biadmin</string></field>
+                    <field  name="password"><string>biadmin</string></field>
+                    <field  name="firstName"><string>biadmin</string></field>
+                    <field  name="lastName"><string>biadmin</string></field>
+                    <field  name="email"><string>biadmin@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/spagobi/admin, member:/spagobi/share</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>bidev</string></field>
+                    <field  name="password"><string>bidev</string></field>
+                    <field  name="firstName"><string>bidev</string></field>
+                    <field  name="lastName"><string>bidev</string></field>
+                    <field  name="email"><string>bidev@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/spagobi/dev, member:/spagobi/share</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>bitest</string></field>
+                    <field  name="password"><string>bitest</string></field>
+                    <field  name="firstName"><string>bitest</string></field>
+                    <field  name="lastName"><string>bitest</string></field>
+                    <field  name="email"><string>bitest@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/spagobi/test, member:/spagobi/share</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>biuser</string></field>
+                    <field  name="password"><string>biuser</string></field>
+                    <field  name="firstName"><string>biuser</string></field>
+                    <field  name="lastName"><string>biuser</string></field>
+                    <field  name="email"><string>biuser@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/user, member:/spagobi/user, member:/spagobi/share</string>
+                    </field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+</configuration>

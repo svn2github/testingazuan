@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    
+    <session-factory name="HibernateSessionFactory">
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost/spagobitest</property>
+        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.password">password</property>
+        <property name="hibernate.connection.username">username</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.show_sql">false</property>
+        <property name="connection.pool_size">1</property>
+        <mapping resource="it/eng/spagobi/metadata/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiFuncRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiObjFunc.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiFunctions.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiChecks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/SbiObjState.hbm.xml" />
+    </session-factory>
+    
+</hibernate-configuration>

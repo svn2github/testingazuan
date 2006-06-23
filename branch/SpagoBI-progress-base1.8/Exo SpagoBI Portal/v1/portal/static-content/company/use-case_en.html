@@ -1,0 +1,463 @@
+<div>
+<h3><a name="the-client"></a>The Client</h3>
+<table cellspacing="0" cellpadding="0" border="0"><tr>
+<td>
+	<a href="http://www.picagroup.com" target="_blank"
+	><img src="/portal/images/pica-logo.gif" border="0" style="margin: 0px 20px 15px 0px"></a>
+</td>
+
+<td style="vertical-align: middle">
+	PICA Group<sup>&reg;</sup>, the leading provider of professional liability
+	insurance for podiatric physicians in the U.S., is a corporation made up of
+	multiple insurance companies that provide a multitude of insurance services
+	to podiatrists and chiropractors. 
+</td></tr></table>
+
+<h3><a name="the-vision"></a>The Vision</h3>
+An initiative was launched at PICA to enhance their web presence and to start
+providing dynamic online services to its agents and policyholders.
+Specifically, PICA wanted policyholders and agents to have the ability to
+pay premiums online.
+<img src="/portal/images/stakeholders.gif" border="0" align="right"
+	  style="margin: 10px 10px 0px 10px">
+<!--
+<table class="factoid" cellpadding="3" cellspacing="1" border="0" align="right">
+<tr><th colspan="2">PICA Portal Stakeholders</th></tr>
+<tr>
+	<td><b>Policyholders</b></td>
+	<td>Clients of PICA who have purchased insurance policies.</td>
+</tr>
+<tr>
+	<td><b>Agents</b></td>
+	<td>Sell insurance on behalf of PICA on a commissioned basis.</td>
+</tr>
+<tr>
+	<td><b>Internal&nbsp;Users</b></td>
+	<td>PICA employees who are responsible for all aspects of policy
+		 management.</td>
+</tr>
+</table>
+-->
+Also, they wished to provide policyholders, agents,
+and internal users with the ability to generate Certificates of Insurance
+(COIs).
+<br><br>
+When the project was initiated each PICA Group<sup>&reg;</sup> company had
+it's own static site that displayed basic company and product information.
+Updating the content required IT involvement to move changes to production.
+PICA desired that management of the content be simplified and consolidated.
+At the same time it was deemed critical to keep brand independence on each of
+the separate company sites. 
+<br><br>
+
+<a href="http://www.trinisys.com" target="_blank">Trinisys</a> was hired in
+August of 2004 by PICA Group, to realize this vision by developing an
+enterprise portal solution. 
+
+<h4><a name="major-goals"></a>Major Goals</h4>
+The following major goals were set out for the portal initiative:
+<ul>
+	<li>Create three distinct sites for each of PICA's major child
+		 companies.</li>
+	<li>Consolidate and simplify site management.</li>
+	<li>Remove IT from the content change workflow.</li>
+	<li>Allow valid policyholders to self-register.</li>
+
+	<li>Authenticate internal users against the existing Active Directory.</li>
+	<li>Provide online premium payment with varying degrees of functionality
+		 based on the user's role (internal users, agents, policyholders).</li>
+	<li>Provide online COI generation with varying degrees of access based on
+		 the user's role.</li>
+</ul>
+
+
+<h3><a name="choosing-the-portal"></a>Choosing the Portal</h3>
+The following categories were used in evaluating which portal implementation
+to choose:
+<ul>
+	<li><b>Cost</b><br>
+
+		 The budget for this project covered the cost of developing custom portal
+		 functionality, but did not allow for the purchase of a commercial portal
+		 product such as Vignette or IBM Webshere Portal.</li>
+	<li><b>Customizable Look-and-Feel</b><br>
+		 A design for the portal was decided upon without regard to the
+		 out-of-the-box appearance and navigation of portal products.  PICA
+		 needed a portal product that could implement the design with as little
+		 effort as possible.</li>
+	<li><b>JSR 168 Compliance</b><br>
+		 It was decided that custom functionality would be developed as JSR 168
+		 portlets giving PICA more future flexibility.  Developing to the portlet
+		 specification would free PICA from dependence on any one portal
+		 implementation.
+	<li><b>Security Implementation</b><br>
+		 <ul>
+
+		 	<li><u>Authentication</u> -
+		 	It was determined that some custom code would need to be developed to
+		 	allow external and internal users to authenticate differently. It was
+		 	understood that the quality of the portal's security implementation
+		 	would greatly affect the effort required to meet these
+		 	requirements.</li>
+		 	<li><u>Secure Transfer of Sensitive Information</u> -
+			It was required that all transactions which involved sensitive user
+			information take place over a secure connection (https). This would include
+			logging in, registering, and all content viewed once the user
+			has authenticated.</li>
+		 </ul></li>
+	<li><b>User-Friendly Administrative Functionality</b><br>
+		 It was required that administrative tasks such as managing users and
+		 updating portal content be provided through an intuitive interface.</li>
+
+	<li><b>Portlet Catalog</b><br>
+		 For the initial phases of the portal, an extensive portlet catalog was
+		 not required. However, it was important that the portal provide rich 
+		 out-of-the-box portlets to display, edit, and manage portal content, as
+		 well as those which would provide flexible user management
+		 functionality. It was also important to consider PICA's vision for
+		 future portal features which would require portlets that would provide a
+		 range of functionality such as forums and community message boards.</li>
+	<li><b>Integration with J2EE Server of Choice</b><br>
+		 It was deemed desirable (but not required) that the portal run in a
+		 lightweight two-tiered environment using Tomcat.</li>
+</ul>
+Since low cost was one of the most important requirements, only open source
+portals were considered. Some of the top contenders included Liferay,
+Gridsphere, eXo Platform and Jetspeed.  Jetspeed, while a relatively mature
+portal implementation, did not support the JSR 168 portlet specification and
+was removed from consideration.
+<img src="/portal/images/jsr168.gif" border="0" align="right"
+	  style="margin: 10px 10px 0px 10px">
+<!--
+<table class="factoid" cellpadding="3" cellspacing="1" border="0" align="right">
+<tr><th colspan="2">JSR 168 Portlet Standard</th></tr>
+<tr>
+	<td>
+		<i>A specification designed through the Java Community Process to enable
+		interoperability between portlets and portals.</i><br><br>
+		Because the portlets built for the PICA portal were designed to this
+		specification, little or no modification was required to port them from
+		Liferay to the eXo Platform.
+	</td>
+</tr>
+</table>
+-->
+<br><br>
+
+During the concept phase of the project, a high priority was placed on having
+a rich porlet catalog and a simple administrative interface. For this reason
+Liferay was chosen as the portal platform for the proof of concept.  As the
+project matured and a final design was agreed upon it became clear that the
+desired look-and-feel would not be possible to implement in Liferay without
+extensive source modification.  
+<br><br>
+At this point the portal platform options were evaluated again. For a number
+of reasons the eXo Platform was chosen. In summary:
+<ul>
+	<li>It was determined that the eXo Platform would be able to facilitate
+		 PICA's design requirements without modifications to the portal source
+		 code.</li>
+	<li>The eXo Platform has an active user community making it relatively easy
+		 to find discussions on and solutions to problems.</li>
+	<li>The developers were easy to work with and allowed us to contribute some
+		 modifications to the core eXo Platform source code.</li>
+</ul>
+
+<h3><a name="exo-portal-features"></a>The eXo Platform Advantage</h3>
+
+The eXo Platform portal proved to have several advantages over its competitors,
+especially where layout and configuration was concerned.  This section outlines
+some of the features which make eXo Platform Portal stand out.
+
+<h4><a name="portal-layout"></a>GUI-Enabled Web Layout</h4>
+One of the most unique and powerful features of the eXo Platform is the ability
+to dynamically configure the site layout using the built-in administrative
+tools. Unlike other portals on the market, no jsps have to be altered to change
+the layout of the eXo Platform. With eXo, all content, including the portal
+navigation, is rendered by portlets.
+<br><br>
+For developers familiar with the Swing model of GUI development, the eXo
+Platform implementation will feel very familiar. Layout in eXo is accomplished
+by nested components. The main layout component is the Container.
+Containers (as the name indicates) contain other layout components.
+One or more portlets or containers may be encapsulated by a container.
+<br><br>
+Arrangement of contained elements are determined by Renderers.  Each container
+specifies a Renderer which controls the layout of the container's contained
+elements.  For example, if two portlets are added to a Container using the
+ContainerRowRenderer the portlets will be displayed one on top of the other.
+<br><br>
+The image below shows the PICA site in portal edit mode. Changes made in this
+mode modify the portion of the portal that remains the same regardless of
+which page is being viewed. Using the controls provided, portlets and
+containers can be added, removed, or shifted around in the layout.
+<br><br>
+<table cellspacing="0" cellpadding="0" border="0" align="center"><tr><td>
+<img src="/portal/images/portal-config.jpg" border="0"><br><i>Portal Layout</i>
+</td></tr></table>
+<br>
+Components edited while in portal edit mode represent those elements which
+remain fixed from page to page. The eXo Platform takes this layout
+flexibility one step further by then allowing the same level of configuration
+to take place at the page level.
+
+<br><br>
+For example, in the screenshot above the page content container has a single
+content portlet which is displaying the PICA welcome page. The screenshot below
+shows the portal in Page Edit Mode on the Contact Us page. This page contains
+two content display portlets and a custom mail form portlet.
+<br><br>
+<table cellspacing="0" cellpadding="0" border="0" align="center"><tr><td>
+<img src="/portal/images/page-config.jpg" border="0" style="border: 1px dotted #dddddd;"><br><i>Page Layout</i>
+</td></tr></table>
+<br><br>
+
+<table cellspacing="0" cellpadding="0" border="0"><tr><td>
+<table cellspacing="0" cellpadding="0" border="0" align="right"
+		 style="margin: 10px 10px 15px 10px"><tr><td>
+	<img src="/portal/images/edit-portlet.jpg" border="0"><br>
+	<i>Applying a custom skin</i>
+</td></tr></table>
+
+<h4><a name="innovative-skins"></a>Innovative Skins Implementation</h4>
+The eXo platform sets itself apart from other portal implementations with its
+innovative skins implementation. Simply stated, a skin controls the
+look-and-feel of a given portal component, usually a portlet.
+Like the eXo platform web layout implementation no portal server code needs to
+be changed to alter the skin of a given component. Custom skins can be applied
+to portlets as well as to any other layout component. 
+<br><br>
+With the eXo platform skins can be deployed to the portal as part of a custom
+portlet application (.war file). This is accomplished by first creating a
+cascading stylesheet (.css file) which defines the skin's look-and-feel. Then
+including a skin-config.xml file that specifies to which component(s) the
+stylesheet may be applied. Finally, deploy the portlet application war file to
+the server. Once deployment is complete the new skins will be available
+to apply to the specified layout components (shown right).
+<br><br>
+</td></tr></table>
+The example below shows an example skin-config.xml file from the PICA Group
+portal:
+<table cellspacing="0" cellpadding="0" border="0" align="center"
+		 style="margin: 10px 0px"><tr><td>
+<img src="/portal/images/skin-config.gif" border="0"><br><i>skin-config.xml</i>
+<!--
+<div class="snippet"><pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;skin-config&gt;
+
+  &lt;portlet-style-config&gt;
+    &lt;portlet-name&gt;pica-nav-portlets/pica-footer-portlet&lt;/portlet-name&gt;
+    &lt;style name="pica-footer" url="/pica-nav-portlets/skin/portlet/footer-portlet.css"/&gt;
+  &lt;/portlet-style-config&gt;
+	
+  &lt;portlet-style-config&gt;
+    &lt;portlet-name&gt;content/DisplayContent&lt;/portlet-name&gt;
+    &lt;style name="pica-content" url="/pica-nav-portlets/skin/portlet/content-portlet.css"/&gt;
+  &lt;/portlet-style-config&gt;
+
+  &lt;container-decorators&gt;
+    &lt;decorator&gt;
+      &lt;renderer-type&gt;ContainerRowRenderer&lt;/renderer-type&gt;
+      &lt;style name="pica-menu" url="/pica-nav-portlets/skin/container/pica-menu-container.css"/&gt;
+    &lt;/decorator&gt;
+  &lt;/container-decorators&gt;
+
+&lt;/skin-config&gt;</code></pre><i>skin-config.xml</i></div>
+-->
+
+</td></tr></table>
+Three separate skins are defined.  The first is for a custom footer portlet.
+The second entry is an example of a custom skin applied to an out-of-the box
+eXo Platform portlet, in this case the DisplayContent portlet. And finally, the
+last skin entry in this example defines a custom look-and-feel for the
+ContainerRowRenderer layout component.<br><br>
+The code snippet below shows the stylesheet used to define the pica-footer
+skin:
+
+<table cellspacing="0" cellpadding="0" border="0" align="center"
+		 style="margin: 10px 0px"><tr><td>
+<img src="/portal/images/css.gif" border="0"><br><i>footer-portlet.css</i>
+<!--
+<div class="snippet"><code><pre>.pica-footer-portlet
+{
+	font-size: 11px;
+	font-weight: normal;
+	font-family: Verdana, Arial,Helvetica;
+	color: #000000;
+	border-top: 1px solid #006b5c;
+	padding: 3px;
+	width: 780px;
+}
+
+.pica-footer-portlet a:link,
+.pica-footer-portlet a:visited,
+.pica-footer-portlet a:active
+.pica-footer-portlet a:hover
+{
+	color: #000000;
+}</code></pre><i>footer-portlet.css</i></div>
+-->
+</td></tr></table>
+
+
+<table cellspacing="0" cellpadding="0" border="0" align="right"
+		 style="margin: 25px 20px 10px 10px;"><tr><td>
+	<img src="/portal/images/portal-nav.jpg" border="0" 
+		  style="border: 1px solid #cccccc;"><br>
+	<i>Portal Navigation</i>
+</td></tr></table>
+<h4><a name="flexible-nav-tree"></a>Flexible Navigation Tree</h4>
+The flexible, tree-based navigation provided by the eXo Platform proved to be
+extremely useful to achieve the look-and-feel requirements of the PICA portal.
+The eXo navigation tree is made up of multiple navigation nodes.
+Each navigation node is associated with a specific portal page and can have
+zero or more child nodes. The navigation tree can be administered with the
+Navigation Menu portlet (shown right). Nodes can be added, removed, renamed,
+linked to a given page, etc., using this interface.
+
+<br><br>
+The eXo Platform also provides an intuitive navigation API which makes the
+process of creating customized navigation portlets quite simple.  In fact, each
+of the navigation portlets shown in the portal configuration diagram above are
+actually custom navigation portlets that were built by Trinisys for the PICA
+portal.
+
+<h4><a name="eclipse-plugin"></a>Eclipse Plugin</h4>
+The eXo Platform Eclipse Plugin is a helpful tool for creating custom portlets.
+Installing the plugin adds a 'Portlets' project type to the Eclipse IDE. 
+A provided wizard walks the user through the process of creating a new 
+'Portlets' project, creating all the configuration files needed for a portlets
+web application. Using the plugin, portlets can be 'hot deployed' to a running
+eXo portal, allowing developers to test changes quickly. It also provides a
+debug mode, which allows developers to step through custom portlet code as well
+as the eXo platform source code.
+
+<h3><a name="pica-portal"></a>The PICA Group<sup>&reg;</sup> Portal</h3>
+
+<h4><a name="portlets"></a>Portlets</h4>
+For the first phase of PICA's portal, a several JSR 168 compliant portlets were
+created to implement the required functionality.  The COI and Online Payment
+portlets allow external and internal users perform business functions.  Other
+portlets were created to alter or customize the portal beyond the out-of-the-box
+functionality.  These portlets are relatively simple, and although they are JSR
+168 portlets, they leverage eXo Platform services and APIs and would require
+some work to port to another portal platform.
+
+<h5><a name="coi-portlet"></a>Certificate of Insurance (COI) Portlet</h5>
+The COI Portlet generates a Certificate of Insurance for a given policyholder
+based on information drawn from PICA's administrative database. 
+COIs are generated as PDF documents that can be viewed online, or sent to a 
+requested third-party either by fax or email. Third-party recipients can
+be selected from a list of entities associated with the policyholder in the
+<img src="/portal/images/coi.gif" border="0" align="right"
+	  style="margin: 10px 10px 0px 10px">
+
+<!--
+<table cellspacing="1" cellpadding="3" border="0" class="factoid" align="right"
+		 style="margin: 10px 20px 10px 5px">
+<tr><th>Certificate of Insurance (COI)</th></tr>
+<tr>
+	<td>
+		A COI is a document which demonstrates evidence of an insurance policy.
+		COIs are often required of doctors by hospitals in order to perform
+		surgery.
+	</td>
+</tr>
+</table>
+-->
+administrative database, or manually entered by the user. PICA's existing
+RightFax solution was leveraged to provide fax transmission functionality.
+Copies of all PDF files generated by the portlet are stored and viewable in
+PICA's administration system for future reference. The amount of functionality
+provided to the user varies by role:
+<ul>
+	<li><b>Internal Users</b><br>
+		 Internal users are provided with a search form which allows them to
+		 find policyholders by policy number, name or SSN. COIs can be 
+		 generated for any policyholder matching the search criteria.</li>
+	<li><b>Agents</b><br>
+		 Agents also have the ability to search and generate COIs for
+		 policyholders. Unlike internal users, however, agents will only be shown
+		 those policies for which they are the agent.</li>
+	<li><b>Policyholders</b><br>
+
+		 Policyholders are not shown the search form and can generate COIs only
+		 for their policy.</li>
+</ul>
+
+<h5><a name="online-payment-portlet"></a>Online Payment Portlet</h5>
+The Online Payment Portlet displays premium billing information for a policy
+and allows policyholders to make payments online. PICA has a relationship with
+a bank that provides the functionality to make online payments through the
+bank's site. The Online Payment Portlet authenticates the current portal user
+with the bank's external site and then uses content proxying to integrate the
+bank's payment screens seamlessly into the portal.  Like the COI portlet, the
+amount of functionality provided by the Online Payment Portlet varies by role:
+<ul>
+	<li><b>Internal Users</b><br>
+		Internal users can view the outstanding premium balance for all policy
+		holders and process payments over the phone.</li>
+	<li><b>Agents</b><br>
+
+		Agents are provided with a search form which allows them to find 
+		policyholders for which they are the agent. Agents can then view their
+		clients' outstanding premium balance.</li>
+	<li><b>Policyholders</b><br>
+		Policyholders are presented with their outstanding balance and have the
+		option to pay bills online using either credit card or electronic check
+		payment.</li>
+</ul>
+
+<h5><a name="user-portlets"></a>User Portlets</h5>
+Besides the major business functionality provided by the portlets mentioned
+above, Trinisys also implemented several user management portlets to extend
+or customize out-of-the-box functionality provided by the eXo Platform.
+<ul>
+	<li><b>Account Registration Portlet</b><br>
+
+		 This portlet allows policyholders to register themselves with the
+		 portal by providing account information which can be used to identify
+		 them as valid policyholders in PICA's administrative database.  Once
+		 verified the user is added to the portal user repository using the eXo
+		 Organization Service API.</li>
+	<li><b>Login Portlet</b><br>
+		 A custom login portlet was created to fulfill PICA'S requirement to
+		 use Microsoft Active Directory to authenticate internal users while
+		 storing policyholder and agent users in the eXo portal database.</li>
+	<li><b>User Profile Portlet</b><br>
+		 This is a simple portlet that allows a user to update their display name
+		 and email address.</li> 
+	<li><b>Password Mailer Portlet</b><br>
+
+		 This portlet allows external users that have forgotten their password to
+		 have it mailed to their email address. If an email address was not
+		 entered when creating the account, then a customer representative is
+		 notified via email of the request.</li>
+</ul>
+
+<h5><a name="future-portlets"></a>Future Portlets</h5>
+Planned portlets include other self service type functionality to allow
+policyholders to update their personal information such as contact and billing
+information, request changes in coverage or payment mode, or allow
+e-applications and online quoting.
+
+<h3><a name="conclusion"></a>Conclusion</h3>
+The eXo Platform proved to be a very flexible, cost-effective foundation upon
+which to build the PICA Portal.  It allowed the seamless integration of content
+and business functionality, as well as providing the flexibility required to
+implement the desired look-and-feel. The PICA Group now has a solid platform
+upon which they can continue to grow their web presence as future business
+needs require.
+
+
+<br><br><br><br><hr>
+<b>About the Authors</b><br><br>
+<table cellspacing="0" cellpadding="0" border="0"><tr>
+<td style="vertical-align:top"><a href="http://www.trinisys.com" target="_blank"><img src="/portal/images/trinisys_logo.gif" border="0"></a></td>
+<td style="vertical-align:top"><a href="http://www.trinisys.com" target="_blank">Trinisys</a>
+
+is a consulting firm based in the United States that specializes in Imaging,
+Data Entry, Document Management, and Enterprise Portal Solutions.
+</td></tr></table>
+<br><br>
+</div>

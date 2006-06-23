@@ -1,0 +1,45 @@
+<project    xmlns:j="jelly:core"
+            xmlns:maven="jelly:maven"
+            xmlns:ant="jelly:ant"
+            default="SpagoBIIReportPlugin:build">
+
+  <goal name="SpagoBIIReportPlugin:build">	
+	<attainGoal name="jar:install" />
+        <ant:mkdir dir="${basedir}/build"/>          
+	<ant:copy todir="${basedir}/build">
+                <ant:fileset dir="${basedir}/target">
+                    <ant:include name="**/*.jar"/>
+                </ant:fileset>
+        </ant:copy>
+        <ant:mkdir dir="${basedir}/build/images"/>       
+        <ant:copy todir="${basedir}/build/images">
+                <ant:fileset dir="${basedir}/doc/images">
+                    <ant:include name="**/*.*"/>
+                </ant:fileset>
+        </ant:copy>
+        <ant:mkdir dir="${basedir}/build/lib"/>       
+        <ant:copy todir="${basedir}/build/lib">
+                <ant:fileset dir="${basedir}/lib">
+                    <ant:include name="**/*.*"/>
+                    <ant:exclude name="**/iReport.jar" /> 
+                </ant:fileset>
+        </ant:copy>
+        <ant:mkdir dir="${basedir}/build/iReport_SpagoBI_plugin_Resources"/>       
+        <ant:copy todir="${basedir}/build/iReport_SpagoBI_plugin_Resources">
+                <ant:fileset dir="${basedir}/src/iReport_SpagoBI_plugin_Resources">
+                    <ant:include name="**/*.*"/>
+                </ant:fileset>
+        </ant:copy>
+        <ant:copy file="${basedir}/LICENSE_SpagoBI-IReportPlugin.txt" 
+                  todir="${basedir}/build"/>
+        <ant:copy file="${basedir}/doc/How to deploy the plugin.html" 
+                  todir="${basedir}/build"/>
+        <ant:copy file="${basedir}/doc/SpagoBI iReport manual.html" 
+                  todir="${basedir}/build"/>
+        <ant:copy file="${basedir}/PlugInConfFile/spagobi.xml" 
+                  todir="${basedir}/build"/>
+ 
+	<attainGoal name="clean:clean"/>  
+  </goal>
+
+</project>

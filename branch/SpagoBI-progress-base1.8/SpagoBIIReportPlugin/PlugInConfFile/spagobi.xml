@@ -1,0 +1,12 @@
+<iReportPlugin 	
+	name="SpagoBI"
+	class="it.eng.spagobi.plugins.ireport.Plugin"
+	loadOnStartup="false"
+	hide = "false"
+	configurable = "true">
+	
+	<IconFile>/it/businesslogic/ireport/icons/menu/new.gif</IconFile>
+	
+	<Description>SpagoBI</Description>
+
+</iReportPlugin>

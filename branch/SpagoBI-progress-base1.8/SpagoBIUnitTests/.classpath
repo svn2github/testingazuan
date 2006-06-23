@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/dbunit-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spago-core-2.0.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_02"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/portlet-api-1.0.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spagoportlet.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-3.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/jcr-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackrabbit-0.16.4.1-dev.jar"/>
+	<classpathentry kind="lib" path="lib/commons-pool-1.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

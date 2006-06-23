@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <owner>exotest</owner>
+    <name>/home</name>
+    <title>Home</title>
+    <viewPermission group="/guest" membership="*"/>
+  </page>
+</page-set>

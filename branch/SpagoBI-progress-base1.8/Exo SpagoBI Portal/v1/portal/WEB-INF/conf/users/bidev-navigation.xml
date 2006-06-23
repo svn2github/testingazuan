@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+  <owner>bidev</owner>
+  <node>
+    <uri>/</uri>
+    <name>home</name>
+    <label>#{home}</label>
+    <viewPermission>any</viewPermission>
+    <editPermission>owner</editPermission>
+    <description>/</description>
+    <pageReference type="text/xhtml" visible="true">bidev:/home</pageReference>
+    <pageReference type="application/vnd.wap.xhtml+xml" visible="true">bidev:/mobile</pageReference>
+
+    <node>
+        <uri>/home/manual</uri>
+        <name>manual</name>
+        <label>#{manual}</label>
+        <viewPermission>any</viewPermission>
+        <description>Manual Page</description>
+        <pageReference>bidev:/home/manual</pageReference>
+		<pageReference type="application/vnd.wap.xhtml+xml" visible="false">bidev:/home/manual</pageReference>
+    </node>
+    <node>
+      <uri>/home/sitemap</uri>
+      <name>sitemap</name>
+      <label>#{sitemap}</label>
+      <viewPermission>any</viewPermission>
+      <description>Sitemap Page</description>
+      <pageReference type="text/xhtml" visible="true">bidev:/home/sitemap</pageReference>
+      <pageReference type="application/vnd.wap.xhtml+xml" visible="false">bidev:/home/sitemap</pageReference>
+    </node>
+    <node>
+	  <uri>/</uri>
+      <name>spagobi</name>
+      <label>#{spagobi}</label>
+      <viewPermission>owner</viewPermission>
+      <editPermission>owner</editPermission>
+      <description>/</description>
+      <pageReference>bidev:/home</pageReference>
+    </node>
+  </node>
+</node-navigation>

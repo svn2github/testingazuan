@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+  <owner>spagobi</owner>
+  <node>
+    <uri>/</uri>
+    <name></name>
+    <label>#{home}</label>
+    <viewPermission group="/guest" membership="*"/>
+    <pageReference type="text/xhtml" visible="true">spagobi:/home</pageReference>
+    <description>/</description>      
+    <node>
+      <uri>/home/sitemap</uri>
+      <name>sitemap</name>
+      <label>#{sitemap}</label>
+      <pageReference type="text/xhtml" visible="true">spagobi:/home/sitemap</pageReference>
+      <description>Sitemap Page</description>
+    </node>
+  </node>
+</node-navigation>

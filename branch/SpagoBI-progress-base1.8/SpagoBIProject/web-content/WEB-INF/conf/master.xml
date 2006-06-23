@@ -35,6 +35,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
 	<!-- end import export module -->
 	<!-- start import pamphlets module -->
+	<!-- 
 	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/pamphlets.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/modules.xml" />
@@ -44,6 +45,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/workflow.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/forms.xml" />
+	-->
 	<!-- end import pamphlets module -->
 	
 </MASTER>

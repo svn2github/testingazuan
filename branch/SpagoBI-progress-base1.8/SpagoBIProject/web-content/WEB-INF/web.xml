@@ -75,16 +75,6 @@
         <servlet-class>it.eng.qbe.services.ReportServlet</servlet-class>
     </servlet>
     
-    <servlet>
-        <servlet-name>PamphletsImageServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.pamphlets.PamphletsImageServlet</servlet-class>
-    </servlet>
-
-	<servlet-mapping>
-        <servlet-name>PamphletsImageServlet</servlet-name>
-        <url-pattern>/PamphletsImageService</url-pattern>
-    </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>ReportServlet</servlet-name>
         <url-pattern>/ReportServlet</url-pattern>
@@ -142,13 +132,6 @@
  		<res-type>javax.sql.DataSource</res-type>
  		<res-auth>Container</res-auth>
 	</resource-ref>
-<!-- 
-    <resource-ref>
- 		<description>Spagobi Cms</description>
- 		<res-ref-name>cms/spagobicms</res-ref-name>
- 		<res-type>it.eng.javax.jcr.Repository</res-type>
- 		<res-auth>Container</res-auth>
-    </resource-ref>
--->
+
 </web-app>
 

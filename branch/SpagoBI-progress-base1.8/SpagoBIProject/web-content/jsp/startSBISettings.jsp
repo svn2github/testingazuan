@@ -87,7 +87,7 @@
 		</tr>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.png")%>' />
+				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.jpg")%>' />
 			</td>
 			<td width="20">
 				&nbsp;
@@ -148,7 +148,7 @@
 		%>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/pamphlets64.png")%>' />
+				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/pamphlets64.jpg")%>' />
 			</td>
 			<td width="20">
 				&nbsp;

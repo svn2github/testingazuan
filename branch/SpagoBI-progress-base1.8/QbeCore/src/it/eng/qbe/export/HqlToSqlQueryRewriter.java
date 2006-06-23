@@ -48,7 +48,7 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	public String rewrite(String query) {
 		String sqlQuery = null;		
 		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
-		System.out.println("HQL query to convert: " + query);
+		System.out.println("---> HQL query to convert: " + query);
 		
 		Query hibQuery = session.createQuery(query);
 		SessionFactory sessFact = session.getSessionFactory();
@@ -60,8 +60,10 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		sqlQuery = trans.getSQLString();
 		
 		Logger.debug(this.getClass(), "rewrite: generated SQL query: " + sqlQuery);		
-		System.out.println("generated SQL query: " + sqlQuery);
-		return rewriteWithAlias(query, sqlQuery);
+		System.out.println(" ---> generated SQL query: " + sqlQuery);
+		String decoratedQuery = rewriteWithAlias(query, sqlQuery);
+		System.out.println(" ---> decorated SQL query: " + decoratedQuery);
+		return decoratedQuery;
 		//return sqlQuery;
 	}
 	
@@ -71,12 +73,48 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		return selectClause;
 	}
 	
+	private String[] getSelectEntities(String selectClause) {
+		return selectClause.split(",");
+	}
+	
+	private String getEntityNameFromFunctionalEntity(String func, String funcEntity) {
+		String entityName = null;
+		System.out.println(" ---> func: " + func + "; funcEntity: " + funcEntity);
+		entityName = funcEntity.substring(funcEntity.indexOf('(') + 1, funcEntity.indexOf(')'));
+		entityName = entityName.trim() +  func.substring(0, 1).toUpperCase() + func.substring(1, func.length()).toLowerCase();
+		System.out.println(" ---> entityName: " + entityName);
+		return entityName;
+	}
+	
+	private String getEntityName(String entity) {
+		String entityName = null;
+		System.out.println(" ---> entity: " + entity);
+		
+		if(entity.indexOf("as") != -1) {
+			entityName = entity.substring(entity.indexOf("as") + 2, entity.length());
+		} else {
+			entityName = entity.trim();
+			if(entityName.startsWith("sum")) entityName = getEntityNameFromFunctionalEntity("sum", entityName);
+			if(entityName.startsWith("avg")) entityName = getEntityNameFromFunctionalEntity("avg", entityName);
+			if(entityName.startsWith("min")) entityName = getEntityNameFromFunctionalEntity("min", entityName);
+			if(entityName.startsWith("max")) entityName = getEntityNameFromFunctionalEntity("max", entityName);
+			if(entityName.startsWith("count")) entityName = getEntityNameFromFunctionalEntity("count", entityName); 
+			
+			if(entityName.lastIndexOf('.') != -1) {
+				entityName = entityName.substring(entityName.lastIndexOf('.') + 1, entityName.length());
+			}
+		}
+		
+		return entityName;
+	}
+	
 	public String rewriteWithAlias(String hqlQuery,String sqlQuery) {
-		String selectHqlBody = getSelectClause(hqlQuery);
-		String[] fields = selectHqlBody.split(",");
-		String[] fieldNames = new String[fields.length];
-		for(int i = 0; i < fields.length; i++) {
-			fieldNames[i] = fields[i];
+		String[] selectEntities = getSelectEntities(getSelectClause(hqlQuery));
+		String[] fieldNames = new String[selectEntities.length];
+		for(int i = 0; i < selectEntities.length; i++) {
+			//fieldNames[i] = selectEntities[i];
+			fieldNames[i] = getEntityName(selectEntities[i]);
+			/*
 			if(fieldNames[i].indexOf("as") != -1) {
 				fieldNames[i] = fieldNames[i].substring(fieldNames[i].indexOf("as")+2, fieldNames[i].length());
 			} else {
@@ -84,18 +122,19 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 					fieldNames[i] = fieldNames[i].substring(fieldNames[i].lastIndexOf('.') + 1, fieldNames[i].length());
 				}
 			}
+			*/
 		}
 		
 		String selectSqlBody = getSelectClause(sqlQuery);
-		fields = selectSqlBody.split(",");
+		selectEntities = selectSqlBody.split(",");
 		String newSelectBody = "";
-		for(int i = 0; i < fields.length; i++) {
-			String selectItem = fields[i];
+		for(int i = 0; i < selectEntities.length; i++) {
+			String selectItem = selectEntities[i];
 			selectItem = selectItem.substring(0, selectItem.indexOf("as")+2);
 			selectItem += " " + fieldNames[i];
 			newSelectBody += ((i!=0)?", ":" ") + selectItem;
 		}		
-		String newQueryWithAlias = "select " + newSelectBody + sqlQuery.substring(sqlQuery.indexOf("from"), sqlQuery.length());
+		String newQueryWithAlias = "select " + newSelectBody + " " + sqlQuery.substring(sqlQuery.indexOf("from"), sqlQuery.length());
 				
 		return newQueryWithAlias;
 	}

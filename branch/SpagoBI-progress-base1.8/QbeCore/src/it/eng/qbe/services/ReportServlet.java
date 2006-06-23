@@ -81,7 +81,7 @@ public class ReportServlet extends HttpServlet{
      } 
 	
 	public String getActionParameter(HttpServletRequest request) {
-		return (String)request.getParameter("ACTION_PARAMETER");
+		return (String)request.getParameter(ACTION_PARAMETER);
 	}
 	
 	/**

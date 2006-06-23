@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/classes"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/bsh-1.2b8.jar"/>
@@ -83,9 +82,9 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.exo.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jackrabbit.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.repositoryfactory.jndi.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.drivers.api-1.8.jar"/>
-	<classpathentry kind="lib" path="/ProjectsDependencies/lib/sbi.securityprovider.api-1.8.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-httpclient-2.0.2.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-fileupload-1.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

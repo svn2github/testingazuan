@@ -103,24 +103,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<br/> 
 	
 	<div class="div_detail_area_forms" >
-		<table style="margin:10px;border:1 solid black">
+		<table style="margin:10px;">
 			<tr>
 				<td class='portlet-form-field-label' width="130px">
 						<spagobi:message key="pamp.nameObject" bundle="component_pamphlets_messages" />
 				</td>
-				<td style="font-size:5;"><%=name %></td>
+				<td style="font-size:11px;"><%=name %></td>
 			</tr>
 			<tr>
 				<td class='portlet-form-field-label' width="130px">
 					<spagobi:message key="pamp.descrObject" bundle="component_pamphlets_messages" />
 				</td>
-				<td style="font-size:5;"><%=description %></td>
+				<td style="font-size:11px;"><%=description %></td>
 			</tr>
 			<tr>
 				<td class='portlet-form-field-label' width="130px">
 					<spagobi:message key="pamp.labelObject" bundle="component_pamphlets_messages" />
 				</td>
-				<td style="font-size:5;"><%=label %></td>
+				<td style="font-size:11px;"><%=label %></td>
 			</tr>
 			<tr><td colspan="2">&nbsp;</td></tr>
 			<%
@@ -152,7 +152,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<br/>
 	
 	<div class="div_detail_area_forms" >
-		<table style="margin:10px;border:1 solid black">
+		<table style="margin:10px;">
 		<%
 				Set names = parnamemap.keySet();
 			Iterator iterParName = names.iterator();

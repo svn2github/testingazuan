@@ -165,7 +165,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key="pamp.template" bundle="component_pamphlets_messages"/>
 		</div>
 		<br/>
-		<span class="portlet-form-field-label">
+		<span style='margin-top:5px;padding-top:5px;' class="portlet-form-field-label">
 			<spagobi:message key="pamp.currenttemplate" bundle="component_pamphlets_messages"/>: 
 		</span>
 		&nbsp;&nbsp;&nbsp;
@@ -196,7 +196,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div style="width:8%;float:left;">
 					<input style="margin-left:10px;" type="image" 
 								 title='<spagobi:message key="pamp.save" bundle="component_pamphlets_messages" />' 
-								 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/save22.png")%>' 
+								 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/save22.gif")%>' 
 								 alt='<spagobi:message key="pamp.save"  bundle="component_pamphlets_messages"/>' />
 			</div>
 		</div>
@@ -210,7 +210,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<input size="30" type="text" name="nameWorkPackage" value="<%=workConf.getNameWorkflowPackage()%>" />
 					</td>
 				</tr>
-				<tr><td colspan="2">&nbsp;</td></tr>
+				<tr style="height:10px;"><td colspan="2"><span></span></td></tr>
 				<tr>
 					<td class='portlet-form-field-label' width="130px">
 						<spagobi:message key="pamp.nameWorkProcess" bundle="component_pamphlets_messages" />

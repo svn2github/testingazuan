@@ -325,40 +325,5 @@
       		<scope>system</scope>
       		<systemPath>${basedir}/web-content/WEB-INF/lib/jug-lgpl-2.0.0.jar</systemPath>
         </dependency> 
-        <dependency>
-        	<groupId>spago</groupId>
-        	<artifactId>spago-workflow-api</artifactId>
-		<version>2.1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/spago-workflow-api-2.1.0.jar</systemPath>
-        </dependency> 
-        <dependency>
-        	<groupId>openoffice</groupId>
-        	<artifactId>openoffice_unoil</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/openoffice_unoil.jar</systemPath>
-        </dependency>                        
-        <dependency>
-        	<groupId>openoffice</groupId>
-        	<artifactId>openoffice_ridl</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/openoffice_ridl.jar</systemPath>
-        </dependency>  
-        <dependency>
-        	<groupId>openoffice</groupId>
-        	<artifactId>openoffice_juh</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/openoffice_juh.jar</systemPath>
-        </dependency>  
-        <dependency>
-        	<groupId>shark</groupId>
-        	<artifactId>sharkinternalapi</artifactId>
-		<version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/sharkinternalapi.jar</systemPath>
-        </dependency>  
   </dependencies>
 </project>

@@ -5,7 +5,9 @@
     <class name="it.eng.spagobi.metadata.SbiEvents" table="sbi_events">
         <id name="id" type="integer">
             <column name="id" />
-            <generator class="identity"/>
+             <generator class="sequence">
+            	<param name="sequence">sbi_events_seq</param> 
+            </generator>
         </id>
                 
         <property name="user" type="string">

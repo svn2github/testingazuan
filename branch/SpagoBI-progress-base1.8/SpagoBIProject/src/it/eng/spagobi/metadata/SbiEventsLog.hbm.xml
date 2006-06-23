@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="it.eng.spagobi.metadata.SbiEventsLog" table="sbi_events_log">
+    <class name="it.eng.spagobi.metadata.SbiEventsLog" table="sbi_events_log" schema="public">
         <composite-id>
 			<key-property name="id" column="id"/>
 			<key-property name="user" column="user_event"/>

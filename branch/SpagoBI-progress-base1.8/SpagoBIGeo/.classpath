@@ -29,7 +29,6 @@
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/junit-3.8.1.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/mail.jar"/>
-	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/postgresql-8.0-311.jdbc2.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/soap-2.3.jar"/>
 	<classpathentry sourcepath="C:/Documents and Settings/Administrator/Documenti/download/Spago/2.0.3/spago2.0.3-src.zip" kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/spago-core-2.0.1.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/spago-web-2.0.1.jar"/>
@@ -38,5 +37,6 @@
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/pdf-transcoder.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="SpagoBIGeoEngine/WEB-INF/classes"/>
 </classpath>

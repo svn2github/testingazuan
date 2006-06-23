@@ -3,7 +3,7 @@
     <!-- type:svg|jpeg -->
 	<MAP name="abitanti_provincia_venezia" enabled="TRUE" type="svg">
 		<MAP_PROVIDER class_name="it.eng.geo.map.DefaultMapProvider"
-		              uri="file:///C:/Progetti/Regione_Veneto/Georeferenziazione/g/VE_comuni/ve_comuni.svg"
+		              uri="http://localhost:8080/SpagoBIGeoEngine/img/maps/ve_comuni.svg"
 					  xml_parser_impl="it.eng.geo.document.XercesXMLDocument"/>
 		<DATAMART_PROVIDER class_name="it.eng.geo.datamart.DefaultDatamartProvider" 
 		                   registered_pool_name="spagobigeo" 

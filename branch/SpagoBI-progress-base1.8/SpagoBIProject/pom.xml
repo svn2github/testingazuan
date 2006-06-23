@@ -254,35 +254,35 @@
       		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagoportlet-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spagobi</groupId>
+                <groupId>spago</groupId>
                 <artifactId>spagocms.core</artifactId>
                 <version>1.0</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagocms.core.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spagobi</groupId>
+                <groupId>spago</groupId>
                 <artifactId>spagocms.executionservice.local</artifactId>
                 <version>1.0</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagocms.executionservice.local.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spagobi</groupId>
+                <groupId>spago</groupId>
                 <artifactId>spagocms.repositoryfactory.exo</artifactId>
                 <version>1.0</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagocms.repositoryfactory.exo.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spagobi</groupId>
+                <groupId>spago</groupId>
                 <artifactId>spagocms.repositoryfactory.jackrabbit</artifactId>
                 <version>1.0</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagocms.repositoryfactory.jackrabbit.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spagobi</groupId>
+                <groupId>spago</groupId>
                 <artifactId>spagocms.repositoryfactory.jndi</artifactId>
                 <version>1.0</version>
       		<scope>system</scope>

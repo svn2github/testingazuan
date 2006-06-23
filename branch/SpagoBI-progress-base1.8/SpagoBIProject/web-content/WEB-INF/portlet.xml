@@ -44,46 +44,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-preferences>
 	</portlet>
 
-	
-	
-	<portlet>
-        <description>Collaboration over Pamphlets</description>		
-        <portlet-name>SBIPamphletCollaboration</portlet-name>		
-        <display-name>Collaboration over Pamphlets</display-name>		
-        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
-        <init-param>
-            <name>serviceType</name>
-            <value>PAGE</value>
-        </init-param>
-        <init-param>
-            <name>serviceName</name>
-            <value>PamphletsCollaborationPage</value>
-        </init-param>
-        <init-param>
-            <name>light_navigation</name>
-            <value>ENABLED</value>
-        </init-param>		        
-        <expiration-cache>0</expiration-cache>
-        <supports>
-	    	<mime-type>text/html</mime-type>
-            <portlet-mode>VIEW</portlet-mode>
-            <portlet-mode>EDIT</portlet-mode>
-		</supports>
-		<supported-locale>en</supported-locale>     
-		<portlet-info>
-        	<title>Collaboration over Pamphlets</title>
-        	<short-title>Collaboration over Pamphlets</short-title>
-        	<keywords>Collaboration over Pamphlets</keywords>
-        </portlet-info>
-        <portlet-preferences>
-        	<preference>
-        		<name>language</name>
-        		<value>en</value>
-        		<value>US</value>
-        	</preference>
-        </portlet-preferences>
-	</portlet>
-
 
 
    <portlet>

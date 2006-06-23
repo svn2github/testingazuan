@@ -28,7 +28,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIBirtReportEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9beta</version>
+  <version>1.9RC</version>
   <name>SpagoBIBirtReportEngine</name>
   <url>http://maven.apache.org</url>
   <build>

@@ -47,5 +47,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-javaflow-20060411.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/poi-2.5.1-final-20040804.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

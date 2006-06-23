@@ -82,7 +82,13 @@
   		  	tofile="${basedir}/build/Requirements" />
 		  <delete>
     			<fileset dir="${basedir}/build/spagobi/WEB-INF/classes/it/eng/spago"/>
-		  </delete>  		  			  
+		  </delete>
+		  <copy todir="${basedir}/build/exampleTemplate">
+		  		<fileset dir="${basedir}/exampleTemplate"/>
+		  </copy>
+		  <copy todir="${basedir}/build/exampleXpdl">
+		  		<fileset dir="${basedir}/exampleXpdl"/>
+		  </copy>	  			  
 		  <zip destfile="${basedir}/build/spagobi.zip" 
 			basedir="${basedir}/build/" />
 		  <delete dir="${basedir}/build/spagobi/" />

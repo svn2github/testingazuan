@@ -156,7 +156,21 @@
   			</parameter>
 		</ResourceParams>
 
-
+    <Resource name="cms/spagobicms" auth="Container" type="javax.jcr.Repository"/> 
+	<ResourceParams name="cms/spagobicms">
+  		<parameter>
+    			<name>factory</name>
+    			<value>org.apache.jackrabbit.core.jndi.BindableRepositoryFactory</value>
+  		</parameter>
+  		<parameter>
+    			<name>configFilePath</name>
+    			<value>${SERVER_HOME}/webapps/spagobi/WEB-INF/classes/repository.xml</value>
+  		</parameter>
+		<parameter>
+    			<name>repHomeDir</name>
+    			<value>${SERVER_HOME}/sbidata/jcrRepositoryFS</value>
+  		</parameter>
+	</ResourceParams>
 
 
 

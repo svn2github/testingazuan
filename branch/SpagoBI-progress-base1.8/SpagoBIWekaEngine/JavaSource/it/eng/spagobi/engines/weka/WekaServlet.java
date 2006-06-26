@@ -11,11 +11,9 @@ import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.security.InvalidKeyException;

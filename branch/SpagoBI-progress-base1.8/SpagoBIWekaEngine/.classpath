@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="JavaSource"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ant-1.5.1.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ClassScriptlet.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-beanutils-1.5.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-collections-2.1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-digester-1.7.jar"/>
@@ -14,7 +13,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jaxen-full.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcommon-1.0.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jdt-compiler-3.1.1.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jug-lgpl-2.0.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/poi-2.5.1-final-20040804.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spago-core-2.0.0.jar"/>
@@ -23,8 +21,7 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/xml-apis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sbi.utils-1.8.jar"/>
 	<classpathentry sourcepath="/weka" kind="lib" path="WebContent/WEB-INF/lib/weka.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mysql-connector-java-3.1.12-bin.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

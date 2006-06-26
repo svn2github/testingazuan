@@ -98,7 +98,7 @@
 
 		    <!-- unzip SpagoBIGeo -->
 		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine-1.9alfa"/>
-                    <unzip src="${basedir}/../SpagoBIGeo/target/SpagoBIGeo-1.9alfa.war" 
+                    <unzip src="${basedir}/../SpagoBIGeo/target/SpagoBIGeoEngine-1.9alfa.war" 
 			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine-1.9alfa"/>
 
 		    <!-- unzip SpagoBIWekaEngine -->

@@ -1,4 +1,4 @@
-  <Context path="/spagobi" docBase="${catalina.home}/webapps/spagobi" debug="0" privileged="true">
+  <Context path="/spagobi-1.9RC" docBase="${catalina.home}/webapps/spagobi-1.9RC" debug="0" privileged="true">
   	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
   	<ResourceLink name="jdbc/spagobi" type="javax.sql.DataSource" global="jdbc/spagobi"/>
 <!--

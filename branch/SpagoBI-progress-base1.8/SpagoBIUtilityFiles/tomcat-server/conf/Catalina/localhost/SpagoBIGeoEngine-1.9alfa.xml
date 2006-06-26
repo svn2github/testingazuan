@@ -1,4 +1,4 @@
-  <Context path="/SpagoBIGeoEngine" docBase="${catalina.home}/webapps/SpagoBIGeoEngine" debug="0" privileged="true">
+  <Context path="/SpagoBIGeoEngine-1.9alfa" docBase="${catalina.home}/webapps/SpagoBIGeoEngine-1.9alfa" debug="0" privileged="true">
   	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
 <!--  	
   	<ResourceLink name="jdbc/spagobigeo" type="javax.sql.DataSource" global="jdbc/spagobigeo"/>

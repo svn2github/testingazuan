@@ -26,9 +26,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <artifactId>SpagoBIGeo</artifactId>
+  <artifactId>SpagoBIGeoEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9beta</version>
+  <version>1.9alfa</version>
   <name>SpagoBIGeoEngine</name>
   <url>http://maven.apache.org</url>
   <build>

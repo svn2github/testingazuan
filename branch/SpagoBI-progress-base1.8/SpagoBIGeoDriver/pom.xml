@@ -28,7 +28,7 @@
   <groupId>spagobi</groupId>
   <artifactId>sbi.drivers.geo</artifactId>
   <packaging>jar</packaging>
-  <version>1.9RC</version>
+  <version>1.9alfa</version>
   <name>SpagoBIGeoDriver</name>
   <url>http://maven.apache.org</url>
   <build>

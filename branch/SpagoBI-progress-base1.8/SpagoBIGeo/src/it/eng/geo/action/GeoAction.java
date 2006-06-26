@@ -1,3 +1,8 @@
+/**
+ *
+ *	LICENSE: see COPYING file
+ *
+**/
 package it.eng.geo.action;
 
 import java.io.ByteArrayInputStream;

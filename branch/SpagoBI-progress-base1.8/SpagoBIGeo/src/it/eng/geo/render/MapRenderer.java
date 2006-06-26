@@ -1,3 +1,8 @@
+/**
+ *
+ *	LICENSE: see COPYING file
+ *
+**/
 package it.eng.geo.render;
 
 import it.eng.geo.configuration.Constants;

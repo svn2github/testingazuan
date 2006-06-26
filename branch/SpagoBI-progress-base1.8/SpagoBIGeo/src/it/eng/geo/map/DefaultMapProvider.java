@@ -1,9 +1,8 @@
-/*
- * Created on 4-mag-2006
+/**
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
+ *	LICENSE: see COPYING file
+ *
+**/
 package it.eng.geo.map;
 
 import it.eng.geo.document.XMLDocumentException;

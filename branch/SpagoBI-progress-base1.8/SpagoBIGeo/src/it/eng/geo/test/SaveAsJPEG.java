@@ -1,3 +1,8 @@
+/**
+ *
+ *	LICENSE: see COPYING file
+ *
+**/
 package it.eng.geo.test;
 
 import java.io.*;

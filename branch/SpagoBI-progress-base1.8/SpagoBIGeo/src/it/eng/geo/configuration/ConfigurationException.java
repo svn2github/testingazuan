@@ -1,3 +1,9 @@
+/**
+ *
+ *	LICENSE: see COPYING file
+ *
+**/
+
 package it.eng.geo.configuration;
 
 public class ConfigurationException extends Exception {

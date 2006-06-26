@@ -1,3 +1,8 @@
+/**
+ *
+ *	LICENSE: see COPYING file
+ *
+**/
 package it.eng.geo.configuration;
 
 import it.eng.spago.base.SourceBean;

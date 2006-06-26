@@ -1,3 +1,10 @@
+<%--
+/**
+ *
+ *	LICENSE: see COPYING file
+ *
+**/
+--%>
 <%@ page import="java.io.*,
 				 java.util.*,
 				 javax.servlet.ServletOutputStream" %>

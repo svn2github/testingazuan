@@ -25,7 +25,7 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/iReport.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jug-lgpl-2.0.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jasperreports-1.2.0.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sbi.utils-1.8.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spago-core-2.1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

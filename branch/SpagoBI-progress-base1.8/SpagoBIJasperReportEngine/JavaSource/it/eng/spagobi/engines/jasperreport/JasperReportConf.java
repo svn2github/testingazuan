@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see COPYING file. 
+ * 
+ */
 package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;

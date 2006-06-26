@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see BIRT.LICENSE.txt file
+ * 
+ */
 package it.eng.spagobi.engines.birt;
 
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;

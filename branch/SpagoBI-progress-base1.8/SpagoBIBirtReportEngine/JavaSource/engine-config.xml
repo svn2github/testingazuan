@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ENGINE-CONFIGURATION>
+	<!--
 	<CONNECTION name="defaultDWH" 
 					isDefault="true" 
 					isJNDI="true"
 					initialContext="java:comp/env"
 					resourceName="jdbc/sbifoodmart"/>
+	-->
 	<!-- 
 	<CONNECTION name="postgresDWH" 
 					isDefault="false"
@@ -12,6 +14,6 @@
 					driver="org.postgresql.Driver"
 					user="foodmart"
 					password="smartfood"
-					jdbcUrl="jdbc:postgresql://giobbe:5432/foodmart"/>
+					jdbcUrl="jdbc:postgresql://<server>:5432/foodmart"/>
 	 -->
 </ENGINE-CONFIGURATION>

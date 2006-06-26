@@ -73,9 +73,9 @@
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9RC.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9RC.jar"
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9alfa.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>			 			    
-			<copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9RC.jar"
+			<copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9alfa.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>			  
 
 		    <!-- delete hibernate configuration file for JOnAS -->

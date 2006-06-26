@@ -1,3 +1,10 @@
+<%--
+/**
+ * 
+ * LICENSE: see BIRT.LICENSE.txt file
+ * 
+ */
+--%>
 <%@ page import="java.io.*,
 				 java.util.*,
 				 javax.servlet.ServletOutputStream" %>

@@ -66,13 +66,6 @@
 		<version>1.5.1</version>
   	</dependency>
     <dependency>
-    	<groupId>ClassScriptlet</groupId>
-        <artifactId>ClassScriptlet</artifactId>
-		<version>1.0</version>
-      	<scope>system</scope>
-      	<systemPath>${basedir}/WebContent/WEB-INF/lib/ClassScriptlet.jar</systemPath>
-    </dependency>
-    <dependency>
     	<groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
 		<version>1.5</version>
@@ -139,14 +132,7 @@
         <version>3.1.1</version>
       	<scope>system</scope>
       	<systemPath>${basedir}/WebContent/WEB-INF/lib/jdt-compiler-3.1.1.jar</systemPath>
-    </dependency>
-    <dependency>
-        <groupId>jug-lgpl</groupId>
-        <artifactId>jug-lgpl</artifactId>
-        <version>2.0.0</version>
-      	<scope>system</scope>
-      	<systemPath>${basedir}/WebContent/WEB-INF/lib/jug-lgpl-2.0.0.jar</systemPath>
-    </dependency>        
+    </dependency>      
     <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>

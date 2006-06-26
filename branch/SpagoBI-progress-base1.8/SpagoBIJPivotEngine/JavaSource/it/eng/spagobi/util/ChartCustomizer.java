@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.html file
+ * 
+ */
 package it.eng.spagobi.util;
 
 import it.eng.spagobi.bean.AnalysisBean;

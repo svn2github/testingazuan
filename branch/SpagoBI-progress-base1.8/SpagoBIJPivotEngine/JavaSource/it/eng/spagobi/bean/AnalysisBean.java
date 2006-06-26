@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.html file
+ * 
+ */
 package it.eng.spagobi.bean;
 
 import java.io.Serializable;

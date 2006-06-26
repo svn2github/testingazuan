@@ -1,3 +1,10 @@
+<%--
+/**
+ * 
+ * LICENSE: see LICENSE.html file
+ * 
+ */
+--%>
 <%@ page session="true" 
          contentType="text/html; charset=ISO-8859-1" 
 		 import="org.dom4j.Document,

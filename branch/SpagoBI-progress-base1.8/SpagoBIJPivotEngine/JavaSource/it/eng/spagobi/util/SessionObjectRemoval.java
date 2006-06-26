@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.html file
+ * 
+ */
 package it.eng.spagobi.util;
 
 import javax.servlet.http.HttpSession;

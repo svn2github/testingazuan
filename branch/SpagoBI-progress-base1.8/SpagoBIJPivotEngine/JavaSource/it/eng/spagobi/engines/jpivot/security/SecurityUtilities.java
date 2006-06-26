@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.html file
+ * 
+ */
 package it.eng.spagobi.engines.jpivot.security;
 
 import java.io.ByteArrayOutputStream;

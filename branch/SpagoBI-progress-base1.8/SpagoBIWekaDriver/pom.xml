@@ -28,7 +28,7 @@
   <groupId>spagobi</groupId>
   <artifactId>sbi.drivers.weka</artifactId>
   <packaging>jar</packaging>
-  <version>1.9RC</version>
+  <version>1.9alfa</version>
   <name>SpagoBIWekaDriver</name>
   <url>http://maven.apache.org</url>
   <build>

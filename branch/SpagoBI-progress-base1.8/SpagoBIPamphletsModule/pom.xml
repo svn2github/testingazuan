@@ -78,8 +78,8 @@
   		  	tofile="${basedir}/build/HowToInstall.txt" />
 		  <copy file="${basedir}/Readme.txt"
   		  	tofile="${basedir}/build/Readme.txt" />
-		  <copy file="${basedir}/Requirements"
-  		  	tofile="${basedir}/build/Requirements" />
+		  <copy file="${basedir}/Requirements.txt"
+  		  	tofile="${basedir}/build/Requirements.txt" />
 		  <delete>
     			<fileset dir="${basedir}/build/spagobi/WEB-INF/classes/it/eng/spago"/>
 		  </delete>

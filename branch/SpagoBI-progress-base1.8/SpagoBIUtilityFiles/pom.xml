@@ -54,8 +54,8 @@
 			  tofile="${basedir}/../build/tomcat_installation_instructions.txt" />
 
 		    <!-- unzip spagobi -->
-		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi-1.9RC.war" 
-			   dest="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC"/>
+		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/spagobi"/>
 
 		    <!-- put the correct cms.xml required by the exo-cms or jackrabbit profile 
 		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms.xml"/>
@@ -66,48 +66,45 @@
 		    
 		    <!-- put external spagobi packages into SpagoBI -->
 		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9RC.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9RC.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9RC.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9RC.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9alfa.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>			 			    
-			<copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9alfa.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/lib"/>			  
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>			 
+		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9alfa.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>			  
 
 		    <!-- delete hibernate configuration file for JOnAS -->
-		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi-1.9RC/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>
+		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>
 
 		    <!-- unzip SpagoBIJasperReportEngine -->
-		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine-1.9RC"/>
-                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine-1.9RC.war" 
-			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine-1.9RC"/>
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine"/>
+                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine"/>
 
 		    <!-- unzip SpagoBIJPivotEngine -->
-		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine-1.9RC"/>
-                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine-1.9RC.war" 
-			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine-1.9RC"/>
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine"/>
+                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine"/>
 
 		    <!-- unzip SpagoBIBirtReportEngine -->
-		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIBirtReportEngine-1.9RC"/>
-                    <unzip src="${basedir}/../SpagoBIBirtReportEngine/target/SpagoBIBirtReportEngine-1.9RC.war" 
-			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIBirtReportEngine-1.9RC"/>
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIBirtReportEngine"/>
+                    <unzip src="${basedir}/../SpagoBIBirtReportEngine/target/SpagoBIBirtReportEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIBirtReportEngine"/>
 
 		    <!-- unzip SpagoBIGeo -->
-		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine-1.9alfa"/>
-                    <unzip src="${basedir}/../SpagoBIGeo/target/SpagoBIGeoEngine-1.9alfa.war" 
-			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine-1.9alfa"/>
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine"/>
+                    <unzip src="${basedir}/../SpagoBIGeo/target/SpagoBIGeoEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine"/>
 
 		    <!-- unzip SpagoBIWekaEngine -->
-		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIWekaEngine-1.9alfa"/>
-                    <unzip src="${basedir}/../SpagoBIWekaEngine/target/SpagoBIWekaEngine-1.9alfa.war" 
-			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIWekaEngine-1.9alfa"/>
-			   					   			   
-		    <!-- delete temp folder -->
-		    <delete dir="${basedir}/../temp"/>
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIWekaEngine"/>
+                    <unzip src="${basedir}/../SpagoBIWekaEngine/target/SpagoBIWekaEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIWekaEngine"/>
 
                   </tasks>
                 </configuration>
@@ -138,10 +135,10 @@
   		      <fileset dir="${basedir}/jboss-server/" />
  		    </copy>
 
-		    <!-- copy the libraries requested by the exo-cms or jackrabbit profile into server/default/deploy/exoplatform.sar -->
+		    <!-- copy the libraries into server/default/deploy/exoplatform.sar -->
 		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar"/>
 		    <copy todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar">
-  		      <fileset dir="${basedir}/../temp/libraries/"/>
+  		      <fileset dir="${basedir}/libraries/"/>
  		    </copy>
 
 		    <!-- move the instructions file -->
@@ -149,23 +146,29 @@
 			  tofile="${basedir}/../build/jboss_installation_instructions.txt" />
 
 		    <!-- unzip spagobi -->
-		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi-1.8.war" 
+		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi.war" 
 			   dest="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war"/>
 
-		    <!-- put the correct cms.xml required by the exo-cms or jackrabbit profile -->
-		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"/>
-		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms-jackrabbit.xml"/>
-		    <copy file="${basedir}/../temp/cms.xml/cms.xml"
+		    <!-- put the correct cms.xml required by jackrabbit -->
+		    <move file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"
+			  tofile="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms_jndi.xml"/>
+		    <move file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms-jackrabbit.xml"
 			  tofile="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"/>
 
 		    <!-- put external spagobi packages into SpagoBI -->
-		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.8.jar"
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9RC.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.8.jar"
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9RC.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.8.jar"
-			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9RC.jar"
+			  todir="${basedir}/../jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9RC.jar"
+			  todir="${basedir}/../jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9alfa.jar"
+			  todir="${basedir}/../jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9alfa.jar"
+			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>			    
+		    
 		    <!-- delete commons-logging library -->
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
 
@@ -174,7 +177,7 @@
 
 		    <!-- unzip SpagoBIJasperReportEngine -->
 		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war"/>
-                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine-1.8.war" 
+                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine.war" 
 			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war"/>
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/commons-logging-1.0.2.jar" />
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJasperReportEngine.war/WEB-INF/lib/commons-logging-api-1.0.2.jar" />
@@ -185,14 +188,37 @@
 
 		    <!-- unzip SpagoBIJPivotEngine -->
 		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy"/>
-                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine-1.8.war" 
+                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine.war" 
 			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war"/>
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war/WEB-INF/lib/commons-logging.jar" />
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war/WEB-INF/lib/commons-logging-api.jar" />
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIJPivotEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
+		    
+		    <!-- unzip SpagoBIBirtReportEngine -->
+		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy"/>
+                    <unzip src="${basedir}/../SpagoBIBirtReportEngine/target/SpagoBIBirtReportEngine.war" 
+			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIBirtReportEngine.war"/>
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIBirtReportEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
+		    
+		    <!-- unzip SpagoBIGeoEngine -->
+		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy"/>
+                    <unzip src="${basedir}/../SpagoBIGeo/target/SpagoBIGeoEngine.war" 
+			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIGeoEngine.war"/>
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIGeoEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIGeoEngine.war/WEB-INF/lib/xalan-2.4.0.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIGeoEngine.war/WEB-INF/lib/xercesImpl.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIGeoEngine.war/WEB-INF/lib/xml-apis.jar" />
 
-		    <!-- delete temp folder -->
-		    <delete dir="${basedir}/../temp"/>
+		    <!-- unzip SpagoBIWekaEngine -->
+		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war"/>
+                    <unzip src="${basedir}/../SpagoBIWekaEngine/target/SpagoBIWekaEngine.war" 
+			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war"/>
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war/WEB-INF/lib/commons-logging-1.0.2.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war/WEB-INF/lib/commons-logging-api-1.0.2.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war/WEB-INF/lib/xalan.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war/WEB-INF/lib/xercesImpl.jar" />
+		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war/WEB-INF/lib/xml-apis.jar" />
 
                   </tasks>
                 </configuration>

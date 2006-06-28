@@ -32,6 +32,7 @@
   <name>SpagoBIBirtReportEngine</name>
   <url>http://maven.apache.org</url>
   <build>
+    <finalName>${artifactId}</finalName>
     <sourceDirectory>JavaSource</sourceDirectory>
     <resources>
       <resource>

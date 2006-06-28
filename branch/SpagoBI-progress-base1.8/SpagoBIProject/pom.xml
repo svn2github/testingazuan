@@ -32,6 +32,7 @@
   <name>SpagoBIProject</name>
   <url>http://maven.apache.org</url>
   <build>
+    <finalName>${artifactId}</finalName>
     <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>

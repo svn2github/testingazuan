@@ -1,6 +1,0 @@
-  <Context path="/SpagoBIJPivotEngine-1.9RC" docBase="${catalina.home}/webapps/SpagoBIJPivotEngine-1.9RC" debug="0" privileged="true">
-  	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
-<!--
-  	<ResourceLink name="jdbc/sbifoodmart" type="javax.sql.DataSource" global="jdbc/sbifoodmart"/>
--->
-  </Context>

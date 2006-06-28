@@ -164,7 +164,7 @@
   		</parameter>
   		<parameter>
     			<name>configFilePath</name>
-    			<value>${SERVER_HOME}/webapps/spagobi/WEB-INF/classes/repository.xml</value>
+    			<value>${SERVER_HOME}/sbidata/repository.xml</value>
   		</parameter>
 		<parameter>
     			<name>repHomeDir</name>

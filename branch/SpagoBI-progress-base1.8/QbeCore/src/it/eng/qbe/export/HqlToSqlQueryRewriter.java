@@ -90,15 +90,15 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		String entityName = null;
 		System.out.println(" ---> entity: " + entity);
 		
-		if(entity.indexOf("as") != -1) {
-			entityName = entity.substring(entity.indexOf("as") + 2, entity.length());
+		if(entity.indexOf(" as ") != -1) {
+			entityName = entity.substring(entity.indexOf(" as ") + 4, entity.length());
 		} else {
 			entityName = entity.trim();
-			if(entityName.startsWith("sum")) entityName = getEntityNameFromFunctionalEntity("sum", entityName);
-			if(entityName.startsWith("avg")) entityName = getEntityNameFromFunctionalEntity("avg", entityName);
-			if(entityName.startsWith("min")) entityName = getEntityNameFromFunctionalEntity("min", entityName);
-			if(entityName.startsWith("max")) entityName = getEntityNameFromFunctionalEntity("max", entityName);
-			if(entityName.startsWith("count")) entityName = getEntityNameFromFunctionalEntity("count", entityName); 
+			if(entityName.startsWith("sum(")) entityName = getEntityNameFromFunctionalEntity("sum", entityName);
+			if(entityName.startsWith("avg(")) entityName = getEntityNameFromFunctionalEntity("avg", entityName);
+			if(entityName.startsWith("min(")) entityName = getEntityNameFromFunctionalEntity("min", entityName);
+			if(entityName.startsWith("max(")) entityName = getEntityNameFromFunctionalEntity("max", entityName);
+			if(entityName.startsWith("count(")) entityName = getEntityNameFromFunctionalEntity("count", entityName); 
 			
 			if(entityName.lastIndexOf('.') != -1) {
 				entityName = entityName.substring(entityName.lastIndexOf('.') + 1, entityName.length());

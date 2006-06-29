@@ -21,7 +21,6 @@
     it.eng.spagobi.util.ChartCustomizer,
     java.util.List,
     java.util.ArrayList"%>
-<%@ taglib uri="http://spagobi.eng.it" prefix="sbi" %>
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 

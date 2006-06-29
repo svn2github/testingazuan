@@ -26,7 +26,7 @@
   <name>SpagoBIUtilityFiles</name>
   <profiles>
     <profile>
-      <id>tomcat-server</id>
+      <id>spagobi-tomcat</id>
       <build>
         <plugins>
       	  <plugin>
@@ -112,7 +112,7 @@
       </build>
     </profile>
     <profile>
-      <id>jboss-server</id>
+      <id>spagobi-jboss</id>
       <build>
         <plugins>
       	  <plugin>
@@ -220,7 +220,7 @@
       </build>
     </profile>
     <profile>
-      <id>jonas-server</id>
+      <id>spagobi-jonas</id>
       <build>
         <plugins>
       	  <plugin>

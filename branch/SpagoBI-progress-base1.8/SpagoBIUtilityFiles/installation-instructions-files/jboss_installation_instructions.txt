@@ -1,0 +1,16 @@
+THIS DOCUMENT FOLLOWS THE FILE README.TXT IN THE SPAGOBI ROOT DIRECTORY.
+
+If you want to install SpagoBI on your JBoss server, after having launched Maven 2 command, please proceed as follows:
+- copy the content of the folder "jboss-server" (NOT the directory itself but only its content) inside your JBoss base directory (we will refer to it as JBOSS_HOME): overwrite the existing files;
+- delete the jar hsqldb.jar from JBOSS_HOME/server/default/lib;
+
+For css files:
+- go to the folder JBOSS_HOME/server/default/deploy/exoplatform.ear and rename the file resources.war into resources.zip;
+- unzip the file resources.zip into a directory named "resources.war" and then delete the file resources.zip;
+- go to JBOSS_HOME/server/default/deploy/exoplatform.ear/resources.war/community/skin, copy the file jsr168-portlet.css and paste it inside JBOSS_HOME/server/default/deploy/exoplatform.ear/resources.war/skin/portlet;
+- inside JBOSS_HOME/server/default/deploy/exoplatform.ear/resources.war/skin/portlet rename the file default-portlet.css with another name and then rename jsr168-portlet.css into default-portlet.css.
+
+For CMS:
+- open the file jackrabbitSessionFactory.properties in JBOSS_HOME/server/default/deploy/exoplatform.ear/spagobi.war/WEB-INF/classes and substitute ${SERVER_HOME} with the actual path of JBOSS_HOME.
+Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);
+

@@ -43,15 +43,9 @@
   		      <fileset dir="${basedir}/tomcat-server/"/>
  		    </copy>
 
-		    <!-- copy the libraries into common/lib -->
-		    <mkdir dir="${basedir}/../build/tomcat-server/common/lib"/>
-		    <copy todir="${basedir}/../build/tomcat-server/common/lib">
-  		    	<fileset dir="${basedir}/libraries/" />
- 		    </copy>
-
-		    <!-- move the instructions file -->
-		    <move file="${basedir}/../build/tomcat-server/tomcat_installation_instructions.txt"
-			  tofile="${basedir}/../build/tomcat_installation_instructions.txt" />
+		    <!-- copy the instructions file -->
+		    <copy file="${basedir}/installation-instructions-files/tomcat_installation_instructions.txt"
+			  todir="${basedir}/../build" />
 
 		    <!-- unzip spagobi -->
 		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi.war" 
@@ -135,15 +129,9 @@
   		      <fileset dir="${basedir}/jboss-server/" />
  		    </copy>
 
-		    <!-- copy the libraries into server/default/deploy/exoplatform.sar -->
-		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar"/>
-		    <copy todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar">
-  		      <fileset dir="${basedir}/libraries/"/>
- 		    </copy>
-
-		    <!-- move the instructions file -->
-		    <move file="${basedir}/../build/jboss-server/jboss_installation_instructions.txt"
-			  tofile="${basedir}/../build/jboss_installation_instructions.txt" />
+		    <!-- copy the instructions file -->
+		    <copy file="${basedir}/installation-instructions-files/jboss_installation_instructions.txt"
+			  todir="${basedir}/../build" />
 
 		    <!-- unzip spagobi -->
 		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi.war" 

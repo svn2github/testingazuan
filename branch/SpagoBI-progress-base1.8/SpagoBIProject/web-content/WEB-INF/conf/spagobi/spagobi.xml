@@ -24,13 +24,13 @@
 	<!-- SPAGOBI HIBERNATE PERSISTENCE CONFIGURATTION -->
 	<HIBERNATE-CFGFILE>
 		<!--  PostgresSQL (Default)  -->
-		<!-- hibernate.cfg.xml -->
+		<!--  hibernate.cfg.postgres.xml -->
 		<!--  MySQL: Uncomment the row below and edit the file  to provide connection info -->
 		<!--  hibernate.cfg.mysql.xml -->
 		<!--  Oracle: Uncomment the row below and edit the file to provide connection info -->
 		<!--  hibernate.cfg.ora.xml-->
-        <!--  Hsqldb: Uncomment the row below and edit the file to provide connection info -->
-        hibernate.cfg.hsql.xml
+    <!--  Hsqldb: Uncomment the row below and edit the file to provide connection info -->
+          hibernate.cfg.hsql.xml
 	</HIBERNATE-CFGFILE>
 	
 	<DAO-CONF>

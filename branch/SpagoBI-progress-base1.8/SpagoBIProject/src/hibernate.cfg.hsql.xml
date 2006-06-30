@@ -14,24 +14,24 @@
         -->
         <property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
         <property name="hibernate.show_sql">false</property>
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiDomains.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParameters.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParuseDet.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjPar.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjects.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiFuncRole.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiLov.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiEngines.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiExtRoles.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjFunc.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiFunctions.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParuse.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiChecks.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiParuseCk.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjState.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiObjParuse.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiSubreports.hbm.xml"/>
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiEvents.hbm.xml" />
-        <mapping resource="it/eng/spagobi/metadata/mappingmysql/SbiEventsLog.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiFuncRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiObjFunc.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiFunctions.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiChecks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiObjState.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiObjParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiSubreports.hbm.xml"/>
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiEvents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappinghsqldb/SbiEventsLog.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

@@ -125,7 +125,7 @@ public class ReportServlet extends HttpServlet{
 			resultFile = reportFile;
 			if(queryName == null) queryName = "queryResults";
 		}		
-				
+		
 		copyFileToResponse(response, inline, resultFile, queryName, format);
 		
 		// instant cleaning

@@ -68,7 +68,7 @@ import org.apache.commons.fileupload.FileUploadException;
  */
 public class IReportPluginServlet extends HttpServlet{
 	
-	private final String ATTR_PATH_SYS_FUNCT = "SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH";
+	private final String ATTR_PATH_SYS_FUNCT = "";
 	private final int OP_PAR_NOT_FOUND = 10;
 	private final int USER_PAR_NOT_FOUND = 11;
 	private final int PWD_PAR_NOT_FOUND = 12;

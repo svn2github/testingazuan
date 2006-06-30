@@ -136,7 +136,7 @@ public class SpagoBIConstants {
 	public static final String PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT = "loopbackAfterSubObjectDeletion";
 	public static final String PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC = "loopbackSingleObjectExecution";
 	
-	public final static String CMS_BIOBJECTS_PATH = "CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH";
+	public final static String CMS_BIOBJECTS_PATH = "SPAGOBI.CMS_PATHS.BIOBJECTSPATH";
 
 	public static final String IMPORTEXPORT_OPERATION = "IMPORTEXPORT_OPERATION";
 	public static final String OPERATION_PAMPHLETS_VIEW_TREE = "OPERATION_PAMPHLETS_VIEW_TREE";

@@ -175,27 +175,6 @@ public class ImportManager implements IImportManager {
 		return props.getProperty("cms-basefolder");
 	}
 	
-	
-	/**
-	 * Gets the path of the cms base folder of the current SpagoBI cms repository 
-	 * @return the path of the cms base folder of the current SpagoBI cms repository 
-	 * @throws EMFUserError
-	 */
-	private String getCurrentCmsBaseFolder()throws EMFUserError {
-		String pathSysFunct = "";
-		try{
-			ConfigSingleton conf = ConfigSingleton.getInstance();
-			SourceBean pathSysFunctSB = (SourceBean)conf.getAttribute("SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH");
-		    pathSysFunct = pathSysFunctSB.getCharacters();
-		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getCurrentCmsBaseFolder",
-                    			  "Error while retriving current cms base folder " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
-		}
-		return pathSysFunct;
-	}
-	
-	
 	/**
 	 * Gets the list of all exported roles
 	 * @return The list of exported roles

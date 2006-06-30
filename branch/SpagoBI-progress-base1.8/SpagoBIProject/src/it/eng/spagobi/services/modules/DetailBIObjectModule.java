@@ -1095,19 +1095,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();
 		    response.setAttribute(NAME_ATTR_LIST_ENGINES, engines);
 		    response.setAttribute(NAME_ATTR_LIST_OBJ_TYPES, types);
-		    response.setAttribute(NAME_ATTR_LIST_STATES, states);
-//		    String ATTR_PATH_SYS_FUNCT = "SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH";
-//          RequestContainer requestContainer = getRequestContainer();
-//          SessionContainer sessionContainer = requestContainer.getSessionContainer();
-//          SessionContainer permanentSession = sessionContainer.getPermanentContainer();
-//          IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-//		    SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute(ATTR_PATH_SYS_FUNCT);
-//		    String pathSysFunct = pathSysFunctSB.getCharacters();
-//	        TreeObjectsDAO objDao = new TreeObjectsDAO();
-//	        SourceBean dataResponseSysFunct = objDao.getXmlTreeObjects(pathSysFunct, profile);
-//			response.setAttribute(dataResponseSysFunct);
-
-		    
+		    response.setAttribute(NAME_ATTR_LIST_STATES, states);		    
 			List functionalities = new ArrayList();
 			try {
 				functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);

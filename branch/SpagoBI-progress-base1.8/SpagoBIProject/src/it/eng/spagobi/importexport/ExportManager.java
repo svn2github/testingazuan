@@ -44,16 +44,12 @@ import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
-import it.eng.spagobi.importexport.IExportManager;
-import it.eng.spagobi.importexport.ImportExportConstants;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -225,13 +221,9 @@ public class ExportManager implements IExportManager {
 	 */
 	private void exportPropertiesFile() throws EMFUserError {
 		try{
-			ConfigSingleton conf = ConfigSingleton.getInstance();
-			SourceBean pathSysFunctSB = (SourceBean)conf.getAttribute("SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH");
-		    String pathSysFunct = pathSysFunctSB.getCharacters();
 			String propFilePath = pathBaseFolder + "/export.properties";
 			FileOutputStream fos = new FileOutputStream(propFilePath);
-			String properties = "spagobi-version=1.9\n"+
-								"cms-basefolder="+pathSysFunct+"\n";
+			String properties = "spagobi-version=1.9\n";
 			fos.write(properties.getBytes());
 			fos.flush();
 			fos.close();

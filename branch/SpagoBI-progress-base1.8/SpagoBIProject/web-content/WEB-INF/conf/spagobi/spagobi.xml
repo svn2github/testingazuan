@@ -3,10 +3,10 @@
 	
 	<!-- root paths of SpagoBI data into the cms system -->
     <CMS_PATHS>
-		<SYSTEM_FUNCTIONALITIES_PATH>/Functionalities/SystemFunctionalities</SYSTEM_FUNCTIONALITIES_PATH>
+		<BIOBJECTSPATH path="/BIObjects" />
 	</CMS_PATHS>
-
-	
+    
+    
  	<SERVICE_SECURITY>
 		<SPAGOBI_PRIVATE_KEY_DSA>spagobi_privatekey</SPAGOBI_PRIVATE_KEY_DSA>
     </SERVICE_SECURITY>
@@ -34,8 +34,8 @@
 	</HIBERNATE-CFGFILE>
 	
 	<DAO-CONF>
-		<!--  HIBERNATE DAO (DEFAULT) IMPLEMENTATION -->
 		
+		<!--  HIBERNATE DAO (DEFAULT) IMPLEMENTATION -->
 		<DAO name="BIObjectDAO" implementation="it.eng.spagobi.bo.dao.hibernate.BIObjectDAOHibImpl"/>  
 		<DAO name="ChecksDAO" implementation="it.eng.spagobi.bo.dao.hibernate.CheckDAOHibImpl"/>
 		<DAO name="EngineDAO" implementation="it.eng.spagobi.bo.dao.hibernate.EngineDAOHibImpl"/>
@@ -53,18 +53,6 @@
  		<DAO name="BIObjectCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.BIObjectCMSDAOImpl"/>		
 		<DAO name="FunctionalityCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.FunctionalityCMSDAOImpl"/>		
 
-		<!--  TO USE JDBC DAO IMPLEMENTATION -->	
-		<!--  <DAO name="BIObjectDAO" implementation="it.eng.spagobi.bo.dao.jdbc.BIObjectDAOImpl"/> -->
-		<!--  <DAO name="ChecksDAO" implementation="it.eng.spagobi.bo.dao.jdbc.CheckDAOImpl"/>-->
-		<!--  <DAO name="EngineDAO" implementation="it.eng.spagobi.bo.dao.jdbc.EngineDAOImpl"/>-->
-		<!--  <DAO name="LowFunctionalityDAO" implementation="it.eng.spagobi.bo.dao.jdbc.LowFunctionalityDAOImpl"/> -->
-		<!--  <DAO name="ModalitiesValueDAO" implementation="it.eng.spagobi.bo.dao.jdbc.ModalitiesValueDAOImpl"/>-->
-		<!--  <DAO name="ParameterDAO" implementation="it.eng.spagobi.bo.dao.jdbc.ParameterDAOImpl"/> -->
-		<!--  <DAO name="ParameterUseDAO" implementation="it.eng.spagobi.bo.dao.jdbc.ParameterUseDAOImpl"/>-->
-		<!--  <DAO name="RoleDAO" implementation="it.eng.spagobi.bo.dao.jdbc.RoleDAOImpl"/> -->
-		<!--  <DAO name="DomainDAO" implementation="it.eng.spagobi.bo.dao.jdbc.DomainDAOImpl"/> -->
-		<!--  <DAO name="BIObjectParameterDAO" implementation="it.eng.spagobi.bo.dao.jdbc.BIObjectParameterDAOImpl"/>-->
-		<!--  END JDBC DAO IMPLEMENTATION -->
 	</DAO-CONF>
 
 
@@ -73,6 +61,7 @@
 		<LANGUAGE default="true" language="en" country="US" />
 	</LANGUAGE_SUPPORTED>	
 	
+	
 	<SCRIPT_LANGUAGE_SUPPORTED>
 		<SCRIPT_LANGUAGE default="true" 
 						name="groovy" 
@@ -80,6 +69,7 @@
 						identifier="groovy"
 						shortidentifier="gy" />
 	</SCRIPT_LANGUAGE_SUPPORTED>	
+	
 	
 	<TREE_INITIALIZATION>
 		<TREE_INITIAL_STRUCTURE>

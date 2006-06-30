@@ -13,12 +13,6 @@
 	  	<INITIALSTRUCTURE>
 			<NODE path="/BIObjects" />
 			<NODE path="/Pamphlets" />
-			<BIOBJECTSPATH path="/BIObjects" />
-	    	<!--
-	    	<NODE path="/Functionalities" />
-		    <NODE path="/Functionalities/SystemFunctionalities" />
-		    <NODE path="/Pamphlets" />
-		    -->
    		</INITIALSTRUCTURE>
    		<NAMESPACES>
    			<SYSTEMNAMESPACE prefix="appSys" uri="http://it.eng.spago.contentRepository.system" />

@@ -723,7 +723,7 @@
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="DetailBIObjectPage" />
         		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
         		<PARAMETER name="selected_obj_par_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.selected_obj_par_id" />
-        		<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.PATH" />
+        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.OBJECT_ID" />
         		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
         		<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.ACTOR" />
       		</RESOURCES>

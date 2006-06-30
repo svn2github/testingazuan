@@ -48,7 +48,7 @@
   	String exportFormUrl = GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet";
   	exportFormUrl += "?jarfilepath=" + jarFilePath;
   	exportFormUrl += "&query=" + finalQueryString ;
-  	exportFormUrl += "&queryName=" + aWizardObject.getQueryId();
+  	if(aWizardObject.getQueryId() != null)  exportFormUrl += "&queryName=" + aWizardObject.getQueryId();
   	exportFormUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
   	exportFormUrl += "&dialect=" + dm.getDialect() ;
 						

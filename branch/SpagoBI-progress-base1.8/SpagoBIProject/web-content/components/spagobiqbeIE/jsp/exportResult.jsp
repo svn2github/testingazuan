@@ -33,7 +33,7 @@
   	saveFormUrl += "?action=buildTemplate";
   	saveFormUrl += "&inline=false";
   	saveFormUrl += "&jarfilepath=" + jarFilePath;
-  	saveFormUrl += "&queryName=" + aWizardObject.getQueryId();
+  	if(aWizardObject.getQueryId() != null) saveFormUrl += "&queryName=" + aWizardObject.getQueryId();
   	saveFormUrl += "&query=" + finalQueryString ;
   	saveFormUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
   	saveFormUrl += "&dialect=" + dm.getDialect() ;
@@ -41,7 +41,7 @@
   	String iframeUrl = GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet";
   	iframeUrl += "?jarfilepath=" + jarFilePath;
   	iframeUrl += "&inline=true";
-  	iframeUrl += "&queryName=" + aWizardObject.getQueryId();
+  	if(aWizardObject.getQueryId() != null) iframeUrl += "&queryName=" + aWizardObject.getQueryId();
   	iframeUrl += "&query=" + finalQueryString ;
   	iframeUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
   	iframeUrl += "&dialect=" + dm.getDialect() ;

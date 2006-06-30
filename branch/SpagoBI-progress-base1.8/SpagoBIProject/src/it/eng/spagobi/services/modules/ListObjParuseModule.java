@@ -95,7 +95,6 @@ public class ListObjParuseModule extends AbstractModule {
 		try {
 			String objParIdStr = (String) request.getAttribute("obj_par_id");
 			String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
-			String path = (String) request.getAttribute(ObjectsTreeConstants.PATH);
 			Integer objParId = new Integer (objParIdStr);
 			BIObjectParameter objParameter = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(objParId);
 			List objParuses = DAOFactory.getObjParuseDAO().loadObjParuses(objParId);
@@ -120,7 +119,6 @@ public class ListObjParuseModule extends AbstractModule {
 				ModalitiesValue lov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
 				if (lov.getITypeCd().equalsIgnoreCase("QUERY")) paruses.add(paruse);
 			}
-			response.setAttribute(ObjectsTreeConstants.PATH, path);
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			response.setAttribute("objParameter", objParameter);
 			response.setAttribute("allParuses", paruses);
@@ -137,7 +135,8 @@ public class ListObjParuseModule extends AbstractModule {
 	
 	private void modObjParuses(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
 		try {
-			String path = (String) request.getAttribute(ObjectsTreeConstants.PATH);
+			String objIdStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+			Integer objId = new Integer(objIdStr);
 			String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 			String objParIdStr = (String) request.getAttribute("obj_par_id");
 			Integer objParId = new Integer (objParIdStr);
@@ -160,7 +159,7 @@ public class ListObjParuseModule extends AbstractModule {
 			// insert or modify the checked ObjParuse
 			saveCheckedObjParuses(newParusesId, request, objParId);
 			
-			response.setAttribute("PATH", path);
+			response.setAttribute(ObjectsTreeConstants.OBJECT_ID, objId.toString());
 			response.setAttribute("selected_obj_par_id", objParId.toString());
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			response.setAttribute("loopback", "true");

@@ -21,13 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.bo;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.bo.dao.jdbc.DomainDAOImpl;
-import it.eng.spagobi.bo.dao.jdbc.EngineDAOImpl;
+
+import java.io.Serializable;
+
 
 /**
  * Defines the <code>QueryDetail</code> objects. This object is used to store 

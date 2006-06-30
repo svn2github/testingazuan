@@ -21,8 +21,8 @@
 	List allParuses = (List) moduleResponse.getAttribute("allParuses");
 	List objParuses = (List) moduleResponse.getAttribute("objParuses");
 	List otherObjParameters = (List) moduleResponse.getAttribute("otherObjParameters");
-	String path = (String) moduleResponse.getAttribute(ObjectsTreeConstants.PATH);
 	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
+	Integer objId = objpar.getBiObjectID();
 	
 	PortletURL formUrl = renderResponse.createActionURL();
    	formUrl.setParameter("PAGE", "ListObjParusePage");
@@ -34,7 +34,7 @@
    	backUrl.setParameter("PAGE", "DetailBIObjectPage");
    	backUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
    	backUrl.setParameter("selected_obj_par_id", objpar.getId().toString());
-   	backUrl.setParameter(ObjectsTreeConstants.PATH, path);
+   	backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, objId.toString());
    	//backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
@@ -42,7 +42,7 @@
 %>
 <form method='POST' action='<%= formUrl.toString() %>' id='objParusesForm'>
 	<input type="hidden" name="obj_par_id" value="<%=objpar.getId()%>" />
-	<input type="hidden" name="<%=ObjectsTreeConstants.PATH%>" value="<%=path%>" />	
+	<input type="hidden" name="<%=ObjectsTreeConstants.OBJECT_ID%>" value="<%=objId%>" />	
 	<%
    	
 	if (allParuses == null || allParuses.size() == 0) {

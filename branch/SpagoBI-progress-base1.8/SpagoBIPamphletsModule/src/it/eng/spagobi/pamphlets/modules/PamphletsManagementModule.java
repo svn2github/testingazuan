@@ -165,10 +165,6 @@ public class PamphletsManagementModule extends AbstractModule {
 		// get list of the configured document
 		List confDoc = pampDao.getConfiguredDocumentList(pathPamp);
 		WorkflowConfiguration workConf = pampDao.getWorkflowConfiguration(pathPamp);
-//		SourceBean pathSysFunctSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.CMS_PATHS.SYSTEM_FUNCTIONALITIES_PATH");
-//	    String pathSysFunct = pathSysFunctSB.getCharacters();
-//	    TreeObjectsDAO objDao = new TreeObjectsDAO();
-//        SourceBean objectsSB = objDao.getXmlTreeObjects(pathSysFunct);
 		List functionalities;
 		try {
 			functionalities = DAOFactory.getLowFunctionalityDAO()

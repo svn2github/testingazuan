@@ -64,12 +64,14 @@
 	
 	
 	String testButtonVisibility = null;
+	String testButtonDisabled = "";
 	if (modVal != null && (modVal.getITypeCd().equalsIgnoreCase("QUERY")
 		|| modVal.getITypeCd().equalsIgnoreCase("SCRIPT")) )  {
 			testButtonVisibility = "visible";
 		}	
 	else {
 			testButtonVisibility = "hidden";
+			testButtonDisabled="disabled='disabled'";
 	}
 	
 %>
@@ -89,24 +91,28 @@
 		document.getElementById("scriptWizard").style.display = "none"
 		document.getElementById("lovWizard").style.display = "none"
 		document.getElementById("testButton").style.visibility = "visible"
+		document.getElementById("testButtonImage").disabled = false
 	}
 	if (wizard.match("SCRIPT") != null) {
 		document.getElementById("queryWizard").style.display = "none"
 		document.getElementById("scriptWizard").style.display = "inline"
 		document.getElementById("lovWizard").style.display = "none"
 		document.getElementById("testButton").style.visibility = "visible"
+		document.getElementById("testButtonImage").disabled = false
 	}
 	if (wizard.match("FIX_LOV") != null) {
 		document.getElementById("queryWizard").style.display = "none"
 		document.getElementById("scriptWizard").style.display = "none"
 		document.getElementById("lovWizard").style.display = "inline"
 		document.getElementById("testButton").style.visibility = "hidden"
+		document.getElementById("testButtonImage").disabled = true
 	}
 	if (wizard.match("MAN_IN") != null) {
 		document.getElementById("queryWizard").style.display = "none"
 		document.getElementById("scriptWizard").style.display = "none"
 		document.getElementById("lovWizard").style.display = "none"
 		document.getElementById("testButton").style.visibility = "hidden"
+		document.getElementById("testButtonImage").disabled = true
 	}
 }
 </script>
@@ -120,7 +126,8 @@
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section' style='visibility:<%=testButtonVisibility%>;' id='testButton'>
-		<input type='image' class='header-button-image-portlet-section' name="testLovBeforeSave" value="testLovBeforeSave" 
+		<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
+				name="testLovBeforeSave" value="testLovBeforeSave" <%=testButtonDisabled%> 
 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/test.png")%>' 
 				title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />'  
 				alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 

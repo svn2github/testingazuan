@@ -470,9 +470,32 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			
 			CmsManager manager = new CmsManager();
+			
 			if (version) {
 				// if user has load a file template update the cms reporitory
 				if(biObject.getTemplate().getFileContent().length > 0) {
+					// controls that the relevant node in CMS exists; if the node does not exist, it is created
+					GetOperation getOp = new GetOperation();
+					getOp.setPath(hibBIObject.getPath());
+					getOp.setRetriveContentInformation("false");
+					getOp.setRetrivePropertiesInformation("false");
+					getOp.setRetriveVersionsInformation("false");
+					getOp.setRetriveChildsInformation("false");
+					CmsNode cmsnode = manager.execGetOperation(getOp);
+					if (cmsnode == null) {
+						// if the node does not exist in CMS, it is created
+						SetOperation setOp = new SetOperation();
+						setOp.setPath(hibBIObject.getPath());
+						setOp.setType(SetOperation.TYPE_CONTAINER);
+						setOp.setEraseOldProperties(true);
+						// define properties
+						List properties = new ArrayList();
+						String[] typePropValues = new String[] { biObject.getBiObjectTypeCode() };
+						CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
+						properties.add(proptype);
+						setOp.setProperties(properties);
+						manager.execSetOperation(setOp);
+					}
 					SetOperation setOp = new SetOperation();
 					setOp.setContent(new ByteArrayInputStream(biObject.getTemplate().getFileContent()));
 					setOp.setType(SetOperation.TYPE_CONTENT);

@@ -124,7 +124,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							Constants.NOME_MODULO,
 							TracerSingleton.INFORMATION,
 							"Validation::validate:validazione non richiesta, nessuna busta <SERVICE> associata a "
-									+ _serviceName + " di tipo " + _serviceType + "Trovata nel file di Configurazione");
+									+ _serviceName + " di tipo " + _serviceType + " trovata nel file di Configurazione");
 			String nomeBustaInSession = "VALIDATE_"+_serviceType.toUpperCase()+"_" + _serviceName;
 			
 			TracerSingleton

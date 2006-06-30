@@ -34,7 +34,7 @@
         <property name="path" type="string">
             <column name="path" length="400" />
         </property>
-        <set name="sbiObjFuncs" inverse="true">
+        <set name="sbiObjFuncs" inverse="true" sort="comparatorClass">
             <key>
                 <column name="funct_id" not-null="true" />
             </key>

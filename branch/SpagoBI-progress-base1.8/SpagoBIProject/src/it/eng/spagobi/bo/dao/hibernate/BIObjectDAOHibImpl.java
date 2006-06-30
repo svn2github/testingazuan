@@ -998,7 +998,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Query hibQuery = aSession.createQuery(" from SbiObjects");
+			Query hibQuery = aSession.createQuery(" from SbiObjects s order by s.name");
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
@@ -1049,7 +1049,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			"where " +
 			"	objects.biobjId = objFuncs.id.sbiObjects.biobjId " +
 			"	and objFuncs.id.sbiFunctions.functId = functions.functId " +
-			"	and functions.path like '" + initialPath + "/%' ");
+			"	and functions.path like '" + initialPath + "/%' " + 
+			"order by " +
+			"	objects.name");
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {

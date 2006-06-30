@@ -319,7 +319,7 @@ public class DetailParameterModule extends AbstractModule {
 					String saveParameterUse = (String) request.getAttribute("saveParameterUse");
 					if (saveParameterUse != null && saveParameterUse.equalsIgnoreCase("yes")) {
 						// it is requested to save the visible ParameterUse
-						ValidationCoordinator.validate("ParameterUseValidation", "PAGE", this);
+						ValidationCoordinator.validate("PAGE", "ParameterUseValidation", this);
 						parameterUseLabelControl(paruse, mod);
 						
 						// if there are some validation errors into the errorHandler does not write into DB
@@ -376,12 +376,11 @@ public class DetailParameterModule extends AbstractModule {
 							&& paruse.getAssociatedRoles().size() == 0)
 						paruseToBeSaved = false;
 					if (paruseToBeSaved) {
-						ValidationCoordinator.validate("ParameterUseValidation",
-								"PAGE", this);
+						ValidationCoordinator.validate("PAGE", "ParameterUseValidation", this);
 						parameterUseLabelControl(paruse, mod);
 					}
 
-					ValidationCoordinator.validate("ParameterValidation", "PAGE", this);
+					ValidationCoordinator.validate("PAGE", "ParameterValidation", this);
 					parameterLabelControl(parameter, mod);
 		    		
 					// if there are some validation errors into the errorHandler does not write into DB
@@ -417,7 +416,7 @@ public class DetailParameterModule extends AbstractModule {
 				}
 
     		} else {
-    			ValidationCoordinator.validate("ParameterValidation","PAGE", this);
+    			ValidationCoordinator.validate("PAGE", "ParameterValidation", this);
     			parameterLabelControl(parameter, mod);
 	    		// if there are some errors, exits without writing into DB
     			selectedParuseIdStr = "-1";

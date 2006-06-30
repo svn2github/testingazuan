@@ -144,8 +144,8 @@ public class DetailEngineModule extends AbstractModule {
 			Integer engineTypeId = new Integer(engineTypeIdStr);
 			Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engineTypeId);
 			
-			if ("EXT".equalsIgnoreCase(engineType.getValueCd())) ValidationCoordinator.validate("ExternalEngineDetailPage", "PAGE", this);
-			else ValidationCoordinator.validate("InternalEngineDetailPage", "PAGE", this);
+			if ("EXT".equalsIgnoreCase(engineType.getValueCd())) ValidationCoordinator.validate("PAGE", "ExternalEngineDetailPage", this);
+			else ValidationCoordinator.validate("PAGE", "InternalEngineDetailPage", this);
 			
 			Engine engine = recoverEngineDetails(request);
 			EMFErrorHandler errorHandler = getErrorHandler();

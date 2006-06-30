@@ -379,7 +379,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					String saveBIObjectParameter = (String) request.getAttribute("saveBIObjectParameter");
 					if (saveBIObjectParameter != null && saveBIObjectParameter.equalsIgnoreCase("yes")) {
 						// it is requested to save the visible BIObjectParameter
-						ValidationCoordinator.validate("BIObjectParameterValidation", "PAGE", this);
+						ValidationCoordinator.validate("PAGE", "BIObjectParameterValidation", this);
 						biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
 						// If it's a new BIObjectParameter or if the Parameter was changed controls 
 						// that the BIObjectParameter url name is not already in use
@@ -470,13 +470,13 @@ public class DetailBIObjectModule extends AbstractModule {
 							&& biObjPar.getParID().intValue() == -1)
 						biParameterToBeSaved = false;
 					if (biParameterToBeSaved) {
-						ValidationCoordinator.validate("BIObjectParameterValidation", "PAGE", this);
+						ValidationCoordinator.validate("PAGE", "BIObjectParameterValidation", this);
 						// If it's a new BIObjectParameter or if the Parameter was changed controls 
 						// that the BIObjectParameter url name is not already in use
 						urlNameControl(obj.getId(), biObjPar);
 					}
 
-					ValidationCoordinator.validate("BIObjectValidation", "PAGE", this);
+					ValidationCoordinator.validate("PAGE", "BIObjectValidation", this);
 					
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -515,7 +515,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 
     		} else {
-    			ValidationCoordinator.validate("BIObjectValidation", "PAGE", this);
+    			ValidationCoordinator.validate("PAGE", "BIObjectValidation", this);
     			selectedObjParIdStr = "-1";
     			
 				// if there are some validation errors into the errorHandler does not write into DB

@@ -246,7 +246,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					modVal.setLovProvider(lovProvider);
 
 					labelControl(request, mod);
-					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
+					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
 
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -279,8 +279,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					modVal.setLovProvider(lovProvider);
 
 					labelControl(request, mod);
-					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
-					ValidationCoordinator.validate("QueryWizardValidation", "PAGE", this);
+					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
+					ValidationCoordinator.validate("PAGE", "QueryWizardValidation", this);
 
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -336,7 +336,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						// it is requested to add a Fix Lov item.
 						// If there are no errors, add the new item in the
 						// Lov
-						ValidationCoordinator.validate("FixLovWizardValidation", "PAGE", this);
+						ValidationCoordinator.validate("PAGE", "FixLovWizardValidation", this);
 						
 						// if there are some validation errors into the errorHandler does not add the new values
 						Collection errors = errorHandler.getErrors();
@@ -360,7 +360,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					}
 
 					labelControl(request, mod);
-					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
+					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
 
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -393,8 +393,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					modVal.setLovProvider(lovProvider);
 
 					labelControl(request, mod);
-					ValidationCoordinator.validate("ModalitiesValueValidation", "PAGE", this);
-					ValidationCoordinator.validate("ScriptWizardValidation", "PAGE", this);
+					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
+					ValidationCoordinator.validate("PAGE", "ScriptWizardValidation", this);
 					
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();

@@ -147,8 +147,10 @@ public interface IBIObjectDAO {
 	public void insertBIObject(BIObject obj) throws EMFUserError;
 
 	/**
-	 * Deletes a BIObject from a functionality. Then, if the BIObject is no more referenced in any 
-	 * functionality, deletes it completely from db and from CMS
+	 * Deletes a BIObject from a functionality. If the functionality is not specified 
+	 * (i.e. idFunct == null), the method deletes the BIObject from all the functionalities.
+	 * Then, if the BIObject is no more referenced in any 
+	 * functionality, deletes it completely from db and from CMS.
 	 * 
 	 * @param obj The object containing all delete information
 	 * @param idFunct The Integer representing the functionality id

@@ -154,8 +154,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		htmlStream.append("				useIcons		: true,\n");
 		htmlStream.append("				useStatusText	: true,\n");
 		htmlStream.append("				closeSameLevel	: false,\n");
-		htmlStream.append("				inOrder			: false\n");
-		htmlStream.append("			}\n");
+		htmlStream.append("				inOrder			: false};\n");
 		htmlStream.append("			this.icon = {\n");
 		htmlStream.append("				root		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treebase.gif")+"',\n");
 		htmlStream.append("				folder		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif")+"',\n");

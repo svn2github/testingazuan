@@ -226,6 +226,8 @@ function showEngField(docType) {
 						<spagobi:message key = "SBIDev.docConf.docDet.engineField" />
 					</span>
 				</div>
+				
+			
 				<div class='div_detail_form'>
 		      		<select class='portlet-form-input-field' style='width:230px;' 
 							name="engine" id="engine" >
@@ -249,11 +251,12 @@ function showEngField(docType) {
 		      		%>
 		      		</select>
 				</div>
- 
+                 
+          
 				<script>
 					var pos = document.getElementById('type').selectedIndex;
 					showEngField(document.getElementById('type').options[pos].value);
-				</script>
+				</script> 
 
 			<!-- DISPLAY COMBO FOR STATE SELECTION -->
 			<!-- IF THE USER IS A DEV ACTOR THE COMBO FOR THE STATE SELECTION CONTAINS ONLY A VALUE
@@ -287,8 +290,8 @@ function showEngField(docType) {
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBIDev.docConf.docDet.stateField" />
 					</span>
-				</div>
-				<div class='div_detail_form'>
+				</div>  
+ 				<div class='div_detail_form'>
 					<select class='portlet-form-input-field' style='width:230px;' name="state" id="state">
 		      			<% 
 		      		    Iterator iterstates = listStates.iterator();
@@ -385,6 +388,8 @@ function showEngField(docType) {
 		</a>
 	</div>
 	
+	
+
 	<script>
 	function switchView() {
 		var treeView = document.getElementById('folderTree').style.display;
@@ -412,6 +417,12 @@ function showEngField(docType) {
 			<spagobi:message key = "SBIDev.docConf.docDet.templateVersionField" />
 		</span>
 		<div style='border: 1px solid black;max-height:160px;overflow:auto;'>
+			
+			
+			
+			
+			
+			
 			<table> 
 				<% 
 				TreeMap templates = obj.getTemplateVersions();
@@ -453,10 +464,7 @@ function showEngField(docType) {
    					eraseVerUrl.setParameter(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
    					eraseVerUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 					eraseVerUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-					SourceBean biObjectsPathSB = (SourceBean)
-ConfigSingleton.getInstance().getAttribute("CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH");
-					String biObjectsPath = (String) biObjectsPathSB.getAttribute("path");
-   					String pathTemp = biObjectsPath + "/" + obj.getUuid() + "/template";
+					String pathTemp = obj.getPath() + "/template";
    					String downl = renderRequest.getContextPath() + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
 		      		       
 		      		        if(isCurrentVer) {
@@ -475,8 +483,17 @@ ConfigSingleton.getInstance().getAttribute("CONTENTCONFIGURATION.CONTENTREPOSITO
 		      		}
 		      		%>    
 		      	</table>
+
+
+
+
+
+
+
+
 		</div>
 	</div>
+
      	</td>
       </tr>
    </table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
@@ -502,7 +519,6 @@ ConfigSingleton.getInstance().getAttribute("CONTENTCONFIGURATION.CONTENTREPOSITO
 <% } else if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
   		BIObjectParameter objPar = (BIObjectParameter) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_OBJECT_PAR);
 %>
-
 	
 <div style='width:100%;visibility:visible;' class='UITabs' id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
 	<div class="first-tab-level" style="background-color:#f8f8f8">
@@ -546,9 +562,6 @@ ConfigSingleton.getInstance().getAttribute("CONTENTCONFIGURATION.CONTENTREPOSITO
 	</div>
 
 
-
-
-	
 <script>
 
 <%
@@ -666,7 +679,6 @@ function deleteBIParameterConfirm (message) {
 }
 
 </script>
-
 
 
 

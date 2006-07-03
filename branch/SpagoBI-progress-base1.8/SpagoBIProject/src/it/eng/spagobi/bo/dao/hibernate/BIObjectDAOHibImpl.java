@@ -45,12 +45,14 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
@@ -730,7 +732,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			Iterator itObjFunc = hibObjFuncs.iterator();
 			while (itObjFunc.hasNext()) {
 				SbiObjFunc aSbiObjFunc = (SbiObjFunc) itObjFunc.next();
-				if (aSbiObjFunc.getId().getSbiFunctions().getFunctId().intValue() == idFunct.intValue()) {
+				if (idFunct == null || aSbiObjFunc.getId().getSbiFunctions().getFunctId().intValue() == idFunct.intValue()) {
 					SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE,
 							"BIObjectDAOImpl", "eraseBIObject",
 							"Deleting object [" + obj.getName() + "] from folder [" + aSbiObjFunc.getId().getSbiFunctions().getPath() + "]");
@@ -754,7 +756,17 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				Set objPars = hibBIObject.getSbiObjPars();
 				Iterator itObjPar = objPars.iterator();
 				while (itObjPar.hasNext()) {
-					aSession.delete((SbiObjPar) itObjPar.next());
+					SbiObjPar aSbiObjPar = (SbiObjPar) itObjPar.next();
+					// deletes all ObjParuse object (dependencies) of the biparameter
+					IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+					List objParuses = objParuseDAO.loadObjParuses(aSbiObjPar.getObjParId());
+					Iterator itObjParuses = objParuses.iterator();
+					while (itObjParuses.hasNext()) {
+						ObjParuse aObjParuse = (ObjParuse) itObjParuses.next();
+						objParuseDAO.eraseObjParuse(aObjParuse);
+					}
+					// deletes the biparameter
+					aSession.delete(aSbiObjPar);
 				}
 				
 				aSession.delete(hibBIObject);
@@ -802,23 +814,39 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 //				SessionContainer session = requestContainer.getSessionContainer();
 //				SessionContainer permSession = session.getPermanentContainer();
 //				IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-				// erase from cms
-				CmsManager manager = new CmsManager();
-				DeleteOperation delOp = new DeleteOperation();
-				delOp.setPath(obj.getPath());
-				manager.execDeleteOperation(delOp);
+				
+				// erase from cms if exists
+				GetOperation getOp = new GetOperation();
+				String path = obj.getPath();
+				getOp.setPath(path);
+				getOp.setRetriveContentInformation("false");
+				getOp.setRetrivePropertiesInformation("false");
+				getOp.setRetriveVersionsInformation("false");
+				getOp.setRetriveChildsInformation("false");
+	            CmsManager manager = new CmsManager();
+				CmsNode cmsnode = manager.execGetOperation(getOp);
+				if (cmsnode != null) {
+					DeleteOperation delOp = new DeleteOperation();
+					delOp.setPath(obj.getPath());
+					manager.execDeleteOperation(delOp);
+				} else {
+					SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
+							"BIObjectDAOImpl", "eraseBIObject",
+							"No CMS node corresponds to the BIObject [" + obj.getName() + "] with path [" + obj.getPath() + "]!!! " + 
+							"The erase operation will have no effects on CMS.");
+				}
 			}
 		} catch (HibernateException he) {
 			logException(he);
-			if (tx != null)
+			if (tx != null && tx.isActive())
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} catch (Exception ex) {
 			logException(ex);
-			if (tx != null)
+			if (tx != null && tx.isActive())
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
-		}	finally {
+		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}

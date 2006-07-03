@@ -1018,11 +1018,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			} else {
 				if (SpagoBIConstants.ADMIN_ACTOR.equals(actor)) {
 					// deletes the document from all the folders, no matter the permissions
-					List funcsId = obj.getFunctionalities();
-					for (Iterator it = funcsId.iterator(); it.hasNext(); ) {
-						Integer idFunct = (Integer) it.next();
-						objdao.eraseBIObject(obj, idFunct);
-					}
+					objdao.eraseBIObject(obj, null);
 				} else {
 					// deletes the document from all the folders on which the profile is a developer
 					List funcsId = obj.getFunctionalities();

@@ -27,15 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.bo.dao.hibernate;
 
-import it.eng.spago.dbaccess.DataConnectionManager;
-import it.eng.spago.dbaccess.SQLStatements;
-import it.eng.spago.dbaccess.Utils;
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.DataField;
-import it.eng.spago.dbaccess.sql.DataRow;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -44,19 +35,15 @@ import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IParameterDAO;
-import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiLov;
-import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
 import it.eng.spagobi.metadata.SbiParuseDet;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;

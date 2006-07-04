@@ -5,8 +5,6 @@
 				 it.eng.spagobi.bo.ModalitiesValue,
 				 it.eng.spagobi.bo.Domain,
 				 it.eng.spagobi.bo.QueryDetail,
-                 it.eng.spagobi.bo.dao.jdbc.DomainDAOImpl,
-                 it.eng.spagobi.bo.dao.jdbc.ModalitiesValueDAOImpl,
                  it.eng.spago.navigation.LightNavigationManager,
                  java.util.ArrayList,
                  it.eng.spagobi.services.modules.DetailModalitiesValueModule,

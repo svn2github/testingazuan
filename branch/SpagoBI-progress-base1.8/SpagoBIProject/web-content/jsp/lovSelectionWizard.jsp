@@ -12,8 +12,6 @@
 				 it.eng.spagobi.bo.ModalitiesValue,
 				 it.eng.spagobi.bo.LovDetail,
 				 it.eng.spagobi.bo.LovDetailList,
-                 it.eng.spagobi.bo.dao.jdbc.DomainDAOImpl,
-                 it.eng.spagobi.bo.dao.jdbc.ModalitiesValueDAOImpl,
                  it.eng.spago.base.RequestContainer,
 				 it.eng.spago.base.ResponseContainer,
 				 it.eng.spago.base.SessionContainer,

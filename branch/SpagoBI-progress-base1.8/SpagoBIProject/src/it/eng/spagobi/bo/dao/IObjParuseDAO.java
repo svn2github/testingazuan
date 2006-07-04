@@ -102,4 +102,15 @@ public interface IObjParuseDAO {
 	 */
 	public List getDependencies(Integer objParFatherId) throws EMFUserError;
 	
+	
+	/**
+	 * Returns the labels list of the documents containing 
+	 * dependencies for the parameter use identified by the id at input.
+	 * 
+	 * @param useId The Integer representing the use id
+	 * @return The list of BIObject objects labels
+	 * @throws EMFUserError
+	 */
+	public List getDocumentLabelsListWithAssociatedDependencies (Integer useId) throws EMFUserError;
+	
 }

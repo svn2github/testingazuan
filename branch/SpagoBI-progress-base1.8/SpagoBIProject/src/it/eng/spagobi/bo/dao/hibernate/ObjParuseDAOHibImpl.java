@@ -336,4 +336,40 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 		return toReturn;
 	}
 	
+	
+	/**
+	 * @see it.eng.spagobi.bo.dao.IObjParuseDAO#getDocumentLabelsListWithAssociatedDependencies(java.lang.Integer)
+	 */
+	public List getDocumentLabelsListWithAssociatedDependencies(Integer useId) throws EMFUserError {
+		List toReturn = new ArrayList();
+		
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = 
+					"select " +
+					"	distinct(obj.label) " +
+					"from " +
+					"	SbiObjects obj, SbiObjParuse s " +
+					"where " +
+					"	obj.sbiObjPars.objParId = s.id.sbiObjPar.objParId and " +
+					"	s.id.sbiParuse.useId = " + useId;
+			Query query = aSession.createQuery(hql);
+			List result = query.list();
+			toReturn = result;
+			tx.commit();
+		} catch(HibernateException he){
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+		return toReturn;
+	}
 }

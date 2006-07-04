@@ -24,7 +24,7 @@ package it.eng.spagobi.services.modules;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spagobi.services.commons.DelegatedHibernateConnectionListService;
 
 /**
  * Loads the parameters list
@@ -32,14 +32,8 @@ import it.eng.spagobi.services.commons.DelegatedBasicListService;
  * @author sulis
  */
 public class ListParametersModule extends AbstractBasicListModule {
+	
 	public static final String MODULE_PAGE = "ListParametersPage";
-	/**
-	 * Class Constructor
-	 *
-	 */
-	public ListParametersModule() {
-		super();
-	} 
 	
 	/**
 	 * Gets the list
@@ -49,16 +43,8 @@ public class ListParametersModule extends AbstractBasicListModule {
 	 */
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		return DelegatedBasicListService.getList(this, request, response);
+		return DelegatedHibernateConnectionListService.getList(this, request, response);
 	} 
-	/**
-	 * Deletes the list
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * 
-	 */
-	public boolean delete(SourceBean request, SourceBean response) {
-		return DelegatedBasicListService.delete(this, request, response);
-	} 
+
 } 
 

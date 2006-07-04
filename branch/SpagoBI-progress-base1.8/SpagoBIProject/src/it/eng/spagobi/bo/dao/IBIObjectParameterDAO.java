@@ -85,14 +85,13 @@ public interface IBIObjectParameterDAO {
 	public void eraseBIObjectParameter(BIObjectParameter aBIObjectParameter) throws EMFUserError;
 
 	/**
-	 * Controls if a BI object parameter has one or more parameters associated. It is useful 
-	 * because a parameter cannot be erased if it has some BIObjects parameters associated
+	 * Returns the labels list of document using the parameter identified by the id at input 
 	 * 
 	 * @param parId The BI object Parameter id
-	 * @return True if there are parameters associaated, else false
+	 * @return The labels lis 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public boolean hasObjParameters(String parId) throws EMFUserError;
+	public List getDocumentLabelsListUsingParameter(Integer parId) throws EMFUserError;
 	
 	/**
 	 * Returns the list of all BIObject parameters associated to a <code>BIObject</code>,

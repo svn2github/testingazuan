@@ -245,24 +245,29 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
-	 * @see it.eng.spagobi.bo.dao.IBIObjectParameterDAO#hasObjParameters(java.lang.String)
+	 * @see it.eng.spagobi.bo.dao.IBIObjectParameterDAO#getDocumentLabelsListUsingParameter(java.lang.Integer)
 	 */
-	public boolean hasObjParameters(String parId) throws EMFUserError {
+	public List getDocumentLabelsListUsingParameter(Integer parId) throws EMFUserError {
 		
-		boolean result = false;
+		List toReturn = new ArrayList();
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "from SbiObjPar s where s.sbiParameter.parId=" + parId;
+			String hql = 
+					"select " +
+					"	distinct(obj.label) " +
+					"from " +
+					"	SbiObjects obj, SbiObjPar objPar " +
+					"where " +
+					"	obj.biobjId = objPar.sbiObject.biobjId and " +
+					"	objPar.sbiParameter.parId = " + parId;
 			Query query = aSession.createQuery(hql);
-			List l = query.list();
-			if (l.size() > 0)
-				result = true;
-			else
-				result = false;
+			List result = query.list();
+			
+			toReturn = result;
 			
 			tx.commit();
 		} catch (HibernateException he) {
@@ -275,7 +280,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-		return result;
+		return toReturn;
 	}
 	
 	/**

@@ -75,7 +75,7 @@ public class DelegatedBasicListService {
 	public static final String LIST_NOCACHE = "LIST_NOCACHE";
 	public static final String LIST_DELETE = "LIST_DELETE";
 
-	private DelegatedBasicListService() {
+	public DelegatedBasicListService() {
 		super();
 	} // private KFDelegatedBasicListService()
 	/**

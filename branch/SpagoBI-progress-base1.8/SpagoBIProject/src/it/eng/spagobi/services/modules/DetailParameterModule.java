@@ -36,6 +36,7 @@ import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
@@ -62,6 +63,7 @@ import org.apache.commons.validator.GenericValidator;
 public class DetailParameterModule extends AbstractModule {
 	
 	private String modalita = "";
+	public final static String MODULE_PAGE = "DetailParameterPage";
 
 	EMFErrorHandler errorHandler = null;
 	
@@ -356,6 +358,21 @@ public class DetailParameterModule extends AbstractModule {
 				} else if (deleteParameterUse != null) {
 					// it is requested to delete the visible ParameterUse
 					int paruseId = findParuseId(deleteParameterUse);
+					checkForDependancies(new Integer(paruseId));
+					// if there are some errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+				    			prepareParameterDetailPage(response, parameter, paruse, paruseIdStr, 
+				    					ObjectsTreeConstants.DETAIL_MOD, false, false);
+								return;
+							}
+						}
+					}
+
 					IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
 					paruse = paruseDAO.loadByUseID(new Integer(paruseId));
 					paruseDAO.eraseParameterUse(paruse);
@@ -632,26 +649,24 @@ public class DetailParameterModule extends AbstractModule {
 			IParameterDAO parDAO = DAOFactory.getParameterDAO();
 			IParameterUseDAO parUseDAO = DAOFactory.getParameterUseDAO();
 			String id = (String) request.getAttribute("id");
+			//controls if the parameter has any object associated
+			List objectsLabels = DAOFactory.getBIObjectParameterDAO().getDocumentLabelsListUsingParameter(new Integer(id));
+			if (objectsLabels != null && objectsLabels.size() > 0){
+				HashMap params = new HashMap();
+				params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
+				Vector v = new Vector();
+				v.add(objectsLabels.toString());
+				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1017, v, params);
+				errorHandler.addError(error);
+				return;
+			}
+			
 			//controls if the parameter has any use associated
 			boolean hasUse = DAOFactory.getParameterUseDAO().hasParUseModes(id);
 			if (hasUse){
 					parUseDAO.eraseParameterUseByParId(Integer.valueOf(id));
-					/*HashMap params = new HashMap();
-					params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1016, new Vector(), params);
-					getErrorHandler().addError(error);
-					return; */
-					}
-			//end of control
-			//controls if the parameter has any object associated
-			boolean hasObject = DAOFactory.getBIObjectParameterDAO().hasObjParameters(id);
-			if (hasObject){
-				HashMap params = new HashMap();
-				params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
-				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1017, new Vector(), params);
-				errorHandler.addError(error);
-				return;
 			}
+			//end of control
 			
 			Parameter parameter =  parDAO.loadForDetailByParameterID(new Integer(id)); 
 			parDAO.eraseParameter(parameter);
@@ -870,4 +885,29 @@ public class DetailParameterModule extends AbstractModule {
 		session.delAttribute("initial_ParameterUse");
 		response.setAttribute("loopback", "true");
 	}
+	
+	/**
+	 * Controls if there are some BIObjectParameter objects that depend by the ParameterUse object
+	 * at input, given its id.
+	 * 
+	 * @param objParFatherId The id of the BIObjectParameter object to check
+	 * @throws EMFUserError
+	 */
+	private void checkForDependancies(Integer paruseId) throws EMFUserError {
+		
+		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+		List objectsLabels = objParuseDAO.getDocumentLabelsListWithAssociatedDependencies(paruseId);
+		if (objectsLabels != null && objectsLabels.size() > 0) {
+			HashMap params = new HashMap();
+			params.put(AdmintoolsConstants.PAGE,
+					DetailParameterModule.MODULE_PAGE);
+			Vector v = new Vector();
+			v.add(objectsLabels.toString());
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1057,
+					v, params);
+			errorHandler.addError(error);
+		}
+		
+	}
+	
 }

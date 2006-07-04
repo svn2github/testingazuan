@@ -26,8 +26,7 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
-import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spagobi.services.commons.DelegatedHibernateConnectionListService;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 /**
@@ -76,17 +75,7 @@ public class ListLookupParametersModule extends AbstractBasicListModule {
 	 * @return ListIFace 
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		return DelegatedBasicListService.getList(this, request, response);
-	} 
-	/**
-	 * Deletes the list
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * 
-	 */
-	public boolean delete(SourceBean request, SourceBean response) {
-		return DelegatedBasicListService.delete(this, request, response);
-	} 
-	
+		return DelegatedHibernateConnectionListService.getList(this, request, response);
+	}
 	
 }

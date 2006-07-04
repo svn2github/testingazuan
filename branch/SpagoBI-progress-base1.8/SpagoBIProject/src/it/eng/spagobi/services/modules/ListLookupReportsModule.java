@@ -27,7 +27,7 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spagobi.services.commons.DelegatedHibernateConnectionListService;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -87,17 +87,8 @@ public class ListLookupReportsModule extends AbstractBasicListModule {
 		
 		
 		
-		return DelegatedBasicListService.getList(this, request, response);
-	} 
-	/**
-	 * Deletes the list
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * 
-	 */
-	public boolean delete(SourceBean request, SourceBean response) {
-		return DelegatedBasicListService.delete(this, request, response);
-	} 
+		return DelegatedHibernateConnectionListService.getList(this, request, response);
+	}
 	
 	private List getSubreportsId(SourceBean request){
 		List results = new ArrayList();

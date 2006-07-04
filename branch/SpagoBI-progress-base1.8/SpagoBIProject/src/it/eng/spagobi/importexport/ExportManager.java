@@ -23,7 +23,6 @@ package it.eng.spagobi.importexport;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
@@ -36,6 +35,7 @@ import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.QueryDetail;
 import it.eng.spagobi.bo.Role;
+import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
@@ -44,17 +44,21 @@ import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
+import it.eng.spagobi.bo.dao.ISubreportDAO;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -259,11 +263,9 @@ public class ExportManager implements IExportManager {
 		IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
 		BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
 		exportTemplate(biobj);
-		/*
 		if(exportSubObjects){
-			exportSubObjects(biobj, path);
+			exportSubObjects(biobj);
 		}
-		*/
 		Engine engine = biobj.getEngine();		
 		exporter.insertEngine(engine, session);
 		exporter.insertBIObject(biobj, session);
@@ -281,6 +283,18 @@ public class ExportManager implements IExportManager {
 		// export parameters
 		List biparams = biobjDAO.getBIObjectParameters(biobj);
 		exportBIParamsBIObj(biparams, biobj);
+		// export parameters dependecies
+		exporter.insertBiParamDepend(biparams, session);
+		
+		// export subReport relation
+		ISubreportDAO subRepDao = DAOFactory.getSubreportDAO();
+		List subList = subRepDao.loadSubreportsByMasterRptId(biobj.getId());
+		Iterator itersub = subList.iterator();
+		while(itersub.hasNext()) {
+			Subreport subRep = (Subreport)itersub.next();
+			exporter.insertSubReportAssociation(subRep, session);
+			exportSingleObj(subRep.getSub_rpt_id().toString());
+		}
 	}
 	
 	
@@ -318,10 +332,10 @@ public class ExportManager implements IExportManager {
 	 * @param path The path of the SpagoBI BIObject
 	 * @throws EMFUserError
 	 */
-	/*
-	private void exportSubObjects(BIObject biobj, String path) throws EMFUserError {
+	
+	private void exportSubObjects(BIObject biobj) throws EMFUserError {
 		try{
-			String folderSubObjPath = pathContentFolder + path + "/subobjects";
+			String folderSubObjPath = pathContentFolder + biobj.getPath() + "/subobjects";
 			File folderSubObjFile = new File(folderSubObjPath);
 			folderSubObjFile.mkdirs();
 			IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
@@ -342,6 +356,7 @@ public class ExportManager implements IExportManager {
 				fos.close();
 				InputStream subis = cmsdao.getSubObject(biobj.getPath(), nameSub);
 				byte[] subcontent = GeneralUtilities.getByteArrayFromInputStream(subis);
+				subis.close();
 			    fos = new FileOutputStream(folderSubObjPath + "/" + nameSub + ".content");
 			    fos.write(subcontent);
 				fos.flush();
@@ -353,7 +368,6 @@ public class ExportManager implements IExportManager {
             throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
-	*/
 	
 	
 	/**
@@ -389,10 +403,12 @@ public class ExportManager implements IExportManager {
 		while(iterUses.hasNext()){
 			ParameterUse paruse = (ParameterUse)iterUses.next();
             Integer idLov = paruse.getIdLov();
-            IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
-            ModalitiesValue lov = lovDAO.loadModalitiesValueByID(idLov);
-            checkConnection(lov, connections);
-		    exporter.insertLov(lov, session);
+            if(idLov!=null) {
+            	IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
+            	ModalitiesValue lov = lovDAO.loadModalitiesValueByID(idLov);
+            	checkConnection(lov, connections);
+            	exporter.insertLov(lov, session);
+            }
 		    exporter.insertParUse(paruse, session);
 		    List checks = paruse.getAssociatedChecks();
 		    Iterator iterChecks = checks.iterator();
@@ -433,7 +449,10 @@ public class ExportManager implements IExportManager {
 				if(conSB == null){
 					 SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "checkConnection",
 							  				"Connection pool name " +nameConnection+ " not found");
-					 throw new EMFInternalError(EMFErrorSeverity.ERROR, "Connection pool name " +nameConnection+ " not found");
+					 Vector paramsErr = new Vector();
+					 paramsErr.add(lov.getLabel());
+					 paramsErr.add(nameConnection);
+					 throw new EMFUserError(EMFErrorSeverity.ERROR, 8008, paramsErr, "component_impexp_messages");
 				} else {
 					SourceBean existSB = (SourceBean)conns.getFilteredSourceBeanAttribute("CONNECTION-POOL", 
 										  "connectionPoolName", nameConnection);
@@ -441,6 +460,8 @@ public class ExportManager implements IExportManager {
 						conns.setAttribute(conSB);
 				}
 			}
+		} catch (EMFUserError emfue){
+			throw emfue;
 		} catch (Exception e) {
 			 SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "checkConnection",
 								  "Error while checking connection" + e);

@@ -2,7 +2,6 @@
 
 <%@ page import="it.eng.spagobi.bo.ModalitiesValue,
                  it.eng.spagobi.bo.Domain,
-                 it.eng.spagobi.bo.dao.jdbc.DomainDAOImpl,
                  it.eng.spagobi.bo.QueryDetail,
                  it.eng.spagobi.bo.ScriptDetail,
                  it.eng.spagobi.bo.LovDetailList,

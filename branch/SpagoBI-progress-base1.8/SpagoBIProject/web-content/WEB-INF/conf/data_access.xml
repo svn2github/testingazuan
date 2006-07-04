@@ -6,7 +6,6 @@
 	<!-- ====================================================================================== -->
 	<!--  Foodmart on HSQL db																	--> 
 	<!-- ====================================================================================== -->
-	<!--
 	 <CONNECTION-POOL connectionPoolName="dwh" 
    					connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
    					connectionPoolType="native" connectionDescription="Foodmart Data Warehouse on HSQL DB">
@@ -17,7 +16,7 @@
       							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
       							 parameterType=""/>
    	</CONNECTION-POOL>
-   	--> 
+
    
    	<!-- ====================================================================================== -->
 	<!--  Foodmart on MySQL db																	--> 
@@ -70,8 +69,9 @@
 
 
    <CONNECTION-MANAGER>
-      <!--
+      
       <REGISTER-POOL registeredPoolName="dwh"/>
+      <!--
       <REGISTER-POOL registeredPoolName="mysqlfoodmart"/>
       <REGISTER-POOL registeredPoolName="oraclesh"/>
       -->

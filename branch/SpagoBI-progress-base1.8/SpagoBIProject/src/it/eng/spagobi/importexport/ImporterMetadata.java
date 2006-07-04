@@ -31,9 +31,13 @@ import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.QueryDetail;
 import it.eng.spagobi.bo.Role;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiChecks;
@@ -45,11 +49,15 @@ import it.eng.spagobi.metadata.SbiFunctions;
 import it.eng.spagobi.metadata.SbiLov;
 import it.eng.spagobi.metadata.SbiObjFunc;
 import it.eng.spagobi.metadata.SbiObjPar;
+import it.eng.spagobi.metadata.SbiObjParuse;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
 import it.eng.spagobi.metadata.SbiParuseCk;
 import it.eng.spagobi.metadata.SbiParuseDet;
+import it.eng.spagobi.metadata.SbiSubreports;
+import it.eng.spagobi.security.AnonymousCMSUserProfile;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.File;
@@ -60,6 +68,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.hibernate.HibernateException;
@@ -225,9 +234,12 @@ public class ImporterMetadata {
 				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObject",
                         			   "Error while inserting object " + he);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			} catch (Exception e){
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObject",
+										"Error while inserting object " + e);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 			}
 		}
-		
 		
 		
 		
@@ -340,6 +352,66 @@ public class ImporterMetadata {
 			}
 			return objToReturn;
 		}
+		
+		
+		
+		/**
+		 * Inserts subobjects of one biobject into the cms 
+		 * @param oldPath the old path of the biobject
+		 * @param pathContent the path of the exported content folder
+		 * @param newObj the new BiObject inserted
+		 * @throws EMFUserError
+		 */
+		public void insertSubObjects(String oldPath, String pathContent, SbiObjects newObj) throws EMFUserError {
+			try{	
+				IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
+				String folderSubObjPath = pathContent + oldPath + "/subobjects";
+				File folderSubObjFile = new File(folderSubObjPath);
+				File[] subobjFiles = folderSubObjFile.listFiles();
+				if(subobjFiles==null){
+					return;
+				}
+				for(int i=0; i<subobjFiles.length; i++){
+					File subobjFile = subobjFiles[i];
+					String completeFileName = subobjFile.getName();
+					String extension = completeFileName.substring(completeFileName.lastIndexOf('.') + 1);
+					String fileName = completeFileName.substring(0, completeFileName.lastIndexOf('.'));
+					if(extension.equals("content")){
+						continue;
+					}
+					FileInputStream fis = new FileInputStream(subobjFile);
+					Properties prop = new Properties();
+					prop.load(fis);
+					String name = prop.getProperty("name");
+					String description = prop.getProperty("description") ;
+					String owner = prop.getProperty("owner");
+					IEngUserProfile profile = new AnonymousCMSUserProfile(owner);
+					String pubvisStr =  prop.getProperty("pubvis");
+					boolean pubvis = false;
+					if(pubvisStr.equalsIgnoreCase("true")){
+						pubvis = true;
+					}
+					fis.close();
+					byte[] content = null;
+					for(int j=0; j<subobjFiles.length; j++){
+						subobjFile = subobjFiles[j];
+						completeFileName = subobjFile.getName();
+						if(!completeFileName.equals(fileName+ ".content")) {
+							continue;
+						}
+						fis = new FileInputStream(subobjFile);
+						content = GeneralUtilities.getByteArrayFromInputStream(fis);
+						fis.close();
+					}
+					cmsdao.saveSubObject(content, newObj.getPath(), name, description, pubvis, profile);
+				}
+			} catch (Exception e) {
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertSubObjects",
+		   				   			   "Error while inserting subobjects " + e);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			}
+		}
+		
 		
 		
 		
@@ -462,6 +534,24 @@ public class ImporterMetadata {
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiObjFunc hibObjFunct = (SbiObjFunc)hqlQuery.uniqueResult();
 				return hibObjFunct;
+			} else if(hibObj instanceof SbiSubreports) {
+				Map uniqueMap = (Map)unique;
+				Integer masterid = (Integer)uniqueMap.get("masterid");
+				Integer subid = (Integer)uniqueMap.get("subid");
+				hql = "from SbiSubreports subRep where subRep.master_rpt_id = " + masterid +
+					  " and subRep.sub_rpt_id = " + subid;
+				hqlQuery = sessionCurrDB.createQuery(hql);
+				SbiSubreports hibSubRep = (SbiSubreports)hqlQuery.uniqueResult();
+				return hibSubRep;
+			} else if(hibObj instanceof SbiObjParuse) {
+				Map uniqueMap = (Map)unique;
+				Integer objparid = (Integer)uniqueMap.get("objparid");
+				Integer paruseid = (Integer)uniqueMap.get("paruseid");
+				hql = "from SbiObjParuse objparuse where objparuse.id.sbiObjPar.objParId = " + objparid +
+					  " and objparuse.id.sbiParuse.useId = " + paruseid;
+				hqlQuery = sessionCurrDB.createQuery(hql);
+				SbiObjParuse hibObjParUse = (SbiObjParuse)hqlQuery.uniqueResult();
+				return hibObjParUse;
 			} 
 			
 			return null;

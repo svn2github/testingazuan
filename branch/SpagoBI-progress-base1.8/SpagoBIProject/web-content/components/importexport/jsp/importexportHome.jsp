@@ -134,10 +134,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "SBISet.importexport.nameExp" bundle="component_impexp_messages"/>
 			: 
 			<input type="text" name="exportFileName" size="30" />
-			<!-- Version 1.8 doesn't allow to export subobject
+			<!-- Version 1.8 doesn't allow to export subobject -->
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			Export SubObjects: <input type="checkbox" name="exportSubObj" />
-			-->
+			<spagobi:message key = "SBISet.importexport.expSubView" bundle="component_impexp_messages"/>
+			<input type="checkbox" name="exportSubObj" />	
 		</div>
 		<div style="clear:left;margin-bottom:10px;">
 			<spagobi:treeObjects moduleName="TreeObjectsModule"  

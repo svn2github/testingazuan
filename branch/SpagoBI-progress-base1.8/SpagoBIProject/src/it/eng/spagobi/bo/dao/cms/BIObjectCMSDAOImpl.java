@@ -35,6 +35,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
@@ -55,8 +56,6 @@ import java.util.Vector;
 
 public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 
-	protected String CMS_BIOBJECTS_PATH = "CONTENTCONFIGURATION.CONTENTREPOSITORY.INITIALSTRUCTURE.BIOBJECTSPATH";
-	
 	/**
 	 * Get the template of the object
 	 * 
@@ -320,7 +319,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 			CmsManager manager = new CmsManager();
 			GetOperation getOp = new GetOperation(); 
 			ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(CMS_BIOBJECTS_PATH);
+			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
 			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
 			String path = biobjectsPath + "/" + obj.getUuid() + "/template";
 			getOp.setPath(path);

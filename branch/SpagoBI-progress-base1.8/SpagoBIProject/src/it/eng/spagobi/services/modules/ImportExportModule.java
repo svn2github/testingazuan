@@ -458,6 +458,12 @@ public class ImportExportModule extends AbstractModule {
 			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "associateMetadata",
 					"Cannot populate response " + sbe);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+		} catch (Exception e) {
+			if(impManager!=null)
+				impManager.stopImport();
+			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "associateMetadata",
+					"error after connection association " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
 		}	
 	}
 	

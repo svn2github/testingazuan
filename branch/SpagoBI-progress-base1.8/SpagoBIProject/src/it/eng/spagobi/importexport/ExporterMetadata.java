@@ -30,11 +30,17 @@ import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.ModalitiesValue;
+import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.Role;
+import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IDomainDAO;
+import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
+import it.eng.spagobi.bo.dao.IParameterDAO;
+import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -46,6 +52,8 @@ import it.eng.spagobi.metadata.SbiLov;
 import it.eng.spagobi.metadata.SbiObjFunc;
 import it.eng.spagobi.metadata.SbiObjFuncId;
 import it.eng.spagobi.metadata.SbiObjPar;
+import it.eng.spagobi.metadata.SbiObjParuse;
+import it.eng.spagobi.metadata.SbiObjParuseId;
 import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiParameters;
 import it.eng.spagobi.metadata.SbiParuse;
@@ -53,10 +61,16 @@ import it.eng.spagobi.metadata.SbiParuseCk;
 import it.eng.spagobi.metadata.SbiParuseCkId;
 import it.eng.spagobi.metadata.SbiParuseDet;
 import it.eng.spagobi.metadata.SbiParuseDetId;
+import it.eng.spagobi.metadata.SbiSubreports;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.poi.hssf.record.SubRecord;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -294,9 +308,12 @@ public class ExporterMetadata {
 			// Set the relation with parameter
 			SbiParameters hibParameters = (SbiParameters)session.load(SbiParameters.class, parUse.getId());
 			hibParuse.setSbiParameters(hibParameters);
-			// Set the relation with idLov 
-			SbiLov hibLov = (SbiLov)session.load(SbiLov.class, parUse.getIdLov());
-			hibParuse.setSbiLov(hibLov);
+			// Set the relation with idLov (if the parameter ha a lov related)
+			Integer lovId = parUse.getIdLov();
+			if(lovId!=null){ 
+				SbiLov hibLov = (SbiLov)session.load(SbiLov.class, parUse.getIdLov());
+				hibParuse.setSbiLov(hibLov);
+			}
 			hibParuse.setLabel(parUse.getLabel());
 			hibParuse.setName(parUse.getName());
 			hibParuse.setDescr(parUse.getDescription());
@@ -309,6 +326,59 @@ public class ExporterMetadata {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
 	}
+	
+	
+	
+	
+	
+	/**
+	 * Insert Dependencies between parameters
+	 * @param parameters list
+	 * @param hibernate session
+	 * @throws EMFUserError
+	 */
+	public void insertBiParamDepend(List biparams, Session session) throws EMFUserError {
+		try {
+			Iterator iterBIParams = biparams.iterator();
+			while(iterBIParams.hasNext()) {
+				BIObjectParameter biparam = (BIObjectParameter)iterBIParams.next();			    
+			    IObjParuseDAO objparuseDao = DAOFactory.getObjParuseDAO();
+				List objparlist = objparuseDao.loadObjParuses(biparam.getId());
+				Iterator iterObjParuse = objparlist.iterator();
+				while(iterObjParuse.hasNext()) {
+					ObjParuse objparuse = (ObjParuse)iterObjParuse.next();
+					Transaction tx = session.beginTransaction();
+					Query hibQuery = session.createQuery(" from SbiObjParuse where id.sbiObjPar.objParId = " + objparuse.getObjParId() + 
+							                             " and id.sbiParuse.useId = " + objparuse.getParuseId());
+					List hibList = hibQuery.list();
+					if(!hibList.isEmpty()) {
+						continue;
+					}
+					// built key
+					SbiObjParuseId hibObjParuseId = new SbiObjParuseId();
+					SbiObjPar hibObjPar = (SbiObjPar)session.load(SbiObjPar.class, objparuse.getObjParId());
+					SbiParuse hibParuse = (SbiParuse)session.load(SbiParuse.class, objparuse.getParuseId());
+					hibObjParuseId.setSbiObjPar(hibObjPar);
+					hibObjParuseId.setSbiParuse(hibParuse);
+					SbiObjParuse hibObjParuse = new SbiObjParuse(hibObjParuseId);
+					hibObjParuse.setFilterColumn(objparuse.getFilterColumn());
+					hibObjParuse.setFilterOperation(objparuse.getFilterOperation());
+					SbiObjPar objparfather = (SbiObjPar)session.load(SbiObjPar.class, objparuse.getObjParFatherId());
+					hibObjParuse.setSbiObjParFather(objparfather);
+					session.save(hibObjParuse);
+					tx.commit();	
+				}
+			}
+			    
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBiParamDepend",
+					"Error while inserting parameter dependencied into export database " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+		}
+	}
+	
+	
+	
 	
 	
 	
@@ -455,13 +525,47 @@ public class ExporterMetadata {
 	
 	
 	/**
+	 * Insert an association between a master report and a subreport
+	 * @param sub The subreport
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
+	public void insertSubReportAssociation(Subreport sub, Session session) throws EMFUserError {
+		try {
+			Transaction tx = session.beginTransaction();
+			Integer masterId = sub.getMaster_rpt_id();
+			Integer subId = sub.getSub_rpt_id();
+			String query = " from SbiSubreports where master_rpt_id = " + masterId +
+						   " and sub_rpt_id = " + subId;
+			Query hibQuery = session.createQuery(query);
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			SbiSubreports subRep = new SbiSubreports();
+			subRep.setMaster_rpt_id(masterId);
+			subRep.setSub_rpt_id(subId);
+			session.save(subRep);
+			tx.commit();
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertSubReportAssociation",
+					               "Error while inserting subreport " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+		}
+	}
+	
+	
+	
+	
+	
+	/**
 	 * Insert a functionality into the exported database
 	 * @param funct Functionality Object to export
 	 * @param session Hibernate session for the exported database
 	 * @throws EMFUserError
 	 */
 	public void insertFunctionality(LowFunctionality funct, Session session) throws EMFUserError {
-		try {
+		try {			
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiFunctions where funct_id = " + funct.getId());
 			List hibList = hibQuery.list();
@@ -471,7 +575,6 @@ public class ExporterMetadata {
 			IDomainDAO domDAO = DAOFactory.getDomainDAO();
 			Domain functTypeDom = domDAO.loadDomainByCodeAndValue("FUNCT_TYPE", funct.getCodType());
 			SbiDomains hibFunctType = (SbiDomains)session.load(SbiDomains.class, functTypeDom.getValueId());
-			
 			SbiFunctions hibFunct = new SbiFunctions(funct.getId());
 			hibFunct.setCode(funct.getCode());
 			hibFunct.setDescr(funct.getDescription());
@@ -481,11 +584,43 @@ public class ExporterMetadata {
 			hibFunct.setPath(funct.getPath());
 			session.save(hibFunct);
 			tx.commit();
+			
+			Role[] devRoles = funct.getDevRoles();
+			Domain devDom = domDAO.loadDomainByCodeAndValue("STATE", "DEV");
+			for(int i=0; i<devRoles.length; i++) {
+				Role devRole = devRoles[i];
+				insertRole(devRole, session);
+				insertFunctRole(devRole, funct, devDom.getValueId(), devDom.getValueCd(), session);
+			}
+			Role[] testRoles = funct.getTestRoles();
+			Domain testDom = domDAO.loadDomainByCodeAndValue("STATE", "TEST");
+			for(int i=0; i<testRoles.length; i++) {
+				Role testRole = testRoles[i];
+				insertRole(testRole, session);
+				insertFunctRole(testRole, funct, testDom.getValueId(), testDom.getValueCd(), session);
+			}
+			Role[] execRoles = funct.getExecRoles();
+			Domain execDom = domDAO.loadDomainByCodeAndValue("STATE", "REL");
+			for(int i=0; i<execRoles.length; i++) {
+				Role execRole = execRoles[i];
+				insertRole(execRole, session);
+				insertFunctRole(execRole, funct, execDom.getValueId(), execDom.getValueCd(), session);
+			}
+			
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertFunctionality",
 					"Error while inserting Functionality into export database " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
 		}
+		
+		// recursively insert parent functionalities
+		Integer parentId = funct.getParentId();
+		if(parentId!=null){
+			ILowFunctionalityDAO lowFunctDAO = DAOFactory.getLowFunctionalityDAO();
+			LowFunctionality functPar = lowFunctDAO.loadLowFunctionalityByID(parentId, false);
+			insertFunctionality(functPar, session);
+		}
+		
 	}
 	
 	

@@ -188,8 +188,8 @@ public class ImportUtilities {
 		newFunct.setName(funct.getName());
 		newFunct.setParentFunct(funct.getParentFunct());
 		newFunct.setPath(funct.getPath());
-		newFunct.setSbiFuncRoles(new HashSet());
-		newFunct.setSbiObjFuncs(new HashSet());
+		//newFunct.setSbiFuncRoles(new HashSet());
+		//newFunct.setSbiObjFuncs(new HashSet());
 		return newFunct;
 	}
 

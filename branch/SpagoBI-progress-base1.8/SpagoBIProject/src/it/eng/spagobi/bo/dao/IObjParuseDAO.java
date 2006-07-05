@@ -113,4 +113,12 @@ public interface IObjParuseDAO {
 	 */
 	public List getDocumentLabelsListWithAssociatedDependencies (Integer useId) throws EMFUserError;
 	
+	/**
+	 * Returns the list of dependencies (ObjParuse objects list) for the ParameterUse object identified by the id passes at input.
+	 * 
+	 * @param useId The Integer representing the use id
+	 * @return The list of ObjParuse objects
+	 * @throws EMFUserError
+	 */
+	public List getAllDependenciesForParameterUse (Integer useId) throws EMFUserError;
 }

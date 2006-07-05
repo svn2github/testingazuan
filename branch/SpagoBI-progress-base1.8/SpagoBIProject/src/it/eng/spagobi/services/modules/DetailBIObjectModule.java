@@ -40,15 +40,18 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
+import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
+import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.services.commons.AbstractBasicCheckListModule;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SessionMonitor;
@@ -386,6 +389,7 @@ public class DetailBIObjectModule extends AbstractModule {
 						urlNameControl(obj.getId(), biObjPar);
 						fillResponse(response);
 						reloadCMSInformation(obj);
+						verifyForDependencies(biObjPar);
 						
 						// if there are some validation errors into the errorHandler does not write into DB
 						Collection errors = errorHandler.getErrors();
@@ -477,6 +481,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					}
 
 					ValidationCoordinator.validate("PAGE", "BIObjectValidation", this);
+					verifyForDependencies(biObjPar);
 					
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -581,6 +586,37 @@ public class DetailBIObjectModule extends AbstractModule {
 		}
 	}
 
+	/**
+	 * Before modifing a BIObjectParameter (not inserting), this method must be invoked in order to verify that the BIObjectParameter
+	 * stored into db (to be modified as per the BIObjectParameter in input) has dependencies associated; if it is the case,
+	 * verifies that the associated Parameter was not changed. In case of changed Parameter adds a EMFValidationError into the error handler.
+	 * 
+	 * @param objPar The BIObjectParameter to verify
+	 * @throws EMFUserError 
+	 */
+	private void verifyForDependencies (BIObjectParameter objPar) throws EMFUserError {
+		Integer objParId = objPar.getId();
+		if (objParId == null || objParId.intValue() == -1) {
+			// it means that the BIObjectParameter in input must be inserted, not modified
+			return;
+		}
+		// Controls that, if the are some dependencies for the BIObjectParameter, the associated parameter was not changed
+		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+		List correlations = objParuseDAO.loadObjParuses(objParId);
+		if (correlations != null && correlations.size() > 0) {
+			IBIObjectParameterDAO objParDAO = DAOFactory.getBIObjectParameterDAO();
+			BIObjectParameter initialObjPar = objParDAO.loadForDetailByObjParId(objParId);
+			if (initialObjPar.getParID().intValue() != objPar.getParID().intValue()) {
+				// the ParameterUse was changed to manual input or the lov id was changed
+				HashMap params = new HashMap();
+				params.put(AdmintoolsConstants.PAGE, "DetailBIObjectPage");
+				Vector vector = new Vector();
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1061, vector, params);
+				errorHandler.addError(error);
+				return;
+			}
+		}
+	}
 
 	/**
 	 * Controls that the BIObjectParameter url name is not in use by another BIObjectParameter

@@ -50,7 +50,7 @@ import org.hibernate.criterion.Expression;
  * 
  * @author Zerbetto
  */
-public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjParuseDAO{
+public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjParuseDAO {
 
 	/** 
 	 * @see it.eng.spagobi.bo.dao.IObjParuseDAO#loadObjParuse(java.lang.Integer, java.lang.Integer)
@@ -337,6 +337,38 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	}
 	
 	
+	/**
+	 * @see it.eng.spagobi.bo.dao.IObjParuseDAO#getAllDependenciesForParameterUse(java.lang.Integer)
+	 */
+	public List getAllDependenciesForParameterUse(Integer useId) throws EMFUserError {
+		List toReturn = new ArrayList();
+		
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiObjParuse s where s.id.sbiParuse.useId = " + useId;
+			Query query = aSession.createQuery(hql);
+			List result = query.list();
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				toReturn.add(toObjParuse((SbiObjParuse) it.next()));
+			}
+			tx.commit();
+		} catch(HibernateException he){
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+		return toReturn;
+	}
+
 	/**
 	 * @see it.eng.spagobi.bo.dao.IObjParuseDAO#getDocumentLabelsListWithAssociatedDependencies(java.lang.Integer)
 	 */

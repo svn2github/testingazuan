@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.services.modules;
+package it.eng.spagobi.services.commons;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -35,7 +35,7 @@ import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
-import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import java.util.Map;
  */
 public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 
-	SourceBean config;
+	protected SourceBean config;
 	Map checkedObjectsMap = null;
 	int pageNumber = 0;
 	boolean returnValues = true;
@@ -181,34 +181,6 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		}
 		System.out.println("Filled Statment: " + statementStr);
 		return statementStr;
-	}	
-	
-	public ScrollableDataResult execCheckedQuery(SourceBean request) throws Exception {
-			
-		// get CHECKED_QUERY query parameters
-		
-		String[] parameters = getQueryParameters("CHECKED_QUERY", request);
-				
-		// get CHECKED_QUERY statment
-		String statement = getQueryStatement("CHECKED_QUERY", parameters);
-		
-		// exec CHECKED_QUERY
-		ScrollableDataResult scrollableDataResult = null;
-		SQLCommand sqlCommand = null;
-		DataConnection dataConnection = null;
-        DataResult dataResult = null;
-        String pool = null;
-        try {
-        	pool = (String)config.getAttribute("POOL");
-        	dataConnection = DataConnectionManager.getInstance().getConnection(pool);
-        	sqlCommand = dataConnection.createSelectCommand(statement);
-        	dataResult = sqlCommand.execute();
-        	scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-        
-        return scrollableDataResult;
 	}
 			
 	private List getCheckedObjectKeys(SourceBean request){
@@ -226,16 +198,45 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		return results;
 	}
 	
-	public void createCheckedObjectMap(SourceBean request) throws Exception {	
+	public void createCheckedObjectMap(SourceBean request) throws Exception {
 		checkedObjectsMap = new HashMap();
-		
-		ScrollableDataResult scrollableDataResult = execCheckedQuery(request);
-		SourceBean chekedObjectsBean = scrollableDataResult.getSourceBean();
-		List checkedObjectsList = chekedObjectsBean.getAttributeAsList("ROW");
-		for(int i = 0; i < checkedObjectsList.size(); i++) {
-			SourceBean objects = (SourceBean)checkedObjectsList.get(i);
-			String key = getObjectKey(objects);			
-			checkedObjectsMap.put(key, key);
+
+		// get CHECKED_QUERY query parameters
+
+		String[] parameters = getQueryParameters("CHECKED_QUERY", request);
+
+		// get CHECKED_QUERY statment
+		String statement = getQueryStatement("CHECKED_QUERY", parameters);
+
+		// exec CHECKED_QUERY
+		ScrollableDataResult scrollableDataResult = null;
+		SQLCommand sqlCommand = null;
+		DataConnection dataConnection = null;
+		DataResult dataResult = null;
+		String pool = null;
+		try {
+			pool = (String) config.getAttribute("POOL");
+			dataConnection = DataConnectionManager.getInstance().getConnection(
+					pool);
+			sqlCommand = dataConnection.createSelectCommand(statement);
+			dataResult = sqlCommand.execute();
+			scrollableDataResult = (ScrollableDataResult) dataResult
+					.getDataObject();
+			SourceBean chekedObjectsBean = scrollableDataResult.getSourceBean();
+			List checkedObjectsList = chekedObjectsBean
+					.getAttributeAsList("ROW");
+			for (int i = 0; i < checkedObjectsList.size(); i++) {
+				SourceBean objects = (SourceBean) checkedObjectsList.get(i);
+				String key = getObjectKey(objects);
+				checkedObjectsMap.put(key, key);
+			}
+
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass()
+					.getName(), "createCheckedObjectMap", e.getMessage(), e);
+		} finally {
+			if (dataConnection != null)
+				dataConnection.close();
 		}
 	}
 	

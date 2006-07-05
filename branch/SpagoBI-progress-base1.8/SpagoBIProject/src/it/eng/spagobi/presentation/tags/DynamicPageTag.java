@@ -24,10 +24,14 @@ package it.eng.spagobi.presentation.tags;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
@@ -47,6 +51,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -71,7 +76,7 @@ public class DynamicPageTag extends TagSupport {
 	private String moduleName = "";
 	PortletRequest portReq = null;
 	private BIObject obj = null;
-	
+	private EMFErrorHandler errorHandler = null;
 	
 	
 	
@@ -87,6 +92,8 @@ public class DynamicPageTag extends TagSupport {
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest =(RenderRequest)httpRequest.getAttribute("javax.portlet.request");
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		ResponseContainer responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+		errorHandler = responseContainer.getErrorHandler();
 		SessionContainer session = requestContainer.getSessionContainer();
 		obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		portReq = PortletUtilities.getPortletRequest();
@@ -292,6 +299,53 @@ public class DynamicPageTag extends TagSupport {
 			value = (String) values.get(0);
 		}
 		
+		// looks for dependencies (this will be ignored if the lov is not of query type)
+		BIObjectParameter objParFather = null;
+		ObjParuse objParuse = null;
+		try {
+			IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+			IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
+			List objParuses = objParuseDAO.loadObjParuses(biparam.getId());
+			if (objParuses != null && objParuses.size() > 0) {
+				Iterator it = objParuses.iterator();
+				while (it.hasNext()) {
+					ObjParuse aObjParuse = (ObjParuse) it.next();
+					Integer paruseId = aObjParuse.getParuseId();
+					ParameterUse aParameterUse = paruseDAO.loadByUseID(paruseId);
+					Integer idLov = aParameterUse.getIdLov();
+					if (idLov.equals(modVal.getId())) {
+						// the ModalitiesValue of the BIObjectParameter corresponds to a ParameterUse correlated
+						objParuse = aObjParuse;
+						SpagoBITracer.debug("", "DynamicPageTag", "createHTMLForm()", "Found correlation:" +
+								" dependent BIObjectParameter id = " + biparam.getId() + "," +
+								" ParameterUse with id = " + paruseId + ";" +
+								" BIObjectParameter father has id = " + objParuse.getObjParFatherId());
+						// now we have to find the BIObjectParameter father of the correlation
+						Integer objParFatherId = objParuse.getObjParFatherId();
+						List parameters = obj.getBiObjectParameters();
+						Iterator i = parameters.iterator();
+						while (i.hasNext()) {
+							BIObjectParameter aBIObjectParameter = (BIObjectParameter) i.next();
+							if (aBIObjectParameter.getId().equals(objParFatherId)) {
+								objParFather = aBIObjectParameter;
+								break;
+							}
+						}
+						if (objParFather == null) {
+							// the BIObjectParameter father of the correlation was not found
+							SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Cannot find the BIObjectParameter father of the correlation");
+							throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+						}
+						break;
+					}
+				}
+			}
+		} catch (EMFUserError e) {
+			SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Error while retrieving information from db", e);
+			e.printStackTrace();
+		}
+		
+		
 		// PARAMETER USE TYPE FIX LOV
 		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {
 			try{
@@ -331,51 +385,6 @@ public class DynamicPageTag extends TagSupport {
 		
 		// PARAMETER USE TYPE QUERY
 		else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {
-			
-			BIObjectParameter objParFather = null;
-			ObjParuse objParuse = null;
-			try {
-				IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
-				IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
-				List objParuses = objParuseDAO.loadObjParuses(biparam.getId());
-				if (objParuses != null && objParuses.size() > 0) {
-					Iterator it = objParuses.iterator();
-					while (it.hasNext()) {
-						ObjParuse aObjParuse = (ObjParuse) it.next();
-						Integer paruseId = aObjParuse.getParuseId();
-						ParameterUse aParameterUse = paruseDAO.loadByUseID(paruseId);
-						Integer idLov = aParameterUse.getIdLov();
-						if (idLov.equals(modVal.getId())) {
-							// the ModalitiesValue of the BIObjectParameter corresponds to a ParameterUse correlated
-							objParuse = aObjParuse;
-							SpagoBITracer.debug("", "DynamicPageTag", "createHTMLForm()", "Found correlation:" +
-									" dependent BIObjectParameter id = " + biparam.getId() + "," +
-									" ParameterUse with id = " + paruseId + ";" +
-									" BIObjectParameter father has id = " + objParuse.getObjParFatherId());
-							// now we have to find the BIObjectParameter father of the correlation
-							Integer objParFatherId = objParuse.getObjParFatherId();
-							List parameters = obj.getBiObjectParameters();
-							Iterator i = parameters.iterator();
-							while (i.hasNext()) {
-								BIObjectParameter aBIObjectParameter = (BIObjectParameter) i.next();
-								if (aBIObjectParameter.getId().equals(objParFatherId)) {
-									objParFather = aBIObjectParameter;
-									break;
-								}
-							}
-							if (objParFather == null) {
-								// the BIObjectParameter father of the correlation was not found
-								SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Cannot find the BIObjectParameter father of the correlation");
-								throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-							}
-							break;
-						}
-					}
-				}
-			} catch (EMFUserError e) {
-				SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Error while retrieving information from db", e);
-				e.printStackTrace();
-			}
 			
 			htmlStream.append("<input type='text' style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' " +
 					"class='portlet-form-input-field' readonly='true' value='"+value+"' />\n");

@@ -134,9 +134,9 @@ public class DelegatedHibernateConnectionListService extends DelegatedBasicListS
 	 */
 	public static void logException(Throwable t){
 		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-							DelegatedHibernateConnectionListService.class.getName(), 
-							t.getMessage(), 
-				            t.toString());
+	            t.getClass().getName(), 
+	            "", 
+	            t.getMessage());
 	}
 	
 }

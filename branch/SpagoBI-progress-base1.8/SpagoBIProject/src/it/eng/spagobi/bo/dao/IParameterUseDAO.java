@@ -124,4 +124,12 @@ public interface IParameterUseDAO {
 	
 	public void eraseParameterUseByParId(Integer parId) throws EMFUserError;
 	
+	/**
+	 * Gets the list of parameter uses associated to the lov identified by the lovId at input
+	 * @param lovId The integer id of the lov
+	 * @return The list of parameter uses associated to the lov identified by the lovId at input
+	 * @throws EMFUserError
+	 */
+	public List getParameterUsesAssociatedToLov(Integer lovId) throws EMFUserError;
+	
 }

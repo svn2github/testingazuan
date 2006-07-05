@@ -286,6 +286,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 
 		for (Iterator iter = fields.iterator(); iter.hasNext();) {
 			
+			Object valueObj = null;
 			String value = null;
 			
 			List validators = null;
@@ -310,7 +311,8 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				if((fieldLabel==null) || (fieldLabel.trim().equals(""))) 
 						fieldLabel = fieldName;
 				
-				value = (String)serviceRequest.getAttribute(fieldName);
+				valueObj = serviceRequest.getAttribute(fieldName);
+				if (valueObj != null) value = valueObj.toString();
 				
 				validators = field.getAttributeAsList("VALIDATOR");
 				

@@ -323,7 +323,7 @@ public class DetailParameterModule extends AbstractModule {
 						// it is requested to save the visible ParameterUse
 						ValidationCoordinator.validate("PAGE", "ParameterUseValidation", this);
 						parameterUseLabelControl(paruse, mod);
-						
+						verifyForDependencies(paruse);
 						// if there are some validation errors into the errorHandler does not write into DB
 						Collection errors = errorHandler.getErrors();
 						if (errors != null && errors.size() > 0) {
@@ -343,7 +343,7 @@ public class DetailParameterModule extends AbstractModule {
 							// it is requested to insert a new ParameterUse
 							paruseDAO.insertParameterUse(paruse);
 						} else {
-							// it is requested to modify a ParameterUse
+							// it is requested to modify a ParameterUse.
 							paruseDAO.modifyParameterUse(paruse);
 						}
 						prepareParameterDetailPage(response, parameter, null, selectedParuseIdStr, 
@@ -395,6 +395,7 @@ public class DetailParameterModule extends AbstractModule {
 					if (paruseToBeSaved) {
 						ValidationCoordinator.validate("PAGE", "ParameterUseValidation", this);
 						parameterUseLabelControl(paruse, mod);
+						verifyForDependencies(paruse);
 					}
 
 					ValidationCoordinator.validate("PAGE", "ParameterValidation", this);
@@ -475,6 +476,42 @@ public class DetailParameterModule extends AbstractModule {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1015, new Vector(), params);
 		}
 	}
+	
+	/**
+	 * Before modifing a ParameterUse (not inserting), this method must be invoked in order to verify that the ParameterUse
+	 * stored into db (to be modified as per the ParameterUse in input) has dependencies associated; if it is the case,
+	 * verifies that the associated Lov was not changed. In case of changed Lov adds a EMFValidationError into the error handler.
+	 * 
+	 * @param paruse The ParameterUse to verify
+	 * @throws EMFUserError 
+	 */
+	private void verifyForDependencies (ParameterUse paruse) throws EMFUserError {
+		Integer paruseIdInt = paruse.getUseID();
+		if (paruseIdInt == null || paruseIdInt.intValue() == -1) {
+			// it means that the ParameterUse in input must be inserted, not modified
+			return;
+		}
+		// Controls that, if the are some dependencies for the ParameterUse, the associated lov was not changed
+		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+		IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
+		ParameterUse initialParuse = paruseDAO.loadByUseID(paruseIdInt);
+		List documents = objParuseDAO.getDocumentLabelsListWithAssociatedDependencies(paruseIdInt);
+		if (documents.size() > 0) {
+			// there are some correlations 
+			if (paruse.getManualInput().intValue() == 1 || 
+					paruse.getIdLov().intValue() != initialParuse.getIdLov().intValue()) {
+				// the ParameterUse was changed to manual input or the lov id was changed
+				HashMap params = new HashMap();
+				params.put(AdmintoolsConstants.PAGE, "DetailParameterPage");
+				Vector vector = new Vector();
+				vector.add(documents.toString());
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1060, vector, params);
+				errorHandler.addError(error);
+				return;
+			} 
+		}
+	}
+	
 	
 	/**
 	 * Reload a ParameterUse from its Parameter id and its label.

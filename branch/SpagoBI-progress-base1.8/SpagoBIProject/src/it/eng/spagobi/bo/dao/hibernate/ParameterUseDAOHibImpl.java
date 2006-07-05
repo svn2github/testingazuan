@@ -525,4 +525,40 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			
 		}
 }
+
+
+
+	public List getParameterUsesAssociatedToLov(Integer lovId) throws EMFUserError {
+		List realResult = new ArrayList();
+
+		Session aSession = null;
+		Transaction tx = null;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			String hql = "from SbiParuse s where s.sbiLov.lovId="+lovId;
+			Query query = aSession.createQuery(hql);
+			List result = query.list();
+			
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				realResult.add(toParameterUse((SbiParuse)it.next()));
+			}
+			
+			tx.commit();
+			
+		} catch(HibernateException he) {
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+		return realResult;
+	}
 }

@@ -26,6 +26,7 @@ import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
+import it.eng.spagobi.services.commons.AbstractHibernateConnectionCheckListModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.List;
  * @author Gioia
  *
  */
-public class CheckLinksModule extends AbstractBasicCheckListModule{
+public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule {
 	public CheckLinksModule() {
 		super();
 	}

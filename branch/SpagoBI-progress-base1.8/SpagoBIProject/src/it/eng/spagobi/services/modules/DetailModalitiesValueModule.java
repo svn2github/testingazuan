@@ -37,19 +37,25 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.LovDetailList;
 import it.eng.spagobi.bo.ModalitiesValue;
+import it.eng.spagobi.bo.ObjParuse;
+import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.QueryDetail;
 import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
+import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -112,7 +118,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				modDetailModValue(request, AdmintoolsConstants.DETAIL_INS, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_DEL)) {
 				delDetailModValue(request, AdmintoolsConstants.DETAIL_DEL, response);
+			} 	else if (message.trim().equalsIgnoreCase("EXIT_FROM_DETAIL")){
+				exitFromDetail(request, response);
 			}
+
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
 			return;
@@ -121,6 +130,11 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			errorHandler.addError(internalError);
 			return;
 		}
+	}
+	
+	private void exitFromDetail (SourceBean request, SourceBean response) throws SourceBeanException {
+		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		response.setAttribute("loopback", "true");
 	}
 	
 	/**
@@ -136,22 +150,12 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	private void getDetailModValue(String key, SourceBean response)
 			throws EMFUserError {
 		try {
-			response.setAttribute(SpagoBIConstants.MODALITY,
-					AdmintoolsConstants.DETAIL_MOD);
+			
 			ModalitiesValue modVal = DAOFactory.getModalitiesValueDAO()
 					.loadModalitiesValueByID(new Integer(key));
-			response.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
-					modVal);
-			loadValuesDomain(response);
-
-			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
-			response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
-
+			prepareDetailModalitiesValuePage(modVal, AdmintoolsConstants.DETAIL_MOD, response);
+			
 			if (modVal.getITypeCd().equals("FIX_LOV")) {
-				RequestContainer requestContainer = this.getRequestContainer();
-				SessionContainer session = requestContainer
-						.getSessionContainer();
 				session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
 						modVal);
 			}
@@ -200,13 +204,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 				session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 				session.delAttribute(SpagoBIConstants.MODALITY);
-				response.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
-						modVal);
-				response.setAttribute(SpagoBIConstants.MODALITY, mod);
-				loadValuesDomain(response);
-				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	    		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
-				response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
+				prepareDetailModalitiesValuePage(modVal, mod, response);
 				// exits without writing into DB and without loop
 				return;
 			}
@@ -423,12 +421,76 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			}
 		
 			// finally (if there are no error, if there is no request for test or to
-			// add or delete
-			// a Fix Lov item) writes into DB
+			// add or delete a Fix Lov item) writes into DB
 		
 			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 				DAOFactory.getModalitiesValueDAO().insertModalitiesValue(modVal);
 			} else {
+				// looks for dependencies associated to the previous lov
+				Integer lovId = modVal.getId();
+				ModalitiesValue initialLov = DAOFactory.getModalitiesValueDAO()
+						.loadModalitiesValueByID(lovId);
+				if (initialLov.getITypeCd().equals("QUERY")) {
+					IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+					IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
+					List paruses = paruseDAO.getParameterUsesAssociatedToLov(lovId);
+					Iterator parusesIt = paruses.iterator();
+					List documents = new ArrayList();
+					List correlations = new ArrayList();
+					while (parusesIt.hasNext()) {
+						ParameterUse aParuse = (ParameterUse) parusesIt.next();
+						documents.addAll(objParuseDAO.getDocumentLabelsListWithAssociatedDependencies(aParuse.getUseID()));
+						correlations.addAll(objParuseDAO.getAllDependenciesForParameterUse(aParuse.getUseID()));
+					}
+					if (documents.size() > 0) {
+						// it means that the lov is in correlation in some documents
+						if (!initialLov.getITypeCd().equals(modVal.getITypeCd())) {
+							// the lov type was changed
+							HashMap params = new HashMap();
+							params.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
+							Vector vector = new Vector();
+							vector.add(documents.toString());
+							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1058, vector, params);
+							errorHandler.addError(error);
+							prepareDetailModalitiesValuePage(modVal, mod, response);
+							return;
+						} else {
+							// the lov type was not changed, must verify that the dependency columns are still present
+							String queryDetXML = modVal.getLovProvider();
+							SourceBean queryXML = SourceBean.fromXMLString(queryDetXML);
+							String visibleColumns = ((SourceBean) queryXML
+									.getAttribute("VISIBLE-COLUMNS")).getCharacters();
+							StringTokenizer strToken = new StringTokenizer(visibleColumns, ",");
+							Vector columns = new Vector();
+							while (strToken.hasMoreTokens()) {
+								String val = strToken.nextToken().trim();
+								columns.add(val);
+							}
+							Iterator correlationsIt = correlations.iterator();
+							boolean columnNoMorePresent = false;
+							List columnsNoMorePresent = new ArrayList();
+							while (correlationsIt.hasNext()) {
+								ObjParuse aObjParuse = (ObjParuse) correlationsIt.next();
+								String filterColumn = aObjParuse.getFilterColumn();
+								if (!columns.contains(filterColumn)) {
+									columnNoMorePresent = true;
+									columnsNoMorePresent.add(filterColumn);
+								}
+							}
+							if (columnNoMorePresent) {
+								HashMap params = new HashMap();
+								params.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
+								Vector vector = new Vector();
+								vector.add(documents.toString());
+								vector.add(columnsNoMorePresent.toString());
+								EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1059, vector, params);
+								errorHandler.addError(error);
+								prepareDetailModalitiesValuePage(modVal, mod, response);
+								return;
+							}
+						}
+					}
+				}
 				DAOFactory.getModalitiesValueDAO().modifyModalitiesValue(modVal);
 			}
 			
@@ -440,7 +502,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		}
     	
 		response.setAttribute("loopback", "true");
-		
 		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		
 	}
@@ -465,7 +526,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
 		response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
 	}
-	
+
 	/**
 	 * Tests the ModalitiesValue before saving and sets some attributes to the response SourceBean 
 	 * for the correct visualization of the test result page.
@@ -590,7 +651,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			modVal.setDescription("");
 			modVal.setLabel("");
 			modVal.setLovProvider("");
-			modVal.setITypeCd("MAN_IN");
+			modVal.setITypeCd("QUERY");
 			loadValuesDomain(response);
 			response.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
 					modVal);

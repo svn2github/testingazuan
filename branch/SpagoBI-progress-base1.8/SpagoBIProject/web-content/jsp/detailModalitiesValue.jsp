@@ -28,8 +28,9 @@
 	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	  
 	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "ListLovsPage");
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	backUrl.setParameter("PAGE", "detailModalitiesValuePage");
+	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_DETAIL");
+	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	
 	String queryDisplay = "none";
 	String scriptDisplay = "none";
@@ -37,28 +38,26 @@
 	
 	QueryDetail query = new QueryDetail();
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("QUERY") ) {
+		queryDisplay = "inline";
 		String lovProvider = modVal.getLovProvider();
 		if (lovProvider != null  &&  !lovProvider.equals("")){
 		  	query = QueryDetail.fromXML(lovProvider);
-		  	queryDisplay = "inline";
 		}
 	}
 	
 	ScriptDetail scriptDet = new ScriptDetail();
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("SCRIPT") ) {
+		scriptDisplay = "inline";
 		String lovProvider = modVal.getLovProvider();
 	  	if (lovProvider != null  &&  !lovProvider.equals("")){
 	  		scriptDet = ScriptDetail.fromXML(lovProvider);
-	  		scriptDisplay = "inline";
 	  	}
 	}
 	
 	String lovProvider = "";
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("FIX_LOV") ) {
+		lovDisplay = "inline";
 		lovProvider = modVal.getLovProvider();
-	  	if (lovProvider != null  &&  !lovProvider.equals("")){
-	  		lovDisplay = "inline";
-	  	}
 	}
 	
 	
@@ -106,13 +105,6 @@
 		document.getElementById("testButton").style.visibility = "hidden"
 		document.getElementById("testButtonImage").disabled = true
 	}
-	if (wizard.match("MAN_IN") != null) {
-		document.getElementById("queryWizard").style.display = "none"
-		document.getElementById("scriptWizard").style.display = "none"
-		document.getElementById("lovWizard").style.display = "none"
-		document.getElementById("testButton").style.visibility = "hidden"
-		document.getElementById("testButtonImage").disabled = true
-	}
 }
 </script>
 
@@ -147,6 +139,39 @@
 	</tr>
 </table>
 
+<%--
+<input type="hidden" id="deleteDependencies" name="" value="" />
+
+<script type="text/javascript">
+	function exitFromDetail(){
+		<%
+		String documents = (String) moduleResponse.getAttribute("Documents_with_associated_dependencies");
+		if (documents != null) {
+			// if the lov type is changed or if the correlation column does no more exist, ask for confirm before deleting dependencies
+			String initialLovType = initialLov.getITypeCd();
+			%>
+			var initialLovType = '<%= initialLovType %>';
+			var actualLovType = document.getElementById("input_type").value;
+			if (actualLovType.match(initialLovType) == null) {
+				var message = '<spagobi:message key = "SBIDev.predLov.dependencyConfirm1" />' + ' ' + '<%= documents %>' + '. ' + '<spagobi:message key = "SBIDev.predLov.dependencyConfirm2" />';
+				if (confirm(message)) {
+					document.getElementById('deleteDependencies').name = 'deleteDependencies';
+					document.getElementById('deleteDependencies').value = 'true';
+					document.getElementById('modalitiesValueForm').submit();
+				}
+			} else {
+				document.getElementById('modalitiesValueForm').submit();
+			}
+			<%
+		} else {
+			%>
+			document.getElementById('modalitiesValueForm').submit();
+			<%
+		}
+		%>
+	}
+</script>
+--%>
 
 
 <div class='div_background_no_img' >

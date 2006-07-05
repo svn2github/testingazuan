@@ -290,6 +290,23 @@ public class ExportManager implements IExportManager {
 		cmsdao.fillBIObjectTemplate(biobj);
 		UploadedFile tempFile = biobj.getTemplate();
 		byte[] tempFileCont = tempFile.getFileContent();
+		
+		
+		try{
+			if(biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+				String tempFileStr = new String(tempFileCont);
+				SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
+				SourceBean datanameSB = (SourceBean)tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
+				String lovLabel = (String)datanameSB.getAttribute("value");
+			    IModalitiesValueDAO lovdao = DAOFactory.getModalitiesValueDAO();
+			    ModalitiesValue lov = lovdao.loadModalitiesValueByLabel(lovLabel);
+			    exporter.insertLov(lov, session);
+			}
+		} catch(Exception e) {
+			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
+                                "Error while exporting lov referenced by template of biobj "+ biobj.getName() +" :" + e);
+		}
+		
 		String tempFileName = tempFile.getFileName();
 		
 		String folderTempFilePath = pathContentFolder + path;

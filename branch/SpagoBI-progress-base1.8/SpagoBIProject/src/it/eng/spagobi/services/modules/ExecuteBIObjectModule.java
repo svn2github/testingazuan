@@ -88,8 +88,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception 
 	{
-		System.out.println(">>> ExecuteBIObjectModule <<<");
-		
 		debug("service", "start service method");
 		String messageExec = (String)request.getAttribute(SpagoBIConstants.MESSAGEDET);
 		debug("service", "using message" + messageExec);

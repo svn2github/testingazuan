@@ -38,6 +38,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.metadata.SbiParuse,
 				it.eng.spagobi.importexport.IImportManager" %>
 
+<%!
+
+		private String cutLabel(String label) {
+				if(label.length() > 45) {
+					label = label.substring(0, 45);
+					label += " ...";
+				}
+				return label;
+		}
+
+%>
+
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
 	IImportManager impMan = (IImportManager)aSessionContainer.getAttribute(ImportExportConstants.IMPORT_MANAGER);
@@ -79,7 +91,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= exitUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.png")%>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.gif")%>' 
       				 alt='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
@@ -94,46 +106,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='connAssForm' name='connAssForm'>
-	<div style="float:left;width:69%;" class="div_detail_area_forms">
-		<%--
-		<%if(!metaAss.getRoleIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
-			<tr>
-				<td class='portlet-section-header' colspan="2">Roles</td>
-			</tr>
-			<tr>
-				<td class='portlet-section-header'>Exported Roles</td>
-				<td class='portlet-section-header'>Existing roles</td>
-			</tr>
-			<%
-				Map rolesAss = metaAss.getRoleAssociation();
-				Set rolesExp = rolesAss.keySet();
-			    Iterator iterExp =  rolesExp.iterator();
-			    while(iterExp.hasNext()) {
-			    	SbiExtRoles roleExp = (SbiExtRoles)iterExp.next();
-			    	SbiExtRoles roleExist = (SbiExtRoles)rolesAss.get(roleExp);
-			%>
-			<tr>
-				<td>
-					<span class='portlet-form-field-label'><%=roleExp.getName()%></span><br/>
-					<%=roleExp.getDescr()%><br/>
-				</td>
-				<td>
-					<span class='portlet-form-field-label'><%=roleExist.getName()%></span><br/>
-					<%=roleExist.getDescr()%><br/>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">&nbsp;</td>
-			</tr>
-			<%
-			    }
-			%>
-		</table>
-		<% } %>
-		--%>
+	<div style="float:left;width:68%;" class="div_detail_area_forms">
+
 		<%if(!metaAss.getLovIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
+		<table>
 			<tr>
 				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.lovs"  bundle="component_impexp_messages"/></td>
 			</tr>
@@ -152,13 +128,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=lovExp.getLabel()%></span><br/>
-					<%=lovExp.getName()%><br/>
-					<%=lovExp.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><<%=lovExp.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=lovExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=lovExist.getLabel()%></span><br/>
-					<%=lovExist.getName()%><br/>
-					<%=lovExist.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=lovExist.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=lovExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -170,7 +146,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table>
 		<% } %>
 		<%if(!metaAss.getFunctIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
+		<table >
 			<tr>
 				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.functionalities"  bundle="component_impexp_messages"/></td>
 			</tr>
@@ -189,15 +165,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=functExp.getCode()%></span><br/>
-					<%=functExp.getName()%><br/>
-					<%=functExp.getDescr()%><br/>
-					<%=functExp.getPath()%><br/>
+					<div style="width:100%;overflow:auto;"><%=functExp.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=functExp.getDescr()%></div>
+					<div alt="<%=functExist.getPath()%>" title="<%=functExist.getPath()%>"  style="width:100%;overflow:auto;"><%=cutLabel(functExp.getPath())%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=functExist.getCode()%></span><br/>
-					<%=functExist.getName()%><br/>
-					<%=functExist.getDescr()%><br/>
-					<%=functExist.getPath()%><br/>
+					<div style="width:100%;overflow:auto;"><%=functExist.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=functExist.getDescr()%></div>
+					<div alt="<%=functExist.getPath()%>" title="<%=functExist.getPath()%>" style="width:100%;overflow:auto;"><%=cutLabel(functExist.getPath())%></div>
 				</td>
 			</tr>
 			<tr>
@@ -209,7 +185,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table>
 		<% } %>
 		<%if(!metaAss.getEngineIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
+		<table>
 			<tr>
 				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.engines"  bundle="component_impexp_messages"/></td>
 			</tr>
@@ -228,15 +204,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=engExp.getLabel()%></span><br/>
-					<%=engExp.getName()%><br/>
-					<%=engExp.getDescr()%><br/>
-					<%=engExp.getMainUrl()%><br/>
+					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExp.getName())%></div>
+					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExp.getDescr())%></div>
+					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExp.getMainUrl())%></div>
 				</td>
-				<td>
+				<td style="overflow:hidden;">
 					<span class='portlet-form-field-label'><%=engExist.getLabel()%></span><br/>
-					<%=engExist.getName()%><br/>
-					<%=engExist.getDescr()%><br/>
-					<%=engExist.getMainUrl()%><br/>
+					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExist.getName())%></div>
+					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExist.getDescr())%></div>
+					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExist.getMainUrl())%></div>
 				</td>
 			</tr>
 			<tr>
@@ -248,7 +224,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table>
 		<% } %>
 		<%if(!metaAss.getCheckIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
+		<table >
 			<tr>
 				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.checks"  bundle="component_impexp_messages"/></td>
 			</tr>
@@ -267,13 +243,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=checkExp.getLabel()%></span><br/>
-					<%=checkExp.getName()%><br/>
-					<%=checkExp.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=checkExp.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=checkExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=checkExist.getLabel()%></span><br/>
-					<%=checkExist.getName()%><br/>
-					<%=checkExist.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=checkExist.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=checkExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -285,7 +261,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table>
 		<% } %>
 		<%if(!metaAss.getParameterIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
+		<table >
 			<tr>
 				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.parameters"  bundle="component_impexp_messages"/></td>
 			</tr>
@@ -304,13 +280,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=paramExp.getLabel()%></span><br/>
-					<%=paramExp.getName()%><br/>
-					<%=paramExp.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=paramExp.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=paramExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=paramExist.getLabel()%></span><br/>
-					<%=paramExist.getName()%><br/>
-					<%=paramExist.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=paramExist.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=paramExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -322,7 +298,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table>
 		<% } %>
 		<%if(!metaAss.getParuseIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
+		<table >
 			<tr>
 				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.paruses"  bundle="component_impexp_messages"/></td>
 			</tr>
@@ -341,13 +317,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=paruseExp.getLabel()%></span><br/>
-					<%=paruseExp.getName()%><br/>
-					<%=paruseExp.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=paruseExp.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=paruseExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=paruseExist.getLabel()%></span><br/>
-					<%=paruseExist.getName()%><br/>
-					<%=paruseExist.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=paruseExist.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=paruseExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -359,7 +335,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table>
 		<% } %>
 		<%if(!metaAss.getBIobjIDAssociation().keySet().isEmpty()) { %>
-		<table style="margin:10px;" cellspacing="5px">
+		<table >
 			<tr>
 				<td class='portlet-section-header' colspan="2"><spagobi:message key = "Sbi.objects"  bundle="component_impexp_messages"/></td>
 			</tr>
@@ -378,13 +354,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=biobjExp.getLabel()%></span><br/>
-					<%=biobjExp.getName()%><br/>
-					<%=biobjExp.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=biobjExp.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=biobjExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=biobjExist.getLabel()%></span><br/>
-					<%=biobjExist.getName()%><br/>
-					<%=biobjExist.getDescr()%><br/>
+					<div style="width:100%;overflow:auto;"><%=biobjExist.getName()%></div>
+					<div style="width:100%;overflow:auto;"><%=biobjExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -402,7 +378,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input type="image" 
 		       name="submit" 
 		       title='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' 
-		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.png")%>' 
+		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.gif")%>' 
 		       alt='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' />
 		<br/>
 		<ul style="color:#074B88;">

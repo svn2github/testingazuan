@@ -69,7 +69,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= exitUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.png")%>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.gif")%>' 
       				 alt='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
@@ -84,8 +84,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='engineAssForm' name='engineAssForm'>
-	<div style="float:left;width:69%;" class="div_detail_area_forms">
-		<table style="margin:10px;" cellspacing="5px">
+	<div style="float:left;width:65%;" class="div_detail_area_forms">
+		<table style="margin:10px;" >
 			<tr>
 				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedEngines"  bundle="component_impexp_messages"/></td>
 				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.currentEngines"  bundle="component_impexp_messages"/></td>
@@ -103,12 +103,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    	Engine engine = (Engine)iterExpEngines.next();
 		    %>
 			<tr>
-				<td>
+				<td >
 					<span class='portlet-form-field-label'><%=engine.getName()%></span>
 					<br/>
-					<%=engine.getDescription()%><br/>
-					<%=engine.getUrl()%><br/>
-					<%=engine.getDriverName()%><br/>
+					<%
+						String url = engine.getUrl();
+					    if( (url!=null) && (url.length() > 60)) {
+					    	url = url.substring(0, 60);
+					        url += "...";
+					    }
+					    String driverName = engine.getDriverName();
+					    if( (driverName!=null) && (driverName.length() > 60) ) {
+					    	driverName = driverName.substring(0, 60);
+					        driverName += "...";   
+					    }
+					    String description = engine.getDescription();
+					    if( (description!=null) && (description.length() > 60) ) {
+					    	description = description.substring(0, 60);
+					        description += "...";  
+					    }
+					%>
+					
+					<span title="<%=engine.getDescription()%>" alt="<%=engine.getDescription()%>"><%=description%></span><br/>
+					<span title="<%=engine.getUrl()%>" alt="<%=engine.getUrl()%>"><%=url%></span><br/>
+					<span title="<%=engine.getDriverName()%>" alt="<%=engine.getDriverName()%>"><%=driverName%></span><br/>
 				</td>
 				<td>
 				    <input type="hidden" name="expEngine" value="<%=engine.getId()%>" />
@@ -134,7 +152,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input type="image" 
 		       name="submit" 
 		       title='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' 
-		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.png")%>' 
+		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.gif")%>' 
 		       alt='<spagobi:message key="Sbi.next" bundle="component_impexp_messages"/>' />
 		<br/>
 		<ul style="color:#074B88;">

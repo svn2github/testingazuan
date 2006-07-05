@@ -1360,7 +1360,6 @@ public class ImportManager implements IImportManager {
 			Object existObj = importer.checkExistence(uniqueMap, sessionCurrDB, new SbiObjPar());
 			
 			if(existObj!=null) {
-				System.out.println("************************* Esiste");
 				SbiObjPar objParCurr = (SbiObjPar)existObj;
 				metaAss.insertCoupleObjpar(objparExp.getObjParId(), objParCurr.getObjParId());
 				metaAss.insertCoupleObjpar(objparExp, objParCurr);

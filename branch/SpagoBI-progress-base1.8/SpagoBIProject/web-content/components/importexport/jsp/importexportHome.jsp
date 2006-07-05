@@ -113,7 +113,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div style="float:left;width:10%;">
 		  <center>
 			 <a href="javascript:submitExportForm()">
-					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.png") %>'
+					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
 				</a>
@@ -162,7 +162,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div style="float:left;width:10%;">
 		  <center>
 			<a href="javascript:document.getElementById('importForm').submit()">
-					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.png") %>'
+					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' />
 				</a>

@@ -77,11 +77,58 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1001, messageBundle);
 		}
 		
-		try {
+		
+		
+		try{	
 			
-			obj.loadTemplate();
+			
+			/*
+			// extract from the parameters of the dashboard the parameter with url_name = listofvalue 
+			// which is the datasource parameter for the dashboard
+			BIObjectParameter biParameterDataSource = null;
+			List bipars = obj.getBiObjectParameters();
+			if(bipars.size()==1){
+				biParameterDataSource = (BIObjectParameter)bipars.get(0);
+			} else if(bipars.size()>1) {
+				Iterator iterBipars = bipars.iterator();
+				while(iterBipars.hasNext()) {
+					BIObjectParameter biobjpar = (BIObjectParameter)iterBipars.next();
+					String urlName = biobjpar.getParameterUrlName();
+					if(urlName.equalsIgnoreCase("listofvalues")) {
+						biParameterDataSource = biobjpar;
+						break;
+					}
+				}
+			}
+			
+			// if the parameter with url__name  = 'listofvalues' doesn't exist throw an exception
+			if(biParameterDataSource==null) {
+				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
+									this.getClass().getName(),
+									"execute",
+			            			"Dashboards need a parameter with a url name = 'listofvalues', which is the datasource");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1004, messageBundle);
+			}
+			
+			// extract from the parameter with url__name  = 'listofvalues' the label of the LOV loaded (loaded based on the user role)
+			Parameter par = biParameterDataSource.getParameter();
+			ModalitiesValue lov = par.getModalityValue();
+			if(lov==null) {
+				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
+						this.getClass().getName(),
+						"execute",
+            			"Parameter with url name = 'listofvalues' not associated to a lov (probably is a manual input)");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1005, messageBundle);
+			}
+			String lovlabel = lov.getLabel();
+			String dataurl = "DashboardService";
+			Map dataParameters = new HashMap();
+			dataParameters.put("dataname", lovlabel);
+			*/
+			
 			
 			// get the template of the object
+			obj.loadTemplate();
 			UploadedFile template = obj.getTemplate();
 			if (template==null) { 
 				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
@@ -90,7 +137,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 						            "Template biobject null");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1002, messageBundle);
 			}
-			// get bytes of template and transform it into a SourceBean
+			// get bytes of template and transform them into a SourceBean
 			SourceBean content = null;
 			try {
 				byte[] contentBytes = template.getFileContent();
@@ -108,6 +155,8 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			String movie = (String)content.getAttribute("movie");
 			String width = (String)content.getAttribute("DIMENSION.width");
 			String height = (String)content.getAttribute("DIMENSION.height");
+			
+			
 			String dataurl = (String)content.getAttribute("DATA.url");
 			// get all the parameters for data url
 			Map dataParameters = new HashMap();
@@ -121,6 +170,8 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 				String valueParam = (String)param.getAttribute("value");
 				dataParameters.put(nameParam, valueParam);
 			}
+			
+			
 			// get all the parameters for dash configuration
 			Map confParameters = new HashMap();
 			SourceBean confSB = (SourceBean)content.getAttribute("CONF");
@@ -201,7 +252,6 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	 */
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, 
 			SourceBean response, Object subObjectInfo) throws EMFUserError {
-		
 		// it cannot be invoked
 		SpagoBITracer.major("SpagoBIDashboardInternalEngine", 
 				this.getClass().getName(),

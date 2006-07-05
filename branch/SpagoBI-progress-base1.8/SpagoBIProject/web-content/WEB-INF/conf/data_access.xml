@@ -53,6 +53,7 @@
   	<!-- ====================================================================================== -->
 	<!--  SpagoBI metadata db																	--> 
 	<!-- ====================================================================================== -->
+   	<!-- 
    	<CONNECTION-POOL	connectionPoolName="spagobi" 
    				    	connectionPoolFactoryClass="it.eng.spago.dbaccess.pool.JNDIConnectionPoolFactory" 
    						connectionPoolType="native" connectionDescription="SpagoBI Metadata DB">
@@ -63,7 +64,7 @@
       						   parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
       						   parameterType=""/>
    </CONNECTION-POOL>
-   
+   -->
   
 
 
@@ -74,8 +75,8 @@
       <!--
       <REGISTER-POOL registeredPoolName="mysqlfoodmart"/>
       <REGISTER-POOL registeredPoolName="oraclesh"/>
-      -->
       <REGISTER-POOL registeredPoolName="spagobi"/>
+      -->
    </CONNECTION-MANAGER>
    
 </DATA-ACCESS>

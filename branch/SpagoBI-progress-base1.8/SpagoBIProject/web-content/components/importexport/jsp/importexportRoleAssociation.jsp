@@ -55,7 +55,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= exitUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.png")%>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/stop.gif")%>' 
       				 alt='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
@@ -70,8 +70,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='roleAssForm' name='roleAssForm'>
-	<div style="float:left;width:59%;" class="div_detail_area_forms">
-		<table style="margin:10px;" cellspacing="5px">
+	<div style="float:left;width:50%;" class="div_detail_area_forms">
+		<table style="margin:10px;">
 			<tr>
 				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedRoles"  bundle="component_impexp_messages"/></td>
 				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.currentRoles"  bundle="component_impexp_messages"/></td>
@@ -142,7 +142,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input type="image" 
 		       name="submit" 
 		       title='<spagobi:message key="Sbi.next"  bundle="component_impexp_messages"/>' 
-		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.png")%>' 
+		       src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/next.gif")%>' 
 		       alt='<spagobi:message key="Sbi.next"  bundle="component_impexp_messages"/>' />
 		<br/>
 		<ul style="color:#074B88;">

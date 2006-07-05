@@ -1,6 +1,14 @@
 package it.eng.spagobi.importexport.transformers;
 
-import java.io.ByteArrayOutputStream;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.importexport.ITransformer;
+import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.importexport.ImportUtilities;
+import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,26 +16,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.importexport.ITransformer;
-import it.eng.spagobi.importexport.ImportExportConstants;
-import it.eng.spagobi.importexport.ImportUtilities;
-import it.eng.spagobi.metadata.HibernateUtil;
-import it.eng.spagobi.metadata.SbiEngines;
-import it.eng.spagobi.metadata.SbiFunctions;
-import it.eng.spagobi.utilities.GeneralUtilities;
-import it.eng.spagobi.utilities.SpagoBITracer;
 
 public class TransformerFrom1_8To1_9 implements ITransformer {
 
@@ -45,6 +36,8 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		} catch(Exception e) {
 			System.out.println(e);
 		}	
+		// change dashboard template
+		changeDashTempl(pathImpTmpFolder, archiveName);
 		// associate objects with functionalities
 		createObjectsFunctsAssociations(pathImpTmpFolder, archiveName);
 		// update path of functionalitie
@@ -61,6 +54,52 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		return content;
 	}
 
+	
+	private void changeDashTempl(String pathImpTmpFold, String archiveName) {
+		Connection conn = null;
+		try{
+			conn = getConnectionToDatabase(pathImpTmpFold, archiveName);
+			String sql = "SELECT * FROM SBI_OBJECTS";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				String path = rs.getString("PATH");
+				int objectID = rs.getInt("BIOBJ_ID");
+				String biobjcode = rs.getString("BIOBJ_TYPE_CD");
+				if(biobjcode.equalsIgnoreCase("DASH")) {
+					String pathBIObjFolder = pathImpTmpFold + "/" + archiveName + "/contents" + path;
+				    File fileBIObjFolder = new File(pathBIObjFolder);
+				    File[] files = fileBIObjFolder.listFiles();
+				    File tempFile = files[0];
+				    FileInputStream fis = new FileInputStream(tempFile);
+				    byte[] content = GeneralUtilities.getByteArrayFromInputStream(fis);
+				    fis.close();
+				    String contentStr = new String(content);
+				    SourceBean contentSB = SourceBean.fromXMLString(contentStr);
+				    String movie = (String)contentSB.getAttribute("movie");
+				    int indDash = movie.indexOf("dashboards");
+				    movie = movie.substring(indDash);
+				    contentSB.updAttribute("movie", movie);
+				    contentSB.updAttribute("DATA.url", "/DashboardService");
+				    String nameFileTemp = tempFile.getName();
+				    tempFile.delete();
+				    FileOutputStream fos = new FileOutputStream(pathBIObjFolder + "/" + nameFileTemp); 
+				    fos.write(contentSB.toXML(false).getBytes());
+				    fos.flush();
+				    fos.close();
+				}
+			}
+			conn.commit();
+			conn.close();
+			
+			
+			
+		} catch(Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "createObjectsFunctsAssociations",
+                                   "Error while creating associations between objects and functions " + e);	
+		}
+	}
+	
 	
 	private void createObjectsFunctsAssociations(String pathImpTmpFold, String archiveName) {
 		Connection conn = null;
@@ -85,7 +124,8 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			conn.commit();
 			conn.close();
 		} catch(Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "createObjectsFunctsAssociations",
+                                   "Error while creating associations between objects and functions " + e);	
 		}
 	}
 	
@@ -109,7 +149,8 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			conn.commit();
 			conn.close();
 		} catch(Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "updateFunctionalityPaths",
+                                   "Error while updating functionalities path " + e);	
 		}
 	}
 	
@@ -157,18 +198,6 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			stmt.execute(sql);
 			sql =  "DROP TABLE SBI_OBJ_PAR_TEMP";
 			stmt.execute(sql);
-			//sql =  "ALTER TABLE SBI_OBJ_PAR RENAME TO SBI_OBJ_PAR_2";
-			//stmt.execute(sql);
-			//sql =  "ALTER TABLE SBI_OBJ_PAR_2 DROP CONSTRAINT XPKSBI_OBJ_PAR";
-			//stmt.execute(sql);
-			//sql =  "INSERT INTO SBI_OBJ_PAR (PAR_ID,BIOBJ_ID,LABEL,REQ_FL,MOD_FL,VIEW_FL,MULT_FL,PROG,PARURL_NM) SELECT PAR_ID,BIOBJ_ID,LABEL,REQ_FL,MOD_FL,VIEW_FL,MULT_FL,PROG,PARURL_NM FROM SBI_OBJ_PAR_2";
-			//stmt.execute(sql);
-			//sql =  "DROP TABLE SBI_OBJ_PAR_2";
-			//stmt.execute(sql);
-			//sql =  "ALTER TABLE SBI_OBJ_PAR ADD CONSTRAINT FK_SBI_OBJ_PAR_1 FOREIGN KEY(BIOBJ_ID) REFERENCES SBI_OBJECTS(BIOBJ_ID)";
-			//stmt.execute(sql);
-			//sql =  "ALTER TABLE SBI_OBJ_PAR ADD CONSTRAINT FK_SBI_OBJ_PAR_2 FOREIGN KEY(PAR_ID) REFERENCES SBI_PARAMETERS(PAR_ID)";
-			//stmt.execute(sql);
 			sql =  "CREATE MEMORY TABLE SBI_OBJ_PARUSE (OBJ_PAR_ID INTEGER NOT NULL, USE_ID INTEGER NOT NULL, OBJ_PAR_FATHER_ID INTEGER NOT NULL, FILTER_COLUMN VARCHAR NOT NULL, FILTER_OPERATION VARCHAR NOT NULL, CONSTRAINT XPKSBI_OBJ_PARUSE PRIMARY KEY(OBJ_PAR_ID,USE_ID))";
 			stmt.execute(sql);
 			// calculate max id for sbidomains
@@ -177,10 +206,12 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			int maxid = 1000;
 			if(rs.next())
 				maxid = rs.getInt("MAXID");
+			int idExtEngDom = maxid+1;
+			int idIntEngDom = maxid+2;
 			// insert sbidomains for engine using maxid
-			sql =  "INSERT INTO SBI_DOMAINS (VALUE_ID, VALUE_CD,VALUE_NM,DOMAIN_CD,DOMAIN_NM,VALUE_DS) VALUES("+(maxid+1)+", 'EXT','External Engine','ENGINE_TYPE','Engine types','Business intelligence external engine of SpagoBI platform')";
+			sql =  "INSERT INTO SBI_DOMAINS (VALUE_ID, VALUE_CD,VALUE_NM,DOMAIN_CD,DOMAIN_NM,VALUE_DS) VALUES("+idExtEngDom+", 'EXT','External Engine','ENGINE_TYPE','Engine types','Business intelligence external engine of SpagoBI platform')";
 			stmt.execute(sql);
-			sql =  "INSERT INTO SBI_DOMAINS (VALUE_ID, VALUE_CD,VALUE_NM,DOMAIN_CD,DOMAIN_NM,VALUE_DS) VALUES("+(maxid+2)+", 'INT','Internal Engine','ENGINE_TYPE','Engine types','Business intelligence internal engine of SpagoBI platform')";
+			sql =  "INSERT INTO SBI_DOMAINS (VALUE_ID, VALUE_CD,VALUE_NM,DOMAIN_CD,DOMAIN_NM,VALUE_DS) VALUES("+idIntEngDom+", 'INT','Internal Engine','ENGINE_TYPE','Engine types','Business intelligence internal engine of SpagoBI platform')";
 			stmt.execute(sql);
 			sql =  "ALTER TABLE sbi_engines ADD COLUMN ENGINE_TYPE INTEGER";
 			stmt.execute(sql);
@@ -188,10 +219,6 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			stmt.execute(sql);
 			sql =  "ALTER TABLE sbi_engines ADD COLUMN BIOBJ_TYPE INTEGER";
 			stmt.execute(sql);
-			//sql =  "ALTER TABLE sbi_engines ADD CONSTRAINT FK_SBI_ENGINES_1 FOREIGN KEY(BIOBJ_TYPE) REFERENCES SBI_DOMAINS(VALUE_ID)";
-			//stmt.execute(sql);
-			//sql =  "ALTER TABLE sbi_engines ADD CONSTRAINT FK_SBI_ENGINES_2 FOREIGN KEY(ENGINE_TYPE) REFERENCES SBI_DOMAINS(VALUE_ID)";
-			//stmt.execute(sql);
 			sql =  "UPDATE sbi_engines SET ENGINE_TYPE = (SELECT  VALUE_ID  FROM SBI_DOMAINS WHERE VALUE_CD = 'EXT')";
 			stmt.executeUpdate(sql);
 			sql =  "UPDATE sbi_engines SET BIOBJ_TYPE = (SELECT  VALUE_ID  FROM SBI_DOMAINS WHERE VALUE_CD = 'REPORT')";
@@ -204,10 +231,78 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			stmt.execute(sql);
 			sql =  "CREATE MEMORY TABLE SBI_EVENTS_LOG (ID VARCHAR NOT NULL, USER VARCHAR NOT NULL, DATE TIMESTAMP DEFAULT 'now' NOT NULL, DESC VARCHAR NOT NULL, PARAMS VARCHAR NOT NULL, CONSTRAINT XPKSBI_EVENTS_LOG PRIMARY KEY(ID,USER, DATE))";
 			stmt.execute(sql);
+			
+			
+			// delete lov manual input and set the manin flag into paruse
+			sql = "SELECT LOV_ID FROM SBI_LOV WHERE INPUT_TYPE_CD = 'MAN_IN'";
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				int lovid = rs.getInt("LOV_ID");
+				sql = "UPDATE SBI_PARUSE SET LOV_ID = NULL, MAN_IN = '1' WHERE LOV_ID = '"+lovid+"'";
+				stmt.executeUpdate(sql);
+				sql = "DELETE FROM SBI_LOV WHERE LOV_ID = '"+lovid+"'";
+				stmt.execute(sql);	
+			}
+			
+			
+			// calculate max id for engined
+			sql = "SELECT MAX(ENGINE_ID) AS MAXID FROM SBI_ENGINES";
+			rs = stmt.executeQuery(sql);
+			int maxidEngine = 1000;
+			if(rs.next())
+				maxidEngine = rs.getInt("MAXID");
+			int idQbeEngine = maxidEngine + 1;
+			int idDashEngine = maxidEngine + 2;
+			// get id of the domain 'DATAMART'
+			sql = "SELECT VALUE_ID FROM SBI_DOMAINS WHERE VALUE_CD = 'DATAMART'";
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			int idDatamartDom = rs.getInt("VALUE_ID");
+			// get id of the domain 'DASH'
+			sql = "SELECT VALUE_ID FROM SBI_DOMAINS WHERE VALUE_CD = 'DASH'";
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			int idDashDom = rs.getInt("VALUE_ID");
+			// insert the default internal engines
+			sql = "INSERT INTO SBI_ENGINES VALUES("+idQbeEngine+",0,'Qbe Internal Engine','Qbe Internal Engine','','','','','','QbeInternalEngine',"+idIntEngDom+",'it.eng.spagobi.engines.datamart.SpagoBIQbeInternalEngine',"+idDatamartDom+")"; 
+			stmt.execute(sql);
+			sql = "INSERT INTO SBI_ENGINES VALUES("+idDashEngine+",0,'Dashboard Internal Engine','Dashboard Internal Engine','','','','','','DashboardInternalEng',"+idIntEngDom+",'it.eng.spagobi.engines.dashboard.SpagoBIDashboardInternalEngine',"+idDashDom+")";
+			stmt.execute(sql);
+			// for each document, check if it is a dash or datamart and change its egine
+			sql = "SELECT * FROM SBI_OBJECTS";
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				int biobjid = rs.getInt("BIOBJ_ID");
+				String biobjcode = rs.getString("BIOBJ_TYPE_CD");
+				if(biobjcode.equals("DASH")) {
+					sql = "UPDATE SBI_OBJECTS SET ENGINE_ID = "+idDashEngine+" WHERE BIOBJ_ID = "+biobjid;
+					stmt.executeUpdate(sql);
+				}
+				if(biobjcode.equals("DATAMART")) {
+					sql = "UPDATE SBI_OBJECTS SET ENGINE_ID = "+idQbeEngine+" WHERE BIOBJ_ID = "+biobjid;
+					stmt.executeUpdate(sql);
+				}
+			}
+			
+			// erase the engines no more useful (into the 1.8 version the dash and qbe objects has a default engine for db key reason)
+			sql = "SELECT ENGINE_ID FROM SBI_ENGINES";
+			rs = stmt.executeQuery(sql);
+			ResultSet rs1 = null;
+			while(rs.next()) {
+				int engineid = rs.getInt("ENGINE_ID");
+				sql = "SELECT BIOBJ_ID FROM SBI_OBJECTS WHERE ENGINE_ID = " + engineid;
+				rs1 = stmt.executeQuery(sql);
+				if(!rs1.next()) {
+					sql = "DELETE FROM SBI_ENGINES WHERE ENGINE_ID = " + engineid;
+					stmt.execute(sql);
+				}
+			}
+			
 			conn.commit();
 			conn.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",
+		                           "Error while changing database " + e);	
 		}
 	}
 	
@@ -243,7 +338,8 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			connection = DriverManager.getConnection(url, username, password);
 			connection.setAutoCommit(true);
 		} catch (Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getConnectionToDatabase",
+					               "Error while getting connection to database " + e);	
 		}
 		return connection;
 	}
@@ -270,14 +366,9 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 			out.flush();
 			out.close();
 			fos.close();
-			
-			
-			
 			FileInputStream fis = new FileInputStream(archivePath);
 			content = GeneralUtilities.getByteArrayFromInputStream(fis);
 			fis.close();
-		
-			
 		} catch (Exception e){
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "createExportArchive",
 					   			   "Error while creating archive file " + e);
@@ -327,63 +418,6 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 	    }
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	private void updateFunctionalitiesReference(String pathImpTmpFolder, String archiveName) {
-		Connection conn = null;
-		try{
-			conn = getConnectionToDatabase(pathImpTmpFolder, archiveName);
-			String sql = "SELECT * FROM SBI_FUNCTIONS";
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-			ResultSet rs1 = null;
-			while(rs.next()) {
-				String path = rs.getString("PATH");
-				int functId = rs.getInt("FUNCT_ID");
-				String parentPath = path.substring(0, path.lastIndexOf('/'));
-				if((parentPath!=null)&&!parentPath.trim().equals("")) {
-					sql = "SELECT FUNCT_ID FROM SBI_FUNCTIONS WHERE PATH = '"+parentPath+"'";
-					rs1 = stmt.executeQuery(sql);
-					if(rs1.next()) {
-						int parFunctId = rs1.getInt("FUNCT_ID");
-						sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+parFunctId+" WHERE FUNCT_ID = " + functId;
-						stmt.executeUpdate(sql);
-					}
-				}
-			}
-			conn.commit();
-			conn.close();	
-			
-			
-			Session sess = HibernateUtil.currentSession();
-			Transaction tx = sess.beginTransaction();
-			Query hibQuery = sess.createQuery("from SbiFunctions where parentFunct is null");
-			SbiFunctions functRoot = (SbiFunctions)hibQuery.uniqueResult();
-			Integer idFunctRoot = functRoot.getFunctId();
-			tx.commit();
-			sess.close();
-			conn = getConnectionToDatabase(pathImpTmpFolder, archiveName);
-			stmt = conn.createStatement();
-			sql = "UPDATE SBI_FUNCTIONS SET PARENT_FUNCT_ID = "+idFunctRoot+" WHERE PARENT_FUNCT_ID IS NULL";
-			stmt.executeUpdate(sql);
-			conn.commit();
-			conn.close();	
-		   
-			
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
-	 */
 	
 	
 }

@@ -1,6 +1,6 @@
  <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
-<%@ page import="it.eng.spago.base.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.spago.base.*, it.eng.spagobi.utilities.javascript.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*"%>
 <%@ page import="java.util.*"%>
 
 
@@ -11,7 +11,13 @@
    
    ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
-   GenerateJavaScriptMenu jsMenu = new GenerateJavaScriptMenu(dm,request);
+   QbeJsTreeBuilder qbeConditionJsTreeBuilder = new QbeConditionJsTreeBuilder(dm,aWizardObject, request);;
+   qbeConditionJsTreeBuilder.setCheckable(false);
+   qbeConditionJsTreeBuilder.setName("conditionTree");
+   
+   QbeJsTreeBuilder qbeJoinJsTreeBuilder = new QbeJoinJsTreeBuilder(dm,aWizardObject, request);;
+   qbeJoinJsTreeBuilder.setCheckable(false);	
+   qbeJoinJsTreeBuilder.setName("joinTree");
    
    dm.updateCurrentClassLoader();
 %>
@@ -70,14 +76,15 @@
 		   			   	   isSelectClauseEmpty = "false";
 	  						treeSelection = (String)sessionContainer.getAttribute("SELECTION_TREE");
 	  						
-	  						treeSelection = treeSelection == null ? "LIGHT" : treeSelection;
+	  						treeSelection = treeSelection == null ? qbeConditionJsTreeBuilder.LIGHT_MODALITY : treeSelection;
 	  						
 	  					} else {
   		   			   	    isSelectClauseEmpty = "true";	  						
-	  						treeSelection = "FULL";
+	  						treeSelection = qbeConditionJsTreeBuilder.FULL_MODALITY;
 	  					}
+		   			 qbeConditionJsTreeBuilder.setModality(treeSelection);
 		  			 %>
-					 <%= jsMenu.condTree(aWizardObject,treeSelection) %>
+					 <%= qbeConditionJsTreeBuilder.build() %>
 	   			</td>
 	   			
 	  			<td valign="top">
@@ -290,7 +297,7 @@
 
 <div id="divTreeSelectJoin" >
    	    <%treeSelection = (String)sessionContainer.getAttribute("SELECTION_TREE");%>
-		<%= jsMenu.condTreeSelectJoin(aWizardObject,treeSelection) %>
+		<%= qbeJoinJsTreeBuilder.build() %>
 </div>
 <%@include file="../jsp/qbefooter.jsp" %>
 

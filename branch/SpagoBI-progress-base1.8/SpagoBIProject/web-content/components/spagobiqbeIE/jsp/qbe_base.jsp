@@ -1,7 +1,7 @@
 <%@ page import="it.eng.spago.base.*"%>
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 <%  
-	 RequestContainer requestContainer = null;
+	RequestContainer requestContainer = null;
 	ResponseContainer responseContainer = null;
 	SessionContainer sessionContainer = null;
 	

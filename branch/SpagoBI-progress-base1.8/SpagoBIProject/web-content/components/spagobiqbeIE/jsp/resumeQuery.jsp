@@ -1,6 +1,6 @@
  <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
-<%@ page import="it.eng.spago.base.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.spago.base.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*, it.eng.qbe.export.*"%>
 <%@ page import="java.util.*"%>
 
 
@@ -12,6 +12,9 @@
    ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
    
+  
+   
+      
    aWizardObject.composeQuery();
    dm.updateCurrentClassLoader();
    
@@ -290,9 +293,7 @@
  			 			<%  String strTextArea = "";
 
 						 				if ((aWizardObject.getExpertQueryDisplayed() == null)||(aWizardObject.getExpertQueryDisplayed().trim().length() == 0)){
-						 					
-						 					strTextArea = aWizardObject.getFinalQuery();
-						 					
+						 					strTextArea = aWizardObject.getFinalSqlQuery(dm);						 					
 						 				}else{
 						 					
 						 					strTextArea = aWizardObject.getExpertQueryDisplayed();

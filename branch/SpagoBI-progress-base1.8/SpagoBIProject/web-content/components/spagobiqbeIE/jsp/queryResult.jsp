@@ -34,20 +34,25 @@
 	   hasPreviousPage = ((Boolean)listResponse.getAttribute("hasPreviousPage")).booleanValue();
 	   hasNextPage = ((Boolean)listResponse.getAttribute("hasNextPage")).booleanValue();
    }
-  	String qbeQuery = aWizardObject.getFinalQuery();;
+  	String qbeQuery = aWizardObject.getFinalQuery();
+  	String qbeSqlQuery = aWizardObject.getFinalSqlQuery(dm);
   	String expertQuery = aWizardObject.getExpertQueryDisplayed();
   			
 	String finalQueryString = null;
+	String queryLang = null;
 	if (aWizardObject.isUseExpertedVersion()){
 		finalQueryString = expertQuery;
+		queryLang = "sql";
 	}else{
-		 finalQueryString = qbeQuery;
+		finalQueryString = qbeQuery;
+		queryLang = "hql";
 	} 
 	
   	String jarFilePath = dm.getJarFile().toString();
   	String exportFormUrl = GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet";
   	exportFormUrl += "?jarfilepath=" + jarFilePath;
-  	exportFormUrl += "&query=" + finalQueryString ;
+  	exportFormUrl += "&query=" + finalQueryString;
+  	exportFormUrl += "&lang=" + queryLang;
   	if(aWizardObject.getQueryId() != null)  exportFormUrl += "&queryName=" + aWizardObject.getQueryId();
   	exportFormUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
   	exportFormUrl += "&dialect=" + dm.getDialect() ;
@@ -428,7 +433,7 @@
 	<table>
 	 <tr>
 	  <td>
-	   <textarea rows="10" cols="50" readonly="true"><%=qbeQuery%></textarea>		
+	   <textarea rows="10" cols="50" readonly="true"><%=qbeSqlQuery%></textarea>		
 	  </td>
 	 </tr>
 	</table>
@@ -444,17 +449,6 @@
 	</table>
 </div>
 
-<!--  
-<div id="divQuery">
-	<table>
-	 <tr>
-	  <td>
-	   <textarea rows="10" cols="50" readonly="true"><%=finalQueryString%></textarea>		
-	  </td>
-	 </tr>
-	</table>
-</div>
--->	
 
 <%@include file="../jsp/qbefooter.jsp" %>
 

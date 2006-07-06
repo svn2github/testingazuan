@@ -11,7 +11,6 @@
 
 <%-- For validation --%>
 <%
-	String finalQueryString = null;
 	String jarFilePath = null;
 	
 	ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject) sessionContainer
@@ -22,11 +21,18 @@
 	dm.updateCurrentClassLoader();
 	aWizardObject.composeQuery();
 		
-	if (aWizardObject.isUseExpertedVersion()) {
-		finalQueryString = aWizardObject.getExpertQueryDisplayed();
-	} else {
-		finalQueryString = aWizardObject.getFinalQuery();
-	}
+	String qbeQuery = aWizardObject.getFinalQuery();;
+  	String expertQuery = aWizardObject.getExpertQueryDisplayed();
+  			
+	String finalQueryString = null;
+	String queryLang = null;
+	if (aWizardObject.isUseExpertedVersion()){
+		finalQueryString = expertQuery;
+		queryLang = "sql";
+	}else{
+		finalQueryString = qbeQuery;
+		queryLang = "hql";
+	} 
 	
 	jarFilePath = dm.getJarFile().toString();
 	String saveFormUrl = GeneralUtilities.getSpagoBiContextAddress() + "/ReportServlet";
@@ -35,6 +41,7 @@
   	saveFormUrl += "&jarfilepath=" + jarFilePath;
   	if(aWizardObject.getQueryId() != null) saveFormUrl += "&queryName=" + aWizardObject.getQueryId();
   	saveFormUrl += "&query=" + finalQueryString ;
+  	saveFormUrl += "&lang=" + queryLang;
   	saveFormUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
   	saveFormUrl += "&dialect=" + dm.getDialect() ;
   	
@@ -43,6 +50,7 @@
   	iframeUrl += "&inline=true";
   	if(aWizardObject.getQueryId() != null) iframeUrl += "&queryName=" + aWizardObject.getQueryId();
   	iframeUrl += "&query=" + finalQueryString ;
+  	iframeUrl += "&lang=" + queryLang;
   	iframeUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
   	iframeUrl += "&dialect=" + dm.getDialect() ;
 %>

@@ -1,6 +1,6 @@
  <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
-<%@ page import="it.eng.spago.base.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.spago.base.*, it.eng.spagobi.utilities.javascript.*, it.eng.qbe.utility.*,it.eng.qbe.javascript.*, it.eng.qbe.wizard.*"%>
 <%@ page import="java.util.*"%>
 
 
@@ -14,7 +14,8 @@
    ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
    GenerateJavaScriptMenu jsMenu = new GenerateJavaScriptMenu(dm,request);
-   
+   QbeJsTreeBuilder qbeJsBuilder = new QbeSelectJsTreeBuilder(dm,aWizardObject, request);;
+	   
    dm.updateCurrentClassLoader();
    
 %>
@@ -58,8 +59,7 @@
 				   		<td></td>
 				  		<td valign="top">
 				  		
-				  					<%=jsMenu.selTree()%>
-				  			
+				  					<%=qbeJsBuilder.build()%>
 				  		</td>
 				  		<td width="47%" valign="top">
 				  		<% java.util.Map sParams = new java.util.HashMap();

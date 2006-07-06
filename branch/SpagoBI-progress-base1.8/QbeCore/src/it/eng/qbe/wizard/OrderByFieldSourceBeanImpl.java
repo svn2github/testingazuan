@@ -21,7 +21,8 @@ public class OrderByFieldSourceBeanImpl  implements IOrderGroupByField{
 
 	public OrderByFieldSourceBeanImpl(){
 		
-		this.id = "orderby"+ String.valueOf(System.currentTimeMillis());
+		this.id =createNewId();
+		//this.id = "orderby"+ String.valueOf(System.currentTimeMillis());
 	
 	}
 	
@@ -41,7 +42,11 @@ public class OrderByFieldSourceBeanImpl  implements IOrderGroupByField{
 		this.id = id;
 	}
 	
-	
+	// TODO generate unique id in a safer mode (i.e. without overflow risk)
+	private static long idcounter = 0;
+	private static String createNewId() {
+		return "orderby" + String.valueOf(idcounter++);
+	}
 	
 }
 

@@ -1,6 +1,8 @@
 
 package it.eng.qbe.action;
 
+import java.util.List;
+
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.IOrderByClause;
 import it.eng.qbe.wizard.IOrderGroupByField;
@@ -33,15 +35,34 @@ public class SelectFieldForOrderByAction extends AbstractAction {
 		
 		String aliasedFieldName = (String)request.getAttribute("COMPLETE_FIELD_NAME"); 
 		
-		
-		IOrderByClause aOrderByClause = aWizardObject.getOrderByClause();
-		if ( aOrderByClause == null){
-			aOrderByClause = new OrderByClauseSourceBeanImpl();
+		if(aliasedFieldName != null) {
+			IOrderByClause aOrderByClause = aWizardObject.getOrderByClause();
+			if ( aOrderByClause == null){
+				aOrderByClause = new OrderByClauseSourceBeanImpl();
+			}
+			IOrderGroupByField aOrderByField = new OrderByFieldSourceBeanImpl();
+			aOrderByField.setFieldName(aliasedFieldName);
+			aOrderByClause.addOrderByField(aOrderByField);
+			aWizardObject.setOrderByClause(aOrderByClause);
 		}
-		IOrderGroupByField aOrderByField = new OrderByFieldSourceBeanImpl();
-		aOrderByField.setFieldName(aliasedFieldName);
-		aOrderByClause.addOrderByField(aOrderByField);
-		aWizardObject.setOrderByClause(aOrderByClause);
+		else {
+			List list = request.getAttributeAsList("field");
+			aWizardObject.setOrderByClause(null);
+			for(int i = 0; i < list.size(); i++) {
+				aliasedFieldName = (String)list.get(i);
+				IOrderByClause aOrderByClause = aWizardObject.getOrderByClause();
+				if ( aOrderByClause == null){
+					aOrderByClause = new OrderByClauseSourceBeanImpl();
+				}
+				IOrderGroupByField aOrderByField = new OrderByFieldSourceBeanImpl();
+				aOrderByField.setFieldName(aliasedFieldName);
+				aOrderByClause.addOrderByField(aOrderByField);
+				aWizardObject.setOrderByClause(aOrderByClause);
+			}	
+		}
+		
+		
+		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
 		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
 		

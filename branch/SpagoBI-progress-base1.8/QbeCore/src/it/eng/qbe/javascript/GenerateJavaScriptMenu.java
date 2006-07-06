@@ -171,7 +171,7 @@ public class GenerateJavaScriptMenu {
 	 */
 	public final String condTreeSelectJoin(ISingleDataMartWizardObject dataMartWizardObject, String selectionTree){
 		
-		//
+		
 		StringBuffer aStringBuffer = new StringBuffer();
 
 		

@@ -24,7 +24,7 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 	
 	
 	public SelectFieldSourceBeanImpl(){
-		this.id = "select_"+ String.valueOf(System.currentTimeMillis());
+		this.id = createNewId();
 	}
 	public String getFieldAlias() {
 		return fieldAlias;
@@ -65,7 +65,11 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 		return this.entityClass;
 	}
 	
-	
+	// TODO generate unique id in a safer mode (i.e. without overflow risk)
+	private static long idcounter = 0;
+	private static String createNewId() {
+		return "select_" + String.valueOf(idcounter++);
+	}
 	
 
 	

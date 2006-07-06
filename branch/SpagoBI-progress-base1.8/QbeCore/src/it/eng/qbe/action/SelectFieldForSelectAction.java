@@ -9,10 +9,12 @@ import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SelectClauseSourceBeanImpl;
 import it.eng.qbe.wizard.SelectFieldSourceBeanImpl;
 import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.utilities.javascript.QbeJsTreeNodeId;
+
+import java.util.List;
 
 
 /**
@@ -22,45 +24,90 @@ import it.eng.spago.dispatching.action.AbstractAction;
  */
 public class SelectFieldForSelectAction extends AbstractAction {
 	
+	// valid input parameter names
+	public static final String CLASS_NAME = "CLASS_NAME";
+	public static final String FIELD_NAME = "FIELD_NAME";
+	public static final String FIELD_LABEL = "FIELD_LABEL";
+	
+	
 	/**
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
-	public void service(SourceBean request, SourceBean response) {
-	
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+	public void service(SourceBean request, SourceBean response) {	
+				
+		String className = (String)request.getAttribute(CLASS_NAME);		
+		String fieldName = (String)request.getAttribute(FIELD_NAME); 
+		String fieldLabel = (String)request.getAttribute(FIELD_LABEL);
 		
 		
-		
-		
-		String className = (String)request.getAttribute("CLASS_NAME");
-		String classAlias = (String)request.getAttribute("ALIAS_CLASS_NAME");
-		
-		EntityClass ec = new EntityClass(className, classAlias);
-		if (!aWizardObject.containEntityClass(ec)){
-			aWizardObject.addEntityClass(ec);
+		if(className != null && fieldName != null) {		
+			//deleteExistingSelectClauses();
+			QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, fieldName);
+			addSelectClause(nodeId.getClassName(), nodeId.getClassAlias(), nodeId.getFieldAlias(), fieldLabel);
 		}
-		
-		String aliasedFieldName = (String)request.getAttribute("COMPLETE_FIELD_NAME"); 
-		
-		String alias = (String)request.getAttribute("ALIAS_FIELD_NAME");
-		
-		ISelectClause aSelectClause = aWizardObject.getSelectClause();
-		if ( aSelectClause == null){
-			aSelectClause = new SelectClauseSourceBeanImpl();
+		else {
+			deleteExistingSelectClauses();
+			List list = request.getAttributeAsList("selectItem");
+			for(int i = 0; i < list.size(); i++) {
+				String chunks[] = ((String)list.get(i)).split(";");
+				
+				className = chunks[0];
+				fieldName = chunks[1];
+				fieldLabel = chunks[2];	
+				
+				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, fieldName);
+				String classAlias = nodeId.getClassAlias();
+				String fieldAlias = nodeId.getFieldAlias();				
+						
+				
+				addSelectClause(className, classAlias, fieldAlias, fieldLabel);				
+			}
+			
 		}
-		
-		ISelectField aSelectField = new SelectFieldSourceBeanImpl();
-		aSelectField.setFieldName(aliasedFieldName);
-		aSelectField.setFieldAlias(alias);
-		aSelectField.setFieldEntityClass(ec);
-		aSelectClause.addSelectField(aSelectField);
-		aWizardObject.setSelectClause(aSelectClause);
+			
 		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
+		getSession().setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, getDataMartWizard());		
+	}
 		
-		
+	
+	private EntityClass getEntityClass(String className, String classAlias){
+		EntityClass ec = new EntityClass(className, classAlias);
+		if (!getDataMartWizard().containEntityClass(ec)){
+			getDataMartWizard().addEntityClass(ec);
+		}	
+		return ec;
+	}
+	
+	private void deleteExistingSelectClauses() {
+		getDataMartWizard().setSelectClause(null);
+	}
+	
+	private ISelectClause getSelectClause() {
+		ISelectClause aSelectClause = getDataMartWizard().getSelectClause();
+		if (aSelectClause == null){
+			aSelectClause = new SelectClauseSourceBeanImpl();
+		}
+		return aSelectClause;
+	}
+	
+	private void addSelectClause(String className, String classAlias, String fieldAlias, String fieldLabel) {
+		ISelectClause aSelectClause = getSelectClause();		
+		ISelectField aSelectField = new SelectFieldSourceBeanImpl();
+		aSelectField.setFieldName(fieldAlias);
+		aSelectField.setFieldAlias(fieldLabel);
+		aSelectField.setFieldEntityClass(getEntityClass(className, classAlias));
+		aSelectClause.addSelectField(aSelectField);
+		getDataMartWizard().setSelectClause(aSelectClause);
+	}
+	
+	
+	
+	private SessionContainer getSession() {
+		return getRequestContainer().getSessionContainer();
+	}
+	
+	private ISingleDataMartWizardObject getDataMartWizard(){
+		return (ISingleDataMartWizardObject)getSession().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
 	}
 }

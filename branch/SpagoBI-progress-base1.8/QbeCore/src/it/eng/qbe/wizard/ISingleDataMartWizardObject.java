@@ -6,6 +6,10 @@
  */
 package it.eng.qbe.wizard;
 
+import it.eng.qbe.model.DataMartModel;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -53,6 +57,8 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	
 	public void setFinalQuery(String query);
 	
+	public String getFinalSqlQuery(DataMartModel dm);
+	
 	public void purgeNotReferredEntityClasses();
 	
 	public String getQueryId();
@@ -90,6 +96,13 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	public boolean getDistinct();
 	
 	public List extractExpertSelectFieldsList(); 
+	
+	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException;
+		
+	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException;
+			
+	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException;
+				
 		
 	
 	

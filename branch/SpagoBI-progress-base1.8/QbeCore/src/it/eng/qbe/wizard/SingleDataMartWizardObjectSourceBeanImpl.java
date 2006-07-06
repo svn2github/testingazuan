@@ -6,12 +6,24 @@
  */
 package it.eng.qbe.wizard;
 
+import it.eng.qbe.export.HqlToSqlQueryRewriter;
+import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Logger;
+import it.eng.qbe.utility.Utils;
+import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 /**
  * @author Zoppello
@@ -112,6 +124,13 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public String getFinalQuery() {
 		return this.finalQuery;
+	}
+	
+	public String getFinalSqlQuery(DataMartModel dm) {
+		String finalSqlQuery = null;
+		HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(dm.createSessionFactory().openSession());
+		finalSqlQuery = queryRewriter.rewrite( getFinalQuery() );
+		return finalSqlQuery;
 	}
 	
 	public void setFinalQuery(String query) {
@@ -518,5 +537,106 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 	}
 	
+	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 	
+	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException {
+		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
+		
+		List result = null;
+		boolean hasNextPage = true;
+		boolean hasPrevPage = (pageNumber > 0);
+		
+		int firstRow = pageNumber * pageSize;
+		firstRow = firstRow < 0 ? 0 : firstRow;
+		
+		try {
+			Connection conn = aSession.connection();
+			Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stm.execute(getExpertQueryDisplayed());
+			
+			ResultSet rs = stm.getResultSet();
+			rs.last();
+			rs.beforeFirst();
+			
+						
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();
+			result = new ArrayList();
+			Object[] row = null;
+			if(firstRow > 0)  
+				rs.absolute(firstRow - 1);
+			else rs.beforeFirst();
+			int remainingRows = pageSize;
+			while(rs.next() && (remainingRows--)>0) {
+				row = new Object[numberOfColumns];
+				for(int i = 0; i < numberOfColumns; i++) {
+					row[i] = rs.getObject(i+1);
+				}
+				result.add(row);
+			}
+			hasNextPage = rs.next();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+			
+		aSession.close();
+				
+		SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
+		queryResponseSourceBean.setAttribute("query", getExpertQueryDisplayed());
+		queryResponseSourceBean.setAttribute("list", result);
+		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
+		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+		
+		return queryResponseSourceBean;	
+	}
+	
+	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException {
+				
+		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
+		
+		Query aQuery = aSession.createQuery(getFinalQuery());
+		
+		int firstRow = pageNumber * pageSize;
+		
+		aQuery.setFirstResult(firstRow < 0 ? 0 : firstRow);
+		aQuery.setMaxResults(pageSize);
+		
+		List result = aQuery.list();
+			
+		boolean hasNextPage = true;
+		boolean hasPrevPage = true;
+			
+		aQuery.setFirstResult(firstRow + pageSize < 0 ? 0 : firstRow + pageSize);
+		aQuery.setMaxResults(1);
+			
+		List secondPage = aQuery.list();
+			
+
+		if (secondPage == null || secondPage.size() == 0) hasNextPage = false;
+			
+		if (pageNumber == 0){
+			firstRow = 0;
+			hasPrevPage = false;
+		}
+								
+		aSession.close();
+			
+		SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
+		queryResponseSourceBean.setAttribute("query", getFinalQuery());
+		queryResponseSourceBean.setAttribute("list", result);
+		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
+		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+					
+		return queryResponseSourceBean;	
+	}
+	
+	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException {
+		if(isUseExpertedVersion()) return executeExpertQuery(dataMartModel, pageNumber, pageSize);
+		return executeQbeQuery(dataMartModel, pageNumber, pageSize);			
+	}
+	
+		
 }

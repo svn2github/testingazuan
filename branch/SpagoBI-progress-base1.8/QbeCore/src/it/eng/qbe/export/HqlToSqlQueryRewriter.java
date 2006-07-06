@@ -60,9 +60,9 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		sqlQuery = trans.getSQLString();
 		
 		Logger.debug(this.getClass(), "rewrite: generated SQL query: " + sqlQuery);		
-		System.out.println(" ---> generated SQL query: " + sqlQuery);
+		System.out.println("generated SQL query: " + sqlQuery);
 		String decoratedQuery = rewriteWithAlias(query, sqlQuery);
-		System.out.println(" ---> decorated SQL query: " + decoratedQuery);
+		System.out.println("decorated SQL query: " + decoratedQuery);
 		return decoratedQuery;
 		//return sqlQuery;
 	}
@@ -79,17 +79,14 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	
 	private String getEntityNameFromFunctionalEntity(String func, String funcEntity) {
 		String entityName = null;
-		System.out.println(" ---> func: " + func + "; funcEntity: " + funcEntity);
 		entityName = funcEntity.substring(funcEntity.indexOf('(') + 1, funcEntity.indexOf(')'));
 		entityName = entityName.trim() +  func.substring(0, 1).toUpperCase() + func.substring(1, func.length()).toLowerCase();
-		System.out.println(" ---> entityName: " + entityName);
 		return entityName;
 	}
 	
 	private String getEntityName(String entity) {
 		String entityName = null;
-		System.out.println(" ---> entity: " + entity);
-		
+				
 		if(entity.indexOf(" as ") != -1) {
 			entityName = entity.substring(entity.indexOf(" as ") + 4, entity.length());
 		} else {

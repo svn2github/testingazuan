@@ -1,7 +1,9 @@
 
 package it.eng.qbe.javascript;
 
+import it.eng.qbe.action.SelectFieldForSelectAction;
 import it.eng.qbe.utility.IQbeUrlGenerator;
+import it.eng.spagobi.utilities.javascript.QbeJsTreeNodeId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +21,8 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 	/** 
 	 * @see it.eng.qbe.utility.javascript.IURLGenerator#generateURL(java.lang.Object)
 	 */
-	private String classCompleteName = null;
-	private String aliasedClassName = null;
-	
-	
+	private String className = null;
+		
 	
 	private IQbeUrlGenerator qbeUrlGenerator = null;
 	private HttpServletRequest httpRequest = null;
@@ -32,27 +32,21 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		this.httpRequest = httpRequest;
 	}
 	
-	public SelectFieldForSelectionURLGenerator(String classCompleteName, IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest){
+	public SelectFieldForSelectionURLGenerator(String className, IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest){
 		this.qbeUrlGenerator = qbeUrlGenerator;
 		this.httpRequest = httpRequest;
-		this.classCompleteName = classCompleteName;
-		
-		if (classCompleteName.indexOf(".") > 0){
-			aliasedClassName = "a" + classCompleteName.substring(classCompleteName.lastIndexOf(".")+1);
-		}else{
-			aliasedClassName = "a" + classCompleteName;
-		}
+		this.className = className;
 	}
-	public String generateURL(Object source) {
+	
+	public String generateURL(Object fieldName) {
 		
 		Map params = new HashMap();
 		
 		params.put("ACTION_NAME","SELECT_FIELD_FOR_SELECT_ACTION");
-		params.put("COMPLETE_FIELD_NAME", aliasedClassName + "."+source.toString());
-		params.put("CLASS_NAME", this.classCompleteName);
-		params.put("ALIAS_CLASS_NAME",this.aliasedClassName);
-	
 		
+		params.put(SelectFieldForSelectAction.CLASS_NAME, className);
+		params.put(SelectFieldForSelectAction.FIELD_NAME, (String)fieldName);
+			
 		return qbeUrlGenerator.getUrl(httpRequest, params);
 	}
 	
@@ -60,15 +54,15 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		return generateURL(source);
 	}
 
-	public String generateURL(Object source, Object source2, Object addtionalParameter) {
+	public String generateURL(Object fieldName, Object fieldLabel, Object addtionalParameter) {
 		Map params = new HashMap();
 		
-		params.put("ACTION_NAME","SELECT_FIELD_FOR_SELECT_ACTION");
-		params.put("COMPLETE_FIELD_NAME", aliasedClassName + "."+source.toString());
-		params.put("ALIAS_FIELD_NAME", source2);
-		params.put("CLASS_NAME", this.classCompleteName);
-		params.put("ALIAS_CLASS_NAME",this.aliasedClassName);
-	
+		params.put("ACTION_NAME","SELECT_FIELD_FOR_SELECT_ACTION");		
+		
+		QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, (String)fieldName);
+		params.put(SelectFieldForSelectAction.CLASS_NAME, className);
+		params.put(SelectFieldForSelectAction.FIELD_NAME, (String)fieldName);
+		params.put(SelectFieldForSelectAction.FIELD_LABEL, fieldLabel);			
 		
 		return qbeUrlGenerator.getUrl(httpRequest, params);
 	}

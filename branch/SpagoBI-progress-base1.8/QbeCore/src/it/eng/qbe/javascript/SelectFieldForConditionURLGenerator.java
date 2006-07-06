@@ -76,14 +76,6 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 	 * @see it.eng.qbe.javascript.IURLGenerator#generateURL(java.lang.Object, java.lang.Object)
 	 */
 	public String generateURL(Object source, Object addtionalParameter) {
-		/*
-		Map params = new HashMap();
-		params.put("ACTION_NAME","SELECT_FIELD_FOR_WHERE_ACTION");
-		params.put("COMPLETE_FIELD_NAME", aliasedClassName + "."+source.toString());
-		params.put("CLASS_NAME", this.classCompleteName);
-		params.put("HIB_TYPE",addtionalParameter.toString());
-		return qbeUrlGenerator.getUrl(httpRequest, params);
-		*/
 		StringBuffer sb = new StringBuffer();
 		sb.append("javascript: selectFieldForConditionCallBack(");
 		sb.append("\\'SELECT_FIELD_FOR_WHERE_ACTION\\',");

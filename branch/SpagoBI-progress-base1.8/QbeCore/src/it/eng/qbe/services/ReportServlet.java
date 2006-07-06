@@ -100,6 +100,7 @@ public class ReportServlet extends HttpServlet{
 		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
 		String dialect = (String)request.getParameter("dialect");
 		String format = (String)request.getParameter("format");
+		String lang = (String)request.getParameter("lang");
 		if(format == null) format = "application/pdf";
 		
 		jarFile = new File(jarFileStr);
@@ -113,7 +114,13 @@ public class ReportServlet extends HttpServlet{
 		File reportFile = File.createTempFile("report", ".rpt"); 
 		File resultFile = null;
 		
-		buildTemplateFromSQLQuery(templateFile);
+		if(lang.equalsIgnoreCase("SQL"))
+			buildTemplateFromSQLQuery(templateFile);
+		else if(lang.equalsIgnoreCase("HQL"))
+			buildTemplateFromHQLQuery(templateFile);
+		else
+			throw new ServletException("Query language not supported: " + lang);
+		
 		if(action != null && action.equals("buildTemplate")){
 			resultFile = templateFile;
 			format = "text/jrxml";
@@ -169,9 +176,19 @@ public class ReportServlet extends HttpServlet{
 		return DataMartModel.getHibernateConfiguration(jarFile, jndiDataSourceName, dialect).buildSessionFactory().openSession();
 	}
 	
-	private void buildTemplateFromSQLQuery(File templateFile) {
+	private void buildTemplateFromHQLQuery(File templateFile) {
 		IQueryRewriter queryRevriter = new HqlToSqlQueryRewriter(session);	
 		String sqlQuery = queryRevriter.rewrite(query);
+		try {
+			ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
+			templateBuilder.buildTemplateToFile(templateFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void buildTemplateFromSQLQuery(File templateFile) {
+		String sqlQuery = query;
 		try {
 			ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
 			templateBuilder.buildTemplateToFile(templateFile);

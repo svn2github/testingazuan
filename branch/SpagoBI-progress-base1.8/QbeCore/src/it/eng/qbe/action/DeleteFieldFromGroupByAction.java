@@ -31,7 +31,7 @@ public class DeleteFieldFromGroupByAction extends AbstractAction {
 		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
 		
 		String fieldId = (String)request.getAttribute("FIELD_ID"); 
-		
+				
 		
 		IGroupByClause aGroupByClause = aWizardObject.getGroupByClause();
 		

@@ -106,11 +106,37 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 		}
 	}
 	
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean request, SourceBean response) throws Exception{
+	private SessionContainer getSessionContainer() {
+		return getRequestContainer().getSessionContainer();
+	}
+	
+	private ISingleDataMartWizardObject getDataMartWizard() {
+		return (ISingleDataMartWizardObject)getSessionContainer().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
 		
+	}
+	
+	private DataMartModel getDataMartModel() {
+		return (DataMartModel)getSessionContainer().getAttribute("dataMartModel");
+	}
+
+	public void service(SourceBean request, SourceBean response) throws Exception{
+		getDataMartWizard().composeQuery();
+		
+		boolean joinOk = checkJoins(getDataMartWizard(), response);
+		
+		if (!joinOk){		
+			response.setAttribute("ERROR_MSG_FINAL", "QBE.Warning.Join");
+		} 
+		else{
+			try {
+				getDataMartWizard().executeQbeQuery(getDataMartModel(), 0, 10);
+				getDataMartWizard().executeExpertQuery(getDataMartModel(), 0, 10);
+			}catch(SourceBeanException e){
+				response.setAttribute("ERROR_MSG_FINAL", e.getMessage());					
+			}					
+		}
+		
+		/*
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
 		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
@@ -119,15 +145,17 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 		
 		executeExpertQuery(aWizardObject, response, aSessionContainer);
 			
-		executeFinalQuery(aWizardObject, response, aSessionContainer);
-			
-		
+		executeFinalQuery(aWizardObject, response, aSessionContainer);			
+		*/
 				
 	}//service
 	
 	
 	private void executeFinalQuery(ISingleDataMartWizardObject aWizardObject, SourceBean response, SessionContainer aSessionContainer) throws Exception{
 	
+		
+		
+		
 		String finalQueryString = aWizardObject.getFinalQuery();
 		
 		boolean joinOk = checkJoins(aWizardObject, response);

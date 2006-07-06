@@ -16,12 +16,12 @@ package it.eng.qbe.wizard;
 public class GroupByFieldSourceBeanImpl  implements IOrderGroupByField{
 
 	private String id = null;
-	
+		
 	private String fieldName = null;
 
 	public GroupByFieldSourceBeanImpl(){
 		
-		this.id = "groupby"+ String.valueOf(System.currentTimeMillis());
+		this.id = createNewId();
 	
 	}
 	
@@ -41,8 +41,11 @@ public class GroupByFieldSourceBeanImpl  implements IOrderGroupByField{
 		this.id = id;
 	}
 	
-	
-	
+	// TODO generate unique id in a safer mode (i.e. without overflow risk)
+	private static long idcounter = 0;
+	private static String createNewId() {
+		return "groupby" + String.valueOf(idcounter++);
+	}
 	
 	
 	

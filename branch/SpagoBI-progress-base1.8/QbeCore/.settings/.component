@@ -2,7 +2,7 @@
 <project-modules id="moduleCoreId">
 <wb-module deploy-name="QbeCore">
 <module-type module-type-id="jst.utility">
-<version></version>
+<version/>
 </module-type>
 <wb-resource deploy-path="/" source-path="/src"/>
 </wb-module>

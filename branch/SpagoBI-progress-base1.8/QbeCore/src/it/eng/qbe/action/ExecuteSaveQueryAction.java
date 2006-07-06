@@ -10,15 +10,18 @@ import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereField;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -37,13 +40,25 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 		
 	
+	public boolean checkJoins(SourceBean request, SourceBean response) throws SourceBeanException {
+		if (isCheckJoinsEnabled(request)){
+			if (!getDataMartWizard().isUseExpertedVersion()){
+				// If I'm not using expert
+				// Check for join controls
+				return doCheckJoins(getDataMartWizard(), response);				
+			}
+		}
+		return true;
+	}
+	
 	/**
+	 * 
 	 * @param wizObj
 	 * @param serviceResponse
-	 * @return true if controls on join condition are correctt, false otherwise
+	 * @return
 	 * @throws SourceBeanException
 	 */
-	public boolean checkJoins(ISingleDataMartWizardObject wizObj, SourceBean serviceResponse) throws SourceBeanException{
+	public boolean doCheckJoins(ISingleDataMartWizardObject wizObj, SourceBean serviceResponse) throws SourceBeanException{
 	
 		IQbeMessageHelper msgHelper = null;
 		StringBuffer warning = new StringBuffer();
@@ -110,20 +125,39 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 		}
 	}
 	
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean request, SourceBean response) throws Exception{
+	private SessionContainer getSessionContainer() {
+		return getRequestContainer().getSessionContainer();
+	}
+	
+	private ISingleDataMartWizardObject getDataMartWizard() {
+		return (ISingleDataMartWizardObject)getSessionContainer().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
 		
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+	}
+	
+	private DataMartModel getDataMartModel() {
+		return (DataMartModel)getSessionContainer().getAttribute("dataMartModel");
+	}
 		
-		
-		String previewMode = (String)request.getAttribute("previewModeFromQueryResult"); 
-		String source = (String)request.getAttribute("SOURCE_FROM_QUERY_RESULT");
+	private String getExecutionMode(SourceBean request) {
+		return (String)request.getAttribute("previewModeFromQueryResult"); 
+	}
+	
+	private boolean isExpertExecutionModeEnabled(SourceBean request) {
+		return ("ExpertMode".equalsIgnoreCase(getExecutionMode(request)));
+	}
+	
+	private boolean isCheckJoinsEnabled(SourceBean request) {
+		String ignoreJoins = (String) request.getAttribute("ignoreJoins");
+		return (ignoreJoins == null) || (!(ignoreJoins.equalsIgnoreCase("true")));
+	}
+	
+	private String getSource(SourceBean request) {
+		return (String)request.getAttribute("SOURCE_FROM_QUERY_RESULT");
+	}
+	
+	private int getPageNumber(SourceBean request) {
 		String pageNumberString = (String) request.getAttribute("pageNumber");
-        int pageNumber;
+        int pageNumber = 0;
         if(pageNumberString == null || pageNumberString.length() == 0) {
         	pageNumber = 0;
         } else {
@@ -134,162 +168,157 @@ public class ExecuteSaveQueryAction extends AbstractAction {
                 pageNumber = 0;
             }
         }
-		String ignoreJoins = (String) request.getAttribute("ignoreJoins");
-		
-		if ("QUERY_RESULT".equalsIgnoreCase(source)){
-			if ("ExpertMode".equalsIgnoreCase(previewMode)){
-				
-				aWizardObject.setUseExpertedVersion(true);
-								
-			}else{
-					
-				aWizardObject.setUseExpertedVersion(false);
-					
-			}
-		}  
-				
-		
-		aWizardObject.composeQuery();
-		
+        return pageNumber;
+	}
 	
-		//Logger.debug(ExecuteSaveQueryAction.class,"LA QUERY FINALE DEL WIZARD "+ aWizardObject.getFinalQuery());
-		
-		String finalQueryString = null;
-		if (aWizardObject.isUseExpertedVersion()){
-			finalQueryString = aWizardObject.getExpertQueryDisplayed();
-		}else{
+	private int getPageSize() {
+		String pageSizeStr = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.page-size");
+		int pageSize = 30;
+		if (pageSizeStr != null) pageSize = new Integer(pageSizeStr).intValue();
+		return pageSize;
+	}
+	
+	private SourceBean executeQuery(String query, String lang, int pageNumber) throws SourceBeanException {
 			
-			 finalQueryString = aWizardObject.getFinalQuery();
+		if(lang.equalsIgnoreCase("sql")) {
+			return executeSqlQuery(query, pageNumber);
+			/*
+			SourceBeanException e = new SourceBeanException("SQL not supported yet");
+			throw e;
+			*/
 		}
 		
-		boolean joinOk = true;
+		return 	executeHqlQuery(query, pageNumber);
+	}
+	
+	private SourceBean executeSqlQuery(String query, int pageNumber) throws SourceBeanException {
+		Session aSession = Utils.getSessionFactory(getDataMartModel(), ApplicationContainer.getInstance()).openSession();
 		
-		if ((ignoreJoins == null) || (!(ignoreJoins.equalsIgnoreCase("true")))){
-			if (!aWizardObject.isUseExpertedVersion()){
-				// If I'm not using expert
-				// Check for join controls
-				joinOk = checkJoins(aWizardObject, response);
-				
-				
+		List result = null;
+		boolean hasNextPage = true;
+		boolean hasPrevPage = (pageNumber > 0);
+		
+		int firstRow = pageNumber * getPageSize();
+		firstRow = firstRow < 0 ? 0 : firstRow;
+		
+		try {
+			Connection conn = aSession.connection();
+			Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stm.execute(query);
+			ResultSet rs = stm.getResultSet();
+			rs.last();
+			rs.beforeFirst();
+			
+						
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();
+			result = new ArrayList();
+			Object[] row = null;
+			if(firstRow > 0)  
+				rs.absolute(firstRow - 1);
+			else rs.beforeFirst();
+			int remainingRows = getPageSize();
+			while(rs.next() && (remainingRows--)>0) {
+				row = new Object[numberOfColumns];
+				for(int i = 0; i < numberOfColumns; i++) {
+					row[i] = rs.getObject(i+1);
+				}
+				result.add(row);
 			}
+			hasNextPage = rs.next();
 		}
-		
-		if (!joinOk){
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 			
-			if (aSessionContainer.getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
-				aSessionContainer.delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
-			}//if (aSessionContainer.getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
 		
-			response.setAttribute("ERROR_MSG", "QBE.Warning.Join");
+		SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
+		queryResponseSourceBean.setAttribute("query", query);
+		queryResponseSourceBean.setAttribute("list", result);
+		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
+		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+		
+		System.out.println("Bean built successfully !!!");
+		
+		return queryResponseSourceBean;	
+	}
+	
+	private SourceBean executeHqlQuery(String query, int pageNumber) throws SourceBeanException {
+		Session aSession = Utils.getSessionFactory(getDataMartModel(), ApplicationContainer.getInstance()).openSession();
+		
+		//Query rowsNumberQuery = aSession.createQuery(COUNT_PREFIX + finalQueryString);
+		
+		//int numberOfRows = ((Integer) rowsNumberQuery.iterate().next()).intValue();
+
+		Query aQuery = aSession.createQuery(query);
+		
+		int firstRow = pageNumber * getPageSize();
+		
+		aQuery.setFirstResult(firstRow < 0 ? 0 : firstRow);
+		aQuery.setMaxResults(getPageSize());
+		
+		List result = aQuery.list();
+			
+		boolean hasNextPage = true;
+		boolean hasPrevPage = true;
+			
+		aQuery.setFirstResult(firstRow + getPageSize() < 0 ? 0 : firstRow + getPageSize());
+		aQuery.setMaxResults(1);
+			
+		List secondPage = aQuery.list();
+			
+
+		if (secondPage == null || secondPage.size() == 0) hasNextPage = false;
+			
+		if (pageNumber == 0){
+			firstRow = 0;
+			hasPrevPage = false;
+		}
+								
+		aSession.close();
+			
+		SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
+		queryResponseSourceBean.setAttribute("query", query);
+		queryResponseSourceBean.setAttribute("list", result);
+		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
+		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+			
+		return queryResponseSourceBean;	
+	}
+	
+	
+	private void returnError(SourceBean response, String errorMsg) {
+		if (getSessionContainer().getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
+			getSessionContainer().delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
+		}	
+		try {
+			response.setAttribute("ERROR_MSG", errorMsg);
+		} catch (SourceBeanException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void service(SourceBean request, SourceBean response) throws Exception {				
+		
+		if ("QUERY_RESULT".equalsIgnoreCase( getSource(request) )){			
+			getDataMartWizard().setUseExpertedVersion( isExpertExecutionModeEnabled(request) );			
+		}  				
+		
+		getDataMartWizard().composeQuery();
+				
+		if (!checkJoins(request, response)){
+			returnError(response, "QBE.Warning.Join");
 		} 
 		else{
-			if ((finalQueryString == null) || (finalQueryString.trim().length() == 0)){
+			try {
+				SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
+				getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
+			}catch(SourceBeanException e){
+				returnError(response, e.getMessage());					
+			}								
 			
-				if (aSessionContainer.getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
-					aSessionContainer.delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
-				}//if (aSessionContainer.getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
-			
-				response.setAttribute("ERROR_MSG", "QBE.Error.ImpossibleExecution");
-			
-			}else{
-			
-				
-				DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
-			
-				Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
-				
-				//Query rowsNumberQuery = aSession.createQuery(COUNT_PREFIX + finalQueryString);
-				
-				//int numberOfRows = ((Integer) rowsNumberQuery.iterate().next()).intValue();
-
-				Query aQuery = aSession.createQuery(finalQueryString);
-				
-				String pageSizeStr = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.page-size");
-				int pageSize = 30;
-				if (pageSizeStr != null) pageSize = new Integer(pageSizeStr).intValue();
-				int firstRow = pageNumber * pageSize;
-				
-				aQuery.setFirstResult(firstRow < 0 ? 0 : firstRow);
-				aQuery.setMaxResults(pageSize);
-				
-				try{
-				
-					List result = aQuery.list();
-					
-//					int lastRow = firstRow + (pageSize - 1);
-					boolean hasNextPage = true;
-					boolean hasPrevPage = true;
-					
-					aQuery.setFirstResult(firstRow + pageSize < 0 ? 0 : firstRow + pageSize);
-					aQuery.setMaxResults(1);
-					
-					List secondPage = aQuery.list();
-					
-//					if (lastRow > numberOfRows){
-//						lastRow = numberOfRows;
-//						hasNextPage = false;
-//					}
-					
-					if (secondPage == null || secondPage.size() == 0) hasNextPage = false;
-					
-					if (pageNumber == 0){
-						firstRow = 0;
-						hasPrevPage = false;
-					}
-					//List toReturn = result.subList(initItem, endItem);
-					
-					aSession.close();
-					
-					SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
-					queryResponseSourceBean.setAttribute("query", finalQueryString);
-					//queryResponseSourceBean.setAttribute("list", toReturn);
-					queryResponseSourceBean.setAttribute("list", result);
-					queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
-					queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
-					queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
-					aSessionContainer.setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
-					
-				}catch (HibernateException he) {
-					
-					Logger.error(ExecuteSaveQueryAction.class, he);
-					if (aSessionContainer.getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
-						aSessionContainer.delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
-					}
-					String causeMsg = he.getCause().getMessage();
-					response.setAttribute("ERROR_MSG", causeMsg);
-				
-				}catch(Exception e){
-					Logger.error(ExecuteSaveQueryAction.class, e);
-					if (aSessionContainer.getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
-						aSessionContainer.delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
-					}
-					String causeMsg = e.getMessage();
-					response.setAttribute("ERROR_MSG", causeMsg);
-				}
-				
-				
-				/*OLD
-				try{
-					HibernatePage aHibernatePage = new HibernatePage(aQuery,
-						pageNumber, 30);
-					SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
-					queryResponseSourceBean.setAttribute("query", finalQueryString);
-					queryResponseSourceBean.setAttribute("list", aHibernatePage.getList());
-					queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
-					queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(aHibernatePage.hasNextPage()));
-					queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(aHibernatePage.hasPreviousPage()));
-					aSessionContainer.setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
-				}catch (HibernateException he) {
-					Logger.error(ExecuteSaveQueryAction.class, he);
-					if (aSessionContainer.getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
-						aSessionContainer.delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
-					}
-					String causeMsg = he.getCause().getMessage();
-					response.setAttribute("ERROR_MSG", causeMsg);
-				}
-				*/
-				
-			}//else
 		}//else
 	}//service
 }

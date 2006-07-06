@@ -1,6 +1,8 @@
 
 package it.eng.qbe.action;
 
+import it.eng.qbe.export.HqlToSqlQueryRewriter;
+import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
@@ -27,9 +29,12 @@ public class AlignExpertAction extends AbstractAction {
 			
 			RequestContainer aRequestContainer = getRequestContainer();
 			SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-			ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+			DataMartModel dm = (it.eng.qbe.model.DataMartModel)aSessionContainer.getAttribute("dataMartModel"); 
+		    ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
 			aWizardObject.composeQuery();
-			aWizardObject.setExpertQueryDisplayed(aWizardObject.getFinalQuery());
+			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(dm.createSessionFactory().openSession());
+			String sqlQuery = queryRewriter.rewrite( aWizardObject.getFinalQuery() );
+			aWizardObject.setExpertQueryDisplayed(sqlQuery);
 			
 		}catch(Exception e){
 			e.printStackTrace();

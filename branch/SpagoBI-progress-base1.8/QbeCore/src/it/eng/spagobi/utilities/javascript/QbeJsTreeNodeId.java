@@ -21,7 +21,8 @@ public class QbeJsTreeNodeId implements IJsTreeNodeId {
 	
 	public QbeJsTreeNodeId(ISelectField field) {
 		this.className = field.getFieldEntityClass().getClassName();
-		this.fieldName = field.getFieldName();
+		this.fieldName = field.getFieldNameWithoutOperators();
+		//System.out.println("className: " + className + "; classAlias: " + getClassAlias() + "; fieldName: " + fieldName);
 		fieldName = fieldName.substring(getClassAlias().length() + 1, fieldName.length());
 	}
 	

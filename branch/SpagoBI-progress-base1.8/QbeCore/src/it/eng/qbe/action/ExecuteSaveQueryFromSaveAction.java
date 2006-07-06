@@ -131,123 +131,20 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 			try {
 				getDataMartWizard().executeQbeQuery(getDataMartModel(), 0, 10);
 				getDataMartWizard().executeExpertQuery(getDataMartModel(), 0, 10);
-			}catch(SourceBeanException e){
-				response.setAttribute("ERROR_MSG_FINAL", e.getMessage());					
-			}					
-		}
-		
-		/*
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
-		
-		aWizardObject.composeQuery();
-		
-		executeExpertQuery(aWizardObject, response, aSessionContainer);
-			
-		executeFinalQuery(aWizardObject, response, aSessionContainer);			
-		*/
-				
-	}//service
-	
-	
-	private void executeFinalQuery(ISingleDataMartWizardObject aWizardObject, SourceBean response, SessionContainer aSessionContainer) throws Exception{
-	
-		
-		
-		
-		String finalQueryString = aWizardObject.getFinalQuery();
-		
-		boolean joinOk = checkJoins(aWizardObject, response);
-		
-		if (!joinOk){
-			
-		
-			response.setAttribute("ERROR_MSG_FINAL", "QBE.Warning.Join");
-		} 
-		else{
-			if ((finalQueryString == null) || (finalQueryString.trim().length() == 0)){
-			
-				response.setAttribute("ERROR_MSG_FINAL", "QBE.Error.ImpossibleExecution");
-			
-			}else{
-			
-				DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
-			
-				Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
-			
-				Query aQuery = aSession.createQuery(finalQueryString);
-								
-				aQuery.setFirstResult(1);
-				aQuery.setMaxResults(5);
-				
-				try{
-				
-					aQuery.list();
-					
-					aSession.close();
-										
-				}catch (HibernateException he) {
-					
-					Logger.error(ExecuteSaveQueryFromSaveAction.class, he);
-					
-					String causeMsg = he.getCause().getMessage();
-					response.setAttribute("ERROR_MSG_FINAL", causeMsg);
-				
-				}catch(Exception e){
-					Logger.error(ExecuteSaveQueryFromSaveAction.class, e);
-					
-					String causeMsg = e.getMessage();
-					response.setAttribute("ERROR_MSG_FINAL", causeMsg);
-				}
-			}
-		}
-	}
-	
-	
-	private void executeExpertQuery(ISingleDataMartWizardObject aWizardObject, SourceBean response, SessionContainer aSessionContainer) throws Exception{
-		
-		String finalQueryString = aWizardObject.getExpertQueryDisplayed();
-		
-		if ((finalQueryString == null) || (finalQueryString.trim().length() == 0)){
-		
-			response.setAttribute("ERROR_MSG_EXPERT", "QBE.Error.ImpossibleExecution");
-		
-		}else{
-		
-			DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
-		
-			Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
-		
-			Query aQuery = aSession.createQuery(finalQueryString);
-				
-			aQuery.setFirstResult(1);
-			aQuery.setMaxResults(5);
-							
-			try{
-				
-				aQuery.list();
-					
-				aSession.close();
-								
-			}catch (HibernateException he) {
-					
-				Logger.error(ExecuteSaveQueryFromSaveAction.class, he);
+			}catch(HibernateException he) {				
+				Logger.error(ExecuteSaveQueryFromSaveAction.class, he);				
 				String causeMsg = he.getCause().getMessage();
-				response.setAttribute("ERROR_MSG_EXPERT", causeMsg);
-				
+				response.setAttribute("ERROR_MSG_FINAL", causeMsg);
+			}catch (java.sql.SQLException se) {
+				Logger.error(ExecuteSaveQueryAction.class, se);
+				String causeMsg = se.getMessage();
+				response.setAttribute("ERROR_MSG_FINAL", causeMsg);
 			}catch(Exception e){
+				System.out.println("Exception type: " + e.getClass().getName());
 				
 				Logger.error(ExecuteSaveQueryFromSaveAction.class, e);
-				String causeMsg = e.getMessage();
-				response.setAttribute("ERROR_MSG_EXPERT", causeMsg);
-			}
-			
-		}
-	}
-	
-	
-	
-	
-	
+				response.setAttribute("ERROR_MSG_FINAL", e.getMessage());					
+			}					
+		}				
+	}//service
 }

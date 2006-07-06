@@ -97,11 +97,11 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	
 	public List extractExpertSelectFieldsList(); 
 	
-	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException;
+	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception;
 		
-	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException;
+	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception;
 			
-	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException;
+	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception;
 				
 		
 	

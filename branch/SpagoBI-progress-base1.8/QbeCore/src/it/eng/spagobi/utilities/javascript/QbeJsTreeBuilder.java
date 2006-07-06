@@ -227,13 +227,22 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					String selected = "";
 					if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
 					
+					String img = "/img/key.gif";
+					/*
+					if(selected.equalsIgnoreCase("true")){
+						System.out.println("check[" + className + "," + completeFieldName + "]: " 
+							+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
+						img = "../img/Method.gif";
+					}
+					*/
+					
 					addNode("" + nodeCounter, "" + idxClassNode, 
 							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
 							fieldAction,  
 							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName), 
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
 							"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);	
 				}
 				else {
@@ -279,6 +288,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					if(checkable) {
 						String selected = "";
 						if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
+						
+						if(selected.equalsIgnoreCase("true"))
+							System.out.println("check[" + className + "," + completeFieldName + "]: " 
+								+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
+						
 						
 				 		addNode("" + nodeCounter, "" + idxClassNode, 
 				 				fldLabel,

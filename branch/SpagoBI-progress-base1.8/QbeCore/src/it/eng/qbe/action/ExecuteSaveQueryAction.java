@@ -22,6 +22,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -182,10 +183,6 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 			
 		if(lang.equalsIgnoreCase("sql")) {
 			return executeSqlQuery(query, pageNumber);
-			/*
-			SourceBeanException e = new SourceBeanException("SQL not supported yet");
-			throw e;
-			*/
 		}
 		
 		return 	executeHqlQuery(query, pageNumber);
@@ -313,9 +310,19 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 		} 
 		else{
 			try {
+				System.out.println(" -----> EXECUTING");
 				SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
 				getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
-			}catch(SourceBeanException e){
+			}catch (HibernateException he) {
+				Logger.error(ExecuteSaveQueryAction.class, he);
+				returnError(response, he.getCause().getMessage());
+			}catch (java.sql.SQLException se) {
+				Logger.error(ExecuteSaveQueryAction.class, se);
+				returnError(response, se.getMessage());
+			}catch(Exception e){
+				System.out.println("Exception type: " + e.getClass().getName());				
+				
+				Logger.error(ExecuteSaveQueryAction.class, e);
 				returnError(response, e.getMessage());					
 			}								
 			

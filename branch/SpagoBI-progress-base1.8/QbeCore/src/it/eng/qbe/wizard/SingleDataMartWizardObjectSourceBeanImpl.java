@@ -539,7 +539,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 	
-	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException {
+	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
 		List result = null;
@@ -549,36 +549,32 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		int firstRow = pageNumber * pageSize;
 		firstRow = firstRow < 0 ? 0 : firstRow;
 		
-		try {
-			Connection conn = aSession.connection();
-			Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			stm.execute(getExpertQueryDisplayed());
+		Connection conn = aSession.connection();
+		Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		stm.execute(getExpertQueryDisplayed());
 			
-			ResultSet rs = stm.getResultSet();
-			rs.last();
-			rs.beforeFirst();
+		ResultSet rs = stm.getResultSet();
+		rs.last();
+		rs.beforeFirst();
 			
 						
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int numberOfColumns = rsmd.getColumnCount();
-			result = new ArrayList();
-			Object[] row = null;
-			if(firstRow > 0)  
-				rs.absolute(firstRow - 1);
-			else rs.beforeFirst();
-			int remainingRows = pageSize;
-			while(rs.next() && (remainingRows--)>0) {
-				row = new Object[numberOfColumns];
-				for(int i = 0; i < numberOfColumns; i++) {
-					row[i] = rs.getObject(i+1);
-				}
-				result.add(row);
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int numberOfColumns = rsmd.getColumnCount();
+		result = new ArrayList();
+		Object[] row = null;
+		if(firstRow > 0)  
+			rs.absolute(firstRow - 1);
+		else rs.beforeFirst();
+		int remainingRows = pageSize;
+		while(rs.next() && (remainingRows--)>0) {
+			row = new Object[numberOfColumns];
+			for(int i = 0; i < numberOfColumns; i++) {
+				row[i] = rs.getObject(i+1);
 			}
-			hasNextPage = rs.next();
+			result.add(row);
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		hasNextPage = rs.next();
+		
 			
 		aSession.close();
 				
@@ -592,7 +588,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		return queryResponseSourceBean;	
 	}
 	
-	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException {
+	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 				
 		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
@@ -633,7 +629,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		return queryResponseSourceBean;	
 	}
 	
-	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws SourceBeanException {
+	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		if(isUseExpertedVersion()) return executeExpertQuery(dataMartModel, pageNumber, pageSize);
 		return executeQbeQuery(dataMartModel, pageNumber, pageSize);			
 	}

@@ -30,14 +30,18 @@ public class QbeSelectJsTreeBuilder extends QbeJsTreeBuilder {
 	}
 	
 	public Map getSelectdNodes() {
+		System.out.println(" > getSelectdNodes < ");
+		
 		Map map = new HashMap();
 		ISelectClause aSelectClause = dataMartWizard.getSelectClause();
 		if(aSelectClause != null) {
+			System.out.println("aSelectClause != null");
 			List fields = aSelectClause.getSelectFields();
 			for(int i = 0; i < fields.size(); i++) {
 				ISelectField field = (ISelectField)fields.get(i);
 				EntityClass ec = field.getFieldEntityClass();
 				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(field);
+				//System.out.println(" -> Node id: " + nodeId.getId());
 				map.put(nodeId.getId(), nodeId);
 			}
 		}

@@ -13,7 +13,6 @@
 <%   
    ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
-   GenerateJavaScriptMenu jsMenu = new GenerateJavaScriptMenu(dm,request);
    QbeJsTreeBuilder qbeJsBuilder = new QbeSelectJsTreeBuilder(dm,aWizardObject, request);;
 	   
    dm.updateCurrentClassLoader();

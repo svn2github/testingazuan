@@ -567,7 +567,15 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 	
+	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
+		return executeSqlQuery(dataMartModel, getFinalSqlQuery(dataMartModel), pageNumber, pageSize);
+	}
+	
 	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
+		return executeSqlQuery(dataMartModel, getExpertQueryDisplayed(), pageNumber, pageSize);
+	}
+	
+	private SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
 		List result = null;
@@ -577,12 +585,16 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		int firstRow = pageNumber * pageSize;
 		firstRow = firstRow < 0 ? 0 : firstRow;
 		
+		
 		Connection conn = aSession.connection();
 		Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		stm.execute(getExpertQueryDisplayed());
+		//stm.execute(getExpertQueryDisplayed());
+		stm.execute(query);
 			
 		ResultSet rs = stm.getResultSet();
 		rs.last();
+		int rowsNumber = rs.getRow();
+		int pagesNumber = (rowsNumber / pageSize) + ( ((rowsNumber % pageSize) != 0 )? 1: 0 );
 		rs.beforeFirst();
 			
 						
@@ -607,21 +619,23 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		aSession.close();
 				
 		SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
-		queryResponseSourceBean.setAttribute("query", getExpertQueryDisplayed());
+		queryResponseSourceBean.setAttribute("query", query);
 		queryResponseSourceBean.setAttribute("list", result);
 		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+		queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
 		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
 		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
 		
 		return queryResponseSourceBean;	
 	}
 	
-	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
+	private SourceBean executeHqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 				
 		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
 				
-		Query aQuery = aSession.createQuery(getFinalQuery());
+		//Query aQuery = aSession.createQuery(getFinalQuery());
+		Query aQuery = aSession.createQuery(query);
 		
 		int firstRow = pageNumber * pageSize;
 		
@@ -649,7 +663,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		aSession.close();
 			
 		SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
-		queryResponseSourceBean.setAttribute("query", getFinalQuery());
+		queryResponseSourceBean.setAttribute("query", query);
 		queryResponseSourceBean.setAttribute("list", result);
 		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
 		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));

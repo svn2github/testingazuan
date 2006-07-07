@@ -267,6 +267,7 @@
 			<spagobi:queryWizard 
 				connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 
 				visibleColumns='<%= query.getVisibleColumns()!= null ? query.getVisibleColumns().toString() : "" %>' 
+				invisibleColumns='<%= query.getInvisibleColumns()!= null ? query.getInvisibleColumns().toString() : "" %>' 
 				valueColumns='<%= query.getValueColumns()!= null ? query.getValueColumns().toString() : "" %>' 
 				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' /> 
 		</div>

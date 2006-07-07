@@ -111,13 +111,13 @@
 		    		   				String urlOrderBy = "";
 		    		   				while (it.hasNext()){
 		    		   					aSelectField = (ISelectField)it.next();
-		    		   					originalFieldName = (String)aSelectField.getFieldNameWithoutOperators();
+		    		   					originalFieldName = (String)aSelectField.getFieldName();
 		    		   					oParams.clear();
 		    		   					oParams.put("ACTION_NAME","SELECT_FIELD_FOR_ORDERBY_ACTION");
 		    		   					oParams.put("COMPLETE_FIELD_NAME",originalFieldName);
 		    		   					urlOrderBy = qbeUrl.getUrl(request, oParams);
-//		    		   				if no operators has applied
-		    		   					if (originalFieldName.equalsIgnoreCase(aSelectField.getFieldName())){
+										// if no operators has applied
+		    		   					//if (originalFieldName.equalsIgnoreCase(aSelectField.getFieldName())){
 		    		   						String checked = "";
 		    		   						if(selectedFields.containsKey(originalFieldName)) checked="checked=\"checked\"";
 		    		   				%>		    		   				
@@ -130,7 +130,7 @@
 		    		   						<a href="<%=urlOrderBy %>"> <%=Utils.getLabelForQueryField(requestContainer,dm,aWizardObject, originalFieldName) %></a>
 		    		   					</td>	
 		    		   				</tr>		    		   				
-		    		   				<% } %>
+		    		   				<% //} %>
 		    		   			<%}//endwhile%>
 		    		   			<tr>
 		    		   					<td width="20%">

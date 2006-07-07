@@ -271,7 +271,12 @@
 						   ISelectField selField = null;
 						   while (it.hasNext()){
 							   selField = (ISelectField)it.next();
-							   headerName = (selField.getFieldAlias() != null ? selField.getFieldAlias() : selField.getFieldName()); 
+							   headerName = selField.getFieldName();
+							   if(headerName.equalsIgnoreCase(selField.getFieldNameWithoutOperators()))
+							   	headerName = (selField.getFieldAlias() != null ? selField.getFieldAlias() : headerName); 
+							   else
+								   if(selField.getFieldAlias() != null)
+								   	headerName = headerName.replaceAll(selField.getFieldNameWithoutOperators(), selField.getFieldAlias());
 						%>
 								<td class='portlet-section-header' style='vertical-align:middle;'><%=headerName %></td>
 						<% } %>

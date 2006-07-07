@@ -413,7 +413,7 @@
  		
  		<tr>
  			<td class="even">
- 				<a href="javascript:applyOperator('count ')"/>count()</a>
+ 				<a href="javascript:applyOperator('count')"/>count()</a>
  			</td>
  		</tr>
  		

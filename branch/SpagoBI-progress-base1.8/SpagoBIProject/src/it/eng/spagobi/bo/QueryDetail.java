@@ -118,7 +118,7 @@ public class QueryDetail  implements Serializable  {
 				     "</STMT>" +
 				     "<VALUE-COLUMN>"+this.getValueColumns()+"</VALUE-COLUMN>" +
 				     "<VISIBLE-COLUMNS>"+this.getVisibleColumns()+"</VISIBLE-COLUMNS>" +
-				     "<INVISIBLE-COLUMNS>"+this.getInvisibleColumns()+"</INVISIBLE-COLUMNS>" +
+				     "<INVISIBLE-COLUMNS>"+this.getInvisibleColumns() != null ? this.getInvisibleColumns() : "" +"</INVISIBLE-COLUMNS>" +
 				     "</QUERY>";
 		return XML;
 	}

@@ -103,7 +103,7 @@ function showEngField(docType) {
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<input type='image' class='header-button-image-portlet-section'
+			<input type='image' name='save' id='save' value='true' class='header-button-image-portlet-section'
 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png") %>'
       				title='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />'
 			/>
@@ -116,7 +116,7 @@ function showEngField(docType) {
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
-				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackConfirm" />","<%=backUrl.toString()%>")'> 
+				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.docConf.docDet.saveConfirm" />","<%=backUrl.toString()%>")'> 
 			<% } else { %>
 				<a href='<%=backUrl.toString()%>'>
 			<% } %>
@@ -540,7 +540,7 @@ function showEngField(docType) {
 		else linkClass = "tab";
 	%>
 					<div class='<%= linkClass%>'>
-						<a href='javascript:changeBIParameter("<%= biObjPar.getId().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
+						<a href='javascript:changeBIParameter("<%= biObjPar.getId().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveBIParameterConfirm" />")'
 						   style="color:black;"> 
 							<%= biObjPar.getLabel()%>
 						</a>
@@ -552,7 +552,7 @@ function showEngField(docType) {
 		linkClass = "tab";
 %>
 					<div class='<%= linkClass%>'>
-						<a href='javascript:changeBIParameter("-1", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveAndChangeBIParameterConfirm" />")'
+						<a href='javascript:changeBIParameter("-1", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveBIParameterConfirm" />")'
 						   style="color:black;"> 
 							<spagobi:message key = "SBIDev.docConf.docDet.newBIParameter" />
 					    </a>
@@ -582,23 +582,60 @@ function fileToUploadInserted() {
 	fileUploadChanged = 'true';
 }
 
-function changeBIParameter (objParId, message) {
-
-	var biobjParFormModified = 'false';
+function isBIObjectFormChanged() {
 	
-	document.getElementById('selected_obj_par_id').name = 'selected_obj_par_id';
-	document.getElementById('selected_obj_par_id').value = objParId;
+	var biobjFormModified = 'false';
+	
+	var label = document.getElementById('label').value;
+	var name = document.getElementById('name').value;
+	var description = document.getElementById('description').value;
+	var relName = document.getElementById('relname').value;
+	var type = document.getElementById('type').value;
+	var engine = document.getElementById('engine').value;
+	var state = document.getElementById('state').value;
+
+	if ((label != '<%=initialBIObject.getLabel()%>')
+		|| (name != '<%=initialBIObject.getName()%>')
+		|| (description != '<%=initialBIObject.getDescription()%>')
+		|| (relName != '<%=initialBIObject.getRelName()%>')
+		|| (type != '<%=initialBIObject.getBiObjectTypeID()+","+initialBIObject.getBiObjectTypeCode()%>')
+		|| (engine != '<%=initialBIObject.getEngine().getId()%>')
+		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
+		|| (versionTemplateChanged == 'true')
+		|| (fileUploadChanged == 'true')) {
+			
+		biobjFormModified = 'true';
+	}
+	
+	return biobjFormModified;
+	
+}
+
+function isBIParameterFormChanged () {
+	
+	var biobjParFormModified = 'false';
 	
 	var objParLabel = document.getElementById('objParLabel').value;
 	var par_Id = document.getElementById('par_Id').value;
 	var parurl_nm = document.getElementById('parurl_nm').value;
-	
+			
 	if ((objParLabel != '<%=initialBIObjectParameter.getLabel()%>')
 		|| (par_Id != '<%=initialBIObjectParameter.getParID() == null ? "" : initialBIObjectParameter.getParID().toString()%>')
 		|| (parurl_nm != '<%=initialBIObjectParameter.getParameterUrlName()%>') )
 	{
 		biobjParFormModified = 'true';
 	}
+	
+	return biobjParFormModified;
+	
+}
+
+function changeBIParameter (objParId, message) {
+
+	var biobjParFormModified = isBIParameterFormChanged();
+	
+	document.getElementById('selected_obj_par_id').name = 'selected_obj_par_id';
+	document.getElementById('selected_obj_par_id').value = objParId;
 	
 	if (biobjParFormModified == 'true') 
 	{
@@ -619,40 +656,9 @@ function changeBIParameter (objParId, message) {
 
 function saveAndGoBackConfirm(message, url){
 
-		var biobjFormModified = 'false';
-		var biobjParFormModified = 'false';
-		
-		var label = document.getElementById('label').value;
-		var name = document.getElementById('name').value;
-		var description = document.getElementById('description').value;
-		var relName = document.getElementById('relname').value;
-		var type = document.getElementById('type').value;
-		var engine = document.getElementById('engine').value;
-		var state = document.getElementById('state').value;
+		var biobjFormModified = isBIObjectFormChanged();
+		var biobjParFormModified = isBIParameterFormChanged();
 
-		if ((label != '<%=initialBIObject.getLabel()%>')
-			|| (name != '<%=initialBIObject.getName()%>')
-			|| (description != '<%=initialBIObject.getDescription()%>')
-			|| (relName != '<%=initialBIObject.getRelName()%>')
-			|| (type != '<%=initialBIObject.getBiObjectTypeID()+","+initialBIObject.getBiObjectTypeCode()%>')
-			|| (engine != '<%=initialBIObject.getEngine().getId()%>')
-			|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
-			|| (versionTemplateChanged == 'true')
-			|| (fileUploadChanged == 'true')) {
-			
-			biobjFormModified = 'true';
-		}
-	
-		var objParLabel = document.getElementById('objParLabel').value;
-		var par_Id = document.getElementById('par_Id').value;
-		var parurl_nm = document.getElementById('parurl_nm').value;
-		
-		if ((objParLabel != '<%=initialBIObjectParameter.getLabel()%>')
-			|| (par_Id != '<%=(initialBIObjectParameter.getParID() == null || initialBIObjectParameter.getParID().intValue() == -1) ? "" : initialBIObjectParameter.getParID().toString()%>')
-			|| (parurl_nm != '<%=initialBIObjectParameter.getParameterUrlName()%>') ) {
-			
-			biobjParFormModified = 'true';
-		}
 		if (biobjFormModified == 'true' || biobjParFormModified == 'true') {
 			if (confirm(message)) {
 				document.getElementById('saveAndGoBack').click();
@@ -677,6 +683,47 @@ function deleteBIParameterConfirm (message) {
         	document.getElementById('objectForm').submit();
         }
 }
+
+function verifyDependencies() {
+	<%
+	List correlations = DAOFactory.getObjParuseDAO().loadObjParuses(objPar.getId());
+	if (correlations != null && correlations.size() > 0) {
+		%>
+		document.getElementById('parameterCannotBeChanged').style.display = 'inline';
+		<%
+	} else {
+		%>
+		document.getElementById('loadParametersLookup').name = 'loadParametersLookup';
+		document.getElementById('loadParametersLookup').value = 'loadParametersLookup';
+		document.getElementById('save').click();
+		<%
+	}
+	%>
+}
+
+function saveBIParameterConfirm (message) {
+
+	var biobjParFormModified = isBIParameterFormChanged();
+
+	if (biobjParFormModified == 'true') 
+	{
+		if (confirm(message))
+		{
+			document.getElementById('saveBIObjectParameter').name = 'saveBIObjectParameter';
+			document.getElementById('saveBIObjectParameter').value= 'yes';
+		}
+		else
+		{
+			document.getElementById('saveBIObjectParameter').name = 'saveBIObjectParameter';
+			document.getElementById('saveBIObjectParameter').value= 'no';
+		}
+	}
+	
+	document.getElementById('goToDependenciesPage').name = 'goToDependenciesPage';
+	document.getElementById('goToDependenciesPage').value= 'goToDependenciesPage';
+	document.getElementById('save').click();
+}
+
 
 </script>
 
@@ -721,18 +768,12 @@ function deleteBIParameterConfirm (message) {
 		</td>
 		<% } %>
 		<% if (biObjParams != null && biObjParams.size() > 1) { 
-			PortletURL objParusePageUrl = renderResponse.createActionURL();
-			objParusePageUrl.setParameter("PAGE", "ListObjParusePage");
-			objParusePageUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
-			objParusePageUrl.setParameter("obj_par_id", (new Integer(obj_par_id)).toString());
-			objParusePageUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-			objParusePageUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-			objParusePageUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 			%>
 			<td class='header-button-column-portlet-section'>
-				<a href='<%=objParusePageUrl.toString()%>'>
+				<a href='javascript:saveBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.saveBIParameterConfirm"/>")'>
 					<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Class.gif") %>'
-							title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />' alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
+						title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
+						alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
 					/>
 				</a>
 			</td>
@@ -757,6 +798,7 @@ function deleteBIParameterConfirm (message) {
 
 <input type='hidden' name='objParId' value='<%= objPar.getId() != null ? objPar.getId().toString() : "-1" %>' />
 <input type='hidden' name='' value='' id='deleteBIObjectParameter' />
+<input type='hidden' name='' value='' id='goToDependenciesPage' />
 		
 
 
@@ -797,6 +839,7 @@ function deleteBIParameterConfirm (message) {
 			   	maxlength="100" readonly>
       	<input type='hidden' id='par_Id' 
 			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />
+			
      <%
 		/**
 		PortletURL parametersLookupURL = renderResponse.createActionURL();
@@ -805,10 +848,13 @@ function deleteBIParameterConfirm (message) {
 	 %>
 
   		&nbsp;*&nbsp;
-		<input type='image' name="loadParametersLookup" value="loadParametersLookup" 
-			   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
+		<a href="javascript:void(0);" onclick="verifyDependencies();">
+			<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
 			   title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' 
 			   alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' />
+		</a>
+			   
+		<input type='hidden' name='' value='' id='loadParametersLookup' />
 	</div>
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
@@ -915,4 +961,9 @@ function deleteBIParameterConfirm (message) {
 <% } %>
 
 
+<div id = 'parameterCannotBeChanged' class='portlet-msg-error' style='display:none;'>
+	<spagobi:message key = "SBIDev.docConf.docDetParam.cannotChangeParameter" />
+</div>
+
 </div> <!-- background -->
+

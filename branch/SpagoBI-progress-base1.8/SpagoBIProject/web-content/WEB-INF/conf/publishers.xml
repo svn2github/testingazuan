@@ -9,6 +9,16 @@
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>	
+
+	<PUBLISHER name="dependenciesLookup">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListObjParusePage" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
 		
 	<!-- DISPATCHER publischer -->	
 	<PUBLISHER name="CheckLinksDispatcherPublisher">
@@ -722,10 +732,7 @@
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="DetailBIObjectPage" />
         		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
-        		<PARAMETER name="selected_obj_par_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.selected_obj_par_id" />
-        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.OBJECT_ID" />
         		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-        		<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ListObjParuseModule.ACTOR" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

@@ -40,14 +40,12 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
-import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
-import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -140,7 +138,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					lookupReturnHandler(request, response);	
 				else
 					lookupReturnBackHandler(request,response);
-				session.delAttribute("RETURN_STATE");
+				session.delAttribute("RETURN_STATUS");
 				session.delAttribute("RETURN_FROM_MODULE");
 				return; // force refresh
 				// TODO force refresh in a standard way with a generic methods
@@ -149,6 +147,10 @@ public class DetailBIObjectModule extends AbstractModule {
 				SessionMonitor.printSession(session);
 				AbstractBasicCheckListModule.clearSession(session, moduleName);
 				SessionMonitor.printSession(session);
+			} else if (moduleName.equalsIgnoreCase("ListObjParuseModule")) {
+				lookupReturnBackHandler(request,response);
+				session.delAttribute("RETURN_FROM_MODULE");
+				return;
 			}
 			
 			
@@ -158,7 +160,8 @@ public class DetailBIObjectModule extends AbstractModule {
 		// of the submit buttons present in the main form 
 		boolean parametersLookupButtonClicked =  request.getAttribute("loadParametersLookup") != null;
 		boolean linksLookupButtonClicked =  request.getAttribute("loadLinksLookup") != null;
-				
+		boolean dependenciesButtonClicked =  request.getAttribute("goToDependenciesPage") != null;
+		
 		errorHandler = getErrorHandler();
 		
 		try {
@@ -175,6 +178,9 @@ public class DetailBIObjectModule extends AbstractModule {
 			} else if(linksLookupButtonClicked){
 				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","editSubreports != null");
 				startLinksLookupHandler(request, message, response);
+			} else if (dependenciesButtonClicked) {
+				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","goToDependenciesPage != null");
+				startDependenciesLookupHandler(request, message, response);
 		    } // ...then check for other service request types 			
 			 else if (message.trim().equalsIgnoreCase(ObjectsTreeConstants.DETAIL_SELECT)) {
 				getDetailObject(request, response);
@@ -199,9 +205,8 @@ public class DetailBIObjectModule extends AbstractModule {
 			errorHandler.addError(internalError);
 			return;
 		}
-	}	
-	
-		
+	}
+
 	private void setLoopbackContext(SourceBean request, String message) throws EMFUserError{
 		BIObject obj = recoverBIObjectDetails(request, message);
 		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
@@ -240,6 +245,50 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute("linksLookup", "true");		
 	}	
 
+	private void startDependenciesLookupHandler(SourceBean request, String message, SourceBean response) throws Exception {
+		fillRequestContainer(request, errorHandler);
+		response.setAttribute(SpagoBIConstants.ACTOR, actor);
+		BIObject obj = recoverBIObjectDetails(request, message);
+		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
+		String saveBIObjectParameter = (String) request.getAttribute("saveBIObjectParameter");
+		if (saveBIObjectParameter != null && saveBIObjectParameter.equalsIgnoreCase("yes")) {
+			// it is requested to save the visible BIObjectParameter
+			ValidationCoordinator.validate("PAGE", "BIObjectParameterValidation", this);
+			// If it's a new BIObjectParameter or if the Parameter was changed controls 
+			// that the BIObjectParameter url name is not already in use
+			urlNameControl(obj.getId(), biObjPar);
+			verifyForDependencies(biObjPar);
+			
+			// if there are some validation errors into the errorHandler does not write into DB
+			Collection errors = errorHandler.getErrors();
+			if (errors != null && errors.size() > 0) {
+				Iterator iterator = errors.iterator();
+				while (iterator.hasNext()) {
+					Object error = iterator.next();
+					if (error instanceof EMFValidationError) {
+						fillResponse(response);
+						reloadCMSInformation(obj);
+						prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), 
+								ObjectsTreeConstants.DETAIL_MOD, false, false);
+						return;
+					}
+				}
+			}
+			DAOFactory.getBIObjectParameterDAO().modifyBIObjectParameter(biObjPar);
+		} else {
+			biObjPar = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(biObjPar.getId());
+		}
+		// refresh of the initial_BIObjectParameter in session
+		BIObjectParameter biObjParClone = clone(biObjPar);
+		session.setAttribute("initial_BIObjectParameter", biObjParClone);
+		// set lookup objects
+		session.setAttribute("LookupBIObject", obj);
+		session.setAttribute("LookupBIObjectParameter", biObjPar);
+		session.setAttribute("modality", message);
+		session.setAttribute("modalityBkp", message);
+		session.setAttribute("actor",actor);		
+		response.setAttribute("dependenciesLookup", "true");
+	}
 	
 	private void lookupReturnBackHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
 
@@ -767,7 +816,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute(NAME_ATTR_OBJECT_PAR, biObjPar);
 		
 		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule", "prepareBIObjectDetailPage", "XXXXXXXXXX " + detail_mod);
-		
 		
 		response.setAttribute(ObjectsTreeConstants.MODALITY, detail_mod);
 		

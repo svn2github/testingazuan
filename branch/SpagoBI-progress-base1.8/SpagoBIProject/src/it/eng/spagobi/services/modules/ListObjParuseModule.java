@@ -31,6 +31,8 @@ package it.eng.spagobi.services.modules;
  * @author zerbetto
  */
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.module.AbstractModule;
@@ -44,7 +46,6 @@ import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -58,10 +59,15 @@ public class ListObjParuseModule extends AbstractModule {
 
 	private EMFErrorHandler errorHandler;
 	
+	protected SessionContainer session = null;
+	
 	public void init(SourceBean config) {
 	}
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		
+		RequestContainer requestContainer = this.getRequestContainer();	
+		session = requestContainer.getSessionContainer();
 		
 		String message = (String) request.getAttribute("MESSAGEDET");
 		SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE, 
@@ -80,6 +86,8 @@ public class ListObjParuseModule extends AbstractModule {
 				getDetailObjParuses(request, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
 				modObjParuses(request, response);
+			}	else if (message.trim().equalsIgnoreCase("EXIT_FROM_MODULE")) {
+				exit(request, response);
 			}
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
@@ -93,10 +101,9 @@ public class ListObjParuseModule extends AbstractModule {
 
 	private void getDetailObjParuses(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-			String objParIdStr = (String) request.getAttribute("obj_par_id");
-			String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
-			Integer objParId = new Integer (objParIdStr);
-			BIObjectParameter objParameter = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(objParId);
+			
+			BIObjectParameter objParameter = (BIObjectParameter) session.getAttribute("LookupBIObjectParameter");
+			Integer objParId = objParameter.getId();
 			List objParuses = DAOFactory.getObjParuseDAO().loadObjParuses(objParId);
 			Integer objId = objParameter.getBiObjectID();
 			List allObjParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(objId);
@@ -119,7 +126,6 @@ public class ListObjParuseModule extends AbstractModule {
 				ModalitiesValue lov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
 				if (lov.getITypeCd().equalsIgnoreCase("QUERY")) paruses.add(paruse);
 			}
-			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			response.setAttribute("objParameter", objParameter);
 			response.setAttribute("allParuses", paruses);
 			response.setAttribute("objParuses", objParuses);
@@ -135,9 +141,6 @@ public class ListObjParuseModule extends AbstractModule {
 	
 	private void modObjParuses(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
 		try {
-			String objIdStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
-			Integer objId = new Integer(objIdStr);
-			String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 			String objParIdStr = (String) request.getAttribute("obj_par_id");
 			Integer objParId = new Integer (objParIdStr);
 			// load the previous ObjParuse objects
@@ -159,10 +162,9 @@ public class ListObjParuseModule extends AbstractModule {
 			// insert or modify the checked ObjParuse
 			saveCheckedObjParuses(newParusesId, request, objParId);
 			
-			response.setAttribute(ObjectsTreeConstants.OBJECT_ID, objId.toString());
-			response.setAttribute("selected_obj_par_id", objParId.toString());
-			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			response.setAttribute("loopback", "true");
+			
+			session.setAttribute("RETURN_FROM_MODULE", "ListObjParuseModule");
 			
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "ListObjParuseModule","modObjParuses","Cannot fill response container", ex  );
@@ -171,6 +173,12 @@ public class ListObjParuseModule extends AbstractModule {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1048, new Vector(), params);
 		}
 		
+	}
+	
+	
+	private void exit(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
+		session.setAttribute("RETURN_FROM_MODULE", "ListObjParuseModule");
+		response.setAttribute("loopback", "true");
 	}
 
 	private void saveCheckedObjParuses(List newParusesId, SourceBean request, Integer objParId) throws EMFUserError {

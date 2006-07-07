@@ -105,6 +105,7 @@ public class DetailBIObjectPublisher implements PublisherDispatcherIFace {
         Object loop = moduleResponse.getAttribute("loopback");
         Object parametersLookupLoop = moduleResponse.getAttribute("parametersLookup");
         Object linksLookupLoop = moduleResponse.getAttribute("linksLookup");
+        Object dependenciesLookup = moduleResponse.getAttribute("dependenciesLookup");
         
                
         if(loop != null) {
@@ -113,6 +114,8 @@ public class DetailBIObjectPublisher implements PublisherDispatcherIFace {
 			publisher = new String("parametersLookupLoop");
 		} else if (linksLookupLoop != null){
 			publisher = new String("linksLookupLoop");
+		} else if (dependenciesLookup != null){
+			publisher = new String("dependenciesLookup");
 		} else {
 			publisher = new String("detailBIObject");
 		}

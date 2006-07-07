@@ -21,28 +21,26 @@
 	List allParuses = (List) moduleResponse.getAttribute("allParuses");
 	List objParuses = (List) moduleResponse.getAttribute("objParuses");
 	List otherObjParameters = (List) moduleResponse.getAttribute("otherObjParameters");
-	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
-	Integer objId = objpar.getBiObjectID();
 	
 	PortletURL formUrl = renderResponse.createActionURL();
    	formUrl.setParameter("PAGE", "ListObjParusePage");
    	formUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_MOD);
-	formUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
    	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "DetailBIObjectPage");
-   	backUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
-   	backUrl.setParameter("selected_obj_par_id", objpar.getId().toString());
-   	backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, objId.toString());
-   	//backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+   	backUrl.setParameter("PAGE", "ListObjParusePage");
+   	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_MODULE");
+   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+//  backUrl.setParameter("PAGE", "DetailBIObjectPage");
+//  backUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
+//  backUrl.setParameter("selected_obj_par_id", objpar.getId().toString());
+//  backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, objId.toString());
+//	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+//	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
    	
 %>
 <form method='POST' action='<%= formUrl.toString() %>' id='objParusesForm'>
 	<input type="hidden" name="obj_par_id" value="<%=objpar.getId()%>" />
-	<input type="hidden" name="<%=ObjectsTreeConstants.OBJECT_ID%>" value="<%=objId%>" />	
 	<%
    	
 	if (allParuses == null || allParuses.size() == 0) {

@@ -60,7 +60,7 @@
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
-				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.param.saveAndGoBackConfirm" />","<%=backUrl.toString()%>")'> 
+				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.param.saveConfirm" />","<%=backUrl.toString()%>")'> 
 			<% } else { %>
 				<a href='<%=backUrl.toString()%>'>
 			<% } %>

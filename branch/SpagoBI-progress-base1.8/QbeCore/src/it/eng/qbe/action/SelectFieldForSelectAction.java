@@ -14,7 +14,9 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spagobi.utilities.javascript.QbeJsTreeNodeId;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -46,10 +48,49 @@ public class SelectFieldForSelectAction extends AbstractAction {
 			addSelectClause(nodeId.getClassName(), nodeId.getClassAlias(), nodeId.getFieldAlias(), fieldLabel);
 		}
 		else {
-			deleteExistingSelectClauses();
-			List list = request.getAttributeAsList("selectItem");
-			for(int i = 0; i < list.size(); i++) {
-				String chunks[] = ((String)list.get(i)).split(";");
+			List items = request.getAttributeAsList("selectItem");
+			Map selectMap = new HashMap();
+			
+			for(int i = 0; i < items.size(); i++) {
+				String chunks[] = ((String)items.get(i)).split(";");
+				className = chunks[0];
+				fieldName = chunks[1];
+				fieldLabel = chunks[2];	
+				
+				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, fieldName);
+				String classAlias = nodeId.getClassAlias();
+				String fieldAlias = nodeId.getFieldAlias();	
+				
+				String completeFieldName = classAlias + "." + fieldName;
+				
+				selectMap.put(completeFieldName, (String)items.get(i));
+				System.out.println(completeFieldName + " -> " + i);
+			}
+			
+			ISelectClause selectClause =  getDataMartWizard().getSelectClause();
+			if(selectClause != null){
+				List fields = selectClause.getSelectFields();
+				//List items = request.getAttributeAsList("selectItem");
+				ISelectField selField = null;
+				for(int i = 0; i < fields.size(); i++) {
+					selField = (ISelectField)fields.get(i);
+					if(selectMap.containsKey(selField.getFieldNameWithoutOperators())) {
+						items.remove(selectMap.get(selField.getFieldNameWithoutOperators()));
+						System.out.println("ADD: " + selField.getFieldNameWithoutOperators());
+					}
+					else {
+						selectClause.delSelectField(selField);
+						System.out.println("REMOVE: " + selField.getFieldNameWithoutOperators());
+					}					
+				}
+			}
+				
+			
+			//deleteExistingSelectClauses();	
+				
+			//List list = request.getAttributeAsList("selectItem");
+			for(int i = 0; i < items.size(); i++) {
+				String chunks[] = ((String)items.get(i)).split(";");
 				
 				className = chunks[0];
 				fieldName = chunks[1];
@@ -59,7 +100,7 @@ public class SelectFieldForSelectAction extends AbstractAction {
 				String classAlias = nodeId.getClassAlias();
 				String fieldAlias = nodeId.getFieldAlias();				
 						
-				
+				System.out.println("CHECKED: " + className + ", " + classAlias + ", " + fieldName + ", " + fieldAlias + ", " + fieldLabel);
 				addSelectClause(className, classAlias, fieldAlias, fieldLabel);				
 			}
 			

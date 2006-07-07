@@ -30,6 +30,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -53,49 +54,41 @@ public class ReportRunner {
 	
 	public ReportRunner() {}
 	
-	public void run(File templateFile, File reportFile, String outputType, Connection conn) {
+	public void run(File templateFile, File reportFile, String outputType, Connection conn) throws Exception {
 		
 		// assume that the report query in in sql format
 		// TODO check this and adapt the behaviour
 		
-		try {
-			InputStream is = new FileInputStream(templateFile);
-			JasperReport report  = JasperCompileManager.compileReport(is);
-			JasperPrint jasperPrint = JasperFillManager.fillReport(report, new HashMap(), conn);
+		InputStream is = new FileInputStream(templateFile);
+		JasperReport report  = JasperCompileManager.compileReport(is);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(report, new HashMap(), conn);
 			
-			JRExporter exporter = null; 
+		JRExporter exporter = null; 
 			
-			if (outputType.equalsIgnoreCase("text/html")) {
-		    	exporter = new JRHtmlExporter();
-		    	exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN, Boolean.FALSE);
-		    	exporter.setParameter(JRHtmlExporterParameter.BETWEEN_PAGES_HTML, "");
-		    } else if (outputType.equalsIgnoreCase("text/xml")) {
-		    	exporter = new JRXmlExporter();
-		    } else if (outputType.equalsIgnoreCase("text/plain")) {
-		    	//exporter = new JRTextExporter(); 
-		    	exporter = new JRTxtExporter(); 
-		    } else if (outputType.equalsIgnoreCase("text/csv")) {
-		    	exporter = new JRCsvExporter(); 	
-		    } else if (outputType.equalsIgnoreCase("application/pdf"))	{			
-		    	exporter = new JRPdfExporter(); 	
-		    } else if (outputType.equalsIgnoreCase("application/rtf"))	{			
-		    	exporter = new JRRtfExporter(); 		
-		    } else if (outputType.equalsIgnoreCase("application/vnd.ms-excel")) {
-		    	exporter = new JRXlsExporter();
-		    } else {
-		    	exporter = new JRPdfExporter();
-		    }
+		if (outputType.equalsIgnoreCase("text/html")) {
+		   	exporter = new JRHtmlExporter();
+		   	exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN, Boolean.FALSE);
+		   	exporter.setParameter(JRHtmlExporterParameter.BETWEEN_PAGES_HTML, "");
+		} else if (outputType.equalsIgnoreCase("text/xml")) {
+		   	exporter = new JRXmlExporter();
+		} else if (outputType.equalsIgnoreCase("text/plain")) {
+		   	//exporter = new JRTextExporter(); 
+		   	exporter = new JRTxtExporter(); 
+		} else if (outputType.equalsIgnoreCase("text/csv")) {
+		   	exporter = new JRCsvExporter(); 	
+		} else if (outputType.equalsIgnoreCase("application/pdf"))	{			
+		   	exporter = new JRPdfExporter(); 	
+		} else if (outputType.equalsIgnoreCase("application/rtf"))	{			
+		   	exporter = new JRRtfExporter(); 		
+		} else if (outputType.equalsIgnoreCase("application/vnd.ms-excel")) {
+		   	exporter = new JRXlsExporter();
+		} else {
+		   	exporter = new JRPdfExporter();
+		}
 			
-			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-	        exporter.setParameter(JRExporterParameter.OUTPUT_FILE , reportFile);
-	        exporter.exportReport();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}						
-		
-		
+		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+	    exporter.setParameter(JRExporterParameter.OUTPUT_FILE , reportFile);
+	    exporter.exportReport();
 	}
 	
 }

@@ -304,13 +304,13 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 		}  				
 		
 		getDataMartWizard().composeQuery();
-				
+		//System.out.println("Query:" + getDataMartWizard().getFinalQuery());		
+		
 		if (!checkJoins(request, response)){
 			returnError(response, "QBE.Warning.Join");
 		} 
 		else{
 			try {
-				System.out.println(" -----> EXECUTING");
 				SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
 				getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
 			}catch (HibernateException he) {

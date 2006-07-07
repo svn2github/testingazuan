@@ -69,7 +69,7 @@ public class DeleteFieldFromSelectAction extends AbstractAction {
 				
 				for (int i=0; i < orderByFields.size(); i++){
 					aOrderGroupByField = (IOrderGroupByField)orderByFields.get(i);
-					if (aOrderGroupByField.getFieldName().equalsIgnoreCase(tmpSelectField.getFieldNameWithoutOperators())){
+					if (aOrderGroupByField.getFieldName().equalsIgnoreCase(tmpSelectField.getFieldName())){
 						toEliminate = new OrderByFieldSourceBeanImpl();
 						toEliminate.setId(aOrderGroupByField.getId());
 					}
@@ -93,7 +93,7 @@ public class DeleteFieldFromSelectAction extends AbstractAction {
 				IOrderGroupByField toEliminate = null;
 				for (int i=0; i < groupByFields.size(); i++){
 					aOrderGroupByField = (IOrderGroupByField)groupByFields.get(i);
-					if (aOrderGroupByField.getFieldName().equalsIgnoreCase(tmpSelectField.getFieldNameWithoutOperators())){
+					if (aOrderGroupByField.getFieldName().equalsIgnoreCase(tmpSelectField.getFieldName())){
 						toEliminate = new GroupByFieldSourceBeanImpl();
 						toEliminate.setId(aOrderGroupByField.getId());
 					}

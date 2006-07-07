@@ -12,15 +12,16 @@ import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -217,17 +218,26 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		this.queryId = queryId;
 	}
 	
-
+	
 	public void composeQuery(){
 		this.finalQuery = null;
 		StringBuffer finalQuery = new StringBuffer();
 		ISelectClause aSelectClause = this.getSelectClause();
 		boolean afterFirst = false;
+		Map fieldToAlias = new HashMap();
+		
 		
 		if (aSelectClause != null){
 			
 			finalQuery.append("select ");
 			java.util.List l= aSelectClause.getSelectFields();
+		 	
+			// if select clause is empty than the query itself is empty so set finalQuery to null
+			if(l == null || l.size() <= 0) {
+				return;
+			}
+			
+		 		
 		 	Iterator it = l.iterator();
 		 
 		 	if (this.getDistinct()){
@@ -240,16 +250,24 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		if (afterFirst)
 		 			finalQuery.append(", ");
 		 		finalQuery.append(aSelectField.getFieldName());
-		 		/*
-		 		if (aSelectField.getFieldAlias() != null)
-		 			finalQuery.append(" as \""+aSelectField.getFieldAlias()+ "\" ");
-		 		*/
+		 		
+		 		if (aSelectField.getFieldAlias() != null) {
+		 			if(aSelectField.getFieldNameWithoutOperators().equalsIgnoreCase(aSelectField.getFieldName())) {
+		 				String alias = aSelectField.getFieldAlias().replaceAll(" ","_");
+		 				finalQuery.append(" as "+ alias + " ");
+		 				// System.out.println(aSelectField.getFieldNameWithoutOperators() + " -> " + aSelectField.getFieldAlias());
+			 			fieldToAlias.put(aSelectField.getFieldNameWithoutOperators(), alias);
+		 			}
+		 			
+		 			
+		 		}
+		 	
 		 		afterFirst = true;
 		 	}
 			
-		} //else{
-			// return;
-		//}
+		} else{
+			 return;
+		}
 		
 		List entityClasses = this.getEntityClasses();
 		
@@ -331,7 +349,12 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		aOrderGroupByField =(IOrderGroupByField)it.next();
 		 		if (afterFirst)
 		 			finalQuery.append(", ");
-		 		finalQuery.append(aOrderGroupByField.getFieldName() + " ");
+		 		
+		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
+		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
+		 		else
+		 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
+		 		
 		 		afterFirst = true;
 		 	}
 		}
@@ -350,7 +373,12 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		aOrderGroupByField =(IOrderGroupByField)it.next();
 		 		if (afterFirst)
 		 			finalQuery.append(", ");
-		 		finalQuery.append(aOrderGroupByField.getFieldName());
+		 		System.out.println("check -> " + aOrderGroupByField.getFieldName() + " -> " + fieldToAlias.containsKey(aOrderGroupByField.getFieldName()));
+		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
+		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
+		 		else
+		 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
+		 				 		
 		 		afterFirst = true;
 		 	}
 		}
@@ -592,6 +620,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 				
 		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
+				
 		Query aQuery = aSession.createQuery(getFinalQuery());
 		
 		int firstRow = pageNumber * pageSize;

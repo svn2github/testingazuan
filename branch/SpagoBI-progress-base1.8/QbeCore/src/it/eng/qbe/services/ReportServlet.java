@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.services;
 
+import it.eng.qbe.action.ExecuteSaveQueryAction;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.export.IQueryRewriter;
 import it.eng.qbe.export.ITemplateBuilder;
@@ -96,6 +97,12 @@ public class ReportServlet extends HttpServlet{
 		boolean inline = (inlineStr != null && inlineStr.equals("true"));
 		String queryName = (String)request.getParameter("queryName");
 		query = (String)request.getParameter("query");
+		System.out.println("Query [" + query + "]");
+		if(query == null || query.equalsIgnoreCase("") || query.equalsIgnoreCase("null")) {
+			copyMessageToResponse(response, "Query is not defined !!!");
+			return;
+		}
+		
 		String jarFileStr = (String)request.getParameter("jarfilepath");
 		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
 		String dialect = (String)request.getParameter("dialect");
@@ -114,12 +121,20 @@ public class ReportServlet extends HttpServlet{
 		File reportFile = File.createTempFile("report", ".rpt"); 
 		File resultFile = null;
 		
-		if(lang.equalsIgnoreCase("SQL"))
-			buildTemplateFromSQLQuery(templateFile);
-		else if(lang.equalsIgnoreCase("HQL"))
-			buildTemplateFromHQLQuery(templateFile);
-		else
-			throw new ServletException("Query language not supported: " + lang);
+		try {
+			if(lang.equalsIgnoreCase("SQL"))
+				buildTemplateFromSQLQuery(templateFile);
+			else if(lang.equalsIgnoreCase("HQL"))
+				buildTemplateFromHQLQuery(templateFile);
+			else
+				throw new ServletException("Query language not supported: " + lang);
+		}catch(Exception e) {
+			copyErrorMessageToResponse(response, e);
+			// instant cleaning
+			templateFile.delete();
+			reportFile.delete();
+			return;
+		}
 		
 		if(action != null && action.equals("buildTemplate")){
 			resultFile = templateFile;
@@ -128,7 +143,15 @@ public class ReportServlet extends HttpServlet{
 		}
 		else {
 			ReportRunner runner = new ReportRunner();		
-			runner.run(templateFile, reportFile, format, connection);
+			try {
+				runner.run(templateFile, reportFile, format, connection);
+			} catch (Exception e) {
+				copyErrorMessageToResponse(response, e);
+				// instant cleaning
+				templateFile.delete();
+				reportFile.delete();
+				return;
+			}
 			resultFile = reportFile;
 			if(queryName == null) queryName = "queryResults";
 		}		
@@ -154,6 +177,21 @@ public class ReportServlet extends HttpServlet{
 		return map;
 	}
 	
+	private void copyMessageToResponse(HttpServletResponse response, String msg) {
+		response.setContentType("text/plain");
+		response.setContentLength((int)msg.length());
+		try {
+			response.getWriter().print(msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void copyErrorMessageToResponse(HttpServletResponse response, Exception exception) {
+		copyMessageToResponse(response, exception.getMessage());
+		Logger.error(ExecuteSaveQueryAction.class, exception);
+	}
+	
 	private void copyFileToResponse(HttpServletResponse response, boolean inline, File file, String fileName, String fileFormat) throws IOException {
 		response.setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + fileName + "." + extensions.get(fileFormat) + "\";");
 		response.setContentType(fileFormat);
@@ -176,25 +214,17 @@ public class ReportServlet extends HttpServlet{
 		return DataMartModel.getHibernateConfiguration(jarFile, jndiDataSourceName, dialect).buildSessionFactory().openSession();
 	}
 	
-	private void buildTemplateFromHQLQuery(File templateFile) {
+	private void buildTemplateFromHQLQuery(File templateFile) throws Exception {
 		IQueryRewriter queryRevriter = new HqlToSqlQueryRewriter(session);	
 		String sqlQuery = queryRevriter.rewrite(query);
-		try {
-			ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
-			templateBuilder.buildTemplateToFile(templateFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
+		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
-	private void buildTemplateFromSQLQuery(File templateFile) {
+	private void buildTemplateFromSQLQuery(File templateFile) throws Exception {
 		String sqlQuery = query;
-		try {
-			ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
-			templateBuilder.buildTemplateToFile(templateFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
+		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
 	private void updateCurrentClassLoader(){

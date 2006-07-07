@@ -122,6 +122,9 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 	public void service(SourceBean request, SourceBean response) throws Exception{
 		getDataMartWizard().composeQuery();
 		
+		if ((getDataMartWizard().getExpertQueryDisplayed() == null)||(getDataMartWizard().getExpertQueryDisplayed().trim().length() == 0))
+			getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+		
 		boolean joinOk = checkJoins(getDataMartWizard(), response);
 		
 		if (!joinOk){		

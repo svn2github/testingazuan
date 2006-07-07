@@ -46,6 +46,7 @@ public class QueryWizardTag extends TagSupport {
 
 	private String connectionName;
 	private String visibleColumns;
+	private String invisibleColumns;
 	private String valueColumns;
 	private String queryDef;
 	
@@ -60,6 +61,7 @@ public class QueryWizardTag extends TagSupport {
 		renderResponse = (RenderResponse) httpRequest.getAttribute("javax.portlet.response");
 		String connNameField = PortletUtilities.getMessage("SBIDev.queryWiz.connNameField", "messages");
 		String visColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.visColumnsField", "messages");
+		String invisColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.invisColumnsField", "messages");
 		String valueColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.valueColumnsField", "messages");
 		String queryDefField = PortletUtilities.getMessage("SBIDev.queryWiz.queryDefField", "messages");
 		String columnsField = PortletUtilities.getMessage("SBIDev.queryWiz.columnsField", "messages");
@@ -100,6 +102,14 @@ public class QueryWizardTag extends TagSupport {
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_form'>\n");
 		output.append("			<input class='portlet-form-input-field' type='text' name='visColumns' id='visColumns' size='50' value='"+ visibleColumns + "' maxlength='100'>&nbsp;*\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(invisColumnsField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<input class='portlet-form-input-field' type='text' name='invisColumns' id='invisColumns' size='50' value='"+ invisibleColumns + "' maxlength='100'>&nbsp;*\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			<span class='portlet-form-field-label'>\n");
@@ -205,7 +215,7 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		for (j = 0; j < visibleColumns.length; j++) {\n");
 	    output.append("			if (fields[i] == visibleColumns[j]) isVisible='checked=\"checked\"';\n");
 	    output.append("		}\n");
-	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"checkbox\" onclick=\"setVisibleColumns(this.value)\" name=\"visColumnsJS\" id=\"visColumnsJS\" value=\"' + fields[i] + '\" ' + isVisible + '></td>';\n");
+	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"checkbox\" onclick=\"setVisibleColumns(this.value,this.checked)\" name=\"visColumnsJS\" id=\"visColumnsJS\" value=\"' + fields[i] + '\" ' + isVisible + '></td>';\n");
 	    output.append("		strHTML += '</tr>';\n");
 	    output.append("	}\n");
 	    output.append("	return strHTML;\n");
@@ -257,7 +267,7 @@ public class QueryWizardTag extends TagSupport {
 	    
 	    output.append("function updateFields() {\n");
 	    output.append("	var fields = findFieldsFromQuery();\n");
-	    // looks if there are some olf fields (no more present in the query definition) in the visible columns field
+	    // looks if there are some old fields (no more present in the query definition) in the visible columns field
 	    output.append("	var visibleColumns = document.getElementById('visColumns').value;\n");
 	    output.append("	var visibleFields = visibleColumns.split(',');\n");
 	    output.append("	if (visibleFields.length == 1 && trim(visibleFields[0]) == '') visibleFields.pop();\n");
@@ -275,6 +285,48 @@ public class QueryWizardTag extends TagSupport {
 	    output.append(" }\n");
 	    output.append(" visibleFields = clean(visibleFields);\n");
 	    output.append("	document.getElementById('visColumns').value = visibleFields.join(',');\n");
+	    // looks if there are some old fields in invisible columns field
+	    output.append("	var invisibleColumns = document.getElementById('invisColumns').value;\n");
+	    output.append("	var	invisibleFields = invisibleColumns.split(',');\n");
+	    output.append("	if (invisibleFields.length == 1 && trim(invisibleFields[0]) == '') invisibleFields.pop();\n");
+	    output.append("	for (i = 0; i < invisibleFields.length; i++) {\n");
+	    output.append("		var invisibleFieldFound = false;\n");
+	    output.append(" 	var aInvisibleField = trim(invisibleFields[i]);\n");
+	    output.append(" 	for (j = 0; j < fields.length; j++) {\n");
+	    output.append(" 		var field = trim(fields[j]);\n");
+	    output.append(" 		if (aInvisibleField == field) {\n");
+	    output.append(" 			invisibleFieldFound = true;\n");
+	    output.append(" 			break;\n");
+	    output.append(" 		}\n");
+	    output.append(" 	}\n");
+	    output.append(" 	if (!invisibleFieldFound) invisibleFields.splice(i,1,'');\n");
+	    output.append(" }\n");
+	    output.append(" invisibleFields = clean(invisibleFields);\n");
+	    // looks if there are new fields; in case of new field, it is inserted into the invisible columns field
+	    output.append("	for (i = 0; i < fields.length; i++) {\n");
+	    output.append("		var fieldFound = false;\n");
+	    output.append(" 	var field = trim(fields[i]);\n");
+	    output.append(" 	for (j = 0; j < invisibleFields.length; j++) {\n");
+	    output.append(" 		var aInvisiblefield = trim(invisibleFields[j]);\n");
+	    output.append(" 		if (aInvisibleField == field) {\n");
+	    output.append(" 			fieldFound = true;\n");
+	    output.append(" 			break;\n");
+	    output.append(" 		}\n");
+	    output.append(" 	}\n");
+	    output.append(" 	if (!fieldFound) {\n");
+	    output.append(" 		for (j = 0; j < visibleFields.length; j++) {\n");
+	    output.append(" 			var aVisibleField = trim(visibleFields[j]);\n");
+	    output.append(" 			if (aVisibleField == field) {\n");
+	    output.append(" 				fieldFound = true;\n");
+	    output.append(" 				break;\n");
+	    output.append(" 			}\n");
+	    output.append(" 		}\n");
+	    output.append(" 	}\n");
+	    output.append(" 	if (!fieldFound) invisibleFields.push(field);\n");
+	    output.append(" }\n");
+	    output.append(" invisibleFields = clean(invisibleFields);\n");
+	    output.append("	document.getElementById('invisColumns').value = invisibleFields.join(',');\n");
+	    
 	    // looks if the value column field contains an old field (no more present in the query definition)
 	    output.append("	var valueColumn = trim(document.getElementById('valueColumns').value);\n");
 	    output.append("	var valueColumnFound = false;\n");
@@ -301,24 +353,46 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		document.getElementById('queryDef').value = queryDef;\n");
 	    output.append("		updateFields();\n");
 	    output.append("}\n");
-	    output.append("function setVisibleColumns(visibleColumn) {\n");
+	    output.append("function setVisibleColumns(column,checked) {\n");
+	    // if the column is checked, tries to insert it into visible columns and to delete from invisible columns
 	    output.append("	var visibleColumns = document.getElementById('visColumns').value;\n");
-	    output.append("	var fields = visibleColumns.split(',');\n");
-	    output.append("	if (fields.length == 1 && trim(fields[0]) == '') fields.pop();\n");
-	    output.append("	var fieldFound = false;\n");
-	    output.append("	for (i = 0; i < fields.length; i++) {\n");
-	    output.append(" 	var temp = fields[i];\n");
+	    output.append("	var visibleFields = visibleColumns.split(',');\n");
+	    output.append("	var invisibleColumns = document.getElementById('invisColumns').value;\n");
+	    output.append("	var invisibleFields = invisibleColumns.split(',');\n");
+	    output.append("	if (visibleFields.length == 1 && trim(visibleFields[0]) == '') visibleFields.pop();\n");
+	    output.append("	if (invisibleFields.length == 1 && trim(invisibleFields[0]) == '') invisibleFields.pop();\n");
+	    output.append("	var visibleFieldFound = false;\n");
+	    output.append("	for (i = 0; i < visibleFields.length; i++) {\n");
+	    output.append(" 	var temp = visibleFields[i];\n");
 	    output.append(" 	temp = trim(temp);\n");
-	    output.append(" 	if (temp == visibleColumn) {\n");
-	    output.append(" 		fieldFound = true;\n");
-	    output.append(" 		fields.splice(i,1);\n");
+	    output.append(" 	if (temp == column) {\n");
+	    output.append(" 		visibleFieldFound = true;\n");
+	    output.append(" 		if (!checked) {\n");
+	    output.append(" 			visibleFields.splice(i,1);\n");
+	    output.append(" 		}\n");
 	    output.append(" 		break;\n");
 	    output.append(" 	}\n");
 	    output.append(" }\n");
-	    output.append(" if (!fieldFound) {\n");
-	    output.append(" 	fields.push(visibleColumn);\n");
+	    output.append(" if (!visibleFieldFound && checked) {\n");
+	    output.append(" 	visibleFields.push(column);\n");
 	    output.append("	}\n");
-	    output.append("	document.getElementById('visColumns').value = fields.join(',');\n");
+	    output.append("	var invisibleFieldFound = false;\n");
+	    output.append("	for (i = 0; i < invisibleFields.length; i++) {\n");
+	    output.append(" 	var temp = invisibleFields[i];\n");
+	    output.append(" 	temp = trim(temp);\n");
+	    output.append(" 	if (temp == column) {\n");
+	    output.append(" 		invisibleFieldFound = true;\n");
+	    output.append(" 		if (checked) {\n");
+	    output.append(" 			invisibleFields.splice(i,1);\n");
+	    output.append(" 		}\n");
+	    output.append(" 		break;\n");
+	    output.append(" 	}\n");
+	    output.append(" }\n");
+	    output.append(" if (!invisibleFieldFound && !checked) {\n");
+	    output.append(" 	invisibleFields.push(column);\n");
+	    output.append("	}\n");
+	    output.append("	document.getElementById('visColumns').value = visibleFields.join(',');\n");
+	    output.append("	document.getElementById('invisColumns').value = invisibleFields.join(',');\n");
 	    output.append("}\n");
 	    
 	    output.append("function isASelect(queryDef) {\n");
@@ -347,6 +421,7 @@ public class QueryWizardTag extends TagSupport {
 	    
 	    output.append("function resetFields() {\n");
 	    output.append("		document.getElementById('visColumns').value = '';\n");
+	    output.append("		document.getElementById('invisColumns').value = '';\n");
 	    output.append("		document.getElementById('valueColumns').value = '';\n");
 	    output.append("}\n");
 	    
@@ -367,7 +442,7 @@ public class QueryWizardTag extends TagSupport {
 	    
 	    output.append("<script>\n");
 	    output.append("document.getElementById('queryWizardWithJavascript').style.display='inline';\n");
-	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='none';\n");
+	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='inline';\n");
 	    output.append("displayQueryFields();\n");
 	    output.append("</script>\n");
 	    
@@ -410,6 +485,12 @@ public class QueryWizardTag extends TagSupport {
 	}
 	public void setVisibleColumns(String visibleColumns) {
 		this.visibleColumns = visibleColumns;
+	}
+	public String getInvisibleColumns() {
+		return invisibleColumns;
+	}
+	public void setInvisibleColumns(String invisibleColumns) {
+		this.invisibleColumns = invisibleColumns;
 	}
 	
 }

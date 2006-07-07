@@ -50,7 +50,7 @@ public class ScriptWizardTag extends TagSupport {
 		output.append(scriptLbl);
 		output.append("			</span>\n");
 		output.append("	</div>\n");
-		output.append("	<div class='div_detail_form' style='height:175px;'>\n");
+		output.append("	<div class='div_detail_form' style='height:185px;'>\n");
 	    output.append("		<textarea id='script' name='script' class='portlet-text-area-field' rows='10' cols='50'>" + script + "</textarea>\n");
 	    output.append("	</div>\n");
 	    
@@ -79,39 +79,6 @@ public class ScriptWizardTag extends TagSupport {
 		output.append("			</input>\n");
 		output.append("	</div>\n");
 	    output.append("</div>\n");
-		
-		
-//		output.append("<table class='object-details-table'>\n");
-//		output.append("	<tr height='25'>\n");
-//		String scriptLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.scriptLbl", "messages");
-//		output.append("		<td align='right' class='portlet-form-field-label' >"+ scriptLbl + "</td>\n");
-//		output.append("		<td>&nbsp;</td>\n");
-//	    output.append("		<td><textarea id='script' name='script' class='portlet-text-area-field' rows='10' cols='50'>" + script + "</textarea></td>\n");
-//	    output.append("	</tr>\n");
-//	    
-//    	String selectedsingle = " checked='checked' ";
-//    	String selectedlist = "";
-//        if("true".equalsIgnoreCase(isListOfValues)) {
-//    		selectedlist = " checked='checked' ";
-//    		selectedsingle = "";
-//    	}
-//	    
-//	    output.append("	<tr height='25'>\n");
-//	    String outputTypeLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.outputType", "messages");
-//	    output.append("		<td align='right' class='portlet-form-field-label' >"+ outputTypeLbl + "</td>\n");
-//	    output.append("		<td>&nbsp;</td>\n");
-//        output.append("		<td><input type='radio' name='numberout' value='single' " + selectedsingle + ">\n");
-//		String singleValLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.SingleValLbl", "messages");
-//		output.append("				<span class='portlet-form-field-label'>"+ singleValLbl + "</span>\n");
-//		output.append("			</input>\n");
-//		output.append("			<br/>\n");
-//        output.append("			<input type='radio' name='numberout' value='list' " + selectedlist + ">\n");
-//		String listValLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.ListValLbl", "messages");
-//		output.append("				<span class='portlet-form-field-label'>"+ listValLbl + "</span>\n");
-//		output.append("			</input>\n");
-//		output.append("		</td>\n");
-//		output.append("	</tr>\n");
-//	    output.append("</table>\n");
 		
         try {
             pageContext.getOut().print(output.toString());

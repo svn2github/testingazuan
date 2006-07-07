@@ -28,4 +28,7 @@ it.eng.spago.base.ResponseContainer aResponseContainer = it.eng.spago.base.Respo
       href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/external.css")%>' 
       type='text/css' />
 
+<script>
+	document.onselectstart = function() { return true; }
+</script>
 

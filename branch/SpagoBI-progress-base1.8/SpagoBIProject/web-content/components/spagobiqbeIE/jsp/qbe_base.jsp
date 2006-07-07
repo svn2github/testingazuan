@@ -49,6 +49,10 @@
 	<script language='javascript' src='<%=qbeUrl.conformStaticResourceLink(request,"../js/Layer.js")%>'></script>
 	--%>
 	
+	<script>
+		document.onselectstart = function() { return true; }
+	</script>
+	
 	
 <%  if (qbeMode.equalsIgnoreCase("PORTLET")) { %>	
 	<SCRIPT language=JavaScript>

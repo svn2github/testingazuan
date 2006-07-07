@@ -139,40 +139,6 @@
 	</tr>
 </table>
 
-<%--
-<input type="hidden" id="deleteDependencies" name="" value="" />
-
-<script type="text/javascript">
-	function exitFromDetail(){
-		<%
-		String documents = (String) moduleResponse.getAttribute("Documents_with_associated_dependencies");
-		if (documents != null) {
-			// if the lov type is changed or if the correlation column does no more exist, ask for confirm before deleting dependencies
-			String initialLovType = initialLov.getITypeCd();
-			%>
-			var initialLovType = '<%= initialLovType %>';
-			var actualLovType = document.getElementById("input_type").value;
-			if (actualLovType.match(initialLovType) == null) {
-				var message = '<spagobi:message key = "SBIDev.predLov.dependencyConfirm1" />' + ' ' + '<%= documents %>' + '. ' + '<spagobi:message key = "SBIDev.predLov.dependencyConfirm2" />';
-				if (confirm(message)) {
-					document.getElementById('deleteDependencies').name = 'deleteDependencies';
-					document.getElementById('deleteDependencies').value = 'true';
-					document.getElementById('modalitiesValueForm').submit();
-				}
-			} else {
-				document.getElementById('modalitiesValueForm').submit();
-			}
-			<%
-		} else {
-			%>
-			document.getElementById('modalitiesValueForm').submit();
-			<%
-		}
-		%>
-	}
-</script>
---%>
-
 
 <div class='div_background_no_img' >
 
@@ -264,19 +230,86 @@
 
 
 
+	<script type="text/javascript">
+			function showSintaxScript(){
+					var divSintax = document.getElementById("sintaxScript");
+					var display = divSintax.style.display;
+					if (display == "none") {
+						document.getElementById("sintaxScript").style.display = "inline";
+						document.getElementById("showSintaxScript").innerHTML = "<spagobi:message key = 'SBIDev.scriptWiz.hideSintax'/>";
+					}
+					else {
+						document.getElementById("sintaxScript").style.display = "none";
+						document.getElementById("showSintaxScript").innerHTML = "<spagobi:message key = 'SBIDev.scriptWiz.showSintax'/>";
+					}
+			}
+			function showSintaxQuery(){
+					var divSintax = document.getElementById("sintaxQuery");
+					var display = divSintax.style.display;
+					if (display == "none") {
+						document.getElementById("sintaxQuery").style.display = "inline";
+						document.getElementById("showSintaxQuery").innerHTML = "<spagobi:message key = 'SBIDev.queryWiz.hideSintax'/>";
+					}
+					else {
+						document.getElementById("sintaxQuery").style.display = "none";
+						document.getElementById("showSintaxQuery").innerHTML = "<spagobi:message key = 'SBIDev.queryWiz.showSintax'/>";
+					}
+			}
+	</script>
 
 
-<div id="queryWizard" style='width:100%;display:<%=queryDisplay%>'>
-	<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
-		<spagobi:message key = "SBIDev.queryWiz.wizardTitle" />
-	</div> 
-	<spagobi:queryWizard 
-		connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 
-		visibleColumns='<%= query.getVisibleColumns()!= null ? query.getVisibleColumns().toString() : "" %>' 
-		valueColumns='<%= query.getValueColumns()!= null ? query.getValueColumns().toString() : "" %>' 
-		queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' 
-		/> 
-</div>
+
+	<div id="queryWizard" style='width:100%;display:<%=queryDisplay%>'>
+		<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
+			<spagobi:message key = "SBIDev.queryWiz.wizardTitle" />
+		</div> 
+		<div style="float:left;" />
+			<spagobi:queryWizard 
+				connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 
+				visibleColumns='<%= query.getVisibleColumns()!= null ? query.getVisibleColumns().toString() : "" %>' 
+				valueColumns='<%= query.getValueColumns()!= null ? query.getValueColumns().toString() : "" %>' 
+				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' /> 
+		</div>
+		<div style="width:100%" />
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBIDev.queryWiz.rulesLabel" />
+				</span>
+				<a id="showSintaxQuery" 
+					 href="javascript:void(0)" 
+					 onclick="showSintaxQuery()" 
+					 class='portlet-form-field-label'
+					 onmouseover="this.style.color='#074BF8';"
+					 onmouseout="this.style.color='#074B88';"
+					 style="text-decoration:none;">
+					<spagobi:message key = "SBIDev.queryWiz.showSintax"/>
+				</a>
+				<br/>	
+				<div style="display:none;" id="sintaxQuery"  >
+					<br/>
+					<table width="100%">
+						<tr height='25'>
+							<td>
+								<div class='portlet-section-subheader' 
+								     style='text-align:center;vertical-align:bottom;' 
+									 width="100%">
+									<spagobi:message key = "SBIDev.queryWiz.rulesTitle" />
+								</div>
+								<div class='portlet-section-alternate' width="100%" 
+								     style="background-color:#FFFFEF;">
+									<spagobi:message key = "SBIDev.queryWiz.profAttr" />
+									<br/>
+									<spagobi:message key = "SBIDev.queryWiz.dotNotation" />
+							    </div>
+							</td>
+							<td width="5px">&nbsp;</td>
+						</tr>
+					</table>
+				</div>
+		</div>
+		<div style="clear:left;">
+			&nbsp;
+		</div>
+	</div>
 
 
 
@@ -292,110 +325,121 @@
 
 
 
+	
+	<div id="scriptWizard" style='width:100%;display:<%=scriptDisplay%>'>
+		<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
+			<spagobi:message key = "SBIDev.scriptWiz.wizardTitle" />
+		</div> 
+		<div style="float:left;" />
+			<spagobi:scriptWizard 
+				script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' 
+				isListOfValues='<%= scriptDet.isListOfValues() ? "true" : "false" %>' />
+		</div>
+		<div style="width:100%" />
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBIDev.scriptWiz.ListValExplanation" />
+				</span>
+				<a id="showSintaxScript" 
+					 href="javascript:void(0)" 
+					 onclick="showSintaxScript()" 
+					 class='portlet-form-field-label'
+					 onmouseover="this.style.color='#074BF8';"
+					 onmouseout="this.style.color='#074B88';"
+					 style="text-decoration:none;">
+					<spagobi:message key = "SBIDev.scriptWiz.showSintax"/>
+				</a>
+				<br/>	
+				<div style="display:none;" id="sintaxScript" >
+					<br/>
+					<table width="100%" style="margin-bottom:5px;">
+							<tr height='25'>
+									<td>
+										<div class='portlet-section-subheader' 
+										     style='text-align:center;vertical-align:bottom;' 
+												 width="100%">
+											<spagobi:message key = "SBIDev.scriptWiz.SintaxLbl" />
+										</div>
+										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+											<spagobi:message key = "SBIDev.scriptWiz.FixValLbl" />
+											=
+											<spagobi:message key = "SBIDev.scriptWiz.FixValExpr" />
+											<br/>
+											<spagobi:message key = "SBIDev.scriptWiz.ProfileValLbl" />
+											=
+											<spagobi:message key = "SBIDev.scriptWiz.ProfileValExpr" />
+											<br/>
+											<spagobi:message key = "SBIDev.scriptWiz.ScriptlLbl" />
+											=
+											<spagobi:message key = "SBIDev.scriptWiz.ScriptExpr" />
+											<br/>
+										</div>
+									</td>
+									<td width="5px">&nbsp;</td>
+							</tr>
+							<tr height='25'>
+									<td>
+										<div class='portlet-section-subheader' 
+										     style='text-align:center;vertical-align:bottom;' 
+												 width="100%">
+											<spagobi:message key = "SBIDev.scriptWiz.ProfileAttrsLbl" />
+										</div>
+										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+											<%
+													Set nameAttrs = profileattrs.keySet();
+													Iterator iterAttrs = nameAttrs.iterator();
+												String attribute = null;
+												while(iterAttrs.hasNext()) {
+													String attributename = (String)iterAttrs.next();
+													out.write(attributename);
+													out.write(" / ");
+												}
+											%>
+										</div>
+									</td>
+									<td width="5px">&nbsp;</td>
+							</tr>
+							<tr height='25'>
+									<td>
+										<div class='portlet-section-subheader' 
+										     style='text-align:center;vertical-align:bottom;' 
+												 width="100%">
+											<spagobi:message key = "SBIDev.scriptWiz.xmlstruct" />
+										</div>
+										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+												&lt;rows&gt; <br/>
+												<span>&nbsp;&nbsp;&nbsp;</span>&lt;row <spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructNameAttribute" />1="<spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructValueAttribute" />1" <spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructNameAttribute" />2="<spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructValueAttribute" />2" ... /&gt;  <br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>.... <br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;visible-columns&gt;<spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructVisibleColumns" />&lt;/visible-columns&gt; <br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;value-column&gt;<spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructValueColumn" />&lt;/value-column&gt; <br/>
+												&lt;/rows&gt; <br/>
+										</div>
+									</td>
+									<td width="5px">&nbsp;</td>
+							</tr>
+					</table>
+				</div>
+		</div>
+		<div style="clear:left;">
+			&nbsp;
+		</div>
+	</div>
+	
+	<table>
+		<tr><td>&nbsp;</td></tr>
+	</table>
 
-<div id="scriptWizard" style='width:100%;display:<%=scriptDisplay%>'>
-	<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
-		<spagobi:message key = "SBIDev.scriptWiz.wizardTitle" />
-	</div> 
-	<spagobi:scriptWizard 
-		script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' 
-		isListOfValues='<%= scriptDet.isListOfValues() ? "true" : "false" %>' 
-	/>
+	
 	
 </form>
 	
-	<br/>
-	<span class='portlet-form-field-label'>
-		<spagobi:message key = "SBIDev.scriptWiz.ListValExplanation" />
-	</span>
-	<br/>
-	<script type="text/javascript">
-		function showSintax(){
-		var display = document.getElementById("sintax").style.display;
-		if (display == "none") {
-			document.getElementById("sintax").style.display = "inline";
-			document.getElementById("showSintax").innerHTML = "<spagobi:message key = 'SBIDev.scriptWiz.hideSintax'/>";
-		}
-		else {
-			document.getElementById("sintax").style.display = "none";
-			document.getElementById("showSintax").innerHTML = "<spagobi:message key = 'SBIDev.scriptWiz.showSintax'/>";
-		}
-	}
-	</script>
 
-	<a id="showSintax" href="javascript:void(0)" onclick="showSintax()" class='portlet-form-field-label'>
-		<spagobi:message key = "SBIDev.scriptWiz.showSintax"/>
-	</a>
-	
 
-	<br/>
-	
-	<div id="sintax" style="display:none;" >
-		<br/>
-		<table width="50%">
-		    <tr height='25'>
-		      	<td>
-		      		<div class='portlet-section-subheader' style='text-align:center;vertical-align:bottom;' width="100%">
-		      			<spagobi:message key = "SBIDev.scriptWiz.SintaxLbl" />
-		      		</div>
-		      		<div class='portlet-section-alternate' width="100%">
-		      			<spagobi:message key = "SBIDev.scriptWiz.FixValLbl" />
-		      			=
-		      			<spagobi:message key = "SBIDev.scriptWiz.FixValExpr" />
-		      			<br/>
-		      			<spagobi:message key = "SBIDev.scriptWiz.ProfileValLbl" />
-		      			=
-		      			<spagobi:message key = "SBIDev.scriptWiz.ProfileValExpr" />
-		      			<br/>
-		      			<spagobi:message key = "SBIDev.scriptWiz.ScriptlLbl" />
-		      			=
-		      			<spagobi:message key = "SBIDev.scriptWiz.ScriptExpr" />
-		      			<br/>
-		      		</div>
-		      	</td>
-		    </tr>
-		    <tr height='25'>
-		      	<td>
-		      		<div class='portlet-section-subheader' style='text-align:center;vertical-align:bottom;' width="100%">
-		      			<spagobi:message key = "SBIDev.scriptWiz.ProfileAttrsLbl" />
-		      		</div>
-		      		<div class='portlet-section-alternate' width="100%">
-		      			<%
-		      			    Set nameAttrs = profileattrs.keySet();
-		      			    Iterator iterAttrs = nameAttrs.iterator();
-		      				String attribute = null;
-		      				while(iterAttrs.hasNext()) {
-		      					String attributename = (String)iterAttrs.next();
-		      					out.write(attributename);
-		      					out.write(" / ");
-		      				}
-		      			%>
-		      		</div>
-		      	</td>
-		    </tr>
-		    <tr height='25'>
-		      	<td>
-		      		<div class='portlet-section-subheader' style='text-align:center;vertical-align:bottom;' width="100%">
-		      			<spagobi:message key = "SBIDev.scriptWiz.xmlstruct" />
-		      		</div>
-		      		<div class='portlet-section-alternate' width="100%">
-		      				&lt;rows&gt; <br/>
-		      				<span>&nbsp;&nbsp;&nbsp;</span>&lt;row <spagobi:message key =
-							"SBIDev.scriptWiz.xmlstructNameAttribute" />1="<spagobi:message key =
-							"SBIDev.scriptWiz.xmlstructValueAttribute" />1" <spagobi:message key =
-							"SBIDev.scriptWiz.xmlstructNameAttribute" />2="<spagobi:message key =
-							"SBIDev.scriptWiz.xmlstructValueAttribute" />2" ... /&gt;  <br/>
-						<span>&nbsp;&nbsp;&nbsp;</span>.... <br/>
-						<span>&nbsp;&nbsp;&nbsp;</span>&lt;visible-columns&gt;<spagobi:message key =
-							"SBIDev.scriptWiz.xmlstructVisibleColumns" />&lt;/visible-columns&gt; <br/>
-						<span>&nbsp;&nbsp;&nbsp;</span>&lt;value-column&gt;<spagobi:message key =
-							"SBIDev.scriptWiz.xmlstructValueColumn" />&lt;/value-column&gt; <br/>
-		      				&lt;/rows&gt; <br/>
-		      		</div>
-		      	</td>
-		    </tr>
-		</table>
-	</div>
 </div>
 
 

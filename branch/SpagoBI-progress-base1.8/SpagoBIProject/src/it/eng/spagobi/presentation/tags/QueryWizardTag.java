@@ -442,7 +442,7 @@ public class QueryWizardTag extends TagSupport {
 	    
 	    output.append("<script>\n");
 	    output.append("document.getElementById('queryWizardWithJavascript').style.display='inline';\n");
-	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='inline';\n");
+	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='none';\n");
 	    output.append("displayQueryFields();\n");
 	    output.append("</script>\n");
 	    

@@ -263,10 +263,10 @@ public class ListTag extends TagSupport
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
 			if (align == null || align.trim().equals("")) align = "left";
-			_htmlStream.append("<TD class='portlet-section-header' valign='center' align='" + align + "'  >" + labelColumn + "</TD>\n");
+			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" + labelColumn + "</TD>\n");
 		} 
 		for(int i=0; i<numCaps; i++) {
-			_htmlStream.append("<TD class='portlet-section-header' align='center'>&nbsp;</TD>\n");
+			_htmlStream.append("<TD class='portlet-section-header' style='text-align:center'>&nbsp;</TD>\n");
 		} 
 		_htmlStream.append("</TR>\n");
 	} 
@@ -320,7 +320,7 @@ public class ListTag extends TagSupport
 				// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 				String align = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("horizontal-align");
 				if (align == null || align.trim().equals("")) align = "left";
-				_htmlStream.append(" <td class='" + rowClass + "' align='" + align + "' valign='top' >" + field + "</td>\n");
+				_htmlStream.append(" <td class='" + rowClass + "' style='vertical-align:middle;text-align:" + align + ";' >" + field + "</td>\n");
 			} 
 			
 			

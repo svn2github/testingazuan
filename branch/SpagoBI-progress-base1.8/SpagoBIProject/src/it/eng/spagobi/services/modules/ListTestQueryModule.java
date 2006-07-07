@@ -75,17 +75,30 @@ public class ListTestQueryModule extends AbstractBasicListModule {
 		String visibleColumns = ((SourceBean) queryXML
 				.getAttribute("VISIBLE-COLUMNS")).getCharacters();
 		StringTokenizer strToken = new StringTokenizer(visibleColumns, ",");
-		Vector columns = new Vector();
+		Vector visColumns = new Vector();
 		while (strToken.hasMoreTokens()) {
 			String val = strToken.nextToken().trim();
-			columns.add(val);
+			visColumns.add(val);
+		}
+		String invisibleColumns = ((SourceBean) queryXML
+				.getAttribute("INVISIBLE-COLUMNS")).getCharacters();
+		Vector invisColumns = new Vector();
+		if (invisibleColumns != null && !invisibleColumns.trim().equals("")) {
+			strToken = new StringTokenizer(invisibleColumns, ",");
+			while (strToken.hasMoreTokens()) {
+				String val = strToken.nextToken().trim();
+				invisColumns.add(val);
+			}
 		}
 		String moduleConfigStr = "";
 		moduleConfigStr += "<CONFIG>";
 		moduleConfigStr += "	<QUERIES/>";
 		moduleConfigStr += "	<COLUMNS>";
-		for (int i = 0; i < columns.size(); i++) {
-			moduleConfigStr += "	<COLUMN name=\"" + columns.get(i).toString() + "\" />";
+		for (int i = 0; i < visColumns.size(); i++) {
+			moduleConfigStr += "	<COLUMN name=\"" + visColumns.get(i).toString() + "\" />";
+		}
+		for (int i = 0; i < invisColumns.size(); i++) {
+			moduleConfigStr += "	<COLUMN name=\"" + invisColumns.get(i).toString() + "\" hidden=\"true\"/>";
 		}
 		moduleConfigStr += "	</COLUMNS>";
 		moduleConfigStr += "	<CAPTIONS/>";

@@ -41,6 +41,7 @@ public class QueryDetail  implements Serializable  {
 	private String visibleColumns = "";
 	private String valueColumns = "";
 	private String queryDefinition = "";
+	private String invisibleColumns = "";
 	/**
 	 * @return Returns the connectionName.
 	 */
@@ -91,6 +92,19 @@ public class QueryDetail  implements Serializable  {
 	}
 	
 	/**
+	 * @return Returns the invisibleColumns.
+	 */
+	public String getInvisibleColumns() {
+		return invisibleColumns;
+	}
+	/**
+	 * @param invisibleColumns The invisibleColumns to set.
+	 */
+	public void setInvisibleColumns(String invisibleColumns) {
+		this.invisibleColumns = invisibleColumns;
+	}
+	
+	/**
 	 * Loads the XML string defined by a <code>QueryDetail</code> object. The object
 	 * gives us all XML field values. Once obtained, the XML represents the data 
 	 * definition for a query Input Type Value LOV object. 
@@ -104,6 +118,7 @@ public class QueryDetail  implements Serializable  {
 				     "</STMT>" +
 				     "<VALUE-COLUMN>"+this.getValueColumns()+"</VALUE-COLUMN>" +
 				     "<VISIBLE-COLUMNS>"+this.getVisibleColumns()+"</VISIBLE-COLUMNS>" +
+				     "<INVISIBLE-COLUMNS>"+this.getInvisibleColumns()+"</INVISIBLE-COLUMNS>" +
 				     "</QUERY>";
 		return XML;
 	}
@@ -129,11 +144,16 @@ public class QueryDetail  implements Serializable  {
 		String valueColumns = valCol.getCharacters();
 		SourceBean visCol = (SourceBean)source.getAttribute("VISIBLE-COLUMNS");
 		String visibleColumns = visCol.getCharacters();
+		SourceBean invisCol = (SourceBean)source.getAttribute("INVISIBLE-COLUMNS");
+		String invisibleColumns = "";
+		// compatibility control (versions till 1.9RC does not have invisible columns definition)
+		if (invisCol != null) invisibleColumns = invisCol.getCharacters();
 		QueryDetail query = new QueryDetail();
 		query.setConnectionName(connectionName);
 		query.setQueryDefinition(queryDefinition);
 		query.setValueColumns(valueColumns);
 		query.setVisibleColumns(visibleColumns);
+		query.setInvisibleColumns(invisibleColumns);
 		return query;
 	}
 	

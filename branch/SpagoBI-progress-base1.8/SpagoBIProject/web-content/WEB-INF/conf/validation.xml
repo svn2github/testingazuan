@@ -357,6 +357,9 @@
 				<FIELD name="visColumns" label="#SBIDev.queryWiz.visColumnsField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
+				</FIELD>
+				<FIELD name="invisColumns" label="#SBIDev.queryWiz.invisColumnsField">
+					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>	
 				<FIELD name="valueColumns" label="#SBIDev.queryWiz.valueColumnsField">
 					<VALIDATOR validatorName="MANDATORY"/>

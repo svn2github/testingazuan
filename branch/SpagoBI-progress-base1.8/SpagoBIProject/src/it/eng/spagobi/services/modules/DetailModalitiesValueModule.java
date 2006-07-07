@@ -696,10 +696,13 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		String visColumns = (String)request.getAttribute("visColumns");
 		String valueColumns = (String)request.getAttribute("valueColumns");
 		String queryDefinition = (String)request.getAttribute("queryDef");
+		String invisColumns = (String)request.getAttribute("invisColumns");
+		if (invisColumns == null) invisColumns = "";
 		query.setConnectionName(connName);
 		query.setVisibleColumns(visColumns);
 		query.setValueColumns(valueColumns);
 		query.setQueryDefinition(queryDefinition);
+		query.setInvisibleColumns(invisColumns);
 		return query;
 	}
 	

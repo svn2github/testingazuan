@@ -20,6 +20,7 @@
    String className = null;
 	String query = null;
 	int currentPage = -1;
+	Integer pagesNumber = null;
 	boolean hasPreviousPage = false;
 	boolean hasNextPage = false;
    SourceBean listResponse = null;
@@ -31,6 +32,7 @@
 	   className = (String) listResponse.getAttribute("className");
 	   query =(String) listResponse.getAttribute("query");
 	   currentPage = ((Integer)listResponse.getAttribute("currentPage")).intValue();
+	   pagesNumber = (Integer)listResponse.getAttribute("pagesNumber");
 	   hasPreviousPage = ((Boolean)listResponse.getAttribute("hasPreviousPage")).booleanValue();
 	   hasNextPage = ((Boolean)listResponse.getAttribute("hasNextPage")).booleanValue();
    }
@@ -211,6 +213,10 @@
 				<a href="<%=urlPrev%>"> << </a>
 			<% } %> 
 			<%=qbeMsg.getMessage(requestContainer, "QBE.QueryResult.CurrentPage", bundle) %> <%=currentPage+1 %>
+			<% if (pagesNumber != null){%>
+				/<%=pagesNumber.intValue()%> 
+			<% } %>
+			
 			<% if (hasNextPage){
 				sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");

@@ -621,7 +621,7 @@ function isBIParameterFormChanged () {
 	var parurl_nm = document.getElementById('parurl_nm').value;
 			
 	if ((objParLabel != '<%=initialBIObjectParameter.getLabel()%>')
-		|| (par_Id != '<%=initialBIObjectParameter.getParID() == null ? "" : initialBIObjectParameter.getParID().toString()%>')
+		|| (par_Id != '<%=(initialBIObjectParameter.getParID() == null || initialBIObjectParameter.getParID().intValue() == -1) ? "" : initialBIObjectParameter.getParID().toString()%>')
 		|| (parurl_nm != '<%=initialBIObjectParameter.getParameterUrlName()%>') )
 	{
 		biobjParFormModified = 'true';

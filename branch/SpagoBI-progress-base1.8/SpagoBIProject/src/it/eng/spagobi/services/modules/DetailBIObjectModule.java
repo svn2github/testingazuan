@@ -108,7 +108,6 @@ public class DetailBIObjectModule extends AbstractModule {
 	 * 
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-	
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 		if (portletRequest instanceof ActionRequest) {
 			ActionRequest actionRequest = (ActionRequest) portletRequest;
@@ -131,6 +130,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 		// get attribute from session
 		String moduleName = (String)session.getAttribute("RETURN_FROM_MODULE");
+		System.out.println("RETURN_FROM_MODULE: " + moduleName);
 		if(moduleName != null) { // TODO clear session with a proper method of returning module
 			if(moduleName.equalsIgnoreCase("ListLookupParametersModule")) {
 				String returnState = (String)session.getAttribute("RETURN_STATUS");
@@ -152,9 +152,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				lookupReturnBackHandler(request,response);
 				session.delAttribute("RETURN_FROM_MODULE");
 				return;
-			}
-			
-			
+			}			
 		}
 		
 		// these attributes, if defined, represent events triggered by one 

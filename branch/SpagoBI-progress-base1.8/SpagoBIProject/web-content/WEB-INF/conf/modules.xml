@@ -10,8 +10,6 @@
       		</KEYS>
       		
       		<QUERIES>
-	        	<SELECT_QUERY statement="SELECT_OBJECT_LIST"/>
-	        	
 	        	<CHECKED_QUERY statement="SELECT_CHECKED_OBJECT_LIST">
 	        		<PARAMETER number="0" name="SUBJECT_ID"/>
 	        	</CHECKED_QUERY>

@@ -367,7 +367,10 @@ function showEngField(docType) {
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					<input class='portlet-form-input-field' type="submit" name="loadLinksLookup" value="Edit">
+					<input type="hidden" name="" value="" id="loadLinksLookup">
+					<a href="javascript:void(0);" onclick="checkDocumentType()" >
+					Edit
+					</a>
 				</div>
 	    <% } %>
             </div> 
@@ -725,7 +728,16 @@ function saveBIParameterConfirm (message) {
 	document.getElementById('save').click();
 }
 
-
+function checkDocumentType() {
+	var type = document.getElementById('type').value;
+	if (type.match('REPORT') != null || type.match('DATA_MINING') != null) {
+		document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
+		document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
+		document.getElementById('objectForm').submit();
+	} else {
+		alert('<spagobi:message key = "SBIDev.docConf.docDet.noPermissibleLinks" />');
+	}
+}
 </script>
 
 

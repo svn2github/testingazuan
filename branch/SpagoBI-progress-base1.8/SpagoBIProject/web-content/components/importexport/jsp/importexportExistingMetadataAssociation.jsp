@@ -41,8 +41,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%!
 
 		private String cutLabel(String label) {
-				if(label.length() > 45) {
-					label = label.substring(0, 45);
+				if(label.length() > 38) {
+					label = label.substring(0, 38);
 					label += " ...";
 				}
 				return label;

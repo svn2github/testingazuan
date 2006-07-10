@@ -81,10 +81,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </table>
 
 
-
-
-
-
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='connAssForm' name='connAssForm'>
@@ -111,7 +107,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    		connName = conn.getName();	
 		    %>
 			<tr>
-				<td>
+				<td class="portlet-font">
 					<span class='portlet-form-field-label'><%=conn.getName() + "  (Jdbc)"%> </span>
 					<br/>
 					<%=conn.getDescription()%><br/>
@@ -123,7 +119,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				connName = conn.getName();	
 		   %>
 		   <tr>
-				<td>
+				<td class="portlet-font">
 					<span class='portlet-form-field-label'><%=conn.getName() + "  (Jndi)"%></span>
 					<br/>
 					<%=conn.getDescription()%><br/>
@@ -174,6 +170,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<spagobi:error/>
 
 
 

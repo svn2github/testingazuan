@@ -31,6 +31,7 @@ import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.error.EMFValidationError;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IEngineDAO;
 import it.eng.spagobi.bo.dao.IRoleDAO;
@@ -397,7 +398,13 @@ public class ImportExportModule extends AbstractModule {
 					SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "associateConnections",
 	                        			"Exported connection " +expConnName+" is not associate to a current " +
 	                        			"system connection");
-					throw new EMFUserError(EMFErrorSeverity.ERROR, 8002, "component_impexp_messages");
+					List exportedConnection = impManager.getExportedConnections();
+					Map currentConnections = getCurrentConnectionInfo();
+					response.setAttribute(ImportExportConstants.LIST_EXPORTED_CONNECTIONS, exportedConnection);
+					response.setAttribute(ImportExportConstants.MAP_CURRENT_CONNECTIONS, currentConnections);
+					response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportConnectionAssociation");
+					EMFUserError emfue =  new EMFUserError(EMFErrorSeverity.ERROR, 8002, "component_impexp_messages");
+					throw new EMFValidationError(emfue);
 				}
 			}
 			impManager.checkExistingMetadata();
@@ -414,6 +421,8 @@ public class ImportExportModule extends AbstractModule {
 					throw new EMFUserError(EMFErrorSeverity.ERROR, 8004);
 				}
 			}
+		} catch (EMFValidationError emfve) {
+			throw emfve; 
 		} catch (EMFUserError emfue) {
 			if(impManager!=null)
 				impManager.stopImport();

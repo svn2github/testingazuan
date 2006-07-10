@@ -84,7 +84,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='engineAssForm' name='engineAssForm'>
-	<div style="float:left;width:65%;" class="div_detail_area_forms">
+		<div style="float:left;width:60%;" class="div_detail_area_forms">
+
 		<table style="margin:10px;" >
 			<tr>
 				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedEngines"  bundle="component_impexp_messages"/></td>
@@ -103,27 +104,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    	Engine engine = (Engine)iterExpEngines.next();
 		    %>
 			<tr>
-				<td >
+				<td class="portlet-font">
 					<span class='portlet-form-field-label'><%=engine.getName()%></span>
 					<br/>
 					<%
 						String url = engine.getUrl();
-					    if( (url!=null) && (url.length() > 60)) {
-					    	url = url.substring(0, 60);
+					    if( (url!=null) && (url.length() > 50)) {
+					    	url = url.substring(0, 50);
 					        url += "...";
 					    }
 					    String driverName = engine.getDriverName();
-					    if( (driverName!=null) && (driverName.length() > 60) ) {
-					    	driverName = driverName.substring(0, 60);
+					    if( (driverName!=null) && (driverName.length() > 50) ) {
+					    	driverName = driverName.substring(0, 50);
 					        driverName += "...";   
 					    }
 					    String description = engine.getDescription();
-					    if( (description!=null) && (description.length() > 60) ) {
-					    	description = description.substring(0, 60);
+					    if( (description!=null) && (description.length() > 50) ) {
+					    	description = description.substring(0, 50);
 					        description += "...";  
 					    }
 					%>
-					
 					<span title="<%=engine.getDescription()%>" alt="<%=engine.getDescription()%>"><%=description%></span><br/>
 					<span title="<%=engine.getUrl()%>" alt="<%=engine.getUrl()%>"><%=url%></span><br/>
 					<span title="<%=engine.getDriverName()%>" alt="<%=engine.getDriverName()%>"><%=driverName%></span><br/>
@@ -166,14 +166,3 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	
 </div>
-
-
-
-
-
-
-
-
-
-
-

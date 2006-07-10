@@ -98,11 +98,7 @@
 	</tr>
 </table>
 
-<%--table width='100%' cellspacing='0' border='0'>		
-	<tr height='40'>
-		<th align='center'><%=title%></th>
-	</tr>
-</table--%>
+
 <% 
 	// IF SINGLE OBJECT MODALITY SHOW THE PROPER TITLE BAR
 	} else {
@@ -123,20 +119,7 @@
 		</td>
 </table>
 	
-<%--table width='100%' cellspacing='0' border='0'>	
-	<tr>
-		<td align="left" class="portlet-section-header">
-			&nbsp;&nbsp;<%=title%>
-		</td>
-		<td class="portlet-section-header" width="40px" align="center" valign="middle">
-				<input type='image' width="20px" height="20px" 
-				  	   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.png")%>' 
-				  	   name='exec' 
-				  	   alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-				       title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
-		</td>
-	</tr>
-</table--%>	
+
 <% } %>
 
 <div class='div_background_no_img' >
@@ -151,42 +134,6 @@
 	<spagobi:error/>
 </div>	
  
-		
-<!--  ************************* BUTTONS ********************************** -->		
-<%-- if ( (!isSingleObjExec) && !noPars ) { %>
-<br/>
-<table width="100%">
-	<tr>
-		<td width='30px'>&nbsp;</td>
-		<td width='80px'>	
-			<input type='image' 
-				   src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.png")%>' 
-				   alt='exec' />
-		</td>
-		<td width='30px'>&nbsp;</td>
-		<td width='80px'>
-			<a href='<%=backUrl.toString()%>' class='portlet-menu-item'>
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' />
-			</a>
-		<td>
-	</tr>
-	<tr>
-		<td width='30px'>&nbsp;</td>
-		<td width='80px'>
-			<a href="javascript:document.getElementById('paramsValueForm').submit()">
-				<%= PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages") %>
-			</a>				
-		</td>
-		<td width='30px'>&nbsp;</td>
-		<td width='80px'>
-			<a href='<%=backUrl.toString()%>'>
-				<%= PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.backButt", "messages") %>
-			</a>	
-		</td>
-	</tr>
-</table>
-<br/>
-<% } --%>
 
 
 
@@ -206,38 +153,46 @@
 	   		execNewCompUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 	   		execNewCompUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    %>
-   <%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages")%>&nbsp;
-   <a href='<%=execUrl.toString()%>'><%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages")%></a>
-   .
-   <%-- &nbsp;<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition3", "messages") %> --%>
+   <span class='portlet-font'>
+			<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages")%>
+	 </span>
+   <a href='<%=execUrl.toString()%>'
+			class='portlet-form-field-label'
+			onmouseover="this.style.color='#9297ac';"
+			onmouseout="this.style.color='#074B88';">
+			<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages")%>
+	 </a>
+
    <br/><br/> 
    <% } %>
 
-	<table style='width:100%;' class='UIProducerNode'>
-		<tr>
-			<td class='wsrp-admin-portlet'>
-				<div class='UIWSRPAdminPortlet'>
-					<ul class='UISimpleTabs'>
-						<li><a class='select-link'>
-							<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.title","messages")%>
-						    </a>
-					</ul>
+	
+	
+	
+	<div style='width:100%;visibility:visible;' 
+			 class='UITabs' 
+			 id='tabPanelWithJavascript' 
+			 name='tabPanelWithJavascript'>
+		<div class="first-tab-level" style="background-color:#f8f8f8">
+			<div style="overflow: hidden; width:100%">
+				<div class='tab'>
+					<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.title","messages")%>
 				</div>
-			</td>
-		</tr>
-	</table>
-   
-    <table style='width:100%;margin-top:5px;'> 
+			</div>
+		</div>
+	</div>
+				
+    <table style='width:100%;'> 
 	     <tr>
-	       <td align="left" class="portlet-section-header">
+	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
 	           <spagobi:message key='SBIDev.docConf.subBIObject.name' />
 	       </td>
 	       <td align="left" class="portlet-section-header">&nbsp;</td>
-	       <td align="left" class="portlet-section-header">
+	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
 	           <spagobi:message key='SBIDev.docConf.subBIObject.description' />
 	       </td>
 	       <td align="left" class="portlet-section-header">&nbsp;</td>
-	       <td align="left" class="portlet-section-header">
+	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
 	           <spagobi:message key='SBIDev.docConf.subBIObject.visibility' />
 	       </td>
 	       <td align="left" class="portlet-section-header" colspan='3' >&nbsp;</td>
@@ -290,25 +245,24 @@
     	                
                    %>
                         <tr class='portlet-font'>
-                            	<!--td width="40px">&nbsp;</td--> 
-                        	<td class='<%= rowClass %>'>
+                        	<td style='vertical-align:middle;' class='<%= rowClass %>'>
                         		<%= nameSub %>
                         	</td>
                         	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-                        	<td class='<%= rowClass %>' ><%=descr %></td>
+                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descr %></td>
                         	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-                        	<td class='<%= rowClass %>' ><%=visib %></td>
+                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=visib %></td>
                         	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-                        	<td class='<%= rowClass %>' width="40px">
+                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                         		<a href="<%=execSubObjUrl.toString()%>">
                         			<img width="20px" height="20px" 
-				  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.png")%>' 
+				  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.gif")%>' 
 				  	                name='execSub' 
 				  	                alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
 				                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
                         		</a>
                         	</td>
-                        	<td class='<%= rowClass %>' width="40px">
+                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                         		<% String eraseMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSubObject", "messages"); %>
                         		<a href="javascript:var conf = confirm('<%=eraseMsg%>'); if(conf) {document.location='<%=deleteSubObjUrl.toString()%>';}">
                         			<img width="20px" height="20px" 
@@ -326,19 +280,6 @@
 
 </div>
 
-<!-- if there aren't parameters show the back button -->
-<%-- if( !isSingleObjExec && noPars  ) {  
-	    PortletURL backUrlSingle = renderResponse.createActionURL();
-		backUrlSingle.setParameter("PAGE", "TreeObjectsPage");
-		backUrlSingle.setParameter(SpagoBIConstants.ACTOR, actor);
- %>
-	<center>
-	    <a href='<%=backUrlSingle.toString()%>' class='portlet-menu-item'>
-            <img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' />
-        </a>
-        <br/>
-        <a href='<%=backUrlSingle.toString()%>'>Back</a>
-	</center>
-<% } --%>
+
 
  		   

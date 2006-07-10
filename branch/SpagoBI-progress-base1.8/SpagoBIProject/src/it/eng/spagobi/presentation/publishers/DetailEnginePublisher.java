@@ -57,7 +57,7 @@ public class DetailEnginePublisher implements PublisherDispatcherIFace {
 	 * 		   call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
-
+	
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
 		// get the module response
@@ -94,14 +94,14 @@ public class DetailEnginePublisher implements PublisherDispatcherIFace {
 		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			return new String("error");
 		}
-
-        Object loop = moduleResponse.getAttribute("loopback");
-        if (loop != null) {
-        	return "detailEngineLoop";
+	
+	    Object loop = moduleResponse.getAttribute("loopback");
+	    if (loop != null) {
+	    	return "detailEngineLoop";
 		} else {
 			return "detailEngine";
 		}
-
+	
 	}
 
 }

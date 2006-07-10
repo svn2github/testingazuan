@@ -112,6 +112,7 @@ public class JasperReportDriver implements IEngineDriver {
 			for(int i = 0; i < subreportList.size(); i++) {
 				Subreport subreport = (Subreport)subreportList.get(i);
 				BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
+								
 				
 				String path = subrptbiobj.getPath();
 				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " PATH: " + path);
@@ -126,58 +127,7 @@ public class JasperReportDriver implements IEngineDriver {
 					  "addBISubreports",
 					  "Error while reading subreports",
 					  e);
-		}
-		
-		
-		/*
-		DataConnection dataConnection = null;
-		SQLCommand sqlCommand = null;
-		DataResult dataResult = null;
-		SourceBean subreports = null;
-		try {
-			DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
-			dataConnection = dataConnectionManager.getConnection("spagobi");
-			String statement = null;
-						
-			statement = SQLStatements.getStatement("SELECT_SUBREPORTS_LIST");
-			statement = statement.replaceFirst("\\?", masterReportId.toString());
-			SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " statement: " + statement);
-			sqlCommand = dataConnection.createSelectCommand(statement);
-			dataResult = sqlCommand.execute();
-			ScrollableDataResult scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
-			subreports = scrollableDataResult.getSourceBean();
-			SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " results: " + subreports.toXML());
-		
-		
-			List subreportsList = subreports.getAttributeAsList("ROW");			
-			for(int i = 0; i < subreportsList.size(); i++) {
-				SourceBean subreport = (SourceBean)subreportsList.get(i);
-				Integer id = (Integer)subreport.getAttribute("SUBREPORT_ID");	
-				
-				statement = SQLStatements.getStatement("SELECT_SUBREPORT_PATH");
-				statement = statement.replaceFirst("\\?", id.toString());
-				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " statement: " + statement);
-				sqlCommand = dataConnection.createSelectCommand(statement);
-				dataResult = sqlCommand.execute();
-				scrollableDataResult = (ScrollableDataResult)dataResult.getDataObject();
-				subreport = (SourceBean)scrollableDataResult.getSourceBean().getAttribute("ROW");
-				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " results: " + subreport.toXML());
-				
-				String path = (String)subreport.getAttribute("PATH");
-				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " PATH: " + path);
-				
-				pars.put("subrpt." + (i+1) + ".path", path);
-			}
-			
-			pars.put("srptnum", "" + subreportsList.size());
-		} catch (Exception ex) {
-			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "execQuery::executeQuery:", ex);
-		} finally {
-			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
-		} 		
-		*/
-		
-		
+		}		
 		
 		return pars;
 	}

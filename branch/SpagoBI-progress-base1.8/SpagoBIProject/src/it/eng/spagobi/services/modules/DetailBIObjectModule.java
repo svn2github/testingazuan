@@ -143,9 +143,10 @@ public class DetailBIObjectModule extends AbstractModule {
 				return; // force refresh
 				// TODO force refresh in a standard way with a generic methods
 			}
-			else if(moduleName.equalsIgnoreCase("AbstractBasicCheckListModule")) {
+			else if(moduleName.equalsIgnoreCase("CheckLinksModule")) {
 				SessionMonitor.printSession(session);
 				AbstractBasicCheckListModule.clearSession(session, moduleName);
+				session.delAttribute(SpagoBIConstants.ACTOR);
 				SessionMonitor.printSession(session);
 			} else if (moduleName.equalsIgnoreCase("ListObjParuseModule")) {
 				lookupReturnBackHandler(request,response);
@@ -242,6 +243,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		//setLoopbackContext(request, message);		
 		BIObject obj = recoverBIObjectDetails(request, message);
 		session.setAttribute("SUBJECT_ID", obj.getId().toString());
+		session.setAttribute(SpagoBIConstants.ACTOR, actor);
 		response.setAttribute("linksLookup", "true");		
 	}	
 

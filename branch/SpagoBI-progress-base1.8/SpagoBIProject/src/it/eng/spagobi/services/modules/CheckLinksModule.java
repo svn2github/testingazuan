@@ -21,14 +21,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.paginator.basic.ListIFace;
+import it.eng.spago.paginator.basic.PaginatorIFace;
+import it.eng.spago.paginator.basic.impl.GenericList;
+import it.eng.spago.paginator.basic.impl.GenericPaginator;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.AbstractHibernateConnectionCheckListModule;
+import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,9 +48,8 @@ import java.util.List;
  *
  */
 public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule {
-	public CheckLinksModule() {
-		super();
-	}
+	
+	IEngUserProfile profile = null;
 	
 	public void save() throws Exception {
 		super.save();
@@ -63,4 +74,86 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","saveSubreportsConfiguration","Cannot erase/insert subreports from/into db", e);
 		}
 	}
+	
+	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+		
+		RequestContainer requestContainer = this.getRequestContainer();	
+		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		String actor = (String) sessionContainer.getAttribute(SpagoBIConstants.ACTOR);
+        String initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
+        String objIdStr = (String) sessionContainer.getAttribute("SUBJECT_ID");
+        Integer objId = null;
+        if (objIdStr != null) objId = new Integer (objIdStr);
+		
+		PaginatorIFace paginator = new GenericPaginator();		
+		IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
+		List objectsList = null;
+		if (initialPath != null && !initialPath.trim().equals("")) {
+			objectsList = objDAO.loadAllBIObjectsFromInitialPath(initialPath);
+		} else {
+			objectsList = objDAO.loadAllBIObjects();
+		}
+		
+		for (Iterator it = objectsList.iterator(); it.hasNext(); ) {
+			BIObject obj = (BIObject) it.next();
+			if (objId != null && obj.getId().equals(objId)) continue;
+			SourceBean rowSB = null;
+			if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor)) {
+				rowSB = makeAdminListRow(obj);
+			} else if (SpagoBIConstants.DEV_ACTOR.equalsIgnoreCase(actor)) {
+				rowSB = makeDevListRow(obj);
+			}
+			if (rowSB != null) paginator.addRow(rowSB);
+		}
+		ListIFace list = new GenericList();
+		list.setPaginator(paginator);
+		return list;
+	}
+	
+	private SourceBean makeDevListRow(BIObject obj) throws Exception {
+		String rowSBStr = "<ROW ";
+		rowSBStr += "		OBJ_ID=\"" + obj.getId() + "\"";
+		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
+		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
+		rowSBStr += "		DESCRIPTION=\"" + obj.getDescription() + "\"";
+		
+		int visibleInstances = 0;
+		List functionalities = obj.getFunctionalities();
+		for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext(); ) {
+			Integer funcId = (Integer) funcIt.next();
+			if (ObjectsAccessVerifier.canDev(obj.getStateCode(), funcId, profile)
+					|| ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
+				visibleInstances++;
+			}
+		}
+		
+		if (visibleInstances == 0) {
+			// the document does not belong to any folder where the profile has the rigth permissions
+			// (i.e.: the document is in REL state but belongs to folders where the profile cannot execute it
+			// OR the document is in DEV state but belongs to folders where the profile cannot develope it)
+			return null;
+		}
+		
+		// at this point the document is in DEV or REL state and there is one or more visible instances
+		rowSBStr += " 		/>";
+		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
+		return rowSB;
+	}
+	
+	private SourceBean makeAdminListRow(BIObject obj) throws Exception {
+		
+		if (!obj.getStateCode().equalsIgnoreCase("DEV") && !obj.getStateCode().equalsIgnoreCase("REL"))
+			return null;
+		String rowSBStr = "<ROW ";
+		rowSBStr += "		OBJ_ID=\"" + obj.getId() + "\"";
+		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
+		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
+		rowSBStr += "		DESCRIPTION=\"" + obj.getDescription() + "\"";
+		rowSBStr += " 		/>";
+		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
+		return rowSB;
+	}
+	
 }

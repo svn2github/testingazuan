@@ -217,7 +217,7 @@ public class CheckBoxTag extends TagSupport {
 		params.put("MESSAGE", "HANDLE_CHECKLIST"); 
 		params.put("LIGHT_NAVIGATOR_DISABLED", "true"); 
 		params.put("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
-		params.put("PAGE_NUMBER", pageNumberString);
+		params.put("PAGE_NUMBER", new Integer(pageNumber).toString());
 		PortletURL url = createUrl(params);		
 		
 		_htmlStream.append(" <form method='POST' action='" + url.toString() + "'>\n");
@@ -305,6 +305,7 @@ public class CheckBoxTag extends TagSupport {
 		for(int i=0; i<numCaps; i++) {
 			_htmlStream.append("<TD class='portlet-section-header' align='center'>&nbsp;</TD>\n");
 		} 
+		_htmlStream.append("	<TD class='portlet-section-header' align='center'>&nbsp;</TD>\n");
 		_htmlStream.append("</TR>\n");
 	} 
 	

@@ -360,7 +360,7 @@ function showEngField(docType) {
              
             
             <!-- DISPLAY FORM FOR LINKS MANAGMENT -->
-				
+	    <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){%>
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />
@@ -368,7 +368,8 @@ function showEngField(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="submit" name="loadLinksLookup" value="Edit">
-				</div>					 
+				</div>
+	    <% } %>
             </div> 
 
 

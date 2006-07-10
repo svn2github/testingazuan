@@ -121,7 +121,7 @@
   		    formUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
   		   	formUrl.setParameter(SpagoBIConstants.ACTOR,actor );
 		   	formUrl.setParameter(SpagoBIConstants.MESSAGEDET, 
-				                ExecuteBIObjectModule.EXEC_CHANGE_STATE);
+		   			ObjectsTreeConstants.EXEC_CHANGE_STATE);
 			formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     		  
     		  %>

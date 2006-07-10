@@ -65,7 +65,7 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		
 		// clear all input parameters
 		ConfigSingleton spagoBiConfig = ConfigSingleton.getInstance();
-		//		 TODO patch this
+		// TODO patch this
 		System.out.println("-> " + moduleName);
 		SourceBean moduleConfig = (SourceBean)spagoBiConfig.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME", moduleName);
 		List parametersList = null;

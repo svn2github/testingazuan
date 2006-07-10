@@ -44,6 +44,11 @@ public class ObjectsTreeConstants {
 	public static final String MESSAGE_DETAIL = "MESSAGEDET";
 
 	public static final String EXEC_PHASE_CREATE_PAGE = "EXEC_PHASE_CREATE_PAGE";
+	public static final String EXEC_PHASE_SELECTED_ROLE = "EXEC_PHASE_SELECTED_ROLE";
+	public static final String EXEC_PHASE_RUN_SUBOJECT = "EXEC_SUBOBJECT";
+	public static final String EXEC_PHASE_DELETE_SUBOJECT = "DELETE_SUBOBJECT";
+	public static final String EXEC_PHASE_RETURN_FROM_LOOKUP = "EXEC_PHASE_RETURN_FROM_LOOKUP";
+	public static final String EXEC_CHANGE_STATE = "EXEC_CHANGE_STATE";
 	public static final String EXEC_PHASE_RUN = "EXEC_PHASE_RUN";
 	
 	public static final String PATH = "PATH";

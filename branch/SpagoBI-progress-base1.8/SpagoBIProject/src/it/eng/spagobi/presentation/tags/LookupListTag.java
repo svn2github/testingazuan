@@ -32,6 +32,7 @@ import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.util.JavaScript;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
 import it.eng.spagobi.utilities.PortletUtilities;
@@ -236,7 +237,7 @@ public class LookupListTag extends TagSupport {
 			String label = PortletUtilities.getMessage("SBIListLookPage.selectButton", "messages");
 			
 			PortletURL lookupBackURL = createUrl(_paramsMap);
-			lookupBackURL.setParameter(SpagoBIConstants.MESSAGEDET, ExecuteBIObjectModule.EXEC_PHASE_RETURN_FROM_LOOKUP);
+			lookupBackURL.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RETURN_FROM_LOOKUP);
 			lookupBackURL.setParameter("LOOKUP_VALUE", (String)row.getAttribute(valueColumn));
 			
 			_htmlStream.append(" <td width='20'>\n");
@@ -428,7 +429,7 @@ public class LookupListTag extends TagSupport {
 		StringBuffer htmlStream = new StringBuffer();
 
 		PortletURL backURL = createUrl(_paramsMap);
-		backURL.setParameter(SpagoBIConstants.MESSAGEDET, ExecuteBIObjectModule.EXEC_PHASE_RETURN_FROM_LOOKUP);
+		backURL.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RETURN_FROM_LOOKUP);
 		backURL.setParameter("LOOKUP_VALUE", "");
 		
 		String labBack = PortletUtilities.getMessage("SBIListLookPage.backButton", "messages");

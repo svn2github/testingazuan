@@ -103,13 +103,13 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		HashMap selectCaptionParams = new HashMap();
 		selectCaptionParams.putAll(paramsMap);
 		selectCaptionParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-		selectCaptionParams.put(SpagoBIConstants.MESSAGEDET, ExecuteBIObjectModule.EXEC_PHASE_RETURN_FROM_LOOKUP);
+		selectCaptionParams.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RETURN_FROM_LOOKUP);
 		selectCaptionParams.put("PAGE", "ValidateExecuteBIObjectPage");
 
 		HashMap backButtonParams = new HashMap();
 		backButtonParams.putAll(paramsMap);
 		backButtonParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-		backButtonParams.put(SpagoBIConstants.MESSAGEDET, ExecuteBIObjectModule.EXEC_PHASE_RETURN_FROM_LOOKUP);
+		backButtonParams.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RETURN_FROM_LOOKUP);
 		backButtonParams.put("PAGE", "ValidateExecuteBIObjectPage");
 		backButtonParams.put("LOOKUP_VALUE", "");
 		

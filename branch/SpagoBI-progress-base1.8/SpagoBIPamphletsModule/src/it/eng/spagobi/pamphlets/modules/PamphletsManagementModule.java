@@ -158,7 +158,8 @@ public class PamphletsManagementModule extends AbstractModule {
 			IRoleDAO roleDao = DAOFactory.getRoleDAO();
 			roleList = roleDao.loadAllRoles();
 		} catch(Exception e) {
-			System.out.println(e);
+			SpagoBITracer.major(PamphletsConstants.NAME_MODULE, this.getClass().getName(),
+		                        "pamphletsDetailHandler", "Error while loading all roles", e);
 		}
 		// get the current template file name
 		String tempFileName = pampDao.getPamphletTemplateFileName(pathPamp);
@@ -208,7 +209,9 @@ public class PamphletsManagementModule extends AbstractModule {
 			IRoleDAO roleDao = DAOFactory.getRoleDAO();
 			roleList = roleDao.loadAllRoles();
 		} catch (Exception e) {
-			System.out.println(e);
+			SpagoBITracer.major(PamphletsConstants.NAME_MODULE, this.getClass().getName(),
+                                 "newConfiguredDocumentHandler", 
+                                 "Error while loading biobje parameters and roles", e);
 		}
 		Integer id = obj.getId();
 		String descr = obj.getDescription();

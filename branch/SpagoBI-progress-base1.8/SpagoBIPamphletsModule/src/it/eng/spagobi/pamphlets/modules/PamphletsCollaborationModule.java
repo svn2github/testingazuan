@@ -117,7 +117,8 @@ public class PamphletsCollaborationModule extends AbstractModule {
 			response.setAttribute(PamphletsConstants.PATH_PAMPHLET, pathPamp);
 			response.setAttribute("ActivityKey", activityKey);
 		} catch(Exception e){
-			System.out.println(e);
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		                        "saveNoteHandler","Error while saving notes", e);
 		}
 	    
 	}

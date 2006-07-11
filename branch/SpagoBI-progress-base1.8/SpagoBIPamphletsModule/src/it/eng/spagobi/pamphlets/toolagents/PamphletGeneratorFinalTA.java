@@ -238,7 +238,8 @@ public class PamphletGeneratorFinalTA {
             	 debug("execute", "Path document stored = " + "file:///" + fileoopath);
                 xStorable.storeAsURL("file:///" + fileoopath , documentProperties);
             } catch (IOException e) {
-                System.out.println(e);
+            	SpagoBITracer.major(PamphletsConstants.NAME_MODULE, PamphletGeneratorFinalTA.class.getName(),
+						            "execute", "Error while storing the final document", e);
             }
             
             FileInputStream fis = new FileInputStream(pathFinalDoc);

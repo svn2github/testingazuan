@@ -101,7 +101,18 @@ function showEngField(docType) {
 		    style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBIDev.docConf.docDet.title" />
 		</td>
+		<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){%>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<input type="hidden" name="" value="" id="loadLinksLookup">
+			<a href='javascript:checkDocumentType();'> 
+			<img style="margin-top:2px;height:21px;" name='links' id='links' class='header-button-image-portlet-section'
+				   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/links.jpg") %>'
+      		 title='<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />' 
+      		 alt='<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />' />
+			</a>
+		</td>
+		<% } %>
 		<td class='header-button-column-portlet-section'>
 			<input type='image' name='save' id='save' value='true' class='header-button-image-portlet-section'
 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png") %>'
@@ -325,8 +336,12 @@ function showEngField(docType) {
 		      	      int cript = obj.getEncrypt().intValue();
 		      	      if(cript > 0) { isCrypt = true; }
 		      	     %> 
-		      	   	<input type="radio" name="criptable" value="1" <% if(isCrypt) { out.println(" checked='checked' "); } %> >True</input>
-		      	   	<input type="radio" name="criptable" value="0" <% if(!isCrypt) { out.println(" checked='checked' "); } %> >False</input>
+		      	   	<input type="radio" name="criptable" value="1" <% if(isCrypt) { out.println(" checked='checked' "); } %> >
+										<span class="portlet-font">True</span>
+								</input>
+		      	   	<input type="radio" name="criptable" value="0" <% if(!isCrypt) { out.println(" checked='checked' "); } %> >
+										<span class="portlet-font">False</span>
+								</input>
 				</div>
 
 
@@ -343,8 +358,12 @@ function showEngField(docType) {
 		      	      int visible = (obj.getVisible()!=null)? obj.getVisible().intValue(): 1;
 		      	      if(visible > 0) { isVisible = true; }
 		      	     %> 
-				   	<input type="radio" name="visible" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %>>True</input>
-		      	   	<input type="radio" name="visible" value="0" <% if(!isVisible) { out.println(" checked='checked' "); } %>>False</input>
+				   	<input type="radio" name="visible" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %>>
+								<span class="portlet-font">True</span>
+						</input>
+		      	<input type="radio" name="visible" value="0" <% if(!isVisible) { out.println(" checked='checked' "); } %>>
+								<span class="portlet-font">False</span>
+						</input>
 				</div>
 
 			<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
@@ -358,8 +377,9 @@ function showEngField(docType) {
 		      		       name="uploadFile" id="uploadFile" onchange='fileToUploadInserted()'/>
 				</div>	
              
-            
-            <!-- DISPLAY FORM FOR LINKS MANAGMENT -->
+        
+        <%--    
+        <!-- DISPLAY FORM FOR LINKS MANAGMENT -->
 	    <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){%>
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
@@ -368,12 +388,15 @@ function showEngField(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<input type="hidden" name="" value="" id="loadLinksLookup">
-					<a href="javascript:void(0);" onclick="checkDocumentType()" >
+						<a href="javascript:checkDocumentType();" >
 					Edit
 					</a>
+					
 				</div>
 	    <% } %>
-            </div> 
+	    --%>
+	    
+        </div> 
 
 
 
@@ -387,7 +410,10 @@ function showEngField(docType) {
 	<!-- OPEN COLUMN WITH TREE FUNCTIONALITIES (INSERT MODE) OR TEMPLATE VERSION (MODIFY MODE)  -->	     
 	<td width="60%">
 	<div style='padding:5px;'>
-		<a href='javascript:void(0)' onclick='switchView()' id='switchView'>
+		<a class="portlet-form-field-label" style="text-decoration:none;" 
+		   onmouseover="this.style.color='#074BF8';"
+		   onmouseout="this.style.color='#074B88';" 
+		   href='javascript:void(0)' onclick='switchView()' id='switchView'>
 			<spagobi:message key = "SBIDev.docConf.docDet.showTemplates" />
 		</a>
 	</div>
@@ -733,7 +759,7 @@ function checkDocumentType() {
 	if (type.match('REPORT') != null || type.match('DATA_MINING') != null) {
 		document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
 		document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
-		document.getElementById('objectForm').submit();
+		document.getElementById('save').click();
 	} else {
 		alert('<spagobi:message key = "SBIDev.docConf.docDet.noPermissibleLinks" />');
 	}
@@ -846,22 +872,16 @@ function checkDocumentType() {
       			break;
       		}
       	} 
-	 %>  
+	 %> 
+    <input type='hidden' id='par_Id' 
+			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />	 
 		<input class='portlet-form-input-field' type="text" id="parameterName" size="42" 
 	    	   name="parameterName" value='<%= parameter != null ? parameter.getName() : "" %>' 
 			   	maxlength="100" readonly>
-      	<input type='hidden' id='par_Id' 
-			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />
-			
-     <%
-		/**
-		PortletURL parametersLookupURL = renderResponse.createActionURL();
-  		parametersLookupURL.setParameter("PAGE", "parametersLookupPage"); 
-  		**/
-	 %>
+
 
   		&nbsp;*&nbsp;
-		<a href="javascript:void(0);" onclick="verifyDependencies();">
+		<a style="text-decoration:none;"  href="javascript:verifyDependencies();">
 			<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
 			   title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' 
 			   alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' />
@@ -882,7 +902,7 @@ function checkDocumentType() {
     	}
     %>
 		<input class='portlet-form-input-field' type="text" size="42" 
-			   name="parurl_nm" id="parurl_nm" value="<%=urlName%>" maxlength="20">&nbsp;*
+			   name="parurl_nm" id="parurl_nm" value="<%=urlName%>" maxlength="20" />&nbsp;&nbsp;*
 	</div>
 	
 	<div class='div_detail_label'>

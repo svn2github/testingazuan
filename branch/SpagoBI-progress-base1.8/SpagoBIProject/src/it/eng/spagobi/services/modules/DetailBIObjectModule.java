@@ -979,7 +979,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				Domain domain = DAOFactory.getDomainDAO().loadDomainById(typeIdInt);
 				Vector vector = new Vector();
 				vector.add(domain.getValueName());
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1063, vector, errorParams);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1064, vector, errorParams);
 			}
 			engine = (Engine) engines.get(0);
 		} else {

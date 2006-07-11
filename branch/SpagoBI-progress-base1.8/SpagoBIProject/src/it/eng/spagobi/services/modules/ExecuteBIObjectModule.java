@@ -34,6 +34,7 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ExecutionController;
+import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
@@ -47,6 +48,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.events.EventsManager;
+import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -541,6 +543,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 			return;
 		}
 		
+		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		if (!canExecute(profile, obj)) return; 
+
+		
 		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
 			
 			try {
@@ -554,24 +560,31 @@ public class ExecuteBIObjectModule extends AbstractModule
 				Map mapPars = null;
 				String type = obj.getBiObjectTypeCode();
 				if(type.equalsIgnoreCase("OLAP")) {
-					// get the user profile
-					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 				    if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
 				    else mapPars = aEngineDriver.getParameterMap(obj, profile);
-				} else if(type.equalsIgnoreCase("REPORT") && aEngineDriver.getClass().getName().equalsIgnoreCase("it.eng.spagobi.drivers.jasperreport.JasperReportDriver")) {
-					String actor = (String)session.getAttribute(SpagoBIConstants.ACTOR);
-					String objState = obj.getStateCode();
-					if(!canExecute(obj)) 
-						 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1062)); 
-					if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
-					else mapPars = aEngineDriver.getParameterMap(obj);
 				} else {
 					if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
 					else mapPars = aEngineDriver.getParameterMap(obj);
 				}
 				
+//				if(type.equalsIgnoreCase("OLAP")) {
+//					// get the user profile
+//					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+//				    if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
+//				    else mapPars = aEngineDriver.getParameterMap(obj, profile);
+//				} else if(type.equalsIgnoreCase("REPORT") && aEngineDriver.getClass().getName().equalsIgnoreCase("it.eng.spagobi.drivers.jasperreport.JasperReportDriver")) {
+//					String actor = (String)session.getAttribute(SpagoBIConstants.ACTOR);
+//					String objState = obj.getStateCode();
+//					if(!canExecute(obj)) 
+//						 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1062)); 
+//					if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
+//					else mapPars = aEngineDriver.getParameterMap(obj);
+//				} else {
+//					if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
+//					else mapPars = aEngineDriver.getParameterMap(obj);
+//				}
+				
 				// callback event id
-				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			    String user = (String)profile.getUserUniqueIdentifier();
 				Integer id =  EventsManager.getInstance().registerEvent(user);
 			    mapPars.put("event", id.toString());
@@ -656,7 +669,30 @@ public class ExecuteBIObjectModule extends AbstractModule
 		return false;
 	}
 	
-	private boolean canExecute(BIObject biobj) {
+	private boolean isSubRptExecutableByUser(IEngUserProfile profile, BIObject subrptbiobj) {
+		String subrptbiobjStatus = subrptbiobj.getStateCode();
+		List functionalities = subrptbiobj.getFunctionalities();
+		Iterator functionalitiesIt = functionalities.iterator();
+		boolean isExecutableByUser = false;
+		while (functionalitiesIt.hasNext()) {
+			LowFunctionality functionality = (LowFunctionality) functionalitiesIt.next();
+			if (ObjectsAccessVerifier.canDev(subrptbiobjStatus, functionality.getId(), profile)) {
+				isExecutableByUser = true;
+				break;
+			}
+			if (ObjectsAccessVerifier.canTest(subrptbiobjStatus, functionality.getId(), profile)) {
+				isExecutableByUser = true;
+				break;
+			}
+			if (ObjectsAccessVerifier.canExec(subrptbiobjStatus, functionality.getId(), profile)) {
+				isExecutableByUser = true;
+				break;
+			}
+		}
+		return isExecutableByUser;
+	}
+	
+	private boolean canExecute(IEngUserProfile profile, BIObject biobj) {
 		
 		Integer masterReportId = biobj.getId();
 		String masterReportStatus = biobj.getStateCode();
@@ -671,6 +707,11 @@ public class ExecuteBIObjectModule extends AbstractModule
 				Subreport subreport = (Subreport)subreportList.get(i);
 				BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
 				if(!isSubRptStatusAdmissible(masterReportStatus, subrptbiobj.getStateCode())) {
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1062));
+					return false;							
+				}
+				if(!isSubRptExecutableByUser(profile, subrptbiobj)) {
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1063)); 
 					return false;							
 				}
 			}			

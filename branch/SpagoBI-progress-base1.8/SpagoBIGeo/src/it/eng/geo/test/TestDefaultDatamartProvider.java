@@ -39,6 +39,5 @@ public class TestDefaultDatamartProvider{
 
         DefaultDatamartProvider datamartProvider = new DefaultDatamartProvider();
         DatamartObject datamartObject = datamartProvider.getDatamartObject(confSB);
-        System.out.println(datamartObject.toString());
     }
 }

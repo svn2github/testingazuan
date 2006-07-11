@@ -67,9 +67,6 @@ public class ExampleSVG2PDF {
      */
     public static void main(String[] args) {
         try {
-            System.out.println("FOP ExampleSVG2PDF\n");
-            System.out.println("Preparing...");
-            
             //Setup directories
             File baseDir = new File("C:/Progetti/Regione_Veneto/Georeferenziazione/g/VE_comuni/");
             File outDir = new File(baseDir, "out");
@@ -79,15 +76,10 @@ public class ExampleSVG2PDF {
             File svgfile = new File(baseDir, "ve_comuni_rv1.svg");
             File pdffile = new File(outDir, "ve_comuni_rv1.pdf");
 
-            System.out.println("Input: SVG (" + svgfile + ")");
-            System.out.println("Output: PDF (" + pdffile + ")");
-            System.out.println();
-            System.out.println("Transforming...");
             
             ExampleSVG2PDF app = new ExampleSVG2PDF();
             app.convertSVG2PDF(svgfile, pdffile);
             
-            System.out.println("Success!");
         } catch (Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);

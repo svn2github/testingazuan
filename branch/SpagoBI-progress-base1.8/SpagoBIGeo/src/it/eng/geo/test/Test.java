@@ -82,7 +82,6 @@ public class Test {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
         DOMUtilities.writeDocument(docSVG, outputStreamWriter);
-        System.out.println("SchedulerInitializer::init: FINE " + new String(byteArrayOutputStream.toByteArray()));
 
         
 //        SVGMapDocument sVGMapDocument = null;

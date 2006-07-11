@@ -73,7 +73,6 @@ public class TestBatik {
             e1.printStackTrace();
         }
         String docString = new String (baos.toByteArray());
-//        System.out.println("SchedulerInitializer::init: FINE " + docString);
         String parser = XMLResourceDescriptor.getXMLParserClassName();
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
 //        SVGDocument docSVG = f.createSVGDocument(uRIString);
@@ -126,7 +125,6 @@ public class TestBatik {
             // TODO Auto-generated catch block
             e2.printStackTrace();
         }
-//        System.out.println("SchedulerInitializer::init: FINE " + new String(byteArrayOutputStream.toByteArray()));
     }
 
 }

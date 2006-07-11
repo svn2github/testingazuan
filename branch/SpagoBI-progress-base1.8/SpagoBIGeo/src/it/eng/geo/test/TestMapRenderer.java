@@ -89,27 +89,21 @@ public class TestMapRenderer {
 
 		Document legendDoc = legend.getDocument();
 		Document svgDoc = xMLDocument.getDocument();
-		System.out.println(legendDoc.getFirstChild().getNodeName());
 		NodeList nodeList = legendDoc.getFirstChild().getChildNodes();
-		System.out.println(legend.getDocumentAsXMLString());
-//		for (int i = 0; i < nodeList.getLength(); i++) {
 		int i = 0;
 		Node node = nodeList.item(0);
 		String nodeName = node.getNodeName();
-		System.out.println("--"+i+"--"+nodeName+"--");
 		svgDoc.adoptNode(node);
 		svgDoc.getLastChild().appendChild(node);
 		i = 1;
 		Node node1 = nodeList.item(2);
 		String nodeName1 = node1.getNodeName();
-		System.out.println("--"+i+"--"+nodeName1+"--");
 		svgDoc.adoptNode(node1);
 		svgDoc.getLastChild().appendChild(node1);
 		
 
-			// svgNode.appendChild(node);
-//		}
 
-//		System.out.println(xMLDocument.getDocumentAsXMLString());
+
+
 	}
 }

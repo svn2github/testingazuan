@@ -8,7 +8,7 @@ In order to install the component proceed as follows:
   the directory contains some subdirectories 'jsp', 'css', WEB-INF, ....
 
 - copy all the folders of the component (components, css, jsp, WEB-INF) into the SPAGOBI_APPLICATION_HOME;
-  Some files will be overwritten and others they will be added
+  Some files will be overwritten.
   
 - go into the folder SPAGOBI_APPLICATION_HOME/WEB-INF/lib and delete the files spago-core-2.0.0.jar and spago-web-2.0.0.jar
 

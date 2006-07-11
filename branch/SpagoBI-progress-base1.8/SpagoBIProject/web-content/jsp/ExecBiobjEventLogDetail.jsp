@@ -16,12 +16,6 @@
 
 <%
 	SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailEventLogModule"); 
-	if(moduleResponse == null) {
-		System.err.println(aServiceResponse.toXML(false));
-%>
-	<P><H3>ERRORE !!!</H3>
-<%
-	} else {
 		// build the back link
    		PortletURL backUrl = renderResponse.createActionURL();
 		backUrl.setParameter("PAGE", "DetailEventLogPage");

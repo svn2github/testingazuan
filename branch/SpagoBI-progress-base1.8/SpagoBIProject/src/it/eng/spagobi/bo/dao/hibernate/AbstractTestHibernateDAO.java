@@ -61,7 +61,8 @@ public class AbstractTestHibernateDAO {
 	 * @param t The input throwable object
 	 */
 	public void logException(Throwable t){
-		System.err.println(t.getClass().getName() + ":" + t.getMessage());
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+				            "logException", t.getClass().getName() + ":" + t.getMessage());
 	}
 	
 	

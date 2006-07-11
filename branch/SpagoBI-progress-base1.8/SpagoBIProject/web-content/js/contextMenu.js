@@ -10,7 +10,11 @@ function hideMenu(event) {
 }	
 
 function showMenu(event, divM) {
-	divM.style.left = '' + (event.clientX-5) + 'px';
-	divM.style.top = '' + (event.clientY + document.documentElement.scrollTop - 5)  + 'px' ;
+	scrollTopMoz = document.documentElement.scrollTop;
+	scrollTopIE = document.body.scrollTop;
+	scrollLeftMoz = document.documentElement.scrollLeft;
+	scrollLeftIE = document.body.scrollLeft;
+	divM.style.left = '' + (event.clientX + scrollLeftMoz + scrollLeftIE - 5) + 'px';
+	divM.style.top = '' + (event.clientY + scrollTopMoz + scrollTopIE - 5)  + 'px' ;
 	divM.style.display = 'inline' ;
 }

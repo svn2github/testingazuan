@@ -13,14 +13,8 @@
 
 <%
 	SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("PortletEventsMonitorModule"); 
-	if(moduleResponse == null) {
-		System.err.println(aServiceResponse.toXML(false));
-%>
-	<P><H3>ERRORE !!!</H3>
-<%
-	} else {
-		List firedEventsList = (List) moduleResponse.getAttribute("firedEventsList");
-		if(firedEventsList.size() == 0) {			
+	List firedEventsList = (List) moduleResponse.getAttribute("firedEventsList");
+	if(firedEventsList.size() == 0) {			
 %>
 	<P><H3><I>Events log is empty !!!</I></H3>
 <%

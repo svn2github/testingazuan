@@ -59,12 +59,8 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	         "eventlog.id = '" + id + "' and " +
 	         "eventlog.date = '" + date + "'";
 			
-			System.out.println(hql);
-			
 			hqlQuery = aSession.createQuery(hql);
 			List hibList = hqlQuery.list();
-			
-			System.out.println("query executed");
 			
 			if(hibList.size() == 1)
 				realResult = toEventsLog((SbiEventsLog)hibList.get(0));

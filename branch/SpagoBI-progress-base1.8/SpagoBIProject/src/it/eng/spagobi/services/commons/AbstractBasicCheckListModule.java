@@ -24,7 +24,6 @@ package it.eng.spagobi.services.commons;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.SQLStatements;
@@ -34,7 +33,6 @@ import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -66,7 +64,6 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		// clear all input parameters
 		ConfigSingleton spagoBiConfig = ConfigSingleton.getInstance();
 		// TODO patch this
-		System.out.println("-> " + moduleName);
 		SourceBean moduleConfig = (SourceBean)spagoBiConfig.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME", moduleName);
 		List parametersList = null;
 		SourceBean parameter = null;
@@ -103,7 +100,6 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			
 	public void save() throws Exception {
 		SourceBean chekhedObjects = getCheckedObjects();
-		System.out.println(chekhedObjects);
 	}
 	
 	public void exitFromModule(SourceBean response, boolean abort) throws Exception{
@@ -154,17 +150,14 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		String pvalue, str; int index;
 		for(int i = 0; i < parametersList.size(); i++) {			
 			parameter = (SourceBean)parametersList.get(i);
-			System.out.println("Parameter: " + parameter);
 			str = (String)parameter.getAttribute("number");
 			index = Integer.parseInt(str);
 			pvalue = (String)parameter.getAttribute("value");
 			if(pvalue == null) {
 				str = (String)parameter.getAttribute("name");
-				System.out.println("Parameter Name: " + str);
 				pvalue = (String)getAttribute(str, request);
 			}
 			parameters[index] = pvalue;		
-			System.out.println("Parameter Value: " + parameters[index]);
 		}
 		
 		return parameters;
@@ -175,11 +168,9 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 						
 		SourceBean statement = (SourceBean) config.getAttribute("QUERIES." + queryName);		
 		statementStr = SQLStatements.getStatement((String) statement.getAttribute("STATEMENT"));
-		System.out.println("Original Statment: " + statementStr);
 		for(int i = 0; i < parameters.length; i++) {			
 			statementStr = statementStr.replaceFirst("\\?", parameters[i]);
 		}
-		System.out.println("Filled Statment: " + statementStr);
 		return statementStr;
 	}
 			
@@ -281,7 +272,6 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		SourceBean pagedList = (SourceBean)response.getAttribute("PAGED_LIST");
 		response.delAttribute("PAGED_LIST");
 		pagedList.delAttribute("ROWS");
-		System.out.println(response);
 		
 		SourceBean rows = new SourceBean("ROWS");
 		for(int i = 0; i < objectsList.size(); i++) {
@@ -314,16 +304,12 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		_response = response;
 		
 		String message = (String)request.getAttribute("MESSAGE");
-		System.out.println("Message: " + message);
-		
+
 		if(message == null || message.equalsIgnoreCase("INIT_CHECKLIST")) {
-			System.out.println("INIT_CHECKLIST");
 			preprocess(request);	
 			super.service(request, response); 
-			System.out.println(response);
 			postprocess(response); 
-			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
-			System.out.println(response);	
+			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
 		}
 		else if(message.equalsIgnoreCase("HANDLE_CHECKLIST")) {
 									
@@ -340,15 +326,13 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			
 			//	events rised by action buttons defined in module.xml file (module name="ListLookupReportsModule")
 			if(request.getAttribute("saveback") != null){
-				System.out.println("SAVE & BACK");
 				preprocess(request);
 				save();
 				exitFromModule(response, false);
 				return;
 			}
 							
-			if(request.getAttribute("save") != null) {
-				System.out.println("SAVE");				
+			if(request.getAttribute("save") != null) {				
 				preprocess(request);
 				save();
 				super.service(request, response); 
@@ -357,8 +341,7 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 				return;
 			}
 			
-			if(request.getAttribute("back") != null) {
-				System.out.println("BACK");				
+			if(request.getAttribute("back") != null) {			
 				exitFromModule(response, true);
 				return;
 			}
@@ -371,13 +354,11 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	public void navigationHandler(SourceBean request, SourceBean response, boolean moveNext) throws Exception{
 		preprocess(request);
 		int destPageNumber = (moveNext)? pageNumber+1: pageNumber-1;		
-		System.out.println("MOVE TO PAGE - " + destPageNumber);
 		request.updAttribute("MESSAGE", "LIST_PAGE");	
 		request.setAttribute("LIST_PAGE", "" + destPageNumber);			
 		super.service(request, response); 				
 		postprocess(response); 
-		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
-		System.out.println(response);	
+		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
 	}
 	
 	
@@ -388,10 +369,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		if(attrValue == null) {
 			SessionContainer session = this.getRequestContainer().getSessionContainer();
 			attrValue = session.getAttribute(attrName);
-			//System.out.println(attrName + " = " + attrValue + " from SESSION");
 		}
 		else {
-			//System.out.println(attrName + " = " + attrValue + " from RESPONSE");
 		}
 			
 		return attrValue;

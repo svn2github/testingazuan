@@ -210,13 +210,5 @@ public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 		return event;
 	}
 	
-	/*
-	public static void main(String[] args) throws EMFUserError {
-		EventDAOHibImpl eventDAO = new EventDAOHibImpl();
-		for(int i = 0; i < 10; i++) {
-			Integer id = eventDAO.registerEvent("root");
-			System.out.println("Id: " + id);
-		}
-	}
-	*/
+
 }

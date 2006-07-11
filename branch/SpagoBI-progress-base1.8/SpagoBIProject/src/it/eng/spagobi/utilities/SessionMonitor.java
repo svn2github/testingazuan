@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.utilities;
 
 import it.eng.spago.base.SessionContainer;
+import it.eng.spagobi.constants.SpagoBIConstants;
 
 import java.util.List;
 
@@ -32,11 +33,10 @@ import java.util.List;
  */
 public class SessionMonitor {
 	public static void printSession(SessionContainer session) {
-		System.out.println("------------------");
 		List list = session.getAttributeNames();
 		for(int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i));
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, SessionMonitor.class.getName(),
+					            "printSession", list.get(i).toString());
 		}				
-		System.out.println("------------------");
 	}
 }

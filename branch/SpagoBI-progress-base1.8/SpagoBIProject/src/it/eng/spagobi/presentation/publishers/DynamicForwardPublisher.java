@@ -84,8 +84,6 @@ public class DynamicForwardPublisher implements PublisherDispatcherIFace {
 		String publisherName = (String) request.getServiceRequest().getAttribute(
 				"PUBLISHER_NAME");
 		
-		System.out.println(publisherName);
-		
 		if (publisherName != null) {
 			return publisherName;
 		} else {

@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +22,9 @@ public class TransformManager {
 		try{
 			decompressArchive(pathImpTmpFolder, archiveName, impArchive);
 		} catch(Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+		               "applyTransformations",
+		               "Error while decompressing exported archive " + e);
 		}
 		String archiveNameWithoutExtension = archiveName.substring(0, archiveName.lastIndexOf('.'));
 		String currVersion = getCurrentVersion();
@@ -29,7 +32,9 @@ public class TransformManager {
 		try{
 			expVersion = getExportVersion(pathImpTmpFolder, archiveNameWithoutExtension);
 		} catch(Exception e){
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+					               "applyTransformations",
+        			               "Error while getting version name of the exporting system " + e);
 		}
 		// erase tmp folder
 		File fileTmpDir = new File(pathImpTmpFolder);
@@ -51,7 +56,9 @@ public class TransformManager {
 				ITransformer transformer = (ITransformer)impClass.newInstance();
 				impArchive = transformer.transform(impArchive, pathImpTmpFolder, archiveName);
 			} catch(Exception e) {
-				System.out.println(e);
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+			                           "applyTransformations",
+			                           "Error while instancing the transformer and executing transformation " + e);
 			}
 		}
 		// return file archive content	

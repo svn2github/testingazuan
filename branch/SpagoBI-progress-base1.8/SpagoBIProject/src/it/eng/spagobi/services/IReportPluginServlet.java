@@ -369,7 +369,6 @@ public class IReportPluginServlet extends HttpServlet{
 				try {
 					//obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
 				} catch (Exception e) {
-					System.out.println(e);
 					SpagoBITracer.warning("SPAGOBI", this.getClass().getName(),
 							              "addItemTree", "Error while loading biobject for " +
 							              "path " + path, e);
@@ -447,9 +446,11 @@ public class IReportPluginServlet extends HttpServlet{
          			}
          		}
          	} catch (IOException ioe) {
-         		System.out.println(ioe);
+         		SpagoBITracer.critical("SPAGOBI", this.getClass().getName(),
+						               "getParameter", "error while reading request parameters", ioe);
             } catch (FileUploadException e1) {
-         		System.out.println(e1);
+            	SpagoBITracer.critical("SPAGOBI", this.getClass().getName(),
+						               "getParameter", "error while reading request parameters", e1);
          	}
         } else {
         	Enumeration enumpar = request.getParameterNames();

@@ -289,7 +289,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void executionHandler(SourceBean request, SourceBean response) throws Exception {
-		//System.out.println("executionHandler");
 		// get object from the session
 		BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
         // for each parameter of the object control if in the request are
@@ -382,13 +381,11 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void lookUpReturnHandler(SourceBean request, SourceBean response) throws Exception {
-		System.out.println("lookUpReturnHandler");
 		// get the object from the session
 		BIObject obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		// get the parameter name and value from the request
 		String parameterNameFromLookUp = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
 		String parameterValueFromLookUp = (String)request.getAttribute("LOOKUP_VALUE");
-		//System.out.println(parameterNameFromLookUp + " = " + parameterValueFromLookUp);
         // Create a List that will contains the value returned 
 		ArrayList paramvalues = new ArrayList();
 		paramvalues.add(parameterValueFromLookUp);
@@ -423,7 +420,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void selectRoleHandler(SourceBean request, SourceBean response) throws Exception {
-		//System.out.println("selectRoleHandler");
 		// get the role selected from request
 		String role = (String)request.getAttribute("role");
 		session.setAttribute(SpagoBIConstants.ROLE, role);
@@ -453,7 +449,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 		if(controller.directExecution()) {
 			response.setAttribute("NO_PARAMETERS", "TRUE");
 		}
-		//System.out.println("selectRoleHandler [END]");
 	}
 	
 		
@@ -566,7 +561,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 			    // get the map of the parameters
 				Map mapPars = null;
 				String type = obj.getBiObjectTypeCode();
-				//System.out.println("TYPE: " + type + "; CLASS: "  + aEngineDriver.getClass().getName());
 				if(type.equalsIgnoreCase("OLAP")) {
 					// get the user profile
 					IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -575,8 +569,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 				} else if(type.equalsIgnoreCase("REPORT") && aEngineDriver.getClass().getName().equalsIgnoreCase("it.eng.spagobi.drivers.jasperreport.JasperReportDriver")) {
 					String actor = (String)session.getAttribute(SpagoBIConstants.ACTOR);
 					String objState = obj.getStateCode();
-					//System.out.println("ACTOR: " + actor + "; STATE: " + objState);
-					//System.out.println("---------> Can execute? " + canExecute(obj));
 					if(!canExecute(obj)) 
 						 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1062)); 
 					if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
@@ -589,9 +581,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 				// callback event id
 				IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			    String user = (String)profile.getUserUniqueIdentifier();
-			    System.out.println("Registering event for user: " + user);
 				Integer id =  EventsManager.getInstance().registerEvent(user);
-				System.out.println("Event id: " + id);
 			    mapPars.put("event", id.toString());
 			    mapPars.put("user", user);
 			    
@@ -657,7 +647,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 	}
 	
 	private boolean isSubRptStatusAdmissible(String masterRptStatus, String subRptStatus) {
-		System.out.println("masterRptStatus: " + masterRptStatus + "; subRptStatus: " + subRptStatus);
 		if(masterRptStatus.equalsIgnoreCase("DEV")) {
 			if(subRptStatus.equalsIgnoreCase("DEV") ||
 			   subRptStatus.equalsIgnoreCase("REL")) return true;
@@ -690,12 +679,9 @@ public class ExecuteBIObjectModule extends AbstractModule
 				Subreport subreport = (Subreport)subreportList.get(i);
 				BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
 				if(!isSubRptStatusAdmissible(masterReportStatus, subrptbiobj.getStateCode())) {
-					//System.out.println("-> FALSE");
 					return false;							
 				}
-				//System.out.println("-> TRUE");
 			}			
-			
 		} catch (EMFUserError e) {
 			SpagoBITracer.warning("ENGINES",
 					  this.getClass().getName(),

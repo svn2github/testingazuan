@@ -130,7 +130,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 		// get attribute from session
 		String moduleName = (String)session.getAttribute("RETURN_FROM_MODULE");
-		System.out.println("RETURN_FROM_MODULE: " + moduleName);
 		if(moduleName != null) { // TODO clear session with a proper method of returning module
 			if(moduleName.equalsIgnoreCase("ListLookupParametersModule")) {
 				String returnState = (String)session.getAttribute("RETURN_STATUS");

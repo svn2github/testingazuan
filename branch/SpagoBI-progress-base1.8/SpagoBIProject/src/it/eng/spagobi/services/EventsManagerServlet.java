@@ -77,9 +77,7 @@ public class EventsManagerServlet extends HttpServlet{
 	 				String user = request.getParameter("user");
 	 				String desc = request.getParameter("desc");
 	 				String paramStr = request.getParameter("parameters");	 				
-	 				
-	 				System.out.println(paramStr);
-	 				
+
 	 				if(eventId != null && user != null) {
 	 					EventsManager.getInstance().fireEvent(eventId, user, desc, paramStr);
 		 				returnValue = RETURN_STATUS_KO;

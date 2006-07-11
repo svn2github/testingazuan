@@ -51,12 +51,9 @@ public class DetailEventLogModule extends AbstractModule {
 		SessionContainer permanentSession =  getRequestContainer().getSessionContainer().getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		
-				
 		String idStr = (String)request.getAttribute("id");
 		String userStr = (String)request.getAttribute("user");
 		String dateStr = (String)request.getAttribute("date");
-		
-		System.out.println(idStr + " " + userStr + " " + dateStr);
 		
 		EventLogDAOHibImpl eventLogDAO = new EventLogDAOHibImpl();
 		EventLog firedEvent = eventLogDAO.loadEventLog(idStr, userStr, dateStr);

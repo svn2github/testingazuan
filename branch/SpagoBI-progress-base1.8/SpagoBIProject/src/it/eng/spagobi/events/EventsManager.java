@@ -74,7 +74,6 @@ public class EventsManager {
 			e.printStackTrace();
 		}		
 		
-		System.out.println("registerEvent: " + id);
 		return id;
 	}
 	
@@ -119,7 +118,6 @@ public class EventsManager {
 			e.printStackTrace();
 		}
 		
-		System.out.println("fireEvent: " + eventLog.getId() + ", "  + eventLog.getUser() + ", " + eventLog.getDate() + ", " + eventLog.getDesc());
 	}
 	
 	/**
@@ -143,9 +141,7 @@ public class EventsManager {
 	public List getFiredEvents(String user) {
 		
 		List firedEventsList = null;
-		System.out.println("getFiredEventsOrdered: ");
 				
-		
 		try {
 			firedEventsList = eventLogDAO.loadEventsLogByUser(user);
 		} catch (EMFUserError e) {
@@ -156,7 +152,6 @@ public class EventsManager {
 		Iterator it = firedEventsList.iterator();
 		while(it.hasNext()){
 			EventLog eventLog = (EventLog)it.next();
-			System.out.println(" - " + eventLog.getId() + ", "  + eventLog.getUser() + ", " + eventLog.getDate() + ", " + eventLog.getDesc());
 		}
 		
 		return firedEventsList;
@@ -179,11 +174,9 @@ public class EventsManager {
 	
 	public static Map parseParamsStr(String str) {
 		Map params = new HashMap();
-		System.out.println(str);
 		String[] parameterPairs = str.split("&");
 		for(int i = 0; i < parameterPairs.length; i++) {
 			String[] chunks = parameterPairs[i].split("=");
-			System.out.println(chunks[0] + " = " + chunks[1]);
 			params.put(chunks[0], chunks[1]);
 		}
 		return params;

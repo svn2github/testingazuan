@@ -26,7 +26,8 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		try{
 			decompressArchive(pathImpTmpFolder, archiveName, content);
 		} catch(Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+                                   "transform", "Error while decompressing 1.8 exported archive" + e);	
 		}
 		archiveName = archiveName.substring(0, archiveName.lastIndexOf('.'));
 		changeDatabase(pathImpTmpFolder, archiveName);
@@ -34,7 +35,8 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		try {
 			baseCmsFolder = getCmsBaseFolder(pathImpTmpFolder, archiveName);
 		} catch(Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+		                           "transform", "Error while retriving the cms base folder of 1.8 version " + e);	
 		}	
 		// change dashboard template
 		changeDashTempl(pathImpTmpFolder, archiveName);
@@ -46,7 +48,8 @@ public class TransformerFrom1_8To1_9 implements ITransformer {
 		try {
 			content = createExportArchive(pathImpTmpFolder, archiveName);
 		} catch (Exception e) {
-			System.out.println(e);
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+					               "transform", "Error while creating creating the export archive " + e);	
 		}
 		// delete tmp dir content
 		File tmpDir = new File(pathImpTmpFolder);

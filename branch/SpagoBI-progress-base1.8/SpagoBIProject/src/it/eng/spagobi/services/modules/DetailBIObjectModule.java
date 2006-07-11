@@ -238,9 +238,9 @@ public class DetailBIObjectModule extends AbstractModule {
 	}
 	
 	private void startLinksLookupHandler(SourceBean request, String message, SourceBean response) throws EMFUserError, SourceBeanException {
-		//setLoopbackContext(request, message);		
-		BIObject obj = recoverBIObjectDetails(request, message);
-		session.setAttribute("SUBJECT_ID", obj.getId().toString());
+		modBIObject(request, ObjectsTreeConstants.DETAIL_MOD, response);
+		String idStr = (String) request.getAttribute("id");
+		session.setAttribute("SUBJECT_ID", idStr);
 		session.setAttribute(SpagoBIConstants.ACTOR, actor);
 		response.setAttribute("linksLookup", "true");		
 	}	

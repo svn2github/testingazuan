@@ -101,11 +101,11 @@ function showEngField(docType) {
 		    style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBIDev.docConf.docDet.title" />
 		</td>
-		<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){%>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){%>
 		<td class='header-button-column-portlet-section'>
 			<input type="hidden" name="" value="" id="loadLinksLookup">
-			<a href='javascript:checkDocumentType();'> 
+			<a href='javascript:checkDocumentType("<spagobi:message key = "SBIDev.docConf.docDet.saveBeforeLinksConfig" />");'> 
 			<img style="margin-top:2px;height:21px;" name='links' id='links' class='header-button-image-portlet-section'
 				   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/links.jpg") %>'
       		 title='<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />' 
@@ -754,12 +754,22 @@ function saveBIParameterConfirm (message) {
 	document.getElementById('save').click();
 }
 
-function checkDocumentType() {
+function checkDocumentType(message) {
 	var type = document.getElementById('type').value;
 	if (type.match('REPORT') != null || type.match('DATA_MINING') != null) {
-		document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
-		document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
-		document.getElementById('save').click();
+		var biobjFormModified = isBIObjectFormChanged();
+		var biobjParFormModified = isBIParameterFormChanged();
+		if (biobjFormModified == 'true' || biobjParFormModified == 'true') {
+			if (confirm(message)) {
+				document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
+				document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
+				document.getElementById('save').click();
+			}
+		} else {
+			document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
+			document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
+			document.getElementById('save').click();
+		}
 	} else {
 		alert('<spagobi:message key = "SBIDev.docConf.docDet.noPermissibleLinks" />');
 	}

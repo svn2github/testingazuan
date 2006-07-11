@@ -675,16 +675,16 @@ public class ExecuteBIObjectModule extends AbstractModule
 		Iterator functionalitiesIt = functionalities.iterator();
 		boolean isExecutableByUser = false;
 		while (functionalitiesIt.hasNext()) {
-			LowFunctionality functionality = (LowFunctionality) functionalitiesIt.next();
-			if (ObjectsAccessVerifier.canDev(subrptbiobjStatus, functionality.getId(), profile)) {
+			Integer functionalityId = (Integer) functionalitiesIt.next();
+			if (ObjectsAccessVerifier.canDev(subrptbiobjStatus, functionalityId, profile)) {
 				isExecutableByUser = true;
 				break;
 			}
-			if (ObjectsAccessVerifier.canTest(subrptbiobjStatus, functionality.getId(), profile)) {
+			if (ObjectsAccessVerifier.canTest(subrptbiobjStatus, functionalityId, profile)) {
 				isExecutableByUser = true;
 				break;
 			}
-			if (ObjectsAccessVerifier.canExec(subrptbiobjStatus, functionality.getId(), profile)) {
+			if (ObjectsAccessVerifier.canExec(subrptbiobjStatus, functionalityId, profile)) {
 				isExecutableByUser = true;
 				break;
 			}

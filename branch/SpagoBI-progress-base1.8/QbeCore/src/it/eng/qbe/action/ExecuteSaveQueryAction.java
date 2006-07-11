@@ -196,9 +196,8 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 			getDataMartWizard().setUseExpertedVersion( isExpertExecutionModeEnabled(request) );			
 		}  				
 		
-		getDataMartWizard().composeQuery();
-		//System.out.println("Query:" + getDataMartWizard().getFinalQuery());		
-		
+		getDataMartWizard().composeQuery();	
+	
 		if (!checkJoins(request, response)){
 			returnError(response, "QBE.Warning.Join");
 		} 
@@ -213,8 +212,6 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 				Logger.error(ExecuteSaveQueryAction.class, se);
 				returnError(response, se.getMessage());
 			}catch(Exception e){
-				System.out.println("Exception type: " + e.getClass().getName());				
-				
 				Logger.error(ExecuteSaveQueryAction.class, e);
 				returnError(response, e.getMessage());					
 			}								

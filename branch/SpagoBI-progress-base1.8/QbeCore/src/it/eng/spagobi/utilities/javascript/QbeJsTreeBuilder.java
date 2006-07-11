@@ -228,13 +228,6 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
 					
 					String img = "/img/key.gif";
-					/*
-					if(selected.equalsIgnoreCase("true")){
-						System.out.println("check[" + className + "," + completeFieldName + "]: " 
-							+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
-						img = "../img/Method.gif";
-					}
-					*/
 					
 					addNode("" + nodeCounter, "" + idxClassNode, 
 							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
@@ -289,9 +282,10 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 						String selected = "";
 						if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
 						
-						if(selected.equalsIgnoreCase("true"))
-							System.out.println("check[" + className + "," + completeFieldName + "]: " 
-								+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
+						if(selected.equalsIgnoreCase("true")) {
+							
+						}
+							
 						
 						
 				 		addNode("" + nodeCounter, "" + idxClassNode, 

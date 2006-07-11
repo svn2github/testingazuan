@@ -48,7 +48,6 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	public String rewrite(String query) {
 		String sqlQuery = null;		
 		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
-		System.out.println("---> HQL query to convert: " + query);
 		
 		Query hibQuery = session.createQuery(query);
 		SessionFactory sessFact = session.getSessionFactory();
@@ -60,9 +59,7 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		sqlQuery = trans.getSQLString();
 		
 		Logger.debug(this.getClass(), "rewrite: generated SQL query: " + sqlQuery);		
-		System.out.println("generated SQL query: " + sqlQuery);
 		String decoratedQuery = rewriteWithAlias(query, sqlQuery);
-		System.out.println("decorated SQL query: " + decoratedQuery);
 		return decoratedQuery;
 		//return sqlQuery;
 	}

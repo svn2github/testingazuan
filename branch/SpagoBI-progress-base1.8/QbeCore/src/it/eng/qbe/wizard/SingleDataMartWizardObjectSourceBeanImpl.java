@@ -58,9 +58,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public SingleDataMartWizardObjectSourceBeanImpl() {
 		super();
-		this.entityClasses = new ArrayList();
-		//this.setQueryId("query_"+ System.currentTimeMillis());
-		
+		this.entityClasses = new ArrayList();	
 	}
 	
 	
@@ -76,8 +74,6 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public IOrderByClause getOrderByClause() {
 		return this.orderByClause;
-		
-		
 	}
 	
 	public IGroupByClause getGroupByClause() {
@@ -190,13 +186,11 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		if (whereClause != null){
 			for (int i=0; i < whereClause.getWhereFields().size(); i++){
 				whereField = (IWhereField)whereClause.getWhereFields().get(i);
-				
 				ec = whereField.getFieldEntityClassForLeftCondition();
 				if (!this.containEntityClass(ec)){
 					this.addEntityClass(ec);
 				}
 				ec = whereField.getFieldEntityClassForRightCondition();
-				
 				if ((ec != null)&&(!this.containEntityClass(ec))){
 					this.addEntityClass(ec);
 				}
@@ -255,7 +249,6 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 			if(aSelectField.getFieldNameWithoutOperators().equalsIgnoreCase(aSelectField.getFieldName())) {
 		 				String alias = aSelectField.getFieldAlias().replaceAll(" ","_");
 		 				finalQuery.append(" as "+ alias + " ");
-		 				// System.out.println(aSelectField.getFieldNameWithoutOperators() + " -> " + aSelectField.getFieldAlias());
 			 			fieldToAlias.put(aSelectField.getFieldNameWithoutOperators(), alias);
 		 			}
 		 			
@@ -373,7 +366,6 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		aOrderGroupByField =(IOrderGroupByField)it.next();
 		 		if (afterFirst)
 		 			finalQuery.append(", ");
-		 		System.out.println("check -> " + aOrderGroupByField.getFieldName() + " -> " + fieldToAlias.containsKey(aOrderGroupByField.getFieldName()));
 		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
 		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
 		 		else

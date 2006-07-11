@@ -60,11 +60,8 @@ public class SelectFieldForSelectAction extends AbstractAction {
 				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, fieldName);
 				String classAlias = nodeId.getClassAlias();
 				String fieldAlias = nodeId.getFieldAlias();	
-				
 				String completeFieldName = classAlias + "." + fieldName;
-				
 				selectMap.put(completeFieldName, (String)items.get(i));
-				System.out.println(completeFieldName + " -> " + i);
 			}
 			
 			ISelectClause selectClause =  getDataMartWizard().getSelectClause();
@@ -76,11 +73,9 @@ public class SelectFieldForSelectAction extends AbstractAction {
 					selField = (ISelectField)fields.get(i);
 					if(selectMap.containsKey(selField.getFieldNameWithoutOperators())) {
 						items.remove(selectMap.get(selField.getFieldNameWithoutOperators()));
-						System.out.println("ADD: " + selField.getFieldNameWithoutOperators());
 					}
 					else {
 						selectClause.delSelectField(selField);
-						System.out.println("REMOVE: " + selField.getFieldNameWithoutOperators());
 					}					
 				}
 			}
@@ -100,7 +95,6 @@ public class SelectFieldForSelectAction extends AbstractAction {
 				String classAlias = nodeId.getClassAlias();
 				String fieldAlias = nodeId.getFieldAlias();				
 						
-				System.out.println("CHECKED: " + className + ", " + classAlias + ", " + fieldName + ", " + fieldAlias + ", " + fieldLabel);
 				addSelectClause(className, classAlias, fieldAlias, fieldLabel);				
 			}
 			

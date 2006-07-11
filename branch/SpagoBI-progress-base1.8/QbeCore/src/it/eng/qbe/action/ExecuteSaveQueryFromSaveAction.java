@@ -143,8 +143,6 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 				String causeMsg = se.getMessage();
 				response.setAttribute("ERROR_MSG_FINAL", causeMsg);
 			}catch(Exception e){
-				System.out.println("Exception type: " + e.getClass().getName());
-				
 				Logger.error(ExecuteSaveQueryFromSaveAction.class, e);
 				response.setAttribute("ERROR_MSG_FINAL", e.getMessage());					
 			}					

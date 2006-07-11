@@ -97,7 +97,6 @@ public class ReportServlet extends HttpServlet{
 		boolean inline = (inlineStr != null && inlineStr.equals("true"));
 		String queryName = (String)request.getParameter("queryName");
 		query = (String)request.getParameter("query");
-		System.out.println("Query [" + query + "]");
 		if(query == null || query.equalsIgnoreCase("") || query.equalsIgnoreCase("null")) {
 			copyMessageToResponse(response, "Query is not defined !!!");
 			return;

@@ -6,6 +6,8 @@
                  it.eng.spagobi.bo.ScriptDetail,
                  it.eng.spagobi.bo.LovDetailList,
                  it.eng.spagobi.bo.LovDetail,
+		 it.eng.spagobi.bo.ParameterUse,
+		 it.eng.spagobi.bo.dao.DAOFactory,
                  java.util.Set,
                  java.util.HashMap,
                  java.util.List,
@@ -78,11 +80,30 @@
 <form method='POST' action='<%= formUrl.toString() %>' id ='modalitiesValueForm' name='modalitiesValueForm'>
 	<input type='hidden' value='<%= modVal.getId() %>' name='id' />
 	<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
+	<input type='hidden' name='lovProviderModified' value='' id='lovProviderModified' />
 
 
 
 <script type="text/javascript">
-  function showWizard(){
+
+<%
+	String lovProviderModified = (String) moduleResponse.getAttribute("lovProviderModified");
+	if (lovProviderModified != null && !lovProviderModified.trim().equals("")) {
+		%>
+		var lovProviderModified = <%=lovProviderModified%>;
+		<%
+	} else {
+		%>
+		var lovProviderModified = false;
+		<%
+	}
+%>
+
+function setLovProviderModified(newValue) {
+	lovProviderModified = newValue;
+}
+
+function showWizard(){
 	var wizard = document.getElementById("input_type").value
 	if (wizard.match("QUERY") != null) {
 		document.getElementById("queryWizard").style.display = "inline"
@@ -106,6 +127,49 @@
 		document.getElementById("testButtonImage").disabled = true
 	}
 }
+
+function askForConfirmIfNecessary() {
+	<%
+	List paruses = DAOFactory.getParameterUseDAO().getParameterUsesAssociatedToLov(modVal.getId());
+	Iterator parusesIt = paruses.iterator();
+	List documents = new ArrayList();
+	while (parusesIt.hasNext()) {
+		ParameterUse aParuse = (ParameterUse) parusesIt.next();
+		List temp = DAOFactory.getBIObjectParameterDAO().getDocumentLabelsListUsingParameter(aParuse.getId());
+		documents.addAll(temp);
+	}
+	if (documents.size() > 0) {
+		String documentsStr = documents.toString();
+		%>
+			if (lovProviderModified) {
+				if (confirm('<spagobi:message key = "SBIDev.predLov.savePreamble" />' + ' ' + '<%=documentsStr%>' + '. ' + '<spagobi:message key = "SBIDev.predLov.saveConfirm" />')) {
+					document.getElementById("saveLov").name = 'saveLov';
+					document.getElementById("saveLov").value = 'saveLov';
+					document.getElementById("modalitiesValueForm").submit();
+				}
+			} else {
+				document.getElementById("saveLov").name = 'saveLov';
+				document.getElementById("saveLov").value = 'saveLov';
+				document.getElementById("modalitiesValueForm").submit();
+			}
+		<%
+	} else {
+		%>
+		document.getElementById("saveLov").name = 'saveLov';
+		document.getElementById("saveLov").value = 'saveLov';
+		document.getElementById("modalitiesValueForm").submit();
+		<%
+	}
+	%>
+}
+
+function setLovProviderModifiedField(){
+	if (lovProviderModified) {
+		document.getElementById("lovProviderModified").value = 'true';
+	} else {
+		document.getElementById("lovProviderModified").value = 'false';
+	}
+}
 </script>
 
 
@@ -118,6 +182,7 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section' style='visibility:<%=testButtonVisibility%>;' id='testButton'>
 		<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
+				onclick='setLovProviderModifiedField();'
 				name="testLovBeforeSave" value="testLovBeforeSave" <%=testButtonDisabled%> 
 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/test.png")%>' 
 				title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />'  
@@ -125,11 +190,14 @@
 		/>
 		</td>
 		<td class='header-button-column-portlet-section'>
-		<input type='image' class='header-button-image-portlet-section' name="saveLov" value="saveLov" 
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
-				title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
-				alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
-		/>
+			<input type='hidden' id="saveLov" name="" value="" />
+			<a href= 'javascript:askForConfirmIfNecessary();' >
+				<img class='header-button-image-portlet-section'
+					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
+					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
+					alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
+				/>
+			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<a href= '<%= backUrl.toString() %>'> 
@@ -194,7 +262,8 @@
       			String valueHid = modVal.getITypeCd()+","+modVal.getITypeId();
       		} 
       	%>	
-   		<select style='width:180px;' name="input_type" id="input_type" class='portlet-form-input-field' onChange="showWizard()">
+   		<select style='width:180px;' name="input_type" id="input_type" class='portlet-form-input-field' 
+			onchange="setLovProviderModified(true);showWizard();">
       	<% 
       	   	String curr_input_type = modVal.getITypeCd();
       	   	if(curr_input_type==null) {

@@ -37,6 +37,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
@@ -605,7 +606,10 @@ public class DetailBIObjectModule extends AbstractModule {
 				fillResponse(response);
 				prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
 			}
-			
+
+		} catch (EMFUserError error) {			
+			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","modBIObject","Cannot fill response container", error  );
+			throw error;
 		} catch (Exception ex) {			
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","modBIObject","Cannot fill response container", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -967,9 +971,17 @@ public class DetailBIObjectModule extends AbstractModule {
 		String typeCode = tokentype.nextToken();
 		String engineIdStr = (String) request.getAttribute("engine");
 		Engine engine = null;
-		if (engineIdStr == null) {
-			List engines = DAOFactory.getEngineDAO().loadAllEngines();
-			if (engines.size() > 0) engine = (Engine) engines.get(0);
+		if (engineIdStr == null || engineIdStr.equals("")) {
+			List engines = DAOFactory.getEngineDAO().loadAllEnginesForBIObjectType(typeCode);
+			if (engines.size() == 0) {
+				HashMap errorParams = new HashMap();
+				errorParams.put(AdmintoolsConstants.PAGE, MODULE_PAGE);
+				Domain domain = DAOFactory.getDomainDAO().loadDomainById(typeIdInt);
+				Vector vector = new Vector();
+				vector.add(domain.getValueName());
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1063, vector, errorParams);
+			}
+			engine = (Engine) engines.get(0);
 		} else {
 			Integer engineIdInt = new Integer(engineIdStr);
 			engine = DAOFactory.getEngineDAO().loadEngineByID(engineIdInt);
@@ -985,7 +997,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		List functionalitiesStr = request.getAttributeAsList(ObjectsTreeConstants.FUNCT_ID);
 		if (functionalitiesStr.size() == 0) {
 			HashMap errorParams = new HashMap();
-			errorParams.put(AdmintoolsConstants.PAGE, BIObjectsModule.MODULE_PAGE);
+			errorParams.put(AdmintoolsConstants.PAGE, MODULE_PAGE);
 			errorParams.put(SpagoBIConstants.ACTOR, actor);
 			EMFValidationError error = null;
 			error = new EMFValidationError(EMFErrorSeverity.ERROR, 1008, new Vector(), errorParams);

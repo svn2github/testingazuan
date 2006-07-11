@@ -1,10 +1,15 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="javax.portlet.PortletURL,
-				 it.eng.spagobi.constants.SpagoBIConstants,
-				 it.eng.spagobi.bo.ModalitiesValue,
-				 it.eng.spagobi.bo.ScriptDetail,
-				 it.eng.spago.navigation.LightNavigationManager"%>
+			it.eng.spagobi.constants.SpagoBIConstants,
+			it.eng.spagobi.bo.ModalitiesValue,
+			it.eng.spagobi.bo.ScriptDetail,
+			it.eng.spagobi.bo.ParameterUse,
+			it.eng.spagobi.bo.dao.DAOFactory,
+			it.eng.spago.navigation.LightNavigationManager,
+			java.util.List,
+			java.util.ArrayList,
+			java.util.Iterator"%>
 
 <%
 
@@ -12,6 +17,9 @@
 	SourceBean listQueryMR = (SourceBean) aServiceResponse.getAttribute("ListTestQueryModule"); 
 	SourceBean listScriptMR = (SourceBean) aServiceResponse.getAttribute("ListTestScriptModule"); 
 
+	String lovProviderModified = (String) detailMR.getAttribute("lovProviderModified");
+	if (lovProviderModified == null) lovProviderModified = "";
+	
 	String modality = null;
 	if (detailMR != null) modality = (String) detailMR.getAttribute("modality");
 	if (modality == null) modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
@@ -33,11 +41,41 @@
   	backUrl.setParameter("modality", modality);
   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
   	backUrl.setParameter("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
+	if (!lovProviderModified.trim().equals(""))
+		backUrl.setParameter("lovProviderModified", lovProviderModified);
   	
   	ModalitiesValue modVal = (ModalitiesValue) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
   	
 %>
 
+
+<script type="text/javascript">
+
+function askForConfirmIfNecessary(url) {
+	<%
+	List paruses = DAOFactory.getParameterUseDAO().getParameterUsesAssociatedToLov(modVal.getId());
+	Iterator parusesIt = paruses.iterator();
+	List documents = new ArrayList();
+	while (parusesIt.hasNext()) {
+		ParameterUse aParuse = (ParameterUse) parusesIt.next();
+		List temp = DAOFactory.getBIObjectParameterDAO().getDocumentLabelsListUsingParameter(aParuse.getId());
+		documents.addAll(temp);
+	}
+	if (documents.size() > 0 && lovProviderModified.equalsIgnoreCase("true")) {
+		String documentsStr = documents.toString();
+		%>
+			if (confirm('<spagobi:message key = "SBIDev.predLov.savePreamble" />' + ' ' + '<%=documentsStr%>' + '. ' + '<spagobi:message key = "SBIDev.predLov.saveConfirm" />')) {
+				location.href = url;
+			}
+		<%
+	} else {
+		%>
+		location.href = url;
+		<%
+	}
+	%>
+}
+</script>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -46,10 +84,14 @@
 			<spagobi:message key = "SBIDev.predLov.testPageTitle" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<td class='header-button-column-portlet-section'>			
-			<a href="<%=saveUrl.toString()%>"> 
-      				<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.Funct.saveButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' alt='<spagobi:message key = "SBISet.Funct.saveButt" />' /> 
-			</a>	
+		<td class='header-button-column-portlet-section'>
+			<a href= 'javascript:askForConfirmIfNecessary("<%=saveUrl.toString()%>");' >
+				<img class='header-button-image-portlet-section'
+					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
+					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
+					alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
+				/>
+			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="<%=backUrl.toString()%>"> 

@@ -205,6 +205,9 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 				session.delAttribute(SpagoBIConstants.MODALITY);
 				prepareDetailModalitiesValuePage(modVal, mod, response);
+				String lovProviderModified = (String) request.getAttribute("lovProviderModified");
+				if (lovProviderModified != null && !lovProviderModified.trim().equals(""))
+					response.setAttribute("lovProviderModified", lovProviderModified);
 				// exits without writing into DB and without loop
 				return;
 			}
@@ -317,6 +320,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						String lovProvider = lovDetailList.toXML();
 						modVal.setLovProvider(lovProvider);
 						prepareDetailModalitiesValuePage(modVal, mod, response);
+						response.setAttribute("lovProviderModified", "true");
 						// exits without writing into DB and without loop
 						return;
 					}
@@ -353,6 +357,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 							addFixLovItem(request, modVal);
 						}
 						prepareDetailModalitiesValuePage(modVal, mod, response);
+						response.setAttribute("lovProviderModified", "true");
 						// exits without writing into DB and without loop
 						return;
 					}
@@ -549,8 +554,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 */
 	private void testLovBeforeSave (SourceBean request, SourceBean response, Object objectToTest) throws SourceBeanException {
 
-    	//String resultTest = "";
-    	
+		String lovProviderModified = (String) request.getAttribute("lovProviderModified");
+		if (lovProviderModified != null && !lovProviderModified.trim().equals("")) 
+			response.setAttribute("lovProviderModified", lovProviderModified);
+		
     	// case on manual input
     	if (objectToTest == null) {
     		response.setAttribute("testedObject", "MAN_IN");

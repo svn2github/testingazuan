@@ -144,8 +144,6 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 	
 	private SourceBean makeAdminListRow(BIObject obj) throws Exception {
 		
-		if (!obj.getStateCode().equalsIgnoreCase("DEV") && !obj.getStateCode().equalsIgnoreCase("REL"))
-			return null;
 		String rowSBStr = "<ROW ";
 		rowSBStr += "		OBJ_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";

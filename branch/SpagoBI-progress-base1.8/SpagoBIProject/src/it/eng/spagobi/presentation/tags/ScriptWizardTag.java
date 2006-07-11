@@ -51,7 +51,7 @@ public class ScriptWizardTag extends TagSupport {
 		output.append("			</span>\n");
 		output.append("	</div>\n");
 		output.append("	<div class='div_detail_form' style='height:185px;'>\n");
-	    output.append("		<textarea id='script' name='script' class='portlet-text-area-field' rows='10' cols='50'>" + script + "</textarea>\n");
+	    output.append("		<textarea id='script' name='script' onchange='setLovProviderModified(true)' class='portlet-text-area-field' rows='10' cols='50'>" + script + "</textarea>\n");
 	    output.append("	</div>\n");
 	    
     	String selectedsingle = " checked='checked' ";
@@ -68,12 +68,12 @@ public class ScriptWizardTag extends TagSupport {
 		output.append("			</span>\n");
 		output.append("	</div>\n");
 		output.append("	<div class='div_detail_form' style='height:45px;'>\n");
-        output.append("		<input type='radio' name='numberout' value='single' " + selectedsingle + ">\n");
+        output.append("		<input type='radio' name='numberout' onchange='setLovProviderModified(true)' value='single' " + selectedsingle + ">\n");
 		String singleValLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.SingleValLbl", "messages");
 		output.append("				<span class='portlet-form-field-label'>"+ singleValLbl + "</span>\n");
 		output.append("			</input>\n");
 		output.append("			<br/>\n");
-        output.append("			<input type='radio' name='numberout' value='list' " + selectedlist + ">\n");
+        output.append("			<input type='radio' name='numberout' onchange='setLovProviderModified(true)' value='list' " + selectedlist + ">\n");
 		String listValLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.ListValLbl", "messages");
 		output.append("				<span class='portlet-form-field-label'>"+ listValLbl + "</span>\n");
 		output.append("			</input>\n");

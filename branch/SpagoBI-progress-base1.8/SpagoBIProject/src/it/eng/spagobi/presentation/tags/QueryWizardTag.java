@@ -139,7 +139,7 @@ public class QueryWizardTag extends TagSupport {
 		output.append("			</span>\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_form'>\n");
-		output.append("			<select style='width:180px;' class='portlet-form-input-field' name='connNameJS' id='connNameJS' onchange='setConnName(this.selectedIndex)'>\n");
+		output.append("			<select onchange='setLovProviderModified(true)' style='width:180px;' class='portlet-form-input-field' name='connNameJS' id='connNameJS' onchange='setConnName(this.selectedIndex)'>\n");
 		it = dbConnection.iterator();
 		while (it.hasNext()) {
 			SourceBean connectionPool = (SourceBean) it.next();
@@ -158,13 +158,13 @@ public class QueryWizardTag extends TagSupport {
 		output.append("			</span>\n");
 		output.append("		</div>\n");
 		output.append("		<div style='height:110px;' class='div_detail_form'>\n");
-		output.append("			<textarea style='height:100px;' class='portlet-text-area-field' name='queryDefJS' onchange='setQueryDef(this.value)'  cols='50'>" + queryDef + "</textarea>\n");
+		output.append("			<textarea style='height:100px;' class='portlet-text-area-field' name='queryDefJS' onchange='setLovProviderModified(true);setQueryDef(this.value);'  cols='50'>" + queryDef + "</textarea>\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			&nbsp;\n");
 		output.append("		</div>\n");
 		output.append("		<div >\n");
-		output.append("			<a onclick='' href='javascript:void(0)'>\n");
+		output.append("			<a onclick='' href='javascript:void(0)' style='text-decoration:none;'>\n");
 		output.append("				<img style='width:20px;height:20px;' src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.gif") + "' />\n");
 		output.append("			</a>\n");
 		output.append("			<a onclick='' href='javascript:void(0)' class='portlet-form-field-label' style='text-decoration:none;'>\n");
@@ -210,12 +210,12 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		strHTML += '<td class=\"' + rowClass + '\">' + fields[i] + '</td>';\n");
 	    output.append("		var isValueColumn = '';\n");
 	    output.append("		if (fields[i] == valueColumn) isValueColumn='checked=\"checked\"';\n");
-	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"radio\" onclick=\"setValueColumn(this.value)\" name=\"valueColumnsJS\" value=\"' + fields[i] + '\"  ' + isValueColumn + '></td>';\n");
+	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"radio\" onclick=\"setValueColumn(this.value);\" onchange=\"setLovProviderModified(true);\" name=\"valueColumnsJS\" value=\"' + fields[i] + '\"  ' + isValueColumn + '></td>';\n");
 	    output.append("		var isVisible = '';\n");
 	    output.append("		for (j = 0; j < visibleColumns.length; j++) {\n");
 	    output.append("			if (fields[i] == visibleColumns[j]) isVisible='checked=\"checked\"';\n");
 	    output.append("		}\n");
-	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"checkbox\" onclick=\"setVisibleColumns(this.value,this.checked)\" name=\"visColumnsJS\" id=\"visColumnsJS\" value=\"' + fields[i] + '\" ' + isVisible + '></td>';\n");
+	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"checkbox\" onclick=\"setVisibleColumns(this.value,this.checked);\" onchange=\"setLovProviderModified(true);\" name=\"visColumnsJS\" id=\"visColumnsJS\" value=\"' + fields[i] + '\" ' + isVisible + '></td>';\n");
 	    output.append("		strHTML += '</tr>';\n");
 	    output.append("	}\n");
 	    output.append("	return strHTML;\n");

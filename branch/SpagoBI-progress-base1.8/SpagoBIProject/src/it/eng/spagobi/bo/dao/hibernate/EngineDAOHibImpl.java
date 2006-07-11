@@ -35,21 +35,13 @@ import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.engine.SessionFactoryImplementor;
-import org.hibernate.hql.QueryTranslator;
-import org.hibernate.hql.ast.ASTQueryTranslatorFactory;
-import org.hibernate.hql.ast.QueryTranslatorImpl;
-import org.hibernate.mapping.Collection;
 
 /**
  * Defines the Hibernate implementations for all DAO methods,
@@ -129,6 +121,42 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		return realResult;
 	}
 
+	/**
+	 * @see it.eng.spagobi.bo.dao.IEngineDAO#loadAllEnginesForBIObjectType(java.lang.String)
+	 */
+	public List loadAllEnginesForBIObjectType(String biobjectType) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Query hibQuery = aSession.createQuery(" from SbiEngines engines where engines.biobjType.valueCd = '" + biobjectType + "'");
+			
+			List hibList = hibQuery.list();
+			Iterator it = hibList.iterator();
+
+			while (it.hasNext()) {
+				realResult.add(toEngine((SbiEngines) it.next()));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
+	}
+	
 	/**
 	 * @see it.eng.spagobi.bo.dao.IEngineDAO#modifyEngine(it.eng.spagobi.bo.Engine)
 	 */

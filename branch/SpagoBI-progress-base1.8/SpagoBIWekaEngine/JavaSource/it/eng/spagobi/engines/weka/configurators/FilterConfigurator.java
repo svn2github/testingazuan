@@ -21,8 +21,7 @@ public class FilterConfigurator extends AbstractWekaBeanConfigurator{
 	private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
 	
 	static private void log(String msg) {
-		//logger.debug("FilterConfigurator:" + msg);
-		System.out.println("FilterConfigurator: " + msg);
+		logger.debug("FilterConfigurator:" + msg);
 	}
 	
 	public void setup(Filter bean)  throws Exception {

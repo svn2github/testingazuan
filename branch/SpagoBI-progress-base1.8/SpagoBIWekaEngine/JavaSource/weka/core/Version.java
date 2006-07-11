@@ -22,7 +22,11 @@
 
 package weka.core;
 
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
 import java.io.*;
+
+import org.apache.log4j.Logger;
 
 /**
  * This class contains the version number of the current WEKA release and some
@@ -46,15 +50,12 @@ public class Version implements Comparable {
   /** the revision */
   public static int REVISION = 3;
 
+  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  
   static {
     try {
-    		
-      InputStream inR = 
-    	  Version.class.getClassLoader().getResourceAsStream("weka/core/version.txt");
-      
-      
+      InputStream inR = Version.class.getClassLoader().getResourceAsStream("weka/core/version.txt");
       LineNumberReader lnr = new LineNumberReader(new InputStreamReader(inR));
-      
       String line = lnr.readLine();
       int [] maj = new int[1];
       int [] min = new int[1];
@@ -65,7 +66,7 @@ public class Version implements Comparable {
       REVISION = rev[0];
       lnr.close();
     } catch (Exception ex) {
-      System.err.println("weka.core.Version: Unable to load version information!");
+    	logger.error("weka.core.Version: Unable to load version information!", ex);
     }
   }
 
@@ -143,7 +144,6 @@ public class Version implements Comparable {
       revision = rev[0];
     }
     else {
-      System.out.println(this.getClass().getName() + ": no version-string for comparTo povided!");
       major    = -1;
       minor    = -1;
       revision = -1;
@@ -214,43 +214,13 @@ public class Version implements Comparable {
     Version       v;
     String        tmpStr;
 
-    // print version
-    System.out.println(VERSION + "\n");
     
     // test on different versions
     v = new Version();
-    System.out.println("-1? " + v.compareTo("5.0.1"));
-    System.out.println(" 0? " + v.compareTo(VERSION));
-    System.out.println("+1? " + v.compareTo("3.4.0"));
-    
     tmpStr = "5.0.1";
-    System.out.println("\ncomparing with " + tmpStr);
-    System.out.println("isOlder? " + v.isOlder(tmpStr));
-    System.out.println("equals ? " + v.equals(tmpStr));
-    System.out.println("isNewer? " + v.isNewer(tmpStr));
-    
     tmpStr = VERSION;
-    System.out.println("\ncomparing with " + tmpStr);
-    System.out.println("isOlder? " + v.isOlder(tmpStr));
-    System.out.println("equals ? " + v.equals(tmpStr));
-    System.out.println("isNewer? " + v.isNewer(tmpStr));
-    
     tmpStr = "3.4.0";
-    System.out.println("\ncomparing with " + tmpStr);
-    System.out.println("isOlder? " + v.isOlder(tmpStr));
-    System.out.println("equals ? " + v.equals(tmpStr));
-    System.out.println("isNewer? " + v.isNewer(tmpStr));
-    
     tmpStr = "3.4";
-    System.out.println("\ncomparing with " + tmpStr);
-    System.out.println("isOlder? " + v.isOlder(tmpStr));
-    System.out.println("equals ? " + v.equals(tmpStr));
-    System.out.println("isNewer? " + v.isNewer(tmpStr));
-    
     tmpStr = "5";
-    System.out.println("\ncomparing with " + tmpStr);
-    System.out.println("isOlder? " + v.isOlder(tmpStr));
-    System.out.println("equals ? " + v.equals(tmpStr));
-    System.out.println("isNewer? " + v.isNewer(tmpStr));
   }
 }

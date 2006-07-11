@@ -29,6 +29,8 @@ import weka.core.Attribute;
 import weka.core.OptionHandler;
 import weka.core.Utils;
 import weka.core.Option;
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
 import java.io.IOException;
 import java.sql.*;
 import java.util.Hashtable;
@@ -36,6 +38,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -137,15 +141,15 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   /** Properties associated with the database connection */
   protected static Properties PROPERTIES;
 
+  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  
   /** reads the property file */
   static {
 
     try {
-      PROPERTIES = Utils.readProperties(PROPERTY_FILE);
-   
+    	PROPERTIES = Utils.readProperties(PROPERTY_FILE);
     } catch (Exception ex) {
-      System.err.println("Problem reading properties. Fix before continuing.");
-      System.err.println(ex);
+    	logger.error("Problem reading properties. Fix before continuing.", ex);
     }
   }
   
@@ -452,8 +456,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
             m_DataBaseConnection.connectToDatabase();
       DatabaseMetaData dmd = m_DataBaseConnection.getMetaData();
       String table = endOfQuery(true);
-      //System.out.println(table);
-      //check for primary keys
       ResultSet rs = dmd.getPrimaryKeys(null,null,table);
       while(rs.next()){
           m_orderBy.addElement(rs.getString(4));
@@ -539,7 +541,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
           return limitedQuery;
       }
       limitedQuery = query.concat(orderByString+" LIMIT "+offset+", 1");
-      //System.out.println(limitedQuery);
       return limitedQuery;
   }
   
@@ -603,7 +604,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
             catch (SQLException ex) {
                 choice++;
                 if(choice == 3){
-                    System.out.println("Incremental loading not supported for that DBMS. Pseudoincremental mode is used if you use incremental loading.\nAll rows are loaded into memory once and retrieved incrementally from memory instead of from the database.");
                     m_pseudoIncremental = true;
                     break pseudo;
                 }
@@ -620,7 +620,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         for (int i = 1; i <= numAttributes; i++) {
             switch (m_DataBaseConnection.translateDBColumnType(md.getColumnTypeName(i))) {
                 case STRING :
-                    //System.err.println("String --> nominal");
                     ResultSet rs1;
                     String columnName = md.getColumnName(i);
                     if(m_DataBaseConnection.getUpperCase())
@@ -640,7 +639,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
                         rs1 = m_DataBaseConnection.getResultSet();
                     }
                     else{
-                        //System.err.println("Count for nominal values cannot be calculated. Attribute "+columnName+" treated as String.");
                         attributeTypes[i - 1] = Attribute.STRING;
                         break;
                     }
@@ -649,7 +647,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
                     rs1.close();
                     break;
                 case BOOL:
-                    //System.err.println("boolean --> nominal");
                     attributeTypes[i - 1] = Attribute.NOMINAL;
                     m_nominalIndexes[i - 1] = new Hashtable();
                     m_nominalIndexes[i - 1].put("false", new Double(0));
@@ -659,34 +656,27 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
                     m_nominalStrings[i - 1].addElement("true");
                     break;
                 case DOUBLE:
-                    //System.err.println("BigDecimal --> numeric");
                     attributeTypes[i - 1] = Attribute.NUMERIC;
                     break;
                 case BYTE:
-                    //System.err.println("byte --> numeric");
                     attributeTypes[i - 1] = Attribute.NUMERIC;
                     break;
                 case SHORT:
-                    //System.err.println("short --> numeric");
                     attributeTypes[i - 1] = Attribute.NUMERIC;
                     break;
                 case INTEGER:
-                    //System.err.println("int --> numeric");
                     attributeTypes[i - 1] = Attribute.NUMERIC;
                     break;
                 case LONG:
-                    //System.err.println("long --> numeric");
                     attributeTypes[i - 1] = Attribute.NUMERIC;
                     break;
                 case FLOAT:
-                    //System.err.println("float --> numeric");
                     attributeTypes[i - 1] = Attribute.NUMERIC;
                     break;
                 case DATE:
                     attributeTypes[i - 1] = Attribute.DATE;
                     break;
                 default:
-                    //System.err.println("Unknown column type");
                     attributeTypes[i - 1] = Attribute.STRING;
             }
         }
@@ -716,11 +706,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         //get rid of m_idColumn
         if(m_DataBaseConnection.getUpperCase())
               m_idColumn = m_idColumn.toUpperCase();
-        //System.out.println(m_structure.attribute(0).name().equals(idColumn));
         if(m_structure.attribute(0).name().equals(m_idColumn)){
             m_oldStructure = new Instances(m_structure,0);
             m_oldStructure.deleteAttributeAt(0);
-            //System.out.println(m_structure);
         }
         else
             m_oldStructure = new Instances(m_structure,0);
@@ -790,7 +778,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         rs1.close();  
 	break;
       case BOOL:
-	//System.err.println("boolean --> nominal");
 	attributeTypes[i - 1] = Attribute.NOMINAL;
 	m_nominalIndexes[i - 1] = new Hashtable();
 	m_nominalIndexes[i - 1].put("false", new Double(0));
@@ -800,40 +787,32 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 	m_nominalStrings[i - 1].addElement("true");
 	break;
       case DOUBLE:
-	//System.err.println("BigDecimal --> numeric");
 	attributeTypes[i - 1] = Attribute.NUMERIC;
 	break;
       case BYTE:
-	//System.err.println("byte --> numeric");
 	attributeTypes[i - 1] = Attribute.NUMERIC;
 	break;
       case SHORT:
-	//System.err.println("short --> numeric");
 	attributeTypes[i - 1] = Attribute.NUMERIC;
 	break;
       case INTEGER:
-	//System.err.println("int --> numeric");
 	attributeTypes[i - 1] = Attribute.NUMERIC;
 	break;
       case LONG:
-	//System.err.println("long --> numeric");
 	attributeTypes[i - 1] = Attribute.NUMERIC;
 	break;
       case FLOAT:
-	//System.err.println("float --> numeric");
 	attributeTypes[i - 1] = Attribute.NUMERIC;
 	break;
       case DATE:
 	attributeTypes[i - 1] = Attribute.DATE;
 	break;
       default:
-	//System.err.println("Unknown column type");
 	attributeTypes[i - 1] = Attribute.STRING;
       }
     }
 
     // Step through the tuples
-    //System.err.println("Creating instances...");
     FastVector instances = new FastVector();
     while(rs.next()) {
       double[] vals = new double[numAttributes];
@@ -927,7 +906,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     }   
     
     // Create the header and add the instances to the dataset
-    //System.err.println("Creating header...");
     FastVector attribInfo = new FastVector();
     for (int i = 0; i < numAttributes; i++) {
       /* Fix for databases that uppercase column names */
@@ -976,10 +954,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
                 text.append(option.synopsis()+'\n');
                 text.append(option.description()+'\n');
             }
-            System.out.println(text);
         }
     }
-    //System.out.println(result);
     return result;
   }
   
@@ -1263,21 +1239,13 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @param ex the exception to print
    */  
   private void printException(Exception ex){
-  
-      System.out.println("\n--- Exception caught ---\n");
+ 
 	while (ex != null) {
-		System.out.println("Message:   "
-                                   + ex.getMessage ());
-                if(ex instanceof SQLException){
-                    System.out.println("SQLState:  "
-                                   + ((SQLException)ex).getSQLState ());
-                    System.out.println("ErrorCode: "
-                                   + ((SQLException)ex).getErrorCode ());
-                    ex = ((SQLException)ex).getNextException();
-                }
-                else
-                    ex = null;
-		System.out.println("");
+         if(ex instanceof SQLException){
+               ex = ((SQLException)ex).getNextException();
+         }
+         else
+           ex = null;
 	}
       
       

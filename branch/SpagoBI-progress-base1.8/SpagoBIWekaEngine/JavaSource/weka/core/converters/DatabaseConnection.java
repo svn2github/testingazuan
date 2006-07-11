@@ -23,6 +23,8 @@
 package weka.core.converters;
 
 import weka.core.Utils;
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
 import java.util.Properties;
 import java.util.Vector;
 import java.util.StringTokenizer;
@@ -39,6 +41,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSetMetaData;
 import java.sql.PreparedStatement;
 import java.sql.DatabaseMetaData;
+
+import org.apache.log4j.Logger;
 
 /**
  * Connects to a database.
@@ -106,6 +110,8 @@ public class DatabaseConnection implements Serializable {
 
 	public static final int DATE = 8;
 
+	private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+	
 	/*
 	 * Load the database drivers -- the properties files only get consulted when
 	 * the class is initially loaded, not for every object instantiated
@@ -129,15 +135,12 @@ public class DatabaseConnection implements Serializable {
 				String driver = st.nextToken();
 				try {
 					DRIVERS.addElement(Class.forName(driver).newInstance());
-					// System.err.println("Loaded driver: " + driver);
 				} catch (Exception ex) {
-					// Drop through
+					logger.error("Error while adding driver", ex);
 				}
 			}
 		} catch (Exception ex) {
-			System.err
-					.println("Problem reading properties. Fix before continuing.");
-			System.err.println(ex);
+			logger.error("static block DatabaseConnection", ex);
 		}
 	}
 
@@ -362,7 +365,7 @@ public class DatabaseConnection implements Serializable {
 			return;
 
 		if (m_Debug) {
-			System.err.println("Connecting to " + m_DatabaseURL);
+			logger.error("Connecting to " + m_DatabaseURL);
 		}
 		if (connection == null) {
 			if (m_userName.equals("")) {
@@ -390,7 +393,7 @@ public class DatabaseConnection implements Serializable {
 		if (connectionMenagedByExternalPool)
 			return;
 		if (m_Debug) {
-			System.err.println("Disconnecting from " + m_DatabaseURL);
+			logger.error("Disconnecting from " + m_DatabaseURL);
 		}
 		if (connection != null) {
 			connection.close();
@@ -482,7 +485,7 @@ public class DatabaseConnection implements Serializable {
 	public boolean tableExists(String tableName) throws Exception {
 
 		if (m_Debug) {
-			System.err.println("Checking if table " + tableName + " exists...");
+			logger.error("Checking if table " + tableName + " exists...");
 		}
 		DatabaseMetaData dbmd = connection.getMetaData();
 		ResultSet rs;
@@ -498,9 +501,9 @@ public class DatabaseConnection implements Serializable {
 		rs.close();
 		if (m_Debug) {
 			if (tableExists) {
-				System.err.println("... " + tableName + " exists");
+				logger.error("... " + tableName + " exists");
 			} else {
-				System.err.println("... " + tableName + " does not exist");
+				logger.error("... " + tableName + " does not exist");
 			}
 		}
 		return tableExists;
@@ -517,10 +520,6 @@ public class DatabaseConnection implements Serializable {
 	 */
 	public boolean isTableEmpty(String tableName) throws Exception {
 
-		//if (m_Debug) {
-			System.out.println("Checking if table " + tableName + " is empty...");
-		//}
-
 		 // Select the number of rows in the table
         Statement stmt = connection.createStatement();
         String query = "SELECT COUNT(*) FROM";
@@ -530,15 +529,12 @@ public class DatabaseConnection implements Serializable {
 		} else {
 			query += " " + tableName.toUpperCase();
 		}
-        System.out.println("Executing query: " + query);
         ResultSet resultSet = stmt.executeQuery(query);
-        System.out.println("Query executed successfully - " + resultSet);
         
         // Get the number of rows from the result set
         resultSet.next();
         int rowcount = resultSet.getInt(1);
-        System.out.println("Rows num: " + rowcount);
-		
+
 		return (rowcount == 0);
 	}
 

@@ -5,10 +5,13 @@
 **/
 package it.eng.spagobi.engines.weka;
 
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Map;
 import java.util.Properties;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Gioia
@@ -19,6 +22,7 @@ public class Test {
 	//static private String pathStr = "C:\\Documents and Settings\\gioia\\Documenti\\Codice\\Java\\SpagoBIBranch\\SpagoBIWekaEngine\\JavaSource";
 	static private String pathStr = "D:\\Documenti\\Andrea\\Codice\\Java\\SpagoBIBranch\\SpagoBIWekaEngine\\JavaSource";
 	static private File path = new File(pathStr);
+	private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
 	
 	public static final String WRITE_MODE = "writeMode"; 
 	public static final String KEYS = "keys";
@@ -27,7 +31,7 @@ public class Test {
 	public static final String VERSION = "version";
 	
 	static private void log(String msg) {
-		System.out.println(msg);
+		logger.debug("Test:" + msg);
 	}
 	
 	static private File getTemplateFile(String[] args) {

@@ -22,6 +22,10 @@
 
 package weka.gui.beans;
 
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
+import org.apache.log4j.Logger;
+
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.DatabaseConverter;
@@ -86,7 +90,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
   public static final int EXECUTING = 1;
   public static final int TERMINATED = 2;
 
-  
+  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
   
   private class SaveBatchThread extends Thread {
     private DataSink m_DS;
@@ -96,16 +100,13 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
     }
 
     public void run() {
-     
-    	System.out.println(">>> MY SAVER IS ON <<<");
-    	
     	try {
         m_visual.setAnimated();
         m_Saver.setInstances(m_dataSet);
         m_Saver.writeBatch();
 	
       } catch (Exception ex) {
-	ex.printStackTrace();
+    	  logger.error("SaveBatchThread.run", ex);
       } finally {
         block(false);       
         status = TERMINATED;
@@ -139,7 +140,6 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
 	  while(status != TERMINATED) {
 		  try {
 		        Thread.currentThread().sleep(1000);
-		        System.out.println("[" + status + "] keep waiting ...");
 		  } catch (InterruptedException e) {}
 		  
 	  }	  
@@ -217,11 +217,10 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
             try{
                 m_Saver.setDirAndPrefix(m_fileName,"");
             }catch (Exception ex){
-                System.out.println(ex);
+                logger.error("acceptDataSet", ex);
             }
           }
           saveBatch();
-          System.out.println("...relation "+ m_fileName +" saved.");
       }
   }
   
@@ -240,7 +239,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
             try{
                 m_Saver.setDirAndPrefix(m_fileName,"_test_"+e.getSetNumber()+"_of_"+e.getMaxSetNumber());
             }catch (Exception ex){
-                System.out.println(ex);
+            	logger.error("acceptTestSet", ex);
             }
           }
           else{
@@ -249,7 +248,6 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
               ((DatabaseSaver)m_Saver).setTableName(setName+"_test_"+e.getSetNumber()+"_of_"+e.getMaxSetNumber());
           }
           saveBatch();
-          System.out.println("... test set "+e.getSetNumber()+" of "+e.getMaxSetNumber()+" for relation "+ m_fileName +" saved.");
       }
   }
   
@@ -269,7 +267,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
             try{
                 m_Saver.setDirAndPrefix(m_fileName,"_training_"+e.getSetNumber()+"_of_"+e.getMaxSetNumber());
             }catch (Exception ex){
-                System.out.println(ex);
+                logger.error("acceptTrainingSet", ex);
             }
           }
           else{
@@ -278,7 +276,6 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
               ((DatabaseSaver)m_Saver).setTableName(setName+"_training_"+e.getSetNumber()+"_of_"+e.getMaxSetNumber());
           }
           saveBatch();
-          System.out.println("... training set "+e.getSetNumber()+" of "+e.getMaxSetNumber()+" for relation "+ m_fileName +" saved.");
       }
   }
   
@@ -317,7 +314,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
                 try{
                     m_Saver.setDirAndPrefix(m_fileName,"");
                 }catch (Exception ex){
-                    System.out.println(ex);
+                    logger.error("acceptInstance", ex);
                     m_visual.setStatic();
                 }
             }
@@ -328,8 +325,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
             m_Saver.writeIncremental(e.getInstance());
         } catch (Exception ex) {
             m_visual.setStatic();
-            System.err.println("Instance "+e.getInstance() +" could not been saved");
-            ex.printStackTrace();
+            logger.error("acceptInstance", ex);
         }
       }
       if(e.getStatus() == e.BATCH_FINISHED){
@@ -338,12 +334,10 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
             m_Saver.writeIncremental(null);
             //m_firstNotice = true;
             m_visual.setStatic();
-            System.out.println("...relation "+ m_fileName +" saved.");
             m_count = 0;
         } catch (Exception ex) {
             m_visual.setStatic();
-            System.err.println("File could not have been closed.");
-            ex.printStackTrace();
+            logger.error("acceptInstance", ex);
         }
       }
   }
@@ -408,7 +402,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
       jf.setSize(800,600);
       jf.setVisible(true);
     } catch (Exception ex) {
-      ex.printStackTrace();
+    	logger.error("main", ex);
     }
   }
   

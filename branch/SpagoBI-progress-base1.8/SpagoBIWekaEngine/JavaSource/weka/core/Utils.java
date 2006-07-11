@@ -22,12 +22,16 @@
 
 package weka.core;
 
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
 import java.lang.Math;
 import java.lang.reflect.Array;
 import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Random;
+
+import org.apache.log4j.Logger;
 
 /**
  * Class implementing some simple utility methods.
@@ -46,6 +50,7 @@ public final class Utils {
   /** The small deviation allowed in double comparisons */
   public static double SMALL = 1e-6;
 
+  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
   
   /**
    * Reads properties that inherit from three locations. Properties
@@ -75,10 +80,8 @@ public final class Utils {
       //defaultProps.load(ClassLoader.getSystemResourceAsStream(resourceName));
       defaultProps.load(Utils.class.getClassLoader().getResourceAsStream(resourceName));
     } catch (Exception ex) {
-/*      throw new Exception("Problem reading default properties: "
-	+ ex.getMessage()); */
-      System.err.println("Warning, unable to load properties file " + resourceName + " from "
-			 +"system resource (Utils.java)");
+    	logger.error("Warning, unable to load properties file " + resourceName + " from "
+   			         +"system resource (Utils.java)", ex);
     }
 
     // Hardcoded slash is OK here
@@ -1638,126 +1641,22 @@ public final class Utils {
     double[] doublesWithNaN = {4.5, 6.7, Double.NaN, 3.4, 4.8, 1.2, 3.4};
     double[] doubles = {4.5, 6.7, 6.7, 3.4, 4.8, 1.2, 3.4, 6.7, 6.7, 3.4};
     int[] ints = {12, 6, 2, 18, 16, 6, 7, 5, 18, 18, 17};
-
     try {
-
       // Option handling
-      System.out.println("First option split up:");
       if (ops.length > 0) {
-	String[] firstOptionSplitUp = Utils.splitOptions(ops[0]);
-	for (int i = 0; i < firstOptionSplitUp.length; i ++) {
-	  System.out.println(firstOptionSplitUp[i]);
-	}
-      }					       
-      System.out.println("Partitioned options: ");
+    	  String[] firstOptionSplitUp = Utils.splitOptions(ops[0]);
+      }					        
       String[] partitionedOptions = Utils.partitionOptions(ops);
-      for (int i  = 0; i < partitionedOptions.length; i++) {
-	System.out.println(partitionedOptions[i]);
-      }
-      System.out.println("Get flag -f: " + Utils.getFlag('f', ops));
-      System.out.println("Get option -o: " + Utils.getOption('o', ops));
-      System.out.println("Checking for remaining options... ");
       Utils.checkForRemainingOptions(ops);
-      
       // Statistics
-      System.out.println("Original array with NaN (doubles): ");
-      for (int i = 0; i < doublesWithNaN.length; i++) {
-	System.out.print(doublesWithNaN[i] + " ");
-      }
-      System.out.println();
-      System.out.println("Original array (doubles): ");
-      for (int i = 0; i < doubles.length; i++) {
-	System.out.print(doubles[i] + " ");
-      }
-      System.out.println();
-      System.out.println("Original array (ints): ");
-      for (int i = 0; i < ints.length; i++) {
-	System.out.print(ints[i] + " ");
-      }
-      System.out.println();
-      System.out.println("Correlation: " + Utils.correlation(doubles, doubles, 
-							     doubles.length));
-      System.out.println("Mean: " + Utils.mean(doubles));
-      System.out.println("Variance: " + Utils.variance(doubles));
-      System.out.println("Sum (doubles): " + Utils.sum(doubles));
-      System.out.println("Sum (ints): " + Utils.sum(ints));
-      System.out.println("Max index (doubles): " + Utils.maxIndex(doubles));
-      System.out.println("Max index (ints): " + Utils.maxIndex(ints));
-      System.out.println("Min index (doubles): " + Utils.minIndex(doubles));
-      System.out.println("Min index (ints): " + Utils.minIndex(ints));
-      System.out.println("Median (doubles): " + 
-                         Utils.kthSmallestValue(doubles, doubles.length / 2));
-      System.out.println("Median (ints): " + 
-                         Utils.kthSmallestValue(ints, ints.length / 2));
-
-      // Sorting and normalizing
-      System.out.println("Sorted array with NaN (doubles): ");
       int[] sorted = Utils.sort(doublesWithNaN);
-      for (int i = 0; i < doublesWithNaN.length; i++) {
-	System.out.print(doublesWithNaN[sorted[i]] + " ");
-      }
-      System.out.println();
-      System.out.println("Sorted array (doubles): ");
       sorted = Utils.sort(doubles);
-      for (int i = 0; i < doubles.length; i++) {
-	System.out.print(doubles[sorted[i]] + " ");
-      }
-      System.out.println();
-      System.out.println("Sorted array (ints): ");
       sorted = Utils.sort(ints);
-      for (int i = 0; i < ints.length; i++) {
-	System.out.print(ints[sorted[i]] + " ");
-      }
-      System.out.println();
-      System.out.println("Indices from stable sort (doubles): ");
       sorted = Utils.stableSort(doubles);
-      for (int i = 0; i < doubles.length; i++) {
-	System.out.print(sorted[i] + " ");
-      }
-      System.out.println();
-      System.out.println("Indices from sort (ints): ");
       sorted = Utils.sort(ints);
-      for (int i = 0; i < ints.length; i++) {
-	System.out.print(sorted[i] + " ");
-      }
-      System.out.println();
-      System.out.println("Normalized array (doubles): ");
       Utils.normalize(doubles);
-      for (int i = 0; i < doubles.length; i++) {
-	System.out.print(doubles[i] + " ");
-      }
-      System.out.println();
-      System.out.println("Normalized again (doubles): ");
       Utils.normalize(doubles, Utils.sum(doubles));
-      for (int i = 0; i < doubles.length; i++) {
-	System.out.print(doubles[i] + " ");
-      }
-      System.out.println();
-      
-      // Pretty-printing
-      System.out.println("-4.58: " + Utils.doubleToString(-4.57826535, 2));
-      System.out.println("-6.78: " + Utils.doubleToString(-6.78214234, 6,2));
-      
-      // Comparisons
-      System.out.println("5.70001 == 5.7 ? " + Utils.eq(5.70001, 5.7));
-      System.out.println("5.70001 > 5.7 ? " + Utils.gr(5.70001, 5.7));
-      System.out.println("5.70001 >= 5.7 ? " + Utils.grOrEq(5.70001, 5.7));
-      System.out.println("5.7 < 5.70001 ? " + Utils.sm(5.7, 5.70001));
-      System.out.println("5.7 <= 5.70001 ? " + Utils.smOrEq(5.7, 5.70001));
-      
-      // Math
-      System.out.println("Info (ints): " + Utils.info(ints));
-      System.out.println("log2(4.6): " + Utils.log2(4.6));
-      System.out.println("5 * log(5): " + Utils.xlogx(5));
-      System.out.println("5.5 rounded: " + Utils.round(5.5));
-      System.out.println("5.55555 rounded to 2 decimal places: " + 
-			 Utils.roundDouble(5.55555, 2));
-      
-      // Arrays
-      System.out.println("Array-Dimensions of 'new int[][]': " + Utils.getArrayDimensions(new int[][]{}));
-      System.out.println("Array-Dimensions of 'new int[][]{{1,2,3},{4,5,6}}': " + Utils.getArrayDimensions(new int[][]{{1,2,3},{4,5,6}}));
       String[][][] s = new String[3][4][];
-      System.out.println("Array-Dimensions of 'new String[3][4][]': " + Utils.getArrayDimensions(s));
     } catch (Exception e) {
       e.printStackTrace();
     }

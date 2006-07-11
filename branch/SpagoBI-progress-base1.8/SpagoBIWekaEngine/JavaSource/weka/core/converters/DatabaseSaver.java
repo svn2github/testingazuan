@@ -22,6 +22,8 @@
 
 package weka.core.converters;
 
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -31,6 +33,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
 
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -64,6 +68,8 @@ import weka.core.Utils;
 public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		IncrementalConverter, DatabaseConverter, OptionHandler {
 
+	private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+	
 	/** The database connection */
 	private DatabaseConnection databaseConnection;
 
@@ -153,11 +159,8 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 
 		try {
 			PROPERTIES = Utils.readProperties(PROPERTY_FILE);
-
 		} catch (Exception ex) {
-			System.err
-					.println("Problem reading properties. Fix before continuing.");
-			System.err.println(ex);
+			logger.error("Problem reading properties. Fix before continuing.", ex);
 		}
 	}
 
@@ -205,10 +208,11 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		if (getWriteMode() == CANCEL) {
 			try {
 				databaseConnection.execute("DROP TABLE " + m_tableName);
-				if (databaseConnection.tableExists(m_tableName))
-					System.err.println("Table cannot be dropped.");
+				if(databaseConnection.tableExists(m_tableName)) {
+					logger.error("Table cannot be dropped");
+				}
 			} catch (Exception ex) {
-				printException(ex);
+				logger.error("cancel", ex);
 			}
 			resetOptions();
 		}
@@ -504,15 +508,8 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		}
 		
 		query.append(" )");
-		
-		System.out.println(query);
-
 		databaseConnection.execute(query.toString());
-		/*
-		if (!databaseConnection.tableExists(m_tableName)) {
-			throw new IOException("Table cannot be built.");
-		}
-		*/
+
 	}
 
 	private void prepareStructure() throws Exception {
@@ -526,57 +523,37 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			m_createText = m_createText.toUpperCase();
 		}
 		m_tableName = m_tableName.replaceAll("[^\\w]", "_");
-		
-		System.out.println("-----------------> table name: " + m_tableName);
 
 		switch (dbWriteMode) {
 		case DROP_INSERT:
-			System.out.println("Write mode: DROP_INSERT");
 			try {
 				databaseConnection.execute("DROP TABLE " + m_tableName);
 			} catch(Exception e) {
-				System.err.println("Table cannot be dropped.");
+				logger.error("Table cannot be dropped.");
 			}
-			/*
-			if (databaseConnection.tableExists(m_tableName)) {
-				databaseConnection.execute("DROP TABLE " + m_tableName);
-				if (databaseConnection.tableExists(m_tableName)) {
-					System.err.println("Table cannot be dropped.");
-					throw new Exception();
-				}
-			}
-			*/
 			writeStructure();
 			break;
 		case DELETE_INSERT:
-			System.out.println("Write mode: DELETE_INSERT");
 			if (!databaseConnection.tableExists(m_tableName)) {
-				System.out.println("Creating table " + m_tableName + " ...");
 				writeStructure();
 				break;
 			}
-
-			System.out.println("Deleating table " + m_tableName + " ...");
 			databaseConnection.execute("DELETE FROM " + m_tableName);
 			if (!databaseConnection.isTableEmpty(m_tableName)) {
-				System.err.println("Table cannot be delated.");
+				logger.error("Table cannot be delated.");
 				throw new Exception();
 			}
-			System.out.println("Table " + m_tableName + " deleated successfully");
 			break;
 		case INSERT:
-			System.out.println("Write mode: INSERT");
 			if (!databaseConnection.tableExists(m_tableName))
 				writeStructure();
 			break;
 		case UPDATE_INSERT:
-			System.out.println("Write mode: UPDATE_INSERT");
 			if (!databaseConnection.tableExists(m_tableName))
 				writeStructure();
 			break;
 			
 		default:
-			System.out.println("Write mode: DEFAULT (DELETE_INSERT)");
 			if (!databaseConnection.tableExists(m_tableName))
 				writeStructure();
 			break;
@@ -658,7 +635,6 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			insert.append(", '" + version + "'");
 		
 		insert.append(" )");
-		System.out.println(" - " + insert.toString());
 		databaseConnection.fastExecute(insert.toString());
 		/*
 		if (databaseConnection.execute(insert.toString()) == false
@@ -692,15 +668,12 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		if(versioning && isKeyColumnName(versionColumnName)){
 			where.append(" AND " + versionColumnName + " = '" + version + "'");
 		}
-		
-		System.out.println(select.toString() + where.toString());		
+
 		if(!databaseConnection.fastExecute(select.toString() + where.toString())) {
 			writeInstance(inst);
-			System.out.println("-----------> WRITE");
 			return;
 		}
-		
-		System.out.println("-----------> UPDATE");
+
 		
 		StringBuffer update = new StringBuffer();
 		update.append("UPDATE ");
@@ -718,8 +691,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 				update.append(stringInsert);
 			}
 		}
-		
-		System.out.println(update.toString() + where.toString());
+
 		databaseConnection.fastExecute(update.toString() + where.toString());	
 	}
 
@@ -813,14 +785,11 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 				connectToDatabase();
 			setWriteMode(WRITE);
 			prepareStructure();
-			System.out.println("Writing instances to db ...");
 			for (int i = 0; i < instances.numInstances(); i++) {
 				if(dbWriteMode != UPDATE_INSERT) {
-					System.out.println("Inserting instance into db (" + (i+1)+ "/" + instances.numInstances() + ")");
 					writeInstance(instances.instance(i));
 				}
 				else {
-					System.out.println("Updating instance (" + (i+1)+ "/" + instances.numInstances() + ")");
 					updateInstance(instances.instance(i));
 				}
 				
@@ -842,18 +811,11 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	 */
 	private void printException(Exception ex) {
 
-		System.out.println("\n--- Exception caught ---\n");
 		while (ex != null) {
-			System.out.println("Message:   " + ex.getMessage());
 			if (ex instanceof SQLException) {
-				System.out.println("SQLState:  "
-						+ ((SQLException) ex).getSQLState());
-				System.out.println("ErrorCode: "
-						+ ((SQLException) ex).getErrorCode());
 				ex = ((SQLException) ex).getNextException();
 			} else
 				ex = null;
-			System.out.println("");
 		}
 
 	}
@@ -945,7 +907,6 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 				File inputFile = new File(inputString);
 				al.setSource(inputFile);
 				setInstances(al.getDataSet());
-				// System.out.println(getInstances());
 				if (tableString.length() == 0)
 					m_tableName = getInstances().relationName();
 			} catch (Exception ex) {
@@ -994,7 +955,6 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 			asv.writeBatch();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println(text);
 		}
 
 	}

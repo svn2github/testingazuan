@@ -29,7 +29,6 @@ public class ParametersFiller {
 			int index = -1;
 			while( (index = line.indexOf("$P{")) != -1) {
 				String pname = line.substring(index + 3, line.indexOf("}"));
-				//System.out.println(pname);
 				line = line.substring(0, index) + params.get(pname) +
 					   line.substring(line.indexOf("}") + 1 , line.length());
 			}
@@ -47,7 +46,6 @@ public class ParametersFiller {
 			int index = -1;
 			while( (index = line.indexOf("$P{")) != -1) {
 				String pname = line.substring(index + 3, line.indexOf("}"));
-				System.out.println(pname + ": " +  params.get(pname));
 				line = line.substring(0, index) + params.get(pname) +
 					   line.substring(line.indexOf("}") + 1 , line.length());
 			}

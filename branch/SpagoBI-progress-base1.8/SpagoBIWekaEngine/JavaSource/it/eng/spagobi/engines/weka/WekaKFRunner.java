@@ -66,8 +66,7 @@ public class WekaKFRunner {
 	private static transient Logger logger = Logger.getLogger(WekaKFRunner.class);
 	
 	static private void log(String msg) {
-		//logger.debug("WekaKFRunner:" + msg);
-		System.out.println("WekaKFRunner:" + msg);
+		logger.debug("WekaKFRunner:" + msg);
 	}
 	
 	

@@ -176,12 +176,11 @@ public class PamphletGeneratorFinalTA {
             			XPropertySet xSPS = (XPropertySet)UnoRuntime.queryInterface(XPropertySet.class, xShapeNew);
             			try {  
             				 String fileoopath = transformPathForOpenOffice(fileTmpImg);
-            				 
             				 debug("execute", "Path image loaded into openoffice = " + fileoopath);
-            				 
             				 xSPS.setPropertyValue("GraphicURL", "file:///" + fileoopath);            
             			} catch (Exception e) {                 
-            				e.printStackTrace(System.err);
+            				SpagoBITracer.major(PamphletsConstants.NAME_MODULE, PamphletGeneratorFinalTA.class.getName(),
+    								            "execute", "error while adding graphic shape", e);
             			}
             			shapetoadd.add(xShapeNew);
             		}

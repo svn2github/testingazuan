@@ -67,6 +67,13 @@ public class ListTestQueryModule extends AbstractBasicListModule {
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		
+		String lovProviderModified = (String) request.getAttribute("lovProviderModified");
+		if (lovProviderModified != null && !lovProviderModified.trim().equals("")) {
+			response.setAttribute("lovProviderModified", lovProviderModified);
+			HashMap map = new HashMap();
+			map.put("lovProviderModified", lovProviderModified);
+			response.setAttribute("PARAMETERS_MAP", map);
+		}
 		RequestContainer requestContainer = getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		ModalitiesValue modVal = (ModalitiesValue) session.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);

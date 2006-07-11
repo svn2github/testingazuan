@@ -17,7 +17,10 @@
 	SourceBean listQueryMR = (SourceBean) aServiceResponse.getAttribute("ListTestQueryModule"); 
 	SourceBean listScriptMR = (SourceBean) aServiceResponse.getAttribute("ListTestScriptModule"); 
 
-	String lovProviderModified = (String) detailMR.getAttribute("lovProviderModified");
+	String lovProviderModified = null;
+	if (detailMR != null) lovProviderModified = (String) detailMR.getAttribute("lovProviderModified");
+	else if (listQueryMR != null) lovProviderModified = (String) listQueryMR.getAttribute("lovProviderModified");
+	else if (listScriptMR != null) lovProviderModified = (String) listScriptMR.getAttribute("lovProviderModified");
 	if (lovProviderModified == null) lovProviderModified = "";
 	
 	String modality = null;

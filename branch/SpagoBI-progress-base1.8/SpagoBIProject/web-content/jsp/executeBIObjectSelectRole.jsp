@@ -23,7 +23,7 @@
 	// build the form url	
 	PortletURL formAct = renderResponse.createActionURL();
     formAct.setParameter(AdmintoolsConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
-    formAct.setParameter(SpagoBIConstants.MESSAGEDET, ExecuteBIObjectModule.EXEC_PHASE_SELECTED_ROLE);
+    formAct.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE);
     formAct.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     
     String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);

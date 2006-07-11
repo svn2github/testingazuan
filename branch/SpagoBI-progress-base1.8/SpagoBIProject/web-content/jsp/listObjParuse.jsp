@@ -30,14 +30,7 @@
    	PortletURL backUrl = renderResponse.createActionURL();
    	backUrl.setParameter("PAGE", "ListObjParusePage");
    	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_MODULE");
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-//  backUrl.setParameter("PAGE", "DetailBIObjectPage");
-//  backUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_SELECT);
-//  backUrl.setParameter("selected_obj_par_id", objpar.getId().toString());
-//  backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, objId.toString());
-//	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-//	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-   	
+   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");   	
 %>
 <form method='POST' action='<%= formUrl.toString() %>' id='objParusesForm'>
 	<input type="hidden" name="obj_par_id" value="<%=objpar.getId()%>" />
@@ -92,7 +85,7 @@
 		<div class="div_detail_area_forms_objParuse">
 		
 		<table style="border-spacing:5px;border-collapse:separate;">
-			<tr>
+			<tr class="portlet-form-field-label">
 				<th align="center">
 					<spagobi:message key = "SBIDev.listObjParuses.activeDependancies" /> 
 				</th>
@@ -135,7 +128,7 @@
 					%>
 					<input type="checkbox" name="paruse_id" value="<%=paruse.getUseID()%>" <%=checked%>/>
 				</td>
-				<td>
+				<td class="portlet-font">
 					<%=paruse.getLabel() + ": " + paruse.getDescription() %>
 				</td>
 				<td>

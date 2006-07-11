@@ -77,14 +77,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 	
 	public static final String MODULE_PAGE = "ExecuteBIObjectPage";	
 	public static final String MESSAGE_EXECUTION = "MESSAGEEXEC";	
-		
-	//public static final String EXEC_PHASE_CREATE_PAGE = "EXEC_PHASE_CREATE_PAGE";
-	//public static final String EXEC_PHASE_SELECTED_ROLE = "EXEC_PHASE_SELECTED_ROLE";
-	//public static final String EXEC_PHASE_RUN_SUBOJECT = "EXEC_SUBOBJECT";
-	//public static final String EXEC_PHASE_DELETE_SUBOJECT = "DELETE_SUBOBJECT";
-	//public static final String EXEC_PHASE_RETURN_FROM_LOOKUP = "EXEC_PHASE_RETURN_FROM_LOOKUP";
-	//public static final String EXEC_CHANGE_STATE = "EXEC_CHANGE_STATE";
-	//public static final String EXEC_PHASE_RUN = "EXEC_PHASE_RUN";
 	
 	
 	public void init(SourceBean config) {}
@@ -116,19 +108,19 @@ public class ExecuteBIObjectModule extends AbstractModule
 				throw userError;
 			}
 			
-			if(messageExec.equalsIgnoreCase(ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE))  {
+			if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_CREATE_PAGE))  {
 				pageCreationHandler(request, response);
-			} else if(messageExec.equalsIgnoreCase(ObjectsTreeConstants.EXEC_PHASE_RUN_SUBOJECT)) {
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_RUN_SUBOJECT)) {
 				executionSubObjectHandler(request, response);
-			} else if(messageExec.equalsIgnoreCase(ObjectsTreeConstants.EXEC_PHASE_DELETE_SUBOJECT)) {
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_DELETE_SUBOJECT)) {
 				deleteSubObjectHandler(request, response);
-			} else if(messageExec.equalsIgnoreCase(ObjectsTreeConstants.EXEC_PHASE_SELECTED_ROLE)) {
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE)) {
 				selectRoleHandler(request, response);	
-			} else if(messageExec.equalsIgnoreCase(ObjectsTreeConstants.EXEC_PHASE_RETURN_FROM_LOOKUP)) {
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_RETURN_FROM_LOOKUP)) {
 				lookUpReturnHandler(request, response);
-			} else if(messageExec.equalsIgnoreCase(ObjectsTreeConstants.EXEC_PHASE_RUN))  {
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_RUN))  {
 				executionHandler(request, response);
-			} else if(messageExec.equalsIgnoreCase(ObjectsTreeConstants.EXEC_CHANGE_STATE)){
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_CHANGE_STATE)){
 				changeStateHandler(request, response);
 			} else {	
 		   	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 

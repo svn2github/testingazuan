@@ -140,4 +140,12 @@ public class SpagoBIConstants {
 
 	public static final String IMPORTEXPORT_OPERATION = "IMPORTEXPORT_OPERATION";
 	public static final String OPERATION_PAMPHLETS_VIEW_TREE = "OPERATION_PAMPHLETS_VIEW_TREE";
+	
+	public static final String EXEC_PHASE_CREATE_PAGE = "EXEC_PHASE_CREATE_PAGE";
+	public static final String EXEC_PHASE_SELECTED_ROLE = "EXEC_PHASE_SELECTED_ROLE";
+	public static final String EXEC_PHASE_RUN_SUBOJECT = "EXEC_SUBOBJECT";
+	public static final String EXEC_PHASE_DELETE_SUBOJECT = "DELETE_SUBOBJECT";
+	public static final String EXEC_PHASE_RETURN_FROM_LOOKUP = "EXEC_PHASE_RETURN_FROM_LOOKUP";
+	public static final String EXEC_CHANGE_STATE = "EXEC_CHANGE_STATE";
+	public static final String EXEC_PHASE_RUN = "EXEC_PHASE_RUN";
 }

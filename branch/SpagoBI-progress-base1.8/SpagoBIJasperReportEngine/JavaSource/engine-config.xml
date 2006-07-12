@@ -24,7 +24,7 @@
 	-->
 	<!-- ====================================================================================== -->
 	<!--
-	<CONNECTIONS default="mysqlfoodmart">
+	<CONNECTIONS default="hsqlfoodmart">
 		<CONNECTION name="hsqlfoodmart" 
 					isJNDI="true"
 					initialContext="java:comp/env"

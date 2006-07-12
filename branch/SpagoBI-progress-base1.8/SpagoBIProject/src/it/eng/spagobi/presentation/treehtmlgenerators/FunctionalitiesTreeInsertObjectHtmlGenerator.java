@@ -279,11 +279,11 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
 	   		if (initialPath != null) {
-	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, obj, true);
-	   			else addItemForJSTree(htmlStream, folder, obj, false);
+	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, obj, false, true);
+	   			else addItemForJSTree(htmlStream, folder, obj, false, false);
 	   		} else {
-	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, obj, true);
-	   			else addItemForJSTree(htmlStream, folder, obj, false);
+	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, obj, true, false);
+	   			else addItemForJSTree(htmlStream, folder, obj, false, false);
 	   		}
 	   	}
 	   	htmlStream.append("				document.write(treeFunctIns);\n");
@@ -295,13 +295,16 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		
 	}
 
-	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, BIObject obj, boolean isRoot) {
+	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, BIObject obj, 
+			boolean isRoot, boolean isInitialPath) {
 		
 		String nameLabel = folder.getName();
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
 		String codeType = folder.getCodType();
 		Integer id = folder.getId();
-		Integer parentId = folder.getParentId();
+		Integer parentId = null;
+		if (isInitialPath) parentId = new Integer (dTreeRootId);
+		else parentId = folder.getParentId();
 
 		if (isRoot) {
 			htmlStream.append("	treeFunctIns.add(" + id + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");

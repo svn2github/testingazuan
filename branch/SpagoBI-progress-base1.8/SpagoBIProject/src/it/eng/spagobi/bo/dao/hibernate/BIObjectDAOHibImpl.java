@@ -1121,13 +1121,15 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			Query hibQuery = aSession.createQuery(
 			"select " +
-			"	objects " +
+			"	distinct(objects) " +
 			"from " +
 			"	SbiObjects as objects, SbiObjFunc as objFuncs, SbiFunctions as functions " +
 			"where " +
 			"	objects.biobjId = objFuncs.id.sbiObjects.biobjId " +
 			"	and objFuncs.id.sbiFunctions.functId = functions.functId " +
-			"	and functions.path like '" + initialPath + "/%' " + 
+			"	and " +
+			"		(functions.path = '" + initialPath + "' " +
+			"		 or functions.path like '" + initialPath + "/%' ) " + 
 			"order by " +
 			"	objects.name");
 			List hibList = hibQuery.list();

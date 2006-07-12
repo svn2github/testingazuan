@@ -33,6 +33,7 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
@@ -47,7 +48,8 @@ import java.util.List;
 public class ListBIObjectsModule extends AbstractBasicListModule {
 	
 	protected IEngUserProfile profile = null; 
-
+	protected String initialPath = null;
+	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 
 		RequestContainer requestContainer = this.getRequestContainer();	
@@ -55,7 +57,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
-        String initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
+        initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
 		
 		SourceBean moduleConfig = null;
 		if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor)) {
@@ -204,8 +206,27 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		DESCRIPTION=\"" + obj.getDescription() + "\"";
 		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
-		boolean canExec = false;
+		
 		List functionalities = obj.getFunctionalities();
+		int visibleInstances = 0;
+		if (initialPath != null && !initialPath.trim().equals("")) {
+			// in case of local administrator, he can admin only a part of the instances of the document
+			for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext(); ) {
+				Integer funcId = (Integer) funcIt.next();
+				LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(funcId, false);
+				String folderPath = folder.getPath();
+				if (folderPath.equalsIgnoreCase(initialPath) || folderPath.startsWith(initialPath + "/")) {
+					visibleInstances++;
+				}
+			}
+			if (visibleInstances == 0) return null;
+		} else {
+			// in case of global administrator, he can admin all the instances of the document
+			visibleInstances = functionalities.size();
+		}
+		rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
+		
+		boolean canExec = false;
 		for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext(); ) {
 			Integer funcId = (Integer) funcIt.next();
 			if (ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
@@ -213,7 +234,6 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 				break;
 			}
 		}
-		rowSBStr += "		INSTANCES=\"" + functionalities.size() + "\"";
 		rowSBStr += "		canExec=\"" + canExec + "\"";
 		rowSBStr += " 		/>";
 		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
@@ -361,7 +381,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		   				   "		</CHANGE_VIEW_BUTTON>";	
 		moduleConfigStr += "		<BACK_BUTTON confirm=\"FALSE\" image=\"/img/back.png\" label=\"SBISet.objects.backButt\"> " +
         				   "			<PARAMETER name=\"ACTION_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"START_ACTION\"/> " +
-        				   "			<PARAMETER name=\"PUBLISHER_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"LoginSBISettingsPublisher\"/> " +
+        				   "			<PARAMETER name=\"PUBLISHER_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"LoginSBIAdministrationContextPublisher\"/> " +
         				   "			<PARAMETER name=\"" + LightNavigationManager.LIGHT_NAVIGATOR_RESET + "\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +
         				   "		</BACK_BUTTON>";
       	moduleConfigStr += "	</BUTTONS>";

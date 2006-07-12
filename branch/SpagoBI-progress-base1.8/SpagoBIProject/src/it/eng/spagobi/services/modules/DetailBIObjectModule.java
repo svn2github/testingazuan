@@ -39,6 +39,7 @@ import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
+import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.TemplateVersion;
@@ -67,6 +68,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.portlet.ActionRequest;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 
 import org.apache.commons.fileupload.portlet.PortletFileUpload;
@@ -92,6 +94,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	private String actor = null;
 	private EMFErrorHandler errorHandler = null;
 	protected IEngUserProfile profile;
+	protected String initialPath = null;
 	
 	SessionContainer session = null;
 	
@@ -115,6 +118,13 @@ public class DetailBIObjectModule extends AbstractModule {
 			if (PortletFileUpload.isMultipartContent(actionRequest)) {
 				request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
 			}
+		}
+		
+		PortletPreferences prefs = portletRequest.getPreferences();
+		String modality = (String) prefs.getValue(BIObjectsModule.MODALITY, "");
+		initialPath = null;
+		if (modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
+			initialPath = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
 		}
 		
 		RequestContainer requestContainer = this.getRequestContainer();		
@@ -1021,9 +1031,8 @@ public class DetailBIObjectModule extends AbstractModule {
 			getErrorHandler().addError(error);
 		}
 		
-		// in case the user is an administrator, he can see all the functionalities and all the documents inside them
+		// in case the user is not an administrator, folders where the user is not a developer must remain
 		if (!SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) && mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
-			// folder where the user is not a developer must remain
 			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 			BIObject prevObj = objDAO.loadBIObjectById(id);
 			List prevFuncsId = prevObj.getFunctionalities();
@@ -1034,6 +1043,26 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 			}
 		}
+		// in case the user is a local administrator, folders where he cannot admin must remain
+		if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) 
+				&& initialPath != null && !initialPath.trim().equals("")  
+				&& mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
+			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
+			BIObject prevObj = objDAO.loadBIObjectById(id);
+			List functionalitiesId = prevObj.getFunctionalities();
+			Iterator it = functionalitiesId.iterator();
+			while (it.hasNext()) {
+				Integer folderId = (Integer) it.next();
+				LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
+				String folderPath = folder.getPath();
+				if (!folderPath.equalsIgnoreCase(initialPath) && !folderPath.startsWith(initialPath + "/")) {
+					functionalities.add(folderId);
+				}
+			}
+		}
+		
+		// if the user is a global administrator, he can see all functionalities
+		
 		obj.setFunctionalities(functionalities);
 
 		if (mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
@@ -1112,8 +1141,21 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 			} else {
 				if (SpagoBIConstants.ADMIN_ACTOR.equals(actor)) {
-					// deletes the document from all the folders, no matter the permissions
-					objdao.eraseBIObject(obj, null);
+					if (initialPath != null && !initialPath.trim().equals("")) {
+						// in case of local administrator, deletes the document in the folders where he can admin
+						List funcsId = obj.getFunctionalities();
+						for (Iterator it = funcsId.iterator(); it.hasNext(); ) {
+							Integer idFunct = (Integer) it.next();
+							LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(idFunct, false);
+							String folderPath = folder.getPath();
+							if (folderPath.equalsIgnoreCase(initialPath) || folderPath.startsWith(initialPath + "/")) {
+								objdao.eraseBIObject(obj, idFunct);
+							}
+						}
+					} else {
+						// deletes the document from all the folders, no matter the permissions
+						objdao.eraseBIObject(obj, null);
+					}
 				} else {
 					// deletes the document from all the folders on which the profile is a developer
 					List funcsId = obj.getFunctionalities();
@@ -1186,10 +1228,17 @@ public class DetailBIObjectModule extends AbstractModule {
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();
 		    response.setAttribute(NAME_ATTR_LIST_ENGINES, engines);
 		    response.setAttribute(NAME_ATTR_LIST_OBJ_TYPES, types);
-		    response.setAttribute(NAME_ATTR_LIST_STATES, states);		    
+		    response.setAttribute(NAME_ATTR_LIST_STATES, states);
 			List functionalities = new ArrayList();
 			try {
-				functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+				if (initialPath != null && !initialPath.trim().equals("")) {
+					functionalities = DAOFactory.getLowFunctionalityDAO().loadSubLowFunctionalities(initialPath, false);
+					//response.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.FILTER_TREE_MODALITY);
+					response.setAttribute(TreeObjectsModule.PATH_SUBTREE, initialPath);
+				} else {
+					functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+					//response.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.ENTIRE_TREE_MODALITY);
+				}
 			} catch (EMFUserError e) {
 				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
 						"DetailBIObjectsMOdule", 

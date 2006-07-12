@@ -30,6 +30,7 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
@@ -38,10 +39,14 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.AbstractHibernateConnectionCheckListModule;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.Iterator;
 import java.util.List;
+
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
 
 /**
  * @author Gioia
@@ -49,7 +54,8 @@ import java.util.List;
  */
 public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule {
 	
-	IEngUserProfile profile = null;
+	protected IEngUserProfile profile = null;
+	protected String initialPath = null;
 	
 	public void save() throws Exception {
 		super.save();
@@ -82,7 +88,12 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String actor = (String) sessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-        String initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
+        PortletRequest portReq = PortletUtilities.getPortletRequest();
+		PortletPreferences prefs = portReq.getPreferences();
+		String modality = (String)prefs.getValue(BIObjectsModule.MODALITY, "");
+		if (modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
+			initialPath = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
+		}
         String objIdStr = (String) sessionContainer.getAttribute("SUBJECT_ID");
         Integer objId = null;
         if (objIdStr != null) objId = new Integer (objIdStr);
@@ -144,6 +155,22 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 	
 	private SourceBean makeAdminListRow(BIObject obj) throws Exception {
 		
+		if (initialPath != null && !initialPath.trim().equals("")) {
+			boolean isVisible = false;
+			List functionalitiesId = obj.getFunctionalities();
+			Iterator it = functionalitiesId.iterator();
+			while (it.hasNext()) {
+				Integer id = (Integer) it.next();
+				LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(id, false);
+				String folderPath = folder.getPath();
+				if (folderPath.equalsIgnoreCase(initialPath) || folderPath.startsWith(initialPath + "/")) {
+					isVisible = true;
+					break;
+				}
+			}
+			if (!isVisible) return null;
+		}
+
 		String rowSBStr = "<ROW ";
 		rowSBStr += "		OBJ_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";

@@ -194,11 +194,11 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
 	   		if (initialPath != null) {
-	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);
-	   			else addItemForJSTree(htmlStream, folder, false);
+	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, false, true);
+	   			else addItemForJSTree(htmlStream, folder, false, false);
 	   		} else {
-	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true);
-	   			else addItemForJSTree(htmlStream, folder, false);
+	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true, false);
+	   			else addItemForJSTree(htmlStream, folder, false, false);
 	   		}
 	   	}
     	htmlStream.append("				document.write(treeCMS);\n");
@@ -210,13 +210,16 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return htmlStream;
 	}
 	
-	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
+	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, 
+			boolean isRoot, boolean isInitialPath) {
 		
 		String nameLabel = folder.getName();
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
-		Integer parentId = folder.getParentId();
+		Integer parentId = null;
+		if (isInitialPath) parentId = new Integer (dTreeRootId);
+		else parentId = folder.getParentId();
 
 		if (isRoot) {
 			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");

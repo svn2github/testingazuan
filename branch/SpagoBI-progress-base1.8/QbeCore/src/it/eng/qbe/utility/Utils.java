@@ -8,11 +8,13 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
 
+
 import java.io.File;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.jar.JarFile;
 
+import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.SessionFactory;
@@ -227,6 +229,39 @@ public class Utils {
 			String str = String.valueOf(System.currentTimeMillis());
 			Logger.debug(Utils.class,"Last Update Timestamp ["+str+"]");
 			reqContainer.getSessionContainer().setAttribute("QBE_LAST_UPDATE_TIMESTAMP", str);
+	}
+	
+	public static IQbeMessageHelper getQbeMessageHelper(){
+		String qbeMsgHelperClass = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MSG-HELPER.className");
+		
+		IQbeMessageHelper msgHelper = null;
+		try{
+			msgHelper = (IQbeMessageHelper)Class.forName(qbeMsgHelperClass).newInstance();
+		}catch (Exception e) {
+			e.printStackTrace();
+			Logger.error(Utils.class, e);
+		}
+		return msgHelper;
+	}
+	
+	
+	public static String getReportServletContextAddress(){
+		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
+		//		 Retrieve Locale
+		String path = null;
+		if (qbeMode.equalsIgnoreCase("WEB")){
+			path = "..";
+		}else{
+			PortletRequest portletRequest = it.eng.spago.util.PortletUtilities.getPortletRequest();
+			Logger.debug(Utils.class, 
+					"getReportServletContextAddress portlet request obtained: " + portletRequest);
+			path ="http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
+			Logger.debug(Utils.class, 
+					"getReportServletContextAddress using context path: " + path);
+		}
+		
+		return path;
+		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	}
 	
 	

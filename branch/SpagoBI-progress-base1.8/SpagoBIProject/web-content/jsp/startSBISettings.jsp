@@ -55,6 +55,7 @@
 				</a>
 			</td>
 		</tr>
+		<%--
 		<tr class="portlet-font">
 			<td width="100" align="center">
 				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderAdministrationIcon.png")%>' />
@@ -85,6 +86,7 @@
 				</a>
 			</td>
 		</tr>
+		--%>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
 				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.jpg")%>' />
@@ -135,6 +137,7 @@
 		<%
 			}
 		%>
+		<%--
 		<%
 			boolean pamphletsInst = false;
 			SourceBean compPampSB = (SourceBean)spagoConfig.getFilteredSourceBeanAttribute("SPAGOBI_COMPONENTS.SPAGOBI_COMPONENT", "name", "pamphlets");
@@ -168,7 +171,7 @@
 		<%
 			}
 		%>
-	
+	    --%>
 	
 	</table>
 	<br/>

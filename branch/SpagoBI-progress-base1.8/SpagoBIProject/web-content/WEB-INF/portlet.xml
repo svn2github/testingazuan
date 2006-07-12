@@ -35,13 +35,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<short-title>Events Monitor</short-title>
         	<keywords>Events Monitor</keywords>
         </portlet-info>
-        <portlet-preferences>
-        	<preference>
-        		<name>language</name>
-        		<value>en</value>
-        		<value>US</value>
-        	</preference>
-        </portlet-preferences>
 	</portlet>
 
 
@@ -77,11 +70,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-info>
         <portlet-preferences>
         	<preference>
-        		<name>language</name>
-        		<value>en</value>
-        		<value>US</value>
-        	</preference>
-        	<preference>
         		<name>OBJECTS_VIEW</name>
         		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
         	</preference>
@@ -89,7 +77,46 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 	</portlet>
 	
 	
-
+    <portlet>
+        <description>Administration Environment</description>		
+        <portlet-name>SBIAdministrationContext</portlet-name>		
+        <display-name>Administration Environment</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>ACTION</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>LOGIN_ACTION_SBI_ADMINISTRATION_CONTEXT</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+        <supported-locale>en</supported-locale>       
+		<portlet-info>
+        	<title>Administration Environment</title>
+        	<short-title>Administration Environment</short-title>
+        	<keywords>Administration Environment</keywords>
+        </portlet-info>
+        <portlet-preferences>
+        	<preference>
+        		<name>MODALITY</name>
+        		<value>(FILTER_TREE)</value>
+        	</preference>
+            <preference> 
+        		<name>PATH_SUBTREE</name>
+        		<value>paths of the subTree in modality FILTER_TREE</value>
+        	</preference>
+        </portlet-preferences>
+	</portlet>
 
 
 
@@ -210,11 +237,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<keywords>Development Environment</keywords>
         </portlet-info>
         <portlet-preferences>
-        	<preference>
-        		<name>language</name>
-        		<value>en</value>
-        		<value>US</value>
-        	</preference>
         	<preference>
         		<name>OBJECTS_VIEW</name>
         		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>

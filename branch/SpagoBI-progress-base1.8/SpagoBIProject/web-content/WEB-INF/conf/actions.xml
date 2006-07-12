@@ -12,5 +12,8 @@
  <ACTION name="LOGIN_ACTION_SBI_DEVELOPMENT_CONTEXT" class="it.eng.spagobi.services.actions.PortletLoginAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_ADMINISTRATION_CONTEXT" class="it.eng.spagobi.services.actions.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 </ACTIONS>
 

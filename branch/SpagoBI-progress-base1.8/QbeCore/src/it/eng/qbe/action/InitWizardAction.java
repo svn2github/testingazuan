@@ -14,7 +14,7 @@ import it.eng.spago.dispatching.action.AbstractAction;
 /**
  * @author Zoppello
  * 
- * This is thhe starting action for QBE it provide to initialize the ISingleDataMartWizardObject
+ * This is the starting action for QBE it provide to initialize the ISingleDataMartWizardObject
  * provided with qbe and to put in the session
  * 
  * If QBE is asked to run with an exisisting composed query identified in request with queryId

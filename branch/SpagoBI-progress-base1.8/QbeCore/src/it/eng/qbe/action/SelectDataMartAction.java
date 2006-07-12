@@ -26,8 +26,6 @@ public class SelectDataMartAction extends AbstractAction {
 		
 		String jndiDataSourceName = (String)request.getAttribute("JNDI_DS");
 		
-		
-		
 		String dialect = (String)request.getAttribute("DIALECT");
 		
 		String dmPath = (String)request.getAttribute("PATH");
@@ -37,12 +35,6 @@ public class SelectDataMartAction extends AbstractAction {
 		ApplicationContainer application = ApplicationContainer.getInstance();
 		
 		SessionFactory sf = Utils.getSessionFactory(dmModel, application);
-		
-		
-		
-		
-		
-		
 		
         getRequestContainer().getSessionContainer().setAttribute("dataMartModel", dmModel);
         

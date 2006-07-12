@@ -49,13 +49,13 @@ import javax.portlet.PortletRequest;
 public class BIObjectsModule extends AbstractModule {
 	
 	public static final String MODULE_PAGE = "BIObjectsPage";
-    private static final String MODALITY = "MODALITY";
-    private static final String SINGLE_OBJECT = "SINGLE_OBJECT";
-    private static final String FILTER_TREE = "FILTER_TREE";
-    private static final String LABEL_SINGLE_OBJECT = "LABEL_SINGLE_OBJECT";
-    private static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
+    public static final String MODALITY = "MODALITY";
+    public static final String SINGLE_OBJECT = "SINGLE_OBJECT";
+    public static final String FILTER_TREE = "FILTER_TREE";
+    public static final String LABEL_SINGLE_OBJECT = "LABEL_SINGLE_OBJECT";
+    public static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
     public static final String PATH_SUBTREE = "PATH_SUBTREE";
-    private static final String HEIGHT_AREA = "HEIGHT_AREA";
+    public static final String HEIGHT_AREA = "HEIGHT_AREA";
 	
     SessionContainer sessionContainer = null;
     EMFErrorHandler errorHandler = null;

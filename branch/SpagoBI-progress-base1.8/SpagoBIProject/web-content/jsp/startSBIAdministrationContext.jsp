@@ -141,6 +141,7 @@
 		--%>
 		<%
 			boolean pamphletsInst = false;
+		    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
 			SourceBean compPampSB = (SourceBean)spagoConfig.getFilteredSourceBeanAttribute("SPAGOBI_COMPONENTS.SPAGOBI_COMPONENT", "name", "pamphlets");
 			if(compPampSB!=null){
 				String inst = (String)compPampSB.getAttribute("installed");

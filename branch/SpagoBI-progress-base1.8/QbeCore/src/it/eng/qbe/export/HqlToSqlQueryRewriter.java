@@ -23,8 +23,10 @@ package it.eng.qbe.export;
 
 import it.eng.qbe.utility.Logger;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -48,18 +50,62 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	public String rewrite(String query) {
 		String sqlQuery = null;		
 		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
+		System.out.println("---> HQL query to convert: " + query);
 		
 		Query hibQuery = session.createQuery(query);
 		SessionFactory sessFact = session.getSessionFactory();
 		SessionFactoryImplementor imple = (SessionFactoryImplementor) sessFact;
 		ASTQueryTranslatorFactory factory = new ASTQueryTranslatorFactory();
-		QueryTranslator trans = factory.createQueryTranslator(hibQuery
-				.getQueryString(), Collections.EMPTY_MAP, imple);
+		QueryTranslator trans = null; 
+		// Hibernate 3.0
+		Class[] parsTypes = null;
+		
+		parsTypes = new Class[3];
+		
+		parsTypes[0] = String.class;
+		parsTypes[1] = Map.class;
+		parsTypes[2] = SessionFactoryImplementor.class;
+		
+		Method createQueryTranslatorMethod = null;
+		try{
+			
+			createQueryTranslatorMethod = factory.getClass().getMethod("createQueryTranslator", parsTypes);
+			try{
+				trans = (QueryTranslator)createQueryTranslatorMethod.invoke(factory, new Object[]{hibQuery,Collections.EMPTY_MAP, imple});
+			}catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}catch (NoSuchMethodException e) {
+			
+			parsTypes = new Class[4];
+			
+			parsTypes[0] = String.class;
+			parsTypes[1] = String.class;
+			parsTypes[2] = Map.class;
+			parsTypes[3] = SessionFactoryImplementor.class;
+			
+			try{
+				createQueryTranslatorMethod = factory.getClass().getMethod("createQueryTranslator", parsTypes); 
+			
+				if (createQueryTranslatorMethod != null){
+					try{
+						trans = (QueryTranslator)createQueryTranslatorMethod.invoke(factory, new Object[]{String.valueOf(System.currentTimeMillis()), hibQuery.getQueryString(),Collections.EMPTY_MAP, imple});
+					}catch (Throwable t) {
+						t.printStackTrace();
+					}
+				}
+			}catch (NoSuchMethodException ex) {
+				e.printStackTrace();
+			}
+		}
+		
 		trans.compile(new HashMap(), false);
 		sqlQuery = trans.getSQLString();
 		
 		Logger.debug(this.getClass(), "rewrite: generated SQL query: " + sqlQuery);		
+		System.out.println("generated SQL query: " + sqlQuery);
 		String decoratedQuery = rewriteWithAlias(query, sqlQuery);
+		System.out.println("decorated SQL query: " + decoratedQuery);
 		return decoratedQuery;
 		//return sqlQuery;
 	}

@@ -64,12 +64,7 @@ public class JarUtils {
 				jarFile = new JarFile( jar );
 			}
 			catch (IOException ioe) {
-				/*
-				throw new MappingException(
-						"Could not read mapping documents from jar: " + jar.getName(),
-						ioe
-					);
-					*/
+				ioe.printStackTrace();
 			}
 
 			Enumeration jarEntries = jarFile.entries();
@@ -79,7 +74,7 @@ public class JarUtils {
 				
 				
 				String fileName = getFileName(ze.getName());
-				
+				Logger.debug(JarUtils.class, " Find file ["+ fileName + "] in jar File");
 				if ( fileName.equalsIgnoreCase(resourceName) ) {
 					//log.info( "Found mapping document in jar: " + ze.getName() );
 					try {
@@ -107,8 +102,12 @@ public class JarUtils {
 			}
 
 		}
-		String urlStr = "jar:file:/" + jar.toString() + "!/" + path;
-		return getUrl(jar, path);
+		if (path != null){
+			String urlStr = "jar:file:/" + jar.toString() + "!/" + path;
+			return getUrl(jar, path);
+		}else{
+			return null;
+		}
 	}
 	
 	public static String getUrlStr(File jarFile, String path) {

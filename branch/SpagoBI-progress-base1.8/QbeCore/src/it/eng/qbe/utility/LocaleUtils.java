@@ -33,8 +33,12 @@ public class LocaleUtils {
 			
 			String afLanguage = (String)requestConatiner.getSessionContainer().getPermanentContainer().getAttribute("AF_LANGUAGE");
 			
+			if (afLanguage == null){
+				afLanguage = "en";
+			}
 			String afCountry = (String)requestConatiner.getSessionContainer().getPermanentContainer().getAttribute("AF_COUNTRY");
-		
+			
+			
 			retLocale = new Locale(afLanguage);
 		
 		}else if (qbeMode.equalsIgnoreCase("PORTLET")) {

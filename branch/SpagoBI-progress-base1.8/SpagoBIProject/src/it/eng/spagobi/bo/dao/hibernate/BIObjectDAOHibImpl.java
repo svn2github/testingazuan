@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.bo.dao.hibernate;
 
+import it.eng.spago.base.PortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
@@ -67,12 +68,15 @@ import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -89,8 +93,6 @@ import org.safehaus.uuid.UUIDGenerator;
 /**
  *	Defines the Hibernate implementations for all DAO methods,
  *  for a BI Object.  
- * 
- * @author Zoppello
  */
 public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		IBIObjectDAO {
@@ -264,11 +266,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 */
 	public void gatherCMSInformation(BIObject biObject) throws EMFUserError {
 		
-		//Operazioni del CMS -- Ripreso dal codice dell'altro dao
-//		RequestContainer requestContainer =  RequestContainer.getRequestContainer();
-//		SessionContainer session = requestContainer.getSessionContainer();
-//		SessionContainer permSession = session.getPermanentContainer();
-//		IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
 			GetOperation getOp = new GetOperation();
 			String path = biObject.getPath() + "/template";
@@ -283,31 +280,66 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				String currentVerStr = cmsnode.getVersion();
 				List versions = cmsnode.getVersions();
 				Iterator iterVer = versions.iterator();
-				//ArrayList templates = new ArrayList();
 				TreeMap templates = new TreeMap();
 				TemplateVersion currentVer = null;
 				while(iterVer.hasNext()) {
 					CmsVersion ver = (CmsVersion)iterVer.next();
 					String nameVer = ver.getName();
-					String dateVer = ver.getDataCreation();
 					// retrive version
 					getOp.setVersion(nameVer);
 					CmsNode cmsnodever = manager.execGetOperation(getOp);
 					List properties = cmsnodever.getProperties();
 					Iterator iterProps = properties.iterator();
 					String nameFile = "";
+					String dateLoadStr = "";
 					while(iterProps.hasNext()) {
 						CmsProperty prop = (CmsProperty)iterProps.next();
 						String nameProp = prop.getName();
 						if(nameProp.equalsIgnoreCase("fileName")) 
 							nameFile = prop.getStringValues()[0];
+						if(nameProp.equalsIgnoreCase("dateLoad")) 
+							dateLoadStr = prop.getStringValues()[0];
 					}
+					
+					// instance templateVersion object and set version name, date and file name
 					TemplateVersion tempVer = new TemplateVersion();
-					tempVer.setDataLoad(dateVer);
 					tempVer.setVersionName(nameVer);
 					tempVer.setNameFileTemplate(nameFile);
-					//templates.add(tempVer);
-					templates.put(nameVer, tempVer);
+					// the date is stored as a long number, but the template contains the formatted date string
+					Long dateLong = null;
+					Date date = null;
+					try{
+						dateLong = new Long(dateLoadStr);
+						date = new Date(dateLong.longValue());
+					} catch (Exception e) {
+						// compatibility towards version < 1.9
+						try{
+							SimpleDateFormat dateForm = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+							date = dateForm.parse(dateLoadStr);
+							dateLong = new Long(date.getTime());
+						} catch(Exception ee) {
+							dateLong = new Long(0);
+						}
+					}
+					
+					// format the date
+					Locale portalLoc = PortletAccess.getPortalLocale();
+					String dateFormatted = "";
+					if(dateLong.longValue() != 0) {
+						SimpleDateFormat dateForm = null;
+						if(portalLoc!=null) {
+							dateForm = new SimpleDateFormat("d MMM yyyy HH:mm:ss", portalLoc);
+						} else { 
+							dateForm = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+						}
+						dateFormatted = dateForm.format(date);
+					} else {
+						dateFormatted = " ";
+					}
+
+                   
+					tempVer.setDataLoad(dateFormatted);
+					templates.put(dateLong, tempVer);
 					if(nameVer.equalsIgnoreCase(currentVerStr)) {
 						currentVer = tempVer;
 					}
@@ -327,10 +359,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		}
 		
 	}
-
-	
-	
-	
 	
 	
 	
@@ -506,7 +534,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					// define properties list
 					List properties = new ArrayList();
 					String[] nameFilePropValues = new String[] { biObject.getTemplate().getFileName() };
-					String today = new Date().toString();
+					String today = new Long(new Date().getTime()).toString();
 					String[] datePropValues = new String[] { today };
 					CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
 					CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);
@@ -662,7 +690,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				// define properties
 				properties =  new ArrayList();
 				String[] nameFilePropValues = new String[] { biObject.getTemplate().getFileName() };
-				String today = new Date().toString();
+				String today = new Long(new Date().getTime()).toString();
 				String[] datePropValues = new String[] { today };
 				CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
 				CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);

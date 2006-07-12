@@ -22,7 +22,8 @@
 				 it.eng.spago.configuration.ConfigSingleton,
 				 java.util.TreeMap,
 				 java.util.Collection,
-				 java.util.ArrayList" %>
+				 java.util.ArrayList,
+				 java.util.Date" %>
 
 <%
     SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailBIObjectModule"); 
@@ -455,47 +456,48 @@ function showEngField(docType) {
 			
 			<table> 
 				<% 
-				TreeMap templates = obj.getTemplateVersions();
-		 		if(templates==null)
-		 			templates = new TreeMap();
-				String curVer = "";
-				if (obj.getCurrentTemplateVersion() != null) 
-					curVer = obj.getCurrentTemplateVersion().getVersionName();
-				int numTemp = templates.size();  
-				if(numTemp == 0) {
-					out.print("<tr class='portlet-section-body'>");
+					TreeMap templates = obj.getTemplateVersions();
+		 			if(templates==null)
+		 				templates = new TreeMap();
+					String curVer = "";
+					if(obj.getCurrentTemplateVersion() != null) 
+						curVer = obj.getCurrentTemplateVersion().getVersionName();
+					int numTemp = templates.size();  
+					if(numTemp == 0) {
+						out.print("<tr class='portlet-section-body'>");
 		      			out.print("<td class='portlet-font'>No Version Found</td></tr>");
 		      		}
-				Collection versions = templates.values();
-				Iterator iterVers = versions.iterator();
-				ArrayList reverseVersions = new ArrayList();
-				while(iterVers.hasNext()) {
-					Object objVer = iterVers.next();
-					reverseVersions.add(0, objVer);
-				}
-				Iterator iterTemp = reverseVersions.iterator();
+					Collection versions = templates.values();
+					Iterator iterVers = versions.iterator();
+					ArrayList reverseVersions = new ArrayList();
+					while(iterVers.hasNext()) {
+						Object objVer = iterVers.next();
+						reverseVersions.add(0, objVer);
+					}
+					Iterator iterTemp = reverseVersions.iterator();
 		      		while(iterTemp.hasNext()) {
 		      			TemplateVersion tempVer = (TemplateVersion)iterTemp.next();
-		      		        String checkStr = " ";
-		      		        boolean isCurrentVer = false;
-		      		        if(curVer.equalsIgnoreCase(tempVer.getVersionName())) {
-		      		        	checkStr = " checked='checked' ";
-		      		        	isCurrentVer = true;
-		      		        }
-		      		        out.print("<tr class='portlet-section-body'>");
-		      		        out.print("<td class='portlet-font' width='40px'>"+tempVer.getVersionName()+"</td>");
-		      		        out.print("<td class='portlet-font' width='220px'>"+tempVer.getDataLoad()+"</td>");
-		      		        out.print("<td class='portlet-font' width='150px'>"+tempVer.getNameFileTemplate()+"</td>");
+		      		 	String checkStr = " ";
+		      		    boolean isCurrentVer = false;
+		      		    if(curVer.equalsIgnoreCase(tempVer.getVersionName())) {
+		      		       	checkStr = " checked='checked' ";
+		      		      	isCurrentVer = true;
+		      		    }
+		      		    out.print("<tr class='portlet-section-body'>");
+		      		    out.print("<td class='portlet-font' width='40px'>"+tempVer.getVersionName()+"</td>");
+		      		    String dateStr = tempVer.getDataLoad();
+		      		    out.print("<td class='portlet-font' width='220px'>"+tempVer.getDataLoad()+"</td>");
+		      		    out.print("<td class='portlet-font' width='150px'>"+tempVer.getNameFileTemplate()+"</td>");
 		      		        
-		      		        PortletURL eraseVerUrl = renderResponse.createActionURL();
-   					eraseVerUrl.setParameter("PAGE", "detailBIObjectPage");
-   					eraseVerUrl.setParameter("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
-   					eraseVerUrl.setParameter(SpagoBIConstants.VERSION, tempVer.getVersionName());
-   					eraseVerUrl.setParameter(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
-   					eraseVerUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-					eraseVerUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-					String pathTemp = obj.getPath() + "/template";
-   					String downl = renderRequest.getContextPath() + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
+		      		    PortletURL eraseVerUrl = renderResponse.createActionURL();
+   						eraseVerUrl.setParameter("PAGE", "detailBIObjectPage");
+   						eraseVerUrl.setParameter("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
+   						eraseVerUrl.setParameter(SpagoBIConstants.VERSION, tempVer.getVersionName());
+   						eraseVerUrl.setParameter(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
+   						eraseVerUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+						eraseVerUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+						String pathTemp = obj.getPath() + "/template";
+   						String downl = renderRequest.getContextPath() + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
 		      		       
 		      		        if(isCurrentVer) {
 		      		        	out.print("<td class='portlet-font' >&nbsp;</a></td>");

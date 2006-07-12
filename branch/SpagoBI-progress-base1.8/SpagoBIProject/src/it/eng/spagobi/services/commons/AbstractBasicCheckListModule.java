@@ -335,10 +335,12 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			if(request.getAttribute("save") != null) {				
 				preprocess(request);
 				save();
+				request.updAttribute("MESSAGE", "LIST_PAGE");	
+				request.setAttribute("LIST_PAGE", new Integer(pageNumber).toString());	
 				super.service(request, response); 
 				postprocess(response); 
 				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
-				return;
+				return;			
 			}
 			
 			if(request.getAttribute("back") != null) {			

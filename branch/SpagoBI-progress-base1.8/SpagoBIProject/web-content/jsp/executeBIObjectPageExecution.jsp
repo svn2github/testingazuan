@@ -21,13 +21,14 @@
                  javax.portlet.PortletRequest, 
                  javax.portlet.PortletSession,
                  it.eng.spago.base.ApplicationContainer,
-                 java.util.Map" %>
+                 java.util.Map,
+                 org.safehaus.uuid.UUIDGenerator,
+                 org.safehaus.uuid.UUID" %>
 
 <%
-    java.util.Random rand = new java.util.Random();
-    int randint = rand.nextInt();
-    randint = Math.abs(randint);
-    String requestIdentity = "request" + randint;  
+    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+    UUID uuid = uuidGen.generateTimeBasedUUID();
+    String requestIdentity = "request" + uuid.toString();  
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
 	// get the BiObject from the response
@@ -55,9 +56,13 @@
    		isSingleObjExec = true;
    	
    	// try to get from the session the heigh of the output area
+   	boolean heightSetted = false;
    	String heightArea = (String)aSessionContainer.getAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA);
-   	if( (heightArea==null) || (heightArea.trim().equals("")) )
+   	if( (heightArea==null) || (heightArea.trim().equals("")) ) {
    		heightArea = "500";
+   	} else {
+   		heightSetted = true;
+   	}
    	
    	
    	// build the back link
@@ -104,7 +109,7 @@
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
-           <%=title%>
+           &nbsp;&nbsp;&nbsp;<%=title%>
        </td>
        <td class='header-empty-column-portlet-section'>&nbsp;</td>
        <td class='header-button-column-portlet-section'>
@@ -155,7 +160,7 @@
 <table width='100%' cellspacing='0' border='0'>
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
-			<%=title%>
+			&nbsp;&nbsp;&nbsp;<%=title%>
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
@@ -169,34 +174,66 @@
 		</td>
 </table>
 
-<%--table width='100%' cellspacing='0' border='0'>	
-	<tr>
-		<td class="portlet-section-header">
-			&nbsp;&nbsp;<%=title%>
-		</td>
-		<td class="portlet-section-header" width="40px" align="center" valign="middle">
-			<a style="text-decoration:none;" href='<%=refreshUrl.toString()%>'>
-				<img width="20px" height="20px" 
-				     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/refresh.png")%>' 
-				     name='refresh' 
-				     alt='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' 
-				     title='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' /> 
-      		</a>
-		</td>
-	</tr>
-</table--%>
 
 
 <% } %>
 
+<script>
+		function adaptSize() {
+			iframe = window.frames['iframeexec<%=requestIdentity%>'];
+			navigatorname = navigator.appName;
+			height = 0;
+			navigatorname = navigatorname.toLowerCase();
+			if(navigatorname.indexOf('explorer')) {
+				height = iframe.document.body.offsetHeight;
+			} else {
+				height = iframe.innerHeight;
+			}
+			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			height = height + 100;
+			if(height < 300){
+				height = 300;
+			}
+			iframeEl.style.height = height + 100 + 'px';
+		}
+		/*
+		function GetElementPostion(xElement){
+			var selectedPosX = 0;
+			var selectedPosY = 0;
+			var theElement = document.getElementById(xElement);
+			while(theElement != null){
+				selectedPosX += theElement.offsetLeft;
+				selectedPosY += theElement.offsetTop;
+				theElement = theElement.offsetParent;
+			}              		      		      
+			alert(selectedPosX);
+			alert(selectedPosY);
+		}*/
+		
+</script>
+
+
 <table width='100%' height='100%'>
  	<tr> 
        <td width='100%' >
+           
+           <%
+           		String onloadStr = " ";
+           		if(!heightSetted)
+           			onloadStr = " onload='adaptSize();' ";
+           		String heightStr = "height:400px;";
+           		if(heightSetted)
+           			heightStr = "height:"+heightArea+"px;";
+           %> 
              
-            <iframe style='display:inline;' id='iframeexec<%=requestIdentity%>' 
-                    name='iframeexec<%=requestIdentity%>'  
-         			src="" width='100%' height="<%=heightArea%>">
-         	</iframe>     
+           <iframe <%=onloadStr%> 
+				   style='display:inline;<%=heightStr%>' 
+				   id='iframeexec<%=requestIdentity%>' 
+                   name='iframeexec<%=requestIdentity%>'  
+				   src=""
+                   frameborder=0  
+			       width='100%' >
+         	</iframe>       
                                 
          	<form name="formexecution<%=requestIdentity%>" id='formexecution<%=requestIdentity%>' method="post" 
          	      action="<%=engineurl%>" 

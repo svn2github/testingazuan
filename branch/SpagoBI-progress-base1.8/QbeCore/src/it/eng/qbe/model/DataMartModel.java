@@ -8,11 +8,13 @@ import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.configuration.ConfigSingleton;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -153,7 +155,10 @@ public class DataMartModel implements Serializable {
 	public static Configuration getHibernateConfiguration(File jarFile, String jndiDataSourceName, String dialect) {
 		Configuration cfg = null;
 		
+		
 		if (jndiDataSourceName != null && !jndiDataSourceName.equalsIgnoreCase("")) {
+			// SE I PARAMETRI VENGONO PASSATI IN INPUT USO QUELLI
+			
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: connection properties defined by hand");
 			
 			cfg = new Configuration();
@@ -166,19 +171,48 @@ public class DataMartModel implements Serializable {
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 			cfg.addJar(jarFile);
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: add jar file to configuration");			
-		}
-		else {
-			Logger.debug(DataMartModel.class, "getHibernateConfiguration: connection properties defined in hibernate.cfg.xml");
-							
-			Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
-			updateCurrentClassLoader(jarFile);
-			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
+		}else {
+			// ALTRIMENTI CERCO I PARAMETRI DI CONFIGURAZIONE SUL FILE hibconn.properies
+			URL hibConnPropertiesUrl = JarUtils.getResourceFromJarFile(jarFile, "hibconn.properties") ;
+			if (hibConnPropertiesUrl != null){
+				Properties prop = new Properties();
+				try{
+					prop.load(hibConnPropertiesUrl.openStream());
+				}catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
 			
-			Logger.debug(DataMartModel.class, "getHibernateConfiguration: trying to read configuration from hibernate.cfg.xml file");
-			URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
-			Logger.debug(DataMartModel.class, "getHibernateConfiguration: configuration file found at " + url);
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: connection properties loaded by hibconn.properties in jar");
+				
+				cfg = new Configuration();
+				cfg.setProperty("hibernate.dialect", prop.getProperty("hibernate.dialect"));
+				cfg.setProperty("hibernate.connection.datasource", prop.getProperty("hibernate.connection.datasource"));
+				cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
+				
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
+				updateCurrentClassLoader(jarFile);
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
+				cfg.addJar(jarFile);
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: add jar file to configuration");
+			
+			} else {
+			
+				// ALTRIMENTI EFFETTUO LA CONFIGURAZIONE DAL FILE hibernate.cfg.cml
+			
+				// ---------------------- NOTA BENE
+				// IN QUESTO IL FILE DEVE CONTENERE I RIFERIMENTI A TUTTI GLI HBM
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: connection properties defined in hibernate.cfg.xml");
+							
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
+				updateCurrentClassLoader(jarFile);
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
+			
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: trying to read configuration from hibernate.cfg.xml file");
+				URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: configuration file found at " + url);
 			 
-			cfg = new Configuration().configure(url);
+				cfg = new Configuration().configure(url);
+			}
 		}
 		
 		if(cfg != null){

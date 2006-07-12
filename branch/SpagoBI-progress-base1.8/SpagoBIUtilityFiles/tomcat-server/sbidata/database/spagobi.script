@@ -45,7 +45,6 @@ INSERT INTO SBI_CHECKS VALUES(34,'Control if the parameter is present','CK-FIX-0
 INSERT INTO SBI_CHECKS VALUES(35,'Control if parameter is a Fiscal Code','CK-FIX-06','FISCALCODE',69,NULL,NULL,'Fiscal Code')
 INSERT INTO SBI_CHECKS VALUES(36,'Control if parameter is a E-Mail','CK-FIX-07','EMAIL',70,NULL,NULL,'E-Mail')
 INSERT INTO SBI_DOMAINS VALUES(36,'QUERY','Query statement','INPUT_TYPE','Input mode and values','Query statement to load list of values to choose in')
-INSERT INTO SBI_DOMAINS VALUES(37,'MAN_IN','Manual input','INPUT_TYPE','Input mode and values','Not predefined values but manual input')
 INSERT INTO SBI_DOMAINS VALUES(38,'SCRIPT','Script to load values','INPUT_TYPE','Input mode and values','Script to load predefined values')
 INSERT INTO SBI_DOMAINS VALUES(39,'FIX_LOV','Fixed list of values','INPUT_TYPE','Input mode and values','Predefined and hard coded list of values to choose in')
 INSERT INTO SBI_DOMAINS VALUES(40,'REPORT','Report','BIOBJ_TYPE','BI Object types','Basic business intelligence objects type')

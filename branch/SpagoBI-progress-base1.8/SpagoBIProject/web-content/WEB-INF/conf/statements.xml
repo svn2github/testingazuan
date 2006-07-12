@@ -116,7 +116,8 @@
 						    P.PAR_TYPE_CD as TYPE,
        						P.MASK as MASK,	
        						P.PAR_TYPE_ID as TYPE_ID,
-						(select count(*) from sbi_paruse u where P.PAR_ID = U.PAR_ID) as NUM 
+						(select count(*) from sbi_paruse u where P.PAR_ID = U.PAR_ID) as NUM_USES,
+						(select count(distinct(BIOBJ_ID)) from sbi_obj_par o where P.PAR_ID = O.PAR_ID) as NUM_BIOBJECTS
 						FROM SBI_PARAMETERS P
                        ORDER BY LABEL, NAME, DESCRIPTION"/>
   
@@ -197,9 +198,10 @@
                   T.LABEL as LABEL,
   	              T.NAME as NAME,
   	              T.DESCR as DESCRIPTION,
-  	              T.INPUT_TYPE_CD as TYPE
-  	       FROM SBI_LOV T
-		   ORDER BY LABEL,NAME,DESCRIPTION "/>
+  	              T.INPUT_TYPE_CD as TYPE,
+  	              (SELECT COUNT(DISTINCT(P.PAR_ID)) FROM SBI_PARUSE P where P.LOV_ID = T.LOV_ID) AS N_OF_PARAMETERS
+  	       FROM SBI_LOV T 
+		   ORDER BY LABEL,NAME,DESCRIPTION"/>
 		   
 	<STATEMENT name="SELECT_PARAMETERS_LIST" 
   	query="SELECT PAR_ID as PAR_ID,

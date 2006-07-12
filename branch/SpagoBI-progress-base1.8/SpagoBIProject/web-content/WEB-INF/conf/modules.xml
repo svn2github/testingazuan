@@ -111,7 +111,8 @@
 	        <COLUMN label="SBIDev.ListParam.columnName" name="NAME"/>
 	        <COLUMN label="SBIDev.ListParam.columnDesc" name="DESCRIPTION"/>
 	        <COLUMN label="SBIDev.ListParam.columnType" name="TYPE"/>
-	        <COLUMN label="SBIDev.ListParam.columnUsesNum" name="NUM" horizontal-align="CENTER"/>
+	        <COLUMN label="SBIDev.ListParam.columnUsesNum" name="NUM_USES" horizontal-align="CENTER"/>
+	        <COLUMN label="SBIDev.ListParam.columnBIObjects" name="NUM_BIOBJECTS" horizontal-align="CENTER"/>
 	      </COLUMNS>
 	      <CAPTIONS>
 	        <SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="SBIDev.ListParam.selectCaption">
@@ -201,6 +202,7 @@
         <COLUMN label="SBIDev.predLovList.columnName" name="NAME"/>
         <COLUMN label="SBIDev.predLovList.columnDesc" name="DESCRIPTION"/>
       	<COLUMN label="SBIDev.predLovList.columnType" name="TYPE"/>
+      	<COLUMN label="SBIDev.predLovList.columnParameters" name="N_OF_PARAMETERS" horizontal-align="CENTER"/>
       </COLUMNS>
       <CAPTIONS>
         <SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="SBIDev.predLovList.detailCaption">
@@ -384,7 +386,7 @@
 				<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="par_id"/>
 	      </QUERIES>
 	      <CAPTIONS>
-	        <SELECT_CAPTION confirm="FALSE" image="/img/button_ok.png" label="SBIDev.ListParam.ListLookupParameters.selectCaption">
+	        <SELECT_CAPTION confirm="FALSE" image="/img/button_ok.gif" label="SBIDev.ListParam.ListLookupParameters.selectCaption">
 	          <PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ParametersLookupPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="EXIT_FROM_MODULE"/>

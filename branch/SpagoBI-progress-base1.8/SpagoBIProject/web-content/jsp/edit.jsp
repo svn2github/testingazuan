@@ -1,6 +1,12 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="javax.portlet.PortletURL,
+				 java.util.Collection,
+				 java.util.List,
+				 java.util.Iterator,
+				 it.eng.spago.base.SourceBean,
+				 it.eng.spago.security.IEngUserProfile,
+				 it.eng.spago.configuration.ConfigSingleton,
 				 it.eng.spagobi.utilities.PortletUtilities" %>
 
 
@@ -11,6 +17,29 @@
 </table>
 
 <%
+
+	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	Collection roles = profile.getRoles();
+	boolean hasPortletEditPermissionRoles = false;
+	ConfigSingleton configSingleton = ConfigSingleton.getInstance();
+	List rolesSB = (List) configSingleton.getAttributeAsList("SPAGOBI.PORTLET_EDIT_MODE_ROLES.ROLE");
+	Iterator rolesIt = rolesSB.iterator();
+	while (rolesIt.hasNext()) {
+		SourceBean roleSB = (SourceBean) rolesIt.next();
+		String roleName = (String) roleSB.getAttribute("name");
+		if (roles.contains(roleName)) {
+			hasPortletEditPermissionRoles = true;
+			break;
+		}
+	}
+	
+	if (!hasPortletEditPermissionRoles) {
+		%>
+		<spagobi:message key="editConf.configurationNotPermissible"/>
+		<%
+	} else {
+	
     PortletURL formUrl = renderResponse.createActionURL();
     formUrl.setParameter("PAGE", "SaveConfigurationPage");  
     //boolean it = false;
@@ -70,7 +99,7 @@
 </table>
 </form>
 
-
+<% } %>
 
 
 

@@ -418,9 +418,6 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
-		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
-		htmlStream.append("		menu");
-		htmlStream.append("</div>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
 		htmlStream.append("		<td width='10px'>&nbsp;</td>");
@@ -450,6 +447,9 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
+		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("		menu");
+		htmlStream.append("</div>");
 		return htmlStream;
 		
 	}

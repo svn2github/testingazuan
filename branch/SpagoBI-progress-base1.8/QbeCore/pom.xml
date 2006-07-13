@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9RC</version>
+    <version>1.9</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>qbe.core</artifactId>
   <packaging>jar</packaging>
-  <version>1.9RC</version>
+  <version>1.9</version>
   <name>QbeCore</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -53,8 +53,9 @@
         <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate</artifactId>
-                <version>3.1rc2</version>
-		<scope>compile</scope>
+                <version>3</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/hibernate3.jar</systemPath>
 		<exclusions>
 			<exclusion>
 				<groupId>javax.transaction</groupId>
@@ -76,9 +77,9 @@
         <dependency>
                 <groupId>jasperreports</groupId>
                 <artifactId>jasperreports</artifactId>
-                <version>1.2.0</version>
+                <version>1.2.3</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/lib/jasperreports-1.2.0.jar</systemPath>
+      		<systemPath>${basedir}/lib/jasperreports-1.2.3.jar</systemPath>
         </dependency>        
         <dependency>
                 <groupId>jasperreports</groupId>
@@ -107,11 +108,11 @@
 		<scope>compile</scope>
         </dependency>
         <dependency>
-                <groupId>spagoportlet</groupId>
-                <artifactId>spagoportlet</artifactId>
-                <version>1.0</version>
+                <groupId>spago</groupId>
+                <artifactId>spago-portlet</artifactId>
+                <version>2.1.0</version>
                 <scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagoportlet-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/lib/spago-portlet-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>javax.servlet</groupId>

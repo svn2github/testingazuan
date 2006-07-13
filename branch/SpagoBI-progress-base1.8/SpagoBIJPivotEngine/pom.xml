@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9RC</version>
+    <version>1.9</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIJPivotEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9RC</version>
+  <version>1.9</version>
   <name>SpagoBIJPivotEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -115,12 +115,13 @@
                 <version>2.0.2</version>
 		<scope>compile</scope>
         </dependency>
+        <!--
         <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
 		<version>1.0.4</version>
         </dependency>
-
+		-->
         <dependency>
                 <groupId>commons-pool</groupId>
                 <artifactId>commons-pool</artifactId>
@@ -269,7 +270,7 @@
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.utils</artifactId>
-                <version>1.9RC</version>
+                <version>1.9</version>
         </dependency>
         <dependency>
                 <groupId>standard</groupId>

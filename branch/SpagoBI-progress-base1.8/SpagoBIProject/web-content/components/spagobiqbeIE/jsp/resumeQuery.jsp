@@ -90,8 +90,10 @@
 				<tr>
 					<td>
 						<table class="qbe-font" width="100%">
-									<% int rowsCounter = 1;
-										if (aWizardObject.getSelectClause() != null){ %>
+						<%  int rowsCounter = 1;
+							if (aWizardObject.getFinalQuery() != null){ 
+									 
+									 if (aWizardObject.getSelectClause() != null){ %>
 									
 							<tr border=2>
 								<td colspan="2"> <b>Select </b> 
@@ -128,6 +130,7 @@
 										<td colspan="2"><b> From </b></td> 
 										
 									</tr>
+									
 									<% List enityClasses = aWizardObject.getEntityClasses();
 									   java.util.Iterator it = enityClasses.iterator();
 									   EntityClass ec = null;
@@ -232,6 +235,8 @@
 										}
 										
 									%>
+							
+							<%} %>	
 						</table>
 					</td>	
 				</tr>		
@@ -279,7 +284,10 @@
 					<td colspan="3">
  			 			<%  String strTextArea = "";
 						 				if ((aWizardObject.getExpertQueryDisplayed() == null)||(aWizardObject.getExpertQueryDisplayed().trim().length() == 0)){
-						 					strTextArea = aWizardObject.getFinalSqlQuery(dm);						 					
+						 					strTextArea = aWizardObject.getFinalSqlQuery(dm);
+						 					if (strTextArea == null){
+						 						strTextArea = "";
+						 					}
 						 				}else{
 						 					strTextArea = aWizardObject.getExpertQueryDisplayed();
 						 				}

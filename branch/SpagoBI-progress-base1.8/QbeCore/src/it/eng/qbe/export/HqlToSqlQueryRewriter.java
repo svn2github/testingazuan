@@ -52,6 +52,7 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
 		System.out.println("---> HQL query to convert: " + query);
 		
+		
 		Query hibQuery = session.createQuery(query);
 		SessionFactory sessFact = session.getSessionFactory();
 		SessionFactoryImplementor imple = (SessionFactoryImplementor) sessFact;

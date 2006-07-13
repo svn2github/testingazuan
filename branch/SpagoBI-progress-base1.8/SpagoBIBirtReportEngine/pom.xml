@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9RC</version>
+    <version>1.9</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIBirtReportEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9RC</version>
+  <version>1.9</version>
   <name>SpagoBIBirtReportEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -227,7 +227,7 @@
     <dependency>
         <groupId>spagobi</groupId>
         <artifactId>sbi.utils</artifactId>
-        <version>1.9RC</version>
+        <version>1.9</version>
     </dependency>  	
   	<dependency>
     	<groupId>Tidy</groupId>

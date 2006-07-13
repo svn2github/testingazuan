@@ -11,6 +11,6 @@ For css files:
 - inside JBOSS_HOME/server/default/deploy/exoplatform.ear/resources.war/skin/portlet rename the file default-portlet.css with another name and then rename jsr168-portlet.css into default-portlet.css.
 
 For CMS:
-- open the file jackrabbitSessionFactory.properties in JBOSS_HOME/server/default/deploy/exoplatform.ear/spagobi.war/WEB-INF/classes and substitute ${SERVER_HOME} with the actual path of JBOSS_HOME.
+- open the file cms.xml in JBOSS_HOME/server/default/deploy/exoplatform.ear/spagobi.war/WEB-INF/conf and substitute ${SERVER_HOME} with the actual path of JBOSS_HOME in the following parameters definition: "repository_path" and "conf_file_path".
 Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);
 

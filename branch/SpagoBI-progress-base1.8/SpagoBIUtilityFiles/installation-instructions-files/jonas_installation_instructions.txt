@@ -5,6 +5,6 @@ If you want to install SpagoBI on your JOnAS server, after having launched Maven
 - delete the jar hsqldb-1.8.0.1.jar from JONAS_HOME/lib/apps;
 
 For CMS:
-- open the file jackrabbitSessionFactory.properties in JONAS_HOME/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/classes and substitute ${SERVER_HOME} with the actual path of JONAS_HOME.
+- open the file cms.xml in JONAS_HOME/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/conf and substitute ${SERVER_HOME} with the actual path of JONAS_HOME in the following parameters definition: "repository_path" and "conf_file_path".
 Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);
 

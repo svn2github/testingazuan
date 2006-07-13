@@ -140,12 +140,10 @@
 		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi.war" 
 			   dest="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war"/>
 
-		    <!-- delete CMS configuration file for Tomcat -->
-		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms.xml"/>
-
-		    <!-- put the correct cms.xml required by jboss -->
+		    <!-- overwrite the CMS configuration file for Tomcat with the correct file for JBoss -->
 		    <move file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms-jboss-jonas.xml"
-			  tofile="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"/>
+			  tofile="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"
+			  overwrite="true"/>
 
 		    <!-- put external spagobi packages into SpagoBI -->
 		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.jar"
@@ -236,12 +234,10 @@
 		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi.war" 
 			   dest="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war"/>
 
-		    <!-- delete CMS configuration file for Tomcat -->
-		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms.xml"/>
-
-		    <!-- put the correct cms.xml required by jonas -->
-		    <move file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms-jboss-jonas.xml"
-			  tofile="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/conf/cms.xml"/>
+		    <!-- overwrite the CMS configuration file for Tomcat with the correct file for JOnAS -->
+		    <move file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/conf/cms-jboss-jonas.xml"
+			  tofile="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/conf/cms.xml"
+			  overwrite="true"/>
 
 		    <!-- put external spagobi packages into SpagoBI -->
 		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.jar"

@@ -39,8 +39,6 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
-import it.eng.spagobi.bo.dao.IParameterDAO;
-import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -64,13 +62,9 @@ import it.eng.spagobi.metadata.SbiParuseDetId;
 import it.eng.spagobi.metadata.SbiSubreports;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.poi.hssf.record.SubRecord;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

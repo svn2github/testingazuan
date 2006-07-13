@@ -111,6 +111,8 @@
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>2.0.2</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-httpclient-2.0.2.jar</systemPath>                
         </dependency>
         <dependency>
                 <groupId>dom4j</groupId>
@@ -129,12 +131,16 @@
         <dependency>
                 <groupId>itext</groupId>
                 <artifactId>itext</artifactId>
-		<version>1.3.1</version>
+				<version>1.3.1</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/itext-1.3.1.jar</systemPath> 
         </dependency>
         <dependency>
                 <groupId>jasperreports</groupId>
                 <artifactId>jasperreports</artifactId>
-		<version>1.2.0</version>
+				<version>1.2.0</version>
+		   		<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/jasperreports-1.2.0.jar</systemPath> 
 		<exclusions>
 			<exclusion>
 				<groupId>eclipse</groupId>
@@ -171,6 +177,8 @@
                 <groupId>jfree</groupId>
                 <artifactId>jfreechart</artifactId>
                 <version>1.0.0</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/jfreechart-1.0.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>javax.servlet</groupId>
@@ -188,11 +196,15 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.8</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/log4j-1.2.8.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>2.5.1-final-20040804</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/poi-2.5.1-final-20040804.jar</systemPath>
         </dependency>
        <dependency>
                 <groupId>spago</groupId>

@@ -32,7 +32,6 @@ public class ComposeResumeQueryAction extends AbstractAction {
 			
 			aWizardObject.composeQuery();
 			
-			
 			Logger.debug(ISingleDataMartWizardObject.class,"LA QUERY FINALE DEL WIZARD "+ aWizardObject.getFinalQuery());
 		}catch(Exception e){
 			e.printStackTrace();

@@ -23,6 +23,7 @@
 	Integer pagesNumber = null;
 	boolean hasPreviousPage = false;
 	boolean hasNextPage = false;
+	boolean overflow = false;
    SourceBean listResponse = null;
    if (msg != null){
 	   flagErrors = true;
@@ -35,6 +36,8 @@
 	   pagesNumber = (Integer)listResponse.getAttribute("pagesNumber");
 	   hasPreviousPage = ((Boolean)listResponse.getAttribute("hasPreviousPage")).booleanValue();
 	   hasNextPage = ((Boolean)listResponse.getAttribute("hasNextPage")).booleanValue();
+	   if(listResponse.getAttribute("overflow") != null)
+	   	 overflow = ((Boolean)listResponse.getAttribute("overflow")).booleanValue();
    }
   	String qbeQuery = aWizardObject.getFinalQuery();
   	String qbeSqlQuery = aWizardObject.getFinalSqlQuery(dm);
@@ -184,6 +187,39 @@
 </table>
 		
 <% if (!flagErrors){ %>
+
+<% if (overflow){ %>
+<table width="100%" valign="top"> 
+	<tr>
+		<td width="3%"></td>
+		<td width="94%"></td>
+		<td width="3%"></td>
+ 	</tr>
+	<tr>
+		<td></td>
+ 		<td>
+ 			<span class="qbeError">The following warnings occurred</span>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>				
+		<td>&nbsp;</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td width="3%"></td>
+		<td width="94%">
+			<textarea id="txtAreaMsgError" readonly="true" rows="5" cols="80">Overflow !!! To many rows in the resultset.</textarea>
+		<td	td width="3%"></td>
+	</tr>
+	<tr>
+		<td></td>				
+		<td>&nbsp;</td>
+		<td></td>
+	</tr>
+</table>
+<%} %>
 
 <table width="100%" valign="top"> 
 	<tr>

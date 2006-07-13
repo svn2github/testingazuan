@@ -67,7 +67,7 @@
 				  		%>
 				  		<form id="formUpdateSelect" name="formUpdateSelect" action="<%=qbeUrl.getUrl(request, null) %>" method="post">	
 				  			<input type="hidden" name="ACTION_NAME" value="UPDATE_FIELD_SELECT_ACTION"/>
-				  		<table>
+				  		<table class="qbe-font">
 				  			
 				  		<% if (aWizardObject.getSelectClause() != null){ %>
 					 										 									 					

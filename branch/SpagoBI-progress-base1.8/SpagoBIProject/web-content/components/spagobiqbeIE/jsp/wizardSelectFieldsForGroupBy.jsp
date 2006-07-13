@@ -38,7 +38,8 @@
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
+		<td class='header-title-column-portlet-section' 
+
 		    style='vertical-align:middle;padding-left:5px;'>
 			<%= dm.getName() %> : <%=dm.getDescription() %> - <%=qbeMsg.getMessage(requestContainer, "QBE.Title.Grouping", bundle) %>
 		</td>
@@ -53,51 +54,62 @@
 <div class='div_background_no_img'>
 
 <% if ((aWizardObject.getSelectClause() != null) && (aWizardObject.getSelectClause().getSelectFields().size() > 0)){ %>
+		
+		
+		<% 
+		  java.util.Map params = new java.util.HashMap();
+		  params.put("ACTION_NAME","SELECT_FIELD_FOR_GROUPBY_ACTION");
+		  String formUrl = qbeUrl.getUrl(request, params);
+		%>
+		<form method='POST' action='<%=formUrl%>' id ='groupForm' name='groupForm'>
+		
+		
 		<table width="100%">  
 			<tr>
-			   			<td width="3%">
+			   			<td width="2%">
     						&nbsp;
 	   					</td>
-	   					<td width="47%">
+	   					<td width="43%">
     						&nbsp;
 	   					</td>
-	   					<td width="50%">
+	   					<td width="10%">
+    						&nbsp;
+	   					</td>
+							<td width="43%">
+    						&nbsp;
+	   					</td>
+							<td width="2%">
     						&nbsp;
 	   					</td>
 	   		</tr>  
-		   <tr>
-		   		<td >
-		   		</td>
+			 <tr>
 		   		
-		  		<td width="47%" valign="top">
-		  			<table width="100%">
+					
+					
+					<td>&nbsp;</td>
+		   		
 		  		
-		  			<tr>
-		    		   <td colspan="2">
-		    		   		 <span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer,"QBE.Grouping.ChooseFromSelectedFields", bundle) %></span>
-		    		   </td>   		   				
-		    		</tr>
-		    		<tr>
-						<td colspan="2">
-							&nbsp;
-						</td>
-					</tr>
-			    		   		
-			    	<% 
-		  			java.util.Map params = new java.util.HashMap();
-		  			params.put("ACTION_NAME","SELECT_FIELD_FOR_GROUPBY_ACTION");
-		  			String formUrl = qbeUrl.getUrl(request, params);
-		  			%>		   
-			  			
-			  		<%  java.util.Map oParams = new java.util.HashMap();
-		  		  	oParams.clear();	
-			  		 if (aWizardObject.getSelectClause() != null){ %>
-				 						
-			    		   			<% List l = aWizardObject.getSelectClause().getSelectFields();
+					
+					
+					<td valign="top" class="qbe-td-form">
+		  			
+		  			<table width="100%">
+		  				<tr>
+		    		   		<td colspan="2">
+		    		   		 	<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer,"QBE.Grouping.ChooseFromSelectedFields", bundle) %></span>
+		    		   		</td>   		   				
+		    			</tr>
+		    			<tr>
+							<td colspan="2">
+								&nbsp;
+							</td>
+						</tr>
+			  		<%  
+			  			java.util.Map oParams = new java.util.HashMap();
+		  		  		oParams.clear();	
+			  			 if (aWizardObject.getSelectClause() != null){ 
+			    		   			List l = aWizardObject.getSelectClause().getSelectFields();
 			    		   			if (l != null){
-			    		   				%>
-			    		   				<form method='POST' action='<%=formUrl%>' id ='treeForm' name='treeForm'>
-			    		   				<%
 			    		   				java.util.Iterator it = l.iterator();
 			    		   				ISelectField aSelectField = null;
 			    		   				String originalFieldName = "";
@@ -114,29 +126,19 @@
 			    		   						String checked = "";
 			    		   						if(selectedFields.containsKey(originalFieldName)) checked="checked=\"checked\"";
 			    		   				%>
-			    		   				<tr>
-			    		   					<td width="20%">
-			    		   						&nbsp;
-			    		   					</td>
-			    		   					<td width="80%">
-			    		   						<INPUT type=CHECKBOX name="field" value="<%=originalFieldName%>" <%=checked%> >
-			    		   						<a href="<%=urlOrderBy %>"> <%=Utils.getLabelForQueryField(requestContainer,dm, aWizardObject,originalFieldName) %></a>
-			    		   					</td>	
-			    		   				</tr>
+			    		<tr>
+			    		   	<td colspan="2">
+			    		   		<INPUT type=CHECKBOX name="field" value="<%=originalFieldName%>" <%=checked%> >
+			    		   		<a href="<%=urlOrderBy %>" class="qbe-font-link"> 
+			    		   			<%=Utils.getLabelForQueryField(requestContainer,dm, aWizardObject,originalFieldName) %>
+			    		   		</a>
+			    		   	</td>				
+			    		</tr>
 			    		   			<% } %>
-			    		   			<%}//endwhile%>
-			    		   			<tr>
-		    		   					<td width="20%">
-		    		   						&nbsp;
-		    		   					</td>
-		    		   					<td width="80%">
-		    		   						<INPUT TYPE=SUBMIT VALUE="submit">
-		    		   					</td>
-		    		   				</tr>		    		   			
-		    		   				</form>
+			    		   			<%}//endwhile%>		    		   				
 			    		   		<%}//endif %>
-			    		   	
 			    		 <%}//endif %>
+			    		 
 			    		 <tr>
 			    		   <td colspan="2">
 			    		   		 &nbsp;
@@ -144,7 +146,30 @@
 			    		</tr>
 			    	</table>
 			    	</td>
-			    	<td width="50%" valign="top">
+			    	
+			    	
+			    	
+			    	
+						
+						
+					<td align="center">
+						<br/>
+						<input type="image"
+						       src='<%=qbeUrl.conformStaticResourceLink(request,"../img/refresh.gif")%>' 
+						       alt='<%=qbeMsg.getMessage(requestContainer,"QBE.Update", bundle) %>' 
+						       title='<%=qbeMsg.getMessage(requestContainer,"QBE.Update", bundle) %>'/>
+						<br/>
+						<a href="javascript:document.getElementById('groupForm').submit()" class="qbe-title-link">
+							<%=qbeMsg.getMessage(requestContainer,"QBE.Update", bundle) %>
+						</a>
+					</td>
+						
+						
+			    	
+			    	
+						
+						
+			    	<td valign="top" class="qbe-td-form">
 		  			<table width="100%">
 			    		 <tr>
 			    		   <td colspan="4">
@@ -198,7 +223,7 @@
 				    		   				<td width="5%">
 				    		   						<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
 				    		   				</td>
-			    		   					<td width="85%">
+			    		   					<td width="85%" class="qbe-font">
 			    		   						 <%--<%=originalFieldName %> --%>
 			    		   						<%=Utils.getLabelForQueryField(requestContainer,dm,aWizardObject, originalFieldName) %>
 			    		   					</td>	
@@ -211,12 +236,23 @@
 			    		   		 &nbsp;
 			    		   </td>   		   				
 			    		</tr>
-			    		 
-			    		 
 			    	</table>
 			  		</td>
+						
+						
+						
+						
+						<td>&nbsp;</td>
+						
+						
 			  		</tr>
 			 </table>
+			 </form>
+			 
+			 
+			 
+			 
+			 
 <%} else { %>
 	   			<table width="100%">
 	  			<tr>

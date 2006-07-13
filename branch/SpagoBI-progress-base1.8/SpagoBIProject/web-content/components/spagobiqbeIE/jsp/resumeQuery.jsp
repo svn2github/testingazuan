@@ -46,23 +46,36 @@
 <% if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)){%> 
 <table width="100%">
 	<tr>
-		<td width="3%">
+		<td width="2%">
 			&nbsp;
 		</td>
-		<td width="42%">
+		<td width="40%">
 			&nbsp;
 		</td>
-		<td width="10%">
+		<td width="16%">
 			&nbsp;
 		</td>
-		<td width="45%">
+		<td width="40%">
+			&nbsp;
+		</td>
+		<td width="2%">
 			&nbsp;
 		</td>
 	</tr>			
+	
+	
+	
+	
 	<tr>  
-		<td></td> <%-- Rientro  --%>
-	   			<%-- Colonna di SX  --%>
-		<td>
+		
+		
+		<%-- Left space column  --%>
+		<td>&nbsp;</td> 
+	 
+	 
+	 
+	  <%-- Start Left column  --%>
+		<td class="qbe-td-form">
 			<table valign="top">
 				<tr>
 					<td>
@@ -74,9 +87,9 @@
 						&nbsp;
 					</td>
 				<tr>
-				<tr border=5>
+				<tr>
 					<td>
-						<table width="100%">
+						<table class="qbe-font" width="100%">
 									<% int rowsCounter = 1;
 										if (aWizardObject.getSelectClause() != null){ %>
 									
@@ -220,98 +233,73 @@
 										
 									%>
 						</table>
-
 					</td>	
 				</tr>		
 			</table>
+		</td>
+    <%-- End Left column  --%>
 
-	   			<%-- Colonna di Centro --%>
-	   	</td>
-	   	<td valign="top">
-	   		<table valign="top">		
-	   			<tr>
-	   				<td>
-	   					&nbsp;
-	   				</td>
-	   			</tr>
-	   			<tr>
-	   				<td>
-	   					&nbsp;
-	   				</td>
-	   			</tr>
-	   			<tr>
-	   				<td>
-	   					&nbsp;
-	   				</td>
-	   			</tr>	
-	   			<tr>
-	   				<td>
-	   					<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/alignexpert.gif")%>" 
+
+
+
+	  <%-- Start central column --%>
+	  <td align="center" valign="middle">
+	   				<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/alignexpert.gif")%>" 
 	   						 alt="<%=qbeMsg.getMessage(requestContainer,"QBE.alt.imgRresumeFromQbe", bundle) %>" 
 	   						 title="<%=qbeMsg.getMessage(requestContainer,"QBE.alt.imgResumeFromQbe", bundle) %>" 
 	   						 onclick="javascript:resumeFromQbe()"/>
 						<br/>
-						<a href="javascript:resumeFromQbe()">
+						<a href="javascript:resumeFromQbe()" class="qbe-title-link" >
 							 <%=qbeMsg.getMessage(requestContainer, "QBE.alt.resumeFromQbe", bundle) %>						
 						</a>
-	   				</td>
-	   			</tr>
-	   			<tr>
-	   				<td>
-	   					&nbsp;
-	   				</td>
-	   			</tr>
-	   			<tr>
-	   				<td>
-	   					&nbsp;
-	   				</td>
-	   			</tr>
-	   			<tr>
-	   				<td>
-	   					&nbsp;
-	   				</td>
-	   			</tr>
-	   		</table>
-	   	</td>
+	  </td>
+		<%-- End central column --%>
 
-	   			<%-- Colonna di DX  --%>
-	   			
-	   	<td valign="top">
-	   		<table valign="top">
-				<tr border=5>
-					<td>
+
+
+
+
+
+
+
+	  <%-- Start right column --%>
+	  <td valign="top" class="qbe-td-form">
+				<table valign="top" >
+				<tr>
+					<td colspan="3">
 						<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.ExpertComposition", bundle)%></span>
 					</td>
 				<tr>						
-				<tr border=5>
-					<td>
+				<tr>
+					<td colspan="3">
 						&nbsp;
 					</td>
 				<tr>					
 				<tr>
 					<td colspan="3">
  			 			<%  String strTextArea = "";
-
 						 				if ((aWizardObject.getExpertQueryDisplayed() == null)||(aWizardObject.getExpertQueryDisplayed().trim().length() == 0)){
 						 					strTextArea = aWizardObject.getFinalSqlQuery(dm);						 					
 						 				}else{
-						 					
 						 					strTextArea = aWizardObject.getExpertQueryDisplayed();
-				 					
 						 				}
-						 				
 						%>
-						 									 			
 					 	<textarea name="expertSelectTextArea" id="expertSelectTextArea" rows="<%=rowsCounter%>" cols="50"><%=strTextArea%></textarea>
 					</td>
 				</tr>
+				<tr>
+					<td colspan="3">
+						&nbsp;
+					</td>
+				<tr>	
 				<tr>
 					<td>
 						<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertclose.gif")%>" 
 							 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgResumeLastExpert", bundle) %>"  
 							 title="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgResumeLastExpert", bundle) %>" 
 							 onclick="javascript:resumeLastExpert()"/> 
-						<a href="javascript:submitUpdatePreview('RESUME_LAST_EXPERT_LINK')">
+						<a href="javascript:submitUpdatePreview('RESUME_LAST_EXPERT_LINK')"
+						   class="qbe-title-link">
 							 <%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgResumeLastExpert", bundle) %>
 						</a>
 					</td>
@@ -323,42 +311,67 @@
 							 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgExpertSave", bundle) %>"  
 							 title="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgExpertSave", bundle) %>" 
 				             onclick="javascript:saveExpertSelect()"/>
-				        <a href="javascript:saveExpertSelect()">
+				        <a href="javascript:saveExpertSelect()"
+				           class="qbe-title-link">
                        		 <%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgExpertSave", bundle) %>
                        	</a>
-		            </td>
+					</td>
 				</tr>								
 			</table>
 		</td>
-			<%-- FORM  --%>			
-	<tr>
-		<td>
-			&nbsp;
-	   	</td>
+		<%-- Start right column --%>
+		 
+		 
+		 
+		<%-- Right space column --%> 
+		<td>&nbsp;</td>
+		
+		
 	</tr>
+	
+	
+	
+	
+	<tr>
+		<td colspan="5">
+			&nbsp;
+	  </td>
+	</tr>
+	
+	
+	
+	
+	
 	<tr>
 		<td></td>			
-		<td colspan="3" >
-			<form id="formUpdateExpert" name="formUpdateExpert" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-				<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality", bundle)%></span>
-					&nbsp;
+		<td>
+		    <div class="qbe-td-form">
+				<form id="formUpdateExpert" name="formUpdateExpert" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+				<span class="qbeTitle">
+						<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality", bundle)%>
+				</span>
+				&nbsp;
 				<input type="hidden" name="ACTION_NAME" value="UPDATE_PREVIEW_MODE_ACTION"/>
 				<input type="hidden" id="formUpdateExpert_Source" name="SOURCE" value="RADIO_BUTTON"/>
 				<input type="hidden" id="formUpdateExpert_expertTA" name="EXPERT_DISPLAYED" value=""/>												
-												
 				<% if (aWizardObject.isUseExpertedVersion()) { %>
-					<input type="radio" name="previewMode" value="ComposedQuery" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+					<input type="radio" name="previewMode" value="ComposedQuery" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"><span class="qbe-font"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%></span>
 					&nbsp;
-					<input type="radio" name="previewMode" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+					<input type="radio" name="previewMode" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"><span class="qbe-font"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%></span>
 				<%} else {%>
-					<input type="radio" name="previewMode" value="ComposedQuery" checked="checked" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+					<input type="radio" name="previewMode" value="ComposedQuery" checked="checked" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"><span class="qbe-font"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%></span>
 					&nbsp;
-					<input type="radio" name="previewMode" value="ExpertMode" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')" > <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+					<input type="radio" name="previewMode" value="ExpertMode" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')" ><span class="qbe-font"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%></span>
 				<%}%>
 			</form>
-		</td>		
+			</div>
+		</td>
+    <td colspan="3">&nbsp</td>
 	</tr>
-<%-- FORM per ??? --%>			
+	
+	
+	
+	
 </table> 
 
 <div id="divSpanCurrent">

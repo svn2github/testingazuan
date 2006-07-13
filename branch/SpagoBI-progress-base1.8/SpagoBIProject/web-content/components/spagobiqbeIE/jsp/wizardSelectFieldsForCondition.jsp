@@ -29,7 +29,8 @@
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
+		<td class='header-title-column-portlet-section' 
+
 		    style='vertical-align:middle;padding-left:5px;'>
 			<%= dm.getName() %> : <%=dm.getDescription() %> - <%= qbeMsg.getMessage(requestContainer,"QBE.Title.Conditions", bundle) %>
 		</td>
@@ -93,7 +94,8 @@
 	  						<tr>
 	  							<td id="lightTreeLink">
 									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/removeOperator.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" onclick="javascript:vediSchermo('Light Tree','LIGHT_TREE')" />	
-									<a href="javascript:vediSchermo('Light Tree','LIGHT_TREE')">
+									<a href="javascript:vediSchermo('Light Tree','LIGHT_TREE')"
+										 class="qbe-title-link" >
 										<%=qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTree", bundle)%>
 									</a>
 	  							
@@ -102,7 +104,7 @@
 	  						<tr>
 	  							<td id="fullTreeLink">
 	  								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/detail.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" onclick="javascript:vediSchermo('Full Tree','FULL_TREE')"/>	
-									<a href="javascript:vediSchermo('Full Tree','FULL_TREE')">
+									<a href="javascript:vediSchermo('Full Tree','FULL_TREE')" class="qbe-title-link" >
 										<%=qbeMsg.getMessage(requestContainer, "QBE.Conditions.FullTree", bundle)%>
 									</a>	
 	  							</td>
@@ -147,7 +149,7 @@
 	  			</td>
 		  		<td valign="top">
 		  	
-		  		    <table width="100%">
+		  		    <table  width="100%">
 		  				<tr>
 		  					<td>
 		  						<form id="formUpdateConditions" name="formUpdateConditions" action="<%=qbeUrl.getUrl(request, null) %>"  method="POST">
@@ -168,7 +170,7 @@
 									<input id="Parameter" type="hidden" name="" value=""/>
 																
 		  							
-		  						<table widht="100%">
+		  						<table widht="100%" class="qbe-font">
 		  						
 		  						
 		  						<% 		
@@ -224,7 +226,8 @@
 			    		   					<td>
 			    		   						<%=Utils.getLabelForQueryField(requestContainer, dm, aWizardObject, fieldName)%>
 			    		   					</td>
-			    		   					<td>
+													<td>&nbsp;</td> 
+			    		   					<td style="padding:1px;">
 			    		   						<select name="<%="OPERATOR_FOR_FIELD_"+fieldId%>"/>
 													<option value="=" <%=(fieldOperator.equalsIgnoreCase("=")? "selected" : "")%>>=</option>
 			    		   							<option value="<=" <%=(fieldOperator.equalsIgnoreCase("<=")? "selected" : "")%>><=</option>
@@ -243,18 +246,22 @@
 			    		   							<option value="between" <%=(fieldOperator.equalsIgnoreCase("between")? "selected" : "")%>>between</option>
 			    		   						</select>
 			    		   					</td>
+													<td>&nbsp;</td> 
 			    		   					<td>
 			    		   						<input type="text" id="<%="VALUE_FOR_FIELD_"+fieldId %>" name="<%="VALUE_FOR_FIELD_"+fieldId %>" value="<%=fieldValue %>"/>
 			    		   					</td>
+													<td>&nbsp;</td> 
 			    		   					<td width="5%">
 				    		   					<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/selectjoin.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" onclick="openDivTreeSelectJoin('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
 				    		   				</td>
-			    		   					<td>
+													<td>&nbsp;</td> 
+			    		   					<td  style="padding:1px;">  
 			    		   						<select name="<%="NEXT_BOOLEAN_OPERATOR_FOR_FIELD_"+fieldId%>"/>
 													<option value="AND " <%=(nextBooleanFieldOperator.equalsIgnoreCase("AND")? "selected" : "")%>>AND</option>
 			    		   							<option value="OR" <%=(nextBooleanFieldOperator.equalsIgnoreCase("OR")? "selected" : "")%>>OR</option>
 			    		   						</select>
 			    		   					</td>
+													<td>&nbsp;</td>
 			    		   			    </tr>
 			    		   			   <% }%> <%-- FINE WHILE --%>
 			    		   			<% }%> <%-- FINE IF--%>

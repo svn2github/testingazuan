@@ -741,7 +741,8 @@ TD.LAYMENUEMPDISAB {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
-	color: black;
+	/*color: black;*/
+	color: #074B88;
 	white-space: nowrap;
 }
 
@@ -751,4 +752,53 @@ TD.LAYMENUEMPDISAB {
 	color: red;
 	font-weight: bold;
 	white-space: nowrap;
+}
+
+*.qbe-font    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	font-weight: normal;
+	color: black;
+	text-decoration:none;
+}
+
+*.qbe-title-link {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	font-weight: bold;
+	color: #074B88;
+	text-decoration:none;
+}
+
+*.qbe-title-link:hover {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	font-weight: bold;
+	color: #074B88;
+	text-decoration:underline;
+}
+
+
+*.qbe-font-link    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	font-weight: normal;
+	color: black;
+	text-decoration:none;
+}
+
+*.qbe-font-link:hover   {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	font-weight: normal;
+	color: black;
+	text-decoration:underline;
+}
+
+
+.qbe-td-form {
+	padding:5px;	
+    border: 1px solid #cccccc;
+    background-color:#fafafa;
+    margin:5px;
 }

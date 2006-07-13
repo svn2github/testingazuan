@@ -51,7 +51,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	String actionName = null;
 	
 	String modality = DEFAULT_MODALITY;
-	boolean checkable = true;
+	boolean checkable = false;
 	
 	public static final String FULL_MODALITY = "FULL";
 	public static final String LIGHT_MODALITY = "LIGHT";

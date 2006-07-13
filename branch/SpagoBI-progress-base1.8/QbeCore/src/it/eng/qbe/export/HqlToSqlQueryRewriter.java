@@ -71,7 +71,7 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 			
 			createQueryTranslatorMethod = factory.getClass().getMethod("createQueryTranslator", parsTypes);
 			try{
-				trans = (QueryTranslator)createQueryTranslatorMethod.invoke(factory, new Object[]{hibQuery,Collections.EMPTY_MAP, imple});
+				trans = (QueryTranslator)createQueryTranslatorMethod.invoke(factory, new Object[]{hibQuery.getQueryString(), Collections.EMPTY_MAP, imple});
 			}catch (Throwable e) {
 				e.printStackTrace();
 			}

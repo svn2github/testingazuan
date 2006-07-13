@@ -560,7 +560,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 	
 	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
-		return executeSqlQuery(dataMartModel, getFinalSqlQuery(dataMartModel), pageNumber, pageSize);
+		return executeHqlQuery(dataMartModel, getFinalQuery(), pageNumber, pageSize);
 	}
 	
 	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {

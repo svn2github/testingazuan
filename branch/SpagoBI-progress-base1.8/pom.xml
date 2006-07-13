@@ -21,7 +21,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <version>1.9RC</version>
+  <version>1.9</version>
   <artifactId>app</artifactId>
   <packaging>pom</packaging>
   <modules>

@@ -103,7 +103,7 @@ public interface ISingleDataMartWizardObject extends Serializable {
 			
 	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception;
 				
-		
+	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception;	
 	
 	
 	

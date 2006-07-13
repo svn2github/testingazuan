@@ -573,7 +573,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		return executeSqlQuery(dataMartModel, getExpertQueryDisplayed(), pageNumber, pageSize);
 	}
 	
-	private SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
+	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
 		List result = null;

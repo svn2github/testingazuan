@@ -56,6 +56,8 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	private String queryId = null;
 	private String description = null;
 	
+	public static final int MAX_ROWS_NUM = 20;
+	
 	public SingleDataMartWizardObjectSourceBeanImpl() {
 		super();
 		this.entityClasses = new ArrayList();	
@@ -584,6 +586,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 		Connection conn = aSession.connection();
 		Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		stm.setMaxRows(MAX_ROWS_NUM);
 		//stm.execute(getExpertQueryDisplayed());
 		stm.execute(query);
 			
@@ -621,6 +624,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
 		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
 		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+		queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= MAX_ROWS_NUM));
 		
 		return queryResponseSourceBean;	
 	}

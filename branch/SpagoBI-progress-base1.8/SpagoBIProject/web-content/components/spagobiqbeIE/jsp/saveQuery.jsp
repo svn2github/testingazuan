@@ -81,14 +81,20 @@
 <table width="100%">
 	<tr>
 		<td width="3%">&nbsp;</td>
-		<td width="47%">&nbsp;</td>
-		<td width="47%">&nbsp;</td>
+		<td width="45%">&nbsp;</td>
+		<td width="4%">&nbsp;</td>
+		<td width="45%">&nbsp;</td>
 		<td width="3%">&nbsp;</td>
 	</tr>
 	<tr>
-		<td width="3%"></td>
-		<%-- Rientro  --%>
-		<td width="47%"><%-- Save --%>
+		
+		
+		<td width="3%">&nbsp;</td>
+
+
+
+
+		<td class="qbe-td-form"><%-- Save --%>
 			<form id="formPersistQuery" name="formPersistQuery"
 					action="<%=qbeUrl.getUrl(request,null) %>" method="POST"><input
 					type="hidden" id="previousQueryId" name="previousQueryId"
@@ -96,27 +102,27 @@
 				<input type="hidden" name="ACTION_NAME" value="PERSIST_QUERY_ACTION" />
 				<table>
 					<tr>
-						<td colspan="2"><span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer,
-								"QBE.SavePage.Savings", bundle)%></span>
+						<td colspan="2" >
+							<span class="qbeTitle">
+									<%=qbeMsg.getMessage(requestContainer, "QBE.SavePage.Savings", bundle)%>
+							</span>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">&nbsp;</td>
 					</tr>
 					<tr>
-						<td><%=qbeMsg.getMessage(requestContainer,
-								"QBE.Resume.Query.QueryIdentifier", bundle)%>
+						<td width="120px" class="qbe-font" valign="middle">
+							<%=qbeMsg.getMessage(requestContainer,"QBE.Resume.Query.QueryIdentifier", bundle)%>
 						</td>
-						<td><input id="queryId" type="text" name="queryId"
-							value="<%=(aWizardObject.getQueryId() != null ? aWizardObject.getQueryId() : "") %>">
+						<td >
+								<input id="queryId" type="text" name="queryId"
+												value="<%=(aWizardObject.getQueryId() != null ? aWizardObject.getQueryId() : "") %>">
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">&nbsp;</td>
-					</tr>
-					<tr>
-						<td><%=qbeMsg.getMessage(requestContainer,
-								"QBE.Resume.Query.QueryDescr", bundle)%>
+						<td width="150px" class="qbe-font" valign="middle">
+							<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.QueryDescr", bundle)%>
 						</td>
 						<td><input type="text" name="queryDescritpion"
 							value="<%=(aWizardObject.getDescription() != null ? aWizardObject.getDescription() : "") %>">
@@ -126,11 +132,8 @@
 						<td colspan="2">&nbsp;</td>
 					</tr>
 					<tr>
-						<td colspan="2">&nbsp;</td>
-					</tr>
-					<tr>
-						<td colspan="2"><b><%=qbeMsg.getMessage(requestContainer,
-								"QBE.Resume.Query.Visibility", bundle)%></b>
+						<td colspan="2" class="qbeTitle">
+							<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.Visibility", bundle)%></b>
 						</td>
 					</tr>
 					<tr>
@@ -141,20 +144,30 @@
 
 					%> <input
 							type="radio" name="visibility" value="public" checked="checked">
+              <span class="qbe-font">
 						<%=qbeMsg.getMessage(requestContainer,
 									"QBE.Resume.Query.Visibility.Public", bundle)%>
+							</span>
 						<br>
-						<input type="radio" name="visibility" value="private"> <%=qbeMsg.getMessage(requestContainer,
+						<input type="radio" name="visibility" value="private"> 
+						<span class="qbe-font">
+						<%=qbeMsg.getMessage(requestContainer,
 									"QBE.Resume.Query.Visibility.Private", bundle)%>
+						</span>
 						<%} else {
 
 					%> <input type="radio" name="visibility" value="public">
+					<span class="qbe-font">
 						<%=qbeMsg.getMessage(requestContainer,
 									"QBE.Resume.Query.Visibility.Public", bundle)%>
+						</span>
 						<br>
 						<input type="radio" name="visibility" value="private"
-							checked="checked"> <%=qbeMsg.getMessage(requestContainer,
+							checked="checked"> 
+							<span class="qbe-font">
+							<%=qbeMsg.getMessage(requestContainer,
 									"QBE.Resume.Query.Visibility.Private", bundle)%>
+							</span>
 						<%}
 
 				%>		</td>
@@ -163,14 +176,22 @@
 						<td colspan="2">&nbsp;</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><input type="button" value="<%=qbeMsg.getMessage(requestContainer,
-								"QBE.SaveQuery.SaveButton", bundle)%>"
+						<td colspan="2" align="center">
+						    <input type="button" 
+											 value="<%=qbeMsg.getMessage(requestContainer, "QBE.SaveQuery.SaveButton", bundle)%>"
 							onclick="checkFormPersistQueryAndSubmit();" /></td>
 					</tr>
 				</table>
 			</form>
 		</td>
-		<td width="47%">
+		
+		
+		
+		<td>&nbsp;</td>
+		
+		
+		
+		<td class="qbe-td-form">
 			<table width="100%">
 				<tbody>
 					<tr>
@@ -191,8 +212,10 @@
 								</tr>
 
 								<tr>
-									<td width="100%"><b><%=qbeMsg.getMessage(requestContainer,
-									"QBE.ValidateQuery.CorrectQuery", bundle)%></b>
+									<td width="100%">
+										<span class="qbe-font">
+											<%=qbeMsg.getMessage(requestContainer, "QBE.ValidateQuery.CorrectQuery", bundle)%>
+										</span>
 									</td>
 								</tr>
 								<tr>
@@ -215,7 +238,7 @@
 								: selField.getFieldName());
 
 						%>
-												<TH><%=headerName%></TH>
+												<td class="qbe-font"><%=headerName%></td>
 												<%}
 
 				%>
@@ -313,8 +336,10 @@
 								</tr>
 
 								<tr>
-									<td width="100%"><b><%=qbeMsg.getMessage(requestContainer,
-									"QBE.ValidateQuery.CorrectQuery", bundle)%></b>
+									<td width="100%">
+										<span class="qbe-font">
+											<%=qbeMsg.getMessage(requestContainer, "QBE.ValidateQuery.CorrectQuery", bundle)%>
+									  </span>
 									</td>
 								</tr>
 								<tr>
@@ -337,7 +362,7 @@
 
 							%>
 
-												<th><%=headerName%></th>
+												<td class="qbe-font"><%=headerName%></td>
 
 												<%}
 

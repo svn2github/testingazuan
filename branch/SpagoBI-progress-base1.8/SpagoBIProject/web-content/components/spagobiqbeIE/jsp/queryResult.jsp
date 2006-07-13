@@ -23,7 +23,6 @@
 	Integer pagesNumber = null;
 	boolean hasPreviousPage = false;
 	boolean hasNextPage = false;
-	boolean overflow = false;
    SourceBean listResponse = null;
    if (msg != null){
 	   flagErrors = true;
@@ -36,8 +35,6 @@
 	   pagesNumber = (Integer)listResponse.getAttribute("pagesNumber");
 	   hasPreviousPage = ((Boolean)listResponse.getAttribute("hasPreviousPage")).booleanValue();
 	   hasNextPage = ((Boolean)listResponse.getAttribute("hasNextPage")).booleanValue();
-	   if(listResponse.getAttribute("overflow") != null)
-	   	 overflow = ((Boolean)listResponse.getAttribute("overflow")).booleanValue();
    }
   	String qbeQuery = aWizardObject.getFinalQuery();
   	String qbeSqlQuery = aWizardObject.getFinalSqlQuery(dm);
@@ -71,7 +68,8 @@
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
+		<td class='header-title-column-portlet-section' 
+
 		    style='vertical-align:middle;padding-left:5px;'>
 			<%= dm.getName() %> : <%=dm.getDescription() %> - <%=qbeMsg.getMessage(requestContainer, "QBE.Title.Result.Preview", bundle) %>
 		</td>
@@ -88,7 +86,6 @@
 
 
 <table width="100%">
-	<tbody>
 		<tr>
 			<td width="3%">
 			</td>
@@ -103,7 +100,9 @@
 							<% if (aWizardObject.isUseExpertedVersion()) { %>
 								<td width="20%">	
 								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
+									<span class="qbe-font">
 									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+									</span>
 								</input>
 								</td>	
 								
@@ -117,7 +116,9 @@
 								<tr>
 								<td width="20%">	
 								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
-									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+									<span class="qbe-font">
+										<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+									</span>
 								</input>
 								</td>	
 								<td>
@@ -127,7 +128,9 @@
 							<%} else {%>
 								<td width="20%px">	
 								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
-									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+									<span class="qbe-font">
+										<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+									</span>
 								</input>
 								</td>	
 								
@@ -140,7 +143,9 @@
 								<tr>
 								<td width="20%">	
 								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
-									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+									<span class="qbe-font">
+										<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+									</span>
 								</input>
 								</td>	
 								<td>
@@ -169,7 +174,6 @@
    				<option value="text/plain">TXT</option>
    				<option value="text/csv">CSV</option>
   				</select>
- 				</fieldset>
 				</td>
 				
 				<td width="20%">					
@@ -183,43 +187,9 @@
 			
 			<td width="3%"></td>			
 		</tr>	
-	</tbody>
 </table>
 		
 <% if (!flagErrors){ %>
-
-<% if (overflow){ %>
-<table width="100%" valign="top"> 
-	<tr>
-		<td width="3%"></td>
-		<td width="94%"></td>
-		<td width="3%"></td>
- 	</tr>
-	<tr>
-		<td></td>
- 		<td>
- 			<span class="qbeError">The following warnings occurred</span>
-		</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td></td>				
-		<td>&nbsp;</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td width="3%"></td>
-		<td width="94%">
-			<textarea id="txtAreaMsgError" readonly="true" rows="5" cols="80">Overflow !!! To many rows in the resultset.</textarea>
-		<td	td width="3%"></td>
-	</tr>
-	<tr>
-		<td></td>				
-		<td>&nbsp;</td>
-		<td></td>
-	</tr>
-</table>
-<%} %>
 
 <table width="100%" valign="top"> 
 	<tr>
@@ -246,13 +216,14 @@
    		   			sParams.put("ignoreJoins", "true");
    		   			urlPrev = qbeUrl.getUrl(request, sParams);
    		   			%>
-				<a href="<%=urlPrev%>"> << </a>
+				<a class="qbe-title-link" href="<%=urlPrev%>"> << </a>
 			<% } %> 
+			<span class="qbe-font">
 			<%=qbeMsg.getMessage(requestContainer, "QBE.QueryResult.CurrentPage", bundle) %> <%=currentPage+1 %>
 			<% if (pagesNumber != null){%>
 				/<%=pagesNumber.intValue()%> 
 			<% } %>
-			
+			</span>
 			<% if (hasNextPage){
 				sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
@@ -260,7 +231,7 @@
    		   			sParams.put("pageNumber",String.valueOf(currentPage+1));
    		   			sParams.put("ignoreJoins", "true");
    		   			urlNext = qbeUrl.getUrl(request, sParams);%>
-				<a href="<%=urlNext%>"> >> </a>
+				<a class="qbe-title-link" href="<%=urlNext%>"> >> </a>
 			<% } %>
 		</td>
 		<td></td>

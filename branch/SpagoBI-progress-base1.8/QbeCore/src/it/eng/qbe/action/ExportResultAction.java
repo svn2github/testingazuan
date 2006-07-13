@@ -50,6 +50,8 @@ public class ExportResultAction extends AbstractAction {
 			query =  aWizardObject.getFinalSqlQuery(dataMartModel);
 		} 
 		
+		if(query == null) returnError(response, "Query is null !!!");
+		
 		try {
 			SourceBean queryResponseSourceBean = aWizardObject.executeSqlQuery(dataMartModel, query, 0, 10);
 			getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);

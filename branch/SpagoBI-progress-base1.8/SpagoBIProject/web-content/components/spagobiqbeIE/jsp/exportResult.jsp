@@ -21,6 +21,21 @@
 	dm.updateCurrentClassLoader();
 	aWizardObject.composeQuery();
 		
+	String msg =  (String)aServiceResponse.getAttribute("ERROR_MSG");
+    boolean flagErrors = false;
+    boolean overflow = false;
+    
+    SourceBean listResponse = null;
+    if (msg != null){
+	   flagErrors = true;
+	}else{
+		   listResponse = (SourceBean)sessionContainer.getAttribute(it.eng.qbe.action.ExecuteSaveQueryAction.QUERY_RESPONSE_SOURCE_BEAN);
+		   if(listResponse.getAttribute("overflow") != null)
+		   	 overflow = ((Boolean)listResponse.getAttribute("overflow")).booleanValue();
+	}
+	
+	
+	
 	String qbeQuery = aWizardObject.getFinalQuery();;
   	String expertQuery = aWizardObject.getExpertQueryDisplayed();
   			
@@ -105,6 +120,8 @@
 	</table>
 </form>
 
+
+<%if(!flagErrors && !overflow) { %>
 <center>
 <HR noshade>
 <P><span class="qbeTitle">Report Preview</span>	
@@ -114,6 +131,39 @@
 		TITLE="Report" WIDTH="80%" HEIGHT="500">
 </IFRAME>
 </center>
+
+<%} else { %>
+<table width="100%" valign="top"> 
+	<tr>
+		<td width="3%"></td>
+		<td width="94%"></td>
+		<td width="3%"></td>
+ 	</tr>
+	<tr>
+		<td></td>
+ 		<td>
+ 			<span class="qbeError">The following warnings/errors occurred</span>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>				
+		<td>&nbsp;</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td width="3%"></td>
+		<td width="94%">
+			<textarea id="txtAreaMsgError" readonly="true" rows="5" cols="80"><%=(overflow)?"Overflow !!! To many rows in the resultset.": msg %></textarea>
+		<td	td width="3%"></td>
+	</tr>
+	<tr>
+		<td></td>				
+		<td>&nbsp;</td>
+		<td></td>
+	</tr>
+</table>
+<% } %>
 
 <%if (qbeMode.equalsIgnoreCase("WEB")) {
 %>

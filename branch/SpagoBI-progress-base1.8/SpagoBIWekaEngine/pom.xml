@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9RC</version>
+    <version>1.9</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIWekaEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9alfa</version>
+  <version>1.9alpha</version>
   <name>SpagoBIWekaEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -87,6 +87,7 @@
         <artifactId>commons-httpclient</artifactId>
         <version>2.0.2</version>
     </dependency>
+    <!--
     <dependency>
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
@@ -101,6 +102,7 @@
       	<scope>system</scope>
       	<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-logging-api-1.0.2.jar</systemPath>
     </dependency>
+    -->
     <dependency>
         <groupId>dom4j</groupId>
         <artifactId>dom4j</artifactId>
@@ -154,7 +156,7 @@
     <dependency>
         <groupId>spagobi</groupId>
         <artifactId>sbi.utils</artifactId>
-        <version>1.9RC</version>
+        <version>1.9</version>
     </dependency>
     <dependency>
         <groupId>javax.servlet</groupId>
@@ -168,7 +170,8 @@
 		<version>1.0</version>
       	<scope>system</scope>
       	<systemPath>${basedir}/WebContent/WEB-INF/lib/weka.jar</systemPath>
-    </dependency>    
+    </dependency>
+    <!--
     <dependency>
         <groupId>xalan</groupId>
         <artifactId>xalan</artifactId>
@@ -190,5 +193,6 @@
       	<scope>system</scope>
       	<systemPath>${basedir}/WebContent/WEB-INF/lib/xml-apis.jar</systemPath>
     </dependency>
+    -->
   </dependencies>
 </project>

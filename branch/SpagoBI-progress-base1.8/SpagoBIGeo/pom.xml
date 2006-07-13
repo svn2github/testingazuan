@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9RC</version>
+    <version>1.9</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIGeoEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9alfa</version>
+  <version>1.9alpha</version>
   <name>SpagoBIGeoEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -293,7 +293,7 @@
     <dependency>
         <groupId>spagobi</groupId>
         <artifactId>sbi.utils</artifactId>
-        <version>1.9RC</version>
+        <version>1.9</version>
     </dependency>  	
    	<dependency>
     	<groupId>xalan</groupId>
@@ -309,6 +309,7 @@
      	<scope>system</scope>
       	<systemPath>${basedir}/SpagoBIGeoEngine/WEB-INF/lib/xercesImpl.jar</systemPath>				
   	</dependency> 
+  	<!--
    	<dependency>
     	<groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
@@ -316,5 +317,6 @@
      	<scope>system</scope>
       	<systemPath>${basedir}/SpagoBIGeoEngine/WEB-INF/lib/xml-apis.jar</systemPath>				
   	</dependency> 
+  	-->
   </dependencies>
 </project>

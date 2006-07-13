@@ -40,7 +40,7 @@
   	saveFormUrl += "&inline=false";
   	saveFormUrl += "&jarfilepath=" + jarFilePath;
   	if(aWizardObject.getQueryId() != null) saveFormUrl += "&queryName=" + aWizardObject.getQueryId();
-  	saveFormUrl += "&query=" + finalQueryString ;
+  	saveFormUrl += "&query=" + finalQueryString;
   	saveFormUrl += "&lang=" + queryLang;
   	saveFormUrl += "&jndiDataSourceName=" + dm.getJndiDataSourceName() ;
   	saveFormUrl += "&dialect=" + dm.getDialect() ;

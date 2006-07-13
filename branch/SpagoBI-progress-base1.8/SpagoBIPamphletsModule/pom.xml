@@ -30,7 +30,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIPamphletsModule</artifactId>
   <packaging>war</packaging>
-  <version>1.9RC</version>
+  <version>1.9</version>
   <name>SpagoBIPamphletsModule</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -162,11 +162,10 @@
       		<systemPath>${basedir}/web-content/WEB-INF/lib/openoffice_unoil.jar</systemPath>
         </dependency>      
         <dependency>
-                <groupId>portlet</groupId>
-                <artifactId>portlet</artifactId>
+                <groupId>portlet-api</groupId>
+                <artifactId>portlet-api</artifactId>
                 <version>1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/portlet.jar</systemPath>
+		<scope>provided</scope>
         </dependency>
         <dependency>
         	<groupId>shark</groupId>
@@ -190,11 +189,11 @@
       		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spago-web-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spagoportlet</groupId>
-                <artifactId>spagoportlet</artifactId>
+                <groupId>spago</groupId>
+                <artifactId>spago-portlet</artifactId>
                 <version>2.1.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagoportlet-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spagoportlet-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
         	<groupId>spago</groupId>
@@ -206,21 +205,21 @@
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.drivers.api</artifactId>
-                <version>1.9RC</version>
+                <version>1.9</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIDriversAPI/target/sbi.drivers.api-1.9RC.jar</systemPath>                
+      		<systemPath>${basedir}/../SpagoBIDriversAPI/target/sbi.drivers.api-1.9.jar</systemPath>                
         </dependency>
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.securityprovider.api</artifactId>
-                <version>1.9RC</version>
+                <version>1.9</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBISecurityProviderAPI/target/sbi.securityprovider.api-1.9RC.jar</systemPath>                  
+      		<systemPath>${basedir}/../SpagoBISecurityProviderAPI/target/sbi.securityprovider.api-1.9.jar</systemPath>                  
         </dependency>
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>spagobi</artifactId>
-                <version>1.9RC</version>
+                <version>1.9</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/../SpagoBIProject/target/classes/</systemPath>
         </dependency>        

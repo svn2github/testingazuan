@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9RC</version>
+    <version>1.9</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIJasperReportEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9RC</version>
+  <version>1.9</version>
   <name>SpagoBIJasperReportEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -60,11 +60,13 @@
     </plugins>
   </build>
   <dependencies>
+  		<!--
         <dependency>
                 <groupId>ant</groupId>
                 <artifactId>ant</artifactId>
 		<version>1.5.1</version>
         </dependency>
+        -->
         <dependency>
                 <groupId>ClassScriptlet</groupId>
                 <artifactId>ClassScriptlet</artifactId>
@@ -72,6 +74,7 @@
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/ClassScriptlet.jar</systemPath>
         </dependency>
+        <!--
         <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
@@ -90,11 +93,6 @@
 		<version>1.7</version>
         </dependency>
         <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>2.0.2</version>
-        </dependency>
-        <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
 		<version>1.0.2</version>
@@ -107,6 +105,12 @@
 		<version>1.0.2</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-logging-api-1.0.2.jar</systemPath>
+        </dependency>
+        -->
+        <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>2.0.2</version>
         </dependency>
         <dependency>
                 <groupId>dom4j</groupId>
@@ -138,6 +142,7 @@
 			</exclusion>
 		</exclusions>
         </dependency>
+        <!--
         <dependency>
                 <groupId>jaxen</groupId>
                 <artifactId>jaxen-full</artifactId>
@@ -145,6 +150,7 @@
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/jaxen-full.jar</systemPath>
         </dependency>
+        -->
         <dependency>
                 <groupId>jcommon</groupId>
                 <artifactId>jcommon</artifactId>
@@ -152,6 +158,7 @@
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/jcommon-1.0.0.jar</systemPath>
         </dependency>
+        <!--
         <dependency>
                 <groupId>jdt-compiler</groupId>
                 <artifactId>jdt-compiler</artifactId>
@@ -159,6 +166,7 @@
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/jdt-compiler-3.1.1.jar</systemPath>
         </dependency>
+        -->
         <dependency>
                 <groupId>jfree</groupId>
                 <artifactId>jfreechart</artifactId>
@@ -196,7 +204,7 @@
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.utils</artifactId>
-                <version>1.9RC</version>
+                <version>1.9</version>
         </dependency>
         <dependency>
                 <groupId>javax.servlet</groupId>
@@ -204,6 +212,7 @@
                 <version>2.4</version>
 		<scope>provided</scope>
         </dependency>
+        <!--
         <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
@@ -225,6 +234,7 @@
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/xml-apis.jar</systemPath>
         </dependency>
+        -->
         <dependency>
             <groupId>jug-lgpl</groupId>
             <artifactId>jug-lgpl</artifactId>

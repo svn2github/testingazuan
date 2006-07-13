@@ -69,9 +69,8 @@
 				
 %>
 	<P> <%=biObject.getName() %> - <%=biObject.getDescription() %> - <%=biObject.getBiObjectTypeCode() %> - <%=biObject.getStateCode()%>
-	- <a href='<%=formUrl.toString() %>'>ececute</a>
+	- <a href='<%=formUrl.toString() %>'>execute</a>
 <%		
 			}
 		}
-	}
 %>

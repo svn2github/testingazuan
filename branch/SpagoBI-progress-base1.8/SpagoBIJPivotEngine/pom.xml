@@ -82,39 +82,49 @@
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/batik.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-		<version>1.6</version>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+			<version>1.6</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-beanutils-1.6.jar</systemPath>		
         </dependency>
         <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.1</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-collections-3.1.jar</systemPath>
         </dependency>
+        <!--
         <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections-testframework</artifactId>
                 <version>3.1</version>
                 <scope>compile</scope>
         </dependency>
+        -->
         <dependency>
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
                 <version>1.2.1</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-dbcp-1.2.1.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-digester</groupId>
                 <artifactId>commons-digester</artifactId>
 		<version>1.5</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-digester-1.5.jar</systemPath>
         </dependency>
+        <!--
         <dependency>
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>2.0.2</version>
 		<scope>compile</scope>
         </dependency>
+        -->
         <!--
         <dependency>
                 <groupId>commons-logging</groupId>
@@ -126,7 +136,8 @@
                 <groupId>commons-pool</groupId>
                 <artifactId>commons-pool</artifactId>
                 <version>1.2</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-pool-1.2.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>dom4j</groupId>
@@ -230,7 +241,8 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.8</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/log4j-1.2.8.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>mail</groupId>
@@ -267,11 +279,17 @@
       		<scope>system</scope>
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/saxpath.jar</systemPath>
         </dependency>
-        <dependency>
-                <groupId>spagobi</groupId>
-                <artifactId>sbi.utils</artifactId>
-                <version>1.9</version>
-        </dependency>
+    <dependency>
+        <groupId>spagobi</groupId>
+        <artifactId>sbi.utils</artifactId>
+        <version>1.9</version>	
+    	<exclusions>
+			<exclusion>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
         <dependency>
                 <groupId>standard</groupId>
                 <artifactId>standard</artifactId>
@@ -295,7 +313,8 @@
                 <groupId>xstream</groupId>
                 <artifactId>xstream</artifactId>
                 <version>1.1</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/WebContent/WEB-INF/lib/xstream-1.1.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>xpp3</groupId>

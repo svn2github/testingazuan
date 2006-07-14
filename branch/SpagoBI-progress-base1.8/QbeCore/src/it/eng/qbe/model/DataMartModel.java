@@ -138,6 +138,8 @@ public class DataMartModel implements Serializable {
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
 			updateCurrentClassLoader(jarFile);
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
+			if (jarFile == null)
+				System.out.println( " --------------------- JAR FILE NULLO --------------- ");
 			cfg.addJar(jarFile);
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: add jar file to configuration");			
 		
@@ -166,6 +168,8 @@ public class DataMartModel implements Serializable {
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
 				updateCurrentClassLoader(jarFile);
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
+				if (jarFile == null)
+					System.out.println( " --------------------- JAR FILE NULLO --------------- ");
 				cfg.addJar(jarFile);
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: add jar file to configuration");
 			

@@ -53,7 +53,11 @@ public class ExportResultAction extends AbstractAction {
 		if (aWizardObject.isUseExpertedVersion()){
 			query = aWizardObject.getExpertQueryDisplayed();
 		}else{
-			query =  aWizardObject.getFinalSqlQuery(dataMartModel);
+			try{
+				query =  aWizardObject.getFinalSqlQuery(dataMartModel);
+			}catch(Throwable t){
+				t.printStackTrace();
+			}
 		} 
 		
 		if(query == null) {

@@ -125,8 +125,13 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 		
 		getDataMartWizard().composeQuery();
 		
-		if ((getDataMartWizard().getExpertQueryDisplayed() == null)||(getDataMartWizard().getExpertQueryDisplayed().trim().length() == 0))
-			getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+		if ((getDataMartWizard().getExpertQueryDisplayed() == null)||(getDataMartWizard().getExpertQueryDisplayed().trim().length() == 0)){
+			try{
+				getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+			}catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
 		
 		boolean joinOk = checkJoins(getDataMartWizard(), response);
 		

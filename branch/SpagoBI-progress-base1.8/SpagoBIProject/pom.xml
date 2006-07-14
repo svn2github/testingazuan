@@ -343,6 +343,16 @@
                 <groupId>spagobi</groupId>
                 <artifactId>qbe.core</artifactId>
                 <version>1.9</version>
+                <exclusions>
+					<exclusion>
+						<groupId>commons-beanutils</groupId>
+						<artifactId>commons-beanutils</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+					</exclusion>
+				</exclusions>
         </dependency>
         <dependency>
         	<groupId>jug-lgpl</groupId>

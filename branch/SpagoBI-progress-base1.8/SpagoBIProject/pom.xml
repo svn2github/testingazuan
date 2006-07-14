@@ -87,79 +87,92 @@
                 <artifactId>spago-core</artifactId>
                 <version>2.1.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spago-core-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spago-core-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.3</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-codec-1.3.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.1</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-collections-3.1.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
                 <version>1.2.1</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-dbcp-1.2.1.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>1.0</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-io-1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.0</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-logging-1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-pool</groupId>
                 <artifactId>commons-pool</artifactId>
                 <version>1.2</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-pool-1.2.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-validator</groupId>
                 <artifactId>commons-validator</artifactId>
                 <version>1.1.4</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-validator-1.1.4.jar</systemPath>
         </dependency>
+        <!--
         <dependency>
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>2.0.2</version>
 		<scope>compile</scope>
         </dependency>
+        -->
         <dependency>
                 <groupId>concurrent</groupId>
                 <artifactId>concurrent</artifactId>
                 <version>1.3.4</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/concurrent-1.3.4.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>dom4j</groupId>
                 <artifactId>dom4j</artifactId>
                 <version>1.6</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/dom4j-1.6.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>geronimo-spec</groupId>
                 <artifactId>geronimo-spec-jta</artifactId>
                 <version>1.0-M1</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/geronimo-spec-jta-1.0-M1.jar</systemPath>
         </dependency>
 	<dependency>
                 <groupId>groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>1.0-jsr-03</version>
-		<scope>compile</scope>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/groovy-all-1.0-jsr-03.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>org.hibernate</groupId>
@@ -178,59 +191,63 @@
                 <artifactId>jamon</artifactId>
                 <version>1.0</version>
 		<scope>system</scope>
-		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/jamon.jar</systemPath>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/jamon.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>jdom</groupId>
                 <artifactId>jdom</artifactId>
                 <version>1.0</version>
-		<scope>compile</scope>
+		<scope>system</scope>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/jdom-1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.8</version>
-		<scope>compile</scope>
+		<scope>system</scope>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/log4j-1.2.8.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>lucene</groupId>
                 <artifactId>lucene</artifactId>
                 <version>1.4.3</version>
-		<scope>compile</scope>
+		<scope>system</scope>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/lucene-1.4.3.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
                 <version>2.4.0</version>
-		<scope>compile</scope>
+		<scope>system</scope>
+		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/xalan-2.4.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>xml-apis</groupId>
                 <artifactId>xml-apis</artifactId>
                 <version>2.0.2</version>
 		<scope>system</scope>
-		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/xml-apis-2.0.2.jar</systemPath>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/xml-apis-2.0.2.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>hibernate</groupId>
                 <artifactId>antlr</artifactId>
                 <version>2.7.5H3</version>
-		<!--scope>system</scope>
-		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/antlr-2.7.5H3.jar</systemPath-->
+		<scope>system</scope>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/antlr-2.7.5H3.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>1.1.1</version>
 		<scope>system</scope>
-		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/commons-fileupload-1.1.1.jar</systemPath>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/commons-fileupload-1.1.1.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>jakarta-oro</groupId>
                 <artifactId>jakarta-oro</artifactId>
                 <version>2.0.8</version>
 		<scope>system</scope>
-		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/jakarta-oro-2.0.8.jar</systemPath>
+		<systemPath>${basedir}/web-content/WEB-INF/lib/jakarta-oro-2.0.8.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spagobi</groupId>
@@ -242,38 +259,44 @@
                 <artifactId>sbi.securityprovider.api</artifactId>
                 <version>1.9</version>
         </dependency>
-     	<dependency>
-                <groupId>spagobi</groupId>
-                <artifactId>sbi.utils</artifactId>
-                <version>1.9</version>
-        </dependency>
+    <dependency>
+        <groupId>spagobi</groupId>
+        <artifactId>sbi.utils</artifactId>
+        <version>1.9</version>	
+    	<exclusions>
+			<exclusion>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
         <dependency>
                 <groupId>spago</groupId>
                 <artifactId>spago-portlet</artifactId>
                 <version>2.1.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagoportlet-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spagoportlet-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spago</groupId>
                 <artifactId>spagocms.core</artifactId>
                 <version>2.1.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagocms-core-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spagocms-core-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spago</groupId>
                 <artifactId>spagocms.executioninprocess</artifactId>
                 <version>2.1.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagocms-executioninprocess-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spagocms-executioninprocess-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spago</groupId>
                 <artifactId>spagocms.repositoryproviders</artifactId>
                 <version>2.1.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spagocms-repositoryproviders-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spagocms-repositoryproviders-2.1.0.jar</systemPath>
         </dependency>
         <!--
         <dependency>
@@ -296,7 +319,7 @@
                 <artifactId>spago-web</artifactId>
                 <version>2.1.0</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib/spago-web-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spago-web-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>portlet-api</groupId>

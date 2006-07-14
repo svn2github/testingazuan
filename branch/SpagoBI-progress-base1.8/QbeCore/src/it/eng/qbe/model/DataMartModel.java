@@ -91,6 +91,9 @@ public class DataMartModel implements Serializable {
 		try{
 			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
 			File jarFile = dataMartModelRetriever.getJarFile(path,dialect);
+			if (jarFile == null){
+				System.out.println(" ------------- JAR FILE NULLO -------------------------- ");
+			}
 			return jarFile;
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);

@@ -153,9 +153,9 @@ public class ReportServlet extends HttpServlet{
 			copyErrorMessageToResponse(response, e);
 			
 		}finally{
-			if (templateFile.exists())
+			if (templateFile != null && templateFile.exists())
 				templateFile.delete();
-			if (reportFile.exists())
+			if (reportFile != null && reportFile.exists())
 				reportFile.delete();
 			if ((aSession != null) && (aSession.isOpen())) 
 				aSession.close();

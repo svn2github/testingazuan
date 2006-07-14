@@ -264,5 +264,25 @@ public class Utils {
 		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	}
 	
+	public static String getAbsoluteReportServletContext(RequestContainer requestContainer){
+		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
+		//		 Retrieve Locale
+		String path = null;
+		if (qbeMode.equalsIgnoreCase("WEB")){
+			String contextPath = (String)requestContainer.getAttribute("HTTP_REQUEST_CONTEXT_PATH");
+			path = "http://"+requestContainer.getAttribute("host")+ contextPath;
+		}else{
+			PortletRequest portletRequest = it.eng.spago.util.PortletUtilities.getPortletRequest();
+			Logger.debug(Utils.class, 
+					"getReportServletContextAddress portlet request obtained: " + portletRequest);
+			path ="http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
+			Logger.debug(Utils.class, 
+					"getReportServletContextAddress using context path: " + path);
+		}
+		
+		return path;
+		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
+	}
+	
 	
 }

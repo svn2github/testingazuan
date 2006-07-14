@@ -65,28 +65,37 @@
     	<groupId>ant</groupId>
         <artifactId>ant</artifactId>
 		<version>1.5.1</version>
+      	<scope>system</scope>
+      	<systemPath>${basedir}/WebContent/WEB-INF/lib/ant-1.5.1.jar</systemPath>
   	</dependency>
     <dependency>
     	<groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
 		<version>1.5</version>
+      	<scope>system</scope>
+      	<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-beanutils-1.5.jar</systemPath>
     </dependency>
     <dependency>
     	<groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>2.1</version>
-		<scope>compile</scope>
+      	<scope>system</scope>
+      	<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-collections-2.1.jar</systemPath>
     </dependency>
     <dependency>
         <groupId>commons-digester</groupId>
         <artifactId>commons-digester</artifactId>
 		<version>1.7</version>
+      	<scope>system</scope>
+      	<systemPath>${basedir}/WebContent/WEB-INF/lib/commons-digester-1.7.jar</systemPath>
     </dependency>
+    <!--
     <dependency>
         <groupId>commons-httpclient</groupId>
         <artifactId>commons-httpclient</artifactId>
         <version>2.0.2</version>
     </dependency>
+    -->
     <!--
     <dependency>
         <groupId>commons-logging</groupId>
@@ -114,6 +123,8 @@
         <groupId>itext</groupId>
         <artifactId>itext</artifactId>
 		<version>1.3.1</version>
+      	<scope>system</scope>
+      	<systemPath>${basedir}/WebContent/WEB-INF/lib/itext-1.3.1.jar</systemPath>
     </dependency>
     <dependency>
         <groupId>jaxen</groupId>
@@ -140,11 +151,15 @@
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>1.2.8</version>
+      	<scope>system</scope>
+      	<systemPath>${basedir}/WebContent/WEB-INF/lib/log4j-1.2.8.jar</systemPath>
     </dependency>
     <dependency>
         <groupId>poi</groupId>
         <artifactId>poi</artifactId>
         <version>2.5.1-final-20040804</version>
+      	<scope>system</scope>
+      	<systemPath>${basedir}/WebContent/WEB-INF/lib/poi-2.5.1-final-20040804.jar</systemPath>
     </dependency>
     <dependency>
         <groupId>spago-core</groupId>
@@ -156,8 +171,14 @@
     <dependency>
         <groupId>spagobi</groupId>
         <artifactId>sbi.utils</artifactId>
-        <version>1.9</version>
-    </dependency>
+        <version>1.9</version>	
+    	<exclusions>
+			<exclusion>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
     <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>

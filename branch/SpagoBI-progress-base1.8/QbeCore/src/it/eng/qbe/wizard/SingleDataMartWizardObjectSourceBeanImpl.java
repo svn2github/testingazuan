@@ -12,6 +12,7 @@ import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -56,7 +57,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	private String queryId = null;
 	private String description = null;
 	
-	public static final int MAX_ROWS_NUM = 20;
+	public static final int DEFAULT_MAX_ROWS_NUM = 5000;
 	
 	public SingleDataMartWizardObjectSourceBeanImpl() {
 		super();
@@ -589,6 +590,13 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
+		String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
+		
+		int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
+		if (maxRowsForSQLExecution == null && maxRowsForSQLExecution.trim().length() == 0){
+			maxSQLResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
+		}
+		
 		List result = null;
 		boolean hasNextPage = true;
 		boolean hasPrevPage = (pageNumber > 0);
@@ -599,8 +607,8 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 		Connection conn = aSession.connection();
 		Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		stm.setMaxRows(MAX_ROWS_NUM);
-		//stm.execute(getExpertQueryDisplayed());
+		stm.setMaxRows(maxSQLResults);
+		
 		stm.execute(query);
 			
 		ResultSet rs = stm.getResultSet();
@@ -637,7 +645,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
 		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
 		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
-		queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= MAX_ROWS_NUM));
+		queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= maxSQLResults));
 		
 		return queryResponseSourceBean;	
 	}

@@ -74,7 +74,6 @@ public class DelegatedHibernateConnectionListService extends DelegatedBasicListS
 					dataConnection,
 					statement,
 					"SELECT");
-			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null)

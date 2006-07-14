@@ -49,6 +49,7 @@ public class ExportResultAction extends AbstractAction {
 		DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
 			
 		String query = null;
+		aWizardObject.composeQuery();
 		if (aWizardObject.isUseExpertedVersion()){
 			query = aWizardObject.getExpertQueryDisplayed();
 		}else{

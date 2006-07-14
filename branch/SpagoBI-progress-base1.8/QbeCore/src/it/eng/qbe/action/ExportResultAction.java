@@ -28,11 +28,16 @@ public class ExportResultAction extends AbstractAction {
 	private void returnError(SourceBean response, String errorMsg) {
 		if (getSessionContainer().getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
 			getSessionContainer().delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
-		}	
+		}
+		
 		try {
+		
 			response.setAttribute("ERROR_MSG", errorMsg);
+		
 		} catch (SourceBeanException e) {
+		
 			e.printStackTrace();
+		
 		}
 	}
 	
@@ -51,21 +56,31 @@ public class ExportResultAction extends AbstractAction {
 		} 
 		
 		if(query == null) {
+			
 			returnError(response, "Query is null !!!");
+		
 		}else{
 		
 			try {
+		
 				SourceBean queryResponseSourceBean = aWizardObject.executeSqlQuery(dataMartModel, query, 0, 10);
 				getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
+			
 			}catch (HibernateException he) {
+			
 				Logger.error(ExecuteSaveQueryAction.class, he);
 				returnError(response, he.getCause().getMessage());
+			
 			}catch (java.sql.SQLException se) {
+			
 				Logger.error(ExecuteSaveQueryAction.class, se);
 				returnError(response, se.getMessage());
+			
 			}catch(Exception e){
+			
 				Logger.error(ExecuteSaveQueryAction.class, e);
 				returnError(response, e.getMessage());					
+			
 			}
 		}
 		

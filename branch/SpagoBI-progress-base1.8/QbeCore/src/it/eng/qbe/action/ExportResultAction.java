@@ -50,25 +50,26 @@ public class ExportResultAction extends AbstractAction {
 			query =  aWizardObject.getFinalSqlQuery(dataMartModel);
 		} 
 		
-		if(query == null) returnError(response, "Query is null !!!");
+		if(query == null) {
+			returnError(response, "Query is null !!!");
+		}else{
 		
-		try {
-			SourceBean queryResponseSourceBean = aWizardObject.executeSqlQuery(dataMartModel, query, 0, 10);
-			getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
-		}catch (HibernateException he) {
-			Logger.error(ExecuteSaveQueryAction.class, he);
-			returnError(response, he.getCause().getMessage());
-		}catch (java.sql.SQLException se) {
-			Logger.error(ExecuteSaveQueryAction.class, se);
-			returnError(response, se.getMessage());
-		}catch(Exception e){
-			Logger.error(ExecuteSaveQueryAction.class, e);
-			returnError(response, e.getMessage());					
-		}		
+			try {
+				SourceBean queryResponseSourceBean = aWizardObject.executeSqlQuery(dataMartModel, query, 0, 10);
+				getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
+			}catch (HibernateException he) {
+				Logger.error(ExecuteSaveQueryAction.class, he);
+				returnError(response, he.getCause().getMessage());
+			}catch (java.sql.SQLException se) {
+				Logger.error(ExecuteSaveQueryAction.class, se);
+				returnError(response, se.getMessage());
+			}catch(Exception e){
+				Logger.error(ExecuteSaveQueryAction.class, e);
+				returnError(response, e.getMessage());					
+			}
+		}
 		
-		
-		//executeExpertQuery(aWizardObject, response, aSessionContainer);			
-		//executeFinalQuery(aWizardObject, response, aSessionContainer);		
+				
 				
 	}	
 }

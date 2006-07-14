@@ -120,6 +120,9 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 	}
 
 	public void service(SourceBean request, SourceBean response) throws Exception{
+		if ((getDataMartWizard().getSelectClause() != null) && (getDataMartWizard().getSelectClause().getSelectFields().size() > 0)){
+			
+		
 		getDataMartWizard().composeQuery();
 		
 		if ((getDataMartWizard().getExpertQueryDisplayed() == null)||(getDataMartWizard().getExpertQueryDisplayed().trim().length() == 0))
@@ -146,6 +149,11 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 				Logger.error(ExecuteSaveQueryFromSaveAction.class, e);
 				response.setAttribute("ERROR_MSG_FINAL", e.getMessage());					
 			}					
-		}				
+		}
+		}else{
+			IQbeMessageHelper qbeMsg = Utils.getQbeMessageHelper();
+			String bundle =  "component_spagobiqbeIE_messages";
+			response.setAttribute("ERROR_MSG_FINAL", qbeMsg.getMessage(getRequestContainer(), "QBE.Error.ImpossibleExecution", bundle));	
+		}
 	}//service
 }

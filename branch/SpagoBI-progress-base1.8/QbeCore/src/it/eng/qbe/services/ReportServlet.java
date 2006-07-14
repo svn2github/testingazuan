@@ -57,10 +57,7 @@ import org.hibernate.Session;
  */
 public class ReportServlet extends HttpServlet{
 	
-	String query;
-	File jarFile;
-	Session session;
-	Connection connection;
+
 	
 	static Map extensions;
 	static {
@@ -96,70 +93,74 @@ public class ReportServlet extends HttpServlet{
 		String inlineStr = (String)request.getParameter("inline");
 		boolean inline = (inlineStr != null && inlineStr.equals("true"));
 		String queryName = (String)request.getParameter("queryName");
-		query = (String)request.getParameter("query");
+		String query = (String)request.getParameter("query");
 		if(query == null || query.equalsIgnoreCase("") || query.equalsIgnoreCase("null")) {
 			copyMessageToResponse(response, "Query is not defined !!!");
 			return;
 		}
 		
-		String jarFileStr = (String)request.getParameter("jarfilepath");
+		//String jarFileStr = (String)request.getParameter("jarfilepath");
+		String dmPath = (String)request.getParameter("dmpath");
 		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
 		String dialect = (String)request.getParameter("dialect");
 		String format = (String)request.getParameter("format");
 		String lang = (String)request.getParameter("lang");
 		if(format == null) format = "application/pdf";
 		
-		jarFile = new File(jarFileStr);
-		updateCurrentClassLoader();
-		session = getHibernateSession(jndiDataSourceName, dialect);
-		connection = session.connection();		
-						
-		setJasperClasspath();		
+			
+		DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
 		
-		File templateFile = File.createTempFile("report", ".jrxml"); 
-		File reportFile = File.createTempFile("report", ".rpt"); 
+		Session aSession = null;
+		
+		File templateFile = null; 
+		File reportFile = null; 
 		File resultFile = null;
-		
-		try {
+		try{
+			aSession = dmModel.createSessionFactory().openSession();
+			Connection connection = aSession.connection();		
+			
+			setJasperClasspath(dmModel);
+			
+			templateFile = File.createTempFile("report", ".jrxml"); 
+			reportFile = File.createTempFile("report", ".rpt"); 
+			resultFile = null;
+			
 			if(lang.equalsIgnoreCase("SQL"))
-				buildTemplateFromSQLQuery(templateFile);
+				buildTemplateFromSQLQuery(templateFile,query, connection);
 			else if(lang.equalsIgnoreCase("HQL"))
-				buildTemplateFromHQLQuery(templateFile);
+				buildTemplateFromHQLQuery(templateFile,query, aSession, connection);
 			else
 				throw new ServletException("Query language not supported: " + lang);
-		}catch(Exception e) {
-			copyErrorMessageToResponse(response, e);
-			// instant cleaning
-			templateFile.delete();
-			reportFile.delete();
-			return;
-		}
-		
-		if(action != null && action.equals("buildTemplate")){
-			resultFile = templateFile;
-			format = "text/jrxml";
-			if(queryName == null) queryName = "reportTemplate";
-		}
-		else {
-			ReportRunner runner = new ReportRunner();		
-			try {
-				runner.run(templateFile, reportFile, format, connection);
-			} catch (Exception e) {
-				copyErrorMessageToResponse(response, e);
-				// instant cleaning
-				templateFile.delete();
-				reportFile.delete();
-				return;
+			
+			if(action != null && action.equals("buildTemplate")){
+				resultFile = templateFile;
+				format = "text/jrxml";
+				if(queryName == null) queryName = "reportTemplate";
 			}
-			resultFile = reportFile;
-			if(queryName == null) queryName = "queryResults";
-		}		
+			else {
+				ReportRunner runner = new ReportRunner();		
+				
+				runner.run(templateFile, reportFile, format, connection);
+				
+				resultFile = reportFile;
+				if(queryName == null) queryName = "queryResults";
+			}		
+			
+			copyFileToResponse(response, inline, resultFile, queryName, format);
 		
-		copyFileToResponse(response, inline, resultFile, queryName, format);
+		}catch(Exception e) {
 		
-		// instant cleaning
-		templateFile.delete();
-		reportFile.delete();
+			copyErrorMessageToResponse(response, e);
+			
+		}finally{
+			if (templateFile.exists())
+				templateFile.delete();
+			if (reportFile.exists())
+				reportFile.delete();
+			if ((aSession != null) && (aSession.isOpen())) 
+				aSession.close();
+		}
+		
 	}
 	
 	
@@ -204,28 +205,22 @@ public class ReportServlet extends HttpServlet{
 		in.close();
 	}
 	
-	private Session getHibernateSession(String jndiDataSourceName, String dialect) {
-		/*
-		URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml");
-		Configuration cfg = new Configuration().configure(url);		
-		return cfg.buildSessionFactory().openSession();
-		*/
-		return DataMartModel.getHibernateConfiguration(jarFile, jndiDataSourceName, dialect).buildSessionFactory().openSession();
-	}
 	
-	private void buildTemplateFromHQLQuery(File templateFile) throws Exception {
+	
+	private void buildTemplateFromHQLQuery(File templateFile, String query, Session session, Connection connection) throws Exception {
 		IQueryRewriter queryRevriter = new HqlToSqlQueryRewriter(session);	
 		String sqlQuery = queryRevriter.rewrite(query);
 		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
 		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
-	private void buildTemplateFromSQLQuery(File templateFile) throws Exception {
-		String sqlQuery = query;
+	private void buildTemplateFromSQLQuery(File templateFile, String sqlQuery, Connection connection) throws Exception {
+		
 		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams());
 		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
+	/*
 	private void updateCurrentClassLoader(){
 		try{
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
@@ -235,8 +230,9 @@ public class ReportServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
+	*/
 	
-	private void setJasperClasspath(){
+	private void setJasperClasspath(DataMartModel dm){
 		// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 		String webinflibPath = this.getServletContext().getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 		//logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
@@ -246,6 +242,7 @@ public class ReportServlet extends HttpServlet{
 		StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
 		File f = new File(webinflibPath);
 		String fileToAppend = null;
+		
 		if (f.isDirectory()){
 			String[] jarFiles = f.list();
 			for (int i=0; i < jarFiles.length; i++){
@@ -269,8 +266,10 @@ public class ReportServlet extends HttpServlet{
 		// append HibernateJarFile to jasper classpath
 		if(jasperReportClassPath != null && !jasperReportClassPath.equalsIgnoreCase("")) 
 			jasperReportClassPath += System.getProperty("path.separator");
-		jasperReportClassPath += jarFile.toString();		
+		
+		jasperReportClassPath += dm.getJarFile().toString();		
 		System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
+	
 	}
 	
 

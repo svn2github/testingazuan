@@ -192,30 +192,39 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {				
 		
-		if ("QUERY_RESULT".equalsIgnoreCase( getSource(request) )){			
-			getDataMartWizard().setUseExpertedVersion( isExpertExecutionModeEnabled(request) );			
-		}  				
-		
-		getDataMartWizard().composeQuery();	
-	
-		if (!checkJoins(request, response)){
-			returnError(response, "QBE.Warning.Join");
-		} 
-		else{
-			try {
-				SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
-				getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
-			}catch (HibernateException he) {
-				Logger.error(ExecuteSaveQueryAction.class, he);
-				returnError(response, he.getCause().getMessage());
-			}catch (java.sql.SQLException se) {
-				Logger.error(ExecuteSaveQueryAction.class, se);
-				returnError(response, se.getMessage());
-			}catch(Exception e){
-				Logger.error(ExecuteSaveQueryAction.class, e);
-				returnError(response, e.getMessage());					
-			}								
+		if ((getDataMartWizard().getSelectClause() != null) && (getDataMartWizard().getSelectClause().getSelectFields().size() > 0)){
 			
+		
+			if ("QUERY_RESULT".equalsIgnoreCase( getSource(request) )){			
+			
+		
+				getDataMartWizard().setUseExpertedVersion( isExpertExecutionModeEnabled(request) );			
+			}  				
+		
+			getDataMartWizard().composeQuery();	
+	
+			if (!checkJoins(request, response)){
+				returnError(response, "QBE.Warning.Join");
+			} 
+			else{
+				try {
+					SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
+					getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
+				}catch (HibernateException he) {
+					Logger.error(ExecuteSaveQueryAction.class, he);
+					returnError(response, he.getCause().getMessage());
+				}catch (java.sql.SQLException se) {
+					Logger.error(ExecuteSaveQueryAction.class, se);
+					returnError(response, se.getMessage());
+				}catch(Exception e){
+					Logger.error(ExecuteSaveQueryAction.class, e);
+					returnError(response, e.getMessage());					
+				}
 		}//else
+		}else{
+			IQbeMessageHelper qbeMsg = Utils.getQbeMessageHelper();
+			String bundle =  "component_spagobiqbeIE_messages";
+			returnError(response, qbeMsg.getMessage(getRequestContainer(), "QBE.Error.ImpossibleExecution", bundle));	
+		}
 	}//service
 }

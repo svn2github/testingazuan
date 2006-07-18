@@ -29,7 +29,7 @@ public class RecoverClassLoaderAction extends AbstractAction {
 				Thread.currentThread().setContextClassLoader(toRecoverClassLoader);
 			}
 			String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
-			if (qbeMode.equalsIgnoreCase("WEB")){
+			if (qbeMode.equalsIgnoreCase("PORTLET")){
 				String actor = (String)getRequestContainer().getSessionContainer().getAttribute("ACTOR");
 				response.setAttribute("PAGE", "TreeObjectsPage");
 				response.setAttribute("ACTOR", actor);

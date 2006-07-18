@@ -10,14 +10,23 @@ import it.eng.spago.base.RequestContainerPortletAccess;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.jar.JarFile;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 public class Utils {
 
@@ -283,6 +292,53 @@ public class Utils {
 		return path;
 		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	}
+	
+	public static String[] getJndiDsDialectFromModel(DataMartModel dm){
+		
+		String[] result = new String[2];
+		
+		//ALTRIMENTI CERCO I PARAMETRI DI CONFIGURAZIONE SUL FILE hibconn.properies
+		URL hibConnPropertiesUrl = JarUtils.getResourceFromJarFile(dm.getJarFile(), "hibconn.properties") ;
+		if (hibConnPropertiesUrl != null){
+			Properties prop = new Properties();
+			try{
+				prop.load(hibConnPropertiesUrl.openStream());
+			}catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+			result[0] = prop.getProperty("hibernate.connection.datasource");
+			result[1] = prop.getProperty("hibernate.dialect");		
+		}
+		
+		return result;
+	}
+	
+	public static List getAllJndiDS(){				
+		List listResult = new ArrayList();
+		try{
+			Context ctx = new InitialContext();
+			NamingEnumeration list = ctx.listBindings("java://comp/env/jdbc");
+			
+			while (list.hasMore()){
+				NameClassPair item = (NameClassPair)list.next();
+				String cl = item.getClassName();
+				String name = item.getName();
+				System.out.println(cl+" - "+name);
+				listResult.add("jdbc/"+name);
+			}
+		 }catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return listResult;
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

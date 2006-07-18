@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,27 +29,32 @@ public class LocalFileSystemQueryPersister implements
 	protected void persistToFile(DataMartModel dm, ISingleDataMartWizardObject wizObject, String fileName) {
 
 		try {
-		   
+			File f = new File(fileName);
+			if (!f.exists()){
+				f.createNewFile();
+			}
 		    XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
 		        new FileOutputStream(fileName)));
 		    encoder.writeObject(wizObject);
 		    encoder.close();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			Logger.error(LocalFileSystemQueryPersister.class, e);
 		}
 		
 	}
 	public void persist(DataMartModel dm, ISingleDataMartWizardObject wizObject) {
 		 // Serialize object into XML
+		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
 		String key = wizObject.getQueryId();
-		String fileName = dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
+		String fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
 		persistToFile(dm, wizObject, fileName);
 	}
 	
 	public ISingleDataMartWizardObject load(DataMartModel dm, String key) {
 
     	 // DeSerialize object into XML
-		String fileName = dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
+		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		String fileName = qbeDataMartDir +System.getProperty("file.separator")+ dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
         return loadFromFile(dm, new File(fileName));
     
 		
@@ -70,7 +76,8 @@ public class LocalFileSystemQueryPersister implements
     }
     
     public List loadAllQueries(DataMartModel dm) {
-    	File dir = new File(dm.getPath());
+    	String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+    	File dir = new File(qbeDataMartDir +System.getProperty("file.separator")+ dm.getPath());
         
 //    	 It is also possible to filter the list of returned files.
         // This example does not return any files that start with `.'.

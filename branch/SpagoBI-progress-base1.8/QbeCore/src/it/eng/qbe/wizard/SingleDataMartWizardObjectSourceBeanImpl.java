@@ -363,9 +363,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		if (afterFirst)
 		 			finalQuery.append(", ");
 		 		
-		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
-		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
-		 		else
+//		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
+//		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
+//		 		else
 		 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
 		 		
 		 		afterFirst = true;
@@ -386,9 +386,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		aOrderGroupByField =(IOrderGroupByField)it.next();
 		 		if (afterFirst)
 		 			finalQuery.append(", ");
-		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
-		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
-		 		else
+//		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
+//		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
+//		 		else
 		 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
 		 				 		
 		 		afterFirst = true;

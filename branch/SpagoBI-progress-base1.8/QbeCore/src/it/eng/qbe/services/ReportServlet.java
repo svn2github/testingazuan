@@ -28,6 +28,7 @@ import it.eng.qbe.export.ITemplateBuilder;
 import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLTemplateBuilder;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.JarUtils;
 import it.eng.qbe.utility.Logger;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -42,6 +43,8 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.jar.JarFile;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -50,6 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
+import org.hibernate.cfg.Configuration;
 
 /**
  * @author Gioia
@@ -99,8 +103,10 @@ public class ReportServlet extends HttpServlet{
 			return;
 		}
 		
-		//String jarFileStr = (String)request.getParameter("jarfilepath");
-		String dmPath = (String)request.getParameter("dmpath");
+		String jarFileStr = (String)request.getParameter("jarfilepath");
+		
+		File jarFile = new File(jarFileStr);
+		
 		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
 		String dialect = (String)request.getParameter("dialect");
 		String format = (String)request.getParameter("format");
@@ -108,7 +114,7 @@ public class ReportServlet extends HttpServlet{
 		if(format == null) format = "application/pdf";
 		
 			
-		DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
+	
 		
 		Session aSession = null;
 		
@@ -116,10 +122,10 @@ public class ReportServlet extends HttpServlet{
 		File reportFile = null; 
 		File resultFile = null;
 		try{
-			aSession = dmModel.createSessionFactory().openSession();
+			aSession = getSession(jarFile,jndiDataSourceName, dialect );
 			Connection connection = aSession.connection();		
 			
-			setJasperClasspath(dmModel);
+			setJasperClasspath(jarFile);
 			
 			templateFile = File.createTempFile("report", ".jrxml"); 
 			reportFile = File.createTempFile("report", ".rpt"); 
@@ -149,7 +155,7 @@ public class ReportServlet extends HttpServlet{
 			copyFileToResponse(response, inline, resultFile, queryName, format);
 		
 		}catch(Exception e) {
-			e.printStackTrace();
+		
 			copyErrorMessageToResponse(response, e);
 			
 		}finally{
@@ -220,19 +226,82 @@ public class ReportServlet extends HttpServlet{
 		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
-	/*
-	private void updateCurrentClassLoader(){
-		try{
-			ClassLoader previous = Thread.currentThread().getContextClassLoader();
-			ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
-			Thread.currentThread().setContextClassLoader(current);
-		}catch (Exception e) {
-			e.printStackTrace();
+	public Session getSession(File jarFile, String jndiDataSourceName, String dialect){
+		Configuration cfg = null;
+		if (jndiDataSourceName != null && !jndiDataSourceName.equalsIgnoreCase("")) {
+			// SE I PARAMETRI VENGONO PASSATI IN INPUT USO QUELLI
+			
+			Logger.debug(ReportServlet.class, "getSession: connection properties defined by hand");
+			
+			
+			cfg = new Configuration();
+			cfg.setProperty("hibernate.dialect", dialect);
+			cfg.setProperty("hibernate.connection.datasource", jndiDataSourceName);
+			cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
+			
+			Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + jarFile);
+			
+			Logger.debug(ReportServlet.class, "getSession: current class loader updated");
+			if (jarFile == null)
+				System.out.println( " --------------------- JAR FILE NULLO --------------- ");
+			updateCurrentClassLoader(jarFile);
+			cfg.addJar(jarFile);
+			Logger.debug(ReportServlet.class, "getSession: add jar file to configuration");			
+		
+		}else {
+			
+			// ALTRIMENTI CERCO I PARAMETRI DI CONFIGURAZIONE SUL FILE hibconn.properies
+			URL hibConnPropertiesUrl = JarUtils.getResourceFromJarFile(jarFile, "hibconn.properties") ;
+			if (hibConnPropertiesUrl != null){
+				Properties prop = new Properties();
+				try{
+					prop.load(hibConnPropertiesUrl.openStream());
+				}catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
+			
+				Logger.debug(DataMartModel.class, "getSession: connection properties loaded by hibconn.properties in jar");
+				
+				cfg = new Configuration();
+				cfg.setProperty("hibernate.dialect", prop.getProperty("hibernate.dialect"));
+				cfg.setProperty("hibernate.connection.datasource", prop.getProperty("hibernate.connection.datasource"));
+				cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
+				
+				String jndiDataSourceNameTmp = prop.getProperty("hibernate.connection.datasource");
+				String dialectTmp = prop.getProperty("hibernate.dialect");
+				
+				Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + jarFile);
+				
+				Logger.debug(ReportServlet.class, "getSession: current class loader updated");
+				if (jarFile == null)
+					System.out.println( " --------------------- JAR FILE NULLO --------------- ");
+				updateCurrentClassLoader(jarFile);
+				cfg.addJar(jarFile);
+				Logger.debug(ReportServlet.class, "getSession: add jar file to configuration");
+			
+			} else {
+			
+				// ALTRIMENTI EFFETTUO LA CONFIGURAZIONE DAL FILE hibernate.cfg.cml
+			
+				// ---------------------- NOTA BENE
+				// IN QUESTO IL FILE DEVE CONTENERE I RIFERIMENTI A TUTTI GLI HBM
+				Logger.debug(ReportServlet.class, "getSession: connection properties defined in hibernate.cfg.xml");
+				updateCurrentClassLoader(jarFile);
+				Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + jarFile);
+				
+				Logger.debug(ReportServlet.class, "getSession: current class loader updated");
+			
+				Logger.debug(ReportServlet.class, "getSession: trying to read configuration from hibernate.cfg.xml file");
+				URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+				Logger.debug(ReportServlet.class, "getSession: configuration file found at " + url);
+				cfg = new Configuration().configure(url);
+			
+			}
 		}
+		return cfg.buildSessionFactory().openSession();
 	}
-	*/
 	
-	private void setJasperClasspath(DataMartModel dm){
+	private void setJasperClasspath(File jarFile){
 		// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 		String webinflibPath = this.getServletContext().getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 		//logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
@@ -267,9 +336,24 @@ public class ReportServlet extends HttpServlet{
 		if(jasperReportClassPath != null && !jasperReportClassPath.equalsIgnoreCase("")) 
 			jasperReportClassPath += System.getProperty("path.separator");
 		
-		jasperReportClassPath += dm.getJarFile().toString();		
+		jasperReportClassPath += jarFile.toString();		
 		System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
 	
+	}
+	
+	
+	/**
+	 * This method update the Thread Context ClassLoader adding to the class loader the jarFile
+	 * @param jarFile
+	 */
+	public static void updateCurrentClassLoader(File jarFile){
+		try{
+			ClassLoader previous = Thread.currentThread().getContextClassLoader();
+			ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
+			Thread.currentThread().setContextClassLoader(current);
+		}catch (Exception e) {
+			Logger.error(DataMartModel.class, e);
+		}
 	}
 	
 

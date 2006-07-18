@@ -1,6 +1,7 @@
 
 package it.eng.qbe.action;
 
+import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.IQbeMessageHelper;
 import it.eng.qbe.utility.Logger;
@@ -184,7 +185,6 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 			getSessionContainer().delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
 		}	
 		try {
-			//if(errorMsg == null) errorMsg = "Generic Error";
 			response.setAttribute("ERROR_MSG", errorMsg);
 		} catch (SourceBeanException e) {
 			e.printStackTrace();
@@ -209,6 +209,10 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 			} 
 			else{
 				try {
+					if (getDataMartWizard().getExpertQueryDisplayed() == null){
+						
+						getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+					}
 					SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
 					getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
 				}catch (HibernateException he) {

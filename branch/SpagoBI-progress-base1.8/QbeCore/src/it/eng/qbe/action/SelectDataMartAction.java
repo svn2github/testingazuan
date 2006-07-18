@@ -34,6 +34,8 @@ public class SelectDataMartAction extends AbstractAction {
 		
 		ApplicationContainer application = ApplicationContainer.getInstance();
 		
+		ApplicationContainer.getInstance().setAttribute("CURRENT_THREAD_CONTEXT_LOADER", Thread.currentThread().getContextClassLoader());
+		
 		dmModel.setName(dmModel.getPath());
 		dmModel.setDescription(dmModel.getPath());
 		

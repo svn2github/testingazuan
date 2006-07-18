@@ -28,9 +28,15 @@ public class RecoverClassLoaderAction extends AbstractAction {
 			if ( toRecoverClassLoader != null){
 				Thread.currentThread().setContextClassLoader(toRecoverClassLoader);
 			}
-			String actor = (String)getRequestContainer().getSessionContainer().getAttribute("ACTOR");
-			response.setAttribute("PAGE", "TreeObjectsPage");
-			response.setAttribute("ACTOR", actor);
+			String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
+			if (qbeMode.equalsIgnoreCase("WEB")){
+				String actor = (String)getRequestContainer().getSessionContainer().getAttribute("ACTOR");
+				response.setAttribute("PAGE", "TreeObjectsPage");
+				response.setAttribute("ACTOR", actor);
+			}else{
+				response.setAttribute("ACTION", "START_ACTION");
+				
+			}
 		}catch (SourceBeanException sbe){
 			sbe.printStackTrace();
 		}

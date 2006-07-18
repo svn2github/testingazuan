@@ -588,71 +588,80 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
-		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
-		String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
+		Session aSession = null;
+		try{
+			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
-		int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
-		if (maxRowsForSQLExecution == null && maxRowsForSQLExecution.trim().length() == 0){
-			maxSQLResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
-		}
+			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
 		
-		List result = null;
-		boolean hasNextPage = true;
-		boolean hasPrevPage = (pageNumber > 0);
+			int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
+			if (maxRowsForSQLExecution == null && maxRowsForSQLExecution.trim().length() == 0){
+				maxSQLResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
+			}
 		
-		int firstRow = pageNumber * pageSize;
-		firstRow = firstRow < 0 ? 0 : firstRow;
+			List result = null;
+			boolean hasNextPage = true;
+			boolean hasPrevPage = (pageNumber > 0);
+		
+			int firstRow = pageNumber * pageSize;
+			firstRow = firstRow < 0 ? 0 : firstRow;
 		
 		
-		Connection conn = aSession.connection();
-		Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		stm.setMaxRows(maxSQLResults);
+			Connection conn = aSession.connection();
+			Statement stm = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stm.setMaxRows(maxSQLResults);
 		
-		stm.execute(query);
+			stm.execute(query);
 			
-		ResultSet rs = stm.getResultSet();
-		rs.last();
-		int rowsNumber = rs.getRow();
-		int pagesNumber = (rowsNumber / pageSize) + ( ((rowsNumber % pageSize) != 0 )? 1: 0 );
-		rs.beforeFirst();
+			ResultSet rs = stm.getResultSet();
+			rs.last();
+			int rowsNumber = rs.getRow();
+			int pagesNumber = (rowsNumber / pageSize) + ( ((rowsNumber % pageSize) != 0 )? 1: 0 );
+			rs.beforeFirst();
 			
 						
-		ResultSetMetaData rsmd = rs.getMetaData();
-		int numberOfColumns = rsmd.getColumnCount();
-		result = new ArrayList();
-		Object[] row = null;
-		if(firstRow > 0)  
-			rs.absolute(firstRow - 1);
-		else rs.beforeFirst();
-		int remainingRows = pageSize;
-		while(rs.next() && (remainingRows--)>0) {
-			row = new Object[numberOfColumns];
-			for(int i = 0; i < numberOfColumns; i++) {
-				row[i] = rs.getObject(i+1);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();
+			result = new ArrayList();
+			Object[] row = null;
+			if(firstRow > 0)  
+				rs.absolute(firstRow - 1);
+			else 
+				rs.beforeFirst();
+			int remainingRows = pageSize;
+			while(rs.next() && (remainingRows--)>0) {
+				row = new Object[numberOfColumns];
+				for(int i = 0; i < numberOfColumns; i++) {
+					row[i] = rs.getObject(i+1);
+				}
+				result.add(row);
 			}
-			result.add(row);
-		}
-		hasNextPage = rs.next();
+			hasNextPage = rs.next();
 		
 			
-		aSession.close();
+			
 				
-		SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
-		queryResponseSourceBean.setAttribute("query", query);
-		queryResponseSourceBean.setAttribute("list", result);
-		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
-		queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
-		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
-		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
-		queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= maxSQLResults));
+			SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
+			queryResponseSourceBean.setAttribute("query", query);
+			queryResponseSourceBean.setAttribute("list", result);
+			queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+			queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
+			queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
+			queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+			queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= maxSQLResults));
 		
-		return queryResponseSourceBean;	
+			return queryResponseSourceBean;
+		}finally{
+			if (aSession != null && aSession.isOpen())
+				aSession.close();
+		}
 	}
 	
 	private SourceBean executeHqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
-				
-		Session aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
+		Session aSession = null;
+		try{		
+			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
 				
 		//Query aQuery = aSession.createQuery(getFinalQuery());
@@ -690,7 +699,11 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
 		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
 					
-		return queryResponseSourceBean;	
+		return queryResponseSourceBean;
+		}finally{
+			if (aSession != null && aSession.isOpen())
+			aSession.close();
+		}
 	}
 	
 	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {

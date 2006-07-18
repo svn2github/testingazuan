@@ -149,7 +149,7 @@ public class ReportServlet extends HttpServlet{
 			copyFileToResponse(response, inline, resultFile, queryName, format);
 		
 		}catch(Exception e) {
-		
+			e.printStackTrace();
 			copyErrorMessageToResponse(response, e);
 			
 		}finally{

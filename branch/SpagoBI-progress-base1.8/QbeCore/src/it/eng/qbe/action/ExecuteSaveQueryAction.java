@@ -184,6 +184,7 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 			getSessionContainer().delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
 		}	
 		try {
+			//if(errorMsg == null) errorMsg = "Generic Error";
 			response.setAttribute("ERROR_MSG", errorMsg);
 		} catch (SourceBeanException e) {
 			e.printStackTrace();

@@ -169,10 +169,10 @@ public class DetailFunctionalityModule extends AbstractModule {
 			response.setAttribute(FUNCTIONALITY_OBJ, lowFunct);
 			response.setAttribute(AdmintoolsConstants.MODALITY, mod);
 			EMFErrorHandler errorHandler = getErrorHandler();
-			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-				String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
-				response.setAttribute(AdmintoolsConstants.PATH_PARENT, pathParent);
-			}
+//			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
+//				String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
+//				response.setAttribute(AdmintoolsConstants.PATH_PARENT, pathParent);
+//			}
 			
 			// if there are some validation errors into the errorHandler does not write into DB
 			Collection errors = errorHandler.getErrors();

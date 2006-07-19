@@ -398,6 +398,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		this.finalQuery = (finalQuery != null ? finalQuery.toString() : null);
 		
 		this.finalQuery = this.finalQuery.trim();
+	
 	}//public void composeQuery(){
 
 

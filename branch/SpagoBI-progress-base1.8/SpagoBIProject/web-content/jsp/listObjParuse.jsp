@@ -186,15 +186,17 @@
 					    	<%
 					    }
 						String invisibleColumns = queryDet.getInvisibleColumns();
-					    String[] invisColumns = invisibleColumns.split(",");
-					    for (int i = 0; i < invisColumns.length; i++) {
-					    	String invisibleColumn = invisColumns[i].trim();
-					    	%>
-					    	<option value='<%=invisibleColumn%>' <% if (invisibleColumn.equalsIgnoreCase(columnFilterSelected)) out.print(" selected=\"selected\""); %>>
-					    		<%=invisibleColumn%>
-					    	</option>
-					    	<%
-					    }
+						if (invisibleColumns != null) {
+						    String[] invisColumns = invisibleColumns.split(",");
+						    for (int i = 0; i < invisColumns.length; i++) {
+						    	String invisibleColumn = invisColumns[i].trim();
+						    	%>
+						    	<option value='<%=invisibleColumn%>' <% if (invisibleColumn.equalsIgnoreCase(columnFilterSelected)) out.print(" selected=\"selected\""); %>>
+						    		<%=invisibleColumn%>
+						    	</option>
+						    	<%
+						    }
+						}
 					}
 					%>
 					</select>

@@ -40,7 +40,7 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 	 * @throws SourceBeanException
 	 */
 	public boolean checkJoins(ISingleDataMartWizardObject wizObj, SourceBean serviceResponse) throws SourceBeanException{
-	
+		String bundle = "component_spagobiqbeIE_messages"; 
 		IQbeMessageHelper msgHelper = null;
 		StringBuffer warning = new StringBuffer();
 		
@@ -90,7 +90,7 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 						}//if (wizObj.getWhereClause() != null){
 						if (!joinFound){
 							warnings = true;
-							String locMsg = msgHelper.getMessage(getRequestContainer(), "QBE.Warning.Nojoin");
+							String locMsg = msgHelper.getMessage(getRequestContainer(), "QBE.Warning.Nojoin", bundle);
 							warning.append( locMsg + e1.getClassName() +"," + e2.getClassName() + "\n");
 						}
 					}//if (e1.getClassName() != e2.getClassName()){

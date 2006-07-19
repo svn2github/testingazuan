@@ -63,7 +63,7 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 		String queryId = (String)request.getAttribute("queryId");
 		
 		DataMartModel dataMart = null;
-		if (queryId == null){
+		if ((queryId == null) || ((queryId != null) && (queryId.equalsIgnoreCase("#")))){
 			aWizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
 		} else {
 			dataMart = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");

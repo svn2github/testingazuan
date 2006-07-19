@@ -24,10 +24,17 @@
 	<tr valign="center">
 	<td >
 
-	In order to compile the plugin, please <b>compile SpagoBI Project</b> and after proceed as follows:<br><br>
-	 1) move the current directory (SpagoBIIReportPlugin) into the root source directory of the SpagoBIPlatform (At the same level as the other projects QbeCore, SpagoBIProject, SpagoBIJPivotEngine, .....)<br/><br/>
-         2) execute script file <b>maven.xml</b> (i.e. launch <b>maven</b> command);<br><br>
-	 3) after execution of <b>maven</b> command, please follows the instructions indicated in file "<b>How to deploy the plugin.html</b>" inside <b>build/</b> folder.<br><br>
+  The plugin can be compiled using maven 2
+	<br/><br/>
+	In order to compile the plugin exec the maven command 'mvn package' inside the root directory of the 
+	SpagoBI IReport Plugin project (the directory which contains the pom.xml file)
+	<br/><br/>
+	After the compilation the root directory will contain a target/SpagoBI-IReportPlugin-bin-1.9.zip file.
+	<br/><br/>
+	Unzip the produced archive and read the installation procedure (into the doc directory) 
+	to learn how to install the plugin over iReport
+	<br/><br/>
+	If you want to delete the target directory produced please exec the maven command 'mvn clean'
 
 </td>
 </tr>

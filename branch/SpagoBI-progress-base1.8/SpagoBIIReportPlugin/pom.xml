@@ -38,40 +38,41 @@
              <configuration>
       	       <tasks>
       	           
-      	          <mkdir dir="${basedir}/target/plugin"/>
-									<mkdir dir="${basedir}/target/plugin/iReport_SpagoBI_plugin_Resources"/>
-									<mkdir dir="${basedir}/target/plugin/bin"/>
-									<mkdir dir="${basedir}/target/plugin/bin/iReport_SpagoBI_plugin_Resources"/>
-									<mkdir dir="${basedir}/target/plugin/lib"/>
-									<mkdir dir="${basedir}/target/plugin/plugins"/>
-									<mkdir dir="${basedir}/target/docs"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin"/> 
+      	          <mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/iReport_SpagoBI_plugin_Resources"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/bin"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/bin/iReport_SpagoBI_plugin_Resources"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/lib"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/plugins"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/docs"/>
 									
 									<!-- copy documentation -->
-									<copy todir="${basedir}/target/docs">
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/docs">
 											<fileset dir="${basedir}/doc"/>
 									</copy>
 									<!-- copy license -->
 									<copy file="${basedir}/LICENSE_SpagoBI-IReportPlugin.txt" 
-									      tofile="${basedir}/target/LICENSE_SpagoBI-IReportPlugin.txt" />
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/LICENSE_SpagoBI-IReportPlugin.txt" />
 									<!-- copy plugin xml file -->
 									<copy file="${basedir}/PlugInConfFile/spagobi.xml"  
-									      tofile="${basedir}/target/plugin/plugins/spagobi.xml" />
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/plugins/spagobi.xml" />
 									<!-- copy resources directory -->
-									<copy todir="${basedir}/target/plugin/iReport_SpagoBI_plugin_Resources">
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/plugin/iReport_SpagoBI_plugin_Resources">
 											<fileset dir="${basedir}/src/iReport_SpagoBI_plugin_Resources"/>
 									</copy>
-									<copy todir="${basedir}/target/plugin/bin/iReport_SpagoBI_plugin_Resources">
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/plugin/bin/iReport_SpagoBI_plugin_Resources">
 											<fileset dir="${basedir}/src/iReport_SpagoBI_plugin_Resources"/>
 									</copy>
 									<!-- copy libraries -->
-									<copy todir="${basedir}/target/plugin/lib">
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/plugin/lib">
 											<fileset dir="${basedir}/lib"/>
 									</copy>
-									<delete file="${basedir}/target/plugin/lib/iReport.jar" />
-									<delete file="${basedir}/target/plugin/lib/LICENSE.iReport.txt" />
+									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/iReport.jar" />
+									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/LICENSE.iReport.txt" />
 									<!-- copy plugin jar into libraries -->
 									<copy file="${basedir}/target/SpagoBIIReportPlugin-1.9.jar" 
-									      tofile="${basedir}/target/plugin/lib/SpagoBIIReportPlugin-1.9.jar" />
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/SpagoBIIReportPlugin-1.9.jar" />
 									<!-- delete unecessary files -->
 									<delete file="${basedir}/target/exported-pom.xml" />
 									<delete file="${basedir}/target/SpagoBIIReportPlugin-1.9.jar" />
@@ -79,6 +80,12 @@
 											<fileset dir="${basedir}/target/classes" includes="*" />
 									</delete>
 									<delete dir="${basedir}/target/classes" />
+									<!-- create zip files -->
+									<zip destfile="${basedir}/target/SpagoBI-IReportPlugin-bin-1.9.zip" 
+									     basedir="${basedir}/target" />
+									<!-- delete folder -->
+									<delete dir="${basedir}/target/SpagoBIIReportPlugin" />
+
                </tasks>
              </configuration>
              <goals>

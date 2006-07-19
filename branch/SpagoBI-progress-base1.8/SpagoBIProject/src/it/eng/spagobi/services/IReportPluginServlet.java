@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.CmsProperty;
@@ -32,6 +31,8 @@ import it.eng.spago.cms.operations.SetOperation;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Engine;
+import it.eng.spagobi.bo.LowFunctionality;
+import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.security.IPortalSecurityProvider;
@@ -79,6 +80,7 @@ public class IReportPluginServlet extends HttpServlet{
 	private final int ERROR_CHECK_IN = 16;
 	private final int ERROR_CHECK_OUT = 16;
 	private final int ERROR_CMS_FILE = 17;
+	private final int ERROR_TREE_RECOVER = 20;
 	private final String OP_PAR_NOT_FOUND_MSG = "Operation parameter not found";
 	private final String USER_PAR_NOT_FOUND_MSG = "Username not found";
 	private final String PWD_PAR_NOT_FOUND_MSG = "Password not found";
@@ -89,6 +91,7 @@ public class IReportPluginServlet extends HttpServlet{
 	private final String ERROR_CMS_FILE_MSG = "Cannot retrive file";
 	private final String FILENAME_PAR_NOT_FOUND_MSG = "Filename not found";
 	private final String ERROR_CHECK_OUT_MSG = "Cannot checkout file";
+	private final String ERROR_TREE_RECOVER_MSG = "Cannot recover the business object tree";
 	
 	private List drivers = new ArrayList();
 	
@@ -228,7 +231,8 @@ public class IReportPluginServlet extends HttpServlet{
 	        setOp.setEraseOldProperties(false);
 	        List properties = new ArrayList();
 	        String[] nameFilePropValues = new String[] { nameFile };
-	        String today = new Date().toString();
+	        String today = new Long(new Date().getTime()).toString();
+	        //String today = new Date().toString();
 	        String[] datePropValues = new String[] { today };
 	        CmsProperty propname = new CmsProperty("fileName", nameFilePropValues);
 	        CmsProperty propdateLoad = new CmsProperty("dateLoad", datePropValues);
@@ -281,115 +285,130 @@ public class IReportPluginServlet extends HttpServlet{
      		flushOut(msgErr, out);
            	return;
         } 
-	    // get the sourcebean of the cms tree
-	    //TreeObjectsDAO treedao = new TreeObjectsDAO();
-        ConfigSingleton config = ConfigSingleton.getInstance();
-	    SourceBean pathSysFunctSB = (SourceBean)config.getAttribute(ATTR_PATH_SYS_FUNCT);
-	    String pathSysFunct = pathSysFunctSB.getCharacters();
-        //SourceBean treeSB = treedao.getXmlTreeObjects(pathSysFunct);
-        // filter the sourcebean  
-        //String filterTree = filterTree(treeSB, roles);
-        // if the tree is null return error
-        /*
-	    if(filterTree==null) {
-        	String msgErr = createErrorMessage(this.TREE_GEN_ERROR, this.TREE_GEN_ERROR_MSG);
+	    
+	    List tree = null;
+	    try{
+	    	tree = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
+	    } catch(Exception e) {
+	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+	    						"loginManager", "Cannot recover business object tree", e);
+	    	String msgErr = createErrorMessage(this.ERROR_TREE_RECOVER, this.ERROR_TREE_RECOVER_MSG);
      		flushOut(msgErr, out);
            	return;
-        }*/
-       // String respMsg = createResponseMessage(filterTree);
-	   //     flushOut(respMsg, out);
+	    }
+	    
+	    SourceBean treeSB = filterToSourceBean(tree, roles);
+	    String treeStr = "";
+	    if(treeSB!=null) { 
+		    treeStr = treeSB.toString();
+		    int firstTagClose = treeStr.indexOf(">");
+		    treeStr = treeStr.substring(firstTagClose+1);
+		    treeStr = treeStr.trim();
+	    }
+	    String respMsg = createResponseMessage(treeStr);
+		flushOut(respMsg, out);
 	}
 	
 	
 	/**
 	 * Filter the object tree, base on the user roles, calling a recursive function. 
 	 * 
-	 * @param treeSB Sourcebean that contains the object tree xml format
+	 * @param tree List of the functionalities (each one contains objects)
 	 * @param userRoles list of the user roles
-	 * @return String format of the filtered tree
+	 * @return SourceBean of the filtered tree
 	 */
-	private String filterTree(SourceBean treeSB, List userRoles) {
+	private SourceBean filterToSourceBean(List tree, List userRoles) {
+		SourceBean treeSB = null;
 		try{
-			StringBuffer tree = new StringBuffer();
-			addItemTree(tree, treeSB, userRoles, true, false);
-			return tree.toString();
+			LowFunctionality rootFunct = null;
+			Iterator iterTree = tree.iterator();
+			while(iterTree.hasNext())  {
+				 LowFunctionality funct = (LowFunctionality)iterTree.next();
+				 if(funct.getParentId()==null){
+					 rootFunct = funct;
+				 }
+			}
+			treeSB = addFunctToSB(rootFunct, tree, userRoles);
 		} catch (Exception e) {
-			return null;
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					            "filterToSourceBean", "error while converting tree into sourcebean", e);
 		}
+		return treeSB;
 	}
 	
-   	
+	
 	/**
-	 * Recursively analize all the xml nodes of the object tree and push all the not right objects
+	 * Recursive function that checks if a functionalities and the contained objects dhould be added
+	 * to the tree of document to send to the client. 
 	 * 
-	 * @param tree StringBuffer 
-	 * @param dataTree
-	 * @param userRoles
-	 * @param isRoot
-	 * @param canDev
-	 * @return
+	 * @param funct Functionality to check
+	 * @param tree List of all the fucntionalities
+	 * @return userRoles List of the user roles 
 	 */
-	private void addItemTree(StringBuffer tree, SourceBean dataTree, List userRoles, boolean isRoot, boolean canDev) {
-		
-		List childs = dataTree.getContainedSourceBeanAttributes();
-		Iterator iter = childs.iterator();
-		String name = (String)dataTree.getAttribute("name");
-		String path = (String)dataTree.getAttribute("path");
-		String codeType = (String)dataTree.getAttribute("codeType");
-		if(isRoot) {
-			while(iter.hasNext()) {
-				SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
-				SourceBean itemSB = (SourceBean)itemSBA.getValue();
-				addItemTree(tree, itemSB, userRoles, false, canDev);
+	private SourceBean addFunctToSB(LowFunctionality funct, List tree, List userRoles) {
+		SourceBean folderSB = null; 
+		try{
+			folderSB = new SourceBean("folder");
+			Integer parentId = funct.getParentId();
+			Integer id = funct.getId();
+
+			boolean canDevelop = false;
+			if(parentId==null) {
+				canDevelop = true; // root case
+			} else {
+				Role[] devRoles = funct.getDevRoles();
+			    for(int i=0; i<devRoles.length; i++) {
+			    	Role devRole = devRoles[i];
+			    	if(userRoles.contains(devRole.getName())){
+			    		canDevelop = true;
+			    		break;
+			    	}
+			    }
 			}
-		} else {
-			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				boolean foldCanDev = false;
-				String devRolesStr = (String)dataTree.getAttribute("devRoles");
-				String[] devRolesAr = devRolesStr.split("---");
-				List devRoles = Arrays.asList(devRolesAr);
-				Iterator iterDevRoles = devRoles.iterator();
-				Iterator iterUserRoles = userRoles.iterator();
-				while(iterDevRoles.hasNext()) {
-					String devrole = (String)iterDevRoles.next();
-                    if(userRoles.contains(devrole)) {
-                    	foldCanDev = true;
-                    	break;
-                    }
+		    
+		    if(!canDevelop)
+		    	return null;
+
+			folderSB.setAttribute("name", funct.getName());
+	        List biobjects = funct.getBiObjects();
+	        Iterator iterBiobjects = biobjects.iterator();
+	        while(iterBiobjects.hasNext()){
+	           	BIObject biobject = (BIObject)iterBiobjects.next();
+	           	String state = biobject.getStateCode();
+	           	String type = biobject.getBiObjectTypeCode();
+	           	Engine engine = biobject.getEngine();
+	           	String drivername = engine.getDriverName();
+	           	if( (drivername!=null) && 
+	           		drivers.contains(drivername) && 
+	           		state.equalsIgnoreCase("dev") &&
+	           		type.equalsIgnoreCase("report")) {
+                	SourceBean objSB = new SourceBean("object");
+					objSB.setAttribute("name", biobject.getName());
+					objSB.setAttribute("path", biobject.getPath());
+					folderSB.setAttribute(objSB);
 				}
-				tree.append("<folder name='"+name+"'>");
-				while(iter.hasNext()) {
-					SourceBeanAttribute itemSBA = (SourceBeanAttribute)iter.next();
-					SourceBean itemSB = (SourceBean)itemSBA.getValue();
-					addItemTree(tree, itemSB, userRoles, false, foldCanDev);
-				}
-				tree.append("</folder>");
-			} else if(codeType.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE)) {
-				BIObject obj = null;
-				try {
-					//obj = DAOFactory.getBIObjectDAO().loadBIObjectForTree(path);
-				} catch (Exception e) {
-					SpagoBITracer.warning("SPAGOBI", this.getClass().getName(),
-							              "addItemTree", "Error while loading biobject for " +
-							              "path " + path, e);
-					return; // if error while loading the object isn't add
-				}
-				Engine engine = obj.getEngine();
-				// if engine is null the object isn't add
-				if(engine == null) 
-					return;
-				String driver = engine.getDriverName();
-				// if the driver is null or not equal to the drivers servlet parameter the 
-				// object isn't add
-                if( (driver==null) || !(drivers.contains(driver)) )
-                	return;
-				if(canDev) {
-					String state = (String)dataTree.getAttribute("state");
-					if(state.equalsIgnoreCase("DEV"))
-						tree.append("<object name='"+name+"' path='"+path+"'/>"); 
-				}
-			}
+	        }
+	            
+	        //for each child of the functionality call recursively the function
+			Iterator iterTree = tree.iterator();
+			while(iterTree.hasNext())  {
+				 LowFunctionality otherFunct = (LowFunctionality)iterTree.next();
+				 Integer parentIdOther = otherFunct.getParentId();
+				 if( (parentIdOther!=null) && (parentIdOther.equals(id))){
+					 SourceBean childFolderSB = addFunctToSB(otherFunct, tree, userRoles);
+					 if(childFolderSB!=null)
+						 folderSB.setAttribute(childFolderSB);
+				 }
+			}      
+				
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		                         "addFunctToSB", "cannot add functionality" + funct.getPath(), e);
 		}
+		
+		if(folderSB.getContainedSourceBeanAttributes().isEmpty())
+			return null;
+		else return folderSB;
 	}
 	
 	

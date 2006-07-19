@@ -75,7 +75,6 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-worklist-2.1.0.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/exo-portlet-container.services.jsr168.api-1.1.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/portlet.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.core.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms.executionservice.local.jar"/>
@@ -86,5 +85,6 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/commons-fileupload-1.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/portlet-api-1.0.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

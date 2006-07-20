@@ -473,10 +473,12 @@ public class DetailModalitiesValueModule extends AbstractModule {
 							}
 							String invisibleColumns = ((SourceBean) queryXML
 									.getAttribute("INVISIBLE-COLUMNS")).getCharacters();
-							strToken = new StringTokenizer(invisibleColumns, ",");
-							while (strToken.hasMoreTokens()) {
-								String val = strToken.nextToken().trim();
-								columns.add(val);
+							if (invisibleColumns != null) {
+								strToken = new StringTokenizer(invisibleColumns, ",");
+								while (strToken.hasMoreTokens()) {
+									String val = strToken.nextToken().trim();
+									columns.add(val);
+								}
 							}
 							Iterator correlationsIt = correlations.iterator();
 							boolean columnNoMorePresent = false;

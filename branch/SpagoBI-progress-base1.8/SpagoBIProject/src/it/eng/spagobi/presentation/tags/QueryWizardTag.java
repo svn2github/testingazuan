@@ -139,7 +139,7 @@ public class QueryWizardTag extends TagSupport {
 		output.append("			</span>\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_form'>\n");
-		output.append("			<select onchange='setLovProviderModified(true)' style='width:180px;' class='portlet-form-input-field' name='connNameJS' id='connNameJS' onchange='setConnName(this.selectedIndex)'>\n");
+		output.append("			<select onchange='setLovProviderModified(true);setConnName(this.selectedIndex);' style='width:180px;' class='portlet-form-input-field' name='connNameJS' id='connNameJS' >\n");
 		it = dbConnection.iterator();
 		while (it.hasNext()) {
 			SourceBean connectionPool = (SourceBean) it.next();

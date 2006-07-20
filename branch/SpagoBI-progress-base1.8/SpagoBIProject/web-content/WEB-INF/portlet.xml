@@ -68,12 +68,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<short-title>Static Settings</short-title>
         	<keywords>Static Settings</keywords>
         </portlet-info>
-        <portlet-preferences>
-        	<preference>
-        		<name>OBJECTS_VIEW</name>
-        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
-        	</preference>
-        </portlet-preferences>
 	</portlet>
 	
 	
@@ -107,6 +101,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<keywords>Administration Environment</keywords>
         </portlet-info>
         <portlet-preferences>
+            <preference>
+        		<name>OBJECTS_VIEW</name>
+        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
+        	</preference>
         	<preference>
         		<name>MODALITY</name>
         		<value>(FILTER_TREE)</value>

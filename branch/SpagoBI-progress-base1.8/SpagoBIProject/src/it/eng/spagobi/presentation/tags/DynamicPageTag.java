@@ -129,24 +129,32 @@ public class DynamicPageTag extends TagSupport {
         	BIObjectParameter biparam = (BIObjectParameter)iter.next();
         	boolean createLabelAndForm = true;
         	
-        	Parameter par = biparam.getParameter();
-        	ModalitiesValue paruse = par.getModalityValue();
-        	String inputType = paruse.getITypeCd();
-        	if(inputType.equalsIgnoreCase("SCRIPT")) {
-        		String lov = paruse.getLovProvider();
-        		ScriptDetail scriptDet = null;
-        		try{
-        			scriptDet = ScriptDetail.fromXML(lov);
-        		} catch(Exception e) {
-        			scriptDet = null;
-        		}
-        		if( (scriptDet!=null) && scriptDet.isSingleValue()) {
-        			createLabelAndForm = false;
-        			List biparValues = biparam.getParameterValues();
-        			Object value = biparValues.get(0);
-            		htmlStream.append("<input type='hidden' name='"+biparam.getParameterUrlName()+"' value='"+value+"' />\n");
-        		}
-        	}        	
+        	if (biparam.isTransientParmeters()) {
+        		createLabelAndForm = false;
+    			List biparValues = biparam.getParameterValues();
+    			Object value = biparValues.get(0);
+        		htmlStream.append("<input type='hidden' name='"+biparam.getParameterUrlName()+"' value='"+value+"' />\n");
+        	} else {
+            	Parameter par = biparam.getParameter();
+            	ModalitiesValue paruse = par.getModalityValue();
+            	String inputType = paruse.getITypeCd();
+            	if(inputType.equalsIgnoreCase("SCRIPT")) {
+            		String lov = paruse.getLovProvider();
+            		ScriptDetail scriptDet = null;
+            		try{
+            			scriptDet = ScriptDetail.fromXML(lov);
+            		} catch(Exception e) {
+            			scriptDet = null;
+            		}
+            		if( (scriptDet!=null) && scriptDet.isSingleValue()) {
+            			createLabelAndForm = false;
+            			List biparValues = biparam.getParameterValues();
+            			Object value = biparValues.get(0);
+                		htmlStream.append("<input type='hidden' name='"+biparam.getParameterUrlName()+"' value='"+value+"' />\n");
+            		}
+            	}
+        	}
+     	
         	if(createLabelAndForm) {
         		htmlStream.append("		<div style='clear:left;width:"+widthLabel+"px;float:left;'>\n");
         		htmlStream.append("			<span class='portlet-form-field-label'>\n");

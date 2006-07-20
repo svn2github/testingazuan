@@ -46,12 +46,24 @@ public class ExecutionController {
         while (iterPars.hasNext()){
 			biParameter = (BIObjectParameter)iterPars.next();
             Parameter par = biParameter.getParameter();
-            if(par==null){
-            	if(biParameter.isTransientParmeters())
-            		countHidePar ++;
+            
+        	if(biParameter.isTransientParmeters()) {
+        		countHidePar ++;
             	continue;
-            }
-            	
+        	}
+        	if (par == null) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+		 				"ExecuteBIObjectMOdule", 
+		 				"directExecution", 
+		 				"The biparameter with label = ['" + biParameter.getLabel() + "'] and url name = ['" + biParameter.getParameterUrlName() + "'] has no parameter associated. ");
+        		continue;
+        	}
+//            if(par==null){
+//            	if(biParameter.isTransientParmeters())
+//            		countHidePar ++;
+//            	continue;
+//            }
+
             paruse = par.getModalityValue();
             if(paruse==null)
             	continue;
@@ -76,48 +88,78 @@ public class ExecutionController {
 	
 	private void refreshParameters(BIObject obj, String userProvidedParametersStr){
 		if(userProvidedParametersStr != null) {
-		
-			List parameterList = obj.getBiObjectParameters();
-			BIObjectParameter parameter = null;
-			Map paramMap = new HashMap();
-			for(int i = 0; i < parameterList.size(); i++) {
-				parameter = (BIObjectParameter)parameterList.get(i);
-				paramMap.put(parameter.getParameterUrlName(), parameter);
-				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
-		 				"ExecuteBIObjectMOdule", 
-		 				"refreshParameters", 
-		 				"Parameter [IN]: " + parameter);
-			}
 			
-			parameterList.clear();
-					
+			List biparameters = obj.getBiObjectParameters();
 			String[] userProvidedParameters = userProvidedParametersStr.split("&");
 			for(int i = 0; i < userProvidedParameters.length; i++) {
 				String[] chunks = userProvidedParameters[i].split("=");
-				parameter = new BIObjectParameter();
-				parameter.setParameterUrlName(chunks[0]);
+				String parUrlName = chunks[0];
+				if (parUrlName == null || parUrlName.trim().equals("")) continue;
+				BIObjectParameter biparameter = null;
+				Iterator it = biparameters.iterator();
+				while (it.hasNext()) {
+					BIObjectParameter temp = (BIObjectParameter) it.next();
+					if (temp.getParameterUrlName().equals(parUrlName)) {
+						biparameter = temp;
+						break;
+					}
+				}
+				if (biparameter == null) {
+					SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
+	 				"ExecuteBIObjectMOdule", 
+	 				"refreshParameters", 
+	 				"No BIObjectParameter with url name = ['" + parUrlName + "'] was found.");
+					continue;
+				}
+				String parValue = chunks[1];
 				List parameterValues = new ArrayList();
-				parameterValues.add(chunks[1]);
-				parameter.setParameterValues(parameterValues);
-				parameter.setTransientParmeters(true);
-				paramMap.put(parameter.getParameterUrlName(), parameter);
-				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
-		 				"ExecuteBIObjectMOdule", 
-		 				"refreshParameters", 
-		 				"Parameter [NEW]: " + parameter);
+				parameterValues.add(parValue);
+				biparameter.setParameterValues(parameterValues);
+				biparameter.setTransientParmeters(true);
 			}
 			
-			Iterator it = paramMap.entrySet().iterator();
-			while(it.hasNext()){
-				parameter = (BIObjectParameter)((Map.Entry)it.next()).getValue();
-				parameterList.add(parameter);
-				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
-		 				"ExecuteBIObjectMOdule", 
-		 				"refreshParameters", 
-		 				"Parameter [FINISH]: " + parameter);
-			}
 			
-			obj.setBiObjectParameters(parameterList);
+//			List parameterList = obj.getBiObjectParameters();
+//			BIObjectParameter parameter = null;
+//			Map paramMap = new HashMap();
+//			for(int i = 0; i < parameterList.size(); i++) {
+//				parameter = (BIObjectParameter)parameterList.get(i);
+//				paramMap.put(parameter.getParameterUrlName(), parameter);
+//				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
+//		 				"ExecuteBIObjectMOdule", 
+//		 				"refreshParameters", 
+//		 				"Parameter [IN]: " + parameter);
+//			}
+//			
+//			parameterList.clear();
+//					
+//			String[] userProvidedParameters = userProvidedParametersStr.split("&");
+//			for(int i = 0; i < userProvidedParameters.length; i++) {
+//				String[] chunks = userProvidedParameters[i].split("=");
+//				parameter = new BIObjectParameter();
+//				parameter.setParameterUrlName(chunks[0]);
+//				List parameterValues = new ArrayList();
+//				parameterValues.add(chunks[1]);
+//				parameter.setParameterValues(parameterValues);
+//				parameter.setTransientParmeters(true);
+//				paramMap.put(parameter.getParameterUrlName(), parameter);
+//				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
+//		 				"ExecuteBIObjectMOdule", 
+//		 				"refreshParameters", 
+//		 				"Parameter [NEW]: " + parameter);
+//			}
+//			
+//			Iterator it = paramMap.entrySet().iterator();
+//			while(it.hasNext()){
+//				parameter = (BIObjectParameter)((Map.Entry)it.next()).getValue();
+//				parameterList.add(parameter);
+//				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
+//		 				"ExecuteBIObjectMOdule", 
+//		 				"refreshParameters", 
+//		 				"Parameter [FINISH]: " + parameter);
+//			}
+//			
+//			obj.setBiObjectParameters(parameterList);
 		}
 	}
 	

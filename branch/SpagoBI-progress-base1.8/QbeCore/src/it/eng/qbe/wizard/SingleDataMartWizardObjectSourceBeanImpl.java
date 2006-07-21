@@ -597,7 +597,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
 		
 			int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
-			if (maxRowsForSQLExecution == null || maxRowsForSQLExecution.trim().length() == 0){
+			if (maxRowsForSQLExecution != null && maxRowsForSQLExecution.trim().length() == 0){
 				maxSQLResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
 			}
 		

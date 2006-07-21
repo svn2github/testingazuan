@@ -108,8 +108,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	</preference>
         	<preference>
         		<name>MODALITY</name>
-        		<!-- possible value for this preference is only FILTER_TREE -->
-        		<value></value>
+        		<!-- possible values for this preference are (FILTER_TREE/ENTIRE_TREE) -->
+        		<value>ENTIRE_TREE</value>
         	</preference>
             <preference> 
         		<name>PATH_SUBTREE</name>
@@ -160,8 +160,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 			-->
 			<preference>
         		<name>MODALITY</name>
-        		<!-- possible values for this preference are (SINGLE_OBJECT/FILTER_TREE) -->
-        		<value></value>
+        		<!-- possible values for this preference are (SINGLE_OBJECT/FILTER_TREE/ENTIRE_TREE) -->
+        		<value>ENTIRE_TREE</value>
         	</preference>
             
             <!--  

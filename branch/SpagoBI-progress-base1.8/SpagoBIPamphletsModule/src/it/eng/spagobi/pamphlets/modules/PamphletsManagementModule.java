@@ -258,13 +258,22 @@ public class PamphletsManagementModule extends AbstractModule {
 		List params = biobjpardao.loadBIObjectParametersById(id);
 		Iterator iterParams = params.iterator();
 		// get map of the param url name and value assigned
+		boolean findOutFormat = false;
 		Map paramMap = new HashMap();
 		while(iterParams.hasNext()) {
 			BIObjectParameter par = (BIObjectParameter)iterParams.next();
 			String parUrlName = par.getParameterUrlName();
+			if(parUrlName.equalsIgnoreCase("param_output_format"))
+				findOutFormat = true;
 			String value = (String)request.getAttribute(parUrlName);
-			paramMap.put(parUrlName, value);	
+			paramMap.put(parUrlName, value);
 		}
+		if(!findOutFormat){
+			paramMap.put("param_output_format", "JPGBASE64");
+		}
+		
+		
+		
 		// fill a configured document bo with data retrived
 		ConfiguredBIDocument confDoc = new ConfiguredBIDocument();
 		confDoc.setDescription(obj.getDescription());

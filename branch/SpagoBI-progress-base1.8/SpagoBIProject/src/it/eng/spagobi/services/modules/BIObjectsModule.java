@@ -79,11 +79,15 @@ public class BIObjectsModule extends AbstractModule {
             
             String modality = (String)prefs.getValue(MODALITY, "");
             debug("service", "using "+modality+" modality");
-            if (modality.equalsIgnoreCase(SINGLE_OBJECT)) {
-            	singleObjectModalityHandler(request, response, prefs, actor);
-            } else if (modality.equalsIgnoreCase(FILTER_TREE)) {
-            	String initialPath = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
-            	treeModalityHandler(request, response, prefs, actor, initialPath);
+            if (modality != null) {
+                if (modality.equalsIgnoreCase(SINGLE_OBJECT)) {
+                	singleObjectModalityHandler(request, response, prefs, actor);
+                } else if (modality.equalsIgnoreCase(FILTER_TREE)) {
+                	String initialPath = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
+                	treeModalityHandler(request, response, prefs, actor, initialPath);
+                } else {
+                	treeModalityHandler(request, response, prefs, actor, null);
+                }
             } else {
             	treeModalityHandler(request, response, prefs, actor, null);
             }
@@ -113,22 +117,28 @@ public class BIObjectsModule extends AbstractModule {
 			SourceBean response, PortletPreferences prefs, String actor, 
 			String initialPath) throws SourceBeanException {
 
-		String objectsView = (String) request
-				.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
-		if (objectsView == null) {
-			// finds objects view modality from portlet preferences
-			objectsView = (String) prefs.getValue(
-					SpagoBIConstants.OBJECTS_VIEW, "");
-		}
-		// default value in case it is not specified or in case the value is not valid
-		if (objectsView == null
-				|| (!objectsView
-						.equalsIgnoreCase(SpagoBIConstants.VIEW_OBJECTS_AS_LIST) && !objectsView
-						.equalsIgnoreCase(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)))
+		String objectsView = null;
+		String operation = (String) request.getAttribute(SpagoBIConstants.OPERATION);
+		if (operation != null && operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) {
 			objectsView = SpagoBIConstants.VIEW_OBJECTS_AS_TREE;
+		} else {
+			objectsView = (String) request.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
+			if (objectsView == null) {
+				// finds objects view modality from portlet preferences
+				objectsView = (String) prefs.getValue(
+						SpagoBIConstants.OBJECTS_VIEW, "");
+			}
+			// default value in case it is not specified or in case the value is not valid
+			if (objectsView == null
+					|| (!objectsView
+							.equalsIgnoreCase(SpagoBIConstants.VIEW_OBJECTS_AS_LIST) && !objectsView
+							.equalsIgnoreCase(SpagoBIConstants.VIEW_OBJECTS_AS_TREE)))
+				objectsView = SpagoBIConstants.VIEW_OBJECTS_AS_TREE;
+		}
 
 		if (initialPath != null && !initialPath.trim().equals("")) 
 			response.setAttribute(TreeObjectsModule.PATH_SUBTREE, initialPath);
+		
 		response.setAttribute(SpagoBIConstants.OBJECTS_VIEW, objectsView);
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 

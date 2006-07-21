@@ -103,15 +103,19 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         <portlet-preferences>
             <preference>
         		<name>OBJECTS_VIEW</name>
-        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
+        		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
+        		<value>VIEW_OBJECTS_AS_LIST</value>
         	</preference>
         	<preference>
         		<name>MODALITY</name>
-        		<value>(FILTER_TREE)</value>
+        		<!-- possible value for this preference is only FILTER_TREE -->
+        		<value></value>
         	</preference>
             <preference> 
         		<name>PATH_SUBTREE</name>
-        		<value>paths of the subTree in modality FILTER_TREE</value>
+        		<!-- if the MODALITY preference is set to FILTER_TREE you have to write in this preference 
+        			the path of the subTree -->
+        		<value></value>
         	</preference>
         </portlet-preferences>
 	</portlet>
@@ -156,7 +160,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 			-->
 			<preference>
         		<name>MODALITY</name>
-        		<value>(SINGLE_OBJECT/FILTER_TREE)</value>
+        		<!-- possible values for this preference are (SINGLE_OBJECT/FILTER_TREE) -->
+        		<value></value>
         	</preference>
             
             <!--  
@@ -164,7 +169,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 			--> 
             <preference> 
         		<name>LABEL_SINGLE_OBJECT</name>
-        		<value>label of the single object to execute in modality SINGLE_OBJECT</value>
+        		<!-- if the MODALITY preference is set to SINGLE_OBJECT you have to write in this preference 
+        			the label of the single object to be executed -->
+        		<value></value>
         	</preference>
         	
         	<!--  
@@ -172,7 +179,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 			--> 
             <preference> 
         		<name>PARAMETERS_SINGLE_OBJECT</name>
-        		<value>par1=value</value>
+        		<!-- if the MODALITY preference is set to SINGLE_OBJECT you have to write in this preference 
+        			the parameters values of the single object to be executed with the following sintax:
+        			parameterUrlName1=value1&parameterUrlName2=value2&... -->
+        		<value></value>
         	</preference>
             
             <!--
@@ -180,7 +190,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 			-->
             <preference> 
         		<name>PATH_SUBTREE</name>
-        		<value>paths of the subTree in modality FILTER_TREE</value>
+        		<!-- if the MODALITY preference is set to FILTER_TREE you have to write in this preference 
+        			the path of the subTree -->
+        		<value></value>
         	</preference>
 			
 			<!--
@@ -188,12 +200,15 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
   			-->
             <preference> 
         		<name>HEIGHT_AREA</name>
-        		<value>the height of the area that shows the object output</value>
+        		<!-- if the MODALITY preference is set to SINGLE_OBJECT you have to write in this preference 
+        			the height of the area that shows the object output -->
+        		<value></value>
         	</preference>
         	
         	<preference>
         		<name>OBJECTS_VIEW</name>
-        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
+        		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
+        		<value>VIEW_OBJECTS_AS_TREE</value>
         	</preference>
         </portlet-preferences>
 	</portlet>
@@ -237,7 +252,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         <portlet-preferences>
         	<preference>
         		<name>OBJECTS_VIEW</name>
-        		<value>(VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST)</value>
+        		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
+        		<value>VIEW_OBJECTS_AS_LIST</value>
         	</preference>        	
         </portlet-preferences>
 	</portlet>

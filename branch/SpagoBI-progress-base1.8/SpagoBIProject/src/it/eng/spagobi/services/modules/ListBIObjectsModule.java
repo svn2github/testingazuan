@@ -327,7 +327,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		   				   "		</CHANGE_VIEW_BUTTON>";	
 		moduleConfigStr += "		<BACK_BUTTON confirm=\"FALSE\" image=\"/img/back.png\" label=\"SBISet.objects.backButt\"> " +
         				   "			<PARAMETER name=\"ACTION_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"START_ACTION\"/> " +
-        				   "			<PARAMETER name=\"PUBLISHER_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"LoginSBISettingsPublisher\"/> " +
+        				   "			<PARAMETER name=\"PUBLISHER_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"LoginSBIDevelopmentContextPublisher\"/> " +
         				   "			<PARAMETER name=\"" + LightNavigationManager.LIGHT_NAVIGATOR_RESET + "\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +
         				   "		</BACK_BUTTON>";
       	moduleConfigStr += "	</BUTTONS>";

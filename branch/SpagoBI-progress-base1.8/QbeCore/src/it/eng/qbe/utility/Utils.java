@@ -9,6 +9,7 @@ import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
 
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -365,7 +367,14 @@ public class Utils {
 	}
         
    
-
+	public static boolean isUserAble(IEngUserProfile userProfile, String func){
+		try{
+			Collection userFuncs = userProfile.getFunctionalities();
+			return userFuncs.contains(func) || userFuncs.contains(func.toUpperCase());
+		}catch (EMFInternalError e) {
+			return false;
+		}
+	}
    
 	
 	

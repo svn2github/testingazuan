@@ -168,7 +168,7 @@ public class BIObjectsModule extends AbstractModule {
 		debug("singleObjectModalityHandler", "using object label " + label);
 		
 		// if label is not set then throw an exception
-		if(label.trim().equals("")) {
+		if(label == null || label.trim().equals("")) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 								"BIObjectsModule", 
 								"singleObjectModalityHandler",  
@@ -198,11 +198,11 @@ public class BIObjectsModule extends AbstractModule {
         		                      SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
         
         // if the parameters is set put it into the session
-        if (!parameters.equals("")) 
+        if (parameters != null && !parameters.trim().equals("")) 
         	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
         
         // if the height of the area is set put it into the session
-        if (!heightArea.equals("")) 
+        if (heightArea != null && !heightArea.trim().equals("")) 
         	sessionContainer.setAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA, heightArea);
         debug("singleObjectModalityHandler", "data stored into response");
 	}

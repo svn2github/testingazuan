@@ -91,7 +91,7 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
         PortletRequest portReq = PortletUtilities.getPortletRequest();
 		PortletPreferences prefs = portReq.getPreferences();
 		String modality = (String)prefs.getValue(BIObjectsModule.MODALITY, "");
-		if (modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
+		if (modality != null && modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
 			initialPath = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
 		}
         String objIdStr = (String) sessionContainer.getAttribute("SUBJECT_ID");

@@ -81,7 +81,7 @@
       		<td class='portlet-form-field-label' ><%=prefName%>:</td>
       		<td>&nbsp;</td>
       		<td>	
-      			<input type="text" name="<%=prefPrefix+prefName%>" value="<%=prefValue%>" />
+      			<input type="text" name="<%=prefPrefix+prefName%>" value="<%=prefValue != null ? prefValue : ""%>" />
       		</td>
    		</tr>
 		<%	

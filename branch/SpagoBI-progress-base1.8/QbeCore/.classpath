@@ -62,5 +62,6 @@
 	<classpathentry kind="lib" path="lib/hibernate3.jar"/>
 	<classpathentry kind="var" path="SERVLET_API_HOME/servlet-api.jar"/>
 	<classpathentry kind="var" path="PORTLET_API_HOME/portlet-api-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

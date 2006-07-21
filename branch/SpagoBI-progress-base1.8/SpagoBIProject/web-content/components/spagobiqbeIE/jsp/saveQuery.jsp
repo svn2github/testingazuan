@@ -451,8 +451,8 @@
 				</tbody>
 			</table>
 		</td>
-	</tr>
 	<td width="3%">&nbsp;</td>
+	</tr>
 </table>
 
 	<%} else {%>

@@ -59,9 +59,8 @@
 	<classpathentry kind="lib" path="lib/spago-portlet-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/spago-web-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jasperreports-1.2.3.jar"/>
-	<classpathentry kind="var" path="SERVLET_API_HOME/jsp-api.jar"/>
-	<classpathentry kind="var" path="SERVLET_API_HOME/portlet-api-1.0.jar"/>
-	<classpathentry kind="var" path="SERVLET_API_HOME/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate3.jar"/>
+	<classpathentry kind="var" path="SERVLET_API_HOME/servlet-api.jar"/>
+	<classpathentry kind="var" path="PORTLET_API_HOME/portlet-api-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

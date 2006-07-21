@@ -7,7 +7,7 @@
 	<classpathentry kind="var" path="EXO_HOME/common/lib/picocontainer-1.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
-	<classpathentry kind="lib" path="lib/portlet.jar"/>
 	<classpathentry kind="lib" path="lib/spago-core-2.1.0.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/portlet-api-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

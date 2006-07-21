@@ -7,11 +7,16 @@ import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -27,6 +32,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.w3c.tools.codec.Base64Encoder;
+
+import sun.misc.BASE64Encoder;
 
 public class Utils {
 
@@ -332,6 +340,33 @@ public class Utils {
 		
 		return listResult;
 	}
+	
+
+	
+	public static String hashMD5(String original) throws EMFInternalError {
+		 byte[] stringByteArray = new byte[original.length()];
+		 try {
+			 stringByteArray = original.getBytes("UTF-8");
+	        } // try
+	        catch (UnsupportedEncodingException uee) {
+	            throw new EMFInternalError(EMFErrorSeverity.ERROR, "Autenticazione fallita", uee);
+	        } // catch (UnsupportedEncodingException uee)
+	        MessageDigest algorithm = null;
+	        try {
+	            algorithm = MessageDigest.getInstance("SHA-1");
+	        } // try
+	        catch (NoSuchAlgorithmException nsae) {
+	            throw new EMFInternalError(EMFErrorSeverity.ERROR, "Autenticazione fallita", nsae);
+	        } // catch (NoSuchAlgorithmException nsae)
+	        algorithm.reset();
+	        algorithm.update(stringByteArray);
+	        byte[] digestedString = algorithm.digest();
+	        return new BASE64Encoder().encodeBuffer(digestedString);
+	}
+        
+   
+
+   
 	
 	
 	

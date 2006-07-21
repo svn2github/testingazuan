@@ -36,7 +36,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
    PortletURL backUrl = renderResponse.createActionURL();
    backUrl.setParameter("ACTION_NAME", "START_ACTION");
-   backUrl.setParameter("PUBLISHER_NAME", "LoginSBISettingsPublisher");
+   //backUrl.setParameter("PUBLISHER_NAME", "LoginSBISettingsPublisher");
+   backUrl.setParameter("PUBLISHER_NAME", "LoginSBIAdministrationContextPublisher");
    backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
    
   

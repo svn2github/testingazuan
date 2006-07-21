@@ -154,8 +154,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class="div_detail_area_forms" >
 		<table style="margin:10px;">
 		<%
-				Set names = parnamemap.keySet();
+			Set names = parnamemap.keySet();
 			Iterator iterParName = names.iterator();
+			boolean findOutPar = false;
 			while(iterParName.hasNext()){
 				String parName = (String)iterParName.next();
 				String urlName = (String)parnamemap.get(parName);
@@ -164,6 +165,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				if(urlName.equalsIgnoreCase("param_output_format")){
 					value="JPGBASE64";
 					readonly = " readonly ";
+					findOutPar = true;
 				}
 				
 		%>
@@ -172,8 +174,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<td><input type="text" size="30" name="<%=urlName%>" value="<%=value%>" <%=readonly%> /></td>
 			</tr>
 		<% 
-			}	
+			}
+			if(!findOutPar){
 		%>
+			<input type="hidden" size="30" name="param_output_format" value="JPGBASE64" />
+		<%		
+			}
+		%>
+		
+		
+		
 		</table>
 	</div>
 

@@ -1,6 +1,7 @@
 
 package it.eng.qbe.action;
 
+import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Logger;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
@@ -22,7 +23,7 @@ public class RecoverClassLoaderAction extends AbstractAction {
 	public void service(SourceBean request, SourceBean response) {
 		
 		try{
-		
+			DataMartModel dm = (DataMartModel)getRequestContainer().getSessionContainer().getAttribute("dataMartModel");
 			ClassLoader toRecoverClassLoader = (ClassLoader)ApplicationContainer.getInstance().getAttribute("CURRENT_THREAD_CONTEXT_LOADER"); 
 			Logger.debug(RecoverClassLoaderAction.class, "Recovering ClassLoader " + toRecoverClassLoader.toString());
 			if ( toRecoverClassLoader != null){
@@ -34,8 +35,8 @@ public class RecoverClassLoaderAction extends AbstractAction {
 				response.setAttribute("PAGE", "TreeObjectsPage");
 				response.setAttribute("ACTOR", actor);
 			}else{
-				response.setAttribute("ACTION", "START_ACTION");
-				
+				response.setAttribute("ACTION_NAME", "DETAIL_DATA_MART_ACTION");
+				response.setAttribute("PATH", dm.getPath());
 			}
 		}catch (SourceBeanException sbe){
 			sbe.printStackTrace();

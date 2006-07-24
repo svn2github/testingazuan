@@ -7,6 +7,7 @@ import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spago.security.IEngUserProfile;
 
 
 /**
@@ -48,7 +49,13 @@ public class PersistQueryAction extends AbstractAction {
 			}
 		}
 		
-		
+		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
+		if (qbeMode.equalsIgnoreCase("WEB")){
+			IEngUserProfile userProfile =(IEngUserProfile)getRequestContainer().getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			if (userProfile != null){
+				obj.setOwner(userProfile.getUserUniqueIdentifier().toString());
+			}
+		}
 		dmModel.persistQueryAction(obj);
 		SessionContainer session = getRequestContainer().getSessionContainer();
 		String cTM = String.valueOf(System.currentTimeMillis());

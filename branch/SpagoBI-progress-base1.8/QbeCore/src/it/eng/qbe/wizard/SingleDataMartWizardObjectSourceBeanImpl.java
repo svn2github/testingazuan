@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  * @author Zoppello
@@ -590,10 +591,16 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 		
+		
+		if (!(query.startsWith("select") || query.startsWith("SELECT"))){  
+			throw new Exception("It's not possible change database status with qbe exepert query");
+		}
 		Session aSession = null;
+		Transaction tx = null;
+		
 		try{
 			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
-		
+			tx = aSession.beginTransaction();
 			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
 		
 			int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
@@ -616,44 +623,49 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 			stm.execute(query);
 			
 			ResultSet rs = stm.getResultSet();
-			rs.last();
-			int rowsNumber = rs.getRow();
-			int pagesNumber = (rowsNumber / pageSize) + ( ((rowsNumber % pageSize) != 0 )? 1: 0 );
-			rs.beforeFirst();
+			int pagesNumber = 0;
+			int rowsNumber = 0;
+			if (rs != null){
+				rs.last();
+				rowsNumber = rs.getRow();
+				pagesNumber = (rowsNumber / pageSize) + ( ((rowsNumber % pageSize) != 0 )? 1: 0 );
+				rs.beforeFirst();
 			
 						
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int numberOfColumns = rsmd.getColumnCount();
-			result = new ArrayList();
-			Object[] row = null;
-			if(firstRow > 0)  
-				rs.absolute(firstRow - 1);
-			else 
-				rs.beforeFirst();
-			int remainingRows = pageSize;
-			while(rs.next() && (remainingRows--)>0) {
-				row = new Object[numberOfColumns];
-				for(int i = 0; i < numberOfColumns; i++) {
-					row[i] = rs.getObject(i+1);
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int numberOfColumns = rsmd.getColumnCount();
+				result = new ArrayList();
+				Object[] row = null;
+				if(firstRow > 0)  
+					rs.absolute(firstRow - 1);
+				else 
+					rs.beforeFirst();
+				int remainingRows = pageSize;
+				while(rs.next() && (remainingRows--)>0) {
+					row = new Object[numberOfColumns];
+					for(int i = 0; i < numberOfColumns; i++) {
+						row[i] = rs.getObject(i+1);
+					}
+					result.add(row);
 				}
-				result.add(row);
-			}
-			hasNextPage = rs.next();
+				hasNextPage = rs.next();
 		
-			
+			}
 			
 				
-			SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
-			queryResponseSourceBean.setAttribute("query", query);
-			queryResponseSourceBean.setAttribute("list", result);
-			queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
-			queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
-			queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
-			queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
-			queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= maxSQLResults));
+				SourceBean queryResponseSourceBean = new SourceBean(QUERY_RESPONSE_SOURCE_BEAN);
+				queryResponseSourceBean.setAttribute("query", query);
+				queryResponseSourceBean.setAttribute("list", result);
+				queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+				queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
+				queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
+				queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+				queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= maxSQLResults));
 		
-			return queryResponseSourceBean;
+				return queryResponseSourceBean;
 		}finally{
+			if (tx != null)
+				tx.rollback();
 			if (aSession != null && aSession.isOpen())
 				aSession.close();
 		}

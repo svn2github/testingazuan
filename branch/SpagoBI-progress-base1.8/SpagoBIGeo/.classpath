@@ -35,7 +35,6 @@
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xalan-2.4.0.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/crimson.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="SpagoBIGeoEngine/WEB-INF/lib/pdf-transcoder.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="SpagoBIGeoEngine/WEB-INF/classes"/>

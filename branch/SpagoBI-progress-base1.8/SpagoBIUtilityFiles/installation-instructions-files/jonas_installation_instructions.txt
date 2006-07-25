@@ -1,6 +1,9 @@
 THIS DOCUMENT FOLLOWS THE FILE README.TXT IN THE SPAGOBI ROOT DIRECTORY.
 
-If you want to install SpagoBI on your JOnAS server, after having launched Maven 2 command, please proceed as follows:
+Requirements
+eXo portal 1.1.1 installed over a JOnAS server (see the eXo installation instructions)
+
+If you want to install SpagoBI on your JOnAS-eXo server, after having launched Maven 2 command, please proceed as follows:
 - copy the content of the folder "jonas-server" (NOT the directory itself but only its content) inside your JOnAD base directory (we will refer to it as JONAS_HOME): overwrite the existing files;
 - delete the jar hsqldb-1.8.0.1.jar from JONAS_HOME/lib/apps;
 

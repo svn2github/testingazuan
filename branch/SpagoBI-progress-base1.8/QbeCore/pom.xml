@@ -33,6 +33,15 @@
   <url>http://maven.apache.org</url>
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/</directory>
+        <targetPath>/</targetPath>
+        <includes>
+          <include>**/*.jrxml</include>
+        </includes>
+      </resource>
+    </resources>
     <!--testSourceDirectory>${basedir}/src/</testSourceDirectory-->
   </build>
   <dependencies>

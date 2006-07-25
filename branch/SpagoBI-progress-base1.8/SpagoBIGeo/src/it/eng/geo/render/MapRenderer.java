@@ -84,7 +84,8 @@ public class MapRenderer {
 			String value = (String) valueList.get(i);
 			Element element = xMLDocument.getElemetByID(elementId);
 			String style = mapConfiguration.getStyle(Integer.parseInt(value));
-			element.setAttribute(Constants.STYLE, style);
+			if(element!=null)
+				element.setAttribute(Constants.STYLE, style);
 		}
 		String mapString = xMLDocument.getDocumentAsXMLString();
 		String legendString = mapConfiguration.getLegend();

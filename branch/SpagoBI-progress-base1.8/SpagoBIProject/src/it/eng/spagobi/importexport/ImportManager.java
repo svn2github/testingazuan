@@ -398,6 +398,22 @@ public class ImportManager implements IImportManager {
 					continue;
 				}
 				SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine);
+				SbiDomains engineTypeDomain = newEng.getEngineType();
+				Map uniqueEngineType = new HashMap();
+				uniqueEngineType.put("valuecd", engineTypeDomain.getValueCd());
+				uniqueEngineType.put("domaincd", "ENGINE_TYPE");
+				SbiDomains existEngineTypeDomain = (SbiDomains)importer.checkExistence(uniqueEngineType, sessionCurrDB, new SbiDomains());
+				if(existEngineTypeDomain!=null) {
+					newEng.setEngineType(existEngineTypeDomain);
+				}
+				SbiDomains biobjectTypeDomain = newEng.getBiobjType();
+				Map uniqueBiobjectType = new HashMap();
+				uniqueBiobjectType.put("valuecd", biobjectTypeDomain.getValueCd());
+				uniqueBiobjectType.put("domaincd", "BIOBJ_TYPE");
+				SbiDomains existBiobjectTypeDomain = (SbiDomains)importer.checkExistence(uniqueBiobjectType, sessionCurrDB, new SbiDomains());
+				if(existBiobjectTypeDomain!=null) {
+					newEng.setBiobjType(existBiobjectTypeDomain);
+				}
 			    importer.insertObject(newEng, sessionCurrDB);
 			    metaLog.log("Inserted new engine " + engine.getName());
 			    Integer newId = newEng.getEngineId();
@@ -835,9 +851,8 @@ public class ImportManager implements IImportManager {
 					subid = newSubId;
 				}
 				// get biobjects
-				IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
-				BIObject masterBIObj = biobjdao.loadBIObjectById(masterid);
-				BIObject subBIObj = biobjdao.loadBIObjectById(subid);
+				SbiObjects masterBIObj = importer.getExportedSbiObject(masterid, txExpDB, sessionExpDB);
+				SbiObjects subBIObj = importer.getExportedSbiObject(subid, txExpDB, sessionExpDB);
 				// build a new SbiSubreport
 				SbiSubreports newsubrep  = new SbiSubreports();
 				newsubrep.setMaster_rpt_id(newMasterId);

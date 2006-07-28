@@ -78,7 +78,7 @@ public class AbstractHibernateConnectionCheckListModule extends
 				String key = getObjectKey(objects);
 				checkedObjectsMap.put(key, key);
 			}
-			tx.commit();
+//			tx.commit();
 		} catch (HibernateException he) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 		            this.getClass().getName(), 

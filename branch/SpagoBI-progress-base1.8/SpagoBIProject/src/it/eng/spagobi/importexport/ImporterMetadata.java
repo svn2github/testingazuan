@@ -176,6 +176,25 @@ public class ImporterMetadata {
 			return hibList;
 		}
 		
+		/**
+		 * Get the exported hibernate object identified by the id
+		 * @param id The BIObject id
+		 * @param tx Hibernate transaction for the exported database
+		 * @param session Hibernate session for the exported database
+		 * @return The exported hibernate object
+		 * @throws EMFUserError
+		 */		
+		public SbiObjects getExportedSbiObject(Integer id, Transaction tx, Session session) throws EMFUserError {
+			SbiObjects hibBIObject = null;
+			try {
+				hibBIObject = (SbiObjects) session.load(SbiObjects.class, id);
+			} catch (HibernateException he) {
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getExportedSbiObject",
+						               "Error while getting exported sbi objects " + he);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			} 
+			return hibBIObject;
+		}
 		
 			
 		

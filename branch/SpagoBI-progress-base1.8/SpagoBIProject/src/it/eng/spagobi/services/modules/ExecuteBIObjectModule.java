@@ -608,22 +608,25 @@ public class ExecuteBIObjectModule extends AbstractModule
 			InternalEngineIFace internalEngine = null;
 			// tries to instantiate the class for the internal engine
 			try {
+				if (className == null && className.trim().equals("")) throw new ClassNotFoundException();
 				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
 			} catch (ClassNotFoundException cnfe) {
 				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
 			 				this.getClass().getName(), 
 			 				"execute", 
-			 				"The class " + className + " for internal engine " + engine.getName() + " was not found.", cnfe);
+			 				"The class ['" + className + "'] for internal engine " + engine.getName() + " was not found.", cnfe);
 				Vector params = new Vector();
 				params.add(className);
 				params.add(engine.getName());
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params)); 
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params));
+				return;
 			} catch (Exception e) {
 				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
 		 				this.getClass().getName(), 
 		 				"execute", 
 		 				"Error while instantiating class " + className, e);
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
+				return;
 			}
 			
 			debug("execute", "Class " + className + " instantiated successfully. Now engine's execution starts.");

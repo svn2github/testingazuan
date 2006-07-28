@@ -3,10 +3,10 @@
 "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory name="HibernateSessionFactory">
+    <session-factory name="HibernateSessionFactoryPostgres">
         <property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
         <!-- 
-        <property name="hibernate.connection.url">jdbc:postgresql://192.168.20.223:5432/spagobi</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/spagobi</property>
         <property name="hibernate.cglib.use_reflection_optimizer">false</property>
         <property name="hibernate.connection.password">spagobi</property>
         <property name="hibernate.connection.username">spagobi</property>
@@ -30,5 +30,8 @@
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiParuseCk.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiObjState.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiObjParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiSubreports.hbm.xml"/>
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEvents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEventsLog.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

@@ -3,7 +3,7 @@
 "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory name="HibernateSessionFactoryMySQL">
+    <session-factory name="HibernateSessionFactoryHsqldb">
         <property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
         <!-- 
         <property name="hibernate.connection.url">jdbc:hsqldb:hsql://localhost/spagobi</property>

@@ -17,7 +17,7 @@
             <column name="par_id" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiLov" class="it.eng.spagobi.metadata.SbiLov">
-            <column name="lov_id" not-null="true" />
+            <column name="lov_id" not-null="false" />
         </many-to-one>
         <property name="label" type="string">
             <column name="label" length="20" not-null="true" />

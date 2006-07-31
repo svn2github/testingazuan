@@ -839,6 +839,9 @@ public class ImportManager implements IImportManager {
 				// get ids of master and subreport
 				Integer masterid = objlink.getMaster_rpt_id();
 				Integer subid = objlink.getSub_rpt_id();
+//				 get biobjects
+				SbiObjects masterBIObj = importer.getExportedSbiObject(masterid, txExpDB, sessionExpDB);
+				SbiObjects subBIObj = importer.getExportedSbiObject(subid, txExpDB, sessionExpDB);
 				// get association of object
 				Map biobjIdAss = metaAss.getBIobjIDAssociation();
 				// try to get from association the id associate to the exported metadata
@@ -850,10 +853,6 @@ public class ImportManager implements IImportManager {
 				if(newSubId!=null){
 					subid = newSubId;
 				}
-				
-				// get biobjects
-				SbiObjects masterBIObj = importer.getExportedSbiObject(masterid, txExpDB, sessionExpDB);
-				SbiObjects subBIObj = importer.getExportedSbiObject(subid, txExpDB, sessionExpDB);
 				// build a new SbiSubreport
 				SbiSubreports newsubrep  = new SbiSubreports();
 				newsubrep.setMaster_rpt_id(newMasterId);

@@ -187,6 +187,8 @@ public class ImporterMetadata {
 		public SbiObjects getExportedSbiObject(Integer id, Transaction tx, Session session) throws EMFUserError {
 			SbiObjects hibBIObject = null;
 			try {
+//				Query hibQuery = session.createQuery(" from SbiObjects objs where objs.biobjId = " + id);
+//				hibBIObject = (SbiObjects) hibQuery.uniqueResult();
 				hibBIObject = (SbiObjects) session.load(SbiObjects.class, id);
 			} catch (HibernateException he) {
 				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getExportedSbiObject",

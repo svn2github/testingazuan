@@ -850,6 +850,7 @@ public class ImportManager implements IImportManager {
 				if(newSubId!=null){
 					subid = newSubId;
 				}
+				
 				// get biobjects
 				SbiObjects masterBIObj = importer.getExportedSbiObject(masterid, txExpDB, sessionExpDB);
 				SbiObjects subBIObj = importer.getExportedSbiObject(subid, txExpDB, sessionExpDB);

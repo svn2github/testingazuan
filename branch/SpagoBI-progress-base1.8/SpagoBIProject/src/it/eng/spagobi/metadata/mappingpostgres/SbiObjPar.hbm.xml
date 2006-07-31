@@ -10,7 +10,7 @@
         <id name="objParId" type="integer">
             <column name="obj_par_Id" />
             <generator class="sequence">
-            	<param name="sequence">sbi_objpar_seq</param> 
+            	<param name="sequence">sbi_obj_par_seq</param> 
             </generator>
         </id>
 <!--

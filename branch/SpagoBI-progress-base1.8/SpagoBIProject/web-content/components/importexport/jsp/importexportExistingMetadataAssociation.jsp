@@ -41,6 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%!
 
 		private String cutLabel(String label) {
+				if (label == null) return null;
 				if(label.length() > 38) {
 					label = label.substring(0, 38);
 					label += " ...";
@@ -204,15 +205,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=engExp.getLabel()%></span><br/>
-					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExp.getName())%></div>
-					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExp.getDescr())%></div>
-					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExp.getMainUrl())%></div>
+					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=engExp.getName() != null ? cutLabel(engExp.getName()) : ""%></div>
+					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=engExp.getDescr() != null ? cutLabel(engExp.getDescr()) : ""%></div>
+					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=engExp.getMainUrl() != null ? cutLabel(engExp.getMainUrl()) : ""%></div>
 				</td>
 				<td style="overflow:hidden;">
 					<span class='portlet-form-field-label'><%=engExist.getLabel()%></span><br/>
-					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExist.getName())%></div>
-					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExist.getDescr())%></div>
-					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=cutLabel(engExist.getMainUrl())%></div>
+					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=engExist.getName() != null ? cutLabel(engExist.getName()) : ""%></div>
+					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=engExist.getDescr() != null ? cutLabel(engExist.getDescr()) : ""%></div>
+					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=engExist.getMainUrl() != null ? cutLabel(engExist.getMainUrl()) : ""%></div>
 				</td>
 			</tr>
 			<tr>

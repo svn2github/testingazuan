@@ -65,7 +65,9 @@
 				EventLog firedEvent = (EventLog)firedEventsList.get(i);
 				detailUrl.setParameter("id", firedEvent.getId().toString());
 				detailUrl.setParameter("user", firedEvent.getUser());
-				detailUrl.setParameter("date", firedEvent.getDate().toString());
+				long timelong = firedEvent.getDate().getTime();
+				String timelongStr = Long.valueOf(timelong).toString();
+				detailUrl.setParameter("date", timelongStr);
 %>
 	<tr>
 		<td class='<%=rowClass%>' valign='top' ><%=firedEvent.getId()%></td>

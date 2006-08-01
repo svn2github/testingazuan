@@ -27,7 +27,7 @@ import it.eng.spagobi.bo.EventLog;
 import it.eng.spagobi.bo.dao.IEventLogDAO;
 import it.eng.spagobi.metadata.SbiEventsLog;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -57,13 +57,14 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 			hql = "from SbiEventsLog as eventlog " + 
 	         "where eventlog.user = '" + user + "' and " + 
 	         "eventlog.id = '" + id + "' and " +
-	         "eventlog.date = '" + date + "'";
+	         "eventlog.date = :eventDate";
+			
+			long time = Long.valueOf(date).longValue();
 			
 			hqlQuery = aSession.createQuery(hql);
-			List hibList = hqlQuery.list();
-			
-			if(hibList.size() == 1)
-				realResult = toEventsLog((SbiEventsLog)hibList.get(0));
+			hqlQuery.setTimestamp("eventDate", new Date(time));
+			SbiEventsLog aSbiEventsLog = (SbiEventsLog) hqlQuery.uniqueResult();
+			realResult = toEventsLog(aSbiEventsLog);
 			
 			tx.commit();
 		} catch (HibernateException he) {

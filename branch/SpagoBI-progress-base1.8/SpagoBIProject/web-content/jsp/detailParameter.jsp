@@ -53,7 +53,7 @@
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
-			<input type='image' name='saveAndGoBack' value='true' class='header-button-image-portlet-section'
+			<input type='image' name='saveAndGoBack' id='saveAndGoBack' value='true' class='header-button-image-portlet-section'
 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/saveAndGoBack.png") %>'
       				title='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />'
 			/> 
@@ -235,7 +235,6 @@
 <input type='hidden' id='saveParameterUse' value='' name='' />
 <input type='hidden' id='selected_paruse_id' name='' value=''/>
 <input type='hidden' id='deleteParameterUse' name='' value=''/>
-<input type='hidden' id='saveAndGoBack' name='' value='' >
 <input type='hidden' value='<%= (paruse != null ? String.valueOf(paruse.getUseID()) : "") %>' name='useId' />
 
 
@@ -383,7 +382,7 @@
     	if(manual > 0) { isManualInput = true; }
     	else {isLov = true;}
     %> 
-  		<input type="radio" name="valueSelection"  id = "valueSelection" value="lov" <% if(isLov) { out.println(" checked='checked' "); } %> onClick = "lovControl()" />
+  		<input type="radio" name="valueSelection"  id ="valueSelection" value="lov" <% if(isLov) { out.println(" checked='checked' "); } %> onClick = "lovControl();manualInputSelection=this.value;" />
   	
 		<input 	class='portlet-form-input-field' type="text" id="paruseLovName" 
 		   		name="paruseLovName" size="40" 
@@ -406,7 +405,7 @@
 	</div>
 	<div class='div_detail_form'>
 		
-		<input type="radio" name="valueSelection" id = "valueSelection" value="man_in" <% if(isManualInput) { out.println(" checked='checked' "); } %> onClick = "lovControl()" ></input>
+		<input type="radio" name="valueSelection" id ="valueSelection" value="man_in" <% if(isManualInput) { out.println(" checked='checked' "); } %> onClick = "lovControl();manualInputSelection=this.value;" ></input>
     	
 
 	</div>
@@ -545,6 +544,87 @@ ParameterUse initialParuse = (ParameterUse) aSessionContainer.getAttribute("init
 if (initialParuse == null) initialParuse = paruse;
 %>
 
+var manualInputSelection = '<%=isLov ? "lov" : "man_in"%>';
+
+function isParuseformModified () {
+
+	var paruseLabel = document.getElementById('paruseLabel').value;
+	var paruseName = document.getElementById('paruseName').value;
+	var paruseDescription = document.getElementById('paruseDescription').value;
+	var paruseLovId = document.getElementById('paruseLovId').value;
+	var manIn;
+	if (manualInputSelection == 'lov') {
+		manIn = 0;
+	}
+	else {
+		manIn = 1;
+	}
+	
+	var initialRoles = new Array();
+		
+	<%
+		List initialRoles = initialParuse.getAssociatedRoles();
+		Iterator initialRolesIt = initialRoles.iterator();
+		int c = 0;
+		while (initialRolesIt.hasNext()) {				
+			Role aRole = (Role) initialRolesIt.next();
+			out.print("initialRoles["+c+"]="+aRole.getId().toString()+";\n");
+			c++;
+		}
+	%>
+		
+	paruseExtRoleId=document.forms[0].paruseExtRoleId;
+	var roles = new Array();
+	var count = 0;
+	for (i=0 ; i < paruseExtRoleId.length; i++) {
+		if (paruseExtRoleId[i].checked) {
+			roles[count]=paruseExtRoleId[i].value;
+			count++;
+		}
+	}
+		
+	var rolesChanged = arraysChanged(roles, initialRoles);
+		
+	var initialChecks = new Array();
+		
+	<%
+		List initialChecks = initialParuse.getAssociatedChecks();
+		Iterator initialChecksIt = initialChecks.iterator();
+		c = 0;
+		while (initialChecksIt.hasNext()) {
+			Check aCheck = (Check) initialChecksIt.next();
+			out.print("initialChecks["+c+"]="+aCheck.getCheckId().toString()+";\n");
+			c++;
+		}
+	%>
+		
+	paruseCheckId=document.forms[0].paruseCheckId;
+	var checks = new Array();
+	count = 0;
+	for (i=0 ; i < paruseCheckId.length; i++) {
+		if (paruseCheckId[i].checked) {
+			checks[count]=paruseCheckId[i].value;
+			count++;
+		}
+	}
+		
+	var checksChanged = arraysChanged(checks, initialChecks);
+	
+	if ((paruseLabel != '<%=initialParuse.getLabel()%>')
+		|| (paruseName != '<%=initialParuse.getName()%>')
+		|| (paruseDescription != '<%=initialParuse.getDescription() != null ? initialParuse.getDescription() : ""%>') 
+		|| (paruseLovId != '<%= initialParuse.getIdLov().intValue() != -1 ? initialParuse.getIdLov().toString() : "" %>')
+		|| (manIn != <%=initialParuse.getManualInput()%>)
+		|| rolesChanged
+		|| checksChanged) {
+			return 'true';
+	}
+	else {
+		return 'false';
+	}
+	
+}
+
 function changeParameterUse (paruseId, message) {
 
 	var parameterUseFormModified = 'false';
@@ -552,18 +632,7 @@ function changeParameterUse (paruseId, message) {
 	document.getElementById('selected_paruse_id').name = 'selected_paruse_id';
 	document.getElementById('selected_paruse_id').value = paruseId;
 	
-	var paruseLabel = document.getElementById('paruseLabel').value;
-	var paruseName = document.getElementById('paruseName').value;
-	var paruseDescription = document.getElementById('paruseDescription').value;
-	var paruseLovId = document.getElementById('paruseLovId').value;
-	
-	if ((paruseLabel != '<%=initialParuse.getLabel()%>')
-		|| (paruseName != '<%=initialParuse.getName()%>')
-		|| (paruseDescription != '<%=initialParuse.getDescription()%>') 
-		|| (paruseLovId != '<%=initialParuse.getIdLov().intValue() != -1 ? initialParuse.getIdLov().toString() : ""%>') )
-	{
-		parameterUseFormModified = 'true';
-	}
+	parameterUseFormModified = isParuseformModified();
 	
 	if (parameterUseFormModified == 'true') 
 	{
@@ -600,81 +669,19 @@ function saveAndGoBackConfirm(message, url){
 			|| (modality != '<%=initialParameter.getType() + "," + initialParameter.getTypeId()%>')) {
 			
 			if (confirm(message)) {
-				document.getElementById('saveAndGoBack').name = 'saveAndGoBack';
-				document.getElementById('saveAndGoBack').value= 'true';
-				document.getElementById('parametersForm').submit();
+				document.getElementById('saveAndGoBack').click();
 			} else {
 				location.href = url;
 			}
 			return;
 		}
 	
-		var paruseLabel = document.getElementById('paruseLabel').value;
-		var paruseName = document.getElementById('paruseName').value;
-		var paruseDescription = document.getElementById('paruseDescription').value;
-		var paruseLovId = document.getElementById('paruseLovId').value;
-		
-		var initialRoles = new Array();
-		
-		<%
-		List initialRoles = initialParuse.getAssociatedRoles();
-		Iterator initialRolesIt = initialRoles.iterator();
-		int c = 0;
-		while (initialRolesIt.hasNext()) {				
-			Role aRole = (Role) initialRolesIt.next();
-			out.print("initialRoles["+c+"]="+aRole.getId().toString()+";\n");
-			c++;
-		}
-		%>
-		
-		paruseExtRoleId=document.forms[0].paruseExtRoleId;
-		var roles = new Array();
-		var count = 0;
-		for (i=0 ; i < paruseExtRoleId.length; i++) {
-			if (paruseExtRoleId[i].checked) {
-				roles[count]=paruseExtRoleId[i].value;
-				count++;
-			}
-		}
-		
-		var rolesChanged = arraysChanged(roles, initialRoles);
-		
-		var initialChecks = new Array();
-		
-		<%
-		List initialChecks = initialParuse.getAssociatedChecks();
-		Iterator initialChecksIt = initialChecks.iterator();
-		c = 0;
-		while (initialChecksIt.hasNext()) {
-			Check aCheck = (Check) initialChecksIt.next();
-			out.print("initialChecks["+c+"]="+aCheck.getCheckId().toString()+";\n");
-			c++;
-		}
-		%>
-		
-		paruseCheckId=document.forms[0].paruseCheckId;
-		var checks = new Array();
-		count = 0;
-		for (i=0 ; i < paruseCheckId.length; i++) {
-			if (paruseCheckId[i].checked) {
-				checks[count]=paruseCheckId[i].value;
-				count++;
-			}
-		}
-		
-		var checksChanged = arraysChanged(checks, initialChecks);
-		
-		if ((paruseLabel != '<%=initialParuse.getLabel()%>')
-			|| (paruseName != '<%=initialParuse.getName()%>')
-			|| (paruseDescription != '<%=initialParuse.getDescription()%>') 
-			|| (paruseLovId != '<%= initialParuse.getIdLov().intValue() != -1 ? initialParuse.getIdLov().toString() : "" %>')
-			|| rolesChanged
-			|| checksChanged) {
+		var parameterUseFormModified = isParuseformModified();
+	
+		if (parameterUseFormModified == 'true') {
 			
 			if (confirm(message)) {
-				document.getElementById('saveAndGoBack').name = 'saveAndGoBack';
-				document.getElementById('saveAndGoBack').value= 'true';
-				document.getElementById('parametersForm').submit();
+				document.getElementById('saveAndGoBack').click();
 			} else {
 				location.href = url;
 			}

@@ -150,9 +150,15 @@
 				<spagobi:message key = "SBISet.eng.classNameField" />
 			</span>
 		</div>
+		<% 
+		String engineClassName = engine.getClassName();
+	   	if ((engineClassName == null) || (engineClassName.equalsIgnoreCase("null"))  ) {
+	   		engineClassName = "";
+	   	} 
+		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" name="className"  
-			   	size="50" value="<%=engine.getClassName()%>" maxlength="260">
+			   	size="50" value="<%=engineClassName%>" maxlength="260">
 			&nbsp;*			   
 		</div>
 	</div>
@@ -162,9 +168,15 @@
 				<spagobi:message key = "SBISet.eng.urlField" />
 			</span>
 		</div>
+		<% 
+		String engineUrl = engine.getUrl();
+	   	if ((engineUrl == null) || (engineUrl.equalsIgnoreCase("null"))  ) {
+	   		engineUrl = "";
+	   	} 
+		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" name="url"  
-			   	size="50" value="<%=engine.getUrl()%>" maxlength="260">
+			   	size="50" value="<%=engineUrl%>" maxlength="260">
 			&nbsp;*
 		</div>
 	</div>
@@ -174,9 +186,15 @@
 				<spagobi:message key = "SBISet.eng.driverNameField" />
 			</span>
 		</div>
+		<% 
+		String engineDriver = engine.getDriverName();
+	   	if ((engineDriver == null) || (engineDriver.equalsIgnoreCase("null"))  ) {
+	   		engineDriver = "";
+	   	} 
+		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" name="driverName"
-					size="50" value="<%=engine.getDriverName()%>" maxlength="260">
+					size="50" value="<%=engineDriver%>" maxlength="260">
 			&nbsp;*				
 		</div>
 	</div>

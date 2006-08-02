@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+ * Copyright 2001-2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>spagobi</groupId>
+  <version>1.9</version>
+  <artifactId>app</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>SpagoBIUtils</module>
+    <module>SpagoBIDriversAPI</module>
+    <module>SpagoBISecurityProviderAPI</module>
+    <module>QbeCore</module>
+    <module>SpagoBIProject</module>
+    <module>ExoPortalSecurityProvider</module>
+    <module>SpagoBIJasperReportDriver</module>
+    <module>SpagoBIJasperReportEngine</module>
+    <module>SpagoBIJPivotDriver</module>
+    <module>SpagoBIJPivotEngine</module>
+    <module>SpagoBIBirtReportDriver</module>
+    <module>SpagoBIBirtReportEngine</module>    
+    <module>SpagoBIWekaDriver</module>
+    <module>SpagoBIWekaEngine</module>
+    <module>SpagoBIGeoDriver</module>
+    <module>SpagoBIGeo</module>
+    <module>SpagoBIUtilityFiles</module>
+  </modules>
+  
+  <!--
+  <profiles>
+    <profile>
+      <id>exo-cms</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+                    <mkdir dir="${basedir}/temp/cms.xml"/>
+    	            <copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/conf/cms.xml"
+			  todir="${basedir}/temp/cms.xml/" />
+                    <mkdir dir="${basedir}/temp/libraries"/>
+    	            <copy todir="${basedir}/temp/libraries/">
+      	              <fileset dir="${basedir}/SpagoBIUtilityFiles/libraries/" 
+			       excludes="**/jackrabbit-0.9-incubating.jar" />
+     	            </copy>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jackrabbit</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+                    <mkdir dir="${basedir}/temp/cms.xml"/>
+    	            <copy file="${basedir}/SpagoBIProject/web-content/WEB-INF/conf/cms-jackrabbit.xml"
+			  tofile="${basedir}/temp/cms.xml/cms.xml" />
+                    <mkdir dir="${basedir}/temp/libraries"/>
+    	            <copy todir="${basedir}/temp/libraries/">
+		      <fileset dir="${basedir}/SpagoBIUtilityFiles/libraries/"/>
+    	            </copy>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  -->
+</project>

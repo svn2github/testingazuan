@@ -1,0 +1,451 @@
+/**
+
+    Copyright 2004 Engineering Ingegneria Informatica S.p.A. & Sinapsi S.p.A.
+
+    This file is part of Spago.
+
+    Spago is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    any later version.
+
+    Spago is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Spago; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+
+**/
+/* Foglio di stile "MAIN" per le pagine */
+
+/* ================================================= PAGINA ======================================================== */
+
+BODY
+{
+	BACKGROUND-COLOR: WHITE;
+	FONT-FAMILY: Verdana;
+	FONT-SIZE: 8pt;  
+	SCROLLBAR-TRACK-COLOR: powderblue;
+	SCROLLBAR-3DLIGHT-COLOR: white;
+	SCROLLBAR-HIGHLIGHT-COLOR: lightskyblue;
+	SCROLLBAR-FACE-COLOR: #1C76B9;
+	SCROLLBAR-SHADOW-COLOR: darkblue;
+	SCROLLBAR-DARKSHADOW-COLOR: black;
+	SCROLLBAR-ARROW-COLOR: black;
+}
+
+/* ================================================ BOTTONI ======================================================== */
+
+.BlueButton
+{
+    BORDER-TOP: lightskyblue 2px outset;
+    BORDER-LEFT: lightskyblue 2px outset;
+    BORDER-RIGHT: royalblue 2px ridge;
+    BORDER-BOTTOM: royalblue 2px ridge;
+    BACKGROUND: #1C76B9;
+    COLOR: white;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+    MARGIN-BOTTOM: 1pt;
+    CURSOR: hand;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none;
+}
+
+.RedButton
+{
+    BORDER-TOP: hotpink 2px outset;
+    BORDER-LEFT: hotpink 2px outset;
+    BORDER-RIGHT: crimson 2px ridge;
+    BORDER-BOTTOM: crimson 2px ridge;
+    BACKGROUND: red;
+    COLOR: white;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+    MARGIN-BOTTOM: 1pt;
+    CURSOR: hand;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none;
+}
+
+.GreyButton
+{
+    BORDER-TOP: gainsboro 2px outset;
+    BORDER-LEFT: gainsboro 2px outset;
+    BORDER-RIGHT: gray 2px ridge;
+    BORDER-BOTTOM: gray 2px ridge;
+    BACKGROUND: gray;
+    COLOR: white;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+    MARGIN-BOTTOM: 1pt;
+    CURSOR: hand;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none;
+}
+
+/* ============================================ BOTTONI DELLE LISTE ================================================ */
+
+.ListButtonChangePage
+{
+    BORDER-TOP: lightskyblue 2px outset;
+    BORDER-LEFT: lightskyblue 2px outset;
+    BORDER-RIGHT: royalblue 2px ridge;
+    BORDER-BOTTOM: royalblue 2px ridge;
+    BACKGROUND: #1C76B9;
+    COLOR: white;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    FONT-SIZE: 9pt;
+    FONT-WEIGHT: bold;
+    MARGIN-BOTTOM: 1pt;
+    CURSOR: hand;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none;
+    WIDTH: 48pt;
+    HEIGHT: 16pt;
+}
+
+.ListButtonNuovo,
+.ListButtonFiltro,
+.ListButtonChiudi,
+.ListButtonBackList
+{
+    BORDER-TOP: lightblue 2px outset;
+    BORDER-LEFT: lightblue 2px outset;
+    BORDER-RIGHT: blue 2px ridge;
+    BORDER-BOTTOM: blue 2px ridge;
+    BACKGROUND: darkblue;
+    COLOR: white;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    FONT-SIZE: 9pt;
+    FONT-WEIGHT: bold;
+    MARGIN-BOTTOM: 1pt;
+    CURSOR: hand;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none;
+    WIDTH: 48pt;
+    HEIGHT: 16pt;
+}
+
+.ListButtonDett,
+.ListButtonElim,
+.ListButtonInvio,
+.ListButtonSelect,
+.ListButtonSelectAll,
+.ListButtonSalva,
+.ListButtonPulisci,
+{
+    BORDER-TOP: lightskyblue 1px outset;
+    BORDER-LEFT: lightskyblue 1px outset;
+    BORDER-RIGHT: royalblue 1px ridge;
+    BORDER-BOTTOM: royalblue 1px ridge;
+    BACKGROUND: #1C76B9;
+    COLOR: white;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    FONT-SIZE: 7pt;
+    FONT-WEIGHT: bold;
+    MARGIN-BOTTOM: 0pt;
+    CURSOR: hand;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none;
+    WIDTH: 12pt;
+}
+
+.ButtonChangePage {
+    BORDER-TOP: lightskyblue 2px outset;
+    BORDER-LEFT: lightskyblue 2px outset;
+    BORDER-RIGHT: royalblue 2px ridge;
+    BORDER-BOTTOM: royalblue 2px ridge;
+    BACKGROUND: #1C76B9;
+    COLOR: white;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    FONT-SIZE: 9pt;
+    FONT-WEIGHT: bold;
+    MARGIN-BOTTOM: 1pt;
+    CURSOR: hand;
+    TEXT-ALIGN: center;
+    TEXT-DECORATION: none;
+    HEIGHT: 16pt;
+}
+
+/* =========================================== CAMPI DI INPUT DELLE FORM =========================================== */
+
+INPUT
+{
+    FONT-FAMILY: Verdana;
+    FONT-SIZE: 10pt;
+    COLOR: black;
+}
+
+INPUT.EDIT
+{ 
+    FONT-FAMILY: Arial, geneva, helvetica;
+    FONT-SIZE: 8pt;
+    TEXT-TRANSFORM: uppercase;
+}
+
+INPUT.WEBEDIT
+{ 
+    FONT-FAMILY: Arial, geneva, helvetica;
+    FONT-SIZE: 8pt;
+    
+}
+
+INPUT.VIEW
+{
+    FONT-FAMILY: Arial, geneva, helvetica;
+    FONT-SIZE: 8pt;
+    TEXT-TRANSFORM: uppercase;
+    BORDER-STYLE: none;
+    BACKGROUND : trasparent;
+}
+
+INPUT.WEBVIEW
+{
+    FONT-FAMILY: Arial, geneva, helvetica;
+    FONT-SIZE: 8pt;
+    BORDER-STYLE: none;
+    BACKGROUND : trasparent;
+}
+
+INPUT.BUTTON
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    COLOR: black;
+    FONT-WEIGHT: bold;
+    BACKGROUND-COLOR: #669999;
+}
+
+INPUT.CHECK
+{
+    COLOR: white;
+}
+
+INPUT.VIEWLAV
+{
+    FONT-FAMILY: Arial, geneva, helvetica;
+    FONT-SIZE: 8pt;
+    TEXT-TRANSFORM: uppercase;
+    BORDER-STYLE: none;
+    BACKGROUND : trasparent;
+    COLOR: #1C76B9;
+}
+
+TEXTAREA
+{
+   FONT-FAMILY: Courier New;
+   FONT-SIZE: 9pt;
+   TEXT-TRANSFORM: none;
+}
+TEXTAREA.EDIT
+{
+   FONT-FAMILY: Courier New;
+   FONT-SIZE: 9pt;
+}
+
+TEXTAREA.VIEW
+{
+    COLOR: gray;
+    BORDER-STYLE: none;
+    FONT-FAMILY: Courier New;
+    FONT-SIZE: 9pt;
+}
+ 
+TEXTAREA.MSGEDIT
+{
+   FONT-FAMILY: Verdana, geneva, helvetica;
+   FONT-SIZE: 9pt;
+   TEXT-TRANSFORM: none;
+}
+
+PRE.MSGVIEW
+{
+    FONT-FAMILY: Verdana, geneva, helvetica;
+    FONT-SIZE: 9pt;
+    BORDER-STYLE: none;
+}
+
+SELECT
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    COLOR: black;
+}
+
+SELECT.EDIT
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    COLOR: black;
+}
+
+SELECT.VIEW
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    COLOR: black;
+    BORDER-STYLE: none;
+}
+
+SELECT.LISTA_FITO
+{
+    BORDER-TOP-WIDTH: 0pt; 
+    BORDER-LEFT-WIDTH: 0pt; 
+    FONT-SIZE: 8pt; 
+    BORDER-BOTTOM: ivory 0pt groove; BACKGROUND-COLOR: whitesmoke; 
+    BORDER-RIGHT-WIDTH: 0pt;
+}
+
+
+SELECT.LISTA_FITO_TARGET
+{
+    BORDER-TOP-WIDTH: 0pt; 
+    BORDER-LEFT-WIDTH: 0pt; 
+    FONT-SIZE: 10pt; 
+    BORDER-BOTTOM: ivory 0pt groove; BACKGROUND-COLOR: aliceblue; 
+    BORDER-RIGHT-WIDTH: 0pt;
+} 
+
+/* =================================================== TABELLE ===================================================== */
+
+TABLE
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+}
+TH
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 8pt;
+    white-space: nowrap;
+}
+TD
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 8pt;
+    COLOR: BLACK;
+    white-space: nowrap;
+}
+
+TD.testo
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 8pt;
+    COLOR: BLACK;
+    white-space: nowrap;
+}
+
+
+TABLE.LISTA
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    COLOR: #1C76B9;
+}
+
+TH.LISTA
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    text-align: center;
+    color: white;
+    background-color: #1C76B9;
+}
+
+TR.LISTA
+{
+}
+
+TD.LISTA
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    COLOR: #1C76B9;
+    background-color: #f4f4ff;
+    white-space: nowrap;
+}
+
+TABLE.DETAIL
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    COLOR: #1C76B9;
+}
+
+TH.DETAIL
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    text-align: center;
+    color: white;
+    background-color: #1C76B9;
+}
+
+TR.DETAIL
+{
+}
+
+TD.DETAIL
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 9pt;
+    COLOR: #1C76B9;
+    background-color: #f4f4ff;
+    white-space: nowrap;
+}
+
+TD.footer
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 7pt;
+}
+
+
+/* =============================================== ANCHOR & LINK =================================================== */
+
+A:link { font: 8pt arial, geneva, helvetica;
+	 color:#1c76b9;
+         text-decoration:none 
+}
+
+A:visited { font: 8pt arial, geneva, helvetica;
+	 color:#1c76b9;
+         text-decoration:none 
+}
+
+A:hover {font: 8pt arial, geneva, helvetica;
+	 color:#FF8800;
+         text-decoration:underline 
+}
+
+/* ================================================ PARAGRAFI ====================================================== */
+
+P.DATA_TESTO
+{
+  font: 7pt arial, geneva, helvetica;
+}
+
+P.DATA
+{
+  font: 6pt arial, geneva, helvetica;
+}
+
+/* ================================================== ALTRO ======================================================== */
+
+IMG
+{
+   border-style: none;
+}
+
+.AMenu { font:  10pt arial, geneva, helvetica; color:#ffffff; font-weight:bold;}
+.AMenu:hover
+ { font: 10pt arial, geneva, helvetica; 
+   color:#FF8800; font-weight:bold;
+ }

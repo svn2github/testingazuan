@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="it.eng.spagobi.metadata.SbiEventsLog" table="sbi_events_log">
+        <composite-id>
+			<key-property name="id" column="id"/>
+			<key-property name="user" column="user_event"/>
+			<key-property name="date" column="event_date" type="timestamp"/>
+		</composite-id>        
+		
+		 <property name="desc" type="string">
+            <column name="descr" length="1000" not-null="true" />
+        </property> 
+        
+        <property name="params" type="string">
+            <column name="params" length="1000" not-null="true" />
+        </property>   
+    </class>
+    
+</hibernate-mapping>

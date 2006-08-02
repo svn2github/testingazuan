@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+	trace_min_log_severity:
+	severity minima da tracciare
+	0 - Information
+	1 - Warning
+	2 - Minor
+	3 - Major
+	4 - Critical
+	
+	debug:
+	flag booleano che indica se i messaggi di debugging devono essere tracciati
+-->
+
+<TRACING>
+	<!--LOGGER name="DEFAULT_LOGGER" class="it.eng.spago.tracing.DefaultLogger">
+		<CONFIG trace_min_log_severity="0" debug="true" trace_path="/WEB-INF/log/" trace_name="startup-" append="true" trace_thread_name="false" />
+	</LOGGER-->
+	<!--LOGGER name="Spago" class="it.eng.spago.tracing.DefaultLogger">
+		<CONFIG trace_min_log_severity="4" debug="false" trace_path="/demo/log/" trace_name="spago-"/>
+		</LOGGER-->
+	<LOGGER name="DEFAULT_LOGGER" class="it.eng.spago.tracing.Log4JLogger">
+		<CONFIG trace_min_log_severity="5" debug="false"/>
+	</LOGGER>
+</TRACING>

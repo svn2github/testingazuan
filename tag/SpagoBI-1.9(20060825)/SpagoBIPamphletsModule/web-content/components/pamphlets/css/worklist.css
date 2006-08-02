@@ -1,0 +1,65 @@
+.table-section-header    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	font-weight: bold;	
+	border-bottom: 1px solid #bbb;
+	background-color: rgb(228, 236, 242);
+	color: #074B88;
+	height: 25px;
+	vertical-align: middle;
+	border-top: 1px solid #bbb;
+}
+
+.table-section-body    {
+	background: #eee;
+	border-bottom: 1px solid #CCCCCC;
+	font-size: 8pt;
+}
+
+
+
+.table-section-alternate    {
+	background: white;
+	border-bottom: 1px solid #CCCCCC;
+	font-size: 8pt;
+}
+
+
+.table-section-selected    {
+}
+
+
+.table-section-subheader    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 10px;
+	background-color: rgb(228, 236, 242);
+	color: #074B88;
+	vertical-align: middle;
+}
+
+
+.table-section-footer    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	border-bottom: 1px solid #bbb;
+	padding: 2px;
+	background-color: rgb(228, 236, 242);
+	color: #074B88;
+	text-align: center;
+	height: 25px;
+	vertical-align: middle;
+}
+
+.table-section-text    {
+}
+
+
+.table-font    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 10pt;
+	font-weight: normal;
+	color: black;
+}
+
+

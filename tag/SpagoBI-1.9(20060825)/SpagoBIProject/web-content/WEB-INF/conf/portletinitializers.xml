@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PORTLETINITIALIZERS>
+	<INITIALIZER class="it.eng.spagobi.security.RoleSynchronizerInitializer" config="" />
+	<INITIALIZER class="it.eng.spagobi.init.TreeInitializer" config="SPAGOBI.TREE_INITIALIZATION" />
+</PORTLETINITIALIZERS>

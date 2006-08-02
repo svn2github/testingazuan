@@ -1,0 +1,30 @@
+Before using all the functionalities of SpagoBI 1.9 you must install some required third part software and
+configure some settings.
+
+
+Software required:
+
+- shark1.1.2 (not installed over an hsql database)
+- Open Office 2.x
+
+Software suggested:
+
+- jawe (in order to change the xpdl definition for the booklet feature)
+
+
+Settings:
+
+- Open office has to be executed as a server, so, go into the directory OPENOFFICE-HOME/program and exec the following
+  command soffice -quickstart -accept="socket,host=localhost,port=9000;urp;StarOffice.ServiceManager"
+
+- Open office has to be configured to save the presentation document as powerpoint and to store the content of the 
+  images (not their path), so:
+  - Open the open office impress application and go to tools/options
+  - select the load and save category
+  - select the general subcategory
+  - be sure that the "Save URL relative to filesystem" is not checked
+  - choose the "powerpoint" save format for the presentation document (standard file format part) 
+
+- SpagoBI has to include the shark.conf file so copy the SHARK-HOME/conf/Shark.conf into the folder 
+  SPAGOBI-HOME/WEB-INF/classes (if a file with the same name exists, overwrite it) 
+

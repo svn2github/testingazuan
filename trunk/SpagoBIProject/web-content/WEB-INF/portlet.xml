@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app version="1.0" xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+<!--
+  Please fill the missing values before deploying this portlet
+-->
+
+<portlet>
+        <description>Events Monitor</description>		
+        <portlet-name>EventsMonitor</portlet-name>		
+        <display-name>Events Monitor</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>EVENTS_MONITOR_PAGE</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>     
+		<portlet-info>
+        	<title>Events Monitor</title>
+        	<short-title>Events Monitor</short-title>
+        	<keywords>Events Monitor</keywords>
+        </portlet-info>
+	</portlet>
+
+
+
+   <portlet>
+        <description>Static Settings</description>		
+        <portlet-name>SBISettings</portlet-name>		
+        <display-name>Static Settings</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>ACTION</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>LOGIN_ACTION_SBI_SETTINGS</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>     
+		<portlet-info>
+        	<title>Static Settings</title>
+        	<short-title>Static Settings</short-title>
+        	<keywords>Static Settings</keywords>
+        </portlet-info>
+	</portlet>
+	
+	
+    <portlet>
+        <description>Administration Environment</description>		
+        <portlet-name>SBIAdministrationContext</portlet-name>		
+        <display-name>Administration Environment</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>ACTION</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>LOGIN_ACTION_SBI_ADMINISTRATION_CONTEXT</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+        <supported-locale>en</supported-locale>       
+		<portlet-info>
+        	<title>Administration Environment</title>
+        	<short-title>Administration Environment</short-title>
+        	<keywords>Administration Environment</keywords>
+        </portlet-info>
+        <portlet-preferences>
+            <preference>
+        		<name>OBJECTS_VIEW</name>
+        		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
+        		<value>VIEW_OBJECTS_AS_LIST</value>
+        	</preference>
+        	<preference>
+        		<name>MODALITY</name>
+        		<!-- possible values for this preference are (FILTER_TREE/ENTIRE_TREE) -->
+        		<value>ENTIRE_TREE</value>
+        	</preference>
+            <preference> 
+        		<name>PATH_SUBTREE</name>
+        		<!-- if the MODALITY preference is set to FILTER_TREE you have to write in this preference 
+        			the path of the subTree -->
+        		<value></value>
+        	</preference>
+        </portlet-preferences>
+	</portlet>
+
+
+
+	<portlet>
+        <description>Business Intelligence Documents</description>		
+        <portlet-name>SBIFunctionality</portlet-name>		
+        <display-name>Business Intelligence Documents</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>LOGIN_PAGE_SBI_FUNCTIONALITY</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>	        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+        <supported-locale>en</supported-locale>       
+		<portlet-info>
+        	<title>Business Intelligence Documents</title>
+        	<short-title>Business Intelligence Documents</short-title>
+        	<keywords>Business Intelligence Documents</keywords>
+        </portlet-info>
+        <portlet-preferences>
+        	<!-- 
+				The execution modality, if not set the portlet use the default modality showing
+            	the entire tree, if the value is SINGLE_OBJECT the portlet try to exec a single object 
+				and doesn't show a tree, if the value is FILTER_TREE the portlet show a sub tree
+				based on the value of the PATH_SUBTREE preference       
+			-->
+			<preference>
+        		<name>MODALITY</name>
+        		<!-- possible values for this preference are (SINGLE_OBJECT/FILTER_TREE/ENTIRE_TREE) -->
+        		<value>ENTIRE_TREE</value>
+        	</preference>
+            
+            <!--  
+				The path of the single object to exec
+			--> 
+            <preference> 
+        		<name>LABEL_SINGLE_OBJECT</name>
+        		<!-- if the MODALITY preference is set to SINGLE_OBJECT you have to write in this preference 
+        			the label of the single object to be executed -->
+        		<value></value>
+        	</preference>
+        	
+        	<!--  
+				The parameters of the single object to exec
+			--> 
+            <preference> 
+        		<name>PARAMETERS_SINGLE_OBJECT</name>
+        		<!-- if the MODALITY preference is set to SINGLE_OBJECT you have to write in this preference 
+        			the parameters values of the single object to be executed with the following sintax:
+        			parameterUrlName1=value1&parameterUrlName2=value2&... -->
+        		<value></value>
+        	</preference>
+            
+            <!--
+ 			The path of the subtree to show
+			-->
+            <preference> 
+        		<name>PATH_SUBTREE</name>
+        		<!-- if the MODALITY preference is set to FILTER_TREE you have to write in this preference 
+        			the path of the subTree -->
+        		<value></value>
+        	</preference>
+			
+			<!--
+            the height of the area that shows the object output 
+  			-->
+            <preference> 
+        		<name>HEIGHT_AREA</name>
+        		<!-- if the MODALITY preference is set to SINGLE_OBJECT you have to write in this preference 
+        			the height of the area that shows the object output -->
+        		<value></value>
+        	</preference>
+        	
+        	<preference>
+        		<name>OBJECTS_VIEW</name>
+        		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
+        		<value>VIEW_OBJECTS_AS_TREE</value>
+        	</preference>
+        </portlet-preferences>
+	</portlet>
+	
+
+
+
+
+
+
+
+	<portlet>
+        <description>Development Environment</description>		
+        <portlet-name>SBIDevelopmentContext</portlet-name>		
+        <display-name>Development Environment</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>ACTION</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>LOGIN_ACTION_SBI_DEVELOPMENT_CONTEXT</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+        <supported-locale>en</supported-locale>       
+		<portlet-info>
+        	<title>Development Environment</title>
+        	<short-title>Development Environment</short-title>
+        	<keywords>Development Environment</keywords>
+        </portlet-info>
+        <portlet-preferences>
+        	<preference>
+        		<name>OBJECTS_VIEW</name>
+        		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
+        		<value>VIEW_OBJECTS_AS_LIST</value>
+        	</preference>        	
+        </portlet-preferences>
+	</portlet>
+
+</portlet-app>

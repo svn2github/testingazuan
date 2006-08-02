@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ENGINE-CONFIGURATION>
+	
+	<!-- ====================================================================================== -->
+	<!--  General settings 																		--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		tmpdir = base directory used as temporary storing area for generated reports. 
+		The path must be write in unix form (only with / folder separator and without 
+		any drive letter at the beginning, example: /folder/folder/folder).
+		If the path start with / it will be considered an absolute path, otherwise if it start with 
+		another letter or symbol it will be considered relative to the folder of the jasper report application 
+	-->
+	<!-- ====================================================================================== -->
+	<GENERALSETTINGS tmpdir="tmpdir"/>
+
+
+	<!-- ====================================================================================== -->
+	<!--  Connection settings 																	--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		name 	= 	name of the connection
+		isJNDI 	= 	true iff the connection is defined in the jndi nemespace of the server 
+	-->
+	<!-- ====================================================================================== -->
+	<!--
+	<CONNECTIONS default="hsqlfoodmart">
+		<CONNECTION name="hsqlfoodmart" 
+					isJNDI="true"
+					initialContext="java:comp/env"
+					resourceName="jdbc/sbifoodmart"/>
+		<CONNECTION name="mysqlfoodmart" 
+					isJNDI="true"
+					initialContext="java:comp/env"
+					resourceName="jdbc/mysqlfoodmart"/>
+	</CONNECTIONS>	
+	-->
+
+</ENGINE-CONFIGURATION>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<QBE>
+	<!--
+    <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.utility.LocalFileSystemDataMartModelRetriever"/>
+    <QUERY-PERSISTER className="it.eng.qbe.utility.LocalFileSystemQueryPersister"/>
+    -->	
+
+    <QBE-SQL-RESULT-LIMIT value="10000" />
+
+    <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.utility.SpagoBICmsDataMartModelRetriever"/>
+	<QUERY-PERSISTER className="it.eng.qbe.utility.SpagoBICmsQueryPersister"/>
+	<QBE-MODE mode="PORTLET" page-size="10"/>
+	
+	<TEMPLATE-BUILDER>
+		<PARAMETERS>
+			<PARAMETER name="columnHeaderForegroundColor" value="#074B88"/>
+			<PARAMETER name="columnHeaderBackgroundColor" value="#E4ECF2"/>
+			
+			<PARAMETER name="evenRowsForegroundColor" value="#000000"/>
+			<PARAMETER name="evenRowsBackgroundColor" value="#EEEEEE"/>
+			
+			<PARAMETER name="oddRowsForegroundColor" value="#000000"/>
+			<PARAMETER name="oddRowsBackgroundColor" value="#FFFFFF"/>
+		</PARAMETERS>
+	</TEMPLATE-BUILDER>
+	
+</QBE>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="HibernateSessionFactoryMySQL">
+        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.username">sa</property>
+        <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
+        <property name="hibernate.show_sql">false</property>
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiFuncRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiObjFunc.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiFunctions.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiChecks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiObjState.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiObjParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiSubreports.hbm.xml"/>
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiEvents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiEventsLog.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

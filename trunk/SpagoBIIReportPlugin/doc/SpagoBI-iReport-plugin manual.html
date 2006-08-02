@@ -1,0 +1,119 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title><b>SpagoBI</b> <b>iReport</b> plugin</title>
+
+	<style>
+		body,td,a,p,.h{font-family:arial,sans-serif; }
+		p {text-align: justify}
+		.q{color:#0000cc;}
+
+	</style>
+	<meta>
+</head>
+
+<body bgcolor="#ffffff" text="#000000">
+ 
+
+<table cellpadding="0" cellspacing="20" border="0" width="100%">
+<tr valign="center">
+<td >
+<font size="+2" >SpagoBI - iReport plugin<font>
+</td>
+</tr>
+	<tr valign="center">
+	<td >
+<p>
+This plugin allows the user to access into the tree structure of <b>SpagoBI</b> from which it's possible to download JasperReports registered in there.
+
+These can, therefore, be modified, using <b>iReport</b>, and, newly sent back to <b>SpagoBI</b>.
+
+<br></br>
+This plugin can be launched from the <b>Plugins</b> menu of <b>iReport</b>, selecting <b>SpagoBI</b>.
+</p>
+
+</td>
+</tr>
+
+
+<table cellpadding="0" cellspacing="30" border="0" width="100%">
+	<tr valign="center">
+	<td> <p>
+		
+At the beginning, a window will open up and the user will be asked to fill in the 
+<b>SpagoBI</b> iReport service address and the folder where the application will save the temporary files. 
+<br/>
+The address of the iReport service is composed from your server address:port and the 
+final path '/spagobi/IReportService'. 
+<br/>
+<b>Example:</b> 
+<br/>
+http://localhost:8080/spagobi/IReportService <br></br>
+
+This configuration can be modified from the menu <b>Plugin</b>, selecting <b>SpagoBI</b> and clicking on the <b>Configure</b> button.
+
+		</p>
+	</td>
+	<td nowrap="nowrap" align="center">
+		<img src="images/ConfigurationEN.jpg" border="0">
+	</td>
+	</tr>
+	<tr valign="center">
+	<td><p>
+		Then, <i>username</i> and <i>password</i> will be required for logging in into <b>SpagoBI</b>.
+	</p>
+	</td>
+	<td nowrap="nowrap" align="center">
+		<img src="images/LoginEN.jpg"  border="0">
+	</td>
+	</tr>
+
+	<tr valign="center">
+	<td><p>
+
+Once completed correctly this phase, the  JasperReport tree of <b>SpagoBI</b> is sent to the user.<br></br> 
+Selecting a report the <b>Check IN</b> and the <b>Check OUT</b> buttons are set enabled.<br></br> 
+The user can obtain the requested report from <b>SpagoBI</b> by clicking on the <b>Check OUT</b> button (<b>F6</b>). It will be saved in the temporary files folder specified in the configuration procedure and finally opened up in <b>iReport</b><br></br> 
+
+The <b>Check IN</b> button (<b>F5</b>) can be used in order to send the report currently in use on <b>iReport</b>, to <b>SpagoBI</b> which then saves it in the location specified on the plugin display. <br></br> 
+
+The interface offers moreover the possibility to hide the plugin (select <b>Hide</b> or clck on <b>ESC</b>) or change the user (select <b>Change user</b> or clck on <b>F1</b>).<br></br> 
+
+The <b>Expand all</b> button (<b>+ (tn)</b>) and the <b>Collapse all</b> button (<b> - (tn)</b>) can be used, respectively, to visualize or hide all the reports contained into the selected folder and into its subfolder.
+
+</p>
+	</td>
+	<td nowrap="nowrap" align="center">
+		<img src="images/TreeEN.jpg"  border="0">
+	</td>
+	</tr>
+
+</table>
+
+<tr valign="center">
+	<td>
+		<font size="+2">Create Reports with Graphs</font>
+	</td>
+	<td>
+		<br/><br/>
+In order to produce Reports with Graphs iReport uses a java class that implements a particular interface. It's possible to set a self-produced class or a default one. To set the name of the class proceed as follow: <br/>
+1) select Project menu <br/>
+2) select Project Option  subMenu <br/>
+3) Into the gui showed select the Scriptlet Tab<br/>
+4) Into the scriptlet class list box select 'Use this Scriptlet class'<br/>
+5) Into the text field below enter the complete name of the class.<br/>
+<br/>
+<b>If you want to produce reports for SpagoBIPlatform it's mandatory to use a defined class which  is distributed with the SpagoBIIReportPlugin, so in the text box enter the string <font style='color:red'><i>ClassScriptlet</i></font>.<b/>
+<br/><br/>
+
+	</td>
+</tr>
+
+</table>
+
+
+
+
+
+</body>
+</html>

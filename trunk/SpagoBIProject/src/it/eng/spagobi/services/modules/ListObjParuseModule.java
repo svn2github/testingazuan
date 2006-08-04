@@ -122,9 +122,13 @@ public class ListObjParuseModule extends AbstractModule {
 			Iterator allParusesIt = allParuses.iterator();
 			while (allParusesIt.hasNext()) {
 				ParameterUse paruse = (ParameterUse) allParusesIt.next();
-				Integer lovId = paruse.getIdLov();
-				ModalitiesValue lov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
-				if (lov.getITypeCd().equalsIgnoreCase("QUERY")) paruses.add(paruse);
+				if (paruse.getManualInput().intValue() == 0) {
+					// manual input modality use cannot be considered;
+					// only the modalities associated to query lov can be considered
+					Integer lovId = paruse.getIdLov();
+					ModalitiesValue lov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
+					if (lov.getITypeCd().equalsIgnoreCase("QUERY")) paruses.add(paruse);
+				}
 			}
 			response.setAttribute("objParameter", objParameter);
 			response.setAttribute("allParuses", paruses);

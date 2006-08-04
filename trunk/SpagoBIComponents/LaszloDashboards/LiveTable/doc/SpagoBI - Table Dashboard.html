@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<title><b>SpagoBI</b> <b>iReport</b> plugin</title>
+	<title>SpagoBI - Table Dashboard</title>
 
 	<style>
 		body,td,a,p,.h{font-family:arial,sans-serif;
@@ -18,7 +18,7 @@
 <table cellpadding="0" cellspacing="10" border="0" width="100%">
  <tr>
   <td colspan="3">
-   <font size="+1" >SpagoBI - Table <font>
+   <font size="+1" >SpagoBI - Table<font>
   </td>
  </tr>
 
@@ -290,6 +290,56 @@
   </td>
  </tr>
 
+</table>
+
+<table cellpadding="0" cellspacing="10" border="0" width="100%">
+
+  <th colspan="2">
+    How to feed this movie
+  </th>
+
+  <tr>
+    <td width="10%">
+      <b>Using a script</b>
+    </td>
+    <td>
+      The script must return a String like: &quot;&lt;rows&gt;&lt;row <i>{<b>xColName</b> parameter}</i>='<i>{literal value}</i>' <i>{cell 1 label}</i>='<i>{numeric value}</i>' <i>{cell 2 label}</i>='<i>{numeric value}</i>' ... /&gt;&lt;/rows&gt;&quot;.<br/>
+      Script example (assuming that the <b>xColName</b> parameter is &quot;Store&quot;):<br/>
+      <em>
+        StringBuffer buf = new StringBuffer();<br/>
+	buf.append('&lt;rows&gt;');<br/>
+	buf.append('&lt;row Store=\'Store1\'  Sales=\' ');<br/>
+	float perm1 =</em> ... [numeric value calculation]<em><br/>
+	buf.append(perm1);<br/>
+	buf.append('\' /&gt;');<br/>
+	buf.append('&lt;row Store=\'Store2\'  Sales=\' ');<br/>
+	float perm2 =</em> ... [numeric value calculation]<em><br/>
+	buf.append(perm2);<br/>
+	buf.append('\' /&gt;');<br/>
+	buf.append('&lt;row Store=\'Store3\'  Sales=\' ');<br/>
+	float perm3 =</em> ... [numeric value calculation]<em><br/>
+	buf.append(perm3);<br/>
+	buf.append('\' /&gt;');<br/>
+	buf.append('&lt;/rows&gt;');<br/>
+	return buf;
+      </em>
+    </td>    
+  </tr>
+  
+  <tr>
+    <td>
+      <b>Using a query</b>
+    </td>
+    <td>
+      The query can return many rows. Each row must have an attribute with the key represented by the <b>xColName</b> parameter and with a literal value (this will be the label of the table row dataset and it will appear in the first column) and other attributes: for each row attribute, the key is considered as the column label, the value (that must be a numeric value) is considered as the current cell value:<br/>
+      select <i>{something representing the row dataset}</i> as <i>{<b>xColName</b> parameter}</i>, <i>{something 1}</i>, <i>{something 2}</i> ... from <i>{table}</i> .... <br/>
+      Query example (assuming that the <b>xColName</b> parameter is &quot;Store&quot;):<br/>
+      <em>
+      select store_name as Store, store_sales as Sales from stores where Store in ('Store1','Store2','Store3')
+      </em>
+    </td>    
+  </tr>
+  
 </table>
 
 </body>

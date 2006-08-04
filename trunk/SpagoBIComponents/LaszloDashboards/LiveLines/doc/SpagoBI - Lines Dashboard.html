@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<title><b>SpagoBI</b> <b>iReport</b> plugin</title>
+	<title>SpagoBI - Lines Dashboard</title>
 
 	<style>
 		body,td,a,p,.h{font-family:arial,sans-serif;
@@ -19,7 +19,7 @@
 <table cellpadding="0" cellspacing="10" border="0" width="100%">
  <tr>
   <td colspan="3">
-   <font size="+1" >SpagoBI - Lines <font>
+   <font size="+1" >SpagoBI - Lines<font>
   </td>
  </tr>
 
@@ -195,18 +195,6 @@
 
 <tr valign="center">
   <td align="center">
-     <b>minYValue</b>
-  </td>
-  <td>
-    Set the min value for the y axis
-  </td>
-  <td align="center" >
-	0
-  </td>
- </tr>
-
-<tr valign="center">
-  <td align="center">
      <b>stepYValue</b>
   </td>
   <td>
@@ -337,6 +325,54 @@
   </td>
  </tr>
 
+</table>
+
+<table cellpadding="0" cellspacing="10" border="0" width="100%">
+
+  <th colspan="2">
+    How to feed this movie
+  </th>
+
+  <tr>
+    <td width="10%">
+      <b>Using a script</b>
+    </td>
+    <td>
+      The script must return a String like: &quot;&lt;rows&gt;&lt;row <i>{line 1 label}</i>='<i>{numeric value}</i>' <i>{line 2 label}</i>='<i>{numeric value}</i>' ... /&gt;&lt;/rows&gt;&quot;.<br/>
+      Script example:<br/>
+      <em>
+      StringBuffer buf = new StringBuffer();<br/>
+      buf.append('&lt;rows&gt;');<br/>
+      float line1 =</em> ... [numeric value calculation] <em><br/>
+      float line2 =</em> ... [numeric value calculation] <em><br/>
+      float line3 =</em> ... [numeric value calculation] <em><br/>
+      buf.append('&lt;row Efficiency=\'');<br/>
+      buf.append(line1);<br/>
+      buf.append('\' Budget_satisfation=\'');<br/>
+      buf.append(line2);<br/>
+      buf.append('\' Emp_occupation_degree=\'');<br/>
+      buf.append(line3);<br/>
+      buf.append('\' /&gt;');<br/>
+      buf.append('&lt;/rows&gt;')<br/>
+      return buf;
+      </em>
+    </td>    
+  </tr>
+  
+  <tr>
+    <td>
+      <b>Using a query</b>
+    </td>
+    <td>
+      The query must return one row. For each row attribute, the key is considered as the line label, the value (that must be a numeric value) is considered as the current line height:<br/>
+      select <i>{something representing the line 1 value}</i>, <i>{something representing the line 2 value}</i> ... from <i>{table}</i> .... <br/>
+      Query example:<br/>
+      <em>
+      select store_efficiency as Efficiency, store_budget_satisfation as Budget_satisfation, store_emp_occupation_degree as Emp_occupation_degree from stores where store_id = 3
+      </em>
+    </td>    
+  </tr>
+  
 </table>
 
 </body>

@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<title><b>SpagoBI</b> <b>iReport</b> plugin</title>
+	<title>SpagoBI - Rotation Dashboard</title>
 
 	<style>
 		body,td,a,p,.h{font-family:arial,sans-serif;
@@ -51,6 +51,18 @@
 
  <tr valign="center">
   <td align="center">
+     <b>value</b>
+  </td>
+  <td>
+    The name of the value attribute
+   </td>
+  <td align="center" >
+    value
+  </td>
+ </tr>
+
+ <tr valign="center">
+  <td align="center">
      <b>paramWidth</b>
   </td>
   <td>
@@ -73,7 +85,7 @@
   </td>
  </tr>
 
- <tr valign="center">
+ <!--tr valign="center">
   <td align="center">
      <b>xColName</b>
   </td>
@@ -83,9 +95,9 @@
   <td align="center" >
     xLabel
   </td>
- </tr>
+ </tr-->
 
- <tr valign="center">
+ <!--tr valign="center">
   <td align="center">
      <b>valsColName</b>
   </td>
@@ -95,7 +107,7 @@
   <td align="center" >
     value
   </td>
- </tr>
+ </tr-->
 
  <tr valign="center">
   <td align="center">
@@ -121,19 +133,6 @@
     http://localhost:8080/openlaszlo/OpenLaszloEngineDash
   </td>
  </tr>
-
- <tr valign="center">
-  <td align="center">
-     <b>minValue</b>
-  </td>
-  <td>
-    Set the min value displayed by the dashboard
-  </td>
-  <td align="center" >
-	100
-  </td>
- </tr>
-
 
  <tr valign="center">
   <td align="center">
@@ -184,7 +183,7 @@
 
  <tr valign="center">
   <td align="center">
-     <b>numOfDivision</b>
+     <b>numOfDivisions</b>
   </td>
   <td>
       Set the number of the main divisions 
@@ -278,7 +277,50 @@
   </td>
  </tr>
 
-
 </table>
+
+<table cellpadding="0" cellspacing="10" border="0" width="100%">
+
+  <th colspan="2">
+    How to feed this movie
+  </th>
+
+  <tr>
+    <td width="10%">
+      <b>Using a script</b>
+    </td>
+    <td>
+      The script must return a String like: &quot;&lt;rows&gt;&lt;row <i>{<b>value</b> parameter}</i>='<i>{numeric value}</i>' /&gt;&lt;/rows&gt;&quot;.<br/>
+      Script example (assuming that the <b>value</b> parameter is as default):<br/>
+      <em>
+      StringBuffer buf = new StringBuffer();<br/>
+      buf.append('&lt;rows&gt;');<br/>
+      buf.append('&lt;row value=\'');<br/>
+      float f =</em> .... [numeric value calculation]<br/>
+      <em>
+      buf.append(f);<br/>
+      buf.append('\' /&gt;');<br/>
+      buf.append('&lt;/rows&gt;')<br/>
+      return buf;
+      </em>
+    </td>    
+  </tr>
+  
+  <tr>
+    <td>
+      <b>Using a query</b>
+    </td>
+    <td>
+      The query must return a row with an attribute with the key represented by the <b>value</b> parameter and with a numeric value:<br/>
+      select <i>{something}</i> as <i>{<b>value</b> parameter}</i> from <i>{table}</i> .... <br/>
+      Query example (assuming that the <b>value</b> parameter is as default):<br/>
+      <em>
+      select store_efficiency as value from stores where store_id = 3
+      </em>
+    </td>    
+  </tr>
+  
+</table>
+
 </body>
 </html>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="SpagoBIJasperReportEngine">
+    <display-name>SpagoBIJasperReportEngine</display-name>
+    <description>BO engine</description>
+	
+	<servlet>
+        <servlet-name>BOServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.engines.bo.BOServlet</servlet-class>
+        <init-param>
+            <param-name>BOUSER</param-name>
+            <param-value>fiscato</param-value>
+        </init-param>
+        <init-param>
+            <param-name>BOPASSWORD</param-name>
+            <param-value>luca</param-value>
+        </init-param>
+    </servlet>
+    
+    
+    <servlet>
+		<servlet-name>CadenzaServlet</servlet-name>
+		<display-name>CadenzaServlet</display-name>
+		<servlet-class>com.bo.cdzlet.CadenzaServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>HSALServlet</servlet-name>
+		<display-name>HSALServlet</display-name>
+		<servlet-class>com.bo.hsal.HSALServlet</servlet-class>
+	</servlet>
+    
+    <servlet-mapping>
+        <servlet-name>BOServlet</servlet-name>
+        <url-pattern>/BOServlet</url-pattern>
+    </servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>CadenzaServlet</servlet-name>
+		<url-pattern>/CadenzaDuke</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CadenzaServlet</servlet-name>
+		<url-pattern>/servlet/CadenzaServlet/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>HSALServlet</servlet-name>
+		<url-pattern>/servlet/com.bo.hsal.HSALServlet/*</url-pattern>
+	</servlet-mapping>
+	
+	<taglib>
+		<taglib-uri>http://www.businessobjects.com/taglibs/wilog-1.0</taglib-uri> 
+		<taglib-location>/WEB-INF/wilog.tld</taglib-location> 
+	</taglib>
+    
+    
+</web-app>
+

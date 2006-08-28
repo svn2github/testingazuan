@@ -148,4 +148,9 @@ public class ExoPortalEngUserProfileImpl implements IEngUserProfile {
 		return userAttributes.keySet();
 	}
 
+	public Collection getFunctionalitiesByRole(String arg0) throws EMFInternalError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

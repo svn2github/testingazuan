@@ -50,13 +50,15 @@ import java.util.Map;
  */
 public class BirtReportDriver implements IEngineDriver {
 
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
+	/**
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
-  	*/
-	public Map getParameterMap(Object biobject){
+	 */
+	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)biobject;
@@ -68,21 +70,33 @@ public class BirtReportDriver implements IEngineDriver {
 					"The parameter is not a BIObject type",
 					cce);
 		} 
+		map = applySecurity(map);
 		return map;
-	}			
-
-	public Map getParameterMap(Object object, IEngUserProfile profile) {
-		return getParameterMap(object);
 	}
 
-	public Map getParameterMap(Object object, Object subObject) {
-		return getParameterMap(object);
+	
+	/**
+	 * Returns a map of parameters which will be send in the request to the 
+	 * engine application.
+	 * @param biObject Object container of the subObject
+	 * @param subObject SubObject to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
+	 * @return Map The map of the execution call parameters
+  	 */
+	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
+		return getParameterMap(object, profile, roleName);
 	}
 
-	public Map getParameterMap(Object object, Object subObject,
-			IEngUserProfile profile) {
-		return getParameterMap(object);
+	/**
+	 * Applys changes for security reason if necessary
+	 * @param pars The map of parameters
+	 * @return the map of parameters to send to the engine 
+	 */
+	protected Map applySecurity(Map pars) {
+		return pars;
 	}
+	
 	
     /**
      * Starting from a BIObject extracts from it the map of the parameters for the
@@ -92,11 +106,7 @@ public class BirtReportDriver implements IEngineDriver {
      */    
 	private Map getMap(BIObject biobj) {
    		Map pars = new Hashtable();
-   		
 		ConfigSingleton config = ConfigSingleton.getInstance();
-//		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-//		String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-//		String path = biobjectsPath + "/" + biobj.getUuid() + "/template";
    		String path = biobj.getPath() + "/template";
    		pars.put("templatePath", path);
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());

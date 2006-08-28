@@ -95,7 +95,8 @@ public class ChartCustomizer {
 		chart.setBgColorB(analysis.getBgColorB());
 		chart.setBgColorG(analysis.getBgColorG());
 		chart.setBgColorR(analysis.getBgColorR());
-		
+	
+
 	}
 	
 }

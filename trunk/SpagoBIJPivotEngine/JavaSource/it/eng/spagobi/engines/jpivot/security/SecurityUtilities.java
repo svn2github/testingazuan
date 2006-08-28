@@ -17,6 +17,10 @@ import java.security.SignatureException;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -156,5 +160,24 @@ public class SecurityUtilities {
 		return sign;
 	}
 	
+	/**
+	 * Decodes (using byte64 decoding function) all the value contained into the input map
+	 * @param parMap Map containing value to be decoded
+	 * @return Map with value decoded
+	 */
+	public Map decodeParameterMap(Map parMap){
+		Map decMap = new HashMap();
+		Set keys = parMap.keySet();
+		Iterator iterKeys = keys.iterator();
+		while(iterKeys.hasNext()) {
+			String key = (String)iterKeys.next();
+			Object[] valueEncArr = (Object[])parMap.get(key);
+			String valueEnc = valueEncArr[0].toString();
+			byte[] valueDecBytes =  decodeBase64(valueEnc);
+			String valueDec = new String(valueDecBytes);
+			decMap.put(key, valueDec);
+		}
+		return decMap;
+	}
 	
 }

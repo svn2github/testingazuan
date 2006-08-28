@@ -11,7 +11,7 @@
 
   <context-param>
 	  <param-name>SECURITY_ABLE</param-name>
-	  <param-value>FALSE</param-value>
+	  <param-value>TRUE</param-value>
   </context-param>
   
   <filter>

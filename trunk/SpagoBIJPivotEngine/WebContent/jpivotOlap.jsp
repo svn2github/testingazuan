@@ -60,21 +60,58 @@
         if(securityAble) {
 			secUt = new SecurityUtilities(logger);
 			publicKeyDSASbi = secUt.getPublicKey();
-			// Identity hashMap
-			Map identities = new HashMap();
-			// set into the context
-			context.setAttribute("IDENTITIES", identities);
 		} 
 	}
 %>
 
+
+
+
+
 <%
-    // if is the first request the following parameters have a request value
+	//authentication 
+	boolean authorized = true;
+	Object auth = session.getAttribute("authorized");
+	if(auth!=null) {	
+		if(securityAble) {
+			authorized = false;
+			String token = request.getParameter("TOKEN_SIGN");
+			String tokenclear = request.getParameter("TOKEN_CLEAR");
+			if((token!=null) && !token.trim().equals("") &&  (tokenclear!=null) && !tokenclear.trim().equals("")) {
+	    		if(secUt.authenticate(token, tokenclear, publicKeyDSASbi)) {
+	    			authorized = true;
+	    			session.setAttribute("authorized", "true");
+	    		}
+			}
+		} else {
+			String token = request.getParameter("TOKEN_SIGN");
+			if(token!=null) {
+				authorized = false;
+				logger.error("The engine security check is not active but the driver in sending secure calls." + 
+					     	"Please turn on the security check of the engine");
+			}
+		}
+	}
+	
+	if(!authorized) {
+%>	 	
+
+ 	<%@page import="java.util.Collections"%>
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.List"%>
+<html><body><center><h2>Unauthorized</h2></center></body></html>
+
+<% } else {
+	
+	
+	// if is the first request the following parameters have a request value
     // and they are put in session, otherwise their values are taken from the session
     String jcrPath = request.getParameter("templatePath");
 	String spagoBIBaseUrl = request.getParameter("spagobiurl");
 	String user = request.getParameter("user");
-    if(jcrPath != null)
+	String role = request.getParameter("role");
+	
+	if(jcrPath != null)
     	session.setAttribute("templatePath", jcrPath);
     else jcrPath = (String)session.getAttribute("templatePath");
     if(spagoBIBaseUrl != null)
@@ -83,27 +120,21 @@
     if(user != null) 
     	session.setAttribute("user", user);
     else user = (String)session.getAttribute("user");
-    // authentication 
-    boolean authorized = true;
+    if(role != null) 
+    	session.setAttribute("role", role);
+    else role = (String)session.getAttribute("role");
     
-    if(securityAble) {
-    	authorized = false;
-    	String token = request.getParameter("TOKEN_SIGN");
-    	String tokenclear = request.getParameter("TOKEN_CLEAR");
-    	if((token!=null) && !token.trim().equals("") &&  (tokenclear!=null) && !tokenclear.trim().equals("")) {
-        	if(secUt.authenticate(token, tokenclear, publicKeyDSASbi)) {
-        		authorized = true;
-        	}
-    	}
+    String dimAccRulStr = request.getParameter("dimension_access_rules");
+    if(dimAccRulStr!=null){
+    	String[] dimAccArray = dimAccRulStr.split(",");
+    	List dimAccList = Arrays.asList(dimAccArray);
+    	session.setAttribute("dimension_access_rules", dimAccList);
     }
-    if(!authorized) {
-%>
-	
-	<html><body><center><h2>Unauthorized</h2></center></body></html>
-
-
-<% } else { %>
-
+    
+%>   
+    
+    
+   
 
 
 <html>

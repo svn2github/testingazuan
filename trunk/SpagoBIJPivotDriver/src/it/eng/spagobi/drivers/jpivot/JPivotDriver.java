@@ -39,17 +39,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.drivers.jpivot;
 
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import sun.misc.BASE64Encoder;
 
 
 /**
@@ -57,52 +67,46 @@ import java.util.Map;
  */
 public class JPivotDriver implements IEngineDriver {
 
-	 /**
-	 * Return a map of parameters which will be sended in the request to the 
+	
+	/**
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
-  	*/
-	public Map getParameterMap(Object biobject){
+	 */
+	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)biobject;
-			map = getMap(biobj);
+			map = getMap(biobj, profile, roleName);
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
-					"getParameterMap(Object)",
+					"getParameterMap(Object, IEngUserProfile, String)",
 					"The parameter is not a BIObject type",
 					cce);
 		} 
-		return map;
-	}			
-	/**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object to execute
-	 * @param profile Profile of the user 
-	 * @return Map The map of the execution call parameters
-	 */
-	public Map getParameterMap(Object object, IEngUserProfile profile){
-		Map map = null;
-		map = getParameterMap(object);
-		String username = (String)profile.getUserUniqueIdentifier();
-		map.put("user", username);
+		map = applySecurity(map);
 		return map;
 	}
 	/**
-	 * Return a map of parameters which will be sended in the request to the 
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object container of the subObject
 	 * @param subObject SubObject to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
   	 */
-	public Map getParameterMap(Object object, Object subObject){
+	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
 		Map map = new Hashtable();
 		try{
+			BIObject biobj = (BIObject)object;
+			map = getMap(biobj, profile, roleName);
 			SubObjectDetail subObj = (SubObjectDetail)subObject;
-			map = getParameterMap(object);
+			map = getParameterMap(object, profile, roleName);
 			String nameSub = subObj.getName();
 			map.put("nameSubObject", nameSub);
 			String descrSub = subObj.getDescription();
@@ -112,70 +116,101 @@ public class JPivotDriver implements IEngineDriver {
 		    if(visBool) 
 		    	visStr = "Public";
 			map.put("visibilitySubObject", visStr);
+			// get subobject data from cms
+			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
+		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
+		 	// encode and set the subobject data as a parameter
+		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			map.put("subobjectdata", bASE64Encoder.encode(subObjDataBytes));
+			
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
-					"getParameterMap(Object, Object)",
+					"getParameterMap(Object, Object, IEngUserProfile, String)",
 					"The second parameter is not a SubObjectDetail type",
 					cce);
-		} 
-		return map;
-	}
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @param profile Profile of the user 
-	 * @return Map The map of the execution call parameters
-  	 */
-    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
-    	Map map = new Hashtable();
-		try{
-			SubObjectDetail subObj = (SubObjectDetail)subObject;
-			map = getParameterMap(object, profile);
-			String nameSub = subObj.getName();
-			map.put("nameSubObject", nameSub);
-			String descrSub = subObj.getDescription();
-			map.put("descriptionSubObject", descrSub);
-			String visStr = "Private";
-			boolean visBool = subObj.isPublicVisible();
-		    if(visBool) 
-		    	visStr = "Public";
-			map.put("visibilitySubObject", visStr);
-		} catch (ClassCastException cce) {
+		} catch (EMFUserError emfue) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
-					"getParameterMap(Object, Object, IEngUserProfile)",
-					"The second parameter is not a SubObjectDetail type",
-					cce);
+					"getParameterMap(Object, Object, IEngUserProfile, String)",
+					"Error while creating cmsDao for BiObject",
+					emfue);
 		} 
+		map = applySecurity(map);
 		return map;
 	}
-
     
-        
-        
+       
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
      * @param biobj BIObject to execute
      * @return Map The map of the execution call parameters
      */    
-	private Map getMap(BIObject biobj) {
+	protected Map getMap(BIObject biobj, IEngUserProfile profile, String roleName) {
    		Map pars = new Hashtable();
-//		ConfigSingleton config = ConfigSingleton.getInstance();
-//		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-//		String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-//		String path = biobjectsPath + "/" + biobj.getUuid() + "/template";
-		String path = biobj.getPath() + "/template";
-		pars.put("templatePath", path);
-        pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+		biobj.loadTemplate();
+		UploadedFile uploadedFile =  biobj.getTemplate();
+		byte[] template = uploadedFile.getFileContent();
+		BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		pars.put("template", bASE64Encoder.encode(template));
+		pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+		pars.put("templatePath",biobj.getPath() + "/template");
 		pars.put("query", "dynamicOlap");
+		String username = "";
+		if(profile!=null)
+			username = (String)profile.getUserUniqueIdentifier();
+		pars.put("user", username);
+		pars.put("role", roleName);
+		pars = addDataAccessParameter(profile, roleName, pars);
         pars = addBIParameters(biobj, pars);
         return pars;
 	} 
  
+	
+	/**
+	 * Adds parameter for data access based on the user functionalities
+	 * @param profile Profile of the user
+	 * @param roleName Role name of the user
+	 * @param pars Map of previous parameters
+	 * @return The parameter map containing parameter for data access control
+	 */
+	protected Map addDataAccessParameter(IEngUserProfile profile, String roleName, Map pars) {
+		try{
+			List dataAccessFunct = new ArrayList();
+			Collection profFuncts = profile.getFunctionalitiesByRole(roleName);
+			Iterator iterProfFuncts = profFuncts.iterator();
+			while(iterProfFuncts.hasNext()){
+				Object objFunct = iterProfFuncts.next();
+				if(objFunct instanceof String) {
+					String strFunct = (String)objFunct;
+					if(strFunct.startsWith("data_access:")) {
+						strFunct = strFunct.substring(12);
+						dataAccessFunct.add(strFunct);
+					}
+				}
+			}
+		    String valueAccessPar = "";
+		    Iterator iterdaf = dataAccessFunct.iterator();
+		    while(iterdaf.hasNext()) {
+		    	String accFunct = (String)iterdaf.next();
+		    	accFunct = accFunct.replaceFirst("/", "[");
+		    	accFunct = accFunct.replaceAll("/", "].[");
+		    	accFunct = accFunct + "]";
+		    	if(iterdaf.hasNext())
+		    		valueAccessPar = valueAccessPar + accFunct + ",";
+		    	else valueAccessPar = valueAccessPar + accFunct;
+		    }
+		    if(!valueAccessPar.equalsIgnoreCase("")) {
+		    	pars.put("dimension_access_rules", valueAccessPar);
+		    }
+		} catch(Exception e) {
+			return pars;
+		}
+		return pars;
+	}
+	
          
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
@@ -183,7 +218,7 @@ public class JPivotDriver implements IEngineDriver {
      * @param pars Map of the parameters for the execution call  
      * @return Map The map of the execution call parameters
      */
-	private Map addBIParameters(BIObject biobj, Map pars) {
+	protected Map addBIParameters(BIObject biobj, Map pars) {
 		if(biobj==null) {
 			SpagoBITracer.warning("ENGINES",
 								  this.getClass().getName(),
@@ -211,4 +246,15 @@ public class JPivotDriver implements IEngineDriver {
   		return pars;
 	}
 	
+	
+	/**
+	 * Applys changes for security reason if necessary
+	 * @param pars The map of parameters
+	 * @return the map of parameters to send to the engine 
+	 */
+	protected Map applySecurity(Map pars) {
+		return pars;
+	}
+	
+
 }

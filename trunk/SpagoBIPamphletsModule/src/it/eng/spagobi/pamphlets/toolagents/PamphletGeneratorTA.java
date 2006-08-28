@@ -226,7 +226,7 @@ public class PamphletGeneratorTA {
 			// build an instance of the driver
 			IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
 			// get the map of parameter to send to the engine
-			Map mapPars = aEngineDriver.getParameterMap(biobj);
+			Map mapPars = aEngineDriver.getParameterMap(biobj, null, "");
 			// built the request to sent to the engine
 			Iterator iterMapPar = mapPars.keySet().iterator();
 			HttpClient client = new HttpClient();

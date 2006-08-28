@@ -54,37 +54,26 @@ import java.util.Map;
  */
 public interface IEngineDriver {
 
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object to execute
-	 * @return Map The map of the execution call parameters
-  	*/	
-	public Map getParameterMap(Object biobject);
+    
 	/**
-	 * Return a map of parameters which will be sended in the request to the 
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object to execute
 	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
 	 */
-    public Map getParameterMap(Object biobject, IEngUserProfile profile);
+    public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName);
+	
     /**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @return Map The map of the execution call parameters
-  	 */
-	public Map getParameterMap(Object biobject, Object subObject);
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object container of the subObject
 	 * @param subObject SubObject to execute
 	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
   	 */
-    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile);   
-
+    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName);  
+    
 }

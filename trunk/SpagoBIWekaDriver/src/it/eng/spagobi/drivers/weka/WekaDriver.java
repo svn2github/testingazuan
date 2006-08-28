@@ -9,6 +9,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.IEngineDriver;
+import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -24,77 +25,77 @@ import java.util.Map;
 public class WekaDriver implements IEngineDriver {
 
 	
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
+	/**
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
-  	*/
-	public Map getParameterMap(Object biobject){
+	 */
+	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)biobject;
-			map = getMap(biobj);
+			map = getMap(biobj, profile);
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
-					"getParameterMap(Object)",
+					"getParameterMap(Object, IEngUserProfile, String)",
 					"The parameter is not a BIObject type",
 					cce);
 		} 
+		map = applySecurity(map);
+		return map;
+	}
+
+
+    /**
+	 * Returns a map of parameters which will be send in the request to the 
+	 * engine application.
+	 * @param biObject Object container of the subObject
+	 * @param subObject SubObject to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
+	 * @return Map The map of the execution call parameters
+  	 */
+	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
+		Map map = new Hashtable();
+		try{
+			BIObject biobj = (BIObject)object;
+			map = getMap(biobj, profile);
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object, IEngUserProfile, String)",
+					"The parameter is not a BIObject type",
+					cce);
+		} 
+		map = applySecurity(map);
 		return map;
 	}
 	
 	
-	/**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object to execute
-	 * @param profile Profile of the user 
-	 * @return Map The map of the execution call parameters
-	 */
-	public Map getParameterMap(Object object, IEngUserProfile profile){
-		return getParameterMap(object);
-	}
-	
 	
 	/**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @return Map The map of the execution call parameters
-  	 */
-	public Map getParameterMap(Object object, Object subObject){
-		return getParameterMap(object);
-	}
-	
-	
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @param profile Profile of the user 
-	 * @return Map The map of the execution call parameters
-  	 */
-    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
-		return getParameterMap(object);
-	}
-       
-        
-    /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
      * @param biobj BIObject to execute
      * @return Map The map of the execution call parameters
      */    
-	private Map getMap(BIObject biobj) {
+	private Map getMap(BIObject biobj, IEngUserProfile profile) {
 		Map pars = new Hashtable();
 		pars.put("templatePath",biobj.getPath() + "/template");
 		pars.put("cr_manager_url", GeneralUtilities.getSpagoBiContentRepositoryServlet());
     	pars.put("events_manager_url", GeneralUtilities.getSpagoBiEventsManagerServlet());
         pars = addBIParameters(biobj, pars);
+        // callback event id
+        if(profile!=null) {
+        	String user = (String)profile.getUserUniqueIdentifier();
+        	Integer id =  EventsManager.getInstance().registerEvent(user);
+        	pars.put("event", id.toString());
+        	pars.put("user", user);
+        }
         return pars;
 	} 
  
@@ -133,6 +134,18 @@ public class WekaDriver implements IEngineDriver {
 		}
   		return pars;
 	}
+
+	
+	
+	/**
+	 * Applys changes for security reason if necessary
+	 * @param pars The map of parameters
+	 * @return the map of parameters to send to the engine 
+	 */
+	protected Map applySecurity(Map pars) {
+		return pars;
+	}
+       
 
 }
 

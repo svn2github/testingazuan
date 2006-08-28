@@ -122,4 +122,9 @@ public class AnonymousCMSUserProfile implements IEngUserProfile{
 		return null;
 	}
 
+	public Collection getFunctionalitiesByRole(String arg0) throws EMFInternalError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

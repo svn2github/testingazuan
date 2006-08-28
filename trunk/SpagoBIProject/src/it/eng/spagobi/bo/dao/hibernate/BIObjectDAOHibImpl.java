@@ -944,11 +944,15 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			if(idParameters.size() == 0) {
 				// if the object has not parameter associate all the roles can execute the 
+				// object correctly and in the same manner. 
+				correctRoles.addAll(roles);
+				return correctRoles;
+				// if the object has not parameter associate all the roles can execute the 
 				// object correctly and in the same manner. A role for the execution it's mandatory
 				// so the application return only the first role and the execution of the object 
 				// doesn't need the choice of the execution role but start immediatly.
-				correctRoles.add(roles.iterator().next());
-				return correctRoles;
+				//correctRoles.add(roles.iterator().next());
+				//return correctRoles;
 			}
 			
 			Iterator iterRoles = roles.iterator();

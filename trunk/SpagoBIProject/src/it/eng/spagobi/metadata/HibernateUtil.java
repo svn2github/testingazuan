@@ -43,11 +43,11 @@ public class HibernateUtil {
 			
 			if (fileCfgSb != null){
 				String fileCfg = fileCfgSb.getCharacters();
+				fileCfg = fileCfg.trim();
 				SpagoBITracer.info("HibernateUtil",HibernateUtil.class.getName(), "static declaration ", "Initializing hibernate Session Factory Described by [" + fileCfg +"]");
 				Configuration conf = new Configuration();
 				conf = conf.configure(fileCfg);
 				sessionFactory = conf.buildSessionFactory();
-				
 				
 				//sessionFactory = new Configuration().configure(fileCfg).buildSessionFactory();
 			}else{

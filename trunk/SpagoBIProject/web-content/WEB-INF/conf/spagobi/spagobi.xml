@@ -18,8 +18,12 @@
     
     <!--  SPAGOBI SECURITY PROVIDER CONFIGURATION  Default Security Provider is ExoPortalSecurity Provider-->
 	<SECURITY>
+	    <!-- 
 		<PORTAL-SECURITY-CLASS>it.eng.spagobi.security.ExoPortalSecurityProviderImpl</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS>it.eng.spagobi.security.ExoPortalUserProfileFactoryImpl</USER-PROFILE-FACTORY-CLASS>
+		-->
+		<PORTAL-SECURITY-CLASS>it.eng.spagobi.security.MetodoSecurityProviderImpl</PORTAL-SECURITY-CLASS>
+		<USER-PROFILE-FACTORY-CLASS>it.eng.spagobi.security.MetodoUserProfileFactoryImpl</USER-PROFILE-FACTORY-CLASS>
 		<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
 		<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
 		<LOAD-USER-PROFILE-ATTRIBUTES>yes</LOAD-USER-PROFILE-ATTRIBUTES>

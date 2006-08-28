@@ -24,13 +24,16 @@ import sun.misc.BASE64Encoder;
  */
 public class GeoDriver implements IEngineDriver {
 
-	 /**
-	 * Return a map of parameters which will be sended in the request to the 
+
+	/**
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
-  	*/
-	public Map getParameterMap(Object biobject){
+	 */
+	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)biobject;
@@ -43,89 +46,31 @@ public class GeoDriver implements IEngineDriver {
 					cce);
 		} 
 		return map;
-	}			
+	}
+	
 	/**
-	 * Return a map of parameters which will be sended in the request to the 
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
-	 * @param biObject Object to execute
+	 * @param biObject Object container of the subObject
+	 * @param subObject SubObject to execute
 	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
+  	 */
+	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
+		return getParameterMap(object, profile, roleName);
+	}
+	
+	/**
+	 * Applys changes for security reason if necessary
+	 * @param pars The map of parameters
+	 * @return the map of parameters to send to the engine 
 	 */
-	public Map getParameterMap(Object object, IEngUserProfile profile){
-    	Map map = getParameterMap(object);
-//		Map map = null;
-//		map = getParameterMap(object);
-//		String username = (String)profile.getUserUniqueIdentifier();
-//		map.put("user", username);
-		return map;
+	protected Map applySecurity(Map pars) {
+		return pars;
 	}
-	/**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @return Map The map of the execution call parameters
-  	 */
-	public Map getParameterMap(Object object, Object subObject){
-    	Map map = getParameterMap(object);
-//		Map map = new Hashtable();
-//		try{
-//			SubObjectDetail subObj = (SubObjectDetail)subObject;
-//			map = getParameterMap(object);
-//			String nameSub = subObj.getName();
-//			map.put("nameSubObject", nameSub);
-//			String descrSub = subObj.getDescription();
-//			map.put("descriptionSubObject", descrSub);
-//			String visStr = "Private";
-//			boolean visBool = subObj.isPublicVisible();
-//		    if(visBool) 
-//		    	visStr = "Public";
-//			map.put("visibilitySubObject", visStr);
-//		} catch (ClassCastException cce) {
-//			SpagoBITracer.major("ENGINES",
-//					this.getClass().getName(),
-//					"getParameterMap(Object, Object)",
-//					"The second parameter is not a SubObjectDetail type",
-//					cce);
-//		} 
-		return map;
-	}
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @param profile Profile of the user 
-	 * @return Map The map of the execution call parameters
-  	 */
-    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
-    	Map map = getParameterMap(object);
-//    	Map map = new Hashtable();
-//		try{
-//			SubObjectDetail subObj = (SubObjectDetail)subObject;
-//			map = getParameterMap(object, profile);
-//			String nameSub = subObj.getName();
-//			map.put("nameSubObject", nameSub);
-//			String descrSub = subObj.getDescription();
-//			map.put("descriptionSubObject", descrSub);
-//			String visStr = "Private";
-//			boolean visBool = subObj.isPublicVisible();
-//		    if(visBool) 
-//		    	visStr = "Public";
-//			map.put("visibilitySubObject", visStr);
-//		} catch (ClassCastException cce) {
-//			SpagoBITracer.major("ENGINES",
-//					this.getClass().getName(),
-//					"getParameterMap(Object, Object, IEngUserProfile)",
-//					"The second parameter is not a SubObjectDetail type",
-//					cce);
-//		} 
-		return map;
-	}
-
-    
-        
-        
+	
+	    
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
@@ -139,9 +84,6 @@ public class GeoDriver implements IEngineDriver {
 		byte[] template = uploadedFile.getFileContent();
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
 		pars.put("template", bASE64Encoder.encode(template));
-//		pars.put("templatePath",biobj.getPath() + "/template");
-//        pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-//		pars.put("query", "dynamicOlap");
         pars = addBIParameters(biobj, pars);
         return pars;
 	} 
@@ -180,5 +122,6 @@ public class GeoDriver implements IEngineDriver {
 		}
   		return pars;
 	}
+	
 	
 }

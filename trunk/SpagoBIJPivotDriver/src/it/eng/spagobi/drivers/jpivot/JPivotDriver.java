@@ -39,6 +39,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.drivers.jpivot;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
@@ -163,7 +164,7 @@ public class JPivotDriver implements IEngineDriver {
 			username = (String)profile.getUserUniqueIdentifier();
 		pars.put("user", username);
 		pars.put("role", roleName);
-		pars = addDataAccessParameter(profile, roleName, pars);
+		pars = addDataAccessParameter(profile, roleName, pars, template);
         pars = addBIParameters(biobj, pars);
         return pars;
 	} 
@@ -174,37 +175,62 @@ public class JPivotDriver implements IEngineDriver {
 	 * @param profile Profile of the user
 	 * @param roleName Role name of the user
 	 * @param pars Map of previous parameters
+	 * @param template bytes of the biobject template
 	 * @return The parameter map containing parameter for data access control
 	 */
-	protected Map addDataAccessParameter(IEngUserProfile profile, String roleName, Map pars) {
+	protected Map addDataAccessParameter(IEngUserProfile profile, String roleName, Map pars, byte[] templateBy) {
 		try{
+			// create list of data access functionalities
 			List dataAccessFunct = new ArrayList();
+			// get the user functionalities associated to the execution role
 			Collection profFuncts = profile.getFunctionalitiesByRole(roleName);
-			Iterator iterProfFuncts = profFuncts.iterator();
-			while(iterProfFuncts.hasNext()){
-				Object objFunct = iterProfFuncts.next();
-				if(objFunct instanceof String) {
-					String strFunct = (String)objFunct;
-					if(strFunct.startsWith("data_access:")) {
-						strFunct = strFunct.substring(12);
-						dataAccessFunct.add(strFunct);
+			// value of the parameter to send to the engine
+			String valueAccessPar = "";
+				
+			// trasnform template bytes into a string
+			String templateStr = new String(templateBy);
+			// read the template as a sourcebena
+			SourceBean templateSB = SourceBean.fromXMLString(templateStr);
+			// get the list of granted dimesions
+			List grantDims = templateSB.getAttributeAsList("DATA-ACCESS.GRANTED-DIMENSIONS.DIMENSION");
+			// for each granted dimension
+			Iterator iterGrantDims = grantDims.iterator();
+			while(iterGrantDims.hasNext()) {
+				SourceBean dimSB = (SourceBean)iterGrantDims.next();
+				// get the dimesion name
+				String dimName = (String)dimSB.getAttribute("name");
+				// for each funtionality check if it is a data access functionality and 
+				// if it is related to the template dimension
+				Iterator iterProfFuncts = profFuncts.iterator();
+				while(iterProfFuncts.hasNext()){
+					Object objFunct = iterProfFuncts.next();
+					if(objFunct instanceof String) {
+						String strFunct = (String)objFunct;
+						if(strFunct.startsWith("data_access:")) {
+							strFunct = strFunct.substring(12);
+							if(strFunct.startsWith("/"+dimName)){
+								dataAccessFunct.add(strFunct);
+							}
+						}
 					}
 				}
 			}
-		    String valueAccessPar = "";
-		    Iterator iterdaf = dataAccessFunct.iterator();
+			// transform each data access functionality allowed into the right
+			// sintax for jpivot engine and add them into the parameter value to send
+			Iterator iterdaf = dataAccessFunct.iterator();
 		    while(iterdaf.hasNext()) {
 		    	String accFunct = (String)iterdaf.next();
 		    	accFunct = accFunct.replaceFirst("/", "[");
+		    	if(accFunct.indexOf("/")==-1){
+		    		continue; // means that the path has only one element (only the dimension name)
+		    	}
 		    	accFunct = accFunct.replaceAll("/", "].[");
 		    	accFunct = accFunct + "]";
 		    	if(iterdaf.hasNext())
 		    		valueAccessPar = valueAccessPar + accFunct + ",";
 		    	else valueAccessPar = valueAccessPar + accFunct;
 		    }
-		    if(!valueAccessPar.equalsIgnoreCase("")) {
-		    	pars.put("dimension_access_rules", valueAccessPar);
-		    }
+		    pars.put("dimension_access_rules", valueAccessPar);
 		} catch(Exception e) {
 			return pars;
 		}

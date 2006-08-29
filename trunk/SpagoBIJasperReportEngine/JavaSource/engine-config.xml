@@ -23,8 +23,13 @@
 		isJNDI 	= 	true iff the connection is defined in the jndi nemespace of the server 
 	-->
 	<!-- ====================================================================================== -->
-	<!--
 	<CONNECTIONS default="hsqlfoodmart">
+		<CONNECTION name="hsqlfoodmartjdbc" 
+					isJNDI="false"
+					driver="org.hsqldb.jdbcDriver"
+					user="sa"
+					password=""
+					jdbcUrl="jdbc:hsqldb:hsql://localhost/foodmart"/>
 		<CONNECTION name="hsqlfoodmart" 
 					isJNDI="true"
 					initialContext="java:comp/env"
@@ -38,7 +43,6 @@
 					initialContext="java:comp/env"
 					resourceName="jdbc/oracleSH"/>
 	</CONNECTIONS>	
-	-->
 	
 	
 	<!-- ====================================================================================== -->

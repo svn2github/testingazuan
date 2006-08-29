@@ -88,12 +88,6 @@ public class JasperReportServlet extends HttpServlet {
 		if (securityAble) {
 			// get spagobi public key
 			publicKeyDSASbi = getPublicKey();
-			// Identity hashMap
-			Map identities = new HashMap();
-			// set into the context
-			ServletContext context = this.getServletContext();
-			context.setAttribute("IDENTITIES", identities);
-			logger.info(this.getClass().getName() +":init:Enable security mode");
 		}		
 		logger.debug(this.getClass().getName() +":init:Inizialization " +
 				      "of SpagoBI JasperReport Engine ended succesfully");
@@ -307,11 +301,6 @@ public class JasperReportServlet extends HttpServlet {
 		String tokenSign64 = (String) request.getParameter("TOKEN_SIGN");
 		if ((tokenSign64 == null) || (tokenSign64.trim().equals(""))) {
 			logger.error("Token signed null or empty");
-			return false;
-		}
-		String identity = (String) request.getParameter("IDENTITY");
-		if ((identity == null) || (identity.trim().equals(""))) {
-			logger.error("Identity null or empty");
 			return false;
 		}
 		byte[] tokenClear = tokenClearStr.getBytes();

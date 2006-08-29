@@ -41,7 +41,7 @@ import java.util.List;
  */
 public interface IPortalSecurityProvider {
 	/**
-	 * @return The Roles list.
+	 * @return The Role list. (list of it.eng.spagobi.bo.Role)
 	 */
 	public List getRoles();
 	
@@ -49,9 +49,8 @@ public interface IPortalSecurityProvider {
 	 * Get the list of the user roles. If the user doesn't exist the roles list is empty
 	 * 
 	 * @param user Username
-	 * @param passwd Password of the user
-	 * @return List of user roles
+	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
-	public List getUserRoles(String user, String passwd);
+	public List getUserRoles(String user);
 	
 }

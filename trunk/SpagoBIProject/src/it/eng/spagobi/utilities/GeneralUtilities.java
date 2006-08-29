@@ -32,7 +32,13 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.ModalitiesValue;
+import it.eng.spagobi.bo.Parameter;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
+import it.eng.spago.base.SessionContainer;
 
 import java.io.File;
 import java.io.IOException;
@@ -395,5 +401,38 @@ public class GeneralUtilities {
 		 }
 		 return true;
 	 }
-	
+	public static String substituteProfileAttributesInFixLov(String value, HashMap profileattrs, int profileAttributeStartIndex) throws Exception {
+		int profileAttributeEndIndex = value.indexOf("}");
+		if (profileAttributeEndIndex == -1) throw new Exception("Not closed profile attribute: '}' expected.");
+		if (profileAttributeEndIndex < profileAttributeEndIndex) throw new Exception("Not opened profile attribute: '${' expected.");
+		String attributeName = value.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex);
+		Object attributeValueObj = profileattrs.get(attributeName);
+		if (attributeValueObj == null) throw new Exception("Profile attribute '" + attributeName + "' not existing.");
+		else value = value.replace("${" + attributeName + "}", attributeValueObj.toString());
+		profileAttributeStartIndex = value.indexOf("${", profileAttributeEndIndex);
+		if (profileAttributeStartIndex != -1) 
+			value = substituteProfileAttributesInFixLov(value, profileattrs, profileAttributeStartIndex);
+		return value;
+	}
+	public static void subsituteBIObjectParametersLovProfileAttributes (BIObject obj, SessionContainer session) throws Exception, EMFInternalError {
+		List biparams = obj.getBiObjectParameters(); 
+        Iterator iterParams = biparams.iterator();
+        while(iterParams.hasNext()) {
+        	//if the param is a Fixed Lov, Make the profile attribute substitution at runtime
+        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
+        	Parameter param = biparam.getParameter();
+        	ModalitiesValue modVal = param.getModalityValue();
+        	if(modVal.getITypeCd().equals(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)){
+        		String value = modVal.getLovProvider();
+        		int profileAttributeStartIndex = value.indexOf("${");
+    			if (profileAttributeStartIndex != -1) {
+    				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    				HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+    				value = GeneralUtilities.substituteProfileAttributesInFixLov(value, profileattrs, profileAttributeStartIndex);
+    				biparam.getParameter().getModalityValue().setLovProvider(value);
+    			}
+        		
+        	}
+}
+}
 }

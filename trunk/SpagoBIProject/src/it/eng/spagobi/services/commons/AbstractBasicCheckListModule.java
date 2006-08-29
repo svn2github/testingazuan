@@ -347,6 +347,13 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 				exitFromModule(response, true);
 				return;
 			}
+			if(request.getAttribute("checkFilter") != null && request.getAttribute("checkFilter").equals("checkFilter")){
+			//reinit checklist according to the filter checkbox selection
+				preprocess(request);	
+				super.service(request, response); 
+				postprocess(response); 
+				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
+			}
 		}
 		else {
 			// error

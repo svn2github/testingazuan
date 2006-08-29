@@ -482,7 +482,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					Integer idObj = obj.getId();
 					String stateObj = obj.getStateCode();
 					Integer visibleObj = obj.getVisible();
-					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticon.gif");
+					//insert the correct image for each BI Object type
+					String biObjType = obj.getBiObjectTypeCode();
+					String imgUrl = "/img/objecticon_"+ biObjType+ ".gif";
+					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);
 					String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
 					String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 					PortletURL execUrl = renderResponse.createActionURL();

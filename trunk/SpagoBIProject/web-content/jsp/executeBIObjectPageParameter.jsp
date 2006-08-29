@@ -7,6 +7,7 @@
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
                  it.eng.spagobi.constants.AdmintoolsConstants,
                  it.eng.spagobi.constants.SpagoBIConstants,
+                 it.eng.spagobi.utilities.GeneralUtilities,
                  it.eng.spagobi.bo.BIObject,
                  it.eng.spago.security.IEngUserProfile,
                  it.eng.spago.base.SessionContainer,
@@ -15,7 +16,9 @@
 
 <% 
     // get object from the session 
-    BIObject obj = (BIObject)aSessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);    
+    BIObject obj = (BIObject)aSessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);  
+	//substitute profile attributes for FIX LOV parameters
+	GeneralUtilities.subsituteBIObjectParametersLovProfileAttributes(obj,aSessionContainer);
     // get profile of the user
     SessionContainer permSess = aSessionContainer.getPermanentContainer();
     IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);

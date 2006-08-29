@@ -106,18 +106,44 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		} else {
 			objectsList = objDAO.loadAllBIObjects();
 		}
-		
-		for (Iterator it = objectsList.iterator(); it.hasNext(); ) {
-			BIObject obj = (BIObject) it.next();
-			if (objId != null && obj.getId().equals(objId)) continue;
-			SourceBean rowSB = null;
-			if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor)) {
-				rowSB = makeAdminListRow(obj);
-			} else if (SpagoBIConstants.DEV_ACTOR.equalsIgnoreCase(actor)) {
-				rowSB = makeDevListRow(obj);
-			}
-			if (rowSB != null) paginator.addRow(rowSB);
+		String checked = (String)request.getAttribute("checked");
+		if(checked==null){
+			checked = "true";
 		}
+		if(checked.equals("true")){
+		//if the request is to show only checked objects (it is settled by default when page is loaded at the first time
+			for (Iterator it = objectsList.iterator(); it.hasNext(); ) {
+				BIObject obj = (BIObject) it.next();
+				if (objId != null && obj.getId().equals(objId)) continue;
+				//boolean bool = isCheckedObject(obj.getId().toString());
+				if(isCheckedObject(obj.getId().toString())){
+					SourceBean rowSB = null;
+					if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor)) {
+						rowSB = makeAdminListRow(obj);
+					} else if (SpagoBIConstants.DEV_ACTOR.equalsIgnoreCase(actor)) {
+						rowSB = makeDevListRow(obj);
+					}
+					if (rowSB != null) paginator.addRow(rowSB);
+				}
+			}
+		}
+		//else if it is false, show all objects
+		else if (checked.equals("false")){
+			for (Iterator it = objectsList.iterator(); it.hasNext(); ) {
+				BIObject obj = (BIObject) it.next();
+				if (objId != null && obj.getId().equals(objId)) continue;
+				//boolean bool = isCheckedObject(obj.getId().toString());
+				SourceBean rowSB = null;
+					if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor)) {
+						rowSB = makeAdminListRow(obj);
+					} else if (SpagoBIConstants.DEV_ACTOR.equalsIgnoreCase(actor)) {
+						rowSB = makeDevListRow(obj);
+					}
+					if (rowSB != null) paginator.addRow(rowSB);
+				
+			}
+		}
+		
 		ListIFace list = new GenericList();
 		list.setPaginator(paginator);
 		return list;
@@ -180,5 +206,19 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
 		return rowSB;
 	}
-	
+	public boolean isCheckedObject(String objectID) throws Exception{
+		boolean isChecked = false;
+		SourceBean checkedObjects = getCheckedObjects();
+		List checkedObjectsList = checkedObjects.getAttributeAsList("OBJECT");
+		Iterator i = checkedObjectsList.iterator();
+		while (i.hasNext()){
+			SourceBean source = (SourceBean)i.next();
+			String objID = (String)source.getAttribute("OBJ_ID");
+			if(objID.equals(objectID)){
+				isChecked = true;
+			}
+		}
+		
+		return isChecked;
+	}
 }

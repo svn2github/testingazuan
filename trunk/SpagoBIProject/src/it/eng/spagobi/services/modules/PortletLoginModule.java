@@ -27,14 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.services.modules;
 
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.security.AnonymousCMSUserProfile;
 import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -59,8 +56,17 @@ public class PortletLoginModule extends AbstractModule {
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", "USER CONNECTED IS [" + remoteUser+"]");
 		Principal principal = portletRequest.getUserPrincipal();
 		String engUserProfileFactoryClass =  ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
+		engUserProfileFactoryClass = engUserProfileFactoryClass.trim(); 
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
+	            "userProfile created " + userProfile);
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
+                "Attributes name of the user profile: " + userProfile.getUserAttributeNames());
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
+    			"Functionalities of the user profile: " + userProfile.getFunctionalities());
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
+                "Roles of the user profile: " + userProfile.getRoles());
 		getRequestContainer().getSessionContainer().getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
 	}
 

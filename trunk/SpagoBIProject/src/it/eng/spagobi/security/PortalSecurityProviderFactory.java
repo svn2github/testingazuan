@@ -53,6 +53,9 @@ public class PortalSecurityProviderFactory {
 			
 			// Read the securityProviderClass from configuration file spagobi.xml
 			String securityProviderClass = (String)ConfigSingleton.getInstance().getAttribute("SPAGOBI.PORTAL_SECURITY_PROVIDER_CLASS");
+			if(securityProviderClass!=null){
+				securityProviderClass = securityProviderClass.trim();
+			}
 			
 			//If we don't found class secuirtyProviderClass we set the default (EXO)
 			if (securityProviderClass == null){

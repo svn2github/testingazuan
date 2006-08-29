@@ -345,7 +345,15 @@ public class IReportPluginServlet extends HttpServlet{
 	 * @param tree List of all the fucntionalities
 	 * @return userRoles List of the user roles 
 	 */
-	private SourceBean addFunctToSB(LowFunctionality funct, List tree, List userRoles) {
+	private SourceBean addFunctToSB(LowFunctionality funct, List tree, List userRolesObj) {
+		List userRoles = new ArrayList();
+		Iterator iteruro = userRolesObj.iterator();
+		while(iteruro.hasNext()) {
+			Role role = (Role)iteruro.next();
+			if(role!=null) {
+				userRoles.add(role.getName());
+			}
+		}
 		SourceBean folderSB = null; 
 		try{
 			folderSB = new SourceBean("folder");
@@ -432,7 +440,7 @@ public class IReportPluginServlet extends HttpServlet{
  	    } catch (Exception e) {
  	    	return roles;
  	    }
- 	    roles = portalSecurityProvider.getUserRoles(username, password);
+ 	    roles = portalSecurityProvider.getUserRoles(username);
  	    return roles;
     }
 	

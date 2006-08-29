@@ -79,6 +79,7 @@ public class RoleSynchronizer {
             	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
             			"RoleSynchronizer::synchronize: source bean security class retrived " + secClassSB);
             	String portalSecurityProviderClass = secClassSB.getCharacters();
+            	portalSecurityProviderClass = portalSecurityProviderClass.trim();
             	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
             			"RoleSynchronizer::synchronize: security class name retrived " + portalSecurityProviderClass);
             	Class secProvClass = Class.forName(portalSecurityProviderClass);

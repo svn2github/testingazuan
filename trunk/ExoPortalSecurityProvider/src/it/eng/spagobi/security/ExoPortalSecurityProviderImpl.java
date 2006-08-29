@@ -45,7 +45,7 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 	
 	/** 
 	 * Get all the portal roles 
-	 * @return List of the portal roles
+	 * @return List of the portal roles (list of it it.eng.spagobi.bo.Role)
 	 */
 	public List getRoles() {
 		List roles = new ArrayList();
@@ -76,10 +76,9 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 	
 	/**
 	 * Add the current group(role) and it's child to the roles list
-	 * 
 	 * @param group Group of the portal
 	 * @param orgService OrganizationService of the portal
-	 * @param roles List of roles
+	 * @param roles List of roles (list of it it.eng.spagobi.bo.Role)
 	 */
 	private void add(Group group, OrganizationService orgService, List roles){
 		Role role = new Role(group.getId(), group.getDescription());
@@ -105,12 +104,10 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 
 	/**
 	 * Get the list of the user roles. If the user doesn't exist the roles list is empty
-	 * 
 	 * @param user Username
-	 * @param passwd Password of the user
-	 * @return List of user roles
+	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
-	public List getUserRoles(String user, String passwd) {
+	public List getUserRoles(String user) {
 		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
 							"ExoPortalSecurityProviderImpl::getUserRoles:start method");
 		List roles = new ArrayList();
@@ -142,8 +139,9 @@ public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
 			Iterator iterGroups = groups.iterator();
 			while(iterGroups.hasNext()) {
 				Group group = (Group)iterGroups.next();
-				String groupid = group.getId();
-				roles.add(groupid);
+				add(group, service, roles);
+				//String groupid = group.getId();
+				//roles.add(groupid);
 			}
 		} catch (Exception e) {
 			SpagoBITracer.critical("UTILITIES",

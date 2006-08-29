@@ -25,7 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.olap.metadata.MemberObjectFactories;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
@@ -35,13 +34,11 @@ import mondrian.olap.Cube;
 import mondrian.olap.Exp;
 import mondrian.olap.Formula;
 import mondrian.olap.FunCall;
-import mondrian.olap.Level;
 import mondrian.olap.Literal;
 import mondrian.olap.MondrianException;
 import mondrian.olap.Query;
 import mondrian.olap.QueryAxis;
 import mondrian.olap.Role;
-import mondrian.olap.Schema;
 import mondrian.olap.SchemaReader;
 import mondrian.olap.Syntax;
 import mondrian.olap.Util;
@@ -501,89 +498,130 @@ public class MondrianModel extends MdxOlapModel implements OlapModel,
 
 	    
 	    
+	    
+	    
+	    
+	    
+	    // ***************** START CODE ADDED ********************
+	    
+	    // get the connection role, cube and schema reader
 	    Role connRole = monConnection.getRole().makeMutableClone();
 	    Cube cube = monQuery.getCube();
 	    SchemaReader schemaReader = cube.getSchemaReader(null);
 	    
-	    List dimNames = new ArrayList();
+	    // clean dimension access list
 	    Iterator iterDimAcc = dimAccList.iterator();
+	    List tmpDimAccList = new ArrayList();
 	    while(iterDimAcc.hasNext()) {
 	    	String dimAccStr = (String)iterDimAcc.next();
-	    	String dimName = dimAccStr.substring(0, dimAccStr.indexOf("."));
+	    	if((dimAccStr==null) || (dimAccStr.trim().equals(""))){
+	    		continue;
+	    	} else {
+	    		tmpDimAccList.add(dimAccStr);
+	    	}
+	    }
+	    dimAccList = tmpDimAccList;
+	    
+	    
+	    // calculate an List containing all the dimension name to filter
+	    List dimNames = new ArrayList();
+	    iterDimAcc = dimAccList.iterator();
+	    while(iterDimAcc.hasNext()) {
+	    	String dimAccStr = (String)iterDimAcc.next();
+	    	String dimName = null;
+	    	if(dimAccStr.indexOf(".") == -1){
+	    		continue;
+	    	} else {
+	    		dimName = dimAccStr.substring(0, dimAccStr.indexOf("."));
+	    	}
 	    	if((dimName!=null) && !dimName.trim().equals(""))
 	    		if(!dimNames.contains(dimName))
 	    			dimNames.add(dimName);
 	    }
 	    
-	    Set hierKeys = hHierarchies.keySet();
+	    
+	    // calculate a map with couple { dimName, List of members of the dimension }
+	    Map memberMap = new HashMap();
 	    Iterator iterDimNames = dimNames.iterator();
 	    while(iterDimNames.hasNext()){
 	    	String dimName = (String)iterDimNames.next();
-	    	Iterator itHierKeys = hierKeys.iterator();
-		    while(itHierKeys.hasNext()) {
-		    	String hierKey = (String)itHierKeys.next();
-		    	if(hierKey.equalsIgnoreCase(dimName)) {
-		    		MondrianHierarchy monHier = (MondrianHierarchy)hHierarchies.get(hierKey);
-		    		mondrian.olap.Hierarchy hier = monHier.getMonHierarchy();
-		    		connRole.grant(hier, Access.CUSTOM, null, null);
+	    	List dimMembers = new ArrayList();
+	    	iterDimAcc = dimAccList.iterator();
+		    while(iterDimAcc.hasNext()) {
+		    	String dimAccStr = (String)iterDimAcc.next();
+		    	if(dimAccStr.indexOf(".") == -1){
+		    		continue;
+		    	} else {
+		    		String memberDim = dimAccStr.substring(0, dimAccStr.indexOf("."));
+		    		if(dimName.equalsIgnoreCase(memberDim)){
+		    			dimMembers.add(dimAccStr);
+			    	}
 		    	}
 		    }
+		    memberMap.put(dimName, dimMembers);
 	    }
 	    
-	    iterDimAcc = dimAccList.iterator();
-	    while(iterDimAcc.hasNext()) {
-	    	String dimAccStr = (String)iterDimAcc.next();
-	    	String[] membParts = Util.explode(dimAccStr);
-    	    mondrian.olap.Member member = schemaReader.getMemberByUniqueName(membParts,true);
-    	    connRole.grant(member, Access.ALL);
+	    // FOR EACH DIMENSION NAME SET THE RIGHT GRANT TO THE DIMENSION OR HIERARCHY
+	    Set dimKeys = memberMap.keySet();
+	    Iterator iterDimKeys = dimKeys.iterator();
+	    while(iterDimKeys.hasNext()){
+	    	String dimName = (String)iterDimKeys.next();
+	    	List dimMembs = (List)memberMap.get(dimName);
+	    	if(dimMembs.isEmpty()) {
+	    		Set cubeDimKeys = hDimensions.keySet();
+	    		 Iterator itCubeDimKeys = cubeDimKeys.iterator();
+	 		     while(itCubeDimKeys.hasNext()) {
+	 		    	String cubeDimKey = (String)itCubeDimKeys.next();
+	 		    	if(cubeDimKey.equalsIgnoreCase(dimName)) {
+	 		    		MondrianDimension monDim = (MondrianDimension)hDimensions.get(cubeDimKey);
+	 		    		mondrian.olap.Dimension dim = monDim.getMonDimension();
+	 		    		connRole.grant(dim, Access.NONE);
+	 		    		break;
+	 		    	}
+	 		     }
+	    	} else {
+	    		 Set hierKeys = hHierarchies.keySet();
+	    		 Iterator itHierKeys = hierKeys.iterator();
+	 		     while(itHierKeys.hasNext()) {
+	 		    	String hierKey = (String)itHierKeys.next();
+	 		    	if(hierKey.equalsIgnoreCase(dimName)) {
+	 		    		MondrianHierarchy monHier = (MondrianHierarchy)hHierarchies.get(hierKey);
+	 		    		mondrian.olap.Hierarchy hier = monHier.getMonHierarchy();
+	 		    		connRole.grant(hier, Access.CUSTOM, null, null);
+	 		    		break;
+	 		    	}
+	 		    }
+	    	}
 	    }
 	    
+	    // FOR EACH MEMBER SET THE GRANT
+	    dimKeys = memberMap.keySet();
+	    iterDimKeys = dimKeys.iterator();
+	    while(iterDimKeys.hasNext()){
+	    	String dimName = (String)iterDimKeys.next();
+	    	List dimMembs = (List)memberMap.get(dimName);
+	        Iterator iterDimMembs = dimMembs.iterator();
+	        while(iterDimMembs.hasNext()) {
+	        	String dimMemb = (String)iterDimMembs.next();
+	        	String[] membParts = Util.explode(dimMemb);
+	    	    mondrian.olap.Member member = schemaReader.getMemberByUniqueName(membParts,true);
+	    	    connRole.grant(member, Access.ALL);
+	        }
+	    }
+	    
+	        
+	    // SET THE ROLE INTO CONNECTION
 	    connRole.makeImmutable();
 	    monConnection.setRole(connRole); 
 	    
-	    /*
-	    Role connRole = monConnection.getRole().makeMutableClone();
-	    Cube cube = monQuery.getCube();
-	    SchemaReader schemaReader = cube.getSchemaReader(null);
-	    Set hierKeys = hHierarchies.keySet();
-	    Iterator itHierKeys = hierKeys.iterator();
-	    while(itHierKeys.hasNext()) {
-	    	String hierKey = (String)itHierKeys.next();
-	    	if(hierKey.equalsIgnoreCase("[Product]")) {
-	    		MondrianHierarchy monHier = (MondrianHierarchy)hHierarchies.get(hierKey);
-	    		mondrian.olap.Hierarchy hier = monHier.getMonHierarchy();
-	    		//Level[] levels = hier.getLevels();
-	    	    //for(int i=0; i<levels.length; i++) {
-	    		//		Level level = levels[i];
-	    		// 		String name = level.getName();	
-	    	    //}
-	    	    connRole.grant(hier, Access.CUSTOM, null, null);
-	    	    String[] membParts = Util.explode("[Product].[Food].[Deli].[Meat]");
-	    	    mondrian.olap.Member member = schemaReader.getMemberByUniqueName(membParts,true);
-	    	    connRole.grant(member, Access.ALL);
-	    	    membParts = Util.explode("[Product].[Food].[Produce].[Fruit]");
-	    	    member = schemaReader.getMemberByUniqueName(membParts,true);
-	    	    connRole.grant(member, Access.ALL);
-	    	    membParts = Util.explode("[Product].[Food].[Produce].[Vegetables]");
-	    	    member = schemaReader.getMemberByUniqueName(membParts,true);
-	    	    connRole.grant(member, Access.ALL);
-	    	} 
-	    }
-	    connRole.makeImmutable();
-	    //monConnection.setRole(connRole); 
-
-	    Set dimKeys = hDimensions.keySet();
-	    Iterator itDimKeys = dimKeys.iterator();
-	    while(itDimKeys.hasNext()) {
-	    	String dimKey = (String)itDimKeys.next();
-	    	if(dimKey.equalsIgnoreCase("[Product]")) {
-	    		MondrianDimension monDim = (MondrianDimension)hDimensions.get(dimKey);
-	    		mondrian.olap.Dimension dim = monDim.getMonDimension();
-	    		connRole.grant(dim, Access.NONE);
-	    	}
-	    }
-	    monConnection.setRole(connRole);   
-	    */
+	    
+	    // ***************** END CODE ADDED ********************
+	    
+	    
+	    
+	    
+	    
+	    
 	    
 	    queryAdapter = new MondrianQueryAdapter(this, monQuery);
 

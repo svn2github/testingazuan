@@ -99,6 +99,7 @@
  	<%@page import="java.util.Collections"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <html><body><center><h2>Unauthorized</h2></center></body></html>
 
 <% } else {
@@ -126,9 +127,13 @@
     
     String dimAccRulStr = request.getParameter("dimension_access_rules");
     if(dimAccRulStr!=null){
-    	String[] dimAccArray = dimAccRulStr.split(",");
-    	List dimAccList = Arrays.asList(dimAccArray);
-    	session.setAttribute("dimension_access_rules", dimAccList);
+    	if(dimAccRulStr.trim().equalsIgnoreCase("")) {
+    		session.setAttribute("dimension_access_rules", new ArrayList());
+    	} else {
+    		String[] dimAccArray = dimAccRulStr.split(",");
+    		List dimAccList = Arrays.asList(dimAccArray);
+    		session.setAttribute("dimension_access_rules", dimAccList);
+    	}
     }
     
 %>   

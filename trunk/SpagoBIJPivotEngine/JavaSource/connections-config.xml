@@ -19,8 +19,8 @@
 					isDefault="true"
 					isJNDI="false" 
 					driver="org.postgresql.Driver"
-					user="foodmart"
-					password="smartfood"
-					jdbcUrl="jdbc:postgresql://localhost:5432/foodmart"/>
-	-->
+					user="postgres"
+					password="postgres"
+					jdbcUrl="jdbc:postgresql://localhost:5432/lapam"/>
+					-->
 </CONNECTIONS-CONFIGURATION>

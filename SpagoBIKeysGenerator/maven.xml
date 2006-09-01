@@ -1,0 +1,17 @@
+<project    xmlns:j="jelly:core"
+            xmlns:maven="jelly:maven"
+            xmlns:ant="jelly:ant"
+            default="SpagoBIKeysGenerator:build">
+
+  <goal name="SpagoBIKeysGenerator:build">	
+	<attainGoal name="jar:install" />
+        <ant:mkdir dir="${basedir}/build"/>          
+	<ant:copy todir="${basedir}/build">
+                <ant:fileset dir="${basedir}/target">
+                    <ant:include name="**/*.jar"/>
+                </ant:fileset>
+        </ant:copy>
+	<attainGoal name="clean:clean"/>  
+  </goal>
+
+</project>

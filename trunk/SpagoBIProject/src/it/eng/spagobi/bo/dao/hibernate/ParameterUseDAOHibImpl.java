@@ -185,6 +185,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			hibParuse.setName(aParameterUse.getName());
 			hibParuse.setDescr(aParameterUse.getDescription());
 			hibParuse.setSelectionType(aParameterUse.getSelectionType());
+			hibParuse.setMultivalue(aParameterUse.isMultivalue()? new Integer(1): new Integer(0));
 			hibParuse.setManualInput(aParameterUse.getManualInput());
 			
 			SbiLov hibSbiLov = (SbiLov)aSession.load(SbiLov.class, aParameterUse.getIdLov());
@@ -298,6 +299,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			hibParuse.setName(aParameterUse.getName());
 			hibParuse.setDescr(aParameterUse.getDescription());
 			hibParuse.setSelectionType(aParameterUse.getSelectionType());
+			hibParuse.setMultivalue(aParameterUse.isMultivalue()? new Integer(1): new Integer(1));
 			hibParuse.setManualInput(aParameterUse.getManualInput());
 			Integer useId = (Integer)aSession.save(hibParuse);
 			
@@ -443,6 +445,8 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			logException(he);
 			
 			if (tx != null) tx.rollback();	
+			
+			System.out.println(he.toString());
 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
 		
@@ -479,6 +483,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			aParameterUse.setName(hibParUse.getName());
 			
 			aParameterUse.setSelectionType(hibParUse.getSelectionType());
+			aParameterUse.setMultivalue(hibParUse.getMultivalue() != null && hibParUse.getMultivalue().intValue() > 0);
 			
 			
 			//if the sbi_lov is null, then we have a man in modality

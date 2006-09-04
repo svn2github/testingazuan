@@ -614,6 +614,14 @@ public class DetailParameterModule extends AbstractModule {
 		paruse.setDescription(description);
 		paruse.setLabel(label);		
 		paruse.setSelectionType(selectionType);
+		if(selectionType != null 
+				&& (selectionType.equalsIgnoreCase("LIST") 
+						|| selectionType.equalsIgnoreCase("COMBOBOX")))
+			paruse.setMultivalue(false);
+		else
+			paruse.setMultivalue(true);
+		
+		
 		
 		if(manInFlag.equals("man_in"))
 			paruse.setManualInput(Integer.valueOf("1"));

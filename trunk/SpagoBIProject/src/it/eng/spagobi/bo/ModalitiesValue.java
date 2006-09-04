@@ -43,6 +43,7 @@ public class ModalitiesValue implements Serializable  {
 	private String iTypeId = "";
 	private String label ="";
 	private String selectionType ="";
+	private boolean multivalue = true;
 
 
 
@@ -133,5 +134,11 @@ public class ModalitiesValue implements Serializable  {
 	}
 	public void setSelectionType(String selectionType) {
 		this.selectionType = selectionType;
+	}
+	public boolean isMultivalue() {
+		return multivalue;
+	}
+	public void setMultivalue(boolean multivalue) {
+		this.multivalue = multivalue;
 	}
 }

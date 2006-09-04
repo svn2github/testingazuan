@@ -27,8 +27,6 @@ import java.util.List;
 
 /**
  * Defines a <code>ParameterUse</code> object. 
- * 
- * @author sulis
  */
 
 
@@ -45,6 +43,8 @@ public class ParameterUse  implements Serializable  {
 	List associatedChecks = null;
 	
 	String selectionType = "";
+	boolean multivalue = true;
+	
 	Integer manualInput;
 	
 	/**
@@ -157,5 +157,11 @@ public class ParameterUse  implements Serializable  {
 	}
 	public void setSelectionType(String selectionType) {
 		this.selectionType = selectionType;
+	}
+	public boolean isMultivalue() {
+		return multivalue;
+	}
+	public void setMultivalue(boolean multivalue) {
+		this.multivalue = multivalue;
 	}
 }

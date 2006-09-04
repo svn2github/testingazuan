@@ -162,6 +162,7 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 				}else{
 				ModalitiesValue modVal  = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(hibParuse.getSbiLov().getLovId());
 				modVal.setSelectionType(hibParuse.getSelectionType());
+				modVal.setMultivalue(hibParuse.getMultivalue() != null && hibParuse.getMultivalue().intValue() > 0);
 				parameter.setModalityValue(modVal);
 				}
 				ParameterUse aParameterUse = DAOFactory.getParameterUseDAO().loadByUseID(hibParuse.getUseId());

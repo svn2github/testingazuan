@@ -284,6 +284,16 @@ public class ExecutionController {
 			SourceBean sb = new SourceBean("FIELD");
 			sb.setAttribute("name", aBIObjectParameter.getParameterUrlName());
 			sb.setAttribute("label", aBIObjectParameter.getLabel());
+			
+			
+			if(aBIObjectParameter.getParameter().getModalityValue().isMultivalue()){
+				sb.setAttribute("multivalues", "true");	
+				sb.setAttribute("separator", ";");	
+			}
+			else {
+				sb.setAttribute("multivalues", "false");	
+			}
+			
 			Check check = null;
 			SourceBean validatorSourceBean = null;
 			while (it.hasNext()){
@@ -335,7 +345,8 @@ public class ExecutionController {
 				validatorSourceBean.setAttribute("arg0", check.getFirstValue());
 				validatorSourceBean.setAttribute("validatorName", "DATE");	
 			}
-			sb.setAttribute(validatorSourceBean);
+									
+			sb.setAttribute(validatorSourceBean);			
 		}
 		return sb;
 		}	

@@ -300,6 +300,11 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 				String fieldLabel = (String) field.getAttribute("label");
 				
+				String multivaluesStr = (String) field.getAttribute("multivalues");
+				boolean multivalues = (multivaluesStr != null && multivaluesStr.equalsIgnoreCase("true"))? true: false;
+				String separator = null;
+				if(multivalues) separator = (String) field.getAttribute("separator");
+				
 				// ********************************************
 				if (fieldLabel != null && fieldLabel.startsWith("#")) {
 					String key = fieldLabel.substring(1);
@@ -313,8 +318,15 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 				valueObj = serviceRequest.getAttribute(fieldName);
 				if (valueObj != null) value = valueObj.toString();
+				String[] values = null;
+				if(multivalues) values = value.split(separator);
+				else values = new String[]{value};
 				
 				validators = field.getAttributeAsList("VALIDATOR");
+				
+				for(int i = 0; i < values.length; i++ ) {
+					
+				value = values[i];
 				
 				itValidators = validators.iterator();
 				
@@ -601,7 +613,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						
 					}
 				}//while (itValidators.hasNext())
-				
+				} // while 
 				
 			} catch (Exception ex) {
 				TracerSingleton.log(Constants.NOME_MODULO,

@@ -471,12 +471,15 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
+					String biObjType = obj.getBiObjectTypeCode();
+					String imgUrl = "/img/objecticon_"+ biObjType+ ".gif";
+					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);
 					Integer idObj = obj.getId();
 					String stateObj = obj.getStateCode();
 					if (ObjectsAccessVerifier.canDev(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'"+createDetailObjectLink(idObj)+"\\', \\'\\', \\'"+createEraseObjectLink(idObj, idFolder)+"\\')' );\n");
+						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'"+createDetailObjectLink(idObj)+"\\', \\'\\', \\'"+createEraseObjectLink(idObj, idFolder)+"\\')' );\n");
 					} else if(ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '', '', '', 'menu(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'\\', \\'\\', \\'\\')' );\n");
+						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'\\', \\'\\', \\'\\')' );\n");
 					}
 				}
 			}

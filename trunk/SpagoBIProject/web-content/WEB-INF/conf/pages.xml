@@ -413,21 +413,49 @@
   	
   	<PAGE name="ValidateExecuteBIObjectPage" scope="REQUEST" title="Execute BIObject" >
     	<DEPENDENCIES>
-      		<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ExecuteBIObjectModule">
+	     
+			<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ExecuteBIObjectModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_DEFINED"/>
+        			<!--  <PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/> -->
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
+
+			<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ChecklistLookupModalityValuesModule">
+        		<CONDITIONS>
+        			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
+        			<PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_DEFINED"/>
+        		</CONDITIONS>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>         		
+      		
       		<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
+        			<PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
         		</CONDITIONS>
         		<CONSEQUENCES/>
-      		</DEPENDENCE>  		
+      		</DEPENDENCE>  	
+      		 
+      		
+      		
+      		<DEPENDENCE source="ExecuteBIObjectModule" target="ChecklistLookupModalityValuesModule">
+        		<CONDITIONS>
+        			<PARAMETER name="ExecuteBIObjectModule.LOOKUP_PARAMETER_NAME" scope="SERVICE_RESPONSE" value="AF_DEFINED"/>
+        			<PARAMETER name="ExecuteBIObjectModule.CHECKLIST" scope="SERVICE_RESPONSE" value="AF_DEFINED"/>
+        		</CONDITIONS>
+        		<CONSEQUENCES>
+        			<PARAMETER name="mod_val_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.mod_val_id" />
+        			<PARAMETER name="LOOKUP_PARAMETER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.LOOKUP_PARAMETER_NAME" />
+        			<PARAMETER name="LOOKUP_PARAMETER_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.LOOKUP_PARAMETER_ID" />
+        			<PARAMETER name="correlated_paruse_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.correlated_paruse_id" />
+        		</CONSEQUENCES>
+      		</DEPENDENCE>	
       		<DEPENDENCE source="ExecuteBIObjectModule" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="ExecuteBIObjectModule.LOOKUP_PARAMETER_NAME" scope="SERVICE_RESPONSE" value="AF_DEFINED"/>
+        			<PARAMETER name="ExecuteBIObjectModule.LIST" scope="SERVICE_RESPONSE" value="AF_DEFINED"/>
         		</CONDITIONS>
         		<CONSEQUENCES>
         			<PARAMETER name="mod_val_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.mod_val_id" />
@@ -440,6 +468,7 @@
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" name="ExecuteBIObjectModule"/>
       		<MODULE keep_instance="false" keep_response="false" name="ListLookupModalityValuesModule"/>
+    		<MODULE keep_instance="false" keep_response="false" name="ChecklistLookupModalityValuesModule"/>
     	</MODULES>
   	</PAGE>
 

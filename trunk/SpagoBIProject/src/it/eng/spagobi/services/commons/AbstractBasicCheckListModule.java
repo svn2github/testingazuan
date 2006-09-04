@@ -34,6 +34,7 @@ import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -49,9 +50,9 @@ import java.util.Map;
 public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 
 	protected SourceBean config;
-	Map checkedObjectsMap = null;
-	int pageNumber = 0;
-	boolean returnValues = true;
+	protected Map checkedObjectsMap = null;
+	protected int pageNumber = 0;
+	protected boolean returnValues = true;
 	
 	public static final String MODULE_PAGE = "CheckListPage";
 	
@@ -120,7 +121,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	public String getObjectKey(SourceBean object) {
 		String objectIdName = (String)((SourceBean) config.getAttribute("KEYS.OBJECT")).getAttribute("key");				
 		String objectIdValue = object.getAttribute(objectIdName).toString();
-		return objectIdValue.toLowerCase();
+		objectIdValue = GeneralUtilities.encode(objectIdValue);		
+		return objectIdValue;
 	}
 	
 	public SourceBean getObject(String key) throws Exception {
@@ -285,6 +287,7 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			else {
 				object.setAttribute("CHECKED", "false");				
 			}
+			object.setAttribute("ROW_ID", getObjectKey(object));			
 			rows.setAttribute(object);
 		}		
 				
@@ -300,6 +303,9 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {		
 		config = getConfig();
+		if(config == null) config = (SourceBean) response.getAttribute("CONFIG");
+		
+		
 		_request = request;
 		_response = response;
 		

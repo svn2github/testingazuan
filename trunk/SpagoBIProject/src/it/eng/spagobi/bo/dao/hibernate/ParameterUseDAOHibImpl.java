@@ -184,6 +184,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			hibParuse.setLabel(aParameterUse.getLabel());
 			hibParuse.setName(aParameterUse.getName());
 			hibParuse.setDescr(aParameterUse.getDescription());
+			hibParuse.setSelectionType(aParameterUse.getSelectionType());
 			hibParuse.setManualInput(aParameterUse.getManualInput());
 			
 			SbiLov hibSbiLov = (SbiLov)aSession.load(SbiLov.class, aParameterUse.getIdLov());
@@ -296,6 +297,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			hibParuse.setLabel(aParameterUse.getLabel());
 			hibParuse.setName(aParameterUse.getName());
 			hibParuse.setDescr(aParameterUse.getDescription());
+			hibParuse.setSelectionType(aParameterUse.getSelectionType());
 			hibParuse.setManualInput(aParameterUse.getManualInput());
 			Integer useId = (Integer)aSession.save(hibParuse);
 			
@@ -475,6 +477,10 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			aParameterUse.setId(hibParUse.getSbiParameters().getParId());
 			aParameterUse.setLabel(hibParUse.getLabel());
 			aParameterUse.setName(hibParUse.getName());
+			
+			aParameterUse.setSelectionType(hibParUse.getSelectionType());
+			
+			
 			//if the sbi_lov is null, then we have a man in modality
 			if(hibParUse.getSbiLov()==null){
 				aParameterUse.setIdLov(null);

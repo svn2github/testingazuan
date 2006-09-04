@@ -52,6 +52,7 @@ import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -285,12 +286,14 @@ public class ExecuteBIObjectModule extends AbstractModule
 	private void executionHandler(SourceBean request, SourceBean response) throws Exception {
 		// get object from the session
 		BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-        // for each parameter of the object control if in the request are
+		// for each parameter of the object control if in the request are
 		// present one or more values and put them into the parameter
+		// iff the parameter have not values set yet
 		List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();
         while(iterParams.hasNext()) {
         	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
+        	if(biparam.getParameterValues() != null && biparam.getParameterValues().size() > 0) continue;
         	String nameUrl = biparam.getParameterUrlName();
         	List paramAttrsList = request.getAttributeAsList(nameUrl);
             ArrayList paramvalues = new ArrayList();
@@ -324,8 +327,24 @@ public class ExecuteBIObjectModule extends AbstractModule
     			throw new EMFUserError(EMFErrorSeverity.ERROR, 1041);
         	}
         	ModalitiesValue modVal = lookupBIParameter.getParameter().getModalityValue();
-        	// it is a lookup call
-        	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
+
+//          it is a lookup call
+        	String lookupType = (String)request.getAttribute("LOOKUP_TYPE");
+        	if(lookupType == null) lookupType = "LIST";
+        	
+        	if(lookupType.equalsIgnoreCase("CHECK_LIST")) {        	
+        		response.setAttribute("CHECKLIST", "true");
+        		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "ChecklistLookupPublisher");
+        	}
+        	else if(lookupType.equalsIgnoreCase("LIST")) {  
+        		response.setAttribute("LIST", "true");
+            	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
+        	}
+        	else {
+        		response.setAttribute("LIST", "true");
+            	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
+        	}
+        	
         	response.setAttribute("mod_val_id" , modVal.getId().toString());
         	response.setAttribute("LOOKUP_PARAMETER_NAME", lookupBIParameter.getParameterUrlName());
         	response.setAttribute("LOOKUP_PARAMETER_ID", lookupBIParameter.getId().toString());
@@ -379,10 +398,20 @@ public class ExecuteBIObjectModule extends AbstractModule
 		BIObject obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		// get the parameter name and value from the request
 		String parameterNameFromLookUp = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
-		String parameterValueFromLookUp = (String)request.getAttribute("LOOKUP_VALUE");
-        // Create a List that will contains the value returned 
+		if(parameterNameFromLookUp == null) parameterNameFromLookUp = (String)session.getAttribute("LOOKUP_PARAMETER_NAME");
+				
+		// Create a List that will contains the value returned 
 		ArrayList paramvalues = new ArrayList();
-		paramvalues.add(parameterValueFromLookUp);
+		Object o = request.getAttribute("LOOKUP_VALUE");
+		if(o == null) o = session.getAttribute("LOOKUP_VALUE");
+		if(o instanceof String) {
+			String parameterValueFromLookUp = (String)o;        
+			paramvalues.add(parameterValueFromLookUp);
+		}
+		else {
+			paramvalues.addAll((Collection)o);
+		}
+		
 		// Set into the righr object parameter the list value
         List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();

@@ -196,6 +196,8 @@ public class CheckBoxTag extends TagSupport {
 				"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
 		} 
 		
+		System.out.println(_content.getAttribute("PAGED_LIST"));
+		
 		String pageNumberString = (String) _content.getAttribute("PAGED_LIST.PAGE_NUMBER");
 		String pagesNumberString = (String) _content.getAttribute("PAGED_LIST.PAGES_NUMBER");
 		pageNumber = 1; 
@@ -218,9 +220,10 @@ public class CheckBoxTag extends TagSupport {
 		params.put("LIGHT_NAVIGATOR_DISABLED", "true"); 
 		params.put("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		params.put("PAGE_NUMBER", new Integer(pageNumber).toString());
-		PortletURL url = createUrl(params);		
+		PortletURL url = createUrl(params);	
 		
-		_htmlStream.append(" <form method='POST' id='form' action='" + url.toString() + "'>\n");
+				
+		_htmlStream.append(" <form method='POST' action='" + url.toString() + "'>\n");
 		makeForm();
 		_htmlStream.append(" </form>\n");
 		
@@ -387,7 +390,9 @@ public class CheckBoxTag extends TagSupport {
 			}
 			_htmlStream.append(" <td class='" + rowClass + "'>\n");	
 			String checked = (String)row.getAttribute("CHECKED");
-			Object key = row.getAttribute("OBJ_ID");
+			
+			//String objectIdName = (String)((SourceBean) _layout.getAttribute("KEYS.OBJECT")).getAttribute("key");
+			Object key = row.getAttribute("ROW_ID");			
 			if(checked.equalsIgnoreCase("true")) {
 				_htmlStream.append("\t<input type='checkbox' name='checkbox:" + key.toString() + "' checked>\n");
 			}
@@ -479,8 +484,8 @@ public class CheckBoxTag extends TagSupport {
 		_htmlStream.append("		</TD>\n");
 				
 		// create center blank cell
-		_htmlStream.append("		<TD class='portlet-section-footer'>page " + pageNumber + " of " + pagesNumber + "\n");
-		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
+		_htmlStream.append("		<TD class='portlet-section-footer'>page " + pageNumber + " of " + pagesNumber + "</TD>\n");
+		
 		/*
         // visualize page numbers
 		String pageLabel = PortletUtilities.getMessage("ListTag.pageLable", "messages");
@@ -488,43 +493,7 @@ public class CheckBoxTag extends TagSupport {
 		_htmlStream.append("						<TD class='portlet-section-footer' align='center'>\n");
 		_htmlStream.append("							<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
 		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
-		*/
-		//form for checked elements filtering
-		String checked = "";
-		String isChecked = (String)_serviceRequest.getAttribute("checked");
-		if(isChecked == null){
-			isChecked = "true";
-		}
-		if(isChecked.equals("true")){
-			checked = "checked='checked'";
-		}
 		
-		_htmlStream.append("						    <br/><br/>\n");
-		//_htmlStream.append("	<form method='POST' action='" + formUrl.toString() + "' id ='objectForm' name='objectForm'>\n");
-		String label = PortletUtilities.getMessage("CheckboxTag.showChecked","messages");
-		_htmlStream.append("						    "+label+"\n");
-		_htmlStream.append("<input type=\"checkbox\"" + checked + " \n");
-		_htmlStream.append("				onclick=\"submitForm()\" name=\"filterCheckbox\" id=\"filterCheckbox\" value=\"true\"/>\n");
-		_htmlStream.append("<input type =\"hidden\" id=\"checkFilter\" name=\"checkFilter\" value=\"\" />");
-		_htmlStream.append("<input type =\"hidden\" id=\"checked\" name=\"checked\" value=\"\" />");
-		//_htmlStream.append("						    </form> \n");
-		_htmlStream.append("						    </TD>\n");
-		_htmlStream.append("<script>\n");
-		_htmlStream.append("function submitForm() {\n");
-		_htmlStream.append("var checkFilter=document.getElementById('checkFilter'); ");
-		_htmlStream.append("var filterCheckbox=document.getElementById('filterCheckbox'); ");
-		_htmlStream.append("var checked=document.getElementById('checked'); ");
-		_htmlStream.append("if(filterCheckbox.checked == false){");
-		_htmlStream.append("checked.value = 'false'");
-		_htmlStream.append("}");
-		_htmlStream.append("else{");
-		_htmlStream.append("checked.value = 'true'");
-		_htmlStream.append("}");
-		_htmlStream.append("checkFilter.value='checkFilter';");
-		_htmlStream.append("document.getElementById('form').submit();\n");
-		_htmlStream.append("} \n");
-		_htmlStream.append("</script>");
-		/*
 		// Form for list filtering; if not specified, the filter is enabled
 		if (_filter == null || _filter.equalsIgnoreCase("enabled")) {
 			

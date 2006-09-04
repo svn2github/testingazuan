@@ -176,6 +176,8 @@ public class DetailParameterModule extends AbstractModule {
 			boolean initialParameter, boolean initialParameterUse) throws EMFUserError,
 			SourceBeanException {
 		loadValuesDomain(response);
+		loadSelectionTypesDomain(response);
+		
 		List paruses = DAOFactory.getParameterUseDAO()
 				.loadParametersUseByParId(parameter.getId());
 		response.setAttribute("parusesList", paruses);
@@ -606,13 +608,19 @@ public class DetailParameterModule extends AbstractModule {
 		String description = (String) request.getAttribute("paruseDescription");
 		String name = (String) request.getAttribute("paruseName");
 		String label = (String) request.getAttribute("paruseLabel");
+		String selectionType = (String) request.getAttribute("selectionType");		
 		String manInFlag = (String) request.getAttribute("valueSelection");
 		paruse.setName(name);
 		paruse.setDescription(description);
-		paruse.setLabel(label);
-		if(manInFlag.equals("man_in")){
-		paruse.setManualInput(Integer.valueOf("1"));}
-		else{paruse.setManualInput(Integer.valueOf("0"));}
+		paruse.setLabel(label);		
+		paruse.setSelectionType(selectionType);
+		
+		if(manInFlag.equals("man_in"))
+			paruse.setManualInput(Integer.valueOf("1"));
+		else
+			paruse.setManualInput(Integer.valueOf("0"));
+		
+		
 		if (idLovStr == null || idLovStr.trim().equals(""))
 			paruse.setIdLov(Integer.valueOf("-1"));
 		else
@@ -758,6 +766,26 @@ public class DetailParameterModule extends AbstractModule {
 		parameter.setTypeId(new Integer(0));
 		parameter.setName("");
 		return parameter;
+	}
+	
+	/**
+	 * Loads all possible domain values which can be choosed for a parameter. Each of them
+	 * is stored in a list of <code>Domain</code> objects put into response.
+	 * When the isertion/modify parameters page is loaded, the user selects a domain value for the
+	 * parameter by the Data Selection CD Check Button.
+	 * 
+	 * @param response The response SourceBean
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	private void loadSelectionTypesDomain(SourceBean response)  throws EMFUserError {
+		  try {
+			  List list = DAOFactory.getDomainDAO().loadListDomainsByType("SELECTION_TYPE");
+			  response.setAttribute ("listSelType", list);
+		  }
+		  catch (Exception ex) {
+			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","loadSelectionTypesDomain","Cannot prepare page for the insertion", ex  );
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		  }
 	}
 	
 	/**

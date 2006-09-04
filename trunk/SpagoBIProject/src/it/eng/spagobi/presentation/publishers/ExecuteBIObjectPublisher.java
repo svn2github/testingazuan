@@ -66,10 +66,14 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 		SourceBean listLookupModule = (SourceBean) responseContainer
 				.getServiceResponse().getAttribute(
 						"ListLookupModalityValuesModule");
-
+		SourceBean checklistLookupModule = (SourceBean) responseContainer
+		.getServiceResponse().getAttribute(
+				"ChecklistLookupModalityValuesModule");
+		
 		// if the module response is null throws an error and return the name of
 		// the errors publisher
-		if (executeModuleResponse == null && listLookupModule == null) {
+		if (executeModuleResponse == null && listLookupModule == null && checklistLookupModule == null) {
+			
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE,
 					"ExecuteBIObjectPublisher", "getPublisherName",
 					"Module response null");
@@ -97,6 +101,14 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 					return publisherName;
 				} else
 					return "error";
+			} else if (checklistLookupModule != null) {
+				Object publisherNameSetObj = checklistLookupModule
+						.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
+				if (publisherNameSetObj != null) {
+					String publisherName = (String) publisherNameSetObj;
+					return publisherName;
+				} else
+					return "error";	
 			} else
 				return "error";
 		}
@@ -129,6 +141,10 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 				.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
 		if (publisherNameSetObj == null) {
 			publisherNameSetObj = listLookupModule == null ? null: listLookupModule
+					.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
+		}
+		if (publisherNameSetObj == null) {
+			publisherNameSetObj = checklistLookupModule == null ? null: checklistLookupModule
 					.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
 		}
 		if (publisherNameSetObj != null) {

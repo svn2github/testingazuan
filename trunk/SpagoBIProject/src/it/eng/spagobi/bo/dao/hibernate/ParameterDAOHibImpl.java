@@ -105,62 +105,7 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	 */
 	public Parameter loadForExecutionByParameterIDandRoleName(
 			Integer parameterID, String roleName) throws EMFUserError {
-		/*
-		Parameter parameter = null;
-		SQLCommand cmdSelect = null;
-		DataResult dr = null;
-		ScrollableDataResult sdr = null;
-		ArrayList elements = new ArrayList(1); 
-		DataConnection dataConnection = null;
-//		 LOAD THE LOV FOR THE MODALITY
-		String useIdStr = null;
-		String idLovStr = null;
 		
-		try {
-			parameter = loadForDetailByParameterID(parameterID);
-			
-			Role role = DAOFactory.getRoleDAO().loadByName(roleName);
-			 
-			dataConnection = DataConnectionManager.getInstance().getConnection("spagobi");
-			
-			// FIND THE MODALITY FOR PAR_ID AND ROLE NAME
-			String strSql = SQLStatements.getStatement("SELECT_PARAMETER_USE_FROM_IDPAR_IDROLE");
-			DataField dataField = dataConnection.createDataField("PAR_ID", Types.DECIMAL, parameter.getId());
-			elements.add(dataField);
-			dataField = dataConnection.createDataField("EXT_ROLE_ID", Types.DECIMAL, role.getId());
-			elements.add(dataField);
-			cmdSelect = dataConnection.createSelectCommand(strSql);
-			dr = cmdSelect.execute(elements);
-			sdr = (ScrollableDataResult) dr.getDataObject();
-			
-			
-			
-			if(sdr.hasRows()) {
-				DataRow row = sdr.getDataRow(1);
-				useIdStr = row.getColumn("USE_ID").getObjectValue().toString();
-				idLovStr = row.getColumn("LOV_ID").getObjectValue().toString();
-					
-				
-				
-			}
-			
-		} catch (Exception ex) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "ParameterDAOImpl", "load", "Cannot recover detail information", ex);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} finally {
-			Utils.releaseResources(dataConnection, cmdSelect, dr);
-		}
-		
-		ModalitiesValue modVal  = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(Integer.valueOf(idLovStr));
-		parameter.setModalityValue(modVal);
-		
-		//LOAD THE CHECKS FOR THE MODALITY
-		ParameterUse aParameterUse = DAOFactory.getParameterUseDAO().loadByUseID(new Integer(useIdStr));
-		
-		// Carico i Checks 
-		parameter.setChecks(aParameterUse.getAssociatedChecks());
-		return parameter;  
-		*/
 		Query hqlQuery = null;
 		String hql = null;
 		Session aSession = null;
@@ -183,18 +128,7 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 			criteria.add(domainCdCriterrion);
 			List paruses = criteria.list();
 			
-			/*
-			SELECT 
-			PARUSE.USE_ID AS USE_ID,
-			PARUSE.LOV_ID AS LOV_ID
-			FROM 
-				SBI_PARUSE PARUSE,
-				SBI_PARUSE_DET PARUSEDET
-				WHERE 
-			PARUSE.PAR_ID = ? 
-			AND PARUSEDET.EXT_ROLE_ID = ?
-			AND PARUSE.USE_ID = PARUSEDET.USE_ID"/>  
-*/
+			
 			List parUseAssociated = new ArrayList();
 			Iterator parusesIter = paruses.iterator();
 			while(parusesIter.hasNext()) {
@@ -227,6 +161,7 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 					
 				}else{
 				ModalitiesValue modVal  = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(hibParuse.getSbiLov().getLovId());
+				modVal.setSelectionType(hibParuse.getSelectionType());
 				parameter.setModalityValue(modVal);
 				}
 				ParameterUse aParameterUse = DAOFactory.getParameterUseDAO().loadByUseID(hibParuse.getUseId());

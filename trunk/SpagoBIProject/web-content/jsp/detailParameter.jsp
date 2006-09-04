@@ -26,6 +26,7 @@
 	Parameter parameter = (Parameter) moduleResponse.getAttribute("parametersObj");
 	String modality = (String) moduleResponse.getAttribute("modality");
 	ArrayList list = (ArrayList) moduleResponse.getAttribute("listObj");
+	ArrayList selTypeList = (ArrayList) moduleResponse.getAttribute("listSelType");
 
 	PortletURL formUrl = renderResponse.createActionURL();
 	formUrl.setParameter("PAGE", "detailParameterPage");
@@ -355,11 +356,13 @@
 			   id="paruseDescription" name="paruseDescription" size="50" 
 			   value="<%=paruse.getDescription() == null ? "" : paruse.getDescription()%>" maxlength="160">
 	</div>
+	
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBIDev.ListParamUse.parInfo.Name"/>
-		</span>
+		<spagobi:message key = "SBIDev.ListParamUse.parInfo.Name"/>
+	</span>
 	</div>
+	
 	<div class='div_detail_form' id = 'divForm' >
 	<% String lovName = null;
   	   Integer idLov = null;
@@ -397,7 +400,34 @@
     	<input 	type='image' name="loadLovLookup"  id="loadLovLookup" value="LovLookup" style='<%if(isLov) {out.println("display:inline;");} else {out.println("display:none;");} %>'
 		   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
 		   		title='Lov Lookup' alt='Lov Lookup'/>
-	</div>
+			 
+		 </div>	
+		 
+		 
+		 <div class='div_detail_label'>
+	<span class='portlet-form-field-label'>
+		&nbsp;
+	</span>
+	</div>	
+		<div class='div_detail_form' id = 'divForm' >
+		
+		<select class='portlet-form-input-field' NAME="selectionType" id="paruseSelType">
+		<% 
+		 String curr_seltype_val = paruse.getSelectionType();
+		 if(curr_seltype_val == null) curr_seltype_val = "none";
+		 for (int i=0	; i<selTypeList.size(); i++){
+    	       Domain domain = new Domain();
+    	       domain = (Domain)selTypeList.get(i);		
+		%>		
+        	<option VALUE="<%=(String)domain.getValueCd()%>" <%if(curr_seltype_val.equals(domain.getValueCd().toString())) { out.println(" selected='selected' "); } %> >
+        	<%=domain.getValueName()%>
+       <%} %>
+       </select>  
+       </div>	     
+	
+	
+
+
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBIDev.paramUse.manInputCheck" />
@@ -712,13 +742,17 @@ function deleteParameterUseConfirm (message) {
 function lovControl(){
 var var1 = document.getElementById('loadLovLookup');
 var var2 = document.getElementById('paruseLovName');
+var var3 = document.getElementById('paruseSelType');
+
 if(var1.style.display != 'inline'){
    var1.style.display = 'inline';
    var2.disabled = false;
+   var3.disabled = false;
  }
  else {
  var1.style.display = 'none';
  var2.disabled = true;
+  var3.disabled = true;
  }
  }
  

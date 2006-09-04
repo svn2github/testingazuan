@@ -42,6 +42,8 @@ public class ModalitiesValue implements Serializable  {
 	private String iTypeCd ="";
 	private String iTypeId = "";
 	private String label ="";
+	private String selectionType ="";
+
 
 
 	/**
@@ -124,5 +126,12 @@ public class ModalitiesValue implements Serializable  {
 	}
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	
+	public String getSelectionType() {
+		return selectionType;
+	}
+	public void setSelectionType(String selectionType) {
+		this.selectionType = selectionType;
 	}
 }

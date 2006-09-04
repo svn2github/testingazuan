@@ -401,6 +401,75 @@ public class GeneralUtilities {
 		 }
 		 return true;
 	 }
+	
+
+	/**
+     * Questo metodo permette di sostituire una parte di una stringa con un'altra.
+     * @param toParse stringa da manipolare.
+     * @param replacing parte di stringa da sostituire.
+     * @param replaced stringa nuova.
+     */
+    public static String replace(String toParse, String replacing, String replaced) {        
+        if (toParse == null) {            
+            return toParse;
+        } // if (toParse == null)       
+        if (replacing == null) {            
+            return toParse;
+        } // if (replacing == null)        
+        if (replaced != null) {
+            int parameterIndex = toParse.indexOf(replacing);
+            while (parameterIndex != -1) {
+                String newToParse = toParse.substring(0, parameterIndex);
+                newToParse += replaced;
+                newToParse += toParse.substring(parameterIndex + replacing.length(), toParse.length());               
+                toParse = newToParse;
+                parameterIndex = toParse.indexOf(replacing, parameterIndex + replaced.length());
+            } // while (parameterIndex != -1)
+        } // if (replaced != null)
+        return toParse;
+    } // public static String replace(String toParse, String replacing, String replaced)
+	
+	
+	/**
+	* Questo metodo implementa la stessa logica della funzione javascript <em>escape</em>.
+	* @param input stringa da manipolare.
+	*/
+	public static String encode(String input) {
+		/*
+		input = replace(input, "%", "%25");
+	    input = replace(input, " ", "%20");
+	    input = replace(input, "\"", "%22");
+	    input = replace(input, "'", "%27");
+	    input = replace(input, "<", "%3C");
+	    input = replace(input, "<", "%3E");
+	    input = replace(input, "?", "%3F");
+	    input = replace(input, "&", "%26");
+	    */
+		//input = replace(input, " ", "&#160;");
+		input = replace(input, " ", "_");
+	    return input;
+	 } 
+	
+	/**
+	* Questo metodo implementa la stessa logica della funzione javascript <em>escape</em>.
+	* @param input stringa da manipolare.
+	*/
+	public static String decode(String input) {
+		/*
+		input = replace(input, "%25", "%");
+	    input = replace(input, "%20", " ");
+	    input = replace(input, "%22", "\"");
+	    input = replace(input, "%27", "'");
+	    input = replace(input, "%3C", "<");
+	    input = replace(input, "%3E", "<");
+	    input = replace(input, "%3F", "?");
+	    input = replace(input, "%26", "&");
+	    */
+		//input = replace(input, "&#160;", " ");
+		input = replace(input, "_", " ");
+	    return input;
+	 } 
+	
 	public static String substituteProfileAttributesInFixLov(String value, HashMap profileattrs, int profileAttributeStartIndex) throws Exception {
 		int profileAttributeEndIndex = value.indexOf("}");
 		if (profileAttributeEndIndex == -1) throw new Exception("Not closed profile attribute: '}' expected.");

@@ -28,6 +28,13 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.dbaccess.DataConnectionManager;
+import it.eng.spago.dbaccess.Utils;
+import it.eng.spago.dbaccess.sql.DataConnection;
+import it.eng.spago.dbaccess.sql.SQLCommand;
+import it.eng.spago.dbaccess.sql.result.DataResult;
+import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -100,10 +107,13 @@ public class DynamicPageTag extends TagSupport {
 		
 		// an empty input type hidden and the correspondent JavaScript to popolate it in case there is a lookup call (in case of query or script) 
 		htmlStream.append("<input type='hidden' id='LOOKUP_OBJ_PAR_ID' name='' value=''/>\n");
+		htmlStream.append("<input type='hidden' id='LOOKUP_TYPE' name='' value=''/>\n");
 		htmlStream.append("<script type='text/javascript'>\n");
-		htmlStream.append("	function setLookupField(idStr) {\n");
+		htmlStream.append("	function setLookupField(idStr, type) {\n");
 		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').value= idStr;\n");
 		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').name = 'LOOKUP_OBJ_PAR_ID';\n");
+		htmlStream.append("		document.getElementById('LOOKUP_TYPE').value= type;\n");
+		htmlStream.append("		document.getElementById('LOOKUP_TYPE').name = 'LOOKUP_TYPE';\n");
 		htmlStream.append("	}\n");
 		htmlStream.append("</script>\n");
 		
@@ -171,17 +181,6 @@ public class DynamicPageTag extends TagSupport {
         			correlation += " " + objParFatherLabel ;
         			htmlStream.append("		<img src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/parCorrelation.gif") + "' ");
         			htmlStream.append("		 title='"+correlation+"' alt='"+correlation+"' />");
-//        			htmlStream.append("		<div class='div_detail_label_lov'>\n");
-//            		htmlStream.append("			<span class='portlet-form-field-label'>\n");
-//            		htmlStream.append("				&nbsp;");
-//            		htmlStream.append("			</span>\n");
-//            		htmlStream.append("		</div>\n");
-//            		htmlStream.append("		<div class='div_detail_form'>\n");
-//        			String correlation = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages");
-//            		htmlStream.append("			<span class='portlet-font'>\n");
-//            		htmlStream.append(correlation + " " + objParFatherLabel + "\n");
-//            		htmlStream.append("			</span>\n");
-//            		htmlStream.append("		</div>\n");
         		}
         		htmlStream.append("		</div>\n");
         	}
@@ -219,8 +218,7 @@ public class DynamicPageTag extends TagSupport {
         htmlStream.append("}\n");
         htmlStream.append("</script>\n");
 
-        //htmlStream.append("<br/><br/>\n");
-		//createButtons(htmlStream);
+       
 		try {
 			pageContext.getOut().print(htmlStream);
 		} catch(IOException ioe) {
@@ -229,12 +227,6 @@ public class DynamicPageTag extends TagSupport {
 		
 		return SKIP_BODY;
 	}
-
-	
-	
-	
-	
-	
 	
 	/**
 	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
@@ -246,9 +238,21 @@ public class DynamicPageTag extends TagSupport {
 	
 	
 	
+	 
 	
-	
-	
+	private String getValue(BIObjectParameter biparam) {
+		String value = "";
+		List values = biparam.getParameterValues();
+		if(values == null) return value;
+		
+		if (values.size() == 1) {
+			value = (String) values.get(0);
+		}
+		else {
+			for(int i = 0; i < values.size(); i++) value += (String) values.get(i) + "; ";
+		}
+		return value;
+	}
 	
 	/**
 	 * Given a <code>BIObjectParameter </code> object at input, creates from it a dinamic 
@@ -259,17 +263,57 @@ public class DynamicPageTag extends TagSupport {
 	 * @return The label of the BIObjectParameter of dependancy, if any
 	 */
 	private String createHTMLForm(BIObjectParameter biparam, StringBuffer htmlStream) {
+				
+		String typeCode = getModalityValue(biparam).getITypeCd();
 		
-		ModalitiesValue modVal = biparam.getParameter().getModalityValue();
-		String typeCode = modVal.getITypeCd();
+		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
+			htmlStream.append("<input style='width:230px;' type='text' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' value='" + getValue(biparam) + "' class='portlet-form-input-field' />\n");
+			return null;
+		}		
 		
-		String value = "";
-		List values = biparam.getParameterValues();
-		if (values != null && values.size() == 1) {
-			value = (String) values.get(0);
+		String selectionType = getModalityValue(biparam).getSelectionType();
+		if(selectionType == null) {
+			if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE) 
+				|| typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE))
+				selectionType = "COMBOBOX";
+			else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE))
+				selectionType = "LIST";
+		}			
+		
+		if(selectionType.equalsIgnoreCase("COMBOBOX")) {
+			createHTMLComboBox(biparam, htmlStream);
+		}
+		else if(selectionType.equalsIgnoreCase("RADIOBUTTON")) {
+			createHTMLRadioButton(biparam, htmlStream);		
+		}		
+		else if(selectionType.equalsIgnoreCase("LIST")) {
+			createHTMLListButton(biparam, htmlStream);
+		}		
+		else if(selectionType.equalsIgnoreCase("CHECK_LIST")) {
+			createHTMLCheckListButton(biparam, htmlStream);
 		}
 		
-		// looks for dependencies (this will be ignored if the lov is not of query type)
+		if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {			
+			// looks for dependencies (this will be ignored if the lov is not of query type)
+			Object[] results = getObjectFather(biparam);
+			BIObjectParameter objParFather = (BIObjectParameter)results[1];
+			ObjParuse objParuse = (ObjParuse)results[0];
+			
+			if (objParFather != null && objParuse != null) {
+				// the BIobjectParameter is correlated to another BIObjectParameter
+				htmlStream.append("<input type='hidden' name='correlatedParuseIdForObjParWithId_" + biparam.getId() + "' value='" + objParuse.getParuseId() + "' />\n");
+				return objParFather.getLabel();
+			}
+		}
+		
+		return null;		
+	}
+	
+	private ModalitiesValue getModalityValue(BIObjectParameter biparam) {
+		 return biparam.getParameter().getModalityValue();
+	}
+	
+	private Object[] getObjectFather(BIObjectParameter biparam) {
 		BIObjectParameter objParFather = null;
 		ObjParuse objParuse = null;
 		try {
@@ -283,7 +327,7 @@ public class DynamicPageTag extends TagSupport {
 					Integer paruseId = aObjParuse.getParuseId();
 					ParameterUse aParameterUse = paruseDAO.loadByUseID(paruseId);
 					Integer idLov = aParameterUse.getIdLov();
-					if (idLov.equals(modVal.getId())) {
+					if (idLov.equals(getModalityValue(biparam).getId())) {
 						// the ModalitiesValue of the BIObjectParameter corresponds to a ParameterUse correlated
 						objParuse = aObjParuse;
 						SpagoBITracer.debug("", "DynamicPageTag", "createHTMLForm()", "Found correlation:" +
@@ -315,82 +359,166 @@ public class DynamicPageTag extends TagSupport {
 			e.printStackTrace();
 		}
 		
-		
-		// PARAMETER USE TYPE FIX LOV
-		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {
-			try{
-				htmlStream.append("<select style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' class='portlet-form-field' >\n");
-				String stringXMLValues = modVal.getLovProvider();
-				stringXMLValues = PortletUtilities.cleanString(stringXMLValues);
-				SourceBean sbXMLValues = SourceBean.fromXMLString(stringXMLValues); 
-				List l = sbXMLValues.getAttributeAsList("LOV-ELEMENT");
-				Iterator it = l.iterator();
-				SourceBean sbTemp = null;
-				String desc = null;
-				String val = null;
-				while(it.hasNext()) {
-					sbTemp = (SourceBean)it.next();
-					desc = (String)sbTemp.getAttribute("DESC");
-					val = (String)sbTemp.getAttribute("VALUE");
-					String selected = "";
-					if (value.equals(val)) selected = "selected=\"selected\"";
-					htmlStream.append("<option value='"+val+"' " + selected + ">"+desc+"</option>\n");
-				}
-				htmlStream.append("</select>\n");
-			}catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		
-		return null;	
-		
-			
-		// PARAMETER USE TYPE MANUAL INPUT
-		} else if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
-			htmlStream.append("<input style='width:230px;' type='text' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' value='" + value + "' class='portlet-form-input-field' />\n");
-			return null;
-		} 
-		
-		
-		
-		
-		// PARAMETER USE TYPE QUERY
-		else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {
-			
-			htmlStream.append("<input type='text' style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' " +
-					"class='portlet-form-input-field' readonly='true' value='"+value+"' />\n");
-			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\")' \n");
-			htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
-			htmlStream.append("		title='Lookup' alt='Lookup' \n");
-			htmlStream.append("/>\n");
-			
-			if (objParFather != null && objParuse != null) {
-				// the BIobjectParameter is correlated to another BIObjectParameter
-				htmlStream.append("<input type='hidden' name='correlatedParuseIdForObjParWithId_" + biparam.getId() + "' value='" + objParuse.getParuseId() + "' />\n");
-				return objParFather.getLabel();
-			} else return null;
-			
-		}
-		
-		// PARAMETER USE TYPE SCRIPT
-		else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
-			String idModVal = String.valueOf(modVal.getId());
-//			if(modality.equalsIgnoreCase(SpagoBIConstants.EXECUTION_MODALITY)){
-//				lookupURL.setParameter("ORIGINAL_PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-//			}
-			htmlStream.append("<input type='text' style='width:230px;' name='"+biparam.getParameterUrlName()+"' id='"+biparam.getParameterUrlName()+"' class='portlet-form-input-field' readonly='true' value='"+value+"'/>\n");
-			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\")' \n");
-			htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
-			htmlStream.append("		title='Lookup' alt='Lookup' \n");
-			htmlStream.append("/>\n");
-			//htmlStream.append("<a href='"+lookupURL.toString()+"' class='portlet-menu-item'>\n");
-			//htmlStream.append("   <img src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")+"' />\n");
-			//htmlStream.append("</a>\n");
-			//htmlStream.append("<a href='"+lookupURL.toString()+"'>Lookup</a>\n");
-		}
-		
-		return null;
-		
+		return new Object[]{objParuse, objParFather};
 	}
+	
+	private SourceBean getXMLValuesBean(BIObjectParameter biparam) throws SourceBeanException {
+		String stringXMLValues = biparam.getParameter().getModalityValue().getLovProvider();
+		stringXMLValues = PortletUtilities.cleanString(stringXMLValues);
+		return SourceBean.fromXMLString(stringXMLValues);
+	}
+	
+	private void createHTMLListButton(BIObjectParameter biparam, StringBuffer htmlStream) {
+			htmlStream.append("<input type='text' style='width:230px;' " + 
+							  	"name='" + biparam.getParameterUrlName() +"' "+
+							  	"id='" + biparam.getParameterUrlName() + "' " +
+								"class='portlet-form-input-field' readonly='true' " +
+								"value='" + getValue(biparam) + "' />\n");
+			
+			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"LIST\")' \n");
+			htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
+			htmlStream.append("		title='Lookup' alt='Lookup' \n");
+			htmlStream.append("/>\n");
+	}	
+	
+	private void createHTMLCheckListButton(BIObjectParameter biparam, StringBuffer htmlStream) {
+		htmlStream.append("<input type='text' style='width:230px;' " + 
+						  	"name='" + biparam.getParameterUrlName() +"' "+
+						  	"id='" + biparam.getParameterUrlName() + "' " +
+							"class='portlet-form-input-field' readonly='true' " +
+							"value='" + getValue(biparam) + "' />\n");
+		
+		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");
+		htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
+		htmlStream.append("		title='Lookup' alt='Lookup' \n");
+		htmlStream.append("/>\n");
+}	
+	
+	private SourceBean getLov(BIObjectParameter biparam) throws SourceBeanException {
+		SourceBean lov = null;
+		
+		String inputType = biparam.getParameter().getModalityValue().getITypeCd();
+		
+			
+		// different input type call different delegated class to build the list 
+		if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {			
+			String queryDetXML = biparam.getParameter().getModalityValue().getLovProvider();
+			SourceBean queryXML = SourceBean.fromXMLString(queryDetXML);
+			String visibleColumns = ((SourceBean) queryXML.getAttribute("VISIBLE-COLUMNS")).getCharacters();
+			String valueColumn = ((SourceBean) queryXML.getAttribute("VALUE-COLUMN")).getCharacters();
+			String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
+			String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
+			
+			// execute query
+			SourceBean result = null;
+			DataConnectionManager dataConnectionManager = null;
+			DataConnection dataConnection = null;
+			SQLCommand sqlCommand = null;
+			DataResult dataResult = null;
+			try {
+				dataConnectionManager = DataConnectionManager.getInstance();
+				dataConnection = dataConnectionManager.getConnection(pool);
+				sqlCommand = dataConnection.createSelectCommand(statement);
+				dataResult = sqlCommand.execute();
+				ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult
+						.getDataObject();
+				result = scrollableDataResult.getSourceBean();
+			} catch (Exception ex) {
+				TracerSingleton.log(Constants.NOME_MODULO,
+						TracerSingleton.CRITICAL, "executeSelect:", ex);
+			} finally {
+				Utils.releaseResources(dataConnection, sqlCommand, dataResult);
+			}	
+			
+			lov = new SourceBean("LOV");
+			List rows = result.getAttributeAsList("ROW");
+			for(Iterator it = rows.iterator(); it.hasNext(); ) {
+				SourceBean row = (SourceBean)it.next();
+				String value = (String)row.getAttribute(valueColumn);
+				SourceBean lovElement = new SourceBean("LOV-ELEMENT");
+				lovElement.setAttribute("DESC", value);
+				lovElement.setAttribute("VALUE", value);
+				lov.setAttribute(lovElement);
+			}
+		} else if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {			
+			lov = getXMLValuesBean(biparam);
+		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
+			System.out.println(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE);
+		}	
+				
+		return lov;
+	}
+	
+	private void createHTMLComboBox(BIObjectParameter biparam, StringBuffer htmlStream) {
+    	try{
+	    	htmlStream.append("<select style='width:230px;' " +  
+	    			 			"name='" + biparam.getParameterUrlName() + "' " +
+	    			 			"id='"+ biparam.getParameterUrlName()+ "' " +
+	    			 			"class='portlet-form-field' >\n");
+			
+	    	
+	    	
+	    	//List l = getXMLValuesBean(biparam).getAttributeAsList("LOV-ELEMENT");
+	    	List l = getLov(biparam).getAttributeAsList("LOV-ELEMENT");
+			
+	    	Iterator it = l.iterator();
+			SourceBean sbTemp = null;
+			String desc = null;
+			String val = null;
+			while(it.hasNext()) {
+				sbTemp = (SourceBean)it.next();
+				desc = (String)sbTemp.getAttribute("DESC");
+				val = (String)sbTemp.getAttribute("VALUE");
+				String selected = "";
+				if (getValue(biparam).equals(val)) selected = "selected=\"selected\"";
+				htmlStream.append("<option value='"+val+"' " + selected + ">"+desc+"</option>\n");
+			}
+			htmlStream.append("</select>\n");
+	    }catch (Exception ex) {
+	    	ex.printStackTrace();
+	    }
+    }
+    
+	private void createHTMLRadioButton(BIObjectParameter biparam, StringBuffer htmlStream) {
+    	try{
+	    	List l = getXMLValuesBean(biparam).getAttributeAsList("LOV-ELEMENT");
+			Iterator it = l.iterator();
+			SourceBean sbTemp = null;
+			String desc = null;
+			String val = null;
+			while(it.hasNext()) {
+				sbTemp = (SourceBean)it.next();
+				desc = (String)sbTemp.getAttribute("DESC");
+				val = (String)sbTemp.getAttribute("VALUE");
+				String selected = "";
+				if (getValue(biparam).equals(val)) selected = "checked";
+				htmlStream.append("<input type='radio' name='"+biparam.getParameterUrlName()+"' value='"+val+"' " + selected + ">"+desc+"</input>\n");
+			}
+	    }catch (Exception ex) {
+	    	ex.printStackTrace();
+	    }
+    }
+    
+	private void createHTMLCheckBox(BIObjectParameter biparam, StringBuffer htmlStream) {
+    	try{
+	    	List l = getXMLValuesBean(biparam).getAttributeAsList("LOV-ELEMENT");
+			Iterator it = l.iterator();
+			SourceBean sbTemp = null;
+			String desc = null;
+			String val = null;
+			while(it.hasNext()) {
+				sbTemp = (SourceBean)it.next();
+				desc = (String)sbTemp.getAttribute("DESC");
+				val = (String)sbTemp.getAttribute("VALUE");
+				String selected = "";
+				if (getValue(biparam).equals(val)) selected = "checked";
+				htmlStream.append("<input type='checkbox' name='"+biparam.getParameterUrlName()+"' value='"+val+"' " + selected + ">"+desc+"</input>\n");
+			}
+	    }catch (Exception ex) {
+	    	ex.printStackTrace();
+	    }
+    }
+	
 	
 	
 	

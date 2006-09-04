@@ -41,6 +41,7 @@ public class SbiParuse  implements java.io.Serializable {
      private String descr;
      private Set sbiParuseDets;
      private Set sbiParuseCks;
+     private String selectionType;
      private Integer manualInput;
     
 
@@ -154,5 +155,13 @@ public class SbiParuse  implements java.io.Serializable {
 	 */
 	public void setManualInput(Integer manualInput) {
 		this.manualInput = manualInput;
+	}
+	
+	public String getSelectionType() {
+		return selectionType;
+	}
+
+	public void setSelectionType(String selectionType) {
+		this.selectionType = selectionType;
 	}
 }

@@ -44,6 +44,7 @@ public class ParameterUse  implements Serializable  {
 	List associatedRoles = null;
 	List associatedChecks = null;
 	
+	String selectionType = "";
 	Integer manualInput;
 	
 	/**
@@ -149,5 +150,12 @@ public class ParameterUse  implements Serializable  {
 	 */
 	public void setManualInput(Integer manualInput) {
 		this.manualInput = manualInput;
+	}
+	
+	public String getSelectionType() {
+		return selectionType;
+	}
+	public void setSelectionType(String selectionType) {
+		this.selectionType = selectionType;
 	}
 }

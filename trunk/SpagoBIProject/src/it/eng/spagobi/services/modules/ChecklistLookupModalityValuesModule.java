@@ -167,7 +167,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		// get the input type from request (query || script)
 		String inputType = getModalityValue(request).getITypeCd();
 		
-		// different input type call different delegated class to build the list 
+		// different input type call different methods to build the list configuration envelope 
 		if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {			
 			response.setAttribute(getQueryModuleConfig(request));
 		} else if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {			

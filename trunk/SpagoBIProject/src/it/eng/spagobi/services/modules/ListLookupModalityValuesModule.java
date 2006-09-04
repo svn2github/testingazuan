@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.modules;
 
 import groovy.lang.Binding;
+import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -36,6 +37,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -52,6 +54,7 @@ import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,9 +76,11 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 	} 
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {		
-		
-		System.out.println("LIST");
-		super.service(request, response); 
+						
+		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ListLookupModalityValuesModule::service: invocato");
+	    DelegatedBasicListService.service(this, request, response);
+	    
+		//super.service(request, response); 
 	}
 	
 	/**
@@ -102,7 +107,12 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 				paramsMap.put("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));
 				paramsMap.put("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));	
 			}		
-		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
+		} 
+		else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {			
+			list = getListFromLov(request, response);
+			paramsMap = getParams(request);
+		}
+		else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
 			list = getListFromScript(request, response);
 			paramsMap = getParams(request);
 		}
@@ -164,6 +174,57 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		backButtonParams.put("PAGE", "ValidateExecuteBIObjectPage");
 		backButtonParams.put("LOOKUP_VALUE", "");
 		return backButtonParams;
+	}
+	
+	
+	
+	private ListIFace getListFromLov(SourceBean request, SourceBean response) throws Exception {
+		ListIFace list = null;
+		
+		response.setAttribute(getFixLovModuleConfig(request));		
+		
+		String lovDetXML = getModalityValue(request).getLovProvider();
+		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
+		
+		PaginatorIFace paginator = new GenericPaginator();
+		List rowsVector = new ArrayList();
+		if (lovXML != null) {
+			List lovElement = lovXML.getAttributeAsList("LOV-ELEMENT");
+			for(int j = 0; j < lovElement.size(); j++) {			
+				SourceBean row = new SourceBean("ROW");
+				SourceBean tsb = (SourceBean)lovElement.get(j);
+				String descVal = (String)tsb.getAttribute("DESC");
+				String valueVal = (String)tsb.getAttribute("VALUE");
+				row.setAttribute("DESC", descVal);
+				row.setAttribute("VALUE", valueVal);
+				rowsVector.add(row);
+			}
+			
+			
+		}
+			
+
+		if (lovXML != null) {
+			for (int i = 0; i < rowsVector.size(); i++)
+				paginator.addRow(rowsVector.get(i));
+		}
+		list = new GenericList();
+		list.setPaginator(paginator);
+		
+		// filter the list 
+		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		if (valuefilter != null) {
+			String columnfilter = (String) request
+					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+			String typeFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_FILTER);
+			String typeValueFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+			list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, 
+					columnfilter, typeFilter, getResponseContainer().getErrorHandler());
+		}		
+		
+		return list;
 	}
 	
 	private ListIFace getListFromScript(SourceBean request, SourceBean response) throws Exception {
@@ -240,7 +301,47 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		return list;
 	}
 	
+	private SourceBean getFixLovModuleConfig(SourceBean request) throws Exception {
+		SourceBean moduleConfig = null;
 		
+		String lovDetXML = getModalityValue(request).getLovProvider();
+		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
+		
+		
+		String visibleColumns = "DESC";
+		Vector columns = findVisibleColumns(visibleColumns);
+		
+		//String valueColumn = (String)lovXML.getAttribute("VALUE");
+		//String valueColumn = (String)((SourceBean)lovXML.getAttribute("LOV-ELEMENT")).getAttribute("VALUE");				
+		String valueColumn = "VALUE";
+		
+		String moduleConfigStr = "";
+		moduleConfigStr += "<CONFIG rows=\"10\" title=\"" + getModalityValue(request).getDescription() + "\">";
+		moduleConfigStr += "	<KEYS>";
+		moduleConfigStr += "		<OBJECT key='"+ valueColumn +"'/>";
+		moduleConfigStr += "	</KEYS>";
+		moduleConfigStr += "	<QUERIES/>";
+		moduleConfigStr += "</CONFIG>";
+		moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
+		
+		SourceBean columnsSB = createColumnsSB(columns);
+		moduleConfig.setAttribute(columnsSB);
+
+		SourceBean captionsSB = new SourceBean("CAPTIONS");
+		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn);
+		captionsSB.setAttribute(selectCaptionSB);
+		moduleConfig.setAttribute(captionsSB);
+		
+		SourceBean buttonsSB = new SourceBean("BUTTONS");
+		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
+		buttonsSB.setAttribute(backButtonSB);
+		//SourceBean selectButtonSB = createSelectButton(getBackButtonParams(request));
+		//buttonsSB.setAttribute(selectButtonSB);
+		moduleConfig.setAttribute(buttonsSB);
+		
+		return moduleConfig;
+	}
+	
 	private SourceBean getQueryModuleConfig(SourceBean request) throws Exception {
 		SourceBean moduleConfig = null;
 		
@@ -370,6 +471,16 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 			backButtonStr += "	<PARAMETER name=\"" + key + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + value + "\" />";
 		}
 		backButtonStr += "</BACK_BUTTON>";
+		SourceBean toReturn = SourceBean.fromXMLString(backButtonStr);
+		return toReturn;
+	}
+	
+	private SourceBean createSelectButton(HashMap backButtonParams) throws SourceBeanException {
+		
+		if (backButtonParams == null || backButtonParams.size() == 0) return new SourceBean("BACK_BUTTON");
+		String backButtonStr = "<BACK_BUTTON confirm=\"FALSE\" name=\"saveback\" image=\"/img/button_ok.gif\" " +
+				"label=\"SBIListLookPage.backButton\"/>";
+		
 		SourceBean toReturn = SourceBean.fromXMLString(backButtonStr);
 		return toReturn;
 	}

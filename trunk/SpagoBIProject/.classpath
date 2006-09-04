@@ -42,7 +42,7 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms-executioninprocess-2.1.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms-repositoryproviders-2.1.0.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/jasperreports-1.2.3.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-core-2.1.1.jar"/>
+	<classpathentry sourcepath="C:/Documents and Settings/gioia/Documenti/Codice/Java/RC_SpagoBIBranch/spago2.1.0/spago-core" kind="lib" path="web-content/WEB-INF/lib/spago-core-2.1.1.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-portlet-2.1.1.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

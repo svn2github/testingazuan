@@ -108,12 +108,17 @@ public class DynamicPageTag extends TagSupport {
 		// an empty input type hidden and the correspondent JavaScript to popolate it in case there is a lookup call (in case of query or script) 
 		htmlStream.append("<input type='hidden' id='LOOKUP_OBJ_PAR_ID' name='' value=''/>\n");
 		htmlStream.append("<input type='hidden' id='LOOKUP_TYPE' name='' value=''/>\n");
+		htmlStream.append("<input type='hidden' id='PENDING_DELETE' name='' value=''/>\n");
 		htmlStream.append("<script type='text/javascript'>\n");
 		htmlStream.append("	function setLookupField(idStr, type) {\n");
 		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').value= idStr;\n");
 		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').name = 'LOOKUP_OBJ_PAR_ID';\n");
 		htmlStream.append("		document.getElementById('LOOKUP_TYPE').value= type;\n");
 		htmlStream.append("		document.getElementById('LOOKUP_TYPE').name = 'LOOKUP_TYPE';\n");
+		htmlStream.append("	}\n");
+		htmlStream.append("	function setDelateFlag() {\n");
+		htmlStream.append("		document.getElementById('PENDING_DELETE').value = 'true';\n");	
+		htmlStream.append("		document.getElementById('PENDING_DELETE').name = 'PENDING_DELETE';\n");	
 		htmlStream.append("	}\n");
 		htmlStream.append("</script>\n");
 		
@@ -205,6 +210,22 @@ public class DynamicPageTag extends TagSupport {
         	BIObjectParameter biparam = (BIObjectParameter) iter.next();
         	String id = biparam.getParameterUrlName();
     		ModalitiesValue modVal = biparam.getParameter().getModalityValue();
+    		
+    		String typeCode = modVal.getITypeCd();
+    		String selectionType = modVal.getSelectionType();
+    		
+    		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
+    			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
+    		} else if(selectionType.equalsIgnoreCase("COMBOBOX")) {
+    			htmlStream.append(" document.getElementById('" + id + "').selectedIndex = 0;\n");
+    		} else if(selectionType.equalsIgnoreCase("CHECK_LIST")) {
+    			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
+    			htmlStream.append(" setDelateFlag();\n");
+    		} else if(selectionType.equalsIgnoreCase("LIST")) {
+    			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
+    		}
+    		
+    		/*
     		String typeCode = modVal.getITypeCd();
     		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {
     			htmlStream.append(" document.getElementById('" + id + "').selectedIndex = 0;\n");
@@ -214,6 +235,7 @@ public class DynamicPageTag extends TagSupport {
     				   typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
     			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
     		}
+    		*/
         }
         htmlStream.append("}\n");
         htmlStream.append("</script>\n");

@@ -81,6 +81,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	public void createCheckedObjectMap(SourceBean request) throws Exception {
 		checkedObjectsMap = new HashMap();
 		String biobjParId = (String)request.getAttribute("LOOKUP_OBJ_PAR_ID");
+		String biobjParName = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
+		
 		
 		BIObject obj = (BIObject)getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		List parameters = obj.getBiObjectParameters();

@@ -328,7 +328,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         	}
         	ModalitiesValue modVal = lookupBIParameter.getParameter().getModalityValue();
 
-//          it is a lookup call
+        	// it is a lookup call
         	String lookupType = (String)request.getAttribute("LOOKUP_TYPE");
         	if(lookupType == null) lookupType = "LIST";
         	
@@ -344,6 +344,17 @@ public class ExecuteBIObjectModule extends AbstractModule
         		response.setAttribute("LIST", "true");
             	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
         	}
+        	
+        	String pendingDelete = (String)request.getAttribute("PENDING_DELETE");
+        	if(pendingDelete != null && !pendingDelete.trim().equals("")) {
+        		List parameters = obj.getBiObjectParameters();
+        		BIObjectParameter biparam = null;
+        		for(int i = 0; i < parameters.size(); i++) {
+        			BIObjectParameter tmpBIParam = (BIObjectParameter)parameters.get(i);
+        			tmpBIParam.setParameterValues(null);        				
+        		}
+        	}
+        	
         	
         	response.setAttribute("mod_val_id" , modVal.getId().toString());
         	response.setAttribute("LOOKUP_PARAMETER_NAME", lookupBIParameter.getParameterUrlName());

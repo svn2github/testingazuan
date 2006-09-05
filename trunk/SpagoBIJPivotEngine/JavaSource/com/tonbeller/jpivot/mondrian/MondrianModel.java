@@ -504,12 +504,17 @@ public class MondrianModel extends MdxOlapModel implements OlapModel,
 	    
 	    // ***************** START CODE ADDED ********************
 	    
+	    Logger logger = Logger.getLogger(this.getClass());
 	    // get the connection role, cube and schema reader
 	    Role connRole = monConnection.getRole().makeMutableClone();
+	    logger.debug("MondrianModel::initialize:connection role retrived: " + connRole);
 	    Cube cube = monQuery.getCube();
+	    logger.debug("MondrianModel::initialize: cube retrived: " + cube);
 	    SchemaReader schemaReader = cube.getSchemaReader(null);
-	    
+	    logger.debug("MondrianModel::initialize: schema reader retrived: " + schemaReader);
 	    // clean dimension access list
+	    logger.debug("MondrianModel::initialize: start setting data access using dimension list: " + dimAccList);
+	    logger.debug("MondrianModel::initialize: start cleaning dimension list");
 	    Iterator iterDimAcc = dimAccList.iterator();
 	    List tmpDimAccList = new ArrayList();
 	    while(iterDimAcc.hasNext()) {
@@ -521,8 +526,9 @@ public class MondrianModel extends MdxOlapModel implements OlapModel,
 	    	}
 	    }
 	    dimAccList = tmpDimAccList;
+	    logger.debug("MondrianModel::initialize: end cleaning dimension list: " + dimAccList);
 	    
-	    
+	    logger.debug("MondrianModel::initialize: start calculating access dimension names list");
 	    // calculate an List containing all the dimension name to filter
 	    List dimNames = new ArrayList();
 	    iterDimAcc = dimAccList.iterator();
@@ -538,8 +544,9 @@ public class MondrianModel extends MdxOlapModel implements OlapModel,
 	    		if(!dimNames.contains(dimName))
 	    			dimNames.add(dimName);
 	    }
+	    logger.debug("MondrianModel::initialize: end calculating access dimension names list: " + dimNames);
 	    
-	    
+	    logger.debug("MondrianModel::initialize: start calculating memeber list for each dimension");
 	    // calculate a map with couple { dimName, List of members of the dimension }
 	    Map memberMap = new HashMap();
 	    Iterator iterDimNames = dimNames.iterator();
@@ -560,60 +567,80 @@ public class MondrianModel extends MdxOlapModel implements OlapModel,
 		    }
 		    memberMap.put(dimName, dimMembers);
 	    }
+	    logger.debug("MondrianModel::initialize: end calculating memeber list for each dimension: " + memberMap);
 	    
+	    
+	    logger.debug("MondrianModel::initialize: start setting grant for each dimension or hierachy");
 	    // FOR EACH DIMENSION NAME SET THE RIGHT GRANT TO THE DIMENSION OR HIERARCHY
 	    Set dimKeys = memberMap.keySet();
 	    Iterator iterDimKeys = dimKeys.iterator();
 	    while(iterDimKeys.hasNext()){
 	    	String dimName = (String)iterDimKeys.next();
+	    	logger.debug("MondrianModel::initialize: processing dimension named: " + dimName);
 	    	List dimMembs = (List)memberMap.get(dimName);
+	    	logger.debug("MondrianModel::initialize: members of dimension: " + dimMembs);
 	    	if(dimMembs.isEmpty()) {
+	    		logger.debug("MondrianModel::initialize: try to search the dimension into the cube");
 	    		Set cubeDimKeys = hDimensions.keySet();
 	    		 Iterator itCubeDimKeys = cubeDimKeys.iterator();
 	 		     while(itCubeDimKeys.hasNext()) {
 	 		    	String cubeDimKey = (String)itCubeDimKeys.next();
 	 		    	if(cubeDimKey.equalsIgnoreCase(dimName)) {
+	 		    		logger.debug("MondrianModel::initialize: dimension found into the cube");
 	 		    		MondrianDimension monDim = (MondrianDimension)hDimensions.get(cubeDimKey);
 	 		    		mondrian.olap.Dimension dim = monDim.getMonDimension();
 	 		    		connRole.grant(dim, Access.NONE);
+	 		    		logger.debug("MondrianModel::initialize: setted access.none to the dimension");
 	 		    		break;
 	 		    	}
 	 		     }
+	 		    logger.debug("MondrianModel::initialize: end search dimension into the cube");
 	    	} else {
+	    		 logger.debug("MondrianModel::initialize: try to search the hierarchy into the cube");
 	    		 Set hierKeys = hHierarchies.keySet();
 	    		 Iterator itHierKeys = hierKeys.iterator();
 	 		     while(itHierKeys.hasNext()) {
 	 		    	String hierKey = (String)itHierKeys.next();
 	 		    	if(hierKey.equalsIgnoreCase(dimName)) {
+	 		    		logger.debug("MondrianModel::initialize: hierarchy found into the cube");
 	 		    		MondrianHierarchy monHier = (MondrianHierarchy)hHierarchies.get(hierKey);
 	 		    		mondrian.olap.Hierarchy hier = monHier.getMonHierarchy();
 	 		    		connRole.grant(hier, Access.CUSTOM, null, null);
+	 		    		logger.debug("MondrianModel::initialize: setted access.custom to the hierarchy");
 	 		    		break;
 	 		    	}
 	 		    }
 	    	}
 	    }
+	    logger.debug("MondrianModel::initialize: end setting grant for each dimension or hierachy");
 	    
+	    logger.debug("MondrianModel::initialize: start setting grant for members of dimensions");
 	    // FOR EACH MEMBER SET THE GRANT
 	    dimKeys = memberMap.keySet();
 	    iterDimKeys = dimKeys.iterator();
 	    while(iterDimKeys.hasNext()){
 	    	String dimName = (String)iterDimKeys.next();
+	    	logger.debug("MondrianModel::initialize: start processing dimension named: " + dimName);
 	    	List dimMembs = (List)memberMap.get(dimName);
-	        Iterator iterDimMembs = dimMembs.iterator();
+	    	logger.debug("MondrianModel::initialize: using member list: " + dimMembs);
+	    	Iterator iterDimMembs = dimMembs.iterator();
 	        while(iterDimMembs.hasNext()) {
 	        	String dimMemb = (String)iterDimMembs.next();
+	        	logger.debug("MondrianModel::initialize: processing member : " + dimMemb);
 	        	String[] membParts = Util.explode(dimMemb);
 	    	    mondrian.olap.Member member = schemaReader.getMemberByUniqueName(membParts,true);
+	    	    logger.debug("MondrianModel::initialize: mondrian member object retrived: " + member);
 	    	    connRole.grant(member, Access.ALL);
+	    	    logger.debug("MondrianModel::initialize: setted access.all to the member");
 	        }
 	    }
-	    
+	    logger.debug("MondrianModel::initialize: end setting grant for members of dimensions");
 	        
 	    // SET THE ROLE INTO CONNECTION
 	    connRole.makeImmutable();
 	    monConnection.setRole(connRole); 
-	    
+	    logger.debug("MondrianModel::initialize: setted role with grants into connection");
+	    logger.debug("MondrianModel::initialize: end setting data access");
 	    
 	    // ***************** END CODE ADDED ********************
 	    

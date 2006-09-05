@@ -43,7 +43,7 @@ import org.exoplatform.services.organization.OrganizationService;
 /**
  * Implementation of the Spago IEngUserProfile interface
  */
-public class ExoPortalEngUserProfileImpl implements IEngUserProfile {
+public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 
 	private String userUniqueIdentifier = null;
 	private Map userAttributes = null;
@@ -54,7 +54,7 @@ public class ExoPortalEngUserProfileImpl implements IEngUserProfile {
 	 * @param userAttributes
 	 * @param roles
 	 */
-	public ExoPortalEngUserProfileImpl(Principal userPrincipal) {
+	public ExoGroupAsRoleUserProfileImpl(Principal userPrincipal) {
 		super();
 		this.userUniqueIdentifier = userPrincipal.getName();
 		userAttributes = new HashMap();
@@ -74,18 +74,18 @@ public class ExoPortalEngUserProfileImpl implements IEngUserProfile {
 			String loadUserProfileAttrs = loadUserProfileAttrsSB.getCharacters();
 			HashMap predefinedProfileAttributes = new HashMap();
 			if (loadUserProfileAttrs != null && loadUserProfileAttrs.trim().toUpperCase().equals("YES")) {
-				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>",
+				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Trying to load predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"'.");
 				predefinedProfileAttributes = GeneralUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
 			} else {
-				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>",
+				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"' will not be loaded.");
 			}
 			//add the predefined attributes for the current user (already existing attributes are overwritten)
 			profileAttributes.putAll(predefinedProfileAttributes);
 			userAttributes.put("PROFILE_ATTRIBUTES", profileAttributes);
 		} catch(Exception e){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, ExoPortalEngUserProfileImpl.class.getName(), "<init>", "Exception ",e);
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>", "Exception ",e);
 		}
 	}
 

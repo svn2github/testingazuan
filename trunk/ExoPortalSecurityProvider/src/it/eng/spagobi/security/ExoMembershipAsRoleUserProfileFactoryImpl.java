@@ -31,7 +31,7 @@ import javax.portlet.PortletRequest;
  * Implementation of the IEngUserProfile interface Factory. Defines methods 
  * to get a IEngUserProfile starting from the exo user information 
  */
-public class ExoPortalUserProfileFactoryImpl implements IUserProfileFactory {
+public class ExoMembershipAsRoleUserProfileFactoryImpl implements IUserProfileFactory {
 	
 	/**
 	 * Return an IEngUserProfile implementation starting from the Portlet Request and the Principal of the 
@@ -41,6 +41,6 @@ public class ExoPortalUserProfileFactoryImpl implements IUserProfileFactory {
 	 * @return The User Profile Interface implementation object
 	 */
 	public IEngUserProfile createUserProfile(PortletRequest request, Principal principal){
-		return new ExoPortalEngUserProfileImpl(principal);
+		return new ExoMembershipAsRoleUserProfileImpl(principal);
 	}
 }

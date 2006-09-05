@@ -41,7 +41,7 @@ import org.exoplatform.services.organization.OrganizationService;
  * Implements the IPortalSecurityProvider interface defining method to get the 
  * system and user roles.
  */
-public class ExoPortalSecurityProviderImpl implements IPortalSecurityProvider {
+public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvider {
 	
 	/** 
 	 * Get all the portal roles 

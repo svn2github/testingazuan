@@ -23,11 +23,11 @@ package it.eng.spagobi.constants;
 
 /**
  * Defines all SpagoBI's constants.
- * 
- * @author sulis
  */
 public class SpagoBIConstants {
 
+	public static final String PAGE = "PAGE";
+	
 	public static final String EXECUTION_MODALITY = "EXECUTION_MODALITY";
 	public static final String TEST_MODALITY = "TEST_MODALITY";
 	public static final String DEVELOPMENT_MODALITY = "DEVELOPMENT_MODALITY";
@@ -148,4 +148,11 @@ public class SpagoBIConstants {
 	public static final String EXEC_PHASE_RETURN_FROM_LOOKUP = "EXEC_PHASE_RETURN_FROM_LOOKUP";
 	public static final String EXEC_CHANGE_STATE = "EXEC_CHANGE_STATE";
 	public static final String EXEC_PHASE_RUN = "EXEC_PHASE_RUN";
+	
+	
+	public static final String BOOKLET_MANAGEMENT_PAGE = "BookletsManagementPage";
+	public static final String OPERATION_NEW_BOOKLET_TEMPLATE = "OPERATION_NEW_BOOKLET_TEMPLATE";
+	public static final String OPERATION_EDIT_BOOKLET_TEMPLATE = "OPERATION_EDIT_BOOKLET_TEMPLATE";
+	
+	
 }

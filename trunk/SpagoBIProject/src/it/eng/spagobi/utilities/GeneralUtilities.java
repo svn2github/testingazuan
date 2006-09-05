@@ -502,6 +502,27 @@ public class GeneralUtilities {
     			}
         		
         	}
-}
-}
+        }
+	}
+	
+	/**
+	 * checks if a module is installed (based on the configuration file spagobi_components.xml)
+	 * @param moduleName The name of the module
+	 * @return true if the module is installed, false otherwise
+	 */
+	public static boolean isModuleInstalled(String moduleName) {
+		boolean moduleInst = false;
+		ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+		SourceBean compSB = (SourceBean)spagoConfig.getFilteredSourceBeanAttribute("SPAGOBI_COMPONENTS.SPAGOBI_COMPONENT", "name", moduleName);
+		if(compSB!=null){
+			String inst = (String)compSB.getAttribute("installed");
+			if((inst!=null) && inst.equalsIgnoreCase("true")) {
+				moduleInst = true;
+			}
+		}
+		return moduleInst;
+	}
+	
+	
+	
 }

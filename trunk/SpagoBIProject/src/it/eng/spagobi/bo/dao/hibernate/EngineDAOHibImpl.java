@@ -42,6 +42,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.stat.Statistics;
 
 /**
  * Defines the Hibernate implementations for all DAO methods,
@@ -62,9 +63,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-		
 			SbiEngines hibEngine = (SbiEngines)aSession.load(SbiEngines.class,  engineID);
-			
 			toReturn = toEngine(hibEngine);
 			tx.commit();
 			

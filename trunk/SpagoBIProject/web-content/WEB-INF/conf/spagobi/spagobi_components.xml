@@ -2,6 +2,6 @@
 <SPAGOBI_COMPONENTS>
 	
 	<SPAGOBI_COMPONENT name="importexport" installed="true" /> 
-	<SPAGOBI_COMPONENT name="pamphlets" installed="false" /> 
+	<SPAGOBI_COMPONENT name="booklets" installed="true" /> 
 	
 </SPAGOBI_COMPONENTS>

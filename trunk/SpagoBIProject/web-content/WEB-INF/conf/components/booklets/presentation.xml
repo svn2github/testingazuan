@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PRESENTATION>
+     <MAPPING business_name="BookletsManagementPage" business_type="PAGE" publisher_name="BookletsManagementPubJ"/>
+     
+     <!-- 
+	<MAPPING business_name="PamphletsCollaborationPage" business_type="PAGE" publisher_name="PamphletsCollaborationPubJ"/>
+	<MAPPING business_type="ACTION" business_name="WORKLIST_ACTION" publisher_name="WORKLIST_PUBLISHER" />
+	<MAPPING business_type="ACTION" business_name="ACCEPT_ACTIVITY_ACTION" publisher_name="ACCEPT_ACTIVITY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="COMPLETE_OR_REJECT_ACTIVITY_ACTION" publisher_name="LOOP_WORKLIST_PUBLISHER"/>
+	-->
+</PRESENTATION>
+

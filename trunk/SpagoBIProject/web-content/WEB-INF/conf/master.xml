@@ -35,17 +35,15 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
 	<!-- end import export module -->
 	<!-- start import pamphlets module -->
-	<!-- 
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/pamphlets.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/pages.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/modules.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/presentation.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/publishers.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/initializers.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/actions.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/workflow.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/pamphlets/forms.xml" />
-	-->
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/booklets.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/initializers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/workflow.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/forms.xml" />
 	<!-- end import pamphlets module -->
 	
 </MASTER>

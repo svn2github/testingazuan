@@ -55,38 +55,6 @@
 				</a>
 			</td>
 		</tr>
-		<%--
-		<tr class="portlet-font">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/folderAdministrationIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OPERATION" value="<%= SpagoBIConstants.FUNCTIONALITIES_OPERATION %>"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.linkFunctMan" />
-				</a>
-			</td>
-		</tr>
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/objectAdministrationIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.linkDocMan" />
-				</a>
-			</td>
-		</tr>
-		--%>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
 				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.jpg")%>' />
@@ -137,41 +105,6 @@
 		<%
 			}
 		%>
-		<%--
-		<%
-			boolean pamphletsInst = false;
-			SourceBean compPampSB = (SourceBean)spagoConfig.getFilteredSourceBeanAttribute("SPAGOBI_COMPONENTS.SPAGOBI_COMPONENT", "name", "pamphlets");
-			if(compPampSB!=null){
-				String inst = (String)compPampSB.getAttribute("installed");
-				if((inst!=null) && inst.equalsIgnoreCase("true")) {
-					pamphletsInst = true;
-				}
-			}
-			if(pamphletsInst) {
-		%>
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/pamphlets64.jpg")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL>
-								<portlet:param name="PAGE" value="PamphletsManagementPage"/>
-								<portlet:param name="OPERATION" 
-											   value="<%=SpagoBIConstants.OPERATION_PAMPHLETS_VIEW_TREE %>"/>
-						</portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.PamphletsManagement" />
-				</a>
-			</td>
-		</tr>
-		<%
-			}
-		%>
-	    --%>
 	
 	</table>
 	<br/>

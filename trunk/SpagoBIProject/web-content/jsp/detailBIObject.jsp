@@ -26,6 +26,7 @@
 				 java.util.Date" %>
 
 <%
+	// GET RESPONSE OBJECTS
     SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailBIObjectModule"); 
 	BIObject obj = (BIObject) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_OBJECT);
 	List listEngines = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_ENGINES);
@@ -34,6 +35,8 @@
 	String modality = (String) moduleResponse.getAttribute(ObjectsTreeConstants.MODALITY);
 	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
 	
+	
+	// CREATE PAGE URLs
 	PortletURL formUrl = renderResponse.createActionURL();
    	formUrl.setParameter("PAGE", "detailBIObjectPage");
    	if (modality != null){
@@ -45,6 +48,10 @@
    	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_DETAIL");
    	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+   	
+   	
+   	// CHECK IF BOOKLET MODULE IS INSTALLED
+   	boolean isCompBookletsInst = GeneralUtilities.isModuleInstalled("booklets");
 %>
 
 
@@ -53,15 +60,14 @@
 
 
 
+<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
+<%@page import="java.util.Map"%>
 <script>
 function showEngField(docType) {
-
 	var ind = docType.indexOf(",");
 	var type = docType.substring(ind+1);
-	
 	var engines = document.objectForm.engine.options;
 	engines.length = 0;
-
 	<%
 	for (int i = 0; i < listEngines.size(); i++) {
 		Engine en = (Engine) listEngines.get(i);
@@ -78,6 +84,24 @@ function showEngField(docType) {
 		out.print("}\n");
 	}
 	%>
+}
+
+function checkFormVisibility(docType) {
+	var ind = docType.indexOf(",");
+	var type = docType.substring(ind+1);
+	var divUpload = document.getElementById("form_upload");
+	if(type=="BOOKLET") {
+		divUpload.style.display="none";
+	} else {
+		divUpload.style.display="inline";
+	}
+	var divLinkConf = document.getElementById("link_obj_conf");
+	if(type=="BOOKLET") {
+		divLinkConf.style.display="inline";
+	} else {
+		divLinkConf.style.display="none";
+	}
+	
 	
 }
 
@@ -215,13 +239,18 @@ function showEngField(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<select class='portlet-form-input-field' style='width:230px;' 
-							name="type" id="type" onchange = 'showEngField(this.value)'>
+							name="type" id="type" onchange = 'showEngField(this.value);checkFormVisibility(this.value);'>
 		      		<% 
 		      		    Iterator iterdom = listTypes.iterator();
 		      		    while(iterdom.hasNext()) {
 		      		    	Domain type = (Domain)iterdom.next();
 		      		    	String BIobjTypecode = obj.getBiObjectTypeCode();
 		      		    	String currTypecode = type.getValueCd();
+		      		    	if(currTypecode.equalsIgnoreCase("BOOKLET")) {
+		      		    		if(!isCompBookletsInst) {
+		      		    			continue;
+		      		    		}
+		      		    	}
 		      		    	boolean isType = false;
 		      		    	if(BIobjTypecode.equals(currTypecode)){
 		      		    		isType = true;   
@@ -367,35 +396,78 @@ function showEngField(docType) {
 						</input>
 				</div>
 
-			<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key = "SBIDev.docConf.docDet.templateField" />
-					</span>
-				</div>
-				<div class='div_detail_form'>
-					<input class='portlet-form-input-field' type="file" 
-		      		       name="uploadFile" id="uploadFile" onchange='fileToUploadInserted()'/>
+
+				<%
+					String styleDivFormUpload = " ";
+					String BIobjTypecode = obj.getBiObjectTypeCode();
+				    if(BIobjTypecode.equalsIgnoreCase("BOOKLET"))
+				    	styleDivFormUpload = " style='display:none' ";
+				%>
+
+				<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
+				<div id="form_upload" <%=styleDivFormUpload%>>
+					<div class='div_detail_label'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "SBIDev.docConf.docDet.templateField" />
+						</span>
+					</div>
+					<div class='div_detail_form'>
+						<input class='portlet-form-input-field' type="file" 
+			      		       name="uploadFile" id="uploadFile" onchange='fileToUploadInserted()'/>
+					</div>
 				</div>	
-             
-        
-        <%--    
-        <!-- DISPLAY FORM FOR LINKS MANAGMENT -->
-	    <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){%>
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />
-					</span>
-				</div>
-				<div class='div_detail_form'>
-					<input type="hidden" name="" value="" id="loadLinksLookup">
-						<a href="javascript:checkDocumentType();" >
-					Edit
-					</a>
-					
-				</div>
-	    <% } %>
-	    --%>
+				
+				<% 
+					String styleDivLinkConf = " ";
+					BIobjTypecode = obj.getBiObjectTypeCode();
+			    	if(BIobjTypecode.equalsIgnoreCase("BOOKLET"))
+			    		styleDivLinkConf = " style='display:inline' ";
+			    	else styleDivLinkConf = " style='display:none' ";
+				    String hrefConf = "";
+					if(!modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { 
+						PortletURL configureBookletUrl = renderResponse.createActionURL();
+						configureBookletUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
+						configureBookletUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_NEW_BOOKLET_TEMPLATE);
+						configureBookletUrl.setParameter(SpagoBIConstants.CMS_BIOBJECTS_PATH, obj.getPath());
+						hrefConf = configureBookletUrl.toString();
+					} else {
+						hrefConf = "javascript:alert('"+PortletUtilities.getMessage("sbi.detailbiobj.objectnotsaved", "messages")+"')";
+					}
+				%>
+				
+				<!-- LINK FOR OBJECT CONFIGURATION -->
+				<div id="link_obj_conf" <%=styleDivLinkConf%>>
+					<div class='div_detail_label'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "SBIDev.docConf.docDet.templateField" />
+						</span>
+					</div>
+					<div class='div_detail_form'>
+						<a href="<%=hrefConf%>">
+							<img class='header-button-image-portlet-section' 
+      				 			 title='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate" />' 
+      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/configure_booklet.jpg")%>' 
+      				 			 alt='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate"  />' />
+						</a>
+						<%
+							Map objTemps = obj.getTemplateVersions();
+			 				if( (objTemps!=null) && !objTemps.isEmpty() ) {
+			 					PortletURL editBookUrl = renderResponse.createActionURL();
+			 					editBookUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
+			 					editBookUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_EDIT_BOOKLET_TEMPLATE);
+			 					editBookUrl.setParameter(SpagoBIConstants.PATH, obj.getPath());
+						%>
+						<a href="<%=editBookUrl.toString()%>">
+							<img class='header-button-image-portlet-section' 
+      				 			 title='<spagobi:message key = "sbi.detailbiobj.editTemplate" />' 
+      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/edit_temp_booklet.jpg")%>' 
+      				 			 alt='<spagobi:message key = "sbi.detailbiobj.editTemplate"  />' />
+						</a> 	
+						<%
+			 				}
+						%>
+					</div>
+				</div>		
 	    
         </div> 
 

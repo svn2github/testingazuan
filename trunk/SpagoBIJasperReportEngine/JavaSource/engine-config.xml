@@ -23,7 +23,7 @@
 		isJNDI 	= 	true iff the connection is defined in the jndi nemespace of the server 
 	-->
 	<!-- ====================================================================================== -->
-	<CONNECTIONS default="hsqlfoodmart">
+	<CONNECTIONS default="hsqlfoodmartjdbc">
 		<CONNECTION name="hsqlfoodmartjdbc" 
 					isJNDI="false"
 					driver="org.hsqldb.jdbcDriver"

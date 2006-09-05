@@ -75,6 +75,16 @@
         <servlet-class>it.eng.qbe.services.ReportServlet</servlet-class>
     </servlet>
     
+    <servlet>
+        	<servlet-name>BookletServlet</servlet-name>
+        	<servlet-class>it.eng.spagobi.pamphlets.BookletServlet</servlet-class>
+    	</servlet>
+
+	<servlet-mapping>
+        	<servlet-name>BookletServlet</servlet-name>
+        	<url-pattern>/BookletServlet</url-pattern>
+    	</servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>ReportServlet</servlet-name>
         <url-pattern>/ReportServlet</url-pattern>

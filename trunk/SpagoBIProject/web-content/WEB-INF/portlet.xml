@@ -258,4 +258,36 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-preferences>
 	</portlet>
 
+
+	<portlet>
+        <description>SpagoBI Workflow Task List</description>		
+        <portlet-name>SBIWorkflowTaskList</portlet-name>		
+        <display-name>SpagoBI Workflow Task List</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>WorkflowToDoListPage</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>     
+		<portlet-info>
+        	<title>SpagoBI Workflow Task List</title>
+        	<short-title>SpagoBI Workflow Task List</short-title>
+        	<keywords>SpagoBI Workflow Task List</keywords>
+        </portlet-info>
+	</portlet>
+
 </portlet-app>

@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MODULES>
 	
+	<MODULE class="it.eng.spagobi.workflow.modules.WorkListModule" name="WorkListModule">
+		<CONFIG pool="spagobi" rows="10" title="SBIWorkflowTaskList.workflowToDoList.title" >
+	      <QUERIES/>
+	      <COLUMNS>
+	        <COLUMN label="SBIWorkflowTaskList.workflowToDoList.activityName" name="ActivityName" />
+			<COLUMN label="SBIWorkflowTaskList.workflowToDoList.activityDescription" name="ActivityDescription" />
+			<COLUMN label="SBIWorkflowTaskList.workflowToDoList.activityPriority" name="ActivityPriority" />
+			<COLUMN label="SBIWorkflowTaskList.workflowToDoList.processName" name="ProcessName" />
+	      </COLUMNS>
+	      <CAPTIONS/>
+	      <BUTTONS/>
+	    </CONFIG>
+	</MODULE>
+	
 	<MODULE class="it.eng.spagobi.services.modules.CheckLinksModule" name="CheckLinksModule">
 		<CONFIG pool="spagobi" rows="10" title="Check-List ">
       		

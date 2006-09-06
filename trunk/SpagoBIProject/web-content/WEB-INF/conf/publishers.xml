@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
+
+	<PUBLISHER name="WorkflowToDoListPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/workflowToDoList.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
 	
 	<PUBLISHER name="ChecklistLookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">

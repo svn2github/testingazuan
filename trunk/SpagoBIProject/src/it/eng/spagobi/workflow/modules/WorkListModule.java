@@ -15,7 +15,6 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.workflow.api.WorkflowEngineException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,7 +115,7 @@ public class WorkListModule extends AbstractBasicListModule {
 	 * @throws SourceBeanException if some errors occurs in the source bean population
 	 * @throws WorkflowEngineException if some errors occurs
 	 */
-	protected SourceBean tasksToSourceBean (List aWorkList) throws SourceBeanException, WorkflowEngineException{
+	protected SourceBean tasksToSourceBean (List aWorkList) throws SourceBeanException {
 		SourceBean rows = new SourceBean("ROWS");
         
 		for (Iterator it = aWorkList.iterator(); it.hasNext();){

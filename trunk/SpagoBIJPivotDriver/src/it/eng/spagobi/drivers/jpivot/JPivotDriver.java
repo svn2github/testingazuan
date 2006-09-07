@@ -142,6 +142,161 @@ public class JPivotDriver implements IEngineDriver {
 		return map;
 	}
     
+	
+	
+	
+	
+	
+	
+	
+	 /**
+	 * Return a map of parameters which will be sended in the request to the 
+	 * engine application.
+	 * @param biObject Object to execute
+	 * @return Map The map of the execution call parameters
+	 * @deprecated
+  	*/
+	public Map getParameterMap(Object biobject){
+		Map map = new Hashtable();
+		try{
+			BIObject biobj = (BIObject)biobject;
+			map = getMap(biobj, null, "");
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object)",
+					"The parameter is not a BIObject type",
+					cce);
+		} 
+		map = applySecurity(map);
+		return map;
+	}			
+	/**
+	 * Return a map of parameters which will be sended in the request to the 
+	 * engine application.
+	 * @param biObject Object to execute
+	 * @param profile Profile of the user 
+	 * @return Map The map of the execution call parameters
+	 * @deprecated
+	 */
+	public Map getParameterMap(Object object, IEngUserProfile profile){
+		Map map = new Hashtable();
+		try{
+			BIObject biobj = (BIObject)object;
+			map = getMap(biobj, profile, "");
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, IEngUserProfile)",
+					"The parameter is not a BIObject type",
+					cce);
+		} 
+		map = applySecurity(map);
+		return map;
+	}
+	/**
+	 * Return a map of parameters which will be sended in the request to the 
+	 * engine application.
+	 * @param biObject Object container of the subObject
+	 * @param subObject SubObject to execute
+	 * @return Map The map of the execution call parameters
+	 * @deprecated
+  	 */
+	public Map getParameterMap(Object object, Object subObject){
+		Map map = new Hashtable();
+		try{
+			BIObject biobj = (BIObject)object;
+			map = getMap(biobj, null, "");
+			SubObjectDetail subObj = (SubObjectDetail)subObject;
+			map = getParameterMap(object, null, "");
+			String nameSub = subObj.getName();
+			map.put("nameSubObject", nameSub);
+			String descrSub = subObj.getDescription();
+			map.put("descriptionSubObject", descrSub);
+			String visStr = "Private";
+			boolean visBool = subObj.isPublicVisible();
+		    if(visBool) 
+		    	visStr = "Public";
+			map.put("visibilitySubObject", visStr);
+			// get subobject data from cms
+			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
+		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
+		 	// encode and set the subobject data as a parameter
+		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			map.put("subobjectdata", bASE64Encoder.encode(subObjDataBytes));
+			
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object)",
+					"The second parameter is not a SubObjectDetail type",
+					cce);
+		} catch (EMFUserError emfue) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object)",
+					"Error while creating cmsDao for BiObject",
+					emfue);
+		} 
+		map = applySecurity(map);
+		return map;
+	}
+    /**
+	 * Return a map of parameters which will be sended in the request to the 
+	 * engine application.
+	 * @param biObject Object container of the subObject
+	 * @param subObject SubObject to execute
+	 * @param profile Profile of the user 
+	 * @return Map The map of the execution call parameters
+  	 */
+    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
+    	Map map = new Hashtable();
+		try{
+			BIObject biobj = (BIObject)object;
+			map = getMap(biobj, profile, "");
+			SubObjectDetail subObj = (SubObjectDetail)subObject;
+			map = getParameterMap(object, profile, "");
+			String nameSub = subObj.getName();
+			map.put("nameSubObject", nameSub);
+			String descrSub = subObj.getDescription();
+			map.put("descriptionSubObject", descrSub);
+			String visStr = "Private";
+			boolean visBool = subObj.isPublicVisible();
+		    if(visBool) 
+		    	visStr = "Public";
+			map.put("visibilitySubObject", visStr);
+			// get subobject data from cms
+			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
+		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
+		 	// encode and set the subobject data as a parameter
+		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			map.put("subobjectdata", bASE64Encoder.encode(subObjDataBytes));
+			
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object, IEngUserProfile)",
+					"The second parameter is not a SubObjectDetail type",
+					cce);
+		} catch (EMFUserError emfue) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object, IEngUserProfile)",
+					"Error while creating cmsDao for BiObject",
+					emfue);
+		} 
+		map = applySecurity(map);
+		return map;
+	}
+	
+	
+	
+	
+	
+	
+	
        
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the

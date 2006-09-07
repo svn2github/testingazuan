@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
 	
+	<PAGE name="CompleteOrRejectActivityPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="CompleteOrRejectActivityPage" target="CompleteOrRejectActivityModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="CompleteOrRejectActivityModule"/>
+    	</MODULES>
+  	</PAGE>	
+	
+	<PAGE name="AcceptActivityPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="AcceptActivityPage" target="AcceptActivityModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="AcceptActivityModule"/>
+    	</MODULES>
+  	</PAGE>	
+	
 	<PAGE name="WorkflowToDoListPage" scope="REQUEST" >
     	<DEPENDENCIES>
     		<DEPENDENCE source="WorkflowToDoListPage" target="PortletLoginModule">

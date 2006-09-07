@@ -32,7 +32,7 @@ import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-public class PamphletsCollaborationPublisher implements PublisherDispatcherIFace {
+public class BookletsCollaborationPublisher implements PublisherDispatcherIFace {
 
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving

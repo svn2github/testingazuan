@@ -4,8 +4,7 @@
 	<MODULE class="it.eng.spagobi.booklets.modules.BookletsManagementModule" name="BookletsManagementModule">
 	</MODULE>
 	
-	 <!--
-	<MODULE class="it.eng.spagobi.pamphlets.modules.PamphletsCollaborationModule" name="PamphletsCollaborationModule">
+	<MODULE class="it.eng.spagobi.booklets.modules.BookletsCollaborationModule" name="BookletsCollaborationModule">
 	</MODULE>
-   -->
+   
 </MODULES>

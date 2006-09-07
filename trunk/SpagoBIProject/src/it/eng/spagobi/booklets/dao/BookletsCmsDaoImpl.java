@@ -92,6 +92,15 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		try {
 			CmsManager manager = new CmsManager();
 			String pathDocParts = pathBooklet + "/document_parts";
+			// check if the node containing information exists
+			GetOperation getOp = new GetOperation(pathDocParts, true, false, false, false);
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			// if the node exist delete it
+			if(cmsnode!=null){
+				DeleteOperation delOp = new DeleteOperation(pathDocParts);
+				manager.execDeleteOperation(delOp);
+			}
+			// create the node and subnodes
 			SetOperation setOp = new SetOperation(pathDocParts, SetOperation.TYPE_CONTAINER, true);
 			manager.execSetOperation(setOp);
 			for(int i=1; i<=numTempParts; i++) {
@@ -111,31 +120,11 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 					            "createStructureForTemplate", "Error while creating structure for " +
-					            "pamphlet " + pathBooklet, e);
+					            "booklet " + pathBooklet, e);
 		} finally {	}
 	}
 
-
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	
 	
 	
@@ -244,7 +233,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			manager.execSetOperation(setOp);
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-					            "addPamphlet", "Cannot save the configured document");
+					            "addConfiguredDocument", "Cannot save the configured document");
 		} finally {	}
 	}
 
@@ -336,7 +325,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			bais.close();
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-					            "storePamphletTemplate", "Cannot save the template");
+					            "storeBookletTemplate", "Cannot save the template");
 		} finally {	}
 		
 	}
@@ -362,7 +351,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			name = propNameFile.getStringValues()[0];
 		} catch(Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-		            			"getPamphletTemplateFileName", "Cannot recover template file name");
+		            			"getBookletTemplateFileName", "Cannot recover template file name");
 		}
 		return name;
 	}
@@ -385,7 +374,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			content = node.getContent();
 		} catch(Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-		            			"getPamphletTemplateContent", "Cannot recover template content");
+		            			"getBookletTemplateContent", "Cannot recover template content");
 		}
 		return content;
 	}
@@ -523,7 +512,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		} catch(Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 		            			"getImagesOfTemplatePart", "Error while recovering images of the " +
-		            			"pamphlet " + pathBooklet + " part " + indPart, e);
+		            			"booklet " + pathBooklet + " part " + indPart, e);
 		}
 		return images;
 	}
@@ -548,7 +537,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		} catch(Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 		            			"getNotesTemplatePart", "Error while recovering notes of the " +
-		            			"pamphlet " + pathBooklet + " part " + indPart, e);
+		            			"booklet " + pathBooklet + " part " + indPart, e);
 		}
 		return notes;
 	}
@@ -609,7 +598,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		} catch(Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 		            			"getFinalDocument", "Error while recovering final document of the " +
-		            			"pamphlet " + pathBooklet, e);
+		            			"booklet " + pathBooklet, e);
 		}
 		return doc;
 	}

@@ -42,8 +42,9 @@ public class WorkListModule extends AbstractBasicListModule {
 		    	
     	//Getting Containers
     	SessionContainer session = getRequestContainer().getSessionContainer();
+    	SessionContainer permSession = session.getPermanentContainer();
     	//ApplicationContainer application = ApplicationContainer.getInstance();
-    	IEngUserProfile userProfile = (IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
     	
     	//Getting Jbpm context 
     	JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
@@ -133,16 +134,16 @@ public class WorkListModule extends AbstractBasicListModule {
 	 */
 	protected SourceBean adapt(TaskInstance aTaskInstance) throws SourceBeanException {
 		SourceBean row = new SourceBean(DataRow.ROW_TAG);
-		row.setAttribute("ActivityDescription", aTaskInstance.getDescription());
+		row.setAttribute("ActivityDescription", aTaskInstance.getDescription() == null ? "" :  aTaskInstance.getDescription());
 		row.setAttribute("ActivityKey", aTaskInstance.getId());
-		row.setAttribute("ActivityName", aTaskInstance.getName());
+		row.setAttribute("ActivityName", aTaskInstance.getName() == null ? "" : aTaskInstance.getName());
 		row.setAttribute("ActivityPriority", aTaskInstance.getPriority());
 		row.setAttribute("ActivityState", aTaskInstance.isOpen() ? "Open" : "Closed"); // ??????????
 		ContextInstance contextInstance = aTaskInstance.getContextInstance();
 		ProcessInstance processInstance = contextInstance.getProcessInstance();
 		ProcessDefinition processDefinition = processInstance.getProcessDefinition();
 		row.setAttribute("ProcessDescription", ""); // ??????????
-		row.setAttribute("ProcessKey", processDefinition.getId());
+		row.setAttribute("ProcessKey", processDefinition.getId() );
 		row.setAttribute("ProcessName", processDefinition.getName());
 		row.setAttribute("ProcessState", processInstance.isSuspended() ? "Suspended" : "In execution");
 		row.setAttribute("Accepted", aTaskInstance.isOpen()  ? "Open" : "Closed"); // ??????????

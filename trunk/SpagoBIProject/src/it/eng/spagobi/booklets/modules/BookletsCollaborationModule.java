@@ -46,7 +46,7 @@ import javax.portlet.PortletRequest;
 /**
  * This class implements a module which  handles pamphlets collaboration.
  */
-public class PamphletsCollaborationModule extends AbstractModule {
+public class BookletsCollaborationModule extends AbstractModule {
 	
 
 	public void init(SourceBean config) {
@@ -66,6 +66,8 @@ public class PamphletsCollaborationModule extends AbstractModule {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 						            "service", "The operation parameter is null");
 				initializeHandler(response);
+			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_OPEN_NOTE_EDITOR)) {
+				openNoteEditorHandler(request, response);
 			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_SAVE_NOTE)) {
 				saveNoteHandler(request, response);
 			} 
@@ -78,6 +80,22 @@ public class PamphletsCollaborationModule extends AbstractModule {
 		}
 	}
 
+	
+	
+	private void openNoteEditorHandler(SourceBean request, SourceBean response) {
+		try{
+			String activityKey = (String)request.getAttribute("activityKey");
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletEditNotesTemplatePart");
+			//response.setAttribute(BookletsConstants.PAMPHLET_PART_INDEX, indexPart);
+			//response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathPamp);
+			response.setAttribute("ActivityKey", activityKey);
+		} catch(Exception e){
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		                        "saveNoteHandler","Error while saving notes", e);
+		}
+	    
+	}
+	
 	
 	
 	
@@ -104,7 +122,7 @@ public class PamphletsCollaborationModule extends AbstractModule {
 	private void saveNoteHandler(SourceBean request, SourceBean response) {
 		try{
 			String indexPart = (String)request.getAttribute(BookletsConstants.PAMPHLET_PART_INDEX);
-			String pathPamp = (String)request.getAttribute(BookletsConstants.PATH_PAMPHLET);
+			String pathPamp = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 			String notes = (String)request.getAttribute("notes");
 			String activityKey = (String)request.getAttribute("ActivityKey");
 			IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
@@ -114,7 +132,7 @@ public class PamphletsCollaborationModule extends AbstractModule {
 			pampdao.storeNote(pathPamp, indexPart, notes.getBytes());
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "PamphletEditNotesTemplatePart");
 			response.setAttribute(BookletsConstants.PAMPHLET_PART_INDEX, indexPart);
-			response.setAttribute(BookletsConstants.PATH_PAMPHLET, pathPamp);
+			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathPamp);
 			response.setAttribute("ActivityKey", activityKey);
 		} catch(Exception e){
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),

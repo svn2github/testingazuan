@@ -40,9 +40,41 @@
   	</PUBLISHER>
   	
      
+    <PUBLISHER name="BookletsExecution">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletExecution.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+     
+    
+    <PUBLISHER name="BookletsCollaborationPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.booklets.publishers.BookletsCollaborationPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+     
+     
+    <PUBLISHER name="AddNoteHandler">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsCollaborationPage" />
+      			<PARAMETER name="ActivityKey" type="RELATIVE" scope="SERVICE_REQUEST" value="ActivityKey" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="OPERATION_OPEN_NOTE_EDITOR" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+    
+    
+     
+     
+     
+     
      <!-- 
-	
-
 	<PUBLISHER name="PamphletsLoopbackManagementHome">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -63,13 +95,7 @@
   	</PUBLISHER>
   	
 
-	<PUBLISHER name="PamphletsCollaborationPubJ">
-    	<RENDERING channel="PORTLET" mode="" type="JAVA">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.pamphlets.publishers.PamphletsCollaborationPublisher"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
+	
   	
   	<PUBLISHER name="PamphletsCollaborationPub">
     	<RENDERING channel="PORTLET" mode="" type="JSP">

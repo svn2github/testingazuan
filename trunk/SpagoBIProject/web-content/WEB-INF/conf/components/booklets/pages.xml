@@ -13,20 +13,20 @@
       		<MODULE keep_instance="false" keep_response="false" name="BookletsManagementModule"/>
     	</MODULES>
   	</PAGE>
-  	
-  	<!-- 
-  	<PAGE name="PamphletsCollaborationPage" scope="REQUEST" >
+
+ 
+  	<PAGE name="BookletsCollaborationPage" scope="REQUEST" >
     	<DEPENDENCIES>
-      		<DEPENDENCE source="PamphletsCollaborationPage" target="PamphletsCollaborationModule">
+      		<DEPENDENCE source="BookletsCollaborationPage" target="BookletsCollaborationModule">
         		<CONDITIONS/>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
     	</DEPENDENCIES>
     	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="PamphletsCollaborationModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="BookletsCollaborationModule"/>
     	</MODULES>
   	</PAGE>
-  	-->
+
   	
   	
 </PAGES>

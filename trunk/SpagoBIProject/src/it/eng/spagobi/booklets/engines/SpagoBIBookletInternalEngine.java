@@ -21,30 +21,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.booklets.engines;
 
-import it.eng.qbe.action.RecoverClassLoaderAction;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.Logger;
-import it.eng.qbe.utility.SpagoBICmsDataMartModelRetriever;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
-import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
-import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
+import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.util.Iterator;
-import java.util.List;
+import java.io.InputStream;
+
+import org.jbpm.JbpmConfiguration;
+import org.jbpm.JbpmContext;
+import org.jbpm.context.exe.ContextInstance;
+import org.jbpm.graph.def.ProcessDefinition;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.graph.exe.Token;
 
 public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 
@@ -56,10 +50,72 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 	 * @param obj The <code>BIObject</code> representing the document to be executed
 	 * @param response The response <code>SourceBean</code> to be populated
 	 */
-	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError {
+	public void execute(RequestContainer requestContainer, BIObject biobj, SourceBean response) throws EMFUserError {
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	            			"execute", "Start execute method");
-		System.out.println("************************* execute booklet");
+    			            "execute", "Start execute method");
+		
+		String exMsg = "Workflow Process Started correctly";
+		
+		String pathBiObj = biobj.getPath();
+		String pathBook = pathBiObj + "/template";
+		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBook);		
+		// parse process definition
+		ProcessDefinition processDefinition = null;
+		try{
+			processDefinition = ProcessDefinition.parseXmlInputStream(procDefIS);
+		} catch(Exception e) {
+			exMsg = "Error";
+			System.out.println(e);
+		}
+		try{
+			procDefIS.close();
+		} catch (Exception e){
+			exMsg = "Error";
+			System.out.println(e);
+		}
+        // get name of the process
+		String nameProcess = processDefinition.getName();
+		// get jbpm context
+		JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+		JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+	    try{
+	    	// deploy process   
+			try{
+				jbpmContext.deployProcessDefinition(processDefinition);  
+			} catch (Exception e) {
+				exMsg = "Error";
+				System.out.println(e);
+			}
+			// create process instance
+			ProcessInstance processInstance = new ProcessInstance(processDefinition);
+			
+			// get context instance and set the booklet path variable
+			ContextInstance contextInstance = processInstance.getContextInstance();
+			contextInstance.createVariable(BookletsConstants.PATH_BOOKLET_CONF, pathBook);			
+			// start workflow
+			Token token = processInstance.getRootToken();
+		    token.signal();
+		    jbpmContext.save(processInstance); 
+	    } catch (Throwable thr){
+	    	exMsg = "Error";
+	    	System.out.println(thr);
+	    } finally {
+	           jbpmContext.close();
+	    } 
+		/*
+		 GraphSession graphSession = jbpmContext.getGraphSession();
+		 ProcessDefinition procDefDeployed = graphSession.findLatestProcessDefinition(nameProcess);
+		 proccInstId = processInstance.getId();
+		*/
+	    try{
+	    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsExecution");
+	    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, exMsg);
+	    } catch (Exception e) {
+	    	System.out.println(e);
+	    }
+		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+	            "execute", "End execute method");
 	}
 	
 	/**
@@ -72,7 +128,8 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError {
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
     			            "executeSubObject", "Start executeSubObject method");
-		System.out.println("************************* execute sub obj booklet");		
+		SpagoBITracer.warning(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+	                        "executeSubObject", "Method not implemented");
 	}
 	
 	

@@ -41,11 +41,12 @@ package it.eng.spagobi.booklets.constants;
 		public static final String OPERATION_DETAIL_BOOKLET = "OPERATION_DETAIL_BOOKLET";
 		public static final String OPERATION_SAVE_CONFIGURED_DOCUMENT = "OPERATION_SAVE_CONFIGURED_DOCUMENT";
 		public static final String WF_PROCESS_DEFINTIION_FILENAME = "WF_PROCESS_DEFINTIION_FILENAME";
+		public static final String EXECUTION_MESSAGE = "EXECUTION_MESSAGE";
+		public static final String OPERATION_OPEN_NOTE_EDITOR = "OPERATION_OPEN_NOTE_EDITOR";
+		public static final String OPERATION_SAVE_NOTE = "OPERATION_SAVE_NOTE";
 		
 		
-		
-		
-		
+
 		
 		//public static final String PAMPHLET_LIST = "PAMPHLET_LIST";
 		//public static final String PAMPHLET_MANAGEMENT_MODULE = "PamphletsManagementModule";
@@ -58,7 +59,7 @@ package it.eng.spagobi.booklets.constants;
 		public static final String OPERATION_GENERATE_DOCUMENT_PARTS = "OPERATION_GENERATE_DOCUMENT_PARTS";
 		public static final String OPERATION_EDIT_PAMPHLET_PART = "OPERATION_EDIT_PAMPHLET_PART";
 		public static final String PAMPHLET_PART_INDEX = "PAMPHLET_PART_INDEX";
-		public static final String OPERATION_SAVE_NOTE = "OPERATION_SAVE_NOTE";
+		
 		//public static final String PATH_PAMPHLET = "PATH_PAMPHLET";
 		
 	}

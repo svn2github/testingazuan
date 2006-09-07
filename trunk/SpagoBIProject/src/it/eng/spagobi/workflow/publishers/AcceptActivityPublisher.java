@@ -19,8 +19,9 @@ public class AcceptActivityPublisher implements PublisherDispatcherIFace {
     	String activityKeyIdStr = (String) request.getAttribute("ActivityKey");
 		long activityKeyId = Long.valueOf(activityKeyIdStr).longValue();
 		TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
+		taskInstance.start();
 		ContextInstance contextInstance = taskInstance.getContextInstance();
-		String publisherName = contextInstance.getVariable("handler").toString(); 
+		String publisherName = contextInstance.getVariable("spago_handler").toString(); 
 		return publisherName;
 	}
 

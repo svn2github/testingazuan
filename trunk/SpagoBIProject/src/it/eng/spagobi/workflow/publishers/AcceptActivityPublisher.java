@@ -7,7 +7,6 @@ import it.eng.spago.presentation.PublisherDispatcherIFace;
 
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
-import org.jbpm.context.exe.ContextInstance;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 public class AcceptActivityPublisher implements PublisherDispatcherIFace {
@@ -20,8 +19,7 @@ public class AcceptActivityPublisher implements PublisherDispatcherIFace {
 		long activityKeyId = Long.valueOf(activityKeyIdStr).longValue();
 		TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
 		taskInstance.start();
-		ContextInstance contextInstance = taskInstance.getContextInstance();
-		String publisherName = contextInstance.getVariable("spago_handler").toString(); 
+		String publisherName = taskInstance.getVariable("spago_handler").toString(); 
 		return publisherName;
 	}
 

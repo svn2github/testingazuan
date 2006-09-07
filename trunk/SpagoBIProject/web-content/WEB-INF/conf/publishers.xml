@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
-
+  	
 	<PUBLISHER name="CompleteOrRejectActivityPublisher">
-    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.workflow.publishers.CompleteOrRejectActivityPublisher"/>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="WorkflowToDoListPage" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

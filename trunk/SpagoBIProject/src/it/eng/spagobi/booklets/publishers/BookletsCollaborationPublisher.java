@@ -35,7 +35,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 public class BookletsCollaborationPublisher implements PublisherDispatcherIFace {
 
 	/**
-	 *Given the request at input, gets the name of the reference publisher,driving
+	 * Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
 	 * 
 	 * @param requestContainer The object containing all request information
@@ -44,21 +44,30 @@ public class BookletsCollaborationPublisher implements PublisherDispatcherIFace 
 	 * 		   call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+		// GET THE MODULE RESPONSE
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		SourceBean serviceResp = responseContainer.getServiceResponse();
-		SourceBean moduleResponse = (SourceBean)serviceResp.getAttribute(BookletsConstants.PAMPHLET_COLLABORATION_MODULE);
+		SourceBean moduleResponse = (SourceBean)serviceResp.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE);
 		if(moduleResponse==null) {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
 					            "getPublisherName", "Module response null");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_pamphlets_messages");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_booklets_messages");
 			errorHandler.addError(error);
 			return "error";
 		}
+		// GET THE PUBLISHER NAME
+		String pubName = (String)moduleResponse.getAttribute(BookletsConstants.PUBLISHER_NAME);
+		if((pubName==null) || pubName.trim().equals("")){
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+		                        "getPublisherName", "attribute "+BookletsConstants.PUBLISHER_NAME+" " +
+		                        "not found in response or empty");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_booklets_messages");
+			errorHandler.addError(error);
+			return "error";
+		}
+		// RETURN PUBLISHER NAME OR ERROR PUBLISHER
 		if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			String pubName = (String)moduleResponse.getAttribute(BookletsConstants.PUBLISHER_NAME);
-			if((pubName!=null) && !(pubName.trim().equals("")))
-				return pubName;
-			else return new String("PamphletsCollaborationPub");
+			return pubName;
 		} else {
 			return new String("error");
 		}

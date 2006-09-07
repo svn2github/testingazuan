@@ -25,6 +25,8 @@ package it.eng.spagobi.booklets.constants;
 		
 		public static final String BOOKLET_MANAGEMENT_PAGE = "BookletsManagementPage";
 		public static final String BOOKLET_MANAGEMENT_MODULE = "BookletsManagementModule";
+		public static final String BOOKLET_COLLABORATION_PAGE = "BookletsCollaborationPage";
+		public static final String BOOKLET_COLLABORATION_MODULE = "BookletsCollaborationModule";
 		public static final String NAME_MODULE = "SPAGOBI[BOOKLET]";
 		public static final String PATH_BOOKLET_CONF = "PATH_BOOKLET_CONF";
 		public static final String OO_TEMPLATE_FILENAME = "OO_TEMPLATE_FILENAME";
@@ -44,7 +46,7 @@ package it.eng.spagobi.booklets.constants;
 		public static final String EXECUTION_MESSAGE = "EXECUTION_MESSAGE";
 		public static final String OPERATION_OPEN_NOTE_EDITOR = "OPERATION_OPEN_NOTE_EDITOR";
 		public static final String OPERATION_SAVE_NOTE = "OPERATION_SAVE_NOTE";
-		
+		public static final String BOOKLET_PART_INDEX = "spagobi_booklet_pageindex";
 		
 
 		
@@ -58,8 +60,6 @@ package it.eng.spagobi.booklets.constants;
 		//public static final String ROLE_LIST = "ROLE_LIST";
 		public static final String OPERATION_GENERATE_DOCUMENT_PARTS = "OPERATION_GENERATE_DOCUMENT_PARTS";
 		public static final String OPERATION_EDIT_PAMPHLET_PART = "OPERATION_EDIT_PAMPHLET_PART";
-		public static final String PAMPHLET_PART_INDEX = "PAMPHLET_PART_INDEX";
-		
 		//public static final String PATH_PAMPHLET = "PATH_PAMPHLET";
 		
 	}

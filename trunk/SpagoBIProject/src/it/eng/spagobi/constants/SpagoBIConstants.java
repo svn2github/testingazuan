@@ -154,5 +154,6 @@ public class SpagoBIConstants {
 	public static final String OPERATION_NEW_BOOKLET_TEMPLATE = "OPERATION_NEW_BOOKLET_TEMPLATE";
 	public static final String OPERATION_EDIT_BOOKLET_TEMPLATE = "OPERATION_EDIT_BOOKLET_TEMPLATE";
 	
+	public static final String ACTIVITYKEY = "ACTIVITYKEY";
 	
 }

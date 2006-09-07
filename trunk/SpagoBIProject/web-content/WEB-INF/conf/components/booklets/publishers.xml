@@ -70,8 +70,14 @@
   	</PUBLISHER>
     
     
-     
-     
+    <PUBLISHER name="BookletEditNotesTemplatePart">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletEditNotesTempPart.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
      
      
      <!-- 

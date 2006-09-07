@@ -4,7 +4,7 @@
 	<MODULE class="it.eng.spagobi.workflow.modules.AcceptActivityModule" name="AcceptActivityModule">
 	</MODULE>
 	
-	<MODULE class="it.eng.spagobi.workflow.modules.CompleteOrRejectActivityPage" name="CompleteOrRejectActivityPage">
+	<MODULE class="it.eng.spagobi.workflow.modules.CompleteOrRejectActivityModule" name="CompleteOrRejectActivityModule">
 	</MODULE>
 	
 	<MODULE class="it.eng.spagobi.workflow.modules.WorkListModule" name="WorkListModule">

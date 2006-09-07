@@ -77,12 +77,12 @@
     
     <servlet>
         	<servlet-name>BookletServlet</servlet-name>
-        	<servlet-class>it.eng.spagobi.pamphlets.BookletServlet</servlet-class>
+        	<servlet-class>it.eng.spagobi.booklets.BookletsImageServlet</servlet-class>
     	</servlet>
 
 	<servlet-mapping>
         	<servlet-name>BookletServlet</servlet-name>
-        	<url-pattern>/BookletServlet</url-pattern>
+        	<url-pattern>/BookletsImageService</url-pattern>
     	</servlet-mapping>
     
     <servlet-mapping>

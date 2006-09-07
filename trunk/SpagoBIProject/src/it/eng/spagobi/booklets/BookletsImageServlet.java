@@ -35,8 +35,8 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.workflow.api.IWorkflowAssignment;
 import it.eng.spago.workflow.api.IWorkflowConnection;
 import it.eng.spago.workflow.api.IWorkflowEngine;
-import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
+import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class PamphletsImageServlet extends HttpServlet{
+public class BookletsImageServlet extends HttpServlet{
 	
 	public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -63,10 +63,8 @@ public class PamphletsImageServlet extends HttpServlet{
 		OutputStream out = null;
 		String task = "";
 		try{
-	 		
 	 		task = (String)request.getParameter("task");		
 	 		out = response.getOutputStream();
-	 		
 	 		if(task.equalsIgnoreCase("getTemplateImage")){
 	 			String pathimg = (String)request.getParameter("pathimg");
 			 	if(pathimg!=null) {
@@ -93,7 +91,8 @@ public class PamphletsImageServlet extends HttpServlet{
 		 		String pathPamphlet = (String)context.get("PathPamphlet");
 		 		// GET NAME OF THE PAMPHLET
 		 		IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
-		 		String pampName = pampdao.getBookletName(pathPamphlet);
+		 		//String pampName = pampdao.getBookletName(pathPamphlet);
+		 		String pampName = "finalDocument";
 		 		byte[] finalDocBytes = pampdao.getFinalDocument(pathPamphlet);
 			 	response.setHeader("Content-Disposition","attachment; filename=\"" + pampName + ".ppt" + "\";");
 	 			response.setContentLength(finalDocBytes.length);

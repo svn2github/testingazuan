@@ -22,98 +22,48 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,it.eng.spagobi.booklets.constants.BookletsConstants,java.util.List,java.util.Iterator,it.eng.spagobi.booklets.bo.Pamphlet,it.eng.spagobi.bo.Role,it.eng.spagobi.booklets.bo.ConfiguredBIDocument,java.util.Map,java.util.Set,it.eng.spago.base.SessionContainer,it.eng.spago.base.ApplicationContainer,it.eng.spago.security.IEngUserProfile,it.eng.spago.workflow.api.IWorkflowEngine,it.eng.spago.workflow.api.IWorkflowConnection,it.eng.spago.workflow.api.IWorkflowAssignment,it.eng.spago.configuration.ConfigSingleton,it.eng.spago.base.SourceBean,java.io.File,it.eng.spagobi.booklets.dao.IBookletsCmsDao,it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl,java.util.HashMap,java.io.FileOutputStream,it.eng.spagobi.utilities.GeneralUtilities,it.eng.spagobi.utilities.SpagoBITracer,it.eng.spago.error.EMFUserError,it.eng.spago.error.EMFErrorSeverity,it.eng.spago.error.EMFErrorHandler,it.eng.spagobi.constants.SpagoBIConstants" %>
+				it.eng.spago.navigation.LightNavigationManager,
+				it.eng.spagobi.booklets.constants.BookletsConstants,
+				java.util.List,
+				java.util.Iterator,
+				java.util.Map,
+				java.util.Set,
+				it.eng.spago.base.SourceBean,
+				java.util.HashMap,
+				it.eng.spagobi.constants.SpagoBIConstants" %>
 
 <%
-    String activityKey = null;
-    String pathTmpFold = null;
-    Map imageurl = null;
-    String notes = null;
+	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
+	String pathConfBook = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+	String indexPart = (String)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PART_INDEX);
+	String activityKey = (String)moduleResponse.getAttribute(SpagoBIConstants.ACTIVITYKEY);
+	Map imageurl = (Map)moduleResponse.getAttribute("mapImageUrls");
+    String notes = (String)moduleResponse.getAttribute("notes");
     Iterator iterImgs = null;
+    
 	PortletURL backUrl = renderResponse.createActionURL();
     PortletURL saveNoteUrl = renderResponse.createActionURL();
     PortletURL closeNoteUrl = renderResponse.createActionURL();
-    boolean logicExecuted = true;
-
-	try{	
-		// get activity key
-   		activityKey = (String)aServiceResponse.getAttribute("ActivityKey");   
-    	if(activityKey==null){
-    		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.PAMPHLET_COLLABORATION_MODULE); 
-    		activityKey = (String)moduleResponse.getAttribute("ActivityKey");   
-    	}
-        // get user profile
-		ApplicationContainer applicationCont = ApplicationContainer.getInstance();
-		IEngUserProfile userProfile = (IEngUserProfile)aSessionContainer.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		// get workflow engine and connect
-		IWorkflowEngine wfEngine = (IWorkflowEngine)applicationCont.getAttribute("WfEngine");
-		IWorkflowConnection wfConnection = wfEngine.getWorkflowConnection();
-		wfConnection.open((String)userProfile.getUserUniqueIdentifier(), (String)userProfile.getUserAttribute("password"));
-		// get user assignments
-		IWorkflowAssignment wfAssignment = wfConnection.getWorkflowAssignment(activityKey);
-		// get parameters
-		Map parameters = wfAssignment.getMappedParameters();
-		Map context = wfAssignment.getContext();
-		String pathPamphlet = (String)context.get("PathPamphlet");
-	    String indPart = (String)parameters.get("indexPart");
-		// get temp directory for the pamphlet module
-	    ConfigSingleton configSing = ConfigSingleton.getInstance();
-		SourceBean pathTmpFoldSB = (SourceBean)configSing.getAttribute("PAMPHLETS.PATH_TMP_FOLDER");
-		pathTmpFold = (String)pathTmpFoldSB.getAttribute("path");
-		File tempDir = new File(pathTmpFold); 
-		tempDir.mkdirs();
-		// get images stored into cms pamphlet part
-		IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
-		Map images = pampdao.getImagesOfTemplatePart(pathPamphlet, indPart);
-	    byte[] notesByte = 	pampdao.getNotesTemplatePart(pathPamphlet, indPart);
-	    notes = new String(notesByte);
-	    // for each image store into the temp directory and save the url useful to recover it into the map
-	    imageurl = new HashMap();
-	    iterImgs = images.keySet().iterator();
-	    while(iterImgs.hasNext()){
-	    	String logicalName = (String)iterImgs.next();
-	    	String logicalNameForStoring = pathPamphlet.replace('/', '_') + logicalName + ".jpg";
-	    	byte[] content = (byte[])images.get(logicalName);
-	    	File img = new File(tempDir, logicalNameForStoring);
-	    	FileOutputStream fos = new FileOutputStream(img);
-	    	fos.write(content);
-	    	fos.flush();
-	    	fos.close();
-	    	// the url to recover the image is a spagobi servlet url
-	    	String contextAddress = GeneralUtilities.getSpagoBiContextAddress();
-	    	String recoverUrl = contextAddress + "/PamphletsImageService?task=getTemplateImage&pathimg=" + 
-	    		pathTmpFold + "/" + logicalNameForStoring;
-	    	imageurl.put(logicalName, recoverUrl); 
-	    }
-	   
-	    // add parameters to back url
-	    backUrl.setParameter("PAGE", BookletsConstants.PAMPHLET_COLLABORATION_PAGE);
-	    backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
 	
-	    // add parameters to save url
-	    saveNoteUrl.setParameter("PAGE", BookletsConstants.PAMPHLET_COLLABORATION_PAGE);
-	    saveNoteUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_NOTE);
-	    saveNoteUrl.setParameter(BookletsConstants.PATH_PAMPHLET, pathPamphlet);
-	    saveNoteUrl.setParameter(BookletsConstants.PAMPHLET_PART_INDEX, indPart);
-	    saveNoteUrl.setParameter("ActivityKey", activityKey);
-	    saveNoteUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
+    // add parameters to back url
+	backUrl.setParameter("PAGE", "WorkflowToDoListPage");
+	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	
+	// add parameters to save url
+	saveNoteUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+	saveNoteUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_NOTE);
+	saveNoteUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+	saveNoteUrl.setParameter(BookletsConstants.BOOKLET_PART_INDEX, indexPart);
+	saveNoteUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
+	saveNoteUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
 	      
-	    // add parameter to close url
-	    closeNoteUrl.setParameter("ACTION_NAME", "COMPLETE_OR_REJECT_ACTIVITY_ACTION");
-	    closeNoteUrl.setParameter("CompleteActivity", "TRUE");
-	    closeNoteUrl.setParameter("ActivityKey", activityKey);
-	    closeNoteUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
+	// add parameter to close url
+	closeNoteUrl.setParameter("PAGE", "CompleteOrRejectActivityPage");
+	closeNoteUrl.setParameter("CompletedActivity", "TRUE");
+	closeNoteUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
+	closeNoteUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
 	    
 	    
-	    
-   	} catch (Exception e) {
-   		logicExecuted = false;
-   		EMFErrorHandler errorHandler =  aResponseContainer.getErrorHandler();
-   		EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100);
-   		errorHandler.addError(error);
-   	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "jsp pamphletEditNotesTempPart",
-   	    	"", "error while getting and storing images and notes", e);
-   	}
 %>
 
 
@@ -122,15 +72,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "pamp.editnotes"  bundle="component_pamphlets_messages"/>
+			<spagobi:message key = "book.editnotes"  bundle="component_booklets_messages"/>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "pamp.back" bundle="component_pamphlets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/back.png")%>' 
-      				 alt='<spagobi:message key = "pamp.back"  bundle="component_pamphlets_messages"/>' />
+      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
 		
@@ -138,9 +88,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('formNotes').submit();"> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "pamp.save" bundle="component_pamphlets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/save32.png")%>' 
-      				 alt='<spagobi:message key = "pamp.save"  bundle="component_pamphlets_messages"/>' />
+      				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.png")%>' 
+      				 alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
 
@@ -148,9 +98,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=closeNoteUrl.toString()%>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "pamp.closeDiscussion" bundle="component_pamphlets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/closeNotes32.png")%>' 
-      				 alt='<spagobi:message key = "pamp.closeDiscussion"  bundle="component_pamphlets_messages"/>' />
+      				 title='<spagobi:message key = "book.closeDiscussion" bundle="component_booklets_messages" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/closeNotes32.png")%>' 
+      				 alt='<spagobi:message key = "book.closeDiscussion"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
 		
@@ -165,11 +115,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <spagobi:error/>	
 
 
-
-
-
-	
-<% if(logicExecuted) { %>
 	
 	<script>
 			
@@ -294,7 +239,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div name="notesdiv" id="notesdiv" >
 				<form method="POST" id="formNotes" action="<%=saveNoteUrl.toString()%>" >
 				<center>
-					<b><spagobi:message key = "pamp.notes"  bundle="component_pamphlets_messages"/></b>
+					<b><spagobi:message key = "book.notes"  bundle="component_booklets_messages"/></b>
 					<br/>
 					<textarea name="notes" style="width:1000px;height:350px;"><%=notes%></textarea>
 				<center>
@@ -312,7 +257,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 
 
-<% } %>
+
 
 
 

@@ -130,13 +130,29 @@ public class SelectFieldForSelectAction extends AbstractAction {
 		ISelectClause aSelectClause = getSelectClause();		
 		ISelectField aSelectField = new SelectFieldSourceBeanImpl();
 		aSelectField.setFieldName(fieldAlias);
-		aSelectField.setFieldAlias(fieldLabel);
+		String newfieldLabel = stripPointsFromAlias(fieldLabel);
+		aSelectField.setFieldAlias(newfieldLabel);
 		aSelectField.setFieldEntityClass(getEntityClass(className, classAlias));
 		aSelectClause.addSelectField(aSelectField);
 		getDataMartWizard().setSelectClause(aSelectClause);
 	}
 	
-	
+	public String stripPointsFromAlias(String original){
+		
+		if (original.indexOf(".") < 0){
+			return original;
+		}else{
+			StringBuffer newString = new StringBuffer();
+			char ch;
+			for (int i=0; i < original.length(); i++){
+				ch = original.charAt(i);
+				if (ch != '.'){
+					newString.append(ch);
+				}
+			}
+			return newString.toString();
+		}
+	}
 	
 	private SessionContainer getSession() {
 		return getRequestContainer().getSessionContainer();

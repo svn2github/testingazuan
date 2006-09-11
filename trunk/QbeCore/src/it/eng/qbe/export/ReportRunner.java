@@ -56,8 +56,6 @@ public class ReportRunner {
 	
 	public void run(File templateFile, File reportFile, String outputType, Connection conn) throws Exception {
 		
-		// assume that the report query in in sql format
-		// TODO check this and adapt the behaviour
 		
 		InputStream is = new FileInputStream(templateFile);
 		JasperReport report  = JasperCompileManager.compileReport(is);

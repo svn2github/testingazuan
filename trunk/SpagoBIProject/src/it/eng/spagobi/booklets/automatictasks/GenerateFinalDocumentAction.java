@@ -43,10 +43,10 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.presentation.XPresentationPage;
-import com.sun.star.sdbc.XCloseable;
 import com.sun.star.text.XText;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
+import com.sun.star.util.XCloseable;
 
 public class GenerateFinalDocumentAction implements ActionHandler {
 
@@ -279,7 +279,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             
             FileInputStream fis = new FileInputStream(pathFinalDoc);
             byte[] docCont = GeneralUtilities.getByteArrayFromInputStream(fis);
-            pampDao.storeFinalDocument(pathBookConf, docCont);
+            pampDao.storeCurrentPresentationContent(pathBookConf, docCont);
             debug("execute", "Document stored in CMS");
             fis.close();
 		} catch(Exception e) {
@@ -288,7 +288,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 			 // close open document and environment
 			if(xComponent!=null)  {
 				XModel xModel = (XModel)UnoRuntime.queryInterface(XModel.class, xComponent);
-				com.sun.star.util.XCloseable xCloseable = (com.sun.star.util.XCloseable)UnoRuntime.queryInterface(XCloseable.class, xModel);
+				XCloseable xCloseable = (XCloseable)UnoRuntime.queryInterface(XCloseable.class, xModel);
 				try{
 					xCloseable.close(true);
 				} catch (Exception e){

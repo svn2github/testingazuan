@@ -37,6 +37,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,6 +45,9 @@ import java.util.Map;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
 import org.jbpm.context.exe.ContextInstance;
+import org.jbpm.graph.def.ProcessDefinition;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.graph.exe.Token;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 /**
@@ -66,14 +70,18 @@ public class BookletsCollaborationModule extends AbstractModule {
 		String operation = (String) request.getAttribute(SpagoBIConstants.OPERATION);
 		try{
 			if((operation==null)||(operation.trim().equals(""))) {
-				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 						            "service", "The operation parameter is null");
-				initializeHandler(response);
+				throw new Exception("The operation parameter is null");
 			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_OPEN_NOTE_EDITOR)) {
 				openNoteEditorHandler(request, response);
 			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_SAVE_NOTE)) {
 				saveNoteHandler(request, response);
-			} 
+			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_APPROVE_PRESENTATION)) {
+				approveHandler(request, response);
+			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_RUN_NEW_COLLABORATION)) {
+				runCollaborationHandler(request, response);
+			}
 		} catch (EMFUserError emfue) {
 			errorHandler.addError(emfue);
 		} catch (Exception ex) {
@@ -83,6 +91,101 @@ public class BookletsCollaborationModule extends AbstractModule {
 		}
 	}
 
+	
+	
+	
+	
+	
+	
+	private void runCollaborationHandler(SourceBean request, SourceBean response) {
+		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+		String exMsg = "Workflow Process Started correctly";
+		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBookConf);		
+		// parse process definition
+		ProcessDefinition processDefinition = null;
+		try{
+			processDefinition = ProcessDefinition.parseXmlInputStream(procDefIS);
+		} catch(Exception e) {
+			exMsg = "Error";
+			System.out.println(e);
+		}
+		try{
+			procDefIS.close();
+		} catch (Exception e){
+			exMsg = "Error";
+			System.out.println(e);
+		}
+        // get name of the process
+		String nameProcess = processDefinition.getName();
+		// get jbpm context
+		JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+		JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+	    try{
+	    	// deploy process   
+			try{
+				jbpmContext.deployProcessDefinition(processDefinition);  
+			} catch (Exception e) {
+				exMsg = "Error";
+				System.out.println(e);
+			}
+			// create process instance
+			ProcessInstance processInstance = new ProcessInstance(processDefinition);
+			// get context instance and set the booklet path variable
+			ContextInstance contextInstance = processInstance.getContextInstance();
+			contextInstance.createVariable(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);			
+			// start workflow
+			Token token = processInstance.getRootToken();
+		    token.signal();
+		    jbpmContext.save(processInstance); 
+	    } catch (Exception e){
+	    	exMsg = "Error";
+	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+                                "runCollaborationHandler","Error while starting workflow",  e);
+	    } finally {
+	           jbpmContext.close();
+	    } 
+	    try{
+	    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsExecution");
+	    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, exMsg);
+	    } catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+                                "runCollaborationHandler","Error while setting attributes into response", e);
+	    }
+	}
+	
+	
+	
+	private void approveHandler(SourceBean request, SourceBean response) {
+		try{
+			// recover task instance and variables
+			String activityKey = (String)request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
+			String approved = (String)request.getAttribute("approved");
+			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+			JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
+			ContextInstance contextInstance = taskInstance.getContextInstance();
+			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
+			// store presentation
+			IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+			byte[] currPresCont = bookDao.getCurrentPresentationContent(pathConfBook);
+			bookDao.versionPresentation(pathConfBook, currPresCont);
+			// put attributes into response
+			if(approved.equalsIgnoreCase("true")) {
+				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletCompleteActivityLoopback");
+			} else {
+				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletRejecrActivityLoopback");
+			}
+			response.setAttribute(SpagoBIConstants.ACTIVITYKEY, activityKey);
+	
+		} catch(Exception e){
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		                        "approveHandler","Error while versioning presentation", e);
+		}
+	    
+	}
+	
+	
 	
 	
 	private void openNoteEditorHandler(SourceBean request, SourceBean response) {
@@ -157,31 +260,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	   return imageurl;
 	}
 	
-	
-	
-	
-	private void initializeHandler(SourceBean response) throws EMFUserError {
-		try{
-			/*
-			PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
-			String remoteUser = portletRequest.getRemoteUser();
-			Principal principal = portletRequest.getUserPrincipal();
-			String engUserProfileFactoryClass =  ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
-			IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
-			IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);
-			AnonymousCMSUserProfile prof = new AnonymousCMSUserProfile(userProfile.getUserUniqueIdentifier().toString());
-	    	SessionContainer session = getRequestContainer().getSessionContainer();
-	    	session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, prof);
-	    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "PamphletWorkList");
-	    	*/
-		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "initializerHandler","Error while building profile for logged user", e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}
-	}
-	
-		
+			
 	
 	private void saveNoteHandler(SourceBean request, SourceBean response) {
 		try{

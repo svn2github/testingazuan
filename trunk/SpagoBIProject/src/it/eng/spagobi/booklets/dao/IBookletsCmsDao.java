@@ -75,9 +75,19 @@ public interface IBookletsCmsDao {
 	
 	public void storeNote(String pathBooklet, String indPart, byte[] noteContent);
 	
-	public void storeFinalDocument(String pathBooklet, byte[] docContent);
+	public void storeCurrentPresentationContent(String pathBooklet, byte[] docContent);
 	
-	public byte[] getFinalDocument(String pathBooklet);
+	public byte[] getCurrentPresentationContent(String pathBooklet);
+	
+	public void versionPresentation(String pathBooklet, byte[] presContent);
+	
+	public List getPresentationVersions(String pathBooklet);
+	
+	public void deletePresentationVersion(String pathBooklet, String verName);
+	
+	public byte[] getPresentationVersionContent(String pathBooklet, String verName);
+	
+	public String getBookletName(String pathBooklet);
 	
 	//public void saveWorkflowConfiguration(String pathBooklet, WorkflowConfiguration workConf);
 	

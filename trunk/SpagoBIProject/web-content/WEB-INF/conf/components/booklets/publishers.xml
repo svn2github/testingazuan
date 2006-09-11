@@ -48,6 +48,16 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 
+  	
+  	
+  	 <PUBLISHER name="BookletsPresentationVersion">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletPresentationVersions.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
      
     
     <PUBLISHER name="BookletsCollaborationPubJ">
@@ -78,6 +88,44 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 
+     
+     
+     
+     <PUBLISHER name="ValidateFinalDocumentHandler">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletCheckFinalDocument.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+     
+     
+     
+     <PUBLISHER name="BookletCompleteActivityLoopback">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="CompleteOrRejectActivityPage" />
+      			<PARAMETER name="CompleteActivity" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="ActivityKey" type="RELATIVE" scope="SERVICE_REQUEST" value="ActivityKey" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	
+  	
+  	<PUBLISHER name="BookletRejecrActivityLoopback">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="CompleteOrRejectActivityPage" />
+      			<PARAMETER name="ActivityKey" type="RELATIVE" scope="SERVICE_REQUEST" value="ActivityKey" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+     
      
      
      <!-- 

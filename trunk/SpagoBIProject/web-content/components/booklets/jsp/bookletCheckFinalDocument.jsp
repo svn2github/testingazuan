@@ -22,26 +22,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,it.eng.spagobi.booklets.constants.BookletsConstants,java.util.List,java.util.Iterator,it.eng.spagobi.booklets.bo.Pamphlet,it.eng.spagobi.bo.Role,it.eng.spagobi.booklets.bo.ConfiguredBIDocument,java.util.Map,java.util.Set,it.eng.spago.base.SessionContainer,it.eng.spago.base.ApplicationContainer,it.eng.spago.security.IEngUserProfile,it.eng.spago.workflow.api.IWorkflowEngine,it.eng.spago.workflow.api.IWorkflowConnection,it.eng.spago.workflow.api.IWorkflowAssignment,it.eng.spago.configuration.ConfigSingleton,it.eng.spago.base.SourceBean,java.io.File,it.eng.spagobi.booklets.dao.IBookletsCmsDao,it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl,java.util.HashMap,java.io.FileOutputStream" %>
+				it.eng.spago.navigation.LightNavigationManager,
+				it.eng.spagobi.booklets.constants.BookletsConstants,
+				it.eng.spagobi.constants.SpagoBIConstants,
+				it.eng.spagobi.utilities.GeneralUtilities" %>
 
 <%
 	// RETRIVE ACTIVITY KEY	
-	String activityKey = (String)aServiceResponse.getAttribute("ActivityKey");   
+	String activityKey = (String)aServiceResponse.getAttribute("ActivityKey");
+    if(activityKey==null)
+    	activityKey = (String)aServiceRequest.getAttribute("ActivityKey");
 	// BUILT URL TO DOWNLOAD THE DOCUMENT
-	String contextAddress = it.eng.spagobi.utilities.GeneralUtilities.getSpagoBiContextAddress();
-	String recoverUrl = contextAddress + "/PamphletsImageService?" +
+	String contextAddress = GeneralUtilities.getSpagoBiContextAddress();
+	String recoverUrl = contextAddress + "/BookletsImageService?" +
 	            "task=downloadFinalDocument&ActivityKey=" + activityKey;
 
+	String viewDocUrl = contextAddress + "/BookletsImageService?" +
+    			"task=viewFinalDocument&ActivityKey=" + activityKey;
+	
 	// BUILT BACK URL 
    	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", BookletsConstants.PAMPHLET_COLLABORATION_PAGE);
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
-   	// BUILT APPROVE URL 
+   	backUrl.setParameter("PAGE", "WorkflowToDoListPage");
+	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+   	
+	// BUILT APPROVE URL 
    	PortletURL checkedDocUrl = renderResponse.createActionURL();
-   	checkedDocUrl.setParameter("ACTION_NAME", "COMPLETE_OR_REJECT_ACTIVITY_ACTION");
-   	checkedDocUrl.setParameter("CompleteActivity", "TRUE");
-   	checkedDocUrl.setParameter("ActivityKey", activityKey);
+   	checkedDocUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+   	checkedDocUrl.setParameter("OPERATION", BookletsConstants.OPERATION_APPROVE_PRESENTATION);
+   	checkedDocUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
    	checkedDocUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	
+   	//checkedDocUrl.setParameter("PAGE", "CompleteOrRejectActivityPage");
+   	//checkedDocUrl.setParameter("CompleteActivity", "TRUE");
+   	//checkedDocUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
+   	//checkedDocUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	
 %>
 
 
@@ -50,69 +65,67 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "pamp.approval"  bundle="component_pamphlets_messages"/>
+			<spagobi:message key = "book.approval"  bundle="component_booklets_messages"/>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "pamp.back" bundle="component_pamphlets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/back.png")%>' 
-      				 alt='<spagobi:message key = "pamp.back"  bundle="component_pamphlets_messages"/>' />
+      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
 	</tr>
 </table>
 
 <br/>
-<br/>
 
-
-<script>
-		function approve() {
-			checkObj = document.getElementById("checkapproved");
-			if(checkObj.checked) {
-				formObj = document.getElementById("approveForm");
-				formObj.submit();
-			} else {
-			 	alert('<spagobi:message key="pamp.selectCheckApprove"  bundle="component_pamphlets_messages"/>');
-			}
-		}
-	</script>
-
-
-<center>
-<table style="width:300px">
+<form id="approveForm" action="<%=checkedDocUrl.toString() %>" method="POST"/>
+<table style="width:100%">
 	<tr>
-		<td class='portlet-form-field-label'>
-			<spagobi:message key="pamp.downloadDescr"  bundle="component_pamphlets_messages"/>
-		</td>
-		<td>
+		<td width="2%">&nbsp;</td>
+		<td width="47%" style="padding:10px;" class="div_detail_area_forms">
+		    <span class='portlet-form-field-label'>
+				<spagobi:message key="book.downloadDescr"  bundle="component_booklets_messages"/>
+			</span>
+			&nbsp;&nbsp;&nbsp;&nbsp;
 			<a href="<%=recoverUrl %>">
 			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "pamp.download" bundle="component_pamphlets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/download32.png")%>' 
-	      				 alt='<spagobi:message key = "pamp.download"  bundle="component_pamphlets_messages"/>' />
+	      				 title='<spagobi:message key = "book.download" bundle="component_booklets_messages" />' 
+	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download32.png")%>' 
+	      				 alt='<spagobi:message key = "book.download"  bundle="component_booklets_messages"/>' />
 	        </a>
 		</td>
-	<tr height="30px"><td colspan="2">&nbsp;</td></tr>
-	<form id="approveForm" action="<%=checkedDocUrl.toString() %>" method="POST"/>
-	<tr>
-		<td class='portlet-form-field-label'>
-			<spagobi:message key="pamp.finalDocApproved"  bundle="component_pamphlets_messages"/>
-			<input id="checkapproved" type="checkbox" name="approved"/>
+		<td width="2%">&nbsp;</td>
+		<td width="47%" style="padding:10px;" class="div_detail_area_forms">
+			
+			<table>
+				<tr>
+					<td class='portlet-form-field-label'>
+						<spagobi:message key="book.finalDocApproved"  bundle="component_booklets_messages"/>
+					</td>
+					<td class='portlet-form-field-label'>
+						<input type="radio" name="approved" value="true" default>True<br>
+					</td>
+					<td class='portlet-form-field-label'>
+						<input type="radio" name="approved" value="false">False<br>
+					</td>
+					<td class='portlet-form-field-label'>
+						<input type="image" 
+			       			   title='<spagobi:message key = "book.approvalBotton" bundle="component_booklets_messages" />' 
+      		 	   			   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.png")%>' 
+      		 	  			   alt='<spagobi:message key = "book.approvalBotton"  bundle="component_booklets_messages"/>' />
+					</td>
+				</tr>
+			</table>
+			
 		</td>
-		<td>
-			<img title='<spagobi:message key = "pamp.approvalBotton" bundle="component_pamphlets_messages" />' 
-      		 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/pamphlets/img/save32.png")%>' 
-      		 alt='<spagobi:message key = "pamp.approvalBotton"  bundle="component_pamphlets_messages"/>' 
-      		 onclick="javascript:approve();" />
-		</td>
-	</tr>	
-	</form>
+		<td width="2%">&nbsp;</td>
+	</tr>
 </table>
-</center>
-
+</form>
+	
 
 <br/>
 <br/>

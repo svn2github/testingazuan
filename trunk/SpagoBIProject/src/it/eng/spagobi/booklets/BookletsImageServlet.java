@@ -28,13 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.booklets;
 
 
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.workflow.api.IWorkflowAssignment;
-import it.eng.spago.workflow.api.IWorkflowConnection;
-import it.eng.spago.workflow.api.IWorkflowEngine;
+import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.utilities.GeneralUtilities;
@@ -44,13 +38,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jbpm.JbpmConfiguration;
+import org.jbpm.JbpmContext;
+import org.jbpm.context.exe.ContextInstance;
+import org.jbpm.taskmgmt.exe.TaskInstance;
 
 
 public class BookletsImageServlet extends HttpServlet{
@@ -79,22 +77,29 @@ public class BookletsImageServlet extends HttpServlet{
 			 	} 
 	 		} else if(task.equalsIgnoreCase("downloadFinalDocument")){
 	 			String activityKey = request.getParameter("ActivityKey");
-		 		ApplicationContainer applicationCont = ApplicationContainer.getInstance();
-		 		RequestContainer reqCont = RequestContainer.getRequestContainer();
-		 		SessionContainer sessCont = reqCont.getSessionContainer();
-		 		IEngUserProfile userProfile = (IEngUserProfile)sessCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		 		IWorkflowEngine wfEngine = (IWorkflowEngine)applicationCont.getAttribute("WfEngine");
-		 		IWorkflowConnection wfConnection = wfEngine.getWorkflowConnection();
-		 		wfConnection.open((String)userProfile.getUserUniqueIdentifier(), (String)userProfile.getUserAttribute("password"));
-		 		IWorkflowAssignment wfAssignment = wfConnection.getWorkflowAssignment(activityKey);
-		 		Map context = wfAssignment.getContext();
-		 		String pathPamphlet = (String)context.get("PathPamphlet");
-		 		// GET NAME OF THE PAMPHLET
-		 		IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
-		 		//String pampName = pampdao.getBookletName(pathPamphlet);
-		 		String pampName = "finalDocument";
-		 		byte[] finalDocBytes = pampdao.getFinalDocument(pathPamphlet);
-			 	response.setHeader("Content-Disposition","attachment; filename=\"" + pampName + ".ppt" + "\";");
+	 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+	 	    	JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+	 			long activityKeyId = Long.valueOf(activityKey).longValue();
+	 			TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
+	 			ContextInstance contextInstance = taskInstance.getContextInstance();
+	 			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
+	 			jbpmContext.close();
+	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+		 		String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
+		 		byte[] finalDocBytes = bookdao.getCurrentPresentationContent(pathConfBook);
+			 	response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
+	 			response.setContentLength(finalDocBytes.length);
+	 			out.write(finalDocBytes);
+	 			out.flush();
+	            return;
+		 		
+	 		} else if(task.equalsIgnoreCase("downloadPresentationVersion")) {
+	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
+                String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+	 			byte[] finalDocBytes = bookdao.getPresentationVersionContent(pathBook, verName);
+	 			String bookName = bookdao.getBookletTemplateFileName(pathBook);
+	 			response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
 	 			response.setContentLength(finalDocBytes.length);
 	 			out.write(finalDocBytes);
 	 			out.flush();

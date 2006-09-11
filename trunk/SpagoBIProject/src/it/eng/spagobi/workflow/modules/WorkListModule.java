@@ -15,6 +15,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.workflow.api.WorkflowEngineException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,31 +46,31 @@ public class WorkListModule extends AbstractBasicListModule {
     	SessionContainer permSession = session.getPermanentContainer();
     	//ApplicationContainer application = ApplicationContainer.getInstance();
     	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    	
     	//Getting Jbpm context 
     	JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
     	jbpmContext = jbpmConfiguration.createJbpmContext();
-    	
     	//Getting user roles
     	Collection roles = userProfile.getRoles();
     	
     	//Empty task list definition
-    	List taskList = null;
+    	List taskList = new ArrayList();
     	
     	//For each user role, find the task list associated
     	Iterator rolesIt = roles.iterator();
     	while (rolesIt.hasNext()) {
     		String role = (String) rolesIt.next();
     		List tmpTaskList = jbpmContext.getTaskList(role);
-    		if (taskList == null) taskList = tmpTaskList;
-    		else taskList.addAll(tmpTaskList);
+    		Iterator iterTaskInst = tmpTaskList.iterator();
+    		while(iterTaskInst.hasNext()) {
+    			TaskInstance ti = (TaskInstance)iterTaskInst.next();
+    			taskList.add(ti);
+    		}
     	}
-    	
-    	if (taskList == null) taskList = new ArrayList();
-    	
     	SourceBean workListAsSourceBean = tasksToSourceBean(taskList);
-    	
+    	jbpmContext.close();
     	return workListAsSourceBean;
+    	
+    	
     	
 //    	GraphSession graphSession = jbpmContext.getGraphSession();
 //    	List processDefinitions = graphSession.findAllProcessDefinitions();
@@ -86,25 +87,15 @@ public class WorkListModule extends AbstractBasicListModule {
 //    			.....
 //    		}
 //    	}
-    	
     	//Getting Workflow Engine 
     	//IWorkflowEngine wfEngine = (IWorkflowEngine)application.getAttribute("WfEngine");
-    	
-    	
-    	
     	//Getting Connection From Workflow
     	//IWorkflowConnection wfConnection = wfEngine.getWorkflowConnection();
-    	
-    	
     	// Open the connection
     	//wfConnection.open((String)userProfile.getUserUniqueIdentifier(), (String)userProfile.getUserAttribute("password"));
-        
-       
         //List worklist = wfConnection.getAssignments();
-        
         // Transform List to sourceBean
         //SourceBean workListAsSourceBean = assignmentsToSourceBean(worklist);
-        
         //return workListAsSourceBean;
         
 	}

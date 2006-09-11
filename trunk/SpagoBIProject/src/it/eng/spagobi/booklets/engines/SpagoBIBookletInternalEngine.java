@@ -23,6 +23,7 @@ package it.eng.spagobi.booklets.engines;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
@@ -31,14 +32,7 @@ import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.io.InputStream;
-
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
-import org.jbpm.context.exe.ContextInstance;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.graph.exe.Token;
+import java.util.List;
 
 public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 
@@ -53,67 +47,24 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 	public void execute(RequestContainer requestContainer, BIObject biobj, SourceBean response) throws EMFUserError {
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
     			            "execute", "Start execute method");
-		
-		String exMsg = "Workflow Process Started correctly";
-		
+        
 		String pathBiObj = biobj.getPath();
 		String pathBook = pathBiObj + "/template";
+		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+    			            "execute", "using path " + pathBook);
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
-		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBook);		
-		// parse process definition
-		ProcessDefinition processDefinition = null;
+		List presVersions = bookDao.getPresentationVersions(pathBook);
+		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+	            			"execute", "Version list retrived " + presVersions);
 		try{
-			processDefinition = ProcessDefinition.parseXmlInputStream(procDefIS);
-		} catch(Exception e) {
-			exMsg = "Error";
-			System.out.println(e);
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
+			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
+			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBook);
+		} catch (Exception e) {
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+					            "execute", "error while setting response attribute " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
-		try{
-			procDefIS.close();
-		} catch (Exception e){
-			exMsg = "Error";
-			System.out.println(e);
-		}
-        // get name of the process
-		String nameProcess = processDefinition.getName();
-		// get jbpm context
-		JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-		JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-	    try{
-	    	// deploy process   
-			try{
-				jbpmContext.deployProcessDefinition(processDefinition);  
-			} catch (Exception e) {
-				exMsg = "Error";
-				System.out.println(e);
-			}
-			// create process instance
-			ProcessInstance processInstance = new ProcessInstance(processDefinition);
-			
-			// get context instance and set the booklet path variable
-			ContextInstance contextInstance = processInstance.getContextInstance();
-			contextInstance.createVariable(BookletsConstants.PATH_BOOKLET_CONF, pathBook);			
-			// start workflow
-			Token token = processInstance.getRootToken();
-		    token.signal();
-		    jbpmContext.save(processInstance); 
-	    } catch (Throwable thr){
-	    	exMsg = "Error";
-	    	System.out.println(thr);
-	    } finally {
-	           jbpmContext.close();
-	    } 
-		/*
-		 GraphSession graphSession = jbpmContext.getGraphSession();
-		 ProcessDefinition procDefDeployed = graphSession.findLatestProcessDefinition(nameProcess);
-		 proccInstId = processInstance.getId();
-		*/
-	    try{
-	    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsExecution");
-	    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, exMsg);
-	    } catch (Exception e) {
-	    	System.out.println(e);
-	    }
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 	            "execute", "End execute method");
 	}
@@ -133,125 +84,5 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-//	public void executeSubObject(RequestContainer requestContainer, BIObject obj, 
-//			SourceBean response, Object subObjectInfo) throws EMFUserError {
-//		
-//		SubObjectDetail subObject = (SubObjectDetail) subObjectInfo;
-//		
-//		String nameQuery = subObject == null ? null : subObject.getName();
-//		
-//		SpagoBITracer.debug("SpagoBIQbeInternalEngine",
-//	            this.getClass().getName(),
-//	            "executeSubObject",
-//	            "Start execute method with subobject information: " + nameQuery + ".");
-//		
-//		if (obj == null) {
-//			SpagoBITracer.major("SpagoBIQbeInternalEngine",
-//		            this.getClass().getName(),
-//		            "executeSubObject",
-//		            "The input object is null.");
-//			throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle);
-//		}
-//		
-//		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DATAMART")) {
-//			SpagoBITracer.major("SpagoBIQbeInternalEngine",
-//		            this.getClass().getName(),
-//		            "executeSubObject",
-//		            "The input object is not a datamart.");
-//			throw new EMFUserError(EMFErrorSeverity.ERROR, 1001, messageBundle);
-//		}
-//		
-//		try {
-//			
-//			String jndiDataSourceName = "";
-//			String dialect = "";
-//			List parameters = obj.getBiObjectParameters();
-//			Iterator iterPar = parameters.iterator();
-//			BIObjectParameter parameter = null;
-//			String urlName = null;
-//			while(iterPar.hasNext()) {
-//				parameter = (BIObjectParameter)iterPar.next();
-//				urlName = parameter.getParameterUrlName();
-//			    if(urlName.equalsIgnoreCase("JNDI_DS")) {
-//				   	jndiDataSourceName = (String)parameter.getParameterValues().get(0);
-//			    }
-//			    if(urlName.equalsIgnoreCase("DIALECT")) {
-//			    	dialect = (String)parameter.getParameterValues().get(0);
-//			    }   
-//			}
-//			
-//			SpagoBITracer.debug("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "JNDI data source name: " + jndiDataSourceName + ".");
-//			/*
-//			if (jndiDataSourceName == null || "".equalsIgnoreCase(jndiDataSourceName)) {
-//				SpagoBITracer.major("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "The name of the JNDI data source is missing.");
-//				throw new EMFUserError(EMFErrorSeverity.ERROR, 1002, messageBundle);
-//			}
-//			*/
-//			SpagoBITracer.debug("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "Hibernate dialect: " + dialect + ".");
-//			/*
-//			if (dialect == null || "".equalsIgnoreCase(dialect)) {
-//				SpagoBITracer.major("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "The Hibernate dialect is missing.");
-//				throw new EMFUserError(EMFErrorSeverity.ERROR, 1003, messageBundle);
-//			}
-//			*/
-//			SessionContainer session = requestContainer.getSessionContainer();
-//			session.setAttribute(SpagoBICmsDataMartModelRetriever.REFRESH_DATAMART, "TRUE");
-//			String dmName = obj.getName();
-//			String dmDescription = obj.getDescription();
-//			String dmLabel = obj.getLabel();
-////			ConfigSingleton config = ConfigSingleton.getInstance();
-////			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-////			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-////			String dmPath = biobjectsPath + "/" + obj.getUuid();
-//			String dmPath = obj.getPath();
-//			DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
-//			dmModel.setName(dmName);
-//			dmModel.setDescription(dmDescription);
-//			dmModel.setLabel(dmLabel);
-//			//ApplicationContainer application = ApplicationContainer.getInstance();
-//			//SessionFactory sf = Utils.getSessionFactory(dmModel, application);
-//			session.setAttribute("dataMartModel", dmModel);
-//			ISingleDataMartWizardObject aWizardObject = null;
-//			if (nameQuery==null) {
-//				aWizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
-//			} else {
-//				aWizardObject = dmModel.getQuery(nameQuery);
-//			}
-//			
-//			String cTM = String.valueOf(System.currentTimeMillis());
-//			session.setAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);
-//			session.setAttribute("QBE_LAST_UPDATE_TIMESTAMP", cTM);
-//			
-//			Logger.debug(ExecuteBIObjectModule.class, (String)session.getAttribute("QBE_LAST_UPDATE_TIMESTAMP"));
-//			session.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
-//			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "SELECT_FIELDS_FOR_SELECTION_PUBLISHER");
-//			
-//			ClassLoader toRecoverClassLoader = Thread.currentThread().getContextClassLoader(); 
-//			Logger.debug(RecoverClassLoaderAction.class, "Saving Class Loader for recovering " + toRecoverClassLoader.toString());
-//			if (ApplicationContainer.getInstance().getAttribute("CURRENT_THREAD_CONTEXT_LOADER") == null){
-//				ApplicationContainer.getInstance().setAttribute("CURRENT_THREAD_CONTEXT_LOADER", toRecoverClassLoader);
-//			}
-//			return;
-//		} catch (Exception e) {
-//			SpagoBITracer.major("SPAGOBI", 
-//					            "ExecuteBIObjectMOdule", 
-//					            "execQbe", 
-//					            "Cannot exec the subObject", e);
-//	   		throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle); 
-//		}
-//
-//	}
 
 }

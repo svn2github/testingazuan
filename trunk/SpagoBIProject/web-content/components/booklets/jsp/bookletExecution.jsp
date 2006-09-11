@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.booklets.bo.WorkflowConfiguration" %>
 
 <%
-   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
+   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
    String execMessage = (String)moduleResponse.getAttribute(BookletsConstants.EXECUTION_MESSAGE);
    PortletURL backUrl = renderResponse.createActionURL();
    backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");

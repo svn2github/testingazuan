@@ -36,7 +36,9 @@ package it.eng.spagobi.booklets.constants;
 		public static final String OPERATION_DELETE_CONFIGURED_DOCUMENT = "OPERATION_DELETE_CONFIGURED_DOCUMENT";
 		public static final String OPERATION_LOAD_OOTEMPLATE_BOOKLET = "OPERATION_LOAD_OOTEMPLATE_BOOKLET";
 		public static final String OPERATION_SAVE_WORKFLOWDATA = "OPERATION_SAVE_WORKFLOWDATA";
+		public static final String OPERATION_APPROVE_PRESENTATION = "OPERATION_APPROVE_PRESENTATION";
 		public static final String OPERATION_NEW_CONFIGURED_DOCUMENT = "OPERATION_NEW_CONFIGURED_DOCUMENT";
+		public static final String OPERATION_RUN_NEW_COLLABORATION = "OPERATION_RUN_NEW_COLLABORATION";
 		public static final String BOOKLET_DRIVER_FILTER_SB = "BOOKLETS.TECHNOLOGY_DRIVER_FILTER";
 		public static final String PUBLISHER_NAME = "PUBLISHER_NAME";
 		public static final String PATH_OBJECT = "PATH_OBJECT";
@@ -47,19 +49,8 @@ package it.eng.spagobi.booklets.constants;
 		public static final String OPERATION_OPEN_NOTE_EDITOR = "OPERATION_OPEN_NOTE_EDITOR";
 		public static final String OPERATION_SAVE_NOTE = "OPERATION_SAVE_NOTE";
 		public static final String BOOKLET_PART_INDEX = "spagobi_booklet_pageindex";
+		public static final String BOOKLET_PRESENTATION_VERSIONS = "BOOKLET_PRESENTATION_VERSIONS";
+		public static final String BOOKLET_PRESENTATION_VERSION_NAME = "BOOKLET_PRESENTATION_VERSION_NAME";
 		
-
-		
-		//public static final String PAMPHLET_LIST = "PAMPHLET_LIST";
-		//public static final String PAMPHLET_MANAGEMENT_MODULE = "PamphletsManagementModule";
-		//public static final String PAMPHLET_MANAGEMENT_PAGE = "PamphletsManagementPage";
-		public static final String PAMPHLET_COLLABORATION_MODULE = "PamphletsCollaborationModule";
-		public static final String PAMPHLET_COLLABORATION_PAGE = "PamphletsCollaborationPage";
-		//public static final String OPERATION_NEW_PAMPHLET = "OPERATION_NEW_PAMPHLET";
-		//public static final String OPERATION_ERASE_PAMPHLET = "OPERATION_ERASE_PAMPHLET";
-		//public static final String ROLE_LIST = "ROLE_LIST";
-		public static final String OPERATION_GENERATE_DOCUMENT_PARTS = "OPERATION_GENERATE_DOCUMENT_PARTS";
-		public static final String OPERATION_EDIT_PAMPHLET_PART = "OPERATION_EDIT_PAMPHLET_PART";
-		//public static final String PATH_PAMPHLET = "PATH_PAMPHLET";
 		
 	}

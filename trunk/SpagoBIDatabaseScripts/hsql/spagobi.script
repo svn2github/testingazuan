@@ -88,7 +88,7 @@ INSERT INTO SBI_DOMAINS VALUES(106,'MAP','Map','BIOBJ_TYPE','BI Object types','M
 INSERT INTO SBI_DOMAINS VALUES(107,'BOOKLET','Booklet','BIOBJ_TYPE','BI Object types','Booklet')
 INSERT INTO SBI_DOMAINS VALUES(108, 'LIST','List values selection','SELECTION_TYPE','Selection modality of parameter values','Single-value selection from a list')
 INSERT INTO SBI_DOMAINS VALUES(109, 'CHECK_LIST','CheckList values selection','SELECTION_TYPE','Selection modality of parameter values','Multi-value selection from a checklist')
-INSERT INTO SBI_DOMAINS VALUES(110, 'COMBOBOX','ComboBox values selection','SELECTION_TYPE','Selection modality of parameter values','Single value selection from a combobox');
+INSERT INTO SBI_DOMAINS VALUES(110, 'COMBOBOX','ComboBox values selection','SELECTION_TYPE','Selection modality of parameter values','Single value selection from a combobox')
 INSERT INTO SBI_ENGINES VALUES(109,0,'Qbe Internal Engine','Qbe Internal Engine','','','','','','QbeInternalEngine',105,'it.eng.spagobi.engines.datamart.SpagoBIQbeInternalEngine',103)
 INSERT INTO SBI_ENGINES VALUES(110,0,'Dashboard Internal Engine','Dashboard Internal Engine','','','','','','DashboardInternalEng',105,'it.eng.spagobi.engines.dashboard.SpagoBIDashboardInternalEngine',43)
 INSERT INTO SBI_ENGINES VALUES(115,0,'Booklet Internal Engine','Booklet Internal Engine','','','','','','BookletInternalEng',105,'it.eng.spagobi.booklets.engines.SpagoBIBookletInternalEngine',107)

@@ -210,6 +210,30 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
         		<value>VIEW_OBJECTS_AS_TREE</value>
         	</preference>
+        	
+        	
+        	<!-- able / disable the notes editor into the execution pages -->
+            <preference> 
+        		<name>NOTES_EDITOR_ABLE</name>
+        		<!-- possible values are 	TRUE / FALSE -->
+        		<value>FALSE</value>
+        	</preference>
+        	
+        	
+        	<!-- set the percentage width dimension of the notes editor  -->
+            <preference> 
+        		<name>NOTES_EDITOR_WIDTH</name>
+        		<!--the range is from 20 to 60 and the number will be treated as percentage -->
+        		<value>40</value>
+        	</preference>
+        	
+        	<!-- if set to true the editor will be opened automatically at object execution  -->
+            <preference> 
+        		<name>NOTES_EDITOR_OPEN</name>
+        		<!-- possible values are 	TRUE / FALSE -->
+        		<value>FALSE</value>
+        	</preference>
+        	
         </portlet-preferences>
 	</portlet>
 	

@@ -23,7 +23,13 @@
                  it.eng.spago.base.ApplicationContainer,
                  java.util.Map,
                  org.safehaus.uuid.UUIDGenerator,
-                 org.safehaus.uuid.UUID" %>
+                 org.safehaus.uuid.UUID,
+                 it.eng.spagobi.utilities.GeneralUtilities,
+                 it.eng.spagobi.managers.BIObjectNotesManager,
+                 it.eng.spago.base.SessionContainer,
+                 it.eng.spago.security.IEngUserProfile,
+                 javax.portlet.PortletPreferences" %>
+                 
 
 <%
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -98,8 +104,32 @@
       				}
       	}  
     } 
+    
+    
+    // check if notes editor is able
+    boolean edNoteAble = false;
+    PortletRequest portReq = PortletUtilities.getPortletRequest();
+	PortletPreferences prefs = portReq.getPreferences();
+	String edNoteAbleStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_ABLE, "FALSE");
+    if(edNoteAbleStr.equalsIgnoreCase("true")) {
+    	edNoteAble = true;
+    }
+	int widthNoteEditor = 40;
+		String widthNoteEditorStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_WIDTH, "40");
+		try{
+			widthNoteEditor = new Integer(widthNoteEditorStr).intValue();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		boolean notesEditOpen = false;
+		String notesEditOpenStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_OPEN, "false");
+		if(notesEditOpenStr.equalsIgnoreCase("true")){
+			notesEditOpen = true;
+		}
 	
 %>
+
 
 <% 
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
@@ -148,6 +178,37 @@
       		</td>
         </form>
        <% } %>
+       
+       
+       
+       <!-- ************************************************************************* -->
+       <!-- ******************** START BLOCK BUTTON NOTES EDITOR ******************** -->
+       <!-- ************************************************************************* -->
+       
+       <%
+        if(edNoteAble) {
+       %>
+		
+        <td class='header-empty-column-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-portlet-section'>
+           <a href='javascript:opencloseNotesEditor()'>
+               <img title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notes.jpg")%>' 
+                    alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
+           </a>
+         </td>
+       
+       <td class='tdAlertNotesExists' valign="middle" nowrap='true'>
+           <div id="divAlertExistNotes" class="divAlertNotesExists">
+           </div>
+       </td>
+       
+       <% } %>
+       
+       <!-- ************************************************************************* -->
+       <!-- ******************** END BLOCK BUTTON NOTES EDITOR ********************** -->
+       <!-- ************************************************************************* -->
+       
    </tr>
 </table>
 
@@ -178,6 +239,355 @@
 
 <% } %>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+<!-- **************** START BLOCK NOTES EDITOR *********************** -->
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+
+<%
+	if(edNoteAble) {
+		
+		BIObjectNotesManager objectNotesManager = new BIObjectNotesManager();
+		String execIdentifier = objectNotesManager.getExecutionIdentifier(obj);
+		SessionContainer permSession = aSessionContainer.getPermanentContainer();
+		IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		String nameUser = (String)userProfile.getUserUniqueIdentifier();
+		String linkFck = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/FCKeditor/fckeditor.js");
+%>
+
+
+<SCRIPT language='JavaScript' src='<%=linkFck%>'>
+</SCRIPT>
+<script>
+  
+  var timeoutResize;
+  var noteOpen = false;
+  
+  function opencloseNotesEditor() {
+    if(noteOpen) {
+      noteOpen = false;
+      timeoutResize = setInterval("restrictNotesDiv()", 5);
+    } else {
+      noteOpen = true;
+      timeoutResize = setInterval("enlargeNotesDiv()", 5);
+    } 
+  }
+  
+  function enlargeNotesDiv() {
+    divIframe = document.getElementById('divIframe<%=requestIdentity%>');
+    divNotes = document.getElementById('divNotes<%=requestIdentity%>');
+    wDivIFrame = divIframe.style.width;
+    wDivNotes = divNotes.style.width;
+    wDivIFrame = wDivIFrame.substring(0, wDivIFrame.length - 1);
+    wDivNotes = wDivNotes.substring(0, wDivNotes.length - 1);
+    wDivIFrameNum = parseInt(wDivIFrame);
+    wDivNotesNum = parseInt(wDivNotes);
+    wDivIFrameNum = wDivIFrameNum - 1;
+    wDivNotesNum = wDivNotesNum + 1;
+    if(wDivIFrameNum<=<%=(100 - 2 - widthNoteEditor)%>){
+      clearInterval(timeoutResize);
+    }
+    wDivIFrame = wDivIFrameNum + '%';
+    wDivNotes = wDivNotesNum + '%';
+    divIframe.style.width=wDivIFrame;
+    divNotes.style.width=wDivNotes;
+  }
+  
+  function restrictNotesDiv() {
+    divIframe = document.getElementById('divIframe<%=requestIdentity%>');
+    divNotes = document.getElementById('divNotes<%=requestIdentity%>');
+    wDivIFrame = divIframe.style.width;
+    wDivNotes = divNotes.style.width;
+    wDivIFrame = wDivIFrame.substring(0, wDivIFrame.length - 1);
+    wDivNotes = wDivNotes.substring(0, wDivNotes.length - 1);
+    wDivIFrameNum = parseInt(wDivIFrame);
+    wDivNotesNum = parseInt(wDivNotes);
+    wDivIFrameNum = wDivIFrameNum + 1;
+    wDivNotesNum = wDivNotesNum - 1;
+    if(wDivIFrameNum>=98){
+      clearInterval(timeoutResize);
+    }
+    wDivIFrame = wDivIFrameNum + '%';
+    wDivNotes = wDivNotesNum + '%';
+    divIframe.style.width=wDivIFrame;
+    divNotes.style.width=wDivNotes;
+  }
+  
+</script>
+
+
+       
+       
+       
+       
+<div id="divNotes<%=requestIdentity%>" 
+     style="background-color:#efefde;width:0%;float:left;overflow:hidden;">
+  
+  
+  
+  
+  
+  <script type="text/javascript">
+    
+    locked = false;
+    var xmlHttp = null;
+      
+    function saveNotes() {
+      cleanError();
+      var editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+      xhtml = editor.GetXHTML(false);
+      if(!locked){
+    		return;
+    	}
+    	xmlHttp = GetXmlHttpObject();
+    	if(xmlHttp==null) {
+			   alert ("Browser does not support HTTP Request");
+			   return;
+		  }
+		  var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+      var postdata ="task=saveNotes";
+		  postdata=postdata+"&biobjid=<%=obj.getId()%>";
+		  postdata=postdata+"&execidentifier=<%=execIdentifier.substring(0, 20)%>";
+		  postdata=postdata+"&notes=" + xhtml;
+		  
+		  xmlHttp.onreadystatechange=stateChangedSaveNotes; 
+		  xmlHttp.open('POST',url,true);
+      xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xmlHttp.setRequestHeader("Content-length", postdata.length);
+      xmlHttp.setRequestHeader("Connection", "close");
+		  xmlHttp.send(postdata); 
+    }
+    
+    
+    
+    
+    
+    function requireLock() {
+       cleanError();
+       if(locked){
+    		return;
+    	}
+    	xmlHttp = GetXmlHttpObject();
+    	if(xmlHttp==null) {
+			   alert ("Browser does not support HTTP Request");
+			   return;
+		  }
+		  var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		  url=url+"?task=requireLock";
+		  url=url+"&biobjid=<%=obj.getId()%>";
+		  url=url+"&user=<%=nameUser%>";
+		  url=url+"&execidentifier=<%=execIdentifier.substring(0, 20)%>";
+		  
+		  xmlHttp.onreadystatechange=stateChangedRequestLock; 
+		  xmlHttp.open("GET",url,true);
+		  xmlHttp.send(null); 
+    }
+    
+    
+     function FCKeditor_OnComplete( editorInstance ) {
+    	xmlHttp = GetXmlHttpObject();
+    	if(xmlHttp==null) {
+			   alert ("Browser does not support HTTP Request");
+			   return;
+		 }
+		var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		url=url+"?task=getNotes";
+		url=url+"&biobjid=<%=obj.getId()%>";
+		url=url+"&execidentifier=<%=execIdentifier.substring(0, 20)%>";
+		  
+		xmlHttp.onreadystatechange=stateChangedGetNotes; 
+		xmlHttp.open("GET",url,true);
+		xmlHttp.send(null); 
+	}
+    
+    
+    
+    
+    function GetXmlHttpObject(){ 
+  		var objXMLHttp=null
+  		if(window.XMLHttpRequest)	{
+  			objXMLHttp=new XMLHttpRequest()
+  		} else if (window.ActiveXObject) {
+  			objXMLHttp=new ActiveXObject("Microsoft.XMLHTTP")
+  		}
+  		return objXMLHttp
+  	}
+    
+    
+    
+    function stateChangedSaveNotes(){ 
+      locked = false;
+      document.getElementById('notesLockImg').style.display='inline';
+      document.getElementById('notesSaveImg').style.display='none';
+      if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+  			response=xmlHttp.responseText; 
+  			if(responseHasError(response)) {
+          		error = getResponseError(response);
+          		divError = document.getElementById('notesErrorMessage');
+          		divError.innerHTML = error;
+          		return;
+        	}
+        fillAlertExistNotes("Notes");	
+       }
+    }
+    
+    
+    
+    function stateChangedRequestLock(){ 
+  	 	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+  			response=xmlHttp.responseText; 
+  			if(responseHasError(response)) {
+          		error = getResponseError(response);
+          		divError = document.getElementById('notesErrorMessage');
+          		divError.innerHTML = error;
+          		return;
+        	}
+        	locked=true;
+        	document.getElementById('notesLockImg').style.display='none';
+        	document.getElementById('notesSaveImg').style.display='inline';
+        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+          editor.SetHTML(response, false);
+          fillAlertExistNotes(response);
+  		}  
+	 } 
+    
+   
+    
+    
+    function stateChangedGetNotes(){ 
+      if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+  			response=xmlHttp.responseText; 
+      		if(responseHasError(response)) {
+          		error = getResponseError(response);
+          		divError = document.getElementById('notesErrorMessage');
+          		divError.innerHTML = error;
+          		return;
+        	}
+        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+          editor.SetHTML(response, false);  
+          fillAlertExistNotes(response);
+       }
+    }
+    
+    
+    function responseHasError(response){
+    	if(response.indexOf('SpagoBIError:')!=-1) {
+    		return true;
+    	} else {
+    	    return false;
+    	}
+    }
+    
+    function getResponseError(response) {
+    	error = response.substring(response.indexOf('SpagoBIError:')+13);
+    	return error;
+    }
+    
+    function cleanError(){
+    	divError = document.getElementById('notesErrorMessage');
+        divError.innerHTML = "";
+    }
+    
+    
+    function fillAlertExistNotes(notes){
+       divalertNotes = document.getElementById('divAlertExistNotes');
+       notes = notes.replace(/^\s*|\s*$/g,"");
+       if(notes!=""){
+        divalertNotes.innerHTML = "<spagobi:message key = "sbi.execution.notes.documentHasNotes" />";
+       }
+    }
+
+    
+  </script>
+  
+  
+  <div id="notescloseImg" style="float:left;display:inline;padding:5px;">
+      <a href="javascript:opencloseNotesEditor()">
+          <img title='<spagobi:message key = "sbi.execution.notes.closeeditor" />' 
+               alt='<spagobi:message key = "sbi.execution.notes.closeeditor" />'
+               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")%>' />
+      </a>  
+  </div>
+  <div id="notesLockImg" style="float:left;display:inline;padding:5px;">
+      <a href="javascript:requireLock()">
+          <img title='<spagobi:message key = "sbi.execution.notes.lockeditor" />' 
+               alt='<spagobi:message key = "sbi.execution.notes.lockeditor" />'
+               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/lock16.gif")%>' />
+      </a>  
+  </div>
+  <div id="notesSaveImg" style="float:left;display:none;padding:5px;">
+      <a href="javascript:saveNotes()">
+          <img title='<spagobi:message key = "sbi.execution.notes.savenotes" />' 
+          		alt='<spagobi:message key = "sbi.execution.notes.savenotes" />'
+               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' />
+      </a>   
+  </div>
+  <div id="notesErrorMessage"  style="float:left;color:red;padding:5px;">
+  
+  </div>
+  <div style="clear:left;"></div>
+  
+
+  <textarea id="editorfckarea" name="editorfckarea"></textarea>
+  
+  
+</div>       
+
+
+
+<%	} %>
+
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+<!-- **************** END BLOCK NOTES EDITOR ************************* -->
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+<!-- **************** START BLOCK IFRAME ***************************** -->
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+
+
 <script>
 		function adaptSize() {
 			iframe = window.frames['iframeexec<%=requestIdentity%>'];
@@ -196,26 +606,11 @@
 			}
 			iframeEl.style.height = height + 100 + 'px';
 		}
-		/*
-		function GetElementPostion(xElement){
-			var selectedPosX = 0;
-			var selectedPosY = 0;
-			var theElement = document.getElementById(xElement);
-			while(theElement != null){
-				selectedPosX += theElement.offsetLeft;
-				selectedPosY += theElement.offsetTop;
-				theElement = theElement.offsetParent;
-			}              		      		      
-			alert(selectedPosX);
-			alert(selectedPosY);
-		}*/
 		
 </script>
 
 
-<table width='100%' height='100%'>
- 	<tr> 
-       <td width='100%' >
+<div id="divIframe<%=requestIdentity%>" style="width:98%;float:left;padding-left:2%;">
            
            <%
            		String onloadStr = " ";
@@ -260,14 +655,53 @@
               button.click();               
             </script>
                 
-       </td>
-      
-        
-    </tr>
-</table>
+</div>
+       
+
+
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+<!-- **************** END BLOCK IFRAME ******************************* -->
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
 
 
 
 
 
- 
+
+
+
+
+<!-- ***************************************************************** -->
+<!-- **************** INITIALIZE NOTE EDITOR ************************* -->
+<!-- ***************************************************************** -->
+<%
+	if(edNoteAble) {
+%>
+  <script type="text/javascript">
+    	var oFCKeditor = new FCKeditor('editorfckarea');
+    	oFCKeditor.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
+      iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+      heightif = iframeEl.style.height;
+      heightif = heightif + 'px';
+      oFCKeditor.Height=heightif;
+      oFCKeditor.ToolbarSet = 'Basic';
+      //oFCKeditor.Create();
+      oFCKeditor.ReplaceTextarea();
+  </script>
+<%
+      if(notesEditOpen) {
+%>    
+        <script type="text/javascript">
+            divIframe = document.getElementById('divIframe<%=requestIdentity%>');
+            divNotes = document.getElementById('divNotes<%=requestIdentity%>');
+            divIframe.style.width= <%=(100 - 2 - widthNoteEditor)%> + '%';
+            divNotes.style.width=<%=widthNoteEditor%> + '%';
+            noteOpen = true;
+        </script>
+<%    
+      }
+  }
+%>
+

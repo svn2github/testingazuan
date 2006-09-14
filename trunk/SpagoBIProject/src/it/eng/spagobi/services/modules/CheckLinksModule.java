@@ -108,7 +108,7 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		}
 		String checked = (String)request.getAttribute("checked");
 		if(checked==null){
-			checked = "true";
+			checked = "false";
 		}
 		if(checked.equals("true")){
 		//if the request is to show only checked objects (it is settled by default when page is loaded at the first time

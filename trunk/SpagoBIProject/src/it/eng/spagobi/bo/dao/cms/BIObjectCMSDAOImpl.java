@@ -424,6 +424,70 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	}
 
 
+
+	/**
+	 * Save Notes for a specific execution of the biobject
+	 * @param biobjPath path of the biobject executed
+	 * @param execIdentif identifier of the execution
+	 * @param notes notes to save
+	 */
+	public void saveExecutionNotes(String biobjPath, String execIdentif, String notes) throws Exception {
+		try{
+			CmsManager manager = new CmsManager();
+			// check if notes node exists
+			GetOperation getOp = new GetOperation(biobjPath+"/notes", false, false, false, false);
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			// if notes node doesn't exist create it
+			if(cmsnode==null) {
+				SetOperation setOp = new SetOperation();
+		        setOp.setType(SetOperation.TYPE_CONTAINER);
+		        setOp.setPath(biobjPath+"/notes");
+		        manager.execSetOperation(setOp);
+			}
+		    // store notes
+			SetOperation setOp = new SetOperation();
+	        setOp.setContent(new ByteArrayInputStream(notes.getBytes()));
+	        setOp.setType(SetOperation.TYPE_CONTENT);
+	        setOp.setPath(biobjPath+"/notes/" + execIdentif);
+			manager.execSetOperation(setOp);
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					            "saveExecutionNotes", "cannot save notes for biobj path " + biobjPath, e);
+			throw e;
+		}
+	}
+	
+
+
+	/**
+	 * Get Notes for a specific execution of the biobject
+	 * @param biobjPath path of the biobject executed
+	 * @param execIdentif identifier of the execution
+	 * @return String notes saved
+	 */
+	public String getExecutionNotes(String biobjPath, String execIdentif) throws Exception {
+		String notes = " ";
+		try{
+			CmsManager manager = new CmsManager();
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(biobjPath+"/notes/" +execIdentif);
+			getOp.setRetriveContentInformation("true");
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			// if notes node doesn't exist create it
+			if(cmsnode!=null) {
+				InputStream notesIS = cmsnode.getContent();
+				byte[] notesByts = GeneralUtilities.getByteArrayFromInputStream(notesIS);
+				notes = new String(notesByts);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					            "getExecutionNotes", "cannot recover notes for biobj " +
+					           	"path " + biobjPath + " and exec identif " + execIdentif, e);
+		}
+		return notes;
+	}
+
+
 }
 
 

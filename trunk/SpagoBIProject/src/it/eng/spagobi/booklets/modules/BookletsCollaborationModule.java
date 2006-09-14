@@ -40,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.jbpm.JbpmConfiguration;
@@ -81,6 +82,8 @@ public class BookletsCollaborationModule extends AbstractModule {
 				approveHandler(request, response);
 			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_RUN_NEW_COLLABORATION)) {
 				runCollaborationHandler(request, response);
+			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_DELETE_PRESENTATION_VERSION)) {
+				deletePresVerHandler(request, response);
 			}
 		} catch (EMFUserError emfue) {
 			errorHandler.addError(emfue);
@@ -92,6 +95,46 @@ public class BookletsCollaborationModule extends AbstractModule {
 	}
 
 	
+	
+	
+	private void deletePresVerHandler(SourceBean request, SourceBean response) throws Exception {
+		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+	            			"deletePresVerHandler", "method execution start");
+		String pathBookConf = null;
+		List presVersions = null;
+		IBookletsCmsDao bookDao = null;
+		try{
+			pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+			String verName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+			bookDao = new BookletsCmsDaoImpl();
+			bookDao.deletePresentationVersion(pathBookConf, verName);
+		} catch (Exception e) {
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+                    			"deletePresVerHandler", "error while deleting version " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		try{
+			presVersions = bookDao.getPresentationVersions(pathBookConf);
+			SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+		            			"deletePresVerHandler", "Version list retrived " + presVersions);
+		} catch (Exception e) {
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+		                        "deletePresVerHandler", "error while getting version list " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		try{
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
+			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
+			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+		} catch (Exception e) {
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+					            "deletePresVerHandler", "error while setting response attribute " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+	                        "deletePresVerHandler", "end method execution");
+
+	}
 	
 	
 	

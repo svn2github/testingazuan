@@ -41,6 +41,24 @@ import java.util.List;
  */
 public interface IBIObjectCMSDAO {
 
+	
+	/**
+	 * Save Notes for a specific execution of the biobject
+	 * @param biobjPath path of the biobject executed
+	 * @param execIdentif identifier of the execution
+	 * @param notes notes to save
+	 */
+	public void saveExecutionNotes(String biobjPath, String execIdentif, String notes) throws Exception;
+	
+	/**
+	 * Get Notes for a specific execution of the biobject
+	 * @param biobjPath path of the biobject executed
+	 * @param execIdentif identifier of the execution
+	 * @return String notes saved
+	 */
+	public String getExecutionNotes(String biobjPath, String execIdentif) throws Exception;
+	
+	
 	/**
 	 * Get the template of the object
 	 * 

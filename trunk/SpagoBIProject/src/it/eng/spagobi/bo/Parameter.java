@@ -43,6 +43,7 @@ public class Parameter implements Serializable {
 	private String mask = "";
 	private Integer typeId;
 	private String modality = "";
+	private boolean isFunctional;
 	
 	private ModalitiesValue modalityValue = null;
 	private List checks = null;
@@ -174,5 +175,13 @@ public class Parameter implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public boolean isFunctional() {
+		return this.isFunctional;
+	}
+	
+	public void setIsFunctional(boolean isFunctional) {
+		this.isFunctional = isFunctional;
 	}
 }

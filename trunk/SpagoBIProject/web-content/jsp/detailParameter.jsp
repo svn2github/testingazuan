@@ -141,6 +141,15 @@
 		</input>
    	    <% } %>
 	</div>
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.param.isFunctional"/>
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		<input class='portlet-form-input-field' type="checkbox" name="isFunctional" id="isFunctional" 
+			   value="true" <%=(parameter.isFunctional() ? "checked='checked'" : "")%>/>
+	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBIDev.param.lengthField"/>

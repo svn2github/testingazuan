@@ -239,6 +239,7 @@ public class DetailParameterModule extends AbstractModule {
 		parameterClone.setModalityValue(parameter.getModalityValue());
 		parameterClone.setType(parameter.getType());
 		parameterClone.setTypeId(parameter.getTypeId());
+		parameterClone.setIsFunctional(parameter.isFunctional());
 		
 		return parameterClone;
 	}
@@ -561,8 +562,8 @@ public class DetailParameterModule extends AbstractModule {
 		Parameter parameter = null;
 		try {
 			IParameterDAO parareterDAO = DAOFactory.getParameterDAO();
-			List parareters = parareterDAO.loadAllParameters();
-			Iterator it = parareters.iterator();
+			List parameters = parareterDAO.loadAllParameters();
+			Iterator it = parameters.iterator();
 			while (it.hasNext()) {
 				Parameter aParameter = (Parameter) it.next();
 				if (aParameter.getLabel().equals(label)) {
@@ -571,10 +572,10 @@ public class DetailParameterModule extends AbstractModule {
 				}
 			}
 		} catch (EMFUserError e) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","relaodParuse","Cannot reload ParameterUse", e);
+			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","reloadParameter","Cannot reload Parameter", e);
 		}
 		if (parameter == null) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","relaodParuse","ParameterUse with label '"+label+"' not found.");
+			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","reloadParameter","Parameter with label '"+label+"' not found.");
 			parameter = createNewParameter();
 		}
 		return parameter;
@@ -666,6 +667,7 @@ public class DetailParameterModule extends AbstractModule {
 		String mask = (String) request.getAttribute("mask");
 		String modality = (String) request.getAttribute("modality");
 		String name = (String) request.getAttribute("name");
+		String isFunctional = (String) request.getAttribute("isFunctional");
 
         Parameter parameter  = new Parameter();
         parameter.setId(id);
@@ -683,6 +685,8 @@ public class DetailParameterModule extends AbstractModule {
 		parameter.setMask(mask);
 		parameter.setModality(modality);
 		parameter.setName(name);
+		if (isFunctional != null) parameter.setIsFunctional(true);
+		else parameter.setIsFunctional(false);
 		return parameter;
 	}
 
@@ -773,6 +777,7 @@ public class DetailParameterModule extends AbstractModule {
 		parameter.setMask("");
 		parameter.setTypeId(new Integer(0));
 		parameter.setName("");
+		parameter.setIsFunctional(true);
 		return parameter;
 	}
 	

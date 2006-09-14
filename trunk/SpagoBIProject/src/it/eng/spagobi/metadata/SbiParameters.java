@@ -43,7 +43,7 @@ public class SbiParameters  implements java.io.Serializable {
      private String descr;
      private Set sbiParuses;
      private Set sbiObjPars;
-
+     private Short functionalFlag;
 
     // Constructors
 
@@ -168,4 +168,13 @@ public class SbiParameters  implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public Short getFunctionalFlag() {
+		return functionalFlag;
+	}
+
+	public void setFunctionalFlag(Short functionalFlag) {
+		this.functionalFlag = functionalFlag;
+	}
+	
 }

@@ -277,6 +277,9 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 			hibParameters.setMask(aParameter.getMask());
 			hibParameters.setParameterType(parameterType);
 			
+			if (aParameter.isFunctional()) hibParameters.setFunctionalFlag(new Short((short) 1));
+			else hibParameters.setFunctionalFlag(new Short((short) 0));
+			
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -324,6 +327,8 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 			hibParameters.setParameterTypeCode(input_type_cd);
 			hibParameters.setMask(aParameter.getMask());
 			hibParameters.setParameterType(parameterType);
+			if (aParameter.isFunctional()) hibParameters.setFunctionalFlag(new Short((short) 1));
+			else hibParameters.setFunctionalFlag(new Short((short) 0));
 			aSession.save(hibParameters);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -383,8 +388,6 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	 */
 	public Parameter toParameter(SbiParameters hibParameters){
 		Parameter aParameter = new Parameter();
-		
-		
 		aParameter.setDescription(hibParameters.getDescr());
 		aParameter.setId(hibParameters.getParId());
 		aParameter.setLabel(hibParameters.getLabel());
@@ -393,7 +396,8 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 		aParameter.setMask(hibParameters.getMask());
 		aParameter.setType(hibParameters.getParameterTypeCode());
 		aParameter.setTypeId(hibParameters.getParameterType().getValueId());
-		
+		if (hibParameters.getFunctionalFlag().intValue() == 0) aParameter.setIsFunctional(false);
+		else aParameter.setIsFunctional(true);
 		return aParameter;
 	}
 }

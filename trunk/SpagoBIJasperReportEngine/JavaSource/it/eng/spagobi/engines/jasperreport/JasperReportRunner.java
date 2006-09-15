@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -58,6 +59,7 @@ import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -90,7 +92,7 @@ public class JasperReportRunner {
 	
 	/**
 	 * This method, known all input information, runs a report with JasperReport 
-	 * inside SpagoBI. it is the Jasper Report Engine's core method.
+	 * inside SpagoBI. iIt is the Jasper Report Engine's core method.
 	 * 
 	 * @param ds The input Data Source for the Report
 	 * @param parameters The input parameters map
@@ -107,90 +109,32 @@ public class JasperReportRunner {
 		File[] compiledSubreports = null;
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
-			
-			// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
-			String webinflibPath = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
-			logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
-			
-			// get all jar file names in the jasper classpath
-			logger.debug("Reading jar files from lib-dir...");
-			StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
-			File f = new File(webinflibPath);
-			String fileToAppend = null;
-			if (f.isDirectory()){
-				String[] jarFiles = f.list();
-				for (int i=0; i < jarFiles.length; i++){
-					String namefile = jarFiles[i];
-					if(!namefile.endsWith("jar"))
-						continue; // the inclusion of txt files causes problems
-					fileToAppend = webinflibPath + System.getProperty("file.separator")+ jarFiles[i];
-					logger.debug("Appending jar file [" + fileToAppend + "] to JasperReports classpath");
-					jasperReportClassPathStringBuffer.append(fileToAppend);
-					jasperReportClassPathStringBuffer.append(System.getProperty("path.separator"));  
-				}
-			}
-			
-			String jasperReportClassPath = jasperReportClassPathStringBuffer.toString();
-			jasperReportClassPath = jasperReportClassPath.substring(0, jasperReportClassPath.length() - 1);
-			
-			// set jasper classpath property
-			System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
-			logger.debug("Set [jasper.reports.compile.class.path properties] to value [" + System.getProperty("jasper.reports.compile.class.path")+"]");
-			
+						
+			// all jar needed by JR to succesfully compile a report should be on this path
+			// (by default is WEB_INF/lib)
+			setJRClasspath(getJRLibDir(servletContext));
 			
 			// compile subreports
-			String subreportsDir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp" + System.getProperty("file.separator");
-			File destDir = new File(subreportsDir);
-			destDir.mkdirs();
-			compiledSubreports = compileSubreports(parameters, destDir);
+			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext));
 						
 			// set classloader
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
-			ClassLoader current = URLClassLoader.newInstance(new URL[]{destDir.toURL()}, previous);
+			ClassLoader current = URLClassLoader.newInstance(new URL[]{getJRCompilationDir(servletContext).toURL()}, previous);
 			Thread.currentThread().setContextClassLoader(current); 
 						
-			// set tmpdir property
-			System.setProperty("jasper.reports.compile.temp", tmpDirectory);
-			logger.debug("Set [jasper.reports.compile.temp] to value [" + System.getProperty("jasper.reports.compile.temp")+"]");
+			// Set the temporary location for the files generated on-the-fly by JR 
+			// (by default is the current user tmp-dir)
+			setJRTempDir(tmpDirectory);
 			
-			byte[] jcrContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, this.templatePath);
-			InputStream is = new java.io.ByteArrayInputStream(jcrContent);						
+			InputStream is = getTemplateContent(servletRequest);					
 			logger.debug("Compiling template file ...");
 			JasperReport report  = JasperCompileManager.compileReport(is);
 			logger.debug("Template file compiled  succesfully");
 			
-			// Create the virtualizer
-			JRFileVirtualizer virtualizer = null; 
-			boolean isVirtualizationActive = false;
-			SourceBean config = JasperReportConf.getInstance().getConfig();
-			String active = (String)config.getAttribute("VIRTUALIZER.active");
-			if(active != null) isVirtualizationActive = active.equalsIgnoreCase("true");
-			
-			if(isVirtualizationActive) {
+			// Create the virtualizer									
+			if(isVirtualizationActive()) {
 				logger.debug("Virtualization of fill process is active");
-				String maxSizeStr = (String)config.getAttribute("VIRTUALIZER.maxSize");
-				int maxSize = 2; 
-				if(maxSizeStr!=null) maxSize = Integer.parseInt(maxSizeStr);
-				String dir = (String)config.getAttribute("VIRTUALIZER.dir");
-				if(dir == null){
-					dir = tmpDirectory;
-				} else {
-					if(!dir.startsWith("/")) {
-						String contRealPath = servletContext.getRealPath("/");
-						if(contRealPath.endsWith("\\")||contRealPath.endsWith("/")) {
-							contRealPath = contRealPath.substring(0, contRealPath.length()-1);
-						}
-						dir = contRealPath + "/" + dir;
-					}
-				}
-				dir = dir + System.getProperty("file.separator") + "jrcache";
-				File file = new File(dir);
-				file.mkdirs();
-				logger.debug("Max page cached during virtualization process: " + maxSize);
-				logger.debug("Dir used as storing area during virtualization: " + dir);
-				virtualizer = new JRFileVirtualizer(maxSize, dir);
-				parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
-				virtualizer.setReadOnly(true);
+				parameters.put(JRParameter.REPORT_VIRTUALIZER, getVirtualizer(tmpDirectory, servletContext));
 			}
 			
 			logger.debug("Filling report ...");
@@ -300,6 +244,126 @@ public class JasperReportRunner {
 	}	
 	
 	
+	/////////////////////////////////////////
+	// UTILITY METHODS
+	/////////////////////////////////////////
+		
+	/**
+	 * @return the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
+	 * 
+	 * TODO convert this to a File returning method
+	 */
+	private String getJRLibDir(ServletContext servletContext) {
+		String jrLibDir = null;		
+		jrLibDir = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";		
+		return jrLibDir;		
+	}
+	
+	private File getJRCompilationDir(ServletContext servletContext) {
+		File jrCompilationDir = null;		
+
+		String jrCompilationDirStr = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp" + System.getProperty("file.separator");
+		jrCompilationDir = new File(jrCompilationDirStr);
+		jrCompilationDir.mkdirs();
+		
+		return jrCompilationDir;		
+	}
+	
+	private void setJRClasspath(String jrLibDir) {
+		logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
+		System.setProperty("jasper.reports.compile.class.path", buildJRClasspathValue(jrLibDir));
+		logger.debug("Set [jasper.reports.compile.class.path properties] to value [" + System.getProperty("jasper.reports.compile.class.path")+"]");
+		
+	}
+	
+	private void setJRTempDir(String jrTmpDir) {
+		System.setProperty("jasper.reports.compile.temp", jrTmpDir);
+		logger.debug("Set [jasper.reports.compile.temp] to value [" + System.getProperty("jasper.reports.compile.temp")+"]");
+	}
+	
+	/**
+	 * Build a classpath variable appending all the jar files founded into the specified directory.
+	 * 
+	 * @param  libDir JR lib-dir to scan for find jar files to include into the classpath variable
+	 * @return the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
+	 */
+	private String buildJRClasspathValue(String libDir) {
+		String getJRClasspathValue = null;
+		
+		logger.debug("Reading jar files from lib-dir...");
+		StringBuffer jasperReportClassPathStringBuffer  = new StringBuffer();
+		File f = new File(libDir);
+		String fileToAppend = null;
+		if (f.isDirectory()){
+			String[] jarFiles = f.list();
+			for (int i=0; i < jarFiles.length; i++){
+				String namefile = jarFiles[i];
+				if(!namefile.endsWith("jar"))
+					continue; // the inclusion of txt files causes problems
+				fileToAppend = libDir + System.getProperty("file.separator")+ jarFiles[i];
+				logger.debug("Appending jar file [" + fileToAppend + "] to JasperReports classpath");
+				jasperReportClassPathStringBuffer.append(fileToAppend);
+				jasperReportClassPathStringBuffer.append(System.getProperty("path.separator"));  
+			}
+		}
+		
+		getJRClasspathValue = jasperReportClassPathStringBuffer.toString();
+		getJRClasspathValue = getJRClasspathValue.substring(0, getJRClasspathValue.length() - 1);
+		
+		return getJRClasspathValue;
+	}
+	
+	private InputStream getTemplateContent(HttpServletRequest servletRequest) throws IOException {
+		InputStream is = null;		
+		
+		String templateBase64Coded = (String) servletRequest.getParameter("template");
+		BASE64Decoder bASE64Decoder = new BASE64Decoder();
+		byte[] templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
+				
+		//byte[] templateContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, this.templatePath);
+	
+		is = new java.io.ByteArrayInputStream(templateContent);	
+		
+		return is;
+	}
+	
+	private boolean isVirtualizationActive() {
+		boolean isVirtualizationActive = false;
+		SourceBean config = JasperReportConf.getInstance().getConfig();
+		String active = (String)config.getAttribute("VIRTUALIZER.active");
+		if(active != null) isVirtualizationActive = active.equalsIgnoreCase("true");
+		return isVirtualizationActive;
+	}
+	
+	public JRFileVirtualizer getVirtualizer(String tmpDirectory, ServletContext servletContext) {
+		JRFileVirtualizer virtualizer = null; 
+		
+		SourceBean config = JasperReportConf.getInstance().getConfig();
+		String maxSizeStr = (String)config.getAttribute("VIRTUALIZER.maxSize");
+		int maxSize = 2; 
+		if(maxSizeStr!=null) maxSize = Integer.parseInt(maxSizeStr);
+		String dir = (String)config.getAttribute("VIRTUALIZER.dir");
+		if(dir == null){
+			dir = tmpDirectory;
+		} else {
+			if(!dir.startsWith("/")) {
+				String contRealPath = servletContext.getRealPath("/");
+				if(contRealPath.endsWith("\\")||contRealPath.endsWith("/")) {
+					contRealPath = contRealPath.substring(0, contRealPath.length()-1);
+				}
+				dir = contRealPath + "/" + dir;
+			}
+		}
+		dir = dir + System.getProperty("file.separator") + "jrcache";
+		File file = new File(dir);
+		file.mkdirs();
+		logger.debug("Max page cached during virtualization process: " + maxSize);
+		logger.debug("Dir used as storing area during virtualization: " + dir);
+		virtualizer = new JRFileVirtualizer(maxSize, dir);
+		virtualizer.setReadOnly(true);
+		
+		return virtualizer;
+	}
 	
 	private byte[] getImagesBase64Bytes(JasperReport report, JasperPrint jasperPrint) {
 		byte[] bytes = new byte[0];

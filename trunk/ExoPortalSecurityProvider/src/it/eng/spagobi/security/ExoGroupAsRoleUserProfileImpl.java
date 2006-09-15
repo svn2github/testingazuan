@@ -26,7 +26,6 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.security.Principal;
@@ -69,21 +68,20 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 				this.roles.add(group.getId());
 			}
 			//load profile attributes for all users
-			HashMap profileAttributes = GeneralUtilities.getAllProfileAttributes();
-			SourceBean loadUserProfileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.LOAD-USER-PROFILE-ATTRIBUTES");
+			userAttributes = SecurityProviderUtilities.getAllSharedProfileAttributes();
+			SourceBean loadUserProfileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getAttribute("EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES.LOAD-USER-PROFILE-ATTRIBUTES");
 			String loadUserProfileAttrs = loadUserProfileAttrsSB.getCharacters();
 			HashMap predefinedProfileAttributes = new HashMap();
 			if (loadUserProfileAttrs != null && loadUserProfileAttrs.trim().toUpperCase().equals("YES")) {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Trying to load predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"'.");
-				predefinedProfileAttributes = GeneralUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
+				predefinedProfileAttributes = SecurityProviderUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
 			} else {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"' will not be loaded.");
 			}
 			//add the predefined attributes for the current user (already existing attributes are overwritten)
-			profileAttributes.putAll(predefinedProfileAttributes);
-			userAttributes.put("PROFILE_ATTRIBUTES", profileAttributes);
+			userAttributes.putAll(predefinedProfileAttributes);
 		} catch(Exception e){
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>", "Exception ",e);
 		}

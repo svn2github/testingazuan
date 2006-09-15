@@ -142,15 +142,15 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 	/**
 	 * Get the list of the user roles. If the user doesn't exist the roles list is empty
 	 * @param user Username
+	 * @param config The SourceBean configuration
 	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
-	public List getUserRoles(String user) {
+	public List getUserRoles(String user, SourceBean config) {
 		util.debug(this.getClass(), "getUserRoles", "getUserRoles:start method");
 		List roles = new ArrayList();
-		String paramCont = "SPAGOBI.SECURITY.NAME_PORTAL_APPLICATION";
+		String paramCont = "NAME_PORTAL_APPLICATION";
 		util.debug(this.getClass(), "getUserRoles", "use param " + paramCont);
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		util.debug(this.getClass(), "getUserRoles", "config singleton retrived: " + config);
+		util.debug(this.getClass(), "getUserRoles", "config SourceBean in input: " + config);
 		SourceBean paramContSB = (SourceBean)config.getAttribute(paramCont);
 		util.debug(this.getClass(), "getUserRoles", "param context name Source Bean retrived: " + paramContSB);
 		String nameCont = (String)paramContSB.getCharacters();

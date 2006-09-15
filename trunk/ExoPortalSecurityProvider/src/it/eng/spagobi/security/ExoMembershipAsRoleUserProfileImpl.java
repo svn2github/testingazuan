@@ -21,15 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 **/
 package it.eng.spagobi.security;
 
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.security.Principal;
@@ -155,28 +151,27 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
 			}
 			
 			// load profile attributes for all users
-			HashMap profileAttributes = GeneralUtilities.getAllProfileAttributes();
-			SourceBean loadUserProfileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.LOAD-USER-PROFILE-ATTRIBUTES");
+			userAttributes = SecurityProviderUtilities.getAllSharedProfileAttributes();
+			SourceBean loadUserProfileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getAttribute("EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES.LOAD-USER-PROFILE-ATTRIBUTES");
 			String loadUserProfileAttrs = null;
 			if(loadUserProfileAttrsSB!=null) {
 				loadUserProfileAttrs = loadUserProfileAttrsSB.getCharacters();
 			} else {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), 
 						          "<init>",
-						          "attribute SPAGOBI.SECURITY.LOAD-USER-PROFILE-ATTRIBUTES into spagobi configuration");
+						          "attribute EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES.LOAD-USER-PROFILE-ATTRIBUTES not present into spagobi configuration");
 			}
 			HashMap predefinedProfileAttributes = new HashMap();
 			if (loadUserProfileAttrs != null && loadUserProfileAttrs.trim().toUpperCase().equals("YES")) {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Trying to load predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"'.");
-				predefinedProfileAttributes = GeneralUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
+				predefinedProfileAttributes = SecurityProviderUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
 			} else {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"' will not be loaded.");
 			}
 			//add the predefined attributes for the current user (already existing attributes are overwritten)
-			profileAttributes.putAll(predefinedProfileAttributes);
-			userAttributes.put("PROFILE_ATTRIBUTES", profileAttributes);
+			userAttributes.putAll(predefinedProfileAttributes);
 			
 		} catch(Exception e){
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, ExoMembershipAsRoleUserProfileImpl.class.getName(), 

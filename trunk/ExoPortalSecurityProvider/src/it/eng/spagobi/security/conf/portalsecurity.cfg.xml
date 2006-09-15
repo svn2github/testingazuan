@@ -1,0 +1,19 @@
+<EXO_PORTAL_SECURITY>
+	<PROFILE_ATTRIBUTES>
+		<ATTRIBUTE name="month" valuefortest="9" />
+		<ATTRIBUTE name="limit" valuefortest="5" />
+		<LOAD-USER-PROFILE-ATTRIBUTES>yes</LOAD-USER-PROFILE-ATTRIBUTES>
+		<USER-PROFILES>
+			<USER name="biadmin">
+				<ATTRIBUTE name="product" valuefortest="Food" />
+			</USER>
+			<USER name="bidev">
+				<ATTRIBUTE name="product" valuefortest="Drink" />
+			</USER>
+			<USER name="biuser">
+				<ATTRIBUTE name="product" valuefortest="Food" />
+			</USER>
+		</USER-PROFILES>
+	</PROFILE_ATTRIBUTES>
+</EXO_PORTAL_SECURITY>
+

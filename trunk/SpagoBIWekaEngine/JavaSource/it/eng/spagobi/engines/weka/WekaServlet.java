@@ -251,7 +251,7 @@ public class WekaServlet extends HttpServlet {
 			logger.info(this.getClass().getName() + ":service:reading template file ...");
 			String templatePath = (String) params.get(TEMPLATE_PATH);
 			String cr_manager_url = (String) params.get(CR_MANAGER_URL);				
-			byte[] template = new SpagoBIAccessUtils().getContent(cr_manager_url, templatePath);
+			byte[] template = getTemplateContent(request);
 			logger.info(this.getClass().getName() + ":service:template file has been read succesfully");
 				
 			logger.info(this.getClass().getName() + ":service:saving tamplete file to local temp dir ...");
@@ -534,6 +534,18 @@ public class WekaServlet extends HttpServlet {
 	private String[] parseKeysProp(String keysStr) {
 		if(keysStr == null) return null;
 		return keysStr.split(",");
+	}
+	
+	private byte[] getTemplateContent(HttpServletRequest servletRequest) throws IOException {
+		byte[] templateContent	= null;	
+		
+		String templateBase64Coded = (String) servletRequest.getParameter("template");
+		BASE64Decoder bASE64Decoder = new BASE64Decoder();
+		templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
+				
+		//byte[] templateContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, this.templatePath);
+	
+		return templateContent;
 	}
 
 }

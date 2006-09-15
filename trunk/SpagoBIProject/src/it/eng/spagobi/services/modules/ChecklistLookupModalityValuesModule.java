@@ -52,12 +52,14 @@ import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.services.commons.AbstractBasicCheckListModule;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -357,8 +359,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		
 		int profileAttributeStartIndex = statement.indexOf("${");
 		if (profileAttributeStartIndex != -1) {
-			HashMap profileattrs = (HashMap) getUserProfile(request).getUserAttribute("PROFILE_ATTRIBUTES");
-			statement = GeneralUtilities.substituteProfileAttributesInQuery(statement, profileattrs, profileAttributeStartIndex);
+			IEngUserProfile profile = getUserProfile(request);
+			statement = GeneralUtilities.substituteProfileAttributesInQuery(statement, profile, profileAttributeStartIndex);
 		}
 		
 		Vector columns = findVisibleColumns(visibleColumns);

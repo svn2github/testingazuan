@@ -537,10 +537,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		response.setAttribute(SpagoBIConstants.MODALITY, mod);	
 		loadValuesDomain(response);
 		IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
-		response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
+		HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
+		response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, profileattrs);
 	}
-
+	
 	/**
 	 * Tests the ModalitiesValue before saving and sets some attributes to the response SourceBean 
 	 * for the correct visualization of the test result page.
@@ -589,7 +589,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
     			response.setAttribute("testedObject", "SCRIPT_SINGLE_VALUE");
             	try{
         			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-            		HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+            		HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
             		Binding bind = GeneralUtilities.fillBinding(profileattrs);
             		String resultTest = GeneralUtilities.testScript(scriptDet.getScript(), bind);
             		response.setAttribute("result", resultTest);
@@ -656,7 +656,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		try {
 			
 			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		HashMap attrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+    		HashMap attrs = GeneralUtilities.getAllProfileAttributes(profile);
 			response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
 			
 			response.setAttribute(SpagoBIConstants.MODALITY,

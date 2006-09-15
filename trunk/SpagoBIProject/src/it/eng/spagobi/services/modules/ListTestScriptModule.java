@@ -77,7 +77,7 @@ public class ListTestScriptModule extends AbstractBasicListModule {
 		try {
 			
 			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+    		HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
     		Binding bind = GeneralUtilities.fillBinding(profileattrs);
     		String result = GeneralUtilities.testScript(scriptDetail.getScript(), bind);
     		Vector columns = new Vector();

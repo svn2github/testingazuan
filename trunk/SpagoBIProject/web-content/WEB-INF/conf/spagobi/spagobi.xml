@@ -17,11 +17,14 @@
 
  
   <SECURITY>
-		<PORTAL-SECURITY-CLASS>it.eng.spagobi.security.ExoPortalSecurityProviderImpl</PORTAL-SECURITY-CLASS>
-		<USER-PROFILE-FACTORY-CLASS>it.eng.spagobi.security.ExoPortalUserProfileFactoryImpl</USER-PROFILE-FACTORY-CLASS>
-    	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
-		<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
-		<LOAD-USER-PROFILE-ATTRIBUTES>yes</LOAD-USER-PROFILE-ATTRIBUTES>
+  		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
+		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoGroupAsRoleSecurityProviderImpl">
+			<CONFIG>
+				<NAME_PORTAL_APPLICATION>sbiportal</NAME_PORTAL_APPLICATION>
+			</CONFIG>
+		</PORTAL-SECURITY-CLASS>
+		<USER-PROFILE-FACTORY-CLASS>it.eng.spagobi.security.ExoGroupAsRoleUserProfileFactoryImpl</USER-PROFILE-FACTORY-CLASS>
+    	<ROLE-NAME-PATTERN-FILTER>/spagobi/.*</ROLE-NAME-PATTERN-FILTER>
 	</SECURITY>
     
     <!--  SPAGOBI SECURITY PROVIDER CONFIGURATION  Default Security Provider is ExoPortalSecurity Provider-->
@@ -86,7 +89,8 @@
 						name="groovy" 
 						engineclass="org.codehaus.groovy.bsf.GroovyEngine"
 						identifier="groovy"
-						shortidentifier="gy" />
+						shortidentifier="gy" 
+						predefinedScriptFile="predefinedGroovyScript.groovy"/>
 	</SCRIPT_LANGUAGE_SUPPORTED>	
 	
 	

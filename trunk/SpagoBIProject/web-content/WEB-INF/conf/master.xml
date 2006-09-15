@@ -16,7 +16,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/spagobi/spagobi.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/validators.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/validation.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/profileattributes.xml" />
+	<!--CONFIGURATOR path="/WEB-INF/conf/profileattributes.xml" /-->
 	<CONFIGURATOR path="/WEB-INF/conf/spagobi/spagobi_components.xml" />
 	<!-- START DASHBOARD -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />

@@ -431,8 +431,8 @@ public class IReportPluginServlet extends HttpServlet{
     private	List getRoles(String username, String password) {
     	List roles = new ArrayList();
     	ConfigSingleton config = ConfigSingleton.getInstance();
-	    SourceBean securityconfSB = (SourceBean)config.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
- 	    String portalSecurityProviderClass = securityconfSB.getCharacters();
+    	SourceBean securityconfSB = (SourceBean)config.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
+ 	    String portalSecurityProviderClass = (String) securityconfSB.getAttribute("className");
  	    IPortalSecurityProvider portalSecurityProvider = null;
  	    try {
  	    	Class portSecClass = Class.forName(portalSecurityProviderClass);
@@ -440,7 +440,8 @@ public class IReportPluginServlet extends HttpServlet{
  	    } catch (Exception e) {
  	    	return roles;
  	    }
- 	    roles = portalSecurityProvider.getUserRoles(username);
+ 	   SourceBean portSecClassConfig = (SourceBean) securityconfSB.getAttribute("CONFIG");
+ 	    roles = portalSecurityProvider.getUserRoles(username, portSecClassConfig);
  	    return roles;
     }
 	

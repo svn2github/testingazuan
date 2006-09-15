@@ -30,6 +30,7 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
@@ -40,11 +41,14 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
 import it.eng.spago.base.SessionContainer;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -187,79 +191,6 @@ public class GeneralUtilities {
 	}
 	
 	
-	
-	/**
-	 * Get all the shared profile attributes of the users.
-	 * The attributes are contained into a configuration file which contains the name 
-	 * of the attribute and the test value of the attribute. The test value is used during 
-	 * the test of a script that use the attribute. 
-	 * 
-	 * @return HashMap of the attributes. HashMap keys are profile attribute.
-	 * HashMap values are test values. 
-	 * 
-	 */
-	public static HashMap getAllProfileAttributes() {
-		List attrs = ConfigSingleton.getInstance().getAttributeAsList("PROFILE_ATTRIBUTES.ATTRIBUTE");
-		HashMap attrsMap = new HashMap();
-		if(attrs==null) {
-			return attrsMap;
-		}
-		Iterator iterAttrs = attrs.iterator();
-		SourceBean attrSB = null;
-		String nameattr = null;
-		String attrvalue = null;
-		while(iterAttrs.hasNext()) {
-			attrSB = (SourceBean)iterAttrs.next();
-			if(attrSB==null)
-				continue;
-			nameattr = (String)attrSB.getAttribute("name");
-		    attrvalue = (String)attrSB.getAttribute("valuefortest");
-		    attrsMap.put(nameattr, attrvalue);
-		}
-		return attrsMap;
-	}
-	
-	/**
-	 * Get all the predefined profile attributes of the user with the given unique identifier passed as String.
-	 * The attributes are contained into a configuration file which contains the name 
-	 * of the attribute and the test value of the attribute. The test value is used during 
-	 * the test of a script that use the attribute. 
-	 * 
-	 * @return HashMap of the attributes. HashMap keys are profile attribute.
-	 * HashMap values are test values. 
-	 * 
-	 */
-	public static HashMap getPredefinedProfileAttributes(String userUniqueIdentifier) {
-		SourceBean profileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("PROFILE_ATTRIBUTES.USER-PROFILES.USER", "name", userUniqueIdentifier);
-		if(profileAttrsSB==null)
-			return new HashMap();
-		List profileAttrs = profileAttrsSB.getAttributeAsList("ATTRIBUTE");
-		HashMap attrsMap = new HashMap();
-		if (profileAttrs == null || profileAttrs.size() == 0) {
-			SpagoBITracer.info("SpagoBIUtilities", GeneralUtilities.class.getName(), "getPredefinedProfileAttributes()", 
-				"The user with unique identifer '" + userUniqueIdentifier + 
-				"' has no predefined profile attributes.");
-			return attrsMap;
-		}
-		Iterator iterAttrs = profileAttrs.iterator();
-		SourceBean attrSB = null;
-		String nameattr = null;
-		String attrvalue = null;
-		while(iterAttrs.hasNext()) {
-			attrSB = (SourceBean) iterAttrs.next();
-			if (attrSB == null)
-				continue;
-			nameattr = attrSB.getAttribute("name").toString();
-		    attrvalue = attrSB.getAttribute("valuefortest").toString();
-		    attrsMap.put(nameattr, attrvalue);
-		}
-		SpagoBITracer.info("SpagoBIUtilities", GeneralUtilities.class.getName(), "getPredefinedProfileAttributes()", 
-				"The user with unique identifer '" + userUniqueIdentifier + 
-				"' has the following predefined profile attributes:\n" + attrsMap.toString());
-		return attrsMap;
-	}
-	
-	
 	public static Binding fillBinding(HashMap attrs) {
 		Binding bind = new Binding();
 		Set setattrs = attrs.keySet();
@@ -277,7 +208,7 @@ public class GeneralUtilities {
 	
 	public static Binding fillBinding(IEngUserProfile profile) throws EMFInternalError {
 		
-		HashMap allAttrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+		HashMap allAttrs = GeneralUtilities.getAllProfileAttributes(profile);
 		if (allAttrs == null) return null;
 		return fillBinding(allAttrs);
 //		HashMap allAttrs = getAllProfileAttributes();
@@ -303,25 +234,132 @@ public class GeneralUtilities {
 	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the query statement passed at input.
 	 * 
 	 * @param statement The query statement string to be modified
-	 * @param profileattrs The profile attributes HashMap
+	 * @param profile The IEngUserProfile object
 	 * @param profileAttributeStartIndex The start index for query parsing (useful for recursive calling)
 	 * @return The statement with profile attributes replaced by their values.
 	 * @throws Exception
 	 */
-	public static String substituteProfileAttributesInQuery(String statement, HashMap profileattrs, int profileAttributeStartIndex) throws Exception {
+	public static String substituteProfileAttributesInQuery(String statement, IEngUserProfile profile, int profileAttributeStartIndex) throws Exception {
 		int profileAttributeEndIndex = statement.indexOf("}");
 		if (profileAttributeEndIndex == -1) throw new Exception("Not closed profile attribute: '}' expected.");
 		if (profileAttributeEndIndex < profileAttributeEndIndex) throw new Exception("Not opened profile attribute: '${' expected.");
-		String attributeName = statement.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex);
-		Object attributeValueObj = profileattrs.get(attributeName);
-		if (attributeValueObj == null) throw new Exception("Profile attribute '" + attributeName + "' not existing.");
-		else statement = statement.replace("${" + attributeName + "}", attributeValueObj.toString());
+		String attribute = statement.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex);
+		int startConfigIndex = attribute.indexOf("(");
+		String attributeName = "";
+		String prefix = "";
+		String split = "";
+		String suffix = "";
+		boolean attributeExcpetedToBeMultiValue = false;
+		if (startConfigIndex != -1) {
+			// the attribute profile is expected to be multivalue
+			attributeExcpetedToBeMultiValue = true;
+			int endConfigIndex = attribute.indexOf(")", startConfigIndex);
+			if (endConfigIndex == -1) throw new Exception("Sintax error: \")\" missing. The expected sintax for " +
+					"attribute profile is ${attributeProfileName(prefix;split;suffix)} for multivalue profile attributes " +
+					"or ${attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters.");
+			String configuration = attribute.substring(startConfigIndex + 1, endConfigIndex);
+			String[] configSplitted = configuration.split(";");
+			if (configSplitted == null || configSplitted.length != 3) throw new Exception("Sintax error. The expected sintax for " +
+					"attribute profile is ${attributeProfileName(prefix;split;suffix)} for multivalue profile attributes " +
+					"or ${attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters. " +
+					"The (prefix;split;suffix) is not properly configured");
+			prefix = configSplitted[0];
+			split = configSplitted[1];
+			suffix = configSplitted[2];
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "Multi-value attribute profile configuration found: prefix: '" + prefix + "'; split: '" + split + "'; suffix: '" + suffix + "'." );
+			attributeName = attribute.substring(0, startConfigIndex);
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "Expected multi-value attribute profile name: '" + attributeName + "'");
+		} else {
+			attributeName = attribute;
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "Expected single-value attribute profile name: '" + attributeName + "'");
+		}
+		
+		Object attributeValueObj = profile.getUserAttribute(attributeName);
+		if (attributeValueObj == null || attributeValueObj.toString().trim().equals("")) throw new Exception("Profile attribute '" + attributeName + "' not existing.");
+
+		String attributeValue = attributeValueObj.toString();
+		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "Profile attribute value found: '" + attributeValue + "'");
+		String replacement = null;
+		String newListOfValues = null;
+		if (attributeExcpetedToBeMultiValue) {
+			if (attributeValue.startsWith("{")) {
+				// the profile attribute is multi-value
+				String[] values = findAttributeValues(attributeValue);
+				SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "N. " + values.length + " profile attribute values found: '" + values + "'");
+				newListOfValues = values[0];
+				for (int i = 1; i < values.length; i++) {
+					newListOfValues = newListOfValues + split + values[i];
+				}
+			} else {
+				SpagoBITracer.warning("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "The attribute value has not the sintax of a multi value attribute; considering it as a single value.");
+				newListOfValues = attributeValue;
+			}
+		} else {
+			if (attributeValue.startsWith("{")) {
+				// the profile attribute is multi-value
+				SpagoBITracer.warning("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "The attribute value seems to be a multi value attribute; trying considering it as a multi value using its own splitter and no prefix and suffix.");
+				try {
+					// checks the sintax
+					String[] values = findAttributeValues(attributeValue);
+					newListOfValues = values[0];
+					for (int i = 1; i < values.length; i++) {
+						newListOfValues = newListOfValues + attributeValue.charAt(1) + values[i];
+					}
+				} catch (Exception e) {
+					SpagoBITracer.warning("SpagoBIUtilities", GeneralUtilities.class.getName(), "substituteProfileAttributesInQuery", "The attribute value does not respect the sintax of a multi value attribute; considering it as a single value.");
+					newListOfValues = attributeValue;
+				}
+			} else {
+				newListOfValues = attributeValue;
+			}
+		}
+		
+		replacement = prefix + newListOfValues + suffix;
+		
+		// replaces the profile attribute declaration
+		statement = statement.replace("${" + attributeName + "}", replacement);
+
 		profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
 		if (profileAttributeStartIndex != -1) 
-			statement = substituteProfileAttributesInQuery(statement, profileattrs, profileAttributeStartIndex);
+			statement = substituteProfileAttributesInQuery(statement, profile, profileAttributeStartIndex);
 		return statement;
 	}
 	
+	
+	/**
+	 * Find the attribute values in case of multi value attribute.
+	 * The sintax is: {splitter character{list of values separated by the splitter}}.
+	 * Examples: {;{value1;value2;value3....}}
+	 *           {|{value1|value2|value3....}}
+	 * 
+	 * @param attributeValue The String representing the list of attribute values
+	 * @return The array of attribute values
+	 * @throws Exception in case of sintax error
+	 */
+	private static String[] findAttributeValues(String attributeValue) throws Exception {
+		String sintaxErrorMsg = "Multi value attribute sintax error.";
+		if (attributeValue.length() < 6) throw new Exception(sintaxErrorMsg);
+		if (!attributeValue.endsWith("}}")) throw new Exception(sintaxErrorMsg);
+		if (attributeValue.charAt(2) != '{') throw new Exception(sintaxErrorMsg);
+		char splitter = attributeValue.charAt(1);
+		String valuesList = attributeValue.substring(3, attributeValue.length() - 2);
+		String [] values = valuesList.split(String.valueOf(splitter));
+		return values;
+	}
+	
+	public static HashMap getAllProfileAttributes(IEngUserProfile profile) throws EMFInternalError {
+		if (profile == null) throw new EMFInternalError(EMFErrorSeverity.ERROR, "getAllProfileAttributes method invoked with null input profile object");
+		HashMap profileattrs = new HashMap();
+		Collection profileattrsNames = profile.getUserAttributeNames();
+		if (profileattrsNames == null || profileattrsNames.size() == 0) return profileattrs;
+		Iterator it = profileattrsNames.iterator();
+		while (it.hasNext()) {
+			Object profileattrName = it.next();
+			Object profileattrValue = profile.getUserAttribute(profileattrName.toString());
+			profileattrs.put(profileattrName, profileattrValue);
+		}
+		return profileattrs;
+	}
 	
 	public static String testScript(String script, Binding bind) throws Exception {
 		String result = "";
@@ -339,6 +377,31 @@ public class GeneralUtilities {
 								   "testScript", "The only script language supported is groovy, " +
 								   "the configuration file has no configuration for groovy");
 			return "";
+		}
+		String predefinedScriptFileName = (String)scriptLangSB.getAttribute("predefinedScriptFile");
+		if (predefinedScriptFileName != null && !predefinedScriptFileName.trim().equals("")) {
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), "testScript", "Trying to load predefined script file '" + predefinedScriptFileName + "'.");
+			InputStream is = null;
+			try {
+				is = Thread.currentThread().getContextClassLoader().getResourceAsStream(predefinedScriptFileName);
+				StringBuffer servbuf = new StringBuffer();
+				int arrayLength = 1024;
+				byte[] bufferbyte = new byte[arrayLength];
+				char[] bufferchar = new char[arrayLength];
+				int len;
+				while ((len = is.read(bufferbyte)) >= 0) {
+					for (int i = 0; i < arrayLength; i++) {
+						bufferchar[i] = (char) bufferbyte[i];
+					}
+					servbuf.append(bufferchar, 0, len);
+				}
+				is.close();
+				script = servbuf.toString() + script;
+			} catch (Exception e) {
+				SpagoBITracer.warning("SpagoBIUtilities", GeneralUtilities.class.getName(), "testScript", "The predefined script file '" + predefinedScriptFileName + "' was not properly loaded.");
+			} finally {
+				if (is != null) is.close();
+			}
 		}
 		GroovyShell shell = new GroovyShell(bind);
 		Object value = shell.evaluate(script);
@@ -496,7 +559,7 @@ public class GeneralUtilities {
         		int profileAttributeStartIndex = value.indexOf("${");
     			if (profileAttributeStartIndex != -1) {
     				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    				HashMap profileattrs = (HashMap) profile.getUserAttribute("PROFILE_ATTRIBUTES");
+    				HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
     				value = GeneralUtilities.substituteProfileAttributesInFixLov(value, profileattrs, profileAttributeStartIndex);
     				biparam.getParameter().getModalityValue().setLovProvider(value);
     			}

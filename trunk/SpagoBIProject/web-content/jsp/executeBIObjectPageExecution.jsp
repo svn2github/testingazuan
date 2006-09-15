@@ -198,7 +198,7 @@
            </a>
          </td>
        
-       <td class='tdAlertNotesExists' valign="middle" nowrap='true'>
+       <td id="tdAlertNotesExists" class='tdAlertNotesExists' valign="middle" nowrap='true'>
            <div id="divAlertExistNotes" class="divAlertNotesExists">
            </div>
        </td>
@@ -365,7 +365,7 @@
 		  var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
       var postdata ="task=saveNotes";
 		  postdata=postdata+"&biobjid=<%=obj.getId()%>";
-		  postdata=postdata+"&execidentifier=<%=execIdentifier.substring(0, 20)%>";
+		  postdata=postdata+"&execidentifier=<%=execIdentifier%>";
 		  postdata=postdata+"&notes=" + xhtml;
 		  
 		  xmlHttp.onreadystatechange=stateChangedSaveNotes; 
@@ -394,7 +394,7 @@
 		  url=url+"?task=requireLock";
 		  url=url+"&biobjid=<%=obj.getId()%>";
 		  url=url+"&user=<%=nameUser%>";
-		  url=url+"&execidentifier=<%=execIdentifier.substring(0, 20)%>";
+		  url=url+"&execidentifier=<%=execIdentifier%>";
 		  
 		  xmlHttp.onreadystatechange=stateChangedRequestLock; 
 		  xmlHttp.open("GET",url,true);
@@ -403,19 +403,19 @@
     
     
      function FCKeditor_OnComplete( editorInstance ) {
-    	xmlHttp = GetXmlHttpObject();
-    	if(xmlHttp==null) {
-			   alert ("Browser does not support HTTP Request");
-			   return;
-		 }
-		var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-		url=url+"?task=getNotes";
-		url=url+"&biobjid=<%=obj.getId()%>";
-		url=url+"&execidentifier=<%=execIdentifier.substring(0, 20)%>";
-		  
-		xmlHttp.onreadystatechange=stateChangedGetNotes; 
-		xmlHttp.open("GET",url,true);
-		xmlHttp.send(null); 
+      	xmlHttp = GetXmlHttpObject();
+      	if(xmlHttp==null) {
+  			   alert ("Browser does not support HTTP Request");
+  			   return;
+  		  }
+    		var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+    		url=url+"?task=getNotes";
+    		url=url+"&biobjid=<%=obj.getId()%>";
+    		url=url+"&execidentifier=<%=execIdentifier%>";
+    		
+    		xmlHttp.onreadystatechange=stateChangedGetNotes; 
+    		xmlHttp.open("GET",url,true);
+    		xmlHttp.send(null); 
 	}
     
     
@@ -437,6 +437,12 @@
       locked = false;
       document.getElementById('notesLockImg').style.display='inline';
       document.getElementById('notesSaveImg').style.display='none';
+      try{
+      	   editor.EditingArea.Document.body.contentEditable="false";
+      }catch(e){
+           alert('catch');
+           // not IE
+      }
       if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
   			response=xmlHttp.responseText; 
   			if(responseHasError(response)) {
@@ -465,6 +471,12 @@
         	document.getElementById('notesSaveImg').style.display='inline';
         	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
           editor.SetHTML(response, false);
+          try{
+      	   editor.EditingArea.Document.body.contentEditable="true";
+          }catch(e){
+      	     alert('catch');
+            // not IE
+          }
           fillAlertExistNotes(response);
   		}  
 	 } 
@@ -482,7 +494,12 @@
           		return;
         	}
         	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
-          editor.SetHTML(response, false);  
+          editor.SetHTML(response, false);
+          try{
+            editor.EditingArea.Document.body.contentEditable="false";
+          }catch(e){
+            // not IE
+          }   
           fillAlertExistNotes(response);
        }
     }
@@ -509,13 +526,14 @@
     
     function fillAlertExistNotes(notes){
        divalertNotes = document.getElementById('divAlertExistNotes');
+       tdalertNotes = document.getElementById('tdAlertNotesExists');
        notes = notes.replace(/^\s*|\s*$/g,"");
        if(notes!=""){
         divalertNotes.innerHTML = "<spagobi:message key = "sbi.execution.notes.documentHasNotes" />";
+       	tdalertNotes.style.width="150px";
        }
     }
 
-    
   </script>
   
   

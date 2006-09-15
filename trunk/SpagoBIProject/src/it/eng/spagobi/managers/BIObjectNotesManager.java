@@ -2,6 +2,7 @@ package it.eng.spagobi.managers;
 
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -41,6 +42,10 @@ public class BIObjectNotesManager {
 		iterBiobjPars = biobjpars.iterator();
 		while(iterBiobjPars.hasNext()){
 			biobjpar = (BIObjectParameter)iterBiobjPars.next();
+			Parameter par = biobjpar.getParameter();
+			if((par==null) || (!par.isFunctional())){
+				continue;
+			}
 			parUrlName = biobjpar.getParameterUrlName();
 		 	biparvalues = biobjpar.getParameterValues();
 		 	iterBiparValues = biparvalues.iterator();
@@ -60,7 +65,21 @@ public class BIObjectNotesManager {
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 	                        "getExecutionIdentifier", "identifier produced : " + identif);
 		BASE64Encoder encoder = new BASE64Encoder();
-		String ecodedIdentif = encoder.encode(identif.getBytes());		
+		
+		String ecodedIdentif = "";
+		int index = 0;
+		while(index<identif.length()){
+			String tmpStr = "";
+			try{
+				tmpStr = identif.substring(index, index + 10);
+			} catch (Exception e) {
+				tmpStr = identif.substring(index, identif.length());
+			}
+			String tmpEncoded = encoder.encode(tmpStr.getBytes());
+			ecodedIdentif = ecodedIdentif + tmpEncoded;
+			index = index + 10;
+		}
+
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 	            "getExecutionIdentifier", "end method execution, returning encoded identifier: " + ecodedIdentif);
 		return ecodedIdentif;

@@ -16,11 +16,14 @@ import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import sun.misc.BASE64Encoder;
 
 
 
@@ -84,10 +87,18 @@ public class JasperReportDriver implements IEngineDriver {
      */    
 	private Map getMap(BIObject biobj) {
 		Map pars = new Hashtable();
+		
+		biobj.loadTemplate();
+		UploadedFile uploadedFile =  biobj.getTemplate();
+		byte[] template = uploadedFile.getFileContent();
+		BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		pars.put("template", bASE64Encoder.encode(template));
 		pars.put("templatePath",biobj.getPath() + "/template");
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+        
         pars = addBISubreports(biobj, pars);
         pars = addBIParameters(biobj, pars);
+        
         return pars;
 	} 
  
@@ -139,11 +150,12 @@ public class JasperReportDriver implements IEngineDriver {
 		}
 		if(biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
-			String value = null;
 			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
 				try {
 					biobjPar = (BIObjectParameter)it.next();
-					value = (String)biobjPar.getParameterValues().get(0);
+					String value = "";
+					for(int i = 0; i < biobjPar.getParameterValues().size(); i++)
+						value += (i>0?",":"") + (String)biobjPar.getParameterValues().get(i);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",

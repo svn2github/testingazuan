@@ -12,10 +12,13 @@ import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+
+import sun.misc.BASE64Encoder;
 
 
 
@@ -85,6 +88,12 @@ public class WekaDriver implements IEngineDriver {
      */    
 	private Map getMap(BIObject biobj, IEngUserProfile profile) {
 		Map pars = new Hashtable();
+		
+		biobj.loadTemplate();
+		UploadedFile uploadedFile =  biobj.getTemplate();
+		byte[] template = uploadedFile.getFileContent();
+		BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		pars.put("template", bASE64Encoder.encode(template));
 		pars.put("templatePath",biobj.getPath() + "/template");
 		pars.put("cr_manager_url", GeneralUtilities.getSpagoBiContentRepositoryServlet());
     	pars.put("events_manager_url", GeneralUtilities.getSpagoBiEventsManagerServlet());

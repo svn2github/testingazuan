@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.birt;
 
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -25,6 +26,8 @@ import org.eclipse.birt.report.engine.api.IRenderOption;
 import org.eclipse.birt.report.engine.api.IReportRunnable;
 import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
 import org.eclipse.birt.report.engine.api.ReportEngine;
+
+import sun.misc.BASE64Decoder;
 
 public class BirtReportRunner extends BirtReportRunnerODA {
 
@@ -46,8 +49,7 @@ public class BirtReportRunner extends BirtReportRunnerODA {
 		ReportEngine engine = new ReportEngine(config);
 		logger.debug("Engines"+ this.getClass().getName() + "runReport(): trying to get content of the template with path = ["
 				+ templatePath + "] calling the SpagoBI base url = [" + spagobibaseurl + "]");
-		byte[] jcrContent = new SpagoBIAccessUtils().getContent(
-				this.spagobibaseurl, this.templatePath);
+		byte[] jcrContent = getTemplateContent(servletRequest);
 		logger.debug("Engines"+ this.getClass().getName() + "runReport(): template document retrieved.");
 		InputStream is = new java.io.ByteArrayInputStream(jcrContent);
 		IReportRunnable design = engine.openReportDesign(is);
@@ -85,5 +87,17 @@ public class BirtReportRunner extends BirtReportRunnerODA {
 		task.setRenderOption(options);
 		task.setAppContext(appContext);
 		task.run();
+	}
+	
+	private byte[] getTemplateContent(HttpServletRequest servletRequest) throws IOException {
+		byte[] templateContent	= null;	
+		
+		String templateBase64Coded = (String) servletRequest.getParameter("template");
+		BASE64Decoder bASE64Decoder = new BASE64Decoder();
+		templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
+				
+		//byte[] templateContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, this.templatePath);
+	
+		return templateContent;
 	}
 }

@@ -40,10 +40,13 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+
+import sun.misc.BASE64Encoder;
 
 /**
  * Driver Implementation (IEngineDriver Interface) for Birt Report Engine. 
@@ -106,7 +109,13 @@ public class BirtReportDriver implements IEngineDriver {
      */    
 	private Map getMap(BIObject biobj) {
    		Map pars = new Hashtable();
-		ConfigSingleton config = ConfigSingleton.getInstance();
+		
+   		biobj.loadTemplate();
+		UploadedFile uploadedFile =  biobj.getTemplate();
+		byte[] template = uploadedFile.getFileContent();
+		BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		pars.put("template", bASE64Encoder.encode(template));
+   		ConfigSingleton config = ConfigSingleton.getInstance();
    		String path = biobj.getPath() + "/template";
    		pars.put("templatePath", path);
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
@@ -115,6 +124,7 @@ public class BirtReportDriver implements IEngineDriver {
 	    String format = (String) formatSB.getAttribute("format");
 	    pars.put("dateformat", format);
         pars = addBIParameters(biobj, pars);
+        
         return pars;
 	} 
 	

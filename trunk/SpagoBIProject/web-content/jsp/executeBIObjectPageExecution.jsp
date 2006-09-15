@@ -349,30 +349,50 @@
     
     locked = false;
     var xmlHttp = null;
+    var holdLockInterval = null;  
+      
+    
+    
+    function holdLock() {
+    	   xmlHttp = GetXmlHttpObject();
+    	   if(xmlHttp==null) {
+			   alert ("Browser does not support HTTP Request");
+			   return;
+		    }
+		   var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		   url=url+"?task=holdLock";
+		   url=url+"&user=<%=nameUser%>";
+		   url=url+"&execidentifier=<%=execIdentifier%>";
+		   xmlHttp.onreadystatechange=stateChangedHoldLock; 
+		   xmlHttp.open("GET",url,true);
+		   xmlHttp.send(null); 
+    }
+      
+      
       
     function saveNotes() {
-      cleanError();
-      var editor = FCKeditorAPI.GetInstance('editorfckarea') ;
-      xhtml = editor.GetXHTML(false);
-      if(!locked){
-    		return;
-    	}
-    	xmlHttp = GetXmlHttpObject();
-    	if(xmlHttp==null) {
+	      cleanError();
+	      var editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+	      xhtml = editor.GetXHTML(false);
+	      if(!locked){
+	    		return;
+	    	}
+	      xmlHttp = GetXmlHttpObject();
+	      if(xmlHttp==null) {
 			   alert ("Browser does not support HTTP Request");
 			   return;
 		  }
 		  var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-      var postdata ="task=saveNotes";
+      	  var postdata ="task=saveNotes";
 		  postdata=postdata+"&biobjid=<%=obj.getId()%>";
+		  postdata=postdata+"&user=<%=nameUser%>";
 		  postdata=postdata+"&execidentifier=<%=execIdentifier%>";
 		  postdata=postdata+"&notes=" + xhtml;
-		  
 		  xmlHttp.onreadystatechange=stateChangedSaveNotes; 
 		  xmlHttp.open('POST',url,true);
-      xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xmlHttp.setRequestHeader("Content-length", postdata.length);
-      xmlHttp.setRequestHeader("Connection", "close");
+      	  xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      	  xmlHttp.setRequestHeader("Content-length", postdata.length);
+      	  xmlHttp.setRequestHeader("Connection", "close");
 		  xmlHttp.send(postdata); 
     }
     
@@ -381,42 +401,144 @@
     
     
     function requireLock() {
-       cleanError();
-       if(locked){
-    		return;
-    	}
-    	xmlHttp = GetXmlHttpObject();
-    	if(xmlHttp==null) {
+	       cleanError();
+	       if(locked){
+	    		return;
+	    	}
+    	   xmlHttp = GetXmlHttpObject();
+    	   if(xmlHttp==null) {
 			   alert ("Browser does not support HTTP Request");
 			   return;
-		  }
-		  var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-		  url=url+"?task=requireLock";
-		  url=url+"&biobjid=<%=obj.getId()%>";
-		  url=url+"&user=<%=nameUser%>";
-		  url=url+"&execidentifier=<%=execIdentifier%>";
-		  
-		  xmlHttp.onreadystatechange=stateChangedRequestLock; 
-		  xmlHttp.open("GET",url,true);
-		  xmlHttp.send(null); 
+		    }
+		   var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		   url=url+"?task=requireLock";
+		   url=url+"&biobjid=<%=obj.getId()%>";
+		   url=url+"&user=<%=nameUser%>";
+		   url=url+"&execidentifier=<%=execIdentifier%>";
+		   xmlHttp.onreadystatechange=stateChangedRequestLock; 
+		   xmlHttp.open("GET",url,true);
+		   xmlHttp.send(null); 
     }
     
     
-     function FCKeditor_OnComplete( editorInstance ) {
-      	xmlHttp = GetXmlHttpObject();
-      	if(xmlHttp==null) {
+    function reloadNotes() {
+      		xmlHttp = GetXmlHttpObject();
+      		if(xmlHttp==null) {
   			   alert ("Browser does not support HTTP Request");
   			   return;
-  		  }
+  		  	}
     		var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
     		url=url+"?task=getNotes";
     		url=url+"&biobjid=<%=obj.getId()%>";
     		url=url+"&execidentifier=<%=execIdentifier%>";
-    		
     		xmlHttp.onreadystatechange=stateChangedGetNotes; 
     		xmlHttp.open("GET",url,true);
     		xmlHttp.send(null); 
 	}
+    
+    
+    
+     function FCKeditor_OnComplete( editorInstance ) {
+      		xmlHttp = GetXmlHttpObject();
+      		if(xmlHttp==null) {
+  			   alert ("Browser does not support HTTP Request");
+  			   return;
+  		  	}
+    		var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+    		url=url+"?task=getNotes";
+    		url=url+"&biobjid=<%=obj.getId()%>";
+    		url=url+"&execidentifier=<%=execIdentifier%>";
+    		xmlHttp.onreadystatechange=stateChangedGetNotes; 
+    		xmlHttp.open("GET",url,true);
+    		xmlHttp.send(null); 
+	}
+    
+    
+    
+    function stateChangedHoldLock(){ 
+  	 	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+  	 		// do nothing (the hold lock request is useful only to keep alive the lock)
+  	 	}
+	 } 
+
+    
+    
+    function stateChangedSaveNotes(){ 
+      	locked = false;
+      	document.getElementById('notesLockImg').style.display='inline';
+      	document.getElementById('notesSaveImg').style.display='none';
+      	document.getElementById('notesReloadImg').style.display='inline';
+      	clearInterval(holdLockInterval);
+      	try{
+      	   editor.EditingArea.Document.body.contentEditable="false";
+      	}catch(e){
+           // not IE
+      	}
+      	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+  			response=xmlHttp.responseText; 
+  			if(responseHasError(response)) {
+          		error = getResponseError(response);
+          		divError = document.getElementById('notesErrorMessage');
+          		divError.innerHTML = error;
+          		return;
+        	}
+        	fillAlertExistNotes("Notes");	
+       }
+    }
+    
+    
+    
+    
+    function stateChangedRequestLock(){ 
+  	 	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+  			response=xmlHttp.responseText; 
+  			if(responseHasError(response)) {
+          		error = getResponseError(response);
+          		divError = document.getElementById('notesErrorMessage');
+          		divError.innerHTML = error;
+          		return;
+        	}
+        	// editor locked
+        	locked=true;
+        	document.getElementById('notesLockImg').style.display='none';
+        	document.getElementById('notesSaveImg').style.display='inline';
+        	document.getElementById('notesReloadImg').style.display='none';
+        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+            editor.SetHTML(response, false);
+            try{
+      	     	editor.EditingArea.Document.body.contentEditable="true";
+          	}catch(e){
+            	// not IE
+          	}
+          	holdLockInterval = setInterval("holdLock()", 30000);
+          	fillAlertExistNotes(response);
+  		}  
+	 } 
+    
+   
+    
+    
+    
+    
+    function stateChangedGetNotes(){ 
+      	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+  			response=xmlHttp.responseText; 
+      		if(responseHasError(response)) {
+          		error = getResponseError(response);
+          		divError = document.getElementById('notesErrorMessage');
+          		divError.innerHTML = error;
+          		return;
+        	}
+        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+          	editor.SetHTML(response, false);
+          	try{
+            	editor.EditingArea.Document.body.contentEditable="false";
+          	}catch(e){
+           		 // not IE
+          	}   
+          	fillAlertExistNotes(response);
+       }
+    }
     
     
     
@@ -430,79 +552,6 @@
   		}
   		return objXMLHttp
   	}
-    
-    
-    
-    function stateChangedSaveNotes(){ 
-      locked = false;
-      document.getElementById('notesLockImg').style.display='inline';
-      document.getElementById('notesSaveImg').style.display='none';
-      try{
-      	   editor.EditingArea.Document.body.contentEditable="false";
-      }catch(e){
-           alert('catch');
-           // not IE
-      }
-      if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  			response=xmlHttp.responseText; 
-  			if(responseHasError(response)) {
-          		error = getResponseError(response);
-          		divError = document.getElementById('notesErrorMessage');
-          		divError.innerHTML = error;
-          		return;
-        	}
-        fillAlertExistNotes("Notes");	
-       }
-    }
-    
-    
-    
-    function stateChangedRequestLock(){ 
-  	 	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  			response=xmlHttp.responseText; 
-  			if(responseHasError(response)) {
-          		error = getResponseError(response);
-          		divError = document.getElementById('notesErrorMessage');
-          		divError.innerHTML = error;
-          		return;
-        	}
-        	locked=true;
-        	document.getElementById('notesLockImg').style.display='none';
-        	document.getElementById('notesSaveImg').style.display='inline';
-        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
-          editor.SetHTML(response, false);
-          try{
-      	   editor.EditingArea.Document.body.contentEditable="true";
-          }catch(e){
-      	     alert('catch');
-            // not IE
-          }
-          fillAlertExistNotes(response);
-  		}  
-	 } 
-    
-   
-    
-    
-    function stateChangedGetNotes(){ 
-      if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  			response=xmlHttp.responseText; 
-      		if(responseHasError(response)) {
-          		error = getResponseError(response);
-          		divError = document.getElementById('notesErrorMessage');
-          		divError.innerHTML = error;
-          		return;
-        	}
-        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
-          editor.SetHTML(response, false);
-          try{
-            editor.EditingArea.Document.body.contentEditable="false";
-          }catch(e){
-            // not IE
-          }   
-          fillAlertExistNotes(response);
-       }
-    }
     
     
     function responseHasError(response){
@@ -537,6 +586,10 @@
   </script>
   
   
+  
+  
+  
+  
   <div id="notescloseImg" style="float:left;display:inline;padding:5px;">
       <a href="javascript:opencloseNotesEditor()">
           <img title='<spagobi:message key = "sbi.execution.notes.closeeditor" />' 
@@ -558,7 +611,14 @@
                src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' />
       </a>   
   </div>
-  <div id="notesErrorMessage"  style="float:left;color:red;padding:5px;">
+  <div id="notesReloadImg" style="float:left;display:inline;padding:5px;">
+      <a href="javascript:reloadNotes()">
+          <img title='<spagobi:message key = "sbi.execution.notes.reloadnotes" />' 
+          		alt='<spagobi:message key = "sbi.execution.notes.reloadnotes" />'
+               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/reload16.gif")%>' />
+      </a>   
+  </div>
+  <div id="notesErrorMessage"  style="float:left;color:red;padding:5px;font-family:arial;font-size:11px;">
   
   </div>
   <div style="clear:left;"></div>
@@ -704,7 +764,7 @@
       heightif = iframeEl.style.height;
       heightif = heightif + 'px';
       oFCKeditor.Height=heightif;
-      oFCKeditor.ToolbarSet = 'Basic';
+      oFCKeditor.ToolbarSet = 'SbiObjectNotes';
       //oFCKeditor.Create();
       oFCKeditor.ReplaceTextarea();
   </script>

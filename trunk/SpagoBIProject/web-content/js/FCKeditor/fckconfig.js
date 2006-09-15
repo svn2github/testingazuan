@@ -78,17 +78,11 @@ FCKConfig.ToolbarLocation = 'In' ;
 
 
 FCKConfig.ToolbarSets["SbiObjectNotes"] = [
-	['Cut','Copy','Paste','PasteText','PasteWord'],
-	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
-	['Bold','Italic','Underline','StrikeThrough'],
+	['Bold','Italic','Underline','StrikeThrough','-','TextColor','BGColor'],
 	'/',
 	['OrderedList','UnorderedList','-','Outdent','Indent'],
-	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
-	['TextColor','BGColor'],
-	['Style'],
 	'/',
-	['FontFormat','FontName','FontSize'],
-	
+	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull']
 ] ;
 
 FCKConfig.ToolbarSets["Default"] = [

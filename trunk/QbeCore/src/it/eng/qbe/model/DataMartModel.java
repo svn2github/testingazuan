@@ -29,7 +29,8 @@ import org.hibernate.cfg.Configuration;
  *
  */
 public class DataMartModel implements Serializable {
-
+	
+	private boolean classLoaderExtended = false;
 	/**
 	 * 
 	 */
@@ -140,6 +141,7 @@ public class DataMartModel implements Serializable {
 			
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
 			updateCurrentClassLoader(jarFile);
+			this.classLoaderExtended = true;
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 			if (jarFile == null)
 				System.out.println( " --------------------- JAR FILE NULLO --------------- ");
@@ -170,6 +172,7 @@ public class DataMartModel implements Serializable {
 				
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
 				updateCurrentClassLoader(jarFile);
+				this.classLoaderExtended = true;
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 				if (jarFile == null)
 					System.out.println( " --------------------- JAR FILE NULLO --------------- ");
@@ -186,6 +189,7 @@ public class DataMartModel implements Serializable {
 							
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
 				updateCurrentClassLoader(jarFile);
+				this.classLoaderExtended = true;
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 			
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: trying to read configuration from hibernate.cfg.xml file");
@@ -235,9 +239,11 @@ public class DataMartModel implements Serializable {
 	 */
 	public static void updateCurrentClassLoader(File jarFile){
 		try{
-			ClassLoader previous = Thread.currentThread().getContextClassLoader();
-			ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
-			Thread.currentThread().setContextClassLoader(current);
+			
+				ClassLoader previous = Thread.currentThread().getContextClassLoader();
+				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
+				Thread.currentThread().setContextClassLoader(current);
+
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}
@@ -250,13 +256,21 @@ public class DataMartModel implements Serializable {
 	public void updateCurrentClassLoader(){
 		try{
 			
-			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
-			File jarFile = dataMartModelRetriever.getJarFile(path,dialect);
-			ClassLoader previous = Thread.currentThread().getContextClassLoader();
-			ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
-			Thread.currentThread().setContextClassLoader(current);
+			if (!classLoaderExtended){
+				
+				IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
+				File jarFile = dataMartModelRetriever.getJarFile(path,dialect);
+				ClassLoader previous = Thread.currentThread().getContextClassLoader();
+				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
+				Thread.currentThread().setContextClassLoader(current);
+				classLoaderExtended = true;
+			
+			}
+			
 		}catch (Exception e) {
+			
 			Logger.error(DataMartModel.class, e);
+		
 		}
 	}	
 

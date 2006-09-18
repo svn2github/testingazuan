@@ -37,7 +37,7 @@ import org.hibernate.Transaction;
 public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMartWizardObject {
 
 	
-
+	private int subQueryCounter = 0;
 	private ISelectClause selectClause = null;
 	private IWhereClause  whereClause = null;
 	private IOrderByClause orderByClause = null;
@@ -60,9 +60,15 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public static final int DEFAULT_MAX_ROWS_NUM = 5000;
 	
+	private Map subqueryMap = null;
+	private Map mapFieldIdSubQUeryId = null;
+	
 	public SingleDataMartWizardObjectSourceBeanImpl() {
 		super();
-		this.entityClasses = new ArrayList();	
+		this.entityClasses = new ArrayList();
+		this.subqueryMap = new HashMap();
+		this.mapFieldIdSubQUeryId = new HashMap();
+	
 	}
 	
 	
@@ -338,11 +344,23 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		finalQuery.append(aWhereField.getFieldOperator());
 		 		finalQuery.append(" ");
 		 		String fValue = aWhereField.getFieldValue();
-		 		if ((aWhereField.getFieldEntityClassForRightCondition() == null)&&(aWhereField.getHibernateType().endsWith("StringType")))
-		 			finalQuery.append("'"+ fValue + "'");
-		 		else
-		 			finalQuery.append( fValue );
-		 		
+		 		if (fValue.startsWith("$subquery_") && fValue.endsWith("$")){
+		 			int idx1 = fValue.indexOf("$subquery_");
+		 			int idx2 = fValue.lastIndexOf("$");
+		 			
+		 			idx1 += "$subquery_".length();
+		 			String subQueryFldId = fValue.substring(idx1, idx2);
+		 			ISingleDataMartWizardObject subQueryObject = this.getSubQueryOnField(subQueryFldId);
+		 			subQueryObject.composeQuery();
+		 			finalQuery.append(" ( ");
+		 			finalQuery.append(subQueryObject.getFinalQuery());
+		 			finalQuery.append(" ) ");
+		 		}else{
+		 			if ((aWhereField.getFieldEntityClassForRightCondition() == null)&&(aWhereField.getHibernateType().endsWith("StringType")))
+		 				finalQuery.append("'"+ fValue + "'");
+		 			else
+		 				finalQuery.append( fValue );
+		 		}
 		 		if (it.hasNext())
 		 			finalQuery.append(" "+aWhereField.getNextBooleanOperator()+" ");
 		 		afterFirst = true;
@@ -722,6 +740,39 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		if(isUseExpertedVersion()) return executeExpertQuery(dataMartModel, pageNumber, pageSize);
 		return executeQbeQuery(dataMartModel, pageNumber, pageSize);			
+	}
+
+
+
+
+	public void addSubQueryOnField(String fieldId) {
+		this.subqueryMap.put(fieldId, new SingleDataMartWizardObjectSourceBeanImpl());
+		this.mapFieldIdSubQUeryId.put(fieldId, getNewSubQueryId());
+	}
+
+	public String getNewSubQueryId(){
+		subQueryCounter++;
+		return "sub"+this.subQueryCounter;
+	}
+
+
+	public ISingleDataMartWizardObject getSubQueryOnField(String fieldId) {
+		
+		return (ISingleDataMartWizardObject)this.subqueryMap.get(fieldId);
+	}
+
+
+
+
+	public Map getSubqueries() {
+		return subqueryMap;
+	}
+
+
+
+
+	public String getSubQueryIdForSubQueryOnField(String fieldId) {
+		return (String)mapFieldIdSubQUeryId.get(fieldId);
 	}
 	
 		

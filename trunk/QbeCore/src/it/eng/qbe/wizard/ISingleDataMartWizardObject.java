@@ -12,6 +12,7 @@ import it.eng.spago.base.SourceBeanException;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -105,6 +106,13 @@ public interface ISingleDataMartWizardObject extends Serializable {
 				
 	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception;	
 	
+	public void addSubQueryOnField(String fieldId);
+	
+	public Map  getSubqueries();
+	
+	public ISingleDataMartWizardObject getSubQueryOnField(String fieldId);
+	
+	public String getSubQueryIdForSubQueryOnField(String fieldId);
 	
 	
 }

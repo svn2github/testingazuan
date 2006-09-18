@@ -13,5 +13,9 @@ package it.eng.qbe.wizard;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class WizardConstants {
-	public static final String SINGLE_DATA_MART_WIZARD = "SINGLE_DATA_MART_WIZARD"; 
+	public static final String SINGLE_DATA_MART_WIZARD = "SINGLE_DATA_MART_WIZARD";
+	
+	public static final String QUERY_MODE="QUERY_MODE";
+	public static final String SUBQUERY_MODE="SUBQUERY_MODE";
+	public static final String SUBQUERY_FIELD="SUBQUERY_FIELD";
 }

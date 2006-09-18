@@ -2,6 +2,7 @@
 package it.eng.qbe.action;
 
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.SessionContainer;
@@ -32,7 +33,7 @@ public class PersistQueryAction extends AbstractAction {
 		
 		String  visibility  = (String)request.getAttribute("visibility");
 		
-		ISingleDataMartWizardObject obj = (ISingleDataMartWizardObject)getRequestContainer().getSessionContainer().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject obj = Utils.getWizardObject(getRequestContainer().getSessionContainer());
 		if ((queryId != null) && (queryId.trim().length() > 0)){
 			obj.setQueryId(queryId);
 		}
@@ -59,8 +60,10 @@ public class PersistQueryAction extends AbstractAction {
 		dmModel.persistQueryAction(obj);
 		SessionContainer session = getRequestContainer().getSessionContainer();
 		String cTM = String.valueOf(System.currentTimeMillis());
-		session.setAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);
-		session.setAttribute("QBE_LAST_UPDATE_TIMESTAMP", cTM);
+		if (!Utils.isSubQueryModeActive(session)){
+			session.setAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);
+			session.setAttribute("QBE_LAST_UPDATE_TIMESTAMP", cTM);
+		}
 		
 	}
 }

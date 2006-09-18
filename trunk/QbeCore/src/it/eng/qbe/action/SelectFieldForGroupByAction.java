@@ -35,7 +35,7 @@ public class SelectFieldForGroupByAction extends AbstractAction {
 	
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		
 		String aliasedFieldName = (String)request.getAttribute("COMPLETE_FIELD_NAME"); 
 		if(aliasedFieldName != null) {
@@ -69,7 +69,7 @@ public class SelectFieldForGroupByAction extends AbstractAction {
 		
 		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
+		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
 		
 		
 	}

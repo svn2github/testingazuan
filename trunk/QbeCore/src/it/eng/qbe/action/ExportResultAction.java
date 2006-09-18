@@ -5,6 +5,7 @@ import org.hibernate.HibernateException;
 
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Logger;
+import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
@@ -45,7 +46,7 @@ public class ExportResultAction extends AbstractAction {
 
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
 			
 		String query = null;

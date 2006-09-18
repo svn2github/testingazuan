@@ -40,11 +40,19 @@ public class SelectFieldForSelectAction extends AbstractAction {
 		String className = (String)request.getAttribute(CLASS_NAME);		
 		String fieldName = (String)request.getAttribute(FIELD_NAME); 
 		String fieldLabel = (String)request.getAttribute(FIELD_LABEL);
-		
-		
+		SessionContainer aSessionContainer = getRequestContainer().getSessionContainer();
+		boolean isSubQueryMode = Utils.isSubQueryModeActive(aSessionContainer);
+		String subQueryPrefix = null;
+		if (isSubQueryMode){
+			String subQueryFieldId = (String)aSessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
+			subQueryPrefix = Utils.getMainWizardObject(aSessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);
+		}
 		if(className != null && fieldName != null) {		
 			//deleteExistingSelectClauses();
 			QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, fieldName);
+			if (isSubQueryMode)
+				nodeId.setClassPrefix(subQueryPrefix);
+			
 			addSelectClause(nodeId.getClassName(), nodeId.getClassAlias(), nodeId.getFieldAlias(), fieldLabel);
 		}
 		else {
@@ -58,6 +66,8 @@ public class SelectFieldForSelectAction extends AbstractAction {
 				fieldLabel = chunks[2];	
 				
 				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, fieldName);
+				if (isSubQueryMode)
+					nodeId.setClassPrefix(subQueryPrefix);
 				String classAlias = nodeId.getClassAlias();
 				String fieldAlias = nodeId.getFieldAlias();	
 				String completeFieldName = classAlias + "." + fieldName;
@@ -92,6 +102,8 @@ public class SelectFieldForSelectAction extends AbstractAction {
 				fieldLabel = chunks[2];	
 				
 				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, fieldName);
+				if (isSubQueryMode)
+					nodeId.setClassPrefix(subQueryPrefix);
 				String classAlias = nodeId.getClassAlias();
 				String fieldAlias = nodeId.getFieldAlias();				
 						
@@ -102,7 +114,7 @@ public class SelectFieldForSelectAction extends AbstractAction {
 			
 		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
-		getSession().setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, getDataMartWizard());		
+		getSession().setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(getRequestContainer().getSessionContainer()));		
 	}
 		
 	
@@ -159,6 +171,6 @@ public class SelectFieldForSelectAction extends AbstractAction {
 	}
 	
 	private ISingleDataMartWizardObject getDataMartWizard(){
-		return (ISingleDataMartWizardObject)getSession().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		return  Utils.getWizardObject(getRequestContainer().getSessionContainer());
 	}
 }

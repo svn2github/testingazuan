@@ -26,7 +26,7 @@ public class UpdateFieldsForResumeAction extends AbstractAction {
 		
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		
 						
 		String nextAction = (String)request.getAttribute("NEXT_ACTION");
@@ -47,7 +47,7 @@ public class UpdateFieldsForResumeAction extends AbstractAction {
 			aWizardObject.setExpertQueryDisplayed(expertQueryDisplayed);
 			
 			Utils.updateLastUpdateTimeStamp(getRequestContainer());
-			aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);		
+			aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));		
 		}		
 		
 		

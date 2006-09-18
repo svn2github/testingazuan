@@ -2,6 +2,7 @@
 package it.eng.qbe.action;
 
 import it.eng.qbe.utility.Logger;
+import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
@@ -25,7 +26,7 @@ public class UpdatePreviewModeAction extends AbstractAction {
 		
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		
 		String source = (String)request.getAttribute("SOURCE");
 		String expertQueryDisplayed = (String)request.getAttribute("EXPERT_DISPLAYED");
@@ -55,7 +56,7 @@ public class UpdatePreviewModeAction extends AbstractAction {
 		} else Logger.debug(UpdatePreviewModeAction.class,"ERRORE in UpdatePreviewModeAction - la source non è prevista");
 		
 		
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
+		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
 			
 	}
 }

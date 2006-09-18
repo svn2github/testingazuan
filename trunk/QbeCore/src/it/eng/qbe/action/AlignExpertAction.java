@@ -34,8 +34,9 @@ public class AlignExpertAction extends AbstractAction {
 			RequestContainer aRequestContainer = getRequestContainer();
 			SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
 			DataMartModel dm = (it.eng.qbe.model.DataMartModel)aSessionContainer.getAttribute("dataMartModel"); 
-		    ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
-			aWizardObject.composeQuery();
+		    ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
+			
+		    aWizardObject.composeQuery();
 			SessionFactory sf = Utils.getSessionFactory(dm, ApplicationContainer.getInstance());
 			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(sf.openSession());
 			String sqlQuery = queryRewriter.rewrite( aWizardObject.getFinalQuery() );

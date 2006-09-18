@@ -133,8 +133,8 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 	}
 	
 	private ISingleDataMartWizardObject getDataMartWizard() {
-		return (ISingleDataMartWizardObject)getSessionContainer().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
-		
+		//return (ISingleDataMartWizardObject)getSessionContainer().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		return Utils.getWizardObject(getSessionContainer());
 	}
 	
 	private DataMartModel getDataMartModel() {

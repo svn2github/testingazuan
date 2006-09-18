@@ -2,6 +2,7 @@
 package it.eng.qbe.action;
 
 import it.eng.qbe.utility.Logger;
+import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
@@ -28,8 +29,8 @@ public class ComposeResumeQueryAction extends AbstractAction {
 			
 			RequestContainer aRequestContainer = getRequestContainer();
 			SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-			ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
 			
+			ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 			aWizardObject.composeQuery();
 			
 			Logger.debug(ISingleDataMartWizardObject.class,"LA QUERY FINALE DEL WIZARD "+ aWizardObject.getFinalQuery());

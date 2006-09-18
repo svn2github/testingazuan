@@ -32,7 +32,7 @@ public class UpdateFieldsForSelectAction extends AbstractAction {
 		
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		
 		
 		ISelectClause selectClause = aWizardObject.getSelectClause();

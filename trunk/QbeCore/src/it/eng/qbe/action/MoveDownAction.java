@@ -28,7 +28,7 @@ public class MoveDownAction extends AbstractAction {
 	
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		
 		String fieldId = (String)request.getAttribute("FIELD_ID");
 		ISelectClause aSelectClause = aWizardObject.getSelectClause();
@@ -36,7 +36,7 @@ public class MoveDownAction extends AbstractAction {
 		selectField.setId(fieldId);
 		aSelectClause.moveDown(selectField);
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
+		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
 		
 	}
 }

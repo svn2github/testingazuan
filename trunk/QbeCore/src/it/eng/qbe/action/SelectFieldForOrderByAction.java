@@ -31,7 +31,7 @@ public class SelectFieldForOrderByAction extends AbstractAction {
 	
 		RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)aSessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		
 		String aliasedFieldName = (String)request.getAttribute("COMPLETE_FIELD_NAME"); 
 		
@@ -64,7 +64,7 @@ public class SelectFieldForOrderByAction extends AbstractAction {
 		
 		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
+		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
 		
 		
 	}

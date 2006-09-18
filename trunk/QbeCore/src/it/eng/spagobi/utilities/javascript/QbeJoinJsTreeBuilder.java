@@ -48,8 +48,15 @@ public class QbeJoinJsTreeBuilder extends QbeJsTreeBuilder {
 		
 		for (Iterator it = classNames.iterator(); it.hasNext(); ){
 			String className = (String)it.next();
-			nodeCounter = addFieldNodes(className, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(className, qbeUrlGenerator, httpRequest));
+			nodeCounter = addFieldNodes(className, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(className, qbeUrlGenerator, httpRequest, getClassPrefix()));
 		}		
+	}
+	
+	public void addRootNode() {
+		addNode("0", "-1", "Join with Other Entities", "", "", dataMartModel.getName(), 
+				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
+				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
+				"", "", "", "", "");
 	}
 
 }

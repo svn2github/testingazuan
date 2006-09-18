@@ -10,6 +10,8 @@ package it.eng.spagobi.utilities.javascript;
 public abstract class BaseJsTreeBuilder implements IJsTreeBuilder {
 	String name = DEFAULT_NAME;
 	StringBuffer buffer;
+	String classPrefix = null;
+	
 	
 	public static final String DEFAULT_NAME = "dtree";
 	
@@ -78,6 +80,14 @@ public abstract class BaseJsTreeBuilder implements IJsTreeBuilder {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getClassPrefix() {
+		return classPrefix;
+	}
+
+	public void setClassPrefix(String classPrefix) {
+		this.classPrefix = classPrefix;
 	}
 
 }

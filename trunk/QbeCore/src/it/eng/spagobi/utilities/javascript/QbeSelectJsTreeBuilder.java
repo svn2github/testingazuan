@@ -37,7 +37,7 @@ public class QbeSelectJsTreeBuilder extends QbeJsTreeBuilder {
 			for(int i = 0; i < fields.size(); i++) {
 				ISelectField field = (ISelectField)fields.get(i);
 				EntityClass ec = field.getFieldEntityClass();
-				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(field);
+				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(field, getClassPrefix());
 				map.put(nodeId.getId(), nodeId);
 			}
 		}

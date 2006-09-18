@@ -57,6 +57,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	public static final String LIGHT_MODALITY = "LIGHT";
 	public static final String DEFAULT_MODALITY = FULL_MODALITY;
 	
+	private String classPrefix = null;
 	/**
 	 * @param dataMartModel : The DatamartModel object reperesenting the datamart we're working on
 	 * @param httpRequest : the httpRequest Object
@@ -225,7 +226,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				
 				if(checkable) {
 					String selected = "";
-					if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
+					if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName, classPrefix).getId())) selected = "true";
 					
 					String img = "/img/key.gif";
 					/*

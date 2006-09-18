@@ -3,10 +3,12 @@ package it.eng.qbe.utility;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
@@ -377,7 +379,36 @@ public class Utils {
 	}
    
 	
+	public static ISingleDataMartWizardObject getWizardObject(SessionContainer sessionContainer){
+		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		String qbeQueryMode = (String)sessionContainer.getAttribute(WizardConstants.QUERY_MODE);
+
+		if (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(WizardConstants.SUBQUERY_MODE)){
+			   String subQueryField = (String)sessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
+			   ISingleDataMartWizardObject newWizObject =  aWizardObject.getSubQueryOnField(subQueryField);
+			   return newWizObject;
+		}
+		
+		return aWizardObject;
+	}
 	
+	public static ISingleDataMartWizardObject getMainWizardObject(SessionContainer sessionContainer){
+		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
+		
+		return aWizardObject;
+	}
+	public static boolean isSubQueryModeActive(SessionContainer sessionContainer){
+		
+		String qbeQueryMode = (String)sessionContainer.getAttribute(WizardConstants.QUERY_MODE);
+
+		if (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(WizardConstants.SUBQUERY_MODE)){
+			return true;
+		}else{
+			return false;
+		}
+		
+		
+	}
 	
 	
 	

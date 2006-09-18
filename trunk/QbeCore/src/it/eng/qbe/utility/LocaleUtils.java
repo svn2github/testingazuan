@@ -88,7 +88,7 @@ public class LocaleUtils {
 		try{
 			
 		
-			Logger.debug(LocaleUtils.class, "Seacrhing in Jar File for label file Properties [label_"+loc.getLanguage()+".properties");
+			
 			ZipEntry ze = jf.getEntry("label_"+loc.getLanguage()+".properties");
 			
 			Enumeration e = jf.entries();

@@ -59,7 +59,7 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		
 		params.put("ACTION_NAME","SELECT_FIELD_FOR_SELECT_ACTION");		
 		
-		QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, (String)fieldName);
+		//QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(className, (String)fieldName);
 		params.put(SelectFieldForSelectAction.CLASS_NAME, className);
 		params.put(SelectFieldForSelectAction.FIELD_NAME, (String)fieldName);
 		params.put(SelectFieldForSelectAction.FIELD_LABEL, fieldLabel);			

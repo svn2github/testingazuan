@@ -2,6 +2,7 @@
 package it.eng.qbe.javascript;
 
 import it.eng.qbe.utility.IQbeUrlGenerator;
+import it.eng.spago.base.SessionContainer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 	 */
 	private String classCompleteName = null;
 	private String aliasedClassName = null;
+	private String classPrefix = null;
 	
 	
 	private IQbeUrlGenerator qbeUrlGenerator = null;
@@ -33,26 +35,30 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 	 * @param qbeUrlGenerator
 	 * @param httpRequest
 	 */
+	/*
 	public SelectFieldForConditionURLGenerator (IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest){
 		this.qbeUrlGenerator = qbeUrlGenerator;
 		this.httpRequest = httpRequest;
 	}
+	*/
 	
 	/**
 	 * @param classCompleteName
 	 * @param qbeUrlGenerator
 	 * @param httpRequest
 	 */
-	public SelectFieldForConditionURLGenerator(String classCompleteName, IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest){
+	public SelectFieldForConditionURLGenerator(String classCompleteName, IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest, String classPrefix){
 		this.qbeUrlGenerator = qbeUrlGenerator;
 		this.httpRequest = httpRequest;
 		
 		this.classCompleteName = classCompleteName;
-		
+		if (classPrefix == null){
+			classPrefix = "a";
+		}
 		if (classCompleteName.indexOf(".") > 0){
-			aliasedClassName = "a" + classCompleteName.substring(classCompleteName.lastIndexOf(".")+1);
+			aliasedClassName = classPrefix + classCompleteName.substring(classCompleteName.lastIndexOf(".")+1);
 		}else{
-			aliasedClassName = "a" + classCompleteName;
+			aliasedClassName = classPrefix + classCompleteName;
 		}
 	}
 	
@@ -92,6 +98,14 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 	 */
 	public String generateURL(Object source, Object source2, Object addtionalParameter) {
 		return generateURL(source, addtionalParameter);
+	}
+
+	public String getClassPrefix() {
+		return classPrefix;
+	}
+
+	public void setClassPrefix(String classPrefix) {
+		this.classPrefix = classPrefix;
 	}
 	
 }

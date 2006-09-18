@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class SelectFieldForJoinUrlGenerator implements IURLGenerator{
 
-	
+	private String classPrefix = null;
 	/**
 	 * 
 	 */
@@ -53,16 +53,23 @@ public class SelectFieldForJoinUrlGenerator implements IURLGenerator{
 	 * @param qbeUrlGenerator
 	 * @param httpRequest
 	 */
-	public SelectFieldForJoinUrlGenerator(String classCompleteName, IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest){
+	public SelectFieldForJoinUrlGenerator(String classCompleteName, IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest, String classPrefix){
 		this.qbeUrlGenerator = qbeUrlGenerator;
 		this.httpRequest = httpRequest;
 		
 		this.classCompleteName = classCompleteName;
 		
-		if (classCompleteName.indexOf(".") > 0){
-			aliasedClassName = "a" + classCompleteName.substring(classCompleteName.lastIndexOf(".")+1);
+		
+		if (classPrefix == null){
+			this.classPrefix = "a";
 		}else{
-			aliasedClassName = "a" + classCompleteName;
+			this.classPrefix = classPrefix;
+		}
+		
+		if (classCompleteName.indexOf(".") > 0){
+			aliasedClassName = this.classPrefix + classCompleteName.substring(classCompleteName.lastIndexOf(".")+1);
+		}else{
+			aliasedClassName = this.classPrefix + classCompleteName;
 		}
 	}
 	/**

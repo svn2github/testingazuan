@@ -123,7 +123,7 @@ public class ListTestQueryModule extends AbstractBasicListModule {
 			int profileAttributeStartIndex = statement.indexOf("${");
 			if (profileAttributeStartIndex != -1) {
 				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-				statement = GeneralUtilities.substituteProfileAttributesInQuery(statement, profile, profileAttributeStartIndex);
+				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
 			}
 			rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement);
 		} catch (Exception e) {

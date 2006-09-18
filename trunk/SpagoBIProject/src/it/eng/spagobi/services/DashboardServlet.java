@@ -86,7 +86,7 @@ public class DashboardServlet extends HttpServlet{
             			SessionContainer sessCont = reqcont.getSessionContainer();
             			SessionContainer permSess = sessCont.getPermanentContainer();
             			IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        				statement = GeneralUtilities.substituteProfileAttributesInQuery(statement, profile, profileAttributeStartIndex);
+        				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
         			}
         			SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
         			DataResult dataResult = sqlCommand.execute();

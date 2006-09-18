@@ -355,7 +355,7 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		int profileAttributeStartIndex = statement.indexOf("${");
 		if (profileAttributeStartIndex != -1) {
 			IEngUserProfile profile = getUserProfile(request);
-			statement = GeneralUtilities.substituteProfileAttributesInQuery(statement, profile, profileAttributeStartIndex);
+			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
 		}
 		
 		Vector columns = findVisibleColumns(visibleColumns);

@@ -430,18 +430,30 @@ function setLovProviderModifiedField(){
 											<spagobi:message key = "SBIDev.scriptWiz.SintaxLbl" />
 										</div>
 										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
-											<spagobi:message key = "SBIDev.scriptWiz.FixValLbl" />
-											=
-											<spagobi:message key = "SBIDev.scriptWiz.FixValExpr" />
-											<br/>
-											<spagobi:message key = "SBIDev.scriptWiz.ProfileValLbl" />
-											=
-											<spagobi:message key = "SBIDev.scriptWiz.ProfileValExpr" />
-											<br/>
-											<spagobi:message key = "SBIDev.scriptWiz.ScriptlLbl" />
-											=
-											<spagobi:message key = "SBIDev.scriptWiz.ScriptExpr" />
-											<br/>
+											<ul>
+												<li>
+													<spagobi:message key = "SBIDev.scriptWiz.FixValLbl" />
+													<br/>
+													<spagobi:message key = "SBIDev.scriptWiz.FixValExpr" />
+												</li>
+												<li>
+													<spagobi:message key = "SBIDev.scriptWiz.SingleValueProfileAttrLbl" />
+													<br/>
+													<spagobi:message key = "SBIDev.scriptWiz.SingleValueProfileAttrExpr" />
+												</li>
+												<li>
+													<spagobi:message key = "SBIDev.scriptWiz.MultiValueProfileAttrLbl" />
+													<br/>
+													<spagobi:message key = "SBIDev.scriptWiz.MultiValueProfileAttrExpr" />
+													<br/>
+													<spagobi:message key = "SBIDev.scriptWiz.MultiValueProfileAttrExplanation" />
+												</li>
+												<li>
+													<spagobi:message key = "SBIDev.scriptWiz.ScriptlLbl" />
+													<br/>
+													<spagobi:message key = "SBIDev.scriptWiz.ScriptExpr" />
+												</li>
+											</ul>
 										</div>
 									</td>
 									<td width="5px">&nbsp;</td>
@@ -475,20 +487,32 @@ function setLovProviderModifiedField(){
 												 width="100%">
 											<spagobi:message key = "SBIDev.scriptWiz.xmlstruct" />
 										</div>
-										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+										<div class='portlet-section-alternate' style="text-align:left;width:100%;background-color:#FFFFEF;">
 												&lt;rows&gt; <br/>
-												<span>&nbsp;&nbsp;&nbsp;</span>&lt;row <spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructNameAttribute" />1="<spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructValueAttribute" />1" <spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructNameAttribute" />2="<spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructValueAttribute" />2" ... /&gt;  <br/>
-									<span>&nbsp;&nbsp;&nbsp;</span>.... <br/>
-									<span>&nbsp;&nbsp;&nbsp;</span>&lt;visible-columns&gt;<spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructVisibleColumns" />&lt;/visible-columns&gt; <br/>
-									<span>&nbsp;&nbsp;&nbsp;</span>&lt;value-column&gt;<spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructValueColumn" />&lt;/value-column&gt; <br/>
-												&lt;/rows&gt; <br/>
-										</div>
+												<span>&nbsp;&nbsp;&nbsp;</span>&lt;row 
+												<br/> 
+												<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><spagobi:message key ="SBIDev.scriptWiz.xmlstructNameAttribute" />1="<spagobi:message key ="SBIDev.scriptWiz.xmlstructValueAttribute" />1" 
+												<br/>
+												<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><spagobi:message key ="SBIDev.scriptWiz.xmlstructNameAttribute" />2="<spagobi:message key ="SBIDev.scriptWiz.xmlstructValueAttribute" />2" 
+												<br/>
+												<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>... /&gt;
+												<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>.... <br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;visible-columns&gt;
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><spagobi:message key ="SBIDev.scriptWiz.xmlstructVisibleColumns" />
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/visible-columns&gt; 
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;value-column&gt;
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructValueColumn" />
+									<br/>	
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/value-column&gt; <br/>
+									&lt;/rows&gt; <br/>
+									</div>
 									</td>
 									<td width="5px">&nbsp;</td>
 							</tr>

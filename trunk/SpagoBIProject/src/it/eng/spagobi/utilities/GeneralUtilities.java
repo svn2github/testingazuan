@@ -231,19 +231,19 @@ public class GeneralUtilities {
 	
 	
 	/**
-	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the query statement passed at input.
+	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the string passed at input.
 	 * 
-	 * @param statement The query statement string to be modified
+	 * @param statement The string to be modified (tipically a query)
 	 * @param profile The IEngUserProfile object
 	 * @param profileAttributeStartIndex The start index for query parsing (useful for recursive calling)
 	 * @return The statement with profile attributes replaced by their values.
 	 * @throws Exception
 	 */
-	public static String substituteProfileAttributesInQuery(String statement, IEngUserProfile profile, int profileAttributeStartIndex) throws Exception {
+	public static String substituteProfileAttributesInString(String statement, IEngUserProfile profile, int profileAttributeStartIndex) throws Exception {
 		int profileAttributeEndIndex = statement.indexOf("}");
 		if (profileAttributeEndIndex == -1) throw new Exception("Not closed profile attribute: '}' expected.");
 		if (profileAttributeEndIndex < profileAttributeEndIndex) throw new Exception("Not opened profile attribute: '${' expected.");
-		String attribute = statement.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex);
+		String attribute = statement.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex).trim();
 		int startConfigIndex = attribute.indexOf("(");
 		String attributeName = "";
 		String prefix = "";
@@ -253,8 +253,8 @@ public class GeneralUtilities {
 		if (startConfigIndex != -1) {
 			// the attribute profile is expected to be multivalue
 			attributeExcpetedToBeMultiValue = true;
-			int endConfigIndex = attribute.indexOf(")", startConfigIndex);
-			if (endConfigIndex == -1) throw new Exception("Sintax error: \")\" missing. The expected sintax for " +
+			int endConfigIndex = attribute.length() - 1;
+			if (attribute.charAt(endConfigIndex) != ')') throw new Exception("Sintax error: \")\" missing. The expected sintax for " +
 					"attribute profile is ${attributeProfileName(prefix;split;suffix)} for multivalue profile attributes " +
 					"or ${attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters.");
 			String configuration = attribute.substring(startConfigIndex + 1, endConfigIndex);
@@ -317,11 +317,11 @@ public class GeneralUtilities {
 		replacement = prefix + newListOfValues + suffix;
 		
 		// replaces the profile attribute declaration
-		statement = statement.replace("${" + attributeName + "}", replacement);
+		statement = statement.replace("${" + attribute + "}", replacement);
 
 		profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
 		if (profileAttributeStartIndex != -1) 
-			statement = substituteProfileAttributesInQuery(statement, profile, profileAttributeStartIndex);
+			statement = substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
 		return statement;
 	}
 	
@@ -533,19 +533,6 @@ public class GeneralUtilities {
 	    return input;
 	 } 
 	
-	public static String substituteProfileAttributesInFixLov(String value, HashMap profileattrs, int profileAttributeStartIndex) throws Exception {
-		int profileAttributeEndIndex = value.indexOf("}");
-		if (profileAttributeEndIndex == -1) throw new Exception("Not closed profile attribute: '}' expected.");
-		if (profileAttributeEndIndex < profileAttributeEndIndex) throw new Exception("Not opened profile attribute: '${' expected.");
-		String attributeName = value.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex);
-		Object attributeValueObj = profileattrs.get(attributeName);
-		if (attributeValueObj == null) throw new Exception("Profile attribute '" + attributeName + "' not existing.");
-		else value = value.replace("${" + attributeName + "}", attributeValueObj.toString());
-		profileAttributeStartIndex = value.indexOf("${", profileAttributeEndIndex);
-		if (profileAttributeStartIndex != -1) 
-			value = substituteProfileAttributesInFixLov(value, profileattrs, profileAttributeStartIndex);
-		return value;
-	}
 	public static void subsituteBIObjectParametersLovProfileAttributes (BIObject obj, SessionContainer session) throws Exception, EMFInternalError {
 		List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();
@@ -559,11 +546,9 @@ public class GeneralUtilities {
         		int profileAttributeStartIndex = value.indexOf("${");
     			if (profileAttributeStartIndex != -1) {
     				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    				HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
-    				value = GeneralUtilities.substituteProfileAttributesInFixLov(value, profileattrs, profileAttributeStartIndex);
+    				value = GeneralUtilities.substituteProfileAttributesInString(value, profile, profileAttributeStartIndex);
     				biparam.getParameter().getModalityValue().setLovProvider(value);
     			}
-        		
         	}
         }
 	}

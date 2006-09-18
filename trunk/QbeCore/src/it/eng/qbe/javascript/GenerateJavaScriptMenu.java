@@ -9,7 +9,10 @@ import it.eng.qbe.utility.RelationField;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.ApplicationContainer;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,14 +29,14 @@ import org.hibernate.type.Type;
 
 /**
  * @author Andrea Zoppello
- * 
+ * @deprecated
  * This is an utility class to generate the Javascript code in JSP
  * to handle the tree for field Selection, field Condition, field that are right value of a join
  * 
  */
 public class GenerateJavaScriptMenu {
 
-	
+
 	private DataMartModel dataMartModel = null;
 	
 	private HttpServletRequest httpRequest = null; 
@@ -230,7 +233,7 @@ public class GenerateJavaScriptMenu {
 			
 			classCompleteName = (String)ec.getClassName();
 			
-			nodeCounter = writeTreeReachableFromClass(aStringBuffer, nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(classCompleteName, qbeUrlGenerator, httpRequest));
+			nodeCounter = writeTreeReachableFromClass(aStringBuffer, nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(classCompleteName, qbeUrlGenerator, httpRequest, null));
 		}		 
 		
 		return nodeCounter;
@@ -252,7 +255,7 @@ public class GenerateJavaScriptMenu {
 			
 				classCompleteName = (String)o;
 			
-				nodeCounter = writeTreeReachableFromClass(aStringBuffer,nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(classCompleteName, qbeUrlGenerator, httpRequest));
+				nodeCounter = writeTreeReachableFromClass(aStringBuffer,nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(classCompleteName, qbeUrlGenerator, httpRequest,null));
 			}		 
 		
 			return nodeCounter;
@@ -273,7 +276,12 @@ public class GenerateJavaScriptMenu {
 	 * @return the node counter the counter of the node
 	 */
 	public final int writeConditionTree(ISingleDataMartWizardObject dataMartWizardObject, String selectionTree, StringBuffer aStringBuffer, String nomeAlberoJavaScript, String labelSottoAlberoFunzioni, int rootNode, int nodeCounter, boolean generateFieldsNode){
-		
+		SessionContainer aSessionContainer = RequestContainer.getRequestContainer().getSessionContainer();
+		String classPrefix = null;
+		if (Utils.isSubQueryModeActive(aSessionContainer)){
+			String subQueryFieldId = (String)aSessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
+			classPrefix = Utils.getMainWizardObject(aSessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);
+		}
 		if ((selectionTree == null )||("LIGHT".equalsIgnoreCase(selectionTree))) {
 			
 			ApplicationContainer application = ApplicationContainer.getInstance();
@@ -291,7 +299,7 @@ public class GenerateJavaScriptMenu {
 			
 				classCompleteName = (String)ec.getClassName();
 			
-				nodeCounter = writeTreeReachableFromClass(aStringBuffer, nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForConditionURLGenerator(classCompleteName, qbeUrlGenerator, httpRequest));
+				nodeCounter = writeTreeReachableFromClass(aStringBuffer, nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForConditionURLGenerator(classCompleteName, qbeUrlGenerator, httpRequest,classPrefix));
 			}		 
 		
 			return nodeCounter;
@@ -313,7 +321,7 @@ public class GenerateJavaScriptMenu {
 			
 				classCompleteName = (String)o;
 			
-				nodeCounter = writeTreeReachableFromClass(aStringBuffer,nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForConditionURLGenerator(classCompleteName, qbeUrlGenerator, httpRequest));
+				nodeCounter = writeTreeReachableFromClass(aStringBuffer,nomeAlberoJavaScript, classCompleteName, rootNode, nodeCounter, null, new SelectFieldForConditionURLGenerator(classCompleteName, qbeUrlGenerator, httpRequest, classPrefix));
 			}		 
 		
 			return nodeCounter;

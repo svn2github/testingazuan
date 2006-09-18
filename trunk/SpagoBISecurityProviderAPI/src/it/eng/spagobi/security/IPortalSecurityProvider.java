@@ -31,6 +31,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.security;
 
+import it.eng.spago.base.SourceBean;
+
 import java.util.List;
 
 /**
@@ -49,8 +51,9 @@ public interface IPortalSecurityProvider {
 	 * Get the list of the user roles. If the user doesn't exist the roles list is empty
 	 * 
 	 * @param user Username
+	 * @param config The configuration SourceBean
 	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
-	public List getUserRoles(String user);
+	public List getUserRoles(String user, SourceBean config);
 	
 }

@@ -973,6 +973,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		Integer encrypt = new Integer(criptableStr);
 		String visibleStr = (String) request.getAttribute("visible");
 		Integer visible = new Integer(visibleStr);
+		String path = (String) request.getAttribute("path");
 		
 		String typeAttr = (String) request.getAttribute("type");
 		StringTokenizer tokentype = new StringTokenizer(typeAttr, ",");
@@ -1085,6 +1086,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		obj.setRelName(relname);
 		obj.setStateCode(stateCode);
 		obj.setStateID(stateId);
+		obj.setPath(path);
 		
 		return obj;
 	}

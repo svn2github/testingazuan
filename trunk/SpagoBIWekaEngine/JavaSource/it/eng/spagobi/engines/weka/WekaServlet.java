@@ -79,8 +79,8 @@ public class WekaServlet extends HttpServlet {
 	 */
 	private Map params = null;
 	
-	
-	
+	public static final String CLUSTERER = "clusterer";
+	public static final String CLUSTERNUM = "clusterNum";
 	public static final String TEMPLATE_PATH = "templatePath"; 
 	public static final String CR_MANAGER_URL = "cr_manager_url"; 
 	public static final String EVENTS_MANAGER_URL = "events_manager_url"; 
@@ -94,7 +94,9 @@ public class WekaServlet extends HttpServlet {
 	public static final String VERSIONING = "versioning";
 	public static final String VERSION_COLUMN_NAME = "versionColumnName";
 	public static final String VERSION = "version";
-	
+	public static final String BIOBJECT_ID = "biobjectId";
+	public static final String WEKA_ROLES_HANDLER_CLASS_NAME = "it.eng.spagobi.drivers.weka.events.handlers.WekaRolesHandler";
+	public static final String WEKA_PRESENTAION_HANDLER_CLASS_NAME = "it.eng.spagobi.drivers.weka.events.handlers.WekaEventPresentationHandler";
 	
 	public class RunnerThread extends Thread {
 		private File file = null;		
@@ -123,6 +125,14 @@ public class WekaServlet extends HttpServlet {
 				return;
 			}
 			
+			Map eventParams = new HashMap();				
+			eventParams.put("operation-type", "biobj-execution");
+			eventParams.put("biobj-path", params.get(TEMPLATE_PATH));
+			eventParams.put(BIOBJECT_ID, params.get(BIOBJECT_ID));
+			eventParams.put(EVENT, eventId);
+			
+			String description = "";
+			
 			WekaKFRunner kfRunner = new WekaKFRunner(incon, outcon);
 			
 			logger.debug(this.getClass().getName() + ":service:Start parsing file: " + file);
@@ -150,16 +160,26 @@ public class WekaServlet extends HttpServlet {
 				logger.debug( "\n" + Utils.getSaverDesc(kfRunner.getSavers()) );
 				logger.debug(this.getClass().getName() + ":service:Executing knowledge flow ...");
 				kfRunner.run(false, true);
-				Map eventParams = new HashMap();				
-				eventParams.put("operation-type", "biobj-execution");
-				eventParams.put("operation-exit-status", "success");
-				eventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated", eventParams);
+				
+				description = "${weka.execution.executionOk}";
+				
 			} catch (Exception e) {
-				logger.error("Impossible to load/parse templete file", e);	
-				eventsAccessUtils.fireEvent(eventId, user, "execution of weka flow terminated with errors", null);
+				logger.error("Impossible to load/parse templete file", e);
+				description = "${weka.execution.executionKo}";
 			}
-					
+			
+			description += "<br/>${weka.execution.parameters}<br/><ul>";
+			description += "<li>" + KEYS + " = " + (String)params.get(KEYS) + "</li>";
+			description += "<li>" + VERSION_COLUMN_NAME + " = " + (String)params.get(VERSION_COLUMN_NAME) + "</li>";
+			description += "<li>" + WRITE_MODE + " = " + (String)params.get(WRITE_MODE) + "</li>";
+			description += "<li>" + VERSIONING + " = " + (String)params.get(VERSIONING) + "</li>";
+			description += "<li>" + VERSION + " = " + (String)params.get(VERSION) + "</li>";
+			description += "<li>" + CLUSTERER + " = " + (String)params.get(CLUSTERER) + "</li>";
+			description += "<li>" + CLUSTERNUM + " = " + (String)params.get(CLUSTERNUM) + "</li>";
+			description += "</ul>";
+			
+			eventsAccessUtils.fireEvent(user, description, eventParams, WEKA_ROLES_HANDLER_CLASS_NAME, WEKA_PRESENTAION_HANDLER_CLASS_NAME);
+			
 			file.delete();		
 			
 			// TODO put this block in a finally block
@@ -168,7 +188,9 @@ public class WekaServlet extends HttpServlet {
 				if ((con != null) && (!con.isClosed())) con.close();
 				if ((incon != null) && (!incon.isClosed())) incon.close();
 				if ((outcon != null) && (!outcon.isClosed())) outcon.close();
-			} catch(SQLException sqle){}
+			} catch (SQLException sqle) {
+				logger.error("Problems closing connection", sqle);
+			}
 	    }				
 	}
 	

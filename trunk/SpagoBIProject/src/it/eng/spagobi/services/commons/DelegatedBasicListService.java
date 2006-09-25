@@ -41,7 +41,6 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.init.InitializerIFace;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
@@ -49,6 +48,7 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.QueryExecutor;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
 
@@ -355,7 +355,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(labelTypeFilter);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, 1050, v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1050", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -373,7 +373,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(value);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, 1051, v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1051", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -389,7 +389,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(valuefilter);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, 1052, v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1052", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -439,7 +439,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(labelTypeFilter);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, 1053, v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1053", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -468,7 +468,7 @@ public class DelegatedBasicListService {
 					Vector v = new Vector();
 					v.add(value);
 					v.add(format);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, 1054, v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1054", v, params);
 					errorHandler.addError(error);
 					return list;
 		        }
@@ -485,7 +485,7 @@ public class DelegatedBasicListService {
 					Vector v = new Vector();
 					v.add(valuefilter);
 					v.add(format);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, 1055, v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1055", v, params);
 					errorHandler.addError(error);
 					return list;
 		        }

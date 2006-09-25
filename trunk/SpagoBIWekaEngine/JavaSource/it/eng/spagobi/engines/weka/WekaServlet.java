@@ -6,7 +6,6 @@
 package it.eng.spagobi.engines.weka;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -30,7 +29,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -81,10 +82,10 @@ public class WekaServlet extends HttpServlet {
 	
 	public static final String CLUSTERER = "clusterer";
 	public static final String CLUSTERNUM = "clusterNum";
-	public static final String TEMPLATE_PATH = "templatePath"; 
+	//public static final String TEMPLATE_PATH = "templatePath"; 
 	public static final String CR_MANAGER_URL = "cr_manager_url"; 
 	public static final String EVENTS_MANAGER_URL = "events_manager_url"; 
-	public static final String EVENT = "event"; 
+	public static final String START_EVENT = "startEventId"; 
 	public static final String USER = "user"; 
 	public static final String CONNECTION = "connectionName"; 
 	public static final String INPUT_CONNECTION = "inputConnectionName"; 
@@ -97,6 +98,8 @@ public class WekaServlet extends HttpServlet {
 	public static final String BIOBJECT_ID = "biobjectId";
 	public static final String WEKA_ROLES_HANDLER_CLASS_NAME = "it.eng.spagobi.drivers.weka.events.handlers.WekaRolesHandler";
 	public static final String WEKA_PRESENTAION_HANDLER_CLASS_NAME = "it.eng.spagobi.drivers.weka.events.handlers.WekaEventPresentationHandler";
+	public static final String PROCESS_ACTIVATED_MSG = "processActivatedMsg";
+	public static final String PROCESS_NOT_ACTIVATED_MSG = "processNotActivatedMsg";
 	
 	public class RunnerThread extends Thread {
 		private File file = null;		
@@ -110,8 +113,40 @@ public class WekaServlet extends HttpServlet {
 			
 			String events_manager_url = (String) params.get(EVENTS_MANAGER_URL);
 			EventsAccessUtils eventsAccessUtils = new EventsAccessUtils(events_manager_url);	
-			String eventId = (String) params.get(EVENT);
 			String user = (String) params.get(USER);
+			
+			// registering the start execution event
+			String startExecutionEventDescription = "${weka.execution.started}<br/>";
+			
+			String parametersList = "${weka.execution.parameters}<br/><ul>";
+			Set paramKeys = params.keySet();
+			Iterator paramKeysIt = paramKeys.iterator();
+			while (paramKeysIt.hasNext()) {
+				String key = (String) paramKeysIt.next();
+				if (!key.equalsIgnoreCase("template") 
+						&& !key.equalsIgnoreCase("biobjectId")
+						&& !key.equalsIgnoreCase("cr_manager_url")
+						&& !key.equalsIgnoreCase("events_manager_url")
+						&& !key.equalsIgnoreCase("processActivatedMsg")
+						&& !key.equalsIgnoreCase("processNotActivatedMsg")
+						&& !key.equalsIgnoreCase("user")) {
+					Object valueObj = params.get(key);
+					parametersList += "<li>" + key + " = " + (valueObj != null ? valueObj.toString() : "") + "</li>";
+				}
+			}
+			parametersList += "</ul>";
+			
+			Map startEventParams = new HashMap();				
+			startEventParams.put("operation-type", "biobj-start-execution");
+			//startEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
+			startEventParams.put(BIOBJECT_ID, params.get(BIOBJECT_ID));
+			
+			Integer startEventId = null;
+			try {
+				startEventId = eventsAccessUtils.fireEvent(user, startExecutionEventDescription + parametersList, startEventParams, WEKA_ROLES_HANDLER_CLASS_NAME, WEKA_PRESENTAION_HANDLER_CLASS_NAME);
+			} catch (Exception e) {
+				logger.error(this.getClass().getName() + ":run: problems while registering the start process event", e);
+			}
 			
 			Connection con = getConnection((String)params.get(CONNECTION));
 			Connection incon = (con!=null)?con: getConnection((String)params.get(INPUT_CONNECTION));
@@ -125,13 +160,13 @@ public class WekaServlet extends HttpServlet {
 				return;
 			}
 			
-			Map eventParams = new HashMap();				
-			eventParams.put("operation-type", "biobj-execution");
-			eventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-			eventParams.put(BIOBJECT_ID, params.get(BIOBJECT_ID));
-			eventParams.put(EVENT, eventId);
+			Map endEventParams = new HashMap();				
+			endEventParams.put("operation-type", "biobj-execution");
+			//endEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
+			endEventParams.put(BIOBJECT_ID, params.get(BIOBJECT_ID));
+			endEventParams.put(START_EVENT, startEventId.toString());
 			
-			String description = "";
+			String endExecutionEventDescription = "";
 			
 			WekaKFRunner kfRunner = new WekaKFRunner(incon, outcon);
 			
@@ -161,25 +196,20 @@ public class WekaServlet extends HttpServlet {
 				logger.debug(this.getClass().getName() + ":service:Executing knowledge flow ...");
 				kfRunner.run(false, true);
 				
-				description = "${weka.execution.executionOk}";
+				endExecutionEventDescription = "${weka.execution.executionOk}<br/>";
+				endEventParams.put("operation-result", "success");
 				
 			} catch (Exception e) {
 				logger.error("Impossible to load/parse templete file", e);
-				description = "${weka.execution.executionKo}";
+				endExecutionEventDescription = "${weka.execution.executionKo}<br/>";
+				endEventParams.put("operation-result", "failure");
 			}
 			
-			description += "<br/>${weka.execution.parameters}<br/><ul>";
-			description += "<li>" + KEYS + " = " + (String)params.get(KEYS) + "</li>";
-			description += "<li>" + VERSION_COLUMN_NAME + " = " + (String)params.get(VERSION_COLUMN_NAME) + "</li>";
-			description += "<li>" + WRITE_MODE + " = " + (String)params.get(WRITE_MODE) + "</li>";
-			description += "<li>" + VERSIONING + " = " + (String)params.get(VERSIONING) + "</li>";
-			description += "<li>" + VERSION + " = " + (String)params.get(VERSION) + "</li>";
-			description += "<li>" + CLUSTERER + " = " + (String)params.get(CLUSTERER) + "</li>";
-			description += "<li>" + CLUSTERNUM + " = " + (String)params.get(CLUSTERNUM) + "</li>";
-			description += "</ul>";
-			
-			eventsAccessUtils.fireEvent(user, description, eventParams, WEKA_ROLES_HANDLER_CLASS_NAME, WEKA_PRESENTAION_HANDLER_CLASS_NAME);
-			
+			try {	
+				eventsAccessUtils.fireEvent(user, endExecutionEventDescription + parametersList, endEventParams, WEKA_ROLES_HANDLER_CLASS_NAME, WEKA_PRESENTAION_HANDLER_CLASS_NAME);
+			} catch (Exception e) {
+				logger.error(this.getClass().getName() + ":run: problems while registering the end process event", e);
+			}
 			file.delete();		
 			
 			// TODO put this block in a finally block
@@ -230,7 +260,7 @@ public class WekaServlet extends HttpServlet {
 	/**
 	 * process weka execution requests
 	 */
-	public void service(HttpServletRequest request, HttpServletResponse response)
+	public void service(HttpServletRequest request, HttpServletResponse response) 
 	throws IOException, ServletException {
 	
 		logger.debug(this.getClass().getName()
@@ -271,28 +301,42 @@ public class WekaServlet extends HttpServlet {
 				logger.info(this.getClass().getName() + ":service:Caller authenticated succesfully");
 				
 			logger.info(this.getClass().getName() + ":service:reading template file ...");
-			String templatePath = (String) params.get(TEMPLATE_PATH);
-			String cr_manager_url = (String) params.get(CR_MANAGER_URL);				
-			byte[] template = getTemplateContent(request);
-			logger.info(this.getClass().getName() + ":service:template file has been read succesfully");
-				
-			logger.info(this.getClass().getName() + ":service:saving tamplete file to local temp dir ...");
-			File file = File.createTempFile("weka", null);
-			ParametersFiller.fill(new StringReader(new String(template)), new FileWriter(file), params);
-						
-			logger.info(this.getClass().getName() + ":service:template file saved succesfully to a local temp dir");
+			//String templatePath = (String) params.get(TEMPLATE_PATH);
+			//String cr_manager_url = (String) params.get(CR_MANAGER_URL);
 			
-			// fork
-			Thread runner = new RunnerThread(file);
-			runner.start();				
-						
-			logger.info(this.getClass().getName() + ":service: Return the default waiting message");
-								
+			File file = null;
+			String message = null;
+			Thread runner = null;
+			boolean startupCorrectlyExecuted = true;
+			
+			try {
+				byte[] template = getTemplateContent(request);
+				logger.info(this.getClass().getName() + ":service:template file has been read succesfully");
+				logger.info(this.getClass().getName() + ":service:saving tamplete file to local temp dir ...");
+				file = File.createTempFile("weka", null);
+				ParametersFiller.fill(new StringReader(new String(template)), new FileWriter(file), params);
+				logger.info(this.getClass().getName() + ":service:template file saved succesfully to a local temp dir");
+				runner = new RunnerThread(file);
+			} catch (Exception e) {
+				logger.error(this.getClass().getName() + ":service: error while process startup", e);
+				message = (String) params.get(PROCESS_NOT_ACTIVATED_MSG);
+				startupCorrectlyExecuted = false;
+			}
+			
+			if (startupCorrectlyExecuted) {
+				// fork
+				runner.start();
+				message = (String) params.get(PROCESS_ACTIVATED_MSG);
+				logger.info(this.getClass().getName() + ":service: Return the default waiting message");
+			}
+			
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("<html>\n");
 			buffer.append("<head><title>Service Response</title></head>\n");
 			buffer.append("<body>");
-			buffer.append("Please wait! The engine is working hard for you at this moment\n");
+			buffer.append("<p style=\"text-align:center;font-size:15pt;font-weight:bold;color:#000033;\">");
+			buffer.append(message);
+			buffer.append("</p>");
 			buffer.append("</body>\n");
 			buffer.append("</html>\n");
 			

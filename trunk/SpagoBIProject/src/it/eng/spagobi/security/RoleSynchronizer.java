@@ -78,7 +78,7 @@ public class RoleSynchronizer {
             	SourceBean secClassSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
             	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
             			"RoleSynchronizer::synchronize: source bean security class retrived " + secClassSB);
-            	String portalSecurityProviderClass = secClassSB.getCharacters();
+            	String portalSecurityProviderClass = (String) secClassSB.getAttribute("className");
             	portalSecurityProviderClass = portalSecurityProviderClass.trim();
             	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
             			"RoleSynchronizer::synchronize: security class name retrived " + portalSecurityProviderClass);

@@ -320,7 +320,7 @@ public class ListTag extends TagSupport
 				// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 				String align = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("horizontal-align");
 				if (align == null || align.trim().equals("")) align = "left";
-				_htmlStream.append(" <td class='" + rowClass + "' style='vertical-align:middle;text-align:" + align + ";' >" + field + "</td>\n");
+				_htmlStream.append(" <td class='" + rowClass + "' style='vertical-align:middle;text-overflow:ellipsis;text-align:" + align + ";' >" + field + "</td>\n");
 			} 
 			
 			

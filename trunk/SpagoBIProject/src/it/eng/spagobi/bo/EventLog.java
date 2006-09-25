@@ -22,8 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.bo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class map the SBI_EVENTS_LOG table
@@ -34,14 +34,16 @@ import java.util.Date;
 public class EventLog implements Serializable {
 	private Integer id;
 	private String user;
-	private Timestamp date;
+	private Date date;
 	private String desc;
 	private String params;
+	private String handler;
+	private List roles;
 	
-	public Timestamp getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(Timestamp date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	public String getDesc() {
@@ -67,5 +69,17 @@ public class EventLog implements Serializable {
 	}
 	public void setUser(String user) {
 		this.user = user;
-	}	 
+	}	
+	public List getRoles() {
+		return roles;
+	}
+	public void setRoles(List roles) {
+		this.roles = roles;
+	}
+	public String getHandler() {
+		return handler;
+	}
+	public void setHandler(String handler) {
+		this.handler = handler;
+	}
 }

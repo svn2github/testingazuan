@@ -43,5 +43,8 @@
             </key>
             <one-to-many class="it.eng.spagobi.metadata.SbiObjPar" />
         </set>
+        <property name="functionalFlag" type="short">
+            <column name="functional_flag" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

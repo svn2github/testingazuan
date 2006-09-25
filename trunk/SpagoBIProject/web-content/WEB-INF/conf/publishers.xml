@@ -317,6 +317,15 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	<PUBLISHER name="defaultEventLogDetailPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/defaultEventLogDetail.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
   	<PUBLISHER name="DetailRolesPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
@@ -407,11 +416,21 @@
    	 	</RENDERING>
   	</PUBLISHER>
     	
-    <PUBLISHER name="ExecBiobjEventLogDetailPublisher">
+    <PUBLISHER name="WekaExecutionEventLogDetailPublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/ExecBiobjEventLogDetail.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/wekaExecutionEventLogDetail.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="deletedEventLogLoopPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="EVENTS_MONITOR_PAGE" /> 
+                <PARAMETER name="REFRESH" type="ABSOLUTE" scope="" value="TRUE"/>     		
+                <PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" type="ABSOLUTE" scope="" value="TRUE" /> 
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

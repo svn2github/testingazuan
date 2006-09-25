@@ -57,10 +57,10 @@
     backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 %>
 
-
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section'>
+		<td class='header-title-column-portlet-section' 
+			style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBIErrorPage.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
@@ -74,8 +74,9 @@
 
 <!-- br/-->
 
-<div style='width:100%;text-align:center;'>
-	<div class="portlet-msg-error">
+<div class="div_background_no_img">
+	<div style="border: 1px solid #cccccc;background-color:#fafafa;margin:5px;text-align:center;">
+		<p class="portlet-msg-error">
 	    <% 
 	        EMFAbstractError error = null;
 	        String description = "";
@@ -89,6 +90,7 @@
 			<%= description %>
 			<br/>
 		<% } %>
+		</p>
 	</div>
 </div>		
 

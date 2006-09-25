@@ -1,5 +1,8 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
+<spagobi:list moduleName="ListEventsLogModule" />
+
+<%--
 <%@ page import="it.eng.spagobi.constants.SpagoBIConstants,
          		it.eng.spagobi.events.EventsManager,
          		it.eng.spagobi.bo.EventLog,
@@ -87,4 +90,4 @@
 <%
 		}
 %>
-
+--%>

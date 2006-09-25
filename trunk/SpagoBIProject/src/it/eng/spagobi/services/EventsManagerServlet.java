@@ -22,13 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services;
 
 import it.eng.spagobi.bo.EventLog;
+import it.eng.spagobi.drivers.handlers.IRolesHandler;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -46,8 +45,8 @@ public class EventsManagerServlet extends HttpServlet{
 	
 	public static final String FIRE_EVENT = "fireEvent";
 	public static final String GET_FIRED_EVENTS = "getFiredEvents";
-	public static final String RETURN_STATUS_OK = "OK";
-	public static final String RETURN_STATUS_KO = "KO";
+//	public static final String RETURN_STATUS_OK = "OK";
+//	public static final String RETURN_STATUS_KO = "KO";
 	
 	/**
 	 * Init method definition
@@ -65,51 +64,56 @@ public class EventsManagerServlet extends HttpServlet{
      */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
-		String returnValue = RETURN_STATUS_KO;
+		byte[] returnValue = null;
 		
 		SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "Start processing request ...");	 				
 	 	try{
 	 		String operation = request.getParameter("operation");
 	 		if(operation != null) {
 	 			if(operation.equalsIgnoreCase(FIRE_EVENT)) {
-	 				// read input parameters	 				
-	 				String eventId = request.getParameter("eventId");
+	 				// read input parameters
 	 				String user = request.getParameter("user");
 	 				String desc = request.getParameter("desc");
-	 				String paramStr = request.getParameter("parameters");	 				
-
-	 				if(eventId != null && user != null) {
-	 					EventsManager.getInstance().fireEvent(eventId, user, desc, paramStr);
-		 				returnValue = RETURN_STATUS_KO;
+	 				String paramStr = request.getParameter("parameters");
+	 				String rolesHandler = request.getParameter("rolesHandler");
+	 				String presentationHandler = request.getParameter("presentationHandler");
+//	 				if(eventId != null && user != null) {
+	 				if(user != null) {
+	 					//EventsManager.getInstance().fireEvent(eventId, user, desc, paramStr);
+	 					IRolesHandler rolesHandlerClass = (IRolesHandler) Class.forName(rolesHandler).newInstance();
+	 					List roles = rolesHandlerClass.calculateRoles(paramStr); 
+	 					Integer id = EventsManager.getInstance().registerEvent(user, desc, paramStr, roles, presentationHandler);
+		 				returnValue = id.toString().getBytes();
 		 				SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "operation " + FIRE_EVENT + " executed succesfully");					
 	 				}
 	 				else {
 	 					SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "Impossible to execute operation " + FIRE_EVENT + " because there are some errors in input parameters");
 	 				}
 	 				
-		 			response.setContentLength(returnValue.length());
-				 	response.getWriter().print(returnValue);
-				 	response.getWriter().flush();
+		 			response.setContentLength(returnValue.length);
+				 	response.getOutputStream().write(returnValue);
+				 	response.getOutputStream().flush();
 	 			}
-	 			else if(operation.equalsIgnoreCase(GET_FIRED_EVENTS)) {
-	 				// read input parameters	 				
-	 				String user = request.getParameter("user");
-	 				if(user != null) {
-	 					List firedEventsList = EventsManager.getInstance().getFiredEvents(user);
-		 				returnValue = getFiredEventsCsvStr(firedEventsList);
-		 				SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "operation " + GET_FIRED_EVENTS + " executed succesfully");					
-	 				}
-	 				else {
-	 					SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "Impossible to execute operation " + GET_FIRED_EVENTS + " because there are some errors in input parameters");
-	 				}
-	 				
-	 				response.setContentLength(returnValue.length());
-				 	response.getWriter().print(returnValue);
-				 	response.getWriter().flush();	 				
-	 			}
+//	 			else if(operation.equalsIgnoreCase(GET_FIRED_EVENTS)) {
+//	 				// read input parameters	 				
+//	 				String user = request.getParameter("user");
+//	 				if(user != null) {
+//	 					//List firedEventsList = EventsManager.getInstance().getFiredEvents(user);
+//	 					List firedEventsList = EventsManager.getInstance().getRegisteredEvents(user);
+//		 				returnValue = getFiredEventsCsvStr(firedEventsList);
+//		 				SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "operation " + GET_FIRED_EVENTS + " executed succesfully");					
+//	 				}
+//	 				else {
+//	 					SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "Impossible to execute operation " + GET_FIRED_EVENTS + " because there are some errors in input parameters");
+//	 				}
+//	 				
+//	 				response.setContentLength(returnValue.length());
+//				 	response.getWriter().print(returnValue);
+//				 	response.getWriter().flush();	 				
+//	 			}
 	 		}	
 	 	
-	 	}catch(Exception e){
+	 	} catch(Exception e) {
 	 		SpagoBITracer.critical("SpagoBI", getClass().getName(), "service", "Exception", e);
 	 	}
 	}

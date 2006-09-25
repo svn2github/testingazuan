@@ -29,5 +29,6 @@
         <mapping resource="it/eng/spagobi/importexport/metadata/SbiSubreports.hbm.xml"/>
         <mapping resource="it/eng/spagobi/importexport/metadata/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/importexport/metadata/SbiEventsLog.hbm.xml" />
+        <mapping resource="it/eng/spagobi/importexport/metadata/SbiEventRole.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

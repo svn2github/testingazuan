@@ -120,11 +120,8 @@ public class ListTestQueryModule extends AbstractBasicListModule {
 		SourceBean rowsSourceBean = null;
 		
 		try {
-			int profileAttributeStartIndex = statement.indexOf("${");
-			if (profileAttributeStartIndex != -1) {
-				IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
-			}
+			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
 			rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement);
 		} catch (Exception e) {
 			String stacktrace = e.toString();

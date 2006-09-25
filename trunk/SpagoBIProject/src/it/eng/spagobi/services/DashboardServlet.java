@@ -80,14 +80,11 @@ public class DashboardServlet extends HttpServlet{
             		String statement = queryDet.getQueryDefinition();
             		DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
         			dataConnection = dataConnectionManager.getConnection(pool);
-        			int profileAttributeStartIndex = statement.indexOf("${");
-        			if (profileAttributeStartIndex != -1) {
-            			RequestContainer reqcont = RequestContainer.getRequestContainer();
-            			SessionContainer sessCont = reqcont.getSessionContainer();
-            			SessionContainer permSess = sessCont.getPermanentContainer();
-            			IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
-        			}
+        			RequestContainer reqcont = RequestContainer.getRequestContainer();
+        			SessionContainer sessCont = reqcont.getSessionContainer();
+        			SessionContainer permSess = sessCont.getPermanentContainer();
+        			IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
         			SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
         			DataResult dataResult = sqlCommand.execute();
                     ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();

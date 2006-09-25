@@ -24,7 +24,11 @@ package it.eng.spagobi.presentation.publishers;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 /**
@@ -32,12 +36,14 @@ import it.eng.spagobi.utilities.SpagoBITracer;
  *
  */
 public class DetailEventLogPublisher implements PublisherDispatcherIFace {
+	
+	public static final String DEFAULT_EVENTLOG_DETAIL_PUBLISHER = "defaultEventLogDetailPublisher";
+	
 	/**
 	 * Class constructor
 	 */
 	public DetailEventLogPublisher() {
 		super();
-
 	}
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
@@ -48,21 +54,39 @@ public class DetailEventLogPublisher implements PublisherDispatcherIFace {
 	 * @return A string representing the name of the correct publisher, which will
 	 * 		   call the correct jsp reference.
 	 */
-	public String getPublisherName(RequestContainer request,
-			ResponseContainer response) {
+	public String getPublisherName(RequestContainer requestContainer,
+			ResponseContainer responseContainer) {
+		
+		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
 		// get the module response
-		SourceBean moduleResponse = (SourceBean)response.getServiceResponse().getAttribute("DetailEventLogModule");
-			
+		SourceBean moduleResponse = (SourceBean) responseContainer.getServiceResponse().getAttribute("DetailEventLogModule");
+		
+		// if the module response is null throws an error and return the name of the errors publisher
+		if (moduleResponse == null) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+		            this.getClass().getName(), 
+		            "getPublisherName", 
+		            "Module response null");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10);
+			errorHandler.addError(error);
+			return "error";
+		}
+		
+		// if there are some errors into the errorHandler (not validation errors), return the name for the errors publisher
+		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			return new String("error");
+		}
+		
 		String publisherName = (String) moduleResponse.getAttribute("PUBLISHER_NAME");
 		
-		SpagoBITracer.debug("", "DetailEventLogPublisher","service",
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "service",
 				" PUBLISHER_NAME = "  + publisherName);
 		
 		if (publisherName != null) {
 			return publisherName;
 		} else {
-			return "SERVICE_ERROR_PUBLISHER";
+			return DEFAULT_EVENTLOG_DETAIL_PUBLISHER;
 		}
 	}
 }

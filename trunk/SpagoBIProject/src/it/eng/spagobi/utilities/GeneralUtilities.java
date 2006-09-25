@@ -229,6 +229,21 @@ public class GeneralUtilities {
 //		return bind;
 	}
 	
+	/**
+	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the string passed at input.
+	 * 
+	 * @param statement The string to be modified (tipically a query)
+	 * @param profile The IEngUserProfile object
+	 * @return The statement with profile attributes replaced by their values.
+	 * @throws Exception
+	 */
+	public static String substituteProfileAttributesInString(String statement, IEngUserProfile profile) throws Exception {
+		int profileAttributeStartIndex = statement.indexOf("${");
+		if (profileAttributeStartIndex != -1) {
+			statement = substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
+		}
+		return statement;
+	}
 	
 	/**
 	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the string passed at input.
@@ -239,7 +254,7 @@ public class GeneralUtilities {
 	 * @return The statement with profile attributes replaced by their values.
 	 * @throws Exception
 	 */
-	public static String substituteProfileAttributesInString(String statement, IEngUserProfile profile, int profileAttributeStartIndex) throws Exception {
+	private static String substituteProfileAttributesInString(String statement, IEngUserProfile profile, int profileAttributeStartIndex) throws Exception {
 		int profileAttributeEndIndex = statement.indexOf("}");
 		if (profileAttributeEndIndex == -1) throw new Exception("Not closed profile attribute: '}' expected.");
 		if (profileAttributeEndIndex < profileAttributeEndIndex) throw new Exception("Not opened profile attribute: '${' expected.");
@@ -463,8 +478,49 @@ public class GeneralUtilities {
 			 }
 		 }
 		 return true;
-	 }
+	}
+
+	/**
+	 * Substitutes the substrings with sintax "${code,bundle}" or "${code}" 
+	 * (in the second case bundle is assumed to be the default value "messages") 
+	 * with the correspondent internationalized messages in the input String. 
+	 * This method calls <code>PortletUtilities.getMessage(key, bundle)</code>.
+	 * 
+	 * @param message The string to be modified
+	 * @return The message with the internationalized substrings replaced.
+	 */
+	public static String replaceInternationalizedMessages (String message) {
+		if (message == null) return null;
+		int startIndex = message.indexOf("${");
+		if (startIndex == -1) return message;
+		else return replaceInternationalizedMessages(message, startIndex);
+	}
 	
+	private static String replaceInternationalizedMessages (String message, int startIndex) {
+		int endIndex = message.indexOf("}", startIndex);
+		if (endIndex == -1 || endIndex < startIndex) return message;
+		String toBeReplaced = message.substring(startIndex + 2, endIndex).trim();
+		String key = "";
+		String bundle = "messages";
+		String[] splitted = toBeReplaced.split(",");
+		if (splitted != null) {
+			key = splitted[0].trim();
+			if (splitted.length == 1) {
+				String replacement = PortletUtilities.getMessage(key, bundle);
+				if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
+			}
+			if (splitted.length == 2) {
+				if (splitted[1] != null && !splitted[1].trim().equals("")) 
+					bundle = splitted[1].trim();
+				String replacement = PortletUtilities.getMessage(key, bundle);
+				if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
+			}
+		}
+		startIndex = message.indexOf("${", endIndex);
+		if (startIndex != -1) 
+			message = replaceInternationalizedMessages(message, startIndex);
+		return message;
+	}
 
 	/**
      * Questo metodo permette di sostituire una parte di una stringa con un'altra.

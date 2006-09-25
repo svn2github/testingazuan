@@ -29,7 +29,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.paginator.basic.ListIFace;
@@ -351,12 +350,8 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		String valueColumn = ((SourceBean) queryXML.getAttribute("VALUE-COLUMN")).getCharacters();
 		String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
 		String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
-		
-		int profileAttributeStartIndex = statement.indexOf("${");
-		if (profileAttributeStartIndex != -1) {
-			IEngUserProfile profile = getUserProfile(request);
-			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
-		}
+		IEngUserProfile profile = getUserProfile(request);
+		statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
 		
 		Vector columns = findVisibleColumns(visibleColumns);
 		

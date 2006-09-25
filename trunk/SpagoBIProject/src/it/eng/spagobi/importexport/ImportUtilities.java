@@ -283,6 +283,7 @@ public class ImportUtilities {
 		newPar.setParameterTypeCode(param.getParameterTypeCode());
 		newPar.setSbiObjPars(new HashSet());
 		newPar.setSbiParuses(new HashSet());
+		newPar.setFunctionalFlag(param.getFunctionalFlag());
 		return newPar;
 	}
 	
@@ -313,6 +314,8 @@ public class ImportUtilities {
 		newParuse.setSbiParuseCks(new HashSet());
 		newParuse.setSbiParuseDets(new HashSet());
 		newParuse.setManualInput(paruse.getManualInput());
+		newParuse.setSelectionType(paruse.getSelectionType());
+		newParuse.setMultivalue(paruse.getMultivalue());
 		return newParuse;
 	}
 	

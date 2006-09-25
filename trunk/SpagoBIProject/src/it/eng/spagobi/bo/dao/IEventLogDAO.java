@@ -22,9 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.bo.dao;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.EventLog;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -37,31 +37,32 @@ import java.util.List;
 public interface IEventLogDAO {
 		
 	/**
-	 * Loads  an event log
+	 * Loads an event log given its id
 	 * 
-	 * @param user The user that has registered the events
-	 * @return	A <code>List</code> of <code>EventLog</code> containing all loaded information
+	 * @param id The Integer representing the event id
+	 * @return	A <code>EventLog</code> with the id passed at input
 	 * @throws	EMFUserError If an Exception occurred
 	 */
-	public EventLog loadEventLog(String id, String user,  String date) throws EMFUserError;
+	public EventLog loadEventLogById(Integer id) throws EMFUserError;
 		
 	
 	/**
-	 * Loads a list of all logs associated to events registered by the specified  <code>user</code>
+	 * Loads the list of all events logs associated to the user profile at input
 	 * 
-	 * @param user The user that has registered the events
+	 * @param profile The user profile
 	 * @return	A <code>List</code> of <code>EventLog</code> containing all loaded information
 	 * @throws	EMFUserError If an Exception occurred
 	 */
-	public List loadEventsLogByUser(String user) throws EMFUserError;
+	public List loadEventsLogByUser(IEngUserProfile profile) throws EMFUserError;
 	
 	/**
 	 * Register a new EventLog.
 	 * 
-	 * @param user The user who want to register a new event
+	 * @param user The user who wants to register a new event
+	 * @return the newly created event unique identifier
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void insertEventLog(EventLog eventLog) throws EMFUserError;
+	public Integer insertEventLog(EventLog eventLog) throws EMFUserError;
 	
 	/**
 	 * Erase an event log. 
@@ -72,9 +73,9 @@ public interface IEventLogDAO {
 	public void eraseEventLog(EventLog eventLog) throws EMFUserError;
 	
 	/**
-	 * Erase all event logs related to events registered by the specificated user. 
+	 * Erase all event logs registered by the specificated user. 
 	 * 
-	 * @param event The object containing all delete information
+	 * @param user The user who registered the events
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void eraseEventsLogByUser(String user) throws EMFUserError;

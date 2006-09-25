@@ -356,12 +356,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		String valueColumn = ((SourceBean) queryXML.getAttribute("VALUE-COLUMN")).getCharacters();
 		String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
 		String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
-		
-		int profileAttributeStartIndex = statement.indexOf("${");
-		if (profileAttributeStartIndex != -1) {
-			IEngUserProfile profile = getUserProfile(request);
-			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile, profileAttributeStartIndex);
-		}
+		IEngUserProfile profile = getUserProfile(request);
+		statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
 		
 		Vector columns = findVisibleColumns(visibleColumns);
 		

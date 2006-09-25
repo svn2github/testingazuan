@@ -67,13 +67,14 @@ public class EventsAccessUtils {
 		return buffer.toString();
 	}
 	
-	public void fireEvent(String eventId, String user, String desc, Map params) {
+	public Integer fireEvent(String user, String desc, Map params, String rolesHandlerClassName, String presentationHandler) throws Exception {
 		HttpClient client = new HttpClient();
 	    PostMethod httppost = new PostMethod(eventsManagerServletUrl);
 	    NameValuePair[] parameters = {  new NameValuePair("operation", "fireEvent"), 
-	    								new NameValuePair("eventId", eventId),
 	    								new NameValuePair("user", user),				
 	    								new NameValuePair("desc", desc),
+	    								new NameValuePair("rolesHandler", rolesHandlerClassName),
+	    								new NameValuePair("presentationHandler", presentationHandler),
 	    								new NameValuePair("parameters", getParamsStr(params))};
 	    
 	    //	  Provide custom retry handler is necessary
@@ -91,12 +92,16 @@ public class EventsAccessUtils {
             }
             // Read the response body.
              responseBody  = httppost.getResponseBody();
-          } catch (IOException e) {
-            System.err.println("Failed to download file.");
+        } catch (IOException e) {
+            System.err.println("Failed to get response body.");
             e.printStackTrace();
-          } finally {
+        } finally {
             // Release the connection.
           	httppost.releaseConnection();
-          }         	    
+        }
+        if (responseBody == null) throw new Exception("Failed to register event");
+        String idStr = new String(responseBody);
+        Integer id = new Integer(idStr);
+        return id;
 	}
 }

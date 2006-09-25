@@ -28,12 +28,11 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.error.EMFValidationError;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.Check;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.HashMap;
@@ -289,7 +288,7 @@ public class DetailChecksModule extends AbstractModule {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListChecksModule.MODULE_PAGE);
 				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR,
-						1029, new Vector(), params);
+						"1029", new Vector(), params);
 				getErrorHandler().addError(error);
 			}
 		}

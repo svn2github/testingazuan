@@ -31,9 +31,9 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.LovDetailList;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -455,7 +455,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 							params.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
 							Vector vector = new Vector();
 							vector.add(documents.toString());
-							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1058, vector, params);
+							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1058", vector, params);
 							errorHandler.addError(error);
 							prepareDetailModalitiesValuePage(modVal, mod, response);
 							return;
@@ -624,7 +624,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			if (hasPar){
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListLovsModule.MODULE_PAGE);
-				EMFValidationError error = new EMFValidationError (EMFErrorSeverity.ERROR, 1023, new Vector(), params);
+				EMFValidationError error = new EMFValidationError (EMFErrorSeverity.ERROR, "1023", new Vector(), params);
 				getErrorHandler().addError(error);
 				return;
 		    }
@@ -845,7 +845,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListLovsModule.MODULE_PAGE);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1024,
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1024",
 							new Vector(), params);
 					errorHandler.addError(error);
 				}
@@ -862,7 +862,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListLovsModule.MODULE_PAGE);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1024,
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1024",
 							new Vector(), params);
 					errorHandler.addError(error);
 				}

@@ -28,7 +28,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.error.EMFValidationError;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
@@ -314,7 +314,7 @@ public class DetailEngineModule extends AbstractModule {
 				params.put(AdmintoolsConstants.PAGE,
 						ListEnginesModule.MODULE_PAGE);
 				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR,
-						1011, new Vector(), params);
+						"1011", new Vector(), params);
 				getErrorHandler().addError(error);
 			}
 		}

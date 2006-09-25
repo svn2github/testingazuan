@@ -66,7 +66,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		            this.getClass().getName(),
 		            "execute",
 		            "The input object is null.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 		
 		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
@@ -74,7 +74,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		            this.getClass().getName(),
 		            "execute",
 		            "The input object is not a dashboard.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 1001, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 		}
 		
 		
@@ -135,7 +135,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 						            this.getClass().getName(),
 						            "execute",
 						            "Template biobject null");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1002, messageBundle);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1002", messageBundle);
 			}
 			// get bytes of template and transform them into a SourceBean
 			SourceBean content = null;
@@ -148,7 +148,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			            			this.getClass().getName(),
 			            			"execute",
 			            			"Error while converting the Template bytes into a SourceBean object");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1003, messageBundle);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
 			}
 			// get information from the conf SourceBean and pass them into the response
 			String displayTitleBar = (String)content.getAttribute("displayTitleBar");
@@ -237,7 +237,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 						this.getClass().getName(),
 					    "execute", 
 					    "Cannot exec the dashboard", e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 
 	}
@@ -257,7 +257,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 				this.getClass().getName(),
 	            "executeSubObject", 
 	            "SpagoBIDashboardInternalEngine cannot exec subobjects.");
-		throw new EMFUserError(EMFErrorSeverity.ERROR, 101, messageBundle);
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 
 }

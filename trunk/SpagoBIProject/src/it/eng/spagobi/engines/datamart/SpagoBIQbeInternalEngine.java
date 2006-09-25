@@ -89,7 +89,7 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 		            this.getClass().getName(),
 		            "executeSubObject",
 		            "The input object is null.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 		
 		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DATAMART")) {
@@ -97,7 +97,7 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 		            this.getClass().getName(),
 		            "executeSubObject",
 		            "The input object is not a datamart.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 1001, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 		}
 		
 		try {
@@ -176,7 +176,7 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 					            "ExecuteBIObjectMOdule", 
 					            "execQbe", 
 					            "Cannot exec the subObject", e);
-	   		throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle); 
+	   		throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle); 
 		}
 
 	}

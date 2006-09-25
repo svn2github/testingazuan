@@ -65,7 +65,7 @@ public class ExportUtilities {
         } catch (Exception e) {
         	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
         			"Error during the copy of the metadata exportdatabase script " + e);
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
         }
 	}
 	
@@ -94,7 +94,7 @@ public class ExportUtilities {
         } catch (Exception e) {
         	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScriptProperties",
         			"Error during the copy of the metadata exportdatabase properties " + e);
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
         }
 	}
 	
@@ -135,7 +135,7 @@ public class ExportUtilities {
         } catch (Exception e) {
         	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
         			"Error while getting connection to export database " + e);
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
         }
         return sqlconn;
 	}

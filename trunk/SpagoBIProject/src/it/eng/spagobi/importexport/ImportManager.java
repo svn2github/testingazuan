@@ -26,9 +26,6 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.bo.BIObject;
-import it.eng.spagobi.bo.dao.DAOFactory;
-import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.metadata.HibernateUtil;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiDomains;
@@ -61,7 +58,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +112,7 @@ public class ImportManager implements IImportManager {
 		} catch (IOException ioe) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "prepareImport",
 		               			   "Error while writing archive content into a tmp file " + ioe);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		}
 		// decompress archive
 		ImportUtilities.decompressArchive(pathImpTmpFold, pathArchiveFile);
@@ -138,7 +134,7 @@ public class ImportManager implements IImportManager {
 		} catch (Exception e){
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "prepareImport",
 		   			               "Error while reading properties file " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		}
 		importer = new ImporterMetadata();
 		sessionFactoryExpDB = ImportUtilities.getHibSessionExportDB(pathDBFolder);
@@ -222,7 +218,7 @@ public class ImportManager implements IImportManager {
 				if(otherRoleExpId.compareTo(roleExpId)!=0) {
 					Integer otherRoleAssId = (Integer)roleAssociations.get(otherRoleExpId);
 					if(otherRoleAssId.compareTo(roleAssId)==0){
-						throw new EMFUserError(EMFErrorSeverity.ERROR, 8001, "component_impexp_messages");
+						throw new EMFUserError(EMFErrorSeverity.ERROR, "8001", "component_impexp_messages");
 					}
 				}
 			}
@@ -309,7 +305,7 @@ public class ImportManager implements IImportManager {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "commitAllChanges",
 		                           "Error while writing log file " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		}
 	    return logFile.getPath();
 	}
@@ -1179,15 +1175,15 @@ public class ImportManager implements IImportManager {
 		} catch (FileNotFoundException fnfe) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getExportedConnections", 
 			"Error while reading connections file " + fnfe);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} catch (SourceBeanException sbe) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getExportedConnections", 
 			"Error while reading connections file " + sbe);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		}catch (IOException ioe) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getExportedConnections", 
 			"Error while reading connections file " + ioe);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8004, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {}
 		return connections;
 	}

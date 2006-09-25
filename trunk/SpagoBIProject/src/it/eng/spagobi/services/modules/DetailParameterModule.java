@@ -508,7 +508,7 @@ public class DetailParameterModule extends AbstractModule {
 				params.put(AdmintoolsConstants.PAGE, "DetailParameterPage");
 				Vector vector = new Vector();
 				vector.add(documents.toString());
-				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1060", vector, params);
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "paruseLovId", "1060", vector, params);
 				errorHandler.addError(error);
 				return;
 			} 
@@ -841,7 +841,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListParametersModule.MODULE_PAGE);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1031",
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "label", "1031",
 							new Vector(), params);
 					errorHandler.addError(error);
 				}
@@ -858,7 +858,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE,
 							ListParametersModule.MODULE_PAGE);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1031",
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "label", "1031",
 							new Vector(), params);
 					errorHandler.addError(error);
 				}
@@ -888,7 +888,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
 					params.put(AdmintoolsConstants.ID_DOMAIN, parId);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1025", new Vector(), params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "paruseLabel", "1025", new Vector(), params);
 					errorHandler.addError(error);
 				}
 			}
@@ -904,7 +904,7 @@ public class DetailParameterModule extends AbstractModule {
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListParametersModule.MODULE_PAGE);
 					params.put(AdmintoolsConstants.ID_DOMAIN, parId);
-					EMFValidationError error = new EMFValidationError (EMFErrorSeverity.ERROR, "1025", new Vector(), params);
+					EMFValidationError error = new EMFValidationError (EMFErrorSeverity.ERROR, "paruseLabel", "1025", new Vector(), params);
 					errorHandler.addError(error);
 				}
 			}
@@ -981,8 +981,7 @@ public class DetailParameterModule extends AbstractModule {
 					DetailParameterModule.MODULE_PAGE);
 			Vector v = new Vector();
 			v.add(objectsLabels.toString());
-			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1057",
-					v, params);
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "", "1057", v, params);
 			errorHandler.addError(error);
 		}
 		

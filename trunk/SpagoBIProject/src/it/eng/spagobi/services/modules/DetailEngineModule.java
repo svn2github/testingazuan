@@ -313,7 +313,7 @@ public class DetailEngineModule extends AbstractModule {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE,
 						ListEnginesModule.MODULE_PAGE);
-				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR,
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "label", 
 						"1011", new Vector(), params);
 				getErrorHandler().addError(error);
 			}

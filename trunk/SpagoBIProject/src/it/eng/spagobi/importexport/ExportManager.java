@@ -118,7 +118,7 @@ public class ExportManager implements IExportManager {
     	} catch(Exception e) {
     		SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "prepareExport",
                     			   "Error while creating structure for exported connections " + e);
-    		throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+    		throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
     	}
 	}
 	
@@ -173,7 +173,7 @@ public class ExportManager implements IExportManager {
 		} catch (Exception e){
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "createExportArchive",
 					   			   "Error while creating archive file " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 		return archivePath;
 	}
@@ -214,7 +214,7 @@ public class ExportManager implements IExportManager {
 	    } catch (Exception e) {
 	    	SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "compressSingleFolder",
 	    						   "Error while creating archive file " + e);
-	    	throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+	    	throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 	    }
 	}
 	
@@ -234,7 +234,7 @@ public class ExportManager implements IExportManager {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportPropertiesFile",
                     			  "Error while exporting properties file " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -337,7 +337,7 @@ public class ExportManager implements IExportManager {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
 		                           "Error while exporting template file " + e);
-            throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+            throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -381,7 +381,7 @@ public class ExportManager implements IExportManager {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportSubObjects",
 		                           "Error while exporting subobjects " + e);
-            throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+            throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -481,7 +481,7 @@ public class ExportManager implements IExportManager {
 		} catch (Exception e) {
 			 SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "checkConnection",
 								  "Error while checking connection" + e);
-			 throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			 throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -580,7 +580,7 @@ public class ExportManager implements IExportManager {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConnectionFile",
                     			  "Error while exporting connection file " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 

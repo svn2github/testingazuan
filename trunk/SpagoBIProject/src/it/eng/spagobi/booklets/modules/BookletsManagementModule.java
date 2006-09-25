@@ -79,7 +79,7 @@ public class BookletsManagementModule extends AbstractModule {
 				            "service","begin of detail Engine modify/visualization service with operation =" +operation);
 		try{
 			if((operation==null)||(operation.trim().equals(""))) {
-				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_pamphlets_messages");
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_pamphlets_messages");
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 						            "service", "The operation parameter is null");
 				throw userError;
@@ -172,7 +172,7 @@ public class BookletsManagementModule extends AbstractModule {
 			errBackPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
 			errBackPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			errBackPars.put(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 102, null, errBackPars, "component_booklets_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "102", null, errBackPars, "component_booklets_messages");
 		}
 		String pathObject = (String)objPath;
 		BIObject obj = null;

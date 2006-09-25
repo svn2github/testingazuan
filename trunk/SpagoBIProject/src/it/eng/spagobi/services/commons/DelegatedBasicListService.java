@@ -355,7 +355,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(labelTypeFilter);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1050", v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.TYPE_FILTER, "1050", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -373,7 +373,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(value);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1051", v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.TYPE_VALUE_FILTER, "1051", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -389,7 +389,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(valuefilter);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1052", v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.VALUE_FILTER, "1052", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -439,7 +439,7 @@ public class DelegatedBasicListService {
 							"DelegatedBasicListService::filterList");
 					Vector v = new Vector();
 					v.add(labelTypeFilter);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1053", v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.TYPE_FILTER, "1053", v, params);
 					errorHandler.addError(error);
 					return list;
 				}
@@ -468,7 +468,7 @@ public class DelegatedBasicListService {
 					Vector v = new Vector();
 					v.add(value);
 					v.add(format);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1054", v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.TYPE_VALUE_FILTER, "1054", v, params);
 					errorHandler.addError(error);
 					return list;
 		        }
@@ -485,7 +485,7 @@ public class DelegatedBasicListService {
 					Vector v = new Vector();
 					v.add(valuefilter);
 					v.add(format);
-					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, "1055", v, params);
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.VALUE_FILTER, "1055", v, params);
 					errorHandler.addError(error);
 					return list;
 		        }

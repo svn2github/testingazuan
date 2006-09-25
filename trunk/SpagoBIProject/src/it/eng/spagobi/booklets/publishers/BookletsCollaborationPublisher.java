@@ -51,7 +51,7 @@ public class BookletsCollaborationPublisher implements PublisherDispatcherIFace 
 		if(moduleResponse==null) {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
 					            "getPublisherName", "Module response null");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_booklets_messages");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_booklets_messages");
 			errorHandler.addError(error);
 			return "error";
 		}
@@ -61,7 +61,7 @@ public class BookletsCollaborationPublisher implements PublisherDispatcherIFace 
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
 		                        "getPublisherName", "attribute "+BookletsConstants.PUBLISHER_NAME+" " +
 		                        "not found in response or empty");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_booklets_messages");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_booklets_messages");
 			errorHandler.addError(error);
 			return "error";
 		}

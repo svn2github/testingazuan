@@ -86,7 +86,7 @@ public class ImportUtilities {
 	      } catch(Exception e) {
 	    	  SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ImportUtilities" , "decompressArchive",
 	        			          "Error during the decompression of the exported file " + e);
-	    	  throw new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_impexp_messages");
+	    	  throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
 	      }
 	}
 	

@@ -287,8 +287,7 @@ public class DetailChecksModule extends AbstractModule {
 			if (aCheck.getLabel().equals(label) && !aCheck.getCheckId().equals(checkId)) {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListChecksModule.MODULE_PAGE);
-				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR,
-						"1029", new Vector(), params);
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "label", "1029", new Vector(), params);
 				getErrorHandler().addError(error);
 			}
 		}

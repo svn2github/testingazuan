@@ -332,11 +332,11 @@ public class DetailFunctionalityModule extends AbstractModule {
 				params.put(AdmintoolsConstants.PAGE, BIObjectsModule.MODULE_PAGE);
 				params.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 				params.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
-				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1005", new Vector(), params );
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "code", "1005", new Vector(), params );
 				getErrorHandler().addError(error);
 			}
 			if(DAOFactory.getLowFunctionalityDAO().existByCode(code)!=null) {
-				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "1027");
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "code", "1027");
 				getErrorHandler().addError(error);
 			}
 			lowFunct = new LowFunctionality();

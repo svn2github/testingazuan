@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+
+	<SERVICE name="BookletsManagementPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="OPERATION" scope="SERVICE_REQUEST" value="OPERATION_SAVE_CONFIGURED_DOCUMENT"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="logicalname" label="#book.logNameObject" boundle="component_booklets_messages">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+
+</VALIDATIONS>

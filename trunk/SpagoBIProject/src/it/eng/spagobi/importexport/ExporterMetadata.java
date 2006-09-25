@@ -99,7 +99,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertDomain",
 					"Error while inserting domain into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -137,7 +137,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertEngine",
 					"Error while inserting engine into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -181,7 +181,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
 					"Error while inserting biobject into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -242,7 +242,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObjectParameter",
 					               "Error while inserting BIObjectParameter into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -278,7 +278,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParameter",
 					"Error while inserting parameter into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -317,7 +317,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParUse",
 					"Error while inserting parameter use into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -367,7 +367,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBiParamDepend",
 					"Error while inserting parameter dependencied into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -404,7 +404,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertLov",
 					"Error while inserting lov into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -438,7 +438,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertCheck",
 					"Error while inserting check into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -475,7 +475,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParuseCheck",
 					               "Error while inserting paruse and check association into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -512,7 +512,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParuseDet",
 					               "Error while inserting paruse and role association into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -544,7 +544,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertSubReportAssociation",
 					               "Error while inserting subreport " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -604,7 +604,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertFunctionality",
 					"Error while inserting Functionality into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 		
 		// recursively insert parent functionalities
@@ -647,7 +647,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertRole",
 					"Error while inserting role into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -689,7 +689,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertFunctRole",
 					               "Error while inserting function and role association into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -727,7 +727,7 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObjFunct",
 					               "Error while inserting function and object association into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, "component_impexp_messages");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	

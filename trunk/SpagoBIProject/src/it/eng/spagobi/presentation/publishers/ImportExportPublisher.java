@@ -50,7 +50,7 @@ public class ImportExportPublisher implements PublisherDispatcherIFace {
 		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("ImportExportModule");
 		if(moduleResponse==null) {
 			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getPublisherName", "Module response null");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10, "component_impexp_messages");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "10", "component_impexp_messages");
 			errorHandler.addError(error);
 			return "error";
 		}

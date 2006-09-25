@@ -51,7 +51,7 @@ public class BookletsManagementPublisher implements PublisherDispatcherIFace {
 		if(moduleResponse==null) {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
 					            "getPublisherName", "Module response null");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_booklets_messages");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_booklets_messages");
 			errorHandler.addError(error);
 		}
 		// get publisher name from response
@@ -60,7 +60,7 @@ public class BookletsManagementPublisher implements PublisherDispatcherIFace {
 		if((pubName==null) || pubName.trim().equals("")) {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
 		                       "getPublisherName", "Module Response doesn't contain a publisher name");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_booklets_messages");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_booklets_messages");
 			errorHandler.addError(error);
 		}
 		

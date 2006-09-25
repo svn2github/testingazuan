@@ -346,7 +346,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (GenericValidator.isBlankOrNull(value)){
 							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_MANDATORY, params));	
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MANDATORY, params));	
 							
 						}
 
@@ -356,7 +356,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (!GenericValidator.isBlankOrNull(value) && !urlValidator.isValid(value)){
 							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_URL,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_URL,params));
 							
 						}
 					} 
@@ -365,7 +365,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, LETTER_STRING_REGEXP)){
 							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_LETTERSTRING,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_LETTERSTRING,params));
 							
 						}
 					} else if (validatorName.equalsIgnoreCase("ALFANUMERIC")){
@@ -374,7 +374,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						
 							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_ALFANUMERIC,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_ALFANUMERIC,params));
 							
 						}
 					} else if (validatorName.equalsIgnoreCase("NUMERIC")){
@@ -391,7 +391,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							
 							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_NUMERIC,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_NUMERIC,params));
 							
 						}
 						
@@ -402,7 +402,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							// Generate errors
 							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_EMAIL,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_EMAIL,params));
 							
 						}
 					} else if (validatorName.equalsIgnoreCase("FISCALCODE")){
@@ -412,7 +412,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 //							 Generate errors
 							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_FISCALCODE,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_FISCALCODE,params));
 							
 						}
 					} else if (validatorName.equalsIgnoreCase("DECIMALS")){
@@ -449,8 +449,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 								params.add(String
 										.valueOf(maxNumberOfDecimalDigit));
 								errorHandler.addError(new EMFValidationError(
-										EMFErrorSeverity.ERROR, ERROR_DECIMALS,
-										params));
+										EMFErrorSeverity.ERROR, fieldName, ERROR_DECIMALS, params));
 							}
 						}
 					} else if (validatorName.equalsIgnoreCase("NUMERICRANGE")){
@@ -482,11 +481,11 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 									params.add(fieldLabel);
 									params.add(firstValueStr);
 									params.add(secondValueStr);
-									errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_RANGE,params));
+									errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params));
 							
 								}
 							}else{
-								errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_GENERIC));
+								errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_GENERIC));
 							}
 						}
 					} else if (validatorName.equalsIgnoreCase("DATERANGE")){
@@ -530,10 +529,10 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 								params.add(fieldLabel);
 								params.add(firstValueStr);
 								params.add(secondValueStr);
-								errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_RANGE,params));
+								errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params));
 							}
 						}else{
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_GENERIC));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_GENERIC));
 						}
 						}
 					} else if (validatorName.equalsIgnoreCase("STRINGRANGE")){
@@ -549,7 +548,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							params.add(fieldLabel);
 							params.add(firstValueStr);
 							params.add(secondValueStr);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_RANGE,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params));
 						}
 						}
 					} else if (validatorName.equalsIgnoreCase("MAXLENGTH")){
@@ -563,7 +562,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							params.add(fieldLabel);
 							params.add(String.valueOf(maxLength));
 							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_MAXLENGTH,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MAXLENGTH,params));
 						
 						}
 						}
@@ -579,7 +578,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							params.add(fieldLabel);
 							params.add(String.valueOf(minLength));
 							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_MINLENGTH,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MINLENGTH,params));
 						
 						}
 						}
@@ -595,7 +594,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							params.add(fieldLabel);
 							params.add(regexp);
 							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_REGEXP,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_REGEXP,params));
 						
 						}
 						}
@@ -613,7 +612,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							params.add(fieldLabel);
 							params.add(dateFormat);
 							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_DATE,params));
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_DATE,params));
 						}
 						}
 						

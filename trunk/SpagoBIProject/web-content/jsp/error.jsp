@@ -12,7 +12,8 @@
 
 
 <%
-   
+    
+    // delete validation xml envelope from session
     List sessAttrs = aSessionContainer.getAttributeNames();
     Iterator iterAttrs = sessAttrs.iterator();
     String nameAttrs = null;
@@ -23,23 +24,40 @@
     	}
     }
 
+    // try to get from the session a pre-built back url 
     PortletURL sessionback = null;
     Object sessBackObj = aSessionContainer.getAttribute("NAVIGATION");
     if(sessBackObj!= null)
     	sessionback = (PortletURL)sessBackObj;
 
 
+    // recover error handler and error collection 
     EMFErrorHandler errorHandler = aResponseContainer.getErrorHandler();  
 	Collection errors = errorHandler.getErrors();
 	Iterator iter = errors.iterator();  
-	Object addInfo = null;  
+	
+	// try to get addition info from one of the errors (the first add info found will be taken)
+	Object addInfo = null;
+	while(iter.hasNext()) {
+		EMFAbstractError abErr = (EMFAbstractError)iter.next();
+		Object errAddInfo = abErr.getAdditionalInfo();
+	    if(errAddInfo!=null) {
+	    	addInfo = errAddInfo;
+	    	break;
+	    }
+	}
 %>
 
+
+
+
 <%
-    PortletURL backUrl = null;
+    // built url
+	PortletURL backUrl = null;
+
     if(sessionback!=null) {
     	backUrl = sessionback;
-    } else {
+    } else {   	
     	backUrl = renderResponse.createActionURL();
 		if( (addInfo!=null) && (addInfo instanceof HashMap) ) {
 		     HashMap map = (HashMap)addInfo;
@@ -51,16 +69,20 @@
 				backUrl.setParameter(key, value);	     
 		     }
 		 } else {
-		    backUrl.setParameter("NAVIGATOR_BACK", "1");   
+			 backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		 } 
     }
-    backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    
 %>
+
+
+
+
+
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-			style='vertical-align:middle;padding-left:5px;'>
+		<td class='header-title-column-portlet-section'>
 			<spagobi:message key = "SBIErrorPage.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
@@ -72,12 +94,12 @@
 	</tr>
 </table>
 
-<!-- br/-->
 
-<div class="div_background_no_img">
-	<div style="border: 1px solid #cccccc;background-color:#fafafa;margin:5px;text-align:center;">
-		<p class="portlet-msg-error">
+
+<div style='width:100%;text-align:center;'>
+	<div class="portlet-msg-error">
 	    <% 
+	    	iter = errors.iterator(); 
 	        EMFAbstractError error = null;
 	        String description = "";
 	    	while(iter.hasNext()) {
@@ -90,25 +112,8 @@
 			<%= description %>
 			<br/>
 		<% } %>
-		</p>
 	</div>
 </div>		
-
-<!--br/-->
-
-
-
-<%--div style='width:100%;text-align:center;' >
-	<a href='<%= backUrl.toString() %>' class='portlet-menu-item' >
-    		<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='Back' />
-	</a> 
-	<br/>
-	<a href='<%= backUrl.toString() %>'>
-	<spagobi:message key = "SBIErrorPage.backButt" />
-	</a>
-
-
-</div--%>
 
 
 

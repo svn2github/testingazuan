@@ -89,6 +89,8 @@ public interface IBookletsCmsDao {
 	
 	public String getBookletName(String pathBooklet);
 	
+	public String getBiobjectPath(String pathBooklet);
+	
 	//public void saveWorkflowConfiguration(String pathBooklet, WorkflowConfiguration workConf);
 	
 	//public WorkflowConfiguration getWorkflowConfiguration(String pathBooklet);

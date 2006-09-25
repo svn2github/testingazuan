@@ -34,12 +34,12 @@ package it.eng.spagobi.booklets.constants;
 		public static final String CONFIGURED_DOCUMENT_LIST = "CONFIGURED_DOCUMENT_LIST";
 		public static final String OPERATION_DETAIL_CONFIGURED_DOCUMENT = "OPERATION_DETAIL_CONFIGURED_DOCUMENT";
 		public static final String OPERATION_DELETE_CONFIGURED_DOCUMENT = "OPERATION_DELETE_CONFIGURED_DOCUMENT";
-		public static final String OPERATION_LOAD_OOTEMPLATE_BOOKLET = "OPERATION_LOAD_OOTEMPLATE_BOOKLET";
-		public static final String OPERATION_SAVE_WORKFLOWDATA = "OPERATION_SAVE_WORKFLOWDATA";
 		public static final String OPERATION_APPROVE_PRESENTATION = "OPERATION_APPROVE_PRESENTATION";
 		public static final String OPERATION_NEW_CONFIGURED_DOCUMENT = "OPERATION_NEW_CONFIGURED_DOCUMENT";
 		public static final String OPERATION_RUN_NEW_COLLABORATION = "OPERATION_RUN_NEW_COLLABORATION";
 		public static final String OPERATION_DELETE_PRESENTATION_VERSION = "OPERATION_DELETE_PRESENTATION_VERSION";
+		public static final String OPERATION_SAVE_DETAIL_BOOKLET = "OPERATION_SAVE_DETAIL_BOOKLET";
+		public static final String OPERATION_SAVE_NEW_VERSION_BOOKLET = "OPERATION_SAVE_NEW_VERSION_BOOKLET";
 		public static final String BOOKLET_DRIVER_FILTER_SB = "BOOKLETS.TECHNOLOGY_DRIVER_FILTER";
 		public static final String PUBLISHER_NAME = "PUBLISHER_NAME";
 		public static final String PATH_OBJECT = "PATH_OBJECT";
@@ -53,5 +53,13 @@ package it.eng.spagobi.booklets.constants;
 		public static final String BOOKLET_PRESENTATION_VERSIONS = "BOOKLET_PRESENTATION_VERSIONS";
 		public static final String BOOKLET_PRESENTATION_VERSION_NAME = "BOOKLET_PRESENTATION_VERSION_NAME";
 		
+		public static final String BOOKLET_BIOBJECT_ID = "BIOBJ_ID";
+		public static final String BOOKLET_SERVICE_TASK = "task";
+		public static final String BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE = "getTemplateImage";
+		public static final String BOOKLET_SERVICE_PATH_IMAGE = "pathimg";
+		public static final String BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC = "downloadFinalDocument";
+		public static final String BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION = "downloadPresentationVersion";
+		public static final String BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE = "downloadOOTemplate";
+		public static final String BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION = "downloadWEorkflowDefinition";
 		
 	}

@@ -30,7 +30,6 @@ import it.eng.spago.cms.CmsVersion;
 import it.eng.spago.cms.operations.DeleteOperation;
 import it.eng.spago.cms.operations.GetOperation;
 import it.eng.spago.cms.operations.SetOperation;
-import it.eng.spago.util.PortletUtilities;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
@@ -38,6 +37,7 @@ import it.eng.spagobi.booklets.bo.ConfiguredBIDocument;
 import it.eng.spagobi.booklets.bo.PresentationVersion;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.ByteArrayInputStream;
@@ -779,6 +779,15 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "versionPresentation", "Error while storing approved booklet presentation", e);
 		} finally {	}
+	}
+
+
+
+
+
+	public String getBiobjectPath(String pathBooklet) {
+		String pathBiObj = pathBooklet.substring(0, pathBooklet.lastIndexOf("/"));
+		return pathBiObj;
 	}
 
 

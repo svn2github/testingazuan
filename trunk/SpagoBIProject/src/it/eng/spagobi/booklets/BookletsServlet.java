@@ -31,12 +31,14 @@ package it.eng.spagobi.booklets;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.servlet.ServletConfig;
@@ -51,7 +53,7 @@ import org.jbpm.context.exe.ContextInstance;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 
-public class BookletsImageServlet extends HttpServlet{
+public class BookletsServlet extends HttpServlet{
 	
 	public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -61,10 +63,10 @@ public class BookletsImageServlet extends HttpServlet{
 		OutputStream out = null;
 		String task = "";
 		try{
-	 		task = (String)request.getParameter("task");		
+	 		task = (String)request.getParameter(BookletsConstants.BOOKLET_SERVICE_TASK);		
 	 		out = response.getOutputStream();
-	 		if(task.equalsIgnoreCase("getTemplateImage")){
-	 			String pathimg = (String)request.getParameter("pathimg");
+	 		if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE)){
+	 			String pathimg = (String)request.getParameter(BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE);
 			 	if(pathimg!=null) {
 				 	File imgFile = new File(pathimg);
 				 	FileInputStream fis = new FileInputStream(imgFile);
@@ -75,8 +77,8 @@ public class BookletsImageServlet extends HttpServlet{
 		            imgFile.delete();
 		            return;
 			 	} 
-	 		} else if(task.equalsIgnoreCase("downloadFinalDocument")){
-	 			String activityKey = request.getParameter("ActivityKey");
+	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC)){
+	 			String activityKey = request.getParameter(SpagoBIConstants.ACTIVITYKEY);
 	 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
 	 	    	JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
 	 			long activityKeyId = Long.valueOf(activityKey).longValue();
@@ -93,7 +95,7 @@ public class BookletsImageServlet extends HttpServlet{
 	 			out.flush();
 	            return;
 		 		
-	 		} else if(task.equalsIgnoreCase("downloadPresentationVersion")) {
+	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {
 	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
                 String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
 	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
@@ -102,6 +104,30 @@ public class BookletsImageServlet extends HttpServlet{
 	 			response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
 	 			response.setContentLength(finalDocBytes.length);
 	 			out.write(finalDocBytes);
+	 			out.flush();
+	            return;
+	            
+	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE)) {
+	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
+	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+	 			String templateFileName = bookdao.getBookletTemplateFileName(pathBook);
+	 			InputStream templateIs = bookdao.getBookletTemplateContent(pathBook);
+	 			byte[] templateByts = GeneralUtilities.getByteArrayFromInputStream(templateIs);
+	 			response.setHeader("Content-Disposition","attachment; filename=\"" + templateFileName + "\";");
+	 			response.setContentLength(templateByts.length);
+	 			out.write(templateByts);
+	 			out.flush();
+	            return;
+	 			
+	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION)) {
+	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
+	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+	 			String workDefName = bookdao.getBookletProcessDefinitionFileName(pathBook);
+	 			InputStream workIs = bookdao.getBookletProcessDefinitionContent(pathBook);
+	 			byte[] workByts = GeneralUtilities.getByteArrayFromInputStream(workIs);
+	 			response.setHeader("Content-Disposition","attachment; filename=\"" + workDefName + "\";");
+	 			response.setContentLength(workByts.length);
+	 			out.write(workByts);
 	 			out.flush();
 	            return;
 	 		}

@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 public class BookletsManagementPublisher implements PublisherDispatcherIFace {
@@ -62,12 +63,20 @@ public class BookletsManagementPublisher implements PublisherDispatcherIFace {
 			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100, "component_booklets_messages");
 			errorHandler.addError(error);
 		}
-		// return right publisher		
-		if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			return pubName;
+		
+		
+		//	if there are errors and they are only validation errors return the name for the detail publisher
+		if(!errorHandler.isOK()) {
+			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+				return pubName;
+			} else {
+				return new String("error");
+			}
 		} else {
-			return new String("error");
+			return pubName;
 		}
+		
+		
 	}
 
 }

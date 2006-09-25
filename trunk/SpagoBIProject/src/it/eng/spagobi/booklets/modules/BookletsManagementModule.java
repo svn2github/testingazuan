@@ -24,10 +24,12 @@ package it.eng.spagobi.booklets.modules;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.module.AbstractModule;
+import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
@@ -37,8 +39,8 @@ import it.eng.spagobi.bo.dao.IRoleDAO;
 import it.eng.spagobi.booklets.bo.ConfiguredBIDocument;
 import it.eng.spagobi.booklets.bo.WorkflowConfiguration;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
-import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
+import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -97,31 +99,11 @@ public class BookletsManagementModule extends AbstractModule {
 				deleteConfiguredDocumentHandler(request, response);
 			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_DETAIL_CONFIGURED_DOCUMENT)) {
 				detailConfiguredDocumentHandler(request, response);
-			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_LOAD_OOTEMPLATE_BOOKLET)) {
-				loadOOTemplateHandler(request, response);
-			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_SAVE_WORKFLOWDATA)) {
-				saveWorkflowDataHandler(request, response);
+			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET)) {
+				saveBookletDetailHandler(request, response, false);
+			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_SAVE_NEW_VERSION_BOOKLET)){
+				saveBookletDetailHandler(request, response, true);
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			/*
-			else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_NEW_PAMPHLET)) {
-				pamphletsNewHandler(request, response);
-			}      else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_GENERATE_DOCUMENT_PARTS)) {
-				generateDocumentPartsHandler(request, response);
-			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_ERASE_PAMPHLET)) {
-				erasePamphletHandler(request, response);
-			} 
-			*/
-			
-			
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
 			return;
@@ -135,10 +117,20 @@ public class BookletsManagementModule extends AbstractModule {
 		}
 	}
 
-	
+	/*
+	private void newTemplateVersionHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
+		String pathConfBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+		String pathBiObj = bookDao.getBiobjectPath(pathConfBook);
+		String bookTemplatePath = bookDao.createNewConfigurationNode(pathBiObj);
+		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
+		response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+	}
+	*/
 	
 	private void newTemplateHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
 		String pathBiObject = (String)request.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
+		// create the new template cms node
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
 		String bookTemplatePath = bookDao.createNewConfigurationNode(pathBiObject);
 		if(bookTemplatePath==null) {
@@ -172,12 +164,17 @@ public class BookletsManagementModule extends AbstractModule {
 	
 	private void newConfiguredDocumentHandler(SourceBean request, SourceBean response) 
 											  throws SourceBeanException, EMFUserError {
+		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 		Object objPath = request.getAttribute(BookletsConstants.PATH_OBJECT);
 		if(!(objPath instanceof String)){
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 102, "component_booklets_messages");
+			Map errBackPars = new HashMap();
+			errBackPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+			errBackPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+			errBackPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			errBackPars.put(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 102, null, errBackPars, "component_booklets_messages");
 		}
 		String pathObject = (String)objPath;
-        String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 		BIObject obj = null;
 		List params = null;
 		List roleList = null;
@@ -229,7 +226,8 @@ public class BookletsManagementModule extends AbstractModule {
 		// get logical name assigned to the configured document
 		String logicalName = (String)request.getAttribute("logicalname");
 		if( (logicalName==null) || logicalName.trim().equalsIgnoreCase("") ) {
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 103, "component_booklets_messages");
+			logicalName = "";
+			//throw new EMFUserError(EMFErrorSeverity.ERROR, 103, "component_booklets_messages");
 		}
 		// load biobject using id
 		Integer id = new Integer(idobj);
@@ -241,31 +239,50 @@ public class BookletsManagementModule extends AbstractModule {
 		Iterator iterParams = params.iterator();
 		// get map of the param url name and value assigned
 		boolean findOutFormat = false;
-		Map paramMap = new HashMap();
+		Map paramValueMap = new HashMap();
+		Map paramNameMap = new HashMap();
 		while(iterParams.hasNext()) {
 			BIObjectParameter par = (BIObjectParameter)iterParams.next();
 			String parUrlName = par.getParameterUrlName();
 			if(parUrlName.equalsIgnoreCase("param_output_format"))
 				findOutFormat = true;
 			String value = (String)request.getAttribute(parUrlName);
-			paramMap.put(parUrlName, value);
+			paramValueMap.put(parUrlName, value);
+			paramNameMap.put(par.getLabel(), par.getParameterUrlName());
 		}
 		if(!findOutFormat){
-			paramMap.put("param_output_format", "JPGBASE64");
+			paramValueMap.put("param_output_format", "JPGBASE64");
 		}
 		// fill a configured document bo with data retrived
 		ConfiguredBIDocument confDoc = new ConfiguredBIDocument();
 		confDoc.setDescription(obj.getDescription());
 		confDoc.setId(obj.getId());
 		confDoc.setLabel(obj.getLabel());
-		confDoc.setParameters(paramMap);
+		confDoc.setParameters(paramValueMap);
 		confDoc.setName(obj.getName());
 		confDoc.setLogicalName(logicalName);
-		// store the configured document
-		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
-		bookDao.addConfiguredDocument(pathConfBook, confDoc);
-		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-		response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+		
+		// check if the error handler contains validation errors
+		EMFErrorHandler errorHandler = getResponseContainer().getErrorHandler();
+		if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)){
+			// store the configured document
+			IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+			bookDao.addConfiguredDocument(pathConfBook, confDoc);
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
+			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+		} else {
+			// set attribute into response
+			response.setAttribute("parnamemap", paramNameMap);
+			response.setAttribute("parvaluemap", paramValueMap);
+			response.setAttribute("idobj", confDoc.getId());
+			response.setAttribute("description", confDoc.getDescription());
+			response.setAttribute("label", confDoc.getLabel());
+			response.setAttribute("name", confDoc.getName());
+			response.setAttribute("logicalname", confDoc.getLogicalName());
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletConfiguredDocumentDetail"); 
+			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook); 
+		}
+		
 	}
 	
 	
@@ -352,9 +369,7 @@ public class BookletsManagementModule extends AbstractModule {
 	
 	
 	
-	
-
-	private void loadOOTemplateHandler(SourceBean request, SourceBean response) throws Exception {
+	private void saveBookletDetailHandler(SourceBean request, SourceBean response, boolean newVersion) throws Exception {
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 		if (portletRequest instanceof ActionRequest) {
 			ActionRequest actionRequest = (ActionRequest) portletRequest;
@@ -363,128 +378,36 @@ public class BookletsManagementModule extends AbstractModule {
 			}
 		}
 		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-		Object upFileObj = request.getAttribute("UPLOADED_FILE");
-		UploadedFile upFile = (UploadedFile)request.getAttribute("UPLOADED_FILE");
-		String fileName = upFile.getFileName();
-		byte[] fileContent = upFile.getFileContent();
-		// store the content of the template
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
-		bookDao.storeBookletTemplate(pathBookConf, fileName, fileContent);
-		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-		response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
-	}
-	
-	
-	private void saveWorkflowDataHandler(SourceBean request, SourceBean response) throws Exception {
-		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		if (portletRequest instanceof ActionRequest) {
-			ActionRequest actionRequest = (ActionRequest) portletRequest;
-			if (PortletFileUpload.isMultipartContent(actionRequest)) {
-				request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
+		// check if a new version is requested
+		if(newVersion) {
+			String pathBiObj = bookDao.getBiobjectPath(pathBookConf);
+			String bookTemplatePath = bookDao.createNewConfigurationNode(pathBiObj);
+		}
+		// save inforamtion
+		Object uplObj = request.getAttribute("UPLOADED_FILE");
+		if(uplObj instanceof List) {
+			List uplList = (List)uplObj;
+			Iterator iterUpl = uplList.iterator();
+			while(iterUpl.hasNext()) {
+				UploadedFile upFile = (UploadedFile)iterUpl.next();
+				String nameInForm = upFile.getFieldNameInForm();
+				String fileName = upFile.getFileName();
+				byte[] fileContent = upFile.getFileContent();
+				if(nameInForm.equals("wfdefinitionfile")){
+					if(fileContent.length!=0) {
+						bookDao.storeBookletProcessDefinition(pathBookConf, fileName, fileContent);
+					}
+				}
+				if(nameInForm.equals("templatefile")) {
+					if(fileContent.length!=0) {
+						bookDao.storeBookletTemplate(pathBookConf, fileName, fileContent);
+					}
+				}
 			}
 		}
-		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-		UploadedFile upFile = (UploadedFile)request.getAttribute("UPLOADED_FILE");
-		String fileName = upFile.getFileName();
-		byte[] fileContent = upFile.getFileContent();
-		// store the content of the template
-		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
-		bookDao.storeBookletProcessDefinition(pathBookConf, fileName, fileContent);
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
 		response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
-		//****************** OLD CODE *****************************
-		//*********************************************************
-		/*
-		// get name workflow package and process
-		String packageName = (String)request.getAttribute("nameWorkPackage");
-		String processName = (String)request.getAttribute("nameWorkProcess");
-		String pathPamp = (String)request.getAttribute(BookletsConstants.PATH_PAMPHLET);
-		if(!((packageName==null) ||
-		   (processName==null) ||
-		   packageName.trim().equals("") ||
-		   processName.trim().equals(""))) {
-			WorkflowConfiguration workConf = new WorkflowConfiguration();
-			workConf.setNameWorkflowPackage(packageName);
-			workConf.setNameWorkflowProcess(processName);
-			IPamphletsCmsDao pampDao = new PamphletsCmsDaoImpl();
-			pampDao.saveWorkflowConfiguration(pathPamp, workConf);
-		}
-		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "PamphletsLoopbackPamphletDetail");
-		response.setAttribute(BookletsConstants.PATH_PAMPHLET, pathPamp);
-		*/
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	/*
-	private void pamphletsNewHandler(SourceBean request, SourceBean response) throws SourceBeanException {
-		
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		SourceBean cmsPathPampSB = (SourceBean)config.getAttribute("PAMPHLETS.BASE_CMS_NODE");
-		String cmsPathPamp = (String)cmsPathPampSB.getAttribute("path");
-		String namePamp = (String)request.getAttribute("nameNewPamphlet");
-		IPamphletsCmsDao pampDao = new PamphletsCmsDaoImpl();
-		pampDao.addPamphlet(cmsPathPamp, namePamp);
-		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "PamphletsLoopbackManagementHome");
-		
-	}
-	
-	
-	private void generateDocumentPartsHandler(SourceBean request, SourceBean response) throws Exception {
-		
-		RequestContainer reqCont = RequestContainer.getRequestContainer();
-		SessionContainer sessCont = reqCont.getSessionContainer();
-		SessionContainer permCont = sessCont.getPermanentContainer();
-		IEngUserProfile userProfile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String nameUser = userProfile.getUserUniqueIdentifier().toString();
-		
-		String pathPamp = (String)request.getAttribute(BookletsConstants.PATH_PAMPHLET);
-		IWorkflowEngine wfEngine = (IWorkflowEngine)ApplicationContainer.getInstance().getAttribute("WfEngine");
-		IWorkflowConnection wfConnection = wfEngine.getWorkflowConnection();
-		//wfConnection.open("biadmin","biadmin");
-		wfConnection.open(nameUser, nameUser);
-		Map context = new HashMap();
-		context.put("PathPamphlet", pathPamp);
-		
-		IPamphletsCmsDao pampDao = new PamphletsCmsDaoImpl();
-		WorkflowConfiguration workConf = pampDao.getWorkflowConfiguration(pathPamp);
-		String namePackage = workConf.getNameWorkflowPackage();
-		String nameProcess = workConf.getNameWorkflowProcess();
-		
-		if(namePackage.trim().equals("") || nameProcess.trim().equals("") ) {
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 101, "component_pamphlets_messages");
-		}
-		IWorkflowProcess aWfProcess = wfConnection.createProcessWithInitialContext(namePackage,
-																				   nameProcess, 
-																				   context);
-		
-		//IWorkflowProcess aWfProcess = wfConnection.createProcessWithInitialContext("SpagoBI", "SpagoBI_Phamplet_ExampleDocument", context);
-		aWfProcess.start();
-		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "PamphletsLoopbackPamphletDetail");
-		response.setAttribute(BookletsConstants.PATH_PAMPHLET, pathPamp);
-	}
-	
-	
-	
-	private void erasePamphletHandler(SourceBean request, SourceBean response) throws Exception {
-		String pathPamp = (String)request.getAttribute(BookletsConstants.PATH_PAMPHLET);
-		// delete pamphlet
-		IPamphletsCmsDao pampDao = new PamphletsCmsDaoImpl();
-		pampDao.deletePamphlet(pathPamp);
-		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "PamphletsLoopbackManagementHome");
-	}
-	
-	
-	
-	
-	
-	*/
 	
 }

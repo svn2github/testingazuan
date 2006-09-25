@@ -12,6 +12,7 @@ import it.eng.spagobi.booklets.bo.ConfiguredBIDocument;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
+import it.eng.spagobi.booklets.exceptions.OpenOfficeConnectionException;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -127,7 +128,13 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			debug("execute", "initial XComponentContext created " + xRemoteContext);
 			XUnoUrlResolver urlResolver = UnoUrlResolver.create(xRemoteContext);
 			debug("execute", "XUnoUrlResolver retrived " + urlResolver);
-			Object initialObject = urlResolver.resolve("uno:socket,host="+host+",port="+port+";urp;StarOffice.ServiceManager");
+			Object initialObject = null;
+			try{
+				initialObject = urlResolver.resolve("uno:socket,host="+host+",port="+port+";urp;StarOffice.ServiceManager");
+			} catch (Exception e) {
+				major("execute", "Cannot connect to open office using host " + host + " and port " + port);
+				throw new OpenOfficeConnectionException("Cannot connect to open office using host " + host + " and port " + port);
+			}
 			debug("execute", "Office url resolved");
 			XMultiComponentFactory xRemoteServiceManager = (XMultiComponentFactory)UnoRuntime.queryInterface(XMultiComponentFactory.class, initialObject);
 			debug("execute", "XMultiComponentFactory retrived " + xRemoteServiceManager);

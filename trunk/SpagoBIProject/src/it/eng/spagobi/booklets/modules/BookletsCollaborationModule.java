@@ -31,8 +31,10 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
+import it.eng.spagobi.booklets.exceptions.OpenOfficeConnectionException;
+import it.eng.spagobi.booklets.utils.BookletServiceUtils;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.File;
@@ -46,6 +48,7 @@ import java.util.Map;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
 import org.jbpm.context.exe.ContextInstance;
+import org.jbpm.db.GraphSession;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
@@ -139,38 +142,38 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	
-	
+
 	private void runCollaborationHandler(SourceBean request, SourceBean response) {
+		JbpmContext jbpmContext = null;
 		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-		String exMsg = "Workflow Process Started correctly";
+		String executionMsg = null;
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
 		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBookConf);		
-		// parse process definition
-		ProcessDefinition processDefinition = null;
-		try{
-			processDefinition = ProcessDefinition.parseXmlInputStream(procDefIS);
-		} catch(Exception e) {
-			exMsg = "Error";
-			System.out.println(e);
-		}
-		try{
+		try {
+			// parse process definition
+			ProcessDefinition processDefinition = null;
+			try{
+				processDefinition = ProcessDefinition.parseXmlInputStream(procDefIS);
+			} catch(Exception e) {
+				executionMsg = PortletUtilities.getMessage("book.processDefNotCorrect", "component_booklets_messages"); 
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+		            			    "runCollaborationHandler", "Process definition xml file not correct", e);
+				throw e;
+			}	
 			procDefIS.close();
-		} catch (Exception e){
-			exMsg = "Error";
-			System.out.println(e);
-		}
-        // get name of the process
-		String nameProcess = processDefinition.getName();
-		// get jbpm context
-		JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-		JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-	    try{
-	    	// deploy process   
+		    // get name of the process
+			String nameProcess = processDefinition.getName();
+			// get jbpm context
+			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+			jbpmContext = jbpmConfiguration.createJbpmContext();
+			// deploy process   
 			try{
 				jbpmContext.deployProcessDefinition(processDefinition);  
 			} catch (Exception e) {
-				exMsg = "Error";
-				System.out.println(e);
+				executionMsg = PortletUtilities.getMessage("book.workProcessStartError", "component_booklets_messages");
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+        			                "runCollaborationHandler", "Error while deploying process definition", e);
+				throw e;
 			}
 			// create process instance
 			ProcessInstance processInstance = new ProcessInstance(processDefinition);
@@ -179,23 +182,44 @@ public class BookletsCollaborationModule extends AbstractModule {
 			contextInstance.createVariable(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);			
 			// start workflow
 			Token token = processInstance.getRootToken();
-		    token.signal();
-		    jbpmContext.save(processInstance); 
+			GraphSession graphSess = jbpmContext.getGraphSession();
+			try{
+				token.signal();
+			} catch (Exception e) {
+				if(e.getCause() instanceof OpenOfficeConnectionException ) {
+					executionMsg = PortletUtilities.getMessage("book.errorConnectionOO", "component_booklets_messages"); 
+				}
+			    throw e;
+			}
+			// save workflow data
+			jbpmContext.save(processInstance); 
+			
 	    } catch (Exception e){
-	    	exMsg = "Error";
+	    	if(executionMsg==null) {
+	    		executionMsg = PortletUtilities.getMessage("book.workProcessStartError", "component_booklets_messages");
+	    	}
 	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
                                 "runCollaborationHandler","Error while starting workflow",  e);
 	    } finally {
-	           jbpmContext.close();
+	    	if(executionMsg==null){
+	    		executionMsg = PortletUtilities.getMessage("book.workProcessStartCorrectly", "component_booklets_messages");
+	    	}
+	    	if(jbpmContext!=null){
+	    		jbpmContext.close();
+	    	}
 	    } 
 	    try{
 	    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsExecution");
-	    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, exMsg);
+	    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, executionMsg);
 	    } catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
                                 "runCollaborationHandler","Error while setting attributes into response", e);
 	    }
 	}
+	
+
+	
+	
 	
 	
 	
@@ -227,6 +251,8 @@ public class BookletsCollaborationModule extends AbstractModule {
 		}
 	    
 	}
+	
+	
 	
 	
 	
@@ -295,9 +321,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    	fos.flush();
 	    	fos.close();
 	    	// the url to recover the image is a spagobi servlet url
-	    	String contextAddress = GeneralUtilities.getSpagoBiContextAddress();
-	    	String recoverUrl = contextAddress + "/BookletsImageService?task=getTemplateImage&pathimg=" + 
-	    	pathTmpFold + "/" + logicalNameForStoring;
+	    	
+	    	String recoverUrl = BookletServiceUtils.getBookletServiceUrl() + "?" + 
+	    						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
+	    						BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE + "&" +
+	    						BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE + "=" +
+	    						pathTmpFold + "/" + logicalNameForStoring;
 	    	imageurl.put(logicalName, recoverUrl); 
 	    }
 	   return imageurl;

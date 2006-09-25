@@ -26,12 +26,9 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
-
-import java.util.Collection;
-import java.util.Iterator;
 
 public class CheckLinksDispatcherPublisher implements PublisherDispatcherIFace {
 	/**
@@ -57,18 +54,11 @@ public class CheckLinksDispatcherPublisher implements PublisherDispatcherIFace {
 		// SourceBean serviceRequest = requestContainer.getServiceRequest();
 		EMFErrorHandler errorHandler = response.getErrorHandler();
 		
-		boolean hasOnlyValidationErrors = true;
-		Collection errors = errorHandler.getErrors();
-		if (errors != null && errors.size() > 0) {
-			Iterator iterator = errors.iterator();
-			while (iterator.hasNext()) {
-				Object error = iterator.next();
-				if (!(error instanceof EMFValidationError)) {
-					hasOnlyValidationErrors = false;
-					break;
-				}
+		// if there are errors and they are only validation errors
+		if(!errorHandler.isOK()) {
+			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+				return getPublisherName(moduleResponse);
 			}
-			if (hasOnlyValidationErrors) getPublisherName(moduleResponse);
 		}
 		
 		if (errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR))

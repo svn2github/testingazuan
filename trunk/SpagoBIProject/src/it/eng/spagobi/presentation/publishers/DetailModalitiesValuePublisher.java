@@ -21,18 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/                                                                                                                                            
 package it.eng.spagobi.presentation.publishers;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 /**
@@ -76,19 +73,9 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 			return new String("error");
 		}
 		
-		// if there are only validation errors return the name for the detail publisher
-		boolean hasOnlyValidationErrors = true;
-		Collection errors = errorHandler.getErrors();
-		if (errors != null && errors.size() > 0) {
-			Iterator iterator = errors.iterator();
-			while (iterator.hasNext()) {
-				Object error = iterator.next();
-				if (!(error instanceof EMFValidationError)) {
-					hasOnlyValidationErrors = false;
-					break;
-				}
-			}
-			if (hasOnlyValidationErrors) {
+		// if there are errors and they are only validation errors return the name for the detail publisher
+		if(!errorHandler.isOK()) {
+			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
 				if (detailMR != null) {
 					return new String("detailModalitiesValue");
 				} else if (listTestQueryMR != null) {
@@ -98,7 +85,6 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 				}	
 			}
 		}
-
 		
 		// if there are some errors into the errorHandler, return the name for the errors publisher or the detail publisher
 		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {

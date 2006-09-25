@@ -38,7 +38,6 @@ import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
@@ -58,7 +57,6 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;

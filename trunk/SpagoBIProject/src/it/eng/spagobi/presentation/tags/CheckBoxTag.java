@@ -30,21 +30,16 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
-import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 

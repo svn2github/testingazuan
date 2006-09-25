@@ -28,13 +28,10 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
-
-import java.util.Collection;
-import java.util.Iterator;
 /**
  * A publisher used to lead execution flow after a import / export service.
  */
@@ -59,15 +56,20 @@ public class ImportExportPublisher implements PublisherDispatcherIFace {
 		}
 		
 		String pubName = (String)moduleResponse.getAttribute(ImportExportConstants.PUBLISHER_NAME);
-		boolean onlyValErr = hasOnlyValidationErrors(errorHandler);
 		
-		if(onlyValErr){
-			if((pubName!=null) && !(pubName.trim().equals(""))) {
-				return pubName;
-			} else { 
-				return new String("ImportExportLoopback");
+		// if there are errors and they are only validation errors return the name for the detail publisher
+		if(!errorHandler.isOK()) {
+			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+				if((pubName!=null) && !(pubName.trim().equals(""))) {
+					return pubName;
+				} else { 
+					return new String("ImportExportLoopback");
+				}
 			}
-		} else if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+		}
+		
+		
+		if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			if((pubName!=null) && !(pubName.trim().equals(""))) {
 				return pubName;
 			} else {
@@ -79,23 +81,5 @@ public class ImportExportPublisher implements PublisherDispatcherIFace {
 		
 	}
 	
-	
-	
-
-	private boolean hasOnlyValidationErrors(EMFErrorHandler errorHandler) {
-		boolean hasOnlyValidationErrors = true;
-		Collection errors = errorHandler.getErrors();
-		if (errors != null && errors.size() > 0) {
-			Iterator iterator = errors.iterator();
-			while (iterator.hasNext()) {
-				Object error = iterator.next();
-				if (!(error instanceof EMFValidationError)) {
-					hasOnlyValidationErrors = false;
-					break;
-				}
-			}
-		}
-		return hasOnlyValidationErrors;
-	}
 	
 }

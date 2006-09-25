@@ -25,11 +25,8 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-
-import java.util.Collection;
-import java.util.Iterator;
+import it.eng.spagobi.utilities.GeneralUtilities;
 /**
  * Publishes the results of a list information request for value constraints
  * into the correct jsp page according to what contained into request. If Any errors occurred during the 
@@ -56,20 +53,12 @@ public class ListModalitiesChecksPublisher implements PublisherDispatcherIFace {
 		//SourceBean serviceRequest = requestContainer.getServiceRequest();
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
-		boolean hasOnlyValidationErrors = true;
-		Collection errors = errorHandler.getErrors();
-		if (errors != null && errors.size() > 0) {
-			Iterator iterator = errors.iterator();
-			while (iterator.hasNext()) {
-				Object error = iterator.next();
-				if (!(error instanceof EMFValidationError)) {
-					hasOnlyValidationErrors = false;
-					break;
-				}
+		// if there are errors and they are only validation errors return the name for the detail publisher
+		if(!errorHandler.isOK()) {
+			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+				return "listModalitiesChecks";
 			}
-			if (hasOnlyValidationErrors) return "listModalitiesChecks";
 		}
-		
 		
 		if (errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR))
 			return new String("listModalitiesChecks");

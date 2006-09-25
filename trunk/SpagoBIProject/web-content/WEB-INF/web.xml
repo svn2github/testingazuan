@@ -16,6 +16,31 @@
     <listener>
         <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
     </listener>
+    
+    <!--
+    <filter>
+ 		<filter-name>CAS_Filter</filter-name>
+ 		<filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
+    	<init-param>
+       		<param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
+       		<param-value>https://fiscato:8443/exo-cas-2/login</param-value>
+    	</init-param>
+    	<init-param>
+       		<param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
+       		<param-value>https://fiscato:8443/exo-cas-2/serviceValidate</param-value>
+    	</init-param>
+    	<init-param>
+       		<param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+       		<param-value>fiscato:8443</param-value>
+    	</init-param>
+ 	</filter>
+ 
+  	<filter-mapping>
+    	<filter-name>CAS_Filter</filter-name>
+    	<url-pattern>/BookletService</url-pattern>
+ 	</filter-mapping>
+    -->
+    
     <servlet>
         <servlet-name>PortletWrapper</servlet-name>
         <servlet-class>org.exoplatform.services.portletcontainer.impl.servlet.ServletWrapper</servlet-class>
@@ -87,12 +112,12 @@
     
     <servlet>
         	<servlet-name>BookletServlet</servlet-name>
-        	<servlet-class>it.eng.spagobi.booklets.BookletsImageServlet</servlet-class>
+        	<servlet-class>it.eng.spagobi.booklets.BookletsServlet</servlet-class>
     	</servlet>
 
 	<servlet-mapping>
         	<servlet-name>BookletServlet</servlet-name>
-        	<url-pattern>/BookletsImageService</url-pattern>
+        	<url-pattern>/BookletService</url-pattern>
     	</servlet-mapping>
     
     <servlet-mapping>

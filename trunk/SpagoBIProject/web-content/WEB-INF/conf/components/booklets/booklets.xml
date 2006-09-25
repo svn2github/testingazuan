@@ -2,6 +2,7 @@
 <BOOKLETS>
    <PATH_TMP_FOLDER path="/mytemp" />
    <OFFICECONNECTION host="localhost" port="9000" />
+   <BOOKLET_SERVICE name="BookletService" />
    <!-- the compatible document engine driver must contain 
    the name written in "match" attribute for acknowledgment -->
    <TECHNOLOGY_DRIVER_FILTER match="jasper" />

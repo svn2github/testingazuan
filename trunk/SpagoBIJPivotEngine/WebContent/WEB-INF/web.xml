@@ -11,8 +11,27 @@
 
   <context-param>
 	  <param-name>SECURITY_ABLE</param-name>
-	  <param-value>TRUE</param-value>
+	  <param-value>FALSE</param-value>
   </context-param>
+  
+  <!--
+  <filter>
+ <filter-name>CAS_Filter</filter-name>
+ <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
+    <init-param>
+       <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
+       <param-value>https://localhost:8443/exo-cas-2/login</param-value>
+    </init-param>
+    <init-param>
+       <param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
+       <param-value>https://localhost:8443/exo-cas-2/serviceValidate</param-value>
+    </init-param>
+    <init-param>
+       <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+       <param-value>localhost:8443</param-value>
+    </init-param>
+ </filter>
+ --> 
   
   <filter>
     <filter-name>JPivotController</filter-name>
@@ -43,6 +62,13 @@
     </init-param>
     -->
   </filter>
+
+  <!-->
+  <filter-mapping>
+    <filter-name>CAS_Filter</filter-name>
+    <url-pattern>/SpagoBIJPivotEngine/jpivotOlap.jsp</url-pattern>
+ </filter-mapping>
+  -->
 
   <filter-mapping>
     <filter-name>JPivotController</filter-name>

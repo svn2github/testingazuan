@@ -15,9 +15,9 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.service.RequestContextIFace;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFValidationError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.ValidationEngineIFace;
 import it.eng.spago.validation.impl.ValidatorLocator;
 import it.eng.spagobi.utilities.PortletUtilities;
@@ -25,10 +25,10 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.validator.GenericValidator;
 import org.apache.commons.validator.UrlValidator;
@@ -49,20 +49,20 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 	public static final String NAME_ATTRIBUTE = "NAME";
 	public static final String TOUPPERCASE_ATTRIBUTE = "TOUPPERCASE";
 
-	public static final int ERROR_GENERIC = 9000;
-	public static final int ERROR_MANDATORY=9001;
-	public static final int ERROR_LETTERSTRING=9002;
-	public static final int ERROR_ALFANUMERIC=9003;
-	public static final int ERROR_NUMERIC=9004;
-	public static final int ERROR_EMAIL=9005;
-	public static final int ERROR_FISCALCODE=9006;
-	public static final int ERROR_DECIMALS=9007;
-	public static final int ERROR_RANGE=9008;
-	public static final int ERROR_MAXLENGTH=9009;
-	public static final int ERROR_MINLENGTH=9010;
-	public static final int ERROR_REGEXP=9011;
-	public static final int ERROR_DATE=9012;
-	public static final int ERROR_URL=9013;
+	public static final String ERROR_GENERIC = "9000";
+	public static final String ERROR_MANDATORY="9001";
+	public static final String ERROR_LETTERSTRING="9002";
+	public static final String ERROR_ALFANUMERIC="9003";
+	public static final String ERROR_NUMERIC="9004";
+	public static final String ERROR_EMAIL="9005";
+	public static final String ERROR_FISCALCODE="9006";
+	public static final String ERROR_DECIMALS="9007";
+	public static final String ERROR_RANGE="9008";
+	public static final String ERROR_MAXLENGTH="9009";
+	public static final String ERROR_MINLENGTH="9010";
+	public static final String ERROR_REGEXP="9011";
+	public static final String ERROR_DATE="9012";
+	public static final String ERROR_URL="9013";
 	
 	// Costanti per le espressioni regolari
 	private static final String LETTER_STRING_REGEXP= "^([a-zA-Z])*$";
@@ -308,7 +308,13 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				// ********************************************
 				if (fieldLabel != null && fieldLabel.startsWith("#")) {
 					String key = fieldLabel.substring(1);
-					String fieldDescription = PortletUtilities.getMessage(key, "messages");
+					String boundle = (String) field.getAttribute("boundle");
+					String fieldDescription = "";
+					if((boundle!=null) && !boundle.trim().equals("")){
+						fieldDescription = PortletUtilities.getMessage(key, boundle);
+					} else {
+						fieldDescription = PortletUtilities.getMessage(key, "messages");
+					}
 					if (fieldDescription != null && !fieldDescription.trim().equals("")) fieldLabel = fieldDescription;
 				}
 				//********************************************
@@ -330,7 +336,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 				itValidators = validators.iterator();
 				
-				Vector params = new Vector();
+				List params = null;
 				while (itValidators.hasNext()){
 					currentValidator = (SourceBean)itValidators.next();
 					validatorName = (String)currentValidator.getAttribute("validatorName");
@@ -338,9 +344,9 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 					if (validatorName.equalsIgnoreCase("MANDATORY")){
 						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MANDATORY VALIDATOR to field ["+field+"] with value ["+value+"]");
 						if (GenericValidator.isBlankOrNull(value)){
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_MANDATORY,params));	
+							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_MANDATORY, params));	
 							
 						}
 
@@ -348,7 +354,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the URL VALIDATOR to field ["+field+"] with value ["+value+"]");
 						UrlValidator urlValidator = new SpagoURLValidator();
 						if (!GenericValidator.isBlankOrNull(value) && !urlValidator.isValid(value)){
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_URL,params));
 							
@@ -357,7 +363,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 					else if (validatorName.equalsIgnoreCase("LETTERSTRING")){
 						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the LETTERSTRING VALIDATOR to field ["+field+"] with value ["+value+"]");
 						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, LETTER_STRING_REGEXP)){
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_LETTERSTRING,params));
 							
@@ -366,7 +372,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the ALFANUMERIC VALIDATOR to field ["+field+"] with value ["+value+"]");
 						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, ALPHANUMERIC_STRING_REGEXP)){
 						
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_ALFANUMERIC,params));
 							
@@ -383,7 +389,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							// The string is not a integer, not a float, not double, not short, not long
 							// so is not a number
 							
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_NUMERIC,params));
 							
@@ -394,7 +400,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.isEmail(value)){
 							
 							// Generate errors
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_EMAIL,params));
 							
@@ -404,7 +410,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, FISCAL_CODE_REGEXP)){
 							
 //							 Generate errors
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, ERROR_FISCALCODE,params));
 							
@@ -438,7 +444,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 
 							if (decimalCharacters.length() > maxNumberOfDecimalDigit) {
 								// Generate errors
-								params = new Vector();
+								params = new ArrayList();
 								params.add(fieldLabel);
 								params.add(String
 										.valueOf(maxNumberOfDecimalDigit));
@@ -472,7 +478,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 								double valueToCheckDouble = Double.valueOf(value).doubleValue();
 								if (!(GenericValidator.isInRange(valueToCheckDouble, firstValue, secondValue))){
 							
-									params = new Vector();
+									params = new ArrayList();
 									params.add(fieldLabel);
 									params.add(firstValueStr);
 									params.add(secondValueStr);
@@ -520,7 +526,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 							Date theValueDate = df.parse(value);
 						
 							if ((theValueDate.getTime() < firstValueDate.getTime()) || (theValueDate.getTime() > secondValueDate.getTime())){
-								params = new Vector();
+								params = new ArrayList();
 								params.add(fieldLabel);
 								params.add(firstValueStr);
 								params.add(secondValueStr);
@@ -539,7 +545,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
 						//if (firstValueStr.compareTo(secondValueStr) > 0){
 						if ((value.compareTo(firstValueStr) < 0) || (value.compareTo(secondValueStr) > 0)){
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							params.add(firstValueStr);
 							params.add(secondValueStr);
@@ -553,7 +559,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "maxLength is ["+maxLength+"]");
 						if (!GenericValidator.maxLength(value, maxLength)){
 							
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							params.add(String.valueOf(maxLength));
 							
@@ -569,7 +575,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (!GenericValidator.minLength(value, minLength)){
 							
 							// Generate Errors
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							params.add(String.valueOf(minLength));
 							
@@ -585,7 +591,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (!(GenericValidator.matchRegexp(value, regexp))){
 							
 							// Generate Errors
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							params.add(regexp);
 							
@@ -603,7 +609,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 						if (!GenericValidator.isDate(value, dateFormat, true)){
 				
 							//Generate Errors
-							params = new Vector();
+							params = new ArrayList();
 							params.add(fieldLabel);
 							params.add(dateFormat);
 							

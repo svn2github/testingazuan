@@ -88,7 +88,7 @@ NOCACHE
 NOCYCLE
 NOORDER
 ;
-CREATE SEQUENCE SBI_EVENTS_SEQ 
+CREATE SEQUENCE SBI_EVENTS_LOG_SEQ 
 INCREMENT BY 1 
 START WITH 1 
 NOMAXVALUE 
@@ -385,10 +385,17 @@ CREATE TABLE SBI_EVENTS_LOG (
        EVENT_DATE           TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
        DESCR                 VARCHAR2(1000) NOT NULL,
        PARAMS               VARCHAR2(1000) NOT NULL,
+       HANDLER 	VARCHAR2(1000) NOT NULL DEFAULT 'it.eng.spagobi.events.handlers.DefaultEventPresentationHandler',
        CONSTRAINT XPKSBI_EVENTS_LOG 
-              PRIMARY KEY (ID,USER_EVENT, EVENT_DATE)
+              PRIMARY KEY (ID)
 );
 
+CREATE TABLE SBI_EVENTS_ROLES (
+       EVENT_ID            INTEGER NOT NULL,
+       ROLE_ID             INTEGER NOT NULL,
+       CONSTRAINT XPKSBI_EVENTS_ROLES 
+              PRIMARY KEY (EVENT_ID, ROLE_ID)
+);
 
 ALTER TABLE SBI_CHECKS
        ADD  ( CONSTRAINT FK_sbi_checks_1
@@ -574,7 +581,15 @@ ALTER TABLE SBI_ENGINES
               FOREIGN KEY (ENGINE_TYPE)
                              REFERENCES SBI_DOMAINS ) ; 
 
+ALTER TABLE SBI_EVENTS_ROLES
+       ADD  ( CONSTRAINT FK_sbi_events_roles_1
+              FOREIGN KEY (ROLE_ID)
+                             REFERENCES SBI_EXT_ROLES ) ; 
 
+ALTER TABLE SBI_EVENTS_ROLES
+       ADD  ( CONSTRAINT FK_sbi_events_roles_2
+              FOREIGN KEY (EVENT_ID)
+                             REFERENCES SBI_EVENTS_LOG ) ; 
 
 create trigger TRG_SBI_CHECKS
   BEFORE INSERT
@@ -756,15 +771,15 @@ end;
 
 
 
-create trigger TRG_SBI_EVENTS
+create trigger TRG_SBI_EVENTS_LOG
   BEFORE INSERT
-  on SBI_EVENTS
+  on SBI_EVENTS_LOG
   REFERENCING OLD AS old NEW AS new
   for each row
   declare nuovo_id number;
 begin
 IF :new.ID IS NULL THEN
-     select SBI_EVENTS_SEQ.nextval into nuovo_id from dual;
+     select SBI_EVENTS_LOG_SEQ.nextval into nuovo_id from dual;
      :new.ID:=nuovo_id;
 END IF;
 end;

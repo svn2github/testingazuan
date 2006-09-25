@@ -260,10 +260,17 @@ CREATE TABLE SBI_EVENTS (
 );
 
 CREATE TABLE SBI_EVENTS_LOG (
-	ID                  INTEGER NOT NULL,
+	ID                  INTEGER NOT NULL AUTO_INCREMENT,
 	USER_EVENT                 VARCHAR(40) NOT NULL,
 	EVENT_DATE          TIMESTAMP DEFAULT NOW() NOT NULL,
 	DESCR                VARCHAR(1000) NOT NULL,
 	PARAMS              VARCHAR(1000) NOT NULL,
-              PRIMARY KEY(ID, USER_EVENT, EVENT_DATE)
+	HANDLER 	VARCHAR(1000) NOT NULL DEFAULT 'it.eng.spagobi.events.handlers.DefaultEventPresentationHandler',
+              PRIMARY KEY(ID)
 );
+
+CREATE TABLE SBI_EVENTS_ROLES (
+       EVENT_ID            INTEGER NOT NULL,
+       ROLE_ID             INTEGER NOT NULL,
+              PRIMARY KEY (EVENT_ID, ROLE_ID)
+)TYPE=INNODB;

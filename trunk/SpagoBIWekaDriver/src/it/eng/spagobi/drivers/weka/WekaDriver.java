@@ -9,11 +9,11 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.IEngineDriver;
-import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,7 +27,6 @@ import sun.misc.BASE64Encoder;
  */
 public class WekaDriver implements IEngineDriver {
 
-	
 	/**
 	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
@@ -94,15 +93,17 @@ public class WekaDriver implements IEngineDriver {
 		byte[] template = uploadedFile.getFileContent();
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
 		pars.put("template", bASE64Encoder.encode(template));
-		pars.put("templatePath",biobj.getPath() + "/template");
+		//pars.put("templatePath",biobj.getPath() + "/template");
+		pars.put("biobjectId", biobj.getId().toString());
 		pars.put("cr_manager_url", GeneralUtilities.getSpagoBiContentRepositoryServlet());
     	pars.put("events_manager_url", GeneralUtilities.getSpagoBiEventsManagerServlet());
-        pars = addBIParameters(biobj, pars);
+    	pars.put("processActivatedMsg", GeneralUtilities.replaceInternationalizedMessages("${weka.execution.processActivatedMsg}"));
+    	pars.put("processNotActivatedMsg", GeneralUtilities.replaceInternationalizedMessages("${weka.execution.processNotActivatedMsg}"));
+        Map biobjParameters = findBIParameters(biobj);
+        pars.putAll(biobjParameters);
         // callback event id
-        if(profile!=null) {
-        	String user = (String)profile.getUserUniqueIdentifier();
-        	Integer id =  EventsManager.getInstance().registerEvent(user);
-        	pars.put("event", id.toString());
+        if (profile!=null) {
+        	String user = (String) profile.getUserUniqueIdentifier();
         	pars.put("user", user);
         }
         return pars;
@@ -111,23 +112,23 @@ public class WekaDriver implements IEngineDriver {
 	
 	
     /**
-     * Add into the parameters map the BIObject's BIParameter names and values
-     * @param biobj BIOBject to execute
-     * @param pars Map of the parameters for the execution call  
-     * @return Map The map of the execution call parameters
+     * Returns the BIObject parameters map
+     * @param biobj BIOBject to be executed
+     * @return Map The map of the BIObject parameters
      */
-	private Map addBIParameters(BIObject biobj, Map pars) {
-		if(biobj==null) {
+	private Map findBIParameters(BIObject biobj) {
+		Map pars = new HashMap();
+		if (biobj==null) {
 			SpagoBITracer.warning("ENGINES",
 								  this.getClass().getName(),
 								  "addBIParameters",
-								  "BIObject parameter null");
+								  "BIObject null");
 			return pars;
 		}
-		if(biobj.getBiObjectParameters() != null){
+		if (biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
 			String value = null;
-			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
+			for (Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();) {
 				try {
 					biobjPar = (BIObjectParameter)it.next();
 					value = (String)biobjPar.getParameterValues().get(0);

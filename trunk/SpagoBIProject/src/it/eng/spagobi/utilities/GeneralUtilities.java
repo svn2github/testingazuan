@@ -30,6 +30,8 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFErrorCategory;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
@@ -68,6 +70,25 @@ public class GeneralUtilities {
 	public static void main(String[] args) {
 	}
 
+	/**
+	 * Checks if the Spago errorHandler contains only validation errors
+	 * @param errorHandler The error handler to check
+	 * @return true if the errorHandler contains only validation error, false if erroHandler
+	 * is empty or contains not only validation error.
+	 */
+	public static boolean isErrorHandlerContainingOnlyValidationError(EMFErrorHandler errorHandler) {
+		boolean contOnlyValImpl = false;
+		Collection errors = errorHandler.getErrors();
+		if(errors != null && errors.size() > 0) {
+			if( errorHandler.isOKByCategory(EMFErrorCategory.INTERNAL_ERROR) &&
+				errorHandler.isOKByCategory(EMFErrorCategory.USER_ERROR)) {
+				contOnlyValImpl = true;
+			}
+		}
+		return contOnlyValImpl;
+	}
+	
+	
 	/**
 	 * Given an <code>InputStream</code> as input, gets the correspondent bytes array.
 	 * @param is The input straeam 
@@ -163,7 +184,7 @@ public class GeneralUtilities {
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 				"getSpagoBiContextAddress", "portlet request obtained: " + portletRequest);
-		String path ="http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
+		String path = portletRequest.getScheme() + "://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
 		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 				"getSpagoBiContextAddress", "using context path: " + path);
 		return path;
@@ -211,22 +232,6 @@ public class GeneralUtilities {
 		HashMap allAttrs = GeneralUtilities.getAllProfileAttributes(profile);
 		if (allAttrs == null) return null;
 		return fillBinding(allAttrs);
-//		HashMap allAttrs = getAllProfileAttributes();
-//		Set setattrs = allAttrs.keySet();
-//		Iterator iterattrs = setattrs.iterator();
-//		String key = null;
-//		Object valueobj = null;
-//		while(iterattrs.hasNext()) {
-//			key = iterattrs.next().toString();
-//			try {
-//				valueobj = profile.getUserAttribute(key);
-//			} catch (Exception e) {
-//				valueobj = null;
-//			}
-//			if(valueobj!=null)
-//				bind.setVariable(key, valueobj.toString());
-//		}
-//		return bind;
 	}
 	
 	/**

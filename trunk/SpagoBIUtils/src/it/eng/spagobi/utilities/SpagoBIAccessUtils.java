@@ -36,7 +36,6 @@ package it.eng.spagobi.utilities;
 
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.commons.httpclient.DefaultMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;

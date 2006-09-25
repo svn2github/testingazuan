@@ -33,12 +33,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     if(activityKey==null)
     	activityKey = (String)aServiceRequest.getAttribute("ActivityKey");
 	// BUILT URL TO DOWNLOAD THE DOCUMENT
-	String contextAddress = GeneralUtilities.getSpagoBiContextAddress();
-	String recoverUrl = contextAddress + "/BookletsImageService?" +
-	            "task=downloadFinalDocument&ActivityKey=" + activityKey;
-
-	String viewDocUrl = contextAddress + "/BookletsImageService?" +
-    			"task=viewFinalDocument&ActivityKey=" + activityKey;
+	String recoverUrl = BookletServiceUtils.getBookletServiceUrl() +
+						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
+						BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC + "&" +
+						SpagoBIConstants.ACTIVITYKEY + "=" + activityKey;
 	
 	// BUILT BACK URL 
    	PortletURL backUrl = renderResponse.createActionURL();
@@ -62,6 +60,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>

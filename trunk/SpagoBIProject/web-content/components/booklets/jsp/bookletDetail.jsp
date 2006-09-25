@@ -39,15 +39,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    String wfProcDefFileName = (String)moduleResponse.getAttribute(BookletsConstants.WF_PROCESS_DEFINTIION_FILENAME);
    //WorkflowConfiguration workConf = (WorkflowConfiguration)moduleResponse.getAttribute(BookletsConstants.WORKFLOW_CONFIGURATION);
    
+    // load the biobject
+   IBookletsCmsDao bookletsCmsDao = new BookletsCmsDaoImpl();
+   String biObjectPath = bookletsCmsDao.getBiobjectPath(pathConfNode);
+   BIObject biobject = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(biObjectPath);
+   // get the biobject id
+   String idBiObjStr = biobject.getId().toString();
+   // get the actor from session
+   String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
+   
    Iterator iterDoc = confDocList.iterator();
    
    PortletURL backUrl = renderResponse.createActionURL();
-   backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
+   //backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
+   backUrl.setParameter("PAGE", DetailBIObjectModule.MODULE_PAGE);
+   backUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
+   backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, idBiObjStr);
+   backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_REPLACE_LAST, "TRUE");
+   
    
    PortletURL formDetailUrl = renderResponse.createActionURL();
    formDetailUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    formDetailUrl.setParameter("OPERATION", BookletsConstants.OPERATION_DETAIL_CONFIGURED_DOCUMENT);
    formDetailUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
+   formDetailUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
    PortletURL formEraseUrl = renderResponse.createActionURL();
    formEraseUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
@@ -55,20 +71,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    formEraseUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
    formEraseUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
-   PortletURL loadTemplateUrl = renderResponse.createActionURL();
-   loadTemplateUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   loadTemplateUrl.setParameter("OPERATION", BookletsConstants.OPERATION_LOAD_OOTEMPLATE_BOOKLET);
-   loadTemplateUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   PortletURL saveUrl = renderResponse.createActionURL();
+   saveUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   saveUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
+   saveUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
-   PortletURL saveWorkflowDataUrl = renderResponse.createActionURL();
-   saveWorkflowDataUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   saveWorkflowDataUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_WORKFLOWDATA);
-   saveWorkflowDataUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   
+   PortletURL saveVersionUrl = renderResponse.createActionURL();
+   saveVersionUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   saveVersionUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_NEW_VERSION_BOOKLET);
+   saveVersionUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
+   saveVersionUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
    PortletURL formNewConfDocUrl = renderResponse.createActionURL();
    formNewConfDocUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    formNewConfDocUrl.setParameter("OPERATION", BookletsConstants.OPERATION_NEW_CONFIGURED_DOCUMENT);
+   formNewConfDocUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   
+   //PortletURL loadTemplateUrl = renderResponse.createActionURL();
+   //loadTemplateUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   //loadTemplateUrl.setParameter("OPERATION", BookletsConstants.OPERATION_LOAD_OOTEMPLATE_BOOKLET);
+   //loadTemplateUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   
+   //PortletURL saveWorkflowDataUrl = renderResponse.createActionURL();
+   //saveWorkflowDataUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   //saveWorkflowDataUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_WORKFLOWDATA);
+   //saveWorkflowDataUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+  
    
 %>
 
@@ -77,7 +105,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<!-- ********************* TITOLO **************************  -->
 
-	<table class='header-table-portlet-section'>
+	<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
+<%@page import="it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl"%>
+<%@page import="it.eng.spagobi.bo.dao.IBIObjectCMSDAO"%>
+<%@page import="it.eng.spagobi.booklets.dao.IBookletsCmsDao"%>
+<%@page import="it.eng.spagobi.bo.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.bo.BIObject"%>
+<%@page import="it.eng.spagobi.services.modules.DetailBIObjectModule"%>
+<%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
+<table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
 				<spagobi:message key="book.ConfTemp" bundle="component_booklets_messages" />
@@ -89,6 +125,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
 	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
+				</a>
+			</td>
+			<td class='header-empty-column-portlet-section'>&nbsp;</td>
+			<td class='header-button-column-portlet-section'>
+				<a href="javascript:document.getElementById('saveForm').submit()"> 
+	      			<img class='header-button-image-portlet-section' 
+	      				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
+	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.jpg")%>' 
+	      				 alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
+				</a>
+			</td>
+			<td class='header-empty-column-portlet-section'>&nbsp;</td>
+			<td class='header-button-column-portlet-section'>
+				<a href="<%=saveVersionUrl.toString() %>"> 
+	      			<img class='header-button-image-portlet-section' 
+	      				 title='<spagobi:message key = "book.saveVersion" bundle="component_booklets_messages" />' 
+	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/saveVersion32.jpg")%>' 
+	      				 alt='<spagobi:message key = "book.saveVersion"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
 		</tr>
@@ -162,6 +216,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		
 		<!-- ********************* TEMPLATE FORM **************************  -->
+
+		<form action="<%=saveUrl.toString()%>" method='POST' id='saveForm' name='saveForm' enctype="multipart/form-data">
+			<input type="hidden" name="<%=BookletsConstants.PATH_BOOKLET_CONF %>"  value="<%=pathConfNode%>"/>
 		
 		<br/>
 				
@@ -176,24 +233,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% 
 			if( (templateOOFileName==null) || templateOOFileName.trim().equals("")) {	
 		%>
-			<spagobi:message key="book.templatenotloaded" bundle="component_booklets_messages"/> 
+		    <span style='font:11px;font-family:verdana;'>
+			     <spagobi:message key="book.templatenotloaded" bundle="component_booklets_messages"/>  
+		    </span>
 		<% 	} else { 
-				out.print(templateOOFileName);
+		    out.print("<span style='font:11px;font-family:verdana;'>"+templateOOFileName+"</span>");
+				String downOOTemplateUrl = BookletServiceUtils.getBookletServiceUrl() + "?" + 
+						                   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
+						                   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE + "&" +
+										   BookletsConstants.PATH_BOOKLET_CONF + "=" + pathConfNode;				   
+		%>
+			&nbsp;&nbsp;&nbsp;
+			<a href='<%=downOOTemplateUrl%>' target="iframeForDownload">
+				<img title='<spagobi:message key="book.download" bundle="component_booklets_messages" />' 
+					 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download16.gif")%>' 
+					 alt='<spagobi:message key="book.download"  bundle="component_booklets_messages"/>' />
+			</a>
+		<%
 			}
 		%>
 		<br/>
 		<br/>
-		<form action="<%=loadTemplateUrl.toString()%>" method='POST' id='loadTempForm' name='loadTempForm' enctype="multipart/form-data">
-			<input type="hidden" name="<%=BookletsConstants.PATH_BOOKLET_CONF %>"  value="<%=pathConfNode%>"/>
 			<input size="30" type="file" name="templatefile" />
-			&nbsp;&nbsp;&nbsp;
-			<input type="image" 
-						 title='<spagobi:message key="book.loadTemplate" bundle="component_booklets_messages" />' 
-						 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save22.gif")%>' 
-						 alt='<spagobi:message key="book.loadTemplate"  bundle="component_booklets_messages"/>' />
-		</form>
-		
-		
+ 		<br/>
  		<br/>
 		
 		
@@ -217,46 +279,34 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% 
 			if( (wfProcDefFileName==null) || wfProcDefFileName.trim().equals("")) {	
 		%>
-			<spagobi:message key="book.WFprocessDefFileNotloaded" bundle="component_booklets_messages"/> 
-		<% 	} else { 
-			out.print(wfProcDefFileName);
-			}
+		    <span style='font:11px;font-family:verdana;'>
+			     <spagobi:message key="book.WFprocessDefFileNotloaded" bundle="component_booklets_messages"/> 
+		    </span>
+    <% 	} else { 
+				out.print("<span style='font:11px;font-family:verdana;'>"+wfProcDefFileName+"</span>");
+				String downWorkDefUrl = BookletServiceUtils.getBookletServiceUrl() + "?" + 
+            							BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
+            							BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION + "&" +
+			   							BookletsConstants.PATH_BOOKLET_CONF + "=" + pathConfNode;	
+		%>
+		
+			&nbsp;&nbsp;&nbsp;
+			<a href='<%=downWorkDefUrl%>' target="iframeForDownload">
+				<img title='<spagobi:message key="book.download" bundle="component_booklets_messages" />' 
+					 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download16.gif")%>' 
+				 	alt='<spagobi:message key="book.download"  bundle="component_booklets_messages"/>' />
+			</a>
+		
+		<%
+		}
 		%>
 		<br/>
 		<br/>
-		<form action="<%=saveWorkflowDataUrl.toString()%>" method='POST' id='workForm' name='workForm' enctype="multipart/form-data">	
-			<input type="hidden" name="<%=BookletsConstants.PATH_BOOKLET_CONF %>"  value="<%=pathConfNode%>"/>
 			<input size="30" type="file" name="wfdefinitionfile" />
-			&nbsp;&nbsp;&nbsp;
-			<input type="image" 
-				   title='<spagobi:message key="book.save" bundle="component_booklets_messages" />' 
-				   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save22.gif")%>' 
-				   alt='<spagobi:message key="book.save"  bundle="component_booklets_messages"/>' />
-		</form>
-		
-			<%-- 
-			<table cellspacing="10px">	
-				<tr>
-					<td class='portlet-form-field-label' width="130px">
-						<spagobi:message key="book.nameWorkPackage" bundle="component_booklets_messages" />
-					</td>
-					<td style="font-size:5;">
-						<input size="30" type="text" name="nameWorkPackage" value="<%=workConf.getNameWorkflowPackage()%>" />
-					</td>
-				</tr>
-				<tr style="height:10px;"><td colspan="2"><span></span></td></tr>
-				<tr>
-					<td class='portlet-form-field-label' width="130px">
-						<spagobi:message key="book.nameWorkProcess" bundle="component_booklets_messages" />
-					</td>
-					<td style="font-size:5;">
-						<input size="30" type="text" name="nameWorkProcess" value="<%=workConf.getNameWorkflowProcess()%>" />
-					</td>
-				</tr>
-			</table>
-			--%>
-
 		<br/>
+		<br/>
+		
+		</form>
 		
 	</div>
 
@@ -299,60 +349,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 
 <br/>
-</br>
+
+<div id="iframeForDownload" style="display:none;">
+	<iframe name="iframeForDownload" src="" style="width:0px;height:0px;" /> 
+</div>
 
 
-
-
-
-
-<%-- 
-<table width="100%" cellspacing="0" border="1" >
-  	<tr height='1'>
-  		<td>
-  	    	<table width="100%">
-  	    		<tr >
-  	    			<td colspan="3" align="left" class='portlet-section-header'>
-  	    				<spagobi:message key = "SBIDev.paramUse.valTab3" />
-  	    			</td>
-  	    		</tr>
-  	    		<%   	    		    
-  	    		   	int count = 1;
-  	    		    int prog = 0; 
-  	    		   	Iterator iterRole = roleList.iterator(); 
-  	    		  	int numRoles = roleList.size();
-  	    			while(iterRole.hasNext()) {     
-  	    				Role role = (Role)iterRole.next();
-                        if(count==1) {
-                          out.print("<tr class='portlet-font'>");
-                        }
-  	    		 		out.print("<td class='portlet-section-body'>");
-  	    		 		out.print("   <input type='checkbox' name='idExtRole' value='"+role.getId()+"'/>");
-  	    		 		out.print(    role.getName());
-  	    		 		out.print("</td>");
-  	    		 		if((count < 3) && (prog==numRoles-1)){
-  	    		 		  	int numcol = 3-count;
-  	    		 		  	int num;
-  	    		 		  	for (num = 0; num <numcol; num++){
-  	    		 		  		out.print("<td class='portlet-section-body'>");
-  	    		 		    	out.print("</td>");
-  	    		 		  	}
-  	    		 		  	out.print("</tr>");
-  	    		 		} 
-  	    		 		if( (count==3) || (prog==(numRoles-1)) ) {
-  	    		 		 	out.print("</tr>");
-  	    		 		 	count = 1;
-  	    		 		} 
-  	    		 		else {
-  	    		 		 	count ++;
-  	    		 		 }
-  	    		  }
-  	    		%>
-  	    	</table> 
-  		</td>
-  	</tr>
-</table>
---%>
 
 
 

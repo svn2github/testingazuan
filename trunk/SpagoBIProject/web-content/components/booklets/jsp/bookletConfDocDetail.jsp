@@ -45,10 +45,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   logicalname = "";
    
    PortletURL backUrl = renderResponse.createActionURL();
-   backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
-   //backUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   //backUrl.setParameter("OPERATION", BookletsConstants.OPERATION_DETAIL_);
-   //backUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+   backUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   backUrl.setParameter(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
+   backUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
   
    
    PortletURL formSaveConfDocUrl = renderResponse.createActionURL();
@@ -60,6 +59,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -141,7 +141,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-  
+    <spagobi:error/>
 
 	
 	<div style='padding-top:10px;margin-right:5px;' class='portlet-section-header' style="width:100%;">	

@@ -60,7 +60,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
    
    String contextAddress = GeneralUtilities.getSpagoBiContextAddress();
-   String downloadVersionUrl = contextAddress + "/BookletsImageService?task=downloadPresentationVersion&" + 
+   String downloadVersionUrl = BookletServiceUtils.getBookletServiceUrl() + "?" +
+   							   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
+   							   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION + "&" +
 		                       BookletsConstants.PATH_BOOKLET_CONF+"="+pathConfBook;
    
 %>
@@ -73,6 +75,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	
 	<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
+<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
 <table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>

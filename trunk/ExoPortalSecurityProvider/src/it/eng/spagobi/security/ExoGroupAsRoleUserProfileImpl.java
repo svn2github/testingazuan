@@ -74,31 +74,14 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 			util.debug(this.getClass(), "init", "Membership Handler retrived " + memberHandler);
 			Group group = null;
 			Matcher matcher = null;
-			Membership membership = null;
 			for (Iterator it = tmpRoles.iterator(); it.hasNext();){
 				group = (Group) it.next();
 				String groupID = group.getId();
 				Pattern pattern = util.getFilterPattern();
-				util.debug(this.getClass(), "init", "Process group " + groupID);
-				Collection memberCol = memberHandler.findMembershipsByUserAndGroup(userUniqueIdentifier, group.getId());
-				util.debug(this.getClass(), "init", "User/Role membership collection retrived " + memberCol);
-				
-				// fill roles
-				Iterator iterMember = memberCol.iterator();
-				while(iterMember.hasNext()){
-					membership = (Membership)iterMember.next();
-					String memberType = membership.getMembershipType();
-					matcher = pattern.matcher(memberType);
-            		if(!matcher.find()){
-            			continue;	
-            		}
-					util.debug(this.getClass(), "init", "Process membership " + memberType);
-					if(!this.roles.contains(memberType)) {
-						this.roles.add(memberType);
-						util.debug(this.getClass(), "init", "Added role " + memberType);
-					}
-				}
-				
+				matcher = pattern.matcher(groupID);
+				if(!matcher.find()){
+        			continue;	
+        		}
 				this.roles.add(group.getId());
 			}
 			//load profile attributes for all users

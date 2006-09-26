@@ -232,14 +232,17 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
 					String biObjType = obj.getBiObjectTypeCode();
-					String imgUrl = "/img/objecticon_"+ biObjType+ ".gif";
+					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
 					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);
+					String biObjState = obj.getStateCode();
+					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
+					String stateIcon = PortletUtilities.createPortletURLForResource(httpRequest, stateImgUrl);
 					Integer idObj = obj.getId();					
 					String stateObj = obj.getStateCode();
 					if (ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					} else {
-						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					}
 				}
 			}

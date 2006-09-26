@@ -484,9 +484,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					Integer visibleObj = obj.getVisible();
 					//insert the correct image for each BI Object type
 					String biObjType = obj.getBiObjectTypeCode();
-					String imgUrl = "/img/objecticon_"+ biObjType+ ".gif";
+					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
 					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);
-					String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
+					String biObjState = obj.getStateCode();
+					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
+					String stateIcon = PortletUtilities.createPortletURLForResource(httpRequest, stateImgUrl);
+					//String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
 					String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 					PortletURL execUrl = renderResponse.createActionURL();
 					execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
@@ -503,10 +506,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 						if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile)) {
 							thereIsOneOrMoreObjectsInTestState = true;
 							execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
-							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIconTest + "', '', '', '' );\n");
+							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 							execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
-							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
+							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						}
 					}
 				}

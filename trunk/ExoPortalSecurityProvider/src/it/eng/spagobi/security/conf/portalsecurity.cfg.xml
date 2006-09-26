@@ -6,12 +6,15 @@
 		<USER-PROFILES>
 			<USER name="biadmin">
 				<ATTRIBUTE name="product" valuefortest="Food" />
+				<ATTRIBUTE name="city" valuefortest="{,{Berkeley,Ballard}}" />
 			</USER>
 			<USER name="bidev">
 				<ATTRIBUTE name="product" valuefortest="Drink" />
+				<ATTRIBUTE name="city" valuefortest="{,{Albany,Altadena,Colma,Arcadia}}" />
 			</USER>
 			<USER name="biuser">
 				<ATTRIBUTE name="product" valuefortest="Food" />
+				<ATTRIBUTE name="city" valuefortest="{,{Novato,Renton}}" />
 			</USER>
 		</USER-PROFILES>
 	</PROFILE_ATTRIBUTES>

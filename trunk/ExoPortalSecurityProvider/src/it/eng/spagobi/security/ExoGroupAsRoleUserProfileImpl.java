@@ -34,9 +34,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.GroupHandler;
+import org.exoplatform.services.organization.Membership;
+import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 
 /**
@@ -47,6 +52,7 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 	private String userUniqueIdentifier = null;
 	private Map userAttributes = null;
 	private Collection roles = null;
+	private SecurityProviderUtilities util = new SecurityProviderUtilities();
 	
 	/**
 	 * @param userUniqueIdentifier
@@ -62,9 +68,37 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 		this.roles = new ArrayList();
 		try{
 			Collection tmpRoles = service.getGroupHandler().findGroupsOfUser(userUniqueIdentifier); 
+			GroupHandler groupHandler = service.getGroupHandler();
+			util.debug(this.getClass(), "init", "Group Handler retrived " + groupHandler);
+			MembershipHandler memberHandler = service.getMembershipHandler();
+			util.debug(this.getClass(), "init", "Membership Handler retrived " + memberHandler);
 			Group group = null;
+			Matcher matcher = null;
+			Membership membership = null;
 			for (Iterator it = tmpRoles.iterator(); it.hasNext();){
 				group = (Group) it.next();
+				String groupID = group.getId();
+				Pattern pattern = util.getFilterPattern();
+				util.debug(this.getClass(), "init", "Process group " + groupID);
+				Collection memberCol = memberHandler.findMembershipsByUserAndGroup(userUniqueIdentifier, group.getId());
+				util.debug(this.getClass(), "init", "User/Role membership collection retrived " + memberCol);
+				
+				// fill roles
+				Iterator iterMember = memberCol.iterator();
+				while(iterMember.hasNext()){
+					membership = (Membership)iterMember.next();
+					String memberType = membership.getMembershipType();
+					matcher = pattern.matcher(memberType);
+            		if(!matcher.find()){
+            			continue;	
+            		}
+					util.debug(this.getClass(), "init", "Process membership " + memberType);
+					if(!this.roles.contains(memberType)) {
+						this.roles.add(memberType);
+						util.debug(this.getClass(), "init", "Added role " + memberType);
+					}
+				}
+				
 				this.roles.add(group.getId());
 			}
 			//load profile attributes for all users

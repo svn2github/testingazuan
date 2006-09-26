@@ -7,6 +7,8 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SecurityProviderUtilities {
 
@@ -101,5 +103,16 @@ public class SecurityProviderUtilities {
 	            			nameMeth,
 	            			message);
 	}
-	
+	public  Pattern getFilterPattern(){
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		debug(this.getClass(), "init", "Spago configuration retrived ");
+		SourceBean secFilterSB = (SourceBean)config.getAttribute("SPAGOBI.SECURITY.ROLE-NAME-PATTERN-FILTER");
+		debug(this.getClass(), "init", "source bean filter retrived " + secFilterSB);
+        String rolePatternFilter = secFilterSB.getCharacters();
+        debug(this.getClass(), "init", "filter string retrived " + rolePatternFilter);
+        Pattern pattern = Pattern.compile(rolePatternFilter);
+        debug(this.getClass(), "init", "regular expression pattern compiled " + pattern);
+        return pattern;
+		
+	}
 }

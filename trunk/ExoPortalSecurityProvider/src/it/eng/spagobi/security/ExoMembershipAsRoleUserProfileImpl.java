@@ -78,7 +78,7 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
 		OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
 		util.debug(this.getClass(), "init", "Organization Service retrived " + service);
 		
-		ConfigSingleton config = ConfigSingleton.getInstance();
+		/*ConfigSingleton config = ConfigSingleton.getInstance();
 		util.debug(this.getClass(), "init", "Spago configuration retrived ");
 		SourceBean secFilterSB = (SourceBean)config.getAttribute("SPAGOBI.SECURITY.ROLE-NAME-PATTERN-FILTER");
 		util.debug(this.getClass(), "init", "source bean filter retrived " + secFilterSB);
@@ -86,8 +86,9 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
         util.debug(this.getClass(), "init", "filter string retrived " + rolePatternFilter);
         Pattern pattern = Pattern.compile(rolePatternFilter);
         util.debug(this.getClass(), "init", "regular expression pattern compiled " + pattern);
-        Matcher matcher = null; 
-		
+        Matcher matcher = null;*/ 
+		Pattern pattern = util.getFilterPattern();
+		Matcher matcher = null;
 		// fill functionalities and roles		
 		try{
 			GroupHandler groupHandler = service.getGroupHandler();

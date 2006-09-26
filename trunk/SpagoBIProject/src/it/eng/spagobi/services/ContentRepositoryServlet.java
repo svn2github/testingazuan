@@ -27,8 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.services;
 
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
@@ -36,10 +39,12 @@ import it.eng.spagobi.security.AnonymousCMSUserProfile;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.JCRUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Properties;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -67,9 +72,51 @@ public class ContentRepositoryServlet extends HttpServlet{
      */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 	 	
-	 	try{
+	 	try {
 	 		String operation = request.getParameter("operation");
 	 		if(operation != null) {
+	 			if (operation.equalsIgnoreCase("getTemplateFile")) {
+	 				String idStr = request.getParameter("biobjectId");
+	 				Integer id = new Integer (idStr);
+	 		 		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+	 		 		obj.loadTemplate();
+	 		 		UploadedFile templateFile = obj.getTemplate();
+	 				String templateFileName = null;
+	 				if (templateFile == null) {
+ 						SpagoBITracer.major("SpagoBI", 
+ 							this.getClass().getName(),
+ 						    "service", 
+ 						    "The document template is null!!!");
+ 						return;
+	 				} else {
+	 					templateFileName = templateFile.getFileName();
+	 				}
+	 		 		if (templateFileName == null) {
+ 						SpagoBITracer.major("SpagoBI", 
+	 							this.getClass().getName(),
+	 						    "service", 
+	 						    "The template has no file name!!!");
+ 						templateFileName = "";
+	 		 		}
+	 		 		
+	 		 		String fileExtension = null;
+	 		 		int extindex = templateFileName.lastIndexOf(".");
+	 		 		if (extindex != -1) fileExtension = templateFileName.substring(extindex + 1);
+	 		 		if (fileExtension != null) {
+	 		 			InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("MIMEtypes-extensions.properties");
+	 		 			Properties props = new Properties();
+	 		 			props.load(is);
+	 		 			String mimetype = props.getProperty(fileExtension);
+	 		 			if (mimetype != null && !mimetype.trim().equals("")) {
+	 		 				response.setContentType(mimetype.trim());
+	 		 			}
+	 		 		}
+	 		 		byte[] jcrContent = templateFile.getFileContent();
+	 		 		response.setContentLength(jcrContent.length);
+				 	response.getOutputStream().write(jcrContent);
+				 	response.getOutputStream().flush();
+				 	return;
+	 			}
 	 			if(operation.equalsIgnoreCase("getContent")) {
 	 				String jcrPath = request.getParameter("jcrPath");
 	 		 		if(jcrPath.endsWith("/template")) {

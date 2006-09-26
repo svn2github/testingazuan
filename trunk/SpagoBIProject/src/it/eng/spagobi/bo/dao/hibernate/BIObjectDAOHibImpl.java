@@ -930,6 +930,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		String hql = null;
 		List correctRoles = new ArrayList();
 		
+		
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -943,16 +944,37 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			List idParameters = hqlQuery.list();
 			
 			if(idParameters.size() == 0) {
+				List allCorrectRoles = new ArrayList();
 				// if the object has not parameter associate all the roles can execute the 
-				// object correctly and in the same manner. 
-				correctRoles.addAll(roles);
+				// object correctly and in the same manner.
+				SbiObjects hibBIObject = (SbiObjects)aSession.load(SbiObjects.class, id);
+				String objectState = hibBIObject.getState().getValueCd();
+				Set hibObjFuncs = hibBIObject.getSbiObjFuncs();
+				Iterator itObjFunc = hibObjFuncs.iterator();
+				while (itObjFunc.hasNext()) {
+					SbiObjFunc aSbiObjFunc = (SbiObjFunc) itObjFunc.next();
+					SbiFunctions aSbiFunctions = aSbiObjFunc.getId().getSbiFunctions();
+					String rolesHql = "select distinct roles.name from " +
+						"SbiExtRoles as roles, SbiFuncRole as funcRole " + 
+						"where roles.extRoleId = funcRole.id.role.extRoleId and " +
+						"	   funcRole.id.function.functId = " + aSbiFunctions.getFunctId() + " and " +
+						"	   funcRole.id.state.valueCd = '" + objectState + "' ";
+					Query rolesHqlQuery = aSession.createQuery(rolesHql);
+					// get the list of roles that can see the document (in REL or TEST state) in that functionality
+					List rolesNames = new ArrayList();
+					rolesNames = rolesHqlQuery.list();
+					allCorrectRoles.addAll(rolesNames);
+				}
+				Iterator rolesIt = roles.iterator();
+				while (rolesIt.hasNext()) {
+					// if the role is a user role and can see the document (in REL or TEST state), 
+					// it is a correct role
+					String role = rolesIt.next().toString();
+					if (allCorrectRoles.contains(role)) correctRoles.add(role);
+				}
 				return correctRoles;
-				// if the object has not parameter associate all the roles can execute the 
-				// object correctly and in the same manner. A role for the execution it's mandatory
-				// so the application return only the first role and the execution of the object 
-				// doesn't need the choice of the execution role but start immediatly.
-				//correctRoles.add(roles.iterator().next());
-				//return correctRoles;
+				// if the object has not parameter associates all the roles that have the execution or
+				// test permissions on the containing folders are correct roles in the same manner.
 			}
 			
 			Iterator iterRoles = roles.iterator();

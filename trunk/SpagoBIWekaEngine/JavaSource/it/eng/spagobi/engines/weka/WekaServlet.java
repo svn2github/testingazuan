@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.weka;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -30,6 +31,7 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -277,7 +279,8 @@ public class WekaServlet extends HttpServlet {
 		while (enumer.hasMoreElements()) {
 			parName = (String) enumer.nextElement();
 			parValue = request.getParameter(parName);
-			params.put(parName, parValue);
+			addParToParMap(params, parName, parValue);
+			//params.put(parName, parValue);
 			logger.debug(this.getClass().getName() + ":service:Read "
 					+ "parameter [" + parName + "] with value [" + parValue
 					+ "] from request");
@@ -356,6 +359,33 @@ public class WekaServlet extends HttpServlet {
 	
 	
 	
+	/**
+	 * @param params
+	 * @param parName
+	 * @param parValue
+	 */
+	private void addParToParMap(Map params, String parName, String parValue) {
+		String newParValue;
+		
+		ParametersDecoder decoder = new ParametersDecoder();
+		if(decoder.isMultiValues(parValue)) {			
+			List values = decoder.decode(parValue);
+			newParValue = "";
+			newParValue = (String)values.get(0);
+			/*
+			for(int i = 0; i < values.size(); i++) {
+				newParValue += (i>0?",":"");
+				newParValue += values.get(i);
+			}
+			*/
+			
+		} else {
+			newParValue = parValue;
+		}
+		
+		params.put(parName, newParValue);
+	}
+
 	/**
 	 * This method, based on the engine-config.xml configuration, gets a
 	 * database connection and return it

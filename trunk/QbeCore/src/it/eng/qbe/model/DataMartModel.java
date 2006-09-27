@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.w3c.dom.Document;
 
 
 /**
@@ -193,11 +194,13 @@ public class DataMartModel implements Serializable {
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 			
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: trying to read configuration from hibernate.cfg.xml file");
-				URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
-				Logger.debug(DataMartModel.class, "getHibernateConfiguration: configuration file found at " + url);
+				//URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+				//Logger.debug(DataMartModel.class, "getHibernateConfiguration: configuration file found at " + url);
 				
+				Document doc = JarUtils.getResourceFromJarFileAsDOM(jarFile, "hibernate.cfg.xml") ;
+				cfg = new Configuration().configure(doc);
 				
-				cfg = new Configuration().configure(url);
+				//cfg = new Configuration().configure(url);
 				this.jndiDataSourceName = cfg.getProperty("hibernate.connection.datasource");
 				this.dialect = cfg.getProperty("hibernate.dialect");
 			}

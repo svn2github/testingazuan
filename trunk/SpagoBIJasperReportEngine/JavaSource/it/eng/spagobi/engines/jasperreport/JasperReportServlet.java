@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.utilities.ParametersDecoder;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,6 +31,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -109,7 +111,7 @@ public class JasperReportServlet extends HttpServlet {
 		while (enumer.hasMoreElements()) {
 			parName = (String) enumer.nextElement();
 			parValue = request.getParameter(parName);
-			params.put(parName, parValue);
+			addParToParMap(params, parName, parValue);
 			logger.debug(this.getClass().getName() +":service:Read " +
 					"parameter [" + parName + "] with value [" + parValue + "] from request");
 		}
@@ -177,6 +179,33 @@ public class JasperReportServlet extends HttpServlet {
 	
 	
 	
+	/**
+	 * @param params
+	 * @param parName
+	 * @param parValue
+	 */
+	private void addParToParMap(Map params, String parName, String parValue) {
+		String newParValue;
+		
+		ParametersDecoder decoder = new ParametersDecoder();
+		if(decoder.isMultiValues(parValue)) {			
+			List values = decoder.decode(parValue);
+			newParValue = "";
+			for(int i = 0; i < values.size(); i++) {
+				newParValue += (i>0?",":"");
+				newParValue += values.get(i);
+			}
+			
+		} else {
+			newParValue = parValue;
+		}
+		
+		params.put(parName, newParValue);
+	}
+
+
+
+
 	/**
 	 * This method, based on the engine-config.xml configuration, gets a 
 	 * database connection and return it 

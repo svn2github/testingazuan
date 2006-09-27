@@ -5,6 +5,8 @@
  */
 package it.eng.spagobi.engines.birt;
 
+import it.eng.spagobi.utilities.ParametersDecoder;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +22,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -163,7 +166,8 @@ public class BirtReportServletODA extends HttpServlet {
 	 	while (enumer.hasMoreElements()){
 	 		parName = (String)enumer.nextElement();
 	 		parValue = request.getParameter(parName);
-	 		params.put(parName, parValue);
+	 		//params.put(parName, parValue);
+	 		addParToParMap(params, parName, parValue);
 	 	}		
 
 	 	if (securityAble && !authenticate(request, response)) {
@@ -232,4 +236,30 @@ public class BirtReportServletODA extends HttpServlet {
 		} 
 	}
 	
+	/**
+	 * @param params
+	 * @param parName
+	 * @param parValue
+	 */
+	private void addParToParMap(Map params, String parName, String parValue) {
+		String newParValue;
+		
+		ParametersDecoder decoder = new ParametersDecoder();
+		if(decoder.isMultiValues(parValue)) {			
+			List values = decoder.decode(parValue);
+			newParValue = "";
+			newParValue = (String)values.get(0);
+			/*
+			for(int i = 0; i < values.size(); i++) {
+				newParValue += (i>0?",":"");
+				newParValue += values.get(i);
+			}
+			*/
+			
+		} else {
+			newParValue = parValue;
+		}
+		
+		params.put(parName, newParValue);
+	}
 }

@@ -26,12 +26,18 @@ package it.eng.qbe.utility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
 
 /**
  * @author Gioia
@@ -108,6 +114,60 @@ public class JarUtils {
 		}else{
 			return null;
 		}
+	}
+	
+	public static Document getResourceFromJarFileAsDOM(File jar, String resourceName) {
+		Document doc = null;
+		JarFile jarFile = null;
+		
+		try {
+
+			try {
+				jarFile = new JarFile( jar );
+			}
+			catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+
+			Enumeration jarEntries = jarFile.entries();
+			while ( jarEntries.hasMoreElements() ) {
+
+				ZipEntry ze = (ZipEntry) jarEntries.nextElement();
+				
+				
+				String fileName = getFileName(ze.getName());
+				Logger.debug(JarUtils.class, " Find file ["+ fileName + "] in jar File");
+				if ( fileName.equalsIgnoreCase(resourceName) ) {
+					//log.info( "Found mapping document in jar: " + ze.getName() );
+					try {
+						InputStream in = jarFile.getInputStream(ze);
+						DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+						 doc = builder.parse(in);
+					}
+					catch (Exception e) {
+						/*
+						throw new MappingException(
+								"Could not read mapping documents from jar: " + jar.getName(),
+								e
+							);
+							*/
+					}
+				}
+			}
+
+		}
+		finally {
+
+			try {
+				if (jarFile!=null) jarFile.close();
+			}
+			catch (IOException ioe) {
+				//log.error("could not close jar", ioe);
+			}
+
+		}
+		
+		return doc;
 	}
 	
 	public static String getUrlStr(File jarFile, String path) {

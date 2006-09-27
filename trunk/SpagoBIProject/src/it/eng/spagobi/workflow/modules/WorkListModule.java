@@ -126,15 +126,15 @@ public class WorkListModule extends AbstractBasicListModule {
 	protected SourceBean adapt(TaskInstance aTaskInstance) throws SourceBeanException {
 		SourceBean row = new SourceBean(DataRow.ROW_TAG);
 		row.setAttribute("ActivityDescription", aTaskInstance.getDescription() == null ? "" :  aTaskInstance.getDescription());
-		row.setAttribute("ActivityKey", aTaskInstance.getId());
+		row.setAttribute("ActivityKey", String.valueOf(aTaskInstance.getId()));
 		row.setAttribute("ActivityName", aTaskInstance.getName() == null ? "" : aTaskInstance.getName());
-		row.setAttribute("ActivityPriority", aTaskInstance.getPriority());
+		row.setAttribute("ActivityPriority", String.valueOf(aTaskInstance.getPriority()));
 		row.setAttribute("ActivityState", aTaskInstance.isOpen() ? "Open" : "Closed"); // ??????????
 		ContextInstance contextInstance = aTaskInstance.getContextInstance();
 		ProcessInstance processInstance = contextInstance.getProcessInstance();
 		ProcessDefinition processDefinition = processInstance.getProcessDefinition();
 		row.setAttribute("ProcessDescription", ""); // ??????????
-		row.setAttribute("ProcessKey", processDefinition.getId() );
+		row.setAttribute("ProcessKey", String.valueOf(processDefinition.getId()));
 		row.setAttribute("ProcessName", processDefinition.getName());
 		row.setAttribute("ProcessState", processInstance.isSuspended() ? "Suspended" : "In execution");
 		row.setAttribute("Accepted", aTaskInstance.isOpen()  ? "Open" : "Closed"); // ??????????

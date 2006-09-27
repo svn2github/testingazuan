@@ -131,7 +131,7 @@ public class BIObjectNotesServlet extends HttpServlet{
 			int biobjId = new Integer(biobjIdStr).intValue();
 			execIdent = request.getParameter("execidentifier");
 			IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
-			BIObject biobject = objectDAO.loadBIObjectById(biobjId);
+			BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
 			IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
 			String notes = objectCMSDAO.getExecutionNotes(biobject.getPath(), execIdent);
 			respStr = notes;
@@ -176,7 +176,7 @@ public class BIObjectNotesServlet extends HttpServlet{
 			// if the user doesn't have lock send error otherwise send empty message
 			if(hasLock){
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
-				BIObject biobject = objectDAO.loadBIObjectById(biobjId);
+				BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
 				IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
 				objectCMSDAO.saveExecutionNotes(biobject.getPath(), execIdent, notes);
 			} else {
@@ -236,7 +236,7 @@ public class BIObjectNotesServlet extends HttpServlet{
 			} else {
 				int biobjId = new Integer(biobjIdStr).intValue();
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
-				BIObject biobject = objectDAO.loadBIObjectById(biobjId);
+				BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
 				IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
 				String notes = objectCMSDAO.getExecutionNotes(biobject.getPath(), execIdentifier);
 				respStr = notes;

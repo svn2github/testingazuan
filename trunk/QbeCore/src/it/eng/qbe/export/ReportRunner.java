@@ -70,7 +70,7 @@ public class ReportRunner {
 		String pagingDirectory =  tmpDirectory + System.getProperty("file.separator") + "jrcache";
 		File file = new File(pagingDirectory);
 		file.mkdirs();
-		params.put(JRParameter.REPORT_VIRTUALIZER, getVirtualizer(100, pagingDirectory));
+		//params.put(JRParameter.REPORT_VIRTUALIZER, getVirtualizer(100, pagingDirectory));
 		// virtualization block
 		
 		JasperPrint jasperPrint = JasperFillManager.fillReport(report, params, conn);

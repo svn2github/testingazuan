@@ -28,11 +28,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.HashMap;
-import java.util.Map;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -44,6 +43,9 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
+import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
+
+import org.apache.log4j.Logger;
 
 /**
  * Compile, fill and export a report template to a file or stream
@@ -52,14 +54,26 @@ import net.sf.jasperreports.engine.export.JRXmlExporter;
  */
 public class ReportRunner {
 	
+	private static transient Logger logger = Logger.getLogger(ReportRunner.class);
+	
 	public ReportRunner() {}
 	
 	public void run(File templateFile, File reportFile, String outputType, Connection conn) throws Exception {
 		
-		
 		InputStream is = new FileInputStream(templateFile);
 		JasperReport report  = JasperCompileManager.compileReport(is);
-		JasperPrint jasperPrint = JasperFillManager.fillReport(report, new HashMap(), conn);
+		
+		HashMap params = new HashMap();
+		
+		// virtualization block
+		String tmpDirectory = System.getProperty("java.io.tmpdir");
+		String pagingDirectory =  tmpDirectory + System.getProperty("file.separator") + "jrcache";
+		File file = new File(pagingDirectory);
+		file.mkdirs();
+		params.put(JRParameter.REPORT_VIRTUALIZER, getVirtualizer(100, pagingDirectory));
+		// virtualization block
+		
+		JasperPrint jasperPrint = JasperFillManager.fillReport(report, params, conn);
 			
 		JRExporter exporter = null; 
 			
@@ -87,6 +101,17 @@ public class ReportRunner {
 		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 	    exporter.setParameter(JRExporterParameter.OUTPUT_FILE , reportFile);
 	    exporter.exportReport();
+	}
+	
+	public JRFileVirtualizer getVirtualizer(int maxNumOfPages, String tmpDirectory) {
+		JRFileVirtualizer virtualizer = null; 
+		
+		logger.debug("Max page cached during virtualization process: " + maxNumOfPages);
+		logger.debug("Dir used as storing area during virtualization: " + tmpDirectory);
+		virtualizer = new JRFileVirtualizer(maxNumOfPages, tmpDirectory);
+		virtualizer.setReadOnly(true);
+		
+		return virtualizer;
 	}
 	
 }

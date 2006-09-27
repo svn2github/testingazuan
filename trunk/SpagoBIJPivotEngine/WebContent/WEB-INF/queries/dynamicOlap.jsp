@@ -19,7 +19,8 @@
 				 it.eng.spagobi.bean.SaveAnalysisBean,
 				 com.tonbeller.wcf.form.FormComponent,
 				 java.io.InputStream,
-				 mondrian.olap.*" %>
+				 mondrian.olap.*,
+				 it.eng.spagobi.utilities.ParametersDecoder" %>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
@@ -46,9 +47,13 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
     		if((parameterValue==null) || parameterValue.trim().equals("") ){
     			continue;
     		}
-    		if (parameterValue == null || parameterValue.trim().equals("")) {
-    			continue;
+    		
+    		String decodedParameterValue = parameterValue;
+    		ParametersDecoder decoder = new ParametersDecoder();
+    		if(decoder.isMultiValues(parameterValue)) {
+    			decodedParameterValue = (String)decoder.decode(parameterValue).get(0);
     		}
+    		    		
 			newQuery = ParameterSetter.setParameters(queryStr, as, parameterValue);				
     	}
     }		

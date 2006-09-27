@@ -49,6 +49,7 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -410,10 +411,15 @@ public class JPivotDriver implements IEngineDriver {
 		if(biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
 			String value = null;
+			ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
 			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
 				try {
 					biobjPar = (BIObjectParameter)it.next();
+					/*
 					value = (String)biobjPar.getParameterValues().get(0);
+					pars.put(biobjPar.getParameterUrlName(), value);
+					*/
+					value = parValuesEncoder.encode(biobjPar);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",

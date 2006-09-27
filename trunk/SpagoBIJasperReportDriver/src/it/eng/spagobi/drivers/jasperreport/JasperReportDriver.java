@@ -15,6 +15,7 @@ import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -148,14 +149,21 @@ public class JasperReportDriver implements IEngineDriver {
 								  "BIObject parameter null");
 			return pars;
 		}
+		
+		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
 		if(biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
 			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
 				try {
 					biobjPar = (BIObjectParameter)it.next();
+					
+					
+					/*
 					String value = "";
 					for(int i = 0; i < biobjPar.getParameterValues().size(); i++)
 						value += (i>0?",":"") + (String)biobjPar.getParameterValues().get(i);
+					 */
+					String value = parValuesEncoder.encode(biobjPar);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",

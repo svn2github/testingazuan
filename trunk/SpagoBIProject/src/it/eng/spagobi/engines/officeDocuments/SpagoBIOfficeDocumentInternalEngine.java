@@ -57,7 +57,7 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		            this.getClass().getName(),
 		            "execute",
 		            "The input object is null.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 
 		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("OFFICE_DOC")) {
@@ -65,7 +65,7 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		            this.getClass().getName(),
 		            "execute",
 		            "The input object is not a office document.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 1001, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 		}
 		
 		try {
@@ -80,7 +80,7 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 						this.getClass().getName(),
 					    "execute", 
 					    "The document template is null!!!");
-					throw new EMFUserError(EMFErrorSeverity.ERROR, 1004, messageBundle);
+					throw new EMFUserError(EMFErrorSeverity.ERROR, "1004", messageBundle);
 				}
 				templateFileName = templateFile.getFileName();
 			} else {
@@ -104,7 +104,7 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 						this.getClass().getName(),
 					    "execute", 
 					    "Cannot exec the Office document", e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100, messageBundle);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 	}
 
@@ -124,7 +124,7 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 				this.getClass().getName(),
 	            "executeSubObject", 
 	            "SpagoBIOfficeDocumentInternalEngine cannot exec subobjects.");
-		throw new EMFUserError(EMFErrorSeverity.ERROR, 101, messageBundle);
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 
 }

@@ -410,30 +410,37 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// get the parameter name and value from the request
 		String parameterNameFromLookUp = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
 		if(parameterNameFromLookUp == null) parameterNameFromLookUp = (String)session.getAttribute("LOOKUP_PARAMETER_NAME");
-				
-		// Create a List that will contains the value returned 
-		ArrayList paramvalues = new ArrayList();
-		Object o = request.getAttribute("LOOKUP_VALUE");
-		if(o == null) o = session.getAttribute("LOOKUP_VALUE");
-		if(o instanceof String) {
-			String parameterValueFromLookUp = (String)o;        
-			paramvalues.add(parameterValueFromLookUp);
-		}
-		else {
-			paramvalues.addAll((Collection)o);
-		}
 		
-		// Set into the righr object parameter the list value
-        List biparams = obj.getBiObjectParameters(); 
-        Iterator iterParams = biparams.iterator();
-        while(iterParams.hasNext()) {
-        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
-        	String nameUrl = biparam.getParameterUrlName();
-        	
-        	if (nameUrl.equalsIgnoreCase(parameterNameFromLookUp)){
-        		biparam.setParameterValues(paramvalues);
-        	}//if (nameUrl.equalsIgnoreCase(parameterNameFromLookUp)){
-        }// while(iterParams.hasNext()) {
+		String returnStatus = (String)request.getAttribute("RETURN_STATUS");
+		if(returnStatus == null) returnStatus = (String)session.getAttribute("RETURN_STATUS");
+			
+		if(!returnStatus.equalsIgnoreCase("ABORT")) {
+		
+			// Create a List that will contains the value returned 
+			ArrayList paramvalues = new ArrayList();
+			Object o = request.getAttribute("LOOKUP_VALUE");
+			if(o == null) o = session.getAttribute("LOOKUP_VALUE");
+			if(o instanceof String) {
+				String parameterValueFromLookUp = (String)o;        
+				paramvalues.add(parameterValueFromLookUp);
+			}
+			else {
+				paramvalues.addAll((Collection)o);
+			}
+			
+			// Set into the righr object parameter the list value
+	        List biparams = obj.getBiObjectParameters(); 
+	        Iterator iterParams = biparams.iterator();
+	        while(iterParams.hasNext()) {
+	        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
+	        	String nameUrl = biparam.getParameterUrlName();
+	        	
+	        	if (nameUrl.equalsIgnoreCase(parameterNameFromLookUp)){
+	        		biparam.setParameterValues(paramvalues);
+	        	}//if (nameUrl.equalsIgnoreCase(parameterNameFromLookUp)){
+	        }// while(iterParams.hasNext())
+		}
+        
         // put in session the new object
         session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
         // get the current user profile

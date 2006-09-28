@@ -474,7 +474,11 @@
 			<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ChecklistLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
+        			<!--  
         			<PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_DEFINED"/>
+        			-->
+        			<PARAMETER name="TYPE_LIST" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
+        		
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>         		
@@ -482,7 +486,10 @@
       		<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
+        			<!--  
         			<PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
+        			-->
+        			<PARAMETER name="TYPE_LIST" scope="SERVICE_REQUEST" value="AF_DEFINED"/>
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>  	

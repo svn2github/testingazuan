@@ -328,7 +328,10 @@ public class DelegatedBasicListService {
 			while (valuesfilterIt.hasNext()) {
 				String valuefilter = (String) valuesfilterIt.next();
 				try {
-					doesRowSatisfyCondition = doesRowSatisfyCondition(row, valuefilter, valuetypefilter, columnfilter, typeFilter);
+					if (valuefilter != null && !valuefilter.equals(""))
+						doesRowSatisfyCondition = 
+							doesRowSatisfyCondition(row, valuefilter, valuetypefilter, columnfilter, typeFilter);
+					else doesRowSatisfyCondition = true;
 				} catch (EMFValidationError error) {
 					errorHandler.addError(error);
 					return list;
@@ -356,6 +359,15 @@ public class DelegatedBasicListService {
 	public static ListIFace filterList(ListIFace list, String valuefilter, String valuetypefilter, String columnfilter, 
 						String typeFilter, EMFErrorHandler errorHandler) {
 		if ((valuefilter == null) || (valuefilter.equals(""))) {
+			TracerSingleton.log(
+					Constants.NOME_MODULO,
+					TracerSingleton.WARNING,
+					"DelegatedBasicListService::filterList: the value filter is not set.");
+			HashMap params = new HashMap();
+			params.put(Constants.NOME_MODULO,
+					"DelegatedBasicListService::filterList");
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.VALUE_FILTER, "1070", null, params);
+			errorHandler.addError(error);
 			return list;
 		}
 		if ((columnfilter == null) || (columnfilter.trim().equals(""))) {

@@ -412,9 +412,11 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		switch (valuesFilter.size()) {
 			case 0: return list;
 			case 1: valueFilter = (String) valuesFilter.get(0);
-					return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
+					if (valueFilter != null && !valueFilter.equals(""))
+						return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
 							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
 							getResponseContainer().getErrorHandler());
+					else return list;
 			default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
 							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
 							getResponseContainer().getErrorHandler());

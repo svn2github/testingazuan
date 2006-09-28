@@ -40,6 +40,7 @@
       		<RESOURCES>
       			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ValidateExecuteBIObjectPage" />
       			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_RETURN_FROM_LOOKUP" />
+      			<PARAMETER name="MESSAGE" type="ABSOLUTE" scope="" value="AVOID_VALIDATION" />
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

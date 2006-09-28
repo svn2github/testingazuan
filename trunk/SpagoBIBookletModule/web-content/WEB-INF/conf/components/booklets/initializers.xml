@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<INITIALIZERS>
+    <!-- 
+    	<INITIALIZER class="it.eng.spago.workflow.worklist.initializer.WfInitializer" config=""/> 
+	-->
+</INITIALIZERS>

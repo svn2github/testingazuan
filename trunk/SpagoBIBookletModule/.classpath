@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_juh.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_jurt.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_ridl.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_unoil.jar"/>
+	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
+</classpath>

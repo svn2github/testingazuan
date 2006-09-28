@@ -752,12 +752,11 @@ public class ListTag extends TagSupport
 		while(iter.hasNext()) {
 			String paramKey = (String)iter.next();
 			String paramValue = (String)paramsMap.get(paramKey);
-//			paramKey = JavaScript.escape(paramKey.toUpperCase());
-//			paramValue = JavaScript.escape(paramValue.toUpperCase());
-			//paramKey = JavaScript.escape(paramKey);
-			//paramValue = JavaScript.escape(paramValue);
+
             url.setParameter(paramKey, paramValue); 		
 		}
+		
+		url.setParameter("TYPE_LIST", "TYPE_LIST");
 		return url;
 	}
 	

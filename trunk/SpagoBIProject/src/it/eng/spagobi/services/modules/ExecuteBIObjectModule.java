@@ -293,7 +293,10 @@ public class ExecuteBIObjectModule extends AbstractModule
         Iterator iterParams = biparams.iterator();
         while(iterParams.hasNext()) {
         	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
-        	if(biparam.getParameterValues() != null && biparam.getParameterValues().size() > 0) continue;
+        	if(biparam.getParameterValues() != null && biparam.getParameterValues().size() > 1) 
+        		// if the parameter is multivalue does not refresh its values: this job is performed 
+        		// by the lookup return module
+        		continue;
         	String nameUrl = biparam.getParameterUrlName();
         	List paramAttrsList = request.getAttributeAsList(nameUrl);
             ArrayList paramvalues = new ArrayList();

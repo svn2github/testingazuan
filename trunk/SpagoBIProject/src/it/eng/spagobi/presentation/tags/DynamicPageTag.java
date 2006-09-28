@@ -38,6 +38,7 @@ import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
@@ -51,6 +52,7 @@ import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -81,6 +83,7 @@ public class DynamicPageTag extends TagSupport {
 	private String moduleName = "";
 	PortletRequest portReq = null;
 	private BIObject obj = null;
+	private SessionContainer session = null;
 	private EMFErrorHandler errorHandler = null;
 	
 	
@@ -99,8 +102,8 @@ public class DynamicPageTag extends TagSupport {
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
 		ResponseContainer responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
 		errorHandler = responseContainer.getErrorHandler();
-		SessionContainer session = requestContainer.getSessionContainer();
-		obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		session = requestContainer.getSessionContainer();
+		obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		portReq = PortletUtilities.getPortletRequest();
 		
 		// an empty input type hidden and the correspondent JavaScript to popolate it in case there is a lookup call (in case of query or script) 
@@ -428,6 +431,13 @@ public class DynamicPageTag extends TagSupport {
 			String valueColumn = ((SourceBean) queryXML.getAttribute("VALUE-COLUMN")).getCharacters();
 			String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
 			String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
+			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			try {
+				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
+			} catch (Exception e) {
+				TracerSingleton.log(Constants.NOME_MODULO,
+						TracerSingleton.CRITICAL, "getLov: error while substituting profile attributes in query", e);
+			}
 			
 			// execute query
 			SourceBean result = null;

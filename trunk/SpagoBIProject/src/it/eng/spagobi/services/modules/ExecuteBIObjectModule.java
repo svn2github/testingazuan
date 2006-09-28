@@ -424,9 +424,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 			if(o != null) session.delAttribute("LOOKUP_VALUE");
 		}
 		
-		System.out.println("o:" + o);
-		System.out.println("returnStatus: " + returnStatus);
-		
 		if(o != null && !returnStatus.equalsIgnoreCase("ABORT")) {
 		
 			// Create a List that will contains the value returned 

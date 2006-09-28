@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.utilities.GeneralUtilities;
 
+
 public class BookletServiceUtils {
 
 	private static String getBookletServiceName() {

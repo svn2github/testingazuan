@@ -28,10 +28,10 @@
 -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <artifactId>SpagoBIPamphletsModule</artifactId>
+  <artifactId>SpagoBIBookletModule</artifactId>
   <packaging>war</packaging>
   <version>1.9</version>
-  <name>SpagoBIPamphletsModule</name>
+  <name>SpagoBIBookletModule</name>
   <url>http://maven.apache.org</url>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -80,15 +80,9 @@
   		  	tofile="${basedir}/build/Readme.txt" />
 		  <copy file="${basedir}/Requirements.txt"
   		  	tofile="${basedir}/build/Requirements.txt" />
-		  <delete>
-    			<fileset dir="${basedir}/build/spagobi/WEB-INF/classes/it/eng/spago"/>
-		  </delete>
-		  <copy todir="${basedir}/build/exampleTemplate">
-		  		<fileset dir="${basedir}/exampleTemplate"/>
-		  </copy>
-		  <copy todir="${basedir}/build/exampleXpdl">
-		  		<fileset dir="${basedir}/exampleXpdl"/>
-		  </copy>	  			  
+		  <copy todir="${basedir}/build/UtilityFiles">
+		  		<fileset dir="${basedir}/UtilityFiles"/>
+		  </copy> 			  
 		  <zip destfile="${basedir}/build/spagobi.zip" 
 			basedir="${basedir}/build/" />
 		  <delete dir="${basedir}/build/spagobi/" />

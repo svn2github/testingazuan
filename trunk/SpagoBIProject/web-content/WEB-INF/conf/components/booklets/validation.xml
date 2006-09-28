@@ -13,5 +13,25 @@
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+	
+	
+	<SERVICE name="BookletsCollaborationPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="OPERATION" scope="SERVICE_REQUEST" value="OPERATION_PUBLISH_PRESENTATION"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="label" label="#SBIDev.docConf.docDet.labelField" boundle="messages">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="name" label="#SBIDev.docConf.docDet.nameField" boundle="messages">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="FUNCT_ID" label="#SBISet.treeFunct.title" boundle="messages">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
 
 </VALIDATIONS>

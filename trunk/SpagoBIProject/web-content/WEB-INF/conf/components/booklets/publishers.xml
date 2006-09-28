@@ -128,6 +128,16 @@
      
      
      
+     <PUBLISHER name="publishPresentation">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletPublishPresentation.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+     
+     
      <!-- 
 	<PUBLISHER name="PamphletsLoopbackManagementHome">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">

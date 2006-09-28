@@ -28,18 +28,28 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.Domain;
+import it.eng.spagobi.bo.Engine;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectDAO;
+import it.eng.spagobi.bo.dao.IDomainDAO;
+import it.eng.spagobi.bo.dao.IEngineDAO;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.booklets.exceptions.OpenOfficeConnectionException;
 import it.eng.spagobi.booklets.utils.BookletServiceUtils;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -87,7 +97,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 				runCollaborationHandler(request, response);
 			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_DELETE_PRESENTATION_VERSION)) {
 				deletePresVerHandler(request, response);
-			}
+			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE)) {
+				preparePublishPageHandler(request, response);
+			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_PUBLISH_PRESENTATION)) {
+				publishHandler(request, response);
+			} 
+			
 		} catch (EMFUserError emfue) {
 			errorHandler.addError(emfue);
 		} catch (Exception ex) {
@@ -97,6 +112,99 @@ public class BookletsCollaborationModule extends AbstractModule {
 		}
 	}
 
+	
+	
+	private void publishHandler(SourceBean request, SourceBean response) {
+		try{
+			String label = (String)request.getAttribute("label");
+			if(label==null) label = "";
+			String description = (String)request.getAttribute("description");
+			if(description==null) description = "";
+			String name = (String)request.getAttribute("name");
+			if(name==null) name = "";
+			String pathConfBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+			String presVerName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+			EMFErrorHandler errorHandler = getResponseContainer().getErrorHandler();
+			if(!errorHandler.isOK()){
+				if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+					response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+					response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
+					response.setAttribute("label", label);
+					response.setAttribute("name", name);
+					response.setAttribute("description", description);
+					response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+					response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+					return;
+				}
+			} else {
+				// recover office document sbidomains
+				IDomainDAO domainDAO = DAOFactory.getDomainDAO();
+				Domain officeDocDom = domainDAO.loadDomainByCodeAndValue("BIOBJ_TYPE", "OFFICE_DOC");
+				// recover development sbidomains
+				Domain devDom = domainDAO.loadDomainByCodeAndValue("STATE", "DEV");
+				// recover engine
+				IEngineDAO engineDAO = DAOFactory.getEngineDAO();
+				List engines = engineDAO.loadAllEnginesForBIObjectType(officeDocDom.getValueCd());
+				Engine engine = (Engine)engines.get(0);
+				// load the template
+				UploadedFile uploadedFile = new UploadedFile();
+				IBookletsCmsDao bookletsCmsDao = new BookletsCmsDaoImpl();
+				byte[] tempCont = bookletsCmsDao.getPresentationVersionContent(pathConfBook, presVerName);
+				String bookName = bookletsCmsDao.getBookletName(pathConfBook);
+				uploadedFile.setFieldNameInForm("template");
+				uploadedFile.setFileName(bookName + ".ppt");
+				uploadedFile.setSizeInBytes(tempCont.length);
+				uploadedFile.setFileContent(tempCont);
+				// load all functionality
+				List storeInFunctionalities = new ArrayList();
+				List functIds = request.getAttributeAsList("FUNCT_ID");
+				Iterator iterFunctIds = functIds.iterator();
+				while(iterFunctIds.hasNext()) {
+					String functIdStr = (String)iterFunctIds.next();
+					Integer functId = new Integer(functIdStr);
+					storeInFunctionalities.add(functId);
+				}
+				// create biobject
+				BIObject biobj = new BIObject();
+				biobj.setDescription(description);
+				biobj.setLabel(label);
+				biobj.setName(name);
+				biobj.setEncrypt(new Integer(0));
+				biobj.setEngine(engine);
+				biobj.setRelName("");
+				biobj.setBiObjectTypeCode(officeDocDom.getValueCd());
+				biobj.setBiObjectTypeID(officeDocDom.getValueId());
+				biobj.setStateCode(devDom.getValueCd());
+				biobj.setStateID(devDom.getValueId());
+				biobj.setVisible(new Integer(0));
+				biobj.setTemplate(uploadedFile);
+				biobj.setFunctionalities(storeInFunctionalities);
+				//biobj.setCurrentTemplateVersion(currentTemplateVersion);
+				//biobj.setPath(path);
+				//biobj.setNameCurrentTemplateVersion(nameCurrentTemplateVersion);
+				//biobj.setTemplateVersions(templateVersions);
+				//biobj.setUuid(uuid);
+				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
+				objectDAO.insertBIObject(biobj);
+				// put data into response
+				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
+				response.setAttribute("label", "");
+				response.setAttribute("name", "");
+				response.setAttribute("description", "");
+				response.setAttribute("PublishMessage", PortletUtilities.getMessage("book.presPublished", "component_booklets_messages"));
+				response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+				response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+				
+			}
+		} catch(Exception e){
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		                        "publishHandler","Error while publishing presentation", e);
+		}
+	    
+	}
+	
 	
 	
 	
@@ -142,13 +250,31 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	
+	private void preparePublishPageHandler(SourceBean request, SourceBean response) {
+		try{
+			String pathConfBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+			String presVerName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
+			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+		} catch(Exception e){
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		                        "publishPresHandler","Error while preparing page for publishing", e);
+		}
+	    
+	}
+	
+	
+	
 
 	private void runCollaborationHandler(SourceBean request, SourceBean response) {
 		JbpmContext jbpmContext = null;
 		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 		String executionMsg = null;
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
-		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBookConf);		
+		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBookConf);
 		try {
 			// parse process definition
 			ProcessDefinition processDefinition = null;
@@ -236,7 +362,11 @@ public class BookletsCollaborationModule extends AbstractModule {
 			// store presentation
 			IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
 			byte[] currPresCont = bookDao.getCurrentPresentationContent(pathConfBook);
-			bookDao.versionPresentation(pathConfBook, currPresCont);
+			boolean approvedBool = false;
+			if(approved.equalsIgnoreCase("true")) {
+				approvedBool = true;
+			}
+			bookDao.versionPresentation(pathConfBook, currPresCont, approvedBool);
 			// put attributes into response
 			if(approved.equalsIgnoreCase("true")) {
 				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletCompleteActivityLoopback");

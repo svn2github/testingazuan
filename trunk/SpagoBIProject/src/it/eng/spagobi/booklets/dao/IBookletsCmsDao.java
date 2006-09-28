@@ -77,9 +77,11 @@ public interface IBookletsCmsDao {
 	
 	public void storeCurrentPresentationContent(String pathBooklet, byte[] docContent);
 	
+	public void storeCurrentPresentationContent(String pathBooklet, InputStream docContentIS);
+	
 	public byte[] getCurrentPresentationContent(String pathBooklet);
 	
-	public void versionPresentation(String pathBooklet, byte[] presContent);
+	public void versionPresentation(String pathBooklet, byte[] presContent, boolean approved);
 	
 	public List getPresentationVersions(String pathBooklet);
 	

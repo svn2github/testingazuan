@@ -38,11 +38,9 @@ import com.sun.star.beans.XPropertySet;
 import com.sun.star.bridge.UnoUrlResolver;
 import com.sun.star.bridge.XUnoUrlResolver;
 import com.sun.star.comp.helper.Bootstrap;
-import com.sun.star.container.XNamed;
 import com.sun.star.drawing.XDrawPage;
 import com.sun.star.drawing.XDrawPages;
 import com.sun.star.drawing.XDrawPagesSupplier;
-import com.sun.star.drawing.XShape;
 import com.sun.star.drawing.XShapes;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XDesktop;
@@ -50,6 +48,7 @@ import com.sun.star.frame.XModel;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.lang.XMultiServiceFactory;
+import com.sun.star.text.XText;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.util.XCloseable;
@@ -173,6 +172,9 @@ public class ProcessOOTemplateAction implements ActionHandler {
             // built the structure into the cms 
             IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
             pampdao.createStructureForTemplate(pathBookConf, numPages);
+            // store as current version the template (in case of flow exception there will be a file to download)
+    		InputStream tempContIS = bookDao.getBookletTemplateContent(pathBookConf);
+    		bookDao.storeCurrentPresentationContent(pathBookConf, tempContIS);
             debug("execute", "Template cms structure created");
             // for each part of the document gets the image images and stores them into cms
             for(int i=0; i<numPages; i++) {
@@ -190,19 +192,26 @@ public class ProcessOOTemplateAction implements ActionHandler {
             		debug("execute", "processing shape with index " + j);
             		Object shapeObj = xShapes.getByIndex(j);
             		debug("execute", "shape object retrived " + shapeObj);
-            		XShape xshape = (XShape)UnoRuntime.queryInterface(XShape.class, shapeObj);
-            		debug("execute", "XShape retrived " + xshape);
-            		XNamed xNamed = (XNamed)UnoRuntime.queryInterface(XNamed.class, shapeObj );
-            		debug("execute", "xNamed retrived " + xNamed);
-            		String name = xNamed.getName();
-            		debug("execute", "Name of the shape " + name);
-            		if(name.startsWith("spagobi_placeholder_")) {
-            			String logicalObjectName = name.substring(20);
-            			debug("execute", "Logical Name of the shape " + logicalObjectName);
-            			ConfiguredBIDocument confDoc = bookDao.getConfigureDocument(pathBookConf, logicalObjectName);
-            			debug("execute", "Configured document with Logical Name " + logicalObjectName + " retrived " + confDoc);
-            			storeDocImages(confDoc, numPage, pathBookConf); 
-            		} 
+            		//XShape xshape = (XShape)UnoRuntime.queryInterface(XShape.class, shapeObj);
+            		//debug("execute", "XShape retrived " + xshape);
+            		//XNamed xNamed = (XNamed)UnoRuntime.queryInterface(XNamed.class, shapeObj );
+            		//debug("execute", "xNamed retrived " + xNamed);
+            		//String name = xNamed.getName();
+            		//debug("execute", "Name of the shape " + name);
+            		XText xShapeText = (XText)UnoRuntime.queryInterface(XText.class, shapeObj);
+            		debug("execute", "XShapeText retrived " + xShapeText);
+            		if(xShapeText!=null) {
+            			String shapeText = xShapeText.getString();
+            			debug("execute", "shape text retrived " + shapeText);
+            			shapeText = shapeText.trim();
+            			if(shapeText.startsWith("spagobi_placeholder_")) {
+                			String logicalObjectName = shapeText.substring(20);
+                			debug("execute", "Logical Name of the shape " + logicalObjectName);
+                			ConfiguredBIDocument confDoc = bookDao.getConfigureDocument(pathBookConf, logicalObjectName);
+                			debug("execute", "Configured document with Logical Name " + logicalObjectName + " retrived " + confDoc);
+                			storeDocImages(confDoc, numPage, pathBookConf); 
+                		} 
+            		}
             	}
             }
 	        

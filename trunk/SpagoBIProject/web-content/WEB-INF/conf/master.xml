@@ -35,6 +35,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
 	<!-- end import export module -->
 	<!-- start import booklets module -->
+	<!-- 
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/booklets.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/modules.xml" />
@@ -45,6 +46,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/workflow.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/forms.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/validation.xml" />
+	-->
 	<!-- end import booklets module -->
 	<!-- START OFFICE DOCUMENT -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiofficedocIE/publishers.xml" />

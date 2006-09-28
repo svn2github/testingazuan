@@ -87,7 +87,8 @@ public class BookletsServlet extends HttpServlet{
 	 			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
 	 			jbpmContext.close();
 	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
-		 		String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
+	 			String bookName = bookdao.getBookletName(pathConfBook);
+		 		//String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
 		 		byte[] finalDocBytes = bookdao.getCurrentPresentationContent(pathConfBook);
 			 	response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
 	 			response.setContentLength(finalDocBytes.length);
@@ -100,7 +101,8 @@ public class BookletsServlet extends HttpServlet{
                 String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
 	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
 	 			byte[] finalDocBytes = bookdao.getPresentationVersionContent(pathBook, verName);
-	 			String bookName = bookdao.getBookletTemplateFileName(pathBook);
+	 			String bookName = bookdao.getBookletName(pathBook);
+	 			//String bookName = bookdao.getBookletTemplateFileName(pathBook);
 	 			response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
 	 			response.setContentLength(finalDocBytes.length);
 	 			out.write(finalDocBytes);

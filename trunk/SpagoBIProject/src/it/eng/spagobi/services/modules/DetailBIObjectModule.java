@@ -52,6 +52,7 @@ import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.AbstractBasicCheckListModule;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SessionMonitor;
@@ -79,8 +80,6 @@ import org.apache.commons.validator.GenericValidator;
  * has methods for BI Objects load, detail, modify/insertion and deleting operations. 
  * The <code>service</code> method has  a switch for all these operations, differentiated the ones 
  * from the others by a <code>message</code> String.
- * 
- * @author sulis
  */
 
 public class DetailBIObjectModule extends AbstractModule {
@@ -1226,6 +1225,18 @@ public class DetailBIObjectModule extends AbstractModule {
 		try {
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	        List types = domaindao.loadListDomainsByType("BIOBJ_TYPE");
+	        // if booklet module is not installed remove from types the booklet type
+	        if(!GeneralUtilities.isModuleInstalled("booklets")){
+		        Iterator iterdom = types.iterator();
+	  		    while(iterdom.hasNext()) {
+	  		    	Domain type = (Domain)iterdom.next();
+	  		    	if(type.getValueCd().equalsIgnoreCase("BOOKLET")) {
+	  		    		types.remove(type);
+	  		    		break;
+	  		    	}
+	  		    }
+	        }
+	        // load list of states and engines
 	        List states = domaindao.loadListDomainsByType("STATE");
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();
 		    response.setAttribute(NAME_ATTR_LIST_ENGINES, engines);

@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 public class BookletsCollaborationPublisher implements PublisherDispatcherIFace {
@@ -69,7 +70,11 @@ public class BookletsCollaborationPublisher implements PublisherDispatcherIFace 
 		if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			return pubName;
 		} else {
-			return new String("error");
+			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+				return pubName;
+			} else {
+				return new String("error");
+			}
 		}
 	}
 

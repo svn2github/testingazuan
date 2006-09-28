@@ -58,6 +58,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    eraseVersionUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
    eraseVersionUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    
+   PortletURL publishUrl = renderResponse.createActionURL();
+   publishUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+   publishUrl.setParameter("OPERATION", BookletsConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE);
+   publishUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
    
    String contextAddress = GeneralUtilities.getSpagoBiContextAddress();
    String downloadVersionUrl = BookletServiceUtils.getBookletServiceUrl() + "?" +
@@ -141,7 +145,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	       <td align="center" style='vertical-align:middle;' align="left" class="portlet-section-header">
 	          <spagobi:message key = "book.VersionName"  bundle="component_booklets_messages"/>
 	       </td>
-	       <td align="left" class="portlet-section-header" colspan='3' >&nbsp;</td>
+	       <td align="left" class="portlet-section-header">&nbsp;</td>
+	       <td align="center" style='vertical-align:middle;' align="center" class="portlet-section-header">
+	          <spagobi:message key = "book.Approved"  bundle="component_booklets_messages"/>
+	       </td>
+	       <td align="left" class="portlet-section-header" colspan='4' >&nbsp;</td>
 	     </tr>
 	     <tr> 
 		 <% Iterator iterPresVersions =  presVersions.iterator();
@@ -164,13 +172,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <td align="center" style='vertical-align:middle;' class='<%= rowClass %>' >
             	<%= presVer.getVersionName() %>
             </td>
+            <td class='<%= rowClass %>' width="20px">&nbsp;</td>
+            <td align="center" style='vertical-align:middle;' class='<%= rowClass %>' >
+            	<% out.print(presVer.isApproved()); %>
+            </td> 
             <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+            	<% if(!presVer.isCurrentVersion()) { %>
                 <a href='<%=eraseVersionUrl.toString()+"&"+BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME+"="+presVer.getVersionName()%>'> 
 			    <img title='<spagobi:message key = "book.erase" bundle="component_booklets_messages" />' 
 			    	 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/erase.gif")%>' 
 			    	 alt='<spagobi:message key = "book.erase"  bundle="component_booklets_messages"/>' />
-				</a>        		
+				</a>
+				<% } else { out.print("&nbsp"); } %>        		
             </td>
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                 <a href='<%=downloadVersionUrl.toString() + "&" + BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME + "=" + presVer.getVersionName()%>'> 
@@ -178,6 +192,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    	 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download16.gif")%>' 
 			    	 alt='<spagobi:message key = "book.download"  bundle="component_booklets_messages"/>' />
 				</a>              		
+            </td>
+            <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+            	<% if(presVer.isApproved()) { %>
+                <a href='<%=publishUrl.toString()+"&"+BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME+"="+presVer.getVersionName()%>'> 
+			    <img title='<spagobi:message key = "book.deploy" bundle="component_booklets_messages" />' 
+			    	 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/deploy16.png")%>' 
+			    	 alt='<spagobi:message key = "book.deploy"  bundle="component_booklets_messages"/>' />
+				</a>
+				<% } else { out.print("&nbsp"); } %>        		
             </td>
          </tr> 
          <% } %>

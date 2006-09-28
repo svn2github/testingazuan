@@ -54,27 +54,45 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 		XComponent xComponent = null;
 		XDesktop xdesktop =  null;
 		String pathTmpFold = null;
+		IBookletsCmsDao pampDao = null;
+		String pathTmpFoldPamp = null;
+		String pathBookConf = null;
 		try{
 			debug("execute", "Start execution");
 			ContextInstance contextInstance = context.getContextInstance();
 			debug("execute", "Context Instance retrived " + contextInstance);
-			String pathBookConf = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
+			pathBookConf = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
 			debug("execute", "Booklet path variable retrived " + pathBookConf);
-
-			
 			ConfigSingleton config = ConfigSingleton.getInstance();
 			SourceBean pathTmpFoldSB = (SourceBean)config.getAttribute("BOOKLETS.PATH_TMP_FOLDER");
 			pathTmpFold = (String)pathTmpFoldSB.getAttribute("path");
-			
 			debug("execute", "Path tmp =" + pathTmpFold);
-			
-			String pathTmpFoldPamp = pathTmpFold + pathBookConf;
-			
+			pathTmpFoldPamp = pathTmpFold + pathBookConf;
 			debug("execute", "Path tmp folder pamphlet =" + pathTmpFoldPamp);
-			
 			File tempDir = new File(pathTmpFoldPamp); 
 			tempDir.mkdirs();
 			debug("execute", "Path tmp folder pamphlet =" + pathTmpFoldPamp + " created.");
+			
+			
+			// gets the template file data
+			pampDao = new BookletsCmsDaoImpl();
+			debug("execute", "Booklets CMS Dao instantiated");
+			String templateFileName = pampDao.getBookletTemplateFileName(pathBookConf);
+			debug("execute", "Template file name: " + templateFileName);
+			InputStream contentTempIs = pampDao.getBookletTemplateContent(pathBookConf);
+			debug("execute", "InputStream opened on booklet template.");
+	        byte[] contentTempBytes = GeneralUtilities.getByteArrayFromInputStream(contentTempIs);
+	        debug("execute", "BookletTemplateContent stored into a byte array.");
+	        contentTempIs.close();
+	        // write template content into a temp file
+	        File templateFile = new File(tempDir, templateFileName);
+	        FileOutputStream fosTemplate = new FileOutputStream(templateFile);
+	        fosTemplate.write(contentTempBytes);
+	        fosTemplate.flush();
+	        fosTemplate.close();
+	        debug("execute", "Booklet template content written into a temp file.");
+			
+			
 			// initialize openoffice environment
 			SourceBean officeConnectSB = (SourceBean) config.getAttribute("BOOKLETS.OFFICECONNECTION");
 			debug("execute", "Office connection Sourcebean retrieved: " + officeConnectSB.toXML());
@@ -101,23 +119,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 			xdesktop = (XDesktop)UnoRuntime.queryInterface(XDesktop.class, desktop);
 			debug("execute", "XDesktop object: " + xdesktop);
 			
-			// gets the template file data
-			IBookletsCmsDao pampDao = new BookletsCmsDaoImpl();
-			debug("execute", "Booklets CMS Dao instantiated");
-			String templateFileName = pampDao.getBookletTemplateFileName(pathBookConf);
-			debug("execute", "Template file name: " + templateFileName);
-			InputStream contentTempIs = pampDao.getBookletTemplateContent(pathBookConf);
-			debug("execute", "InputStream opened on booklet template.");
-	        byte[] contentTempBytes = GeneralUtilities.getByteArrayFromInputStream(contentTempIs);
-	        debug("execute", "BookletTemplateContent stored into a byte array.");
-	        contentTempIs.close();
-	        // write template content into a temp file
-	        File templateFile = new File(tempDir, templateFileName);
-	        FileOutputStream fosTemplate = new FileOutputStream(templateFile);
-	        fosTemplate.write(contentTempBytes);
-	        fosTemplate.flush();
-	        fosTemplate.close();
-	        debug("execute", "Booklet template content written into a temp file.");
+
             XComponentLoader xComponentLoader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class, xdesktop);
 	        // load the template into openoffice
             debug("execute", "Path template = " + templateFile.getAbsolutePath());
@@ -156,13 +158,21 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             		Object shapeObj = xShapes.getByIndex(j);
             		XShape xshape = (XShape)UnoRuntime.queryInterface(XShape.class, shapeObj);
             		debug("execute", "xshape: " + xshape);
-            		XNamed xNamed = (XNamed)UnoRuntime.queryInterface(XNamed.class, shapeObj);
-            		debug("execute", "xNamed: " + xNamed);
-            		String name = xNamed.getName();
-            		debug("execute", "Name of the shape: " + name);
+            		//XNamed xNamed = (XNamed)UnoRuntime.queryInterface(XNamed.class, shapeObj);
+            		//debug("execute", "xNamed: " + xNamed);
+            		//String name = xNamed.getName();
+            		//debug("execute", "Name of the shape: " + name);
+            		XText xShapeText = (XText)UnoRuntime.queryInterface(XText.class, shapeObj);
+            		debug("execute", "XShapeText retrived " + xShapeText);
+            		if(xShapeText==null) {
+            			continue;
+            		}
+            		String shapeText = xShapeText.getString();
+            		debug("execute", "shape text retrived " + shapeText);
+            		shapeText = shapeText.trim();
             		// sobstitute the placeholder with the correspondent image
-            		if(name.startsWith("spagobi_placeholder_")) {
-            			String nameImg = name.substring(20);
+            		if(shapeText.startsWith("spagobi_placeholder_")) {
+            			String nameImg = shapeText.substring(20);
             			debug("execute", "Name of the image corresponding to the placeholder: " + nameImg);
             			Size size = xshape.getSize();
             			Point position = xshape.getPosition();
@@ -178,9 +188,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             			debug("execute", "Stored size and position set for the new XShape");
                     	// write the corresponding image into file system
             			String pathTmpImgFolder = pathTmpFoldPamp + "/tmpImgs/";
-            			
             			debug("execute", "Path tmp images: " + pathTmpImgFolder);
-            			
             			File fileTmpImgFolder = new File(pathTmpImgFolder);
             			fileTmpImgFolder.mkdirs();
             			debug("execute", "Folder tmp images: " + pathTmpImgFolder + " created.");
@@ -250,19 +258,15 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             	}
             }  
             
-            
             // save final document
             String namePamp = pampDao.getBookletTemplateFileName(pathBookConf);
             String pathFinalDoc = pathTmpFoldPamp + "/" + namePamp + ".ppt";
-            
             debug("execute", "Path final document = " + pathFinalDoc);
-            
             File fileFinalDoc = new File(pathFinalDoc);
             String fileoopath = transformPathForOpenOffice(fileFinalDoc);
             debug("execute", "Open Office path: " + fileoopath);
             if(fileoopath.equals(""))
             	return;
-            
             XStorable xStorable = (XStorable)UnoRuntime.queryInterface(XStorable.class, xComponent);
             debug("execute", "XStorable: " + xStorable);
             PropertyValue[] documentProperties = new PropertyValue[2];
@@ -276,16 +280,19 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             } catch (IOException e) {
             	major("execute", "Error while storing the final document", e);
             }
-            
             FileInputStream fis = new FileInputStream(pathFinalDoc);
             byte[] docCont = GeneralUtilities.getByteArrayFromInputStream(fis);
             pampDao.storeCurrentPresentationContent(pathBookConf, docCont);
             debug("execute", "Document stored in CMS");
             fis.close();
+           
 		} catch(Exception e) {
 			major("execute", "Error during the generation of the final document", e);
+			// store as final document the template  
+
 		} finally {
-			 // close open document and environment
+			
+			// close open document and environment
 			if(xComponent!=null)  {
 				XModel xModel = (XModel)UnoRuntime.queryInterface(XModel.class, xComponent);
 				XCloseable xCloseable = (XCloseable)UnoRuntime.queryInterface(XCloseable.class, xModel);

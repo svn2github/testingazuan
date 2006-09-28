@@ -5,6 +5,8 @@
 	<INITIALIZER class="it.eng.spago.dbaccess.DataAccessInitializer" config="" />
 	<INITIALIZER class="it.eng.spago.cms.init.CMSInitializer" config="CONTENTCONFIGURATION" />
 	<INITIALIZER class="it.eng.spago.util.MonitorInitializer" config="" />
+	<!-- 
 	<INITIALIZER class="it.eng.spagobi.workflow.JbpmContextInitializer" config="" />
+	-->
 	<INITIALIZER class="it.eng.spagobi.init.TreeInitializer" config="SPAGOBI.TREE_INITIALIZATION" />
 </INITIALIZERS>

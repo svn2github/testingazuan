@@ -5,6 +5,8 @@ public class PresentationVersion {
 	String creationDate = null;
 	String versionName = "";
 	String presentationName = "";
+	boolean approved = false;
+	boolean currentVersion = true;
 	
 	public String getCreationDate() {
 		return creationDate;
@@ -23,6 +25,18 @@ public class PresentationVersion {
 	}
 	public void setPresentationName(String presentationName) {
 		this.presentationName = presentationName;
+	}
+	public boolean isApproved() {
+		return approved;
+	}
+	public void setApproved(boolean approved) {
+		this.approved = approved;
+	}
+	public boolean isCurrentVersion() {
+		return currentVersion;
+	}
+	public void setCurrentVersion(boolean currentVersion) {
+		this.currentVersion = currentVersion;
 	}
 	
 }

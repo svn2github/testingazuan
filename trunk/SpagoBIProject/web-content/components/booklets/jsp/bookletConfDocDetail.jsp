@@ -48,7 +48,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    backUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    backUrl.setParameter(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
    backUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
-  
+   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   
    
    PortletURL formSaveConfDocUrl = renderResponse.createActionURL();
    formSaveConfDocUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);

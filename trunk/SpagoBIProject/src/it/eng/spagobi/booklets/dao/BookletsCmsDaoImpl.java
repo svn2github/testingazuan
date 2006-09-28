@@ -60,6 +60,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 	
 	private static final String PROPERTY_PRESENTATION_NAME = "presentationName";
 	private static final String PROPERTY_CREATION_DATE = "creationDate";
+	private static final String PROPERTY_APPROVED = "approved";
 	
 	
 	public String createNewConfigurationNode(String pathBiObj) {
@@ -584,6 +585,21 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 
 
+	public void storeCurrentPresentationContent(String pathBooklet, InputStream docContentIS) {
+		try {
+			CmsManager manager = new CmsManager();
+			String pathImg = pathBooklet + CURRENT_PRESENTATION;
+			SetOperation setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTENT, true);
+			setOp.setContent(docContentIS);
+			manager.execSetOperation(setOp);
+			docContentIS.close();
+		} catch (Exception e) {
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
+					            "storeCurrentDocumentContent", "Error while storing final document", e);
+		} finally {	}
+	}
+	
+	
 	public void storeCurrentPresentationContent(String pathBooklet, byte[] docContent) {
 		try {
 			CmsManager manager = new CmsManager();
@@ -598,7 +614,6 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 					            "storeCurrentDocumentContent", "Error while storing final document", e);
 		} finally {	}
 	}
-	
 	
 	
 	
@@ -708,13 +723,18 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			getOp.setRetriveVersionsInformation("true");
 			getOp.setRetriveContentInformation("false");
 			CmsNode node = manager.execGetOperation(getOp);
+			String nameCurrVer = node.getVersion();
 			// for each version recover name and date
+			boolean isCurrentVersion = false;
 			List versions = node.getVersions();
 			Iterator iterVers = versions.iterator();
 			while(iterVers.hasNext()) {
 				CmsVersion cmsVer = (CmsVersion)iterVers.next();
 				// recover version name
 				String versionName = cmsVer.getName();
+				if(nameCurrVer.equals(versionName)){
+					isCurrentVersion = true;
+				}
 				// recover version node
 				getOp.setVersion(versionName);
 				getOp.setRetrivePropertiesInformation("true");
@@ -726,6 +746,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 				Iterator iterProps = properties.iterator();
 				String namePres = "";
 				String creationDate = "";
+				boolean approved  = false;
 				while(iterProps.hasNext()) {
 					CmsProperty prop = (CmsProperty)iterProps.next();
 					String nameProp = prop.getName();
@@ -733,12 +754,20 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 						namePres = prop.getStringValues()[0];
 					if(nameProp.equalsIgnoreCase(PROPERTY_CREATION_DATE)) 
 						creationDate = prop.getStringValues()[0];
+					if(nameProp.equalsIgnoreCase(PROPERTY_APPROVED)) {
+						String appStr = prop.getStringValues()[0];
+						if(appStr.equalsIgnoreCase("true")){
+							approved  = true;
+						}
+					}
 				}
 				PresentationVersion presentationVersion = new PresentationVersion();
 				Long creationDateLong = new Long(creationDate);
 				presentationVersion.setCreationDate(new Date(creationDateLong.longValue()).toString());
 				presentationVersion.setPresentationName(namePres);
 				presentationVersion.setVersionName(versionName);
+				presentationVersion.setApproved(approved);
+				presentationVersion.setCurrentVersion(isCurrentVersion);
 				presversions.add(presentationVersion);	
 			}
 		} catch(Exception e) {
@@ -753,7 +782,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 
 
-	public void versionPresentation(String pathBooklet, byte[] presContent) {
+	public void versionPresentation(String pathBooklet, byte[] presContent, boolean approved) {
 		try {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + APPROVED_PRESENTATION;
@@ -767,10 +796,18 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			String[] namePresPropValues = new String[] { bookletName };
 			String today = new Long(new Date().getTime()).toString();
 			String[] datePropValues = new String[] { today };
+			String[] approvedPropValues = null;
+			if(approved) {
+				approvedPropValues = new String[] { "true" };
+			} else {
+				approvedPropValues = new String[] { "false" };
+			}
 			CmsProperty propFileName = new CmsProperty(PROPERTY_PRESENTATION_NAME, namePresPropValues);
 			CmsProperty propDateLoad = new CmsProperty(PROPERTY_CREATION_DATE, datePropValues);
+			CmsProperty propApproved = new CmsProperty(PROPERTY_APPROVED, approvedPropValues);
 			properties.add(propFileName);
 			properties.add(propDateLoad);
+			properties.add(propApproved);
 			setOp.setProperties(properties);
 			// exec set operation
 			manager.execSetOperation(setOp);

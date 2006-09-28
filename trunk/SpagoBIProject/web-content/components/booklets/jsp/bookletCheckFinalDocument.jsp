@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     if(activityKey==null)
     	activityKey = (String)aServiceRequest.getAttribute("ActivityKey");
 	// BUILT URL TO DOWNLOAD THE DOCUMENT
-	String recoverUrl = BookletServiceUtils.getBookletServiceUrl() +
+	String recoverUrl = BookletServiceUtils.getBookletServiceUrl() + "?" +
 						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
 						BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC + "&" +
 						SpagoBIConstants.ACTIVITYKEY + "=" + activityKey;

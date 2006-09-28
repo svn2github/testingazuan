@@ -16,6 +16,8 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.workflow.api.WorkflowEngineException;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,31 +42,34 @@ public class WorkListModule extends AbstractBasicListModule {
 	 * @throws Exception if some errors occurs
 	 */
 	private SourceBean getAssigments() throws Exception {
-		    	
-    	//Getting Containers
-    	SessionContainer session = getRequestContainer().getSessionContainer();
-    	SessionContainer permSession = session.getPermanentContainer();
-    	//ApplicationContainer application = ApplicationContainer.getInstance();
-    	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    	//Getting Jbpm context 
-    	JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-    	jbpmContext = jbpmConfiguration.createJbpmContext();
-    	//Getting user roles
-    	Collection roles = userProfile.getRoles();
-    	
-    	//Empty task list definition
+		
+		// Empty task list definition
     	List taskList = new ArrayList();
-    	
-    	//For each user role, find the task list associated
-    	Iterator rolesIt = roles.iterator();
-    	while (rolesIt.hasNext()) {
-    		String role = (String) rolesIt.next();
-    		List tmpTaskList = jbpmContext.getTaskList(role);
-    		Iterator iterTaskInst = tmpTaskList.iterator();
-    		while(iterTaskInst.hasNext()) {
-    			TaskInstance ti = (TaskInstance)iterTaskInst.next();
-    			taskList.add(ti);
-    		}
+    	try{
+	    	//Getting Containers
+	    	SessionContainer session = getRequestContainer().getSessionContainer();
+	    	SessionContainer permSession = session.getPermanentContainer();
+	    	//ApplicationContainer application = ApplicationContainer.getInstance();
+	    	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	    	//Getting Jbpm context 
+	    	JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+	    	jbpmContext = jbpmConfiguration.createJbpmContext();
+	    	//Getting user roles
+	    	Collection roles = userProfile.getRoles();
+	    	//For each user role, find the task list associated
+	    	Iterator rolesIt = roles.iterator();
+	    	while (rolesIt.hasNext()) {
+	    		String role = (String) rolesIt.next();
+	    		List tmpTaskList = jbpmContext.getTaskList(role);
+	    		Iterator iterTaskInst = tmpTaskList.iterator();
+	    		while(iterTaskInst.hasNext()) {
+	    			TaskInstance ti = (TaskInstance)iterTaskInst.next();
+	    			taskList.add(ti);
+	    		}
+	    	}
+    	} catch (Exception e) {
+    		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+    							"getAssigments", "Cannot recover assignment", e);
     	}
     	SourceBean workListAsSourceBean = tasksToSourceBean(taskList);
     	jbpmContext.close();

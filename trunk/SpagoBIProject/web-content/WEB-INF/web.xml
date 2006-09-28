@@ -23,15 +23,15 @@
  		<filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
     	<init-param>
        		<param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
-       		<param-value>https://fiscato:8443/exo-cas-2/login</param-value>
+       		<param-value>https://lcoalhost:8443/exo-cas-2/login</param-value>
     	</init-param>
     	<init-param>
        		<param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
-       		<param-value>https://fiscato:8443/exo-cas-2/serviceValidate</param-value>
+       		<param-value>https://localhost:8443/exo-cas-2/serviceValidate</param-value>
     	</init-param>
     	<init-param>
        		<param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
-       		<param-value>fiscato:8443</param-value>
+       		<param-value>localhost:8443</param-value>
     	</init-param>
  	</filter>
  
@@ -110,15 +110,17 @@
         	<url-pattern>/BIObjectNotesService</url-pattern>
     	</servlet-mapping>
     
+    <!-- 
     <servlet>
         	<servlet-name>BookletServlet</servlet-name>
         	<servlet-class>it.eng.spagobi.booklets.BookletsServlet</servlet-class>
-    	</servlet>
+    </servlet>
 
 	<servlet-mapping>
         	<servlet-name>BookletServlet</servlet-name>
         	<url-pattern>/BookletService</url-pattern>
-    	</servlet-mapping>
+    </servlet-mapping>
+    -->
     
     <servlet-mapping>
         <servlet-name>ReportServlet</servlet-name>

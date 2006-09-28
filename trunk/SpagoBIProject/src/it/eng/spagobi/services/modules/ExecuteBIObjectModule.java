@@ -412,14 +412,26 @@ public class ExecuteBIObjectModule extends AbstractModule
 		if(parameterNameFromLookUp == null) parameterNameFromLookUp = (String)session.getAttribute("LOOKUP_PARAMETER_NAME");
 		
 		String returnStatus = (String)request.getAttribute("RETURN_STATUS");
-		if(returnStatus == null) returnStatus = (String)session.getAttribute("RETURN_STATUS");
-			
-		if(!returnStatus.equalsIgnoreCase("ABORT")) {
+		if(returnStatus == null) {
+			returnStatus = (String)session.getAttribute("RETURN_STATUS");
+			if(returnStatus != null) session.delAttribute("RETURN_STATUS");
+		}
+		if(returnStatus == null) returnStatus = "OK";
+		
+		Object o = request.getAttribute("LOOKUP_VALUE");
+		if(o == null) {
+			o = session.getAttribute("LOOKUP_VALUE");
+			if(o != null) session.delAttribute("LOOKUP_VALUE");
+		}
+		
+		System.out.println("o:" + o);
+		System.out.println("returnStatus: " + returnStatus);
+		
+		if(o != null && !returnStatus.equalsIgnoreCase("ABORT")) {
 		
 			// Create a List that will contains the value returned 
 			ArrayList paramvalues = new ArrayList();
-			Object o = request.getAttribute("LOOKUP_VALUE");
-			if(o == null) o = session.getAttribute("LOOKUP_VALUE");
+			
 			if(o instanceof String) {
 				String parameterValueFromLookUp = (String)o;        
 				paramvalues.add(parameterValueFromLookUp);

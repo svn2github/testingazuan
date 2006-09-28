@@ -116,6 +116,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		
 		if(session.getAttribute("CHK_LIST_INITIALIZED")==null) {
 			session.setAttribute("LOOKUP_PARAMETER_NAME", request.getAttribute("LOOKUP_PARAMETER_NAME"));
+			session.setAttribute("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));
+			System.out.println("1-> " + request.getAttribute("LOOKUP_PARAMETER_ID"));
 			session.setAttribute("mod_val_id", request.getAttribute("mod_val_id"));
 			session.setAttribute("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));			
 			session.setAttribute("CHK_LIST_INITIALIZED", "true");
@@ -129,6 +131,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	private void clearSession() {
 		SessionContainer session = this.getRequestContainer().getSessionContainer();
 		session.delAttribute("CHK_LIST_INITIALIZED");
+		session.delAttribute("LOOKUP_PARAMETER_ID");
 	}
 	
 	public void exitFromModule(SourceBean response, boolean abort) throws Exception{
@@ -438,6 +441,10 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
+		if(objParIdStr == null) getSession(request).getAttribute(objParIdStr);
+		System.out.println("2-> " + objParIdStr);
+		
+		
 		Integer objParId = Integer.valueOf(objParIdStr);
 		Integer correlatedParuseId = Integer.valueOf((String) request.getAttribute("correlated_paruse_id"));
 		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();

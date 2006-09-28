@@ -234,6 +234,15 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 				exitFromModule(response, true);
 				return;
 			}
+			
+			/*
+			String checked = (String)request.getAttribute("checked");
+			preprocess(request);	
+			DelegatedBasicListService.service(this, request, response);
+			postprocess(response); 
+			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
+			System.out.println("checked:" + checked);
+			*/
 		}
 		else {
 			// error
@@ -441,8 +450,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
-		if(objParIdStr == null) objParIdStr = (String)getSession(request).getAttribute(objParIdStr);
-		System.out.println("2-> " + objParIdStr);
+		System.out.println("2.1-> " + objParIdStr);
+		if(objParIdStr == null) objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
+		System.out.println("2.2-> " + objParIdStr);
 		
 		
 		Integer objParId = Integer.valueOf(objParIdStr);

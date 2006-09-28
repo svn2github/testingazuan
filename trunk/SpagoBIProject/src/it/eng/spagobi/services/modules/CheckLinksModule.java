@@ -106,6 +106,7 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		} else {
 			objectsList = objDAO.loadAllBIObjects();
 		}
+		
 		String checked = (String)request.getAttribute("checked");
 		if(checked==null){
 			checked = "true";

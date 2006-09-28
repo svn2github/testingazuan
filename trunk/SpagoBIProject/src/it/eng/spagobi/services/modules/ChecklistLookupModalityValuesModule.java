@@ -462,13 +462,18 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
         
 		String valueFilter = "";
 		List valuesFilter = objParFather.getParameterValues();
-		if (valuesFilter != null && valuesFilter.size() == 1) {
-			valueFilter = valuesFilter.get(0).toString();
+		if (valuesFilter == null) return list;
+
+		switch (valuesFilter.size()) {
+			case 0: return list;
+			case 1: valueFilter = (String) valuesFilter.get(0);
+					return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
+							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
+							getResponseContainer().getErrorHandler());
+			default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
+							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
+							getResponseContainer().getErrorHandler());
 		}
-		
-		return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
-				objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-				getResponseContainer().getErrorHandler());
 	}
 	
 	

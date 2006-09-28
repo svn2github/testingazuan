@@ -29,6 +29,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.paginator.basic.ListIFace;
@@ -37,6 +38,7 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -405,13 +407,18 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
         
 		String valueFilter = "";
 		List valuesFilter = objParFather.getParameterValues();
-		if (valuesFilter != null && valuesFilter.size() == 1) {
-			valueFilter = valuesFilter.get(0).toString();
+		if (valuesFilter == null) return list;
+
+		switch (valuesFilter.size()) {
+			case 0: return list;
+			case 1: valueFilter = (String) valuesFilter.get(0);
+					return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
+							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
+							getResponseContainer().getErrorHandler());
+			default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
+							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
+							getResponseContainer().getErrorHandler());
 		}
-		
-		return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
-				objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-				getResponseContainer().getErrorHandler());
 	}
 	
 	private ListIFace getListFromQuery (SourceBean request, SourceBean response) throws Exception {

@@ -483,7 +483,8 @@ public class DetailParameterModule extends AbstractModule {
 	/**
 	 * Before modifing a ParameterUse (not inserting), this method must be invoked in order to verify that the ParameterUse
 	 * stored into db (to be modified as per the ParameterUse in input) has dependencies associated; if it is the case,
-	 * verifies that the associated Lov was not changed. In case of changed Lov adds a EMFValidationError into the error handler.
+	 * verifies that the associated Lov was not changed or that the selection type is not COMBOBOX.
+	 * In such cases adds the method a EMFValidationError into the error handler.
 	 * 
 	 * @param paruse The ParameterUse to verify
 	 * @throws EMFUserError 
@@ -494,7 +495,6 @@ public class DetailParameterModule extends AbstractModule {
 			// it means that the ParameterUse in input must be inserted, not modified
 			return;
 		}
-		// Controls that, if the are some dependencies for the ParameterUse, the associated lov was not changed
 		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
 		IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
 		ParameterUse initialParuse = paruseDAO.loadByUseID(paruseIdInt);
@@ -510,8 +510,17 @@ public class DetailParameterModule extends AbstractModule {
 				vector.add(documents.toString());
 				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "paruseLovId", "1060", vector, params);
 				errorHandler.addError(error);
-				return;
-			} 
+			}
+			if (paruse.getManualInput().intValue() == 0 && "COMBOBOX".equalsIgnoreCase(paruse.getSelectionType())) {
+				// the ParameterUse was associated to a ComboBox
+				HashMap params = new HashMap();
+				params.put(AdmintoolsConstants.PAGE, "DetailParameterPage");
+				Vector vector = new Vector();
+				vector.add(documents.toString());
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "paruseLovId", "1068", vector, params);
+				errorHandler.addError(error);
+			}
+			
 		}
 	}
 	

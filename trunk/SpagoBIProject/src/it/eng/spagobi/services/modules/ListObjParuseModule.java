@@ -124,10 +124,13 @@ public class ListObjParuseModule extends AbstractModule {
 				ParameterUse paruse = (ParameterUse) allParusesIt.next();
 				if (paruse.getManualInput().intValue() == 0) {
 					// manual input modality use cannot be considered;
-					// only the modalities associated to query lov can be considered
+					// only the modalities associated to query lov and 
+					// that have not COMBOBOX selection type can be considered
 					Integer lovId = paruse.getIdLov();
 					ModalitiesValue lov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
-					if (lov.getITypeCd().equalsIgnoreCase("QUERY")) paruses.add(paruse);
+					String selectionType = paruse.getSelectionType();
+					if (lov.getITypeCd().equalsIgnoreCase("QUERY") 
+							&& !"COMBOBOX".equalsIgnoreCase(selectionType)) paruses.add(paruse);
 				}
 			}
 			response.setAttribute("objParameter", objParameter);

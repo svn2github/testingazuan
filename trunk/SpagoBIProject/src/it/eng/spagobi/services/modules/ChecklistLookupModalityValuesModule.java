@@ -441,7 +441,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
-		if(objParIdStr == null) getSession(request).getAttribute(objParIdStr);
+		if(objParIdStr == null) objParIdStr = (String)getSession(request).getAttribute(objParIdStr);
 		System.out.println("2-> " + objParIdStr);
 		
 		

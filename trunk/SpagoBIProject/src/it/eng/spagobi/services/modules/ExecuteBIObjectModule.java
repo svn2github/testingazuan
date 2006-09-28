@@ -295,7 +295,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
         	if(biparam.getParameterValues() != null && biparam.getParameterValues().size() > 1) 
         		// if the parameter is multivalue does not refresh its values: this job is performed 
-        		// by the lookup return module
+        		// by the lookup return module; if the fields were resetted, see below how it is managed
         		continue;
         	String nameUrl = biparam.getParameterUrlName();
         	List paramAttrsList = request.getAttributeAsList(nameUrl);
@@ -354,7 +354,10 @@ public class ExecuteBIObjectModule extends AbstractModule
         		BIObjectParameter biparam = null;
         		for(int i = 0; i < parameters.size(); i++) {
         			BIObjectParameter tmpBIParam = (BIObjectParameter)parameters.get(i);
-        			tmpBIParam.setParameterValues(null);        				
+        			List paramValues = tmpBIParam.getParameterValues();
+        			if (paramValues != null && paramValues.size() > 1) 
+        				// if the parameter is multivalues, the list is deleted
+        				tmpBIParam.setParameterValues(null);        				
         		}
         	}
         	

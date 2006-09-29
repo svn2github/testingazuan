@@ -124,46 +124,26 @@
       			<systemPath>${basedir}/lib/cleanimports.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spago-core</groupId>
-                <artifactId>spago-core</artifactId>
-                <version>2.1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/lib/spago-core-2.1.0.jar</systemPath>
-        </dependency>
-        <dependency>
-                <groupId>spago-web</groupId>
-                <artifactId>spago-web</artifactId>
-                <version>2.1.0</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/lib/spago-web-2.1.0.jar</systemPath>
-        </dependency>
-        <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate</artifactId>
-                <version>3</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/lib/hibernate3.jar</systemPath>
-		<exclusions>
-			<exclusion>
-				<groupId>javax.transaction</groupId>
-				<artifactId>jta</artifactId>
-			</exclusion>
-		</exclusions>
-        </dependency>
-        <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.5</version>
-      			<scope>system</scope>
-      			<systemPath>${basedir}/lib/commons-beanutils.jar</systemPath>
-        </dependency>
-        <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.5</version>
       			<scope>system</scope>
       			<systemPath>${basedir}/lib/commons-beanutils-1.5.jar</systemPath>
-        </dependency>        
+        </dependency>  
+        <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>2.1.1</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/lib/commons-collections-2.1.1.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>commons-digester</groupId>
+                <artifactId>commons-digester</artifactId>
+                <version>1.7</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/lib/commons-digester-1.7.jar</systemPath>
+        </dependency>
         <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
@@ -172,10 +152,86 @@
 				<systemPath>${basedir}/lib/commons-fileupload-1.1.1.jar</systemPath>
         </dependency>
         <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.0.2</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/commons-logging-1.0.2.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging-api</artifactId>
+                <version>1.0.2</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/commons-logging-api-1.0.2.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>concurrent</groupId>
+                <artifactId>concurrent</artifactId>
+                <version>1.3.2</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/concurrent-1.3.2.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>connector</groupId>
+                <artifactId>connector</artifactId>
+                <version>1.0</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/connector.jar</systemPath>
+        </dependency>
+        <dependency>
                 <groupId>dom4j</groupId>
                 <artifactId>dom4j</artifactId>
                 <version>1.6</version>
-		<scope>compile</scope>
+				<scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate</artifactId>
+            <version>3</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/hibernate3.jar</systemPath>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+			</exclusions>
+        </dependency>
+        <dependency>
+                <groupId>hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>1.7.1</version>
+				<scope>system</scope>
+      			<systemPath>${basedir}/lib/hsqldb-1.7.1.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>iReport</groupId>
+                <artifactId>iReport</artifactId>
+                <version>1.2.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/iReport.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>itext</groupId>
+                <artifactId>itext</artifactId>
+                <version>1.3.1</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/itext-1.3.1.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jaas</groupId>
+                <artifactId>jaas</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jaas.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jacc</groupId>
+                <artifactId>jacc</artifactId>
+                <version>1_0-fr</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jacc-1_0-fr.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>jasperreports</groupId>
@@ -192,11 +248,87 @@
       		<systemPath>${basedir}/lib/jasperreports-1.2.0-applet.jar</systemPath>
         </dependency-->
         <dependency>
-                <groupId>iReport</groupId>
-                <artifactId>iReport</artifactId>
-                <version>1.2.0</version>
+                <groupId>jaxen</groupId>
+                <artifactId>jaxen</artifactId>
+                <version>1.1-beta-4</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/lib/iReport.jar</systemPath>
+      		<systemPath>${basedir}/lib/jaxen-1.1-beta-4.jar</systemPath>
+        </dependency> 
+        <dependency>
+                <groupId>jboss</groupId>
+                <artifactId>jboss-cache</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jboss-cache.jar</systemPath>
+        </dependency> 
+        <dependency>
+                <groupId>jboss</groupId>
+                <artifactId>jboss-common</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jboss-common.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jboss</groupId>
+                <artifactId>jboss-jmx</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jboss-jmx.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jboss</groupId>
+                <artifactId>jboss-system</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jboss-system.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jcommon</groupId>
+                <artifactId>jcommon</artifactId>
+                <version>1.0.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jcommon-1.0.0.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jdbc</groupId>
+                <artifactId>jdbc</artifactId>
+                <version>2_0-stdext</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jdbc2_0-stdext.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jdt</groupId>
+                <artifactId>jdt-compiler</artifactId>
+                <version>3.1.1</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jdt-compiler-3.1.1.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jfreechart</groupId>
+                <artifactId>jfreechart</artifactId>
+                <version>1.0.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jfreechart-1.0.0.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jgroups</groupId>
+                <artifactId>jgroups</artifactId>
+                <version>2.2.7</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jgroups-2.2.7.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>jta</groupId>
+                <artifactId>jta</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/jta.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>3.8.1</version>
+		<scope>compile</scope>
         </dependency>
         <dependency>
                 <groupId>log4j</groupId>
@@ -206,10 +338,44 @@
       			<systemPath>${basedir}/lib/log4j-1.2.9.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>3.8.1</version>
-		<scope>compile</scope>
+                <groupId>oscache</groupId>
+                <artifactId>oscache</artifactId>
+                <version>2.1</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/lib/oscache-2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>2.0-final-20040126</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/lib/poi-2.0-final-20040126.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>portlet-api</groupId>
+                <artifactId>portlet-api</artifactId>
+                <version>1.0</version>
+				<scope>compile</scope>
+        </dependency>
+        <dependency>
+                <groupId>proxool</groupId>
+                <artifactId>proxool</artifactId>
+                <version>0.8.3</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/lib/proxool-0.8.3.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.4</version>
+				<scope>compile</scope>
+        </dependency>
+        <dependency>
+                <groupId>spago-core</groupId>
+                <artifactId>spago-core</artifactId>
+                <version>2.1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/spago-core-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spago</groupId>
@@ -219,10 +385,53 @@
       		<systemPath>${basedir}/lib/spago-portlet-2.1.0.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.4</version>
-		<scope>compile</scope>
+                <groupId>spago-web</groupId>
+                <artifactId>spago-web</artifactId>
+                <version>2.1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/spago-web-2.1.0.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>swarmcache</groupId>
+                <artifactId>swarmcache</artifactId>
+                <version>1.0rc2</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/swarmcache-1.0rc2.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>versioncheck</groupId>
+                <artifactId>versioncheck</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/versioncheck.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/xalan.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xerces</artifactId>
+                <version>2.6.2</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/xerces-2.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/xercesImpl.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.0</version>
+      		<scope>system</scope>
+      		<systemPath>${basedir}/lib/xml-apis.jar</systemPath>
         </dependency>
         <!--dependency>
                 <groupId>javax.servlet</groupId>
@@ -230,11 +439,6 @@
                 <version>2.0</version>
 		<scope>compile</scope>
         </dependency-->
-        <dependency>
-                <groupId>portlet-api</groupId>
-                <artifactId>portlet-api</artifactId>
-                <version>1.0</version>
-		<scope>compile</scope>
-        </dependency>
+
   </dependencies>
 </project>

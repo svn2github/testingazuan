@@ -119,11 +119,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	}
 	
 	public String getObjectKey(SourceBean object) {
-		System.out.println(object);
 		String objectIdName = (String)((SourceBean) config.getAttribute("KEYS.OBJECT")).getAttribute("key");				
-		System.out.println("objectIdName:" + objectIdName);
 		String objectIdValue = object.getAttribute(objectIdName).toString();
-		System.out.println("objectIdValue:" + objectIdValue);
 		objectIdValue = GeneralUtilities.encode(objectIdValue);		
 		return objectIdValue;
 	}

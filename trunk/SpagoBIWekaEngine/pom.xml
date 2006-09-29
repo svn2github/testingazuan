@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9</version>
+    <version>1.9.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIWekaEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9alpha</version>
+  <version>1.9.1alpha</version>
   <name>SpagoBIWekaEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -171,7 +171,7 @@
     <dependency>
         <groupId>spagobi</groupId>
         <artifactId>sbi.utils</artifactId>
-        <version>1.9</version>	
+        <version>1.9.1</version>	
     	<exclusions>
 			<exclusion>
 				<groupId>commons-logging</groupId>

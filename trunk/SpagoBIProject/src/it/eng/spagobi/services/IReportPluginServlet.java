@@ -328,7 +328,15 @@ public class IReportPluginServlet extends HttpServlet{
 					 rootFunct = funct;
 				 }
 			}
-			treeSB = addFunctToSB(rootFunct, tree, userRoles);
+			List userRolesNames = new ArrayList();
+			Iterator iteruro = userRoles.iterator();
+			while(iteruro.hasNext()) {
+				Role role = (Role)iteruro.next();
+				if(role!=null) {
+					userRolesNames.add(role.getName());
+				}
+			}
+			treeSB = addFunctToSB(rootFunct, tree, userRolesNames);
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
 					            "filterToSourceBean", "error while converting tree into sourcebean", e);
@@ -343,17 +351,9 @@ public class IReportPluginServlet extends HttpServlet{
 	 * 
 	 * @param funct Functionality to check
 	 * @param tree List of all the fucntionalities
-	 * @return userRoles List of the user roles 
+	 * @return userRoles List of the user roles names
 	 */
-	private SourceBean addFunctToSB(LowFunctionality funct, List tree, List userRolesObj) {
-		List userRoles = new ArrayList();
-		Iterator iteruro = userRolesObj.iterator();
-		while(iteruro.hasNext()) {
-			Role role = (Role)iteruro.next();
-			if(role!=null) {
-				userRoles.add(role.getName());
-			}
-		}
+	private SourceBean addFunctToSB(LowFunctionality funct, List tree, List userRoles) {
 		SourceBean folderSB = null; 
 		try{
 			folderSB = new SourceBean("folder");

@@ -147,6 +147,27 @@
       		<systemPath>${basedir}/WebContent/WEB-INF/lib/dom4j.jar</systemPath>
         </dependency>
         <dependency>
+                <groupId>eigenbase</groupId>
+                <artifactId>eigenbase-resgen</artifactId>
+				<version>1.0</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/eigenbase-resgen.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>eigenbase</groupId>
+                <artifactId>eigenbase-xom</artifactId>
+				<version>1.0</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/eigenbase-xom.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>eigenbase</groupId>
+                <artifactId>eigenbase-properties</artifactId>
+				<version>1.0</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/WebContent/WEB-INF/lib/eigenbase-properties.jar</systemPath>
+        </dependency>
+        <dependency>
                 <groupId>fop</groupId>
                 <artifactId>fop</artifactId>
 		<version>1.0</version>

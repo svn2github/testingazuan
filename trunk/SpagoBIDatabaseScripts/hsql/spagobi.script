@@ -93,4 +93,4 @@ INSERT INTO SBI_DOMAINS VALUES(111, 'OFFICE_DOC','Office document','BIOBJ_TYPE',
 INSERT INTO SBI_ENGINES VALUES(109,0,'Qbe Internal Engine','Qbe Internal Engine','','','','','','QbeInternalEngine',105,'it.eng.spagobi.engines.datamart.SpagoBIQbeInternalEngine',103)
 INSERT INTO SBI_ENGINES VALUES(110,0,'Dashboard Internal Engine','Dashboard Internal Engine','','','','','','DashboardInternalEng',105,'it.eng.spagobi.engines.dashboard.SpagoBIDashboardInternalEngine',43)
 INSERT INTO SBI_ENGINES VALUES(115,0,'Booklet Internal Engine','Booklet Internal Engine','','','','','','BookletInternalEng',105,'it.eng.spagobi.booklets.engines.SpagoBIBookletInternalEngine',107)
-INSERT INTO SBI_ENGINES VALUES(116,0,'Office Document Internal Engine','Office Document Internal Engine','','','','','','OfficeDocumentInternalEng',105,'it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine',111)
+INSERT INTO SBI_ENGINES VALUES(116,0,'Office Document Internal Engine','Office Document Internal Engine','','','','','','OfficeInternalEng',105,'it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine',111)

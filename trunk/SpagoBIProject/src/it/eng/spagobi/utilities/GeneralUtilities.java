@@ -49,6 +49,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -632,6 +633,17 @@ public class GeneralUtilities {
 		return moduleInst;
 	}
 	
-	
+	public static String substituteQuotesIntoString(String value){
+		
+		String singleQuoteString = "'";
+		String doubleQuoteString = new String();
+		char doubleQuoteChar = '"';
+		doubleQuoteString += doubleQuoteChar;
+		String singleQuoteReplaceString = "&#39;";
+		String doubleQuotesReplaceString = "&#34;";
+		value = value.replaceAll(singleQuoteString,singleQuoteReplaceString);
+		value = value.replaceAll(doubleQuoteString,doubleQuotesReplaceString);
+		return value;
+		}
 	
 }

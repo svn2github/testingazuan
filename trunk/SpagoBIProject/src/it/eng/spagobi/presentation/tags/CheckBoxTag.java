@@ -34,6 +34,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -386,10 +387,10 @@ public class CheckBoxTag extends TagSupport {
 			//String objectIdName = (String)((SourceBean) _layout.getAttribute("KEYS.OBJECT")).getAttribute("key");
 			Object key = row.getAttribute("ROW_ID");			
 			if(checked.equalsIgnoreCase("true")) {
-				_htmlStream.append("\t<input type='checkbox' name='checkbox:" + key.toString() + "' checked>\n");
+				_htmlStream.append("\t<input type='checkbox' name='checkbox:" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "' checked>\n");
 			}
 			else {
-				_htmlStream.append("\t<input type='checkbox' name='checkbox:" + key.toString() + "'>\n");
+				_htmlStream.append("\t<input type='checkbox' name='checkbox:" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "'>\n");
 			}
 			
 			_htmlStream.append(" </td>\n");

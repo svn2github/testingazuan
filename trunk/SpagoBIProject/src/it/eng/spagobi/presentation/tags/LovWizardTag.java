@@ -26,10 +26,11 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.LovDetail;
 import it.eng.spagobi.bo.LovDetailList;
 import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.GeneralUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.net.*;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +78,7 @@ public class LovWizardTag extends TagSupport {
 			output.append("			</span>\n");
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_form'>\n");
-			output.append("			<input class='portlet-form-input-field' type='text' name='valueOfFixedLovItemNew' size='50' value=''>&nbsp;*\n");
+			output.append("			<input class='portlet-form-input-field' type='text' id='valueOfFixedLovItemNew' name='valueOfFixedLovItemNew' size='50' value=''>&nbsp;*\n");
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_label_lov'>\n");
 			output.append("			&nbsp;\n");
@@ -96,6 +97,7 @@ public class LovWizardTag extends TagSupport {
 			
 			List lovs = new ArrayList();
 			if (lovProvider != null  &&  !lovProvider.equals("")){
+				//lovProvider = GeneralUtilities.substituteQuotesIntoString(lovProvider);
 				lovs = LovDetailList.fromXML(lovProvider).getLovs();
 			}
 			output.append("<table class=\"table_detail_fix_lov\">\n");
@@ -120,15 +122,19 @@ public class LovWizardTag extends TagSupport {
 					String name = lovDet.getName();
 					String description = lovDet.getDescription();
 					
+					//before sending name and description to the hidden input,
+					//substitute single and double quotes with their html encoding
+					name = GeneralUtilities.substituteQuotesIntoString(name);
+					description= GeneralUtilities.substituteQuotesIntoString(description);
+					String prova = GeneralUtilities.substituteQuotesIntoString("aaaa'aaa");
 					output.append("		<input type='hidden' name='nameOfFixedListItem' value='" + name + "'/>\n");
-					output.append("		<input type='hidden' name='valueOfFixedListItem' value='" + description + "'/>\n");
-					
+					output.append("		<input type='hidden' id='valueItem'  name='valueOfFixedListItem' value='"+description+"'/>\n");
 					rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
 		            alternate = !alternate;
 					output.append("	<tr class='portlet-font'>\n");
-					
+					String descrDec = URLDecoder.decode(description,"UTF-8");
 					output.append("		<td class='" + rowClass + "'>" + name + "</td>\n");
-					output.append("		<td class='" + rowClass + "'>" + description + "</td>\n");
+					output.append("		<td class='" + rowClass + "'>" + descrDec + "</td>\n");
 					output.append("		<td class='" + rowClass + "'>\n");
 					String tableCol3 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol3", "messages");
 					output.append("			<input type='image' onclick='setIndexOfFixedLovItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");

@@ -55,6 +55,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.GeneralUtilities;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -396,7 +397,7 @@ public class DynamicPageTag extends TagSupport {
 							  	"name='" + biparam.getParameterUrlName() +"' "+
 							  	"id='" + biparam.getParameterUrlName() + "' " +
 								"class='portlet-form-input-field' readonly='true' " +
-								"value='" + getValue(biparam) + "' />\n");
+								"value='" + GeneralUtilities.substituteQuotesIntoString(getValue(biparam)) + "' />\n");
 			
 			htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"LIST\")' \n");
 			htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
@@ -409,7 +410,7 @@ public class DynamicPageTag extends TagSupport {
 						  	"name='" + biparam.getParameterUrlName() +"' "+
 						  	"id='" + biparam.getParameterUrlName() + "' " +
 							"class='portlet-form-input-field' readonly='true' " +
-							"value='" + getValue(biparam) + "' />\n");
+							"value='" + GeneralUtilities.substituteQuotesIntoString(getValue(biparam)) + "' />\n");
 		
 		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");
 		htmlStream.append("		src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
@@ -501,7 +502,7 @@ public class DynamicPageTag extends TagSupport {
 				val = (String)sbTemp.getAttribute("VALUE");
 				String selected = "";
 				if (getValue(biparam).equals(val)) selected = "selected=\"selected\"";
-				htmlStream.append("<option value='"+val+"' " + selected + ">"+desc+"</option>\n");
+				htmlStream.append("<option value='"+GeneralUtilities.substituteQuotesIntoString(val)+"' " + selected + ">"+desc+"</option>\n");
 			}
 			htmlStream.append("</select>\n");
 	    }catch (Exception ex) {

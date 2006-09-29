@@ -437,6 +437,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		SourceBean moduleConfig = null;
 		
 		String lovDetXML = getModalityValue(request).getLovProvider();
+		IEngUserProfile profile = getUserProfile(request);
+		lovDetXML = GeneralUtilities.substituteProfileAttributesInString(lovDetXML,profile);
 		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
 		
 		
@@ -712,6 +714,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		ListIFace list = null;
 		
 		String lovDetXML = getModalityValue(request).getLovProvider();
+		IEngUserProfile profile = getUserProfile(request);
+		lovDetXML = GeneralUtilities.substituteProfileAttributesInString(lovDetXML,profile);
 		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
 		
 		PaginatorIFace paginator = new GenericPaginator();

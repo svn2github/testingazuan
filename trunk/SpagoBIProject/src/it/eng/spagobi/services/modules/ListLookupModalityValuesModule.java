@@ -185,6 +185,8 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		response.setAttribute(getFixLovModuleConfig(request));		
 		
 		String lovDetXML = getModalityValue(request).getLovProvider();
+		IEngUserProfile profile = getUserProfile(request);
+		lovDetXML = GeneralUtilities.substituteProfileAttributesInString(lovDetXML,profile);
 		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
 		
 		PaginatorIFace paginator = new GenericPaginator();
@@ -306,6 +308,8 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		SourceBean moduleConfig = null;
 		
 		String lovDetXML = getModalityValue(request).getLovProvider();
+		IEngUserProfile profile = getUserProfile(request);
+		lovDetXML = GeneralUtilities.substituteProfileAttributesInString(lovDetXML,profile);
 		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
 		
 		

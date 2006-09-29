@@ -39,6 +39,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -102,6 +103,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		if( values == null ) return;
 		for(int i = 0; i < values.size(); i++) {
 			String value = (String)values.get(i);
+			//System.out.println("--> value: " + value);
 			if(value == null || value.trim().equalsIgnoreCase("")) continue;
 			String key = GeneralUtilities.encode(value);
 			checkedObjectsMap.put(key, key);
@@ -117,7 +119,6 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		if(session.getAttribute("CHK_LIST_INITIALIZED")==null) {
 			session.setAttribute("LOOKUP_PARAMETER_NAME", request.getAttribute("LOOKUP_PARAMETER_NAME"));
 			session.setAttribute("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));
-			System.out.println("1-> " + request.getAttribute("LOOKUP_PARAMETER_ID"));
 			session.setAttribute("mod_val_id", request.getAttribute("mod_val_id"));
 			session.setAttribute("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));			
 			session.setAttribute("CHK_LIST_INITIALIZED", "true");
@@ -168,6 +169,29 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		response.setAttribute("PUBLISHER_NAME", "ChecklistLookupPublisher");	
 	}
 	
+	/*
+	public void printChecked(String phase) throws Exception {
+		/////////////////
+		System.out.println(phase + ": ...");
+		Iterator it = checkedObjectsMap.keySet().iterator();
+		while(it.hasNext()) {
+			System.out.println(phase + ": " + it.next());
+		}
+		
+		//List l = getCheckedObjects().getAttributeAsList("OBJECT");
+		
+		//String valueColumn =(String)((SourceBean)config.getAttribute("KEYS.OBJECT")).getAttribute("key");
+		
+		//for(int i = 0; i < l.size(); i++) {
+		//	SourceBean sb = (SourceBean)l.get(i);
+		//	System.out.println(phase + ": " + GeneralUtilities.decode((String)sb.getAttribute(valueColumn)));
+		//}
+		
+		////////////////
+	}
+	*/
+
+	
 	public void service(SourceBean request, SourceBean response) throws Exception {		
 		initSession(request);
 		
@@ -181,7 +205,6 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			response.setAttribute(getFixLovModuleConfig(request));
 		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
 			response.setAttribute(getScriptModuleConfig(request));
-			//response.setAttribute(getQueryModuleConfig(request));
 		}
 		
 		config = getConfig();
@@ -193,10 +216,12 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		String message = (String)request.getAttribute("MESSAGE");
 
 		if(message == null || message.equalsIgnoreCase("INIT_CHECKLIST")) {
-			preprocess(request);	
+			preprocess(request);		
 			DelegatedBasicListService.service(this, request, response);
 			postprocess(response); 
 			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
+			
+			
 		}
 		else if(message.equalsIgnoreCase("HANDLE_CHECKLIST")) {
 									
@@ -235,14 +260,6 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 				return;
 			}
 			
-			/*
-			String checked = (String)request.getAttribute("checked");
-			preprocess(request);	
-			DelegatedBasicListService.service(this, request, response);
-			postprocess(response); 
-			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
-			System.out.println("checked:" + checked);
-			*/
 		}
 		else {
 			// error
@@ -461,11 +478,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
-		System.out.println("2.1-> " + objParIdStr);
 		if(objParIdStr == null) objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
-		System.out.println("2.2-> " + objParIdStr);
-		
-		
+				
 		Integer objParId = Integer.valueOf(objParIdStr);
 		Integer correlatedParuseId = Integer.valueOf((String) request.getAttribute("correlated_paruse_id"));
 		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
@@ -473,10 +487,24 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		Integer objParFatherId = objParuse.getObjParFatherId();
 		// get object from the session
 		BIObject obj = (BIObject) getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-        // find the parameter for the correlation
+        
 		List biparams = obj.getBiObjectParameters();
+		Iterator iterParams = null;
+		
+		// find the parameter
+		BIObjectParameter lookupBIParameter = null;
+		iterParams = biparams.iterator();
+    	while (iterParams.hasNext()) {
+    		BIObjectParameter aBIParameter = (BIObjectParameter) iterParams.next();
+    		if (aBIParameter.getId().equals(objParId)) {
+    			lookupBIParameter = aBIParameter;
+    			break;
+    		}
+    	}
+		
+		// find the parameter for the correlation
 		BIObjectParameter objParFather = null;
-        Iterator iterParams = biparams.iterator();
+        iterParams = biparams.iterator();
         while (iterParams.hasNext()) {
         	BIObjectParameter aBIObjectParameter = (BIObjectParameter) iterParams.next();
         	if (aBIObjectParameter.getId().equals(objParFatherId)) {
@@ -495,20 +523,58 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		switch (valuesFilter.size()) {
 			case 0: return list;
 			case 1: valueFilter = (String) valuesFilter.get(0);
-					if (valueFilter != null && !valueFilter.equals(""))
-						return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
+					if (valueFilter != null && !valueFilter.equals("")) {
+						ListIFace filteredList = DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
 							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
 							getResponseContainer().getErrorHandler());
+						deselectFilteredValues(lookupBIParameter, filteredList);
+						return filteredList;
+					}
 					else return list;
-			default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
+			default: 
+				ListIFace filteredList = DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
 							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
 							getResponseContainer().getErrorHandler());
+				deselectFilteredValues(lookupBIParameter, filteredList);
+				return filteredList;
 		}
 	}
 	
 	
 	
 	
+	/**
+	 * @param list
+	 * @param filteredList
+	 */
+	private void deselectFilteredValues(BIObjectParameter biParameter, ListIFace filteredList) {
+		
+		String valueColumn = (String)((SourceBean) config.getAttribute("KEYS.OBJECT")).getAttribute("key");
+		
+		HashMap map = new HashMap();
+		
+		SourceBean allrowsSB = filteredList.getPaginator().getAll();
+		List rows = allrowsSB.getAttributeAsList("ROW");
+		Iterator iterRow = rows.iterator();
+		while (iterRow.hasNext()) {
+			SourceBean row = (SourceBean) iterRow.next();
+			Object attribute = row.getAttribute(valueColumn);		
+			map.put(attribute, attribute);
+			//System.out.println(" - " + attribute);
+		}
+		
+		List values = biParameter.getParameterValues();		
+		for(int i = 0; i < values.size(); i++) {
+			String value = (String)values.get(i);
+			//System.out.println(" -  [" + value + "]");
+			//System.out.println(" -> [" + GeneralUtilities.encode(value) + "]");
+			if(map.get(value) == null) {
+				//System.out.println(" *** ");
+				checkedObjectsMap.remove(GeneralUtilities.encode(value));
+			}
+		}
+	}
+
 	/**
 	 * Finds the names of the visible columns with the StringTokenizer from the String at input.
 	 * 
@@ -694,7 +760,6 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		
 		//response.setAttribute(getQueryModuleConfig(request));		
 		list = DelegatedBasicListService.getList(this, request, response);
-				
 		// if the parameter is correlated filter out the list properly
 		if (isCorrelated(request)) {
 			list = filterListForCorrelatedParam(request, list);				

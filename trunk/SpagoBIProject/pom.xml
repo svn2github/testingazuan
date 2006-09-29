@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9</version>
+    <version>1.9.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>spagobi</artifactId>
   <packaging>war</packaging>
-  <version>1.9</version>
+  <version>1.9.1</version>
   <name>SpagoBIProject</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -85,9 +85,9 @@
         <dependency>
                 <groupId>spago-core</groupId>
                 <artifactId>spago-core</artifactId>
-                <version>2.1.0</version>
+                <version>2.1.2</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/spago-core-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spago-core-2.1.2.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>commons-codec</groupId>
@@ -178,13 +178,13 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate</artifactId>
                 <version>3.1rc2</version>
-		<scope>provided</scope>
-		<exclusions>
-			<exclusion>
-				<groupId>javax.transaction</groupId>
-				<artifactId>jta</artifactId>
-			</exclusion>
-		</exclusions>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.transaction</groupId>
+						<artifactId>jta</artifactId>
+					</exclusion>
+				</exclusions>
         </dependency>
         <dependency>
                 <groupId>com.jamonapi</groupId>
@@ -252,30 +252,30 @@
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.drivers.api</artifactId>
-                <version>1.9</version>
+                <version>1.9.1</version>
         </dependency>
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.securityprovider.api</artifactId>
-                <version>1.9</version>
+                <version>1.9.1</version>
         </dependency>
-    <dependency>
+    <!--dependency>
         <groupId>spagobi</groupId>
         <artifactId>sbi.utils</artifactId>
-        <version>1.9</version>	
+        <version>1.9.1</version>	
     	<exclusions>
 			<exclusion>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 			</exclusion>
 		</exclusions>
-	</dependency>
+	</dependency-->
         <dependency>
                 <groupId>spago</groupId>
                 <artifactId>spago-portlet</artifactId>
-                <version>2.1.0</version>
+                <version>2.1.1</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/spagoportlet-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spagoportlet-2.1.1.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spago</groupId>
@@ -317,9 +317,9 @@
         <dependency>
                 <groupId>spago-web</groupId>
                 <artifactId>spago-web</artifactId>
-                <version>2.1.0</version>
+                <version>2.1.2</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/web-content/WEB-INF/lib/spago-web-2.1.0.jar</systemPath>
+      		<systemPath>${basedir}/web-content/WEB-INF/lib/spago-web-2.1.2.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>portlet-api</groupId>
@@ -342,7 +342,7 @@
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>qbe.core</artifactId>
-                <version>1.9</version>
+                <version>1.9.1</version>
                 <exclusions>
 					<exclusion>
 						<groupId>commons-beanutils</groupId>

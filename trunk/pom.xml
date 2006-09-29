@@ -30,16 +30,16 @@
     <module>SpagoBISecurityProviderAPI</module>
     <module>QbeCore</module>
     <module>SpagoBIProject</module>
-    <module>ExoPortalSecurityProvider</module>
     <module>SpagoBIJasperReportDriver</module>
-    <module>SpagoBIJasperReportEngine</module>
     <module>SpagoBIJPivotDriver</module>
-    <module>SpagoBIJPivotEngine</module>
     <module>SpagoBIBirtReportDriver</module>
-    <module>SpagoBIBirtReportEngine</module>    
     <module>SpagoBIWekaDriver</module>
-    <module>SpagoBIWekaEngine</module>
     <module>SpagoBIGeoDriver</module>
+    <module>ExoPortalSecurityProvider</module>
+    <module>SpagoBIBirtReportEngine</module>
+    <module>SpagoBIJasperReportEngine</module>
+    <module>SpagoBIJPivotEngine</module>
+    <module>SpagoBIWekaEngine</module>
     <module>SpagoBIGeo</module>
     <module>SpagoBIUtilityFiles</module>
   </modules>

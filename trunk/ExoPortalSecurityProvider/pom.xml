@@ -42,7 +42,7 @@
           <include>**/*.properties</include>
         </includes>
       </resource>
-    <resources>
+    </resources>
   </build>
   <dependencies>
 	<dependency>

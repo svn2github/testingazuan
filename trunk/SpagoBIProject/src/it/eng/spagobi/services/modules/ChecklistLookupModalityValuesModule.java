@@ -180,8 +180,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		} else if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {			
 			response.setAttribute(getFixLovModuleConfig(request));
 		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
-			//response.setAttribute(getScriptModuleConfig(request));
-			response.setAttribute(getQueryModuleConfig(request));
+			response.setAttribute(getScriptModuleConfig(request));
+			//response.setAttribute(getQueryModuleConfig(request));
 		}
 		
 		config = getConfig();
@@ -337,22 +337,33 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		String valueColumn = valueColumnSB.getCharacters().trim();
 		
 		String moduleConfigStr = "";
+		
 		moduleConfigStr += "<CONFIG rows=\"10\" title=\"" + getModalityValue(request).getDescription() + "\">";
+		
+		moduleConfigStr += "	<KEYS>";
+		moduleConfigStr += "		<OBJECT key='"+ valueColumn +"'/>";
+		moduleConfigStr += "	</KEYS>";
+		
 		moduleConfigStr += "	<QUERIES/>";
+		
 		moduleConfigStr += "</CONFIG>";
+		
+		
 		moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
 		
 		SourceBean columnsSB = createColumnsSB(columns);
 		moduleConfig.setAttribute(columnsSB);
 
 		SourceBean captionsSB = new SourceBean("CAPTIONS");
-		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn);
-		captionsSB.setAttribute(selectCaptionSB);
+		//SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn);
+		//captionsSB.setAttribute(selectCaptionSB);
 		moduleConfig.setAttribute(captionsSB);
 		
 		SourceBean buttonsSB = new SourceBean("BUTTONS");
 		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
 		buttonsSB.setAttribute(backButtonSB);
+		SourceBean selectButtonSB = createSelectButton(getBackButtonParams(request));
+		buttonsSB.setAttribute(selectButtonSB);
 		moduleConfig.setAttribute(buttonsSB);
 
 		return moduleConfig;

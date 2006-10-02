@@ -40,7 +40,8 @@
         <targetPath>/</targetPath>
         <includes>
           <include>**/*.xml</include>
-	  <include>**/*.properties</include>
+		  <include>**/*.properties</include>
+		  <include>**/*publickey</include>
         </includes>
       </resource>
     </resources>

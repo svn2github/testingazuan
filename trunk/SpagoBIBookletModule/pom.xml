@@ -215,7 +215,7 @@
                 <artifactId>sbi.drivers.api</artifactId>
                 <version>1.9.1</version>
       		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIDriversAPI/target/sbi.drivers.api-1.9.jar</systemPath>                
+      		<systemPath>${basedir}/../SpagoBIDriversAPI/target/sbi.drivers.api-1.9.1.jar</systemPath>                
         </dependency>
         <!--dependency>
                 <groupId>spagobi</groupId>

@@ -24,7 +24,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIIReportPlugin</artifactId>
   <packaging>jar</packaging>
-  <version>1.9</version>
+  <version>1.9.1</version>
   <name>SpagoBIIReportPlugin</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -71,17 +71,17 @@
 									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/iReport.jar" />
 									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/LICENSE.iReport.txt" />
 									<!-- copy plugin jar into libraries -->
-									<copy file="${basedir}/target/SpagoBIIReportPlugin-1.9.jar" 
-									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/SpagoBIIReportPlugin-1.9.jar" />
+									<copy file="${basedir}/target/SpagoBIIReportPlugin-1.9.1.jar" 
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/SpagoBIIReportPlugin-1.9.1.jar" />
 									<!-- delete unecessary files -->
 									<delete file="${basedir}/target/exported-pom.xml" />
-									<delete file="${basedir}/target/SpagoBIIReportPlugin-1.9.jar" />
+									<delete file="${basedir}/target/SpagoBIIReportPlugin-1.9.1.jar" />
 									<delete>
 											<fileset dir="${basedir}/target/classes" includes="*" />
 									</delete>
 									<delete dir="${basedir}/target/classes" />
 									<!-- create zip files -->
-									<zip destfile="${basedir}/target/SpagoBI-IReportPlugin-bin-1.9.zip" 
+									<zip destfile="${basedir}/target/SpagoBI-IReportPlugin-bin-1.9.1.zip" 
 									     basedir="${basedir}/target" />
 									<!-- delete folder -->
 									<delete dir="${basedir}/target/SpagoBIIReportPlugin" />

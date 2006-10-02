@@ -466,7 +466,7 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("<input type=\"checkbox\"" + checked + " \n");
 			_htmlStream.append("				onclick=\"submitForm()\" name=\"filterCheckbox\" id=\"filterCheckbox\" value=\"true\"/>\n");
 			_htmlStream.append("<input type =\"hidden\" id=\"checkFilter\" name=\"checkFilter\" value=\"\" />");
-			_htmlStream.append("<input type =\"hidden\" id=\"checked\" name=\"checked\" value=\"\" />");
+			_htmlStream.append("<input type =\"hidden\" id=\"checked\" name=\"checked\" value=\"" + isChecked + "\" />");
 			//_htmlStream.append("						    </form> \n");
 			_htmlStream.append("						    </TD>\n");
 			_htmlStream.append("<script>\n");

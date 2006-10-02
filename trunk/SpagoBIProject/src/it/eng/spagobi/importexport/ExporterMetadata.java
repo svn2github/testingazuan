@@ -273,6 +273,7 @@ public class ExporterMetadata {
 			hibParam.setParameterTypeCode(param.getType());
 			hibParam.setMask(param.getMask());
 			hibParam.setParameterType(hibParamType);
+			hibParam.setFunctionalFlag(param.isFunctional() ? new Short((short) 1) : new Short((short) 0));
 			session.save(hibParam);
 			tx.commit();
 		} catch (Exception e) {
@@ -312,6 +313,8 @@ public class ExporterMetadata {
 			hibParuse.setName(parUse.getName());
 			hibParuse.setDescr(parUse.getDescription());
 			hibParuse.setManualInput(parUse.getManualInput());
+			hibParuse.setSelectionType(parUse.getSelectionType());
+			hibParuse.setMultivalue(parUse.isMultivalue()? new Integer(1): new Integer(0));
 			session.save(hibParuse);
 			tx.commit();
 		} catch (Exception e) {

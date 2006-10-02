@@ -337,7 +337,7 @@ public class WekaServlet extends HttpServlet {
 			buffer.append("<html>\n");
 			buffer.append("<head><title>Service Response</title></head>\n");
 			buffer.append("<body>");
-			buffer.append("<p style=\"text-align:center;font-size:15pt;font-weight:bold;color:#000033;\">");
+			buffer.append("<p style=\"text-align:center;font-size:13pt;font-weight:bold;color:#000033;\">");
 			buffer.append(message);
 			buffer.append("</p>");
 			buffer.append("</body>\n");

@@ -28,6 +28,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.bo.EventLog;
 import it.eng.spagobi.bo.dao.hibernate.EventLogDAOHibImpl;
 import it.eng.spagobi.constants.AdmintoolsConstants;
@@ -84,7 +85,9 @@ public class DetailEventLogModule extends AbstractModule {
 			EventLog event = eventLogDAO.loadEventLogById(id);
 			if (event == null) {
 				HashMap params = new HashMap();
-				params.put(AdmintoolsConstants.PAGE, DetailEventLogModule.MODULE_PAGE);
+				params.put(AdmintoolsConstants.PAGE, "EVENTS_MONITOR_PAGE");
+				params.put("REFRESH", "TRUE");
+				params.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 				Vector v = new Vector();
 				v.add(idStr);
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1067, v, params);
@@ -101,6 +104,7 @@ public class DetailEventLogModule extends AbstractModule {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, this.getClass().getName(), "getDetailEventLog", "Cannot fill response container", ex);
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, "EVENTS_MONITOR_PAGE");
+			params.put("REFRESH", "TRUE");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1065, new Vector(), params);
 		}
 	}
@@ -115,6 +119,7 @@ public class DetailEventLogModule extends AbstractModule {
 		} catch (EMFUserError e){
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, "EVENTS_MONITOR_PAGE");
+			params.put("REFRESH", "TRUE");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1066, new Vector(), params);
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, this.getClass().getName(), "delDetailEventLog", "Cannot fill response container", ex);

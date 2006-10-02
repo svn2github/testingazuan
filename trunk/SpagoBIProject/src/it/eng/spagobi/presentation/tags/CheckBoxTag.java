@@ -381,7 +381,7 @@ public class CheckBoxTag extends TagSupport {
 				_htmlStream.append("     </a>\n");
 				_htmlStream.append(" </td>\n");
 			}
-			_htmlStream.append(" <td class='" + rowClass + "'>\n");	
+			_htmlStream.append(" <td class='" + rowClass + "' width='30px'>\n");	
 			String checked = (String)row.getAttribute("CHECKED");
 			
 			//String objectIdName = (String)((SourceBean) _layout.getAttribute("KEYS.OBJECT")).getAttribute("key");

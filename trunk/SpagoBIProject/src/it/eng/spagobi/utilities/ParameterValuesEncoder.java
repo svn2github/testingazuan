@@ -4,6 +4,8 @@
 package it.eng.spagobi.utilities;
 
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.ModalitiesValue;
+import it.eng.spagobi.bo.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,12 +72,31 @@ public class ParameterValuesEncoder {
 	
 	public String encode(BIObjectParameter biobjPar) {
 		
-		boolean mult = biobjPar.getParameter().getModalityValue().isMultivalue();
-		if(!mult) {
-			return (String)biobjPar.getParameterValues().get(0);
+		Parameter parameter = biobjPar.getParameter();
+		if (parameter != null) {
+			ModalitiesValue modValue = parameter.getModalityValue();
+			if (modValue != null) {
+				boolean mult = biobjPar.getParameter().getModalityValue().isMultivalue();
+				if(!mult) {
+					return (String)biobjPar.getParameterValues().get(0);
+				} else {
+					return encodeMultivaluesParam(biobjPar.getParameterValues());
+				}
+			} else {
+				List values = biobjPar.getParameterValues();
+				if (values != null && values.size() > 0) {
+					if (values.size() == 1) return (String)biobjPar.getParameterValues().get(0);
+					else return encodeMultivaluesParam(biobjPar.getParameterValues());
+				} else return "";
+			}
 		} else {
-			return encodeMultivaluesParam(biobjPar.getParameterValues());
+			List values = biobjPar.getParameterValues();
+			if (values != null && values.size() > 0) {
+				if (values.size() == 1) return (String)biobjPar.getParameterValues().get(0);
+				else return encodeMultivaluesParam(biobjPar.getParameterValues());
+			} else return "";
 		}
+
 	}
 	
 	private String encode(Object values) {

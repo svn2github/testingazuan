@@ -212,7 +212,8 @@ public class CheckBoxTag extends TagSupport {
 		params.put("PAGE", pageName); 
 		params.put("MESSAGE", "HANDLE_CHECKLIST"); 
 		params.put("LIGHT_NAVIGATOR_DISABLED", "true"); 
-		params.put("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
+		//params.put("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
+		_session.setAttribute("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		params.put("PAGE_NUMBER", new Integer(pageNumber).toString());
 		PortletURL url = createUrl(params);	
 		

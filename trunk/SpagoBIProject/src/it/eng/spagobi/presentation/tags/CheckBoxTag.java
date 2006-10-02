@@ -427,42 +427,7 @@ public class CheckBoxTag extends TagSupport {
 		_htmlStream.append("	<TR>\n");
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='14'>\n");
 		
-		/*
-        // create link for previous page
-		HashMap prevParamsMap = new HashMap();
-		prevParamsMap.putAll(_providerUrlMap);
-		prevParamsMap.put("MESSAGE", "LIST_PAGE");
-		prevParamsMap.put("LIST_PAGE", String.valueOf(prevPage));
-		PortletURL prevUrl = createUrl(prevParamsMap);	
 		
-		HashMap nextParamsMap = new HashMap();
-		nextParamsMap.putAll(_providerUrlMap);
-		nextParamsMap.put("MESSAGE", "LIST_PAGE");
-		nextParamsMap.put("LIST_PAGE", String.valueOf(nextPage));
-		PortletURL nextUrl = createUrl(nextParamsMap);
-		
-		String formId = "formFilter";
-		
-		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
-		String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
-		String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
-		String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
-		if (valueFilter != null && columnFilter != null && typeFilter != null) {
-			prevUrl.setParameter(SpagoBIConstants.VALUE_FILTER, valueFilter);
-			prevUrl.setParameter(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
-			prevUrl.setParameter(SpagoBIConstants.COLUMN_FILTER, columnFilter);
-			prevUrl.setParameter(SpagoBIConstants.TYPE_FILTER, typeFilter);
-			nextUrl.setParameter(SpagoBIConstants.VALUE_FILTER, valueFilter);
-			nextUrl.setParameter(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
-			nextUrl.setParameter(SpagoBIConstants.COLUMN_FILTER, columnFilter);
-			nextUrl.setParameter(SpagoBIConstants.TYPE_FILTER , typeFilter);
-		} else {
-			valueFilter = "";
-			typeValueFilter = "";
-			columnFilter = "";
-			typeFilter = "";
-		}
-		*/
 		
 		if(pageNumber != 1) {	
 			//_htmlStream.append("		<A href=\""+prevUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
@@ -479,168 +444,47 @@ public class CheckBoxTag extends TagSupport {
 		// create center blank cell
 		_htmlStream.append("		<TD class='portlet-section-footer'>page " + pageNumber + " of " + pagesNumber + "\n");
 		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
-		/*
-        // visualize page numbers
-		String pageLabel = PortletUtilities.getMessage("ListTag.pageLable", "messages");
-		String pageOfLabel = PortletUtilities.getMessage("ListTag.pageOfLable", "messages");
-		_htmlStream.append("						<TD class='portlet-section-footer' align='center'>\n");
-		_htmlStream.append("							<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
-		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
-		*/
+		
+		
 		//form for checked elements filtering
-		String checked = "";
-		String isChecked = (String)_serviceRequest.getAttribute("checked");
-		if(isChecked == null){
-			isChecked = "true";
-		}
-		if(isChecked.equals("true")){
-			checked = "checked='checked'";
+		
+		if (_filter != null && _filter.equalsIgnoreCase("enabled")) {
+			String checked = "";
+			String isChecked = (String)_serviceRequest.getAttribute("checked");
+			if(isChecked == null){
+				isChecked = "true";
+			}
+			if(isChecked.equals("true")){
+				checked = "checked='checked'";
+			}
+			
+			_htmlStream.append("						    <br/><br/>\n");
+			//_htmlStream.append("	<form method='POST' action='" + formUrl.toString() + "' id ='objectForm' name='objectForm'>\n");
+			String label = PortletUtilities.getMessage("CheckboxTag.showChecked","messages");
+			_htmlStream.append("						    "+label+"\n");
+			_htmlStream.append("<input type=\"checkbox\"" + checked + " \n");
+			_htmlStream.append("				onclick=\"submitForm()\" name=\"filterCheckbox\" id=\"filterCheckbox\" value=\"true\"/>\n");
+			_htmlStream.append("<input type =\"hidden\" id=\"checkFilter\" name=\"checkFilter\" value=\"\" />");
+			_htmlStream.append("<input type =\"hidden\" id=\"checked\" name=\"checked\" value=\"\" />");
+			//_htmlStream.append("						    </form> \n");
+			_htmlStream.append("						    </TD>\n");
+			_htmlStream.append("<script>\n");
+			_htmlStream.append("function submitForm() {\n");
+			_htmlStream.append("var checkFilter=document.getElementById('checkFilter'); ");
+			_htmlStream.append("var filterCheckbox=document.getElementById('filterCheckbox'); ");
+			_htmlStream.append("var checked=document.getElementById('checked'); ");
+			_htmlStream.append("if(filterCheckbox.checked == false){");
+			_htmlStream.append("checked.value = 'false'");
+			_htmlStream.append("}");
+			_htmlStream.append("else{");
+			_htmlStream.append("checked.value = 'true'");
+			_htmlStream.append("}");
+			_htmlStream.append("checkFilter.value='checkFilter';");
+			_htmlStream.append("document.getElementById('form').submit();\n");
+			_htmlStream.append("} \n");
+			_htmlStream.append("</script>");
 		}
 		
-		_htmlStream.append("						    <br/><br/>\n");
-		//_htmlStream.append("	<form method='POST' action='" + formUrl.toString() + "' id ='objectForm' name='objectForm'>\n");
-		String label = PortletUtilities.getMessage("CheckboxTag.showChecked","messages");
-		_htmlStream.append("						    "+label+"\n");
-		_htmlStream.append("<input type=\"checkbox\"" + checked + " \n");
-		_htmlStream.append("				onclick=\"submitForm()\" name=\"filterCheckbox\" id=\"filterCheckbox\" value=\"true\"/>\n");
-		_htmlStream.append("<input type =\"hidden\" id=\"checkFilter\" name=\"checkFilter\" value=\"\" />");
-		_htmlStream.append("<input type =\"hidden\" id=\"checked\" name=\"checked\" value=\"\" />");
-		//_htmlStream.append("						    </form> \n");
-		_htmlStream.append("						    </TD>\n");
-		_htmlStream.append("<script>\n");
-		_htmlStream.append("function submitForm() {\n");
-		_htmlStream.append("var checkFilter=document.getElementById('checkFilter'); ");
-		_htmlStream.append("var filterCheckbox=document.getElementById('filterCheckbox'); ");
-		_htmlStream.append("var checked=document.getElementById('checked'); ");
-		_htmlStream.append("if(filterCheckbox.checked == false){");
-		_htmlStream.append("checked.value = 'false'");
-		_htmlStream.append("}");
-		_htmlStream.append("else{");
-		_htmlStream.append("checked.value = 'true'");
-		_htmlStream.append("}");
-		_htmlStream.append("checkFilter.value='checkFilter';");
-		_htmlStream.append("document.getElementById('form').submit();\n");
-		_htmlStream.append("} \n");
-		_htmlStream.append("</script>");
-		/*
-		// Form for list filtering; if not specified, the filter is enabled
-		if (_filter == null || _filter.equalsIgnoreCase("enabled")) {
-			
-			PortletURL allUrl = createUrl(_providerUrlMap);
-			PortletURL filterURL = createUrl(_providerUrlMap);
-			
-			String label = PortletUtilities.getMessage("SBIListLookPage.labelFilter", "messages");
-			String labelTypeValueFilter = PortletUtilities.getMessage("SBIListLookPage.labelTypeValueFilter", "messages");
-			String labelNumber = PortletUtilities.getMessage("SBIListLookPage.labelNumber", "messages");
-			String labelString = PortletUtilities.getMessage("SBIListLookPage.labelString", "messages");
-			String labelDate = PortletUtilities.getMessage("SBIListLookPage.labelDate", "messages");
-			String labelStart = PortletUtilities.getMessage("SBIListLookPage.startWith", "messages");
-			String labelEnd = PortletUtilities.getMessage("SBIListLookPage.endWith", "messages");
-			String labelContain = PortletUtilities.getMessage("SBIListLookPage.contains", "messages");
-			String labelEqual = PortletUtilities.getMessage("SBIListLookPage.isEquals", "messages");
-			String labelIsLessThan = PortletUtilities.getMessage("SBIListLookPage.isLessThan", "messages");
-			String labelIsLessOrEqualThan = PortletUtilities.getMessage("SBIListLookPage.isLessOrEqualThan", "messages");
-			String labelIsGreaterThan = PortletUtilities.getMessage("SBIListLookPage.isGreaterThan", "messages");
-			String labelIsGreaterOrEqualThan = PortletUtilities.getMessage("SBIListLookPage.isGreaterOrEqualThan", "messages");
-			String labelFilter = PortletUtilities.getMessage("SBIListLookPage.filter", "messages");
-			String labelAll = PortletUtilities.getMessage("SBIListLookPage.all", "messages");
-			
-			_htmlStream.append("						    <br/><br/>\n");			
-			_htmlStream.append("						    "+label+"\n");
-			_htmlStream.append("						    <select name='" + SpagoBIConstants.COLUMN_FILTER + "'>\n");
-			
-			for (int i = 0; i < _columns.size(); i++) {
-				String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
-				String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
-				String labelColumn = new String(nameColumn);
-				if (labelColumnCode != null) labelColumn = PortletUtilities.getMessage(labelColumnCode, "messages");
-				String selected = "";
-				if (nameColumn.equalsIgnoreCase(columnFilter))
-					selected = " selected='selected' "; 
-				_htmlStream.append("						    	<option value='"+nameColumn+"' "+selected+" >"+labelColumn+"</option>\n");
-			}
-			String selected = "";
-			_htmlStream.append("						    </select>\n");
-			_htmlStream.append("						    "+labelTypeValueFilter+"\n");
-			_htmlStream.append("						    <select name='" + SpagoBIConstants.TYPE_VALUE_FILTER + "'>\n");
-			if (typeValueFilter.equalsIgnoreCase(SpagoBIConstants.STRING_TYPE_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.STRING_TYPE_FILTER +"' "+selected+" >"+labelString+"</option>\n");
-			if (typeValueFilter.equalsIgnoreCase(SpagoBIConstants.NUMBER_TYPE_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.NUMBER_TYPE_FILTER +"' "+selected+" >"+labelNumber+"</option>\n");
-			if (typeValueFilter.equalsIgnoreCase(SpagoBIConstants.DATE_TYPE_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.DATE_TYPE_FILTER +"' "+selected+" >"+labelDate+"</option>\n");
-			_htmlStream.append("						    </select>\n");
-			_htmlStream.append("						    <select name='" + SpagoBIConstants.TYPE_FILTER + "'>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.START_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.START_FILTER +"' "+selected+" >"+labelStart+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.END_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.END_FILTER +"' "+selected+" >"+labelEnd+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.CONTAIN_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.CONTAIN_FILTER +"' "+selected+" >"+labelContain+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.EQUAL_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.EQUAL_FILTER +"' "+selected+" >"+labelEqual+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.LESS_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.LESS_FILTER +"' "+selected+" >"+labelIsLessThan+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.LESS_OR_EQUAL_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.LESS_OR_EQUAL_FILTER +"' "+selected+" >"+labelIsLessOrEqualThan+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.GREATER_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.GREATER_FILTER +"' "+selected+" >"+labelIsGreaterThan+"</option>\n");
-			if (typeFilter.equalsIgnoreCase(SpagoBIConstants.GREATER_OR_EQUAL_FILTER))
-				selected = " selected='selected' ";
-			else selected = "";
-			_htmlStream.append("						    	<option value='"+SpagoBIConstants.GREATER_OR_EQUAL_FILTER +"' "+selected+" >"+labelIsGreaterOrEqualThan+"</option>\n");
-			_htmlStream.append("						    </select>\n");
-			_htmlStream.append("						    <input type=\"text\" name=\"" + SpagoBIConstants.VALUE_FILTER + "\" size=\"10\" value=\""+valueFilter+"\" /> \n");
-			_htmlStream.append("						    <a href='javascript:document.getElementById(\"" + formId +"\").submit()'>"+labelFilter+"</a> \n");
-			_htmlStream.append(" <a href='"+allUrl.toString()+"'>"+labelAll+"</a> \n");
-			
-			
-			// visualize any validation error present in the errorHandler
-			boolean thereAreValidationErrors = false;
-			StringBuffer errorsHtmlString = new StringBuffer("");
-			if (_errorHandler != null) {
-				Collection errors = _errorHandler.getErrors();
-				if (errors != null && errors.size() > 0) {
-					errorsHtmlString.append("	<div class='filter-list-errors'>\n");
-					Iterator iterator = errors.iterator();
-					EMFAbstractError error = null;
-					String description = "";
-					while (iterator.hasNext()) {
-						error = (EMFAbstractError) iterator.next();
-						if (error instanceof EMFValidationError) {
-				    	 	description = error.getDescription();
-				    	 	errorsHtmlString.append("		" + description + "<br/>\n");
-				    	 	thereAreValidationErrors = true;
-						}
-					}
-					errorsHtmlString.append("	</div>\n");
-				}
-			}
-			if (thereAreValidationErrors) _htmlStream.append(errorsHtmlString);
-			
-		}
-		_htmlStream.append("		</TD>\n");	
-		*/
 		
 		//	 create link for next page
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				

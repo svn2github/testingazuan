@@ -236,8 +236,9 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	public void updateCheckedObjectMap(SourceBean request) throws Exception {
 		checkedObjectsMap = new HashMap();
 		
-		String sourceBeanStr = (String)request.getAttribute(CHECKED_OBJECTS);
-		SourceBean checked = SourceBean.fromXMLString(sourceBeanStr);
+		//String sourceBeanStr = (String)request.getAttribute(CHECKED_OBJECTS);
+		//SourceBean checked = SourceBean.fromXMLString(sourceBeanStr);
+		SourceBean checked = (SourceBean)getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS);
 		List objectsList = checked.getAttributeAsList(OBJECT);
 		for(int i = 0; i < objectsList.size(); i++) {
 			SourceBean object = (SourceBean)objectsList.get(i);
@@ -253,8 +254,10 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	}
 	
 	public void preprocess(SourceBean request) throws Exception {		
-		if(request.getAttribute(CHECKED_OBJECTS) != null) {
+		//if(request.getAttribute(CHECKED_OBJECTS) != null) {
+		if(getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS) != null) {
 			updateCheckedObjectMap(request);
+			getRequestContainer().getSessionContainer().delAttribute(CHECKED_OBJECTS);
 			String pageNumberStr = (String)request.getAttribute("PAGE_NUMBER");
 			pageNumber = Integer.parseInt(pageNumberStr);
 		}

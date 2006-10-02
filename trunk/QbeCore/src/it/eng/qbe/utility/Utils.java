@@ -13,7 +13,6 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,8 +34,6 @@ import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.w3c.tools.codec.Base64Encoder;
 
 import sun.misc.BASE64Encoder;
 

@@ -8,5 +8,4 @@
 	<!-- 
 	<INITIALIZER class="it.eng.spagobi.workflow.JbpmContextInitializer" config="" />
 	-->
-	<INITIALIZER class="it.eng.spagobi.init.TreeInitializer" config="SPAGOBI.TREE_INITIALIZATION" />
 </INITIALIZERS>

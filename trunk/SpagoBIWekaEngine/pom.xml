@@ -42,6 +42,7 @@
           <include>**/*.xml</include>
 	  	  <include>**/*.properties</include>
 	  	  <include>**/*.kfml</include>
+	  	  <include>**/*publickey</include>
         </includes>
       </resource>
     </resources>

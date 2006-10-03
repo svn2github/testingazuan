@@ -175,7 +175,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		}
 		return statementStr;
 	}
-			
+	
+	/*
 	private List getCheckedObjectKeys(SourceBean request){
 		List results = new ArrayList();
 		List attrs = request.getContainedAttributes();
@@ -187,6 +188,19 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 				results.add(id);
 			}
 		}
+		
+		return results;
+	}
+	*/
+	
+	private List getCheckedObjectKeys(SourceBean request){
+		List results = new ArrayList();
+		
+		List attrs = request.getAttributeAsList("checkbox");
+
+		for(int i = 0; i < attrs.size(); i++){
+			results.add((String)attrs.get(i));
+		}	
 		
 		return results;
 	}
@@ -278,6 +292,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		response.delAttribute("PAGED_LIST");
 		pagedList.delAttribute("ROWS");
 		
+		List pendingDelete = new ArrayList();
+		
 		SourceBean rows = new SourceBean("ROWS");
 		for(int i = 0; i < objectsList.size(); i++) {
 			SourceBean object = (SourceBean)objectsList.get(i);
@@ -285,7 +301,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			if(isChecked(object)) {					
 				object.setAttribute("CHECKED", "true");	
 				String key = getObjectKey(object);
-				checkedObjectsMap.remove(key);
+				pendingDelete.add(key);
+				
 			}
 			else {
 				object.setAttribute("CHECKED", "false");				
@@ -299,6 +316,10 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		pagedList.setAttribute(rows);
 		response.setAttribute(pagedList);
 		response.setAttribute(chekhedObjects);
+		
+		// erase all items in panding delete
+		for(int i = 0; i < pendingDelete.size(); i++) 
+			checkedObjectsMap.remove((String)pendingDelete.get(i));
 	}
 	
 	public SourceBean _request = null;

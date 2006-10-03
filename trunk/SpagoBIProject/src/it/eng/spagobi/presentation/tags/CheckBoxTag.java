@@ -388,10 +388,10 @@ public class CheckBoxTag extends TagSupport {
 			//String objectIdName = (String)((SourceBean) _layout.getAttribute("KEYS.OBJECT")).getAttribute("key");
 			Object key = row.getAttribute("ROW_ID");			
 			if(checked.equalsIgnoreCase("true")) {
-				_htmlStream.append("\t<input type='checkbox' name='checkbox:" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "' checked>\n");
+				_htmlStream.append("\t<input type='checkbox' name='checkbox' value='" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "' checked>\n");
 			}
 			else {
-				_htmlStream.append("\t<input type='checkbox' name='checkbox:" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "'>\n");
+				_htmlStream.append("\t<input type='checkbox' name='checkbox' value='" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "'>\n");
 			}
 			
 			_htmlStream.append(" </td>\n");

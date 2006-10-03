@@ -111,6 +111,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			session.setAttribute("RETURN_VALUES", chekhedObjects);
 		}
 		
+		getRequestContainer().getSessionContainer().delAttribute(CHECKED_OBJECTS);
+		
 		String moduleName = (String)_request.getAttribute("AF_MODULE_NAME");
 				
 		session.setAttribute("RETURN_FROM_MODULE", moduleName);
@@ -273,7 +275,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			updateCheckedObjectMap(request);
 			getRequestContainer().getSessionContainer().delAttribute(CHECKED_OBJECTS);
 			String pageNumberStr = (String)request.getAttribute("PAGE_NUMBER");
-			pageNumber = Integer.parseInt(pageNumberStr);
+			if(pageNumberStr != null)
+				pageNumber = Integer.parseInt(pageNumberStr);
 		}
 		else {
 			createCheckedObjectMap(request);

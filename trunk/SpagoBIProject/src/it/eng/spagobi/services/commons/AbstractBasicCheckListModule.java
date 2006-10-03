@@ -311,15 +311,17 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 			rows.setAttribute(object);
 		}		
 				
+		//	erase all items in panding delete
+		for(int i = 0; i < pendingDelete.size(); i++) 
+			checkedObjectsMap.remove((String)pendingDelete.get(i));
+		
 		SourceBean chekhedObjects = getCheckedObjects();
 		
 		pagedList.setAttribute(rows);
 		response.setAttribute(pagedList);
 		response.setAttribute(chekhedObjects);
 		
-		// erase all items in panding delete
-		for(int i = 0; i < pendingDelete.size(); i++) 
-			checkedObjectsMap.remove((String)pendingDelete.get(i));
+		
 	}
 	
 	public SourceBean _request = null;

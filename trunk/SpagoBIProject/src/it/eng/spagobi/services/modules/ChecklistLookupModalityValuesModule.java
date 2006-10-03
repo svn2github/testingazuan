@@ -152,7 +152,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			session.setAttribute("LOOKUP_VALUE", results);
 		}
 		
-				
+		getRequestContainer().getSessionContainer().delAttribute(CHECKED_OBJECTS);	
+		
 		String moduleName = (String)_request.getAttribute("AF_MODULE_NAME");
 				
 		session.setAttribute("RETURN_FROM_MODULE", moduleName);

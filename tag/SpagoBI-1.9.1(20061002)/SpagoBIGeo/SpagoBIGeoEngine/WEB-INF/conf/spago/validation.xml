@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+	<!--SERVICE name="insertEmployee" type="ACTION">
+		<VALIDATION blocking="true" validators="">
+			<CONDITIONS>											
+				<PARAMETER name="age" scope="SERVICE_REQUEST" value="1" />	   
+			</CONDITIONS>														
+			<FIELDS>
+				<FIELD name="name" maxLength="10" mandatory="true" type="8" />
+				<FIELD name="age" maxLength="5" mandatory="false" type="6" />
+				<FIELD name="department" maxLength="20" mandatory="false" type="7" />
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE-->
+</VALIDATIONS>

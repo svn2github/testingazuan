@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PROXIES>
+	<PROXY name="ADAPTER_EJB_PROXY" jndi="ejb/spago/AdapterEJBHome" />
+	<PROXY name="SESSION_FACADE_EJB_LOCAL_PROXY" jndi="java:comp/env/ejb/spago/SessionFacadeEJBLocalHome" />
+	<PROXY name="BUSINESS_DELEGATE_EJB_LOCAL_PROXY" jndi="java:comp/env/ejb/spago/BusinessDelegateEJBLocalHome" />
+</PROXIES>

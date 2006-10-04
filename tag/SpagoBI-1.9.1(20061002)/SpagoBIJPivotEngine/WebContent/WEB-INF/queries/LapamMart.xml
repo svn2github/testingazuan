@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<Schema name="LapamMart">
+<!--
+  == $Id: //open/mondrian/demo/FoodMart.xml#42 $
+  == This software is subject to the terms of the Common Public License
+  == Agreement, available at the following URL:
+  == http://www.opensource.org/licenses/cpl.html.
+  == (C) Copyright 2000-2005 Kana Software, Inc. and others.
+  == All Rights Reserved.
+  == You must accept the terms of that agreement to use this software.
+  -->
+
+  <Dimension name="Voci">
+    <Hierarchy hasAll="true" allMemberName="Voci Tutte" primaryKey="id" primaryKeyTable="voci">
+      <Join leftKey="attivita" rightAlias="attivita" rightKey="id">
+        <Table name="voci"/>
+        <Join leftKey="settore" rightKey="id">
+          <Table name="attivita" />
+          <Table name="settori" />
+        </Join>
+      </Join>
+      <Level name="Settori" table="settori" column="des" uniqueMembers="false"/>
+      <Level name="Attivita" table="attivita" column="des" uniqueMembers="false"/>
+      <Level name="Voce" table="voci" column="des" uniqueMembers="false"/>
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Filiali">
+    <Hierarchy hasAll="true" allMemberName="Filiali Tutte" primaryKey="id" primaryKeyTable="filiali">
+      <Join leftKey="zona" rightKey="id">
+        <Table name="filiali" />
+        <Table name="zone" />
+      </Join>
+      <Level name="Zona" table="zone" column="des" uniqueMembers="true"/>
+      <Level name="Filiale" table="filiali" column="des" uniqueMembers="true">
+        <Property name="Id" column="id"/>
+      </Level>
+      
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Nature Giuridiche">
+    <Hierarchy hasAll="true" allMemberName="Nature Giuridiche Tutte" primaryKey="id" primaryKeyTable="soggetti">
+      <Join leftKey="ngi" rightKey="id">
+        <Table name="soggetti" />
+        <Table name="natgiu" />
+      </Join>
+      <Level name="Natura Giuridica" table="natgiu" column="des" uniqueMembers="false"/>
+    </Hierarchy>
+  </Dimension>
+
+<!--
+  <Dimension name="Tempo">
+    <Hierarchy hasAll="true" allMemberName="Tempo Tutto" primaryKey="id">
+      <Table name="tempo" />
+      <Level name="Anno" ordinalColumn="cod_anno" column="anno" uniqueMembers="true" />
+      <Level name="Semestre" ordinalColumn="cod_semestre" column="semestre" uniqueMembers="false" />
+      <Level name="Trimestre" ordinalColumn="cod_trimestre" column="trimestre" uniqueMembers="false" />
+      <Level name="Mese" ordinalColumn="cod_mese" column="mese" uniqueMembers="false" />
+    </Hierarchy>
+  </Dimension>
+  -->
+  <Dimension name="Tempo">
+    <Hierarchy hasAll="true" allMemberName="Tempo Tutto" primaryKey="id">
+      <Table name="tempo" />
+      <Level name="Anno" ordinalColumn="cod_anno" column="anno" uniqueMembers="true" />
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Regimi">
+    <Hierarchy hasAll="true" allMemberName="Regimi Tutti" primaryKey="id">
+      <Table name="regimi" />
+      <Level name="Regime" column="des" uniqueMembers="true" />
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Volume Affari">
+    <Hierarchy hasAll="true" allMemberName="Volume Affari Tutti" primaryKey="id">
+      <Table name="fasciavolaff" />
+      <Level name="Volume Affari" ordinalColumn="cod" column="des" uniqueMembers="true" />
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Numero Registrazioni">
+    <Hierarchy hasAll="true" allMemberName="Numero Registrazioni Tutti" primaryKey="id">
+      <Table name="fasciareg" />
+      <Level name="Numero Registrazioni" ordinalColumn="cod" column="des" uniqueMembers="true" />
+    </Hierarchy>
+  </Dimension>
+
+<!-- Ricavi -->
+<Cube name="Ricavi">
+  <Table name="ricavi" />
+  <DimensionUsage name="Voci" source="Voci" foreignKey="voce"/>
+  <DimensionUsage name="Nature Giuridiche" source="Nature Giuridiche" foreignKey="soggetto"/>
+  <DimensionUsage name="Tempo" source="Tempo" foreignKey="tempo"/>
+  <DimensionUsage name="Filiali" source="Filiali" foreignKey="filiale"/>
+
+  <Measure name="Importo" column="importo" aggregator="sum"
+      formatString="#,###.00"/>
+  <Measure name="Pagato" column="pagato" aggregator="sum"
+      formatString="#,###.00"/>
+  <CalculatedMember
+      name="Credito"
+      dimension="Measures">
+      <Formula>[Measures].[Importo] - [Measures].[Pagato]</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>
+</Cube>
+
+<!-- Servizio Coge -->
+<Cube name="ServizioCoge">
+  <Table name="srvcoge" />
+  <DimensionUsage name="Regimi" source="Regimi" foreignKey="regime"/>
+  <DimensionUsage name="Nature Giuridiche" source="Nature Giuridiche" foreignKey="soggetto"/>
+  <DimensionUsage name="Tempo" source="Tempo" foreignKey="tempo"/>
+  <DimensionUsage name="Filiali" source="Filiali" foreignKey="filiale"/>
+  <DimensionUsage name="Volume Affari" source="Volume Affari" foreignKey="fasciavolaff"/>
+  <DimensionUsage name="Numero Registrazioni" source="Numero Registrazioni" foreignKey="fasciareg"/>
+
+  <Measure name="Importo" column="importo" aggregator="sum"
+      formatString="#,###.00"/>
+  <Measure name="Pagato" column="pagato" aggregator="sum"
+      formatString="#,###.00"/>
+  <Measure name="Numero Registrazioni" column="numreg" aggregator="sum"
+      formatString="#,###"/>
+  <Measure name="Volume Affari" column="volaff" aggregator="sum"
+      formatString="#,###.00"/>
+  <Measure name="Regime" column="regime" aggregator="count" />
+</Cube>
+
+<Role name="biadmin">
+  <SchemaGrant access="none">
+    <CubeGrant cube="Ricavi" access="all">
+      <HierarchyGrant hierarchy="[Filiali]" access="custom" topLevel="[Filiali].[Zona]">
+        <MemberGrant member="[Filiali].[ZONA 082].[Filiale 030]" access="all"/>
+        <MemberGrant member="[Filiali].[ZONA 082].[Filiale 035]" access="all"/>
+      </HierarchyGrant>
+    </CubeGrant>
+    <CubeGrant cube="ServizioCoge" access="all">
+      <HierarchyGrant hierarchy="[Filiali]" access="custom" topLevel="[Filiali].[Zona]">
+        <MemberGrant member="[Filiali].[ZONA 087].[Filiale 027]" access="all"/>
+        <MemberGrant member="[Filiali].[ZONA 087].[Filiale 043]" access="all"/>
+        <MemberGrant member="[Filiali].[ZONA 082].[Filiale 030]" access="all"/>
+        <MemberGrant member="[Filiali].[ZONA 082].[Filiale 035]" access="all"/>
+      </HierarchyGrant>
+    </CubeGrant>
+  </SchemaGrant>
+</Role>
+
+</Schema>

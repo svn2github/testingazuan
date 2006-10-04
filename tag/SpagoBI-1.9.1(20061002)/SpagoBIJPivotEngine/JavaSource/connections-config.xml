@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<CONNECTIONS-CONFIGURATION>
+	<!--
+	<CONNECTION name="defaultDWH" 
+					isDefault="true"
+					isJNDI="false" 
+					driver="org.hsqldb.jdbcDriver"
+					user="sa"
+					password=""
+					jdbcUrl="jdbc:hsqldb:hsql://localhost/foodmart"/>
+	-->
+	<!--
+	<CONNECTION name="defaultDWH" 
+					isDefault="true"
+					isJNDI="true" 
+					initialContext="java:comp/env"
+					resourceName="jdbc/sbifoodmart"/>
+	<CONNECTION name="postgresDWH" 
+					isDefault="true"
+					isJNDI="false" 
+					driver="org.postgresql.Driver"
+					user="postgres"
+					password="postgres"
+					jdbcUrl="jdbc:postgresql://localhost:5432/lapam"/>
+	-->
+</CONNECTIONS-CONFIGURATION>

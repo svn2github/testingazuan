@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+ * Copyright 2001-2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>spagobi</groupId>
+  <artifactId>SpagoBIIReportPlugin</artifactId>
+  <packaging>jar</packaging>
+  <version>1.9.1</version>
+  <name>SpagoBIIReportPlugin</name>
+  <url>http://maven.apache.org</url>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+         <artifactId>maven-antrun-plugin</artifactId>
+         <executions>
+           <execution>
+             <phase>package</phase>
+             <configuration>
+      	       <tasks>
+      	           
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin"/> 
+      	          <mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/iReport_SpagoBI_plugin_Resources"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/bin"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/bin/iReport_SpagoBI_plugin_Resources"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/lib"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/plugins"/>
+									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/docs"/>
+									
+									<!-- copy documentation -->
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/docs">
+											<fileset dir="${basedir}/doc"/>
+									</copy>
+									<!-- copy license -->
+									<copy file="${basedir}/LICENSE_SpagoBI-IReportPlugin.txt" 
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/LICENSE_SpagoBI-IReportPlugin.txt" />
+									<!-- copy plugin xml file -->
+									<copy file="${basedir}/PlugInConfFile/spagobi.xml"  
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/plugins/spagobi.xml" />
+									<!-- copy resources directory -->
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/plugin/iReport_SpagoBI_plugin_Resources">
+											<fileset dir="${basedir}/src/iReport_SpagoBI_plugin_Resources"/>
+									</copy>
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/plugin/bin/iReport_SpagoBI_plugin_Resources">
+											<fileset dir="${basedir}/src/iReport_SpagoBI_plugin_Resources"/>
+									</copy>
+									<!-- copy libraries -->
+									<copy todir="${basedir}/target/SpagoBIIReportPlugin/plugin/lib">
+											<fileset dir="${basedir}/lib"/>
+									</copy>
+									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/iReport.jar" />
+									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/LICENSE.iReport.txt" />
+									<!-- copy plugin jar into libraries -->
+									<copy file="${basedir}/target/SpagoBIIReportPlugin-1.9.1.jar" 
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/SpagoBIIReportPlugin-1.9.1.jar" />
+									<!-- delete unecessary files -->
+									<delete file="${basedir}/target/exported-pom.xml" />
+									<delete file="${basedir}/target/SpagoBIIReportPlugin-1.9.1.jar" />
+									<delete>
+											<fileset dir="${basedir}/target/classes" includes="*" />
+									</delete>
+									<delete dir="${basedir}/target/classes" />
+									<!-- create zip files -->
+									<zip destfile="${basedir}/target/SpagoBI-IReportPlugin-bin-1.9.1.zip" 
+									     basedir="${basedir}/target" />
+									<!-- delete folder -->
+									<delete dir="${basedir}/target/SpagoBIIReportPlugin" />
+
+               </tasks>
+             </configuration>
+             <goals>
+             	<goal>run</goal>
+             </goals>
+           </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+        <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.1</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/commons-fileupload-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>dom4j.jar</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>1.6.1</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/dom4j-1.6.1.jar</systemPath>
+        </dependency>     
+        <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.0-rc3</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/commons-httpclient-3.0-rc3.jar</systemPath>
+        </dependency>    
+        <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>3.8.1</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/junit.jar</systemPath>
+        </dependency>   
+         <dependency>
+                <groupId>iReport</groupId>
+                <artifactId>iReport</artifactId>
+                <version>1.5</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/iReport.jar</systemPath>
+        </dependency>  				
+  </dependencies>
+</project>

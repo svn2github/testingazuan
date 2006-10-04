@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MASTER>
+	<CONFIGURATOR path="/WEB-INF/conf/spago/data_access.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/authorizations.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/business_map.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/common.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/dispatchers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/distribution.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/graphs.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/initializers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/lookup.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/proxies.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/security.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/statements.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/spago/tracing.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/spago/validation.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/spago/validators.xml" />	
+</MASTER>

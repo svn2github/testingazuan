@@ -14,7 +14,9 @@ Settings:
 
 - Open office has to be executed as a server, so, 
   go into the directory OPENOFFICE-HOME/program and exec the following command 
-  soffice -quickstart -accept="socket,host=localhost,port=9000;urp;StarOffice.ServiceManager"
+  soffice -quickstart -accept="socket,host=0,port=9000;urp;StarOffice.ServiceManager"
+  This command could open a new open office window. In order to avoid this behaviour you can add -invisible as command line argument. 
+  Anytime you launch the soffice command a new soffice process is created and so, if you use the -invisible argument, the only way  to stop open office is to kill the process.
 
 - Open office has to be configured to save the presentation document as powerpoint 
   and to store the content of the images (not their path), so:

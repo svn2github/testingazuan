@@ -28,6 +28,7 @@ import com.sun.star.beans.XPropertySet;
 import com.sun.star.bridge.UnoUrlResolver;
 import com.sun.star.bridge.XUnoUrlResolver;
 import com.sun.star.comp.helper.Bootstrap;
+import com.sun.star.container.XNameContainer;
 import com.sun.star.container.XNamed;
 import com.sun.star.drawing.XDrawPage;
 import com.sun.star.drawing.XDrawPages;
@@ -152,6 +153,8 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             	// prepare list for shapes to remove and to add
             	List shapetoremove = new ArrayList();
             	List shapetoadd = new ArrayList();
+            	Object oBitmapsObj = xServiceFactory.createInstance( "com.sun.star.drawing.BitmapTable" );
+            	XNameContainer oBitmaps = (XNameContainer)UnoRuntime.queryInterface(XNameContainer.class, oBitmapsObj);
                 // check each shape
             	for(int j=0; j<numShapes; j++) {
             		debug("execute", "Start examining shape " + j + " of page " + i);
@@ -209,7 +212,16 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             			try {  
             				 String fileoopath = transformPathForOpenOffice(fileTmpImg);
             				 debug("execute", "Path image loaded into openoffice = " + fileoopath);
-            				 xSPS.setPropertyValue("GraphicURL", "file:///" + fileoopath);            
+            				 String externalGraphicUrl = "file:///" + fileoopath;
+            				 if (!oBitmaps.hasByName(nameImg)) {
+            					 debug("execute", "Bitmap table does not contain an element with name '" + nameImg + "'.");
+            					 oBitmaps.insertByName(nameImg, externalGraphicUrl);
+            				 } else {
+            					 debug("execute", "Bitmap table already contains an element with name '" + nameImg + "'.");
+            				 }
+            				 Object internalGraphicUrl = oBitmaps.getByName(nameImg);
+            				 debug("execute", "Retrieved internal url for image '" + nameImg + "': " + internalGraphicUrl);
+            				 xSPS.setPropertyValue("GraphicURL", internalGraphicUrl);            
             			} catch (Exception e) {                 
             				major("execute", "error while adding graphic shape", e);
             			}

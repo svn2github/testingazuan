@@ -93,12 +93,12 @@ public class TestMapRenderer {
 		int i = 0;
 		Node node = nodeList.item(0);
 		String nodeName = node.getNodeName();
-		svgDoc.adoptNode(node);
+		//svgDoc.adoptNode(node);
 		svgDoc.getLastChild().appendChild(node);
 		i = 1;
 		Node node1 = nodeList.item(2);
 		String nodeName1 = node1.getNodeName();
-		svgDoc.adoptNode(node1);
+		//svgDoc.adoptNode(node1);
 		svgDoc.getLastChild().appendChild(node1);
 		
 

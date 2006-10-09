@@ -306,7 +306,7 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			debug("storeDocImages", "engine driver instance created " + aEngineDriver);
 			// get the map of parameter to send to the engine
 			Map mapPars = aEngineDriver.getParameterMap(biobj, null, "");
-			debug("storeDocImages", "parameter map returned by engine driver " + mapPars);
+			debug("storeDocImages", "parameter map returned by engine driver " );
 			// built the request to sent to the engine
 			Iterator iterMapPar = mapPars.keySet().iterator();
 			HttpClient client = new HttpClient();

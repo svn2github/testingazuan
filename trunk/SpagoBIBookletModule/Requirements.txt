@@ -4,7 +4,7 @@ configure some settings.
 
 Software required:
 
-- Open Office 2.x
+- Open Office 2.0.0
 
 Software suggested:
 

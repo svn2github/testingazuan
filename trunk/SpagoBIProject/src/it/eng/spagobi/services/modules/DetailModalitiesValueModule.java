@@ -35,6 +35,7 @@ import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
+import it.eng.spagobi.bo.JavaClassDetail;
 import it.eng.spagobi.bo.LovDetailList;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.ObjParuse;
@@ -45,6 +46,7 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
+import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
@@ -241,13 +243,15 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				modVal.setITypeCd(input_type_cd);
 				modVal.setITypeId(input_type_id);
 
-				if (input_type_cd.equalsIgnoreCase("MAN_IN")) {
-
-					String lovProvider = "";
+				if (input_type_cd.equalsIgnoreCase("JAVA_CLASS")) {
+					
+					JavaClassDetail javaClassDet = recoverJavaClassWizardValues(request);
+					String lovProvider = javaClassDet.toXML();
 					modVal.setLovProvider(lovProvider);
 
 					labelControl(request, mod);
 					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
+					ValidationCoordinator.validate("PAGE", "JavaClassWizardValidation", this);
 
 					// if there are some validation errors into the errorHandler does not write into DB
 					Collection errors = errorHandler.getErrors();
@@ -262,10 +266,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						}
 					}
 
-					// control if user wants to test the manual input
+					// control if user wants to test the script
 					Object test = request.getAttribute("testLovBeforeSave");
 					if (test != null) {
-						testLovBeforeSave(request, response, null);
+						testLovBeforeSave(request, response, javaClassDet);
 						session.setAttribute(SpagoBIConstants.MODALITY, mod);
 						session.setAttribute(
 								SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
@@ -551,7 +555,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * 			- null in case on manual input;
 	 * 			- a QueryDetail in case of query;
 	 * 			- a LovDetailList in case of Fix Lov;
-	 * 			- a ScriptDetail in case of script.
+	 * 			- a ScriptDetail in case of script;
+	 * 			- a JavaClassDetail in case of java class.
 	 * @throws SourceBeanException
 	 */
 	private void testLovBeforeSave (SourceBean request, SourceBean response, Object objectToTest) throws SourceBeanException {
@@ -603,6 +608,26 @@ public class DetailModalitiesValueModule extends AbstractModule {
     		}
     	}
 
+    	// case on script
+    	if (objectToTest instanceof JavaClassDetail) {
+    		JavaClassDetail javaClassDetail = (JavaClassDetail) objectToTest;
+    		if (javaClassDetail.isSingleValue()) {
+    			response.setAttribute("testedObject", "JAVA_CLASS_SINGLE_VALUE");
+            	try {
+        			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        			String javaClassName = javaClassDetail.getJavaClassName();
+        			IJavaClassLov javaClassLov = (IJavaClassLov) Class.forName(javaClassName).newInstance();
+            		String resultTest = javaClassLov.getValues(profile);
+            		response.setAttribute("result", resultTest);
+            	} catch (Exception e) {
+            		response.setAttribute("stacktrace", e.toString());
+            	}
+            	response.setAttribute("testExecuted", "yes");
+    		} else {
+    			response.setAttribute("testedObject", "JAVA_CLASS_LIST_OF_VALUES");
+    			// now the ListTestScriptModule is called; it will perform the test
+    		}
+    	}
 	}
 	
 	/**
@@ -699,7 +724,31 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1021);
 		}
 	}
-		
+	
+	/**
+	 * Recover all Java Class Wizard values when a value is inserted or modified, choosing "Java Class"
+	 * as the input type. 
+	 * 
+	 * @param request The request SourceBean
+	 */
+	private JavaClassDetail recoverJavaClassWizardValues (SourceBean request) {
+		JavaClassDetail javaClassDetail = new JavaClassDetail();
+		String javaClassName = (String) request.getAttribute("javaClassName");
+		if (javaClassName == null) {
+			javaClassName = "";
+		}
+		javaClassDetail.setJavaClassName(javaClassName);
+		String numberOutStr = (String) request.getAttribute("outputType");
+        if(numberOutStr.equalsIgnoreCase("list")) {
+        	javaClassDetail.setIsListOfValues(true);
+        	javaClassDetail.setIsSingleValue(false);
+        } else {
+        	javaClassDetail.setIsListOfValues(false);
+        	javaClassDetail.setIsSingleValue(true);
+        }
+        return javaClassDetail;
+	}
+	
 	/**
 	 * Recover all Query Wizard values when a value is inserted or modified, choosing "Query Statement"
 	 * as the input type. 

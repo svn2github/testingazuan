@@ -61,9 +61,10 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 		SourceBean detailMR = (SourceBean) responseContainer.getServiceResponse().getAttribute("DetailModalitiesValueModule");
 		SourceBean listTestQueryMR = (SourceBean) responseContainer.getServiceResponse().getAttribute("ListTestQueryModule");
 		SourceBean listTestScriptMR = (SourceBean) responseContainer.getServiceResponse().getAttribute("ListTestScriptModule");
+		SourceBean listTestJavaClassMR = (SourceBean) responseContainer.getServiceResponse().getAttribute("ListTestJavaClassModule");
 		
 		// if the module response is null throws an error and return the name of the errors publisher
-		if (detailMR == null && listTestQueryMR == null && listTestScriptMR == null) {
+		if (detailMR == null && listTestQueryMR == null && listTestScriptMR == null && listTestJavaClassMR == null) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 		            "DetailModalitiesValuePublisher", 
 		            "getPublisherName", 
@@ -80,7 +81,9 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 					return new String("detailModalitiesValue");
 				} else if (listTestQueryMR != null) {
 					return "detailLovTestResult";
-				}  if (listTestScriptMR != null) {
+				} else if (listTestJavaClassMR != null) {
+					return "detailLovTestResult";
+				} if (listTestScriptMR != null) {
 					return "detailLovTestResult";
 				}	
 			}
@@ -93,7 +96,10 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 			} else if (listTestQueryMR != null) {
 				if ("yes".equalsIgnoreCase((String) listTestQueryMR.getAttribute("testExecuted"))) return "detailLovTestResult";
 				else return "error";
-			}  if (listTestScriptMR != null) {
+			} if (listTestJavaClassMR != null) {
+				if ("yes".equalsIgnoreCase((String) listTestJavaClassMR.getAttribute("testExecuted"))) return "detailLovTestResult";
+				else return "error";
+			} if (listTestScriptMR != null) {
 				if ("yes".equalsIgnoreCase((String) listTestScriptMR.getAttribute("testExecuted"))) return "detailLovTestResult";
 				else return "error";
 			} else return "error";
@@ -110,9 +116,10 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
         Object testedObject = detailMR == null ? null : detailMR.getAttribute("testedObject");
         if (testedObject != null) {
         	String testedObjectStr = (String) testedObject;
-        	if ("MAN_IN".equalsIgnoreCase(testedObjectStr) || "FIX_LOV".equalsIgnoreCase(testedObjectStr)) 
-        		return "detailLovTestResult";
-        	else if ("QUERY".equalsIgnoreCase(testedObjectStr)) {
+//        	if ("MAN_IN".equalsIgnoreCase(testedObjectStr) || "FIX_LOV".equalsIgnoreCase(testedObjectStr)) 
+//        		return "detailLovTestResult";
+//        	else if ("QUERY".equalsIgnoreCase(testedObjectStr)) {
+        	if ("QUERY".equalsIgnoreCase(testedObjectStr)) {
         		if (listTestQueryMR == null) {
         			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
         		            "DetailModalitiesValuePublisher", 
@@ -144,6 +151,24 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
     			Object testExecuted = detailMR.getAttribute("testExecuted");
     			if (testExecuted != null) afterTest = true;
     			else return "error";
+        	} else if ("JAVA_CLASS_LIST_OF_VALUES".equalsIgnoreCase(testedObjectStr)) {
+        		if (listTestJavaClassMR == null) {
+        			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+        		            "DetailModalitiesValuePublisher", 
+        		            "getPublisherName", 
+        		            "The tested object is a java class but the listTestJavaClassMR response is null");
+        			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
+        			errorHandler.addError(error);
+        			return new String("error");
+        		} else {
+        			Object testExecuted = listTestJavaClassMR.getAttribute("testExecuted");
+        			if (testExecuted != null) afterTest = true;
+        			else return "error";
+        		}
+        	} else if ("JAVA_CLASS_SINGLE_VALUE".equalsIgnoreCase(testedObjectStr)) {
+    			Object testExecuted = detailMR.getAttribute("testExecuted");
+    			if (testExecuted != null) afterTest = true;
+    			else return "error";
         	}
         } else if (detailMR == null) {
         	if (listTestQueryMR != null && listTestScriptMR != null) {
@@ -157,6 +182,11 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
         	}
         	if (listTestQueryMR != null) {
     			Object testExecuted = listTestQueryMR.getAttribute("testExecuted");
+    			if (testExecuted != null) afterTest = true;
+    			else return "error";
+        	}
+        	if (listTestJavaClassMR != null) {
+    			Object testExecuted = listTestJavaClassMR.getAttribute("testExecuted");
     			if (testExecuted != null) afterTest = true;
     			else return "error";
         	}

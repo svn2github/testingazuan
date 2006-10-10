@@ -358,6 +358,13 @@
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
+      		<DEPENDENCE source="DetailModalitiesValuePage" target="ListTestJavaClassModule">
+				<CONDITIONS>
+        			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestJavaClassModule" />
+        		</CONDITIONS>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
       		<DEPENDENCE source="DetailModalitiesValueModule" target="ListTestQueryModule">
         		<CONDITIONS>
         			<PARAMETER name="DetailModalitiesValueModule.testedObject" scope="SERVICE_RESPONSE" value="QUERY" />
@@ -374,11 +381,20 @@
         			<PARAMETER name="lovProviderModified" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.lovProviderModified" />
         		</CONSEQUENCES>
       		</DEPENDENCE>
+      		<DEPENDENCE source="DetailModalitiesValueModule" target="ListTestJavaClassModule">
+        		<CONDITIONS>
+        			<PARAMETER name="DetailModalitiesValueModule.testedObject" scope="SERVICE_RESPONSE" value="JAVA_CLASS_LIST_OF_VALUES" />
+        		</CONDITIONS>
+        		<CONSEQUENCES>
+        			<PARAMETER name="lovProviderModified" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.lovProviderModified" />
+        		</CONSEQUENCES>
+      		</DEPENDENCE>
     	</DEPENDENCIES>
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" name="DetailModalitiesValueModule"/>
       		<MODULE keep_instance="false" keep_response="false" name="ListTestQueryModule"/>
       		<MODULE keep_instance="false" keep_response="false" name="ListTestScriptModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="ListTestJavaClassModule"/>
     	</MODULES>
   	</PAGE>
   	

@@ -223,7 +223,23 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-        <tag>
+    <tag>
+        <name>javaClassWizard</name>
+        <tag-class>it.eng.spagobi.presentation.tags.JavaClassWizardTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the java class wizard form</description>
+        <attribute>
+            <name>javaClassName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>isListOfValues</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <name>lovWizard</name>
         <tag-class>it.eng.spagobi.presentation.tags.LovWizardTag</tag-class>
         <body-content>EMPTY</body-content>

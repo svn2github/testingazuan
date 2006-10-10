@@ -42,6 +42,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.JavaClassDetail;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
@@ -50,6 +51,7 @@ import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
+import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
@@ -60,6 +62,7 @@ import it.eng.spagobi.utilities.GeneralUtilities;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -164,6 +167,21 @@ public class DynamicPageTag extends TagSupport {
             			scriptDet = null;
             		}
             		if( (scriptDet!=null) && scriptDet.isSingleValue()) {
+            			createLabelAndForm = false;
+            			List biparValues = biparam.getParameterValues();
+            			Object value = biparValues.get(0);
+                		htmlStream.append("<input type='hidden' name='"+biparam.getParameterUrlName()+"' value='"+value+"' />\n");
+            		}
+            	}
+            	if(inputType.equalsIgnoreCase("JAVA_CLASS")) {
+            		String lov = paruse.getLovProvider();
+            		JavaClassDetail javaClassDetail = null;
+            		try{
+            			javaClassDetail = JavaClassDetail.fromXML(lov);
+            		} catch(Exception e) {
+            			javaClassDetail = null;
+            		}
+            		if( (javaClassDetail!=null) && javaClassDetail.isSingleValue()) {
             			createLabelAndForm = false;
             			List biparValues = biparam.getParameterValues();
             			Object value = biparValues.get(0);
@@ -475,6 +493,62 @@ public class DynamicPageTag extends TagSupport {
 			lov = getXMLValuesBean(biparam);
 		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
 			System.out.println(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE);
+		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_JAVA_CLASS_CODE)) {			
+			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			String lovProvider = biparam.getParameter().getModalityValue().getLovProvider();
+			JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lovProvider);
+			String javaClassName = javaClassDetail.getJavaClassName();
+			if (javaClassName == null || javaClassName.trim().equals("")){
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+						"DynamicPageTag", 
+						"getLov", "The java class name is not specified");
+				return new SourceBean("LOV");
+				//throw new EMFUserError(EMFErrorSeverity.ERROR, "1071");
+			}
+			IJavaClassLov javaClassLov = null;
+			Class javaClass = null;
+			try {
+				javaClass = Class.forName(javaClassName);
+			} catch (ClassNotFoundException e) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+						"DynamicPageTag", 
+						"getLov", "Java class '" + javaClassName + "' not found!!");
+				return new SourceBean("LOV");
+				//Vector v = new Vector();
+				//v.add(javaClassName);
+				//throw new EMFUserError(EMFErrorSeverity.ERROR, "1072", v);
+			}
+			try {
+				javaClassLov = (IJavaClassLov) javaClass.newInstance();
+			} catch (Exception e) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+						"DynamicPageTag", 
+						"getLov", "Error while instatiating Java class '" + javaClassName + "'.");
+				return new SourceBean("LOV");
+				//Vector v = new Vector();
+				//v.add(javaClassName);
+				//throw new EMFUserError(EMFErrorSeverity.ERROR, "1073", v);
+			}
+			String result = javaClassLov.getValues(profile);
+			SourceBean rowsSourceBean = null;
+			try{
+				rowsSourceBean = SourceBean.fromXMLString(result);
+			} catch(Exception e) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+									"DynamicPageTag", 
+									"getLov", "Error during parsing of the script result",e);
+			}
+			lov = new SourceBean("LOV");
+			String valueColumn = ((SourceBean) rowsSourceBean.getAttribute("VALUE-COLUMN")).getCharacters();
+			List rows = rowsSourceBean.getAttributeAsList("ROW");
+			for(Iterator it = rows.iterator(); it.hasNext(); ) {
+				SourceBean row = (SourceBean)it.next();
+				String value = (String)row.getAttribute(valueColumn);
+				SourceBean lovElement = new SourceBean("LOV-ELEMENT");
+				lovElement.setAttribute("DESC", value);
+				lovElement.setAttribute("VALUE", value);
+				lov.setAttribute(lovElement);
+			}
 		}	
 				
 		return lov;

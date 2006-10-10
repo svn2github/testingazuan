@@ -4,6 +4,7 @@
                  it.eng.spagobi.bo.Domain,
                  it.eng.spagobi.bo.QueryDetail,
                  it.eng.spagobi.bo.ScriptDetail,
+                 it.eng.spagobi.bo.JavaClassDetail,
                  it.eng.spagobi.bo.LovDetailList,
                  it.eng.spagobi.bo.LovDetail,
 		 it.eng.spagobi.bo.ParameterUse,
@@ -37,6 +38,7 @@
 	String queryDisplay = "none";
 	String scriptDisplay = "none";
 	String lovDisplay = "none";
+	String javaClassDisplay = "none";
 	
 	QueryDetail query = new QueryDetail();
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("QUERY") ) {
@@ -56,6 +58,15 @@
 	  	}
 	}
 	
+	JavaClassDetail javaClassDetail = new JavaClassDetail();
+	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("JAVA_CLASS") ) {
+		javaClassDisplay = "inline";
+		String lovProvider = modVal.getLovProvider();
+	  	if (lovProvider != null  &&  !lovProvider.equals("")){
+	  		javaClassDetail = JavaClassDetail.fromXML(lovProvider);
+	  	}
+	}
+	
 	String lovProvider = "";
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("FIX_LOV") ) {
 		lovDisplay = "inline";
@@ -65,8 +76,13 @@
 	
 	String testButtonVisibility = null;
 	String testButtonDisabled = "";
-	if (modVal != null && (modVal.getITypeCd().equalsIgnoreCase("QUERY")
-		|| modVal.getITypeCd().equalsIgnoreCase("SCRIPT")) )  {
+	if (modVal != null 
+			&& (
+					modVal.getITypeCd().equalsIgnoreCase("QUERY")
+					|| modVal.getITypeCd().equalsIgnoreCase("SCRIPT")
+					|| modVal.getITypeCd().equalsIgnoreCase("JAVA_CLASS")
+				)
+		)  {
 			testButtonVisibility = "visible";
 		}	
 	else {
@@ -109,6 +125,7 @@ function showWizard(){
 		document.getElementById("queryWizard").style.display = "inline"
 		document.getElementById("scriptWizard").style.display = "none"
 		document.getElementById("lovWizard").style.display = "none"
+		document.getElementById("javaClassWizard").style.display = "none"
 		document.getElementById("testButton").style.visibility = "visible"
 		document.getElementById("testButtonImage").disabled = false
 	}
@@ -116,6 +133,7 @@ function showWizard(){
 		document.getElementById("queryWizard").style.display = "none"
 		document.getElementById("scriptWizard").style.display = "inline"
 		document.getElementById("lovWizard").style.display = "none"
+		document.getElementById("javaClassWizard").style.display = "none"
 		document.getElementById("testButton").style.visibility = "visible"
 		document.getElementById("testButtonImage").disabled = false
 	}
@@ -123,8 +141,17 @@ function showWizard(){
 		document.getElementById("queryWizard").style.display = "none"
 		document.getElementById("scriptWizard").style.display = "none"
 		document.getElementById("lovWizard").style.display = "inline"
+		document.getElementById("javaClassWizard").style.display = "none"
 		document.getElementById("testButton").style.visibility = "hidden"
 		document.getElementById("testButtonImage").disabled = true
+	}
+	if (wizard.match("JAVA_CLASS") != null) {
+		document.getElementById("queryWizard").style.display = "none"
+		document.getElementById("scriptWizard").style.display = "none"
+		document.getElementById("lovWizard").style.display = "none"
+		document.getElementById("javaClassWizard").style.display = "inline"
+		document.getElementById("testButton").style.visibility = "visible"
+		document.getElementById("testButtonImage").disabled = false
 	}
 }
 
@@ -523,6 +550,117 @@ function setLovProviderModifiedField(){
 			&nbsp;
 		</div>
 	</div>
+	
+	
+	
+	<div id="javaClassWizard" style='width:100%;display:<%=javaClassDisplay%>'>
+		<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
+			<spagobi:message key = "SBIDev.javaClassWiz.title" />
+		</div> 
+		<div style="float:left;" />
+			<spagobi:javaClassWizard 
+				javaClassName='<%= javaClassDetail.getJavaClassName()!= null ? javaClassDetail.getJavaClassName() : "" %>' 
+				isListOfValues='<%= javaClassDetail.isListOfValues() ? "true" : "false" %>' />
+		</div>
+		<div style="width:100%" />
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBIDev.javaClassWiz.ListValExplanation" />
+				</span>
+				<a id="showSintaxJavaClass" 
+					 href="javascript:void(0)" 
+					 onclick="showSintaxJavaClass" 
+					 class='portlet-form-field-label'
+					 onmouseover="this.style.color='#074BF8';"
+					 onmouseout="this.style.color='#074B88';"
+					 style="text-decoration:none;">
+					<spagobi:message key = "SBIDev.javaClassWiz.showSintax"/>
+				</a>
+				<br/>	
+				<div style="display:none;" id="sintaxJavaClass" >
+					<br/>
+					<table width="100%" style="margin-bottom:5px;">
+							<tr height='25'>
+									<td>
+										<div class='portlet-section-subheader' 
+										     style='text-align:center;vertical-align:bottom;' 
+												 width="100%">
+											<spagobi:message key = "SBIDev.scriptWiz.SintaxLbl" />
+										</div>
+										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+
+										</div>
+									</td>
+									<td width="5px">&nbsp;</td>
+							</tr>
+							<tr height='25'>
+									<td>
+										<div class='portlet-section-subheader' 
+										     style='text-align:center;vertical-align:bottom;' 
+												 width="100%">
+											<spagobi:message key = "SBIDev.scriptWiz.ProfileAttrsLbl" />
+										</div>
+										<%--
+										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+											<%
+													Set nameAttrs = profileattrs.keySet();
+													Iterator iterAttrs = nameAttrs.iterator();
+												String attribute = null;
+												while(iterAttrs.hasNext()) {
+													String attributename = (String)iterAttrs.next();
+													out.write(attributename);
+													out.write(" / ");
+												}
+											%>
+										</div>
+										--%>
+									</td>
+									<td width="5px">&nbsp;</td>
+							</tr>
+							<tr height='25'>
+									<td>
+										<div class='portlet-section-subheader' 
+										     style='text-align:center;vertical-align:bottom;' 
+												 width="100%">
+											<spagobi:message key = "SBIDev.scriptWiz.xmlstruct" />
+										</div>
+										<div class='portlet-section-alternate' style="text-align:left;width:100%;background-color:#FFFFEF;">
+												&lt;rows&gt; <br/>
+												<span>&nbsp;&nbsp;&nbsp;</span>&lt;row 
+												<br/> 
+												<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><spagobi:message key ="SBIDev.scriptWiz.xmlstructNameAttribute" />1="<spagobi:message key ="SBIDev.scriptWiz.xmlstructValueAttribute" />1" 
+												<br/>
+												<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><spagobi:message key ="SBIDev.scriptWiz.xmlstructNameAttribute" />2="<spagobi:message key ="SBIDev.scriptWiz.xmlstructValueAttribute" />2" 
+												<br/>
+												<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>... /&gt;
+												<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>.... <br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;visible-columns&gt;
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><spagobi:message key ="SBIDev.scriptWiz.xmlstructVisibleColumns" />
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/visible-columns&gt; 
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;value-column&gt;
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<spagobi:message key =
+										"SBIDev.scriptWiz.xmlstructValueColumn" />
+									<br/>	
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/value-column&gt; <br/>
+									&lt;/rows&gt; <br/>
+									</div>
+									</td>
+									<td width="5px">&nbsp;</td>
+							</tr>
+					</table>
+				</div>
+		</div>
+		<div style="clear:left;">
+			&nbsp;
+		</div>
+	</div>
+	
+	
 	
 	<table>
 		<tr><td>&nbsp;</td></tr>

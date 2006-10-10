@@ -330,6 +330,20 @@
 		</VALIDATION>
 	</SERVICE>
 
+	<SERVICE name="JavaClassWizardValidation" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="javaClassName" label="#SBIDev.javaClassWiz.javaClassNameLbl">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="outputType" label="#SBIDev.javaClassWiz.outputType">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+
 	<SERVICE name="FixLovWizardValidation" type="PAGE">
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS/>

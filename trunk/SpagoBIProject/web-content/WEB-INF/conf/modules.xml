@@ -84,6 +84,8 @@
 	</MODULE>
 	<MODULE class="it.eng.spagobi.services.modules.ListTestQueryModule" name="ListTestQueryModule">
 	</MODULE>
+	<MODULE class="it.eng.spagobi.services.modules.ListTestJavaClassModule" name="ListTestJavaClassModule">
+	</MODULE>
 	<MODULE class="it.eng.spagobi.services.modules.ListLookupModalityValuesModule" name="ListLookupModalityValuesModule">
 	</MODULE>
 	<MODULE class="it.eng.spagobi.services.modules.ChecklistLookupModalityValuesModule" name="ChecklistLookupModalityValuesModule">

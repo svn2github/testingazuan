@@ -25,9 +25,11 @@ import groovy.lang.Binding;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -35,6 +37,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 public class ExecutionController {
 
@@ -239,6 +242,45 @@ public class ExecutionController {
 							String value = GeneralUtilities.testScript(script, bind);
 							List biparvals = new ArrayList();
 							biparvals.add(value);
+							aBIObjectParameter.setParameterValues(biparvals);
+						}
+					} else if(type.equalsIgnoreCase("JAVA_CLASS")) {
+						String lovProv = paruse.getLovProvider();
+						JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lovProv);
+						if(javaClassDetail.isSingleValue()) {
+							IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+							String javaClassName = javaClassDetail.getJavaClassName();
+							if (javaClassName == null || javaClassName.trim().equals("")){
+								SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+										"ExecutionController", 
+										"prepareBIObjectInSession", "The java class name is not specified");
+								throw new EMFUserError(EMFErrorSeverity.ERROR, "1071");
+							}
+							IJavaClassLov javaClassLov = null;
+							Class javaClass = null;
+							try {
+								javaClass = Class.forName(javaClassName);
+							} catch (ClassNotFoundException e) {
+								SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+										"ExecutionController", 
+										"prepareBIObjectInSession", "Java class '" + javaClassName + "' not found!!");
+								Vector v = new Vector();
+								v.add(javaClassName);
+								throw new EMFUserError(EMFErrorSeverity.ERROR, "1072", v);
+							}
+							try {
+								javaClassLov = (IJavaClassLov) javaClass.newInstance();
+							} catch (Exception e) {
+								SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+										"ExecutionController", 
+										"prepareBIObjectInSession", "Error while instatiating Java class '" + javaClassName + "'.");
+								Vector v = new Vector();
+								v.add(javaClassName);
+								throw new EMFUserError(EMFErrorSeverity.ERROR, "1073", v);
+							}
+							String result = javaClassLov.getValues(profile);
+							List biparvals = new ArrayList();
+							biparvals.add(result);
 							aBIObjectParameter.setParameterValues(biparvals);
 						}
 					}

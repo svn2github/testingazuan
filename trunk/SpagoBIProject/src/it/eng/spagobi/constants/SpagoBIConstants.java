@@ -109,8 +109,9 @@ public class SpagoBIConstants {
 	
 	public static final String INPUT_TYPE = "INPUT_TYPE";
 	public static final String INPUT_TYPE_QUERY_CODE = "QUERY";
+	public static final String INPUT_TYPE_MAN_IN_CODE ="MAN_IN";
 	public static final String INPUT_TYPE_FIX_LOV_CODE = "FIX_LOV";
-	public static final String INPUT_TYPE_MAN_IN_CODE = "MAN_IN";
+	public static final String INPUT_TYPE_JAVA_CLASS_CODE = "JAVA_CLASS";
 	public static final String INPUT_TYPE_SCRIPT_CODE = "SCRIPT";
 	
 	

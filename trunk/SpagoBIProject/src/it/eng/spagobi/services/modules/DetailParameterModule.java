@@ -613,8 +613,8 @@ public class DetailParameterModule extends AbstractModule {
 		}
 
 		String idLovStr = (String) request.getAttribute("paruseLovId");
-		if (idLovStr == null || idLovStr.trim().equalsIgnoreCase("")) idLovStr = "-1";
-		paruse.setIdLov(Integer.valueOf(idLovStr));
+		if (idLovStr == null || idLovStr.trim().equals("")) idLovStr = "-1";
+			paruse.setIdLov(Integer.valueOf(idLovStr));
 		String description = (String) request.getAttribute("paruseDescription");
 		String name = (String) request.getAttribute("paruseName");
 		String label = (String) request.getAttribute("paruseLabel");
@@ -622,27 +622,22 @@ public class DetailParameterModule extends AbstractModule {
 		String manInFlag = (String) request.getAttribute("valueSelection");
 		paruse.setName(name);
 		paruse.setDescription(description);
-		paruse.setLabel(label);		
-		paruse.setSelectionType(selectionType);
-		if(selectionType != null 
-				&& (selectionType.equalsIgnoreCase("LIST") 
-						|| selectionType.equalsIgnoreCase("COMBOBOX")))
-			paruse.setMultivalue(false);
-		else
-			paruse.setMultivalue(true);
+		paruse.setLabel(label);
 		
-		
-		
-		if(manInFlag.equals("man_in"))
+		if (manInFlag.equals("man_in")) {
 			paruse.setManualInput(Integer.valueOf("1"));
-		else
+			paruse.setSelectionType(null);
+			paruse.setMultivalue(false);
+		} else {
 			paruse.setManualInput(Integer.valueOf("0"));
+			paruse.setSelectionType(selectionType);
+			if (selectionType != null && 
+					(selectionType.equalsIgnoreCase("LIST") || selectionType.equalsIgnoreCase("COMBOBOX")))
+				paruse.setMultivalue(false);
+			else
+				paruse.setMultivalue(true);
+		}
 		
-		
-		if (idLovStr == null || idLovStr.trim().equals(""))
-			paruse.setIdLov(Integer.valueOf("-1"));
-		else
-		paruse.setIdLov(Integer.valueOf(idLovStr));
 		paruse.setAssociatedRoles(roles);
 		paruse.setAssociatedChecks(toLoadInParUseCheckList);
 		return paruse;

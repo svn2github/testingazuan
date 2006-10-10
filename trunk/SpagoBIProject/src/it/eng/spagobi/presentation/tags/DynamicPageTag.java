@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.tags;
 
+import groovy.lang.Binding;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
@@ -57,12 +58,10 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
-import it.eng.spagobi.utilities.GeneralUtilities;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -233,6 +232,27 @@ public class DynamicPageTag extends TagSupport {
     		
     		String typeCode = modVal.getITypeCd();
     		String selectionType = modVal.getSelectionType();
+    		if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_JAVA_CLASS_CODE)) {
+    			String lovProvider = modVal.getLovProvider();
+    			JavaClassDetail javaClassDetail = null;
+    			try {
+					javaClassDetail = JavaClassDetail.fromXML(lovProvider);
+				} catch (SourceBeanException e) {
+					SpagoBITracer.major("", "DynamicPageTag", "doStartTag", "Error while creating JavaClassDetail " +
+							"from lovProvider = '" + lovProvider + "'", e);
+				}
+				if (javaClassDetail != null && javaClassDetail.isSingleValue()) continue;
+    		} else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
+    			String lovProvider = modVal.getLovProvider();
+    			ScriptDetail scriptDet = null;
+    			try {
+    				scriptDet = ScriptDetail.fromXML(lovProvider);
+				} catch (SourceBeanException e) {
+					SpagoBITracer.major("", "DynamicPageTag", "doStartTag", "Error while creating JavaClassDetail " +
+							"from lovProvider = '" + lovProvider + "'", e);
+				}
+				if (scriptDet != null && scriptDet.isSingleValue()) continue;
+    		} 
     		
     		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
     			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
@@ -491,8 +511,40 @@ public class DynamicPageTag extends TagSupport {
 			}
 		} else if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {			
 			lov = getXMLValuesBean(biparam);
-		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
-			System.out.println(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE);
+		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
+			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			String lovProvider = biparam.getParameter().getModalityValue().getLovProvider();
+			ScriptDetail scriptDet = ScriptDetail.fromXML(lovProvider);
+			String script = scriptDet.getScript();
+			SourceBean rowsSourceBean = null;
+			String result = null;
+			try {
+				Binding bind = GeneralUtilities.fillBinding(profile);
+				result = GeneralUtilities.testScript(script, bind);
+			} catch (Exception e) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+						"DynamicPageTag", 
+						"getLov", "Error during script loading or execution", e);
+			}
+			
+			try {
+				rowsSourceBean = SourceBean.fromXMLString(result);
+			} catch(Exception e) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+									"DynamicPageTag", 
+									"getLov", "Error during parsing of the script result", e);
+			}
+			lov = new SourceBean("LOV");
+			String valueColumn = ((SourceBean) rowsSourceBean.getAttribute("VALUE-COLUMN")).getCharacters();
+			List rows = rowsSourceBean.getAttributeAsList("ROW");
+			for(Iterator it = rows.iterator(); it.hasNext(); ) {
+				SourceBean row = (SourceBean)it.next();
+				String value = (String)row.getAttribute(valueColumn);
+				SourceBean lovElement = new SourceBean("LOV-ELEMENT");
+				lovElement.setAttribute("DESC", value);
+				lovElement.setAttribute("VALUE", value);
+				lov.setAttribute(lovElement);
+			}
 		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_JAVA_CLASS_CODE)) {			
 			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			String lovProvider = biparam.getParameter().getModalityValue().getLovProvider();

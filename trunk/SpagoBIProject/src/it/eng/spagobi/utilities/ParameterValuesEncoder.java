@@ -6,6 +6,7 @@ package it.eng.spagobi.utilities;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.Parameter;
+import it.eng.spagobi.constants.SpagoBIConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,12 @@ public class ParameterValuesEncoder {
 			ModalitiesValue modValue = parameter.getModalityValue();
 			if (modValue != null) {
 				boolean mult = biobjPar.getParameter().getModalityValue().isMultivalue();
+				
+				String typeCode = biobjPar.getParameter().getModalityValue().getITypeCd();
+				if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
+					mult = false;
+				}
+				
 				if(!mult) {
 					return (String)biobjPar.getParameterValues().get(0);
 				} else {

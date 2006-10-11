@@ -420,7 +420,7 @@
 	</div>	
 		<div class='div_detail_form' id = 'divForm' >
 		
-		<select class='portlet-form-input-field' NAME="selectionType" id="paruseSelType">
+		<select class='portlet-form-input-field' NAME="selectionType" id="paruseSelType" <% if (isManualInput) { out.print("disabled='disabled'"); } %>>
 		<% 
 		 String curr_seltype_val = paruse.getSelectionType();
 		 if(curr_seltype_val == null) curr_seltype_val = "none";

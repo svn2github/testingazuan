@@ -204,7 +204,7 @@ function askForConfirmIfNecessary(url) {
 			}
 
 		
-		} if (modVal.getITypeCd().equalsIgnoreCase("JAVA_CLASS")) {
+		} else if (modVal.getITypeCd().equalsIgnoreCase("JAVA_CLASS")) {
 			
 			String lovProvider = modVal.getLovProvider();
 			JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lovProvider);

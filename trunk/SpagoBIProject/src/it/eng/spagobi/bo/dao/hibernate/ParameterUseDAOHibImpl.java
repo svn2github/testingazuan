@@ -299,7 +299,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			hibParuse.setName(aParameterUse.getName());
 			hibParuse.setDescr(aParameterUse.getDescription());
 			hibParuse.setSelectionType(aParameterUse.getSelectionType());
-			hibParuse.setMultivalue(aParameterUse.isMultivalue()? new Integer(1): new Integer(1));
+			hibParuse.setMultivalue(aParameterUse.isMultivalue()? new Integer(1): new Integer(0));
 			hibParuse.setManualInput(aParameterUse.getManualInput());
 			Integer useId = (Integer)aSession.save(hibParuse);
 			

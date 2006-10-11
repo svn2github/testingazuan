@@ -351,6 +351,18 @@ function setLovProviderModifiedField(){
 						document.getElementById("showSintaxQuery").innerHTML = "<spagobi:message key = 'SBIDev.queryWiz.showSintax'/>";
 					}
 			}
+			function showSintaxJavaClass(){
+					var divSintax = document.getElementById("sintaxJavaClass");
+					var display = divSintax.style.display;
+					if (display == "none") {
+						document.getElementById("sintaxJavaClass").style.display = "inline";
+						document.getElementById("showSintaxJavaClass").innerHTML = "<spagobi:message key = 'SBIDev.javaClassWiz.hideSintax'/>";
+					}
+					else {
+						document.getElementById("sintaxJavaClass").style.display = "none";
+						document.getElementById("showSintaxJavaClass").innerHTML = "<spagobi:message key = 'SBIDev.javaClassWiz.showSintax'/>";
+					}
+			}
 	</script>
 
 
@@ -568,7 +580,7 @@ function setLovProviderModifiedField(){
 				</span>
 				<a id="showSintaxJavaClass" 
 					 href="javascript:void(0)" 
-					 onclick="showSintaxJavaClass" 
+					 onclick="showSintaxJavaClass()" 
 					 class='portlet-form-field-label'
 					 onmouseover="this.style.color='#074BF8';"
 					 onmouseout="this.style.color='#074B88';"
@@ -584,10 +596,16 @@ function setLovProviderModifiedField(){
 										<div class='portlet-section-subheader' 
 										     style='text-align:center;vertical-align:bottom;' 
 												 width="100%">
-											<spagobi:message key = "SBIDev.scriptWiz.SintaxLbl" />
+											<spagobi:message key = "SBIDev.javaClassWiz.SintaxLbl" />
 										</div>
 										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
-
+											<ul>
+												<li>
+													<spagobi:message key = "SBIDev.javaClassWiz.interfaceName" />
+													<br/>
+													<spagobi:message key = "SBIDev.javaClassWiz.interfaceMethod" />
+												</li>
+											</ul>
 										</div>
 									</td>
 									<td width="5px">&nbsp;</td>
@@ -597,22 +615,20 @@ function setLovProviderModifiedField(){
 										<div class='portlet-section-subheader' 
 										     style='text-align:center;vertical-align:bottom;' 
 												 width="100%">
-											<spagobi:message key = "SBIDev.scriptWiz.ProfileAttrsLbl" />
+											<spagobi:message key = "SBIDev.javaClassWiz.ProfileAttrsLbl" />
 										</div>
-										<%--
 										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
 											<%
-													Set nameAttrs = profileattrs.keySet();
-													Iterator iterAttrs = nameAttrs.iterator();
-												String attribute = null;
-												while(iterAttrs.hasNext()) {
+												nameAttrs = profileattrs.keySet();
+												iterAttrs = nameAttrs.iterator();
+												attribute = null;
+												while (iterAttrs.hasNext()) {
 													String attributename = (String)iterAttrs.next();
 													out.write(attributename);
 													out.write(" / ");
 												}
 											%>
 										</div>
-										--%>
 									</td>
 									<td width="5px">&nbsp;</td>
 							</tr>

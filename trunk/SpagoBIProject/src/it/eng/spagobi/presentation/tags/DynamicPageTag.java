@@ -466,7 +466,7 @@ public class DynamicPageTag extends TagSupport {
 		if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {			
 			String queryDetXML = biparam.getParameter().getModalityValue().getLovProvider();
 			SourceBean queryXML = SourceBean.fromXMLString(queryDetXML);
-			String visibleColumns = ((SourceBean) queryXML.getAttribute("VISIBLE-COLUMNS")).getCharacters();
+			//String visibleColumns = ((SourceBean) queryXML.getAttribute("VISIBLE-COLUMNS")).getCharacters();
 			String valueColumn = ((SourceBean) queryXML.getAttribute("VALUE-COLUMN")).getCharacters();
 			String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
 			String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
@@ -498,17 +498,7 @@ public class DynamicPageTag extends TagSupport {
 			} finally {
 				Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 			}	
-			
-			lov = new SourceBean("LOV");
-			List rows = result.getAttributeAsList("ROW");
-			for(Iterator it = rows.iterator(); it.hasNext(); ) {
-				SourceBean row = (SourceBean)it.next();
-				String value = (String)row.getAttribute(valueColumn);
-				SourceBean lovElement = new SourceBean("LOV-ELEMENT");
-				lovElement.setAttribute("DESC", value);
-				lovElement.setAttribute("VALUE", value);
-				lov.setAttribute(lovElement);
-			}
+			lov = getLovElements(result, valueColumn);
 		} else if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {			
 			lov = getXMLValuesBean(biparam);
 		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {
@@ -534,17 +524,8 @@ public class DynamicPageTag extends TagSupport {
 									"DynamicPageTag", 
 									"getLov", "Error during parsing of the script result", e);
 			}
-			lov = new SourceBean("LOV");
 			String valueColumn = ((SourceBean) rowsSourceBean.getAttribute("VALUE-COLUMN")).getCharacters();
-			List rows = rowsSourceBean.getAttributeAsList("ROW");
-			for(Iterator it = rows.iterator(); it.hasNext(); ) {
-				SourceBean row = (SourceBean)it.next();
-				String value = (String)row.getAttribute(valueColumn);
-				SourceBean lovElement = new SourceBean("LOV-ELEMENT");
-				lovElement.setAttribute("DESC", value);
-				lovElement.setAttribute("VALUE", value);
-				lov.setAttribute(lovElement);
-			}
+			lov = getLovElements(rowsSourceBean, valueColumn);
 		} else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_JAVA_CLASS_CODE)) {			
 			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			String lovProvider = biparam.getParameter().getModalityValue().getLovProvider();
@@ -590,19 +571,24 @@ public class DynamicPageTag extends TagSupport {
 									"DynamicPageTag", 
 									"getLov", "Error during parsing of the script result",e);
 			}
-			lov = new SourceBean("LOV");
 			String valueColumn = ((SourceBean) rowsSourceBean.getAttribute("VALUE-COLUMN")).getCharacters();
-			List rows = rowsSourceBean.getAttributeAsList("ROW");
-			for(Iterator it = rows.iterator(); it.hasNext(); ) {
-				SourceBean row = (SourceBean)it.next();
-				String value = (String)row.getAttribute(valueColumn);
-				SourceBean lovElement = new SourceBean("LOV-ELEMENT");
-				lovElement.setAttribute("DESC", value);
-				lovElement.setAttribute("VALUE", value);
-				lov.setAttribute(lovElement);
-			}
+			lov = getLovElements(rowsSourceBean, valueColumn);
 		}	
 				
+		return lov;
+	}
+	
+	private SourceBean getLovElements (SourceBean rowsSourceBean, String valueColumn) throws SourceBeanException {
+		SourceBean lov = new SourceBean("LOV");
+		List rows = rowsSourceBean.getAttributeAsList("ROW");
+		for(Iterator it = rows.iterator(); it.hasNext(); ) {
+			SourceBean row = (SourceBean)it.next();
+			String value = (String)row.getAttribute(valueColumn);
+			SourceBean lovElement = new SourceBean("LOV-ELEMENT");
+			lovElement.setAttribute("DESC", value);
+			lovElement.setAttribute("VALUE", value);
+			lov.setAttribute(lovElement);
+		}
 		return lov;
 	}
 	

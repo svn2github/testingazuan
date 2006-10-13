@@ -58,6 +58,7 @@ public class ObjectsTreeConstants {
 	public static final String ROLE = "ROLE";
 	
 	public static final String OBJECT_ID = "OBJECT_ID";
+	public static final String OBJECT_LABEL = "OBJECT_LABEL";
 	public static final String FUNCT_ID = "FUNCT_ID";
 	
 	public static final String DYNAMIC_PAGE_DATA = "DYNAMIC_PAGE_DATA";

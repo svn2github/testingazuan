@@ -1,15 +1,16 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="java.util.Map,
+<%@ page import="java.net.URLEncoder,
+				 java.util.Map,
                  java.util.Set,
                  java.util.Iterator,
-                 it.eng.spagobi.constants.SpagoBIConstants,
                  javax.portlet.PortletURL,
                  it.eng.spago.navigation.LightNavigationManager,
                  it.eng.spago.util.JavaScript,
-                 it.eng.spagobi.services.modules.ExecuteBIObjectModule,
+                 it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.engines.dashboardscomposition.SpagoBIDashboardsCompositionInternalEngine,
                  it.eng.spagobi.bo.Domain,
+                 it.eng.spagobi.services.modules.ExecuteBIObjectModule,
                  it.eng.spagobi.utilities.GeneralUtilities,
                  java.util.List,
                  org.safehaus.uuid.UUID,
@@ -42,50 +43,7 @@ String linkEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "
     UUIDGenerator generator = UUIDGenerator.getInstance();
     UUID uuid = generator.generateRandomBasedUUID();
     String uuidStr = uuid.toString().replaceAll("-", "");
-    %>
-<%--
-    String movie = renderRequest.getContextPath();
-    String relMovie = (String)moduleResponse.getAttribute("movie");
-    if(relMovie.startsWith("/"))
-    	movie = movie + relMovie;
-    else movie = movie + "/" + relMovie;
-	String width = (String)moduleResponse.getAttribute("width");
-	String height = (String)moduleResponse.getAttribute("height");
-	String dataurl = renderRequest.getContextPath();
-	String dataurlRel = (String)moduleResponse.getAttribute("dataurl");
-	if(dataurlRel.startsWith("/"))
-		dataurl = dataurl + dataurlRel;
-	else dataurl = dataurl + "/" + dataurlRel;
-	Map confParameters = (Map)moduleResponse.getAttribute("confParameters");
-	Map dataParameters = (Map)moduleResponse.getAttribute("dataParameters");
---%>
 
-<%--
-	// put the two dimensio parameter
-	movie += "?paramHeight="+height+"&paramWidth="+width; 
-
-	// create the dataurl string
-	dataurl += "?";
-	// for each data parameter append to the dataurl 
-	Set dataKeys = dataParameters.keySet();
-	Iterator iterDataKeys = dataKeys.iterator();
-	while(iterDataKeys.hasNext()) {
-		String name = (String)iterDataKeys.next();
-		String value = (String)dataParameters.get(name);
-	    dataurl += name + "=" + value + "&"; 
-	}
-    // for each conf parameter append to the data url  
-	Set confKeys = confParameters.keySet();
-	Iterator iterConfKeys = confKeys.iterator();
-	while(iterConfKeys.hasNext()) {
-		String name = (String)iterConfKeys.next();
-		String value = (String)confParameters.get(name);
-	    dataurl += name + "=" + value + "&"; 
-	}
-    // append to the calling url the dataurl	
-	movie += "&dataurl=" + dataurl;
---%>
-	<%
 	// build the back link
    	PortletURL backUrl = renderResponse.createActionURL();
 	backUrl.setParameter("PAGE", "BIObjectsPage");
@@ -209,6 +167,10 @@ SourceBean layout = (SourceBean) content.getAttribute(SpagoBIDashboardsCompositi
 if (layout == null) {
 	out.write("NO LAYOUT!!!");
 } else {
+	PortletURL linkbaseurl = renderResponse.createActionURL();
+	String linkbaseurlStr = linkbaseurl.toString();
+	linkbaseurlStr = linkbaseurlStr.replaceAll("&amp;", "&");
+	linkbaseurlStr = URLEncoder.encode(linkbaseurlStr);
 	String layoutStr = layout.getCharacters();
 	int startIndex = 0;
 	int startDashboard = layoutStr.indexOf("${");
@@ -276,7 +238,7 @@ if (layout == null) {
 	    	lzCanvasRuntimeVersion = 6.65;
 	    }
 	    if (isIE && isWin || detectFlash() >= lzCanvasRuntimeVersion) {
-	    	lzEmbed({url: '<%=moviePath%>?uuid=<%=uuidStr%>&logicalname=<%=dashboardName%>&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '<%=width%>', height: '<%=height%>', id: 'lzapp<%=uuidStr + "_" + count%>', accessible: 'false'}, lzCanvasRuntimeVersion);
+	    	lzEmbed({url: '<%=moviePath%>?uuid=<%=uuidStr%>&logicalname=<%=dashboardName%>&linkbaseurl=<%=linkbaseurlStr%>&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '<%=width%>', height: '<%=height%>', id: 'lzapp<%=uuidStr + "_" + count%>', accessible: 'false'}, lzCanvasRuntimeVersion);
 	        lzHistEmbed(lzLPSRoot);
 	    } else {
 	    	document.write('This application requires Flash player ' + lzCanvasRuntimeVersion + '. <a href="http://www.macromedia.com/go/getflashplayer" target="fpupgrade">Click here</a> to upgrade.');
@@ -305,21 +267,31 @@ if (layout == null) {
 		}
 		
 		var x = doc.documentElement;
-		var dashboardxml = x.getElementsByTagName(logicalName)[0].getElementsByTagName("ROWS")[0];
+		var	dashboardxml = x.getElementsByTagName(logicalName)[0];
+		if (dashboardxml == null) {
+			dashboardxml = x.getElementsByTagName(logicalName.toUpperCase())[0];
+		}
+		if (dashboardxml == null) {
+			dashboardxml = x.getElementsByTagName(logicalName.toLowerCase())[0];
+		}
+		var rowsxml = dashboardxml.getElementsByTagName("rows")[0];
+		if (rowsxml == null) {
+			dashboardxml.getElementsByTagName("ROWS")[0];
+		}
 		
 		// code for Mozilla
 		if (window.XMLSerializer) {
-			dashboardxmldata<%=uuidStr%> = (new XMLSerializer()).serializeToString(dashboardxml);
+			dashboardxmldata<%=uuidStr%> = (new XMLSerializer()).serializeToString(rowsxml);
 		}
 		// code for IE
 		else {
-			dashboardxmldata<%=uuidStr%> = dashboardxml.xml;
+			dashboardxmldata<%=uuidStr%> = rowsxml.xml;
 		}
 		lzSetCanvasAttribute("xmldata", dashboardxmldata<%=uuidStr%>, "false");
 	}
 	
-	function getxmlconf<%=uuidStr%>(logicalName) {
-		return eval(logicalName + '<%=uuidStr%>');
+	function getxmlconfig<%=uuidStr%>(logicalName) {
+		lzSetCanvasAttribute("xmlconfig", eval(logicalName + '<%=uuidStr%>'), "false");
 	}
 	
 	</script>
@@ -329,27 +301,3 @@ if (layout == null) {
 }
 
 %>
-
-<%--
-<script type="text/javascript">
-	lzLPSRoot = '/spagobi/dashboards/';
-    lzCanvasRuntimeVersion = 7 * 1;
-    if (lzCanvasRuntimeVersion == 6) {
-    	lzCanvasRuntimeVersion = 6.65;
-    }
-    if (isIE && isWin || detectFlash() >= lzCanvasRuntimeVersion) {
-    	lzEmbed({url: '/spagobi/dashboards/sbigrid.lzx.swf?&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '600', height: '600', id: 'lzapp', accessible: 'false'}, lzCanvasRuntimeVersion);
-        lzHistEmbed(lzLPSRoot);
-    } else {
-    	document.write('This application requires Flash player ' + lzCanvasRuntimeVersion + '. <a href="http://www.macromedia.com/go/getflashplayer" target="fpupgrade">Click here</a> to upgrade.');
-    }
-       
-	function getxmldata(logicalName) {
-		lzSetCanvasAttribute("xmldata", xmldata, "false");
-	}
-	
-	function getxmlconf(logicalName) {
-		return null;
-	}
-</script>
---%>  

@@ -307,13 +307,13 @@ if (layout == null) {
 		var x = doc.documentElement;
 		var dashboardxml = x.getElementsByTagName(logicalName)[0].getElementsByTagName("ROWS")[0];
 		
-		// code for IE
-		if (window.ActiveXObject) {
-			dashboardxmldata<%=uuidStr%> = dashboardxml.xml;
-		}
 		// code for Mozilla
-		else {
+		if (window.XMLSerializer) {
 			dashboardxmldata<%=uuidStr%> = (new XMLSerializer()).serializeToString(dashboardxml);
+		}
+		// code for IE
+		else {
+			dashboardxmldata<%=uuidStr%> = dashboardxml.xml;
 		}
 		lzSetCanvasAttribute("xmldata", dashboardxmldata<%=uuidStr%>, "false");
 	}

@@ -151,7 +151,15 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 		// get the id of the object
 		String idStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
-		Integer id = new Integer(idStr);
+		String label = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
+		debug("pageCreationHandler", "Request parameters: " +
+				"biobject id = '" + idStr + "'; object label = '" + label + "'.");
+		Integer id = null;
+		if (label != null) {
+			debug("pageCreationHandler", "Loading biobject with label = '" + label + "' ...");
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+			id = obj.getId();
+		} else id = new Integer(idStr);
 		debug("pageCreationHandler", "BIObject id = " + id);
 		
 		// get parameters statically defined in portlet config file
@@ -170,6 +178,15 @@ public class ExecuteBIObjectModule extends AbstractModule
 			session.setAttribute(SpagoBIConstants.ACTOR, actor);
 		} else {
 			actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
+		}
+		if (actor == null) {
+		    debug("pageCreationHandler", "Actor parameter was found neither in request nor in session!!");
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+					            "ExecuteBIObjectMOdule", 
+					            "service", 
+					            "Actor parameter was not found neither in request nor in session!!");
+	   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "100")); 
+	   		return;
 		}
 		debug("pageCreationHandler", "using actor " + actor);
 		

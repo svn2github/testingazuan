@@ -116,12 +116,17 @@ String linkEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "
 SourceBean data = (SourceBean) content.getAttribute(SpagoBIDashboardsCompositionInternalEngine.DATA);
 String lovLabel = (String) data.getAttribute(SpagoBIDashboardsCompositionInternalEngine.LOV_LABEL);
 String refreshRate = (String) data.getAttribute(SpagoBIDashboardsCompositionInternalEngine.REFRESH_RATE);
+String xmldataStr = GeneralUtilities.getLovResult(lovLabel);
+xmldataStr = xmldataStr.replaceAll("'", "\'");
+xmldataStr = xmldataStr.replaceAll("\n", "");
+xmldataStr = xmldataStr.replaceAll("\t", "");
+xmldataStr = xmldataStr.replaceAll("\r", "");
 %>
 
 
 <script type="text/javascript">
 
-	var xmldata<%=uuidStr%>='<%=GeneralUtilities.getLovResult(lovLabel)%>';
+	var xmldata<%=uuidStr%>='<%=xmldataStr%>';
 	var t<%=uuidStr%> = setTimeout("timedCount<%=uuidStr%>()",0);
 	
 	var xmlconf<%=uuidStr%>=null;
@@ -247,6 +252,7 @@ if (layout == null) {
 	    <%
 	    count++;
 	}
+	if (endDashboard < layoutStr.length()) out.write("\n" + layoutStr.substring(endDashboard + 1) + "\n");
 	%>
 	<script type="text/javascript">
 	
@@ -296,8 +302,6 @@ if (layout == null) {
 	
 	</script>
 	<%
-	
-	if (endDashboard < layoutStr.length()) out.write("\n" + layoutStr.substring(endDashboard + 1) + "\n");
 }
 
 %>

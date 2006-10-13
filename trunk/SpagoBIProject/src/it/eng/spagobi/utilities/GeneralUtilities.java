@@ -28,34 +28,47 @@ package it.eng.spagobi.utilities;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dbaccess.DataConnectionManager;
+import it.eng.spago.dbaccess.sql.DataConnection;
+import it.eng.spago.dbaccess.sql.SQLCommand;
+import it.eng.spago.dbaccess.sql.result.DataResult;
+import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.JavaClassDetail;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.Parameter;
+import it.eng.spagobi.bo.QueryDetail;
+import it.eng.spagobi.bo.ScriptDetail;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
+import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
-import it.eng.spago.base.SessionContainer;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.portlet.PortletRequest;
 
@@ -200,6 +213,16 @@ public class GeneralUtilities {
 	public static String getSpagoBiContentRepositoryServlet(){
 		
 	    return getSpagoBiContextAddress() + "/ContentRepositoryServlet";
+	}
+	
+	/**
+	 * Gets the spagoBI's dashboards servlet information as a string.
+	 * 
+	 * @return A string containing spagoBI's dashboards servlet information
+	 */
+	public static String getSpagoBiDashboardServlet(){
+		
+	    return getSpagoBiContextAddress() + "/DashboardService";
 	}
 	
 	/**
@@ -644,6 +667,93 @@ public class GeneralUtilities {
 		value = value.replaceAll(singleQuoteString,singleQuoteReplaceString);
 		value = value.replaceAll(doubleQuoteString,doubleQuotesReplaceString);
 		return value;
-		}
+		
+	}
+	
+	public static String getLovResult (String lovLabel) throws Exception {
+ 		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
+ 		ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(lovLabel);
+ 		String toReturn = getLovResult(lov);
+ 		return toReturn;
+	}
+	
+	public static String getLovResult (ModalitiesValue lov) throws Exception {
+		DataConnection dataConnection = null;
+		RequestContainer reqcont = RequestContainer.getRequestContainer();
+		SessionContainer sessCont = reqcont.getSessionContainer();
+		SessionContainer permSess = sessCont.getPermanentContainer();
+		IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        String type = lov.getITypeCd();
+        if (type.equalsIgnoreCase("QUERY")) {
+        	String dataProv = lov.getLovProvider();
+        	QueryDetail queryDet = QueryDetail.fromXML(dataProv);
+        	String pool = queryDet.getConnectionName();
+    		String statement = queryDet.getQueryDefinition();
+    		DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
+			dataConnection = dataConnectionManager.getConnection(pool);
+			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
+			SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
+			DataResult dataResult = sqlCommand.execute();
+            ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
+			SourceBean result = scrollableDataResult.getSourceBean();
+    		String resStr = result.toXML(false);
+    		resStr = resStr.trim();
+    		if(resStr.startsWith("<?")) {
+    			resStr = resStr.substring(2);
+    			int indFirstTag = resStr.indexOf("<");
+    			resStr = resStr.substring(indFirstTag);
+    		}
+    		resStr = resStr.toLowerCase();
+    		return resStr;
+        } else if (type.equalsIgnoreCase("SCRIPT")) {
+        	HashMap attributes = getAllProfileAttributes(profile);
+        	Binding bind = GeneralUtilities.fillBinding(attributes);
+        	String dataProv = lov.getLovProvider();
+        	ScriptDetail scriptDet = ScriptDetail.fromXML(dataProv);
+        	String result = GeneralUtilities.testScript(scriptDet.getScript(), bind);
+    		return result;
+        } else if (type.equalsIgnoreCase("JAVA_CLASS")) {
+        	String lovProvider = lov.getLovProvider();
+			JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lovProvider);
+			String javaClassName = javaClassDetail.getJavaClassName();
+			if (javaClassName == null || javaClassName.trim().equals("")){
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+						GeneralUtilities.class.getName(), 
+						"getLovResult", "The java class name is not specified");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1071");
+			}
+			IJavaClassLov javaClassLov = null;
+			Class javaClass = null;
+			try {
+				javaClass = Class.forName(javaClassName);
+			} catch (ClassNotFoundException e) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+						GeneralUtilities.class.getName(), 
+						"getLovResult", "Java class '" + javaClassName + "' not found!!");
+				Vector v = new Vector();
+				v.add(javaClassName);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1072", v);
+			}
+			try {
+				javaClassLov = (IJavaClassLov) javaClass.newInstance();
+			} catch (Exception e) {
+				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+						GeneralUtilities.class.getName(), 
+						"getLovResult", "Error while instatiating Java class '" + javaClassName + "'.");
+				Vector v = new Vector();
+				v.add(javaClassName);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1073", v);
+			}
+			String result = javaClassLov.getValues(profile);
+			return result;
+        } else if (type.equalsIgnoreCase("FIX_LOV")) 
+        		return lov.getLovProvider();
+        else {
+			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
+					GeneralUtilities.class.getName(), 
+					"getLovResult", "Input type '" + type + "' not valid.");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");
+        }
+	}
 	
 }

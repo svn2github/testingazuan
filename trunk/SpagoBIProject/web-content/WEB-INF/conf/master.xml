@@ -21,6 +21,9 @@
 	<!-- START DASHBOARD -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />
 	<!-- END DASHBOARD -->
+	<!-- START DASHBOARDSCOMPOSITION -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardsCompositionIE/publishers.xml" />
+	<!-- END DASHBOARDSCOMPOSITION -->
 	<!-- START QBE -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/qbe.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/actions.xml" />

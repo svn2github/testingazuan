@@ -27,20 +27,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.services;
 
-import groovy.lang.Binding;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.ModalitiesValue;
-import it.eng.spagobi.bo.QueryDetail;
-import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.utilities.GeneralUtilities;
@@ -48,7 +37,6 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -73,43 +61,14 @@ public class DashboardServlet extends HttpServlet{
 		 		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
 		 		ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(dataName);
                 String type = lov.getITypeCd();
-                if(type.equalsIgnoreCase("QUERY")) {
-                	String dataProv = lov.getLovProvider();
-                	QueryDetail queryDet = QueryDetail.fromXML(dataProv);
-                	String pool = queryDet.getConnectionName();
-            		String statement = queryDet.getQueryDefinition();
-            		DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
-        			dataConnection = dataConnectionManager.getConnection(pool);
-        			RequestContainer reqcont = RequestContainer.getRequestContainer();
-        			SessionContainer sessCont = reqcont.getSessionContainer();
-        			SessionContainer permSess = sessCont.getPermanentContainer();
-        			IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
-        			SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
-        			DataResult dataResult = sqlCommand.execute();
-                    ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
-        			SourceBean result = scrollableDataResult.getSourceBean();
-            		String resStr = result.toXML(false);
-            		resStr = resStr.trim();
-            		if(resStr.startsWith("<?")) {
-            			resStr = resStr.substring(2);
-            			int indFirstTag = resStr.indexOf("<");
-            			resStr = resStr.substring(indFirstTag);
-            		}
-            		resStr = resStr.toLowerCase();
-            		out.write(resStr.getBytes());
-    		 		out.flush();
-                } else if(type.equalsIgnoreCase("SCRIPT")) {
-                	Binding bind = GeneralUtilities.fillBinding(new HashMap());
-                	String dataProv = lov.getLovProvider();
-                	ScriptDetail scriptDet = ScriptDetail.fromXML(dataProv);
-                	String result = GeneralUtilities.testScript(scriptDet.getScript(), bind);
-                	out.write(result.getBytes());
-		 		    out.flush();
-                } else {
+                if(!type.equalsIgnoreCase("QUERY") && !type.equalsIgnoreCase("SCRIPT") && !!type.equalsIgnoreCase("JAVA_CLASS")) {
                 	SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-    						             "Service", "Dashboard "+type+" lov Not yet Supported");
+				             "Service", "Dashboard "+type+" lov Not yet Supported");
                 	out.write(createErrorMsg(12, "Dashboard  "+type+" lov not yet supported"));
+                	out.flush();
+                } else {
+                	String result = GeneralUtilities.getLovResult(dataName);
+            		out.write(result.getBytes());
     		 		out.flush();
                 }		
 		 	} else {

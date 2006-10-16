@@ -61,7 +61,7 @@ public class DashboardServlet extends HttpServlet{
 		 		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
 		 		ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(dataName);
                 String type = lov.getITypeCd();
-                if(!type.equalsIgnoreCase("QUERY") && !type.equalsIgnoreCase("SCRIPT") && !!type.equalsIgnoreCase("JAVA_CLASS")) {
+                if(!type.equalsIgnoreCase("QUERY") && !type.equalsIgnoreCase("SCRIPT") && !type.equalsIgnoreCase("JAVA_CLASS")) {
                 	SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 				             "Service", "Dashboard "+type+" lov Not yet Supported");
                 	out.write(createErrorMsg(12, "Dashboard  "+type+" lov not yet supported"));

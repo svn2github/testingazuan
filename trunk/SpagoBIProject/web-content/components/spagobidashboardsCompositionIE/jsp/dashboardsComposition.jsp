@@ -282,7 +282,7 @@ if (layout == null) {
 		}
 		var rowsxml = dashboardxml.getElementsByTagName("rows")[0];
 		if (rowsxml == null) {
-			dashboardxml.getElementsByTagName("ROWS")[0];
+			rowsxml = dashboardxml.getElementsByTagName("ROWS")[0];
 		}
 		
 		// code for Mozilla

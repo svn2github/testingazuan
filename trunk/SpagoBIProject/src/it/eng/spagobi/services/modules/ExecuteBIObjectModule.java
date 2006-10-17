@@ -158,6 +158,16 @@ public class ExecuteBIObjectModule extends AbstractModule
 		if (label != null) {
 			debug("pageCreationHandler", "Loading biobject with label = '" + label + "' ...");
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+			if (obj == null) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+						            "ExecuteBIObjectMOdule", 
+						            "pageCreationHandler", 
+						            "Object with label = '" + label + "' not found!!");
+				Vector v = new Vector();
+				v.add(label);
+		   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1074", v)); 
+		   		return;
+			}
 			id = obj.getId();
 		} else id = new Integer(idStr);
 		debug("pageCreationHandler", "BIObject id = " + id);
@@ -180,7 +190,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 			actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
 		}
 		if (actor == null) {
-		    debug("pageCreationHandler", "Actor parameter was found neither in request nor in session!!");
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 					            "ExecuteBIObjectMOdule", 
 					            "service", 

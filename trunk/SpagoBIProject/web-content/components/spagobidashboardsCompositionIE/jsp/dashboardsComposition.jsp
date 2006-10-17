@@ -180,7 +180,6 @@ if (layout == null) {
 	int startIndex = 0;
 	int startDashboard = layoutStr.indexOf("${");
 	int endDashboard = 0;
-	int count = 0;
 	while (startDashboard != -1) {
 		// writes the html between one dashboard and another		
 		out.write(layoutStr.substring(startIndex, startDashboard) + "\n");
@@ -243,14 +242,13 @@ if (layout == null) {
 	    	lzCanvasRuntimeVersion = 6.65;
 	    }
 	    if (isIE && isWin || detectFlash() >= lzCanvasRuntimeVersion) {
-	    	lzEmbed({url: '<%=moviePath%>?uuid=<%=uuidStr%>&logicalname=<%=dashboardName%>&linkbaseurl=<%=linkbaseurlStr%>&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '<%=width%>', height: '<%=height%>', id: 'lzapp<%=uuidStr + "_" + count%>', accessible: 'false'}, lzCanvasRuntimeVersion);
+	    	lzEmbed({url: '<%=moviePath%>?uuid=<%=uuidStr%>&logicalname=<%=dashboardName%>&linkbaseurl=<%=linkbaseurlStr%>&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#ffffff', width: '<%=width%>', height: '<%=height%>', id: 'lzapp<%=uuidStr + dashboardName%>', accessible: 'false'}, lzCanvasRuntimeVersion);
 	        lzHistEmbed(lzLPSRoot);
 	    } else {
 	    	document.write('This application requires Flash player ' + lzCanvasRuntimeVersion + '. <a href="http://www.macromedia.com/go/getflashplayer" target="fpupgrade">Click here</a> to upgrade.');
 	    }
 		</script>
 	    <%
-	    count++;
 	}
 	if (endDashboard < layoutStr.length()) out.write("\n" + layoutStr.substring(endDashboard + 1) + "\n");
 	%>
@@ -293,11 +291,13 @@ if (layout == null) {
 		else {
 			dashboardxmldata<%=uuidStr%> = rowsxml.xml;
 		}
-		lzSetCanvasAttribute("xmldata", dashboardxmldata<%=uuidStr%>, "false");
+		document.getElementById("lzapp<%=uuidStr%>" + logicalName).SetVariable("xmldata", dashboardxmldata<%=uuidStr%>);
+		//lzSetCanvasAttribute("xmldata", dashboardxmldata<%=uuidStr%>, "false");
 	}
 	
 	function getxmlconfig<%=uuidStr%>(logicalName) {
-		lzSetCanvasAttribute("xmlconfig", eval(logicalName + '<%=uuidStr%>'), "false");
+		document.getElementById("lzapp<%=uuidStr%>" + logicalName).SetVariable("xmlconfig", eval(logicalName + '<%=uuidStr%>'));
+		//lzSetCanvasAttribute("xmlconfig", eval(logicalName + '<%=uuidStr%>'), "false");
 	}
 	
 	</script>

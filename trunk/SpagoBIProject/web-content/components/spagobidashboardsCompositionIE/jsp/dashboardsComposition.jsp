@@ -117,7 +117,8 @@ SourceBean data = (SourceBean) content.getAttribute(SpagoBIDashboardsComposition
 String lovLabel = (String) data.getAttribute(SpagoBIDashboardsCompositionInternalEngine.LOV_LABEL);
 String refreshRate = (String) data.getAttribute(SpagoBIDashboardsCompositionInternalEngine.REFRESH_RATE);
 String xmldataStr = GeneralUtilities.getLovResult(lovLabel);
-xmldataStr = xmldataStr.replaceAll("'", "\'");
+xmldataStr = xmldataStr.replaceAll("\\\\", "\\\\\\\\");
+xmldataStr = xmldataStr.replaceAll("'", "\\\\'");
 xmldataStr = xmldataStr.replaceAll("\n", "");
 xmldataStr = xmldataStr.replaceAll("\t", "");
 xmldataStr = xmldataStr.replaceAll("\r", "");
@@ -178,6 +179,9 @@ if (layout == null) {
 	linkbaseurlStr = URLEncoder.encode(linkbaseurlStr);
 	String layoutStr = layout.getCharacters();
 	int startIndex = 0;
+	// minimun delay between one dashboard request and another dashboard's one
+	int mindelay = 100;
+	int delay = 0;
 	int startDashboard = layoutStr.indexOf("${");
 	int endDashboard = 0;
 	while (startDashboard != -1) {
@@ -224,7 +228,7 @@ if (layout == null) {
 		SourceBean confSB = (SourceBean) dashboardConfSb.getAttribute("CONFIGURATION");
 		String confStr = confSB.toXML(false);
 		//confStr = JavaScript.escape(confStr);
-		confStr = confStr.replaceAll("'", "\'");
+		confStr = confStr.replaceAll("'", "\\'");
 		confStr = confStr.replaceAll("\n", "");
 		confStr = confStr.replaceAll("\t", "");
 		confStr = confStr.replaceAll("\r", "");
@@ -242,13 +246,14 @@ if (layout == null) {
 	    	lzCanvasRuntimeVersion = 6.65;
 	    }
 	    if (isIE && isWin || detectFlash() >= lzCanvasRuntimeVersion) {
-	    	lzEmbed({url: '<%=moviePath%>?uuid=<%=uuidStr%>&logicalname=<%=dashboardName%>&linkbaseurl=<%=linkbaseurlStr%>&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#ffffff', width: '<%=width%>', height: '<%=height%>', id: 'lzapp<%=uuidStr + dashboardName%>', accessible: 'false'}, lzCanvasRuntimeVersion);
+	    	lzEmbed({url: '<%=moviePath%>?delay=<%=delay%>&uuid=<%=uuidStr%>&logicalname=<%=dashboardName%>&linkbaseurl=<%=linkbaseurlStr%>&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#ffffff', width: '<%=width%>', height: '<%=height%>', id: 'lzapp<%=uuidStr + dashboardName%>', accessible: 'false'}, lzCanvasRuntimeVersion);
 	        lzHistEmbed(lzLPSRoot);
 	    } else {
 	    	document.write('This application requires Flash player ' + lzCanvasRuntimeVersion + '. <a href="http://www.macromedia.com/go/getflashplayer" target="fpupgrade">Click here</a> to upgrade.');
 	    }
 		</script>
 	    <%
+	    delay += mindelay;
 	}
 	if (endDashboard < layoutStr.length()) out.write("\n" + layoutStr.substring(endDashboard + 1) + "\n");
 	%>

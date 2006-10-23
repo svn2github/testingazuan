@@ -647,9 +647,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			//controls if there is any parameter associated
 			boolean hasPar = DAOFactory.getModalitiesValueDAO().hasParameters(idStr);
 			if (hasPar){
-				HashMap params = new HashMap();
-				params.put(AdmintoolsConstants.PAGE, ListLovsModule.MODULE_PAGE);
-				EMFValidationError error = new EMFValidationError (EMFErrorSeverity.ERROR, "", "1023", new Vector(), params);
+				EMFUserError error = new EMFUserError (EMFErrorSeverity.ERROR, "1023", new Vector(), null);
 				getErrorHandler().addError(error);
 				return;
 		    }

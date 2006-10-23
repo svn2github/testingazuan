@@ -25,12 +25,13 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.LovDetail;
 import it.eng.spagobi.bo.LovDetailList;
-import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.PortletUtilities;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.net.*;
+
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -94,12 +95,12 @@ public class LovWizardTag extends TagSupport {
 			output.append("			</a>\n");
 			output.append("		</div>\n");
 			output.append("</div>\n");
-			
 			List lovs = new ArrayList();
 			if (lovProvider != null  &&  !lovProvider.equals("")){
 				//lovProvider = GeneralUtilities.substituteQuotesIntoString(lovProvider);
 				lovs = LovDetailList.fromXML(lovProvider).getLovs();
 			}
+			
 			output.append("<table class=\"table_detail_fix_lov\">\n");
 		  	output.append("	<tr>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");

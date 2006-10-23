@@ -24,8 +24,11 @@
 	HashMap profileattrs = (HashMap)moduleResponse.getAttribute(SpagoBIConstants.PROFILE_ATTRS);
 	ModalitiesValue modVal = (ModalitiesValue)moduleResponse.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 	String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
-	ArrayList list = (ArrayList)moduleResponse.getAttribute(SpagoBIConstants.LIST_INPUT_TYPE);
-
+	ArrayList list = (ArrayList)moduleResponse.getAttribute(SpagoBIConstants.LIST_INPUT_TYPE); 
+	
+	Set nameAttrs = profileattrs.keySet();
+	Iterator iterAttrs = null;
+	
 	PortletURL formUrl = renderResponse.createActionURL();
 	formUrl.setParameter("PAGE", "detailModalitiesValuePage");
 	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
@@ -93,6 +96,7 @@
 %>
 
 
+<%@page import="it.eng.spagobi.utilities.PortletUtilities"%>
 <form method='POST' action='<%= formUrl.toString() %>' id ='modalitiesValueForm' name='modalitiesValueForm'>
 	<input type='hidden' value='<%= modVal.getId() %>' name='id' />
 	<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
@@ -235,12 +239,11 @@ function setLovProviderModifiedField(){
 </table>
 
 
-<div class='div_background_no_img' >
+<div class='div_background_no_img'>
 
 
 
-
-<div class="div_detail_area_forms_lov">
+<div class="div_detail_area_forms_lov" >
 	<div class='div_detail_label_lov'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBIDev.predLov.labelField" />
@@ -316,12 +319,6 @@ function setLovProviderModifiedField(){
 
 
 
-
-
-
-
-
-
 <spagobi:error/>
 
 
@@ -363,7 +360,21 @@ function setLovProviderModifiedField(){
 						document.getElementById("showSintaxJavaClass").innerHTML = "<spagobi:message key = 'SBIDev.javaClassWiz.showSintax'/>";
 					}
 			}
+			function showSintaxFixlov(){
+					var divSintax = document.getElementById("sintaxFixlov");
+					var display = divSintax.style.display;
+					if (display == "none") {
+						document.getElementById("sintaxFixlov").style.display = "inline";
+						document.getElementById("showSintaxFixlov").innerHTML = "<spagobi:message key = 'SBIDev.fixlovWiz.hideSintax'/>";
+					}
+					else {
+						document.getElementById("sintaxFixlov").style.display = "none";
+						document.getElementById("showSintaxFixlov").innerHTML = "<spagobi:message key = 'SBIDev.fixlovWiz.showSintax'/>";
+					}
+			}
 	</script>
+
+
 
 
 
@@ -371,7 +382,7 @@ function setLovProviderModifiedField(){
 		<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
 			<spagobi:message key = "SBIDev.queryWiz.wizardTitle" />
 		</div> 
-		<div style="float:left;" />
+		<div style="float:left;" >
 			<spagobi:queryWizard 
 				connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 
 				visibleColumns='<%= query.getVisibleColumns()!= null ? query.getVisibleColumns().toString() : "" %>' 
@@ -379,7 +390,7 @@ function setLovProviderModifiedField(){
 				valueColumns='<%= query.getValueColumns()!= null ? query.getValueColumns().toString() : "" %>' 
 				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' /> 
 		</div>
-		<div style="width:100%" />
+		<div style="width:100%" >
 				<span class='portlet-form-field-label'>
 					<spagobi:message key = "SBIDev.queryWiz.rulesLabel" />
 				</span>
@@ -404,37 +415,144 @@ function setLovProviderModifiedField(){
 									<spagobi:message key = "SBIDev.queryWiz.rulesTitle" />
 								</div>
 								<div class='portlet-section-alternate' width="100%" 
-								     style="background-color:#FFFFEF;">
-									<spagobi:message key = "SBIDev.queryWiz.profAttr" />
-									<br/>
-									<spagobi:message key = "SBIDev.queryWiz.dotNotation" />
+								     style="background-color:#FFFFEF;border:1px solid #dddddd;" >
+								  <ul style='margin:5px;padding-left:20px;padding-right:5px;'>   
+									<li><spagobi:message key = "SBIDev.queryWiz.profAttr" /></li>
+									<li><spagobi:message key = "SBIDev.queryWiz.dotNotation" /></li>
+									</ul>
 							    </div>
 							</td>
+							<tr>
+									<td>
+										<div class='portlet-section-subheader' 
+										     style='text-align:center;vertical-align:bottom;' 
+												 width="100%">
+											<spagobi:message key = "SBIDev.scriptWiz.ProfileAttrsLbl" />
+										</div>
+										<div class='portlet-section-alternate' width="100%" 
+                         style="background-color:#FFFFEF;border: 1px solid #dddddd;">
+											<%
+											    if(nameAttrs.isEmpty()) {
+											    	out.write("<ul style='margin:5px;padding-left:20px;'>");
+											    	out.write("<li>");
+											    	out.write(PortletUtilities.getMessage("SBIDev.scriptWiz.NoProfileAttrs", "messages"));
+											    	out.write("</li>");
+                            out.write("</ul>");
+                          } else {
+											    	out.write("<ul style='margin:5px;padding-left:20px;'>");  
+													iterAttrs = nameAttrs.iterator();
+													while(iterAttrs.hasNext()) {
+														String attributename = (String)iterAttrs.next();
+														out.write("<li>");
+														out.write(attributename);
+														out.write("</li>");
+													}
+													out.write("</ul>");
+											    }
+											%>
+										</div>
+									</td>
+									<td width="5px">&nbsp;</td>
+							</tr>
 							<td width="5px">&nbsp;</td>
 						</tr>
+						
 					</table>
 				</div>
 		</div>
 		<div style="clear:left;">
 			&nbsp;
 		</div>
-	</div>
+  </div>
+
+
+  
+   
+  <div id="lovWizard" style='width:100%;display:<%=lovDisplay%>'>
+    	<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
+  			<spagobi:message key = "SBIDev.lovWiz.wizardTitle" />
+  		</div> 
+  		<div style="float:left;">
+       		<spagobi:lovWizard lovProvider='<%= lovProvider!= null ? lovProvider : "" %>' />
+    	</div>
+ 		<div style="width:100%" >
+  			<span class='portlet-form-field-label'>
+  				<spagobi:message key = "SBIDev.fixlovWiz.rulesLabel" />
+  			</span>
+  			<a id="showSintaxFixlov" 
+  				 href="javascript:void(0)" 
+  				 onclick="showSintaxFixlov()" 
+  				 class='portlet-form-field-label'
+  				 onmouseover="this.style.color='#074BF8';"
+  				 onmouseout="this.style.color='#074B88';"
+  				 style="text-decoration:none;">
+  				<spagobi:message key = "SBIDev.fixlovWiz.showSintax"/>
+  			</a>
+  			<br/>
+  			<div style="display:none;" id="sintaxFixlov"  >
+				<br/>
+				<table width="100%">
+					<tr height='25'>
+						<td>
+							<div class='portlet-section-subheader' 
+							     style='text-align:center;vertical-align:bottom;' 
+								 width="100%">
+								<spagobi:message key = "SBIDev.fixlovWiz.rulesTitle" />
+							</div>
+							<div class='portlet-section-alternate' width="100%" 
+							     style="background-color:#FFFFEF;border:1px solid #dddddd;" >
+							 	 <ul style='margin:5px;padding-left:20px;padding-right:5px;'>   
+									<li><spagobi:message key = "SBIDev.fixlovWiz.profAttr" /></li>
+								 </ul>
+							</div>
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<div class='portlet-section-subheader' 
+							     style='text-align:center;vertical-align:bottom;' 
+								 width="100%">
+								<spagobi:message key = "SBIDev.scriptWiz.ProfileAttrsLbl" />
+							</div>
+							<div class='portlet-section-alternate' width="100%" 
+                         		 style="background-color:#FFFFEF;border: 1px solid #dddddd;">
+								<%
+								   if(nameAttrs.isEmpty()) {
+								    	out.write("<ul style='margin:5px;padding-left:20px;'>");
+								    	out.write("<li>");
+								    	out.write(PortletUtilities.getMessage("SBIDev.scriptWiz.NoProfileAttrs", "messages"));
+								    	out.write("</li>");
+                            			out.write("</ul>");
+                          			} else {
+									   	out.write("<ul style='margin:5px;padding-left:20px;'>");  
+										iterAttrs = nameAttrs.iterator();
+										while(iterAttrs.hasNext()) {
+											String attributename = (String)iterAttrs.next();
+											out.write("<li>");
+											out.write(attributename);
+											out.write("</li>");
+										}
+										out.write("</ul>");
+									}
+								%>
+							</div>
+						</td>
+						<td width="5px">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="5px">&nbsp;</td>
+					</tr>
+				</table>
+			</div>
+  		</div>
+  		<div style="clear:left;">&nbsp;</div>
+  </div>
+  
 
 
 
 
 
-<div id="lovWizard" style='width:100%;display:<%=lovDisplay%>'>
-	<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
-		<spagobi:message key = "SBIDev.lovWiz.wizardTitle" />
-	</div> 
-	<spagobi:lovWizard lovProvider='<%= lovProvider!= null ? lovProvider : "" %>' />
-</div>
-
-
-
-
-	
 	<div id="scriptWizard" style='width:100%;display:<%=scriptDisplay%>'>
 		<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
 			<spagobi:message key = "SBIDev.scriptWiz.wizardTitle" />
@@ -468,8 +586,9 @@ function setLovProviderModifiedField(){
 												 width="100%">
 											<spagobi:message key = "SBIDev.scriptWiz.SintaxLbl" />
 										</div>
-										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
-											<ul>
+										<div class='portlet-section-alternate' width="100%" 
+                         style="background-color:#FFFFEF;border: 1px solid #dddddd;padding-right:10px;">
+											<ul style='margin:5px;padding-left:20px;padding-right:5px;'>
 												<li>
 													<spagobi:message key = "SBIDev.scriptWiz.FixValLbl" />
 													<br/>
@@ -497,23 +616,33 @@ function setLovProviderModifiedField(){
 									</td>
 									<td width="5px">&nbsp;</td>
 							</tr>
-							<tr height='25'>
+							<tr>
 									<td>
 										<div class='portlet-section-subheader' 
 										     style='text-align:center;vertical-align:bottom;' 
 												 width="100%">
 											<spagobi:message key = "SBIDev.scriptWiz.ProfileAttrsLbl" />
 										</div>
-										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+										<div class='portlet-section-alternate' width="100%" 
+                         style="background-color:#FFFFEF;border: 1px solid #dddddd;">
 											<%
-													Set nameAttrs = profileattrs.keySet();
-													Iterator iterAttrs = nameAttrs.iterator();
-												String attribute = null;
-												while(iterAttrs.hasNext()) {
-													String attributename = (String)iterAttrs.next();
-													out.write(attributename);
-													out.write(" / ");
-												}
+											    if(nameAttrs.isEmpty()) {
+											    	out.write("<ul style='margin:5px;padding-left:20px;'>");
+											    	out.write("<li>");
+											    	out.write(PortletUtilities.getMessage("SBIDev.scriptWiz.NoProfileAttrs", "messages"));
+											    	out.write("</li>");
+                            out.write("</ul>");
+                          } else {
+											    	out.write("<ul style='margin:5px;padding-left:20px;'>");  
+													iterAttrs = nameAttrs.iterator();
+													while(iterAttrs.hasNext()) {
+														String attributename = (String)iterAttrs.next();
+														out.write("<li>");
+														out.write(attributename);
+														out.write("</li>");
+													}
+													out.write("</ul>");
+											    }
 											%>
 										</div>
 									</td>
@@ -526,7 +655,8 @@ function setLovProviderModifiedField(){
 												 width="100%">
 											<spagobi:message key = "SBIDev.scriptWiz.xmlstruct" />
 										</div>
-										<div class='portlet-section-alternate' style="text-align:left;width:100%;background-color:#FFFFEF;">
+										<div class='portlet-section-alternate' width="100%"
+                         style="text-align:left;padding:10px;background-color:#FFFFEF;border: 1px solid #dddddd;">
 												&lt;rows&gt; <br/>
 												<span>&nbsp;&nbsp;&nbsp;</span>&lt;row 
 												<br/> 
@@ -546,9 +676,10 @@ function setLovProviderModifiedField(){
 									<span>&nbsp;&nbsp;&nbsp;</span>&lt;value-column&gt;
 									<br/>
 									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-									<spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructValueColumn" />
+									<spagobi:message key = "SBIDev.scriptWiz.xmlstructValueColumn1" />
 									<br/>	
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                  <spagobi:message key = "SBIDev.scriptWiz.xmlstructValueColumn2" />
 									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/value-column&gt; <br/>
 									&lt;/rows&gt; <br/>
 									</div>
@@ -562,9 +693,9 @@ function setLovProviderModifiedField(){
 			&nbsp;
 		</div>
 	</div>
+
 	
-	
-	
+
 	<div id="javaClassWizard" style='width:100%;display:<%=javaClassDisplay%>'>
 		<div style='margin:5px;padding-top:5px;padding-left:5px;' class='portlet-section-header'>
 			<spagobi:message key = "SBIDev.javaClassWiz.title" />
@@ -598,8 +729,9 @@ function setLovProviderModifiedField(){
 												 width="100%">
 											<spagobi:message key = "SBIDev.javaClassWiz.SintaxLbl" />
 										</div>
-										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
-											<ul>
+										<div class='portlet-section-alternate' width="100%" 
+                         style="background-color:#FFFFEF;border: 1px solid #dddddd;">
+											<ul style='margin:5px;padding-left:20px;padding-right:5px;'>
 												<li>
 													<spagobi:message key = "SBIDev.javaClassWiz.interfaceName" />
 													<br/>
@@ -617,16 +749,26 @@ function setLovProviderModifiedField(){
 												 width="100%">
 											<spagobi:message key = "SBIDev.javaClassWiz.ProfileAttrsLbl" />
 										</div>
-										<div class='portlet-section-alternate' width="100%" style="background-color:#FFFFEF;">
+										<div class='portlet-section-alternate' width="100%" 
+                         style="background-color:#FFFFEF;border: 1px solid #dddddd;">
 											<%
-												nameAttrs = profileattrs.keySet();
-												iterAttrs = nameAttrs.iterator();
-												attribute = null;
-												while (iterAttrs.hasNext()) {
-													String attributename = (String)iterAttrs.next();
-													out.write(attributename);
-													out.write(" / ");
-												}
+											    if(nameAttrs.isEmpty()) {
+											    	out.write("<ul style='margin:5px;padding-left:20px;'>");
+											    	out.write("<li>");
+											    	out.write(PortletUtilities.getMessage("SBIDev.scriptWiz.NoProfileAttrs", "messages"));
+											    	out.write("</li>");
+                            out.write("</ul>");
+                          } else {
+											    	out.write("<ul style='margin:5px;padding-left:20px;'>");  
+													iterAttrs = nameAttrs.iterator();
+													while(iterAttrs.hasNext()) {
+														String attributename = (String)iterAttrs.next();
+														out.write("<li>");
+														out.write(attributename);
+														out.write("</li>");
+													}
+													out.write("</ul>");
+											    }
 											%>
 										</div>
 									</td>
@@ -637,9 +779,10 @@ function setLovProviderModifiedField(){
 										<div class='portlet-section-subheader' 
 										     style='text-align:center;vertical-align:bottom;' 
 												 width="100%">
-											<spagobi:message key = "SBIDev.scriptWiz.xmlstruct" />
+											<spagobi:message key = "SBIDev.fixlovWiz.xmlstruct" />
 										</div>
-										<div class='portlet-section-alternate' style="text-align:left;width:100%;background-color:#FFFFEF;">
+										<div class='portlet-section-alternate' width="100%"  
+                         style="text-align:left;padding:10px;background-color:#FFFFEF;border: 1px solid #dddddd;">
 												&lt;rows&gt; <br/>
 												<span>&nbsp;&nbsp;&nbsp;</span>&lt;row 
 												<br/> 
@@ -675,7 +818,7 @@ function setLovProviderModifiedField(){
 			&nbsp;
 		</div>
 	</div>
-	
+
 	
 	
 	<table>
@@ -687,10 +830,10 @@ function setLovProviderModifiedField(){
 </form>
 	
 
-
+<!--
 </div>
 
-
+-->
 
 
 </div> <!-- close background --> 

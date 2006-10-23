@@ -26,6 +26,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.security.Principal;
@@ -34,15 +35,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.organization.UserProfileHandler;
 
 /**
  * Implementation of the Spago IEngUserProfile interface
@@ -67,6 +70,8 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 		OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
 		this.roles = new ArrayList();
 		try{
+			
+			// load user roles
 			Collection tmpRoles = service.getGroupHandler().findGroupsOfUser(userUniqueIdentifier); 
 			GroupHandler groupHandler = service.getGroupHandler();
 			util.debug(this.getClass(), "init", "Group Handler retrived " + groupHandler);
@@ -84,21 +89,64 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
         		}
 				this.roles.add(group.getId());
 			}
-			//load profile attributes for all users
-			userAttributes = SecurityProviderUtilities.getAllSharedProfileAttributes();
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                                "<init>", "Roles load into SpagoBI profile: " + this.roles);
+			
+			//start load profile attributes 
+
+			// load the exo user profile attributes into spagobi user profile 
+			UserProfileHandler userProfileHandler = service.getUserProfileHandler();
+			if(userProfileHandler==null) {
+				SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+						              "<init>", "UserProfileHandler null");
+			} else {
+				UserProfile exoUserProfile = userProfileHandler.findUserProfileByName(this.userUniqueIdentifier);
+				if(exoUserProfile==null){
+					SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+				                          "<init>", "exoUserProfile not found for user " + this.userUniqueIdentifier);
+				} else {
+					Map userInfoMap = exoUserProfile.getUserInfoMap();
+					Set infoKeys = userInfoMap.keySet();
+					Iterator infoKeyIter = infoKeys.iterator();
+					while(infoKeyIter.hasNext()) {
+						String labelcode = infoKeyIter.next().toString();
+						String value = userInfoMap.get(labelcode).toString();
+						String label = PortletUtilities.getMessage(labelcode, "exo_userprofile_labels");
+						userAttributes.put(label, value);
+						SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                                            "<init>", "Load into SpagoBI user profile couple " + label + " : " + value);
+					}
+				}
+			}
+
+			// add the profile attributes of the current user (attributes already existing are overwritten)
 			SourceBean loadUserProfileAttrsSB = (SourceBean) ConfigSingleton.getInstance().getAttribute("EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES.LOAD-USER-PROFILE-ATTRIBUTES");
 			String loadUserProfileAttrs = loadUserProfileAttrsSB.getCharacters();
-			HashMap predefinedProfileAttributes = new HashMap();
+			Map predefinedProfileAttributes = new HashMap();
+			Map sharedAttr = new HashMap();
 			if (loadUserProfileAttrs != null && loadUserProfileAttrs.trim().toUpperCase().equals("YES")) {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Trying to load predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"'.");
+				// load profile attributes shared by  users (attributes already existing are overwritten)
+				sharedAttr = SecurityProviderUtilities.getAllSharedProfileAttributes();
+				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                                    "<init>", "Shared Attributes recovered : " + sharedAttr);
 				predefinedProfileAttributes = SecurityProviderUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
+				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                                    "<init>", "Current user predefined attributes recovered : " + predefinedProfileAttributes);
 			} else {
 				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>",
 						"Predefined user attributes for user with unique identifer '" + this.userUniqueIdentifier +"' will not be loaded.");
 			}
-			//add the predefined attributes for the current user (already existing attributes are overwritten)
+			userAttributes.putAll(sharedAttr);
 			userAttributes.putAll(predefinedProfileAttributes);
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                                "<init>", "Attributes load into SpagoBI profile: " + userAttributes);
+			
+			// end load profile attributes 
+			
+			
+			
 		} catch(Exception e){
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, ExoGroupAsRoleUserProfileImpl.class.getName(), "<init>", "Exception ",e);
 		}

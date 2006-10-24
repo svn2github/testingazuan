@@ -128,7 +128,7 @@ xmldataStr = xmldataStr.replaceAll("\r", "");
 <script type="text/javascript">
 
 	var xmldata<%=uuidStr%>='<%=xmldataStr%>';
-	var t<%=uuidStr%> = setTimeout("timedCount<%=uuidStr%>()",0);
+	var t<%=uuidStr%> = setTimeout("timedCount<%=uuidStr%>()",<%=refreshRate%>);
 	
 	var xmlconf<%=uuidStr%>=null;
 	
@@ -180,7 +180,7 @@ if (layout == null) {
 	String layoutStr = layout.getCharacters();
 	int startIndex = 0;
 	// minimun delay between one dashboard request and another dashboard's one
-	int mindelay = 100;
+	int mindelay = 1000;
 	int delay = 0;
 	int startDashboard = layoutStr.indexOf("${");
 	int endDashboard = 0;

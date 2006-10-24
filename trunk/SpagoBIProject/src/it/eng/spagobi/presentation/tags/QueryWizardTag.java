@@ -125,7 +125,7 @@ public class QueryWizardTag extends TagSupport {
 		output.append("			</span>\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_form'>\n");
-		output.append("			<textarea class='portlet-text-area-field' name='queryDef' id='queryDef' rows='5' cols='50'>" + queryDef + "</textarea>\n");
+		output.append("			<textarea style='height:100px;' class='portlet-text-area-field' name='queryDef' id='queryDef' rows='5' cols='50'>" + queryDef + "</textarea>\n");
 		output.append("		</div>\n");
 		output.append("  </div>\n");
 	    output.append("</div>\n");

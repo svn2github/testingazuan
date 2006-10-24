@@ -261,8 +261,13 @@ if (layout == null) {
 	
 	function getxmldata<%=uuidStr%>(logicalName) {
 	
+	    // if logical name is null or empty the script returns the entire response
+		if(logicalName == null || trim(logicalName) == "") {
+			document.getElementById("lzapp<%=uuidStr%>" + logicalName).SetVariable("xmldata", xmldata<%=uuidStr%>);
+			return;
+		}
+			
 		var dashboardxmldata<%=uuidStr%>;
-		
 		// code for IE
 		if (window.ActiveXObject) {
 		  var doc=new ActiveXObject("Microsoft.XMLDOM");
@@ -274,7 +279,7 @@ if (layout == null) {
 		  var parser=new DOMParser();
 		  var doc=parser.parseFromString(xmldata<%=uuidStr%>,"text/xml");
 		}
-		
+		// try to get the xml envelope for the logical name
 		var x = doc.documentElement;
 		var	dashboardxml = x.getElementsByTagName(logicalName)[0];
 		if (dashboardxml == null) {
@@ -283,27 +288,20 @@ if (layout == null) {
 		if (dashboardxml == null) {
 			dashboardxml = x.getElementsByTagName(logicalName.toLowerCase())[0];
 		}
-		
 		// if dashboardxml is still null means that the result doesn't contain the logical name tag
 		// so the script returns the entire response
 		// *****************************************
 		if(dashboardxml == null) {
-			if (window.XMLSerializer) {
-				dashboardxmldata<%=uuidStr%> = (new XMLSerializer()).serializeToString(dashboardxml);
-			} else {
-				dashboardxmldata<%=uuidStr%> = dashboardxml.xml;
-			}
+			dashboardxmldata<%=uuidStr%> = xmldata<%=uuidStr%>;
 			document.getElementById("lzapp<%=uuidStr%>" + logicalName).SetVariable("xmldata", dashboardxmldata<%=uuidStr%>);
 			return;
 		}	
 		// *****************************************
-		
-		
+		// get the rows tag
 		var rowsxml = dashboardxml.getElementsByTagName("rows")[0];
 		if (rowsxml == null) {
 			rowsxml = dashboardxml.getElementsByTagName("ROWS")[0];
 		}
-		
 		// code for Mozilla
 		if (window.XMLSerializer) {
 			dashboardxmldata<%=uuidStr%> = (new XMLSerializer()).serializeToString(rowsxml);
@@ -313,13 +311,26 @@ if (layout == null) {
 			dashboardxmldata<%=uuidStr%> = rowsxml.xml;
 		}
 		document.getElementById("lzapp<%=uuidStr%>" + logicalName).SetVariable("xmldata", dashboardxmldata<%=uuidStr%>);
-		//lzSetCanvasAttribute("xmldata", dashboardxmldata<%=uuidStr%>, "false");
 	}
+	
+	
 	
 	function getxmlconfig<%=uuidStr%>(logicalName) {
 		document.getElementById("lzapp<%=uuidStr%>" + logicalName).SetVariable("xmlconfig", eval(logicalName + '<%=uuidStr%>'));
-		//lzSetCanvasAttribute("xmlconfig", eval(logicalName + '<%=uuidStr%>'), "false");
 	}
+	
+	
+	
+	function trim(sString) {
+		while (sString.substring(0,1) == ' ') {
+			sString = sString.substring(1, sString.length);
+		}
+		while (sString.substring(sString.length-1, sString.length) == ' ') {
+			sString = sString.substring(0,sString.length-1);
+		}
+		return sString;
+	}
+	
 	
 	</script>
 	<%

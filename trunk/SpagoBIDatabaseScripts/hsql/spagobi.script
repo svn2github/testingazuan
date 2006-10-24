@@ -95,3 +95,4 @@ INSERT INTO SBI_ENGINES VALUES(109,0,'Qbe Internal Engine','Qbe Internal Engine'
 INSERT INTO SBI_ENGINES VALUES(110,0,'Dashboard Internal Engine','Dashboard Internal Engine','','','','','','DashboardInternalEng',105,'it.eng.spagobi.engines.dashboard.SpagoBIDashboardInternalEngine',43)
 INSERT INTO SBI_ENGINES VALUES(115,0,'Booklet Internal Engine','Booklet Internal Engine','','','','','','BookletInternalEng',105,'it.eng.spagobi.booklets.engines.SpagoBIBookletInternalEngine',107)
 INSERT INTO SBI_ENGINES VALUES(116,0,'Office Document Internal Engine','Office Document Internal Engine','','','','','','OfficeDocumentInternalEng',105,'it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine',111)
+INSERT INTO SBI_ENGINES VALUES(117,0,'Dashboard Composition Internal Engine','Dashboard Composition Internal Engine','','','','','','DashboardCompIE',105,'it.eng.spagobi.engines.dashboardscomposition.SpagoBIDashboardsCompositionInternalEngine',43)

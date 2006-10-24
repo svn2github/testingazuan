@@ -75,7 +75,7 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 		
-		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH_COMP")) {
+		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
 			SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine",
 		            this.getClass().getName(),
 		            "execute",

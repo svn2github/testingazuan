@@ -21,8 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.utilities;
 
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.dao.DAOFactory;
@@ -469,6 +471,48 @@ public class ObjectsAccessVerifier {
 		}
 		return false;
 		
+	}
+	
+	/**
+	 * Controls if the current user can see the document: 
+	 * - if the document is in DEV state the user must have the development permission in a folder containing it;
+	 * - if the document is in TEST state the user must have the test permission in a folder containing it;
+	 * - if the document is in REL state the user must have the execution permission in a folder containing it.
+	 * 
+	 * @param obj The BIObject
+	 * @param profile user profile
+	 * @return A boolean control value
+	 * @throws EMFInternalError 
+	 */
+	public static boolean canSee (BIObject obj, IEngUserProfile profile) throws EMFInternalError {
+		boolean canSee = false;
+		if (obj == null) throw new EMFInternalError(EMFErrorSeverity.ERROR, "BIObject in input is null!!");
+		if (profile == null) throw new EMFInternalError(EMFErrorSeverity.ERROR, "User profile in input is null!!");
+		String state = obj.getStateCode();
+		if ("SUSP".equalsIgnoreCase(state)) return false;
+		List foldersId = obj.getFunctionalities();
+		if (foldersId == null || foldersId.size() == 0) 
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, "BIObject does not belong to any functionality!!");
+		Iterator foldersIdIt = foldersId.iterator();
+		while (foldersIdIt.hasNext()) {
+			Integer folderId = (Integer) foldersIdIt.next();
+			boolean canDev = canDev(state, folderId, profile);
+			if (canDev) {
+				canSee = true;
+				break;
+			}
+			boolean canTest = canTest(state, folderId, profile);
+			if (canTest) {
+				canSee = true;
+				break;
+			}
+			boolean canExec = canExec(state, folderId, profile);
+			if (canExec) {
+				canSee = true;
+				break;
+			}
+		}
+		return canSee;
 	}
 	
 }

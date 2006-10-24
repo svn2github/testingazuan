@@ -149,36 +149,15 @@ public class ExecuteBIObjectModule extends AbstractModule
 				
 		debug("pageCreationHandler", "start pageCreationHandler method");
 		
+		// get the current user profile
+		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		debug("pageCreationHandler", "user profile retrived " + profile);
+		
 		// get the id of the object
 		String idStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
 		String label = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
 		debug("pageCreationHandler", "Request parameters: " +
 				"biobject id = '" + idStr + "'; object label = '" + label + "'.");
-		Integer id = null;
-		if (label != null) {
-			debug("pageCreationHandler", "Loading biobject with label = '" + label + "' ...");
-			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
-			if (obj == null) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-						            "ExecuteBIObjectMOdule", 
-						            "pageCreationHandler", 
-						            "Object with label = '" + label + "' not found!!");
-				Vector v = new Vector();
-				v.add(label);
-		   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1074", v)); 
-		   		return;
-			}
-			id = obj.getId();
-		} else id = new Integer(idStr);
-		debug("pageCreationHandler", "BIObject id = " + id);
-		
-		// get parameters statically defined in portlet config file
-		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
-		debug("pageCreationHandler", "using parameters " + userProvidedParametersStr);
-		
-		// get the current user profile
-		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		debug("pageCreationHandler", "user profile retrived " + profile);
 		
 		// get the type of actor 
 		String actor = "";
@@ -198,6 +177,46 @@ public class ExecuteBIObjectModule extends AbstractModule
 	   		return;
 		}
 		debug("pageCreationHandler", "using actor " + actor);
+		
+		Integer id = null;
+		if (label != null) {
+			debug("pageCreationHandler", "Loading biobject with label = '" + label + "' ...");
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+			if (obj == null) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+						            "ExecuteBIObjectMOdule", 
+						            "pageCreationHandler", 
+						            "Object with label = '" + label + "' not found!!");
+				Vector v = new Vector();
+				v.add(label);
+		   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1074", v)); 
+		   		return;
+			}
+			id = obj.getId();
+			/*
+			 * in case the object is executed by its label (it means that it is called by a link 
+			 * in another document) we must verify that the user can see the document
+			*/
+			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
+			if (!canSee) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+			            "ExecuteBIObjectMOdule", 
+			            "pageCreationHandler", 
+			            "Object with label = '" + label + "' cannot be executed by the user!!");
+				Vector v = new Vector();
+				v.add(label);
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
+				return;
+			}
+			/*
+			 * TODO the actor parameter must be updated
+			 */
+		} else id = new Integer(idStr);
+		debug("pageCreationHandler", "BIObject id = " + id);
+		
+		// get parameters statically defined in portlet config file
+		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		debug("pageCreationHandler", "using parameters " + userProvidedParametersStr);
 		
 		// define the variable for execution role
 		String role = "";

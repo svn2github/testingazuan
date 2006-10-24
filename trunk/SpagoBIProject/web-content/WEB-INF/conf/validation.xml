@@ -381,7 +381,7 @@
 				</FIELD>	
 				<FIELD name="queryDef" label="#SBIDev.queryWiz.queryDefField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="500"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="3400"/>
 				</FIELD>	
 			</FIELDS>
 		</VALIDATION>

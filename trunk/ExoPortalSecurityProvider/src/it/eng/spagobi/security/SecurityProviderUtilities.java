@@ -2,36 +2,49 @@ package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.organization.UserProfileHandler;
 
 public class SecurityProviderUtilities {
 
 	/**
 	 * Get all the predefined profile attributes of the user with the given unique identifier passed as String.
 	 * The attributes are contained into a configuration file which contains the name 
-	 * of the attribute and the test value of the attribute. The test value is used during 
-	 * the test of a script that use the attribute. 
+	 * of the attribute and the value of the attribute.
 	 * 
 	 * @return HashMap of the attributes. HashMap keys are profile attribute.
-	 * HashMap values are test values. 
+	 * @throws EMFInternalError 
 	 * 
 	 */
-	public static HashMap getPredefinedProfileAttributes(String userUniqueIdentifier) {
+	private static HashMap getPredefinedProfileAttributes(String userUniqueIdentifier) throws EMFInternalError {
 		SourceBean profileAttrsSB = getProfileAttributesSourceBean();
+		if (profileAttrsSB == null) {
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, 
+					"Profile attributes attribute not found in ConfigSingleton");
+		}
 		HashMap attrsMap = new HashMap();
 		if (profileAttrsSB == null) return attrsMap;
-		SourceBean userProfileAttrsSB = (SourceBean) profileAttrsSB.getFilteredSourceBeanAttribute("USER-PROFILES.USER", "name", userUniqueIdentifier);
+		SourceBean userProfileAttrsSB = (SourceBean) 
+			profileAttrsSB.getFilteredSourceBeanAttribute("USER-PROFILES.USER", "name", userUniqueIdentifier);
 		if (userProfileAttrsSB == null)
 			return new HashMap();
 		List profileAttrs = userProfileAttrsSB.getAttributeAsList("ATTRIBUTE");
 		if (profileAttrs == null || profileAttrs.size() == 0) {
-			SpagoBITracer.info("SPAGOBI(ExoSecurityProvider)", SecurityProviderUtilities.class.getName(), "getPredefinedProfileAttributes()", 
+			SpagoBITracer.info("SPAGOBI(ExoSecurityProvider)", 
+				SecurityProviderUtilities.class.getName(), "getPredefinedProfileAttributes()", 
 				"The user with unique identifer '" + userUniqueIdentifier + 
 				"' has no predefined profile attributes.");
 			return attrsMap;
@@ -45,53 +58,77 @@ public class SecurityProviderUtilities {
 			if (attrSB == null)
 				continue;
 			nameattr = attrSB.getAttribute("name").toString();
-		    attrvalue = attrSB.getAttribute("valuefortest").toString();
+		    attrvalue = attrSB.getAttribute("value").toString();
 		    attrsMap.put(nameattr, attrvalue);
 		}
-		SpagoBITracer.info("SPAGOBI(ExoSecurityProvider)", SecurityProviderUtilities.class.getName(), "getPredefinedProfileAttributes()", 
-				"The user with unique identifer '" + userUniqueIdentifier + 
-				"' has the following predefined profile attributes:\n" + attrsMap.toString());
 		return attrsMap;
 	}
 	
 	/**
-	 * Get all the shared profile attributes of the users.
-	 * The attributes are contained into a configuration file which contains the name 
-	 * of the attribute and the test value of the attribute. The test value is used during 
-	 * the test of a script that use the attribute. 
+	 * Get all the default profile attributes of the users.
+	 * The default attributes are contained into a configuration file which contains the name 
+	 * of the attribute and the default value of the attribute.
 	 * 
+	 * @param exoProfileAttrs HashMap containing the exo user profile attributes.
 	 * @return HashMap of the attributes. HashMap keys are profile attribute.
 	 * HashMap values are test values. 
+	 * @throws EMFInternalError 
 	 * 
 	 */
-	public static HashMap getAllSharedProfileAttributes() {
-		SourceBean profileAttrsSB = getProfileAttributesSourceBean();
-		HashMap attrsMap = new HashMap();
-		if (profileAttrsSB == null) return attrsMap;
+	private static HashMap getAllDefaultProfileAttributes(HashMap exoProfileAttrs) throws EMFInternalError {
+		SourceBean profileAttrsSB = SecurityProviderUtilities.getProfileAttributesSourceBean();
+		if (profileAttrsSB == null) {
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, 
+					"Profile attributes attribute not found in ConfigSingleton");
+		}
+		HashMap toReturn = new HashMap();
 		List attrs = profileAttrsSB.getAttributeAsList("ATTRIBUTE");
-		if(attrs==null) {
-			return attrsMap;
+		if (attrs != null && attrs.size() > 0) {
+			Iterator iterAttrs = attrs.iterator();
+			SourceBean attrSB = null;
+			String nameattr = null;
+			String source = null;
+			String defaultvalue = null;
+			while(iterAttrs.hasNext()) {
+				attrSB = (SourceBean) iterAttrs.next();
+				if (attrSB == null)
+					continue;
+				source = (String) attrSB.getAttribute("source");
+				nameattr = (String) attrSB.getAttribute("name");
+				if (nameattr == null) {
+					throw new EMFInternalError(EMFErrorSeverity.ERROR, 
+							"Attribute 'name' missing in SourceBean\n" + attrSB.toXML(false));
+				}
+				defaultvalue = (String) attrSB.getAttribute("default");
+				if ("absolute".equalsIgnoreCase(source)) {
+					toReturn.put(nameattr, defaultvalue);
+				} else if ("exo".equalsIgnoreCase(source)) {
+					String exoname = (String) attrSB.getAttribute("exoname");
+					if (exoname == null) {
+						throw new EMFInternalError(EMFErrorSeverity.ERROR, 
+								"Attribute 'exoname', required for attributes with source='exo', " +
+								"missing in SourceBean\n" + attrSB.toXML(false));
+					}
+					String exovalue = (String) exoProfileAttrs.get(exoname);
+					if (exovalue != null) toReturn.put(nameattr, exovalue);
+					else toReturn.put(nameattr, defaultvalue);
+				} else {
+					throw new EMFInternalError(EMFErrorSeverity.ERROR, 
+							"Source '" + source + "' not recognized in SourceBean\n" + attrSB.toXML(false));
+				}
+			}
 		}
-		Iterator iterAttrs = attrs.iterator();
-		SourceBean attrSB = null;
-		String nameattr = null;
-		String attrvalue = null;
-		while(iterAttrs.hasNext()) {
-			attrSB = (SourceBean)iterAttrs.next();
-			if(attrSB==null)
-				continue;
-			nameattr = (String)attrSB.getAttribute("name");
-		    attrvalue = (String)attrSB.getAttribute("valuefortest");
-		    attrsMap.put(nameattr, attrvalue);
-		}
-		return attrsMap;
+		return toReturn;
 	}
 	
-	public static SourceBean getProfileAttributesSourceBean() {
-		SourceBean profileAttributesSB = (SourceBean) ConfigSingleton.getInstance().getAttribute("EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES");
+	private static SourceBean getProfileAttributesSourceBean() {
+		SourceBean profileAttributesSB = (SourceBean) 
+			ConfigSingleton.getInstance().getAttribute("EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES");
 		if (profileAttributesSB == null) {
-			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)", SecurityProviderUtilities.class.getName(), "getProfileAttributesSourceBean()", 
-					"There is not the needed EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES attribute in the ConfigSingleton!!");
+			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)", 
+					SecurityProviderUtilities.class.getName(), "getProfileAttributesSourceBean()", 
+					"There is not the needed EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES attribute " +
+					"in the ConfigSingleton!!");
 			return null;
 		} else return profileAttributesSB;
 		
@@ -113,6 +150,91 @@ public class SecurityProviderUtilities {
         Pattern pattern = Pattern.compile(rolePatternFilter);
         debug(this.getClass(), "init", "regular expression pattern compiled " + pattern);
         return pattern;
+	}
+	
+	
+	/**
+	 * Get all the profile attributes of the users given his unique identifier
+	 * The profile attributes are default and predefined attributes (predefined override default attributes) 
+	 * and are contained into a configuration file which contains the name 
+	 * of the attribute and its default value or its reference to a eXo user profile attribute.
+	 * 
+	 * @param userUniqueIdentifier String representing the unique identifier.
+	 * @return service The eXo OrganizationService object. 
+	 * 
+	 */
+	public static HashMap getUserProfileAttributes (String userUniqueIdentifier, OrganizationService service) {
 		
+		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+				"getUserProfileAttributes",
+				"Trying to load user attributes for user with unique identifer '" + userUniqueIdentifier +"'.");
+		// load the exo user profile attributes into a tenmporary hashmap
+		HashMap exoProfileAttrs = new HashMap();
+		HashMap userAttributes = new HashMap();
+		UserProfileHandler userProfileHandler = service.getUserProfileHandler();
+		if (userProfileHandler==null) {
+			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+					              "getUserProfileAttributes", "UserProfileHandler null");
+		} else {
+			UserProfile exoUserProfile = null;
+			try {
+				exoUserProfile = userProfileHandler.findUserProfileByName(userUniqueIdentifier);
+			} catch (Exception e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+                        "getUserProfileAttributes", "Error while recovering user profile by name '" 
+                        + userUniqueIdentifier + "'", e);
+				return userAttributes;
+			}
+			if (exoUserProfile == null){
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+			                          "getUserProfileAttributes", "exoUserProfile not found for user " 
+			                          + userUniqueIdentifier);
+				return userAttributes;
+			} else {
+				Map userInfoMap = exoUserProfile.getUserInfoMap();
+				Set infoKeys = userInfoMap.keySet();
+				Iterator infoKeyIter = infoKeys.iterator();
+				while(infoKeyIter.hasNext()) {
+					String labelcode = infoKeyIter.next().toString();
+					String value = userInfoMap.get(labelcode).toString();
+					//String label = PortletUtilities.getMessage(labelcode, "exo_userprofile_labels");
+					//exoProfileAttrs.put(label, value);
+					exoProfileAttrs.put(labelcode, value);
+					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+                                        "getUserProfileAttributes", "Found exo user profile attribute " 
+                                        + labelcode + " : " + value);
+				}
+			}
+		}
+
+		HashMap allProfileAttributes = null;
+		try {
+			allProfileAttributes = getAllDefaultProfileAttributes(exoProfileAttrs);
+		} catch (EMFInternalError e) {
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+                    "getUserProfileAttributes", "Error recovering default profile attributes", e);
+			return userAttributes;
+		}
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+                "getUserProfileAttributes", "All users predefined attributes recovered : " + allProfileAttributes);
+		HashMap predefinedProfileAttributes = null;
+		try {
+			predefinedProfileAttributes = 
+				SecurityProviderUtilities.getPredefinedProfileAttributes(userUniqueIdentifier);
+		} catch (EMFInternalError e) {
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+                    "getUserProfileAttributes", "Error recovering predefined profile attributes for user " 
+                    + userUniqueIdentifier, e);
+			return userAttributes;
+		}
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
+                            "getUserProfileAttributes", "Current user predefined attributes recovered : " 
+                            + predefinedProfileAttributes);
+		
+		userAttributes.putAll(allProfileAttributes);
+		// predefinedProfileAttributes override allProfileAttributes
+		userAttributes.putAll(predefinedProfileAttributes);
+		
+		return userAttributes;
 	}
 }

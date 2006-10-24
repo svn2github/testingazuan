@@ -1,7 +1,32 @@
 <EXO_PORTAL_SECURITY>
 	<PROFILE_ATTRIBUTES>
-		<ATTRIBUTE name="month" valuefortest="9" />
+		
+		<ATTRIBUTE name="product" default="" source="absolute" />
+		<ATTRIBUTE name="city" default="" source="absolute" />
+		<ATTRIBUTE name="month" default="9" source="absolute" />
+		<ATTRIBUTE name="limit" default="5" source="absolute" />
+		<ATTRIBUTE name="Birthday" default="" source="exo"  exoname="user.bdate" />
+		
+		<USER-PROFILES>
+			<USER name="biadmin">
+				<ATTRIBUTE name="product" value="Food" />
+				<ATTRIBUTE name="city" value="{,{Berkeley,Ballard}}" />
+			</USER>
+			<USER name="bidev">
+				<ATTRIBUTE name="product" value="Drink" />
+				<ATTRIBUTE name="city" value="{,{Albany,Altadena,Colma,Arcadia}}" />
+			</USER>
+			<USER name="biuser">
+				<ATTRIBUTE name="product" value="Food" />
+				<ATTRIBUTE name="city" value="{,{Novato,Renton}}" />
+			</USER>
+		</USER-PROFILES>
+		
+		
+		<!-- 
+		<ATTRIBUTE name="month" source="exo" valuefortest="9" />
 		<ATTRIBUTE name="limit" valuefortest="5" />
+		<ATTRIBUTE name="product" valuefortest="5" />
 		<LOAD-USER-PROFILE-ATTRIBUTES>yes</LOAD-USER-PROFILE-ATTRIBUTES>
 		<USER-PROFILES>
 			<USER name="biadmin">
@@ -17,6 +42,9 @@
 				<ATTRIBUTE name="city" valuefortest="{,{Novato,Renton}}" />
 			</USER>
 		</USER-PROFILES>
+		-->
+		
+		
 	</PROFILE_ATTRIBUTES>
 </EXO_PORTAL_SECURITY>
 

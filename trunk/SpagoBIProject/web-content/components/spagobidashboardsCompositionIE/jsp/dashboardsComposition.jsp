@@ -283,6 +283,22 @@ if (layout == null) {
 		if (dashboardxml == null) {
 			dashboardxml = x.getElementsByTagName(logicalName.toLowerCase())[0];
 		}
+		
+		// if dashboardxml is still null means that the result doesn't contain the logical name tag
+		// so the script returns the entire response
+		// *****************************************
+		if(dashboardxml == null) {
+			if (window.XMLSerializer) {
+				dashboardxmldata<%=uuidStr%> = (new XMLSerializer()).serializeToString(dashboardxml);
+			} else {
+				dashboardxmldata<%=uuidStr%> = dashboardxml.xml;
+			}
+			document.getElementById("lzapp<%=uuidStr%>" + logicalName).SetVariable("xmldata", dashboardxmldata<%=uuidStr%>);
+			return;
+		}	
+		// *****************************************
+		
+		
 		var rowsxml = dashboardxml.getElementsByTagName("rows")[0];
 		if (rowsxml == null) {
 			rowsxml = dashboardxml.getElementsByTagName("ROWS")[0];

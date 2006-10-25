@@ -285,6 +285,9 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             documentProperties[0] = new PropertyValue();
             documentProperties[0].Name = "Overwrite";
             documentProperties[0].Value = new Boolean(true);
+            documentProperties[1] = new PropertyValue();
+            documentProperties[1].Name = "FilterName";
+            documentProperties[1].Value = "MS PowerPoint 97";
             try {
             	debug("execute", "Try to store document with path = " + "file:///" + fileoopath);
                 xStorable.storeAsURL("file:///" + fileoopath , documentProperties);

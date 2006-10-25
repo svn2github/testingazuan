@@ -6,8 +6,10 @@
 		<ATTRIBUTE name="month" default="9" source="absolute" />
 		<ATTRIBUTE name="limit" default="5" source="absolute" />
 		
+		<ATTRIBUTE name="Filiale" default="" source="exo"  exoname="filiale" />
+		
 		<ATTRIBUTE name="Birthday" default="" source="exo"  exoname="user.bdate" />
-		<ATTRIBUTE name="Gender" default="" source="exo"  exoname="user.gender" />
+    <ATTRIBUTE name="Gender" default="" source="exo"  exoname="user.gender" />
 		<ATTRIBUTE name="Employer" default="" source="exo"  exoname="user.employer" />
 		<ATTRIBUTE name="Department" default="" source="exo"  exoname="user.department" />
 		<ATTRIBUTE name="JobTitle" default="" source="exo"  exoname="user.jobtitle" />
@@ -57,27 +59,3 @@
 				
 	</PROFILE_ATTRIBUTES>
 </EXO_PORTAL_SECURITY>
-
-
-
-		<!-- 
-		<ATTRIBUTE name="month" source="exo" valuefortest="9" />
-		<ATTRIBUTE name="limit" valuefortest="5" />
-		<ATTRIBUTE name="product" valuefortest="5" />
-		<LOAD-USER-PROFILE-ATTRIBUTES>yes</LOAD-USER-PROFILE-ATTRIBUTES>
-		<USER-PROFILES>
-			<USER name="biadmin">
-				<ATTRIBUTE name="product" valuefortest="Food" />
-				<ATTRIBUTE name="city" valuefortest="{,{Berkeley,Ballard}}" />
-			</USER>
-			<USER name="bidev">
-				<ATTRIBUTE name="product" valuefortest="Drink" />
-				<ATTRIBUTE name="city" valuefortest="{,{Albany,Altadena,Colma,Arcadia}}" />
-			</USER>
-			<USER name="biuser">
-				<ATTRIBUTE name="product" valuefortest="Food" />
-				<ATTRIBUTE name="city" valuefortest="{,{Novato,Renton}}" />
-			</USER>
-		</USER-PROFILES>
-		-->
-

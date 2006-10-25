@@ -7,6 +7,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -76,7 +77,7 @@ public class SecurityProviderUtilities {
 	 * 
 	 */
 	private static HashMap getAllDefaultProfileAttributes(HashMap exoProfileAttrs) throws EMFInternalError {
-		SourceBean profileAttrsSB = SecurityProviderUtilities.getProfileAttributesSourceBean();
+		SourceBean profileAttrsSB = getProfileAttributesSourceBean();
 		if (profileAttrsSB == null) {
 			throw new EMFInternalError(EMFErrorSeverity.ERROR, 
 					"Profile attributes attribute not found in ConfigSingleton");
@@ -236,5 +237,32 @@ public class SecurityProviderUtilities {
 		userAttributes.putAll(predefinedProfileAttributes);
 		
 		return userAttributes;
+	}
+	
+	public static List getAllProfileAtributesNames () throws EMFInternalError {
+		SourceBean profileAttrsSB = getProfileAttributesSourceBean();
+		if (profileAttrsSB == null) {
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, 
+					"Profile attributes attribute not found in ConfigSingleton");
+		}
+		List toReturn = new ArrayList();
+		List attrs = profileAttrsSB.getAttributeAsList("ATTRIBUTE");
+		if (attrs != null && attrs.size() > 0) {
+			Iterator iterAttrs = attrs.iterator();
+			SourceBean attrSB = null;
+			String nameattr = null;
+			while(iterAttrs.hasNext()) {
+				attrSB = (SourceBean) iterAttrs.next();
+				if (attrSB == null)
+					continue;
+				nameattr = (String) attrSB.getAttribute("name");
+				if (nameattr == null) {
+					throw new EMFInternalError(EMFErrorSeverity.ERROR, 
+							"Attribute 'name' missing in SourceBean\n" + attrSB.toXML(false));
+				}
+				toReturn.add(nameattr);
+			}
+		}
+		return toReturn;
 	}
 }

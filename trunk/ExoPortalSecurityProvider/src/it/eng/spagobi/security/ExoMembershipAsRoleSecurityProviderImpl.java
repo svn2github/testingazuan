@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -71,7 +71,7 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 			roles = getRolesFromMembership(groups, membershipHandler, membershipTypeHandler);
 			util.debug(this.getClass(), "getRoles", "roles retrived " + roles);	
 		} catch (Exception e) {
-			SpagoBITracer.critical("SPAGOBI(MetodoSecurityProvider)",
+			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
 					               this.getClass().getName(),
 					               "getRoles()",
 					               "Exception ", e);
@@ -103,7 +103,7 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 	    	try{
 	    		memebers = membershipHandler.findMembershipsByGroup(group);
 	    	} catch(Exception e) {
-	    		SpagoBITracer.critical("SPAGOBI(MetodoSecurityProvider)",
+	    		SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
 			               			   this.getClass().getName(),
 			                           "getRolesFromMembership()",
 			                           "Error while recovering membership of the group", e);
@@ -119,7 +119,7 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 	    			try{
 	    				membershipType = membershipTypeHandler.findMembershipType(memberType);
 	    			} catch(Exception e) {
-	    	    		SpagoBITracer.critical("SPAGOBI(MetodoSecurityProvider)",
+	    	    		SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
 	    	    							   this.getClass().getName(),
 	    	    							   "getRolesFromMembership()",
 	    	    							   "Error while recovering membershipType of the membership", e);
@@ -173,13 +173,27 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 			roles = getRolesFromMembership(groups, membershipHandler, membershipTypeHandler);
 			util.debug(this.getClass(), "getUserRoles", "roles retrived " + roles);		
 		} catch (Exception e) {
-			SpagoBITracer.critical("SPAGOBI(MetodoSecurityProvider)",
+			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
 					               this.getClass().getName(),
 					               "getUserRoles(String, String)",
 					               "Error retrieving groups of user "+user, e);
 		}
 		util.debug(this.getClass(), "getRoles", "roles returned " + roles);		
 		return roles;
+	}
+	
+	public List getAllProfileAttributesNames() {
+		List toReturn = null;
+		try {
+			toReturn = SecurityProviderUtilities.getAllProfileAtributesNames();
+		} catch (EMFInternalError e) {
+			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
+		               this.getClass().getName(),
+		               "getAllProfileAttributesNames()",
+		               "Error retrieving the list of all profile attributes names", e);
+			return new ArrayList();
+		}
+		return toReturn;
 	}
 	
 }

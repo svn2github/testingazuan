@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -43,6 +43,8 @@ import org.exoplatform.services.organization.OrganizationService;
  */
 public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvider {
 	
+	private SecurityProviderUtilities util = new SecurityProviderUtilities();
+	
 	/** 
 	 * Get all the portal roles 
 	 * @return List of the portal roles (list of it it.eng.spagobi.bo.Role)
@@ -55,20 +57,16 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 			Collection groups = service.getGroupHandler().getAllGroups();
 		    Iterator iter = groups.iterator();
 		    Group group = null;
-		    Role role = null;
 		    while(iter.hasNext()) {
 		    	group = (Group)iter.next();
-		    	SpagoBITracer.debug("UTILITIES",
-		    			            "ExoPortalSecurityProviderImpl",
-		    			            "getRoles()",
-		    			            "Find a Role With Name [" + group.getGroupName() +"]");
+		    	util.debug(this.getClass(), "getRoles", " Find a Role With Name [" + group.getGroupName() +"]");
 		    	add(group, service, roles);
 		    }
 		} catch (Exception e) {
-			SpagoBITracer.critical("UTILITIES",
-					               "ExoPortalSecurityProviderImpl",
+			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
+					               this.getClass().getName(),
 					               "getRoles()",
-					               "Exception ", e);
+					               " Exception while retrieving roles", e);
 		}
 		return roles;
 	}
@@ -95,10 +93,10 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
     			}
     		}
     	}catch(Exception e){
-    		SpagoBITracer.critical("UTILITIES",
-    				               "ExoPortalSecurityProviderImpl",
-    				               "getRoles()",
-    				               "Exception when retrieving child of group "+group.getId(), e);
+    		SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
+    				               this.getClass().getName(),
+    				               "add()",
+    				               " Exception when retrieving child of group "+group.getId(), e);
     	}
 	}
 
@@ -109,31 +107,23 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
 	public List getUserRoles(String user, SourceBean config) {
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-							"ExoPortalSecurityProviderImpl::getUserRoles:start method");
+		util.debug(this.getClass(), "getUserRoles", " Start method");
+		util.debug(this.getClass(), "getUserRoles", " Config SourceBean in input: " + config);
 		List roles = new ArrayList();
 		String paramCont = "NAME_PORTAL_APPLICATION";
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-							"ExoPortalSecurityProviderImpl::getUserRoles:use param " + paramCont);
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-				            "ExoPortalSecurityProviderImpl::getUserRoles:config SourceBean in input: " + config);
+		util.debug(this.getClass(), "getUserRoles", " Use param " + paramCont);
 		SourceBean paramContSB = (SourceBean)config.getAttribute(paramCont);
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-							"ExoPortalSecurityProviderImpl::getUserRoles:param context name Source Bean " +
+		util.debug(this.getClass(), "getUserRoles", " Param context name Source Bean " +
 							"retrived: " + paramContSB);
 		String nameCont = (String)paramContSB.getCharacters();
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-				            "ExoPortalSecurityProviderImpl::getUserRoles: use context name " + nameCont);
+		util.debug(this.getClass(), "getUserRoles", " Use context name " + nameCont);
 		RootContainer rootCont = RootContainer.getInstance();
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-	                        "ExoPortalSecurityProviderImpl::getUserRoles: root container retrived: " + rootCont);
+		util.debug(this.getClass(), "getUserRoles", " Root container retrived: " + rootCont);
 		PortalContainer container = rootCont.getPortalContainer(nameCont);
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-                            "ExoPortalSecurityProviderImpl::getUserRoles: portal container retrived: " + container);
+		util.debug(this.getClass(), "getUserRoles", " Portal container retrived: " + container);
 		OrganizationService service = 
 			(OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-                			"ExoPortalSecurityProviderImpl::getUserRoles: organization service retrived: " + service);
+		util.debug(this.getClass(), "getUserRoles", " Organization service retrived: " + service);
 		try {
 			Collection groups = service.getGroupHandler().findGroupsOfUser(user);
 			Iterator iterGroups = groups.iterator();
@@ -144,14 +134,28 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 				//roles.add(groupid);
 			}
 		} catch (Exception e) {
-			SpagoBITracer.critical("UTILITIES",
-					               "ExoPortalSecurityProviderImpl",
-					               "getUserRoles()",
-					               "Error retrieving groups of user "+user, e);
+			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
+					this.getClass().getName(),
+					"getUserRoles()",
+					"Error retrieving groups of user "+user, e);
 		}
-		TracerSingleton.log("SPAGOBI", TracerSingleton.DEBUG, 
-							"ExoPortalSecurityProviderImpl::getUserRoles:end method return roles: " + roles);
+		util.debug(this.getClass(), "getUserRoles", " End method return roles: " + roles);
 		return roles;
+	}
+
+
+	public List getAllProfileAttributesNames() {
+		List toReturn = null;
+		try {
+			toReturn = SecurityProviderUtilities.getAllProfileAtributesNames();
+		} catch (EMFInternalError e) {
+			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
+					this.getClass().getName(),
+		            "getAllProfileAttributesNames()",
+		            "Error retrieving the list of all profile attributes names", e);
+			return new ArrayList();
+		}
+		return toReturn;
 	}
 	
 }

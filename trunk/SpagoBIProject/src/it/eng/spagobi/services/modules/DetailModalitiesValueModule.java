@@ -22,17 +22,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.modules;
 
 import groovy.lang.Binding;
+import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.init.InitializerIFace;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.JavaClassDetail;
@@ -49,9 +53,11 @@ import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.security.IPortalSecurityProvider;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -540,10 +546,35 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		response.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
 		response.setAttribute(SpagoBIConstants.MODALITY, mod);	
 		loadValuesDomain(response);
-		IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
+		loadAllProfileAttributes(response);
+	}
+	
+	private void loadAllProfileAttributes(SourceBean response) throws SourceBeanException {
+		SourceBean configSingleton = ConfigSingleton.getInstance();
+		SourceBean portalSecuritySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
+		SpagoBITracer.debug("SPAGOBI", this.getClass().getName(), "prepareDetailModalitiesValuePage", 
+				" Portal security class configuration " + portalSecuritySB);
+		String portalSecurityClassName = (String) portalSecuritySB.getAttribute("className");
+		SpagoBITracer.debug("SPAGOBI", this.getClass().getName(), "prepareDetailModalitiesValuePage", 
+				" Portal security class name: " + portalSecurityClassName);
+		if (portalSecurityClassName == null || portalSecurityClassName.trim().equals("")) {
+			SpagoBITracer.critical("SPAGOBI", this.getClass().getName(), "prepareDetailModalitiesValuePage", 
+					" Portal security class name not set!!!!");
+			return;
+		}
+		portalSecurityClassName = portalSecurityClassName.trim();
+		IPortalSecurityProvider portalSecurityProvider = null;
+		try {
+			portalSecurityProvider = (IPortalSecurityProvider)Class.forName(portalSecurityClassName).newInstance();
+		} catch (Exception e) {
+			SpagoBITracer.critical("SPAGOBI", this.getClass().getName(), "prepareDetailModalitiesValuePage", 
+					" Error while istantiating portal security class '" + portalSecurityClassName + "'.", e);
+			return;
+		}
+		List profileattrs = portalSecurityProvider.getAllProfileAttributesNames();
 		response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, profileattrs);
 	}
+	
 	
 	/**
 	 * Tests the ModalitiesValue before saving and sets some attributes to the response SourceBean 
@@ -677,13 +708,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 */
 	private void newDetailModValue(SourceBean response) throws EMFUserError {
 		try {
-			
-			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		HashMap attrs = GeneralUtilities.getAllProfileAttributes(profile);
-			response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, attrs);
-			
-			response.setAttribute(SpagoBIConstants.MODALITY,
-					AdmintoolsConstants.DETAIL_INS);
 			ModalitiesValue modVal = new ModalitiesValue();
 			modVal.setId(new Integer(0));
 			modVal.setName("");
@@ -691,9 +715,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			modVal.setLabel("");
 			modVal.setLovProvider("");
 			modVal.setITypeCd("QUERY");
-			loadValuesDomain(response);
-			response.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
-					modVal);
+			prepareDetailModalitiesValuePage(modVal, AdmintoolsConstants.DETAIL_INS, response);
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
 					"DetailModalitiesValueModule", "newDetailModValue",

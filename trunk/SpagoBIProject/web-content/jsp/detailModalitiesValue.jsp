@@ -21,12 +21,11 @@
 
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
-	HashMap profileattrs = (HashMap)moduleResponse.getAttribute(SpagoBIConstants.PROFILE_ATTRS);
+	List nameAttrs = (List) moduleResponse.getAttribute(SpagoBIConstants.PROFILE_ATTRS);
 	ModalitiesValue modVal = (ModalitiesValue)moduleResponse.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 	String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 	ArrayList list = (ArrayList)moduleResponse.getAttribute(SpagoBIConstants.LIST_INPUT_TYPE); 
-	
-	Set nameAttrs = profileattrs.keySet();
+
 	Iterator iterAttrs = null;
 	
 	PortletURL formUrl = renderResponse.createActionURL();

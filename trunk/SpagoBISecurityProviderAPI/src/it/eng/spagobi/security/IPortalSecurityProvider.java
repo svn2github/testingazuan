@@ -56,4 +56,11 @@ public interface IPortalSecurityProvider {
 	 */
 	public List getUserRoles(String user, SourceBean config);
 	
+	/**
+	 * Gets the list of names of all attributes of all profiles defined in the portal server.
+	 *  
+	 * @return the list of names of all attributes of all profiles defined in the portal server
+	 */
+	public List getAllProfileAttributesNames ();
+	
 }

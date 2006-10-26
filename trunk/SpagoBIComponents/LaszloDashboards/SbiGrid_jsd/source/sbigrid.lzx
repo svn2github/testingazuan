@@ -1,0 +1,467 @@
+<canvas width="100%" height="100%" bgcolor="0xeaeaea">
+    
+    <include href="sbitable.lzx"/>
+    <include href="sbicolumn.lzx"/>
+    
+    <!--
+    <attribute name="xmldata" type="string" value=""/>
+    <attribute name="xmlconfig" type="string" value=""/>
+    -->
+    
+    <script>
+    
+         var xmldata = "";
+         var xmlconfig = ""; 
+    
+         delay = typeof(global.delay)!="undefined" ? global.delay : "50"; 
+         delay = parseInt(delay);
+         
+         logicalname = typeof(global.logicalname)!="undefined" ? global.logicalname : "";
+         linkbaseurl = typeof(global.linkbaseurl)!="undefined" ? global.linkbaseurl : "";
+	       uuid = typeof(global.uuid)!="undefined" ? global.uuid : "";
+         var dataPointer = new LzDatapointer();
+         var confPointer = new LzDatapointer();  
+         var sbitableobj = new sbitable();
+         var lightColumnConf = new Array();
+         var linkColumnConf = new Array();
+         var nameColumnConf = new Array();
+         var dimensionColumnConf = new Array();
+         
+         var refreshtime = 30000;
+         ray = 15;
+         heightFirstRow = 0;
+         tablebackgroundcolor = "#9cc6d0";
+         bgcolorFirstRow = "#2861bf";
+         bgcolorFirstColumn = "#4286f4";
+         boldTextFirstRow = true;
+         boldTextFirstColumn = false;
+         colorTextFirstColumn = "#ffffff";
+         colorTextFirstRow = "#ffffff";
+         sizeTextFirstRow = 15;
+         sizeTextFirstColumn = 11;
+         colorLinkOver = "yellow";
+         sizeText = 10;
+         
+    </script> 
+
+
+    <method name="checkdataload" >
+      //if(canvas.getAttribute("xmldata")=="") {
+      if(xmldata=="") {
+         canvas.timercheckdataloaded();   
+      } else { 
+        //var valuexml = canvas.getAttribute("xmldata");
+        var valuexml = xmldata;  
+        var dataDom = LzDataNode.stringToLzData(valuexml, false); 
+        if(dataDom!=null) {
+          //canvas.setAttribute("xmldata", "");
+          xmldata = "";
+          dataPointer.setPointer(dataDom);
+          canvas.dashboardArea.redraw(dataPointer);
+        }
+      }
+    </method>
+    
+    <method name="checkconfload" >
+      <![CDATA[
+      //if(canvas.getAttribute("xmlconfig")=="") {
+      if(xmlconfig=="") {
+         canvas.timercheckconfloaded();   
+      } else { 
+        //var valuexmlconf = canvas.getAttribute("xmlconfig");  
+        var valuexmlconf = xmlconfig;
+        var dataDomConf = LzDataNode.stringToLzData(valuexmlconf, false); 
+        if(dataDomConf!=null) {
+          confPointer.setPointer(dataDomConf);
+          
+          // calculate the light configuration parameters
+          var curConfNode = confPointer.xpathQuery(".");
+          curConfNode = confPointer.xpathQuery("./LIGHTCOLUMNS");          
+          var childs = confPointer.xpathQuery("./LIGHTCOLUMNS/*");
+          if(childs!=null) {
+              var numChilds = childs.length;
+              if(numChilds==null) {      
+                  var parameters = new Array();
+                  parameters[0] = childs.getAttr("index");
+                  parameters[1] = childs.getAttr("condition");
+                  parameters[2] = childs.getAttr("value1");
+                  parameters[3] = childs.getAttr("value2");
+                  parameters[4] = childs.getAttr("conditioncolor");
+                  parameters[5] = childs.getAttr("defaultcolor");
+                  lightColumnConf[lightColumnConf.length] = parameters;                  
+              } else {
+                  for(var index=0; index < childs.length; index++) {
+                      var parameters = new Array();
+                      parameters[0] = childs[index].getAttr("index");
+                      parameters[1] = childs[index].getAttr("condition");
+                      parameters[2] = childs[index].getAttr("value1");
+                      parameters[3] = childs[index].getAttr("value2");
+                      parameters[4] = childs[index].getAttr("conditioncolor");
+                      parameters[5] = childs[index].getAttr("defaultcolor");
+                      lightColumnConf[lightColumnConf.length] = parameters;
+                  }
+              }
+          }
+          
+          
+          
+          // calculate the link configuration parameters
+          var curConfNode = confPointer.xpathQuery(".");
+          curConfNode = confPointer.xpathQuery("./LINKCOLUMNS");          
+          var childs = confPointer.xpathQuery("./LINKCOLUMNS/*");
+          if(childs!=null) {
+              var numChilds = childs.length;
+              if(numChilds==null) {      
+                  var parameters = new Array();
+                  parameters[0] = childs.getAttr("index");
+                  parameters[1] = childs.getAttr("onlyheader");
+                  parameters[2] = childs.getAttr("fixedquerystring");
+                  parameters[3] = childs.getAttr("prefixvalue");
+                  linkColumnConf[linkColumnConf.length] = parameters;                  
+              } else {
+                  for(var index=0; index < childs.length; index++) {
+                      var parameters = new Array();
+                      parameters[0] = childs[index].getAttr("index");
+                      parameters[1] = childs[index].getAttr("onlyheader");
+                      parameters[2] = childs[index].getAttr("fixedquerystring");
+                      parameters[3] = childs[index].getAttr("prefixvalue");
+                      linkColumnConf[linkColumnConf.length] = parameters;
+                  }
+              }
+          }
+          
+          
+          // calculate the column dimension 
+          var curConfNode = confPointer.xpathQuery(".");
+          curConfNode = confPointer.xpathQuery("./DIMENSIONCOLUMNS");          
+          var childs = confPointer.xpathQuery("./DIMENSIONCOLUMNS/*");
+          if(childs!=null) {
+              var numChilds = childs.length;
+              if(numChilds==null) {      
+                  var parameters = new Array();
+                  parameters[0] = childs.getAttr("index");
+                  parameters[1] = childs.getAttr("width");
+                  dimensionColumnConf[dimensionColumnConf.length] = parameters;                  
+              } else {
+                  for(var index=0; index < childs.length; index++) {
+                      var parameters = new Array();
+                      parameters[0] = childs[index].getAttr("index");
+                      parameters[1] = childs[index].getAttr("width");
+                      dimensionColumnConf[dimensionColumnConf.length] = parameters;
+                  }
+              }
+          }
+          
+          
+          // gather the column names 
+          var curConfNode = confPointer.xpathQuery(".");    
+          var childs = confPointer.xpathQuery("./NAMECOLUMNS/*");
+          if(childs!=null) {
+              var numChilds = childs.length;
+              if(numChilds==null) {      
+                  var parameters = new Array();
+                  parameters[0] = childs.getAttr("index");
+                  parameters[1] = childs.getAttr("name");
+                  nameColumnConf[nameColumnConf.length] = parameters;                  
+              } else {
+                  for(var index=0; index < childs.length; index++) {
+                      var parameters = new Array();
+                      parameters[0] = childs[index].getAttr("index");
+                      parameters[1] = childs[index].getAttr("name");
+                      nameColumnConf[nameColumnConf.length] = parameters;
+                  }
+              }
+          }
+
+          
+          // gather parameter values
+          childs = confPointer.xpathQuery("./PARAMETERS/*");
+          for(var index=0; index < childs.length; index++) {
+              var name = childs[index].getAttr("name");
+              var value = childs[index].getAttr("value");
+              if(name=="refreshtime") {
+                  refreshtime = parseInt(value);
+              }
+              if(name=="ray") {
+                  ray = value;
+              }
+              if(name=="heightfirstrow") {
+                  heightFirstRow = parseInt(value);
+              }
+              if(name=="tablebackgroundcolor") {
+                  tablebackgroundcolor = value;
+              }
+              if(name=="boldtextfirstrow") {
+                  boldTextFirstRow = value;
+              }
+              if(name=="boldtextfirstcolumn") {
+                  boldTextFirstColumn = value;
+              }
+              if(name=="colortextfirstcolumn") {
+                  colorTextFirstColumn = value;
+              }
+              if(name=="colortextfirstrow") {
+                  colorTextFirstRow = value;
+              }
+              if(name=="sizetextfirstrow") {
+                  sizeTextFirstRow = value;
+              }
+              if(name=="sizetextfirstcolumn") {
+                  sizeTextFirstColumn = value;
+              }
+              if(name=="colorlinkover") {
+                  colorLinkOver = value;
+              }
+              if(name=="bgcolorfirstrow") {
+                  bgcolorFirstRow = value;
+              }
+              if(name=="bgcolorfirstcolumn") {
+                  bgcolorFirstColumn = value;
+              }
+              if(name=="sizetext") {
+                  sizeText = value;
+              }
+          }         
+          canvas.getxmldata();
+        }
+      }
+    ]]>
+    </method>
+
+    <method name="timercheckdataloaded">
+       this.checkDataLoad = new LzDelegate( this, "checkdataload" );
+   	   LzTimer.addTimer(this.checkDataLoad, 200);	
+    </method> 
+    
+    <method name="timercheckconfloaded">
+       this.checkConfLoad = new LzDelegate( this, "checkconfload" );
+   	   LzTimer.addTimer(this.checkConfLoad, 200);	
+    </method> 
+
+
+    <method name="getxmldata">
+         <![CDATA[
+         var s = "javascript:getxmldata"+uuid+"('"+logicalname+"');";
+         LzBrowser.loadURL(s);
+         //var data = '<rows><row cluster="cluster1" task1="ok" task2="fault" /><row cluster="cluster2" task1="fault" task2="ok" /><row cluster="cluster3" task1="ok" task2="fault" /></rows>';
+         //xmldata = data;
+         canvas.timercheckdataloaded();
+         canvas.timergetxmldata();
+         ]]>
+    </method> 
+    
+    <method name="getxmlconfig">
+         <![CDATA[
+         var s = "javascript:getxmlconfig"+uuid+"('"+logicalname+"');";  
+         LzBrowser.loadURL(s);
+         //var config = '<CONFIGURATION><NAMECOLUMNS><COLUMN index="1" name="Nuovo Nome"/><COLUMN index="0" name="Ma dai"/></NAMECOLUMNS><DIMENSIONCOLUMNS><COLUMN index="0" width="200"/></DIMENSIONCOLUMNS><LINKCOLUMNS><COLUMN index="0" onlyheader="true" fixedquerystring="querystring&biobject=" prefixvalue="biobjectcluster_" /></LINKCOLUMNS><PARAMETERS><PARAMETER name="tablebackgroundcolor" value="#9cc6d0"/><PARAMETER name="heightfirstrow" value="100"/><PARAMETER name="refreshtime" value="60000"/><PARAMETER name="ray" value="15"/></PARAMETERS><LIGHTCOLUMNS><column index="1" condition="contains" value1="o" value2="" conditioncolor="green" defaultcolor="red" /><column index="2" condition="contains" value1="o" value2="" conditioncolor="green" defaultcolor="red"/></LIGHTCOLUMNS></CONFIGURATION>';
+         //xmlconfig = config;
+         canvas.timercheckconfloaded();
+         ]]>
+    </method> 
+
+    <method name="timergetxmldata">
+        this.getXmlDataDelegate = new LzDelegate( this, "getxmldata" );
+   	    LzTimer.addTimer( this.getXmlDataDelegate, refreshtime); 	
+    </method>  
+
+    <method name="start" event="oninit">
+         //canvas.getxmldata();  --> called after the configuration retrival (see checkconfload)
+         //canvas.getxmlconfig();
+         this.getXmlConfDel = new LzDelegate( this, "getxmlconfig" );
+   	     LzTimer.addTimer( this.getXmlConfDel, delay);  
+    </method>
+
+   
+    
+
+    <view clip="true" width="${parent.width}" height="${parent.height}" bgcolor="white" name="dashboardArea" id="dashboardArea">
+        
+        
+        
+        
+        
+        <method name="redraw" args="dataPointer">
+                  
+            <![CDATA[
+            // CLEAR ALL THE DRAWN ELEMENTS
+            sbitableobj.clear();
+            // CREATE THE TABLE OBJECTS
+            sbitableobj.setAttribute("x", 0);
+            sbitableobj.setAttribute("y", 0);
+            sbitableobj.setAttribute("height", this.height);
+            sbitableobj.setAttribute("width", this.width); 
+            sbitableobj.setAttribute("heightFirstRow", heightFirstRow);   
+            sbitableobj.setAttribute("backgroundcolor", tablebackgroundcolor);   
+            sbitableobj.setAttribute("linkbaseurl", linkbaseurl); 
+            // GATHER ALL THE ATTRIBUTE NAMES OF THE FIRST ROW         
+            var invAttributeNames = new Array();
+            dataPointer.selectChild();
+            var curNode = dataPointer.xpathQuery(".");   
+            var attrs = curNode.attributes;
+            for(var attr in attrs) {
+               invAttributeNames[invAttributeNames.length] = "" + attr;
+            }
+            // REVERT THE ORDER OF THE ATTRIBUTE NAMES
+            var attributeNames = new Array();
+            for(var i=invAttributeNames.length-1; i>=0; i--) {
+                attributeNames[attributeNames.length] = invAttributeNames[i];
+            } 
+            // CREATE A TABLE COLUMN FOR EACH ATTRIBUTE
+            var columns = new Array();
+            for(var i=0; i<attributeNames.length; i++) { 
+                var sbicol = new sbicolumn();
+                var sbicellhead = new sbicell();
+                sbicellhead.setAttribute("parentcolumn", sbicol);
+                sbicellhead.setAttribute("containstext", "true");
+                var celltext =  attributeNames[i];
+                for(var j=0; j<nameColumnConf.length; j++) {                      
+                    if(i==nameColumnConf[j][0]) {
+                        celltext = nameColumnConf[j][1];
+                    }
+                }
+                sbicellhead.setAttribute("celltext", celltext);
+                //sbicellhead.setAttribute("celltext", attributeNames[i]);
+                sbicellhead.setAttribute("bold", boldTextFirstRow);
+                sbicellhead.setAttribute("textsize", sizeTextFirstRow);
+                sbicellhead.setAttribute("textcolor", colorTextFirstRow);
+                sbicellhead.setAttribute("backgroundColor", bgcolorFirstRow); 
+                for(var j=0; j<linkColumnConf.length; j++) {                      
+                    if(i==linkColumnConf[j][0]) {
+                         if(linkColumnConf[j][1]=="true") {
+                             var fixquerystr = linkColumnConf[j][2];
+                             var valueparlink = celltext;
+                             var prefixvalue = linkColumnConf[j][3];
+                             if(linkbaseurl.indexOf('?')==-1){
+                                 linkbaseurl = linkbaseurl + "?";
+                             } 
+                             var link = linkbaseurl + fixquerystr + prefixvalue + valueparlink;
+                             sbicellhead.setAttribute("url", link);
+                             sbicellhead.setAttribute("colorLinkOver", colorLinkOver);
+                         }    
+                    }                       
+                }
+                sbicol.addCell(sbicellhead);
+                sbicol.parenttable = sbitableobj;
+                columns[columns.length] = sbicol;
+                
+            } 
+            // ADD CELLS TO THE COLUMNS 
+            this.addcells(dataPointer,attributeNames,columns);
+            // for each other row of the data set cells into columns
+            while(dataPointer.selectNext()) {
+                this.addcells(dataPointer,attributeNames,columns);
+            }
+           
+           // INSERTING ALL THE COLUMN INTO THE TABLE
+           for(var i=0; i < columns.length; i++) {
+                var sbicol = columns[i];
+                sbitableobj.addColumn(sbicol);  
+            } 
+           // DESIGN TABLE
+           sbitableobj.draw(this, dimensionColumnConf);
+
+
+           ]]>
+        </method>
+    
+    
+    
+        
+        <method name="addcells" args="dataPointer,attributeNames,columns">
+            <![CDATA[
+            for(var i=0; i<attributeNames.length; i++) { 
+                name = attributeNames[i];
+                col =  columns[i];
+                value = dataPointer.getNodeAttribute(name);
+                var insertTextNode = true;
+                
+                // CREATE THE CELL    
+                var sbicellobj = new sbicell();
+                sbicellobj.setAttribute("parentcolumn", col);
+                if(i==0) {
+                   sbicellobj.setAttribute("backgroundColor", bgcolorFirstColumn);
+                }
+                    
+                for(var j=0; j<lightColumnConf.length; j++) {
+                    if(i==lightColumnConf[j][0]) {
+                        insertTextNode = false;
+                        var color = lightColumnConf[j][5];
+                        var condition = lightColumnConf[j][1];
+                        if(condition=="equal") {
+                            if(value==lightColumnConf[j][2]) {
+                                color = lightColumnConf[j][4]
+                            }
+                        }
+                        if(condition=="contains") {
+                            if(value.indexOf(lightColumnConf[j][2])!=-1) {
+                                color = lightColumnConf[j][4]
+                            }
+                        }
+                        if(condition=="greaterthan") {
+                            if(parseFloat(value) > parseFloat(lightColumnConf[j][2])) {
+                                color = lightColumnConf[j][4]
+                            }
+                        }
+                        if(condition=="lessthan") {
+                            if(parseFloat(value) < parseFloat(lightColumnConf[j][2])) {
+                                color = lightColumnConf[j][4]
+                            }
+                        }
+                        if(condition=="between") {
+                            if( (parseFloat(value) > parseFloat(lightColumnConf[j][2])) && (parseFloat(value) < parseFloat(lightColumnConf[j][3]))  ) {
+                                color = lightColumnConf[j][4]
+                            }
+                        }
+                        
+                        sbicellobj.setAttribute("containstext", "false");
+                        sbicellobj.setAttribute("containslight", "true");
+                        sbicellobj.setAttribute("lightcolor", color);
+                        sbicellobj.setAttribute("lightray", ray);
+                        col.addCell(sbicellobj);                    
+                    }
+                }
+                if(insertTextNode) {
+                    sbicellobj.setAttribute("containstext", "true");
+                    sbicellobj.setAttribute("celltext", value); 
+                    if(i==0) {
+                        sbicellobj.setAttribute("bold", boldTextFirstColumn);
+                        sbicellobj.setAttribute("textsize", sizeTextFirstColumn);
+                        sbicellobj.setAttribute("textcolor", colorTextFirstColumn);
+                    } else {
+                        sbicellobj.setAttribute("textsize", sizeText);
+                    }
+                    for(var j=0; j<linkColumnConf.length; j++) {                     
+                        if(i==linkColumnConf[j][0]) {
+                            if(linkColumnConf[j][1]!="true") {
+                                var fixquerystr = linkColumnConf[j][2];
+                                var valueparlink = value;
+                                var prefixvalue = linkColumnConf[j][3];
+                                if(linkbaseurl.indexOf('?')==-1){
+                                      linkbaseurl = linkbaseurl + "?";
+                                } 
+                                var link = linkbaseurl + fixquerystr + prefixvalue + valueparlink;
+                                sbicellobj.setAttribute("url", link);
+                                sbicellobj.setAttribute("colorLinkOver", colorLinkOver);
+                            }    
+                        }                       
+                    }
+                    col.addCell(sbicellobj);
+               }
+            }
+            ]]>
+        </method>     
+    
+    
+    
+    </view> 
+    
+    
+    <alert name="gridalert" width="${parent.width}">
+          <statictext name="message">
+              You should not see this !!
+          </statictext>
+    </alert>
+    
+    
+</canvas>

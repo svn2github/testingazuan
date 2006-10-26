@@ -57,7 +57,7 @@
           }
           
           if (isIE && isWin || detectFlash() >= lzCanvasRuntimeVersion) {
-            lzEmbed({url: 'sbigrid.lzx.swf?delay=50&linkbaseurl=http://spagobi.eng.it/dashService&logicalname=clusterlight&uuid=123456&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '1000', height: '250', id: 'lzapp', accessible: 'false'}, lzCanvasRuntimeVersion);
+            lzEmbed({url: 'sbigrid_jsd.lzx.swf?delay=50&linkbaseurl=http://spagobi.eng.it/dashService&logicalname=clusterlight&uuid=123456&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '1000', height: '250', id: 'lzapp', accessible: 'false'}, lzCanvasRuntimeVersion);
             //lzEmbed({url: "sbigrid.lzx.swf?delay=100&linkbaseurl=http://spagobi.eng.it/dashService&logicalname=clusterlight&uuid=1234567&lzproxied=false&__lzhistconn="+top.connuid+"&__lzhisturl=" + escape("lps/includes/h.html?h="), bgcolor: "#eaeaea", width: "1000", height: "300", id: "lzapp1", accessible: "false"}, lzCanvasRuntimeVersion);
             lzHistEmbed(lzLPSRoot);
           } else {

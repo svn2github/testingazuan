@@ -684,11 +684,16 @@
 			}
 			iframeEl.style.height = height + 100 + 'px';
 		}
-		
 </script>
 
+<%
+	String styleDiv = "width:100%;";	
+	if(edNoteAble) {
+		styleDiv = "width:98%;float:left;padding-left:2%;";
+	} 
+%>
 
-<div id="divIframe<%=requestIdentity%>" style="width:98%;float:left;padding-left:2%;">
+<div id="divIframe<%=requestIdentity%>" style="<%=styleDiv%>">
            
            <%
            		String onloadStr = " ";

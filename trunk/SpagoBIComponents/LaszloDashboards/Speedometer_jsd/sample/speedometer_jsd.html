@@ -39,7 +39,7 @@
             lzCanvasRuntimeVersion = 6.65;
           }
           if (isIE && isWin || detectFlash() >= lzCanvasRuntimeVersion) {
-            lzEmbed({url: 'speedometer.lzx.swf?delay=5000&linkbaseurl=http://spagobi.eng.it/dashService&logicalname=clusterlight&uuid=123456&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '300', height: '300', id: 'lzapp', accessible: 'false'}, lzCanvasRuntimeVersion);
+            lzEmbed({url: 'speedometer_jsd.lzx.swf?delay=5000&linkbaseurl=http://spagobi.eng.it/dashService&logicalname=clusterlight&uuid=123456&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '300', height: '300', id: 'lzapp', accessible: 'false'}, lzCanvasRuntimeVersion);
             lzHistEmbed(lzLPSRoot);
           } else {
             document.write('This application requires Flash player ' + lzCanvasRuntimeVersion + '. <a href="http://www.macromedia.com/go/getflashplayer" target="fpupgrade">Click here</a> to upgrade.');

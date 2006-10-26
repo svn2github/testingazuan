@@ -10,12 +10,12 @@
 	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spago-core-2.1.2.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="EXO_HOME/common/lib/portlet-api-1.0.jar"/>
-	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spago-portlet-2.1.1.jar"/>
 	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/jbpm-3.1.2.jar"/>
 	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/jbpm-identity-3.1.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
 	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spagocms-core-2.1.0.jar"/>
 	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/commons-httpclient-2.0.2.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spago-portlet-spagobi.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

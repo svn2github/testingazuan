@@ -281,8 +281,7 @@ public class BookletsManagementModule extends AbstractModule {
 			response.setAttribute("logicalname", confDoc.getLogicalName());
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletConfiguredDocumentDetail"); 
 			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook); 
-		}
-		
+		}	
 	}
 	
 	

@@ -5,9 +5,8 @@
 		<ATTRIBUTE name="city" default="" source="absolute" />
 		<ATTRIBUTE name="month" default="9" source="absolute" />
 		<ATTRIBUTE name="limit" default="5" source="absolute" />
-		
-		<ATTRIBUTE name="Filiale" default="" source="exo"  exoname="filiale" />
-		
+    
+    <!-- 
 		<ATTRIBUTE name="Birthday" default="" source="exo"  exoname="user.bdate" />
     <ATTRIBUTE name="Gender" default="" source="exo"  exoname="user.gender" />
 		<ATTRIBUTE name="Employer" default="" source="exo"  exoname="user.employer" />
@@ -41,6 +40,7 @@
 		<ATTRIBUTE name="BusinessWebsite" default="" source="exo"  exoname="user.business-info.online.uri" />
 		<ATTRIBUTE name="AvatarUrl" default="" source="exo"  exoname="user.other-info.avatar.url" />
 		<ATTRIBUTE name="Signature" default="" source="exo"  exoname="user.other-info.signature" />
+		-->
 		
 		<USER-PROFILES>
 			<USER name="biadmin">

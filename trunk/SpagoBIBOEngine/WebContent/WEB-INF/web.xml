@@ -9,11 +9,11 @@
         <servlet-class>it.eng.spagobi.engines.bo.BOServlet</servlet-class>
         <init-param>
             <param-name>BOUSER</param-name>
-            <param-value>fiscato</param-value>
+            <param-value>{username}</param-value>
         </init-param>
         <init-param>
             <param-name>BOPASSWORD</param-name>
-            <param-value>luca</param-value>
+            <param-value>{password}</param-value>
         </init-param>
     </servlet>
     

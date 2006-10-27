@@ -9,6 +9,7 @@
                 com.bo.rebean.wi.Reports"%>
 <%@page import="com.bo.rebean.wi.DrillInfo"%>
 <%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.List"%>
@@ -30,9 +31,14 @@
   	Reports reports = document.getReports();
   	Report report = reports.getItem(selectedReport);
   	DrillInfo drillInfo = (DrillInfo)report.getNamedInterface("DrillInfo");
-  	Map drillHier = null;
+  	Map drillHier = new HashMap();
   	if(report.getReportMode().value() == report.getReportMode().Analysis.value()){
-  	drillHier = Utils.getDrillDimensions(drillInfo);
+  		try {
+  			drillHier = Utils.getDrillDimensions(drillInfo);
+  		} catch (Exception e) {
+  			out.write("Error while getting drill dimensions. Try restarting document execution.");
+  			return;
+  		}
   	}
   	Set drilHierNames = drillHier.keySet();
   	Iterator iterDrillHier = drilHierNames.iterator();

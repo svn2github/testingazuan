@@ -178,7 +178,7 @@
           			</a>  
           			<% } else { %>
           			<a target="_parent" href="<%=beginDrill%>" alt="drill">
-          				<img border="0" src="/images/drillmode.gif" title="drill" alt="drill" /></a> 
+          				<img border="0" src="../images/drillmode.gif" title="drill" alt="drill" /></a> 
           			<% } %>
 			  	</td>
 	

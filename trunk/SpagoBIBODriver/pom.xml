@@ -41,7 +41,8 @@
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.drivers.api</artifactId>
                 <version>1.9.1</version>
-				<scope>compile</scope>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/../SpagoBIDriversAPI/target/sbi.drivers.api-1.9.1.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spago-core</groupId>

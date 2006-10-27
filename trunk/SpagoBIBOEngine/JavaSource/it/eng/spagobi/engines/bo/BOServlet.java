@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.dom4j.DocumentException;
 
 import com.bo.rebean.wi.ReportEngine;
 import com.bo.wibean.WIServer;

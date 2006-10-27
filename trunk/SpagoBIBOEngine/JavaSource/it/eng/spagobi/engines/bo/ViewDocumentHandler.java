@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Node;
 
 import sun.misc.BASE64Decoder;
@@ -31,7 +30,6 @@ import com.bo.rebean.wi.ReportEngine;
 import com.bo.rebean.wi.Reports;
 import com.bo.wibean.WIServer;
 import com.bo.wibean.WISession;
-import it.eng.spagobi.utilities.*;
 
 public class ViewDocumentHandler {
 
@@ -134,6 +132,9 @@ public class ViewDocumentHandler {
 		// open document
 		DocumentInstance document  = null;
 		document = repEngine.openDocument(reportName, reportID, repository, reportType);
+		// fills document parameters values
+		Utils.fillPrompts(document, request);
+		
 		String storageToken = document.getStorageToken();
 
 		// Set image parameters

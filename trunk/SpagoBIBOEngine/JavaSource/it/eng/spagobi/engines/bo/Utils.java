@@ -64,8 +64,8 @@ public class Utils {
 				 String valuePrompt = request.getParameter(namePrompt);
 				 logger.info("Engines"+ Utils.class.getName()+ 
 		         			 "fillPrompts() output type not supported");
-				 if(valuePrompt!=null) {
-				 	String[] valsPrompt = { valuePrompt };
+				 if (valuePrompt != null) {
+				 	String[] valsPrompt = valuePrompt.split(",");
 				 	prompt.enterValues(valsPrompt);
 				 }
 			}
@@ -80,9 +80,23 @@ public class Utils {
 		session.setAttribute(BOConstants.REPORTBODYPART, bodyPart);
 	}
 	
+	public static HashMap getDrillDimensions(DrillInfo drillInfo) throws Exception {
+		HashMap hash = null;
+		for (int count = 0; true; count++) {
+			try {
+				hash = getDrillDimensionsPrivate(drillInfo);
+			} catch (Exception e) {
+				logger.error(Utils.class + ":getDrillDimensions: caught excetpion " + e);
+				if (count < 10) continue;
+				else throw e;
+			}
+			if (hash != null) break;
+		}
+		return hash;
+	}
 	
-	public static HashMap  getDrillDimensions(DrillInfo drillInfo) {
-		HashMap hash = new HashMap(); 
+	private static HashMap getDrillDimensionsPrivate(DrillInfo drillInfo) throws Exception {
+		HashMap hash = new HashMap();
 		DrillHierarchies drillHierarchies = drillInfo.getDrillHierarchies();
 		DrillBar drillBar = drillInfo.getDrillBar();
 		//insert each hierarchy into the hash Map 

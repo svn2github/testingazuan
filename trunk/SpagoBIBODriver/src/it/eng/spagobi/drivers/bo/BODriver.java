@@ -36,7 +36,6 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.IEngineDriver;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -94,9 +93,10 @@ public class BODriver implements IEngineDriver {
 	 * engine application.
 	 * @param biObject Object to execute
 	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
 	 */
-	public Map getParameterMap(Object object, IEngUserProfile profile){
+	public Map getParameterMap(Object object, IEngUserProfile profile, String roleName){
 		return getParameterMap(object);
 	}
 	/**
@@ -108,6 +108,18 @@ public class BODriver implements IEngineDriver {
   	 */
 	public Map getParameterMap(Object object, Object subObject){
 		return getParameterMap(object);
+	}
+	/**
+	 * Returns a map of parameters which will be send in the request to the 
+	 * engine application.
+	 * @param biObject Object container of the subObject
+	 * @param subObject SubObject to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
+	 * @return Map The map of the execution call parameters
+  	 */
+	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
+		return getParameterMap(object, profile, roleName);
 	}
     /**
 	 * Return a map of parameters which will be sended in the request to the 
@@ -161,11 +173,12 @@ public class BODriver implements IEngineDriver {
 		}
 		if(biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
-			String value = null;
-			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
+			for (Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
 				try {
-					biobjPar = (BIObjectParameter)it.next();
-					value = (String)biobjPar.getParameterValues().get(0);
+					biobjPar = (BIObjectParameter) it.next();
+					String value = "";
+					for(int i = 0; i < biobjPar.getParameterValues().size(); i++)
+						value += (i>0?",":"") + (String)biobjPar.getParameterValues().get(i);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",

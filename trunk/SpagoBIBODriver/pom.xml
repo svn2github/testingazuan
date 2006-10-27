@@ -31,25 +31,32 @@
   </build>
   <dependencies>
         <dependency>
-                <groupId>spagobi</groupId>
-                <artifactId>spagobi</artifactId>
-                <version>1.9.1</version>
-     			<scope>system</scope>
-      			<systemPath>${basedir}/../SpagoBIProject/target/classes/</systemPath>
+                <groupId>spago-core</groupId>
+                <artifactId>spago-core</artifactId>
+                <version>2.0.0</version>
+      			<scope>system</scope>
+      			<systemPath>${basedir}/lib/spago-core-2.0.0.jar</systemPath>
         </dependency>
         <dependency>
                 <groupId>spagobi</groupId>
                 <artifactId>sbi.drivers.api</artifactId>
                 <version>1.9.1</version>
       			<scope>system</scope>
-      			<systemPath>${basedir}/../SpagoBIDriversAPI/target/sbi.drivers.api-1.9.1.jar</systemPath>
+      			<systemPath>${basedir}/lib/sbi.drivers.api-1.9.1.jar</systemPath>
         </dependency>
         <dependency>
-                <groupId>spago-core</groupId>
-                <artifactId>spago-core</artifactId>
-                <version>2.0.0</version>
-      			<scope>system</scope>
-      			<systemPath>${basedir}/lib/spago-core-2.0.0.jar</systemPath>
+                <groupId>spagobi</groupId>
+                <artifactId>spagobi-bo</artifactId>
+                <version>1.9.1</version>
+     			<scope>system</scope>
+      			<systemPath>${basedir}/lib/spagobi-bo.jar</systemPath>
+        </dependency>
+        <dependency>
+                <groupId>spagobi</groupId>
+                <artifactId>spagobi-utilities</artifactId>
+                <version>1.9.1</version>
+     			<scope>system</scope>
+      			<systemPath>${basedir}/lib/spagobi-utilities.jar</systemPath>
         </dependency>
   </dependencies>
 </project>

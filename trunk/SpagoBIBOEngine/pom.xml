@@ -23,7 +23,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIBOEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9.1Alpha</version>
+  <version>1.9.1alpha</version>
   <name>SpagoBIBOEngine</name>
   <url>http://maven.apache.org</url>
   <build>

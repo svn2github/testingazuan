@@ -10,6 +10,9 @@
 	Set keySet = attributes.keySet();
 	Iterator iterAttr = keySet.iterator();
 	String username = (String)moduleResponse.getAttribute("UserName");
+	String lastname = (String)moduleResponse.getAttribute("LastName");
+	String firstname = (String)moduleResponse.getAttribute("FirstName");
+	String email = (String)moduleResponse.getAttribute("Email");
  
    	PortletURL saveUrl = renderResponse.createActionURL();
    	saveUrl.setParameter("PAGE", "ExoProfileAttributeManagerPage");
@@ -52,9 +55,29 @@
 	</table>
 
 
+  
+    
 
-	<div class='div_background_no_img' style='padding-top:5px;padding-left:5px;'>
-		<div class="div_detail_area_forms" style="padding:10px;">
+	<div class='div_background_no_img' style='padding:5px;'>
+     
+    <table style="margin:5px;">
+    	<tr>
+    		<td class='portlet-section-header'><spagobi:message key = "profileattr.username" /></td>
+    		<td class='portlet-section-header'><spagobi:message key = "profileattr.firstname" /></td>
+    		<td class='portlet-section-header'><spagobi:message key = "profileattr.lastname" /></td>
+    		<td class='portlet-section-header'><spagobi:message key = "profileattr.email" /></td>
+    	</tr>
+    	<tr>
+    	  <td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=username%></td>
+    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=firstname%></td>
+    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=lastname%></td>
+    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=email%></td>    	
+      </tr>
+    </table> 
+     
+    <br/>
+    
+    <div class="div_detail_area_forms" style="padding:10px;">
 	  <table>
 	  	<%
 	  		while(iterAttr.hasNext()) {

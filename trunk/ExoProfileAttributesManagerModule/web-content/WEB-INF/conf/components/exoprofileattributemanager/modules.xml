@@ -9,6 +9,9 @@
 	      <QUERIES/>
 	      <COLUMNS>
 	      	<COLUMN label="profileattr.username" name="UserName" />
+	      	<COLUMN label="profileattr.firstname" name="FirstName" />
+	      	<COLUMN label="profileattr.lastname" name="LastName" />
+	      	<COLUMN label="profileattr.email" name="Email" />
 	      </COLUMNS>
 	      <CAPTIONS>
 	      	<ACCEPT_ACTIVITY_CAPTION confirm="FALSE" image="/img/detail.gif" label="Detail">

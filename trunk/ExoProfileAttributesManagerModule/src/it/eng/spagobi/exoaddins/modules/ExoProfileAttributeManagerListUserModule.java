@@ -35,6 +35,7 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.exoaddins.Utilities;
+import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.Iterator;
@@ -69,6 +70,20 @@ public class ExoProfileAttributeManagerListUserModule extends AbstractBasicListM
 		}
 		ListIFace list = new GenericList();
 		list.setPaginator(paginator);
+		
+		// filter the list 
+		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		if (valuefilter != null) {
+			String columnfilter = (String) request
+					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+			String typeFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_FILTER);
+			String typeValueFilter = (String) request
+					.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+			list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, 
+					                                    columnfilter, typeFilter, 
+					                                    serviceRequestContext.getErrorHandler());
+		}
 		return list;
 	}
 
@@ -94,8 +109,18 @@ public class ExoProfileAttributeManagerListUserModule extends AbstractBasicListM
 			while(iterUser.hasNext()) {
 				User user = (User)iterUser.next();
 				String userName = user.getUserName();
+				if(userName == null) userName = "";
+				String firstName = user.getFirstName();
+				if(firstName == null) firstName = "";
+				String lastName = user.getLastName();
+				if(lastName == null) lastName = "";
+				String email = user.getEmail();
+				if(email == null) email = "";
 				SourceBean row = new SourceBean(DataRow.ROW_TAG);	
 				row.setAttribute("UserName", userName);
+				row.setAttribute("FirstName", firstName);
+				row.setAttribute("LastName", lastName);
+				row.setAttribute("Email", email);
 				rows.setAttribute(row);
 			}
 		} catch (Exception e){

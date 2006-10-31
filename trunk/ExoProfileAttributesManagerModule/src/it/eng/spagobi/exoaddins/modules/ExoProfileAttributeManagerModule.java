@@ -179,13 +179,19 @@ public class ExoProfileAttributeManagerModule extends AbstractModule {
 	private void getUserProfile(String username, SourceBean response) throws Exception {
 		Map attributes = new HashMap();
 		Map attributeKeys = new HashMap();
+		User user = null;
 		try{
 			PortalContainer container = PortalContainer.getInstance();	
 			OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
 			UserProfileHandler userProfileHandler = service.getUserProfileHandler();
+			UserHandler userHandler = service.getUserHandler();
 			UserProfile userProfile = null;
 			Map exoprofileattrs = new HashMap();
 			userProfile = userProfileHandler.findUserProfileByName(username);
+		    // get the name of the user and use it to recover the user bean
+			String userName = userProfile.getUserName();
+			user = userHandler.findUserByName(userName);
+			// recover profile attributes
 			exoprofileattrs = userProfile.getUserInfoMap();
 			SourceBean profileAttributesSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES");
 			if(profileAttributesSB!=null) {
@@ -217,10 +223,25 @@ public class ExoProfileAttributeManagerModule extends AbstractModule {
 			attributes = new HashMap();
 			attributeKeys = new HashMap();
 		}
+		// load into response user information
+		response.setAttribute("UserName", username);
+		String firstName = "";
+		String lastName = "";
+		String email = "";
+		firstName = user.getFirstName();
+		if(firstName == null) firstName = "";
+		lastName = user.getLastName();
+		if(lastName == null) lastName = "";
+		email = user.getEmail();
+		if(email == null) email = "";
+		response.setAttribute("FirstName", firstName);
+		response.setAttribute("LastName", lastName);
+		response.setAttribute("Email", email);
+		// load into response profile attributes
 		response.setAttribute("attributes", attributes);
 		response.setAttribute("attributeKeys", attributeKeys);
+		// load into response publisher name
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExoProfileAttributeManagerDetailProfile");
-		response.setAttribute("UserName", username);
 	}
 	
 }	

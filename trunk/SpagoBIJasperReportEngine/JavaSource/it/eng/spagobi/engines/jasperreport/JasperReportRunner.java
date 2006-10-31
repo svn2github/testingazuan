@@ -5,7 +5,6 @@
  */
 package it.eng.spagobi.engines.jasperreport;
 
-import it.businesslogic.ireport.Report;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
@@ -30,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +63,7 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
@@ -377,6 +378,9 @@ public class JasperReportRunner {
 				BufferedImage image = (BufferedImage)iterImgs.next();
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(baos);
+				JPEGEncodeParam encodeParam = encoder.getDefaultJPEGEncodeParam(image);
+				encodeParam.setQuality(1.0f, true);
+				encoder.setJPEGEncodeParam(encodeParam);
 				encoder.encode(image);
 				byte[] byteImg = baos.toByteArray();
 				baos.close();
@@ -427,9 +431,13 @@ public class JasperReportRunner {
 			// gets byte of the jpeg image 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(baos);
+			JPEGEncodeParam encodeParam = encoder.getDefaultJPEGEncodeParam(finalImage);
+			encodeParam.setQuality(1.0f, true);
+			encoder.setJPEGEncodeParam(encodeParam);
 			encoder.encode(finalImage);
 			bytes = baos.toByteArray();
 			baos.close();
+			
 		} catch (Exception e) {
 			logger.error("Error while producing jpg image of the report", e);
 		}

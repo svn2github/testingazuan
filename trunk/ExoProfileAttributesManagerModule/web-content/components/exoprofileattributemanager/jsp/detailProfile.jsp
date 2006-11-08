@@ -92,7 +92,7 @@
 	   			</td>
 	   			<td>
 	   				<input class='portlet-form-input-field' type="text" name="<%=attributeKeys.get(key)%>" 
-			      	       size="40" value="<%=value%>" maxlength="20">
+			      	       size="40" value="<%=value%>" >
 	   			</td>  
 	   		</tr>
 	    <%  } %>

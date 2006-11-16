@@ -18,12 +18,4 @@ Settings:
   This command could open a new open office window. In order to avoid this behaviour you can add -invisible as command line argument. 
   Anytime you launch the soffice command a new soffice process is created and so, if you use the -invisible argument, the only way  to stop open office is to kill the process.
 
-- Open office has to be configured to save the presentation document as powerpoint 
-  and to store the content of the images (not their path), so:
-  - Open the open office impress application and go to tools/options
-  - select the load and save category
-  - select the general subcategory
-  - be sure that the "Save URL relative to filesystem" is not checked
-  - choose the "powerpoint" save format for the presentation document (standard file format part) 
-
 

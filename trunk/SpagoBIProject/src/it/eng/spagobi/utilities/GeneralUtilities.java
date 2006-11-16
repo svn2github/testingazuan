@@ -684,7 +684,7 @@ public class GeneralUtilities {
 		//SessionContainer sessCont = reqcont.getSessionContainer();
 		//SessionContainer permSess = sessCont.getPermanentContainer();
 		//IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        AnonymousCMSUserProfile profile = new AnonymousCMSUserProfile("anonymous");
+		IEngUserProfile profile = new AnonymousCMSUserProfile("anonymous");
 		String type = lov.getITypeCd();
         if (type.equalsIgnoreCase("QUERY")) {
         	String dataProv = lov.getLovProvider();
@@ -706,6 +706,9 @@ public class GeneralUtilities {
     			resStr = resStr.substring(indFirstTag);
     		}
     		resStr = resStr.toLowerCase();
+    		
+    		it.eng.spago.dbaccess.Utils.releaseResources(dataConnection, sqlCommand, dataResult);
+    		
     		return resStr;
         } else if (type.equalsIgnoreCase("SCRIPT")) {
         	HashMap attributes = getAllProfileAttributes(profile);

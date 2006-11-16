@@ -6,6 +6,71 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
   Please fill the missing values before deploying this portlet
 -->
 
+	<portlet>
+        <description>Scheduler</description>		
+        <portlet-name>Scheduler</portlet-name>		
+        <display-name>Scheduler</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>SchedulerGUIPage</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<portlet-info>
+        	<title>Scheduler</title>
+        	<short-title>Scheduler</short-title>
+        	<keywords>Scheduler</keywords>
+        </portlet-info>
+	</portlet>
+
+   <!--
+	<portlet>
+        <description>Exo Profile Attributes Manager</description>		
+        <portlet-name>ExoProfileAttributesManager</portlet-name>		
+        <display-name>Exo Profile Attributes Manager</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>ExoProfileAttributeManagerPage</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<portlet-info>
+        	<title>Exo Profile Attributes Manager</title>
+        	<short-title>Exo Profile Attributes Manager</short-title>
+        	<keywords>Exo Profile Attributes Manager</keywords>
+        </portlet-info>
+	</portlet>
+  -->
+
+
 <portlet>
         <description>Events Monitor</description>		
         <portlet-name>EventsMonitor</portlet-name>		
@@ -29,7 +94,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <portlet-mode>VIEW</portlet-mode>
             <portlet-mode>EDIT</portlet-mode>
 		</supports>
-		<supported-locale>en</supported-locale>     
+		<supported-locale>en</supported-locale>
 		<portlet-info>
         	<title>Events Monitor</title>
         	<short-title>Events Monitor</short-title>
@@ -62,7 +127,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <portlet-mode>VIEW</portlet-mode>
             <portlet-mode>EDIT</portlet-mode>
 		</supports>
-		<supported-locale>en</supported-locale>     
+		<supported-locale>en</supported-locale>
 		<portlet-info>
         	<title>Static Settings</title>
         	<short-title>Static Settings</short-title>
@@ -94,7 +159,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <portlet-mode>VIEW</portlet-mode>
             <portlet-mode>EDIT</portlet-mode>
 		</supports>
-        <supported-locale>en</supported-locale>       
+        <supported-locale>en</supported-locale>     
 		<portlet-info>
         	<title>Administration Environment</title>
         	<short-title>Administration Environment</short-title>
@@ -145,7 +210,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
             <portlet-mode>VIEW</portlet-mode>
             <portlet-mode>EDIT</portlet-mode>
 		</supports>
-        <supported-locale>en</supported-locale>       
+        <supported-locale>en</supported-locale>      
 		<portlet-info>
         	<title>Business Intelligence Documents</title>
         	<short-title>Business Intelligence Documents</short-title>

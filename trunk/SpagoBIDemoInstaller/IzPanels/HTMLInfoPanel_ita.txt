@@ -6,7 +6,14 @@ Lancia nell'ordine i seguenti file:
 - start.bat per Windows o start.sh per Unix all'interno della cartella 
 sbidata/databases di Exo-Tomcat (Controllare i permessi di esecuzione);
 - exo-run.bat per Windows o exo-run.sh per Unix all'interno della cartella 
-bin di Exo-Tomcat.
+bin di Exo-Tomcat;
+- per i booklets (fascicoli), chiudi tutte le applicazioni Open Office e 
+dalla cartella {OpenOffice-2.0.x-Home}/program esegui il seguente comando:
+soffice -quickstart -accept="socket,host=localhost,port=9000;urp;StarOffice.ServiceManager"
+Poi apri OpenOffice.org Impress, vai alla sezione Strumenti --> Opzioni --> 
+Carica/salva --> Generale, assicurati che la voce "Salvare url relativamente 
+al file system" non sia selezionata e nella sezione "Formato file standard" 
+scegli "Presentazione" come formato di salvataggio.
 
 Collegati, con il tuo browser (Explorer/Firefox) all'indirizzo 
 http://localhost:8080/sbiportal

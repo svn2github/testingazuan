@@ -1,9 +1,9 @@
 <project basedir="." name="test" default="all">
 <taskdef name="izpack" classpath="/Programmi/IzPack/lib/compiler.jar" classname="com.izforge.izpack.ant.IzPackTask"/>
 	<target name="all">
-		<izpack input="/Progetti/spagobi_ow/source/trunk/SpagoBIDemoInstaller/SpagoBIDemoInstallerCreator.xml"
-		        output="/Progetti/spagobi_ow/source/trunk/SpagoBIDemoInstaller/SpagoBIDemoInstaller.jar"
-		        installerType="standard" basedir="/Progetti/spagobi_ow/source/trunk/SpagoBIDemoInstaller"
+		<izpack input="/Progetti/SpagoBI/workspace/trunk/SpagoBIDemoInstaller/SpagoBIDemoInstallerCreator.xml"
+		        output="/Progetti/SpagoBI/workspace/trunk/SpagoBIDemoInstaller/SpagoBIDemoInstaller.jar"
+		        installerType="standard" basedir="/Progetti/SpagoBI/workspace/trunk/SpagoBIDemoInstaller"
 		        izPackDir="/Programmi/IzPack"/>
 	</target>
 </project>

@@ -4,7 +4,7 @@
     timestamp="true"/>
   <!--
   <Logger className="org.apache.catalina.logger.FileLogger"
-    prefix="exo_portal." suffix=".txt" timestamp="true"/>          
+    prefix="exo_sbiportal." suffix=".txt" timestamp="true"/>          
   -->
   <!--
   Remove this if you want to use the default StandarManager. The standard 
@@ -17,5 +17,5 @@
          appName="exo-domain"
          userClassNames="org.exoplatform.services.security.impl.UserPrincipalImpl"
          roleClassNames="org.exoplatform.services.security.impl.RolePrincipalImpl"
-         debug="99" cache="false"/>
+         debug="0" cache="false"/>
 </Context>

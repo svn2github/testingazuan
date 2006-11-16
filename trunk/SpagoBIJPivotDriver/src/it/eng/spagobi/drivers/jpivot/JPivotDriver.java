@@ -44,10 +44,13 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -56,6 +59,7 @@ import it.eng.spagobi.utilities.UploadedFile;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -441,6 +445,75 @@ public class JPivotDriver implements IEngineDriver {
 	 */
 	protected Map applySecurity(Map pars) {
 		return pars;
+	}
+	
+	/**
+	 * Returns the url to be invoked for editing template document
+	 * 
+	 * @param biobject The biobject
+	 * @return the url to be invoked for editing template document
+	 */
+	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+		BIObject obj = null;
+		try {
+			obj = (BIObject) biobject;
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(), "getEditDocumentTemplateBuildUrl",
+					"The input object is not a BIObject type", cce);
+			return null;
+		}
+		Engine engine = obj.getEngine();
+		String url = engine.getUrl();
+		url = url.substring(0, url.lastIndexOf("/"));
+		url += "/chooseConnection.jsp";
+		obj.loadTemplate();
+		UploadedFile uploadedFile =  obj.getTemplate();
+		byte[] template = uploadedFile.getFileContent();
+		BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		String templateName = obj.getCurrentTemplateVersion().getNameFileTemplate();
+		// sometimes template name contains complete path
+		// TODO to review (this control should not be performed)
+		int index = templateName.lastIndexOf("/");
+		if (index != -1) templateName = templateName.substring(index + 1);
+		index = templateName.lastIndexOf("\\");
+		if (index != -1) templateName = templateName.substring(index + 1);
+		HashMap parameters = new HashMap();
+		parameters.put("biobject_path", obj.getPath());
+		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+		parameters.put("templateName", templateName);
+		parameters.put("template", bASE64Encoder.encode(template));
+		parameters.put("new_session", "true");
+		EngineURL engineURL = new EngineURL(url, parameters);
+		return engineURL;
+	}
+	
+	/**
+	 * Returns the url to be invoked for creating a new template document
+	 * 
+	 * @param biobject The biobject
+	 * @return the url to be invoked for creating a new template document
+	 */
+	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+		BIObject obj = null;
+		try {
+			obj = (BIObject) biobject;
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(), "getEditDocumentTemplateBuildUrl",
+					"The input object is not a BIObject type", cce);
+			return null;
+		}
+		Engine engine = obj.getEngine();
+		String url = engine.getUrl();
+		url = url.substring(0, url.lastIndexOf("/"));
+		url += "/initialQueryCreator.jsp";
+		HashMap parameters = new HashMap();
+		parameters.put("biobject_path", obj.getPath());
+		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+		parameters.put("new_session", "true");
+		EngineURL engineURL = new EngineURL(url, parameters);
+		return engineURL;
 	}
 	
 

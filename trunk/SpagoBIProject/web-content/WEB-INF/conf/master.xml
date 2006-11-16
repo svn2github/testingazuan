@@ -37,7 +37,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
 	<!-- end import export module -->
-	<!-- start import booklets module --> 
+	<!-- start booklets module -->
+	<!--
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/booklets.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/modules.xml" />
@@ -48,8 +49,23 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/workflow.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/forms.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/validation.xml" />
-	<!-- end import booklets module -->
+	-->
+  <!-- end booklets module -->
 	<!-- START OFFICE DOCUMENT -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiofficedocIE/publishers.xml" />
 	<!-- END OFFICE DOCUMENT -->
+	<!-- start exo profile manager module -->
+	<!--
+  <CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/publishers.xml" />
+	-->
+  <!-- end exo profile manager module -->
+	<!-- start scheduler module -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/publishers.xml" />
+	<!-- end scheduler module -->
 </MASTER>

@@ -1,5 +1,4 @@
-
-<%@ page session="true" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"
+<%@ page session="true" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 	import="com.tonbeller.jpivot.olap.model.OlapModel,
     		com.tonbeller.jpivot.mondrian.MondrianMemento,
    			com.tonbeller.jpivot.table.TableComponent,
@@ -17,6 +16,12 @@
    			java.util.Map,
    			javax.servlet.ServletContext,
    			java.util.HashMap"%>
+   			
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
@@ -97,10 +102,7 @@
 	if(!authorized) {
 %>	 	
 
- 	<%@page import="java.util.Collections"%>
-<%@page import="java.util.Arrays"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
+
 <html><body><center><h2>Unauthorized</h2></center></body></html>
 
 <% } else {
@@ -146,7 +148,7 @@
 <html>
 <head>
   <title>JPivot Test Page</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css" href="jpivot/table/mdxtable.css">
   <link rel="stylesheet" type="text/css" href="jpivot/navi/mdxnavi.css">
   <link rel="stylesheet" type="text/css" href="wcf/form/xform.css">

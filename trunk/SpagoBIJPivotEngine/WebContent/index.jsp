@@ -6,7 +6,7 @@
 <html>
 <head>
   <title>JPivot Demo</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css" href="css/mdxtable.css">
   <link rel="stylesheet" type="text/css" href="css/mdxnavi.css">
 </head>

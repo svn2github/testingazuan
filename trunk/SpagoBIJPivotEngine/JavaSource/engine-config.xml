@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<CONNECTIONS-CONFIGURATION>
-	<!--
-	<CONNECTION name="defaultDWH" 
-					isDefault="true"
+<ENGINE-CONFIGURATION>
+	<CONNECTIONS-CONFIGURATION>
+
+		<CONNECTION name="hsqldbDWH" 
+					isDefault="false"
 					isJNDI="false" 
 					driver="org.hsqldb.jdbcDriver"
 					user="sa"
 					password=""
 					jdbcUrl="jdbc:hsqldb:hsql://localhost/foodmart"/>
-	-->
-	<!--
-	<CONNECTION name="defaultDWH" 
+
+		<CONNECTION name="defaultDWH" 
 					isDefault="true"
 					isJNDI="true" 
 					initialContext="java:comp/env"
 					resourceName="jdbc/sbifoodmart"/>
-	<CONNECTION name="postgresDWH" 
-					isDefault="true"
+
+		<CONNECTION name="postgresDWH" 
+					isDefault="false"
 					isJNDI="false" 
 					driver="org.postgresql.Driver"
 					user="postgres"
 					password="postgres"
 					jdbcUrl="jdbc:postgresql://localhost:5432/lapam"/>
-	-->
-</CONNECTIONS-CONFIGURATION>
+
+	</CONNECTIONS-CONFIGURATION>
+	
+	<SCHEMAS>
+		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="FoodMart" />
+		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="Baseball" />
+	</SCHEMAS>
+	
+</ENGINE-CONFIGURATION>

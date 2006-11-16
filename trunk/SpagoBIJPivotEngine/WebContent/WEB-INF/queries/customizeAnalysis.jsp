@@ -8,8 +8,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<%@ page session="true" language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"
+<%@ page session="true" language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"
 	import="com.tonbeller.jpivot.olap.model.OlapModel,
     com.tonbeller.jpivot.chart.ChartComponentTag,
     com.tonbeller.jpivot.chart.ChartComponent,

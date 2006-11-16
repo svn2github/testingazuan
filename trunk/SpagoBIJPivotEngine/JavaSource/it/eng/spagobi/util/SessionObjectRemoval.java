@@ -11,6 +11,13 @@ public class SessionObjectRemoval {
 
 	public static void removeSessionObjects(HttpSession session) {
 
+		// could not delete everything from session because some objects are useful (wcf controllers ...)
+//		Enumeration names = session.getAttributeNames();
+//		while (names.hasMoreElements()) {
+//			String name = (String) names.nextElement();
+//			session.removeAttribute(name);
+//		}
+		
 		// remove following objects from session.
 		if (session.getAttribute("query01") != null) {
 			session.removeAttribute("query01");
@@ -63,7 +70,30 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("save01") != null) {
 			session.removeAttribute("save01");
 		}
+		
+		if (session.getAttribute("schemas") != null) {
+			session.removeAttribute("schemas");
+		}
+		
+		if (session.getAttribute("connections") != null) {
+			session.removeAttribute("connections");
+		}
+		
+		if (session.getAttribute("MondrianCubes") != null) {
+			session.removeAttribute("MondrianCubes");
+		}
+		
+		if (session.getAttribute("MondrianVirtualCubes") != null) {
+			session.removeAttribute("MondrianVirtualCubes");
+		}
+		
+		if (session.getAttribute("saveTemplate01") != null) {
+			session.removeAttribute("saveTemplate01");
+		}
 
+		if (session.getAttribute("toolbar01") != null) {
+			session.removeAttribute("toolbar01");
+		}
 	}
 	
 }

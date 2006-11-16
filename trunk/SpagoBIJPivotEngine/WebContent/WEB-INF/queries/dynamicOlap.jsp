@@ -6,7 +6,7 @@
  */
 --%>
 <%@ page session="true" 
-         contentType="text/html; charset=ISO-8859-1" 
+         contentType="text/html; charset=UTF-8" 
 		 import="org.dom4j.Document,
 				 org.dom4j.Node,
 				 java.io.InputStreamReader,
@@ -19,8 +19,10 @@
 				 it.eng.spagobi.bean.SaveAnalysisBean,
 				 com.tonbeller.wcf.form.FormComponent,
 				 java.io.InputStream,
-				 mondrian.olap.*,
-				 it.eng.spagobi.utilities.ParametersDecoder" %>
+				 mondrian.olap.*" %>
+<%@page import="sun.misc.BASE64Decoder"%>
+<%@page import="java.util.Map"%>
+<%@page import="it.eng.spagobi.utilities.ParametersDecoder"%>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
@@ -138,12 +140,12 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 			form.setBean(analysisBean);
 		}	
 		org.dom4j.io.SAXReader readerConFile = new org.dom4j.io.SAXReader();
-		Document documentConFile = readerConFile.read(getClass().getResourceAsStream("/connections-config.xml"));
+		Document documentConFile = readerConFile.read(getClass().getResourceAsStream("/engine-config.xml"));
 		Node connectionDef = null;
 		if(nameConnection!=null) {
-			connectionDef = documentConFile.selectSingleNode("//CONNECTIONS-CONFIGURATION/CONNECTION[@name='"+nameConnection+"'");
+			connectionDef = documentConFile.selectSingleNode("//ENGINE-CONFIGURATION/CONNECTIONS-CONFIGURATION/CONNECTION[@name='"+nameConnection+"'");
 		} else {
-			connectionDef = documentConFile.selectSingleNode("//CONNECTIONS-CONFIGURATION/CONNECTION[@isDefault='true'");
+			connectionDef = documentConFile.selectSingleNode("//ENGINE-CONFIGURATION/CONNECTIONS-CONFIGURATION/CONNECTION[@isDefault='true'");
 		}
 		String jndi = connectionDef.valueOf("@isJNDI");
 		if(jndi.equalsIgnoreCase("true")) { 
@@ -152,9 +154,8 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 		    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+reference+";";
 		    query = substituteQueryParameters(query, parameters, request);
 	    %>
-    	<%@page import="sun.misc.BASE64Decoder"%>
-<%@page import="java.util.Map"%>
-<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+
+		<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 			<%=query%>
 		</jp:mondrianQuery>
 		<%

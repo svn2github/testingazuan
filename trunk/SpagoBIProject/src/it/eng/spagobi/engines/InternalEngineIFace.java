@@ -26,6 +26,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 
 
 /**
@@ -53,5 +54,23 @@ public interface InternalEngineIFace {
 	 * @param subObjectInfo An object describing the subobject to be executed
 	 */
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError;
+	
+	/**
+	 * Handles the request for the creation of a new document template
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param obj The <code>BIObject</code> representing the document
+	 * @param response The response <code>SourceBean</code> to be populated
+	 */
+	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest;
+	
+	/**
+	 * Handles the request for the modification of the current document template
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param obj The <code>BIObject</code> representing the document
+	 * @param response The response <code>SourceBean</code> to be populated
+	 */
+	public void handleDocumentTemplateEdit(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest;
 	
 }

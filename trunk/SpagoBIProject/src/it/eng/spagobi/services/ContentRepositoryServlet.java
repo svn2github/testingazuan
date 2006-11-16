@@ -168,6 +168,19 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 				                  descr, visibility, profile);
 	 		 		return;
 	 			}
+	 			if (operation.equalsIgnoreCase("saveObjectTemplate")) {
+	 				String jcrPath = request.getParameter("jcrPath");
+	 				String templateName = request.getParameter("templateName");
+	 				if (templateName == null || templateName.trim().equals("")) templateName = "Template";
+	 		 		if(jcrPath.endsWith("/template")) {
+	 		 			int lastslash = jcrPath.lastIndexOf("/");
+	 		 			jcrPath = jcrPath.substring(0, lastslash);
+	 		 		}
+	 		 		String content = request.getParameter("content");
+	 		 		IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
+	 		 		biObjCMSDAO.saveTemplate(content.getBytes(), jcrPath, templateName);
+	 		 		return;
+	 			}
 	 			
 	 			
 	 		// part for download of the template version

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
 	
+	<PAGE name="DocumentTemplateBuildPage" scope="REQUEST" title="Document template build page" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DocumentTemplateBuildPage" target="DocumentTemplateBuildModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DocumentTemplateBuildModule"/>
+    	</MODULES>
+  	</PAGE>
+	
 	<PAGE name="CompleteOrRejectActivityPage" scope="REQUEST" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="CompleteOrRejectActivityPage" target="CompleteOrRejectActivityModule">

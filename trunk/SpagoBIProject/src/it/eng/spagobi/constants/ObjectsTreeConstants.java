@@ -70,4 +70,5 @@ public class ObjectsTreeConstants {
 	public static final String INPUT_TYPE_MAN_IN_CODE = "MAN_IN";
 	public static final String INPUT_TYPE_METHOD_CODE = "METHOD";
 	public static final String REPORT_CALL_URL = "REPORT_CALL_URL";
+	public static final String CALL_URL = "CALL_URL";
 }

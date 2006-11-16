@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
   	
+  	<PUBLISHER name="DocumentTemplateBuildPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DocumentTemplateBuildPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="DocumentTemplateErrorInformationPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/documentTemplateErrorInfo.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="TemplateBuildPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/templateBuild.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
 	<PUBLISHER name="CompleteOrRejectActivityPublisher">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -589,6 +613,18 @@
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" /> 
       			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectModule.ACTOR" />
       			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="detailBIObjectSaveLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="DetailBIObjectPage" />
+        		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
+      			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectModule.ACTOR" />
+      			<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectModule.OBJECT_ID" />
+      			<PARAMETER name="selected_obj_par_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectModule.selected_obj_par_id" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" type="ABSOLUTE" scope="" value="TRUE" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

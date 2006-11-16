@@ -612,8 +612,11 @@ public class DetailBIObjectModule extends AbstractModule {
 				response.setAttribute("loopback", "true");
 			} else {
 				// it is requested to save and remain in the BIObject detail page
-				fillResponse(response);
-				prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
+				//fillResponse(response);
+				//prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
+				response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+				response.setAttribute("selected_obj_par_id", selectedObjParIdStr);
+				response.setAttribute("saveLoop", "true");
 			}
 
 		} catch (EMFUserError error) {			

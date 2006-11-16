@@ -43,6 +43,7 @@ import it.eng.spagobi.utilities.UploadedFile;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -487,6 +488,50 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		return notes;
 	}
 
+	/**
+	 * Save a subObject of the object
+	 * 
+	 * @param content byte array containing the content of the template
+	 * @param path the cms path of the document
+	 */
+	public void saveTemplate(byte[] content, String path, String templateName) throws EMFUserError {
+		try {
+			CmsManager manager = new CmsManager();
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(path);
+			getOp.setRetriveContentInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			getOp.setRetriveChildsInformation("false");
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			if (cmsnode == null) {
+				SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+			            "saveTemplate", "The document with path " + path + " is not present in cms.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			}
+			SetOperation setOp = new SetOperation();
+			setOp.setContent(new ByteArrayInputStream(content));
+			setOp.setType(SetOperation.TYPE_CONTENT);
+			String templatePath = path + "/template";
+			setOp.setPath(templatePath);
+			// define properties list
+			List properties = new ArrayList();
+			String[] nameFilePropValues = new String[] { templateName };
+			String today = new Long(new Date().getTime()).toString();
+			String[] datePropValues = new String[] { today };
+			CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
+			CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);
+			properties.add(propFileName);
+			properties.add(propDateLoad);
+	        setOp.setProperties(properties);
+	        // exec operation
+			manager.execSetOperation(setOp);
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "saveTemplate", "cannot save template for document with path " + path, e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+	}
 
 }
 

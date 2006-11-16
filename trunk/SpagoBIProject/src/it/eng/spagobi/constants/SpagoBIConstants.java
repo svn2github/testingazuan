@@ -150,10 +150,13 @@ public class SpagoBIConstants {
 	public static final String EXEC_CHANGE_STATE = "EXEC_CHANGE_STATE";
 	public static final String EXEC_PHASE_RUN = "EXEC_PHASE_RUN";
 	
+	public static final String DOCUMENT_TEMPLATE_BUILD = "DocumentTemplateBuildPage";
+	public static final String NEW_DOCUMENT_TEMPLATE = "NEW_DOCUMENT_TEMPLATE";
+	public static final String EDIT_DOCUMENT_TEMPLATE = "EDIT_DOCUMENT_TEMPLATE";
 	
-	public static final String BOOKLET_MANAGEMENT_PAGE = "BookletsManagementPage";
-	public static final String OPERATION_NEW_BOOKLET_TEMPLATE = "OPERATION_NEW_BOOKLET_TEMPLATE";
-	public static final String OPERATION_EDIT_BOOKLET_TEMPLATE = "OPERATION_EDIT_BOOKLET_TEMPLATE";
+	//public static final String BOOKLET_MANAGEMENT_PAGE = "BookletsManagementPage";
+	//public static final String OPERATION_NEW_BOOKLET_TEMPLATE = "OPERATION_NEW_BOOKLET_TEMPLATE";
+	//public static final String OPERATION_EDIT_BOOKLET_TEMPLATE = "OPERATION_EDIT_BOOKLET_TEMPLATE";
 	
 	public static final String ACTIVITYKEY = "ACTIVITYKEY";
 	

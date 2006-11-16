@@ -29,6 +29,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
@@ -127,4 +128,38 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param biobject The BIOBject to edit
+	 * @param response The response <code>SourceBean</code> to be populated
+	 * @throws InvalidOperationRequest
+	 */
+	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
+			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
+				this.getClass().getName(),
+	            "handleNewDocumentTemplateCreation", 
+	            "SpagoBIOfficeDocumentInternalEngine cannot build document template.");
+		throw new InvalidOperationRequest();
+		
+	}
+
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param biobject The BIOBject to edit
+	 * @param response The response <code>SourceBean</code> to be populated
+	 * @throws InvalidOperationRequest
+	 */
+	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
+			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
+				this.getClass().getName(),
+	            "handleDocumentTemplateEdit", 
+	            "SpagoBIOfficeDocumentInternalEngine cannot build document template.");
+		throw new InvalidOperationRequest();
+	}
 }

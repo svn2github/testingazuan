@@ -32,6 +32,7 @@ import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
@@ -274,4 +275,39 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param biobject The BIOBject to edit
+	 * @param response The response <code>SourceBean</code> to be populated
+	 * @throws InvalidOperationRequest
+	 */
+	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
+			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine", 
+				this.getClass().getName(),
+	            "handleNewDocumentTemplateCreation", 
+	            "SpagoBIDashboardsCompositionInternalEngine cannot build document template.");
+		throw new InvalidOperationRequest();
+		
+	}
+
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param biobject The BIOBject to edit
+	 * @param response The response <code>SourceBean</code> to be populated
+	 * @throws InvalidOperationRequest
+	 */
+	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
+			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine", 
+				this.getClass().getName(),
+	            "handleDocumentTemplateEdit", 
+	            "SpagoBIDashboardsCompositionInternalEngine cannot build document template.");
+		throw new InvalidOperationRequest();
+	}
+	
 }

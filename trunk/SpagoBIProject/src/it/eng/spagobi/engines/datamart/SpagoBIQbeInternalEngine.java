@@ -38,6 +38,7 @@ import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -172,13 +173,48 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 			}
 			return;
 		} catch (Exception e) {
-			SpagoBITracer.major("SPAGOBI", 
-					            "ExecuteBIObjectMOdule", 
-					            "execQbe", 
+			SpagoBITracer.major("SpagoBIQbeInternalEngine", 
+					            this.getClass().getName(), 
+					            "executeSubObject", 
 					            "Cannot exec the subObject", e);
 	   		throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle); 
 		}
 
 	}
 
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param biobject The BIOBject to edit
+	 * @param response The response <code>SourceBean</code> to be populated
+	 * @throws InvalidOperationRequest
+	 */
+	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
+			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		SpagoBITracer.major("SpagoBIQbeInternalEngine", 
+				this.getClass().getName(),
+	            "handleNewDocumentTemplateCreation", 
+	            "SpagoBIQbeInternalEngine cannot build document template.");
+		throw new InvalidOperationRequest();
+		
+	}
+
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param biobject The BIOBject to edit
+	 * @param response The response <code>SourceBean</code> to be populated
+	 * @throws InvalidOperationRequest
+	 */
+	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
+			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		SpagoBITracer.major("SpagoBIQbeInternalEngine", 
+				this.getClass().getName(),
+	            "handleDocumentTemplateEdit", 
+	            "SpagoBIQbeInternalEngine cannot build document template.");
+		throw new InvalidOperationRequest();
+	}
+	
 }

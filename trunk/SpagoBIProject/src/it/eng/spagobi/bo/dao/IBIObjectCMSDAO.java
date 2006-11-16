@@ -126,4 +126,14 @@ public interface IBIObjectCMSDAO {
 	 * @return List of BIObject.SubObjectDetail objects 
 	 */
 	public List getSubObjects(String pathParent);
+	
+	/**
+	 * Save a subObject of the object
+	 * 
+	 * @param content: byte array containing the content of the template
+	 * @param path: the cms path of the document
+	 * @param templateName: the name of the template
+	 */
+	public void saveTemplate(byte[] content, String path, String templateName) throws EMFUserError;
+	
 }

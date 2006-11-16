@@ -188,5 +188,49 @@ public class SpagoBIAccessUtils {
         return responseBody;	  
 	}
 	
+	/**
+	 * Save the object template into SpagoBI Repository
+	 * 
+	 * @param spagoBIBaseUrl: The SpagoBI service URL
+	 * @param path: The cms path of the document
+	 * @param content: the template content
+	 * @param templateName: the template name
+	 * @return The output response body
+	 */
+	public byte[] saveObjectTemplate(String spagoBIBaseUrl, String path, String templateName, String content) 
+								throws GenericSavingException {
+		HttpClient client = new HttpClient();
+	    PostMethod httppost = new PostMethod(spagoBIBaseUrl);
+	    NameValuePair[] data = { new NameValuePair("jcrPath", path),
+	    						 new NameValuePair("templateName", templateName),
+	    						 new NameValuePair("operation", "saveObjectTemplate"),
+	    						 new NameValuePair("content", content)};
+	    //	  Provide custom retry handler is necessary
+	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
+	    retryhandler.setRequestSentRetryEnabled(false);
+	    retryhandler.setRetryCount(3);
+	    httppost.setMethodRetryHandler(retryhandler);
+	    httppost.setRequestBody(data);
+        byte[] responseBody = null; 
+        try {
+            // Execute the method.
+            int statusCode = client.executeMethod(httppost);
+            if (statusCode != HttpStatus.SC_OK) {
+              System.err.println("Method failed: " + httppost.getStatusLine());
+              
+            }
+            // Read the response body.
+             responseBody  = httppost.getResponseBody();
+       
+        } catch (IOException e) {
+            System.err.println("Failed to upload file.");
+            e.printStackTrace();
+            throw new GenericSavingException("Communication Exception");
+        } finally {
+            // Release the connection.
+          	httppost.releaseConnection();
+        }
+        return responseBody;	  
+	}
 	
 }

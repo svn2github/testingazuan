@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
 
-  	<PUBLISHER name="SchedulerPub">
+  	<PUBLISHER name="SchedulerGUIPub">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/components/scheduler/SpagoBISchedulerGUI.jsp"/>
+        		<ITEM mode="VIEW" resource="/components/scheduler/jsp/SpagoBISchedulerGUI.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>

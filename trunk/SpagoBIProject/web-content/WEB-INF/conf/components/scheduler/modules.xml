@@ -5,4 +5,8 @@
      	<CONFIG/>
     </MODULE>
     
+    <MODULE class="it.eng.spagobi.scheduler.modules.SchedulerGUIModule" name="SchedulerGUIModule">
+     	<CONFIG/>
+    </MODULE>
+    
 </MODULES>

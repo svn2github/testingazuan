@@ -83,9 +83,9 @@ public class BookletsManagementModule extends AbstractModule {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 						            "service", "The operation parameter is null");
 				throw userError;
-			} else if(operation.equalsIgnoreCase(SpagoBIConstants.OPERATION_NEW_BOOKLET_TEMPLATE)) {
+			} else if(operation.equalsIgnoreCase(SpagoBIConstants.NEW_DOCUMENT_TEMPLATE)) {
 				newTemplateHandler(request, response);
-			} else if(operation.equalsIgnoreCase(SpagoBIConstants.OPERATION_EDIT_BOOKLET_TEMPLATE)) {
+			} else if(operation.equalsIgnoreCase(SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE)) {
 				String pathBiobj = (String)request.getAttribute(SpagoBIConstants.PATH);
 				request.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBiobj + "/template");
 				bookletDetailHandler(request, response);
@@ -129,7 +129,7 @@ public class BookletsManagementModule extends AbstractModule {
 	*/
 	
 	private void newTemplateHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
-		String pathBiObject = (String)request.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
+		String pathBiObject = (String)request.getAttribute(SpagoBIConstants.PATH);
 		// create the new template cms node
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
 		String bookTemplatePath = bookDao.createNewConfigurationNode(pathBiObject);

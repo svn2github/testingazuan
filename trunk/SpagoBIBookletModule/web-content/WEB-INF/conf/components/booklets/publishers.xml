@@ -39,6 +39,16 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+    <PUBLISHER name="BookletsManagementLoopCall">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsManagementPage" />
+      			<PARAMETER name="OPERATION" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.OPERATION" />
+      			<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.PATH" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" type="ABSOLUTE" scope="" value="TRUE" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
      
     <PUBLISHER name="BookletsExecution">
     	<RENDERING channel="PORTLET" mode="" type="JSP">

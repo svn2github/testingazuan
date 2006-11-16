@@ -29,6 +29,8 @@ import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -81,6 +83,30 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
     			            "executeSubObject", "Start executeSubObject method");
 		SpagoBITracer.warning(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 	                        "executeSubObject", "Method not implemented");
+	}
+
+	public void handleDocumentTemplateEdit(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		try {
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsManagementLoopCall");
+			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
+			response.setAttribute(SpagoBIConstants.PATH, obj.getPath());
+		} catch (Exception e) {
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+					            "handleDocumentTemplateEdit", "error while setting response attribute " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+	}
+
+	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
+		try {
+			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsManagementLoopCall");
+			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
+			response.setAttribute(SpagoBIConstants.PATH, obj.getPath());
+		} catch (Exception e) {
+			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+					            "handleDocumentTemplateEdit", "error while setting response attribute " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
 	}
 	
 	

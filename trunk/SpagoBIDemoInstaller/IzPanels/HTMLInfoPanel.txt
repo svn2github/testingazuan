@@ -10,11 +10,6 @@ bin folder inside Exo-Tomcat directory.
 - for booklets, close all OpenOffice applications and go into the 
 directory OPENOFFICE-HOME/program and exec the following command 
 soffice -quickstart -accept="socket,host=0,port=9000;urp;StarOffice.ServiceManager"
-Then open the OpenOffice.org Impress application and go to 
-Tools --> Options --> Load/save --> General, be sure that 
-the "Save URL relative to filesystem" is not checked and choose 
-the "powerpoint" save format for the presentation document 
-("Standard file format" section).
 
 Connect, with your browser (Explorer/Firefox), to the address
 http://localhost:8080/sbiportal

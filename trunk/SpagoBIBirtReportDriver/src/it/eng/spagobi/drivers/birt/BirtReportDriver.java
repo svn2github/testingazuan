@@ -37,7 +37,9 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -167,6 +169,34 @@ public class BirtReportDriver implements IEngineDriver {
 			}
 		}
   		return pars;
+	}
+
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param biobject The BIOBject to edit
+	 * @throws InvalidOperationRequest
+	 */
+	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+		SpagoBITracer.major("ENGINES",
+				  this.getClass().getName(),
+				  "getEditDocumentTemplateBuildUrl",
+				  "Function not implemented");
+		throw new InvalidOperationRequest();
+	}
+
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param biobject The BIOBject to edit
+	 * @throws InvalidOperationRequest
+	 */
+	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+		SpagoBITracer.major("ENGINES",
+				  this.getClass().getName(),
+				  "getNewDocumentTemplateBuildUrl",
+				  "Function not implemented");
+		throw new InvalidOperationRequest();
 	}
 
 }

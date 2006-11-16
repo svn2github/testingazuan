@@ -57,6 +57,7 @@ import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
+import it.eng.spagobi.security.AnonymousCMSUserProfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -679,11 +680,12 @@ public class GeneralUtilities {
 	
 	public static String getLovResult (ModalitiesValue lov) throws Exception {
 		DataConnection dataConnection = null;
-		RequestContainer reqcont = RequestContainer.getRequestContainer();
-		SessionContainer sessCont = reqcont.getSessionContainer();
-		SessionContainer permSess = sessCont.getPermanentContainer();
-		IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        String type = lov.getITypeCd();
+		//RequestContainer reqcont = RequestContainer.getRequestContainer();
+		//SessionContainer sessCont = reqcont.getSessionContainer();
+		//SessionContainer permSess = sessCont.getPermanentContainer();
+		//IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        AnonymousCMSUserProfile profile = new AnonymousCMSUserProfile("anonymous");
+		String type = lov.getITypeCd();
         if (type.equalsIgnoreCase("QUERY")) {
         	String dataProv = lov.getLovProvider();
         	QueryDetail queryDet = QueryDetail.fromXML(dataProv);

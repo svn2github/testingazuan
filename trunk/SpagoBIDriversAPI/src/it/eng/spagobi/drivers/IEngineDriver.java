@@ -37,6 +37,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.drivers;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.Map;
 
@@ -75,5 +76,17 @@ public interface IEngineDriver {
 	 * @return Map The map of the execution call parameters
   	 */
     public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName);  
+    
+    /**
+     * Returns the EngineURL for the creation of a new template for the document
+     * @return the EngineURL for the creation of a new template for the document
+     */
+    public EngineURL getNewDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest;
+    
+    /**
+     * Returns the EngineURL for the modification of the document template
+     * @return the EngineURL for the modification of the document template
+     */
+    public EngineURL getEditDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest;
     
 }

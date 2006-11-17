@@ -10,4 +10,14 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	
+  	<PUBLISHER name="SchedulerPub">
+       <RENDERING channel="SOAP" type="XSL" mode="">
+           <RESOURCES>
+               <ITEM prog="0" resource="/components/scheduler/xsl/schedulerModule.xsl" />
+           </RESOURCES>
+       </RENDERING>
+   </PUBLISHER>
+  	
+  	
 </PUBLISHERS>

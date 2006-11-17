@@ -2,6 +2,7 @@
 <PRESENTATION>
 
     <MAPPING business_name="SchedulerGUIPage" business_type="PAGE" publisher_name="SchedulerGUIPub"/>
+    <MAPPING business_name="SchedulerPage" business_type="PAGE" publisher_name="SchedulerPub"/>
     
 </PRESENTATION>
 

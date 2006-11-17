@@ -80,11 +80,6 @@ public class ExecutionController {
 		 				"The biparameter with label = ['" + biParameter.getLabel() + "'] and url name = ['" + biParameter.getParameterUrlName() + "'] has no parameter associated. ");
         		continue;
         	}
-//            if(par==null){
-//            	if(biParameter.isTransientParmeters())
-//            		countHidePar ++;
-//            	continue;
-//            }
 
             paruse = par.getModalityValue();
             if(paruse==null)
@@ -108,7 +103,10 @@ public class ExecutionController {
 	}
 	
 	
-	private void refreshParameters(BIObject obj, String userProvidedParametersStr){
+	
+	
+	
+	public void refreshParameters(BIObject obj, String userProvidedParametersStr){
 		if(userProvidedParametersStr != null) {
 			
 			List biparameters = obj.getBiObjectParameters();
@@ -139,49 +137,6 @@ public class ExecutionController {
 				biparameter.setParameterValues(parameterValues);
 				biparameter.setTransientParmeters(true);
 			}
-			
-			
-//			List parameterList = obj.getBiObjectParameters();
-//			BIObjectParameter parameter = null;
-//			Map paramMap = new HashMap();
-//			for(int i = 0; i < parameterList.size(); i++) {
-//				parameter = (BIObjectParameter)parameterList.get(i);
-//				paramMap.put(parameter.getParameterUrlName(), parameter);
-//				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
-//		 				"ExecuteBIObjectMOdule", 
-//		 				"refreshParameters", 
-//		 				"Parameter [IN]: " + parameter);
-//			}
-//			
-//			parameterList.clear();
-//					
-//			String[] userProvidedParameters = userProvidedParametersStr.split("&");
-//			for(int i = 0; i < userProvidedParameters.length; i++) {
-//				String[] chunks = userProvidedParameters[i].split("=");
-//				parameter = new BIObjectParameter();
-//				parameter.setParameterUrlName(chunks[0]);
-//				List parameterValues = new ArrayList();
-//				parameterValues.add(chunks[1]);
-//				parameter.setParameterValues(parameterValues);
-//				parameter.setTransientParmeters(true);
-//				paramMap.put(parameter.getParameterUrlName(), parameter);
-//				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
-//		 				"ExecuteBIObjectMOdule", 
-//		 				"refreshParameters", 
-//		 				"Parameter [NEW]: " + parameter);
-//			}
-//			
-//			Iterator it = paramMap.entrySet().iterator();
-//			while(it.hasNext()){
-//				parameter = (BIObjectParameter)((Map.Entry)it.next()).getValue();
-//				parameterList.add(parameter);
-//				SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
-//		 				"ExecuteBIObjectMOdule", 
-//		 				"refreshParameters", 
-//		 				"Parameter [FINISH]: " + parameter);
-//			}
-//			
-//			obj.setBiObjectParameters(parameterList);
 		}
 	}
 	
@@ -393,10 +348,6 @@ public class ExecutionController {
 		return sb;
 		}	
 	}
-	
-	
-	
-	
 	
 	
 	

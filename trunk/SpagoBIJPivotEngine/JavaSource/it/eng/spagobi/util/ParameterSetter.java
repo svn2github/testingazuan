@@ -21,13 +21,14 @@ public class ParameterSetter {
 				continue;
 			ptr = newQuery.indexOf(",", ptr) + 1; // 2 arg
 			String secondArg = newQuery.substring(ptr, newQuery.indexOf(",", ptr));	
-			//if the parameter type is STRING, add double apix to the value passed by SpagoBI
-			if(secondArg.equalsIgnoreCase("STRING")){
-				pvalue = '"' + pvalue+ '"';
-			}
 			ptr = newQuery.indexOf(",", ptr) + 1; // 3 arg
-			String thirdArg = newQuery.substring(ptr, newQuery.indexOf(",", ptr));	
-			newQuery = newQuery.substring(0, ptr) + pvalue + newQuery.substring(newQuery.indexOf(",", ptr+1), newQuery.length());		
+			String thirdArg = newQuery.substring(ptr, newQuery.indexOf(",", ptr));
+			// if the parameter type is STRING, add double apix to the value passed by SpagoBI
+			if(secondArg.equalsIgnoreCase("STRING")){
+				newQuery = newQuery.substring(0, ptr) + '"' + pvalue + '"' + newQuery.substring(newQuery.indexOf(",", ptr+1), newQuery.length());
+			} else {
+				newQuery = newQuery.substring(0, ptr) + pvalue + newQuery.substring(newQuery.indexOf(",", ptr+1), newQuery.length());
+			}
 		}
 		// substitute the spagobi parameter sintax 
 		index = -1;

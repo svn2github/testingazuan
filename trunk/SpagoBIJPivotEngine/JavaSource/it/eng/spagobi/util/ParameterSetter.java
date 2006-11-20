@@ -36,14 +36,12 @@ public class ParameterSetter {
 			int indexEnd = newQuery.indexOf("}", index);
 			ptr = indexEnd;
 			String namePar = newQuery.substring(index+2, indexEnd);
-			//if the parameter comes from a property, a double apix has to be added
-			//control if immediately before the ${Parameter there is the = charachter}
-			//to be done for parameters that are not strings
-			String controlSubstring =newQuery.substring(index-5, index); 
 			
-			if(controlSubstring.indexOf("=")!= -1){
-				pvalue = '"'+pvalue+'"';
-			}
+			// TODO manage property parameters type
+			// If the parameter comes from a property, a double apix has to be added
+			// but we have to pay attention to recognize property parameters and filter 
+			// conditions
+			
 			if(!namePar.trim().equalsIgnoreCase(pname)) 
 				continue;
 			newQuery = newQuery.substring(0, index) + 

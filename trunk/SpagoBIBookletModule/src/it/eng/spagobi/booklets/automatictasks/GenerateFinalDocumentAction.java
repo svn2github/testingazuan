@@ -5,6 +5,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
+import it.eng.spagobi.booklets.exceptions.OpenOfficeConnectionException;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -26,8 +27,12 @@ import com.sun.star.awt.Size;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.bridge.UnoUrlResolver;
+import com.sun.star.bridge.XBridge;
+import com.sun.star.bridge.XBridgeFactory;
 import com.sun.star.bridge.XUnoUrlResolver;
 import com.sun.star.comp.helper.Bootstrap;
+import com.sun.star.connection.XConnection;
+import com.sun.star.connection.XConnector;
 import com.sun.star.container.XNameContainer;
 import com.sun.star.container.XNamed;
 import com.sun.star.drawing.XDrawPage;
@@ -58,6 +63,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 		IBookletsCmsDao pampDao = null;
 		String pathTmpFoldPamp = null;
 		String pathBookConf = null;
+		XBridge bridge = null;
 		try{
 			debug("execute", "Start execution");
 			ContextInstance contextInstance = context.getContextInstance();
@@ -103,11 +109,31 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 			debug("execute", "Office connection port: " + port);
 			XComponentContext  xRemoteContext = Bootstrap.createInitialComponentContext(null);
 			debug("execute", "InitialComponentContext xRemoteContext created: " + xRemoteContext);
-			XUnoUrlResolver urlResolver = UnoUrlResolver.create(xRemoteContext);   
-			debug("execute", "XUnoUrlResolver created: " + urlResolver);
-			Object initialObject = urlResolver.resolve("uno:socket,host="+host+",port="+port+";urp;StarOffice.ServiceManager");
-			debug("execute", "InitialObject: " + initialObject);
-			XMultiComponentFactory xRemoteServiceManager = (XMultiComponentFactory)UnoRuntime.queryInterface(XMultiComponentFactory.class, initialObject);
+			
+//			XUnoUrlResolver urlResolver = UnoUrlResolver.create(xRemoteContext);   
+//			debug("execute", "XUnoUrlResolver created: " + urlResolver);
+//			Object initialObject = urlResolver.resolve("uno:socket,host="+host+",port="+port+";urp;StarOffice.ServiceManager");
+//			debug("execute", "InitialObject: " + initialObject);
+			
+			Object x = xRemoteContext.getServiceManager().createInstanceWithContext("com.sun.star.connection.Connector", xRemoteContext);
+            XConnector xConnector = (XConnector) UnoRuntime.queryInterface(XConnector.class, x);
+            debug("execute", "XConnector retrieved: " + xConnector);
+            XConnection connection = xConnector.connect("socket,host=" + host + ",port=" + port);
+            debug("execute", "XConnection retrieved: " + connection);
+            x = xRemoteContext.getServiceManager().createInstanceWithContext("com.sun.star.bridge.BridgeFactory", xRemoteContext);
+            XBridgeFactory xBridgeFactory = (XBridgeFactory) UnoRuntime.queryInterface(XBridgeFactory.class, x);
+            debug("execute", "XBridgeFactory retrieved: " + xBridgeFactory);
+            // this is the bridge that you will dispose
+            bridge = xBridgeFactory.createBridge("", "urp", connection, null);
+            debug("execute", "XBridge retrieved: " + bridge);
+            XComponent xComp = (XComponent) UnoRuntime.queryInterface(XComponent.class, bridge);
+            // get the remote instance
+            x = bridge.getInstance("StarOffice.ServiceManager");
+            debug("execute", "StarOffice.ServiceManager instance retrieved: " + x);
+            // Query the initial object for its main factory interface
+            XMultiComponentFactory xRemoteServiceManager = (XMultiComponentFactory) UnoRuntime.queryInterface(XMultiComponentFactory.class, x);
+			
+			//XMultiComponentFactory xRemoteServiceManager = (XMultiComponentFactory)UnoRuntime.queryInterface(XMultiComponentFactory.class, initialObject);
 			debug("execute", "xRemoteServiceManager: " + xRemoteServiceManager);
 			XPropertySet xPropertySet = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, xRemoteServiceManager);
 			debug("execute", "XPropertySet: " + xPropertySet);
@@ -316,10 +342,12 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 				} catch (Exception e){
 					major("execute", "Cannot close openoffice template document", e);
 				}
-			} 
-			if(xdesktop!=null){
-				xdesktop.terminate();
 			}
+			
+			// the following code make the OO server go down!!
+//			if(xdesktop!=null){
+//				xdesktop.terminate();
+//			}
 		}
 		
 		 // delete all file inside tht patmphlet temp directory

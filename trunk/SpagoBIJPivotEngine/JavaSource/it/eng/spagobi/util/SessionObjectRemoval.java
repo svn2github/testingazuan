@@ -94,6 +94,34 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("toolbar01") != null) {
 			session.removeAttribute("toolbar01");
 		}
+		
+		if (session.getAttribute("selectedSchemaNode") != null) {
+			session.removeAttribute("selectedSchemaNode");
+		}
+		
+		if (session.getAttribute("catalogUri") != null) {
+			session.removeAttribute("catalogUri");
+		}
+		
+		if (session.getAttribute("connection") != null) {
+			session.removeAttribute("connection");
+		}
+		
+		if (session.getAttribute("parameters") != null) {
+			session.removeAttribute("parameters");
+		}
+		
+		if (session.getAttribute("queryWithParameters") != null) {
+			session.removeAttribute("queryWithParameters");
+		}
+		
+		if (session.getAttribute("initialQueryWithParameters") != null) {
+			session.removeAttribute("initialQueryWithParameters");
+		}
+		
+		if (session.getAttribute("initialMondrianQuery") != null) {
+			session.removeAttribute("initialMondrianQuery");
+		}
 	}
 	
 }

@@ -5,6 +5,9 @@ import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,18 +44,42 @@ public class TemplateBean implements Serializable {
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		MdxQuery mdxQuery = (MdxQuery) olapModel.getExtension("mdxQuery");
 		String query = mdxQuery.getMdxQuery();
-//		if (olapModel.getBookmarkState(0) instanceof MondrianMemento) {
-//			MondrianMemento olapMem = (MondrianMemento) olapModel.getBookmarkState(0);
-//			query = olapMem.getMdxQuery();
-//		}
+		// the queryWithParameters is added by the addParameter.jsp
+		String queryWithParameters = (String) session.getAttribute("queryWithParameters");
+		String initialQueryWithParameters = (String) session.getAttribute("initialQueryWithParameters");
+		String initialMondrianQuery = (String) session.getAttribute("initialMondrianQuery");
+		if (initialQueryWithParameters != null && initialMondrianQuery != null) {
+			if (query.trim().equalsIgnoreCase(initialMondrianQuery.trim())) {
+				// the initial Mondrian query was not modified
+				if (queryWithParameters == null) {
+					// if the queryWithParameters is not null it means that the user modified manually the query;
+					// if it is null instead it means that the user did not modify manually the query.
+					queryWithParameters = initialQueryWithParameters;
+				}
+			}
+		}
+		if (queryWithParameters == null) queryWithParameters = query;
+		HashMap parameters = (HashMap) session.getAttribute("parameters");
 		if (query != null) {
 			String xmlString = "<olap>\n";
 			xmlString += "	<cube reference='" + catalogUri + "' />\n";
 			xmlString += "	<MDXquery>\n";
-			xmlString += query;
+			xmlString += queryWithParameters;
+			if (parameters != null && parameters.size() > 0) {
+				Set keys = parameters.keySet();
+				Iterator keyIt = keys.iterator();
+				while (keyIt.hasNext()) {
+					String parameterName = (String) keyIt.next();
+					String parameterUrlName = (String) parameters.get(parameterName);
+					xmlString += "<parameter name='" + parameterUrlName + "' as='" + parameterName + "' />";
+				}
+			}
 			xmlString += "	</MDXquery>\n";
+			xmlString += "	<MDXMondrianQuery>\n";
+			xmlString += query;
+			xmlString += "	</MDXMondrianQuery>\n";
 			xmlString += "</olap>";
-			// controls that the produced String in a valid xml format
+			// controls that the produced String is a valid xml format
 			Document document = null;
 			try {
 				SAXReader reader = new SAXReader();

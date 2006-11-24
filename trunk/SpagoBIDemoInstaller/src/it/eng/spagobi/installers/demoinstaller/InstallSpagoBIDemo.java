@@ -38,6 +38,9 @@ public class InstallSpagoBIDemo {
 			if (!installJndiConfiguration(pathsource, pathdest))
 				return;
 			
+			if (!installBookletConfiguration(pathsource, pathdest))
+				return;
+			
 //			if (!installDB(pathsource, pathdest))
 //				return;
 			
@@ -232,6 +235,39 @@ public class InstallSpagoBIDemo {
 		return true;
 	}
 	
+	private static boolean installBookletConfiguration(String pathsource, String pathdest) {
+		try {
+			
+			// read into a string buffer the booklet.xml file 
+			File bookletconf = new File(pathdest + "/webapps/spagobi/WEB-INF/conf/components/booklets/booklets.xml");
+			FileReader reader = new FileReader(bookletconf);
+			
+			//FileInputStream fis = new FileInputStream(servconf);
+			StringBuffer stringBuffer = new StringBuffer();
+			char[] buffer = new char[1024];
+			int len;
+			while ((len = reader.read(buffer)) >= 0) {
+				stringBuffer.append(buffer, 0, len);
+			}
+			reader.close();
+			// deletes the old file
+			bookletconf.delete();
+			
+			// replace the path of the exo root 
+		    int startbooklettempdir = stringBuffer.indexOf("${booklettempdir}");
+		    stringBuffer.replace(startbooklettempdir, startbooklettempdir+17, pathdest+"/temp/booklet-temp");
+		    // write the string buffer to the new file booklet.xml
+		    bookletconf = new File(pathdest + "/webapps/spagobi/WEB-INF/conf/components/booklets/booklets.xml");
+			FileOutputStream fos = new FileOutputStream(bookletconf);
+			fos.write(stringBuffer.toString().getBytes());
+			fos.flush();
+			fos.close();
+		} catch (Exception exc) {
+			System.out.println(exc);
+			return false;
+		}
+		return true;
+	}
 	
 //	private static boolean installDB(String pathsource, String pathdest) {
 //		try {

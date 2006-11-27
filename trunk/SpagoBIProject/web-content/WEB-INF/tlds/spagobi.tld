@@ -197,6 +197,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>descriptionColumns</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
             <name>queryDef</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -217,11 +222,6 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <name>isListOfValues</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
     </tag>
     <tag>
         <name>javaClassWizard</name>
@@ -232,12 +232,7 @@
             <name>javaClassName</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>isListOfValues</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
+        </attribute>        
     </tag>
     <tag>
         <name>lovWizard</name>

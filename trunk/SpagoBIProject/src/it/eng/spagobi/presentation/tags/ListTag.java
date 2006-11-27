@@ -60,7 +60,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  * SpagoBI's list modules. Once a list module has been executed, 
  * the list tag builds all the correspondent jsp page and gives the results
  * 
- * @author sulis
  */
 
 public class ListTag extends TagSupport
@@ -98,13 +97,7 @@ public class ListTag extends TagSupport
     	labelLinkSaltoPagina = "Vai alla Pagina";	
     }
 
-    
-    
-    /**
-	 * @see it.eng.spagobi.presentation.tags.ListTag#doStartTag()
-	 * 
-	 */
-    
+       
 	public int doStartTag() throws JspException {
 		SpagoBITracer.info("Admintools", "ListTag", "doStartTag", " method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();

@@ -41,16 +41,20 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.JavaClassDetail;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
-import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
+import it.eng.spagobi.bo.lov.ILovDetail;
+import it.eng.spagobi.bo.lov.JavaClassDetail;
+import it.eng.spagobi.bo.lov.LovDetailFactory;
+import it.eng.spagobi.bo.lov.LovResultHandler;
+import it.eng.spagobi.bo.lov.LovToListService;
+import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
@@ -82,8 +86,6 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 						
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ListLookupModalityValuesModule::service: invocato");
 	    DelegatedBasicListService.service(this, request, response);
-	    
-		//super.service(request, response); 
 	}
 	
 	/**
@@ -94,36 +96,22 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 	 * @return ListIFace 
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {		
-		ListIFace list = null;		
-		
+		ListIFace list = null;	
 		HashMap paramsMap = null;	
+						
+		list = getListFromLov(request, response);
+		paramsMap = getParams(request);
 		
-		// get the input type from request (query || script)
 		String inputType = getModalityValue(request).getITypeCd();
-		
-		// different input type call different delegated class to build the list 
-		if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {			
-			list = getListFromQuery(request, response);
-			paramsMap = getParams(request);
-			String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
-			if (correlatedParuseIdStr != null && !correlatedParuseIdStr.equals("")) {
+		if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {		
+			if (isCorrelated(request)) {
+				list = filterListForCorrelatedParam(request, list);		
+				String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
 				paramsMap.put("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));
 				paramsMap.put("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));	
-			}		
-		} 
-		else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {			
-			list = getListFromLov(request, response);
-			paramsMap = getParams(request);
-		}
-		else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE)) {			
-			list = getListFromScript(request, response);
-			paramsMap = getParams(request);
-		}
-		else if(inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_JAVA_CLASS_CODE)) {			
-			list = getListFromJavaClass(request, response);
-			paramsMap = getParams(request);
-		}
-		
+			}  
+		}		
+				
 		response.setAttribute("PARAMETERS_MAP", paramsMap);		
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
 		
@@ -184,41 +172,35 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 	}
 	
 	
+	private BIObjectParameter getBIParameter(SourceBean request) {
+		BIObject obj = (BIObject)getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		String parameterUrlName = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
+		List biparams = obj.getBiObjectParameters(); 
+        Iterator iterParams = biparams.iterator();
+        while(iterParams.hasNext()) {
+        	BIObjectParameter biParam = (BIObjectParameter)iterParams.next();
+        	if(biParam.getParameterUrlName().equalsIgnoreCase(parameterUrlName)) return biParam;
+        }
+        
+        return null;
+	}
+	
 	
 	private ListIFace getListFromLov(SourceBean request, SourceBean response) throws Exception {
 		ListIFace list = null;
 		
-		response.setAttribute(getFixLovModuleConfig(request));		
-		
-		String lovDetXML = getModalityValue(request).getLovProvider();
-		IEngUserProfile profile = getUserProfile(request);
-		lovDetXML = GeneralUtilities.substituteProfileAttributesInString(lovDetXML,profile);
-		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
-		
-		PaginatorIFace paginator = new GenericPaginator();
-		List rowsVector = new ArrayList();
-		if (lovXML != null) {
-			List lovElement = lovXML.getAttributeAsList("LOV-ELEMENT");
-			for(int j = 0; j < lovElement.size(); j++) {			
-				SourceBean row = new SourceBean("ROW");
-				SourceBean tsb = (SourceBean)lovElement.get(j);
-				String descVal = (String)tsb.getAttribute("DESC");
-				String valueVal = (String)tsb.getAttribute("VALUE");
-				row.setAttribute("DESC", descVal);
-				row.setAttribute("VALUE", valueVal);
-				rowsVector.add(row);
-			}
-			
-			
+		BIObjectParameter biParam = getBIParameter(request);
+		String lovResult = biParam.getLovResult();
+		if(lovResult == null) {
+			IEngUserProfile profile = getUserProfile(request);
+			String lovProvider = getModalityValue(request).getLovProvider();
+			ILovDetail  lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
+			lovResult = lovDetail.getLovResult(profile);		
 		}
+		LovToListService lovToListService = new LovToListService(lovResult);	
+		list = lovToListService.getLovAsListService();
 			
-
-		if (lovXML != null) {
-			for (int i = 0; i < rowsVector.size(); i++)
-				paginator.addRow(rowsVector.get(i));
-		}
-		list = new GenericList();
-		list.setPaginator(paginator);
+		response.setAttribute(getLovModuleConfig(lovResult, request));	
 		
 		// filter the list 
 		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
@@ -236,262 +218,32 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 		return list;
 	}
 	
-	private ListIFace getListFromJavaClass(SourceBean request, SourceBean response) throws Exception {
-		ListIFace list = null;
-		
-		IEngUserProfile profile = (IEngUserProfile)getPermanentSession(request).getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String lov = getModalityValue(request).getLovProvider();
-		JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lov);
-		String javaClassName = javaClassDetail.getJavaClassName();
-		if (javaClassName == null || javaClassName.trim().equals("")){
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-					"ListLookupModalityValuesModule", 
-					"getListFromJavaClass", "The java class name is not specified");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "1071");
-		}
-		IJavaClassLov javaClassLov = null;
-		Class javaClass = null;
-		try {
-			javaClass = Class.forName(javaClassName);
-		} catch (ClassNotFoundException e) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-					"ListLookupModalityValuesModule", 
-					"getListFromJavaClass", "Java class '" + javaClassName + "' not found!!");
-			Vector v = new Vector();
-			v.add(javaClassName);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "1072", v);
-		}
-		try {
-			javaClassLov = (IJavaClassLov) javaClass.newInstance();
-		} catch (Exception e) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-					"ListLookupModalityValuesModule", 
-					"getListFromJavaClass", "Error while instatiating Java class '" + javaClassName + "'.");
-			Vector v = new Vector();
-			v.add(javaClassName);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "1073", v);
-		}
-		String result = javaClassLov.getValues(profile);
-		SourceBean rowsSourceBean = null;
-		try{
-			rowsSourceBean = SourceBean.fromXMLString(result);
-		} catch(Exception e) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-								"ListLookupModalityValuesModule", 
-								"getList", "Error during parsing of the script result",e);
-		}
-		
-		SourceBean visibleColumnsSB = (SourceBean) rowsSourceBean.getAttribute("VISIBLE-COLUMNS");
-		String visibleColumns = visibleColumnsSB.getCharacters();
-		Vector columns = findVisibleColumns(visibleColumns);
-		
-		SourceBean valueColumnSB = (SourceBean) rowsSourceBean.getAttribute("VALUE-COLUMN");
-		String valueColumn = valueColumnSB.getCharacters().trim();
-		
-		String moduleConfigStr = "";
-		moduleConfigStr += "<CONFIG rows=\"10\" title=\"" + getModalityValue(request).getDescription() + "\">";
-		moduleConfigStr += "	<QUERIES/>";
-		moduleConfigStr += "</CONFIG>";
-		SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
-		
-		SourceBean columnsSB = createColumnsSB(columns);
-		moduleConfig.setAttribute(columnsSB);
+	
 
-		SourceBean captionsSB = new SourceBean("CAPTIONS");
-		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn);
+	
+	
+	private SourceBean getLovModuleConfig(String lovResult, SourceBean request) throws Exception {
+		
+		LovToListService lovToListService = new LovToListService(lovResult);
+		SourceBean config = lovToListService.getListServiceBaseConfig(getModalityValue(request).getDescription());
+		
+		LovResultHandler lovResultHandler = new LovResultHandler(lovResult);						
+		String valueColumn = lovResultHandler.getValueColumn();
+		String descriptionColumn = lovResultHandler.getDescriptionColumn();
+				
+		SourceBean captionsSB = new SourceBean("CAPTIONS");		
+		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn, descriptionColumn);
 		captionsSB.setAttribute(selectCaptionSB);
-		moduleConfig.setAttribute(captionsSB);
+		config.setAttribute(captionsSB);
 		
 		SourceBean buttonsSB = new SourceBean("BUTTONS");
 		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
-		buttonsSB.setAttribute(backButtonSB);
-		moduleConfig.setAttribute(buttonsSB);
-
-		response.setAttribute(moduleConfig);
+		buttonsSB.setAttribute(backButtonSB);		
+		config.setAttribute(buttonsSB);
 		
-    	PaginatorIFace paginator = new GenericPaginator();
-		List rowsVector = null;
-		if (rowsSourceBean != null)
-			rowsVector = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
-
-		if (rowsSourceBean != null) {
-			for (int i = 0; i < rowsVector.size(); i++)
-				paginator.addRow(rowsVector.get(i));
-		}
-		list = new GenericList();
-		list.setPaginator(paginator);
-		
-		// filter the list 
-		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
-		if (valuefilter != null) {
-			String columnfilter = (String) request
-					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
-			String typeFilter = (String) request
-					.getAttribute(SpagoBIConstants.TYPE_FILTER);
-			String typeValueFilter = (String) request
-					.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
-			list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, 
-					columnfilter, typeFilter, getResponseContainer().getErrorHandler());
-		}		
-		
-		return list;
+		return config;
 	}
-	
-	private ListIFace getListFromScript(SourceBean request, SourceBean response) throws Exception {
-		ListIFace list = null;
-		
-		IEngUserProfile profile = (IEngUserProfile)getPermanentSession(request).getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String lov = getModalityValue(request).getLovProvider();
-		ScriptDetail scriptDet = ScriptDetail.fromXML(lov);
-		String script = scriptDet.getScript();
-		Binding bind = GeneralUtilities.fillBinding(profile);
-		String result = GeneralUtilities.testScript(script, bind);
-		SourceBean rowsSourceBean = null;
-		try{
-			rowsSourceBean = SourceBean.fromXMLString(result);
-		} catch(Exception e) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-								"ListLookupModalityValuesModule", 
-								"getList", "Error during parsing of the script result",e);
-		}
-		
-		SourceBean visibleColumnsSB = (SourceBean) rowsSourceBean.getAttribute("VISIBLE-COLUMNS");
-		String visibleColumns = visibleColumnsSB.getCharacters();
-		Vector columns = findVisibleColumns(visibleColumns);
-		
-		SourceBean valueColumnSB = (SourceBean) rowsSourceBean.getAttribute("VALUE-COLUMN");
-		String valueColumn = valueColumnSB.getCharacters().trim();
-		
-		String moduleConfigStr = "";
-		moduleConfigStr += "<CONFIG rows=\"10\" title=\"" + getModalityValue(request).getDescription() + "\">";
-		moduleConfigStr += "	<QUERIES/>";
-		moduleConfigStr += "</CONFIG>";
-		SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
-		
-		SourceBean columnsSB = createColumnsSB(columns);
-		moduleConfig.setAttribute(columnsSB);
 
-		SourceBean captionsSB = new SourceBean("CAPTIONS");
-		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn);
-		captionsSB.setAttribute(selectCaptionSB);
-		moduleConfig.setAttribute(captionsSB);
-		
-		SourceBean buttonsSB = new SourceBean("BUTTONS");
-		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
-		buttonsSB.setAttribute(backButtonSB);
-		moduleConfig.setAttribute(buttonsSB);
-
-		response.setAttribute(moduleConfig);
-		
-    	PaginatorIFace paginator = new GenericPaginator();
-		List rowsVector = null;
-		if (rowsSourceBean != null)
-			rowsVector = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
-
-		if (rowsSourceBean != null) {
-			for (int i = 0; i < rowsVector.size(); i++)
-				paginator.addRow(rowsVector.get(i));
-		}
-		list = new GenericList();
-		list.setPaginator(paginator);
-		
-		// filter the list 
-		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
-		if (valuefilter != null) {
-			String columnfilter = (String) request
-					.getAttribute(SpagoBIConstants.COLUMN_FILTER);
-			String typeFilter = (String) request
-					.getAttribute(SpagoBIConstants.TYPE_FILTER);
-			String typeValueFilter = (String) request
-					.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
-			list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, 
-					columnfilter, typeFilter, getResponseContainer().getErrorHandler());
-		}		
-		
-		return list;
-	}
-	
-	private SourceBean getFixLovModuleConfig(SourceBean request) throws Exception {
-		SourceBean moduleConfig = null;
-		
-		String lovDetXML = getModalityValue(request).getLovProvider();
-		IEngUserProfile profile = getUserProfile(request);
-		lovDetXML = GeneralUtilities.substituteProfileAttributesInString(lovDetXML,profile);
-		SourceBean lovXML = SourceBean.fromXMLString(lovDetXML);
-		
-		
-		String visibleColumns = "DESC";
-		Vector columns = findVisibleColumns(visibleColumns);
-		
-		//String valueColumn = (String)lovXML.getAttribute("VALUE");
-		//String valueColumn = (String)((SourceBean)lovXML.getAttribute("LOV-ELEMENT")).getAttribute("VALUE");				
-		String valueColumn = "VALUE";
-		
-		String moduleConfigStr = "";
-		moduleConfigStr += "<CONFIG rows=\"10\" title=\"" + getModalityValue(request).getDescription() + "\">";
-		moduleConfigStr += "	<KEYS>";
-		moduleConfigStr += "		<OBJECT key='"+ valueColumn +"'/>";
-		moduleConfigStr += "	</KEYS>";
-		moduleConfigStr += "	<QUERIES/>";
-		moduleConfigStr += "</CONFIG>";
-		moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
-		
-		SourceBean columnsSB = createColumnsSB(columns);
-		moduleConfig.setAttribute(columnsSB);
-
-		SourceBean captionsSB = new SourceBean("CAPTIONS");
-		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn);
-		captionsSB.setAttribute(selectCaptionSB);
-		moduleConfig.setAttribute(captionsSB);
-		
-		SourceBean buttonsSB = new SourceBean("BUTTONS");
-		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
-		buttonsSB.setAttribute(backButtonSB);
-		//SourceBean selectButtonSB = createSelectButton(getBackButtonParams(request));
-		//buttonsSB.setAttribute(selectButtonSB);
-		moduleConfig.setAttribute(buttonsSB);
-		
-		return moduleConfig;
-	}
-	
-	private SourceBean getQueryModuleConfig(SourceBean request) throws Exception {
-		SourceBean moduleConfig = null;
-		
-		String queryDetXML = getModalityValue(request).getLovProvider();
-		SourceBean queryXML = SourceBean.fromXMLString(queryDetXML);
-		String visibleColumns = ((SourceBean) queryXML.getAttribute("VISIBLE-COLUMNS")).getCharacters();
-		String valueColumn = ((SourceBean) queryXML.getAttribute("VALUE-COLUMN")).getCharacters();
-		String pool = ((SourceBean) queryXML.getAttribute("CONNECTION")).getCharacters();
-		String statement = ((SourceBean) queryXML.getAttribute("STMT")).getCharacters();
-		IEngUserProfile profile = getUserProfile(request);
-		statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
-		
-		Vector columns = findVisibleColumns(visibleColumns);
-		
-		String moduleConfigStr = "";
-		moduleConfigStr += "<CONFIG pool=\"" + pool + "\" rows=\"10\" title=\"" + getModalityValue(request).getDescription() + "\">";
-		moduleConfigStr += "	<QUERIES>";
-		moduleConfigStr += "		<SELECT_QUERY statement=\"" + statement + "\" />";
-		moduleConfigStr += "	</QUERIES>";
-		moduleConfigStr += "</CONFIG>";
-		moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
-		
-		SourceBean columnsSB = createColumnsSB(columns);
-		moduleConfig.setAttribute(columnsSB);
-
-		SourceBean captionsSB = new SourceBean("CAPTIONS");
-		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn);
-		captionsSB.setAttribute(selectCaptionSB);
-		moduleConfig.setAttribute(captionsSB);
-		
-		SourceBean buttonsSB = new SourceBean("BUTTONS");
-		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
-		buttonsSB.setAttribute(backButtonSB);
-		moduleConfig.setAttribute(buttonsSB);
-		
-		return moduleConfig;
-	}
-	
 	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
 		Integer objParId = Integer.valueOf(objParIdStr);
@@ -533,39 +285,6 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 							getResponseContainer().getErrorHandler());
 		}
 	}
-	
-	private ListIFace getListFromQuery (SourceBean request, SourceBean response) throws Exception {
-		ListIFace list = null;
-		
-		response.setAttribute(getQueryModuleConfig(request));		
-		list = DelegatedBasicListService.getList(this, request, response);
-				
-		// if the parameter is correlated filter out the list properly
-		if (isCorrelated(request)) {
-			list = filterListForCorrelatedParam(request, list);				
-		}  
-		
-		return list;
-	}
-	
-	
-	/**
-	 * Finds the names of the visible columns with the StringTokenizer from the String at input.
-	 * 
-	 * @param visibleColumns The String at input to be tokenized
-	 * @return A Vector containing the names of the visible columns
-	 */
-	private Vector findVisibleColumns(String visibleColumns) {
-		if (visibleColumns == null || visibleColumns.trim().equals("")) return new Vector ();
-		StringTokenizer strToken = new StringTokenizer(visibleColumns, ",");
-		Vector columns = new Vector();
-		while (strToken.hasMoreTokens()) {
-			String val = strToken.nextToken().trim();
-			columns.add(val);
-		}
-		return columns;
-	}
-
 
 	/**
 	 * Creates a BACK_BUTTON SourceBean with the parameters passed at input
@@ -608,7 +327,7 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 	 * @return The SELECT_CAPTION SourceBean
 	 * @throws SourceBeanException
 	 */
-	private SourceBean createSelectCaption(HashMap selectCaptionParams, String valueColumn) throws SourceBeanException {
+	private SourceBean createSelectCaption(HashMap selectCaptionParams, String valueColumn, String descColumn) throws SourceBeanException {
 		if (selectCaptionParams == null || selectCaptionParams.size() == 0) return new SourceBean("SELECT_CAPTION");
 		String selectCaptionStr = "<SELECT_CAPTION confirm=\"FALSE\" image=\"/img/button_ok.gif\" " +
 				" label=\"SBIListLookPage.selectButton\">";
@@ -620,28 +339,10 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 			selectCaptionStr += "	<PARAMETER name=\"" + key + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + value + "\" />";
 		}
 		selectCaptionStr += "	<PARAMETER name=\"LOOKUP_VALUE\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"" + valueColumn + "\" />";
+		selectCaptionStr += "	<PARAMETER name=\"LOOKUP_DESC\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"" + descColumn + "\" />";
 		selectCaptionStr += "</SELECT_CAPTION>";
 		SourceBean toReturn = SourceBean.fromXMLString(selectCaptionStr);
 		return toReturn;
-	}
-	
-	/**
-	 * Creates a COLUMNS SourceBean with all the columns in the Vector passed at input
-	 * 
-	 * @param columns The Vector containing the columns to be visualized
-	 * @return The COLUMNS SourceBean 
-	 * @throws SourceBeanException
-	 */
-	private SourceBean createColumnsSB(Vector columns) throws SourceBeanException {
-		if (columns == null || columns.size() == 0) return new SourceBean("COLUMNS");
-		String columnsStr = "<COLUMNS>";
-		for (int i = 0; i < columns.size(); i++) {
-			columnsStr += "	<COLUMN name=\"" + columns.get(i).toString() + "\" />";
-		}
-		columnsStr += "</COLUMNS>";
-		SourceBean columnsSB = SourceBean.fromXMLString(columnsStr);
-		return columnsSB;
-	}
-	
+	}	
 } 
 

@@ -78,6 +78,8 @@ public class BIObjectParameter implements Serializable {
 	/* transient flag. set to true for parameters buil on the fly */
 	private boolean transientParmeters = false;
 	
+	private String lovResult;
+	
 	/**
 	 * @return Returns the id of the BIObjectParameter
 	 */
@@ -241,6 +243,12 @@ public class BIObjectParameter implements Serializable {
 	
 	public void setTransientParmeters(boolean transientParmeters) {
 		this.transientParmeters = transientParmeters;
+	}
+	public String getLovResult() {
+		return lovResult;
+	}
+	public void setLovResult(String lovResult) {
+		this.lovResult = lovResult;
 	}
 	
 }

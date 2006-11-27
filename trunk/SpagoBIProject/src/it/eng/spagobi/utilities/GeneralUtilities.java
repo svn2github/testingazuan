@@ -46,14 +46,16 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.JavaClassDetail;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.Parameter;
-import it.eng.spagobi.bo.QueryDetail;
-import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
+import it.eng.spagobi.bo.lov.ILovDetail;
+import it.eng.spagobi.bo.lov.JavaClassDetail;
+import it.eng.spagobi.bo.lov.LovDetailFactory;
+import it.eng.spagobi.bo.lov.QueryDetail;
+import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
@@ -679,86 +681,10 @@ public class GeneralUtilities {
 	}
 	
 	public static String getLovResult (ModalitiesValue lov) throws Exception {
-		DataConnection dataConnection = null;
-		//RequestContainer reqcont = RequestContainer.getRequestContainer();
-		//SessionContainer sessCont = reqcont.getSessionContainer();
-		//SessionContainer permSess = sessCont.getPermanentContainer();
-		//IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		IEngUserProfile profile = new AnonymousCMSUserProfile("anonymous");
-		String type = lov.getITypeCd();
-        if (type.equalsIgnoreCase("QUERY")) {
-        	String dataProv = lov.getLovProvider();
-        	QueryDetail queryDet = QueryDetail.fromXML(dataProv);
-        	String pool = queryDet.getConnectionName();
-    		String statement = queryDet.getQueryDefinition();
-    		DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
-			dataConnection = dataConnectionManager.getConnection(pool);
-			statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
-			SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
-			DataResult dataResult = sqlCommand.execute();
-            ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
-			SourceBean result = scrollableDataResult.getSourceBean();
-    		String resStr = result.toXML(false);
-    		resStr = resStr.trim();
-    		if(resStr.startsWith("<?")) {
-    			resStr = resStr.substring(2);
-    			int indFirstTag = resStr.indexOf("<");
-    			resStr = resStr.substring(indFirstTag);
-    		}
-    		resStr = resStr.toLowerCase();
-    		
-    		it.eng.spago.dbaccess.Utils.releaseResources(dataConnection, sqlCommand, dataResult);
-    		
-    		return resStr;
-        } else if (type.equalsIgnoreCase("SCRIPT")) {
-        	HashMap attributes = getAllProfileAttributes(profile);
-        	Binding bind = GeneralUtilities.fillBinding(attributes);
-        	String dataProv = lov.getLovProvider();
-        	ScriptDetail scriptDet = ScriptDetail.fromXML(dataProv);
-        	String result = GeneralUtilities.testScript(scriptDet.getScript(), bind);
-    		return result;
-        } else if (type.equalsIgnoreCase("JAVA_CLASS")) {
-        	String lovProvider = lov.getLovProvider();
-			JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lovProvider);
-			String javaClassName = javaClassDetail.getJavaClassName();
-			if (javaClassName == null || javaClassName.trim().equals("")){
-				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-						GeneralUtilities.class.getName(), 
-						"getLovResult", "The java class name is not specified");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1071");
-			}
-			IJavaClassLov javaClassLov = null;
-			Class javaClass = null;
-			try {
-				javaClass = Class.forName(javaClassName);
-			} catch (ClassNotFoundException e) {
-				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-						GeneralUtilities.class.getName(), 
-						"getLovResult", "Java class '" + javaClassName + "' not found!!");
-				Vector v = new Vector();
-				v.add(javaClassName);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1072", v);
-			}
-			try {
-				javaClassLov = (IJavaClassLov) javaClass.newInstance();
-			} catch (Exception e) {
-				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-						GeneralUtilities.class.getName(), 
-						"getLovResult", "Error while instatiating Java class '" + javaClassName + "'.");
-				Vector v = new Vector();
-				v.add(javaClassName);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1073", v);
-			}
-			String result = javaClassLov.getValues(profile);
-			return result;
-        } else if (type.equalsIgnoreCase("FIX_LOV")) 
-        		return lov.getLovProvider();
-        else {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
-					GeneralUtilities.class.getName(), 
-					"getLovResult", "Input type '" + type + "' not valid.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");
-        }
+		String dataProv = lov.getLovProvider();
+		ILovDetail lovDetail = LovDetailFactory.getLovFromXML(dataProv);
+		return lovDetail.getLovResult(profile);		
 	}
 	
 }

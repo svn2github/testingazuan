@@ -73,6 +73,8 @@ public class ParameterValuesEncoder {
 	
 	public String encode(BIObjectParameter biobjPar) {
 		
+		if(biobjPar.getParameterValues() == null) throw new RuntimeException();
+		
 		Parameter parameter = biobjPar.getParameter();
 		if (parameter != null) {
 			ModalitiesValue modValue = parameter.getModalityValue();

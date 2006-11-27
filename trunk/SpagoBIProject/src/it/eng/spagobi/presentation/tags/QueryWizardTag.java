@@ -48,6 +48,7 @@ public class QueryWizardTag extends TagSupport {
 	private String visibleColumns;
 	private String invisibleColumns;
 	private String valueColumns;
+	private String descriptionColumns;
 	private String queryDef;
 	
 	private HttpServletRequest httpRequest = null;
@@ -55,6 +56,7 @@ public class QueryWizardTag extends TagSupport {
     protected RenderResponse renderResponse = null;
 	
 	public int doStartTag() throws JspException {
+		///*
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "QueryWizardTag::doStartTag:: invocato");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
@@ -63,6 +65,7 @@ public class QueryWizardTag extends TagSupport {
 		String visColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.visColumnsField", "messages");
 		String invisColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.invisColumnsField", "messages");
 		String valueColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.valueColumnsField", "messages");
+		String descriptionColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.descriptionColumnsField", "messages");		
 		String queryDefField = PortletUtilities.getMessage("SBIDev.queryWiz.queryDefField", "messages");
 		String columnsField = PortletUtilities.getMessage("SBIDev.queryWiz.columnsField", "messages");
 		String noPointNotationError = PortletUtilities.getMessage("SBIDev.queryWiz.noPointNotationError", "messages");
@@ -95,38 +98,57 @@ public class QueryWizardTag extends TagSupport {
 		}
 		output.append("			</select>\n");
 		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			<span class='portlet-form-field-label'>\n");
 		output.append(visColumnsField);
 		output.append("			</span>\n");
 		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_form'>\n");
 		output.append("			<input class='portlet-form-input-field' type='text' name='visColumns' id='visColumns' size='50' value='"+ visibleColumns + "' maxlength='100'>&nbsp;*\n");
 		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			<span class='portlet-form-field-label'>\n");
 		output.append(invisColumnsField);
 		output.append("			</span>\n");
 		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_form'>\n");
 		output.append("			<input class='portlet-form-input-field' type='text' name='invisColumns' id='invisColumns' size='50' value='"+ invisibleColumns + "' maxlength='100'>&nbsp;*\n");
 		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			<span class='portlet-form-field-label'>\n");
 		output.append(valueColumnsField);
 		output.append("			</span>\n");
 		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_form'>\n");
 		output.append("			<input class='portlet-form-input-field' type='text' name='valueColumns' id='valueColumns' size='50' value='"+ valueColumns + "' maxlength='100'>&nbsp;*\n");
 		output.append("		</div>\n");
+		
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(descriptionColumnsField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<input class='portlet-form-input-field' type='text' name='descriptionColumns' id='descriptionColumns' size='50' value='"+ descriptionColumns + "' maxlength='100'>&nbsp;*\n");
+		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			<span class='portlet-form-field-label'>\n");
 		output.append(queryDefField);
 		output.append("			</span>\n");
 		output.append("		</div>\n");
+		
 		output.append("		<div class='div_detail_form'>\n");
 		output.append("			<textarea style='height:100px;' class='portlet-text-area-field' name='queryDef' id='queryDef' rows='5' cols='50'>" + queryDef + "</textarea>\n");
 		output.append("		</div>\n");
+		
 		output.append("  </div>\n");
 	    output.append("</div>\n");
 		
@@ -180,6 +202,7 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("<script type='text/javascript'>\n");
 	    output.append("function displayQueryFields() {\n");
 	    output.append(" var valueColumn = '" + valueColumns + "';\n");
+	    output.append(" var descriptionColumn = '" + descriptionColumns + "';\n");
 	    output.append(" var visibleColumns = new Array();\n");
 	    String[] visColumns = visibleColumns.split(",");
 	    for (int i = 0; i < visColumns.length; i++) {
@@ -188,16 +211,17 @@ public class QueryWizardTag extends TagSupport {
 	    	output.append(" visibleColumns[" + i + "] = '" + visibleColumn +"';\n");
 	    }
 	    output.append("	var fields = findFieldsFromQuery();\n");
-	    output.append("	var strHTML = generateHTML(fields, valueColumn, visibleColumns);\n");
+	    output.append("	var strHTML = generateHTML(fields, valueColumn, descriptionColumn, visibleColumns);\n");
 	    output.append("	document.getElementById('fieldsDiv').innerHTML = strHTML;\n");
 	    output.append("}\n");
 	    
-	    output.append("function generateHTML(fields, valueColumn, visibleColumns) {\n");
+	    output.append("function generateHTML(fields, valueColumn, descriptionColumn,  visibleColumns) {\n");
 	    output.append("	var strHTML ='';\n");
 	    output.append("	strHTML += '<table class=\"object-details-table\" style=\"margin:5px;width:100%;\">';\n");
 	    output.append("	strHTML += '<tr>';\n");
 	    output.append("	strHTML += '<td class=\"portlet-section-header\">' + '" + columnsField + "' + '</td>';\n");
 	    output.append("	strHTML += '<td class=\"portlet-section-header\" style=\"text-align:center;width:100px;\">' + '" + valueColumnsField + "' + '</td>';\n");
+	    output.append("	strHTML += '<td class=\"portlet-section-header\" style=\"text-align:center;width:100px;\">' + '" + descriptionColumnsField + "' + '</td>';\n");
 	    output.append("	strHTML += '<td class=\"portlet-section-header\" style=\"text-align:center;width:100px;\">' + '" + visColumnsField + "' + '</td>';\n");
 	    output.append("	strHTML += '</tr>';\n");
 	    output.append("	var rowClass;\n");
@@ -208,9 +232,16 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		alternate = !alternate;\n");
 	    output.append("		strHTML += '<tr class=\"portlet-font\">';\n");
 	    output.append("		strHTML += '<td class=\"' + rowClass + '\">' + fields[i] + '</td>';\n");
+	    
 	    output.append("		var isValueColumn = '';\n");
 	    output.append("		if (fields[i] == valueColumn) isValueColumn='checked=\"checked\"';\n");
 	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"radio\" onclick=\"setValueColumn(this.value);\" onchange=\"setLovProviderModified(true);\" name=\"valueColumnsJS\" value=\"' + fields[i] + '\"  ' + isValueColumn + '></td>';\n");
+	   
+	    output.append("		var isDescriptionColumn = '';\n");
+	    output.append("		if (fields[i] == descriptionColumn) isDescriptionColumn='checked=\"checked\"';\n");
+	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"radio\" onclick=\"setDescriptionColumn(this.value);\" onchange=\"setLovProviderModified(true);\" name=\"descriptionColumnsJS\" value=\"' + fields[i] + '\"  ' + isDescriptionColumn + '></td>';\n");
+	   
+	    
 	    output.append("		var isVisible = '';\n");
 	    output.append("		for (j = 0; j < visibleColumns.length; j++) {\n");
 	    output.append("			if (fields[i] == visibleColumns[j]) isVisible='checked=\"checked\"';\n");
@@ -338,8 +369,22 @@ public class QueryWizardTag extends TagSupport {
 	    output.append(" 	}\n");
 	    output.append(" }\n");
 	    output.append(" if (!valueColumnFound) document.getElementById('valueColumns').value = '';\n");
-	    // regenerate the HTML code
-	    output.append("	var strHTML = generateHTML(fields, valueColumn, visibleFields);\n");
+	    
+	    	    
+	    // looks if the description column field contains an old field (no more present in the query definition)
+	    output.append("	var descriptionColumn = trim(document.getElementById('descriptionColumns').value);\n");
+	    output.append("	var descriptionColumnFound = false;\n");
+	    output.append(" for (i = 0; i < fields.length; i++) {\n");
+	    output.append(" 	var field = trim(fields[i]);\n");
+	    output.append(" 	if (descriptionColumn == field) {\n");
+	    output.append(" 		descriptionColumnFound = true;\n");
+	    output.append(" 		break;\n");
+	    output.append(" 	}\n");
+	    output.append(" }\n");
+	    output.append(" if (!descriptionColumnFound) document.getElementById('descriptionColumns').value = '';\n");
+	    
+	    //	  regenerate the HTML code
+	    output.append("	var strHTML = generateHTML(fields, valueColumn, descriptionColumn, visibleFields);\n");
 	    output.append("	document.getElementById('fieldsDiv').innerHTML = strHTML;\n");
 	    output.append("}\n");
 	    
@@ -349,6 +394,9 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("function setValueColumn(valcol) {\n");
 	    output.append("		document.getElementById('valueColumns').value = valcol;\n");
 	    output.append("}\n");
+	    output.append("function setDescriptionColumn(desccol) {\n");
+	    output.append("		document.getElementById('descriptionColumns').value = desccol;\n");
+	    output.append("}\n");	    
 	    output.append("function setQueryDef(queryDef) {\n");
 	    output.append("		document.getElementById('queryDef').value = queryDef;\n");
 	    output.append("		updateFields();\n");
@@ -423,6 +471,7 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		document.getElementById('visColumns').value = '';\n");
 	    output.append("		document.getElementById('invisColumns').value = '';\n");
 	    output.append("		document.getElementById('valueColumns').value = '';\n");
+	    output.append("		document.getElementById('definitionColumns').value = '';\n");
 	    output.append("}\n");
 	    
 	    output.append("function clean(vect) {\n");
@@ -453,7 +502,7 @@ public class QueryWizardTag extends TagSupport {
             TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "QueryWizardTag::doStartTag::", ex);
             throw new JspException(ex.getMessage());
         }
-	    
+	    //*/
 		return SKIP_BODY;
 	}
 	
@@ -491,6 +540,14 @@ public class QueryWizardTag extends TagSupport {
 	}
 	public void setInvisibleColumns(String invisibleColumns) {
 		this.invisibleColumns = invisibleColumns;
+	}
+
+	public String getDescriptionColumns() {
+		return descriptionColumns;
+	}
+
+	public void setDescriptionColumns(String descriptionColumns) {
+		this.descriptionColumns = descriptionColumns;
 	}
 	
 }

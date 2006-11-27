@@ -37,7 +37,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 public class JavaClassWizardTag extends TagSupport {
 	
 	private String javaClassName;
-	private String isListOfValues;
 	
 	public int doStartTag() throws JspException {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ScriptWizardTag::doStartTag:: invocato");
@@ -54,6 +53,7 @@ public class JavaClassWizardTag extends TagSupport {
 	    output.append("		<input type='text' id='javaClassName' name='javaClassName' size='50' onchange='setLovProviderModified(true)' class='portlet-form-input-field' value='" + javaClassName + "' maxlength='100'/>&nbsp;*\n");
 	    output.append("	</div>\n");
 	    
+	    /*
     	String selectedsingle = " checked='checked' ";
     	String selectedlist = "";
         if("true".equalsIgnoreCase(isListOfValues)) {
@@ -78,6 +78,7 @@ public class JavaClassWizardTag extends TagSupport {
 		output.append("				<span class='portlet-form-field-label'>"+ listValLbl + "</span>\n");
 		output.append("			</input>\n");
 		output.append("	</div>\n");
+		*/
 	    output.append("</div>\n");
 		
         try {
@@ -96,12 +97,7 @@ public class JavaClassWizardTag extends TagSupport {
         return super.doEndTag();
     }
 	
-	public String getListOfValues() {
-		return isListOfValues;
-	}
-	public void setIsListOfValues(String isListOfValues) {
-		this.isListOfValues = isListOfValues;
-	}
+	
 	public String getJavaClassName() {
 		return javaClassName;
 	}

@@ -93,12 +93,14 @@ public class DelegatedBasicListService {
 				TracerSingleton.WARNING,
 				"KFDelegatedBasicListService::service: parametri non validi");
 			return;
-		} // if ((service == null) || (request == null) || (response == null))
+		} 
+		
 		TracerSingleton.log(
 			Constants.NOME_MODULO,
 			TracerSingleton.DEBUG,
 			"KFDelegatedBasicListService::service: request",
 			request);
+		
 		String message = getMessage(request);
 		if ((message == null) || message.equalsIgnoreCase("BEGIN"))
 			message = LIST_FIRST;

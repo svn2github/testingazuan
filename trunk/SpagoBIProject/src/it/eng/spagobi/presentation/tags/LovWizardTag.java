@@ -23,8 +23,8 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.bo.LovDetail;
-import it.eng.spagobi.bo.LovDetailList;
+import it.eng.spagobi.bo.lov.FixedListItemDetail;
+import it.eng.spagobi.bo.lov.FixedListDetail;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 
@@ -98,7 +98,7 @@ public class LovWizardTag extends TagSupport {
 			List lovs = new ArrayList();
 			if (lovProvider != null  &&  !lovProvider.equals("")){
 				//lovProvider = GeneralUtilities.substituteQuotesIntoString(lovProvider);
-				lovs = LovDetailList.fromXML(lovProvider).getLovs();
+				lovs = FixedListDetail.fromXML(lovProvider).getLovs();
 			}
 			
 			output.append("<table class=\"table_detail_fix_lov\">\n");
@@ -119,7 +119,7 @@ public class LovWizardTag extends TagSupport {
 				boolean alternate = false;
 		        String rowClass;
 				for (int i = 0; i < lovs.size(); i++) {
-					LovDetail lovDet = (LovDetail) lovs.get(i); 
+					FixedListItemDetail lovDet = (FixedListItemDetail) lovs.get(i); 
 					String name = lovDet.getName();
 					String description = lovDet.getDescription();
 					

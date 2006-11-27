@@ -24,6 +24,7 @@ package it.eng.spagobi.services.modules;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -42,6 +43,7 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
+import it.eng.spagobi.bo.lov.LovResultHandler;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -53,6 +55,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -262,6 +265,20 @@ public class ExecuteBIObjectModule extends AbstractModule
 				
 		// based on the role selected (or the only for the user) load the object and put it in session
 		BIObject obj = execContr.prepareBIObjectInSession(session, id, role, userProvidedParametersStr);
+		Map paramsDescriptionMap = new HashMap();
+		List biparams = obj.getBiObjectParameters(); 
+	    Iterator iterParams = biparams.iterator();
+	    while(iterParams.hasNext()) {
+	    	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
+	        String nameUrl = biparam.getParameterUrlName();
+	        paramsDescriptionMap.put(nameUrl, "");	        
+	    }
+		
+		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
+		
+		
+		
+		
 		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
 		debug("pageCreationHandler", "object retrived and setted into session");
 		
@@ -321,118 +338,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	}
 	
-	
-	
-	/**
-	 * Handles the final execution of the object  
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 */
-	private void executionHandler(SourceBean request, SourceBean response) throws Exception {
-		// get object from the session
-		BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-		// for each parameter of the object control if in the request are
-		// present one or more values and put them into the parameter
-		// iff the parameter have not values set yet
-		List biparams = obj.getBiObjectParameters(); 
-        Iterator iterParams = biparams.iterator();
-        while(iterParams.hasNext()) {
-        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
-        	if(biparam.getParameterValues() != null && biparam.getParameterValues().size() > 1) 
-        		// if the parameter is multivalue does not refresh its values: this job is performed 
-        		// by the lookup return module; if the fields were resetted, see below how it is managed
-        		continue;
-        	String nameUrl = biparam.getParameterUrlName();
-        	List paramAttrsList = request.getAttributeAsList(nameUrl);
-            ArrayList paramvalues = new ArrayList();
-            if(paramAttrsList.size()==0)
-            	continue;
-            Iterator iterParAttr = paramAttrsList.iterator();
-            while(iterParAttr.hasNext()) {
-            	String value = (String)iterParAttr.next();
-            	paramvalues.add(value);
-            }
-            biparam.setParameterValues(paramvalues);
-        }
-        
-        Object lookupObjParId = request.getAttribute("LOOKUP_OBJ_PAR_ID");
-        if (lookupObjParId != null) {
-        	Integer objParId = new Integer(findBIObjParId(lookupObjParId));
-        	BIObjectParameter lookupBIParameter = null;
-        	iterParams = biparams.iterator();
-        	while (iterParams.hasNext()) {
-        		BIObjectParameter aBIParameter = (BIObjectParameter) iterParams.next();
-        		if (aBIParameter.getId().equals(objParId)) {
-        			lookupBIParameter = aBIParameter;
-        			break;
-        		}
-        	}
-        	if (lookupBIParameter == null) {
-    			SpagoBITracer.major("SPAGOBI", 
-            			this.getClass().getName(), 
-            			"executionHandler", 
-            			"The BIParameter with id = " + objParId.toString() + " does not exist.");
-    			throw new EMFUserError(EMFErrorSeverity.ERROR, 1041);
-        	}
-        	ModalitiesValue modVal = lookupBIParameter.getParameter().getModalityValue();
-
-        	// it is a lookup call
-        	String lookupType = (String)request.getAttribute("LOOKUP_TYPE");
-        	if(lookupType == null) lookupType = "LIST";
-        	
-        	if(lookupType.equalsIgnoreCase("CHECK_LIST")) {        	
-        		response.setAttribute("CHECKLIST", "true");
-        		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "ChecklistLookupPublisher");
-        	}
-        	else if(lookupType.equalsIgnoreCase("LIST")) {  
-        		response.setAttribute("LIST", "true");
-            	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
-        	}
-        	else {
-        		response.setAttribute("LIST", "true");
-            	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
-        	}
-        	
-        	String pendingDelete = (String)request.getAttribute("PENDING_DELETE");
-        	if(pendingDelete != null && !pendingDelete.trim().equals("")) {
-        		List parameters = obj.getBiObjectParameters();
-        		BIObjectParameter biparam = null;
-        		for(int i = 0; i < parameters.size(); i++) {
-        			BIObjectParameter tmpBIParam = (BIObjectParameter)parameters.get(i);
-        			List paramValues = tmpBIParam.getParameterValues();
-        			if (paramValues != null && paramValues.size() > 1) 
-        				// if the parameter is multivalues, the list is deleted
-        				tmpBIParam.setParameterValues(null);        				
-        		}
-        	}
-        	
-        	
-        	response.setAttribute("mod_val_id" , modVal.getId().toString());
-        	response.setAttribute("LOOKUP_PARAMETER_NAME", lookupBIParameter.getParameterUrlName());
-        	response.setAttribute("LOOKUP_PARAMETER_ID", lookupBIParameter.getId().toString());
-        	String correlatedParuseId = (String) request.getAttribute("correlatedParuseIdForObjParWithId_" + lookupObjParId);
-        	if (correlatedParuseId != null && !correlatedParuseId.equals("")) response.setAttribute("correlated_paruse_id", correlatedParuseId);
-        	return;
-        }
-        
-        errorHandler = getErrorHandler();
-		// if there are some errors into the errorHandler does not execute the BIObject
-		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-			response.setAttribute(SpagoBIConstants.ROLE, role);
-			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			// get the list of the subObjects
-			List subObjects = getSubObjectsList(obj, profile);
-	        // put in response the list of subobject names
-			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
-		}
-        // load the template of the object
-        obj.loadTemplate();
-        // call the execution method        
-        execute(obj, null, response);
-	}
-	
 	public int findBIObjParId (Object parIdObj) {
 		String parIdStr = "";
 		if (parIdObj instanceof String) {
@@ -450,6 +355,30 @@ public class ExecuteBIObjectModule extends AbstractModule
 		return parId;
 	}
 	
+	private Object getAttribute(SourceBean request, String attributeName) {
+		Object attribute = null;
+		attribute = request.getAttribute(attributeName);
+		if(attribute == null) {
+			attribute = session.getAttribute(attributeName);
+			if(attribute != null) session.delAttribute(attributeName);
+		}
+		return attribute;
+	}
+	
+	public List getAsList(Object o) {		
+		ArrayList list = new ArrayList();
+		
+		if(o instanceof String) {
+			String parameterValueFromLookUp = (String)o;        
+			list.add(parameterValueFromLookUp);
+		}
+		else {
+			list.addAll((Collection)o);
+		}
+		
+		return list;
+	}
+	
 	/**
 	 * Called after the parameter value lookup selection to continue the execution phase  
 	 * @param request The request SourceBean
@@ -462,31 +391,17 @@ public class ExecuteBIObjectModule extends AbstractModule
 		String parameterNameFromLookUp = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
 		if(parameterNameFromLookUp == null) parameterNameFromLookUp = (String)session.getAttribute("LOOKUP_PARAMETER_NAME");
 		
-		String returnStatus = (String)request.getAttribute("RETURN_STATUS");
-		if(returnStatus == null) {
-			returnStatus = (String)session.getAttribute("RETURN_STATUS");
-			if(returnStatus != null) session.delAttribute("RETURN_STATUS");
-		}
+		String returnStatus = (String)getAttribute(request, "RETURN_STATUS");		
 		if(returnStatus == null) returnStatus = "OK";
 		
-		Object o = request.getAttribute("LOOKUP_VALUE");
-		if(o == null) {
-			o = session.getAttribute("LOOKUP_VALUE");
-			if(o != null) session.delAttribute("LOOKUP_VALUE");
-		}
+		Object lookUpValueObj = getAttribute(request, "LOOKUP_VALUE");
+		Object lookUpDescObj  = getAttribute(request, "LOOKUP_DESC");
 		
-		if(o != null && !returnStatus.equalsIgnoreCase("ABORT")) {
+		if(lookUpValueObj != null && !returnStatus.equalsIgnoreCase("ABORT")) {
 		
-			// Create a List that will contains the value returned 
-			ArrayList paramvalues = new ArrayList();
 			
-			if(o instanceof String) {
-				String parameterValueFromLookUp = (String)o;        
-				paramvalues.add(parameterValueFromLookUp);
-			}
-			else {
-				paramvalues.addAll((Collection)o);
-			}
+			List paramValues = getAsList(lookUpValueObj);
+			List paramDescriptions = (lookUpDescObj==null)? paramValues: getAsList(lookUpDescObj);
 			
 			// Set into the righr object parameter the list value
 	        List biparams = obj.getBiObjectParameters(); 
@@ -496,9 +411,18 @@ public class ExecuteBIObjectModule extends AbstractModule
 	        	String nameUrl = biparam.getParameterUrlName();
 	        	
 	        	if (nameUrl.equalsIgnoreCase(parameterNameFromLookUp)){
-	        		biparam.setParameterValues(paramvalues);
-	        	}//if (nameUrl.equalsIgnoreCase(parameterNameFromLookUp)){
-	        }// while(iterParams.hasNext())
+	        		biparam.setParameterValues(paramValues);
+	        		
+	        		// refresh also the description
+	        		HashMap paramsDescriptionMap = (HashMap)session.getAttribute("PARAMS_DESCRIPTION_MAP");
+	        		String desc = "";
+	        		for(int i = 0; i < paramDescriptions.size(); i++) {
+	        			desc += (i==0?"":";") + paramDescriptions.get(i).toString();
+	        		}
+	        		paramsDescriptionMap.put(nameUrl, desc);
+	        		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
+	        	}
+	        }
 		}
         
         // put in session the new object
@@ -867,7 +791,6 @@ public class ExecuteBIObjectModule extends AbstractModule
   
 	}
 	
-	
 	/**
 	 * Trace a debug message into the log
 	 * @param method Name of the method to store into the log
@@ -879,5 +802,188 @@ public class ExecuteBIObjectModule extends AbstractModule
 							method, 
         					message);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * get object from session
+	 */
+	private BIObject getBIObject() {
+		return (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+	}
+	
+	private boolean isMultivalueParameter(BIObjectParameter biparam) {
+		return (biparam.getParameterValues() != null && biparam.getParameterValues().size() > 1);
+	}
+	
+	private void refreshParameter(BIObjectParameter biparam, SourceBean request) {
+		String nameUrl = biparam.getParameterUrlName();
+    	List paramAttrsList = request.getAttributeAsList(nameUrl);
+        ArrayList paramvalues = new ArrayList();
+        if(paramAttrsList.size()==0) return;        	
+        Iterator iterParAttr = paramAttrsList.iterator();
+        while(iterParAttr.hasNext()) {
+        	String values = (String)iterParAttr.next();
+        	String[] value =  values.split(";");
+        	for(int i = 0; i < value.length; i++) {
+        		if(!value[i].trim().equalsIgnoreCase("")) paramvalues.add(value[i]);
+        	}
+        	
+        }
+        if(paramvalues.size() == 0) biparam.setParameterValues(null);
+        else biparam.setParameterValues(paramvalues);
+	}
+	
+	
+	private Object getLookedUpObjId(SourceBean request) {
+		return ( request.getAttribute("LOOKUP_OBJ_PAR_ID") );
+	}
+	
+	private boolean isLookupCall(SourceBean request) {
+		return ( getLookedUpObjId(request) != null );
+	}
+	
+	private Integer getLookedUpParameterId(SourceBean request) {
+		return ( new Integer(findBIObjParId(getLookedUpObjId(request))) );
+	}
+	
+	public BIObjectParameter getLookedUpParameter(SourceBean request) {
+		BIObjectParameter lookedupBIParameter = null;
+		
+		Integer objParId = getLookedUpParameterId(request);
+    	Iterator iterParams = getBIObject().getBiObjectParameters().iterator();
+    	while (iterParams.hasNext()) {
+    		BIObjectParameter aBIParameter = (BIObjectParameter) iterParams.next();
+    		if (aBIParameter.getId().equals(objParId)) {
+    			lookedupBIParameter = aBIParameter;
+    			break;
+    		}
+    	}
+    	
+    	return lookedupBIParameter;
+	}
+		
+	
+	public boolean isSingleValue(BIObjectParameter biparam) {
+		boolean isSingleValue = false;
+    	try {
+			LovResultHandler lovResultHandler = new LovResultHandler(biparam.getLovResult());
+			if(lovResultHandler.isSingleValue()) isSingleValue = true;
+		} catch (SourceBeanException e) {
+			// TODO Auto-generated catch block
+		}
+		return isSingleValue;
+	}
+	
+	
+	
+	/**
+	 * Handles the final execution of the object  
+	 * @param request The request SourceBean
+	 * @param response The response SourceBean
+	 */
+	private void executionHandler(SourceBean request, SourceBean response) throws Exception {
+		
+		BIObject obj = getBIObject();
+		
+		// refresh parameter values
+		List biparams = obj.getBiObjectParameters(); 
+        Iterator iterParams = biparams.iterator();
+        while(iterParams.hasNext()) {
+        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
+        	HashMap paramsDescriptionMap = (HashMap)session.getAttribute("PARAMS_DESCRIPTION_MAP");
+        	
+        	String pendingDelete = (String)request.getAttribute("PENDING_DELETE");
+        	if(pendingDelete != null && !pendingDelete.trim().equals("")) {
+        		if(isSingleValue(biparam)) continue;
+        		biparam.setParameterValues(null);
+        		if(paramsDescriptionMap.get(biparam.getParameterUrlName()) != null)
+        				paramsDescriptionMap.put(biparam.getParameterUrlName(), "");            		
+        	} else {
+        		refreshParameter(biparam, request);
+            	String isChanged = (String)request.getAttribute(biparam.getParameterUrlName() + "IsChanged");
+            	if(isChanged != null && isChanged.equalsIgnoreCase("true")) {
+            		// refresh also the description
+            		List values = biparam.getParameterValues();
+            		String desc = "";
+            		if(values != null) {    
+    	        		for(int i = 0; i < values.size(); i++) {
+    	        			desc += (i==0?"":";") + values.get(i).toString();
+    	        		}
+            		}
+            		paramsDescriptionMap.put(biparam.getParameterUrlName(), desc);            		
+            	}
+        	}
+        	
+        	session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
+        }
+        
+              
+        // it is a lookup call
+        Object lookupObjParId = request.getAttribute("LOOKUP_OBJ_PAR_ID");
+        if ( isLookupCall(request) ) {
+        	
+        	BIObjectParameter lookupBIParameter = getLookedUpParameter(request);
+
+        	if (lookupBIParameter == null) {
+    			SpagoBITracer.major("SPAGOBI", 
+            			this.getClass().getName(), 
+            			"executionHandler", 
+            			"The BIParameter with id = " + getLookedUpParameterId(request).toString() + " does not exist.");
+    			throw new EMFUserError(EMFErrorSeverity.ERROR, 1041);
+        	}
+        	ModalitiesValue modVal = lookupBIParameter.getParameter().getModalityValue();
+
+        	
+        	String lookupType = (String)request.getAttribute("LOOKUP_TYPE");
+        	if(lookupType == null) lookupType = "LIST";
+        	
+        	if(lookupType.equalsIgnoreCase("CHECK_LIST")) {        	
+        		response.setAttribute("CHECKLIST", "true");
+        		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "ChecklistLookupPublisher");
+        	}
+        	else if(lookupType.equalsIgnoreCase("LIST")) {  
+        		response.setAttribute("LIST", "true");
+            	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
+        	}
+        	else {
+        		response.setAttribute("LIST", "true");
+            	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
+        	}
+        	        	
+        	response.setAttribute("mod_val_id" , modVal.getId().toString());
+        	response.setAttribute("LOOKUP_PARAMETER_NAME", lookupBIParameter.getParameterUrlName());
+        	response.setAttribute("LOOKUP_PARAMETER_ID", lookupBIParameter.getId().toString());
+        	String correlatedParuseId = (String) request.getAttribute("correlatedParuseIdForObjParWithId_" + lookupObjParId);
+        	if (correlatedParuseId != null && !correlatedParuseId.equals("")) response.setAttribute("correlated_paruse_id", correlatedParuseId);
+        	return;
+        }
+        
+        errorHandler = getErrorHandler();
+		// if there are some errors into the errorHandler does not execute the BIObject
+		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+			response.setAttribute(SpagoBIConstants.ROLE, role);
+			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			// get the list of the subObjects
+			List subObjects = getSubObjectsList(obj, profile);
+	        // put in response the list of subobject names
+			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
+		}
+        // load the template of the object
+        obj.loadTemplate();
+        // call the execution method        
+        execute(obj, null, response);
+	}
+	
+
+	
 	
 }

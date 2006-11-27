@@ -39,18 +39,18 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
-import it.eng.spagobi.bo.JavaClassDetail;
-import it.eng.spagobi.bo.LovDetailList;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.ParameterUse;
-import it.eng.spagobi.bo.QueryDetail;
-import it.eng.spagobi.bo.ScriptDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
+import it.eng.spagobi.bo.lov.JavaClassDetail;
+import it.eng.spagobi.bo.lov.FixedListDetail;
+import it.eng.spagobi.bo.lov.QueryDetail;
+import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.security.IPortalSecurityProvider;
@@ -117,12 +117,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				String id = (String) request.getAttribute("id");
 				getDetailModValue(id, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
-				//nameControl (request,"MODIFY");
 				modDetailModValue(request, AdmintoolsConstants.DETAIL_MOD, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_NEW)) {
 				newDetailModValue(response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-				//nameControl (request,"INSERT");
 				modDetailModValue(request, AdmintoolsConstants.DETAIL_INS, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_DEL)) {
 				delDetailModValue(request, AdmintoolsConstants.DETAIL_DEL, response);
@@ -325,7 +323,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					if (indexOfFixedLovItemToDeleteObj != null) {
 						// it is requested to delete a Fix Lov item
 						int indexOfFixedLovItemToDelete = findIndexOfFixedLovItemToDelete(indexOfFixedLovItemToDeleteObj);
-						LovDetailList lovDetailList = recoverLovWizardValues(
+						FixedListDetail lovDetailList = recoverLovWizardValues(
 								request, indexOfFixedLovItemToDelete);
 						String lovProvider = lovDetailList.toXML();
 						modVal.setLovProvider(lovProvider);
@@ -336,7 +334,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					}
 
 					// loads all Fix Lov items
-					LovDetailList lovDetailList = recoverLovWizardValues(
+					FixedListDetail lovDetailList = recoverLovWizardValues(
 							request, -1);
 					String lovProvider = lovDetailList.toXML();
 					modVal.setLovProvider(lovProvider);
@@ -606,58 +604,24 @@ public class DetailModalitiesValueModule extends AbstractModule {
     	// case of query
     	if (objectToTest instanceof QueryDetail) {
     		response.setAttribute("testedObject", "QUERY");
-    		// now the ListTestQueryModule is called; it will perform the test
     		return;
     	}
     	
     	// case of Fix Lov
-    	if (objectToTest instanceof LovDetailList) {
-    		response.setAttribute("testedObject", "FIX_LOV");
-    		response.setAttribute("testExecuted", "yes");
-    		//LovDetailList lovDetailList  = (LovDetailList) objectToTest;
+    	if (objectToTest instanceof FixedListDetail) {
+    		response.setAttribute("testedObject", "FIXED_LIST");
+    		response.setAttribute("testExecuted", "yes");    		
     		return;
     	}
     	
     	// case on script
-    	if (objectToTest instanceof ScriptDetail) {
-    		ScriptDetail scriptDet = (ScriptDetail) objectToTest;
-    		if (scriptDet.isSingleValue()) {
-    			response.setAttribute("testedObject", "SCRIPT_SINGLE_VALUE");
-            	try{
-        			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-            		HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
-            		Binding bind = GeneralUtilities.fillBinding(profileattrs);
-            		String resultTest = GeneralUtilities.testScript(scriptDet.getScript(), bind);
-            		response.setAttribute("result", resultTest);
-            	} catch (Exception e) {
-            		response.setAttribute("stacktrace", e.toString());
-            	}
-            	response.setAttribute("testExecuted", "yes");
-    		} else {
-    			response.setAttribute("testedObject", "SCRIPT_LIST_OF_VALUES");
-    			// now the ListTestScriptModule is called; it will perform the test
-    		}
+    	if (objectToTest instanceof ScriptDetail) {    		
+    		response.setAttribute("testedObject", "SCRIPT");    			
     	}
 
     	// case on script
-    	if (objectToTest instanceof JavaClassDetail) {
-    		JavaClassDetail javaClassDetail = (JavaClassDetail) objectToTest;
-    		if (javaClassDetail.isSingleValue()) {
-    			response.setAttribute("testedObject", "JAVA_CLASS_SINGLE_VALUE");
-            	try {
-        			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        			String javaClassName = javaClassDetail.getJavaClassName();
-        			IJavaClassLov javaClassLov = (IJavaClassLov) Class.forName(javaClassName).newInstance();
-            		String resultTest = javaClassLov.getValues(profile);
-            		response.setAttribute("result", resultTest);
-            	} catch (Exception e) {
-            		response.setAttribute("stacktrace", e.toString());
-            	}
-            	response.setAttribute("testExecuted", "yes");
-    		} else {
-    			response.setAttribute("testedObject", "JAVA_CLASS_LIST_OF_VALUES");
-    			// now the ListTestScriptModule is called; it will perform the test
-    		}
+    	if (objectToTest instanceof JavaClassDetail) {    		
+    		response.setAttribute("testedObject", "JAVA_CLASS");       		
     	}
 	}
 	
@@ -758,14 +722,12 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			javaClassName = "";
 		}
 		javaClassDetail.setJavaClassName(javaClassName);
-		String numberOutStr = (String) request.getAttribute("outputType");
-        if(numberOutStr.equalsIgnoreCase("list")) {
-        	javaClassDetail.setIsListOfValues(true);
-        	javaClassDetail.setIsSingleValue(false);
-        } else {
-        	javaClassDetail.setIsListOfValues(false);
-        	javaClassDetail.setIsSingleValue(true);
-        }
+		
+		String singleValueStr = (String) request.getAttribute("singlevalue");
+		boolean singleValue = (singleValueStr != null && singleValueStr.equalsIgnoreCase("true"));
+		javaClassDetail.setSingleValue(singleValue);
+		
+		
         return javaClassDetail;
 	}
 	
@@ -780,12 +742,14 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		String connName = (String)request.getAttribute("connName");
 		String visColumns = (String)request.getAttribute("visColumns");
 		String valueColumns = (String)request.getAttribute("valueColumns");
+		String descriptionColumns = (String)request.getAttribute("descriptionColumns");
 		String queryDefinition = (String)request.getAttribute("queryDef");
 		String invisColumns = (String)request.getAttribute("invisColumns");
 		if (invisColumns == null) invisColumns = "";
 		query.setConnectionName(connName);
 		query.setVisibleColumns(visColumns);
 		query.setValueColumns(valueColumns);
+		query.setDescriptionColumns(descriptionColumns);
 		query.setQueryDefinition(queryDefinition);
 		query.setInvisibleColumns(invisColumns);
 		return query;
@@ -810,17 +774,11 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			script = script.replaceAll("\"", "&quot;");
 			scriptDet.setScript(script);
 			
-			String numberOutStr = (String)request.getAttribute("numberout");
-	        if(numberOutStr.equalsIgnoreCase("list")) {
-	        	scriptDet.setListOfValues(true);
-	        	scriptDet.setSingleValue(false);
-	        } else {
-	        	scriptDet.setListOfValues(false);
-	        	scriptDet.setSingleValue(true);
-	        }
-
-	        return scriptDet;
-	        
+			String singleValueStr = (String) request.getAttribute("singlevalue");
+			boolean singleValue = (singleValueStr != null && singleValueStr.equalsIgnoreCase("true"));
+			scriptDet.setSingleValue(singleValue);
+			
+	        return scriptDet;	        
 	}
 	
 	
@@ -835,11 +793,11 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 */
 	private ModalitiesValue addFixLovItem (SourceBean request, ModalitiesValue modVal) throws SourceBeanException {
 		String lovProv = modVal.getLovProvider();
-		LovDetailList lovDetList = null;
+		FixedListDetail lovDetList = null;
 		if ((lovProv==null) || (lovProv.trim().equals("")) || (!modVal.getITypeCd().equals("FIX_LOV"))) {
-			lovDetList = new LovDetailList();
+			lovDetList = new FixedListDetail();
 		} else {
-			lovDetList = LovDetailList.fromXML(lovProv);
+			lovDetList = FixedListDetail.fromXML(lovProv);
 		}
 		String lovName = (String)request.getAttribute("nameOfFixedLovItemNew");
 		String lovDesc = (String)request.getAttribute("valueOfFixedLovItemNew");
@@ -880,9 +838,9 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param indexOfFixedListItemToDelete	The index of the item to be ignorated.
 	 * @throws Exception	If an Exception occurred
 	 */
-	private LovDetailList recoverLovWizardValues (SourceBean request, int indexOfFixedLovItemToDelete) throws Exception {
+	private FixedListDetail recoverLovWizardValues (SourceBean request, int indexOfFixedLovItemToDelete) throws Exception {
 		
-		LovDetailList lovDetList = new LovDetailList();
+		FixedListDetail lovDetList = new FixedListDetail();
 		List names = request.getAttributeAsList("nameOfFixedListItem");
 		List values = request.getAttributeAsList("valueOfFixedListItem");
 		if (names.size() != values.size()) throw new Exception ("Fixed Lov has different numbers of names and values!");

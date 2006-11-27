@@ -32,9 +32,9 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.bo.JavaClassDetail;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
+import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
 

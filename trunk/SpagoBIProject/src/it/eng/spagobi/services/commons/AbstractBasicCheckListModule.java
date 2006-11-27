@@ -58,6 +58,9 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	
 	public static final String OBJECT = "OBJECT";
 	public static final String CHECKED_OBJECTS = "CHECKEDOBJECTS";
+	public static final String CHECKED_OBJECTS_DESC = "CHECKEDOBJECTSDESC";
+	
+	
 	
 	
 	public static void clearSession(SessionContainer session, String moduleName){
@@ -134,6 +137,8 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		return object;
 	}
 	
+	
+	
 	public SourceBean getCheckedObjects() throws Exception{
 		SourceBean chekhedObjects = new SourceBean(CHECKED_OBJECTS);
 		Iterator it = checkedObjectsMap.keySet().iterator();
@@ -144,6 +149,9 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 		}	
 		return chekhedObjects;
 	}
+	
+	
+	
 		
 	public String[] getQueryParameters(String queryName, SourceBean request) {
 		String[] parameters = null;
@@ -195,7 +203,7 @@ public class AbstractBasicCheckListModule extends AbstractBasicListModule {
 	}
 	*/
 	
-	private List getCheckedObjectKeys(SourceBean request){
+	protected List getCheckedObjectKeys(SourceBean request){
 		List results = new ArrayList();
 		
 		List attrs = request.getAttributeAsList("checkbox");

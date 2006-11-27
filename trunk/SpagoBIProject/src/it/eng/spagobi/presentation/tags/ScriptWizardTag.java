@@ -37,7 +37,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 public class ScriptWizardTag extends TagSupport {
 	
 	private String script;
-	private String isListOfValues;
 	
 	public int doStartTag() throws JspException {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ScriptWizardTag::doStartTag:: invocato");
@@ -54,13 +53,8 @@ public class ScriptWizardTag extends TagSupport {
 	    output.append("		<textarea id='script' name='script' onchange='setLovProviderModified(true)' class='portlet-text-area-field' rows='10' cols='50'>" + script + "</textarea>\n");
 	    output.append("	</div>\n");
 	    
-    	String selectedsingle = " checked='checked' ";
-    	String selectedlist = "";
-        if("true".equalsIgnoreCase(isListOfValues)) {
-    		selectedlist = " checked='checked' ";
-    		selectedsingle = "";
-    	}
-	    
+    
+	    /*
 	    output.append("	<div class='div_detail_label_lov'>\n");
 	    String outputTypeLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.outputType", "messages");
 		output.append("			<span class='portlet-form-field-label'>\n");
@@ -78,6 +72,7 @@ public class ScriptWizardTag extends TagSupport {
 		output.append("				<span class='portlet-form-field-label'>"+ listValLbl + "</span>\n");
 		output.append("			</input>\n");
 		output.append("	</div>\n");
+		*/
 	    output.append("</div>\n");
 		
         try {
@@ -96,12 +91,7 @@ public class ScriptWizardTag extends TagSupport {
         return super.doEndTag();
     }
 	
-	public String getListOfValues() {
-		return isListOfValues;
-	}
-	public void setIsListOfValues(String isListOfValues) {
-		this.isListOfValues = isListOfValues;
-	}
+	
 	public String getScript() {
 		return script;
 	}

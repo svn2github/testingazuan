@@ -34,7 +34,7 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.ModalitiesValue;
-import it.eng.spagobi.bo.ScriptDetail;
+import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.GeneralUtilities;
@@ -77,10 +77,13 @@ public class ListTestScriptModule extends AbstractBasicListModule {
 		try {
 			
 			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
+    		/*
+			HashMap profileattrs = GeneralUtilities.getAllProfileAttributes(profile);
     		Binding bind = GeneralUtilities.fillBinding(profileattrs);
     		String result = GeneralUtilities.testScript(scriptDetail.getScript(), bind);
-    		Vector columns = new Vector();
+    		*/
+			String result = scriptDetail.getLovResult(profile);
+			Vector columns = new Vector();
     		
     		try {
         		rowsSourceBean = SourceBean.fromXMLString(result);

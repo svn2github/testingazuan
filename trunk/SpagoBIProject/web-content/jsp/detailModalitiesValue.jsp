@@ -2,13 +2,13 @@
 
 <%@ page import="it.eng.spagobi.bo.ModalitiesValue,
                  it.eng.spagobi.bo.Domain,
-                 it.eng.spagobi.bo.QueryDetail,
-                 it.eng.spagobi.bo.ScriptDetail,
-                 it.eng.spagobi.bo.JavaClassDetail,
-                 it.eng.spagobi.bo.LovDetailList,
-                 it.eng.spagobi.bo.LovDetail,
-		 it.eng.spagobi.bo.ParameterUse,
-		 it.eng.spagobi.bo.dao.DAOFactory,
+                 it.eng.spagobi.bo.lov.QueryDetail,
+                 it.eng.spagobi.bo.lov.ScriptDetail,
+                 it.eng.spagobi.bo.lov.JavaClassDetail,
+                 it.eng.spagobi.bo.lov.FixedListDetail,
+                 it.eng.spagobi.bo.lov.FixedListItemDetail,
+		 		 it.eng.spagobi.bo.ParameterUse,
+		 		 it.eng.spagobi.bo.dao.DAOFactory,
                  java.util.Set,
                  java.util.HashMap,
                  java.util.List,
@@ -42,6 +42,8 @@
 	String lovDisplay = "none";
 	String javaClassDisplay = "none";
 	
+	String isSingleValue = "false";
+	
 	QueryDetail query = new QueryDetail();
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("QUERY") ) {
 		queryDisplay = "inline";
@@ -58,6 +60,7 @@
 	  	if (lovProvider != null  &&  !lovProvider.equals("")){
 	  		scriptDet = ScriptDetail.fromXML(lovProvider);
 	  	}
+	  	if(scriptDet.isSingleValue()) isSingleValue = "true";
 	}
 	
 	JavaClassDetail javaClassDetail = new JavaClassDetail();
@@ -67,12 +70,16 @@
 	  	if (lovProvider != null  &&  !lovProvider.equals("")){
 	  		javaClassDetail = JavaClassDetail.fromXML(lovProvider);
 	  	}
+	  	if(javaClassDetail.isSingleValue()) isSingleValue = "true";
 	}
 	
-	String lovProvider = "";
+	FixedListDetail fixedListDetail = new FixedListDetail();
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("FIX_LOV") ) {
 		lovDisplay = "inline";
-		lovProvider = modVal.getLovProvider();
+		String lovProvider = modVal.getLovProvider();
+	  	if (lovProvider != null  &&  !lovProvider.equals("")){
+	  		fixedListDetail = FixedListDetail.fromXML(lovProvider);
+	  	}
 	}
 	
 	
@@ -83,6 +90,7 @@
 					modVal.getITypeCd().equalsIgnoreCase("QUERY")
 					|| modVal.getITypeCd().equalsIgnoreCase("SCRIPT")
 					|| modVal.getITypeCd().equalsIgnoreCase("JAVA_CLASS")
+					|| modVal.getITypeCd().equalsIgnoreCase("FIX_LOV")
 				)
 		)  {
 			testButtonVisibility = "visible";
@@ -100,6 +108,7 @@
 	<input type='hidden' value='<%= modVal.getId() %>' name='id' />
 	<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
 	<input type='hidden' name='lovProviderModified' value='' id='lovProviderModified' />
+	<input type='hidden' name='singlevalue' value='<%=isSingleValue%>' id='singlevalue' />
 
 
 
@@ -385,9 +394,11 @@ function setLovProviderModifiedField(){
 			<spagobi:queryWizard 
 				connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 
 				visibleColumns='<%= query.getVisibleColumns()!= null ? query.getVisibleColumns().toString() : "" %>' 
-				invisibleColumns='<%= query.getInvisibleColumns()!= null ? query.getInvisibleColumns().toString() : "" %>' 
 				valueColumns='<%= query.getValueColumns()!= null ? query.getValueColumns().toString() : "" %>' 
-				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' /> 
+				descriptionColumns='<%= query.getDescriptionColumns()!= null ? query.getDescriptionColumns().toString() : "" %>' 
+				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' 
+				invisibleColumns='<%= query.getInvisibleColumns()!= null ? query.getInvisibleColumns().toString() : "" %>' 
+				 /> 	
 		</div>
 		<div style="width:100%" >
 				<span class='portlet-form-field-label'>
@@ -472,7 +483,7 @@ function setLovProviderModifiedField(){
   			<spagobi:message key = "SBIDev.lovWiz.wizardTitle" />
   		</div> 
   		<div style="float:left;">
-       		<spagobi:lovWizard lovProvider='<%= lovProvider!= null ? lovProvider : "" %>' />
+       		<spagobi:lovWizard lovProvider='<%= fixedListDetail.toXML() %>' />
     	</div>
  		<div style="width:100%" >
   			<span class='portlet-form-field-label'>
@@ -558,8 +569,7 @@ function setLovProviderModifiedField(){
 		</div> 
 		<div style="float:left;" />
 			<spagobi:scriptWizard 
-				script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' 
-				isListOfValues='<%= scriptDet.isListOfValues() ? "true" : "false" %>' />
+				script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' />
 		</div>
 		<div style="width:100%" />
 				<span class='portlet-form-field-label'>
@@ -701,8 +711,7 @@ function setLovProviderModifiedField(){
 		</div> 
 		<div style="float:left;" />
 			<spagobi:javaClassWizard 
-				javaClassName='<%= javaClassDetail.getJavaClassName()!= null ? javaClassDetail.getJavaClassName() : "" %>' 
-				isListOfValues='<%= javaClassDetail.isListOfValues() ? "true" : "false" %>' />
+				javaClassName='<%= javaClassDetail.getJavaClassName()!= null ? javaClassDetail.getJavaClassName() : "" %>'  />
 		</div>
 		<div style="width:100%" />
 				<span class='portlet-form-field-label'>

@@ -3,8 +3,9 @@
 <%@ page import="javax.portlet.PortletURL,
 			it.eng.spagobi.constants.SpagoBIConstants,
 			it.eng.spagobi.bo.ModalitiesValue,
-			it.eng.spagobi.bo.ScriptDetail,
-			it.eng.spagobi.bo.JavaClassDetail,
+			it.eng.spagobi.bo.lov.ScriptDetail,
+			it.eng.spagobi.bo.lov.JavaClassDetail,
+			it.eng.spagobi.bo.lov.FixedListDetail,
 			it.eng.spagobi.bo.ParameterUse,
 			it.eng.spagobi.bo.dao.DAOFactory,
 			it.eng.spago.navigation.LightNavigationManager,
@@ -15,12 +16,14 @@
 <%
 
 	SourceBean detailMR = (SourceBean) aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
+	SourceBean listFixedListMR = (SourceBean) aServiceResponse.getAttribute("ListTestFixedListModule"); 
 	SourceBean listQueryMR = (SourceBean) aServiceResponse.getAttribute("ListTestQueryModule"); 
 	SourceBean listScriptMR = (SourceBean) aServiceResponse.getAttribute("ListTestScriptModule");
 	SourceBean listJavaClassMR = (SourceBean) aServiceResponse.getAttribute("ListTestJavaClassModule");
 
 	String lovProviderModified = null;
 	if (detailMR != null) lovProviderModified = (String) detailMR.getAttribute("lovProviderModified");
+	else if (listFixedListMR != null) lovProviderModified = (String) listFixedListMR.getAttribute("lovProviderModified");
 	else if (listQueryMR != null) lovProviderModified = (String) listQueryMR.getAttribute("lovProviderModified");
 	else if (listScriptMR != null) lovProviderModified = (String) listScriptMR.getAttribute("lovProviderModified");
 	else if (listScriptMR != null) lovProviderModified = (String) listJavaClassMR.getAttribute("lovProviderModified");
@@ -114,52 +117,17 @@ function askForConfirmIfNecessary(url) {
 		String lovProvider = modVal.getLovProvider();
 		ScriptDetail scriptDetail = ScriptDetail.fromXML(lovProvider);
 		
-		if (scriptDetail.isSingleValue()) {
-			
-			String result = (String) detailMR.getAttribute("result");
-	  		String stack = (String) detailMR.getAttribute("stacktrace");
-		
-			if (result != null) { 
-			
-				  result = result.replaceAll(">", "&gt;");
-				  result = result.replaceAll("<", "&lt;");
-				  result = result.replaceAll("\"", "&quot;");
-			
-			%>
-	    
-	   	 		<div width="100%">
-					<br/>
-					<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testExecCorrect" /></div>
-					<br/>	
-					<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'><%= result %></div>
-	 			</div>
-				<br/>
-			<% } else { %>
-		
-		 	 	<br/>
-		 	 	<div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testExecNotCorrect" /></div>
-			 	<br/>	
-			 	<div style="left:10%;width:70%" class='portlet-section-alternate'><%= stack %></div>
-		
-			<% } 
-			
-		} else {
-			
-			  String errorMessage = (String) listScriptMR.getAttribute("errorMessage");
+		String errorMessage = (String) listScriptMR.getAttribute("errorMessage");
 			  
-			  if (errorMessage != null) { 
-				  
-				  %>
-				  
-				  <br/>
-				  <div style="left:10%;width:80%" class='portlet-form-field-label' >
-				  	<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
-				  </div>
-				  
-				  <%
-				  
-				  if (!errorMessage.trim().equals("")) { %>
-					  
+		if (errorMessage != null) {				  
+%>				  
+			<br/>
+			<div style="left:10%;width:80%" class='portlet-form-field-label' >
+				<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
+			</div>				  
+<%				  
+			if (!errorMessage.trim().equals("")) { 
+%>					  
 					<br/>
 				 	<div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testErrorMessage" /></div>
 					<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
@@ -168,18 +136,16 @@ function askForConfirmIfNecessary(url) {
 					<div style="left:10%;width:70%" class='portlet-section-alternate'><%= errorMessage %></div>
 					<% } %>
 					<br/>
-				  <% }
-					 
-			  } else { 
+<% 
+			}					 
+		} else { 
 				  
 				  String result = (String) listScriptMR.getAttribute("result");
 				  
-				  if (result != null) { 
-				  
+				  if (result != null) { 				  
 					  result = result.replaceAll(">", "&gt;");
 					  result = result.replaceAll("<", "&lt;");
-					  result = result.replaceAll("\"", "&quot;");
-					  
+					  result = result.replaceAll("\"", "&quot;");					  
 				  %>
 					  
 				   	<div width="100%">
@@ -191,54 +157,80 @@ function askForConfirmIfNecessary(url) {
 					<br/>
 					  
 					  
-				  <% } else { %>
-				  
+<% 
+				  } else { 
+%>				  
 				    <div width="100%">
 						<spagobi:list moduleName="ListTestScriptModule"/>
 				  	</div>
 				  	
 			  <% }
 		  	
-			  }
+			  }		
+		
+		} else if (modVal.getITypeCd().equalsIgnoreCase("FIX_LOV")) {
 			
-			}
-
+			String lovProvider = modVal.getLovProvider();
+			FixedListDetail fixedListDetail = FixedListDetail.fromXML(lovProvider);
+			
+			String errorMessage = (String) listFixedListMR.getAttribute("errorMessage");
+				  
+			if (errorMessage != null) {				  
+	%>				  
+				<br/>
+				<div style="left:10%;width:80%" class='portlet-form-field-label' >
+					<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
+				</div>				  
+	<%				  
+				if (!errorMessage.trim().equals("")) { 
+	%>					  
+						<br/>
+					 	<div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testErrorMessage" /></div>
+						<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
+						<div style="left:10%;width:70%" class='portlet-section-alternate'><spagobi:message key = "SBIDev.predLov.testScriptInvalidXMLOutput" /></div>
+						<% } else { %>
+						<div style="left:10%;width:70%" class='portlet-section-alternate'><%= errorMessage %></div>
+						<% } %>
+						<br/>
+	<% 
+				}					 
+			} else { 
+					  
+					  String result = (String) listFixedListMR.getAttribute("result");
+					  
+					  if (result != null) { 				  
+						  result = result.replaceAll(">", "&gt;");
+						  result = result.replaceAll("<", "&lt;");
+						  result = result.replaceAll("\"", "&quot;");					  
+					  %>
+						  
+					   	<div width="100%">
+						<br/>
+						<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testScriptNonCorrectResult" /></div>
+						<br/>	
+						<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'><%= result %></div>
+				 		</div>
+						<br/>
+						  
+						  
+	<% 
+					  } else { 
+	%>				  
+					    <div width="100%">
+							<spagobi:list moduleName="ListTestFixedListModule"/>
+					  	</div>
+					  	
+				  <% }
+			  	
+				  }		
+		
 		
 		} else if (modVal.getITypeCd().equalsIgnoreCase("JAVA_CLASS")) {
 			
 			String lovProvider = modVal.getLovProvider();
 			JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lovProvider);
 			
-			if (javaClassDetail.isSingleValue()) {
-				
-				String result = (String) detailMR.getAttribute("result");
-		  		String stack = (String) detailMR.getAttribute("stacktrace");
 			
-				if (result != null) { 
-				
-					  result = result.replaceAll(">", "&gt;");
-					  result = result.replaceAll("<", "&lt;");
-					  result = result.replaceAll("\"", "&quot;");
-				
-				%>
-		    
-		   	 		<div width="100%">
-						<br/>
-						<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testExecCorrect" /></div>
-						<br/>	
-						<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'><%= result %></div>
-		 			</div>
-					<br/>
-				<% } else { %>
-			
-			 	 	<br/>
-			 	 	<div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testExecNotCorrect" /></div>
-				 	<br/>	
-				 	<div style="left:10%;width:70%" class='portlet-section-alternate'><%= stack %></div>
-			
-				<% } 
-				
-			} else {
 				
 				  String errorMessage = (String) listJavaClassMR.getAttribute("errorMessage");
 				  
@@ -296,7 +288,7 @@ function askForConfirmIfNecessary(url) {
 			  	
 				  }
 				  
-				}
+				
 			
 		} else if (modVal.getITypeCd().equalsIgnoreCase("QUERY")) { 
 	  

@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.bo;
+package it.eng.spagobi.bo.lov;
 
 import java.io.Serializable;
 
@@ -29,34 +29,34 @@ import java.io.Serializable;
  * 
  * @author sulis
  */
-public class LovDetail  implements Serializable  {
+public class FixedListItemDetail  implements Serializable  {
 	
-	private String Name= "" ;
-	private String Description = "";
+	private String name= "" ;
+	private String description = "";
 	
 	/**
 	 * @return Returns the description.
 	 */
 	public String getDescription() {
-		return Description;
+		return description;
 	}
 	/**
 	 * @param description The description to set.
 	 */
 	public void setDescription(String description) {
-		Description = description;
+		this.description = description;
 	}
 	/**
 	 * @return Returns the name.
 	 */
 	public String getName() {
-		return Name;
+		return name;
 	}
 	/**
 	 * @param name The name to set.
 	 */
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 	
 }

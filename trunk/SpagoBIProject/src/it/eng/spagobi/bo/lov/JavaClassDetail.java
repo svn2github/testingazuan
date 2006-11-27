@@ -113,7 +113,7 @@ public class JavaClassDetail implements ILovDetail {
 		}
 		result = javaClassLov.getValues(profile);
 		
-		if(isSingleValue()) result = convertResult(result);
+		if(isSingleValue() && !result.contains("<")) result = convertResult(result);
 		
 		return result;
 	}

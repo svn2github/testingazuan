@@ -84,7 +84,7 @@ public class ScriptDetail  implements ILovDetail  {
 		HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile);
 		Binding bind = GeneralUtilities.fillBinding(attributes);
 		result = GeneralUtilities.testScript(getScript(), bind);
-		if(isSingleValue()) result = convertResult(result);
+		if(isSingleValue() && !result.contains("<")) result = convertResult(result);
 		return result;
 	}
 	

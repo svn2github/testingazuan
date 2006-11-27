@@ -84,7 +84,8 @@
 	
 	
 	
-	
+	<MODULE class="it.eng.spagobi.services.modules.ListTestFixedListModule" name="ListTestFixedListModule">
+	</MODULE>
 	<MODULE class="it.eng.spagobi.services.modules.ListTestScriptModule" name="ListTestScriptModule">
 	</MODULE>
 	<MODULE class="it.eng.spagobi.services.modules.ListTestQueryModule" name="ListTestQueryModule">

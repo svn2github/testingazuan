@@ -323,9 +323,6 @@
 				<FIELD name="script" label="#SBIDev.scriptWiz.scriptLbl">
 				    <VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
-				<FIELD name="numberout" label="#SBIDev.scriptWiz.outputType">
-				    <VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
@@ -336,10 +333,7 @@
 			<FIELDS>
 				<FIELD name="javaClassName" label="#SBIDev.javaClassWiz.javaClassNameLbl">
 				    <VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>
-				<FIELD name="outputType" label="#SBIDev.javaClassWiz.outputType">
-				    <VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>
+				</FIELD>				
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>

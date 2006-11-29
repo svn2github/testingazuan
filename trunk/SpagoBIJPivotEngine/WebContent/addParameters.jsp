@@ -9,6 +9,7 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
+<%@page import="org.apache.commons.validator.GenericValidator"%>
 
 <html>
 <head>
@@ -60,13 +61,21 @@ if (parameters == null) {
 }
 String action = request.getParameter("action");
 if (action != null && action.trim().equalsIgnoreCase("addParameter")) {
-	if (parameterName != null && !parameterName.trim().equals("") && parameterUrlName != null 
-			&& !parameterUrlName.trim().equals("")) {
-		parameters.put(parameterName, parameterUrlName);
-	} else {
+	String ALPHANUMERIC_STRING_REGEXP="^([a-zA-Z0-9\\s\\-\\_])*$";
+	if (GenericValidator.isBlankOrNull(parameterName) || GenericValidator.isBlankOrNull(parameterUrlName)) {
 		%>
-		Missing parameter name or parameter url name!!
+		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: red;font-size: 8pt;font-weigth: bold;">
+		ERROR: Missing parameter name or parameter url name!!
+		</span>
 		<%
+	} else if (GenericValidator.matchRegexp(parameterName, ALPHANUMERIC_STRING_REGEXP) || GenericValidator.matchRegexp(parameterUrlName, ALPHANUMERIC_STRING_REGEXP)) {
+		%>
+		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: red;font-size: 8pt;font-weigth: bold;">
+		ERROR: Parameter name and parameter url name must be alphanumeric!!
+		</span>
+		<%
+	} else {
+		parameters.put(parameterName, parameterUrlName);
 	}
 }
 
@@ -97,7 +106,7 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 	<table cellpadding="5" cellspacing="0" width="42%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 		<tr>
 			<td style="width: 45%;">Insert parameter name:</td>
-			<td style="width: 45%;"><input type="text" name="parameterName" value="" /></td>
+			<td style="width: 45%;"><input type="text" name="parameterName" value="<%=(parameterName != null) ? parameterName : ""%>" /></td>
 			<td rowspan="2" align="center" style="width: 10%;">
 				<input type="image" title="Add parameter" alt="Add parameter" 
 						name="action" value="addParameter"
@@ -106,7 +115,7 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 		</tr>
 		<tr>
 			<td>Insert parameter url name:</td>
-			<td><input type="text" name="parameterUrlName" value="" /></td>
+			<td><input type="text" name="parameterUrlName" value="<%=(parameterUrlName != null) ? parameterName : ""%>" /></td>
 		</tr>
 	</table>
 	</span>

@@ -89,6 +89,14 @@ public class LovResultHandler {
 		return values;
 	}
 	
+	public boolean containsValue(String value) {
+		List values = getValues();
+		for(int i = 0; i < values.size(); i++)
+			if(values.get(i).toString().equalsIgnoreCase(value)) return true;
+		
+		return false;
+	}
+	
 	public SourceBean getLovResultSB() {
 		return lovResultSB;
 	}

@@ -9,7 +9,6 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="org.apache.commons.validator.GenericValidator"%>
 
 <html>
 <head>

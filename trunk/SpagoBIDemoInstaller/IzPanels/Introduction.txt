@@ -16,4 +16,4 @@ Before proceeding please checks the following system requirements:
 
 - OpenOffice 2.0.x (for booklets creation)
 
-- 256 MB memory (suggested).
+- 512 MB memory (suggested).

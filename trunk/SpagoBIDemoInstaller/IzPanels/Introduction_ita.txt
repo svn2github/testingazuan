@@ -15,4 +15,4 @@ Prima di procedere controlla i seguenti requisiti minimi di sistema:
 
 - OpenOffice 2.0.x (per la produzione dei booklets/fascicoli)
 
-- 256 MB di memoria (suggerito).
+- 512 MB di memoria (suggerito).

@@ -144,6 +144,7 @@ public class DynamicPageTag extends TagSupport {
 		createRefreshJSFunction(htmlStream);
 		createClearFieldJSFunction(htmlStream);
 		createSetChangedFlagJSFunction(htmlStream);
+		createSelectAllTextJSFunction(htmlStream);
 		
 		
 		
@@ -267,6 +268,15 @@ public class DynamicPageTag extends TagSupport {
 		htmlStream.append("		function clearField(targetId) {\n");
 		//htmlStream.append("			alert('targetId: ' + targetId)\n");
 		htmlStream.append("			document.getElementById(targetId).value = '';\n");
+		htmlStream.append("		}\n");
+		htmlStream.append("</script>\n");
+	}
+	
+	private void createSelectAllTextJSFunction(StringBuffer htmlStream) {
+		htmlStream.append("<script type='text/javascript'>\n");
+		htmlStream.append("		function selectAllText(id) {\n");
+		htmlStream.append("			var object = document.getElementById(id);\n");
+		htmlStream.append("			object.select( );\n");
 		htmlStream.append("		}\n");
 		htmlStream.append("</script>\n");
 	}
@@ -417,10 +427,9 @@ public class DynamicPageTag extends TagSupport {
 						  	"id='" + biparam.getParameterUrlName() + "Desc' " +
 							"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 							"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
-							"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "')\" " +
-							"onclick=\"clearField('" + biparam.getParameterUrlName() + "Desc');" +
-							 		  "refresh('" + biparam.getParameterUrlName() + "Desc', '" +  biparam.getParameterUrlName() + "');" +
-							 		  "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
+							"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
+									   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
+							"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\"" +							 		  
 							" />\n");
 		
 		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"LIST\")' \n");
@@ -435,10 +444,9 @@ public class DynamicPageTag extends TagSupport {
 					  	"id='" + biparam.getParameterUrlName() + "Desc' " +
 						"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 						"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
-						"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "')\" " +
-						"onclick=\"clearField('" + biparam.getParameterUrlName() + "Desc');" +
-						 		  "refresh('" + biparam.getParameterUrlName() + "Desc', '" +  biparam.getParameterUrlName() + "');" +
-						 		  "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
+						"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
+								   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
+						"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\"" +							 		  
 						" />\n");
 	
 		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");

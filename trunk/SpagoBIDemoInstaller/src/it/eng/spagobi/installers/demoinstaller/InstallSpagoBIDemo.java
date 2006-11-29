@@ -14,8 +14,8 @@ public class InstallSpagoBIDemo {
 			if (!installCommonLibs(pathsource, pathdest))
 				return;
 	        
-//			if(!installPatchBin(pathsource, pathdest))
-//				return;
+			if(!installPatchBin(pathsource, pathdest))
+				return;
 			
 			if (!installPatchHsqldb(pathsource, pathdest))
 				return;
@@ -67,22 +67,19 @@ public class InstallSpagoBIDemo {
 	}
 	
 	
-//	private static boolean installPatchBin(String pathsource, String pathdest) {
-//		try {
-//			File catalinaold = new File(pathdest + "/bin/catalina.sh");
-//			catalinaold.delete();
-//			File runbatold = new File(pathdest + "/bin/exo-run.bat");
-//			runbatold.delete();
-//			File runshold = new File(pathdest + "/bin/exo-run.sh");
-//			runshold.delete();
-//			FileUtilities.copy(pathdest + "/bin", pathsource	+ "/patchbin/catalina.sh");
-//			FileUtilities.copy(pathdest + "/bin", pathsource	+ "/patchbin/exo-run.sh");
-//			FileUtilities.copy(pathdest + "/bin", pathsource	+ "/patchbin/exo-run.bat");
-//		} catch (Exception exc) {
-//			return false;
-//		}
-//		return true;
-//	}
+	private static boolean installPatchBin(String pathsource, String pathdest) {
+		try {
+			File catalinaold = new File(pathdest + "/bin/catalina.sh");
+			catalinaold.delete();
+			File runbatold = new File(pathdest + "/bin/catalina.bat");
+			runbatold.delete();
+			FileUtilities.copy(pathdest + "/bin", pathsource	+ "/patchbin/catalina.sh");
+			FileUtilities.copy(pathdest + "/bin", pathsource	+ "/patchbin/catalina.bat");
+		} catch (Exception exc) {
+			return false;
+		}
+		return true;
+	}
 	
 	private static boolean installPatchHsqldb(String pathsource, String pathdest) {
 		try {

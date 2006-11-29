@@ -219,7 +219,7 @@ if (selectedSchemaNode != null) {
 				for (int i = 0; i < virtualcubes.length; i++) {
 					MondrianDef.VirtualCube aVirtualCube = virtualcubes[i];
 					String isVirtualCubeSelected = "";
-					if (aVirtualCube.name.equalsIgnoreCase(selectedCubeName)) {
+					if (cubeWasSelected && aVirtualCube.name.equalsIgnoreCase(selectedCubeName)) {
 						selectedVirtualCube = aVirtualCube;
 						isVirtualCubeSelected = "selected='selected'";
 					}

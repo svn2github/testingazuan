@@ -173,7 +173,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		errorHandler = getErrorHandler();
 		
 		try {
-			if (message == null) {
+			if (message == null) {				
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
 				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule", "service", "The message parameter is null");
 				throw userError;

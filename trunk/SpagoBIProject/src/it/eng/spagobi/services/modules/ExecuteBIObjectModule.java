@@ -965,6 +965,31 @@ public class ExecuteBIObjectModule extends AbstractModule
         	return;
         }
         
+        iterParams = biparams.iterator();
+        while(iterParams.hasNext()) {
+        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
+        	ModalitiesValue modVal = biparam.getParameter().getModalityValue();
+    		String typeCode = modVal.getITypeCd();
+    		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) continue; 	
+        	
+        	String lovResult = biparam.getLovResult();
+        	LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
+        	List values = biparam.getParameterValues();
+        	if(values != null) {
+        		for(int i = 0; i < values.size(); i++) {
+        			String value = values.get(i).toString();
+        			if(!lovResultHandler.containsValue(value)) {
+        				List l = new ArrayList();
+        				l.add(biparam.getLabel());
+        				l.add(value);
+        				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1077, l);
+        				errorHandler.addError(userError);
+        			}
+        		}
+        	}
+        }
+        
+        
         errorHandler = getErrorHandler();
 		// if there are some errors into the errorHandler does not execute the BIObject
 		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {

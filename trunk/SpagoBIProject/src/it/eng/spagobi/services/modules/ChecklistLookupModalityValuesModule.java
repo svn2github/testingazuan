@@ -176,11 +176,13 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			List descriptions = new ArrayList();
 			for(int i = 0; i < valuesSBList.size(); i++) {
 				SourceBean valueSB = (SourceBean)valuesSBList.get(i);
-				values.add(GeneralUtilities.decode((String)valueSB.getAttribute(valueColumn)));
-				
+								
 				LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
-				descriptions.add(lovResultHandler.getRow((String)valueSB.getAttribute(valueColumn))
-						.getAttribute(lovResultHandler.getDescriptionColumn()));
+				SourceBean rowSB = lovResultHandler.getRow((String)valueSB.getAttribute(valueColumn));
+				if(rowSB != null) {
+					values.add(GeneralUtilities.decode((String)valueSB.getAttribute(valueColumn)));
+					descriptions.add(rowSB.getAttribute(lovResultHandler.getDescriptionColumn()));
+				}
 			}
 			
 			session.setAttribute("LOOKUP_VALUE", values);

@@ -94,7 +94,7 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 	<p>
 	<b>Type name and url name for each parameter inserted above:</b>
 	<br>
-	<table border="1" cellpadding="5" cellspacing="0" width="42%" style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
+	<table cellpadding="5" cellspacing="0" width="42%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 		<tr>
 			<td style="width: 45%;">Insert parameter name:</td>
 			<td style="width: 45%;"><input type="text" name="parameterName" value="" /></td>
@@ -122,7 +122,7 @@ if (parameters.size() > 0) {
 		<input type="hidden" name="action" value="deleteParameter" />
 		<input type="hidden" name="queryWithParameters" value="<%=queryWithParameters%>" />
 		
-		<table border="1" cellpadding="5" cellspacing="0" width="42%" style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
+		<table cellpadding="5" cellspacing="0" width="42%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 			<tr>
 				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;">Parameter name</th>
 				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;">Parameter url name</th>

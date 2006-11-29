@@ -28,7 +28,7 @@ public class SQLFieldsReader implements IFieldsReader {
 	
 	
 	public Vector readFields() throws Exception {
-		 Vector queryFields = new Vector();
+		Vector queryFields = new Vector();
 		
         PreparedStatement ps = null;
         try {
@@ -43,9 +43,11 @@ public class SQLFieldsReader implements IFieldsReader {
              
              List columns = new ArrayList();
              for (int i=1; i <= rsmd.getColumnCount(); ++i) {
+            	            	 
             	 Field field = new Field(
                          rsmd.getColumnLabel(i), 
-                         getJdbcTypeClass(rsmd, i) );
+                         getJdbcTypeClass(rsmd, i),
+                         rsmd.getColumnDisplaySize(i));
                  
             	 queryFields.add( field );
              }

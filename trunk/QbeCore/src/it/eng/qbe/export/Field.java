@@ -11,10 +11,12 @@ public class Field {
 	private String name;
 	private String description;
 	private String classType;
+	private int displySize;
 	
-	public  Field(String name, String classType) {
+	public  Field(String name, String classType, int displySize) {
 		this.name = name;
 		this.classType = classType;
+		this.displySize = displySize;
 		this.description = "";
 	}
 
@@ -61,4 +63,12 @@ public class Field {
        
         return type;
     }
+
+	public int getDisplySize() {
+		return displySize;
+	}
+
+	private void setDisplySize(int displySize) {
+		this.displySize = displySize;
+	}
 }

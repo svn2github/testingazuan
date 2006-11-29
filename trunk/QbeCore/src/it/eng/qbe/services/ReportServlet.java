@@ -61,8 +61,6 @@ import org.hibernate.cfg.Configuration;
  */
 public class ReportServlet extends HttpServlet{
 	
-
-	
 	static Map extensions;
 	static {
 		extensions = new HashMap();
@@ -76,15 +74,86 @@ public class ReportServlet extends HttpServlet{
 		extensions.put("application/vnd.ms-excel", "xls");
 	}
 	
-	public static final String ACTION_PARAMETER = "action";
+	public static final String ACTION_PARAMETER 				= "action";
+	public static final String INLINE_PARAMETER 				= "inline";
+	public static final String QUERYNAME_PARAMETER 				= "queryName";
+	public static final String QUERY_PARAMETER 					= "query";
+	public static final String QUERY_LANG_PARAMETER 			= "lang";
+	public static final String JNDI_DATASOURCE_NAME_PARAMETER 	= "jndiDataSourceName";
+	public static final String DIALECT_PARAMETER 				= "dialect";
+	public static final String JAR_FILE_PATH_PARAMETER 			= "jarfilepath";
+	public static final String FORMAT_PARAMETER 				= "format";
+	
+	
+	private boolean isStringEmpty(String str) {
+		return (str == null || str.trim().equalsIgnoreCase(""));
+	}
+	
+	
+	private boolean getParameterAsBoolean(HttpServletRequest request, String paramName) {
+		if( isStringEmpty(paramName) ) return false;
+		String paramValue = (String)request.getParameter(paramName);
+		return (paramValue != null && paramValue.equalsIgnoreCase("true"));
+	}
+	
+	private String getParameterAsString(HttpServletRequest request, String paramName) {
+		if( isStringEmpty(paramName) ) return null;
+		return (String)request.getParameter(paramName);
+	}
+	
+	private boolean isInline(HttpServletRequest request) {
+		return getParameterAsBoolean(request, INLINE_PARAMETER);
+	}
+	
+	private String getQueryName(HttpServletRequest request) {
+		return getParameterAsString(request, QUERYNAME_PARAMETER);
+	}
+	
+	private String getQuery(HttpServletRequest request) {
+		return getParameterAsString(request, QUERY_PARAMETER);
+	}
+	
+	private boolean isQueryDefined(HttpServletRequest request) {
+		return ( isStringEmpty( getQuery(request) ) == false
+				&& getQuery(request).equalsIgnoreCase("null") == false);
+	}
+	
+	private String getJNDIDataSourceName(HttpServletRequest request) {
+		return getParameterAsString(request, JNDI_DATASOURCE_NAME_PARAMETER);
+	}
+	
+	private String getDataSourceSQLDialect(HttpServletRequest request) {
+		return getParameterAsString(request, DIALECT_PARAMETER);
+	}
+	
+	private File getJarFile(HttpServletRequest request) {
+		String jarFileStr = getParameterAsString(request, JAR_FILE_PATH_PARAMETER);
+		return new File(jarFileStr);
+	}
+
+	private String getFormat(HttpServletRequest request) {
+		String format = getParameterAsString(request, FORMAT_PARAMETER);
+		if(format == null) format = "application/pdf";
+		return format;
+	}
+	
+	private String getQueryLang(HttpServletRequest request) {
+		return getParameterAsString(request, QUERY_LANG_PARAMETER);
+	}
+	
+	private boolean isSQLQuery(HttpServletRequest request) {
+		return (isStringEmpty(getQueryLang(request)) == false 
+				&& getQueryLang(request).equalsIgnoreCase("SQL"));
+	}
+	
+	private boolean isHQLQuery(HttpServletRequest request) {
+		return (isStringEmpty(getQueryLang(request)) == false 
+				&& getQueryLang(request).equalsIgnoreCase("HQL"));
+	}
 	
 	public void init(ServletConfig config) throws ServletException {
         super.init(config);
      } 
-	
-	public String getActionParameter(HttpServletRequest request) {
-		return (String)request.getParameter(ACTION_PARAMETER);
-	}
 	
 	/**
 	 * Handle an export request of a QBE query resultset. First generates a jasper report template. Than compile &
@@ -93,28 +162,18 @@ public class ReportServlet extends HttpServlet{
 	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Logger.debug(this.getClass(), "service: start method service");		
-		String action = getActionParameter(request);
-		String inlineStr = (String)request.getParameter("inline");
-		boolean inline = (inlineStr != null && inlineStr.equals("true"));
-		String queryName = (String)request.getParameter("queryName");
-		String query = (String)request.getParameter("query");
-		if(query == null || query.equalsIgnoreCase("") || query.equalsIgnoreCase("null")) {
+				
+		String queryName = getQueryName(request);
+				
+		
+		if(isQueryDefined(request) == false) {
 			copyMessageToResponse(response, "Query is not defined !!!");
 			return;
 		}
-		
-		String jarFileStr = (String)request.getParameter("jarfilepath");
-		
-		File jarFile = new File(jarFileStr);
-		
-		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
-		String dialect = (String)request.getParameter("dialect");
-		String format = (String)request.getParameter("format");
-		String lang = (String)request.getParameter("lang");
-		if(format == null) format = "application/pdf";
+				
+		String format = getFormat(request);
 		
 			
-	
 		
 		Session aSession = null;
 		
@@ -122,23 +181,23 @@ public class ReportServlet extends HttpServlet{
 		File reportFile = null; 
 		File resultFile = null;
 		try{
-			aSession = getSession(jarFile,jndiDataSourceName, dialect );
+			aSession = getHibernateSession(request);
 			Connection connection = aSession.connection();		
 			
-			setJasperClasspath(jarFile);
+			setJasperClasspath(getJarFile(request));
 			
 			templateFile = File.createTempFile("report", ".jrxml"); 
 			reportFile = File.createTempFile("report", ".rpt"); 
 			resultFile = null;
 			
-			if(lang.equalsIgnoreCase("SQL"))
-				buildTemplateFromSQLQuery(templateFile,query, connection);
-			else if(lang.equalsIgnoreCase("HQL"))
-				buildTemplateFromHQLQuery(templateFile,query, aSession, connection);
+			if( isSQLQuery(request) )
+				buildTemplateFromSQLQuery(templateFile,getQuery(request), connection);
+			else if( isHQLQuery(request) )
+				buildTemplateFromHQLQuery(templateFile,getQuery(request), aSession, connection);
 			else
-				throw new ServletException("Query language not supported: " + lang);
+				throw new ServletException("Query language not supported: " + getQueryLang(request));
 			
-			if(action != null && action.equals("buildTemplate")){
+			if(getAction(request) != null && getAction(request).equals("buildTemplate")){
 				resultFile = templateFile;
 				format = "text/jrxml";
 				if(queryName == null) queryName = "reportTemplate";
@@ -152,7 +211,7 @@ public class ReportServlet extends HttpServlet{
 				if(queryName == null) queryName = "queryResults";
 			}		
 			
-			copyFileToResponse(response, inline, resultFile, queryName, format);
+			copyFileToResponse(response, isInline(request), resultFile, queryName, format);
 		
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -168,6 +227,17 @@ public class ReportServlet extends HttpServlet{
 		}
 		
 	}
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////
+	// QUERY Methods
+	////////////////////////////////////////////////////////////////////////////////
+	
+	private String getAction(HttpServletRequest request) {
+		return (String)request.getParameter(ACTION_PARAMETER);
+	}
+	
+	
 	
 	
 	public Map getParams() {
@@ -226,32 +296,30 @@ public class ReportServlet extends HttpServlet{
 		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
-	public Session getSession(File jarFile, String jndiDataSourceName, String dialect){
+	private Session getHibernateSession(HttpServletRequest request){
+						
 		Configuration cfg = null;
-		if (jndiDataSourceName != null && !jndiDataSourceName.equalsIgnoreCase("")) {
-			// SE I PARAMETRI VENGONO PASSATI IN INPUT USO QUELLI
-			
+		if ( isStringEmpty( getJNDIDataSourceName(request) ) == false ) {
+			// SE I PARAMETRI VENGONO PASSATI IN INPUT USO QUELLI			
 			Logger.debug(ReportServlet.class, "getSession: connection properties defined by hand");
-			
-			
+						
 			cfg = new Configuration();
-			cfg.setProperty("hibernate.dialect", dialect);
-			cfg.setProperty("hibernate.connection.datasource", jndiDataSourceName);
+			
+			cfg.setProperty("hibernate.dialect", getDataSourceSQLDialect(request));
+			cfg.setProperty("hibernate.connection.datasource", getJNDIDataSourceName(request));
 			cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
 			
-			Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + jarFile);
+			Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + getJarFile(request));			
+			Logger.debug(ReportServlet.class, "getSession: current class loader updated");			
 			
-			Logger.debug(ReportServlet.class, "getSession: current class loader updated");
-			if (jarFile == null)
-				System.out.println( " --------------------- JAR FILE NULLO --------------- ");
-			updateCurrentClassLoader(jarFile);
-			cfg.addJar(jarFile);
+			updateCurrentClassLoader(getJarFile(request));
+			cfg.addJar(getJarFile(request));			
 			Logger.debug(ReportServlet.class, "getSession: add jar file to configuration");			
 		
-		}else {
-			
+		} else {			
 			// ALTRIMENTI CERCO I PARAMETRI DI CONFIGURAZIONE SUL FILE hibconn.properies
-			URL hibConnPropertiesUrl = JarUtils.getResourceFromJarFile(jarFile, "hibconn.properties") ;
+			URL hibConnPropertiesUrl = JarUtils.getResourceFromJarFile(getJarFile(request), "hibconn.properties") ;
+			
 			if (hibConnPropertiesUrl != null){
 				Properties prop = new Properties();
 				try{
@@ -263,41 +331,37 @@ public class ReportServlet extends HttpServlet{
 				Logger.debug(DataMartModel.class, "getSession: connection properties loaded by hibconn.properties in jar");
 				
 				cfg = new Configuration();
+				
 				cfg.setProperty("hibernate.dialect", prop.getProperty("hibernate.dialect"));
 				cfg.setProperty("hibernate.connection.datasource", prop.getProperty("hibernate.connection.datasource"));
 				cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
+								
+				Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + getJarFile(request));				
+				Logger.debug(ReportServlet.class, "getSession: current class loader updated");	
 				
-				String jndiDataSourceNameTmp = prop.getProperty("hibernate.connection.datasource");
-				String dialectTmp = prop.getProperty("hibernate.dialect");
-				
-				Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + jarFile);
-				
-				Logger.debug(ReportServlet.class, "getSession: current class loader updated");
-				if (jarFile == null)
-					System.out.println( " --------------------- JAR FILE NULLO --------------- ");
-				updateCurrentClassLoader(jarFile);
-				cfg.addJar(jarFile);
+				updateCurrentClassLoader(getJarFile(request));
+				cfg.addJar(getJarFile(request));
 				Logger.debug(ReportServlet.class, "getSession: add jar file to configuration");
 			
-			} else {
-			
+			} else {			
 				// ALTRIMENTI EFFETTUO LA CONFIGURAZIONE DAL FILE hibernate.cfg.cml
 			
 				// ---------------------- NOTA BENE
-				// IN QUESTO IL FILE DEVE CONTENERE I RIFERIMENTI A TUTTI GLI HBM
+				// IN QUESTO CASO IL FILE DEVE CONTENERE I RIFERIMENTI A TUTTI GLI HBM
 				Logger.debug(ReportServlet.class, "getSession: connection properties defined in hibernate.cfg.xml");
-				updateCurrentClassLoader(jarFile);
-				Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + jarFile);
+				updateCurrentClassLoader(getJarFile(request));
+				Logger.debug(ReportServlet.class, "getSession: jar file obtained: " + getJarFile(request));
 				
 				Logger.debug(ReportServlet.class, "getSession: current class loader updated");
 			
 				Logger.debug(ReportServlet.class, "getSession: trying to read configuration from hibernate.cfg.xml file");
-				URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+				URL url = JarUtils.getResourceFromJarFile(getJarFile(request), "hibernate.cfg.xml") ;
 				Logger.debug(ReportServlet.class, "getSession: configuration file found at " + url);
 				cfg = new Configuration().configure(url);
 			
 			}
 		}
+		
 		return cfg.buildSessionFactory().openSession();
 	}
 	

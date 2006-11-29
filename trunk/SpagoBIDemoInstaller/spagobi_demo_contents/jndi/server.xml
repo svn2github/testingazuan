@@ -70,11 +70,11 @@
   		</parameter>
   		<parameter>
     			<name>username</name>
-    			<value>sa</value>
+    				<value>sa</value>
   		</parameter>
   		<parameter>
     			<name>password</name>
-    			<value></value>
+    				<value></value>
   		</parameter>
   		<parameter>
     			<name>maxActive</name>
@@ -89,46 +89,8 @@
     			<value>-1</value>
   		</parameter>
 	</ResourceParams>
-<!--
-<Resource name="jdbc/sbifoodmart" auth="Container" type="javax.sql.DataSource"/> 
 
-	<ResourceParams name="jdbc/sbifoodmart">
-  		<parameter>
-    			<name>factory</name>
-    			<value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-  		</parameter>
-  	 	<parameter>
-    			<name>driverClassName</name>
-    			<value>org.apache.derby.jdbc.ClientDriver</value>
-  		</parameter>
-  		<parameter>
-    			<name>url</name>
-    			<value>jdbc:derby://localhost:1527/foodmart</value>
-  		</parameter>
-  		<parameter>
-    			<name>username</name>
-    			<value>usr</value>
-  		</parameter>
-  		<parameter>
-    			<name>password</name>
-    			<value>pwd</value>
-  		</parameter>
-  		<parameter>
-    			<name>maxActive</name>
-    			<value>20</value>
-  		</parameter>
-  		<parameter>
-    			<name>maxIdle</name>
-    			<value>10</value>
-  		</parameter>
-  		<parameter>
-    			<name>maxWait</name>
-    			<value>-1</value>
-  		</parameter>
-	</ResourceParams>
-  -->
-
-    <Resource name="jdbc/sbifoodmart" auth="Container" type="javax.sql.DataSource"/> 
+  	<Resource name="jdbc/sbifoodmart" auth="Container" type="javax.sql.DataSource"/> 
 	<ResourceParams name="jdbc/sbifoodmart">
   		<parameter>
     			<name>factory</name>
@@ -164,7 +126,7 @@
   		</parameter>
 	</ResourceParams>
 
-    <Resource name="jdbc/spagobi" auth="Container" type="javax.sql.DataSource"/> 
+  	<Resource name="jdbc/spagobi" auth="Container" type="javax.sql.DataSource"/> 
 	<ResourceParams name="jdbc/spagobi">
   		<parameter>
     			<name>factory</name>
@@ -184,7 +146,7 @@
   		</parameter>
   		<parameter>
     			<name>password</name>
-    			<value></value>
+    				<value></value>
   		</parameter>
   		<parameter>
     			<name>maxActive</name>
@@ -199,6 +161,43 @@
     			<value>-1</value>
   		</parameter>
 	</ResourceParams> 
+  
+  	<Resource name="jdbc/jbpm" auth="Container" type="javax.sql.DataSource"/> 
+	<ResourceParams name="jdbc/jbpm">
+  		<parameter>
+    			<name>factory</name>
+    			<value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+  		</parameter>
+  		<parameter>
+    			<name>driverClassName</name>
+          <value>org.hsqldb.jdbcDriver</value>
+  		</parameter>
+  		<parameter>
+    			<name>url</name>
+          <value>jdbc:hsqldb:hsql://localhost/jbpm</value>
+  		</parameter>
+  		<parameter>
+    			<name>username</name>
+          <value>sa</value>
+  		</parameter>
+  		<parameter>
+    			<name>password</name>
+          <value></value>
+  		</parameter>
+  		<parameter>
+    			<name>maxActive</name>
+    			<value>20</value>
+  		</parameter>
+  		<parameter>
+    			<name>maxIdle</name>
+    			<value>10</value>
+  		</parameter>
+  		<parameter>
+    			<name>maxWait</name>
+    			<value>-1</value>
+  		</parameter>
+	</ResourceParams> 
+
     <Resource name="cms/spagobicms" auth="Container" type="javax.jcr.Repository"/> 
 	<ResourceParams name="cms/spagobicms">
   		<parameter>

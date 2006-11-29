@@ -12,9 +12,28 @@
 	<QBE-MODE mode="PORTLET" page-size="10"/>
 	
 	<TEMPLATE-BUILDER>
+		
+		<!--  
+		<BASE-TEMPLATE>...</BASE-TEMPLATE>
+		-->
+		
 		<PARAMETERS>
+		
+			<PARAMETER name="bandWidth" value="530"/>
+			<PARAMETER name="columnHeaderHeight" value="40"/>
+			
+			<PARAMETER name="pixelPerChar" value="9"/>
+			<PARAMETER name="pixelPerRow" value="16"/>	
+			
+			<PARAMETER name="maxLinesPerRow" value="4"/>				
+			
+			<PARAMETER name="columnHeaderFont" value="Helvetica-Bold"/>
+			<PARAMETER name="columnHeaderFontSize" value="12"/>
 			<PARAMETER name="columnHeaderForegroundColor" value="#074B88"/>
 			<PARAMETER name="columnHeaderBackgroundColor" value="#E4ECF2"/>
+			
+			<PARAMETER name="rowFont" value="Times-Roman"/>
+			<PARAMETER name="rowFontSize" value="10"/>
 			
 			<PARAMETER name="evenRowsForegroundColor" value="#000000"/>
 			<PARAMETER name="evenRowsBackgroundColor" value="#EEEEEE"/>

@@ -12,7 +12,7 @@
                  it.eng.spagobi.bo.dao.DAOFactory,
                  it.eng.spagobi.bo.dao.IModalitiesValueDAO,
                  it.eng.spagobi.bo.ModalitiesValue,
-                 it.eng.spagobi.bo.QueryDetail,
+                 it.eng.spagobi.bo.lov.QueryDetail,
                  it.eng.spagobi.bo.BIObjectParameter;" %>
 
 <%

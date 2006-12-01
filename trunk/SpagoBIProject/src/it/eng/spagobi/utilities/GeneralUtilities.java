@@ -148,19 +148,28 @@ public class GeneralUtilities {
 	 * @return	relative names substring
 	 */
 	public static String getRelativeFileNames(String completeFileName){
-		String fileSeparator = System.getProperty("file.separator");
-		String javaSeparator = "/";
-		if (completeFileName.indexOf(fileSeparator) < 0){
-			if (completeFileName.indexOf(javaSeparator) < 0){ 
-				return completeFileName;
-			}else{
-				int lastIndexOf = completeFileName.lastIndexOf(javaSeparator);
-				return completeFileName.substring(lastIndexOf+1);
-			}		
-		}else{
-			int lastIndexOf = completeFileName.lastIndexOf(fileSeparator);
-			return completeFileName.substring(lastIndexOf+1);
+		String linuxSeparator = "/";
+		String windowsSeparator = "\\";
+		if (completeFileName.indexOf(linuxSeparator) != -1) {
+			completeFileName = completeFileName.substring(completeFileName.lastIndexOf(linuxSeparator) + 1);
 		}
+		if (completeFileName.indexOf(windowsSeparator) != -1) {
+			completeFileName = completeFileName.substring(completeFileName.lastIndexOf(windowsSeparator) + 1);
+		}
+		return completeFileName;
+//		String fileSeparator = System.getProperty("file.separator");
+//		String javaSeparator = "/";
+//		if (completeFileName.indexOf(fileSeparator) < 0){
+//			if (completeFileName.indexOf(javaSeparator) < 0){ 
+//				return completeFileName;
+//			}else{
+//				int lastIndexOf = completeFileName.lastIndexOf(javaSeparator);
+//				return completeFileName.substring(lastIndexOf+1);
+//			}		
+//		}else{
+//			int lastIndexOf = completeFileName.lastIndexOf(fileSeparator);
+//			return completeFileName.substring(lastIndexOf+1);
+//		}
 	}
 	
 	/**

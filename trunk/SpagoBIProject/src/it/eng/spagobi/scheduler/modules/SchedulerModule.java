@@ -53,7 +53,6 @@ public class SchedulerModule extends AbstractModule {
 	public void init(SourceBean config) {	}
 
 	public void service(SourceBean request, SourceBean response) throws Exception { 
-	
 		try {
 			errorHandler = getErrorHandler();
 			scheduler = StdSchedulerFactory.getDefaultScheduler(); 
@@ -292,52 +291,66 @@ public class SchedulerModule extends AbstractModule {
 		buffer.append("</TRIGGER_DETAILS>");
 	}
 
-	private void defineJob(SourceBean request, SourceBean response){
-		try{
-			String jobName = (String)request.getAttribute("jobName");
-			String jobgroupName = (String)request.getAttribute("jobGroupName");
-			String jobDescription = (String)request.getAttribute("jobDescription");
-			String jobClassName = (String)request.getAttribute("jobClass");
-			String jobDurability = (String)request.getAttribute("jobDurability");
-			String jobRequestRecovery = (String)request.getAttribute("jobRequestRecovery");
-			String jobVolatility = (String)request.getAttribute("jobVolatility");
-			SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
-			
-			JobDetail jobDetail = new JobDetail();
-			jobDetail.setName(jobName);
-			if(jobgroupName!=null)
-				jobDetail.setGroup(jobgroupName);
-			else jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
-			if(jobDescription==null)
-				jobDescription = "";
-			jobDetail.setDescription(jobDescription);
-			if((jobDurability!=null) && (jobDurability.trim().equalsIgnoreCase("true")))
-				jobDetail.setDurability(true);
-			else jobDetail.setDurability(false);
-			if((jobRequestRecovery!=null) && (jobRequestRecovery.trim().equalsIgnoreCase("true")))
-				jobDetail.setRequestsRecovery(true);
-			else jobDetail.setRequestsRecovery(false);
-			if((jobVolatility!=null) && (jobVolatility.trim().equalsIgnoreCase("true")))
-				jobDetail.setVolatility(true);
-			else jobDetail.setVolatility(false);
-			
-			// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
-			JobDataMap jdm = getJobDataMap(jobParameters);
-			jobDetail.setJobDataMap(jdm);
-			
-			Class jobClass = Class.forName(jobClassName);
-			jobDetail.setJobClass(jobClass);
-			
-			response.setAttribute("result", "");
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void defineJob(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException{
+		String jobName = (String)request.getAttribute("jobName");
+		String jobgroupName = (String)request.getAttribute("jobGroupName");
+		String jobDescription = (String)request.getAttribute("jobDescription");
+		String jobClassName = (String)request.getAttribute("jobClass");
+		String jobDurability = (String)request.getAttribute("jobDurability");
+		String jobRequestRecovery = (String)request.getAttribute("jobRequestRecovery");
+		String jobVolatility = (String)request.getAttribute("jobVolatility");
+		SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
+		
+		JobDetail jobDetail = new JobDetail();
+		jobDetail.setName(jobName);
+		if(jobgroupName!=null)
+			jobDetail.setGroup(jobgroupName);
+		else jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
+		if(jobDescription==null)
+			jobDescription = "";
+		jobDetail.setDescription(jobDescription);
+		if((jobDurability!=null) && (jobDurability.trim().equalsIgnoreCase("true")))
+			jobDetail.setDurability(true);
+		else jobDetail.setDurability(false);
+		if((jobRequestRecovery!=null) && (jobRequestRecovery.trim().equalsIgnoreCase("true")))
+			jobDetail.setRequestsRecovery(true);
+		else jobDetail.setRequestsRecovery(false);
+		if((jobVolatility!=null) && (jobVolatility.trim().equalsIgnoreCase("true")))
+			jobDetail.setVolatility(true);
+		else jobDetail.setVolatility(false);
+		
+		// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
+		JobDataMap jdm = getJobDataMap(jobParameters);
+		jobDetail.setJobDataMap(jdm);
+		
+		Class jobClass;
+		try {
+			jobClass = Class.forName(jobClassName);
+		} catch (ClassNotFoundException e) {
+			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "defineJob", 
+					"Class '" + jobClassName + "' not found for job with name '" + jobName + "' of group '" + jobgroupName + "'!");
+			Vector v = new Vector();
+			v.add(jobClassName);
+			v.add(jobName);
+			v.add(jobgroupName);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", v);
 		}
+		jobDetail.setJobClass(jobClass);
+		try {
+			scheduler.addJob(jobDetail, false);
+		} catch (SchedulerException e) {
+			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "defineJob", 
+					"Error while adding job to the scheduler", e);
+			Vector v = new Vector();
+			v.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
+		}
+		response.setAttribute("result", "<RESULT>OK</RESULT>");
+
 	}
 
 	private void scheduleJob(SourceBean request, SourceBean response){
-		try{
+		try {
 			response.setAttribute("result", "");
 		} catch (Exception e) {
 			e.printStackTrace();

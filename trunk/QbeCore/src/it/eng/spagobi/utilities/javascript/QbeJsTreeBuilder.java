@@ -153,7 +153,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	 * @param fieldUrlGenerator
 	 * @return
 	 */
-	public final int addFieldNodes (String className, int rootNode, int nodeCounter, String prefix, IURLGenerator fieldUrlGenerator){
+	public final int addFieldNodes (String className, int rootNode, int nodeCounter, String prefix, IURLGenerator fieldUrlGenerator,int recursionLevel){
 		
 		
 		nodeCounter++;
@@ -319,7 +319,194 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			Iterator associatedClassIterator = associatedClassesArrayList.iterator();
 			while (associatedClassIterator.hasNext()){
 				RelationField aRelationField = (RelationField)associatedClassIterator.next();
-				nodeCounter = addFieldNodes(aRelationField.getClassName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator);
+				if (aRelationField.getClassName().equalsIgnoreCase(className)){
+					nodeCounter = addFieldNodesNoRecursion(aRelationField.getClassName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator,recursionLevel+1);
+				}
+				else{
+					nodeCounter = addFieldNodes(aRelationField.getClassName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator,recursionLevel+1);
+				}
+				}
+		
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return nodeCounter;
+	}
+	
+public final int addFieldNodesNoRecursion (String className, int rootNode, int nodeCounter, String prefix, IURLGenerator fieldUrlGenerator,int recursionLevel){
+		
+		
+		nodeCounter++;
+		
+		
+		String classLabel = Utils.getLabelForClass(Utils.getRequestContainer(httpRequest), dataMartModel, className);
+		
+		// add class node
+		addNode("" + nodeCounter, "" + rootNode, classLabel, "", "", classLabel, 
+				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Class.gif"),
+				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Class.gif"),
+				"", "", "", "", "");
+		
+		
+		int idxClassNode = nodeCounter;
+		
+		// Genero i field
+		try{
+			ApplicationContainer application = ApplicationContainer.getInstance();
+			SessionFactory sf = Utils.getSessionFactory(dataMartModel,application);
+			
+			ClassMetadata aClassMetadata = sf.getClassMetadata(className);
+			String[] metaPropertyNames = aClassMetadata.getPropertyNames();
+			
+			List associatedClassesArrayList = new ArrayList();
+			
+			Type aHibType = null;
+			String urlRef = "";    	
+
+			Type aType = aClassMetadata.getIdentifierType();
+			
+			String completeFieldName = "";
+			String fieldAction = "";
+			String[] keyProperties = null;
+			String[] keyPropertiesType = null;
+			if (aType.isComponentType()){
+					
+					
+					String idPropertyName = aClassMetadata.getIdentifierPropertyName();
+					String[] tmpKeyProperties = ((ComponentType)aType).getPropertyNames();
+					
+					Type[] subtypes = ((ComponentType)aType).getSubtypes();
+					keyProperties = new String[tmpKeyProperties.length];
+					keyPropertiesType = new String[tmpKeyProperties.length];
+					for (int j=0; j < tmpKeyProperties.length; j++){
+						keyProperties[j] = idPropertyName + "." + tmpKeyProperties[j];
+						keyPropertiesType[j] = subtypes[j].getClass().getName();
+					}
+			}else{
+					keyProperties = new String[1];
+					keyProperties[0] = aClassMetadata.getIdentifierPropertyName();
+					keyPropertiesType = new String[1];
+					keyPropertiesType[0] = aType.getClass().getName();
+			}
+			    	
+			for (int j = 0; j < keyProperties.length; j++) {
+
+				Logger.debug(this.getClass(),"keyProperties[" + j + "] "
+						+ keyProperties[j]);
+				nodeCounter++;
+				completeFieldName = keyProperties[j];
+
+				
+				if (prefix != null) {
+					completeFieldName = prefix + "." + keyProperties[j];
+				}
+				//
+				String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName);
+				fieldAction = fieldUrlGenerator.generateURL(completeFieldName, fldLabel,  keyPropertiesType[j]);
+				
+				if(checkable) {
+					String selected = "";
+					if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName, classPrefix).getId())) selected = "true";
+					
+					String img = "/img/key.gif";
+					/*
+					if(selected.equalsIgnoreCase("true")){
+						System.out.println("check[" + className + "," + completeFieldName + "]: " 
+							+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
+						img = "../img/Method.gif";
+					}
+					*/
+					
+					addNode("" + nodeCounter, "" + idxClassNode, 
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
+							fieldAction,  
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName), 
+							"_self",
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
+							"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);	
+				}
+				else {
+					addNode("" + nodeCounter, "" + idxClassNode, 
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
+							fieldAction,  
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName), 
+							"_self",
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
+							"", "", "", "", "");	
+				}
+			}
+			
+				
+			
+			for(int i=0; i < metaPropertyNames.length; i++){
+			 	aHibType = (Type)aClassMetadata.getPropertyType(metaPropertyNames[i]);
+			 	
+			 	if (aHibType instanceof ManyToOneType){
+			 		completeFieldName = metaPropertyNames[i];
+			 		
+			 		if (prefix != null){
+			 			 completeFieldName = prefix +"." + metaPropertyNames[i];
+			 		}
+			 		RelationField aRelationField = new RelationField( completeFieldName, ((ManyToOneType)aHibType).getAssociatedEntityName()); 
+			 		
+			 		associatedClassesArrayList.add(aRelationField);																   
+			 	}else{
+			 		Logger.debug(this.getClass()," HibType Class" + aHibType.getClass());
+			 		nodeCounter++;
+			 		completeFieldName = metaPropertyNames[i];
+			 		
+			 		
+			 		if (prefix != null){
+			 			 completeFieldName = prefix +"." + metaPropertyNames[i];
+			 		}
+			 		
+			 		String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, metaPropertyNames[i]);
+			 		fieldAction = fieldUrlGenerator.generateURL(completeFieldName, fldLabel, aHibType.getClass().getName());
+			 		
+			 		
+					if(checkable) {
+						String selected = "";
+						if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
+						
+						if(selected.equalsIgnoreCase("true"))
+							System.out.println("check[" + className + "," + completeFieldName + "]: " 
+								+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
+						
+						
+				 		addNode("" + nodeCounter, "" + idxClassNode, 
+				 				fldLabel,
+								fieldAction,  
+								fldLabel, 
+								"_self",
+								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+								"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);		
+					} else {
+						addNode("" + nodeCounter, "" + idxClassNode, 
+				 				fldLabel,
+								fieldAction,  
+								fldLabel, 
+								"_self",
+								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+								"", "", "",  "", "");
+					}
+			 	}
+			}
+			
+			Iterator associatedClassIterator = associatedClassesArrayList.iterator();
+			while (associatedClassIterator.hasNext()){
+				RelationField aRelationField = (RelationField)associatedClassIterator.next();
+				if (aRelationField.getClassName().equalsIgnoreCase(className)){
+					continue;
+				}else{
+					nodeCounter = addFieldNodes(aRelationField.getClassName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator,recursionLevel+1);
+				}
+				
 			}
 		
 			

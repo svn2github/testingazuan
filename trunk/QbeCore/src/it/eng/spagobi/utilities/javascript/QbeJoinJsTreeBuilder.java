@@ -48,7 +48,7 @@ public class QbeJoinJsTreeBuilder extends QbeJsTreeBuilder {
 		
 		for (Iterator it = classNames.iterator(); it.hasNext(); ){
 			String className = (String)it.next();
-			nodeCounter = addFieldNodes(className, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(className, qbeUrlGenerator, httpRequest, getClassPrefix()));
+			nodeCounter = addFieldNodes(className, rootNode, nodeCounter, null, new SelectFieldForJoinUrlGenerator(className, qbeUrlGenerator, httpRequest, getClassPrefix()),1);
 		}		
 	}
 	

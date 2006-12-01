@@ -49,7 +49,7 @@ public class QbeSelectJsTreeBuilder extends QbeJsTreeBuilder {
 		int nodeCounter = 0;
 		for (Iterator it = getClassNames().iterator(); it.hasNext(); ){
 			String className = (String)it.next();
-			nodeCounter = addFieldNodes(className, rootNode, nodeCounter, null, new SelectFieldForSelectionURLGenerator(className, qbeUrlGenerator, httpRequest));
+			nodeCounter = addFieldNodes(className, rootNode, nodeCounter, null, new SelectFieldForSelectionURLGenerator(className, qbeUrlGenerator, httpRequest),1);
 		}		
 	}
 }

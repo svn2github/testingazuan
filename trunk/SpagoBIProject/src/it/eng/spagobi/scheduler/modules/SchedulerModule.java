@@ -21,12 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.scheduler.modules;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
@@ -36,10 +30,17 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -345,31 +346,71 @@ public class SchedulerModule extends AbstractModule {
 			v.add(e.getMessage());
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
 		}
-		response.setAttribute("result", "<RESULT>OK</RESULT>");
 
 	}
 
-	private void scheduleJob(SourceBean request, SourceBean response){
+	private void scheduleJob(SourceBean request, SourceBean response) throws EMFUserError{
+		String triggerName = (String) request.getAttribute("triggerName");
+		String triggerGroup = (String) request.getAttribute("triggerGroup");
+		Date startTime = (Date) request.getAttribute("startTime");
+		Date endTime = (Date) request.getAttribute("endTime");
+		String repeatCountStr = (String) request.getAttribute("repeatCount");
+		String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
+		int repeatCount = Integer.parseInt(repeatCountStr);
+		long repeatInterval = Long.parseLong(repeatIntervalStr);
+		
+		Trigger trigger = new SimpleTrigger(triggerName, triggerGroup, 
+				startTime, endTime, repeatCount, repeatInterval);
+
+		String jobName = (String) request.getAttribute("jobName");
+		String jobGroup = (String) request.getAttribute("jobGroup");
+		JobDetail job;
 		try {
-			response.setAttribute("result", "");
-		} catch (Exception e) {
-			e.printStackTrace();
+			job = scheduler.getJobDetail(jobName, jobGroup);
+		} catch (SchedulerException e) {
+			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
+					"Error while loading job ", e);
+			Vector v = new Vector();
+			v.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
+		}
+		try {
+			scheduler.scheduleJob(job, trigger);
+		} catch (SchedulerException e) {
+			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
+					"Error while scheduling job ", e);
+			Vector v = new Vector();
+			v.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
 		}
 	}
 
-	private void deleteJob(SourceBean request, SourceBean response){
-		try{
-			response.setAttribute("result", "");
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void deleteJob(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException{
+		
+		String jobName = (String)request.getAttribute("jobName");
+		String jobgroupName = (String)request.getAttribute("jobGroupName");
+		try {
+			scheduler.deleteJob(jobName, jobgroupName);
+		} catch (SchedulerException e) {
+			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "deleteJob", 
+					"Error while deleting job", e);
+			Vector v = new Vector();
+			v.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
 		}
 	}
 
-	private void deleteSchedulation(SourceBean request, SourceBean response){
-		try{
-			response.setAttribute("result", "");
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void deleteSchedulation(SourceBean request, SourceBean response) throws EMFUserError{
+		String triggerName = (String) request.getAttribute("triggerName");
+		String triggerGroup = (String) request.getAttribute("triggerGroup");
+		try {
+			scheduler.unscheduleJob(triggerName, triggerGroup);
+		} catch (SchedulerException e) {
+			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "deleteSchedulation", 
+					"Error while deleting trigger", e);
+			Vector v = new Vector();
+			v.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
 		}
 	}
 	

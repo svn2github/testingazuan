@@ -304,6 +304,7 @@ if (selectedSchemaNode != null) {
 			<wcf:imgbutton id="addParameters" tooltip="toolb.addParameters" img="mdx-edit" href="./addParameters.jsp"/>
 		</wcf:toolbar>
 		<wcf:render ref="toolbar01" xslUri="/WEB-INF/jpivot/toolbar/htoolbar.xsl" xslCache="true"/>
+		<p>
 		<wcf:render ref="saveTemplateForm01" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 		<%-- if there was an overflow, show error message --%>
 		<c:if test="${query01.result.overflowOccured}">

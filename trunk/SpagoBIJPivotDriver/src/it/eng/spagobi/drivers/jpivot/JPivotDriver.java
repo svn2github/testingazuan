@@ -466,7 +466,7 @@ public class JPivotDriver implements IEngineDriver {
 		Engine engine = obj.getEngine();
 		String url = engine.getUrl();
 		url = url.substring(0, url.lastIndexOf("/"));
-		url += "/chooseConnection.jsp";
+		url += "/editQuery.jsp";
 		obj.loadTemplate();
 		UploadedFile uploadedFile =  obj.getTemplate();
 		byte[] template = uploadedFile.getFileContent();

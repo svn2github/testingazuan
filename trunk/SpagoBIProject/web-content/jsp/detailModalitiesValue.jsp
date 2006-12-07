@@ -690,7 +690,17 @@ function setLovProviderModifiedField(){
 									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                   <spagobi:message key = "SBIDev.scriptWiz.xmlstructValueColumn2" />
 									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/value-column&gt; <br/>
+									
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;description-column&gt;
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<spagobi:message key = "SBIDev.scriptWiz.xmlstructDescriptionColumn" />
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/description-column&gt;
+									<br/>
+									
 									&lt;/rows&gt; <br/>
+									
 									</div>
 									</td>
 									<td width="5px">&nbsp;</td>
@@ -744,6 +754,8 @@ function setLovProviderModifiedField(){
 													<spagobi:message key = "SBIDev.javaClassWiz.interfaceName" />
 													<br/>
 													<spagobi:message key = "SBIDev.javaClassWiz.interfaceMethod" />
+													<br/>
+													<spagobi:message key = "SBIDev.javaClassWiz.interfaceMethodReturn" />
 												</li>
 											</ul>
 										</div>
@@ -811,9 +823,18 @@ function setLovProviderModifiedField(){
 									<br/>
 									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 									<spagobi:message key =
-										"SBIDev.scriptWiz.xmlstructValueColumn" />
+										"SBIDev.scriptWiz.xmlstructValueColumn1" />
 									<br/>	
 									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/value-column&gt; <br/>
+									
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;description-column&gt;
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<spagobi:message key = "SBIDev.scriptWiz.xmlstructDescriptionColumn" />
+									<br/>
+									<span>&nbsp;&nbsp;&nbsp;</span>&lt;/description-column&gt;
+									<br/>
+									
 									&lt;/rows&gt; <br/>
 									</div>
 									</td>

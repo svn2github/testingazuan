@@ -21,14 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.tags;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.utilities.PortletUtilities;
+
+import java.util.Iterator;
+import java.util.List;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -72,6 +72,8 @@ public class QueryWizardTag extends TagSupport {
 		String updateFieldsFromQuery = PortletUtilities.getMessage("SBIDev.queryWiz.updateFieldsFromQuery", "messages");
 		String isNotASelect = PortletUtilities.getMessage("SBIDev.queryWiz.isNotASelect", "messages");
 		String incorrectQuery = PortletUtilities.getMessage("SBIDev.queryWiz.incorrectQuery", "messages");
+		String fieldSeparator = PortletUtilities.getMessage("SBIDev.queryWiz.fieldseparator", "messages");
+		String commaSeparator = PortletUtilities.getMessage("SBIDev.queryWiz.commaseparator", "messages");
 		StringBuffer output = new StringBuffer();
 		
 		
@@ -185,6 +187,18 @@ public class QueryWizardTag extends TagSupport {
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			&nbsp;\n");
 		output.append("		</div>\n");
+		// *********************************************************************************
+		output.append("		<div style='margin-bottom:8px;margin-top:5px;'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(fieldSeparator);
+		output.append("			</span>\n");
+		output.append("			<input type='radio' onclick=\"updateFields()\" id='comaradio' name='fieldsplitter' value=',' checked='true'/>,("+commaSeparator+")\n");
+		output.append("			<input type='radio' onclick=\"updateFields()\" id='asradio' name='fieldsplitter' value=' AS '/>as\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			&nbsp;\n");
+		output.append("		</div>\n");
+		// **************************************************************************************
 		output.append("		<div >\n");
 		output.append("			<a onclick='' href='javascript:void(0)' style='text-decoration:none;'>\n");
 		output.append("				<img style='width:20px;height:20px;' src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.gif") + "' />\n");
@@ -241,7 +255,6 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		if (fields[i] == descriptionColumn) isDescriptionColumn='checked=\"checked\"';\n");
 	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"radio\" onclick=\"setDescriptionColumn(this.value);\" onchange=\"setLovProviderModified(true);\" name=\"descriptionColumnsJS\" value=\"' + fields[i] + '\"  ' + isDescriptionColumn + '></td>';\n");
 	   
-	    
 	    output.append("		var isVisible = '';\n");
 	    output.append("		for (j = 0; j < visibleColumns.length; j++) {\n");
 	    output.append("			if (fields[i] == visibleColumns[j]) isVisible='checked=\"checked\"';\n");
@@ -269,7 +282,44 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("	else initialIndex = queryDefUC.indexOf(' DISTINCT ') + 10;\n");
 	    output.append("	var finalIndex = queryDefUC.indexOf(' FROM ');\n");
 	    output.append("	var selectClause = queryDef.substring(initialIndex, finalIndex);\n");
-	    output.append("	var selectFields = selectClause.split(',');\n");
+
+	    //******************************************************
+	    output.append(" var splitter = ',';\n");
+	    output.append("	var selectFields = selectClause.split(splitter);\n");
+	    output.append(" var asrad = document.getElementById('asradio');\n");
+	    output.append(" if(asrad.checked) {\n");
+	    output.append("    splitter = ' AS ';\n");
+	    output.append("    scs = selectClause;\n");
+	    output.append("    while(scs.indexOf(' as ')!=-1) {\n");
+	    output.append("        scs =  scs.substring(0, scs.indexOf(' as ')) + ' AS ' +  scs.substring(scs.indexOf(' as ')+4);\n");
+	    output.append("    }\n");
+	    output.append("    while(scs.indexOf(' As ')!=-1) {\n");
+	    output.append("        scs =  scs.substring(0, scs.indexOf(' As ')) + ' AS ' + scs.substring(scs.indexOf(' As ')+4);\n");
+	    output.append("    }\n");
+	    output.append("    while(scs.indexOf(' aS ')!=-1) {\n");
+	    output.append("        scs =  scs.substring(0, scs.indexOf(' aS ')) +' AS ' +  scs.substring(scs.indexOf(' aS ')+4);\n");
+	    output.append("    }\n");
+	    output.append("    selectFields = new Array();\n");
+	    output.append("    while(scs.indexOf(' AS ')!=-1) {\n");
+	    output.append("        indas = scs.indexOf(' AS ');\n");
+	    output.append("        indcoma = scs.indexOf(',', indas);\n");
+	    output.append("        var field = '';\n");
+	    output.append("        if(indcoma==-1){;\n");
+	    output.append("              field = scs;\n");
+	    output.append("        } else {\n");
+	    output.append("              field = scs.substring(0, indcoma);\n");
+	    output.append("        }\n");
+	    output.append("        selectFields[selectFields.length]=field;\n");
+	    output.append("        if(indcoma==-1){;\n");
+	    output.append("              scs = ' ';\n");
+	    output.append("        } else {\n");
+	    output.append("              scs = scs.substring(indcoma+1);\n");
+	    output.append("        }\n");
+	    output.append("    }\n");
+	    output.append(" }\n");
+	    //******************************************************
+
+	    //output.append("	var selectFields = selectClause.split(',');\n");
 	    output.append("	var fields = new Array();\n");
 	    output.append("	for (i = 0; i < selectFields.length; i++) {\n");
 	    output.append("		var temp;\n");

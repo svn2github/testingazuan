@@ -125,28 +125,11 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String capErase = PortletUtilities.getMessage("SBISet.devObjects.captionErase", "messages");
         htmlStream.append("         if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
         htmlStream.append("				showMenu(event, divM);\n");
-        //htmlStream.append("			divM.style.left = '' + (event.clientX-5) + 'px';\n");
-		//htmlStream.append("			divM.style.top = '' + (event.clientY + document.documentElement.scrollTop - 5)  + 'px' ;\n");
-		//htmlStream.append("			divM.style.display = 'inline' ;\n");
 		htmlStream.append("		}\n");
-
 		
 		htmlStream.append("		function linkEmpty() {\n");
 		htmlStream.append("		}\n");
 		
-		/*
-		htmlStream.append("		function hideMenu(event) {\n");
-		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
-		htmlStream.append("			yup = parseInt(divM.style.top) - parseInt(document.documentElement.scrollTop);\n");
-		htmlStream.append("			ydown = parseInt(divM.style.top) + parseInt(divM.offsetHeight) - parseInt(document.documentElement.scrollTop);\n");
-		htmlStream.append("			xleft = parseInt(divM.style.left);\n");
-		htmlStream.append("			xright = parseInt(divM.style.left) + parseInt(divM.offsetWidth);\n");
-		htmlStream.append("			if( (event.clientY<=(yup+2)) || (event.clientY>=ydown) || (event.clientX<=(xleft+2)) || (event.clientX>=xright) ) { ;\n");
-		htmlStream.append("				divM.style.display = 'none' ;\n");
-		htmlStream.append("			}\n");
-		htmlStream.append("		}\n");
-		*/
-        
 		// js function for item action confirm
         String confirmCaption = PortletUtilities.getMessage("SBISet.devObjects.confirmCaption", "messages");
         htmlStream.append("     function actionConfirm(message, url){\n");

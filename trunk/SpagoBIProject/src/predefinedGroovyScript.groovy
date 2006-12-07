@@ -1,5 +1,20 @@
 public String getSingleValueProfileAttribute(String attrName) {
-	return attrName;
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append('<ROWS>');
+		strBuf.append('<ROW ');
+		strBuf.append('value=\''+attrName+'\' >');
+		strBuf.append('</ROW>');
+		strBuf.append('<visible-columns>');
+		strBuf.append('value');
+		strBuf.append('</visible-columns>');
+		strBuf.append('<value-column>');
+		strBuf.append('value');
+		strBuf.append('</value-column>');
+		strBuf.append('<description-column>');
+		strBuf.append('value');
+		strBuf.append('</description-column>');
+		strBuf.append('</ROWS>');
+		return strBuf.toString();
 };
 
 public String getMultiValueProfileAttribute(String attrName, String prefix, String newSplit, String suffix) {
@@ -11,5 +26,42 @@ public String getMultiValueProfileAttribute(String attrName, String prefix, Stri
 		newListOfValues = newListOfValues + newSplit + values[i];
 	};
 	String finalResult = prefix + newListOfValues + suffix;
-	return finalResult;
+	
+	StringBuffer strBuf = new StringBuffer();
+	strBuf.append('<ROWS>');
+	strBuf.append('<ROW ');
+	strBuf.append('value=\''+finalResult+'\' >');
+	strBuf.append('</ROW>');
+	strBuf.append('<visible-columns>');
+	strBuf.append('value');
+	strBuf.append('</visible-columns>');
+	strBuf.append('<value-column>');
+	strBuf.append('value');
+	strBuf.append('</value-column>');
+	strBuf.append('<description-column>');
+	strBuf.append('value');
+	strBuf.append('</description-column>');
+	strBuf.append('</ROWS>');
+	
+	return strBuf.toString();
+};
+
+
+public String returnValue(String valuein) {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append('<ROWS>');
+		strBuf.append('<ROW ');
+		strBuf.append('value=\''+valuein+'\' >');
+		strBuf.append('</ROW>');
+		strBuf.append('<visible-columns>');
+		strBuf.append('value');
+		strBuf.append('</visible-columns>');
+		strBuf.append('<value-column>');
+		strBuf.append('value');
+		strBuf.append('</value-column>');
+		strBuf.append('<description-column>');
+		strBuf.append('value');
+		strBuf.append('</description-column>');
+		strBuf.append('</ROWS>');
+		return strBuf.toString();
 };

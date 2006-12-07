@@ -330,7 +330,7 @@ IMG {
 /* Part with details of an object (engine, parameters, ...) in the SpagoBI portlet*/
 .div_detail_area_forms {
 	margin: 0px 5px 10px 5px;
-	width:450px;
+	width:500px;
     padding-top:5px;
     padding-left:5px; 	
     border: 1px solid #cccccc;
@@ -339,7 +339,7 @@ IMG {
 
 .div_detail_area_sub_forms {
 	margin: 10px 5px 10px 5px;
-	width:450px;
+	width:500px;
     padding-top:5px;
     padding-left:5px; 
     border: 1px solid #cccccc;

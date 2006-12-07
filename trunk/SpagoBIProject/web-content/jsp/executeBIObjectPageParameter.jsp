@@ -29,6 +29,9 @@
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR); 
 	// get subObject List
 	List subObjs = (List)moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT_LIST);
+	// get snapshot List
+	List snapshots = (List)moduleResponse.getAttribute(SpagoBIConstants.SNAPSHOT_LIST);
+	
 	String typeObj = (String)moduleResponse.getAttribute(SpagoBIConstants.BIOBJECT_TYPE_CODE);
 	
 	// try to get the the "NO_PARAMETERS", if it is present the object has only subobjects but not
@@ -146,7 +149,9 @@
 
 
 
-<% if( (subObjs!=null) && (subObjs.size()!=0) ) { %>
+<% if( ((subObjs!=null)&&(subObjs.size()!=0))  ||  ((snapshots!=null)&&(snapshots.size()!=0))  ) { %>
+
+
 
    <!-- if there aren't parameters show the link for the new composition -->
    <% if(noPars) { 
@@ -171,114 +176,195 @@
 
 	
 	
+	<% if( (subObjs!=null)&&(subObjs.size()!=0) ) { %>
 	
-	<div style='width:100%;visibility:visible;' 
-			 class='UITabs' 
-			 id='tabPanelWithJavascript' 
-			 name='tabPanelWithJavascript'>
-		<div class="first-tab-level" style="background-color:#f8f8f8">
-			<div style="overflow: hidden; width:100%">
-				<div class='tab'>
-					<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.title","messages")%>
+			<div style='width:100%;visibility:visible;' 
+					 class='UITabs' 
+					 id='tabPanelWithJavascript' 
+					 name='tabPanelWithJavascript'>
+				<div class="first-tab-level" style="background-color:#f8f8f8">
+					<div style="overflow: hidden; width:100%">
+						<div class='tab'>
+							<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.title","messages")%>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-				
-    <table style='width:100%;'> 
-	     <tr>
-	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
-	           <spagobi:message key='SBIDev.docConf.subBIObject.name' />
-	       </td>
-	       <td align="left" class="portlet-section-header">&nbsp;</td>
-	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
-	           <spagobi:message key='SBIDev.docConf.subBIObject.description' />
-	       </td>
-	       <td align="left" class="portlet-section-header">&nbsp;</td>
-	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
-	           <spagobi:message key='SBIDev.docConf.subBIObject.visibility' />
-	       </td>
-	       <td align="left" class="portlet-section-header" colspan='3' >&nbsp;</td>
-	     <tr> 
-		              
-		    	<% Iterator iterSubs =  subObjs.iterator();
-		    	   BIObject.SubObjectDetail subObj = null;
-		    	   String nameSub = "";
-		    	   String descr = "";
-		    	   String visib = null;
-		    	   String delete = "";
-		    	   String owner = "";
-		    	   PortletURL execSubObjUrl = null;
-		    	   PortletURL deleteSubObjUrl = null;
-			   
-			   boolean alternate = false;
-			   String rowClass = "";
-			   
-                   while(iterSubs.hasNext()) {
-    	                subObj = (BIObject.SubObjectDetail)iterSubs.next();
+						
+		    <table style='width:100%;'> 
+			     <tr>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.subBIObject.name' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.subBIObject.description' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.subBIObject.visibility' />
+			       </td>
+			       <td align="left" class="portlet-section-header" colspan='3' >&nbsp;</td>
+			     <tr> 
+				              
+				    	<% Iterator iterSubs =  subObjs.iterator();
+				    	   BIObject.SubObjectDetail subObj = null;
+				    	   String nameSub = "";
+				    	   String descr = "";
+				    	   String visib = null;
+				    	   String delete = "";
+				    	   String owner = "";
+				    	   PortletURL execSubObjUrl = null;
+				    	   PortletURL deleteSubObjUrl = null;
+					   
+					   boolean alternate = false;
+					   String rowClass = "";
+					   
+		                   while(iterSubs.hasNext()) {
+		    	                subObj = (BIObject.SubObjectDetail)iterSubs.next();
+					
+					rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
+					alternate = !alternate;
+					
+		                        nameSub = subObj.getName();
+		                        descr = subObj.getDescription();
+		                        owner = subObj.getOwner();
+		                        visib = "Private";
+		                        if(subObj.isPublicVisible()) {
+		                        	visib = "Public";
+		                        } 
+		                        if(owner.equals(currentUser)) {
+		                        	delete = "delete";
+		                        }
+		    	                execSubObjUrl = renderResponse.createActionURL();
+		    	                execSubObjUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
+		    	                execSubObjUrl.setParameter(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
+		    	                execSubObjUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+		    	                execSubObjUrl.setParameter("NAME_SUB_OBJECT", nameSub);
+		    	                execSubObjUrl.setParameter("DESCRIPTION_SUB_OBJECT", descr);
+		    	                execSubObjUrl.setParameter("VISIBILITY_SUB_OBJECT", visib);
+		    	                execSubObjUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+		    	                
+		    	                deleteSubObjUrl = renderResponse.createActionURL();
+		    	                deleteSubObjUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
+		    	                deleteSubObjUrl.setParameter(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
+		    	                deleteSubObjUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+		    	                deleteSubObjUrl.setParameter("NAME_SUB_OBJECT", nameSub);
+		    	                deleteSubObjUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+		    	                
+		                   %>
+		                        <tr class='portlet-font'>
+		                        	<td style='vertical-align:middle;' class='<%= rowClass %>'>
+		                        		<%= nameSub %>
+		                        	</td>
+		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descr %></td>
+		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=visib %></td>
+		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+		                        		<a href="<%=execSubObjUrl.toString()%>">
+		                        			<img width="20px" height="20px" 
+						  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.gif")%>' 
+						  	                name='execSub' 
+						  	                alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
+						                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+		                        		</a>
+		                        	</td>
+		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+		                        		<% String eraseMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSubObject", "messages"); %>
+		                        		<a href="javascript:var conf = confirm('<%=eraseMsg%>'); if(conf) {document.location='<%=deleteSubObjUrl.toString()%>';}">
+		                        			<img width="20px" height="20px" 
+						  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' 
+						  	                name='deleteSub' 
+						  	                alt='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+						                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' />
+		                        		</a>
+		                        	</td>
+		                        </tr> 
+		                  <% } %>           
+			  </table> 
+			  <br/>	
+	  <% } %>
+	  
+	  
+	  
+	  
+	  
+	  
+	<% if( (snapshots!=null)&&(snapshots.size()!=0) ) { %>
+	
+			<div style='width:100%;visibility:visible;' 
+					 class='UITabs' 
+					 id='tabPanelWithJavascript' 
+					 name='tabPanelWithJavascript'>
+				<div class="first-tab-level" style="background-color:#f8f8f8">
+					<div style="overflow: hidden; width:100%">
+						<div class='tab'>
+							<%=PortletUtilities.getMessage("SBIDev.docConf.snapshots.title","messages")%>
+						</div>
+					</div>
+				</div>
+			</div>
 			
-			rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
-			alternate = !alternate;
-			
-                        nameSub = subObj.getName();
-                        descr = subObj.getDescription();
-                        owner = subObj.getOwner();
-                        visib = "Private";
-                        if(subObj.isPublicVisible()) {
-                        	visib = "Public";
-                        } 
-                        if(owner.equals(currentUser)) {
-                        	delete = "delete";
-                        }
-    	                execSubObjUrl = renderResponse.createActionURL();
-    	                execSubObjUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
-    	                execSubObjUrl.setParameter(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
-    	                execSubObjUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-    	                execSubObjUrl.setParameter("NAME_SUB_OBJECT", nameSub);
-    	                execSubObjUrl.setParameter("DESCRIPTION_SUB_OBJECT", descr);
-    	                execSubObjUrl.setParameter("VISIBILITY_SUB_OBJECT", visib);
-    	                execSubObjUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
-    	                
-    	                deleteSubObjUrl = renderResponse.createActionURL();
-    	                deleteSubObjUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
-    	                deleteSubObjUrl.setParameter(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
-    	                deleteSubObjUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-    	                deleteSubObjUrl.setParameter("NAME_SUB_OBJECT", nameSub);
-    	                deleteSubObjUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
-    	                
-                   %>
-                        <tr class='portlet-font'>
-                        	<td style='vertical-align:middle;' class='<%= rowClass %>'>
-                        		<%= nameSub %>
-                        	</td>
-                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descr %></td>
-                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=visib %></td>
-                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-                        		<a href="<%=execSubObjUrl.toString()%>">
-                        			<img width="20px" height="20px" 
-				  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.gif")%>' 
-				  	                name='execSub' 
-				  	                alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-				                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
-                        		</a>
-                        	</td>
-                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-                        		<% String eraseMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSubObject", "messages"); %>
-                        		<a href="javascript:var conf = confirm('<%=eraseMsg%>'); if(conf) {document.location='<%=deleteSubObjUrl.toString()%>';}">
-                        			<img width="20px" height="20px" 
-				  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' 
-				  	                name='deleteSub' 
-				  	                alt='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
-				                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' />
-                        		</a>
-                        	</td>
-                        </tr> 
-                  <% } %>           
-	  </table> 
-	  <br/>	
+		
+		    <table style='width:100%;'> 
+			     <tr>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.snapshots.name' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.snapshots.description' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			     <tr> 
+				              
+				 <% Iterator iterSnap =  snapshots.iterator();
+				    BIObject.BIObjectSnapshot snap = null;
+				    String nameSnap = "";
+				    String descrSnap = "";
+				    PortletURL execSnapUrl = null;
+					boolean alternate = false;
+					String rowClass = "";
+					   
+		            while(iterSnap.hasNext()) {
+		            	snap = (BIObject.BIObjectSnapshot)iterSnap.next();
+						rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
+						alternate = !alternate;
+						nameSnap = snap.getName();
+						descrSnap = snap.getDescription();
+		                execSnapUrl = renderResponse.createActionURL();
+		                execSnapUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
+		                execSnapUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
+		                execSnapUrl.setParameter(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+		         %>
+		         <tr class='portlet-font'>
+		           	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameSnap %></td>
+		           	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descrSnap %></td>
+		            <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		            <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+		                <a href="<%=execSnapUrl.toString()%>">
+		                       <img width="20px" height="20px" 
+						  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.gif")%>' 
+						  	        name='execSnap' 
+						  	        alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
+						            title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+		               	</a>
+		           	</td>
+		         </tr> 
+		         <% } %>           
+			 </table> 
+			 <br/>				  
+	  <% } %>	  
+	  
+	  
+	  
+	  
+	  
+	  
  <% } %>
 
 </div>

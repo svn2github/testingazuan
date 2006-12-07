@@ -136,4 +136,31 @@ public interface IBIObjectCMSDAO {
 	 */
 	public void saveTemplate(byte[] content, String path, String templateName) throws EMFUserError;
 	
+	
+	/**
+	 * Save a snapshot of the object
+	 * 
+	 * @param content byte array containing the content of the snapshot
+	 * @param pathParent the cms path of the parent
+	 * @param name the name of the new subobject
+	 * @param description the description of the new subobject
+	*/
+	public void saveSnapshot(byte[] content, String pathParent, String name, 
+			                 String description) throws EMFUserError;
+	
+	/**
+	 * Gets the list of the snapshot details that are children of a biobject  
+	 * @param pathParent Cms path of the biobject
+	 * @return List of BIObject.BIObjectSnapshot objects 
+	 */
+	public List getSnapshots(String pathParent);
+	
+	/**
+	 * Delete a snapshot
+	 * @param pathParent path of the parent biobject
+	 * @param name name of the snapshot
+	 */
+	public void deleteSnapshot(String pathParent, String name) throws EMFUserError;
+	
+	
 }

@@ -414,5 +414,33 @@ public class BIObject implements Serializable {
 			return description;
 		}
 	}
+	
+	
+	
+	
+	
+	public class BIObjectSnapshot implements Serializable {
+		private String path = null;
+		private String name = null;
+		private String description = null;
+		
+		public BIObjectSnapshot(String path, String name, String descr) {
+			this.path = path;
+			this.name = name;
+			this.description = descr;
+		}
+	
+		public String getName() {
+			return name;
+		}
+	
+		public String getPath() {
+			return path;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+	}
 
 }

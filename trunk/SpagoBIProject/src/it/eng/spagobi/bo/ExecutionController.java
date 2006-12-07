@@ -26,13 +26,16 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
 import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -101,8 +104,18 @@ public class ExecutionController {
 		
 	public void refreshParameters(BIObject obj, String userProvidedParametersStr){
 		if(userProvidedParametersStr != null) {
-			
 			List biparameters = obj.getBiObjectParameters();
+			if(biparameters == null) {
+				try{
+					IBIObjectParameterDAO pardao = DAOFactory.getBIObjectParameterDAO();
+				    biparameters = pardao.loadBIObjectParametersById(obj.getId());
+				} catch(Exception e) {
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+							            "refreshParameters", "Error while loading biparameters of the biobject with id " + obj.getId());
+					return;
+				}
+			}
+			userProvidedParametersStr = JavaScript.unescape(userProvidedParametersStr);
 			String[] userProvidedParameters = userProvidedParametersStr.split("&");
 			for(int i = 0; i < userProvidedParameters.length; i++) {
 				String[] chunks = userProvidedParameters[i].split("=");
@@ -118,10 +131,8 @@ public class ExecutionController {
 					}
 				}
 				if (biparameter == null) {
-					SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, 
-	 				"ExecuteBIObjectMOdule", 
-	 				"refreshParameters", 
-	 				"No BIObjectParameter with url name = ['" + parUrlName + "'] was found.");
+					SpagoBITracer.info(ObjectsTreeConstants.NAME_MODULE, this.getClass().getName(), 
+	 				                   "refreshParameters", "No BIObjectParameter with url name = ['" + parUrlName + "'] was found.");
 					continue;
 				}
 				String parValue = chunks[1];
@@ -130,6 +141,7 @@ public class ExecutionController {
 				biparameter.setParameterValues(parameterValues);
 				biparameter.setTransientParmeters(true);
 			}
+			obj.setBiObjectParameters(biparameters);
 		}
 	}
 	
@@ -193,6 +205,8 @@ public class ExecutionController {
 			    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues());
 			        	}        	       
 		        	} catch (Exception e1) {
+		        		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+		        				            "prepareBIObjectInSession", "Error while loading lov values", e1);
 						continue;
 					}   
 				}

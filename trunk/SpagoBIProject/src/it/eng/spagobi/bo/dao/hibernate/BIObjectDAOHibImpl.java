@@ -322,7 +322,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					}
 					
 					// format the date
-					Locale portalLoc = PortletAccess.getPortalLocale();
+					Locale portalLoc = null;
+					try{
+						portalLoc = PortletAccess.getPortalLocale();
+					} catch (Exception e) {
+						SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+								              "gatherCMSInformation", "Error while getting portal locale, probably the locale request happens before the portal initialization");
+					}
 					String dateFormatted = "";
 					if(dateLong.longValue() != 0) {
 						SimpleDateFormat dateForm = null;

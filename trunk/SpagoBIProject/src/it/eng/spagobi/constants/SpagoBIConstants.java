@@ -27,6 +27,7 @@ package it.eng.spagobi.constants;
 public class SpagoBIConstants {
 
 	public static final String PAGE = "PAGE";
+	public static final String URL = "URL";
 	
 	public static final String EXECUTION_MODALITY = "EXECUTION_MODALITY";
 	public static final String TEST_MODALITY = "TEST_MODALITY";
@@ -124,6 +125,9 @@ public class SpagoBIConstants {
 	public static final String LOW_FUNCTIONALITY_TYPE_CODE = "LOW_FUNCT";
 	
 	public static final String SUBOBJECT_LIST = "SUBOBJECT_NAMES_LIST";
+	public static final String SNAPSHOT_LIST = "SNAPSHOT_LIST";
+	public static final String EXEC_SNAPSHOT_MESSAGE = "EXEC_SNAPSHOT_MESSAGE";
+	public static final String SNAPSHOT_PATH = "SNAPSHOT_PATH";
 	
 	public static final String ROLE = "ROLE";
 	
@@ -164,5 +168,7 @@ public class SpagoBIConstants {
 	public static final String PREFERENCE_NOTES_EDITOR_ABLE = "NOTES_EDITOR_ABLE";
 	public static final String PREFERENCE_NOTES_EDITOR_WIDTH = "NOTES_EDITOR_WIDTH";
 	public static final String PREFERENCE_NOTES_EDITOR_OPEN = "NOTES_EDITOR_OPEN";
+	
+	public static final String MESSAGE_GETOBJECTS_SCHED = "MESSAGE_GETOBJECTS_SCHED";
 	
 }

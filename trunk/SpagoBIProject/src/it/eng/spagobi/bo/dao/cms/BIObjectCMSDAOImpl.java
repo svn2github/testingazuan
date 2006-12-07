@@ -312,6 +312,34 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	}
 	
 	
+	/**
+	 * Control if the BIOBJECT_PATH_PARENT/snapshots node exists and create it in case it doesn't exist
+	 * @param pathParent cms path of the parent biobject
+	 * @throws Exception
+	 */
+	private void controlForSnapshotsNode(String pathParent) throws Exception {
+		try {
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(pathParent + "/snapshots");
+			getOp.setRetriveContentInformation("false");
+			getOp.setRetriveChildsInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+            CmsManager manager = new CmsManager();
+            CmsNode cmsnode = manager.execGetOperation(getOp);
+			if((cmsnode==null) || (cmsnode.getName()==null) || cmsnode.getName().trim().equals("") ) {
+				SetOperation setOp = new SetOperation();
+				setOp.setEraseOldProperties(false);
+		        setOp.setType(SetOperation.TYPE_CONTAINER);
+		        setOp.setPath(pathParent + "/snapshots");
+		        manager.execSetOperation(setOp);
+			}
+		} catch(Exception e) {
+			throw e;
+		} finally {	}
+	}
+	
+	
 	/** 
 	 * @see it.eng.spagobi.bo.dao.IBIObjectDAO#fillBIObjectTemplate(it.eng.spagobi.bo.BIObject)
 	 */
@@ -531,6 +559,121 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 					            "saveTemplate", "cannot save template for document with path " + path, e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
+	}
+
+
+
+	public void deleteSnapshot(String pathParent, String name) throws EMFUserError {
+		String pathTodel = pathParent + "/snapshots/" + name;
+		try {
+			DeleteOperation delOp = new DeleteOperation();
+			delOp.setPath(pathTodel);
+			CmsManager manager = new CmsManager();
+			manager.execDeleteOperation(delOp);
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+		                        "deleteSnapshot", "Cannot delete snapshot", e);
+			Vector params = new Vector();
+			params.add(name);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 7001, params);
+		}
+	}
+
+
+
+	public List getSnapshots(String pathParent) {
+		List snapshots = new ArrayList();
+		try{
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(pathParent + "/snapshots");
+			getOp.setRetriveContentInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			getOp.setRetriveChildsInformation("true");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			if(cmsnode == null)
+				return snapshots;
+			if(cmsnode.getChilds() == null)
+				return snapshots;
+			List childs = cmsnode.getChilds();
+			Iterator iterChilds = childs.iterator();
+			while(iterChilds.hasNext()) {
+				CmsNode child = (CmsNode)iterChilds.next();
+				String pathChild = child.getPath();
+				getOp.setPath(pathChild);
+			    getOp.setRetriveContentInformation("false");
+				getOp.setRetrivePropertiesInformation("true");
+				getOp.setRetriveVersionsInformation("false");
+				getOp.setRetriveChildsInformation("false");
+				CmsNode cmsnodechild = manager.execGetOperation(getOp);
+				List properties = cmsnodechild.getProperties();
+				Iterator iterProps = properties.iterator();
+				String name = "";
+				String description = "";
+				while(iterProps.hasNext()) {
+					CmsProperty prop = (CmsProperty)iterProps.next();
+					String nameprop = prop.getName();
+					if(nameprop.equalsIgnoreCase("name")) {
+						name = prop.getStringValues()[0];
+					}
+					if(nameprop.equalsIgnoreCase("description")) {
+						description = prop.getStringValues()[0];
+					}
+				}
+				BIObject biobj = new BIObject();
+				BIObject.BIObjectSnapshot snap = biobj.new BIObjectSnapshot(pathChild, name, description);
+				snapshots.add(snap);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "getSnapshots", "Cannot retrive snapshot List", e);
+		} finally {}
+		return snapshots;
+	}
+
+
+
+	public void saveSnapshot(byte[] content, String pathParent, String name, String description) throws EMFUserError {
+		// if the name is not set throw an error
+		if( (name==null) || name.trim().equals("") ) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+		            			"saveSnapshot", 
+		            			"No name set");
+		}
+		// if the description is null set its value to empty string
+		if(description==null) {
+			description = "";
+		}
+		// check if snapshot node exist and create it in case it doens't exist
+		try {
+			controlForSnapshotsNode(pathParent);
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "saveSnapshot", "Error while contolling snapshots node", e);
+		}
+		// save the snapshot
+		try {
+			SetOperation setOp = new SetOperation();
+	        setOp.setContent(new ByteArrayInputStream(content));
+	        setOp.setType(SetOperation.TYPE_CONTENT);
+	        setOp.setPath(pathParent + "/snapshots/" + name);
+	        setOp.setEraseOldProperties(false);
+	        List properties = new ArrayList();
+	        String[] namePropValues = new String[] { name };
+	        String[] descrPropValues = new String[] { description };
+	        CmsProperty propname = new CmsProperty("name", namePropValues);
+	        CmsProperty propdesc = new CmsProperty("description", descrPropValues);
+	        properties.add(propname);
+	        properties.add(propdesc);
+	        setOp.setProperties(properties);
+	        CmsManager manager = new CmsManager();
+			manager.execSetOperation(setOp);
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "saveSnapshot", "Error while saving snapshot " + name, e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {	}
 	}
 
 }

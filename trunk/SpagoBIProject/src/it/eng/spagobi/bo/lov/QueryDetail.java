@@ -24,6 +24,7 @@ package it.eng.spagobi.bo.lov;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.DataConnectionManager;
+import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
@@ -141,10 +142,7 @@ public class QueryDetail  implements ILovDetail  {
 			int indFirstTag = resStr.indexOf("<");
 			resStr = resStr.substring(indFirstTag);
 		}
-		resStr = resStr.toLowerCase();
-		
-		it.eng.spago.dbaccess.Utils.releaseResources(dataConnection, sqlCommand, dataResult);
-		
+		Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		return resStr;
 	}
 	

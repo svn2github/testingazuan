@@ -27,6 +27,7 @@ public class QuartzInitializer implements InitializerIFace {
 	        properties.load(propIs);
 	        stdSchedFact.initialize(properties);
 	        Scheduler sched = stdSchedFact.getScheduler();
+	        sched.start();
 	    } catch (Exception e) {
 	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 	    			            "init", "Error while initializing scheduler " + e);

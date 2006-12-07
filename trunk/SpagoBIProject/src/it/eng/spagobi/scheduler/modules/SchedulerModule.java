@@ -28,6 +28,7 @@ import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -293,95 +294,120 @@ public class SchedulerModule extends AbstractModule {
 	}
 
 	private void defineJob(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException{
+		
+		// READ REQUEST
 		String jobName = (String)request.getAttribute("jobName");
 		String jobgroupName = (String)request.getAttribute("jobGroupName");
+		if(jobgroupName==null)
+			jobgroupName = Scheduler.DEFAULT_GROUP;
 		String jobDescription = (String)request.getAttribute("jobDescription");
-		String jobClassName = (String)request.getAttribute("jobClass");
-		String jobDurability = (String)request.getAttribute("jobDurability");
-		String jobRequestRecovery = (String)request.getAttribute("jobRequestRecovery");
-		String jobVolatility = (String)request.getAttribute("jobVolatility");
-		SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
-		
-		JobDetail jobDetail = new JobDetail();
-		jobDetail.setName(jobName);
-		if(jobgroupName!=null)
-			jobDetail.setGroup(jobgroupName);
-		else jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
 		if(jobDescription==null)
 			jobDescription = "";
-		jobDetail.setDescription(jobDescription);
-		if((jobDurability!=null) && (jobDurability.trim().equalsIgnoreCase("true")))
-			jobDetail.setDurability(true);
-		else jobDetail.setDurability(false);
-		if((jobRequestRecovery!=null) && (jobRequestRecovery.trim().equalsIgnoreCase("true")))
-			jobDetail.setRequestsRecovery(true);
-		else jobDetail.setRequestsRecovery(false);
-		if((jobVolatility!=null) && (jobVolatility.trim().equalsIgnoreCase("true")))
-			jobDetail.setVolatility(true);
-		else jobDetail.setVolatility(false);
-		
+		String jobRequestRecoveryStr = (String)request.getAttribute("jobRequestRecovery");
+		boolean jobRequestRecovery = false;
+		if((jobRequestRecoveryStr!=null) && (jobRequestRecoveryStr.trim().equalsIgnoreCase("true")))
+			jobRequestRecovery = true;
+		SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
 		// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
 		JobDataMap jdm = getJobDataMap(jobParameters);
-		jobDetail.setJobDataMap(jdm);
-		
+		// get the job class
+		String jobClassName = (String)request.getAttribute("jobClass");
 		Class jobClass;
 		try {
 			jobClass = Class.forName(jobClassName);
 		} catch (ClassNotFoundException e) {
-			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "defineJob", 
-					"Class '" + jobClassName + "' not found for job with name '" + jobName + "' of group '" + jobgroupName + "'!");
-			Vector v = new Vector();
-			v.add(jobClassName);
-			v.add(jobName);
-			v.add(jobgroupName);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", v);
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+					               "defineJob", "Class '" + jobClassName + "' not found for job with name '" + jobName + "' of group '" + jobgroupName + "'!");
+			List errPars = new ArrayList();
+			errPars.add(jobClassName);
+			errPars.add(jobName);
+			errPars.add(jobgroupName);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", errPars);
 		}
+		
+		
+		// CREATE JOB DETAIL 
+		JobDetail jobDetail = new JobDetail();
+		jobDetail.setName(jobName);
+		jobDetail.setDescription(jobDescription);
+		jobDetail.setDurability(true);
+		jobDetail.setVolatility(false);
+		jobDetail.setRequestsRecovery(jobRequestRecovery);
+		jobDetail.setJobDataMap(jdm);
 		jobDetail.setJobClass(jobClass);
+		
+		
+		// SCHEDULE JOB
 		try {
 			scheduler.addJob(jobDetail, false);
 		} catch (SchedulerException e) {
-			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "defineJob", 
-					"Error while adding job to the scheduler", e);
-			Vector v = new Vector();
-			v.add(e.getMessage());
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+					               "defineJob", "Error while adding job to the scheduler", e);
+			List errPars = new ArrayList();
+			errPars.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", errPars);
 		}
 
 	}
 
+	
+	
+	
+	
 	private void scheduleJob(SourceBean request, SourceBean response) throws EMFUserError{
+		
 		String triggerName = (String) request.getAttribute("triggerName");
 		String triggerGroup = (String) request.getAttribute("triggerGroup");
-		Date startTime = (Date) request.getAttribute("startTime");
-		Date endTime = (Date) request.getAttribute("endTime");
-		String repeatCountStr = (String) request.getAttribute("repeatCount");
-		String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
-		int repeatCount = Integer.parseInt(repeatCountStr);
-		long repeatInterval = Long.parseLong(repeatIntervalStr);
-		
-		Trigger trigger = new SimpleTrigger(triggerName, triggerGroup, 
-				startTime, endTime, repeatCount, repeatInterval);
-
+		if(triggerGroup==null)
+			triggerGroup = Scheduler.DEFAULT_GROUP;
 		String jobName = (String) request.getAttribute("jobName");
 		String jobGroup = (String) request.getAttribute("jobGroup");
+		if(jobGroup==null)
+			jobGroup = Scheduler.DEFAULT_GROUP;
+		SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
+		// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
+		JobDataMap jdm = getJobDataMap(jobParameters);
+		
+		//Date startTime = (Date) request.getAttribute("startTime");
+		//Date endTime = (Date) request.getAttribute("endTime");
+		//String repeatCountStr = (String) request.getAttribute("repeatCount");
+		//String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
+		//int repeatCount = Integer.parseInt(repeatCountStr);
+		//long repeatInterval = Long.parseLong(repeatIntervalStr);
+		//Trigger trigger = new SimpleTrigger(triggerName, triggerGroup, 
+		//		startTime, endTime, repeatCount, repeatInterval);
+
+		
+		long startTime = System.currentTimeMillis() + 20000L;
+		long endTime = System.currentTimeMillis() + 3600000L;
+        SimpleTrigger trigger = new SimpleTrigger(triggerName, triggerGroup, new Date(startTime), new Date(endTime), 0, 0L);
+        trigger.setJobName(jobName);
+        trigger.setJobGroup(jobGroup);
+        trigger.setJobDataMap(jdm);
+        trigger.setVolatility(false);
+		
+        /*
 		JobDetail job;
 		try {
 			job = scheduler.getJobDetail(jobName, jobGroup);
 		} catch (SchedulerException e) {
-			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
-					"Error while loading job ", e);
-			Vector v = new Vector();
-			v.add(e.getMessage());
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+					              "scheduleJob", "Error while loading job ", e);
+			List errPars = new ArrayList();
+			errPars.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", errPars);
 		}
+		*/
+        
+        
 		try {
-			scheduler.scheduleJob(job, trigger);
+			scheduler.scheduleJob(trigger);
 		} catch (SchedulerException e) {
 			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
 					"Error while scheduling job ", e);
-			Vector v = new Vector();
-			v.add(e.getMessage());
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
+			List errPars = new ArrayList();
+			errPars.add(e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", errPars);
 		}
 	}
 
@@ -416,6 +442,7 @@ public class SchedulerModule extends AbstractModule {
 	
 	private JobDataMap getJobDataMap(SourceBean jobParameters) {
 		JobDataMap jdm = new JobDataMap();
+		jdm.put("empty", "empty");
 		if(jobParameters!=null) {
 			List paramsSB = jobParameters.getContainedAttributes();
 			Iterator iterParSb = paramsSB.iterator();

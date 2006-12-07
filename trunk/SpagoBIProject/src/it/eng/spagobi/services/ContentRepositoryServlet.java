@@ -27,14 +27,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.services;
 
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
-import it.eng.spagobi.bo.TemplateVersion;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
-import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.security.AnonymousCMSUserProfile;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.JCRUtilities;
@@ -43,7 +39,6 @@ import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.servlet.ServletConfig;
@@ -113,6 +108,15 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		}
 	 		 		byte[] jcrContent = templateFile.getFileContent();
 	 		 		response.setContentLength(jcrContent.length);
+				 	response.getOutputStream().write(jcrContent);
+				 	response.getOutputStream().flush();
+				 	return;
+	 			}
+	 			if(operation.equalsIgnoreCase("getJcrNodeContent")) {
+	 				String jcrPath = request.getParameter("jcrPath");
+	 				InputStream jcrContentStream = JCRUtilities.getContentByPath(jcrPath);
+	 		 		byte[] jcrContent = GeneralUtilities.getByteArrayFromInputStream(jcrContentStream);
+		 			response.setContentLength(jcrContent.length);
 				 	response.getOutputStream().write(jcrContent);
 				 	response.getOutputStream().flush();
 				 	return;

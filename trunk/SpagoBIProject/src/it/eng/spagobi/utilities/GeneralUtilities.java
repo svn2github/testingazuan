@@ -205,14 +205,20 @@ public class GeneralUtilities {
 	 * @return A String with SpagoBI's context adderss
 	 */
 	public static String getSpagoBiContextAddress(){
-		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
-				"getSpagoBiContextAddress", "method invoked");
-		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
-				"getSpagoBiContextAddress", "portlet request obtained: " + portletRequest);
-		String path = portletRequest.getScheme() + "://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
-		SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
-				"getSpagoBiContextAddress", "using context path: " + path);
+		String path = "";
+		try{
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+					"getSpagoBiContextAddress", "method invoked");
+			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+					"getSpagoBiContextAddress", "portlet request obtained: " + portletRequest);
+			path = portletRequest.getScheme() + "://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+					"getSpagoBiContextAddress", "using context path: " + path);
+		} catch(Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, GeneralUtilities.class.getName(), 
+					            "getSpagoBiContextAddress", "Error while recovering SpagoBI context address", e);
+		}
 		return path;
 		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	}

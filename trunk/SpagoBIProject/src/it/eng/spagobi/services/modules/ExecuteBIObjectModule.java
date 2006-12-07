@@ -35,7 +35,6 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ExecutionController;
-import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
@@ -49,7 +48,7 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.events.EventsManager;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -128,6 +127,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 				executionHandler(request, response);
 			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_CHANGE_STATE)){
 				changeStateHandler(request, response);
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE)) {
+				execSnapshotHandler(request, response);
 			} else {	
 		   	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 		   	    		            "ExecuteBIObjectMOdule", 
@@ -288,18 +289,24 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// get the list of the subObjects
 		List subObjects = getSubObjectsList(obj, profile);
 		debug("pageCreationHandler", "List subobject loaded: " + subObjects);
-        
-		// put in response the list of subobject names
+		// put in response the list of subobject
 		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-				
+        
+		// get the list of biobject snapshot
+		List snapshots = getSnapshotList(obj);
+		debug("pageCreationHandler", "List snapshot loaded: " + snapshots);
+		// put in response the list of snapshot 
+		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+		
+					
 		// load the object into the Execution controller				
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
 		
 		// if the object can be directly executed (because it hasn't any parameter to be
-		// filled by the user) and if the object has no subobject saved then execute it
+		// filled by the user) and if the object has no subobject / snapshots saved then execute it
 		// directly without pass for parameters page 	
-		if( controller.directExecution() &&  (subObjects.size() == 0) ) {
+		if( controller.directExecution() &&  (subObjects.size() == 0) && (snapshots.size() == 0) ) {
 			debug("pageCreationHandler", "object hasn't any parameter to fill and no subObjects");
             execute(obj, null, response);
 		}
@@ -528,6 +535,26 @@ public class ExecuteBIObjectModule extends AbstractModule
 	}
 	
 	
+	
+	/**
+	 * Get the list of BIObject sbapshots 
+	 * @param obj BIObject container of the snapshot 
+	 * @return the List of the BIObject snapshots 
+	 */
+	private List getSnapshotList(BIObject obj) {
+		List snapshots = new ArrayList();
+		try {
+			IBIObjectCMSDAO biObjCmsDAO = DAOFactory.getBIObjectCMSDAO();
+			String objectPath =  obj.getPath();
+			snapshots =  biObjCmsDAO.getSnapshots(objectPath);
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                    			"getSnapshotList", "Error retriving the snapshot list", e);
+		}
+		return snapshots;
+	}
+	
+	
 	/**
 	 * Based on the object type launches the right execution mechanism. For objects executed 
 	 * by an external engine instantiates the driver for execution, gets the execution call parameters map,
@@ -750,6 +777,23 @@ public class ExecuteBIObjectModule extends AbstractModule
 		}	
 		
 		return true;
+	}
+	
+	
+	/**
+	 * Exec a biobject snapshot.
+	 * @param request The request SourceBean
+	 * @param response The response SourceBean
+	 */
+	private void execSnapshotHandler(SourceBean request, SourceBean response) throws Exception {
+		String snapshotPath = (String)request.getAttribute(SpagoBIConstants.SNAPSHOT_PATH);
+		// built the url for the content recovering
+		String url = GeneralUtilities.getSpagoBiContentRepositoryServlet() + 
+		             "?operation=getJcrNodeContent&jcrPath=" + snapshotPath ;
+		// set recover url into response
+		response.setAttribute(SpagoBIConstants.URL, url);
+		// set information for the publisher
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ViewSnapshotPubJ");
 	}
 	
 	

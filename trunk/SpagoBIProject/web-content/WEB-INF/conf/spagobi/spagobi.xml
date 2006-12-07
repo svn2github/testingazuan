@@ -2,7 +2,7 @@
 <SPAGOBI>
 	
 	<PORTLET_EDIT_MODE_ROLES>
-		<ROLE name="/admin" />
+		<ROLE name="/spagobi/admin" />
 	</PORTLET_EDIT_MODE_ROLES>
 	
 	<!-- root paths of SpagoBI data into the cms system -->

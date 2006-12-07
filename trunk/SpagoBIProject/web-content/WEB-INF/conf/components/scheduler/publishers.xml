@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
 
+    <PUBLISHER name="SchedulerGUIPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.scheduler.publishers.SchedulerGUIPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
   	<PUBLISHER name="SchedulerGUIPub">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
@@ -9,7 +17,15 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-  	
+  	  	
+  	<PUBLISHER name="ObjectForSchedulingPub">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/scheduler/jsp/ObjectForScheduling.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
   	
   	<PUBLISHER name="SchedulerPub">
        <RENDERING channel="SOAP" type="XSL" mode="">
@@ -18,6 +34,7 @@
            </RESOURCES>
        </RENDERING>
    </PUBLISHER>
-  	
+
+
   	
 </PUBLISHERS>

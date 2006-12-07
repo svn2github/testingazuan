@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PRESENTATION>
 
-    <MAPPING business_name="SchedulerGUIPage" business_type="PAGE" publisher_name="SchedulerGUIPub"/>
+    <MAPPING business_name="SchedulerGUIPage" business_type="PAGE" publisher_name="SchedulerGUIPubJ"/>
     <MAPPING business_name="SchedulerPage" business_type="PAGE" publisher_name="SchedulerPub"/>
     
 </PRESENTATION>

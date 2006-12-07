@@ -3,6 +3,7 @@ package it.eng.spagobi.scheduler.jobs;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.ExecutionController;
 import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.ExecutionProxy;
@@ -13,10 +14,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class executeBIDocumentJob implements Job {
+public class ExecuteBIDocumentJob implements Job {
 
 	public void execute(JobExecutionContext jex) throws JobExecutionException {
-		
+
 		JobDataMap jdm = jex.getMergedJobDataMap();
 	    String docIdStr = jdm.getString("documentid");
 	    Integer docId = new Integer(docIdStr);
@@ -24,6 +25,7 @@ public class executeBIDocumentJob implements Job {
 	    String storeAsSnapshot =  jdm.getString("storeassnapshot");
 	    String storeAsDocument =  jdm.getString("storeasdocument");
 	    String storeName = jdm.getString("storename");
+	    String storeDesc = jdm.getString("storedescription");
 	    String storeDocumentType = jdm.getString("storedocumenttype");
 	    String docParQueryString = jdm.getString("parameters");
 	    
@@ -41,7 +43,12 @@ public class executeBIDocumentJob implements Job {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
 				byte[] response = proxy.exec();
+			
+				// store document into
+				IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
+				objectCMSDAO.saveSnapshot(response, biobj.getPath(), storeName, storeDesc);
 			}
+					
 	    } catch (Exception e) {
 	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 	    			           "execute", "Error while executiong job ", e );

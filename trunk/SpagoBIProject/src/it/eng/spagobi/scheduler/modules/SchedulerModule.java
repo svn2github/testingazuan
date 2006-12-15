@@ -32,7 +32,9 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -63,6 +65,8 @@ public class SchedulerModule extends AbstractModule {
 				getJobList(request, response);
 			} else if(task.equalsIgnoreCase("getJobDefinition")){
 				getJobDefinition(request, response);
+			} else if(task.equalsIgnoreCase("existJobDefinition")){
+				existJobDefinition(request, response);
 			} else if(task.equalsIgnoreCase("getJobSchedulationList")){
 				getJobSchedulationList(request, response);
 			} else if(task.equalsIgnoreCase("getJobSchedulationDefinition")){
@@ -77,13 +81,13 @@ public class SchedulerModule extends AbstractModule {
 				deleteSchedulation(request, response);
 			}
 		} catch (EMFUserError e) {
-			SpagoBITracer.warning("SCHEDULER", this.getClass().getName(), 
-					"service", "EMFUserError captured", e);
-			errorHandler.addError(e);
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+								"service", "EMFUserError captured", e);
+			//errorHandler.addError(e);
 		} catch (Exception e) {
-			SpagoBITracer.warning("SCHEDULER", this.getClass().getName(), 
-					"getJobList", "Generic error", e);
-			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "100"));
+			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+								  "service", "Generic error", e);
+			//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "100"));
 		}
 	}
 	
@@ -205,6 +209,31 @@ public class SchedulerModule extends AbstractModule {
 		response.setAttribute(detailSourceBean);
 	}
 
+	private void existJobDefinition(SourceBean request, SourceBean response) throws EMFUserError, Exception {
+		String jobName = (String) request.getAttribute("jobName");
+		String jobGroup = (String) request.getAttribute("jobGroup");
+		if (jobName == null || jobName.trim().equals("")) {
+			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "existJobDefinition", 
+				"Missing job name request parameter!");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001");
+		}
+		if (jobGroup == null || jobGroup.trim().equals("")) {
+			SpagoBITracer.major("SCHEDULER", this.getClass().getName(), "existJobDefinition", 
+				"Missing job group name! Using default group...");
+			jobGroup = Scheduler.DEFAULT_GROUP;
+		}
+		JobDetail aJob = scheduler.getJobDetail(jobName, jobGroup);
+		StringBuffer buffer = new StringBuffer("<JOB_EXISTANCE  ");
+		if (aJob == null) {
+			buffer.append(" exists=\"false\" />");
+		} else {
+			buffer.append(" exists=\"true\" />");
+		}
+		SourceBean existSourceBean = SourceBean.fromXMLString(buffer.toString());
+		response.setAttribute(existSourceBean);
+	}
+	
+	
 	private void getJobSchedulationList(SourceBean request, SourceBean response) 
 							throws EMFUserError, SchedulerException, SourceBeanException{
 		String jobName = (String) request.getAttribute("jobName");
@@ -293,124 +322,200 @@ public class SchedulerModule extends AbstractModule {
 		buffer.append("</TRIGGER_DETAILS>");
 	}
 
-	private void defineJob(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException{
-		
-		// READ REQUEST
-		String jobName = (String)request.getAttribute("jobName");
-		String jobgroupName = (String)request.getAttribute("jobGroupName");
-		if(jobgroupName==null)
-			jobgroupName = Scheduler.DEFAULT_GROUP;
-		String jobDescription = (String)request.getAttribute("jobDescription");
-		if(jobDescription==null)
-			jobDescription = "";
-		String jobRequestRecoveryStr = (String)request.getAttribute("jobRequestRecovery");
-		boolean jobRequestRecovery = false;
-		if((jobRequestRecoveryStr!=null) && (jobRequestRecoveryStr.trim().equalsIgnoreCase("true")))
-			jobRequestRecovery = true;
-		SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
-		// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
-		JobDataMap jdm = getJobDataMap(jobParameters);
-		// get the job class
-		String jobClassName = (String)request.getAttribute("jobClass");
-		Class jobClass;
-		try {
-			jobClass = Class.forName(jobClassName);
-		} catch (ClassNotFoundException e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
-					               "defineJob", "Class '" + jobClassName + "' not found for job with name '" + jobName + "' of group '" + jobgroupName + "'!");
-			List errPars = new ArrayList();
-			errPars.add(jobClassName);
-			errPars.add(jobName);
-			errPars.add(jobgroupName);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", errPars);
+	
+	
+	
+	
+	
+	
+	private void defineJob(SourceBean request, SourceBean response) {
+		StringBuffer servreponse = new StringBuffer();
+		try{
+			servreponse.append("<EXECUTION_OUTCOME ");
+			// READ REQUEST
+			String jobName = (String)request.getAttribute("jobName");
+			String jobgroupName = (String)request.getAttribute("jobGroupName");
+			if(jobgroupName==null)
+				jobgroupName = Scheduler.DEFAULT_GROUP;
+			String jobDescription = (String)request.getAttribute("jobDescription");
+			if(jobDescription==null)
+				jobDescription = "";
+			String jobRequestRecoveryStr = (String)request.getAttribute("jobRequestRecovery");
+			boolean jobRequestRecovery = false;
+			if((jobRequestRecoveryStr!=null) && (jobRequestRecoveryStr.trim().equalsIgnoreCase("true")))
+				jobRequestRecovery = true;
+			SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
+			// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
+			JobDataMap jdm = getJobDataMap(jobParameters);
+			// get the job class
+			String jobClassName = (String)request.getAttribute("jobClass");
+			Class jobClass = null;
+			try {
+				jobClass = Class.forName(jobClassName);
+			} catch (ClassNotFoundException e) {
+				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+						               "defineJob", "Class '" + jobClassName + "' not found for job with name '" + jobName + "' of group '" + jobgroupName + "'!");
+				throw e;
+			}
+			// CREATE JOB DETAIL 
+			JobDetail jobDetail = new JobDetail();
+			jobDetail.setName(jobName);
+			jobDetail.setGroup(jobgroupName);
+			jobDetail.setDescription(jobDescription);
+			jobDetail.setDurability(true);
+			jobDetail.setVolatility(false);
+			jobDetail.setRequestsRecovery(jobRequestRecovery);
+			jobDetail.setJobDataMap(jdm);
+			jobDetail.setJobClass(jobClass);
+			// ADD JOB
+			try {
+				scheduler.addJob(jobDetail, false);
+			} catch (SchedulerException e) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+						               "defineJob", "Error while adding job to the scheduler", e);
+				throw e;
+			}
+			servreponse.append("outcome=\"perform\"/>");
+		} catch (Exception e) {
+			servreponse.append("outcome=\"fault\"/>");
 		}
-		
-		
-		// CREATE JOB DETAIL 
-		JobDetail jobDetail = new JobDetail();
-		jobDetail.setName(jobName);
-		jobDetail.setDescription(jobDescription);
-		jobDetail.setDurability(true);
-		jobDetail.setVolatility(false);
-		jobDetail.setRequestsRecovery(jobRequestRecovery);
-		jobDetail.setJobDataMap(jdm);
-		jobDetail.setJobClass(jobClass);
-		
-		
-		// SCHEDULE JOB
-		try {
-			scheduler.addJob(jobDetail, false);
-		} catch (SchedulerException e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
-					               "defineJob", "Error while adding job to the scheduler", e);
-			List errPars = new ArrayList();
-			errPars.add(e.getMessage());
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", errPars);
+		// put into response the outcome of the service
+		try{
+			SourceBean outcomeSB = SourceBean.fromXMLString(servreponse.toString());
+			response.setAttribute(outcomeSB);
+		} catch(Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+		                        "defineJob", "Error while filling response with the service outcome", e);
 		}
+	}
 
+	
+	
+	
+	
+	
+	
+	
+	private void scheduleJob(SourceBean request, SourceBean response) {
+		StringBuffer servreponse = new StringBuffer();
+		try{
+			servreponse.append("<EXECUTION_OUTCOME ");
+			String triggerName = (String) request.getAttribute("triggerName");
+			String triggerGroup = (String) request.getAttribute("triggerGroup");
+			if(triggerGroup==null)
+				triggerGroup = Scheduler.DEFAULT_GROUP;
+			String jobName = (String) request.getAttribute("jobName");
+			String jobGroup = (String) request.getAttribute("jobGroup");
+			if(jobGroup==null)
+				jobGroup = Scheduler.DEFAULT_GROUP;
+			// recover scheduling parameters
+			SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
+			// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
+			JobDataMap jdm = getJobDataMap(jobParameters);
+			// recover and transform dates
+			// get the start date param (format gg/mm/yyyy) and start time (format hh:mm)
+			String startDateStr = (String)request.getAttribute("startDate");
+			String startTimeStr = (String)request.getAttribute("startTime");
+			String startDay = startDateStr.substring(0, 2);
+			String startMonth = startDateStr.substring(3, 5);
+			String startYear = startDateStr.substring(6);
+			Calendar startCal = new GregorianCalendar(new Integer(startYear).intValue(), 
+					                                  new Integer(startMonth).intValue()-1, 
+					                                  new Integer(startDay).intValue());
+			if(startTimeStr!=null) {
+				String startHour = startTimeStr.substring(0, 2);
+				String startMinute = startTimeStr.substring(3);
+				startCal.set(startCal.HOUR_OF_DAY, new Integer(startHour).intValue());
+				startCal.set(startCal.MINUTE, new Integer(startMinute).intValue());
+			}
+			Date startDate = startCal.getTime();
+			// get the end date param (format gg/mm/yyyy) and end time (format hh:mm)
+			Date endDate = null;
+			String endDateStr = (String)request.getAttribute("endDate");
+			if(endDateStr!=null){
+				String endDay = endDateStr.substring(0, 2);
+				String endMonth = endDateStr.substring(3, 5);
+				String endYear = endDateStr.substring(6);
+				Calendar endCal = new GregorianCalendar(new Integer(endYear).intValue(), 
+					                           new Integer(endMonth).intValue()-1, 
+					                           new Integer(endDay).intValue());
+				String endTimeStr = (String)request.getAttribute("endTime");
+				if(endTimeStr!=null) {
+					String endHour = endTimeStr.substring(0, 2);
+					String endMinute = endTimeStr.substring(3);
+					endCal.set(endCal.HOUR_OF_DAY, new Integer(endHour).intValue());
+					endCal.set(endCal.MINUTE, new Integer(endMinute).intValue());
+				}
+				endDate = endCal.getTime();
+			}
+			// get the repeat interval
+			long repeatInterval = -1;
+			String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
+			if( (repeatIntervalStr!=null) && !repeatIntervalStr.trim().equals("") ) {
+				repeatInterval = Long.parseLong(repeatIntervalStr);
+			}
+			// get the repeat count 
+			int repeatCount = 0;
+			String repeatCountStr = (String) request.getAttribute("repeatCount");
+			if( (repeatCountStr!=null) && !repeatCountStr.trim().equals("") ) {
+				repeatCount = Integer.parseInt(repeatCountStr);
+			} else {
+				long startTimeL = startDate.getTime();
+				if(endDate!=null) {
+					long endTimeL = endDate.getTime();
+					if(repeatInterval!=-1) {
+						repeatCount = new Long((endTimeL - startTimeL) / repeatInterval).intValue();
+					}
+				}
+				
+			}
+	
+			
+			// create trigger
+			SimpleTrigger trigger = new SimpleTrigger();
+			trigger.setName(triggerName);
+			trigger.setGroup(triggerGroup);
+			trigger.setStartTime(startDate);
+			if(endDate!=null) {
+				trigger.setEndTime(endDate);
+			}
+			if(repeatInterval!=-1) {
+				trigger.setRepeatInterval(repeatInterval);
+			}
+			if(repeatCount!=0) {
+				trigger.setRepeatCount(repeatCount);
+			}
+			trigger.setJobName(jobName);
+		    trigger.setJobGroup(jobGroup);
+		    trigger.setJobDataMap(jdm);
+		    trigger.setVolatility(false);
+			 
+		    
+	        // schedule trigger 
+			try {
+				scheduler.scheduleJob(trigger);
+			} catch (SchedulerException e) {
+				SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
+						"Error while scheduling job ", e);
+				throw e;
+			}
+		} catch (Exception e) {
+			servreponse.append("outcome=\"fault\"/>");
+		}
+		servreponse.append("outcome=\"perform\"/>");
+		// put into response the outcome of the service
+		try{
+			SourceBean outcomeSB = SourceBean.fromXMLString(servreponse.toString());
+			response.setAttribute(outcomeSB);
+		} catch(Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+		                        "scheduleJob", "Error while filling response with the service outcome", e);
+		}
 	}
 
 	
 	
 	
-	
-	private void scheduleJob(SourceBean request, SourceBean response) throws EMFUserError{
-		
-		String triggerName = (String) request.getAttribute("triggerName");
-		String triggerGroup = (String) request.getAttribute("triggerGroup");
-		if(triggerGroup==null)
-			triggerGroup = Scheduler.DEFAULT_GROUP;
-		String jobName = (String) request.getAttribute("jobName");
-		String jobGroup = (String) request.getAttribute("jobGroup");
-		if(jobGroup==null)
-			jobGroup = Scheduler.DEFAULT_GROUP;
-		SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
-		// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
-		JobDataMap jdm = getJobDataMap(jobParameters);
-		
-		//Date startTime = (Date) request.getAttribute("startTime");
-		//Date endTime = (Date) request.getAttribute("endTime");
-		//String repeatCountStr = (String) request.getAttribute("repeatCount");
-		//String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
-		//int repeatCount = Integer.parseInt(repeatCountStr);
-		//long repeatInterval = Long.parseLong(repeatIntervalStr);
-		//Trigger trigger = new SimpleTrigger(triggerName, triggerGroup, 
-		//		startTime, endTime, repeatCount, repeatInterval);
-
-		
-		long startTime = System.currentTimeMillis() + 20000L;
-		long endTime = System.currentTimeMillis() + 3600000L;
-        SimpleTrigger trigger = new SimpleTrigger(triggerName, triggerGroup, new Date(startTime), new Date(endTime), 0, 0L);
-        trigger.setJobName(jobName);
-        trigger.setJobGroup(jobGroup);
-        trigger.setJobDataMap(jdm);
-        trigger.setVolatility(false);
-		
-        /*
-		JobDetail job;
-		try {
-			job = scheduler.getJobDetail(jobName, jobGroup);
-		} catch (SchedulerException e) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
-					              "scheduleJob", "Error while loading job ", e);
-			List errPars = new ArrayList();
-			errPars.add(e.getMessage());
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", errPars);
-		}
-		*/
-        
-        
-		try {
-			scheduler.scheduleJob(trigger);
-		} catch (SchedulerException e) {
-			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
-					"Error while scheduling job ", e);
-			List errPars = new ArrayList();
-			errPars.add(e.getMessage());
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", errPars);
-		}
-	}
-
 	private void deleteJob(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException{
 		
 		String jobName = (String)request.getAttribute("jobName");

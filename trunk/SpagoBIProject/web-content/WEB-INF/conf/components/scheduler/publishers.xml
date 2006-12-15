@@ -27,6 +27,36 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	<PUBLISHER name="DetailObjectSchedulingPub">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/scheduler/jsp/DetailObjectScheduling.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="ListObjectSchedulationPub">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/scheduler/jsp/ListObjectSchedulation.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="DetailObjectSchedulingLoopPub">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="SchedulerGUIPage" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="MESSAGE_GET_DETAIL_SCHEDULE_OBJECT" />
+      			<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_REQUEST" value="OBJECT_ID" />
+      			<PARAMETER name="OBJ_JOB_EXISTS" type="RELATIVE" scope="SERVICE_RESPONSE" value="SchedulerGUIModule.OBJ_JOB_EXISTS" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
   	<PUBLISHER name="SchedulerPub">
        <RENDERING channel="SOAP" type="XSL" mode="">
            <RESOURCES>
@@ -34,6 +64,7 @@
            </RESOURCES>
        </RENDERING>
    </PUBLISHER>
+
 
 
   	

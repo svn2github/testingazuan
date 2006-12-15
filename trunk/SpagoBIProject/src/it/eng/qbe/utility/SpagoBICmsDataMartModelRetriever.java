@@ -10,6 +10,8 @@ import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SpagoBICmsDataMartModelRetriever implements IDataMartModelRetriever {
@@ -62,6 +64,11 @@ public class SpagoBICmsDataMartModelRetriever implements IDataMartModelRetriever
 
 	public File getJarFile(String dataMartPath, String dialect) {
 	    return getJarFile(dataMartPath);
+	}
+
+	public List getViewJarFiles(String dataMartPath, String dialect) {
+		List jars = new ArrayList();
+		return jars;
 	}
 
 }

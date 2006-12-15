@@ -29,7 +29,13 @@ public class SchedulerModuleTest {
 		StringBuffer message = new StringBuffer();
 		message.append("<SERVICE_REQUEST PAGE=\"SchedulerPage\" task=\"scheduleJob\" ");
 		message.append(" jobName=\"myjob\" ");
-		message.append(" triggerName=\"mytrigger3\" ");
+		message.append(" triggerName=\"mytrigger14\" ");
+		message.append(" startDate=\"11/12/2006\" ");
+		message.append(" startTime=\"17:48\" ");
+		message.append(" endDate=\"11/12/2006\" ");
+		message.append(" endTime=\"17:53\" ");
+		message.append(" repeatInterval=\"10000\" ");
+		message.append(" repeatCount=\"5\" ");
 		message.append(">");
 		message.append("   <PARAMETERS>");
 		message.append("   	   <PARAMETER name=\"parameters\" value=\"param_output_format=HTML%26ParRole=Middle Management\" />");

@@ -43,12 +43,16 @@ public class ExecuteBIDocumentJob implements Job {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
 				byte[] response = proxy.exec();
-			
-				// store document into
-				IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
-				objectCMSDAO.saveSnapshot(response, biobj.getPath(), storeName, storeDesc);
-			}
-					
+				// if the user request the store
+				if(storeOutput!=null) {
+					if(storeAsSnapshot!=null) {
+						// store document as snapshot
+						IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
+						objectCMSDAO.saveSnapshot(response, biobj.getPath(), storeName, storeDesc);
+					}
+				}
+				
+			}				
 	    } catch (Exception e) {
 	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 	    			           "execute", "Error while executiong job ", e );

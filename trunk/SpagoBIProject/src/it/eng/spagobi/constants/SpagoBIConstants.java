@@ -28,6 +28,7 @@ public class SpagoBIConstants {
 
 	public static final String PAGE = "PAGE";
 	public static final String URL = "URL";
+	public static final String OBJECT_ID = "OBJECT_ID";
 	
 	public static final String EXECUTION_MODALITY = "EXECUTION_MODALITY";
 	public static final String TEST_MODALITY = "TEST_MODALITY";
@@ -170,5 +171,12 @@ public class SpagoBIConstants {
 	public static final String PREFERENCE_NOTES_EDITOR_OPEN = "NOTES_EDITOR_OPEN";
 	
 	public static final String MESSAGE_GETOBJECTS_SCHED = "MESSAGE_GETOBJECTS_SCHED";
+	public static final String MESSAGE_SCHEDULE_OBJECT = "MESSAGE_SCHEDULE_OBJECT";
+	public static final String MESSAGE_GET_OBJECT_SCHEDULATIONS = "MESSAGE_GET_OBJECT_SCHEDULATIONS";
+	public static final String MESSAGE_GET_DETAIL_SCHEDULE_OBJECT = "MESSAGE_GET_DETAIL_SCHEDULE_OBJECT";
 	
+	public static final String LIST_BIOBJ_PARAMETERS = "LIST_BIOBJ_PARAMETERS";
+	
+	public static final String OBJ_SCHEDULE_DETAIL = "OBJ_SCHEDULE_DETAIL";
+	public static final String OBJ_JOB_EXISTS = "OBJ_JOB_EXISTS";
 }

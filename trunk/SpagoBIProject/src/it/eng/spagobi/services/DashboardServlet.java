@@ -68,7 +68,9 @@ public class DashboardServlet extends HttpServlet{
                 	out.flush();
                 } else {
                 	String result = GeneralUtilities.getLovResult(dataName);
-                	result = result.toLowerCase();
+                	if(type.equalsIgnoreCase("QUERY")){
+                		result = result.toLowerCase();
+                	}
             		out.write(result.getBytes());
     		 		out.flush();
                 }		

@@ -52,5 +52,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </table>
 
 
-
+<spagobi:treeObjects moduleName="SchedulerGUIModule"  
+		htmlGeneratorClass="it.eng.spagobi.scheduler.SchedulerTreeHtmlGenerator" />
 

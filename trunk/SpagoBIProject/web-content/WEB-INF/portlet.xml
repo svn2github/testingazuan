@@ -266,6 +266,22 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<value>FALSE</value>
         	</preference>
         	
+        	<!--  The snapshot Name of the single object to exec --> 
+            <preference> 
+        		<name>SNAPSHOT_NAME</name>
+        		<!-- If the portlet is configured for a single object and this preference is setted 
+        		     the it will exec the snapshot with the name reported (look also at
+        		     snapshot history preference) -->
+        		<value></value>
+        	</preference>
+        	
+        	<!--  The snapshot History of the single object to exec --> 
+            <preference> 
+        		<name>SNAPSHOT_HISTORY</name>
+        		<!-- The Number of step back into the snapshot history (0 is the last, 1 is the previous one, ...)  -->
+        		<value>0</value>
+        	</preference>
+        	
         </portlet-preferences>
 	</portlet>
 	

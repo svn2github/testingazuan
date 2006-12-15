@@ -10,6 +10,7 @@
 				 it.eng.spagobi.utilities.PortletUtilities" %>
 
 
+<%@page import="java.util.Map"%>
 <table width='100%' cellspacing='0' border='0'>		
 	<tr height='40'>
 		<th align='left'>&nbsp;&nbsp;<spagobi:message key="editConf.configuration"/></th>
@@ -65,6 +66,7 @@
   	<%
   	javax.portlet.PortletRequest portReq = PortletUtilities.getPortletRequest();
   	javax.portlet.PortletPreferences prefs = portReq.getPreferences();
+  	Map prefMap = prefs.getMap();
   	String prefPrefix = "PORTLET_PREF_";
   	java.util.Enumeration names = prefs.getNames();
 	while (names.hasMoreElements()) {

@@ -27,6 +27,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -423,11 +424,13 @@ public class BIObject implements Serializable {
 		private String path = null;
 		private String name = null;
 		private String description = null;
+		private Date dateCreation = null;
 		
-		public BIObjectSnapshot(String path, String name, String descr) {
+		public BIObjectSnapshot(String path, String name, String descr, Date dateCrea) {
 			this.path = path;
 			this.name = name;
 			this.description = descr;
+			this.dateCreation = dateCrea;
 		}
 	
 		public String getName() {
@@ -440,6 +443,10 @@ public class BIObject implements Serializable {
 
 		public String getDescription() {
 			return description;
+		}
+		
+		public Date getDateCreation() {
+			return dateCreation;
 		}
 	}
 

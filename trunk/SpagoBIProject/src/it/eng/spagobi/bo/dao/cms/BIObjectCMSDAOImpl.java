@@ -48,6 +48,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * Implements all the methods for access the biobject cms contents
  * 
@@ -563,8 +566,8 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 
 
 
-	public void deleteSnapshot(String pathParent, String name) throws EMFUserError {
-		String pathTodel = pathParent + "/snapshots/" + name;
+	public void deleteSnapshot(String pathParent, String uuid) throws EMFUserError {
+		String pathTodel = pathParent + "/snapshots/" + uuid;
 		try {
 			DeleteOperation delOp = new DeleteOperation();
 			delOp.setPath(pathTodel);
@@ -573,8 +576,8 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 		                        "deleteSnapshot", "Cannot delete snapshot", e);
-			Vector params = new Vector();
-			params.add(name);
+			List params = new ArrayList();
+			params.add(uuid);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 7001, params);
 		}
 	}
@@ -611,6 +614,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 				Iterator iterProps = properties.iterator();
 				String name = "";
 				String description = "";
+				Date dateCreation = null; 
 				while(iterProps.hasNext()) {
 					CmsProperty prop = (CmsProperty)iterProps.next();
 					String nameprop = prop.getName();
@@ -619,10 +623,15 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 					}
 					if(nameprop.equalsIgnoreCase("description")) {
 						description = prop.getStringValues()[0];
-					}
+					} 
+					if(nameprop.equalsIgnoreCase("dateCreation")) {
+						String dateCreationStr = prop.getStringValues()[0];
+						Long dateCreationLong = new Long(dateCreationStr);
+						dateCreation = new Date(dateCreationLong.longValue());
+					} 
 				}
 				BIObject biobj = new BIObject();
-				BIObject.BIObjectSnapshot snap = biobj.new BIObjectSnapshot(pathChild, name, description);
+				BIObject.BIObjectSnapshot snap = biobj.new BIObjectSnapshot(pathChild, name, description, dateCreation);
 				snapshots.add(snap);
 			}
 		} catch (Exception e) {
@@ -654,18 +663,25 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		}
 		// save the snapshot
 		try {
+			UUIDGenerator uuidgen = UUIDGenerator.getInstance();
+			UUID uuid = uuidgen.generateTimeBasedUUID();
+			String uuidStr = uuid.toString();
 			SetOperation setOp = new SetOperation();
 	        setOp.setContent(new ByteArrayInputStream(content));
 	        setOp.setType(SetOperation.TYPE_CONTENT);
-	        setOp.setPath(pathParent + "/snapshots/" + name);
+	        setOp.setPath(pathParent + "/snapshots/" + uuidStr);
 	        setOp.setEraseOldProperties(false);
 	        List properties = new ArrayList();
+	        String today = new Long(new Date().getTime()).toString();
+	        String[] dateCreationValues = new String[] { today };
 	        String[] namePropValues = new String[] { name };
 	        String[] descrPropValues = new String[] { description };
 	        CmsProperty propname = new CmsProperty("name", namePropValues);
 	        CmsProperty propdesc = new CmsProperty("description", descrPropValues);
+			CmsProperty propDateCreation = new CmsProperty("dateCreation", dateCreationValues);
 	        properties.add(propname);
 	        properties.add(propdesc);
+	        properties.add(propDateCreation);
 	        setOp.setProperties(properties);
 	        CmsManager manager = new CmsManager();
 			manager.execSetOperation(setOp);

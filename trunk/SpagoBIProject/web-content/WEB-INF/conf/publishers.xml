@@ -820,6 +820,17 @@
 			</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="loopbackSnapshotExecution">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_SNAPSHOT_MESSAGE" />
+                <PARAMETER name="SNAPSHOT_PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SNAPSHOT_PATH" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
 
   	<PUBLISHER name="ListObjParusePublisher">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">

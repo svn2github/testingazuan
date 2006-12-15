@@ -21,6 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -30,9 +37,12 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.BIObject.BIObjectSnapshot;
 import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.scheduler.SchedulerUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -56,6 +66,8 @@ public class BIObjectsModule extends AbstractModule {
     public static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
     public static final String PATH_SUBTREE = "PATH_SUBTREE";
     public static final String HEIGHT_AREA = "HEIGHT_AREA";
+    public static final String SNAPSHOT_NAME = "SNAPSHOT_NAME";
+    public static final String SNAPSHOT_HISTORY = "SNAPSHOT_HISTORY";
 	
     SessionContainer sessionContainer = null;
     EMFErrorHandler errorHandler = null;
@@ -162,11 +174,9 @@ public class BIObjectsModule extends AbstractModule {
 			                                 PortletPreferences prefs, String actor) 
 											 throws Exception {
 		debug("singleObjectModalityHandler", "enter singleObjectModalityHandler");
-		
 		// get from preferences the label of the object
 		String label = prefs.getValue(LABEL_SINGLE_OBJECT, "");
 		debug("singleObjectModalityHandler", "using object label " + label);
-		
 		// if label is not set then throw an exception
 		if(label == null || label.trim().equals("")) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
@@ -175,36 +185,69 @@ public class BIObjectsModule extends AbstractModule {
 								"Object's label not set");
         	throw new Exception("Label not set");
         }
-		
 		// get from preferences the parameters used by the object during execution
 		String parameters = prefs.getValue(PARAMETERS_SINGLE_OBJECT, "");
 		debug("singleObjectModalityHandler", "using parameters " + parameters);
-		
 		// get from preferences the height of the area
 		String heightArea = prefs.getValue(HEIGHT_AREA, "");
 		debug("singleObjectModalityHandler", "using height of area " + heightArea);
-        
-		// set into the reponse the publisher name for object execution
-        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
-        					  SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);
-        
-        // set into the response the righr inforamtion for loopback
-        response.setAttribute(SpagoBIConstants.ACTOR, actor);
-        BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
-        response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-                
+		// get from preferences the snapshot name
+		String snapName = prefs.getValue(SNAPSHOT_NAME, "");
+		debug("singleObjectModalityHandler", "using snapshot name " + snapName);
+		// get from preferences the snapshot history
+		String snapHistStr = prefs.getValue(SNAPSHOT_HISTORY, "0");
+		debug("singleObjectModalityHandler", "using snapshot history " + snapHistStr);
+		
+		// load biobject
+		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+		// if the height of the area is set put it into the session
+        if (heightArea != null && !heightArea.trim().equals("")) 
+        	sessionContainer.setAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA, heightArea);
         // put in session the modality and the actor
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
         		                      SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
+		
+        if(!snapName.trim().equalsIgnoreCase("")) {
+        	// get the snapshot history
+        	int snapHist = 0;
+        	try{
+        		Integer snapHistI = new Integer(snapHistStr);
+        		snapHist = snapHistI.intValue();
+        	} catch (Exception e) {
+        		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+									"singleObjectModalityHandler", 
+									"Snapshot history preference value is not a valid integer number, using default 0");
+        		snapHist = 0;
+        	}
+        	// get the all the snapshots of the objects
+        	List allsnapshots = null;
+        	try {
+    			IBIObjectCMSDAO biObjCmsDAO = DAOFactory.getBIObjectCMSDAO();
+    			String objectPath = obj.getPath();
+    			allsnapshots =  biObjCmsDAO.getSnapshots(objectPath);
+    		} catch (Exception e) {
+    			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                        			"singleObjectModalityHandler", "Error while retriving the snapshot list", e);
+    			throw new Exception("Error while retriving the snapshot list", e);
+    		}
+    		// recover only the snapshot with the name requested
+    		BIObject.BIObjectSnapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots,snapName,snapHist);
+    		response.setAttribute(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+    		// set into the reponse the publisher name for object execution
+            response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "loopbackSnapshotExecution");
+        } else {
+        	// set into the response the right information for loopback
+            response.setAttribute(SpagoBIConstants.ACTOR, actor);
+            response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+    		// set into the reponse the publisher name for object execution
+            response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
+            					  SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);
+            // if the parameters is set put it into the session
+            if (parameters != null && !parameters.trim().equals("")) 
+            	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
+        }
         
-        // if the parameters is set put it into the session
-        if (parameters != null && !parameters.trim().equals("")) 
-        	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
-        
-        // if the height of the area is set put it into the session
-        if (heightArea != null && !heightArea.trim().equals("")) 
-        	sessionContainer.setAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA, heightArea);
-        debug("singleObjectModalityHandler", "data stored into response");
+        debug("singleObjectModalityHandler", "end method");
 	}
 	
 	

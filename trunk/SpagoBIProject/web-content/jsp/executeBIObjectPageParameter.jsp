@@ -69,6 +69,7 @@
 	
 %>
 	
+<%@page import="java.util.Date"%>
 <form method='POST' action='<%=execUrl.toString()%>' id='paramsValueForm' name='paramsValueForm'>	
 
 
@@ -318,6 +319,10 @@
 			           <spagobi:message key='SBIDev.docConf.snapshots.description' />
 			       </td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.snapshots.dateCreation' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			     <tr> 
 				              
@@ -325,6 +330,7 @@
 				    BIObject.BIObjectSnapshot snap = null;
 				    String nameSnap = "";
 				    String descrSnap = "";
+				    Date creationDate = null;
 				    PortletURL execSnapUrl = null;
 					boolean alternate = false;
 					String rowClass = "";
@@ -335,6 +341,7 @@
 						alternate = !alternate;
 						nameSnap = snap.getName();
 						descrSnap = snap.getDescription();
+						creationDate = snap.getDateCreation();
 		                execSnapUrl = renderResponse.createActionURL();
 		                execSnapUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
 		                execSnapUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
@@ -344,6 +351,8 @@
 		           	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameSnap %></td>
 		           	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
 		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descrSnap %></td>
+		            <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=creationDate.toString() %></td>
 		            <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
 		            <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
 		                <a href="<%=execSnapUrl.toString()%>">

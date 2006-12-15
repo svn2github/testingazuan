@@ -13,12 +13,15 @@ import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.w3c.dom.Document;
 
 
 /**
@@ -31,6 +34,7 @@ import org.w3c.dom.Document;
  */
 public class DataMartModel implements Serializable {
 	
+	private List alreadyAddedView = null;
 	private boolean classLoaderExtended = false;
 	/**
 	 * 
@@ -59,6 +63,8 @@ public class DataMartModel implements Serializable {
 	private String dialect = null;
 	
 	private Configuration hibCfg = null;
+	
+	
 	/**
 	 * @param path: The path of the datamart
 	 * @param jndiDataSourceName: the name of the jndi datasource
@@ -68,6 +74,10 @@ public class DataMartModel implements Serializable {
 		this.path = path;
 		this.jndiDataSourceName = jndiDataSourceName;
 		this.dialect = dialect;
+		
+		this.alreadyAddedView = new ArrayList();
+		
+		
 	}
 	
 	/**
@@ -103,6 +113,17 @@ public class DataMartModel implements Serializable {
 		}
 	}
 	
+	
+	public List getViewJarFiles(){
+		try{
+			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
+			return dataMartModelRetriever.getViewJarFiles(path,dialect);
+		}catch (Exception e) {
+			Logger.error(DataMartModel.class, e);
+			return null;
+		}
+	}
+	
 	/**
 	 * This methos is responsible to create the Hibernate Session Factory Object related to the
 	 * datamart model
@@ -115,8 +136,20 @@ public class DataMartModel implements Serializable {
 		Configuration cfg = null;
 		
 		cfg = getHibernateConfiguration(getJarFile());
-		sf = cfg.buildSessionFactory();
 		
+		List viewsJarFile = getViewJarFiles();
+		
+		File f = null;
+		for (Iterator it = viewsJarFile.iterator(); it.hasNext(); ){
+			f = ((File)it.next());
+			if (!(alreadyAddedView.contains(f.getAbsolutePath()))){
+				cfg.addJar(f);
+				alreadyAddedView.add(f.getAbsolutePath());
+			}
+		}
+		
+		sf = cfg.buildSessionFactory();
+				
 		return sf;
 	}
 	
@@ -141,8 +174,14 @@ public class DataMartModel implements Serializable {
 			cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");			
 			
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
-			updateCurrentClassLoader(jarFile);
-			this.classLoaderExtended = true;
+			if (!classLoaderExtended){
+				updateCurrentClassLoader(jarFile);
+				List viewJarFiles = getViewJarFiles();
+				for (int i=0; i < viewJarFiles.size(); i++){
+					updateCurrentClassLoader((File)viewJarFiles.get(i));
+				}
+				this.classLoaderExtended = true;
+			}
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 			if (jarFile == null)
 				System.out.println( " --------------------- JAR FILE NULLO --------------- ");
@@ -172,7 +211,16 @@ public class DataMartModel implements Serializable {
 				this.dialect = prop.getProperty("hibernate.dialect");
 				
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
-				updateCurrentClassLoader(jarFile);
+				if (!classLoaderExtended){
+					updateCurrentClassLoader(jarFile);
+					
+					List viewJarFiles = getViewJarFiles();
+					for (int i=0; i < viewJarFiles.size(); i++){
+						updateCurrentClassLoader((File)viewJarFiles.get(i));
+					}
+					
+					this.classLoaderExtended = true;
+				}
 				this.classLoaderExtended = true;
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 				if (jarFile == null)
@@ -189,18 +237,23 @@ public class DataMartModel implements Serializable {
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: connection properties defined in hibernate.cfg.xml");
 							
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: jar file obtained: " + jarFile);
-				updateCurrentClassLoader(jarFile);
+				if (!classLoaderExtended){
+					updateCurrentClassLoader(jarFile);
+					List viewJarFiles = getViewJarFiles();
+					for (int i=0; i < viewJarFiles.size(); i++){
+						updateCurrentClassLoader((File)viewJarFiles.get(i));
+					}
+					this.classLoaderExtended = true;
+				}
 				this.classLoaderExtended = true;
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
 			
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: trying to read configuration from hibernate.cfg.xml file");
-				//URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
-				//Logger.debug(DataMartModel.class, "getHibernateConfiguration: configuration file found at " + url);
+				URL url = JarUtils.getResourceFromJarFile(jarFile, "hibernate.cfg.xml") ;
+				Logger.debug(DataMartModel.class, "getHibernateConfiguration: configuration file found at " + url);
 				
-				Document doc = JarUtils.getResourceFromJarFileAsDOM(jarFile, "hibernate.cfg.xml") ;
-				cfg = new Configuration().configure(doc);
 				
-				//cfg = new Configuration().configure(url);
+				cfg = new Configuration().configure(url);
 				this.jndiDataSourceName = cfg.getProperty("hibernate.connection.datasource");
 				this.dialect = cfg.getProperty("hibernate.dialect");
 			}
@@ -220,7 +273,9 @@ public class DataMartModel implements Serializable {
 	 * @return the IDataMartModelRetriever object reading concrete implementation class from the property QBE.DATA-MART-MODEL-RETRIEVER.className in
 	 * qbe.xml file
 	 */
-	public IDataMartModelRetriever getDataMartModelRetriever() throws Exception{
+	public IDataMartModelRetriever getDataMartModelRetriever() throws Exception {
+
+			
 			String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
 			IDataMartModelRetriever dataMartModelRetriever = (IDataMartModelRetriever)Class.forName(dataMartModelRetrieverClassName).newInstance();
 			return dataMartModelRetriever;
@@ -241,13 +296,14 @@ public class DataMartModel implements Serializable {
 	 * @param jarFile
 	 */
 	public static void updateCurrentClassLoader(File jarFile){
-		try{
-			
+		try {
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();
+				
 				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
+				
 				Thread.currentThread().setContextClassLoader(current);
-
-		}catch (Exception e) {
+				
+		} catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}
 	}
@@ -266,6 +322,8 @@ public class DataMartModel implements Serializable {
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();
 				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
 				Thread.currentThread().setContextClassLoader(current);
+				
+				
 				classLoaderExtended = true;
 			
 			}
@@ -401,6 +459,30 @@ public class DataMartModel implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Configuration getHibCfg() {
+		return hibCfg;
+	}
+
+	public void setHibCfg(Configuration hibCfg) {
+		this.hibCfg = hibCfg;
+	}
+
+	public boolean isClassLoaderExtended() {
+		return classLoaderExtended;
+	}
+
+	public void setClassLoaderExtended(boolean classLoaderExtended) {
+		this.classLoaderExtended = classLoaderExtended;
+	}
+
+	public List getAlreadyAddedView() {
+		return alreadyAddedView;
+	}
+
+	public void setAlreadyAddedView(List alreadyAddedView) {
+		this.alreadyAddedView = alreadyAddedView;
 	}
 	
 }

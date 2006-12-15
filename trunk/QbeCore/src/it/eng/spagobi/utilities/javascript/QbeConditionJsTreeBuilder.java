@@ -55,7 +55,7 @@ public class QbeConditionJsTreeBuilder extends QbeJsTreeBuilder {
 		
 		for (Iterator it = classNames.iterator(); it.hasNext(); ){
 			String className = (String)it.next();
-			nodeCounter = addFieldNodes(className, rootNode, nodeCounter, null, new SelectFieldForConditionURLGenerator(className, qbeUrlGenerator, httpRequest, getClassPrefix()),1);
+			nodeCounter = addFieldNodes(className, null, rootNode, nodeCounter, null, new SelectFieldForConditionURLGenerator(className, qbeUrlGenerator, httpRequest, getClassPrefix()), 1);
 		}		
 	}
 

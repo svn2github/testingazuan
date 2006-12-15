@@ -1,6 +1,12 @@
 package it.eng.qbe.action;
 
+import java.util.List;
+
+import groovy.lang.Binding;
+import groovy.util.GroovyScriptEngine;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.Logger;
+import it.eng.qbe.utility.SpagoBIInfo;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
@@ -9,9 +15,11 @@ import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractAction;
 
 import org.hibernate.SessionFactory;
+import org.jboss.util.ThrowableHandler;
 
 
 /**
@@ -27,7 +35,17 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		RequestContainer requestContainer = getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		session.delAttribute("spagobi");
 		
+		String user = (String)request.getAttribute("SPAGOBI_USER");
+		String spagobiurl = (String)request.getAttribute("SPAGOBI_URL");
+		String templatePath = (String)request.getAttribute("SPAGOBI_PATH");
+		if(user != null && spagobiurl != null && templatePath != null) {
+			SpagoBIInfo spagoBIInfo = new SpagoBIInfo(templatePath, spagobiurl, user);		
+			session.setAttribute("spagobi", spagoBIInfo);
+		}
 		
 		String jndiDataSourceName = (String)request.getAttribute("JNDI_DS");
 		
@@ -44,7 +62,14 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 		dmModel.setName(dmModel.getPath());
 		dmModel.setDescription(dmModel.getPath());
 		
-		SessionFactory sf = Utils.getSessionFactory(dmModel, application);
+		
+		
+		
+		SessionFactory sf = dmModel.createSessionFactory();
+		Logger.debug(Utils.class, "getSessionFactory: session factory created: " + sf);
+	    ApplicationContainer.getInstance().setAttribute(dmModel.getPath(), sf);
+		Logger.debug(Utils.class, "getSessionFactory: session factory stored into application context: " + sf);
+		
 		
 		if (getRequestContainer().getSessionContainer().getAttribute("dataMartModel") != null){
 			getRequestContainer().getSessionContainer().delAttribute("dataMartModel");
@@ -69,6 +94,10 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 			dataMart = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
 			aWizardObject = dataMart.getQuery(queryId);
 		}
+		
+		
+		
+		
 		
 		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, aWizardObject);
 		

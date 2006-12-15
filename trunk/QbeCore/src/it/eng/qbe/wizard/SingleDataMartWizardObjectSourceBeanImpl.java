@@ -134,16 +134,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	public String getFinalSqlQuery(DataMartModel dm) {
-		/*
-		String finalSqlQuery = null;
 		
-		String finalHQLQuery = getFinalQuery();
-		if (finalHQLQuery != null){
-			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(dm.createSessionFactory().openSession());
-			finalSqlQuery = queryRewriter.rewrite( getFinalQuery() );
-		}
-		return finalSqlQuery;
-		*/
 		
 		
 		String finalSqlQuery = null;
@@ -227,7 +218,45 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 	}
 	
-
+	public void purgeNotReferredEntityClasses(String prefix) {
+		this.entityClasses.clear();
+		
+		ISelectClause selectClause = getSelectClause();
+				
+		EntityClass ec = null;
+		ISelectField selField = null;
+		if (selectClause != null){
+			for (int i=0; i < selectClause.getSelectFields().size(); i++){
+				selField = (ISelectField)selectClause.getSelectFields().get(i);
+				ec = selField.getFieldEntityClass();
+				if (!this.containEntityClass(ec) && ec.getClassAlias().startsWith(prefix)){
+					this.addEntityClass(ec);
+				}
+			}
+		}
+		
+		IWhereClause whereClause = getWhereClause();
+		
+		ec = null;
+		
+		IWhereField whereField = null;
+		
+		if (whereClause != null){
+			for (int i=0; i < whereClause.getWhereFields().size(); i++){
+				whereField = (IWhereField)whereClause.getWhereFields().get(i);
+				ec = whereField.getFieldEntityClassForLeftCondition();
+				if (!this.containEntityClass(ec)&& ec.getClassAlias().startsWith(prefix)){
+					this.addEntityClass(ec);
+				}
+				ec = whereField.getFieldEntityClassForRightCondition();
+				if ((ec != null)&&(!this.containEntityClass(ec)) && ec.getClassAlias().startsWith(prefix)) {
+					this.addEntityClass(ec);
+				}
+				
+			}
+		}		
+		
+	}
 	public String getQueryId() {
 		return queryId;
 	}
@@ -285,6 +314,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		afterFirst = true;
 		 	}
 			
+		 	
 		} else{
 			 return;
 		}
@@ -614,11 +644,11 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 			throw new Exception("It's not possible change database status with qbe exepert query");
 		}
 		Session aSession = null;
-		Transaction tx = null;
+		
 		
 		try{
 			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
-			tx = aSession.beginTransaction();
+			
 			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
 		
 			int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
@@ -682,8 +712,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 				return queryResponseSourceBean;
 		}finally{
-			if (tx != null)
-				tx.rollback();
+			
 			if (aSession != null && aSession.isOpen())
 				aSession.close();
 		}
@@ -773,6 +802,48 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 	public String getSubQueryIdForSubQueryOnField(String fieldId) {
 		return (String)mapFieldIdSubQUeryId.get(fieldId);
+	}
+
+
+
+
+	public Map getMapFieldIdSubQUeryId() {
+		return mapFieldIdSubQUeryId;
+	}
+
+
+
+
+	public void setMapFieldIdSubQUeryId(Map mapFieldIdSubQUeryId) {
+		this.mapFieldIdSubQUeryId = mapFieldIdSubQUeryId;
+	}
+
+
+
+
+	public int getSubQueryCounter() {
+		return subQueryCounter;
+	}
+
+
+
+
+	public void setSubQueryCounter(int subQueryCounter) {
+		this.subQueryCounter = subQueryCounter;
+	}
+
+
+
+
+	public Map getSubqueryMap() {
+		return subqueryMap;
+	}
+
+
+
+
+	public void setSubqueryMap(Map subqueryMap) {
+		this.subqueryMap = subqueryMap;
 	}
 	
 		

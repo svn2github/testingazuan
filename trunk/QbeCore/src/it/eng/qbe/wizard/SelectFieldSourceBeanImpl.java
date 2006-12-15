@@ -21,7 +21,10 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 	private String fieldAlias = null;
 	private String originalFieldName = null;
 	private EntityClass entityClass = null;
-	
+	private String fieldCompleteName = null;
+	private String hibType = null;
+	private String scale = null;
+	private String precision = null;
 	
 	public SelectFieldSourceBeanImpl(){
 		this.id = createNewId();
@@ -69,6 +72,33 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 	private static long idcounter = 0;
 	private static String createNewId() {
 		return "select_" + String.valueOf(idcounter++);
+	}
+	public String getFieldCompleteName() {
+		return fieldCompleteName;
+	}
+	public void setFieldCompleteName(String fieldCompleteName) {
+		this.fieldCompleteName = fieldCompleteName;
+	}
+	public String getHibType() {
+		return hibType;
+	}
+	public String getPrecision() {
+		return precision;
+	}
+	public String getScale() {
+		return scale;
+	}
+	public void setHibType(String type) {
+		this.hibType = type;
+		
+	}
+	public void setPrecision(String precision) {
+		this.precision = precision;
+		
+	}
+	public void setScale(String scale) {
+		this.scale = scale;
+		
 	}
 	
 

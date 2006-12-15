@@ -15,14 +15,17 @@
 		 topMargin="20"
 		 bottomMargin="20"
 		 whenNoDataType="NoPages"
+		 scriptletClass="it.eng.qbe.utility.Scriptlet"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
-	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.scriptlethandling" value="2" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
+	${params}
+	
 	<queryString language="${lang}"><![CDATA[
 	${query}
 	]]></queryString>

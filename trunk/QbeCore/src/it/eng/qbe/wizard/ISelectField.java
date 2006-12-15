@@ -34,4 +34,20 @@ public interface ISelectField extends Serializable{
 	
 	public EntityClass getFieldEntityClass();
 
+	public void setFieldCompleteName(String fieldCompleteName);
+	
+	public String getFieldCompleteName();
+	
+	public void setHibType(String type);
+	
+	public void setPrecision(String precision);
+	
+	public void setScale(String scale);
+	
+	
+	public String getHibType();
+	
+	public String getPrecision();
+	
+	public String getScale();
 }

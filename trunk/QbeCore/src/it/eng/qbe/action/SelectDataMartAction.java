@@ -1,9 +1,11 @@
 package it.eng.qbe.action;
 
+import groovy.util.GroovyScriptEngine;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractAction;
 
 import org.hibernate.SessionFactory;
@@ -38,6 +40,8 @@ public class SelectDataMartAction extends AbstractAction {
 		
 		dmModel.setName(dmModel.getPath());
 		dmModel.setDescription(dmModel.getPath());
+		
+		
 		
 		SessionFactory sf = Utils.getSessionFactory(dmModel, application);
 		

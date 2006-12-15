@@ -114,5 +114,6 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	
 	public String getSubQueryIdForSubQueryOnField(String fieldId);
 	
+	public void purgeNotReferredEntityClasses(String prefix);
 	
 }

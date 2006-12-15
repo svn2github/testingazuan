@@ -29,9 +29,46 @@ public class SQLFieldsReader implements IFieldsReader {
 	
 	public Vector readFields() throws Exception {
 		Vector queryFields = new Vector();
+        
+		PreparedStatement ps = null;
 		
-        PreparedStatement ps = null;
         try {
+        	
+        	String queryToUpperCase = query.toUpperCase();
+        	
+        	if ( queryToUpperCase.indexOf("GROUP BY") > 0 ){
+        		String before = query.substring(0, queryToUpperCase.indexOf("GROUP BY"));
+        		String after =query.substring(queryToUpperCase.indexOf("GROUP BY")); 
+        		
+        		if (( before.indexOf("where") > 0) || (before.indexOf("WHERE") > 0)){
+        			before += " and 1 = 0 ";
+        		}else{
+        			before += " where 1 = 0 ";
+        		}
+        		
+        		
+        		query = before + after; 
+        	
+        	}else if ( queryToUpperCase.indexOf("ORDER BY") > 0 ){
+        		
+        		String before = query.substring(0, queryToUpperCase.indexOf("ORDER BY"));
+        		String after =query.substring(queryToUpperCase.indexOf("ORDER BY")); 
+        		
+        		if (( before.indexOf("where") > 0) || (before.indexOf("WHERE") > 0)){
+        			before += " and 1 = 0 ";
+        		}else{
+        			before += " where 1 = 0 ";
+        		}	
+        		query = before + after;
+        	}else{
+        		if (( query.indexOf("where") > 0) || (query.indexOf("WHERE") > 0)){
+        			query += " and 1 = 0 ";
+        		}else{
+        			query += " where 1 = 0 ";
+        		}	
+        		
+        	}
+        	
         	ps = connection.prepareStatement( query );
              
             // Some JDBC drivers don't supports this method...
@@ -43,7 +80,6 @@ public class SQLFieldsReader implements IFieldsReader {
              
              List columns = new ArrayList();
              for (int i=1; i <= rsmd.getColumnCount(); ++i) {
-            	            	 
             	 Field field = new Field(
                          rsmd.getColumnLabel(i), 
                          getJdbcTypeClass(rsmd, i),

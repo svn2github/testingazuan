@@ -13,6 +13,7 @@ package it.eng.qbe.utility;
 public class RelationField {
 	private String fieldName = null;
 	private String className = null;
+	private String relationOnColumnName = null;
 	
 	/**
 	 * 
@@ -20,7 +21,12 @@ public class RelationField {
 	public RelationField(String aFieldName, String className) {
 		this.fieldName = aFieldName;
 		this.className = className;
-		
+	
+	}
+	public RelationField(String aFieldName, String className, String relationOnColumnName) {
+		this.fieldName = aFieldName;
+		this.className = className;
+		this.relationOnColumnName = relationOnColumnName;
 	}
 	/**
 	 * @return Returns the className.
@@ -45,5 +51,11 @@ public class RelationField {
 	 */
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
+	}
+	public String getRelationOnColumnName() {
+		return relationOnColumnName;
+	}
+	public void setRelationOnColumnName(String relationOnColumnName) {
+		this.relationOnColumnName = relationOnColumnName;
 	}
 }

@@ -1,6 +1,7 @@
 
 package it.eng.qbe.action;
 
+import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
@@ -39,10 +40,16 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 		String className = (String) request.getAttribute("S_CLASS_NAME");	
 		
 		String classPrefix = "a";
-		 if (Utils.isSubQueryModeActive(aSessionContainer)){
+		String isJoinWithParentQuery =   (String)request.getAttribute("fUpdCondJoinParent");
+		
+		if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
+			classPrefix = "a";
+		}else{
+			if (Utils.isSubQueryModeActive(aSessionContainer)){
 				String subQueryFieldId = (String)aSessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
 				classPrefix = Utils.getMainWizardObject(aSessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);
-		 }
+			}
+		}
 		String classAlias = null;
 			
 			if (className.indexOf(".") > 0){
@@ -102,12 +109,7 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 			 }
 		}
 		
-//		<input id="updCondMsg" name="updCondMsg" type="hidden" value="UPD"/>
-//			
-//			
-//		<input id="S_COMPLETE_FIELD_NAME" name="S_COMPLETE_FIELD_NAME" value=""/>
-//		<input id="S_CLASS_NAME" name="S_CLASS_NAME" value=""/>
-//		<input id="S_HIB_TYPE" name="S_HIB_TYPE" value=""/>
+
 		
 		
 		if (updCondMsg.equalsIgnoreCase("UPD_SEL")){
@@ -145,9 +147,15 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 		} else if (updCondMsg.equalsIgnoreCase("UPD_SEL_RIGHT")){
 			
 			EntityClass ec = new EntityClass(className, classAlias);
-			if (!aWizardObject.containEntityClass(ec)){
-				aWizardObject.addEntityClass(ec);
+			
+			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
+				Logger.debug(this.getClass(), "-----");
+			}else{	
+				if (!aWizardObject.containEntityClass(ec)){
+					aWizardObject.addEntityClass(ec);
+				}
 			}
+			
 			
 			aWhereField = null;
 			
@@ -163,8 +171,11 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 					}
 			    }
 			}
-			
-			aWizardObject.purgeNotReferredEntityClasses(); 
+			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
+				// --- 
+			}else{
+				aWizardObject.purgeNotReferredEntityClasses();
+			}
 			
 			Utils.updateLastUpdateTimeStamp(getRequestContainer());
 			aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));

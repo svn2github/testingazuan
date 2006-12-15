@@ -92,12 +92,7 @@ public class LocaleUtils {
 			ZipEntry ze = jf.getEntry("label_"+loc.getLanguage()+".properties");
 			
 			Enumeration e = jf.entries();
-			/*
-			while (e.hasMoreElements()){
-				ze = (ZipEntry)e.nextElement();
-				Logger.debug(LocaleUtils.class,"-->" + ze.getName());
-			}
-			*/
+			
 			if (ze != null){
 				prop = new Properties();
 				prop.load(jf.getInputStream(ze));

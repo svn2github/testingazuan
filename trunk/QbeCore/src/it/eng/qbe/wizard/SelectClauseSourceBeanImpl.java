@@ -6,10 +6,15 @@
  */
 package it.eng.qbe.wizard;
 
+import it.eng.qbe.utility.CalculatedField;
 import it.eng.qbe.utility.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.tools.ant.taskdefs.Sleep;
 
 /**
  * @author Zoppello
@@ -21,11 +26,15 @@ public class SelectClauseSourceBeanImpl
 		implements ISelectClause {
 
 	private List selectFields = null;
+	private List calcuatedFields = null;
 	
 	
 	public SelectClauseSourceBeanImpl() {
+		
 		super();
 		selectFields = new ArrayList();
+		
+		calcuatedFields = new ArrayList();
 	}
 
 	public List getSelectFields() {
@@ -39,7 +48,7 @@ public class SelectClauseSourceBeanImpl
 
 	public void addSelectField(ISelectField selectField) {
 		this.selectFields.add(selectField);
-		
+		String selectFieldCompleteName = selectField.getFieldCompleteName();
 	}
 
 	public void delSelectField(ISelectField selectField) {
@@ -102,11 +111,34 @@ public class SelectClauseSourceBeanImpl
 				
 				ISelectField swap = (ISelectField)this.selectFields.set(newPosition, tmp);
 				this.selectFields.set(positionOfElement, swap);
-			}
-			
-		
+			}	
+	}
+
+	public List getCalcuatedFields() {
+		return calcuatedFields;
+	}
+
+	public void setCalcuatedFields(List calcuatedFields) {
+		this.calcuatedFields = calcuatedFields;
+	}
+
+	public void addCalculatedField(CalculatedField calculatedField) {
+		this.calcuatedFields.add(calculatedField);
 		
 	}
+
+	public void deleteCalculatedField(String calculatedFieldID) {
+		CalculatedField cField = null;
+		for (int i=0; i < calcuatedFields.size(); i++){
+			cField = (CalculatedField)calcuatedFields.get(i);
+			if (cField.getId().equalsIgnoreCase(calculatedFieldID))
+				break;
+		}
+		if (cField != null)
+			calcuatedFields.remove(cField);
+	}
+
+	
 
 	
 

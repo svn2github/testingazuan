@@ -44,7 +44,14 @@ public class DeleteFieldFromWhereAction extends AbstractAction {
 		if (aWhereClause.getWhereFields().size() == 0)
 			aWizardObject.delWhereClause();
 						
-		aWizardObject.purgeNotReferredEntityClasses(); // 
+		String prefix = "a";
+		 if (Utils.isSubQueryModeActive(aSessionContainer)){
+				String subQueryFieldId = (String)aSessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
+				prefix = Utils.getMainWizardObject(aSessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);
+		 }
+		 
+	
+		 aWizardObject.purgeNotReferredEntityClasses(prefix);
 		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
 		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));

@@ -165,23 +165,6 @@ public class HibernateTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
-	/*
-	<staticText>
-	<reportElement
-		mode="Opaque"
-		x="0"
-		y="0"
-		width="100"
-		height="30"
-		forecolor="#FFFFFF"
-		backcolor="#006666"
-		key="staticText-2"/>
-	<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
-	<textElement verticalAlignment="Middle">
-		<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
-	</textElement>
-	*/
-	
 	private String getTemplateTemplate() {
 		StringBuffer buffer = new StringBuffer();
 		

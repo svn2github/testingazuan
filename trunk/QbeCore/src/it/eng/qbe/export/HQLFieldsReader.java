@@ -66,7 +66,7 @@ public class HQLFieldsReader implements IFieldsReader {
 							&& !aliases[i].equals(i + "")) {
 						aliasName = aliases[i];
 						Field field = new Field(aliases[i], types[i]
-								.getReturnedClass().getName(), -1);
+						          .getReturnedClass().getName(), -1);
 						field.setDescription(aliases[i]);
 						fields.add(field);
 					}					
@@ -76,7 +76,7 @@ public class HQLFieldsReader implements IFieldsReader {
 							&& !aliases[i].equals("" + i))
 						fieldName = aliases[i];
 					Field field = new Field(fieldName, types[i]
-							.getReturnedClass().getName(), -1);
+					    .getReturnedClass().getName(), -1);
 					field.setDescription("field"+ (i+1));
 					fields.add(field);
 				}

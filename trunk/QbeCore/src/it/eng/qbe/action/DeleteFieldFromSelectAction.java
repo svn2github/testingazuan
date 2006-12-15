@@ -112,9 +112,15 @@ public class DeleteFieldFromSelectAction extends AbstractAction {
 			aSelectClause.delSelectField(selectField);
 			if (aSelectClause.getSelectFields().size() == 0)
 				aWizardObject.delSelectClause();
-		}
-		
-		aWizardObject.purgeNotReferredEntityClasses();
+		 }
+		 String prefix = "a";
+		 if (Utils.isSubQueryModeActive(aSessionContainer)){
+				String subQueryFieldId = (String)aSessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
+				prefix = Utils.getMainWizardObject(aSessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);
+		 }
+		 
+	
+		 aWizardObject.purgeNotReferredEntityClasses(prefix);
 		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
 		

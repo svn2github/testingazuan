@@ -49,7 +49,9 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	
 	public String rewrite(String query) {
 		String sqlQuery = null;		
-		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);			
+		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
+		System.out.println("---> HQL query to convert: " + query);
+		
 		
 		Query hibQuery = session.createQuery(query);
 		SessionFactory sessFact = session.getSessionFactory();
@@ -169,11 +171,11 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		String newSelectBody = "";
 		for(int i = 0; i < selectEntities.length; i++) {
 			String selectItem = selectEntities[i];
-			selectItem = selectItem.substring(0, selectItem.indexOf(" as ")+4);
+			selectItem = selectItem.substring(0, selectItem.indexOf("as")+2);
 			selectItem += " " + fieldNames[i];
 			newSelectBody += ((i!=0)?", ":" ") + selectItem;
 		}		
-		String newQueryWithAlias = "select " + newSelectBody + " " + sqlQuery.substring(sqlQuery.indexOf(" from "), sqlQuery.length());
+		String newQueryWithAlias = "select " + newSelectBody + " " + sqlQuery.substring(sqlQuery.indexOf("from"), sqlQuery.length());
 				
 		return newQueryWithAlias;
 	}

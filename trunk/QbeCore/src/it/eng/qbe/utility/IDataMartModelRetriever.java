@@ -1,6 +1,7 @@
 package it.eng.qbe.utility;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author Andrea Zoppello
@@ -23,4 +24,6 @@ public interface IDataMartModelRetriever {
 	 * @return the specific file of datamart given Hibernate Dialect
 	 */
 	public File getJarFile(String dataMartPath, String dialect);
+	
+	public List getViewJarFiles(String dataMartPath, String dialect);
 }

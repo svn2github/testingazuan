@@ -1,7 +1,9 @@
 package it.eng.qbe.utility;
 
+import groovy.util.GroovyScriptEngine;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.wizard.EntityClass;
+import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.ApplicationContainer;
@@ -9,9 +11,11 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +25,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 
 import javax.naming.Context;
@@ -33,7 +39,12 @@ import javax.naming.NamingEnumeration;
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import org.dom4j.Document;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.w3c.tools.codec.Base64Encoder;
 
 import sun.misc.BASE64Encoder;
 
@@ -141,6 +152,18 @@ public class Utils {
 			return className;
 	}
 	
+	public static String getLabelForForeignKey(RequestContainer requestContainer, DataMartModel dmModel,  String classForeignKeyID){
+		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
+		//		 Retrieve Locale
+		Locale loc = LocaleUtils.getLocale(requestContainer, qbeMode);
+		Properties prop = Utils.getLabelProperties(dmModel, ApplicationContainer.getInstance(), loc);
+		
+		String res =(String)prop.get("relation." + classForeignKeyID);
+		if ((res != null) && (res.trim().length() > 0))
+			return res;
+		else
+			return null;
+	}
 	
 	/**
 	 * Get the label for given fieldName
@@ -406,11 +429,369 @@ public class Utils {
 		
 		
 	}
+	/**
+	 * Estrae dal file formula.xml solo i campi calcolati relativi alle entita' che 
+	 * ho estratto nella query
+	 * @param aWizardObject
+	 * @return
+	 */
+	public static List getCalculatedFields(ISingleDataMartWizardObject aWizardObject, DataMartModel dmModel) throws Exception{
+		SAXReader saxReader = null;
+		Document formulaFileDocument = null;
+		File f =  null;
+		try{
+			
+		String enableScript = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.enablescript");
+		
+		List calcuatedFields = new ArrayList();
+		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
+			String formulaFile = dmModel.getJarFile().getParent() + "/formula.xml";
+			f = new File(formulaFile);
+			if (!f.exists()){
+				return new ArrayList();
+			}
+			saxReader = new SAXReader();
+			formulaFileDocument = saxReader.read(f);
+			
+			
+			Iterator it = aWizardObject.getEntityClasses().iterator();
+			EntityClass ec = null;
+			String ecName = null;
+			String xPath = null;
+			Node domNode = null;
+			CalculatedField cfield = null;
+			while(it.hasNext()){
+				ec =(EntityClass) it.next();
+				ecName = ec.getClassName(); 
+				xPath = "/FORMULAS/FORMULA[@onEntity = '"+ecName+"' and @mode='auto']";
+				
+				List nodeList = formulaFileDocument.selectNodes(xPath);
+				
+				for (Iterator it2 = nodeList.iterator(); it2.hasNext();){
+					domNode = (Node)it2.next();
+					cfield = new CalculatedField();
+					cfield.setEntityName(domNode.valueOf("@onEntity"));
+					cfield.setId(domNode.valueOf("@id"));
+					cfield.setFldLabel(domNode.valueOf("@resultingFieldName"));
+					cfield.setScript(domNode.valueOf("@script"));
+					cfield.setMappings(domNode.valueOf("@mappings"));
+					cfield.setClassNameInQuery(cfield.getEntityName());
+					cfield.setFldCompleteNameInQuery(cfield.getEntityName() + "." + cfield.getId());
+					cfield.setInExport(domNode.valueOf("@inExport"));
+					calcuatedFields.add(cfield);
+				}
+			}
+			
+		}
+		return calcuatedFields;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList();
+		}finally{
+			f = null;
+			saxReader = null;
+			formulaFileDocument = null;
+		}
+		
+	}
+	
+	public static CalculatedField getCalculatedField(String cFieldId, String formulaFileParentPath) throws Exception{
+		File f = null;
+		SAXReader saxReader = null;
+		Document formulaFileDocument = null;
+		try{
+			String formulaFile = formulaFileParentPath + "/formula.xml";
+			
+			f = new File(formulaFile);
+			if (!f.exists()){
+				return null;
+			}
+			saxReader = new SAXReader();
+			formulaFileDocument = saxReader.read(f);
+			String xPath = "/FORMULAS/FORMULA[@id = '"+cFieldId+"']";
+			
+			Node cFieldNode =  formulaFileDocument.selectSingleNode(xPath);
+			CalculatedField cfield = new CalculatedField();
+			cfield.setId(cFieldNode.valueOf("@id"));
+			cfield.setEntityName(cFieldNode.valueOf("@onEntity"));
+			cfield.setFldLabel(cFieldNode.valueOf("@resultingFieldName"));
+			cfield.setScript(cFieldNode.valueOf("@script"));
+			cfield.setMappings(cFieldNode.valueOf("@mappings"));
+			cfield.setInExport(cFieldNode.valueOf("@inExport"));
+			return cfield;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}finally{
+			f = null;
+			saxReader = null;
+			formulaFileDocument = null;
+		}
+	}
+	
+	
+	public static List getCalculatedFields(String entitiesList, String formulaFileParentPath) throws Exception{
+		SAXReader saxReader = null;
+		Document formulaFileDocument = null;
+		File f = null;
+		try{
+		String enableScript = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.enablescript");
+		
+		List calcuatedFields = new ArrayList();
+		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
+			String formulaFile = formulaFileParentPath + "/formula.xml";
+			f = new File(formulaFile);
+			if (!f.exists()){
+				return new ArrayList();
+			}
+			saxReader = new SAXReader();
+			formulaFileDocument = saxReader.read(f);
+			
+			
+			String[] entitiesName = entitiesList.split(";");
+			String ecName = null;
+			String xPath = null;
+			Node domNode = null;
+			CalculatedField cfield = null;
+			for (int i=0; i < entitiesName.length; i++){
+				
+				ecName = entitiesName[i];
+				xPath = "/FORMULAS/FORMULA[@onEntity = '"+ecName+"' and @mode='auto']";
+				
+				List nodeList = formulaFileDocument.selectNodes(xPath);
+				
+				for (Iterator it2 = nodeList.iterator(); it2.hasNext();){
+					domNode = (Node)it2.next();
+					cfield = new CalculatedField();
+					cfield.setId(domNode.valueOf("@id"));
+					cfield.setEntityName(domNode.valueOf("@onEntity"));
+					cfield.setFldLabel(domNode.valueOf("@resultingFieldName"));
+					cfield.setScript(domNode.valueOf("@script"));
+					cfield.setMappings(domNode.valueOf("@mappings"));
+					cfield.setMappings(domNode.valueOf("@inExport"));
+					cfield.setClassNameInQuery(cfield.getEntityName());
+					cfield.setFldCompleteNameInQuery(cfield.getEntityName() + "." + cfield.getId());
+					calcuatedFields.add(cfield);
+				}
+			}
+			
+		}
+		return calcuatedFields;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList();
+		}finally{
+			f = null;
+			saxReader = null;
+			formulaFileDocument = null;
+		}
+		
+	}
+	
+	
+	public static List getManualCalculatedFieldsForEntity(String ecName, String formulaFileParentPath) throws Exception{
+		SAXReader saxReader = null;
+		Document formulaFileDocument = null;
+		File f = null;
+		try{
+		String enableScript = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.enablescript");
+		
+		List calcuatedFields = new ArrayList();
+		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
+			String formulaFile = formulaFileParentPath + "/formula.xml";
+			
+			f = new File(formulaFile);
+			if (!f.exists()){
+				return new ArrayList();
+			}
+			saxReader = new SAXReader();
+			formulaFileDocument = saxReader.read(f);
+			
+			
+	
+			String xPath = null;
+			Node domNode = null;
+			CalculatedField cfield = null;
+			
+				
+				
+				xPath = "/FORMULAS/FORMULA[@onEntity = '"+ecName+"' and @mode='manual']";
+				
+				List nodeList = formulaFileDocument.selectNodes(xPath);
+				
+				for (Iterator it2 = nodeList.iterator(); it2.hasNext();){
+					domNode = (Node)it2.next();
+					cfield = new CalculatedField();
+					cfield.setId(domNode.valueOf("@id"));
+					cfield.setEntityName(domNode.valueOf("@onEntity"));
+					cfield.setFldLabel(domNode.valueOf("@resultingFieldName"));
+					cfield.setScript(domNode.valueOf("@script"));
+					cfield.setMappings(domNode.valueOf("@mappings"));
+					cfield.setMappings(domNode.valueOf("@inExport"));
+					calcuatedFields.add(cfield);
+				}
+			
+			
+		}
+		return calcuatedFields;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList();
+		}finally{
+			f = null;
+			saxReader = null;
+			formulaFileDocument = null;
+		}
+		
+	}
 	
 	
 	
 	
+	public static Integer findPositionOf(ISingleDataMartWizardObject aWizardObject, String completeName){
+		if (aWizardObject.getSelectClause() != null){
+			List l = aWizardObject.getSelectClause().getSelectFields();
+			ISelectField selField = null;
+			String selFieldcompleteName = null;
+			for (int i=0; i < l.size(); i++){
+				selField = (ISelectField)l.get(i);
+				selFieldcompleteName = selField.getFieldCompleteName();
+				if ((selFieldcompleteName != null) && (selFieldcompleteName.equals(completeName))){
+					return new Integer(i);
+				}
+			}
+		}
+		
+		return new Integer(-1);
+	}
 	
 	
+	public static String getOrderedFieldList(ISingleDataMartWizardObject wizObject){
+		StringBuffer sb = new StringBuffer();
+		if (wizObject.getSelectClause() != null){
+			List l = wizObject.getSelectClause().getSelectFields();
+			
+			for (Iterator it = l.iterator(); it.hasNext();){
+				sb.append(((ISelectField)it.next()).getFieldCompleteName());
+				if (it.hasNext())
+					sb.append(";");
+			}
+		}
+		
+		
+		return sb.toString();
+	}
 	
+	public static String getSelectedEntitiesAsString(ISingleDataMartWizardObject aWizardObject) throws Exception{
+		Iterator it = aWizardObject.getEntityClasses().iterator();
+		EntityClass ec = null;
+		StringBuffer sb = new StringBuffer();
+		while (it.hasNext()){
+			ec = (EntityClass)it.next();
+			sb.append(ec.getClassName());
+			if (it.hasNext()){
+				sb.append(";");
+			}
+		}
+		return sb.toString();
+	}
+	
+	public static String asJavaClassIdentifier(String identifier){
+		return capitalize(asJavaIdentifier(identifier));
+	}
+	public static String asJavaPropertyIdentifier(String identifier){
+		return unCapitalize(asJavaIdentifier(identifier));
+	}
+	public static String asJavaIdentifier(String identifier) {
+		
+		StringBuffer sb = new StringBuffer();
+		String originalIdentifier = identifier;
+		
+		if (identifier.equalsIgnoreCase(identifier.toUpperCase())){
+			originalIdentifier = identifier.toLowerCase();
+		}
+			
+			StringTokenizer st = new StringTokenizer(originalIdentifier, "_ ", false);
+			boolean isFirstToken = false;
+			while (st.hasMoreTokens()){
+				if (!isFirstToken){
+					sb.append(capitalize(st.nextToken()));
+				}else{
+					sb.append(st.nextToken());
+					isFirstToken = true;
+				}
+			}	
+			
+		return sb.toString();
+	}
+	
+	public static String capitalize(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        java.util.StringTokenizer tokenizer = new StringTokenizer(value, " ");
+        StringBuffer result = new StringBuffer();
+
+        while (tokenizer.hasMoreTokens()) {
+            StringBuffer word = new StringBuffer(tokenizer.nextToken());
+
+            // upper case first character
+            word.replace(0, 1, word.substring(0, 1).toUpperCase());
+
+            if (!tokenizer.hasMoreTokens()) {
+                result.append(word);
+            } else {
+                result.append(word + " ");
+            }
+        }
+
+        return result.toString();
+    }
+	
+	public static String unCapitalize(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        java.util.StringTokenizer tokenizer = new StringTokenizer(value, " ");
+        StringBuffer result = new StringBuffer();
+
+        while (tokenizer.hasMoreTokens()) {
+            StringBuffer word = new StringBuffer(tokenizer.nextToken());
+
+            // upper case first character
+            word.replace(0, 1, word.substring(0, 1).toLowerCase());
+
+            if (!tokenizer.hasMoreTokens()) {
+                result.append(word);
+            } else {
+                result.append(word + " ");
+            }
+        }
+
+        return result.toString();
+    }
+	public static String packageAsDir(String packageName){
+		String dir = packageName.replace('.', File.separatorChar);
+		return dir;
+	}
+	
+	//	 Deletes all files and subdirectories under dir.
+    // Returns true if all deletions were successful.
+    // If a deletion fails, the method stops attempting to delete and returns false.
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+    
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 }

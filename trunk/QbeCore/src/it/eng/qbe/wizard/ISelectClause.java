@@ -6,6 +6,8 @@
  */
 package it.eng.qbe.wizard;
 
+import it.eng.qbe.utility.CalculatedField;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,6 +21,8 @@ public interface ISelectClause extends  Serializable {
 	
 	public List getSelectFields(); 
 	
+	public List getCalcuatedFields();
+	
 	public void setSelectFields(List aList);
 
 	public void addSelectField(ISelectField selectField);
@@ -29,6 +33,11 @@ public interface ISelectClause extends  Serializable {
 	
 	public void moveDown(ISelectField selectField);
 	
+	public void addCalculatedField(CalculatedField calculatedField);
+	
+	
+	
+	public void deleteCalculatedField(String calculatedField);
 	
 	
 }

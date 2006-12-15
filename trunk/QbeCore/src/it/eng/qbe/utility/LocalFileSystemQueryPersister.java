@@ -3,6 +3,7 @@ package it.eng.qbe.utility;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
 
 import java.beans.XMLDecoder;
@@ -72,14 +73,21 @@ public class LocalFileSystemQueryPersister implements
 
     	RequestContainer requestCont = RequestContainer.getRequestContainer();
         IEngUserProfile userProfile =(IEngUserProfile)requestCont.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        SpagoBIInfo spagoBIInfo =(SpagoBIInfo)requestCont.getSessionContainer().getAttribute("spagobi");
     	
+        
         String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
         
         String fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
         
         ISingleDataMartWizardObject wiz = loadFromFile(dm, new File(fileName));
-        if (wiz == null){
-        	fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + userProfile.getUserUniqueIdentifier() + System.getProperty("file.separator") + key+ ".qbe";
+        if (wiz == null && userProfile != null){
+        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + userProfile.getUserUniqueIdentifier() + System.getProperty("file.separator") + key+ ".qbe";
+        	wiz = loadFromFile(dm, new File(fileName));
+        }
+        
+        if (wiz == null && spagoBIInfo != null){
+        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + spagoBIInfo.getUser() + System.getProperty("file.separator") + key+ ".qbe";
         	wiz = loadFromFile(dm, new File(fileName));
         }
         return wiz;
@@ -107,7 +115,7 @@ public class LocalFileSystemQueryPersister implements
        // This example does not return any files that start with `.'.
        FilenameFilter filter = new FilenameFilter() {
            public boolean accept(File dir, String name) {
-               return !name.endsWith("jar");
+               return name.endsWith("qbe");
            }
        };
        

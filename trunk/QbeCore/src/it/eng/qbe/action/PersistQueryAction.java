@@ -2,6 +2,7 @@
 package it.eng.qbe.action;
 
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.SpagoBIInfo;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
@@ -9,6 +10,8 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.utilities.GenericSavingException;
+import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 
 /**
@@ -56,9 +59,29 @@ public class PersistQueryAction extends AbstractAction {
 			if (userProfile != null){
 				obj.setOwner(userProfile.getUserUniqueIdentifier().toString());
 			}
+			
+			SessionContainer session = getRequestContainer().getSessionContainer();
+			SpagoBIInfo spagobiInfo = (SpagoBIInfo)session.getAttribute("spagobi");
+			if (spagobiInfo != null){
+				obj.setOwner(spagobiInfo.getUser());
+			}
 		}
 		dmModel.persistQueryAction(obj);
 		SessionContainer session = getRequestContainer().getSessionContainer();
+		SpagoBIInfo spagobiInfo = (SpagoBIInfo)session.getAttribute("spagobi");
+		if(spagobiInfo != null) {
+			SpagoBIAccessUtils spagoBIProxy = new SpagoBIAccessUtils();
+			try {
+				spagoBIProxy.saveSubObject(spagobiInfo.getSpagobiurl(), 
+										   spagobiInfo.getTemplatePath(), 
+										   queryId, queryDescritpion, spagobiInfo.getUser(), obj.getVisibility(), queryId);
+			} catch (GenericSavingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
 		String cTM = String.valueOf(System.currentTimeMillis());
 		if (!Utils.isSubQueryModeActive(session)){
 			session.setAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);

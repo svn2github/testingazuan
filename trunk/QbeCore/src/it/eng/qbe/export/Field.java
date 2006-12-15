@@ -68,7 +68,7 @@ public class Field {
 		return displySize;
 	}
 
-	private void setDisplySize(int displySize) {
+	public void setDisplySize(int displySize) {
 		this.displySize = displySize;
 	}
 }

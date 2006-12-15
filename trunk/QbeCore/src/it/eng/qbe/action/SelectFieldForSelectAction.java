@@ -30,7 +30,10 @@ public class SelectFieldForSelectAction extends AbstractAction {
 	public static final String CLASS_NAME = "CLASS_NAME";
 	public static final String FIELD_NAME = "FIELD_NAME";
 	public static final String FIELD_LABEL = "FIELD_LABEL";
-	
+	public static final String FIELD_HIBTYPE = "FIELD_HIBTYPE";
+	public static final String FIELD_HIBSCALE= "FIELD_HIBSCALE";
+	public static final String FIELD_HIBPREC= "FIELD_HIBPREC";
+
 	
 	/**
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
@@ -40,6 +43,11 @@ public class SelectFieldForSelectAction extends AbstractAction {
 		String className = (String)request.getAttribute(CLASS_NAME);		
 		String fieldName = (String)request.getAttribute(FIELD_NAME); 
 		String fieldLabel = (String)request.getAttribute(FIELD_LABEL);
+		
+		String fieldHibType = (String)request.getAttribute(FIELD_HIBTYPE);
+		String fieldHibScale = (String)request.getAttribute(FIELD_HIBSCALE);
+		String fieldHibPrec= (String)request.getAttribute(FIELD_HIBPREC);
+		
 		SessionContainer aSessionContainer = getRequestContainer().getSessionContainer();
 		boolean isSubQueryMode = Utils.isSubQueryModeActive(aSessionContainer);
 		String subQueryPrefix = null;
@@ -53,7 +61,14 @@ public class SelectFieldForSelectAction extends AbstractAction {
 			if (isSubQueryMode)
 				nodeId.setClassPrefix(subQueryPrefix);
 			
-			addSelectClause(nodeId.getClassName(), nodeId.getClassAlias(), nodeId.getFieldAlias(), fieldLabel);
+			addSelectClause(nodeId.getClassName(), 
+							nodeId.getClassAlias(), 
+							nodeId.getFieldAlias(), 
+							fieldLabel, 
+							className + "." + fieldName,
+							fieldHibType,
+							fieldHibScale,
+							fieldHibPrec);
 		}
 		else {
 			List items = request.getAttributeAsList("selectItem");
@@ -91,9 +106,7 @@ public class SelectFieldForSelectAction extends AbstractAction {
 			}
 				
 			
-			//deleteExistingSelectClauses();	
-				
-			//List list = request.getAttributeAsList("selectItem");
+			
 			for(int i = 0; i < items.size(); i++) {
 				String chunks[] = ((String)items.get(i)).split(";");
 				
@@ -107,7 +120,7 @@ public class SelectFieldForSelectAction extends AbstractAction {
 				String classAlias = nodeId.getClassAlias();
 				String fieldAlias = nodeId.getFieldAlias();				
 						
-				addSelectClause(className, classAlias, fieldAlias, fieldLabel);				
+				addSelectClause(className, classAlias, fieldAlias, fieldLabel, className + "." + fieldName);				
 			}
 			
 		}
@@ -138,13 +151,36 @@ public class SelectFieldForSelectAction extends AbstractAction {
 		return aSelectClause;
 	}
 	
-	private void addSelectClause(String className, String classAlias, String fieldAlias, String fieldLabel) {
+	protected void addSelectClause(String className, String classAlias, String fieldAlias, String fieldLabel, String selectFieldCompleteName) {
 		ISelectClause aSelectClause = getSelectClause();		
 		ISelectField aSelectField = new SelectFieldSourceBeanImpl();
 		aSelectField.setFieldName(fieldAlias);
 		String newfieldLabel = stripPointsFromAlias(fieldLabel);
 		aSelectField.setFieldAlias(newfieldLabel);
+		aSelectField.setFieldCompleteName(selectFieldCompleteName);
 		aSelectField.setFieldEntityClass(getEntityClass(className, classAlias));
+		aSelectClause.addSelectField(aSelectField);
+		getDataMartWizard().setSelectClause(aSelectClause);
+	}
+	
+	protected void addSelectClause(String className, 
+								   String classAlias, 
+								   String fieldAlias, 
+								   String fieldLabel, 
+								   String selectFieldCompleteName,
+								   String fldHibType,
+								   String fldHibPrec,
+								   String fldHibScale) {
+		ISelectClause aSelectClause = getSelectClause();		
+		ISelectField aSelectField = new SelectFieldSourceBeanImpl();
+		aSelectField.setFieldName(fieldAlias);
+		String newfieldLabel = stripPointsFromAlias(fieldLabel);
+		aSelectField.setFieldAlias(newfieldLabel);
+		aSelectField.setFieldCompleteName(selectFieldCompleteName);
+		aSelectField.setFieldEntityClass(getEntityClass(className, classAlias));
+		aSelectField.setHibType(fldHibType);
+		aSelectField.setScale(fldHibScale);
+		aSelectField.setPrecision(fldHibPrec);
 		aSelectClause.addSelectField(aSelectField);
 		getDataMartWizard().setSelectClause(aSelectClause);
 	}
@@ -166,11 +202,11 @@ public class SelectFieldForSelectAction extends AbstractAction {
 		}
 	}
 	
-	private SessionContainer getSession() {
+	protected SessionContainer getSession() {
 		return getRequestContainer().getSessionContainer();
 	}
 	
-	private ISingleDataMartWizardObject getDataMartWizard(){
+	protected ISingleDataMartWizardObject getDataMartWizard(){
 		return  Utils.getWizardObject(getRequestContainer().getSessionContainer());
 	}
 }

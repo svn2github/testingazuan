@@ -14,7 +14,7 @@ public class GroovyEngine {
 	    	try{
 	    		
 	    		String [] roots = new String[1];
-	    		String groovyScriptDir = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SCRIPT-DIR.dir");
+	    		String groovyScriptDir = FileUtils.getQbeScriptDir(null);
 	    		roots[0] = groovyScriptDir;
 	    		
 	    		groovyScriptEngine = new GroovyScriptEngine(roots);

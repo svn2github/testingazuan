@@ -19,12 +19,12 @@ import java.util.List;
 public class LocalFileSystemDataMartModelRetriever implements
 		IDataMartModelRetriever {
 
-	/**
-	 * @see it.eng.qbe.utility.IDataMartModelRetriever#getJarFile(java.lang.String)
-	 */
-	public File getJarFile(String dataMartPath) {
+
+	
+	public File getJarFile(File contextDir, String dataMartPath) {
 		
-		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		String qbeDataMartDir = FileUtils.getQbeDataMartDir(null);
+		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
 		
 		String completeFileName = qbeDataMartDir + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator") + "datamart.jar";
 		File f = new File(completeFileName);
@@ -33,12 +33,16 @@ public class LocalFileSystemDataMartModelRetriever implements
 		else
 			return null;
 	}
+	
+	public File getJarFile(String dataMartPath) {		
+		return getJarFile((File)null, dataMartPath);
+	}
 
-	/**
-	 * @see it.eng.qbe.utility.IDataMartModelRetriever#getJarFile(java.lang.String, java.lang.String)
-	 */
-	public File getJarFile(String dataMartPath, String dialect) {
-		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+	
+	public File getJarFile(File contextDir, String dataMartPath, String dialect) {
+		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
+		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		
 		String completeFileName = qbeDataMartDir  + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator") + "datamart-"+dialect+".jar";
 		
 		File f = new File(completeFileName);
@@ -48,9 +52,16 @@ public class LocalFileSystemDataMartModelRetriever implements
 			return getJarFile(dataMartPath);
 	}
 	
+	public File getJarFile(String dataMartPath, String dialect) {
+		return getJarFile((File)null, dataMartPath, dialect);
+	}
 	
-	public static List getAllDataMartPath() {
-		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+	
+	public static List getAllDataMartPath(File contextDir) {
+		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
+		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		
+		
 		File f = new File(qbeDataMartDir);
 		
 		List dataMartPaths = new ArrayList();
@@ -62,9 +73,13 @@ public class LocalFileSystemDataMartModelRetriever implements
 		return dataMartPaths;
 	}
 
-	public List getViewJarFiles(String dataMartPath, String dialect) {
+	public List getViewJarFiles(File contextDir, String dataMartPath, String dialect) {
 		List files = new ArrayList();
-		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+
+		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
+		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		
+		
 		String directory = qbeDataMartDir + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator");
 		File dir = new File(directory);
 //	   	 It is also possible to filter the list of returned files.
@@ -87,5 +102,11 @@ public class LocalFileSystemDataMartModelRetriever implements
            }
           return files;
 	}
+	
+	public List getViewJarFiles(String dataMartPath, String dialect) {
+		return getViewJarFiles((File)null, dataMartPath, dialect);
+	}
+
+	
 
 }

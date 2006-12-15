@@ -39,8 +39,12 @@ public class DataMartUploadManager extends DefaultRequestContext implements IUpl
     
     private String filePath = null;
 
+ 
+    
 	public void init(SourceBean config) {
-		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		
+		String qbeDataMartDir = FileUtils.getQbeDataMartDir(new File(it.eng.spago.configuration.ConfigSingleton.getInstance().getRootPath()));
+		//String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
 		
 		File f = new File(qbeDataMartDir);
 		

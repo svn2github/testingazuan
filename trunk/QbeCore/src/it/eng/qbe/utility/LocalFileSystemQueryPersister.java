@@ -31,6 +31,9 @@ import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 public class LocalFileSystemQueryPersister implements
 		IQueryPersister {
 
+	
+
+	
 	protected void persistToFile(DataMartModel dm, ISingleDataMartWizardObject wizObject, String fileName) {
 
 		try {
@@ -47,9 +50,16 @@ public class LocalFileSystemQueryPersister implements
 		}
 		
 	}
-	public void persist(DataMartModel dm, ISingleDataMartWizardObject wizObject) {
-		 // Serialize object into XML
-		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+	
+	public void persist(DataMartModel dm, ISingleDataMartWizardObject wizObject) {		
+		persist((File)null, dm, wizObject);
+	}
+	
+	public void persist(File baseDir, DataMartModel dm, ISingleDataMartWizardObject wizObject) {
+		
+		String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
+		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		
 		String key = wizObject.getQueryId();
 		String fileName = null;
 		
@@ -70,14 +80,19 @@ public class LocalFileSystemQueryPersister implements
 	}
 	
 	public ISingleDataMartWizardObject load(DataMartModel dm, String key) {
+		return load((File)null, dm, key);
+	}
+	
+	public ISingleDataMartWizardObject load(File baseDir, DataMartModel dm, String key) {
 
     	RequestContainer requestCont = RequestContainer.getRequestContainer();
         IEngUserProfile userProfile =(IEngUserProfile)requestCont.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         SpagoBIInfo spagoBIInfo =(SpagoBIInfo)requestCont.getSessionContainer().getAttribute("spagobi");
     	
         
-        String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
-        
+        String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
+		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		
         String fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
         
         ISingleDataMartWizardObject wiz = loadFromFile(dm, new File(fileName));

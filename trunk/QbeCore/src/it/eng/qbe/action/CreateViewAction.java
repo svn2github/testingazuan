@@ -71,10 +71,25 @@ public class CreateViewAction extends AbstractHttpAction {
 		return (DataMartModel)getSessionContainer().getAttribute("dataMartModel");
 	}
 	
+	private static boolean isAbsolutePath(String path) {
+		if(path == null) return false;
+		return (path.startsWith("/") || path.startsWith("\\") || path.charAt(1) == ':');
+	}
+	
+	private static String getQbeDataMartDir(File baseDir) {
+		String qbeDataMartDir = null;
+		qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		if( !isAbsolutePath(qbeDataMartDir) )  {
+			String baseDirStr = (baseDir != null)? baseDir.toString(): System.getProperty("user.home");
+			qbeDataMartDir = baseDir + System.getProperty("file.separator") + qbeDataMartDir;
+		}
+		return qbeDataMartDir;
+	}
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {				
 		String viewName = (String)request.getAttribute("VIEW_NAME");
-		String qbeDataMartDir = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		String qbeDataMartDir = getQbeDataMartDir(new File(it.eng.spago.configuration.ConfigSingleton.getInstance().getRootPath()));
+		
 		getResponseContainer().setAttribute(Constants.HTTP_RESPONSE_FREEZED, Boolean.TRUE);
 		
 		if ((getDataMartWizard().getSelectClause() != null) && (getDataMartWizard().getSelectClause().getSelectFields().size() > 0)){

@@ -29,15 +29,27 @@ import org.safehaus.uuid.UUIDGenerator;
  */
 public class PersistQueryTemporaryAction extends AbstractHttpAction {
 	
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	private static boolean isAbsolutePath(String path) {
+		if(path == null) return false;
+		return (path.startsWith("/") || path.startsWith("\\") || path.charAt(1) == ':');
+	}
+	
+	private static String getQbeDataMartDir(File baseDir) {
+		String qbeDataMartDir = null;
+		qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+		if( !isAbsolutePath(qbeDataMartDir) )  {
+			String baseDirStr = (baseDir != null)? baseDir.toString(): System.getProperty("user.home");
+			qbeDataMartDir = baseDir + System.getProperty("file.separator") + qbeDataMartDir;
+		}
+		return qbeDataMartDir;
+	}
+	
 	public void service(SourceBean request, SourceBean response) {
 		
 		try{
 			DataMartModel dmModel = (DataMartModel)getRequestContainer().getSessionContainer().getAttribute("dataMartModel");
 	
-			String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+			String qbeDataMartDir = getQbeDataMartDir(new File(it.eng.spago.configuration.ConfigSingleton.getInstance().getRootPath()));
 		
 			String publicDmDir = qbeDataMartDir +System.getProperty("file.separator") +  dmModel.getPath();
 		

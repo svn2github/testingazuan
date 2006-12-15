@@ -51,7 +51,8 @@ public abstract class BaseJsTreeBuilder implements IJsTreeBuilder {
 			"'" + nname + "', " +
 			"'" + url + "', " +
 			"'" + title + "', " +
-			"'" + target + "', " +
+			//"'" + target + "', " +
+			"'', " +
 			"'" + icon + "', " + 
 			"'" + iconOpen + "', " +
 			"'" + open + "', " +  

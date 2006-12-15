@@ -75,6 +75,17 @@
 
 
 <%
+	Map pars = request.getParameterMap();
+	Iterator iter = pars.keySet().iterator();
+	while(iter.hasNext()) {
+		String key = iter.next().toString();
+		String value = request.getParameter(key);
+		System.out.println(key + " = " + value);
+	}
+	
+    String charEnc = request.getCharacterEncoding();
+    System.out.println("Char Enc === " + charEnc);
+    
 	//authentication 
 	boolean authorized = true;
 	Object auth = session.getAttribute("authorized");
@@ -103,6 +114,7 @@
 %>	 	
 
 
+<%@page import="java.util.Iterator"%>
 <html><body><center><h2>Unauthorized</h2></center></body></html>
 
 <% } else {

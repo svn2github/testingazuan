@@ -1,0 +1,17 @@
+<FORMULAS>
+
+  <FORMULA id="cField1"
+      onEntity="it.foodmart.Customer" 
+      mode="auto"
+      mappings="customerId->input1" 
+      resultingFieldName="Link Detail" 
+      script="customerlnk.groovy"/>
+      
+  <FORMULA id="cField2"
+      onEntity="it.foodmart.Customer"
+      mode="manual"
+      mappings="lname->input1,fname->input2" 
+      resultingFieldName="Link Name" 
+      script="customername.groovy"/>
+
+</FORMULAS>

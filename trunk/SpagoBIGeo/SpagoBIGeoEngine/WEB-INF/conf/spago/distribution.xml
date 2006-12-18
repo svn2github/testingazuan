@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<DISTRIBUTIONS>
-	<!--DISTRIBUTION business_type="ACTION" business_name="LISTA_UTENTI_ACTION" distribute_coordinator_class="it.eng.spago.dispatching.distribute.DistributeCoordinator" /-->
-	<!--DISTRIBUTION business_type="PAGE" business_name="AutomaticPaginaUtenti" distribute_coordinator_class="it.eng.spago.dispatching.distribute.DistributeCoordinator" /-->
-	<!--DISTRIBUTION business_type="ACTION" business_name="HibernateListaUtentiAction" distribute_coordinator_class="it.eng.spago.dispatching.distribute.DistributeCoordinator" /-->
-</DISTRIBUTIONS>

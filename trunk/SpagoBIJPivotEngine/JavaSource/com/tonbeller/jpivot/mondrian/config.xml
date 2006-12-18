@@ -1,10 +1,3 @@
-<!--
-/**
- * 
- * LICENSE: see LICENSE.html file
- * 
- */
--->
 <?xml version="1.0" encoding="iso-8859-1"?>
 <model class="com.tonbeller.jpivot.mondrian.MondrianModel">
   <extension id="drillExpandMember" class="com.tonbeller.jpivot.olap.query.DrillExpandMemberExt"/>

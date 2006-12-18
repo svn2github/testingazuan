@@ -17,6 +17,7 @@ import com.tonbeller.jpivot.mondrian.MondrianMemento;
 import com.tonbeller.jpivot.olap.model.OlapModel;
 import com.tonbeller.jpivot.table.TableComponent;
 import com.tonbeller.wcf.controller.RequestContext;
+import com.tonbeller.wcf.format.FormatException;
 
 public class SaveAnalysisBean {
 	
@@ -39,6 +40,15 @@ public class SaveAnalysisBean {
 	}
 
 	public void setAnalysisName(String analysisName) {
+	    if (analysisName == null || analysisName.trim().equals("")) {
+			throw new FormatException("Please provide an analysis name");
+		}
+		if (analysisName.indexOf("/") != -1 || analysisName.indexOf("\\") != -1) {
+			throw new FormatException("Analysis name contains file path separators");
+		}
+		if (analysisName.indexOf("<") != -1 || analysisName.indexOf(">") != -1) {
+			throw new FormatException("Analysis name contains invalid characters");
+		}
 		this.analysisName = analysisName;
 	}
 
@@ -80,8 +90,10 @@ public class SaveAnalysisBean {
 				visibilityBoolean = true;
 		    SpagoBIAccessUtils sbiutils = new SpagoBIAccessUtils();
 		    try {
-		        sbiutils.saveSubObject(spagoBIBaseUrl, jcrPath, analysisName, 
-		        		analysisDescription, user, visibilityBoolean, xmlString); 
+		        byte[] response = sbiutils.saveSubObject(spagoBIBaseUrl, jcrPath, analysisName,
+		        		analysisDescription, user, visibilityBoolean, xmlString);
+		        String message = new String(response);
+		        session.setAttribute("message", message);
 		    } catch (GenericSavingException gse) {		
 		    	gse.printStackTrace();
 		    }   

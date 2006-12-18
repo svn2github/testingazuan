@@ -39,6 +39,8 @@ import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletConfig;
@@ -167,9 +169,38 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		String content = request.getParameter("content");
 	 		 		String descr = request.getParameter("description");
 	 		 		IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
+	 		 		// if the subobject has a public visibility, controls if another 
+	 		 		// subobejct with the same name exists
+	 		 		if (visibility) {
+		 		 		List subobjects = biObjCMSDAO.getSubObjects(jcrPath);
+		 		 		Iterator it = subobjects.iterator();
+		 		 		boolean subObjectAlreadyExisting = false;
+		 		 		while (it.hasNext()) {
+		 		 			BIObject.SubObjectDetail subobject = (BIObject.SubObjectDetail) it.next();
+		 		 			String subobjectname = subobject.getName();
+		 		 			if (subobjectname.equalsIgnoreCase(nameSubObj)) {
+		 		 				subObjectAlreadyExisting = true;
+		 		 				break;
+		 		 			}
+		 		 		}
+		 		 		if (subObjectAlreadyExisting) {
+		 		 			String message = "Analysis name already in use for another subobject. " +
+		 		 					"Please provide a different analysis name";
+			 		 		byte[] messageBytes = message.getBytes();
+				 			response.setContentLength(messageBytes.length);
+						 	response.getOutputStream().write(messageBytes);
+						 	response.getOutputStream().flush();
+						 	return;
+		 		 		}
+	 		 		}
 	 		 		IEngUserProfile profile = new AnonymousCMSUserProfile(user);
 	 		 		biObjCMSDAO.saveSubObject(content.getBytes(), jcrPath, nameSubObj, 
 	 		 				                  descr, visibility, profile);
+ 		 			String message = "Analysis correctly saved";
+				 	byte[] messageBytes = message.getBytes();
+		 			response.setContentLength(messageBytes.length);
+				 	response.getOutputStream().write(messageBytes);
+				 	response.getOutputStream().flush();
 	 		 		return;
 	 			}
 	 			if (operation.equalsIgnoreCase("saveObjectTemplate")) {
@@ -185,8 +216,6 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		biObjCMSDAO.saveTemplate(content.getBytes(), jcrPath, templateName);
 	 		 		return;
 	 			}
-	 			
-	 			
 	 		// part for download of the template version
 	 		// TODO manage with the operation parameter logic
 	 		} else {
@@ -206,7 +235,7 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		}
 
 	 		
-	 	}catch(Exception e){
+	 	} catch(Exception e) {
 	 		SpagoBITracer.critical("SpagoBI",getClass().getName(),"service","Exception", e);
 	 	}
 	 }

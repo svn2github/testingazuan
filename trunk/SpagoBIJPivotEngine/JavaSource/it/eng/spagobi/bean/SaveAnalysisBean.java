@@ -27,6 +27,8 @@ public class SaveAnalysisBean {
 
 	private String analysisVisibility;
 
+	private String recoveryAnalysisName;
+	
 	public String getAnalysisDescription() {
 		return analysisDescription;
 	}
@@ -49,6 +51,8 @@ public class SaveAnalysisBean {
 		if (analysisName.indexOf("<") != -1 || analysisName.indexOf(">") != -1) {
 			throw new FormatException("Analysis name contains invalid characters");
 		}
+		// save the current analisys name if the recoveryAnalysisName variable
+		this.recoveryAnalysisName = this.analysisName;
 		this.analysisName = analysisName;
 	}
 
@@ -94,6 +98,8 @@ public class SaveAnalysisBean {
 		        		analysisDescription, user, visibilityBoolean, xmlString);
 		        String message = new String(response);
 		        session.setAttribute("message", message);
+		        // if the saving operation has no success, the previous 
+		        if (message.toUpperCase().startsWith("KO")) this.analysisName = recoveryAnalysisName;
 		    } catch (GenericSavingException gse) {		
 		    	gse.printStackTrace();
 		    }   

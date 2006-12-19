@@ -77,8 +77,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Defines a tag to create a dinamic JSP page
- * 
- * @author sulis
  */
 public class DynamicPageTag extends TagSupport {
 

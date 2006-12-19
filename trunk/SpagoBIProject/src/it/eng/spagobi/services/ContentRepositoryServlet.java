@@ -184,7 +184,7 @@ public class ContentRepositoryServlet extends HttpServlet{
 		 		 			}
 		 		 		}
 		 		 		if (subObjectAlreadyExisting) {
-		 		 			String message = "Analysis name already in use for another subobject. " +
+		 		 			String message = "KO - Analysis name '" + nameSubObj + "' already in use for another subobject. " +
 		 		 					"Please provide a different analysis name";
 			 		 		byte[] messageBytes = message.getBytes();
 				 			response.setContentLength(messageBytes.length);
@@ -196,7 +196,7 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		IEngUserProfile profile = new AnonymousCMSUserProfile(user);
 	 		 		biObjCMSDAO.saveSubObject(content.getBytes(), jcrPath, nameSubObj, 
 	 		 				                  descr, visibility, profile);
- 		 			String message = "Analysis correctly saved";
+ 		 			String message = "OK - Analysis successfully saved";
 				 	byte[] messageBytes = message.getBytes();
 		 			response.setContentLength(messageBytes.length);
 				 	response.getOutputStream().write(messageBytes);

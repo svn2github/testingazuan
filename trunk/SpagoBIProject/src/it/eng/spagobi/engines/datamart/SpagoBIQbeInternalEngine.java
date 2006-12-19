@@ -68,7 +68,8 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 	/**
 	 * Executes the subobject of the document and populates the response 
 	 * 
-	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param requestContainer The <code>RequestContainer</code> object (the session 
+	 * 			can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document
 	 * @param response The response <code>SourceBean</code> to be populated
 	 * @param subObjectInfo An object describing the subobject to be executed
@@ -121,28 +122,15 @@ public class SpagoBIQbeInternalEngine implements InternalEngineIFace {
 			}
 			
 			SpagoBITracer.debug("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "JNDI data source name: " + jndiDataSourceName + ".");
-			/*
-			if (jndiDataSourceName == null || "".equalsIgnoreCase(jndiDataSourceName)) {
-				SpagoBITracer.major("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "The name of the JNDI data source is missing.");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1002, messageBundle);
-			}
-			*/
+			
 			SpagoBITracer.debug("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "Hibernate dialect: " + dialect + ".");
-			/*
-			if (dialect == null || "".equalsIgnoreCase(dialect)) {
-				SpagoBITracer.major("SpagoBIQbeInternalEngine", this.getClass().getName(), "executeSubObject", "The Hibernate dialect is missing.");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1003, messageBundle);
-			}
-			*/
+			
 			SessionContainer session = requestContainer.getSessionContainer();
 			session.setAttribute(SpagoBICmsDataMartModelRetriever.REFRESH_DATAMART, "TRUE");
 			String dmName = obj.getName();
 			String dmDescription = obj.getDescription();
 			String dmLabel = obj.getLabel();
-//			ConfigSingleton config = ConfigSingleton.getInstance();
-//			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-//			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-//			String dmPath = biobjectsPath + "/" + obj.getUuid();
+			
 			String dmPath = obj.getPath();
 			DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
 			dmModel.setName(dmName);

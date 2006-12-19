@@ -25,12 +25,6 @@
 	<!-- START DASHBOARDSCOMPOSITION -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardsCompositionIE/publishers.xml" />
 	<!-- END DASHBOARDSCOMPOSITION -->
-	<!-- START QBE -->
-	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/qbe.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/actions.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/presentation.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiqbeIE/publishers.xml" />
-	<!-- END QBE -->
 	<!-- start import export module -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/importexport.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/pages.xml" />

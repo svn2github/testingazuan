@@ -176,7 +176,8 @@ public class JasperReportRunner {
 		    	String mapName = uuid.toString();
 		    	servletRequest.getSession().setAttribute(mapName, m_imagesMap);
 		    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP,m_imagesMap);
-		    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image.jsp?mapname="+mapName+"&image=");
+		    	//exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image.jsp?mapname="+mapName+"&image=");
+		    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "JRImageServlet?mapname="+mapName+"&image=");
 		    } else if (outputType.equalsIgnoreCase("xls")) {
 		    	if(mimeType == null) mimeType = "application/vnd.ms-excel";
 		    	servletResponse.setContentType(mimeType);

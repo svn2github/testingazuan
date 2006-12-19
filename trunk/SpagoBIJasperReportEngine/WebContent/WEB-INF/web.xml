@@ -39,9 +39,19 @@
         </init-param>
     </servlet>
     
+    <servlet>
+        <servlet-name>JRImageServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.engines.jasperreport.JRImageServlet</servlet-class>
+    </servlet>
+    
     <servlet-mapping>
         <servlet-name>JasperReportServlet</servlet-name>
         <url-pattern>/JasperReportServlet</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>JRImageServlet</servlet-name>
+        <url-pattern>/JRImageServlet</url-pattern>
     </servlet-mapping>
     
     <welcome-file-list>

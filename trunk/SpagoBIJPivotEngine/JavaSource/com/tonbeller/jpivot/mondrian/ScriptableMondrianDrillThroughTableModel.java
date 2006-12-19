@@ -144,7 +144,8 @@ public class ScriptableMondrianDrillThroughTableModel extends AbstractTableModel
 			catExtDigester.addSetNext("extension/script", "addScript");
 			catExtDigester.parse(catExtIs);
 
-			scriptEngine = new GroovyScriptEngine(new URL[] {new URL(scriptRootUrl)});
+			URL scriptsBaseURL = Thread.currentThread().getContextClassLoader().getResource(scriptRootUrl);
+			scriptEngine = new GroovyScriptEngine(new URL[] {scriptsBaseURL});
 			
 			con = getConnection();
 			Statement s = con.createStatement();

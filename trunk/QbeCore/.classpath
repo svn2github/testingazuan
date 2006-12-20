@@ -50,7 +50,7 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/iReport.jar"/>
-	<classpathentry kind="lib" path="lib/spago-core-2.1.0.jar"/>
+	<classpathentry sourcepath="C:/Documents and Settings/sulis/Documenti/Codice/Java/Spago/spago2.1.1/spago-core/src" kind="lib" path="lib/spago-core-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/spago-portlet-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/spago-web-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate3.jar"/>

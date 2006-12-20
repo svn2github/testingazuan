@@ -2,6 +2,7 @@ package it.eng.qbe.utility;
 
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.message.MessageBundle;
 /**
  * @author Andrea Zoppello
@@ -16,6 +17,10 @@ public class QbeWebMessageHelper implements
 	}
 	
 	public String getMessage(RequestContainer aRequestContainer, String code, String bundle){
+		SessionContainer session = aRequestContainer.getSessionContainer();
+		SpagoBIInfo spagoBIInfo = (SpagoBIInfo)session.getAttribute("spagobi");
+		if(spagoBIInfo != null && spagoBIInfo.getLoacale() != null) 
+			return MessageBundle.getMessage(code, bundle, spagoBIInfo.getLoacale());
 		return MessageBundle.getMessage(code, bundle);
 	}
 

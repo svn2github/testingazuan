@@ -271,21 +271,7 @@ public class Utils {
 			Logger.debug(Utils.class,"Last Update Timestamp ["+str+"]");
 			reqContainer.getSessionContainer().setAttribute("QBE_LAST_UPDATE_TIMESTAMP", str);
 	}
-	
-	public static IQbeMessageHelper getQbeMessageHelper(){
-		String qbeMsgHelperClass = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MSG-HELPER.className");
 		
-		IQbeMessageHelper msgHelper = null;
-		try{
-			msgHelper = (IQbeMessageHelper)Class.forName(qbeMsgHelperClass).newInstance();
-		}catch (Exception e) {
-			e.printStackTrace();
-			Logger.error(Utils.class, e);
-		}
-		return msgHelper;
-	}
-	
-	
 	public static String getReportServletContextAddress(){
 		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
 		//		 Retrieve Locale

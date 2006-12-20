@@ -48,10 +48,12 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 		String language = (String)request.getAttribute("SPAGOBI_LANGUAGE");
 		Locale spagobiLocale = null;
 		if(language != null) {
+			/*
 			if(country == null || country.equalsIgnoreCase("")) {
 				if(language.equalsIgnoreCase("it")) country = "IT";
 				else if (language.equalsIgnoreCase("en")) country = "US";
 			}
+			*/
 			spagobiLocale = new Locale(language, country);
 		}
 		if(user != null && spagobiurl != null && templatePath != null) {

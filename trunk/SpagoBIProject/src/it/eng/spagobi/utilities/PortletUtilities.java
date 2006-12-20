@@ -247,6 +247,10 @@ public class PortletUtilities {
 		return sb.toString().trim();
 	}
 	
+	public static Locale getPortalLocale() {
+		return PortletAccess.getPortalLocale();
+	}
+	
 	/**
 	 * Gets a localized message given its code and bundle 
 	 * information. If there isn't any message matching to these infromation, a

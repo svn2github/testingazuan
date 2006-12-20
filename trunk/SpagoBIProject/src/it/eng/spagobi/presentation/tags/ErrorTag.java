@@ -77,33 +77,7 @@ public class ErrorTag extends TagSupport  {
         EMFErrorHandler engErrorHandler = responseContainer.getErrorHandler();
 
     	Collection errors = engErrorHandler.getErrors();
-    	/*
-    	if (!errors.isEmpty()) {
-	    	output.append("<table class='errors-object-details-table'>\n");
-	    	output.append("	<tr>\n");
-	    	output.append("		<td class='portlet-section-header' valign='middle' align=left>\n");
-	    	output.append("			ERRORS:\n");
-	    	output.append("		</td>\n");
-	    	output.append("	</tr>\n");
-	    	output.append("	<tr>\n");
-	    	output.append("		<td>");
-	    	output.append("			<div class='portlet-msg-error'>\n");
-	    	output.append("				<ul class='errors-object-details-ul'>\n");
-	    	EMFAbstractError error = null;
-	    	String description = "";
-	    	Iterator iter = errors.iterator();
-	    	while(iter.hasNext()) {
-	    		error = (EMFAbstractError)iter.next();
-	    	 	description = error.getDescription();
-	    	 	output.append("				<li>"+description+"</li>\n");
-	    	}
-	    	output.append("				</ul>\n");
-	    	output.append("			</div>\n");
-	    	output.append("		</td>\n");
-	    	output.append("	</tr>\n");
-	    	output.append("</table>\n");
-    	}
-        */
+    	
     	
     	if (!errors.isEmpty()) {
 	    	output.append("<div class='div_detail_errors'>\n");

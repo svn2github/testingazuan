@@ -5,6 +5,8 @@
  */
 package it.eng.spagobi.drivers.qbe;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
@@ -38,6 +40,23 @@ import sun.misc.BASE64Encoder;
  */
 public class QbeDriver implements IEngineDriver {
 
+	private void addLocale(Map map) {
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		Locale portalLocale =  PortletUtilities.getPortalLocale();
+		SourceBean languageSB = null;
+		if(portalLocale != null && portalLocale.getLanguage() != null) {
+			languageSB = (SourceBean)config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+					"language", portalLocale.getLanguage());
+		}
+		if(languageSB != null) {
+			map.put("country", (String)languageSB.getAttribute("country"));
+			map.put("language", (String)languageSB.getAttribute("language"));
+		} else {
+			map.put("country", "US");
+			map.put("language", "en");
+		}			
+	}
+	
 	/**
 	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
@@ -53,11 +72,6 @@ public class QbeDriver implements IEngineDriver {
 			map = getMap(biobj);
 			map.put("query", "#");
 			map.put("user", profile.getUserUniqueIdentifier());
-			Locale portalLocale =  PortletUtilities.getPortalLocale();
-			if(portalLocale != null) {
-				map.put("country", portalLocale.getCountry());
-				map.put("language", portalLocale.getLanguage());
-			}
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
@@ -88,11 +102,6 @@ public class QbeDriver implements IEngineDriver {
 			SubObjectDetail subObjectDetail = (SubObjectDetail) subObject;
 			map.put("query", subObjectDetail.getName());
 			map.put("user", profile.getUserUniqueIdentifier());
-			Locale portalLocale =  PortletUtilities.getPortalLocale();
-			if(portalLocale != null) {
-				map.put("country", portalLocale.getCountry());
-				map.put("language", portalLocale.getLanguage());
-			}
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
@@ -131,7 +140,7 @@ public class QbeDriver implements IEngineDriver {
 		pars.put("templatePath",biobj.getPath() + "/template");
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
         
-       
+        addLocale(pars);
         pars = addBIParameters(biobj, pars);
         
         return pars;

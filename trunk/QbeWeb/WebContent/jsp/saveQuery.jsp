@@ -1,7 +1,10 @@
  <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java"%>
-<%@ page
-	import="it.eng.spago.base.*,it.eng.qbe.utility.*,it.eng.qbe.javascript.*,it.eng.qbe.wizard.*"%>
+
+<%@ page import="it.eng.spago.base.*"%>
+<%@ page import="it.eng.qbe.javascript.*"%>
+<%@ page import="it.eng.qbe.urlgenerator.*"%>
+<%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="java.util.*"%>
 
 

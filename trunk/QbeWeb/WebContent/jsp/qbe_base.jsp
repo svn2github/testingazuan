@@ -1,6 +1,7 @@
 <%@ page import="it.eng.spago.base.*"%>
-<%@ page import="it.eng.qbe.utility.Utils"%>
-
+<%@ page import="it.eng.qbe.utility.*"%>
+<%@ page import="it.eng.qbe.urlgenerator.*"%>
+<%@page import="it.eng.qbe.conf.*"%>
 
 <%  
 	RequestContainer requestContainer = null;
@@ -12,22 +13,19 @@
 	
 	String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");   
 	
-	it.eng.qbe.utility.IQbeUrlGenerator qbeUrl = null;
-	it.eng.qbe.utility.IQbeMessageHelper qbeMsg = null;
+	IQbeUrlGenerator qbeUrl = null;
+	IQbeMessageHelper qbeMsg = null;
 	if (qbeMode.equalsIgnoreCase("WEB")){
 		requestContainer = RequestContainerAccess.getRequestContainer(request);
 		responseContainer = ResponseContainerAccess.getResponseContainer(request);
-		qbeUrl = new it.eng.qbe.utility.WebQbeUrlGenerator();
-		//qbeMsg = new it.eng.qbe.utility.QbeWebMessageHelper();
-		
+		qbeUrl = new WebQbeUrlGenerator();		
 	} else if  (qbeMode.equalsIgnoreCase("PORTLET")){
 		requestContainer = RequestContainerPortletAccess.getRequestContainer(request);
 		responseContainer = it.eng.spago.base.ResponseContainerPortletAccess.getResponseContainer(request);
-		qbeUrl = new it.eng.qbe.utility.PortletQbeUrlGenerator();
-		//qbeMsg = new it.eng.qbe.utility.QbeSpagoBIMessageHelper();
+		qbeUrl = new PortletQbeUrlGenerator();
 	}
 	
-	qbeMsg = Utils.getQbeMessageHelper();
+	qbeMsg = QbeConf.getInstance().getQbeMessageHelper();
 	
 	SourceBean aServiceRequest = requestContainer.getServiceRequest();
 	SourceBean aServiceResponse = responseContainer.getServiceResponse();

@@ -12,7 +12,8 @@ String[] dialectJndiDs = Utils.getJndiDsDialectFromModel(dm);
 String dialect = dialectJndiDs[0];
 String jndiDs = dialectJndiDs[1];
 
-List allJndiDs = Utils.getAllJndiDS();
+//List allJndiDs = Utils.getAllJndiDS();
+List allJndiDs = QbeConf.getInstance().getConnectionNames();
 
 
 IEngUserProfile userProfile = (IEngUserProfile)sessionContainer.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -89,7 +90,7 @@ if (queryPersister instanceof LocalFileSystemQueryPersister){
 			    		<% for (Iterator it=allJndiDs.iterator(); it.hasNext(); ){  
 			    				String jndiDsTmp = (String)it.next(); 
 			 			%>
-			    				<option value="<%="java:comp/env/"+jndiDsTmp%>"><%=jndiDsTmp%></option>
+			    				<option value="<%=jndiDsTmp%>"><%=jndiDsTmp%></option>
 			    		<% } %>
   	 			</select>
   	 		</td>

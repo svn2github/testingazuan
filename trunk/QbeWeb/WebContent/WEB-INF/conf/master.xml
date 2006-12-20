@@ -2,6 +2,7 @@
 <MASTER>
 	<CONFIGURATOR path="/WEB-INF/conf/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/common.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/data_access.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/events.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/security.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/upload.xml" />

@@ -10,6 +10,10 @@
       			<PARAMETER name="SPAGOBI_USER" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_USER" />
       			<PARAMETER name="SPAGOBI_URL" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_URL" />
       			<PARAMETER name="SPAGOBI_PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_PATH" />
+      			
+      			<PARAMETER name="SPAGOBI_COUNTRY" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_COUNTRY" />
+      			<PARAMETER name="SPAGOBI_LANGUAGE" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_LANGUAGE" />
+      			
       			<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="PATH" />
       			<PARAMETER name="DIALECT" type="RELATIVE" scope="SERVICE_RESPONSE" value="DIALECT" />
       			<PARAMETER name="JNDI_DS" type="RELATIVE" scope="SERVICE_RESPONSE" value="JNDI_DS" />

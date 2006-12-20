@@ -180,7 +180,7 @@ if(!authenticated) {
    		 	rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
          	alternate = !alternate; 
 	   		dmPath = (String)it.next();
-	   		completePath = qbeDataMartDir  + System.getProperty("file.separator") + dmPath;
+	   		completePath = new File(qbeDataMartDir  + System.getProperty("file.separator") + dmPath).toString();
 	   		link = "../servlet/AdapterHTTP?ACTION_NAME=DETAIL_DATA_MART_ACTION&PATH="+dmPath;
 	   		linkDelete = "../servlet/AdapterHTTP?ACTION_NAME=DELETE_DATA_MART_ACTION&PATH="+dmPath;
 	   		

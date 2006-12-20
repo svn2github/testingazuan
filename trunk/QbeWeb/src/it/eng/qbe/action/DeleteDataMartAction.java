@@ -3,6 +3,7 @@ package it.eng.qbe.action;
 import java.io.File;
 
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.FileUtils;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
@@ -31,7 +32,7 @@ public class DeleteDataMartAction extends AbstractAction {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String dataMartPath = (String)request.getAttribute("PATH");
       
-   		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
+   		String qbeDataMartDir = FileUtils.getQbeDataMartDir((File)null);
    		String dataMartDir = qbeDataMartDir  + System.getProperty("file.separator") + dataMartPath;
    		
    		File f = new File(dataMartDir);

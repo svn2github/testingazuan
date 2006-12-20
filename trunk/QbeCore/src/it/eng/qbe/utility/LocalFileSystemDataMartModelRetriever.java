@@ -24,7 +24,6 @@ public class LocalFileSystemDataMartModelRetriever implements
 	public File getJarFile(File contextDir, String dataMartPath) {
 		
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(null);
-		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
 		
 		String completeFileName = qbeDataMartDir + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator") + "datamart.jar";
 		File f = new File(completeFileName);
@@ -41,7 +40,6 @@ public class LocalFileSystemDataMartModelRetriever implements
 	
 	public File getJarFile(File contextDir, String dataMartPath, String dialect) {
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
-		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
 		
 		String completeFileName = qbeDataMartDir  + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator") + "datamart-"+dialect+".jar";
 		
@@ -59,17 +57,26 @@ public class LocalFileSystemDataMartModelRetriever implements
 	
 	public static List getAllDataMartPath(File contextDir) {
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
-		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
 		
 		
 		File f = new File(qbeDataMartDir);
 		
 		List dataMartPaths = new ArrayList();
 
-		String[] children = f.list();
-	    
-		if (children != null)
-			dataMartPaths = Arrays.asList(children);
+		String[] childrens = f.list();
+		if(childrens != null) {
+			for(int i = 0; i < childrens.length; i++) {
+				File children = new File(f, childrens[i]);
+				if(children.exists() && children.isDirectory())
+					dataMartPaths.add(childrens[i]);
+			}
+		}
+	
+		
+		/*
+		if (childrens != null)
+			dataMartPaths = Arrays.asList(childrens);
+		*/
 		return dataMartPaths;
 	}
 

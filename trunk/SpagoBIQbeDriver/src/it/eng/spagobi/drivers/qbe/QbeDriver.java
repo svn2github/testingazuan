@@ -19,12 +19,14 @@ import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ParameterValuesEncoder;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import sun.misc.BASE64Encoder;
@@ -51,6 +53,11 @@ public class QbeDriver implements IEngineDriver {
 			map = getMap(biobj);
 			map.put("query", "#");
 			map.put("user", profile.getUserUniqueIdentifier());
+			Locale portalLocale =  PortletUtilities.getPortalLocale();
+			if(portalLocale != null) {
+				map.put("country", portalLocale.getCountry());
+				map.put("language", portalLocale.getLanguage());
+			}
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
@@ -81,6 +88,11 @@ public class QbeDriver implements IEngineDriver {
 			SubObjectDetail subObjectDetail = (SubObjectDetail) subObject;
 			map.put("query", subObjectDetail.getName());
 			map.put("user", profile.getUserUniqueIdentifier());
+			Locale portalLocale =  PortletUtilities.getPortalLocale();
+			if(portalLocale != null) {
+				map.put("country", portalLocale.getCountry());
+				map.put("language", portalLocale.getLanguage());
+			}
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),

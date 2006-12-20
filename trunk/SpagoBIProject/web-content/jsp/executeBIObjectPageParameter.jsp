@@ -272,6 +272,9 @@
 						                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
 		                        		</a>
 		                        	</td>
+		                        	<%
+		                        	if(owner.equals(currentUser)) {
+		                        	%>
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
 		                        		<% String eraseMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSubObject", "messages"); %>
 		                        		<a href="javascript:var conf = confirm('<%=eraseMsg%>'); if(conf) {document.location='<%=deleteSubObjUrl.toString()%>';}">
@@ -282,6 +285,11 @@
 						                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' />
 		                        		</a>
 		                        	</td>
+		                        	<%} else {%>
+		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+		                        		&nbsp;
+		                        	</td>
+		                        	<%} %>
 		                        </tr> 
 		                  <% } %>           
 			  </table> 

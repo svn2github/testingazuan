@@ -82,6 +82,7 @@
 				</a>
 			</td>
 		</tr>
+		<%--
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
 				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/scheduleIcon64.png")%>' />
@@ -97,7 +98,7 @@
 				</a>
 			</td>
 		</tr>
-
+		--%>
 	
 	</table>
 	<br/>

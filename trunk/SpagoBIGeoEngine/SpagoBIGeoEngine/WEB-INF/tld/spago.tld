@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE taglib
+    PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+	"http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>spagotags</shortname>
+	<uri></uri>
+	<info>Spago Tags</info>
+	<tag>
+		<name>list</name>
+		<tagclass>it.eng.spago.tags.DefaultListTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
+		<info>Esegue il rendering di una lista, versione HTML</info>
+		<attribute>
+			<name>actionName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>moduleName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>detail</name>
+		<tagclass>it.eng.spago.tags.DefaultDetailTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
+		<info>Esegue il rendering di un dettaglio, versione HTML</info>
+		<attribute>
+			<name>actionName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>moduleName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+    <tag>
+        <name>lookup</name>
+        <tagclass>it.eng.spago.tags.DefaultLookupTag</tagclass>
+        <bodycontent>EMPTY</bodycontent>
+        <info>Esegue il rendering di una lista di lookup, versione HTML</info>
+    </tag>
+    <tag>
+        <name>lookupClient</name>
+        <tagclass>it.eng.spago.tags.DefaultLookupClientTag</tagclass>
+        <bodycontent>EMPTY</bodycontent>
+        <info>Costruisce la funzione javascript che permette di invocare il modulo di lista, versione HTML</info>
+        <attribute>
+            <name>idLookup</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+	<tag>
+		<name>error</name>
+		<tagclass>it.eng.spago.tags.DefaultErrorTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
+		<info>Esegue il rendering degli errori, versione HTML</info>
+	</tag>
+	<tag>
+		<name>navigationToolbar</name>
+		<tagclass>it.eng.spago.tags.DefaultNavigationToolbarTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
+		<info>Genera barra di navigazione</info>
+	</tag>
+	<tag>
+		<name>comboNavigationToolbar</name>
+		<tagclass>it.eng.spago.tags.ComboNavigationToolbarTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
+		<info>Genera combo-box di navigazione</info>
+	</tag>
+	<tag>
+		<name>generateToken</name>
+		<tagclass>it.eng.spago.tags.GenerateTokenTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
+		<info>Genera l'input type hidden contenente il token generato dal server per verificare submit multipli degli stessi form</info>
+	</tag>
+	<tag>
+		<name>message</name>
+		<tagclass>it.eng.spago.tags.MessageTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
+		<info>Dispaly the message in the properties file macthing with the input code</info>
+		<attribute>
+			<name>code</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>bundle</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>				
+	</tag>
+	<tag>
+		<name>writeString</name>
+		<tagclass>it.eng.spago.tags.StringWriterTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info>Visualizza la stringa in input o il valore di nullValue (default blank) se la stringa e' nulla</info>
+		<attribute>
+			<name>string</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nullValue</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>encode</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>reloadField</name>
+		<tagclass>it.eng.spago.tags.ReloadFieldTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info>Recupera dalla serviceRequest il valore dell’attributo passato in input</info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>			
+</taglib>

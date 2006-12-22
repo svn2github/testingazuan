@@ -1,0 +1,9 @@
+<LOOKUPS>
+	<!--LOOKUP idlookup="ListaUtenti">
+		<PARAMETERS pageName="ListaUtentiLookupPage" moduleName="ListaUtentiLookupModule" formName="StartLookup">
+			<FIELDS>
+				<FIELD lookupTableField="userid" formField="userid" likeField="true" />
+			</FIELDS>
+		</PARAMETERS>
+	</LOOKUP-->
+</LOOKUPS>

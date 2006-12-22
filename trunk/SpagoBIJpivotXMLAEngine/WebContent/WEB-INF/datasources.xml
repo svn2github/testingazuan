@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DataSources>
+	<DataSource>
+		<DataSourceName>MondrianFoodMart</DataSourceName>
+		<DataSourceDescription>FoodMart 2000 Data Warehouse</DataSourceDescription>
+		<URL>http://localhost:8080/mondrian/xmla</URL>
+		<DataSourceInfo><![CDATA[Provider=mondrian;Jdbc=jdbc:mysql://localhost/foodmart?user=root&password=admin;JdbcDrivers=com.mysql.jdbc.Driver;Catalog=/WEB-INF/queries/FoodMart.xml]]></DataSourceInfo>
+		<ProviderName>Mondrian</ProviderName>
+		<ProviderType>MDP</ProviderType>
+		<AuthenticationMode>Unauthenticated</AuthenticationMode>
+	</DataSource>
+</DataSources>

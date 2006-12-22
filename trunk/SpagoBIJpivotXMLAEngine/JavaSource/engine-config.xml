@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<CONNECTIONS-CONFIGURATION>
+	<CONNECTION name="GenovaDWH" 
+					isDefault="true"
+					url="http://192.168.14.4/xmla/msxisapi.dll"/>
+</CONNECTIONS-CONFIGURATION>

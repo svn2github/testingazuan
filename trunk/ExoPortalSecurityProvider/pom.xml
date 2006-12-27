@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9.1</version>
+    <version>1.9.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>sbi.security.exo</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.1</version>
+  <version>1.9.2</version>
   <name>ExoPortalSecurityProvider</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -37,65 +37,62 @@
       <resource>
         <directory>src/</directory>
         <targetPath>/</targetPath>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.properties</include>
-        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
       </resource>
     </resources>
   </build>
+  <properties>
+    <lib.dir>${basedir}/lib</lib.dir>
+    <exo.lib.dir>${basedir}/../SpagoBIUtilityFiles/eXo2-libraries</exo.lib.dir>
+  </properties>
   <dependencies>
-	<dependency>
-                <groupId>spago-core</groupId>
-                <artifactId>spago-core</artifactId>
-                <version>2.1.1</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/lib/spago-core-2.1.1.jar</systemPath>
-        </dependency>
-        <dependency>
-                <groupId>exo</groupId>
-                <artifactId>exo-platform.container</artifactId>
-                <version>2.0.2</version>
-		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIUtilityFiles/eXo2-libraries/exo-platform.container-2.0.2.jar</systemPath>
-        </dependency>
-	<dependency>
-                <groupId>exo</groupId>
-                <artifactId>exo-platform.services.organization.api</artifactId>
-                <version>2.0.2</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIUtilityFiles/eXo2-libraries/exo-platform.services.organization.api-2.0.2.jar</systemPath>
-        </dependency>
-        <dependency>
-                <groupId>picocontainer</groupId>
-                <artifactId>picocontainer</artifactId>
-                <version>1.1</version>
-		<scope>compile</scope>
-        </dependency>
-	    <dependency>
-	      <groupId>portlet-api</groupId>
-	      <artifactId>portlet-api</artifactId>
-	      <version>1.0</version>
-	      <scope>provided</scope>
-	    </dependency> 
-        <!--dependency>
-                <groupId>tomcat</groupId>
-                <artifactId>jasper-compiler</artifactId>
-                <version>5.5.9</version>
-		<scope>compile</scope>
-        </dependency-->
-        <dependency>
-                <groupId>spagobi</groupId>
-                <artifactId>spagobi</artifactId>
-                <version>1.9.1</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/../SpagoBIProject/target/classes/</systemPath>
-        </dependency>
-        <dependency>
-                <groupId>spagobi</groupId>
-                <artifactId>sbi.securityprovider.api</artifactId>
-                <version>1.9.1</version>
-		<scope>compile</scope>
-        </dependency>
+    <dependency>
+      <groupId>spago-core</groupId>
+      <artifactId>spago-core</artifactId>
+      <version>2.1.1</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/spago-core-2.1.1.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>exo</groupId>
+      <artifactId>exo-platform.container</artifactId>
+      <version>2.0.2</version>
+      <scope>system</scope>
+      <systemPath>${exo.lib.dir}\exo-platform.container-2.0.2.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>exo</groupId>
+      <artifactId>exo-platform.services</artifactId>
+      <version>2.0.2</version>
+      <scope>system</scope>
+      <systemPath>${exo.lib.dir}/exo-platform.services.organization.api-2.0.2.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>picocontainer</groupId>
+      <artifactId>picocontainer</artifactId>
+      <version>1.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>portlet-api</groupId>
+      <artifactId>portlet-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency> 
+    <dependency>
+      <groupId>spagobi</groupId>
+      <artifactId>spagobi</artifactId>
+      <version>1.9.2</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/../SpagoBIProject/target/classes/</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>spagobi</groupId>
+      <artifactId>sbi.securityprovider.api</artifactId>
+      <version>1.9.2</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>

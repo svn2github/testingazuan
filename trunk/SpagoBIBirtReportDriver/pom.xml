@@ -22,44 +22,47 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9.1</version>
+    <version>1.9.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>sbi.drivers.birt</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.1</version>
+  <version>1.9.2</version>
   <name>SpagoBIBirtReportDriver</name>
   <url>http://maven.apache.org</url>
   <build>
     <sourceDirectory>src</sourceDirectory>
   </build>
+  <properties>
+    <lib.dir>${basedir}/lib</lib.dir>
+  </properties>
   <dependencies>
-  	<dependency>
-    	<groupId>spagobi</groupId>
-        <artifactId>spagobi</artifactId>
-        <version>1.9.1</version>
-     	<scope>system</scope>
-      	<systemPath>${basedir}/../SpagoBIProject/target/classes/</systemPath>
+    <dependency>
+      <groupId>spagobi</groupId>
+      <artifactId>spagobi</artifactId>
+      <version>1.9.2</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/../SpagoBIProject/target/classes/</systemPath>
     </dependency>
     <dependency>
-    	<groupId>spagobi</groupId>
-        <artifactId>sbi.utils</artifactId>
-        <version>1.9.1</version>
-		<scope>compile</scope>
+      <groupId>spagobi</groupId>
+      <artifactId>sbi.utils</artifactId>
+      <version>1.9.2</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
-    	<groupId>spagobi</groupId>
-        <artifactId>sbi.drivers.api</artifactId>
-        <version>1.9.1</version>
-		<scope>compile</scope>
+      <groupId>spagobi</groupId>
+      <artifactId>sbi.drivers.api</artifactId>
+      <version>1.9.2</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
-        <groupId>spago-core</groupId>
-        <artifactId>spago-core</artifactId>
-        <version>2.1.0</version>
-      	<scope>system</scope>
-      	<systemPath>${basedir}/lib/spago-core-2.1.0.jar</systemPath>
+      <groupId>spago-core</groupId>
+      <artifactId>spago-core</artifactId>
+      <version>2.1.0</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/spago-core-2.1.0.jar</systemPath>
     </dependency>
   </dependencies>
 </project>

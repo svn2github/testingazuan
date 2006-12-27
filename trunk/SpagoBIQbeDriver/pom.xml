@@ -26,10 +26,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <artifactId>sbi.drivers.geo</artifactId>
+  <artifactId>sbi.drivers.qbe</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.2alpha</version>
-  <name>SpagoBIGeoDriver</name>
+  <version>1.9.2</version>
+  <name>SpagoBIQbeDriver</name>
   <url>http://maven.apache.org</url>
   <build>
     <sourceDirectory>src</sourceDirectory>

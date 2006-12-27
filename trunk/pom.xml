@@ -21,7 +21,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <version>1.9.1</version>
+  <version>1.9.2</version>
   <artifactId>app</artifactId>
   <packaging>pom</packaging>
   <modules>
@@ -35,12 +35,14 @@
     <module>SpagoBIBirtReportDriver</module>
     <module>SpagoBIWekaDriver</module>
     <module>SpagoBIGeoDriver</module>
+    <module>SpagoBIQbeDriver</module>
     <module>ExoPortalSecurityProvider</module>
     <module>SpagoBIBirtReportEngine</module>
     <module>SpagoBIJasperReportEngine</module>
     <module>SpagoBIJPivotEngine</module>
     <module>SpagoBIWekaEngine</module>
-    <module>SpagoBIGeo</module>
+    <module>SpagoBIGeoEngine</module>
+    <module>QbeWeb</module>
     <module>SpagoBIUtilityFiles</module>
   </modules>
   

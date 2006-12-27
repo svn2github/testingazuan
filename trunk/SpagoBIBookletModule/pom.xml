@@ -19,18 +19,11 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-<!--
-  <parent>
-    <groupId>spagobi</groupId>
-    <artifactId>app</artifactId>
-    <version>1.9RC</version>
-  </parent>
--->
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIBookletModule</artifactId>
   <packaging>war</packaging>
-  <version>1.9.1</version>
+  <version>1.9.2</version>
   <name>SpagoBIBookletModule</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -39,11 +32,9 @@
       <resource>
         <directory>src/</directory>
         <targetPath>/</targetPath>
-        <includes>
-        <include>**/*.xml</include>
-          <include>**/*.conf</include>
-	  <include>**/*.properties</include>
-        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
       </resource>
     </resources>
     <plugins>
@@ -52,12 +43,6 @@
         <artifactId>maven-war-plugin</artifactId>
           <configuration>
             <warSourceDirectory>${basedir}/web-content</warSourceDirectory>
-            <!--archive>
-              <manifest>
-                <manifestFile>${basedir}/web-content/META-INF/MANIFEST.MF</manifestFile>
-		<addClasspath>true</addClasspath>
-              </manifest>
-            </archive-->
           </configuration>
       </plugin>
       <plugin>

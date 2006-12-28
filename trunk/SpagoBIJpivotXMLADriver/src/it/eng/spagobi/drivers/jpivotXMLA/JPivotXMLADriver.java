@@ -42,8 +42,9 @@ package it.eng.spagobi.drivers.jpivotXMLA;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.BIObject.SubObjectDetail;
+import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
+import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -61,9 +62,11 @@ public class JPivotXMLADriver implements IEngineDriver {
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
 	 * @param biObject Object to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
   	*/
-	public Map getParameterMap(Object biobject){
+	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName){
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)biobject;
@@ -76,7 +79,22 @@ public class JPivotXMLADriver implements IEngineDriver {
 					cce);
 		} 
 		return map;
-	}			
+	}
+	
+	/**
+	 * Returns a map of parameters which will be send in the request to the 
+	 * engine application.
+	 * @param biObject Object container of the subObject
+	 * @param subObject SubObject to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
+	 * @return Map The map of the execution call parameters
+  	 */
+	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
+		return getParameterMap(object, profile, roleName);
+	}
+	
+	/*
 	/**
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
@@ -84,6 +102,7 @@ public class JPivotXMLADriver implements IEngineDriver {
 	 * @param profile Profile of the user 
 	 * @return Map The map of the execution call parameters
 	 */
+	/*
 	public Map getParameterMap(Object object, IEngUserProfile profile){
 		Map map = null;
 		map = getParameterMap(object);
@@ -91,6 +110,9 @@ public class JPivotXMLADriver implements IEngineDriver {
 		map.put("user", username);
 		return map;
 	}
+	*/
+	
+	/*
 	/**
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
@@ -98,6 +120,7 @@ public class JPivotXMLADriver implements IEngineDriver {
 	 * @param subObject SubObject to execute
 	 * @return Map The map of the execution call parameters
   	 */
+	/*
 	public Map getParameterMap(Object object, Object subObject){
 		Map map = new Hashtable();
 		try{
@@ -121,6 +144,9 @@ public class JPivotXMLADriver implements IEngineDriver {
 		} 
 		return map;
 	}
+	*/
+	
+	/*
     /**
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
@@ -129,6 +155,7 @@ public class JPivotXMLADriver implements IEngineDriver {
 	 * @param profile Profile of the user 
 	 * @return Map The map of the execution call parameters
   	 */
+	/*
     public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
     	Map map = new Hashtable();
 		try{
@@ -152,7 +179,7 @@ public class JPivotXMLADriver implements IEngineDriver {
 		} 
 		return map;
 	}
-
+    */
     
         
         
@@ -209,6 +236,34 @@ public class JPivotXMLADriver implements IEngineDriver {
 			}
 		}
   		return pars;
+	}
+	
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param biobject The BIOBject to edit
+	 * @throws InvalidOperationRequest
+	 */
+	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+		SpagoBITracer.major("ENGINES",
+				  this.getClass().getName(),
+				  "getEditDocumentTemplateBuildUrl",
+				  "Function not implemented");
+		throw new InvalidOperationRequest();
+	}
+
+	/**
+	 * Function not implemented. Thid method should not be called
+	 * 
+	 * @param biobject The BIOBject to edit
+	 * @throws InvalidOperationRequest
+	 */
+	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+		SpagoBITracer.major("ENGINES",
+				  this.getClass().getName(),
+				  "getNewDocumentTemplateBuildUrl",
+				  "Function not implemented");
+		throw new InvalidOperationRequest();
 	}
 	
 }

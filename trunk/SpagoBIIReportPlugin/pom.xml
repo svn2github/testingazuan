@@ -24,9 +24,12 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIIReportPlugin</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.1</version>
+  <version>1.9.2</version>
   <name>SpagoBIIReportPlugin</name>
   <url>http://maven.apache.org</url>
+  <properties>
+    <lib.dir>${basedir}/lib</lib.dir>
+  </properties>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -37,7 +40,6 @@
              <phase>package</phase>
              <configuration>
       	       <tasks>
-      	           
 									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin"/> 
       	          <mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin"/>
 									<mkdir dir="${basedir}/target/SpagoBIIReportPlugin/plugin/iReport_SpagoBI_plugin_Resources"/>
@@ -66,26 +68,25 @@
 									</copy>
 									<!-- copy libraries -->
 									<copy todir="${basedir}/target/SpagoBIIReportPlugin/plugin/lib">
-											<fileset dir="${basedir}/lib"/>
+											<fileset dir="${lib.dir}"/>
 									</copy>
 									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/iReport.jar" />
 									<delete file="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/LICENSE.iReport.txt" />
 									<!-- copy plugin jar into libraries -->
-									<copy file="${basedir}/target/SpagoBIIReportPlugin-1.9.1.jar" 
-									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/SpagoBIIReportPlugin-1.9.1.jar" />
+									<copy file="${basedir}/target/SpagoBIIReportPlugin-${project.version}.jar" 
+									      tofile="${basedir}/target/SpagoBIIReportPlugin/plugin/lib/SpagoBIIReportPlugin-${project.version}.jar" />
 									<!-- delete unecessary files -->
 									<delete file="${basedir}/target/exported-pom.xml" />
-									<delete file="${basedir}/target/SpagoBIIReportPlugin-1.9.1.jar" />
+									<delete file="${basedir}/target/SpagoBIIReportPlugin-${project.version}.jar" />
 									<delete>
 											<fileset dir="${basedir}/target/classes" includes="*" />
 									</delete>
 									<delete dir="${basedir}/target/classes" />
 									<!-- create zip files -->
-									<zip destfile="${basedir}/target/SpagoBI-IReportPlugin-bin-1.9.1.zip" 
+									<zip destfile="${basedir}/target/SpagoBI-IReportPlugin-bin-${project.version}.zip" 
 									     basedir="${basedir}/target" />
 									<!-- delete folder -->
 									<delete dir="${basedir}/target/SpagoBIIReportPlugin" />
-
                </tasks>
              </configuration>
              <goals>
@@ -97,40 +98,40 @@
     </plugins>
   </build>
   <dependencies>
-        <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>1.1</version>
-				<scope>system</scope>
-				<systemPath>${basedir}/lib/commons-fileupload-1.0.jar</systemPath>
-        </dependency>
-        <dependency>
-                <groupId>dom4j.jar</groupId>
-                <artifactId>dom4j</artifactId>
-                <version>1.6.1</version>
-				<scope>system</scope>
-				<systemPath>${basedir}/lib/dom4j-1.6.1.jar</systemPath>
-        </dependency>     
-        <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>3.0-rc3</version>
-				<scope>system</scope>
-				<systemPath>${basedir}/lib/commons-httpclient-3.0-rc3.jar</systemPath>
-        </dependency>    
-        <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>3.8.1</version>
-				<scope>system</scope>
-				<systemPath>${basedir}/lib/junit.jar</systemPath>
-        </dependency>   
-         <dependency>
-                <groupId>iReport</groupId>
-                <artifactId>iReport</artifactId>
-                <version>1.5</version>
-				<scope>system</scope>
-				<systemPath>${basedir}/lib/iReport.jar</systemPath>
-        </dependency>  				
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.1</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/commons-fileupload-1.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>dom4j.jar</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/dom4j-1.6.1.jar</systemPath>
+    </dependency>     
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.0-rc3</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/commons-httpclient-3.0-rc3.jar</systemPath>
+    </dependency>    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/junit.jar</systemPath>
+    </dependency>   
+    <dependency>
+      <groupId>iReport</groupId>
+      <artifactId>iReport</artifactId>
+      <version>1.5</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/iReport.jar</systemPath>
+    </dependency>
   </dependencies>
 </project>

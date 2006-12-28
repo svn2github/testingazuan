@@ -36,6 +36,7 @@
   </build>
   <properties>
     <lib.dir>${basedir}/lib</lib.dir>
+    <spagobi.compiled.dir>${basedir}/../SpagoBIProject/target/classes</spagobi.compiled.dir>
   </properties>
   <dependencies>
     <dependency>
@@ -43,7 +44,7 @@
       <artifactId>spagobi</artifactId>
       <version>1.9.2</version>
       <scope>system</scope>
-      <systemPath>${basedir}/../SpagoBIProject/target/classes/</systemPath>
+      <systemPath>${spagobi.compiled.dir}</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>

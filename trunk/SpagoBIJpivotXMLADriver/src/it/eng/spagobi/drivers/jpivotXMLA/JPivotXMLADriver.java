@@ -39,18 +39,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.drivers.jpivotXMLA;
 
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.BIObject.SubObjectDetail;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+
+import sun.misc.BASE64Encoder;
 
 
 /**
@@ -70,14 +79,15 @@ public class JPivotXMLADriver implements IEngineDriver {
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)biobject;
-			map = getMap(biobj);
+			map = getMap(biobj, profile, roleName);
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),
 					"getParameterMap(Object)",
 					"The parameter is not a BIObject type",
 					cce);
-		} 
+		}
+		map = applySecurity(map);
 		return map;
 	}
 	
@@ -91,7 +101,43 @@ public class JPivotXMLADriver implements IEngineDriver {
 	 * @return Map The map of the execution call parameters
   	 */
 	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
-		return getParameterMap(object, profile, roleName);
+		Map map = new Hashtable();
+		try {
+			BIObject biobj = (BIObject)object;
+			map = getMap(biobj, profile, roleName);
+			SubObjectDetail subObj = (SubObjectDetail)subObject;
+			map = getParameterMap(object, profile, roleName);
+			String nameSub = subObj.getName();
+			map.put("nameSubObject", nameSub);
+			String descrSub = subObj.getDescription();
+			map.put("descriptionSubObject", descrSub);
+			String visStr = "Private";
+			boolean visBool = subObj.isPublicVisible();
+		    if(visBool) 
+		    	visStr = "Public";
+			map.put("visibilitySubObject", visStr);
+			// get subobject data from cms
+			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
+		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
+		 	// encode and set the subobject data as a parameter
+		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			map.put("subobjectdata", bASE64Encoder.encode(subObjDataBytes));
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object, IEngUserProfile, String)",
+					"The second parameter is not a SubObjectDetail type",
+					cce);
+		} catch (EMFUserError emfue) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object, IEngUserProfile, String)",
+					"Error while creating cmsDao for BiObject",
+					emfue);
+		}
+		map = applySecurity(map);
+		return map;
 	}
 	
 	/*
@@ -187,20 +233,41 @@ public class JPivotXMLADriver implements IEngineDriver {
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
      * @param biobj BIObject to execute
+	 * @param profile Profile of the user 
+	 * @param roleName the name of the execution role
      * @return Map The map of the execution call parameters
      */    
-	private Map getMap(BIObject biobj) {
+	private Map getMap(BIObject biobj, IEngUserProfile profile, String roleName) {
+//   	Map pars = new Hashtable();
+////		ConfigSingleton config = ConfigSingleton.getInstance();
+////		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
+////		String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+////		String path = biobjectsPath + "/" + biobj.getUuid() + "/template";
+//		String path = biobj.getPath() + "/template";
+//		pars.put("templatePath", path);
+//      pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+//		pars.put("query", "dynamicQuery");
+//      pars = addBIParameters(biobj, pars);
+//      return pars;
    		Map pars = new Hashtable();
-//		ConfigSingleton config = ConfigSingleton.getInstance();
-//		SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-//		String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-//		String path = biobjectsPath + "/" + biobj.getUuid() + "/template";
-		String path = biobj.getPath() + "/template";
-		pars.put("templatePath", path);
-        pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-		pars.put("query", "dynamicQuery");
+		biobj.loadTemplate();
+		UploadedFile uploadedFile =  biobj.getTemplate();
+		byte[] template = uploadedFile.getFileContent();
+		BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		pars.put("template", bASE64Encoder.encode(template));
+		pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+		pars.put("templatePath",biobj.getPath() + "/template");
+		pars.put("query", "dynamicOlap");
+		String username = "";
+		if(profile!=null)
+			username = (String)profile.getUserUniqueIdentifier();
+		pars.put("user", username);
+		pars.put("role", roleName);
+		//pars = addDataAccessParameter(profile, roleName, pars, template);
         pars = addBIParameters(biobj, pars);
         return pars;
+        
+        
 	} 
  
          
@@ -218,13 +285,18 @@ public class JPivotXMLADriver implements IEngineDriver {
 								  "BIObject parameter null");
 			return pars;
 		}
-		if(biobj.getBiObjectParameters() != null){
+		if (biobj.getBiObjectParameters() != null) {
 			BIObjectParameter biobjPar = null;
 			String value = null;
-			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
+			ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
+			for (Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();) {
 				try {
 					biobjPar = (BIObjectParameter)it.next();
+					/*
 					value = (String)biobjPar.getParameterValues().get(0);
+					pars.put(biobjPar.getParameterUrlName(), value);
+					*/
+					value = parValuesEncoder.encode(biobjPar);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",
@@ -236,6 +308,15 @@ public class JPivotXMLADriver implements IEngineDriver {
 			}
 		}
   		return pars;
+	}
+	
+	/**
+	 * Applys changes for security reason if necessary
+	 * @param pars The map of parameters
+	 * @return the map of parameters to send to the engine 
+	 */
+	protected Map applySecurity(Map pars) {
+		return pars;
 	}
 	
 	/**

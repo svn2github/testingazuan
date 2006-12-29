@@ -157,10 +157,10 @@ public interface IBIObjectCMSDAO {
 	
 	/**
 	 * Delete a snapshot
-	 * @param pathParent path of the parent biobject
+	 * @param snapshotPath path of the snapshot
 	 * @param name name of the snapshot
 	 */
-	public void deleteSnapshot(String pathParent, String name) throws EMFUserError;
+	public void deleteSnapshot(String snapshotPath) throws EMFUserError;
 	
 	
 }

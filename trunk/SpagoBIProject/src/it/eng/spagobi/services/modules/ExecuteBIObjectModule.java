@@ -129,6 +129,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 				changeStateHandler(request, response);
 			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE)) {
 				execSnapshotHandler(request, response);
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE)) {
+				eraseSnapshotHandler(request, response);
 			} else {	
 		   	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 		   	    		            "ExecuteBIObjectMOdule", 
@@ -141,6 +143,22 @@ public class ExecuteBIObjectModule extends AbstractModule
 	    	errorHandler.addError(e); 
 	    }
     }
+
+
+	private void eraseSnapshotHandler(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
+		String snapshotPath = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_PATH);
+		IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
+		objectCMSDAO.deleteSnapshot(snapshotPath);
+        // get object from session
+        BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+        // get from the session the execution role
+        String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+        // set data in response
+        response.setAttribute(ObjectsTreeConstants.OBJECT_ID , obj.getId().toString());
+        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
+        		 			  SpagoBIConstants.PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT);
+        response.setAttribute(SpagoBIConstants.ROLE, role);
+	}
 
 
 	/**

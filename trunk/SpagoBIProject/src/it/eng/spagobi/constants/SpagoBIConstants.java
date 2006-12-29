@@ -128,6 +128,7 @@ public class SpagoBIConstants {
 	public static final String SUBOBJECT_LIST = "SUBOBJECT_NAMES_LIST";
 	public static final String SNAPSHOT_LIST = "SNAPSHOT_LIST";
 	public static final String EXEC_SNAPSHOT_MESSAGE = "EXEC_SNAPSHOT_MESSAGE";
+	public static final String ERASE_SNAPSHOT_MESSAGE = "ERASE_SNAPSHOT_MESSAGE";
 	public static final String SNAPSHOT_PATH = "SNAPSHOT_PATH";
 	
 	public static final String ROLE = "ROLE";

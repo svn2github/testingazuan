@@ -332,6 +332,7 @@
 			       </td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			     <tr> 
 				              
 				 <% Iterator iterSnap =  snapshots.iterator();
@@ -340,6 +341,7 @@
 				    String descrSnap = "";
 				    Date creationDate = null;
 				    PortletURL execSnapUrl = null;
+				    PortletURL deleteSnapUrl = null;
 					boolean alternate = false;
 					String rowClass = "";
 					   
@@ -354,6 +356,11 @@
 		                execSnapUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
 		                execSnapUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
 		                execSnapUrl.setParameter(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+		                deleteSnapUrl = renderResponse.createActionURL();
+		                deleteSnapUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
+		                deleteSnapUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
+		                deleteSnapUrl.setParameter(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+		                deleteSnapUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 		         %>
 		         <tr class='portlet-font'>
 		           	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameSnap %></td>
@@ -371,6 +378,16 @@
 						            title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
 		               	</a>
 		           	</td>
+                    <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+                    	<% String eraseSnapMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSnapshot", "messages"); %>
+                    	<a href="javascript:var conf = confirm('<%=eraseSnapMsg%>'); if(conf) {document.location='<%=deleteSnapUrl.toString()%>';}">
+                    		<img width="20px" height="20px" 
+                    			src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' 
+  	                			name='deleteSnapshot' alt='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+                        		title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+                        	/>
+                    	</a>
+                    </td>
 		         </tr> 
 		         <% } %>           
 			 </table> 

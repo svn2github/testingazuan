@@ -566,18 +566,18 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 
 
 
-	public void deleteSnapshot(String pathParent, String uuid) throws EMFUserError {
-		String pathTodel = pathParent + "/snapshots/" + uuid;
+	public void deleteSnapshot(String snapshotPath) throws EMFUserError {
+		String name = snapshotPath.substring(snapshotPath.lastIndexOf("/snapshots/") + 11);
 		try {
 			DeleteOperation delOp = new DeleteOperation();
-			delOp.setPath(pathTodel);
+			delOp.setPath(snapshotPath);
 			CmsManager manager = new CmsManager();
 			manager.execDeleteOperation(delOp);
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
 		                        "deleteSnapshot", "Cannot delete snapshot", e);
 			List params = new ArrayList();
-			params.add(uuid);
+			params.add(name);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 7001, params);
 		}
 	}

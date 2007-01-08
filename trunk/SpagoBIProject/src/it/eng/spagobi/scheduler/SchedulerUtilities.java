@@ -1,5 +1,9 @@
 package it.eng.spagobi.scheduler;
 
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.SpagoBITracer;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -7,11 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import it.eng.spagobi.bo.BIObject;
-import it.eng.spagobi.bo.BIObject.BIObjectSnapshot;
-import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.utilities.SpagoBITracer;
 
 public class SchedulerUtilities {
 
@@ -43,4 +42,18 @@ public class SchedulerUtilities {
 		return snap;
 	}
 	
+
+	
+	public static List getSnapshotsByName(List allsnapshots, String namesnap) throws Exception {
+		List snaps = new ArrayList();
+		Iterator iterAllSnap = allsnapshots.iterator();
+		while(iterAllSnap.hasNext()) {
+			BIObject.BIObjectSnapshot snap =  (BIObject.BIObjectSnapshot)iterAllSnap.next();
+			if(snap.getName().equals(namesnap)){
+				snaps.add(snap);
+			}
+		}
+		return snaps;
+	}	
+
 }

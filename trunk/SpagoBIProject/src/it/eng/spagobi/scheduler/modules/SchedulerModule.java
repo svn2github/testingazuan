@@ -292,7 +292,7 @@ public class SchedulerModule extends AbstractModule {
 				"Missing trigger group name! Using default group...");
 			triggerGroup = Scheduler.DEFAULT_GROUP;
 		}
-		Trigger trigger = scheduler.getTrigger(triggerName, triggerGroup);
+		SimpleTrigger trigger = (SimpleTrigger) scheduler.getTrigger(triggerName, triggerGroup);
 		if (trigger == null) {
 			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "getJobSchedulationDefinition", 
 				"Trigger with name '" + triggerName + "' not found in group '" + triggerGroup + "'!");
@@ -304,22 +304,88 @@ public class SchedulerModule extends AbstractModule {
 		loadTriggerIntoResponse(response, trigger);
 	}
 
-	private void loadTriggerIntoResponse(SourceBean response, Trigger trigger) {
+	private void loadTriggerIntoResponse(SourceBean response, SimpleTrigger trigger) throws SourceBeanException {
 		StringBuffer buffer = new StringBuffer("<TRIGGER_DETAILS ");
 		buffer.append(" ");
 		String triggerName = trigger.getName();
 		String triggerDescription = trigger.getDescription();
-		String triggerCalendarName = trigger.getCalendarName();
+		//String triggerCalendarName = trigger.getCalendarName();
+		
 		Date triggerStartTime = trigger.getStartTime();
-		String triggerStartTimeStr = triggerStartTime != null ? triggerStartTime.toString(): "";
+		String triggerStartDateStr = "";
+		String triggerStartTimeStr = "";
+		if (triggerStartTime != null) {
+			Calendar startCal = new GregorianCalendar();
+			startCal.setTime(triggerStartTime);
+			// date format: dd/mm/yyyy
+			int day = startCal.get(Calendar.DAY_OF_MONTH);
+			int month = startCal.get(Calendar.MONTH);
+			int year = startCal.get(Calendar.YEAR);
+			triggerStartDateStr = ((day < 10) ? "0" : "") + day + 
+						"/" + 
+						((month + 1 < 10) ? "0" : "") + (month + 1) + 
+						"/" + 
+						year;
+			int hour = startCal.get(Calendar.HOUR_OF_DAY);
+			int minute = startCal.get(Calendar.MINUTE);
+			// hour format: hh:mm
+			triggerStartTimeStr = ((hour < 10) ? "0" : "") + hour + ":" + ((minute < 10) ? "0" : "") + minute;
+		}
+		
 		Date triggerEndTime = trigger.getEndTime();
-		String triggerEndTimeStr = triggerEndTime != null ? triggerEndTime.toString(): "";
+		String triggerEndDateStr = "";
+		String triggerEndTimeStr = "";
+		if (triggerEndTime != null) {
+			Calendar endCal = new GregorianCalendar();
+			endCal.setTime(triggerEndTime);
+			// date format: dd/mm/yyyy
+			int day = endCal.get(Calendar.DAY_OF_MONTH);
+			int month = endCal.get(Calendar.MONTH);
+			int year = endCal.get(Calendar.YEAR);
+			triggerEndDateStr = ((day < 10) ? "0" : "") + day + 
+						"/" + 
+						((month + 1 < 10) ? "0" : "") + (month + 1) + 
+						"/" + 
+						year;
+			int hour = endCal.get(Calendar.HOUR_OF_DAY);
+			int minute = endCal.get(Calendar.MINUTE);
+			// hour format: hh:mm
+			triggerEndTimeStr = ((hour < 10) ? "0" : "") + hour + ":" + ((minute < 10) ? "0" : "") + minute;
+		}
+		
+		String triggerRepeatInterval = new Long(trigger.getRepeatInterval()).toString();
 		buffer.append(" triggerName=\"" + (triggerName != null ? triggerName : "") + "\"");
 		buffer.append(" triggerDescription=\"" + (triggerDescription != null ? triggerDescription : "") + "\"");
-		buffer.append(" triggerCalendarName=\"" + (triggerCalendarName != null ? triggerCalendarName : "") + "\"");
+		//buffer.append(" triggerCalendarName=\"" + (triggerCalendarName != null ? triggerCalendarName : "") + "\"");
+		buffer.append(" triggerStartDate=\"" + triggerStartDateStr + "\"");
 		buffer.append(" triggerStartTime=\"" + triggerStartTimeStr + "\"");
+		buffer.append(" triggerEndDate=\"" + triggerEndDateStr + "\"");
 		buffer.append(" triggerEndTime=\"" + triggerEndTimeStr + "\"");
-		buffer.append("</TRIGGER_DETAILS>");
+		buffer.append(" triggerRepeatInterval=\"" + triggerRepeatInterval + "\"");
+		
+		JobDataMap jdm = trigger.getJobDataMap();
+		String queryStr = jdm.getString("parameters");
+		buffer.append(" queryStr=\"" + queryStr + "\"");
+		
+		String storeoutput = jdm.getString("storeoutput");
+		if (storeoutput != null && storeoutput.equalsIgnoreCase("true")) {
+			buffer.append(" storeoutput=\"true\"");
+			buffer.append(" storename=\"" + jdm.getString("storename") + "\"");
+			buffer.append(" storedescription=\"" + jdm.getString("storedescription") + "\"");
+			buffer.append(" lengthhistory=\"" + jdm.getString("lengthhistory") + "\"");
+			String storeassnapshot = jdm.getString("storeassnapshot");
+			if (storeassnapshot != null && storeassnapshot.equalsIgnoreCase("true")) {
+				buffer.append(" storeassnapshot=\"true\"");
+			} else {
+				buffer.append(" storeasdocument=\"true\"");
+				buffer.append(" pathdocument=\"" + jdm.getString("pathdocument") + "\"");
+			}
+		} else {
+			buffer.append(" storeoutput=\"false\"");
+		}
+		buffer.append(" />");
+		SourceBean triggerSB = SourceBean.fromXMLString(buffer.toString());
+		response.setAttribute(triggerSB);
 	}
 
 	
@@ -401,6 +467,7 @@ public class SchedulerModule extends AbstractModule {
 		try{
 			servreponse.append("<EXECUTION_OUTCOME ");
 			String triggerName = (String) request.getAttribute("triggerName");
+			String triggerDescription = (String) request.getAttribute("triggerDescription");
 			String triggerGroup = (String) request.getAttribute("triggerGroup");
 			if(triggerGroup==null)
 				triggerGroup = Scheduler.DEFAULT_GROUP;
@@ -474,6 +541,7 @@ public class SchedulerModule extends AbstractModule {
 			// create trigger
 			SimpleTrigger trigger = new SimpleTrigger();
 			trigger.setName(triggerName);
+			trigger.setDescription(triggerDescription);
 			trigger.setGroup(triggerGroup);
 			trigger.setStartTime(startDate);
 			if(endDate!=null) {

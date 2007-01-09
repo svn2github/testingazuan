@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class SchedulerGUIModule extends AbstractModule {
     
 	public static final String MODULE_PAGE = "SchedulerGUIPage";
@@ -71,8 +70,10 @@ public class SchedulerGUIModule extends AbstractModule {
 				getObjectForScheduling(request, response);
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_GET_OBJECT_SCHEDULATIONS)) {
 				getObjectSchedulations(request, response);
-			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_GET_DETAIL_SCHEDULE_OBJECT)) {
-				getDetailObjectScheduling(request, response);
+			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_NEW_OBJECT_SCHEDULATION)) {
+				newObjectSchedulationHandler(request, response);
+			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_GET_OBJECT_SCHEDULATION_DETAILS)) {
+				getObjectSchedulationDetails(request, response);
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_SCHEDULE_OBJECT)) {
 				scheduleObject(request, response);
 			} 
@@ -92,6 +93,94 @@ public class SchedulerGUIModule extends AbstractModule {
 	
 	
 	
+	private void getObjectSchedulationDetails(SourceBean request, SourceBean response) throws EMFUserError {
+			AdapterAxisProxy proxy = new AdapterAxisProxy();
+			String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+			String triggerName = (String) request.getAttribute("triggerName");
+			try {
+				StringBuffer message = new StringBuffer();
+				message.append("<SERVICE_REQUEST PAGE=\"SchedulerPage\" task=\"getJobSchedulationDefinition\" ");
+				message.append(" triggerName=\"" + triggerName + "\" ");
+				message.append(">");
+				message.append("</SERVICE_REQUEST>");
+				proxy.setEndpoint(sbiconturl + "/services/AdapterAxis");
+				String resp = proxy.service(message.toString());
+				SourceBean respSB = SourceBean.fromXMLString(resp);
+				SourceBean servRespSB = (SourceBean)respSB.getAttribute("SERVICE_RESPONSE");
+				SourceBean schedModRespSB = (SourceBean)servRespSB.getAttribute("SCHEDULERMODULE");
+				SourceBean triggerSB = (SourceBean) schedModRespSB.getAttribute("TRIGGER_DETAILS");
+				
+				// get the object id
+				String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
+				Integer objId = new Integer(objIdStr);
+				// get the flag for object job existance
+				String objJobExist = (String) request.getAttribute(SpagoBIConstants.OBJ_JOB_EXISTS);
+				ObjExecSchedulation oes = new ObjExecSchedulation();
+				oes.setTriggerName((String) triggerSB.getAttribute("triggerName"));
+				oes.setTriggerDescription((String) triggerSB.getAttribute("triggerDescription"));
+				oes.setStartDate((String) triggerSB.getAttribute("triggerStartDate"));
+				oes.setStartTime((String) triggerSB.getAttribute("triggerStartTime"));
+				oes.setEndDate((String) triggerSB.getAttribute("triggerEndDate"));
+				oes.setEndTime((String) triggerSB.getAttribute("triggerEndTime"));
+				oes.setRepeatInterval((String) triggerSB.getAttribute("triggerRepeatInterval"));
+				if (objJobExist.equalsIgnoreCase("true")) {
+					//load schedulation and build to
+					response.setAttribute(SpagoBIConstants.OBJ_JOB_EXISTS, "TRUE");
+				} else {
+					response.setAttribute(SpagoBIConstants.OBJ_JOB_EXISTS, "FALSE");
+				}
+				
+				// recover store output information
+				String storeoutput = (String) triggerSB.getAttribute("storeoutput");
+				if (storeoutput != null && storeoutput.equalsIgnoreCase("true")) {
+					oes.setStoreOutput(true);
+					oes.setStoreName((String) triggerSB.getAttribute("storename"));
+					oes.setStoreDescription((String) triggerSB.getAttribute("storedescription"));
+					oes.setHistoryLength((String) triggerSB.getAttribute("lengthhistory"));
+					String storeassnapshot = (String) triggerSB.getAttribute("storeassnapshot");
+					if (storeassnapshot != null && storeassnapshot.equalsIgnoreCase("true")) {
+						oes.setStoreType("storeassnapshot");
+					} else {
+						oes.setStoreType("storeasdocument");
+						oes.setPathDocument((String) triggerSB.getAttribute("pathdocument"));
+					}
+				} else {
+					oes.setStoreOutput(true);
+				}
+				
+				// recover the list of biobject parameters
+				List biobjpars = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(objId);
+				List emptyParMap = new ArrayList();
+				Iterator biobjparsIter = biobjpars.iterator();
+				String queryStr = (String) triggerSB.getAttribute("queryStr");
+				
+				while (biobjparsIter.hasNext()) {
+					BIObjectParameter bop = (BIObjectParameter)biobjparsIter.next();
+					String bopUrlName = bop.getParameterUrlName();
+					int bopValueStartIndex = queryStr.indexOf(bopUrlName) + bopUrlName.length() + 1;
+					int bopValueEndIndex = queryStr.indexOf("%26", bopValueStartIndex);
+					if (bopValueEndIndex < 0) bopValueEndIndex = queryStr.length();
+					String bopValue = queryStr.substring(bopValueStartIndex, bopValueEndIndex);
+					BIObjectParamInfo bopi = new BIObjectParamInfo(bop.getLabel(), bop.getParameterUrlName(), bopValue);
+					emptyParMap.add(bopi);
+				}
+				oes.setObjExecParameters(emptyParMap);
+				// populate response with the right values
+				response.setAttribute(SpagoBIConstants.OBJ_SCHEDULE_DETAIL, oes);
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DetailObjectSchedulingPub");
+				response.setAttribute(SpagoBIConstants.OBJECT_ID, objId);
+			} catch (Exception e) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+			                        "getObjectSchedulationDetails", 
+			                        "Error while recovering job schedulation definition ", e);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			}
+	}
+
+
+
+
+
 	private void getObjectForScheduling(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
@@ -182,7 +271,7 @@ public class SchedulerGUIModule extends AbstractModule {
 	
 	
 	
-	private void getDetailObjectScheduling(SourceBean request, SourceBean response) throws EMFUserError {
+	private void newObjectSchedulationHandler(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
 			AdapterAxisProxy proxy = new AdapterAxisProxy();
 			String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
@@ -283,7 +372,7 @@ public class SchedulerGUIModule extends AbstractModule {
             // SCHEDULE THE TRIGGER
 			// create the message to schedule the job	
 			String triggername = (String)request.getAttribute("triggername");	
-			String triggerdesc  = (String)request.getAttribute("triggerdescription");	
+			String triggerDescription  = (String)request.getAttribute("triggerdescription");	
 			String startdate  = (String)request.getAttribute("startdate");	
 			String starttime = (String)request.getAttribute("starttime");	
 			String enddate = (String)request.getAttribute("enddate");	
@@ -304,6 +393,7 @@ public class SchedulerGUIModule extends AbstractModule {
 			message.append(" jobName=\""+jobName+"\" ");
 			message.append(" jobGroup=\""+jobGroupName+"\" ");
 			message.append(" triggerName=\""+triggername+"\" ");
+			message.append(" triggerDescription=\""+triggerDescription+"\" ");
 			message.append(" startDate=\""+startdate+"\" ");
 			message.append(" startTime=\""+starttime+"\" ");
 			if(!enddate.trim().equals("")){

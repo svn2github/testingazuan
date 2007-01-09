@@ -44,7 +44,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/back.png")%>' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/back.png")%>' 
       				 alt='<spagobi:message key = "scheduler.back"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>

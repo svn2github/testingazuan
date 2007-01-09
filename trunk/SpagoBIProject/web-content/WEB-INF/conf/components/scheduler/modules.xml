@@ -6,17 +6,17 @@
     </MODULE>
     
     <MODULE class="it.eng.spagobi.scheduler.modules.SchedulerGUIModule" name="SchedulerGUIModule">
-     	<CONFIG rows="10" title="ChangeMe" >
+     	<CONFIG rows="10" title="scheduler.SchedulationListTitle" >
 	      <QUERIES/>
 	      <COLUMNS>
-	      	<COLUMN label="TriggerName" name="TriggerName" />
-	        <COLUMN label="triggerDescription" name="triggerDescription" />
-			<COLUMN label="triggerCalendarName" name="triggerCalendarName" />
-			<COLUMN label="triggerStartTime" name="triggerStartTime" />
-			<COLUMN label="triggerEndTime" name="triggerEndTime" />
+	      	<COLUMN label="scheduler.TriggerName" name="TriggerName" />
+	        <COLUMN label="scheduler.triggerDescription" name="triggerDescription" />
+			<!-- <COLUMN label="triggerCalendarName" name="triggerCalendarName" /> -->
+			<COLUMN label="scheduler.triggerStartTime" name="triggerStartTime" />
+			<COLUMN label="scheduler.triggerEndTime" name="triggerEndTime" />
 	      </COLUMNS>
 	      <CAPTIONS>
-	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="ChangeMe">
+	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="scheduler.detail">
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_OBJECT_SCHEDULATION_DETAILS"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="SchedulerGUIPage"/>
 	          <PARAMETER name="triggerName" scope="LOCAL" type="RELATIVE" value="TriggerName"/>
@@ -25,13 +25,13 @@
 	        </DETAIL_CAPTION>
 	      </CAPTIONS>
 	      <BUTTONS>
-	        <INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="ChangeMe">
+	        <INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="scheduler.newschedule">
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_NEW_OBJECT_SCHEDULATION"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="SchedulerGUIPage"/>
 	          <PARAMETER name="OBJECT_ID" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJECT_ID"/>
 	          <PARAMETER name="OBJ_JOB_EXISTS" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJ_JOB_EXISTS"/>
 	        </INSERT_BUTTON>
-	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="ChangeMe">
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="scheduler.back">
 	          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE" value="1"/>
 	        </BACK_BUTTON>
 	      </BUTTONS>

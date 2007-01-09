@@ -53,117 +53,231 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			Change Me			
+			<spagobi:message key = "scheduler.scheduledetail"  bundle="component_scheduler_messages"/>			
+		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<a href="javascript:document.getElementById('scheduleDetailForm').submit()"> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key="scheduler.save" bundle="component_scheduler_messages" />' 
+      			     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/save.png")%>' 
+      			     alt='<spagobi:message key="scheduler.save" bundle="component_scheduler_messages" />' /> 
+			</a>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.back" bundle="component_impexp_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/back.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
+      				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
+      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/back.png")%>' 
+      				 alt='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' />
 			</a>
 		</td>
 	</tr>
 </table>
 
+<br/>
 
-<form method="post" action="<%=saveUrl.toString()%>" >
+<script>
+	function storeOutClickHandler() {
+		soc = document.getElementById('storeoutcheck');
+		socCheck = soc.checked;
+		sod = document.getElementById('storeoutdiv');
+		if(socCheck){
+			sod.style.display="inline";
+		} else {
+			sod.style.display="none";
+		}
+	}
+	
+	function radioClickHandler() {
+		sadr = document.getElementById('storeAsDocRadio');
+		sadrCheck = sadr.checked;
+		sandd = document.getElementById('storeasnewdocdiv');
+		if(sadrCheck){
+			sandd.style.display="inline";
+		} else {
+			sandd.style.display="none";
+		}
+	}
+</script>
+
+<form id="scheduleDetailForm" method="post" action="<%=saveUrl.toString()%>" >
     <input type="hidden" name="<%=SpagoBIConstants.OBJECT_ID%>" value="<%=objid%>" />
 	<input type="hidden" name="<%=SpagoBIConstants.OBJ_JOB_EXISTS%>" value="<%=jobExist%>" />
-	<table>
-		<tr>
-		 	<td colspan="2" bgcolor="yellow" style="height:25px;">Schedule Info</td>
-		</tr>
-		<tr>
-		 	<td width="200px">Schedule Name:</td>
-		 	<td><input type="text" name="triggername" value="<%=oes.getTriggerName() != null ? oes.getTriggerName() : ""%>"/></td>
-		</tr>
-		<tr>
-		 	<td width="200px">Schedule Description:</td>
-		 	<td><input type="text" name="triggerdescription" value="<%=oes.getTriggerDescription() != null ? oes.getTriggerDescription() : ""%>"/></td>
-		</tr>
-		<tr>
-		 	<td width="200px">Start Date:</td>
-		 	<td><input type="text" name="startdate" value="<%=oes.getStartDate() != null ? oes.getStartDate() : ""%>"/>gg/mm/yyyy</td>
-		</tr>
-		<tr>
-		 	<td width="200px">Start Time:</td>
-		 	<td><input type="text" name="starttime" value="<%=oes.getStartTime() != null ? oes.getStartTime() : ""%>"/>hh:mm</td>
-		</tr>
-		<tr>
-		 	<td width="200px">End Date:</td>
-		 	<td><input type="text" name="enddate" value="<%=oes.getEndDate() != null ? oes.getEndDate() : ""%>"/>gg/mm/yyyy</td>
-		</tr>
-		<tr>
-		 	<td width="200px">End Time:</td>
-		 	<td><input type="text" name="endtime" value="<%=oes.getEndTime() != null ? oes.getEndTime() : ""%>"/>hh:mm</td>
-		</tr>
-		<tr>
-		 	<td width="200px">Repeat Interval:</td>
-		 	<td><input type="text" name="repeatInterval" value="<%=oes.getRepeatInterval() != null ? oes.getRepeatInterval() : ""%>"/>ms</td>
-		</tr>
-		<tr>
-		 	<td width="200px">Store Output:</td>
-		 	<%
-		 	String storeOutputChecked = oes.isStoreOutput() ? "checked=\"checked\"" : "";
-		 	%>
-		 	<td><input type="checkbox" name="storeoutput" <%=storeOutputChecked%>/></td>
-		</tr>
-		<tr>
-		 	<td width="200px">Store Name:</td>
-		 	<td><input type="text" name="storename" value="<%=oes.getStoreName() != null ? oes.getStoreName() : ""%>"/></td>
-		</tr>
-		<tr>
-		 	<td width="200px">Store Description:</td>
-		 	<td><input type="text" name="storedescription" value="<%=oes.getStoreDescription() != null ? oes.getStoreDescription() : ""%>"/></td>
-		</tr>
-		<tr>
-		 	<td width="200px">History Length:</td>
-		 	<td><input type="text" name="historylength" value="<%=oes.getHistoryLength() != null ? oes.getHistoryLength() : ""%>"/></td>
-		</tr>
-		<tr>
-		 	<td width="200px">Store As:</td>
-		 	<%
-		 	String storesnapChecked = (oes.getStoreType() != null && oes.getStoreType().equalsIgnoreCase("storeassnapshot")) ? "checked=\"checked\"" : "";
-		 	String storedocChecked =  storesnapChecked.equalsIgnoreCase("")? "checked=\"checked\"" : "";
-		 	%>
-		 	<td>
-		 		<input type="radio" name="storetype" value="storesnap" <%=storesnapChecked%>/> Document snapshot
-				<input type="radio" name="storetype" value="storedoc" <%=storedocChecked%>/> New document 
-			</td>
-		</tr>
-		<tr>
-		 	<td width="200px">Path Document:</td>
-		 	<td><input type="text" name="pathdocument" value="<%=oes.getPathDocument() != null ? oes.getPathDocument() : ""%>"/></td>
-		</tr>
-		<tr>
-		 	<td colspan="2" bgcolor="yellow" style="height:25px;">BIObject Parameters</td>
-		</tr>
-		<%
-			while(opisIter.hasNext()) {
-				BIObjectParamInfo bipo = (BIObjectParamInfo)opisIter.next();
-				%>
-				<tr>
-		 			<td width="200px"><%=bipo.getLabel()%>:</td>
-		 			<td><input type="text" name="biobjpar_<%=bipo.getUrlname()%>" value="<%=bipo.getValue()%>"/></td>
-				</tr>
+	
+	
+	<div class="div_detail_area_forms_scheduler" >
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.schedname" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="triggername" value="<%=oes.getTriggerName() != null ? oes.getTriggerName() : ""%>" size="35"/>
+		    &nbsp;*
+		</div>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.scheddescription" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="triggerdescription" value="<%=oes.getTriggerDescription() != null ? oes.getTriggerDescription() : ""%>" size="35"/>
+			&nbsp;*
+		</div>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.startdate" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="startdate" value="<%=oes.getStartDate() != null ? oes.getStartDate() : ""%>" size="35"/>
+			&nbsp;*
+		</div>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.starttime" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="starttime" value="<%=oes.getStartTime() != null ? oes.getStartTime() : ""%>" size="35"/>
+			&nbsp;*
+		</div>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.enddate" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="enddate" value="<%=oes.getEndDate() != null ? oes.getEndDate() : ""%>" size="35"/>
+			&nbsp;*
+		</div>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.endtime" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="endtime" value="<%=oes.getEndTime() != null ? oes.getEndTime() : ""%>" size="35"/>
+			&nbsp;*
+		</div>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.repeatinterval" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="repeatInterval" value="<%=oes.getRepeatInterval() != null ? oes.getRepeatInterval() : ""%>" size="35"/>
+			&nbsp;*&nbsp;ms
+		</div>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.storeout" bundle="component_scheduler_messages" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<% String storeOutputChecked = oes.isStoreOutput() ? "checked=\"checked\"" : ""; %>
+		 	<input id="storeoutcheck" type="checkbox" name="storeoutput" <%=storeOutputChecked%> onclick="storeOutClickHandler()"/>
+			&nbsp;
+		</div>
+		<% String styleStoreOutDiv = oes.isStoreOutput() ? "display:inline;" : "display:none;"; %>
+		<div id="storeoutdiv" style="<%=styleStoreOutDiv%>">
+			<div class='div_detail_label_scheduler'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.storename" bundle="component_scheduler_messages" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<input type="text" name="storename" value="<%=oes.getStoreName() != null ? oes.getStoreName() : ""%>" size="35"/>
+				&nbsp;*
+			</div>
+			<div class='div_detail_label_scheduler'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.storedescr" bundle="component_scheduler_messages" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<input type="text" name="storedescription" value="<%=oes.getStoreDescription() != null ? oes.getStoreDescription() : ""%>" size="35"/>
+				&nbsp;*
+			</div>
+			<div class='div_detail_label_scheduler'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.historylength" bundle="component_scheduler_messages" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<input type="text" name="historylength" value="<%=oes.getHistoryLength() != null ? oes.getHistoryLength() : ""%>" size="35"/>
+				&nbsp;*
+			</div>
+			<div class='div_detail_label_scheduler'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.storeas" bundle="component_scheduler_messages" />
+				</span>
+			</div>
+			<div class='div_detail_form' style="height:50px;">
 				<%
-			}
-		%>
-	</table>
-   
-	
-	
-	
+				String storedocChecked =  (oes.getStoreType()!= null && oes.getStoreType().equalsIgnoreCase("storeasnewdoc")) ? "checked=\"checked\"" : "";
+				String storesnapChecked =  storedocChecked.equalsIgnoreCase("")? "checked=\"checked\"" : "";
+			 	//String storesnapChecked = (oes.getStoreType() != null && oes.getStoreType().equalsIgnoreCase("storeassnapshot")) ? "checked=\"checked\"" : "";
+			 	//String storedocChecked =  storesnapChecked.equalsIgnoreCase("")? "checked=\"checked\"" : "";
+			 	%>
+				<input type="radio" name="storetype" value="storesnap" <%=storesnapChecked%> onclick="radioClickHandler()" /> 
+				<spagobi:message key="storeassnapshot" bundle="component_scheduler_messages" />
+				<br/>
+				<input id="storeAsDocRadio" type="radio" name="storetype" value="storedoc" <%=storedocChecked%> onclick="radioClickHandler()"/> 
+				<spagobi:message key="storeasnewdoc" bundle="component_scheduler_messages" /> 
+			</div>
+			<% String styleStoreAsNewDocDiv = (oes.getStoreType() != null && oes.getStoreType().equalsIgnoreCase("storeasnewdoc")) ? "display:inline;" : "display:none;"; %>
+			<div id="storeasnewdocdiv" style="<%=styleStoreAsNewDocDiv%>">
+				<div class='div_detail_label_scheduler'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.newdoclabel" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<input type="text" name="documentlabel" value="" size="35"/>
+					&nbsp;*
+				</div>
+				<div class='div_detail_label_scheduler'>
+					<span class='portlet-form-field-label'>
+						&nbsp;
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					Qui ci va il tree
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-	
-	
-	
-	
 
-	<input type="submit" value="save" />
+	<div class='portlet-section-header' >
+		<spagobi:message key="scheduler.biobjectParameters" bundle="component_scheduler_messages" />
+	</div>
+	
+	<br/>
+	
+	<div class="div_detail_area_forms_scheduler" >
+	<%
+		while(opisIter.hasNext()) {
+			BIObjectParamInfo bipo = (BIObjectParamInfo)opisIter.next();
+	%>
+		<div class='div_detail_label_scheduler'>
+			<span class='portlet-form-field-label'>
+				<%=bipo.getLabel()%>:
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="text" name="biobjpar_<%=bipo.getUrlname()%>" value="<%=bipo.getValue()%>"/>
+		    &nbsp;*
+		</div>
+	<%
+		}
+	%>
+	</div>
+
 
 
 </form>

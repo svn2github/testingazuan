@@ -1,14 +1,19 @@
 package it.eng.spagobi.scheduler.jobs;
 
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.Domain;
+import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ExecutionController;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
+import it.eng.spagobi.bo.dao.IDomainDAO;
+import it.eng.spagobi.bo.dao.IEngineDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.scheduler.SchedulerUtilities;
 import it.eng.spagobi.utilities.ExecutionProxy;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.List;
 
@@ -78,7 +83,56 @@ public class ExecuteBIDocumentJob implements Job {
 							}
 						}
 						objectCMSDAO.saveSnapshot(response, biobj.getPath(), storeName, storeDesc);
-					}
+					} //if(storeAsSnapshot!=null)
+					
+					
+					// IF THE STORE DOCUMENT OPTION IS SELECTED THEN STORE ANEW OFFICE DOCUMENT
+					if(storeAsDocument!=null) {
+						// recover office document sbidomains
+						IDomainDAO domainDAO = DAOFactory.getDomainDAO();
+						Domain officeDocDom = domainDAO.loadDomainByCodeAndValue("BIOBJ_TYPE", "OFFICE_DOC");
+						// recover development sbidomains
+						Domain devDom = domainDAO.loadDomainByCodeAndValue("STATE", "DEV");
+						// recover engine
+						IEngineDAO engineDAO = DAOFactory.getEngineDAO();
+						List engines = engineDAO.loadAllEnginesForBIObjectType(officeDocDom.getValueCd());
+						Engine engine = (Engine)engines.get(0);
+						// load the template
+						UploadedFile uploadedFile = new UploadedFile();
+						uploadedFile.setFieldNameInForm("template");
+						uploadedFile.setFileName(storeName);
+						uploadedFile.setSizeInBytes(response.length);
+						uploadedFile.setFileContent(response);
+						// load all functionality
+						//List storeInFunctionalities = new ArrayList();
+						//List functIds = request.getAttributeAsList("FUNCT_ID");
+						//Iterator iterFunctIds = functIds.iterator();
+						//while(iterFunctIds.hasNext()) {
+						//	String functIdStr = (String)iterFunctIds.next();
+						//	Integer functId = new Integer(functIdStr);
+						//	storeInFunctionalities.add(functId);
+						//}
+						// create biobject
+						BIObject newbiobj = new BIObject();
+						newbiobj.setDescription(storeDesc);
+						newbiobj.setLabel(storeName);
+						newbiobj.setName(storeName);
+						newbiobj.setEncrypt(new Integer(0));
+						newbiobj.setEngine(engine);
+						newbiobj.setRelName("");
+						newbiobj.setBiObjectTypeCode(officeDocDom.getValueCd());
+						newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
+						newbiobj.setStateCode(devDom.getValueCd());
+						newbiobj.setStateID(devDom.getValueId());
+						newbiobj.setVisible(new Integer(0));
+						newbiobj.setTemplate(uploadedFile);
+						//newbiobj.setFunctionalities(storeInFunctionalities);
+						IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
+						objectDAO.insertBIObject(biobj);
+					} // if(storeAsDocument!=null)
+					
+					
+					
 				}
 			}				
 	    } catch (Exception e) {

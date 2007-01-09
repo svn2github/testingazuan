@@ -610,48 +610,41 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 */
 	public void insertBIObject(BIObject obj) throws EMFUserError {
 		BIObject biObject = obj;
-
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiObjects hibBIObject = new SbiObjects();
-			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,
-					biObject.getEngine().getId());
+			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,	biObject.getEngine().getId());
 			hibBIObject.setSbiEngines(hibEngine); 
 			hibBIObject.setDescr(biObject.getDescription());
 			hibBIObject.setLabel(biObject.getLabel());
 			hibBIObject.setName(biObject.getName());
 			hibBIObject.setEncrypt(new Short(biObject.getEncrypt().shortValue()));
 			hibBIObject.setVisible(new Short(biObject.getVisible().shortValue()));
-			
 			hibBIObject.setRelName(biObject.getRelName());
-			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class,
-					biObject.getStateID());
+			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class, biObject.getStateID());
 			hibBIObject.setState(hibState);
 			hibBIObject.setStateCode(biObject.getStateCode());
-			SbiDomains hibObjectType = (SbiDomains) aSession.load(
-					SbiDomains.class, biObject.getBiObjectTypeID());
+			SbiDomains hibObjectType = (SbiDomains) aSession.load(SbiDomains.class, biObject.getBiObjectTypeID());
 			hibBIObject.setObjectType(hibObjectType);
 			hibBIObject.setObjectTypeCode(biObject.getBiObjectTypeCode());
-			
 			// uuid generation
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
 			String uuid = uuidObj.toString();
 			hibBIObject.setUuid(uuid);
-			
+			// build path of the new biobject
 			ConfigSingleton config = ConfigSingleton.getInstance();
 			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
 			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
 			String path = biobjectsPath + "/" + uuid;
 			hibBIObject.setPath(path);
-
+            // save biobject
 			Integer id = (Integer) aSession.save(hibBIObject);
-			
+			// recover the saved hibernate object
 			hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, id);
-			
 			// functionalities storing
 			Set hibObjFunc = new HashSet();
 			List functionalities = biObject.getFunctionalities();
@@ -666,15 +659,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				hibObjFunc.add(aSbiObjFunc);
 			}
 			hibBIObject.setSbiObjFuncs(hibObjFunc);	
-			
-//			RequestContainer requestContainer = RequestContainer
-//					.getRequestContainer();
-//			SessionContainer session = requestContainer.getSessionContainer();
-//			SessionContainer permSession = session.getPermanentContainer();
-//			IEngUserProfile profile = (IEngUserProfile) permSession
-//					.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-
-			
+            // save new biobject into cms
 			CmsManager manager = new CmsManager();
 			SetOperation setOp = new SetOperation();
 			setOp.setPath(path);
@@ -707,15 +692,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			// Clear bytes in memory
 			biObject.setTemplate(null);
 			tx.commit();
-			
 			obj.setId(id);
-			
 		} catch (OperationExecutionException oe) {
-
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
 					"BIObjectDAOImpl", "internalModify",
 					"Cannot recover detail information", oe);
-
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -723,24 +704,19 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
 					"BIObjectDAOImpl", "internalModify",
 					"Cannot recover detail information", boe);
-
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} catch (HibernateException he) {
 			logException(he);
-
 			if (tx != null)
 				tx.rollback();
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-
 	}
 
 	

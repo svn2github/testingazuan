@@ -16,16 +16,20 @@
 			<COLUMN label="triggerEndTime" name="triggerEndTime" />
 	      </COLUMNS>
 	      <CAPTIONS>
-	      	<ACCEPT_ACTIVITY_CAPTION confirm="FALSE" image="/img/detail.gif" label="ChangeMe">
-	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ChangeMe"/>
-	        </ACCEPT_ACTIVITY_CAPTION>
+	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="ChangeMe">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_OBJECT_SCHEDULATION_DETAILS"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="SchedulerGUIPage"/>
+	          <PARAMETER name="triggerName" scope="LOCAL" type="RELATIVE" value="TriggerName"/>
+	          <PARAMETER name="OBJECT_ID" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJECT_ID"/>
+	          <PARAMETER name="OBJ_JOB_EXISTS" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJ_JOB_EXISTS"/>
+	        </DETAIL_CAPTION>
 	      </CAPTIONS>
 	      <BUTTONS>
 	        <INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="ChangeMe">
-	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_DETAIL_SCHEDULE_OBJECT"/>
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_NEW_OBJECT_SCHEDULATION"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="SchedulerGUIPage"/>
 	          <PARAMETER name="OBJECT_ID" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJECT_ID"/>
-	           <PARAMETER name="OBJ_JOB_EXISTS" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJ_JOB_EXISTS"/>
+	          <PARAMETER name="OBJ_JOB_EXISTS" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJ_JOB_EXISTS"/>
 	        </INSERT_BUTTON>
 	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="ChangeMe">
 	          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE" value="1"/>

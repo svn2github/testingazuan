@@ -37,20 +37,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			Change Me			
+			<spagobi:message key = "scheduler.objectsforscheduling"  bundle="component_scheduler_messages"/>		
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "Sbi.back" bundle="component_impexp_messages" />' 
+      				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
       				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/back.png")%>' 
-      				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
+      				 alt='<spagobi:message key = "scheduler.back"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>
 	</tr>
 </table>
 
+<br/>
+
+<span class='portlet-form-field-label' style="padding-left:10px;">
+			<spagobi:message key="scheduler.choosedoctoschedule" bundle="component_scheduler_messages"/>
+</span>
+
+<br/>
 
 <spagobi:treeObjects moduleName="SchedulerGUIModule"  
 		htmlGeneratorClass="it.eng.spagobi.scheduler.SchedulerTreeHtmlGenerator" />

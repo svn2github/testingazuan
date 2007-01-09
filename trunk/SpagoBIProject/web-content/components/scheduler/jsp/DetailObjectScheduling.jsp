@@ -77,58 +77,65 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</tr>
 		<tr>
 		 	<td width="200px">Schedule Name:</td>
-		 	<td><input type="text" name="triggername" /></td>
+		 	<td><input type="text" name="triggername" value="<%=oes.getTriggerName() != null ? oes.getTriggerName() : ""%>"/></td>
 		</tr>
 		<tr>
 		 	<td width="200px">Schedule Description:</td>
-		 	<td><input type="text" name="triggerdescription" /></td>
+		 	<td><input type="text" name="triggerdescription" value="<%=oes.getTriggerDescription() != null ? oes.getTriggerDescription() : ""%>"/></td>
 		</tr>
 		<tr>
 		 	<td width="200px">Start Date:</td>
-		 	<td><input type="text" name="startdate" />gg/mm/yyyy</td>
+		 	<td><input type="text" name="startdate" value="<%=oes.getStartDate() != null ? oes.getStartDate() : ""%>"/>gg/mm/yyyy</td>
 		</tr>
 		<tr>
 		 	<td width="200px">Start Time:</td>
-		 	<td><input type="text" name="starttime" />hh:mm</td>
+		 	<td><input type="text" name="starttime" value="<%=oes.getStartTime() != null ? oes.getStartTime() : ""%>"/>hh:mm</td>
 		</tr>
 		<tr>
 		 	<td width="200px">End Date:</td>
-		 	<td><input type="text" name="enddate" />gg/mm/yyyy</td>
+		 	<td><input type="text" name="enddate" value="<%=oes.getEndDate() != null ? oes.getEndDate() : ""%>"/>gg/mm/yyyy</td>
 		</tr>
 		<tr>
 		 	<td width="200px">End Time:</td>
-		 	<td><input type="text" name="endtime" />hh:mm</td>
+		 	<td><input type="text" name="endtime" value="<%=oes.getEndTime() != null ? oes.getEndTime() : ""%>"/>hh:mm</td>
 		</tr>
 		<tr>
 		 	<td width="200px">Repeat Interval:</td>
-		 	<td><input type="text" name="repeatInterval" />ms</td>
+		 	<td><input type="text" name="repeatInterval" value="<%=oes.getRepeatInterval() != null ? oes.getRepeatInterval() : ""%>"/>ms</td>
 		</tr>
 		<tr>
 		 	<td width="200px">Store Output:</td>
-		 	<td><input type="checkbox" name="storeoutput" /></td>
+		 	<%
+		 	String storeOutputChecked = oes.isStoreOutput() ? "checked=\"checked\"" : "";
+		 	%>
+		 	<td><input type="checkbox" name="storeoutput" <%=storeOutputChecked%>/></td>
 		</tr>
 		<tr>
 		 	<td width="200px">Store Name:</td>
-		 	<td><input type="text" name="storename" /></td>
+		 	<td><input type="text" name="storename" value="<%=oes.getStoreName() != null ? oes.getStoreName() : ""%>"/></td>
 		</tr>
 		<tr>
 		 	<td width="200px">Store Description:</td>
-		 	<td><input type="text" name="storedescription" /></td>
+		 	<td><input type="text" name="storedescription" value="<%=oes.getStoreDescription() != null ? oes.getStoreDescription() : ""%>"/></td>
 		</tr>
 		<tr>
 		 	<td width="200px">History Length:</td>
-		 	<td><input type="text" name="historylength" /></td>
+		 	<td><input type="text" name="historylength" value="<%=oes.getHistoryLength() != null ? oes.getHistoryLength() : ""%>"/></td>
 		</tr>
 		<tr>
 		 	<td width="200px">Store As:</td>
+		 	<%
+		 	String storesnapChecked = (oes.getStoreType() != null && oes.getStoreType().equalsIgnoreCase("storesnap")) ? "checked=\"checked\"" : "";
+		 	String storedocChecked =  storesnapChecked.equalsIgnoreCase("")? "checked=\"checked\"" : "";
+		 	%>
 		 	<td>
-		 		<input type="radio" name="storetype" value="storesnap" checked="checked"/> Document snapshot
-				<input type="radio" name="storetype" value="storedoc" /> New document 
+		 		<input type="radio" name="storetype" value="storesnap" <%=storesnapChecked%>/> Document snapshot
+				<input type="radio" name="storetype" value="storedoc" <%=storedocChecked%>/> New document 
 			</td>
 		</tr>
 		<tr>
 		 	<td width="200px">Path Document:</td>
-		 	<td><input type="text" name="pathdocument" /></td>
+		 	<td><input type="text" name="pathdocument" value="<%=oes.getPathDocument() != null ? oes.getPathDocument() : ""%>"/></td>
 		</tr>
 		<tr>
 		 	<td colspan="2" bgcolor="yellow" style="height:25px;">BIObject Parameters</td>
@@ -136,12 +143,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%
 			while(opisIter.hasNext()) {
 				BIObjectParamInfo bipo = (BIObjectParamInfo)opisIter.next();
-		%>
-		<tr>
-		 	<td width="200px"><%=bipo.getLabel()%>:</td>
-		 	<td><input type="text" name="biobjpar_<%=bipo.getUrlname()%>" /></td>
-		</tr>
-		<%
+				%>
+				<tr>
+		 			<td width="200px"><%=bipo.getLabel()%>:</td>
+		 			<td><input type="text" name="biobjpar_<%=bipo.getUrlname()%>" value="<%=bipo.getValue()%>"/></td>
+				</tr>
+				<%
 			}
 		%>
 	</table>

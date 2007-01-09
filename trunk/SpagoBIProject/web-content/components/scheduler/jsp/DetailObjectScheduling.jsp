@@ -125,7 +125,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<tr>
 		 	<td width="200px">Store As:</td>
 		 	<%
-		 	String storesnapChecked = (oes.getStoreType() != null && oes.getStoreType().equalsIgnoreCase("storesnap")) ? "checked=\"checked\"" : "";
+		 	String storesnapChecked = (oes.getStoreType() != null && oes.getStoreType().equalsIgnoreCase("storeassnapshot")) ? "checked=\"checked\"" : "";
 		 	String storedocChecked =  storesnapChecked.equalsIgnoreCase("")? "checked=\"checked\"" : "";
 		 	%>
 		 	<td>

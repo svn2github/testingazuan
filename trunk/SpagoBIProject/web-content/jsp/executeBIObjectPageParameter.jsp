@@ -368,7 +368,24 @@
 		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descrSnap %></td>
 		            <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
 		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=creationDate.toString() %></td>
-		            <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		            <td class='<%= rowClass %>' width="20px">&nbsp;</td>
+                    <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+                    	<% 
+                    	if (!actor.equalsIgnoreCase(SpagoBIConstants.ADMIN_ACTOR)) {
+                    		%>
+                    		&nbsp;
+                    		<%
+                    	} else {
+                    	String eraseSnapMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSnapshot", "messages"); %>
+                    	<a href="javascript:var conf = confirm('<%=eraseSnapMsg%>'); if(conf) {document.location='<%=deleteSnapUrl.toString()%>';}">
+                    		<img width="20px" height="20px" 
+                    			src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' 
+  	                			name='deleteSnapshot' alt='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+                        		title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+                        	/>
+                    	</a>
+                    	 <% } %>
+                    </td>
 		            <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
 		                <a href="<%=execSnapUrl.toString()%>">
 		                       <img width="20px" height="20px" 
@@ -378,16 +395,6 @@
 						            title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
 		               	</a>
 		           	</td>
-                    <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-                    	<% String eraseSnapMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSnapshot", "messages"); %>
-                    	<a href="javascript:var conf = confirm('<%=eraseSnapMsg%>'); if(conf) {document.location='<%=deleteSnapUrl.toString()%>';}">
-                    		<img width="20px" height="20px" 
-                    			src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' 
-  	                			name='deleteSnapshot' alt='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
-                        		title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
-                        	/>
-                    	</a>
-                    </td>
 		         </tr> 
 		         <% } %>           
 			 </table> 

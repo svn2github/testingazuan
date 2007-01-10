@@ -76,7 +76,9 @@ public class SchedulerGUIModule extends AbstractModule {
 				getObjectSchedulationDetails(request, response);
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_SCHEDULE_OBJECT)) {
 				scheduleObject(request, response);
-			} 
+			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_DELETE_OBJECT_SCHEDULE)) {
+				deleteObjectSchedule(request, response);
+			}
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
 			return;
@@ -89,7 +91,38 @@ public class SchedulerGUIModule extends AbstractModule {
 	}
 	
 	
-	
+
+	private void deleteObjectSchedule(SourceBean request, SourceBean response) throws EMFUserError {
+		AdapterAxisProxy proxy = new AdapterAxisProxy();
+		String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		String triggerName = (String) request.getAttribute("triggerName");
+		String triggerGroup = (String) request.getAttribute("triggerGroup");
+		try {
+			StringBuffer message = new StringBuffer();
+			message.append("<SERVICE_REQUEST PAGE=\"SchedulerPage\" task=\"deleteSchedulation\" ");
+			message.append(" triggerName=\"" + triggerName + "\" ");
+			message.append(" triggerGroup=\"" + triggerGroup + "\" ");
+			message.append(">");
+			message.append("</SERVICE_REQUEST>");
+			proxy.setEndpoint(sbiconturl + "/services/AdapterAxis");
+			String resp = proxy.service(message.toString());
+			SourceBean respSB = SourceBean.fromXMLString(resp);
+			SourceBean servRespSB = (SourceBean)respSB.getAttribute("SERVICE_RESPONSE");
+			SourceBean schedModRespSB = (SourceBean)servRespSB.getAttribute("SCHEDULERMODULE");
+			SourceBean execOutSB = (SourceBean)schedModRespSB.getAttribute("EXECUTION_OUTCOME");
+			String outcome = (String)execOutSB.getAttribute("outcome");
+			if(outcome.equalsIgnoreCase("fault"))
+				throw new Exception("Object schedule not deleted by the service");
+			// fill spago response
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ListObjectSchedulationLoopPub");
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+                                "deleteObjectSchedule","Error while deleting job schedule ", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		
+	}
+
 	
 	
 	

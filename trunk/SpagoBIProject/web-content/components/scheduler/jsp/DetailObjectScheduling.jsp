@@ -79,6 +79,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dojo/dojo.js" )%>"></script>
 <script type="text/javascript">
        dojo.require("dojo.widget.DropdownDatePicker");
+       dojo.require("dojo.widget.DropdownTimePicker");
 </script>
 
 <script>
@@ -127,7 +128,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input type="text" name="triggerdescription" value="<%=oes.getTriggerDescription() != null ? oes.getTriggerDescription() : ""%>" size="35"/>
-			&nbsp;*
+			&nbsp;
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -147,7 +148,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
+			<%--
 			<input type="text" name="starttime" value="<%=oes.getStartTime() != null ? oes.getStartTime() : ""%>" size="35"/>
+			--%>
+			<input type="hidden" name="starttime" id="starttime" value="<%=oes.getStartTime() != null ? oes.getStartTime() : ""%>" />
+			<div dojoType="dropdowntimepicker" widgetId="startTimeWidget" ></div>
 			&nbsp;*
 		</div>
 		<div class='div_detail_label_scheduler'>
@@ -156,8 +161,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
+		    <%-- 
 			<input type="text" name="enddate" value="<%=oes.getEndDate() != null ? oes.getEndDate() : ""%>" size="35"/>
-			&nbsp;*
+			--%>
+			<input type="hidden" id="enddate" name="enddate" value="<%=oes.getEndDate() != null ? oes.getEndDate() : ""%>" />
+		 	<div dojoType="dropdowndatepicker" widgetId="endDateWidget" ></div>
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -165,8 +173,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
+			<%-- 
 			<input type="text" name="endtime" value="<%=oes.getEndTime() != null ? oes.getEndTime() : ""%>" size="35"/>
-			&nbsp;*
+			--%>
+			<input type="hidden" name="endtime" id="endtime" value="<%=oes.getEndTime() != null ? oes.getEndTime() : ""%>" />
+			<div dojoType="dropdowntimepicker" widgetId="endTimeWidget" ></div>
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -175,7 +186,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input type="text" name="repeatInterval" value="<%=oes.getRepeatInterval() != null ? oes.getRepeatInterval() : ""%>" size="35"/>
-			&nbsp;*&nbsp;ms
+			&nbsp;<span style="font-size:9pt;">ms<span>
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -205,7 +216,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</div>
 			<div class='div_detail_form'>
 				<input type="text" name="storedescription" value="<%=oes.getStoreDescription() != null ? oes.getStoreDescription() : ""%>" size="35"/>
-				&nbsp;*
 			</div>
 			<div class='div_detail_label_scheduler'>
 				<span class='portlet-form-field-label'>
@@ -214,8 +224,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</div>
 			<div class='div_detail_form'>
 				<input type="text" name="historylength" value="<%=oes.getHistoryLength() != null ? oes.getHistoryLength() : ""%>" size="35"/>
-				&nbsp;*
 			</div>
+			<!--  THE FOLLOWING PART IS FOR THE SELECTION OF THE SAVE KIND (SNAPSHOT/NEW DOCUMENT) -->
+			<!--  CURRENTLY IS POSSIBLE ONLY TO SAVE AS SNAPSHOT SO THERE'S THE INPUT TYPE HIDDEN -->
+			<input type="hidden" name="storetype" value="storesnap" />
+			<%-- 
 			<div class='div_detail_label_scheduler'>
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.storeas" bundle="component_scheduler_messages" />
@@ -254,6 +267,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					Qui ci va il tree
 				</div>
 			</div>
+			--%> 
 		</div>
 	</div>
 
@@ -286,20 +300,104 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 </form>
 
+
+
+
+
+
 <script type="text/javascript">
+	
 	function schedulerDetailFormSubmit() {
-		var datePicker = dojo.widget.byId("startDateWidget");
-		var startdate = datePicker.getDate();
-		var startDateStr = startdate.getDate() + "/" + (startdate.getMonth() + 1) + "/" + startdate.getFullYear();
-		document.getElementById("startdate").value = startDateStr;
-		document.getElementById("scheduleDetailForm").submit();
+		// fill startdate
+		var startDatePickerDD = dojo.widget.byId("startDateWidget");
+		var startDatePicker = startDatePickerDD.datePicker;
+    	try{
+      		var startdate = startDatePicker.getDate();
+		  	var startDateStr = addZero(startdate.getDate()) + "/" + addZero(startdate.getMonth() + 1) + "/" + addZero(startdate.getFullYear());
+		  	document.getElementById("startdate").value = startDateStr;
+    	} catch(e) {
+      		document.getElementById("startdate").value = "";
+    	}
+        // fill enddate
+		var endDatePickerDD = dojo.widget.byId("endDateWidget");
+		var endDatePicker = endDatePickerDD.datePicker;
+		try{
+  			var enddate = endDatePicker.getDate();
+  			var endDateStr = addZero(enddate.getDate()) + "/" + addZero(enddate.getMonth() + 1) + "/" + addZero(enddate.getFullYear());
+  			document.getElementById("enddate").value = endDateStr;
+  		} catch(e) {
+      		document.getElementById("enddate").value = "";
+    	}
+		// fill start time
+		var startTimePickerDD = dojo.widget.byId("startTimeWidget");
+		var startTimePickerDDValue = startTimePickerDD.getValue();
+		if(startTimePickerDDValue!="") {
+			var startTimePicker = startTimePickerDD.timePicker;
+	    	var starttime = startTimePicker.time;
+	    	var startTimeStr = addZero(starttime.getHours()) + ":" + addZero(starttime.getMinutes());
+		  	document.getElementById("starttime").value = startTimeStr;
+		}
+        
+        // fill end time
+    	var endTimePickerDD = dojo.widget.byId("endTimeWidget");
+   		var endTimePickerDDValue = endTimePickerDD.getValue();
+    	if(endTimePickerDDValue!="") {
+	       	var endTimePicker = endTimePickerDD.timePicker;
+	       	var endtime = endTimePicker.time;
+			var endTimeStr = addZero(endtime.getHours()) + ":" + addZero(endtime.getMinutes());
+			document.getElementById("endtime").value = endTimeStr;
+    	}
+    	
+    	alert(document.getElementById("startdate").value);
+		alert(document.getElementById("enddate").value);
+		alert(document.getElementById("starttime").value);
+    	alert(document.getElementById("endtime").value);
+    	
+    	//document.getElementById("scheduleDetailForm").submit();
 	}
+	
+	function addZero(number) {
+		if(number < 10) { 
+			return "0" + number;
+		} else {
+			return "" + number;
+		}
+	}
+	
+	function init() {
+    	<%
+    	if( (oes.getStartDate()!= null) && !oes.getStartDate().trim().equals("") ) {
+			String[] splittedStartDate = oes.getStartDate().split("/"); // date format dd/mm/yyyy
+		%>
+		var startDatePicker = dojo.widget.byId("startDateWidget");
+		var startdate = new Date();
+		startdate.setDate(<%=splittedStartDate[0]%>);
+		startdate.setMonth(<%=new Integer(splittedStartDate[1]).intValue() - 1%>);
+		startdate.setFullYear(<%=splittedStartDate[2]%>);
+		startDatePicker.setDate(startdate);
+		<%}%>
+		<%
+    	if( (oes.getEndDate()!= null) && !oes.getEndDate().trim().equals("") ) {
+			String[] splittedEndDate = oes.getEndDate().split("/"); // date format dd/mm/yyyy
+		%>
+		var endDatePicker = dojo.widget.byId("endDateWidget");
+		var enddate = new Date();
+		enddate.setDate(<%=splittedEndDate[0]%>);
+		enddate.setMonth(<%=new Integer(splittedEndDate[1]).intValue() - 1%>);
+		enddate.setFullYear(<%=splittedEndDate[2]%>);
+		endDatePicker.setDate(enddate);
+		<%}%>
+  	}
+
+   dojo.addOnLoad(init);
 </script>
+
+<%--
 <%
 if (oes.getStartDate() != null) {
 	// date format dd/mm/yyyy
 	String[] splittedDate = oes.getStartDate().split("/");
-	%>
+%>
 	<script type="text/javascript">
 		setTimeout("updateDate()",1);
 		function updateDate () {
@@ -311,6 +409,8 @@ if (oes.getStartDate() != null) {
 			datePicker.setDate(startdate);
 		}
 	</script>
-	<%
+<%
 }
 %>
+
+--%>

@@ -10,6 +10,7 @@
 	      <QUERIES/>
 	      <COLUMNS>
 	      	<COLUMN label="scheduler.TriggerName" name="TriggerName" />
+	      	<COLUMN label="scheduler.TriggerGroup" name="TriggerGroup" hidden="true" />
 	        <COLUMN label="scheduler.triggerDescription" name="triggerDescription" />
 			<!-- <COLUMN label="triggerCalendarName" name="triggerCalendarName" /> -->
 			<COLUMN label="scheduler.triggerStartTime" name="triggerStartTime" />
@@ -21,8 +22,16 @@
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="SchedulerGUIPage"/>
 	          <PARAMETER name="triggerName" scope="LOCAL" type="RELATIVE" value="TriggerName"/>
 	          <PARAMETER name="OBJECT_ID" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJECT_ID"/>
-	          <PARAMETER name="OBJ_JOB_EXISTS" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJ_JOB_EXISTS"/>
+	          <PARAMETER name="OBJ_JOB_EXISTS" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJ_JOB_EXISTS"/> 
 	        </DETAIL_CAPTION>
+	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="scheduler.delete">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_DELETE_OBJECT_SCHEDULE"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="SchedulerGUIPage"/>
+	          <PARAMETER name="triggerName" scope="LOCAL" type="RELATIVE" value="TriggerName"/>
+	          <PARAMETER name="triggerGroup" scope="LOCAL" type="RELATIVE" value="TriggerGroup"/>
+	          <PARAMETER name="OBJECT_ID" scope="SERVICE_RESPONSE" type="RELATIVE" value="SchedulerGUIModule.OBJECT_ID"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
+	        </DELETE_CAPTION>
 	      </CAPTIONS>
 	      <BUTTONS>
 	        <INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="scheduler.newschedule">

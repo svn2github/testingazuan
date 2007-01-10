@@ -259,6 +259,7 @@ public class SchedulerModule extends AbstractModule {
 				Trigger trigger = triggers[i];
 				buffer.append("<ROW ");
 				String triggerName = trigger.getName();
+				String triggerGroup = trigger.getGroup();
 				String triggerDescription = trigger.getDescription();
 				String triggerCalendarName = trigger.getCalendarName();
 				Date triggerStartTime = trigger.getStartTime();
@@ -266,6 +267,7 @@ public class SchedulerModule extends AbstractModule {
 				Date triggerEndTime = trigger.getEndTime();
 				String triggerEndTimeStr = triggerEndTime != null ? triggerEndTime.toString(): "";
 				buffer.append(" triggerName=\"" + (triggerName != null ? triggerName : "") + "\"");
+				buffer.append(" triggerGroup=\"" + (triggerGroup != null ? triggerGroup : "") + "\"");
 				buffer.append(" triggerDescription=\"" + (triggerDescription != null ? triggerDescription : "") + "\"");
 				buffer.append(" triggerCalendarName=\"" + (triggerCalendarName != null ? triggerCalendarName : "") + "\"");
 				buffer.append(" triggerStartTime=\"" + triggerStartTimeStr + "\"");
@@ -599,19 +601,39 @@ public class SchedulerModule extends AbstractModule {
 		}
 	}
 
+	
+	
+	
 	private void deleteSchedulation(SourceBean request, SourceBean response) throws EMFUserError{
-		String triggerName = (String) request.getAttribute("triggerName");
-		String triggerGroup = (String) request.getAttribute("triggerGroup");
-		try {
-			scheduler.unscheduleJob(triggerName, triggerGroup);
-		} catch (SchedulerException e) {
-			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "deleteSchedulation", 
-					"Error while deleting trigger", e);
-			Vector v = new Vector();
-			v.add(e.getMessage());
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "101", v);
+		StringBuffer servreponse = new StringBuffer();
+		try{
+			servreponse.append("<EXECUTION_OUTCOME ");
+			String triggerName = (String) request.getAttribute("triggerName");
+			String triggerGroup = (String) request.getAttribute("triggerGroup");
+			try {
+				scheduler.unscheduleJob(triggerName, triggerGroup);
+			} catch (SchedulerException e) {
+				SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "deleteSchedulation", 
+										"Error while deleting trigger", e);
+				throw e;
+			}
+		} catch (Exception e) {
+			servreponse.append("outcome=\"fault\"/>");
+		}
+		servreponse.append("outcome=\"perform\"/>");
+		// put into response the outcome of the service
+		try{
+			SourceBean outcomeSB = SourceBean.fromXMLString(servreponse.toString());
+			response.setAttribute(outcomeSB);
+		} catch(Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
+		                        "deleteSchedulation", "Error while filling response with the service outcome", e);
 		}
 	}
+	
+	
+	
+	
 	
 	private JobDataMap getJobDataMap(SourceBean jobParameters) {
 		JobDataMap jdm = new JobDataMap();

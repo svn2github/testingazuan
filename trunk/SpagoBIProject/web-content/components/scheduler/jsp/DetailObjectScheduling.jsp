@@ -28,6 +28,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.bo.BIObjectParameter"%>
 <%@page import="it.eng.spagobi.scheduler.modules.SchedulerGUIModule"%>
+<%@page import="it.eng.spagobi.scheduler.to.ObjExecSchedulation"%>
+<%@page import="it.eng.spagobi.scheduler.to.BIObjectParamInfo"%>
 
 <%  
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("SchedulerGUIModule"); 
@@ -46,10 +48,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    saveUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
    
 %>
-
-
-<%@page import="it.eng.spagobi.scheduler.to.ObjExecSchedulation"%>
-<%@page import="it.eng.spagobi.scheduler.to.BIObjectParamInfo"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -57,7 +55,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href="javascript:document.getElementById('scheduleDetailForm').submit()"> 
+			<a href="javascript:schedulerDetailFormSubmit()"> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key="scheduler.save" bundle="component_scheduler_messages" />' 
       			     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/save.png")%>' 
@@ -77,6 +75,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </table>
 
 <br/>
+
+<script type="text/javascript" src="<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dojo/dojo.js" )%>"></script>
+<script type="text/javascript">
+       dojo.require("dojo.widget.DropdownDatePicker");
+</script>
 
 <script>
 	function storeOutClickHandler() {
@@ -102,7 +105,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 </script>
 
-<form id="scheduleDetailForm" method="post" action="<%=saveUrl.toString()%>" >
+<form id="scheduleDetailForm" name="scheduleDetailForm" method="post" action="<%=saveUrl.toString()%>" >
     <input type="hidden" name="<%=SpagoBIConstants.OBJECT_ID%>" value="<%=objid%>" />
 	<input type="hidden" name="<%=SpagoBIConstants.OBJ_JOB_EXISTS%>" value="<%=jobExist%>" />
 	
@@ -132,8 +135,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
+			<%--
 			<input type="text" name="startdate" value="<%=oes.getStartDate() != null ? oes.getStartDate() : ""%>" size="35"/>
-			&nbsp;*
+			--%>
+			<input type="hidden" id="startdate" name="startdate" value="<%=oes.getStartDate() != null ? oes.getStartDate() : ""%>" />
+		 	<div dojoType="dropdowndatepicker" widgetId="startDateWidget" ></div>&nbsp;*
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -278,7 +284,33 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 	</div>
 
-
-
 </form>
 
+<script type="text/javascript">
+	function schedulerDetailFormSubmit() {
+		var datePicker = dojo.widget.byId("startDateWidget");
+		var startdate = datePicker.getDate();
+		var startDateStr = startdate.getDate() + "/" + (startdate.getMonth() + 1) + "/" + startdate.getFullYear();
+		document.getElementById("startdate").value = startDateStr;
+		document.getElementById("scheduleDetailForm").submit();
+	}
+</script>
+<%
+if (oes.getStartDate() != null) {
+	// date format dd/mm/yyyy
+	String[] splittedDate = oes.getStartDate().split("/");
+	%>
+	<script type="text/javascript">
+		setTimeout("updateDate()",1);
+		function updateDate () {
+			var datePicker = dojo.widget.byId("startDateWidget");
+			var startdate = new Date();
+			startdate.setDate(<%=splittedDate[0]%>);
+			startdate.setMonth(<%=new Integer(splittedDate[1]).intValue() - 1%>);
+			startdate.setFullYear(<%=splittedDate[2]%>);
+			datePicker.setDate(startdate);
+		}
+	</script>
+	<%
+}
+%>

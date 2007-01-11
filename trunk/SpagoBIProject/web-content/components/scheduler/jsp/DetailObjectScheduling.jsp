@@ -347,13 +347,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			var endTimeStr = addZero(endtime.getHours()) + ":" + addZero(endtime.getMinutes());
 			document.getElementById("endtime").value = endTimeStr;
     	}
-    	
-    	alert(document.getElementById("startdate").value);
-		alert(document.getElementById("enddate").value);
-		alert(document.getElementById("starttime").value);
-    	alert(document.getElementById("endtime").value);
-    	
-    	//document.getElementById("scheduleDetailForm").submit();
+    	//alert(document.getElementById("startdate").value);
+		//alert(document.getElementById("enddate").value);
+		//alert(document.getElementById("starttime").value);
+    	//alert(document.getElementById("endtime").value);
+    	document.getElementById("scheduleDetailForm").submit();
 	}
 	
 	function addZero(number) {
@@ -387,30 +385,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		enddate.setFullYear(<%=splittedEndDate[2]%>);
 		endDatePicker.setDate(enddate);
 		<%}%>
+		<%
+    	if( (oes.getStartTime()!= null) && !oes.getStartTime().trim().equals("") ) {
+			String[] splittedStartTime = oes.getStartTime().split(":"); // time format hh:mm
+		%>
+		var startTimePicker = dojo.widget.byId("startTimeWidget");
+		var startTime = new Date();
+		startTime.setHours(<%=splittedStartTime[0]%>);
+		startTime.setMinutes(<%=splittedStartTime[1]%>);
+		startTimePicker.setTime(startTime);
+		<%}%>
+		<%
+    	if( (oes.getEndTime()!= null) && !oes.getEndTime().trim().equals("") ) {
+			String[] splittedEndTime = oes.getEndTime().split(":"); // time format hh:mm
+		%>
+		var endTimePicker = dojo.widget.byId("endTimeWidget");
+		var endTime = new Date();
+		endTime.setHours(<%=splittedEndTime[0]%>);
+		endTime.setMinutes(<%=splittedEndTime[1]%>);
+		endTimePicker.setTime(endTime);
+		<%}%>
+		
   	}
 
    dojo.addOnLoad(init);
 </script>
 
-<%--
-<%
-if (oes.getStartDate() != null) {
-	// date format dd/mm/yyyy
-	String[] splittedDate = oes.getStartDate().split("/");
-%>
-	<script type="text/javascript">
-		setTimeout("updateDate()",1);
-		function updateDate () {
-			var datePicker = dojo.widget.byId("startDateWidget");
-			var startdate = new Date();
-			startdate.setDate(<%=splittedDate[0]%>);
-			startdate.setMonth(<%=new Integer(splittedDate[1]).intValue() - 1%>);
-			startdate.setFullYear(<%=splittedDate[2]%>);
-			datePicker.setDate(startdate);
-		}
-	</script>
-<%
-}
-%>
-
---%>

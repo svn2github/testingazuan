@@ -110,10 +110,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 	function changeNameHandler() {
 		var originalName = "<%=oes.getTriggerName()%>";
-		var actualName = document.getElementById('triggernameIT').value;
+		var actualName = document.getElementById('triggername').value;
 		if(actualName!=originalName) {
 			if(!confirm('<spagobi:message key="scheduler.changeNameMsg" bundle="component_scheduler_messages" />')) {
-				document.getElementById('triggernameIT').value = originalName;
+				document.getElementById('triggername').value = originalName;
 			}
 		}
 	}
@@ -135,7 +135,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input id="triggernameIT" onchange="changeNameHandler()" type="text" name="triggername" value="<%=oes.getTriggerName() != null ? oes.getTriggerName() : ""%>" size="35"/>
+			<input id="triggername" onchange="changeNameHandler()" type="text" name="triggername" value="<%=oes.getTriggerName() != null ? oes.getTriggerName() : ""%>" size="35"/>
 		    &nbsp;*
 		</div>
 		<div class='div_detail_label_scheduler'>
@@ -212,7 +212,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<% String storeOutputChecked = oes.isStoreOutput() ? "checked=\"checked\"" : ""; %>
-		 	<input id="storeoutcheck" type="checkbox" name="storeoutput" <%=storeOutputChecked%> onclick="storeOutClickHandler()"/>
+		 	<input id="storeoutcheck" type="checkbox" id="storeoutput" name="storeoutput" <%=storeOutputChecked%> onclick="storeOutClickHandler()"/>
 			&nbsp;
 		</div>
 		<% String styleStoreOutDiv = oes.isStoreOutput() ? "display:inline;" : "display:none;"; %>
@@ -223,7 +223,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<input type="text" name="storename" value="<%=oes.getStoreName() != null ? oes.getStoreName() : ""%>" size="35"/>
+				<input type="text" id="storename" name="storename" value="<%=oes.getStoreName() != null ? oes.getStoreName() : ""%>" size="35"/>
 				&nbsp;*
 			</div>
 			<div class='div_detail_label_scheduler'>
@@ -367,6 +367,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		//alert(document.getElementById("enddate").value);
 		//alert(document.getElementById("starttime").value);
     	//alert(document.getElementById("endtime").value);
+    	
+    	// input data validation
+    	if (document.getElementById('triggername').value == '') {
+    		alert('<spagobi:message key="sheduler.javascript.schedulationNameMissing" bundle="component_scheduler_messages" />');
+    		return;
+    	}
+    	if (document.getElementById('startdate').value == '') {
+    		alert('<spagobi:message key="sheduler.javascript.schedulationStartDateMissing" bundle="component_scheduler_messages" />');
+    		return;
+    	}
+    	if (document.getElementById('starttime').value == '') {
+    		alert('<spagobi:message key="sheduler.javascript.schedulationStartHourMissing" bundle="component_scheduler_messages" />');
+    		return;
+    	}
+    	
+    	storeOutputChecked = document.getElementById('storeoutcheck').checked;
+    	if (storeOutputChecked) {
+    		if (document.getElementById('storename').value == '') {
+    			alert('<spagobi:message key="sheduler.javascript.schedulationStoreOutputName" bundle="component_scheduler_messages" />');
+    			return;
+    		}
+    	}
+    	
     	document.getElementById("scheduleDetailForm").submit();
 	}
 	

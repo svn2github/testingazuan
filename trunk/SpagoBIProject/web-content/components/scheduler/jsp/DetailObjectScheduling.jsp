@@ -104,6 +104,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			sandd.style.display="none";
 		}
 	}
+	
+	<%
+	if( (oes.getTriggerName()!=null) && !oes.getTriggerName().trim().equals("") ) { 
+	%>
+	function changeNameHandler() {
+		var originalName = "<%=oes.getTriggerName()%>";
+		var actualName = document.getElementById('triggernameIT').value;
+		if(actualName!=originalName) {
+			if(!confirm('<spagobi:message key="scheduler.changeNameMsg" bundle="component_scheduler_messages" />')) {
+				document.getElementById('triggernameIT').value = originalName;
+			}
+		}
+	}
+	<%
+	}
+	%>
+	
 </script>
 
 <form id="scheduleDetailForm" name="scheduleDetailForm" method="post" action="<%=saveUrl.toString()%>" >
@@ -118,7 +135,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input type="text" name="triggername" value="<%=oes.getTriggerName() != null ? oes.getTriggerName() : ""%>" size="35"/>
+			<input id="triggernameIT" onchange="changeNameHandler()" type="text" name="triggername" value="<%=oes.getTriggerName() != null ? oes.getTriggerName() : ""%>" size="35"/>
 		    &nbsp;*
 		</div>
 		<div class='div_detail_label_scheduler'>
@@ -291,7 +308,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input type="text" name="biobjpar_<%=bipo.getUrlname()%>" value="<%=bipo.getValue()%>"/>
-		    &nbsp;*
 		</div>
 	<%
 		}

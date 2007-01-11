@@ -538,8 +538,6 @@ public class SchedulerModule extends AbstractModule {
 				}
 				
 			}
-	
-			
 			// create trigger
 			SimpleTrigger trigger = new SimpleTrigger();
 			trigger.setName(triggerName);
@@ -559,16 +557,28 @@ public class SchedulerModule extends AbstractModule {
 		    trigger.setJobGroup(jobGroup);
 		    trigger.setJobDataMap(jdm);
 		    trigger.setVolatility(false);
-			 
-		    
+			// check if the trigger already exists 
+		    boolean exists = false;
+		    Trigger[] jobTrgs = scheduler.getTriggersOfJob(jobName, jobGroup);
+            for(int ind=0; ind<jobTrgs.length; ind++) {
+            	Trigger trg = jobTrgs[ind];
+            	if(trg.getName().equals(triggerName)) {
+            		exists = true;
+            		break;
+            	}
+            }
 	        // schedule trigger 
-			try {
-				scheduler.scheduleJob(trigger);
+			try{
+				if(!exists) {
+					scheduler.scheduleJob(trigger);
+				} else {
+					scheduler.rescheduleJob(triggerName, triggerGroup, trigger);
+				}
 			} catch (SchedulerException e) {
 				SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
 						"Error while scheduling job ", e);
 				throw e;
-			}
+			}			
 		} catch (Exception e) {
 			servreponse.append("outcome=\"fault\"/>");
 		}

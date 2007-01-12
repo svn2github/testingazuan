@@ -153,7 +153,12 @@ public class QueryWizardTag extends TagSupport {
 		
 		output.append("  </div>\n");
 	    output.append("</div>\n");
-		
+	    
+	    
+	    output.append("<br>\n");
+	    output.append("<br>\n");
+	    output.append("<br>\n");
+	    output.append("<br>\n");
 		
 	    output.append("<div id='queryWizardWithJavascript' style='display:none;'>\n");
 	    output.append("	 <div class='div_detail_area_forms_lov'>\n");	
@@ -240,6 +245,7 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("	strHTML += '</tr>';\n");
 	    output.append("	var rowClass;\n");
 	    output.append("	var alternate = false;\n");
+	    output.append("	var visibleColPos = 0;\n");
 	    output.append("	for (i = 0; i < fields.length; i++) {\n");
 	    output.append("		if (alternate) rowClass = \"portlet-section-alternate\";\n");
 	    output.append("		else rowClass = \"portlet-section-body\";\n");
@@ -257,9 +263,14 @@ public class QueryWizardTag extends TagSupport {
 	   
 	    output.append("		var isVisible = '';\n");
 	    output.append("		for (j = 0; j < visibleColumns.length; j++) {\n");
-	    output.append("			if (fields[i] == visibleColumns[j]) isVisible='checked=\"checked\"';\n");
+	    output.append("			if (fields[i] == visibleColumns[j]) {\n");
+	    output.append("				isVisible='checked=\"checked\"';\n");
+	    output.append("				visibleColPos = visibleColPos + 1;\n");
+	    output.append("				break;\n");
+	    output.append("			}\n");
+	    //output.append("		if (fields[i] == visibleColumns[j]) isVisible='checked=\"checked\"';\n");
 	    output.append("		}\n");
-	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"checkbox\" onclick=\"setVisibleColumns(this.value,this.checked);\" onchange=\"setLovProviderModified(true);\" name=\"visColumnsJS\" id=\"visColumnsJS\" value=\"' + fields[i] + '\" ' + isVisible + '></td>';\n");
+	    output.append("		strHTML += '<td class=\"' + rowClass + '\" align=\"center\"><input type=\"checkbox\" onclick=\"setVisibleColumns(this.value,this.checked,' + visibleColPos + ');\" onchange=\"setLovProviderModified(true);\" name=\"visColumnsJS\" id=\"visColumnsJS\" value=\"' + fields[i] + '\" ' + isVisible + '></td>';\n");
 	    output.append("		strHTML += '</tr>';\n");
 	    output.append("	}\n");
 	    output.append("	return strHTML;\n");
@@ -372,7 +383,7 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("	if (invisibleFields.length == 1 && trim(invisibleFields[0]) == '') invisibleFields.pop();\n");
 	    output.append("	for (i = 0; i < invisibleFields.length; i++) {\n");
 	    output.append("		var invisibleFieldFound = false;\n");
-	    output.append(" 	var aInvisibleField = trim(invisibleFields[i]);\n");
+	    output.append(" 	aInvisibleField = trim(invisibleFields[i]);\n");
 	    output.append(" 	for (j = 0; j < fields.length; j++) {\n");
 	    output.append(" 		var field = trim(fields[j]);\n");
 	    output.append(" 		if (aInvisibleField == field) {\n");
@@ -388,15 +399,15 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		var fieldFound = false;\n");
 	    output.append(" 	var field = trim(fields[i]);\n");
 	    output.append(" 	for (j = 0; j < invisibleFields.length; j++) {\n");
-	    output.append(" 		var aInvisiblefield = trim(invisibleFields[j]);\n");
-	    output.append(" 		if (aInvisibleField == field) {\n");
+	    output.append(" 		aInvisField = trim(invisibleFields[j]);\n");
+	    output.append(" 		if (aInvisField == field) {\n");
 	    output.append(" 			fieldFound = true;\n");
 	    output.append(" 			break;\n");
 	    output.append(" 		}\n");
 	    output.append(" 	}\n");
 	    output.append(" 	if (!fieldFound) {\n");
 	    output.append(" 		for (j = 0; j < visibleFields.length; j++) {\n");
-	    output.append(" 			var aVisibleField = trim(visibleFields[j]);\n");
+	    output.append(" 			aVisibleField = trim(visibleFields[j]);\n");
 	    output.append(" 			if (aVisibleField == field) {\n");
 	    output.append(" 				fieldFound = true;\n");
 	    output.append(" 				break;\n");
@@ -451,7 +462,7 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("		document.getElementById('queryDef').value = queryDef;\n");
 	    output.append("		updateFields();\n");
 	    output.append("}\n");
-	    output.append("function setVisibleColumns(column,checked) {\n");
+	    output.append("function setVisibleColumns(column,checked,visibleColumnPos) {\n");
 	    // if the column is checked, tries to insert it into visible columns and to delete from invisible columns
 	    output.append("	var visibleColumns = document.getElementById('visColumns').value;\n");
 	    output.append("	var visibleFields = visibleColumns.split(',');\n");
@@ -472,7 +483,8 @@ public class QueryWizardTag extends TagSupport {
 	    output.append(" 	}\n");
 	    output.append(" }\n");
 	    output.append(" if (!visibleFieldFound && checked) {\n");
-	    output.append(" 	visibleFields.push(column);\n");
+	    output.append(" 	visibleFields.splice(visibleColumnPos,0,column);\n");
+	    //output.append(" 	visibleFields.push(column);\n");
 	    output.append("	}\n");
 	    output.append("	var invisibleFieldFound = false;\n");
 	    output.append("	for (i = 0; i < invisibleFields.length; i++) {\n");
@@ -491,6 +503,12 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("	}\n");
 	    output.append("	document.getElementById('visColumns').value = visibleFields.join(',');\n");
 	    output.append("	document.getElementById('invisColumns').value = invisibleFields.join(',');\n");
+	    output.append("	var valueColumn = trim(document.getElementById('valueColumns').value);\n");
+	    output.append("	var descriptionColumn = trim(document.getElementById('descriptionColumns').value);\n");
+	    output.append("	var fields = findFieldsFromQuery();\n");
+	    output.append("	var strHTML = generateHTML(fields, valueColumn, descriptionColumn, visibleFields);\n");
+	    output.append("	document.getElementById('fieldsDiv').innerHTML = strHTML;\n");
+	    //output.append("	updateFields();\n");
 	    output.append("}\n");
 	    
 	    output.append("function isASelect(queryDef) {\n");
@@ -541,7 +559,7 @@ public class QueryWizardTag extends TagSupport {
 	    
 	    output.append("<script>\n");
 	    output.append("document.getElementById('queryWizardWithJavascript').style.display='inline';\n");
-	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='none';\n");
+	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='inline';\n");
 	    output.append("displayQueryFields();\n");
 	    output.append("</script>\n");
 	    

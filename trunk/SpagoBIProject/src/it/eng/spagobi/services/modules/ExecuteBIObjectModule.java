@@ -456,8 +456,12 @@ public class ExecuteBIObjectModule extends AbstractModule
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         // get the list of the subObjects
 		List subObjects = getSubObjectsList(obj, profile);
-        // put in response the list of subobject names
+		// get the list of biobject snapshot
+		List snapshots = getSnapshotList(obj);
+		// put in response the list of subobject names
 		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+		// put in response the list of snapshot 
+		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "ExecuteBIObjectPageParameter");
 	}
 	

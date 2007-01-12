@@ -21,22 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
-import groovy.lang.Binding;
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
+import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.init.InitializerIFace;
 import it.eng.spago.navigation.LightNavigationManager;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -46,18 +42,16 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
-import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
-import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.FixedListDetail;
+import it.eng.spagobi.bo.lov.FixedListItemDetail;
+import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.QueryDetail;
 import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.security.IPortalSecurityProvider;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -322,9 +316,31 @@ public class DetailModalitiesValueModule extends AbstractModule {
 							.getAttribute("indexOfFixedLovItemToDelete");
 					if (indexOfFixedLovItemToDeleteObj != null) {
 						// it is requested to delete a Fix Lov item
-						int indexOfFixedLovItemToDelete = findIndexOfFixedLovItemToDelete(indexOfFixedLovItemToDeleteObj);
-						FixedListDetail lovDetailList = recoverLovWizardValues(
-								request, indexOfFixedLovItemToDelete);
+						int indexOfFixedLovItemToDelete = new Integer((String)indexOfFixedLovItemToDeleteObj).intValue();
+						FixedListDetail lovDetailList = recoverLovWizardValues(request);
+						lovDetailList = deleteFixLovValue(lovDetailList, indexOfFixedLovItemToDelete);
+						String lovProvider = lovDetailList.toXML();
+						modVal.setLovProvider(lovProvider);
+						prepareDetailModalitiesValuePage(modVal, mod, response);
+						response.setAttribute("lovProviderModified", "true");
+						// exits without writing into DB and without loop
+						return;
+					}
+					
+					// checks if it is requested to change a Fix Lov item
+					Object indOfFixLovItemToChangeObj = request.getAttribute("indexOfFixedLovItemToChange");
+					if (indOfFixLovItemToChangeObj != null) {
+						// it is requested to change a Fix Lov item
+						int indexOfFixedLovItemToChange = new Integer((String)indOfFixLovItemToChangeObj).intValue();
+						FixedListDetail lovDetailList = recoverLovWizardValues(request);
+						String newName = (String)request.getAttribute("nameRow"+indexOfFixedLovItemToChange+"InpText");
+						String newValue = (String)request.getAttribute("descrRow"+indexOfFixedLovItemToChange+"InpText");
+						request.setAttribute("newNameRow", newName);
+						request.setAttribute("newValueRow", newValue);
+						ValidationCoordinator.validate("PAGE", "FixLovChangeValidation", this);
+						if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+							lovDetailList = changeFixLovValue(lovDetailList, indexOfFixedLovItemToChange, newName, newValue);
+						}
 						String lovProvider = lovDetailList.toXML();
 						modVal.setLovProvider(lovProvider);
 						prepareDetailModalitiesValuePage(modVal, mod, response);
@@ -333,15 +349,49 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						return;
 					}
 
+					// ***************************************************************************
+					// ***************************************************************************
+					// ***************************************************************************
+					// checks if it is requested to move down a Fix Lov item
+					Object indexOfItemToDown = request.getAttribute("indexOfItemToDown");
+					if (indexOfItemToDown != null) {
+						// it is requested to move down a Fix Lov item
+						int indexOfItemToDownInt = new Integer((String)indexOfItemToDown).intValue();
+						FixedListDetail lovDetailList = recoverLovWizardValues(request);
+						lovDetailList = moveDownFixLovItem(lovDetailList, indexOfItemToDownInt);
+						String lovProvider = lovDetailList.toXML();
+						modVal.setLovProvider(lovProvider);
+						prepareDetailModalitiesValuePage(modVal, mod, response);
+						response.setAttribute("lovProviderModified", "true");
+						// exits without writing into DB and without loop
+						return;
+					}
+					
+					// checks if it is requested to move up a Fix Lov item
+					Object indexOfItemToUp = request.getAttribute("indexOfItemToUp");
+					if (indexOfItemToUp != null) {
+						// it is requested to move down a Fix Lov item
+						int indexOfItemToUpInt = new Integer((String)indexOfItemToUp).intValue();
+						FixedListDetail lovDetailList = recoverLovWizardValues(request);
+						lovDetailList = moveUpFixLovItem(lovDetailList, indexOfItemToUpInt);
+						String lovProvider = lovDetailList.toXML();
+						modVal.setLovProvider(lovProvider);
+						prepareDetailModalitiesValuePage(modVal, mod, response);
+						response.setAttribute("lovProviderModified", "true");
+						// exits without writing into DB and without loop
+						return;
+					}
+					// ***************************************************************************
+					// ***************************************************************************
+					// ***************************************************************************
+					
 					// loads all Fix Lov items
-					FixedListDetail lovDetailList = recoverLovWizardValues(
-							request, -1);
+					FixedListDetail lovDetailList = recoverLovWizardValues(request);
 					String lovProvider = lovDetailList.toXML();
 					modVal.setLovProvider(lovProvider);
 
 					// controls if it is requested to add a Fix Lov item
-					Object insertFixLovItem = request
-							.getAttribute("insertFixLovItem");
+					Object insertFixLovItem = request.getAttribute("insertFixLovItem");
 					if (insertFixLovItem != null) {
 						// it is requested to add a Fix Lov item.
 						// If there are no errors, add the new item in the
@@ -806,12 +856,14 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		return modVal;
 	}
 	
+	
 	/**
 	 * Finds the index of the fixed lov item to delete.
 	 * 
 	 * @param indexOfFixedListItemToDeleteObj	The object obtained from the SourceBean request 
 	 * as an attribute with key "indexOfFixedListItemToDelete" 
 	 */
+	/*
 	private int findIndexOfFixedLovItemToDelete (Object indexOfFixedLovItemToDeleteObj) {
 		String indexOfFixedLovItemToDeleteStr = "";
 		if (indexOfFixedLovItemToDeleteObj instanceof String) {
@@ -828,6 +880,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		int indexOfFixedLovItemToDelete = Integer.parseInt(indexOfFixedLovItemToDeleteStr);
 		return indexOfFixedLovItemToDelete;
 	}
+	*/
 	
 	/**
 	 * Recovers all the fix lov items from the request, apart from the one with index indexOfFixedListItemToDelete,
@@ -838,20 +891,82 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param indexOfFixedListItemToDelete	The index of the item to be ignorated.
 	 * @throws Exception	If an Exception occurred
 	 */
-	private FixedListDetail recoverLovWizardValues (SourceBean request, int indexOfFixedLovItemToDelete) throws Exception {
-		
+	private FixedListDetail recoverLovWizardValues (SourceBean request) throws Exception {
 		FixedListDetail lovDetList = new FixedListDetail();
 		List names = request.getAttributeAsList("nameOfFixedListItem");
 		List values = request.getAttributeAsList("valueOfFixedListItem");
-		if (names.size() != values.size()) throw new Exception ("Fixed Lov has different numbers of names and values!");
-		for (int i = 0; i < names.size(); i++) {
+		if(names.size() != values.size()) 
+			throw new Exception ("Fixed Lov has different numbers of names and values!");
+		for(int i = 0; i < names.size(); i++) {
 			String name = (String) names.get(i);
 			String value = (String) values.get(i);
-			if (indexOfFixedLovItemToDelete != i) lovDetList.add(name, value);
+			lovDetList.add(name, value);
+			//	if (indexOfFixedLovItemToDelete != i) lovDetList.add(name, value);
 		}
 		return lovDetList;
 	}
 	
+	
+	/**
+	 * Delete from the list of fix lov items the one at index indexOfFixedListItemToDelete
+	 * @param lovDetList	The list of Fix Lov
+	 * @param indexOfFixedListItemToDelete	The index of the item to be deleted
+    */
+	private FixedListDetail deleteFixLovValue (FixedListDetail lovDetList, int indexOfFixedLovItemToDelete)  {
+		List lovs = lovDetList.getLovs();
+		lovs.remove(indexOfFixedLovItemToDelete);
+		lovDetList.setLovs(lovs);
+		return lovDetList;
+	}
+	
+	/**
+	 * Move up an item of the fix lov list
+	 * @param lovDetList	The list of Fix Lov
+	 * @param indexOfItemToUp	The index of the item to move up
+    */
+	private FixedListDetail moveUpFixLovItem (FixedListDetail lovDetList, int indexOfItemToUp)  {
+		List lovs = lovDetList.getLovs();
+		Object o = lovs.get(indexOfItemToUp);
+		lovs.remove(indexOfItemToUp);
+		lovs.add((indexOfItemToUp-1), o);
+		lovDetList.setLovs(lovs);
+		return lovDetList;
+	}
+	
+	/**
+	 * Move down an item of the fix lov list
+	 * @param lovDetList	The list of Fix Lov
+	 * @param indexOfItemToDown	The index of the item to move down
+    */
+	private FixedListDetail moveDownFixLovItem (FixedListDetail lovDetList, int indexOfItemToDown)  {
+		List lovs = lovDetList.getLovs();
+		Object o = lovs.get(indexOfItemToDown);
+		lovs.remove(indexOfItemToDown);
+		lovs.add((indexOfItemToDown+1), o);
+		lovDetList.setLovs(lovs);
+		return lovDetList;
+	}
+					
+	/**
+	 * Chnage from the list of fix lov items the one at index indexOfFixedListItemToDelete
+	 * @param lovDetList	The list of Fix Lov
+	 * @param itemToChange	The index of the item to be changed
+	 * @param newName the new name of the item
+	 * @param newValue the new value of the item
+    */
+	private FixedListDetail changeFixLovValue (FixedListDetail lovDetList, int itemToChange, 
+			                                   String newName, String newValue)  {
+		List lovs = lovDetList.getLovs();
+		lovs.remove(itemToChange);
+		FixedListItemDetail lovdet = new FixedListItemDetail();
+		lovdet.setName(newName);
+		lovdet.setDescription(newValue);
+		lovs.add(itemToChange, lovdet);
+		lovDetList.setLovs(lovs);
+		return lovDetList;
+	}		
+			
+			
 	/**
 	 * Controls if the label choosed by user is yet in use. 
 	 * If it is, an error is added to the error handler.

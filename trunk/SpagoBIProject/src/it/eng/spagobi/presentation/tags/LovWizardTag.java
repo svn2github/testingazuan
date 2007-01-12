@@ -23,8 +23,8 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.bo.lov.FixedListItemDetail;
 import it.eng.spagobi.bo.lov.FixedListDetail;
+import it.eng.spagobi.bo.lov.FixedListItemDetail;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 
@@ -113,9 +113,18 @@ public class LovWizardTag extends TagSupport {
 		  	output.append("		</td>\n");
 		  	output.append("		<td colspan='1' width='20' class='portlet-section-header'>&nbsp;\n");
 		  	output.append("		</td>\n");
+		  	output.append("		<td colspan='1' width='20' class='portlet-section-header'>&nbsp;\n");
+		  	output.append("		</td>\n");
+		  	output.append("		<td colspan='1' width='20' class='portlet-section-header'>&nbsp;\n");
+		  	output.append("		</td>\n");
+		  	output.append("		<td colspan='1' width='18' class='portlet-section-header'>&nbsp;\n");
+		  	output.append("		</td>\n");
 		  	output.append("	</tr>\n");
 			if (lovs != null) {
 				output.append("		<input type='hidden' id='indexOfFixedLovItemToDelete' name='' value=''/>\n");
+				output.append("		<input type='hidden' id='indexOfFixedLovItemToChange' name='' value=''/>\n");
+				output.append("		<input type='hidden' id='indexOfItemToDown' name='' value=''/>\n");
+				output.append("		<input type='hidden' id='indexOfItemToUp' name='' value=''/>\n");
 				boolean alternate = false;
 		        String rowClass;
 				for (int i = 0; i < lovs.size(); i++) {
@@ -134,14 +143,62 @@ public class LovWizardTag extends TagSupport {
 		            alternate = !alternate;
 					output.append("	<tr class='portlet-font'>\n");
 					String descrDec = URLDecoder.decode(description,"UTF-8");
-					output.append("		<td class='" + rowClass + "'>" + name + "</td>\n");
-					output.append("		<td class='" + rowClass + "'>" + descrDec + "</td>\n");
+					output.append("		<td class='" + rowClass + "'>");
+					output.append("          <span style='display:inline;' id='nameRow"+i+"'>"+name+"</span>");
+					output.append("          <input type='text' style='display:none;' id='nameRow"+i+"InpText' name='nameRow"+i+"InpText' value='"+name+"' />");
+					output.append("     </td>\n");
+					output.append("		<td class='" + rowClass + "'>");
+					output.append("          <span style='display:inline;' id='descrRow"+i+"'>"+descrDec+"</span>");
+					output.append("          <input type='text' style='display:none;' id='descrRow"+i+"InpText' name='descrRow"+i+"InpText' value='"+descrDec+"' />");
+					output.append("     </td>\n");
+					
 					output.append("		<td class='" + rowClass + "'>\n");
-					String tableCol3 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol3", "messages");
+					String tooltipRowDetail = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol3", "messages");
+					String tooltipRowSave = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol3.1", "messages");
+					output.append("			<div style='display:inline;' id='divBtnDetailRow"+i+"'>");
+					output.append("				<a href='javascript:changeRowValues(\""+ i +"\")'>");
+					output.append("				<img class ='portlet-menu-item' \n");
+					output.append("					src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
+					output.append("					title='" + tooltipRowDetail + "' alt='" + tooltipRowDetail + "' />\n");
+					output.append("				</a>");
+					output.append("			</div>");
+					output.append("			<div style='display:none;' id='divBtnSaveRow"+i+"'>");
+					output.append("				<input type='image' onclick='saveRowValues(\""+ i +"\")' class ='portlet-menu-item' \n");
+					output.append("					src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif") + "' \n");
+					output.append("					title='" + tooltipRowSave + "' alt='" + tooltipRowSave + "' />\n");
+					output.append("			</div>");
+					output.append("		</td>\n");
+					
+					
+					output.append("		<td class='" + rowClass + "'>\n");
+					String tableCol4 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol4", "messages");
 					output.append("			<input type='image' onclick='setIndexOfFixedLovItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
 					output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif") + "' \n");
-					output.append("				title='" + tableCol3 + "' alt='" + tableCol3 + "' />\n");
+					output.append("				title='" + tableCol4 + "' alt='" + tableCol4 + "' />\n");
 		  			output.append("		</td>\n");
+		  			
+		  			output.append("		<td class='" + rowClass + "'>\n");
+		  			if(i<(lovs.size()-1)) {
+						String tableCol5 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol5", "messages");
+						output.append("			<input type='image' onclick='downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
+						output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/down16.gif") + "' \n");
+						output.append("				title='" + tableCol5 + "' alt='" + tableCol5 + "' />\n");
+		  			} else {
+		  				output.append("	        &nbsp;");
+		  			}
+		  			output.append("		</td>\n");
+		  			
+		  			output.append("		<td class='" + rowClass + "'>\n");
+		  			if(i>0) {
+						String tableCol6 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol6", "messages");
+						output.append("			<input type='image' onclick='upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
+						output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/up16.gif") + "' \n");
+						output.append("				title='" + tableCol6 + "' alt='" + tableCol6 + "' />\n");
+		  			} else {
+		  				output.append("	        &nbsp;");
+		  			}
+		  			output.append("		</td>\n");
+		  			
 		  			output.append("	</tr>\n");
 		  		}
 		  	}
@@ -157,6 +214,31 @@ public class LovWizardTag extends TagSupport {
 			output.append("		document.getElementById('insertFixLovItem').value = 'insertFixLovItem';\n");
 			output.append("		document.getElementById('modalitiesValueForm').submit();\n");
 			output.append(" }\n");
+			
+			output.append(" function changeRowValues(index) {\n");
+			output.append("		document.getElementById('nameRow'+index).style.display = 'none';\n");
+			output.append("		document.getElementById('descrRow'+index).style.display = 'none';\n");
+			output.append("		document.getElementById('nameRow'+index+'InpText').style.display = 'inline';\n");
+			output.append("		document.getElementById('descrRow'+index+'InpText').style.display = 'inline';\n");
+			output.append("		document.getElementById('divBtnDetailRow'+index).style.display = 'none';\n");
+			output.append("		document.getElementById('divBtnSaveRow'+index).style.display = 'inline';\n");
+			output.append(" }\n");
+			
+			output.append(" function saveRowValues(i) {\n");
+			output.append("		document.getElementById('indexOfFixedLovItemToChange').name = 'indexOfFixedLovItemToChange';\n");
+			output.append("		document.getElementById('indexOfFixedLovItemToChange').value = i;\n");
+			output.append(" }\n");
+			
+			output.append(" function downRow(i) {\n");
+			output.append("		document.getElementById('indexOfItemToDown').name = 'indexOfItemToDown';\n");
+			output.append("		document.getElementById('indexOfItemToDown').value = i;\n");
+			output.append(" }\n");
+			
+			output.append(" function upRow(i) {\n");
+			output.append("		document.getElementById('indexOfItemToUp').name = 'indexOfItemToUp';\n");
+			output.append("		document.getElementById('indexOfItemToUp').value = i;\n");
+			output.append(" }\n");
+			
 			output.append("</script>\n");
             pageContext.getOut().print(output.toString());
         }

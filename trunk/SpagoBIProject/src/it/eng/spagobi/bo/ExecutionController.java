@@ -119,7 +119,7 @@ public class ExecutionController {
 			String[] userProvidedParameters = userProvidedParametersStr.split("&");
 			for(int i = 0; i < userProvidedParameters.length; i++) {
 				String[] chunks = userProvidedParameters[i].split("=");
-				if (chunks == null || chunks.length != 2) {
+				if (chunks == null || chunks.length > 2) {
 					SpagoBITracer.warning(ObjectsTreeConstants.NAME_MODULE, 
 			 				this.getClass().getName(), 
 			 				"refreshParameters", 
@@ -143,7 +143,11 @@ public class ExecutionController {
 	 				                   "refreshParameters", "No BIObjectParameter with url name = ['" + parUrlName + "'] was found.");
 					continue;
 				}
-				String parValue = chunks[1];
+				// if the user specified the parameter value it is considered, elsewhere an empty String is considered
+				String parValue = "";
+				if (chunks.length == 2) {
+					parValue = chunks[1];
+				}
 				List parameterValues = new ArrayList();
 				parameterValues.add(parValue);
 				biparameter.setParameterValues(parameterValues);

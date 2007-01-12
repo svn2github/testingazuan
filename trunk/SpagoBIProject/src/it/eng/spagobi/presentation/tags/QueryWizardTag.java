@@ -153,12 +153,6 @@ public class QueryWizardTag extends TagSupport {
 		
 		output.append("  </div>\n");
 	    output.append("</div>\n");
-	    
-	    
-	    output.append("<br>\n");
-	    output.append("<br>\n");
-	    output.append("<br>\n");
-	    output.append("<br>\n");
 		
 	    output.append("<div id='queryWizardWithJavascript' style='display:none;'>\n");
 	    output.append("	 <div class='div_detail_area_forms_lov'>\n");	
@@ -559,7 +553,7 @@ public class QueryWizardTag extends TagSupport {
 	    
 	    output.append("<script>\n");
 	    output.append("document.getElementById('queryWizardWithJavascript').style.display='inline';\n");
-	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='inline';\n");
+	    output.append("document.getElementById('queryWizardWithoutJavascript').style.display='none';\n");
 	    output.append("displayQueryFields();\n");
 	    output.append("</script>\n");
 	    

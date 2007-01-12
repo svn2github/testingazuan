@@ -211,8 +211,21 @@ public class GeneralUtilities {
 					"getSpagoBiContextAddress", "method invoked");
 			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
-					"getSpagoBiContextAddress", "portlet request obtained: " + portletRequest);
-			path = portletRequest.getScheme() + "://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
+					"getSpagoBiContextAddress", "Portlet request obtained: " + portletRequest);
+			if (portletRequest != null) {
+				path = portletRequest.getScheme() + "://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath();
+			} else {
+				SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+						"getSpagoBiContextAddress", "Trying to recover spagobi context path from ConfigSingleton");
+				ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+				SourceBean spagobiContextPathSB = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_CONTEXT_PATH");
+				if (spagobiContextPathSB != null) {
+					path = spagobiContextPathSB.getCharacters();
+				} else {
+					SpagoBITracer.critical("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+							"getSpagoBiContextAddress", "SpagoBI context path not found neither from PortletRequest nor from ConfigSingleton");
+				}
+			}
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "using context path: " + path);
 		} catch(Exception e) {

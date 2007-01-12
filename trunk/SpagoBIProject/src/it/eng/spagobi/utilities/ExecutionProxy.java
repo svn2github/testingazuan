@@ -1,5 +1,6 @@
 package it.eng.spagobi.utilities;
 
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -23,7 +24,7 @@ public class ExecutionProxy {
 		this.biObject = biObject;
 	}
 	
-	public byte[] exec() {
+	public byte[] exec(IEngUserProfile profile) {
 		byte[] response = new byte[0];
 		try{
 			if(biObject==null)
@@ -40,7 +41,7 @@ public class ExecutionProxy {
 			// build an instance of the driver
 			IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
 			// get the map of parameter to send to the engine
-			Map mapPars = aEngineDriver.getParameterMap(biObject, null, "");
+			Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
 			// built the request to sent to the engine
 			Iterator iterMapPar = mapPars.keySet().iterator();
 			HttpClient client = new HttpClient();

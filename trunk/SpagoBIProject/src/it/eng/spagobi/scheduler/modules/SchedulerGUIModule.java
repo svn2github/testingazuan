@@ -29,6 +29,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.soap.axis.client.AdapterAxisProxy;
+import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
@@ -178,7 +179,7 @@ public class SchedulerGUIModule extends AbstractModule {
 						oes.setPathDocument((String) triggerSB.getAttribute("pathdocument"));
 					}
 				} else {
-					oes.setStoreOutput(true);
+					oes.setStoreOutput(false);
 				}
 				
 				// recover the list of biobject parameters
@@ -190,7 +191,7 @@ public class SchedulerGUIModule extends AbstractModule {
 				while (biobjparsIter.hasNext()) {
 					BIObjectParameter bop = (BIObjectParameter)biobjparsIter.next();
 					String bopUrlName = bop.getParameterUrlName();
-					int bopValueStartIndex = queryStr.indexOf(bopUrlName) + bopUrlName.length() + 1;
+					int bopValueStartIndex = queryStr.indexOf(bopUrlName + "=") + bopUrlName.length() + 1;
 					int bopValueEndIndex = queryStr.indexOf("%26", bopValueStartIndex);
 					if (bopValueEndIndex < 0) bopValueEndIndex = queryStr.length();
 					String bopValue = queryStr.substring(bopValueStartIndex, bopValueEndIndex);
@@ -355,7 +356,7 @@ public class SchedulerGUIModule extends AbstractModule {
 	
 	
 	private void scheduleObject(SourceBean request, SourceBean response) throws EMFUserError {
-		try{
+		try {
 			AdapterAxisProxy proxy = new AdapterAxisProxy();
 			String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
 			proxy.setEndpoint(sbiconturl + "/services/AdapterAxis");
@@ -411,7 +412,7 @@ public class SchedulerGUIModule extends AbstractModule {
 			String enddate = (String)request.getAttribute("enddate");	
 			String endtime = (String)request.getAttribute("endtime");	
 			String repeatinterval = (String)request.getAttribute("repeatInterval");	
-			String storout = (String)request.getAttribute("storeoutput");
+			String storout = (String) request.getAttribute("storeoutput");
 			if(storout==null)
 				storout = "false";
 			else storout = "true";

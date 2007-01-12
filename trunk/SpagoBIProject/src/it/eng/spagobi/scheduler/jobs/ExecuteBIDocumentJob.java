@@ -1,5 +1,6 @@
 package it.eng.spagobi.scheduler.jobs;
 
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
@@ -11,6 +12,7 @@ import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.IEngineDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.scheduler.SchedulerUtilities;
+import it.eng.spagobi.scheduler.profile.AnonymousSchedulerProfile;
 import it.eng.spagobi.utilities.ExecutionProxy;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
@@ -51,7 +53,8 @@ public class ExecuteBIDocumentJob implements Job {
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-				byte[] response = proxy.exec();
+				IEngUserProfile profile = new AnonymousSchedulerProfile();
+				byte[] response = proxy.exec(profile);
 				// if the user request the store
 				if(storeOutput!=null) {
 					if(storeAsSnapshot!=null) {

@@ -108,6 +108,8 @@ public class WekaDriver implements IEngineDriver {
         if (profile!=null) {
         	String user = (String) profile.getUserUniqueIdentifier();
         	pars.put("user", user);
+        } else {
+        	pars.put("user", "[unidentified]");
         }
         return pars;
 	} 

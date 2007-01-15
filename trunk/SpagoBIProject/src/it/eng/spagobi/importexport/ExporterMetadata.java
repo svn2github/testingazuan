@@ -535,7 +535,7 @@ public class ExporterMetadata {
 			Integer subId = sub.getSub_rpt_id();
 			String query = " from SbiSubreports as subreport where " +
 					"subreport.id.masterReport.biobjId = " + masterId + " and " +
-					"subreport.id.masterReport.biobjId = " + subId;
+					"subreport.id.subReport.biobjId = " + subId;
 			Query hibQuery = session.createQuery(query);
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {

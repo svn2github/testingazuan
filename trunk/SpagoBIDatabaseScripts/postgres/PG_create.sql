@@ -502,4 +502,14 @@ ALTER TABLE SBI_EVENTS_ROLES
 ALTER TABLE SBI_EVENTS_ROLES
        ADD  CONSTRAINT FK_sbi_events_roles_2
               FOREIGN KEY (EVENT_ID)
-                             REFERENCES SBI_EVENTS_LOG ; 
+                             REFERENCES SBI_EVENTS_LOG ;
+
+ALTER TABLE SBI_SUBREPORTS
+       ADD  ( CONSTRAINT FK_sbi_subreports_1
+              FOREIGN KEY (MASTER_RPT_ID)
+                             REFERENCES SBI_OBJECTS ) ;
+
+ALTER TABLE SBI_SUBREPORTS
+       ADD  ( CONSTRAINT FK_sbi_subreports_2
+              FOREIGN KEY (SUB_RPT_ID)
+                             REFERENCES SBI_OBJECTS ) ;

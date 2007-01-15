@@ -591,6 +591,16 @@ ALTER TABLE SBI_EVENTS_ROLES
               FOREIGN KEY (EVENT_ID)
                              REFERENCES SBI_EVENTS_LOG ) ; 
 
+ALTER TABLE SBI_SUBREPORTS
+       ADD  ( CONSTRAINT FK_sbi_subreports_1
+              FOREIGN KEY (MASTER_RPT_ID)
+                             REFERENCES SBI_OBJECTS ) ;
+
+ALTER TABLE SBI_SUBREPORTS
+       ADD  ( CONSTRAINT FK_sbi_subreports_2
+              FOREIGN KEY (SUB_RPT_ID)
+                             REFERENCES SBI_OBJECTS ) ;
+
 create trigger TRG_SBI_CHECKS
   BEFORE INSERT
   on SBI_CHECKS

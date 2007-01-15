@@ -89,20 +89,21 @@ function showEngField(docType) {
 function checkFormVisibility(docType) {
 	var ind = docType.indexOf(",");
 	var type = docType.substring(ind+1);
+	// hide or shiw template upload div for Booklet 
 	var divUpload = document.getElementById("form_upload");
 	if(type=="BOOKLET") {
 		divUpload.style.display="none";
 	} else {
 		divUpload.style.display="inline";
 	}
-	<%--
+	// hide template dynamic creation button for booklet and olap document 
 	var divLinkConf = document.getElementById("link_obj_conf");
-	if(type=="BOOKLET") {
+	if(type=="BOOKLET" || type=="OLAP") {
 		divLinkConf.style.display="inline";
 	} else {
 		divLinkConf.style.display="none";
 	}
-	--%>
+	
 }
 </script>
 
@@ -419,77 +420,78 @@ function checkFormVisibility(docType) {
 				
 				
 				
-			    <!-- TEMPLATE LABEL AND BUTTONS FOR BOOKLET  -->
-				<%-- 
+			    <!-- TEMPLATE LABEL AND BUTTONS FOR BOOKLET AND OLAP -->
+				<% 
 					String styleDivLinkConf = " ";
 					BIobjTypecode = obj.getBiObjectTypeCode();
-			    	if(BIobjTypecode.equalsIgnoreCase("BOOKLET"))
+			    	if(BIobjTypecode.equalsIgnoreCase("BOOKLET") || BIobjTypecode.equalsIgnoreCase("OLAP"))
 			    		styleDivLinkConf = " style='display:inline' ";
 			    	else styleDivLinkConf = " style='display:none' ";
-			    --%>	
+			    %>	
 			    <!-- LINK FOR OBJECT CONFIGURATION -->
-				<%--div id="link_obj_conf" <%=styleDivLinkConf%>--%>
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key = "SBIDev.docConf.docDet.templateBuild" />
-					</span>
-				</div>
-				<div class='div_detail_form'>
-				<% 
-					boolean hasTemplates = false;
-					Map objTemps = obj.getTemplateVersions();
-	 				if( (objTemps!=null) && !objTemps.isEmpty() ) {
-	 					hasTemplates = true;
-	 				}
-					if(!hasTemplates) {
-						String hrefConf = "";
-						if(!modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { 
-							PortletURL configureUrl = renderResponse.createActionURL();
-							configureUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
-							configureUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
-							configureUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-							configureUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-							hrefConf = configureUrl.toString();
-							//PortletURL configureBookletUrl = renderResponse.createActionURL();
-							//configureBookletUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
-							//configureBookletUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_NEW_BOOKLET_TEMPLATE);
-							//configureBookletUrl.setParameter(SpagoBIConstants.CMS_BIOBJECTS_PATH, obj.getPath());
-							//configureBookletUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-							//hrefConf = configureBookletUrl.toString();
-						} else {
-							hrefConf = "javascript:alert('"+PortletUtilities.getMessage("sbi.detailbiobj.objectnotsaved", "messages")+"')";
-						}				
-				%>	
-						<a href="<%=hrefConf%>">
-							<img class='header-button-image-portlet-section' 
-      				 			 title='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate" />' 
-      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/configure_booklet.jpg")%>' 
-      				 			 alt='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate"  />' />
-						</a>
-				<%
-					} else { // if(!hasTemplates)
-						//PortletURL editBookUrl = renderResponse.createActionURL();
-	 					//editBookUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
-	 					//editBookUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_EDIT_BOOKLET_TEMPLATE);
-	 					//editBookUrl.setParameter(SpagoBIConstants.PATH, obj.getPath());
-	 					//editBookUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-						PortletURL editUrl = renderResponse.createActionURL();
-						editUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
-						editUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
-						editUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-						editUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	 					String editUrlStr = editUrl.toString();
-				%>
-						<a href="<%=editUrlStr%>">
-							<img class='header-button-image-portlet-section' 
-      				 			 title='<spagobi:message key = "sbi.detailbiobj.editTemplate" />' 
-      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/edit_temp_booklet.jpg")%>' 
-      				 			 alt='<spagobi:message key = "sbi.detailbiobj.editTemplate"  />' />
-						</a> 	
-				<%
-			 		}
-				%>
-				</div>	
+			    <div id="link_obj_conf" <%=styleDivLinkConf%>>
+					<div class='div_detail_label'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "SBIDev.docConf.docDet.templateBuild" />
+						</span>
+					</div>
+					<div class='div_detail_form'>
+					<% 
+						boolean hasTemplates = false;
+						Map objTemps = obj.getTemplateVersions();
+		 				if( (objTemps!=null) && !objTemps.isEmpty() ) {
+		 					hasTemplates = true;
+		 				}
+						if(!hasTemplates) {
+							String hrefConf = "";
+							if(!modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { 
+								PortletURL configureUrl = renderResponse.createActionURL();
+								configureUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
+								configureUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
+								configureUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+								configureUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+								hrefConf = configureUrl.toString();
+								//PortletURL configureBookletUrl = renderResponse.createActionURL();
+								//configureBookletUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
+								//configureBookletUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_NEW_BOOKLET_TEMPLATE);
+								//configureBookletUrl.setParameter(SpagoBIConstants.CMS_BIOBJECTS_PATH, obj.getPath());
+								//configureBookletUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+								//hrefConf = configureBookletUrl.toString();
+							} else {
+								hrefConf = "javascript:alert('"+PortletUtilities.getMessage("sbi.detailbiobj.objectnotsaved", "messages")+"')";
+							}				
+					%>	
+							<a href="<%=hrefConf%>">
+								<img class='header-button-image-portlet-section' 
+	      				 			 title='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate" />' 
+	      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/configure_booklet.jpg")%>' 
+	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate"  />' />
+							</a>
+					<%
+						} else { // if(!hasTemplates)
+							//PortletURL editBookUrl = renderResponse.createActionURL();
+		 					//editBookUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
+		 					//editBookUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_EDIT_BOOKLET_TEMPLATE);
+		 					//editBookUrl.setParameter(SpagoBIConstants.PATH, obj.getPath());
+		 					//editBookUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+							PortletURL editUrl = renderResponse.createActionURL();
+							editUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
+							editUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
+							editUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+							editUrl.setParameter(SpagoBIConstants.ACTOR, actor);
+		 					String editUrlStr = editUrl.toString();
+					%>
+							<a href="<%=editUrlStr%>">
+								<img class='header-button-image-portlet-section' 
+	      				 			 title='<spagobi:message key = "sbi.detailbiobj.editTemplate" />' 
+	      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/edit_temp_booklet.jpg")%>' 
+	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.editTemplate"  />' />
+							</a> 	
+					<%
+				 		}
+					%>
+					</div>
+	        </div>						
         </div> 
 
 

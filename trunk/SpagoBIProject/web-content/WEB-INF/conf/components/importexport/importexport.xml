@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <IMPORTEXPORT>
-    <CURRENTVERSION version="1.9.1"/>
+    <CURRENTVERSION version="1.9.2"/>
 	<EXPORTER class="it.eng.spagobi.importexport.ExportManager"
 	          exportFolder="exports" />
 	<IMPORTER class="it.eng.spagobi.importexport.ImportManager" 
@@ -8,6 +8,7 @@
 	<TRANSFORMERS>
 		<TRANSFORM from="1.8" to="1.9" class="it.eng.spagobi.importexport.transformers.TransformerFrom1_8To1_9" />
 		<TRANSFORM from="1.9" to="1.9.1" class="it.eng.spagobi.importexport.transformers.TransformerFrom1_9To1_9_1" />
+		<TRANSFORM from="1.9.1" to="1.9.2" class="it.eng.spagobi.importexport.transformers.TransformerFrom1_9_1To1_9_2" />
 	</TRANSFORMERS>
 </IMPORTEXPORT>
 

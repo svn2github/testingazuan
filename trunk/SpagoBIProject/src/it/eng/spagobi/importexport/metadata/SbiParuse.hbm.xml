@@ -29,10 +29,10 @@
             <column name="man_in" not-null = "true"/>
         </property>
          <property name="selectionType" type="string">
-            <column name="selection_type" length="20" not-null="true" />
+            <column name="selection_type" length="20" not-null="false" />
         </property>
         <property name="multivalue" type="integer">
-            <column name="multivalue_flag" not-null = "true"/>
+            <column name="multivalue_flag" not-null = "false"/>
         </property>
         <set name="sbiParuseDets" inverse="true">
             <key>

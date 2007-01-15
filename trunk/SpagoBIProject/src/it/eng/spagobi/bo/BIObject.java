@@ -386,13 +386,18 @@ public class BIObject implements Serializable {
 		private boolean publicVisible = false;
 		private String owner = null;
 		private String description = null;
+		private String lastModifcationDate;
+		private String creationDate;
 		
-		public SubObjectDetail(String name, String path, String owner, String descr, boolean vis) {
+		public SubObjectDetail(String name, String path, String owner, String descr, 
+				String lastModifcationDate, String creationDate, boolean vis) {
 			this.path = path;
 			this.name = name;
 			this.owner = owner;
 			this.publicVisible = vis;
 			this.description = descr;
+			this.lastModifcationDate = lastModifcationDate;
+			this.creationDate = creationDate;
 		}
 	
 		public String getName() {
@@ -413,6 +418,22 @@ public class BIObject implements Serializable {
 
 		public String getDescription() {
 			return description;
+		}
+
+		public String getCreationDate() {
+			return creationDate;
+		}
+
+		public void setCreationDate(String creationDate) {
+			this.creationDate = creationDate;
+		}
+
+		public String getLastModifcationDate() {
+			return lastModifcationDate;
+		}
+
+		public void setLastModifcationDate(String lastModifcationDate) {
+			this.lastModifcationDate = lastModifcationDate;
 		}
 	}
 	

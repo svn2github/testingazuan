@@ -42,6 +42,7 @@ import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -125,6 +126,19 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 					            "saveSubObject", "Error while contolling subobjects node", e);
 		}
 		
+		BIObject.SubObjectDetail targetSubObj = null;
+		List subobjects = getSubObjects(pathParent);
+		for(Iterator it = subobjects.iterator(); it.hasNext(); ) {
+			BIObject.SubObjectDetail subobject = (BIObject.SubObjectDetail)it.next();
+			if(subobject.getName().equalsIgnoreCase(name)) {
+				targetSubObj = subobject;
+				break;
+			}
+		}
+		
+		String lastModifcationDate = DateFormat.getDateInstance().format(new Date());
+	    String creationDate = (targetSubObj == null)? lastModifcationDate: targetSubObj.getLastModifcationDate();
+		
 		try {
 			SetOperation setOp = new SetOperation();
 	        setOp.setContent(new ByteArrayInputStream(content));
@@ -136,14 +150,22 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	        String[] visibilityPropValues = new String[] { visibilityStr };
 	        String[] namePropValues = new String[] { name };
 	        String[] descrPropValues = new String[] { description };
+	        String[] lastModifcationDateValues = new String[] { lastModifcationDate };
+	        String[] creationDateValues = new String[] { creationDate };
+	        
 	        CmsProperty propname = new CmsProperty("name", namePropValues);
 	        CmsProperty propvis = new CmsProperty("public", visibilityPropValues);
 	        CmsProperty propown = new CmsProperty("owner", ownerPropValues);
 	        CmsProperty propdesc = new CmsProperty("description", descrPropValues);
+	        CmsProperty proplastm = new CmsProperty("lastModifcationDate", lastModifcationDateValues);
+	        CmsProperty propcdate = new CmsProperty("creationDate", creationDateValues);
+	        
 	        properties.add(propname);
 	        properties.add(propvis);
 	        properties.add(propown);
 	        properties.add(propdesc);
+	        properties.add(proplastm);
+	        properties.add(propcdate);
 	        setOp.setProperties(properties);
 	        CmsManager manager = new CmsManager();
 			manager.execSetOperation(setOp);
@@ -200,6 +222,8 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 				String publicVisStr = "";
 				String name = "";
 				String description = "";
+				String lastModifcationDate = "";
+				String creationDate = "";
 				while(iterProps.hasNext()) {
 					CmsProperty prop = (CmsProperty)iterProps.next();
 					String nameprop = prop.getName();
@@ -215,6 +239,12 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 					if(nameprop.equalsIgnoreCase("description")) {
 						description = prop.getStringValues()[0];
 					}
+					if(nameprop.equalsIgnoreCase("lastModifcationDate")) {
+						lastModifcationDate = prop.getStringValues()[0];
+					}
+					if(nameprop.equalsIgnoreCase("creationDate")) {
+						creationDate = prop.getStringValues()[0];
+					}
 				}
 				boolean publicVis = false;
 				if(publicVisStr.equalsIgnoreCase("true"))
@@ -222,7 +252,8 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 				if( publicVis || owner.equals(user) ) {
 					BIObject biobj = new BIObject();
 					BIObject.SubObjectDetail subDet = 
-						biobj.new SubObjectDetail(name, pathChild, owner, description, publicVis );
+						biobj.new SubObjectDetail(name, pathChild, owner, description, 
+								lastModifcationDate, creationDate, publicVis );
 					subObjects.add(subDet);
 				} 
 			}
@@ -425,6 +456,8 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 				String publicVisStr = "";
 				String name = "";
 				String description = "";
+				String lastModifcationDate = "";
+				String creationDate = "";
 				while(iterProps.hasNext()) {
 					CmsProperty prop = (CmsProperty)iterProps.next();
 					String nameprop = prop.getName();
@@ -440,12 +473,19 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 					if(nameprop.equalsIgnoreCase("description")) {
 						description = prop.getStringValues()[0];
 					}
+					if(nameprop.equalsIgnoreCase("lastModifcationDate")) {
+						lastModifcationDate = prop.getStringValues()[0];
+					}
+					if(nameprop.equalsIgnoreCase("creationDate")) {
+						creationDate = prop.getStringValues()[0];
+					}
 				}
 				boolean publicVis = false;
 				if(publicVisStr.equalsIgnoreCase("true"))
 					publicVis = true;
 				BIObject biobj = new BIObject();
-				BIObject.SubObjectDetail subDet = biobj.new SubObjectDetail(name, pathChild, owner, description, publicVis );
+				BIObject.SubObjectDetail subDet = biobj.new SubObjectDetail(name, pathChild, owner, description, 
+						lastModifcationDate, creationDate, publicVis );
 				subObjects.add(subDet);
 			}
 		} catch (Exception e) {

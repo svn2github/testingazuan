@@ -197,10 +197,27 @@
 			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
 			           <spagobi:message key='SBIDev.docConf.subBIObject.name' />
 			       </td>
+			       
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.subBIObject.owner' />
+			       </td>
+			       
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
 			           <spagobi:message key='SBIDev.docConf.subBIObject.description' />
 			       </td>
+			       
+			        <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.subBIObject.creationDate' />
+			       </td>
+			       
+			        <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.subBIObject.lastModificationDate' />
+			       </td>
+			       
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
 			           <spagobi:message key='SBIDev.docConf.subBIObject.visibility' />
@@ -215,6 +232,8 @@
 				    	   String visib = null;
 				    	   String delete = "";
 				    	   String owner = "";
+				    	   String creationDate = "";
+				    	   String lastModificationDate = "";
 				    	   PortletURL execSubObjUrl = null;
 				    	   PortletURL deleteSubObjUrl = null;
 					   
@@ -230,6 +249,9 @@
 		                        nameSub = subObj.getName();
 		                        descr = subObj.getDescription();
 		                        owner = subObj.getOwner();
+		                        creationDate = subObj.getCreationDate();
+		                        lastModificationDate = subObj.getLastModifcationDate();
+		                        
 		                        visib = "Private";
 		                        if(subObj.isPublicVisible()) {
 		                        	visib = "Public";
@@ -258,10 +280,25 @@
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>'>
 		                        		<%= nameSub %>
 		                        	</td>
+		                        	
 		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descr %></td>
+		                        	<td style='vertical-align:middle;' class='<%= rowClass%>' ><%=owner %></td>
+		                        	
+		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		                        	<td style='vertical-align:middle;' class='<%= rowClass%>' ><%=descr %></td>
+		                        	
+		                        	
+		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		                        	<td style='vertical-align:middle;' class='<%=rowClass%>' ><%=creationDate %></td>
+		                        	
+		                        	
+		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		                        	<td style='vertical-align:middle;' class='<%=rowClass%>' ><%=lastModificationDate %></td>
+		                        	
+		                        	
 		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=visib %></td>
+		                        	
 		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
 		                        		<a href="<%=execSubObjUrl.toString()%>">

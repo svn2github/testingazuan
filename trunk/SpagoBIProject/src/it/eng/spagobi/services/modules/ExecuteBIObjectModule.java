@@ -52,8 +52,10 @@ import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -839,7 +841,13 @@ public class ExecuteBIObjectModule extends AbstractModule
         boolean publicVis = false;
         if(subObjVis.equals("Public"))
         	publicVis = true;
-        SubObjectDetail subObj = obj.new SubObjectDetail(subObjName, "", "", subObjDesc, publicVis);
+        
+        Date now = new Date();
+		String lastModifcationDate = DateFormat.getDateInstance().format(now);
+	    String creationDate = DateFormat.getDateInstance().format(now);
+        
+        SubObjectDetail subObj = obj.new SubObjectDetail(subObjName, "", "", subObjDesc, 
+        		lastModifcationDate, creationDate, publicVis);
         // load all the parameter value with an empty value 
         List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();

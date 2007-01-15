@@ -152,10 +152,18 @@ public class ReportServlet extends HttpServlet{
 			reportFile = File.createTempFile("report", ".rpt"); 
 			resultFile = null;
 			
+			
+			boolean pagination = false;
+			if(action == null 
+					|| !action.equals("buildTemplate")){
+				if(format.equalsIgnoreCase("text/html")
+						|| format.equalsIgnoreCase("application/vnd.ms-excel")) pagination = true;
+			}
+			
 			if(lang.equalsIgnoreCase("SQL"))
-				buildTemplateFromSQLQuery(templateFile,query, connection, orderedfldList, extractedEntitiesList, jarFile.getParent(), savedQueryObjectId);
+				buildTemplateFromSQLQuery(templateFile,query, pagination, connection, orderedfldList, extractedEntitiesList, jarFile.getParent(), savedQueryObjectId);
 			else if(lang.equalsIgnoreCase("HQL"))
-				buildTemplateFromHQLQuery(templateFile,query, aSession, connection, orderedfldList, extractedEntitiesList, jarFile.getParent(), savedQueryObjectId);
+				buildTemplateFromHQLQuery(templateFile,query, pagination, aSession, connection, orderedfldList, extractedEntitiesList, jarFile.getParent(), savedQueryObjectId);
 			else
 				throw new ServletException("Query language not supported: " + lang);
 		
@@ -190,10 +198,13 @@ public class ReportServlet extends HttpServlet{
 		}
 		
 	}
-	private void buildTemplateFromHQLQuery(File templateFile, String query, Session session, Connection connection, String orderedFieldList,  String extractedEntitiesList, String formulaFilePath, String savedQueryObjectID) throws Exception {
+	private void buildTemplateFromHQLQuery(File templateFile, String query, boolean pagination, Session session, Connection connection, String orderedFieldList,  String extractedEntitiesList, String formulaFilePath, String savedQueryObjectID) throws Exception {
+		Map params = getParams();
+		params.put("pagination", pagination?"true":"false");
+		
 		IQueryRewriter queryRevriter = new HqlToSqlQueryRewriter(session);	
 		String sqlQuery = queryRevriter.rewrite(query);
-		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams(), orderedFieldList, extractedEntitiesList, formulaFilePath);
+		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, params, orderedFieldList, extractedEntitiesList, formulaFilePath);
 		if (savedQueryObjectID != null){
 			((SQLTemplateBuilder)templateBuilder).fillCalculatedFields(savedQueryObjectID);
 		}
@@ -245,9 +256,14 @@ public class ReportServlet extends HttpServlet{
 	
 	
 	
-	private void buildTemplateFromSQLQuery(File templateFile, String sqlQuery, Connection connection, String orderedFieldList, String extractedEntitiesList, String formulaFilePath, String savedQueryObjectID) throws Exception {
+	private void buildTemplateFromSQLQuery(File templateFile, String sqlQuery, boolean pagination, Connection connection, 
+			String orderedFieldList, String extractedEntitiesList, String formulaFilePath, String savedQueryObjectID) throws Exception {
 		
-		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, getParams(),  orderedFieldList, extractedEntitiesList, formulaFilePath);
+		Map params = getParams();
+		params.put("pagination", pagination?"true":"false");
+		
+		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, params,  
+				orderedFieldList, extractedEntitiesList, formulaFilePath);
 		if (savedQueryObjectID != null){
 			((SQLTemplateBuilder)templateBuilder).fillCalculatedFields(savedQueryObjectID);
 		}

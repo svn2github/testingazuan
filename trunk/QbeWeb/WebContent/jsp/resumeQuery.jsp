@@ -177,15 +177,22 @@
 									   while (it.hasNext()){
 										   conditionF = (IWhereField)it.next();
 										   rowsCounter++;
+										   String leftBracketsStr = "";
+										   for(int j = 0; j < conditionF.getLeftBracketsNum(); j++) leftBracketsStr += "(";
+								    
+										   String rightBracketsStr = "";
+										   for(int j = 0; j < conditionF.getRightBracketsNum(); j++) rightBracketsStr += ")";
+								    
 								    %>
 								    	<tr>
-								    	<td>&nbsp;<%=conditionF.getFieldName() %>
+								    	<td>&nbsp;<%=leftBracketsStr + conditionF.getFieldName()%>
 								    	<b><%= " " + conditionF.getFieldOperator() + " "%></b> 
 								    	<% if ((conditionF.getFieldEntityClassForRightCondition() == null)&&(conditionF.getHibernateType().endsWith("StringType"))){ %>
 								    	<%=" '"+conditionF.getFieldValue()+ "' "%>
 								    	<% }else{ %>
 								    	<%=" "+ conditionF.getFieldValue() + " "%>
 								    	<% } %>
+								    	<%=rightBracketsStr%>
 								    	<% if (it.hasNext()) {%>
 								    	&nbsp;<%=conditionF.getNextBooleanOperator() %>
 								    	<% } %>
@@ -225,13 +232,14 @@
 									   </tr>
 									<% List orderByFields = aWizardObject.getOrderByClause().getOrderByFields(); 
 									   java.util.Iterator it = orderByFields.iterator();
-									   IOrderGroupByField orderF = null;
+									   OrderByFieldSourceBeanImpl orderF = null;
 									   while (it.hasNext()){
-										   orderF = (IOrderGroupByField)it.next();
+										   orderF = (OrderByFieldSourceBeanImpl)it.next();
 										   rowsCounter++;
 								    %>
 								    	<tr>
 								    	<td>&nbsp;<%= orderF.getFieldName() %> 
+								    	&nbsp;<%= orderF.isAscendingOrder()? "ASC": "DESC"%> 
 								    	<% if (it.hasNext()){ %>
 								    		,
 								    		<% } %>

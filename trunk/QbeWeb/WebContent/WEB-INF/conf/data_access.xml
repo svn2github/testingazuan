@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <DATA-ACCESS>
-	<CONNECTION name="hsqlFoodmart" jndiResourceName="jdbc/foodmart" />
+		<CONNECTION name="hsqlFoodmart" jndiResourceName="jdbc/foodmart" />
+		<CONNECTION name="hsqlSpagobi" jndiResourceName="jdbc/spagobi" />
 </DATA-ACCESS>

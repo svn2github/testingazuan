@@ -58,10 +58,12 @@
 	
 	<MAPPING business_type="ACTION" business_name="MOVE_UP_WHERE_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_WHERE_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_BRACKETS_ACTION" publisher_name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER"/>
 	
 	
 	<MAPPING business_type="ACTION" business_name="MOVE_UP_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SWITCH_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
 	
 	<MAPPING business_type="ACTION" business_name="MOVE_UP_GROUPBY_ACTION" publisher_name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_GROUPBY_ACTION" publisher_name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER"/>

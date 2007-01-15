@@ -161,6 +161,10 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="UPDATE_BRACKETS_ACTION" class="it.eng.qbe.action.UpdateBracketsInWhereAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="MOVE_UP_GROUPBY_ACTION" class="it.eng.qbe.action.MoveUpGroupByAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
@@ -174,6 +178,10 @@
 	</ACTION>
 	
 	<ACTION name="MOVE_DOWN_ORDERBY_ACTION" class="it.eng.qbe.action.MoveDownOrderByAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SWITCH_ORDERBY_ACTION" class="it.eng.qbe.action.SwitchOrderByAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	

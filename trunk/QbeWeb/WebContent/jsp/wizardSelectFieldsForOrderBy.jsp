@@ -148,7 +148,7 @@
 		    		   				if(selectedFields.containsKey(originalFieldName)) checked="checked=\"checked\"";
 		    		   				%>		    		   				
 		    		   	<tr>
-		    		   		<td colspan="2">
+		    		   		<td colspan="2" ALIGN="left">
 		    		   			<INPUT type=CHECKBOX name="field" value="<%=originalFieldName%>" <%=checked%> >		    		   						
 		    		   			<a class="qbe-font-link"  href="<%=urlOrderBy %>"> 
 		    		   				<%=Utils.getLabelForQueryField(requestContainer,dm,aWizardObject, originalFieldName) %>
@@ -206,13 +206,14 @@
 		    		   			<% List l = aWizardObject.getOrderByClause().getOrderByFields();
 		    		   			if (l != null){
 		    		   				java.util.Iterator it = l.iterator();
-		    		   				IOrderGroupByField aOrderByField = null;
+		    		   				OrderByFieldSourceBeanImpl aOrderByField = null;
 		    		   				
 		    		   				String urlDeleteOrderBy = "";
 		    		   				String urlMoveUp ="";
 		    		   				String urlMoveDown = "";
+		    		   				String urlSwitchOrder = "";
 		    		   				while (it.hasNext()){
-		    		   					aOrderByField = (IOrderGroupByField)it.next();
+		    		   					aOrderByField = (OrderByFieldSourceBeanImpl)it.next();
 		    		   					
 		    		   					oParams.clear();
 		    		   					oParams.put("ACTION_NAME","DELETE_FIELD_FOR_ORDERBY_ACTION");
@@ -229,6 +230,11 @@
 		    		   					oParams.put("FIELD_ID",aOrderByField.getId());
 		    		   					urlMoveDown = qbeUrl.getUrl(request, oParams);
 		    		   					
+		    		   					oParams.clear();
+		    		   					oParams.put("ACTION_NAME","SWITCH_ORDERBY_ACTION");
+		    		   					oParams.put("FIELD_ID",aOrderByField.getId());
+		    		   					urlSwitchOrder = qbeUrl.getUrl(request, oParams);
+		    		   					
 		    		   				%>
 		    		   				<tr>
 		    		   					<td width="5%">
@@ -241,7 +247,19 @@
 				    		   			<td width="5%">
 				    		   						<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
 				    		   			</td>
-		    		   					<td width="85%" class="qbe-font">
+				    		   			
+				    		   		<%
+				    		   			if(aOrderByField.isAscendingOrder()) {
+				    		   		%>
+				    		   			<td width="5%">
+				    		   						<a href="<%=urlSwitchOrder%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ascendingOrder.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToDescendingOrder", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToDescendingOrder", bundle) %>"/></a>
+				    		   			</td>
+				    		   		<%} else { %>
+				    		   			<td width="5%">
+				    		   						<a href="<%=urlSwitchOrder%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/descendingOrder.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToAscendingOrder", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToAscendingOrder", bundle) %>"/></a>
+				    		   			</td>
+				    		   		<%} %>
+		    		   					<td width="85%" class="qbe-font" ALIGN="left">
 		    		   						 <%=Utils.getLabelForQueryField(requestContainer,dm, aWizardObject,aOrderByField.getFieldName()) %>
 		    		   					</td>	
 		    		   				</tr>

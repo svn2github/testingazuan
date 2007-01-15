@@ -35,8 +35,7 @@
 		qbeJoinWithParentQueryBuilder = new QbeJoinWithFatherQueryJsTreeBuilder(dm, Utils.getMainWizardObject(sessionContainer), request);
 		qbeJoinWithParentQueryBuilder.setCheckable(false);
 		qbeJoinWithParentQueryBuilder.setName("joinTreeWithParentQuery");
-		qbeJoinWithParentQueryBuilder.setClassPrefix("a");
-		
+		qbeJoinWithParentQueryBuilder.setClassPrefix("a");		
    }
    
    //dm.updateCurrentClassLoader();
@@ -91,7 +90,7 @@
    					<td width="50%">
    						&nbsp;
    					</td>
-	   				</tr>
+	   			</tr>
 	   	   			
 	   			<tr>
 	   			
@@ -208,6 +207,11 @@
 			    		   		String urlDeleteWhere = "";
 			    		   		String urlMoveDown ="#";
 	    		   				String urlMoveUp ="#";
+	    		   				String urlAddLeftBracket ="#";
+	    		   				String urlAddRightBracket ="#";
+	    		   				String urlRemoveLeftBracket = "#";
+	    		   				String urlRemoveRightBracket = "#";
+	    		   				
 			    		   		
 			    		   		String fieldId = "";
 			    		   		if (aWizardObject.getWhereClause() != null){
@@ -238,6 +242,54 @@
 			    		   					sParams.put("FIELD_ID",fieldId);
 			    		   					urlMoveDown = qbeUrl.getUrl(request, sParams);
 			    		   					
+			    		   					sParams.clear();
+			    		   					sParams.put("ACTION_NAME","UPDATE_BRACKETS_ACTION");
+			    		   					sParams.put("FIELD_ID",fieldId);
+			    		   					sParams.put("SIDE", "RIGHT");
+			    		   					sParams.put("ACTION", "ADD");
+			    		   					urlAddRightBracket = qbeUrl.getUrl(request, sParams);
+			    		   					
+			    		   					sParams.clear();
+			    		   					sParams.put("ACTION_NAME","UPDATE_BRACKETS_ACTION");
+			    		   					sParams.put("FIELD_ID",fieldId);
+			    		   					sParams.put("SIDE", "RIGHT");
+			    		   					sParams.put("ACTION", "REMOVE");
+			    		   					urlRemoveRightBracket = qbeUrl.getUrl(request, sParams);
+			    		   					
+			    		   					sParams.clear();
+			    		   					sParams.put("ACTION_NAME","UPDATE_BRACKETS_ACTION");
+			    		   					sParams.put("FIELD_ID",fieldId);
+			    		   					sParams.put("SIDE", "LEFT");
+			    		   					sParams.put("ACTION", "ADD");
+			    		   					urlAddLeftBracket = qbeUrl.getUrl(request, sParams);
+			    		   					
+			    		   					
+			    		   					sParams.clear();
+			    		   					sParams.put("ACTION_NAME","UPDATE_BRACKETS_ACTION");
+			    		   					sParams.put("FIELD_ID",fieldId);
+			    		   					sParams.put("SIDE", "LEFT");
+			    		   					sParams.put("ACTION", "REMOVE");
+			    		   					urlRemoveLeftBracket = qbeUrl.getUrl(request, sParams);
+			    		   					
+			    		   					String leftBracketsStr = "";
+			    		   					if(aWhereField.getLeftBracketsNum() == 0) {
+			    		   						leftBracketsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			    		   					} else {
+			    		   						for(int i = 0; i < aWhereField.getLeftBracketsNum(); i++) {
+			    		   							leftBracketsStr += "(";
+			    		   						}
+			    		   					}
+			    		   					
+			    		   						
+			    		   					String rightBracketsStr = "";
+			    		   					if(aWhereField.getRightBracketsNum() == 0) {
+			    		   						rightBracketsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			    		   					} else {
+			    		   						for(int i = 0; i < aWhereField.getRightBracketsNum(); i++) {
+				    		   						rightBracketsStr += ")";
+			    		   						}
+			    		   					}
+			    		   					
 			    		   				%>
 			    		   				<tr>
 			    		   					<td width="5%">
@@ -250,10 +302,29 @@
 				    		   				<td width="5%">
 				    		   					<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
 				    		   				</td>
-			    		   					<td>
-			    		   						<%=Utils.getLabelForQueryField(requestContainer, dm, aWizardObject, fieldName)%>
+				    		   				<td>&nbsp;</td> 
+				    		   				<td width="5%">
+				    		   					<a href="<%=urlAddLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/add.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>"/></a>
+				    		   				</td>
+				    		   				<td width="5%">
+				    		   					<a href="<%=urlRemoveLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/remove.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>"/></a>
+				    		   				</td>
+				    		   				<td>&nbsp;</td> 
+				    		   				<td width="5%">
+				    		   					<div style="border:1px; border-color:black">
+				    		   						<%=leftBracketsStr%>
+				    		   					</div>
 			    		   					</td>
-													<td>&nbsp;</td> 
+				    		   				<td>&nbsp;</td> 
+				    		   				
+			    		   					<td>
+			    		   						
+			    		   						<% String label = Utils.getLabelForQueryField(requestContainer, dm, aWizardObject, fieldName);
+			    		   						label = label.replaceAll("\\.", ". ");				    		   				
+			    		   						%>
+			    		   						<%=label %>
+			    		   					</td>
+											<td>&nbsp;</td> 
 			    		   					<td style="padding:1px;">
 			    		   						<select name="<%="OPERATOR_FOR_FIELD_"+fieldId%>" class="qbe-font"/>
 													<option value="=" <%=(fieldOperator.equalsIgnoreCase("=")? "selected" : "")%>>=</option>
@@ -277,7 +348,22 @@
 			    		   					<td>
 			    		   						<input type="text" id="<%="VALUE_FOR_FIELD_"+fieldId %>" name="<%="VALUE_FOR_FIELD_"+fieldId %>" value="<%=fieldValue %>"/>
 			    		   					</td>
-													<td>&nbsp;</td> 
+											<td>&nbsp;</td> 
+											<td width="5%">
+				    		   					<div style="border:1px; border-color:black">
+				    		   						<%=rightBracketsStr%>
+				    		   					</div>
+				    		   				</td>	
+				    		   				<td>&nbsp;</td> 	
+											<td width="5%">
+				    		   					<a href="<%=urlAddRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/add.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>"/></a>
+				    		   				</td>
+				    		   				<td width="5%">
+				    		   					<a href="<%=urlRemoveRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/remove.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>"/></a>
+				    		   				</td>
+				    		   					
+													
+													
 			    		   					<td width="5%">
 				    		   					<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/selectjoin.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" onclick="openDivTreeSelectJoin('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
 				    		   				</td>
@@ -299,7 +385,7 @@
 			    		   						</select>
 			    		   					</td>
 													<td>&nbsp;</td>
-			    		   			    </tr>
+			    		   			    </tr><tr><td>&nbsp;</td></tr>
 			    		   			   <% }%> <%-- FINE WHILE --%>
 			    		   			<% }%> <%-- FINE IF--%>
 		    					<% }%><%-- FINE IF--%>

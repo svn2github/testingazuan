@@ -11,6 +11,7 @@ import it.eng.qbe.urlgenerator.SelectFieldForSelectionURLGenerator;
 import it.eng.qbe.urlgenerator.WebQbeUrlGenerator;
 import it.eng.qbe.utility.CalculatedField;
 import it.eng.qbe.utility.Logger;
+import it.eng.qbe.utility.QbeProperties;
 import it.eng.qbe.utility.RelationField;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
@@ -29,6 +30,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.metadata.ClassMetadata;
@@ -155,8 +157,15 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	 * @param fieldUrlGenerator
 	 * @return
 	 */
-	public final int addFieldNodes (String className, String relationOnColumnName, int rootNode, int nodeCounter, String prefix, IURLGenerator fieldUrlGenerator, int recursionLevel){
+	public final int addFieldNodes (String className, String relationOnColumnName, 
+			int rootNode, int nodeCounter, String prefix, 
+			IURLGenerator fieldUrlGenerator, int recursionLevel){
 		
+		String newClassName = className;
+		if (relationOnColumnName != null){
+			newClassName = className+"("+relationOnColumnName+")";
+		}
+		if(!QbeProperties.isTableVisible(dataMartModel, newClassName)) return nodeCounter;
 		
 		nodeCounter++;
 		
@@ -172,10 +181,21 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				classLabel += "("+ relationOnColumnName +")";
 			}
 		}
+		
+		String classImage;
+		if(QbeProperties.getTableType(dataMartModel, newClassName) == QbeProperties.CLASS_TYPE_TABLE) {
+			classImage = "../img/Class.gif";
+		} else {
+			classImage = "../img/relationship.gif";
+		}
+		
+		if(!QbeProperties.isTableVisible(dataMartModel, newClassName)) return nodeCounter;
+		
+		
 		// add class node
 		addNode("" + nodeCounter, "" + rootNode, classLabel, "", "", classLabel, 
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Class.gif"),
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Class.gif"),
+				qbeUrlGenerator.conformStaticResourceLink(httpRequest,classImage),
+				qbeUrlGenerator.conformStaticResourceLink(httpRequest,classImage),
 				"", "", "", "", "");
 		
 		
@@ -193,13 +213,31 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			List associatedClassesArrayList = new ArrayList();
 			
 			Type aHibType = null;
+			
+			/*
+			Map foreignFields = new HashMap();
+			for(int i=0; i < metaPropertyNames.length; i++){
+			 	aHibType = (Type)aClassMetadata.getPropertyType(metaPropertyNames[i]);
+			 	org.hibernate.mapping.Property property = pc.getProperty(metaPropertyNames[i]);
 			 	
+			 	if (aHibType instanceof ManyToOneType){
+			 		
+				 	Iterator it = property.getColumnIterator();
+				 	String columnName = null;
+				 	if (it.hasNext()){
+				 		columnName = ((Column)it.next()).getName();
+				 	}
+			 		
+				 	foreignFields.put(columnName, columnName);																   
+			 	}
+			}
+			*/	
 
 			Type aType = aClassMetadata.getIdentifierType();
 			
 			String completeFieldName = "";
 			String fieldAction = "";
-			String[] keyProperties = null;
+			List keyProperties = new ArrayList();
 			String[] keyPropertiesType = null;
 			String[] hibTypes  = null;
 			String[] hibScale  = null;
@@ -212,7 +250,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					
 					
 					Type[] subtypes = ((ComponentType)aType).getSubtypes();
-					keyProperties = new String[tmpKeyProperties.length];
+					//keyProperties = new String[tmpKeyProperties.length];
 					keyPropertiesType = new String[tmpKeyProperties.length];
 					hibTypes  = new String[tmpKeyProperties.length];
 					hibScale  = new String[tmpKeyProperties.length];
@@ -220,7 +258,20 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					Class classOfSubTypesI = null;
 					
 					for (int j=0; j < tmpKeyProperties.length; j++){
-						keyProperties[j] = idPropertyName + "." + tmpKeyProperties[j];
+						/*
+						org.hibernate.mapping.Property property = pc.getProperty(idPropertyName);
+						Iterator it = property.getColumnIterator();
+					 	String columnName = null;
+					 	if (it.hasNext()){
+					 		columnName = ((Column)it.next()).getName();
+					 	}
+						
+						
+						if(QbeProperties.getTableType(dataMartModel, className) == QbeProperties.CLASS_TYPE_RELATION 
+								&& foreignFields.containsKey(columnName)) continue;
+						*/
+						
+						keyProperties.add(idPropertyName + "." + tmpKeyProperties[j]);
 						classOfSubTypesI = subtypes[j].getClass();
 						keyPropertiesType[j] = classOfSubTypesI.getName();
 						hibTypes[j] = subtypes[j].getName();
@@ -228,14 +279,18 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					
 					
 			}else{
-					keyProperties = new String[1];
-					keyProperties[0] = aClassMetadata.getIdentifierPropertyName();
-					keyPropertiesType = new String[1];
-					keyPropertiesType[0] = aType.getClass().getName();
-					hibTypes = new String[1];
-					hibTypes[0] = aType.getName();
-					hibScale = new String[1];
-					hibPrecision = new String[1];
+					/*
+					if(QbeProperties.getTableType(dataMartModel, className) != QbeProperties.CLASS_TYPE_RELATION 
+						|| foreignFields.containsKey(aClassMetadata.getIdentifierPropertyName())){
+				*/
+						keyProperties.add(aClassMetadata.getIdentifierPropertyName());
+						keyPropertiesType = new String[1];
+						keyPropertiesType[0] = aType.getClass().getName();
+						hibTypes = new String[1];
+						hibTypes[0] = aType.getName();
+						hibScale = new String[1];
+						hibPrecision = new String[1];
+					//}
 					
 			}
 			Iterator pkColumnIerator = pc.getIdentifierProperty().getColumnIterator();
@@ -248,16 +303,16 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				hibPrecision[k] = String.valueOf(col.getPrecision());
 			}
 			    	
-			for (int j = 0; j < keyProperties.length; j++) {
+			for (int j = 0; j < keyProperties.size(); j++) {
 
 				Logger.debug(this.getClass(),"keyProperties[" + j + "] "
-						+ keyProperties[j]);
+						+ (String)keyProperties.get(j));
 				nodeCounter++;
-				completeFieldName = keyProperties[j];
+				completeFieldName = (String)keyProperties.get(j);
 
 				
 				if (prefix != null) {
-					completeFieldName = prefix + "." + keyProperties[j];
+					completeFieldName = prefix + "." + (String)keyProperties.get(j);
 				}
 				
 				String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName);
@@ -305,6 +360,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				}
 			}
 			
+			List associatedCollectionClassesArrayList = new ArrayList();
 				
 			
 			for(int i=0; i < metaPropertyNames.length; i++){
@@ -313,8 +369,6 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			 	
 			 	if (aHibType instanceof ManyToOneType){
 			 		
-				 	
-				 	
 				 	Iterator it = property.getColumnIterator();
 				 	String columnName = null;
 				 	if (it.hasNext()){
@@ -331,7 +385,32 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			 		associatedClassesArrayList.add(aRelationField);																   
 			 	}else if (aHibType instanceof CollectionType) {
 					Logger.debug(this.getClass()," Collection type skip........");
+					/*
+					CollectionType collection = (CollectionType)aHibType;
+					
+					
+					Iterator it = property.getColumnIterator();
+				 	String columnName = null;
+				 	if (it.hasNext()){
+				 		columnName = ((Column)it.next()).getName();
+				 	}
+			 		completeFieldName = metaPropertyNames[i];
+			 		
+			 		if (prefix != null){
+			 			 completeFieldName = prefix +"." + metaPropertyNames[i];
+			 		}
+					
+					String str = collection.getAssociatedEntityName((SessionFactoryImpl)sf);
+					System.out.println("entity: " + str);
+		
+					RelationField aRelationField = new RelationField( completeFieldName, 
+							collection.getAssociatedEntityName((SessionFactoryImpl)sf), 
+							columnName ); 
+					associatedCollectionClassesArrayList.add(aRelationField);
+					*/
+			 		
 				}else{
+						if(!QbeProperties.isFieldVisible(dataMartModel, metaPropertyNames[i])) continue;
 						Logger.debug(this.getClass()," HibType Class" + aHibType.getClass());
 						nodeCounter++;
 						completeFieldName = metaPropertyNames[i];
@@ -351,8 +430,15 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 						}
 						
 						String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, metaPropertyNames[i]);
+						String fieldImage;
+						if(QbeProperties.getFieldType(dataMartModel, metaPropertyNames[i]) == QbeProperties.FIELD_TYPE_DIMENSION) {
+							fieldImage = "../img/Method.gif";
+						} else {
+							fieldImage = "../img/dot.png";
+						}
 						
-						//
+						
+					
 						String addParameters = "";
 						if (fieldUrlGenerator instanceof SelectFieldForSelectionURLGenerator ) {
 							addParameters = "";
@@ -386,8 +472,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 									fieldAction,  
 									fldLabel, 
 									"_self",
-									qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
-									qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+									qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
+									qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
 									"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);		
 						} else {
 							addNode("" + nodeCounter, "" + idxClassNode, 
@@ -395,8 +481,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 								fieldAction,  
 								fldLabel, 
 								"_self",
-								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
-								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+								qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
+								qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
 								"", "", "",  "", "");
 						}
 					}
@@ -437,6 +523,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			Iterator associatedClassIterator = associatedClassesArrayList.iterator();
 			while (associatedClassIterator.hasNext()){
 				RelationField aRelationField = (RelationField)associatedClassIterator.next();
+				//if(true) {
 				if (aRelationField.getClassName().equalsIgnoreCase(className)){
 					nodeCounter = addFieldNodesNoRecursion(aRelationField.getClassName(), aRelationField.getRelationOnColumnName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator, recursionLevel+1);
 				}else{

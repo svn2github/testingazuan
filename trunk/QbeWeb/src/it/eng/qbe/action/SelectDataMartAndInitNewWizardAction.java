@@ -61,6 +61,12 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 			session.setAttribute("spagobi", spagoBIInfo);
 		}
 		
+		List allJndiDs = Utils.getAllJndiDS();
+		for(int i = 0; i < allJndiDs.size(); i++) {
+			Object o = allJndiDs.get(i);
+			System.out.println("JNDI connection: " + o.toString());
+		}
+		
 		String dataSourceName = (String)request.getAttribute("JNDI_DS");
 		String jndiDataSourceName  = QbeConf.getInstance().getJndiConnectionName(dataSourceName);
 		

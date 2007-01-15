@@ -136,7 +136,7 @@
 			    		   						if(selectedFields.containsKey(originalFieldName)) checked="checked=\"checked\"";
 			    		   				%>
 			    		<tr>
-			    		   	<td colspan="2">
+			    		   	<td colspan="2" ALIGN="left">
 			    		   		<INPUT type=CHECKBOX name="field" value="<%=originalFieldName%>" <%=checked%> >
 			    		   		<a href="<%=urlOrderBy %>" class="qbe-font-link"> 
 			    		   			<%=Utils.getLabelForQueryField(requestContainer,dm, aWizardObject,originalFieldName) %>
@@ -232,7 +232,7 @@
 				    		   				<td width="5%">
 				    		   						<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
 				    		   				</td>
-			    		   					<td width="85%" class="qbe-font">
+			    		   					<td width="85%" class="qbe-font" ALIGN="left">
 			    		   						 <%--<%=originalFieldName %> --%>
 			    		   						<%=Utils.getLabelForQueryField(requestContainer,dm,aWizardObject, originalFieldName) %>
 			    		   					</td>	

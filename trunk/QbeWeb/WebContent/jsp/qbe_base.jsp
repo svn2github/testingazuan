@@ -15,7 +15,7 @@
 	
 	IQbeUrlGenerator qbeUrl = null;
 	IQbeMessageHelper qbeMsg = null;
-	if (qbeMode.equalsIgnoreCase("WEB")){
+	if (qbeMode.equalsIgnoreCase("WEB")) {
 		requestContainer = RequestContainerAccess.getRequestContainer(request);
 		responseContainer = ResponseContainerAccess.getResponseContainer(request);
 		qbeUrl = new WebQbeUrlGenerator();		

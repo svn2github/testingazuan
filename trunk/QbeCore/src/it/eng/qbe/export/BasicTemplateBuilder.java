@@ -119,7 +119,12 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	
 	public String buildTemplate() {
 		String templateStr = getTemplateTemplate();
-		
+		if(getParamValue("pagination", "false").equalsIgnoreCase("true")) {
+			templateStr = replaceParam(templateStr, "pagination", 
+					"isIgnorePagination=\"true\"");
+		} else {
+			templateStr = replaceParam(templateStr, "pagination", "");
+		}
 		templateStr = replaceParam(templateStr, "lang", queryLanguage);
 		templateStr = replaceParam(templateStr, "params", getParamBlock());
 		templateStr = replaceParam(templateStr, "query", query);

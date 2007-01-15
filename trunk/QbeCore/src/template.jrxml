@@ -17,7 +17,8 @@
 		 whenNoDataType="NoPages"
 		 scriptletClass="it.eng.qbe.utility.Scriptlet"
 		 isTitleNewPage="false"
-		 isSummaryNewPage="false">
+		 isSummaryNewPage="false"
+		 ${pagination}>
 	<property name="ireport.scriptlethandling" value="2" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />

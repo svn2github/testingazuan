@@ -23,4 +23,5 @@ public interface IOrderGroupByField extends  Serializable{
 	public String getFieldName();
 
 	public void setFieldName(String fieldName);
+	
 }

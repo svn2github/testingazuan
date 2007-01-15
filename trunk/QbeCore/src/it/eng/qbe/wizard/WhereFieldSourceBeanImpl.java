@@ -9,9 +9,6 @@ package it.eng.qbe.wizard;
 
 /**
  * @author Zoppello
- * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
  */
 public class WhereFieldSourceBeanImpl 
 		implements IWhereField {
@@ -31,6 +28,9 @@ public class WhereFieldSourceBeanImpl
 	private EntityClass fieldEntityClassForRightCondition = null;
 	
 	private EntityClass fieldEntityClassForLeftCondition = null;
+	
+	private int rightBracketsNum;	
+	private int leftBracketsNum;	
 
 	public WhereFieldSourceBeanImpl(){
 		
@@ -95,6 +95,18 @@ public class WhereFieldSourceBeanImpl
 	}
 	public void setFieldEntityClassForRightCondition(EntityClass fieldEntityClassForRightCondition) {
 		this.fieldEntityClassForRightCondition = fieldEntityClassForRightCondition;
+	}
+	public int getLeftBracketsNum() {
+		return leftBracketsNum;
+	}
+	public void setLeftBracketsNum(int leftBracketsNum) {
+		this.leftBracketsNum = leftBracketsNum>0? leftBracketsNum: 0;
+	}
+	public int getRightBracketsNum() {
+		return rightBracketsNum;
+	}
+	public void setRightBracketsNum(int rightBracketsNum) {
+		this.rightBracketsNum = rightBracketsNum>0? rightBracketsNum: 0;
 	}
 	
 	

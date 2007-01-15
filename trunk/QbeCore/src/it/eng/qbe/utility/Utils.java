@@ -554,7 +554,7 @@ public class Utils {
 					cfield.setFldLabel(domNode.valueOf("@resultingFieldName"));
 					cfield.setScript(domNode.valueOf("@script"));
 					cfield.setMappings(domNode.valueOf("@mappings"));
-					cfield.setMappings(domNode.valueOf("@inExport"));
+					cfield.setInExport(domNode.valueOf("@inExport"));
 					cfield.setClassNameInQuery(cfield.getEntityName());
 					cfield.setFldCompleteNameInQuery(cfield.getEntityName() + "." + cfield.getId());
 					calcuatedFields.add(cfield);

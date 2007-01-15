@@ -352,6 +352,8 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 		aWhereField =(IWhereField)it.next();
 		 		fieldName = aWhereField.getFieldName();
 		 		
+		 		for(int i = 0; i < aWhereField.getLeftBracketsNum(); i++) finalQuery.append("(");
+		 		
 		 		finalQuery.append(fieldName);  
 		 		finalQuery.append(" ");
 		 		
@@ -391,6 +393,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 			else
 		 				finalQuery.append( fValue );
 		 		}
+		 		
+		 		for(int i = 0; i < aWhereField.getRightBracketsNum(); i++) finalQuery.append(")");
+		 		
 		 		if (it.hasNext())
 		 			finalQuery.append(" "+aWhereField.getNextBooleanOperator()+" ");
 		 		afterFirst = true;
@@ -430,17 +435,15 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		 	Iterator it = l.iterator();
 		 
 		 	
-		 	IOrderGroupByField aOrderGroupByField = null;
+		 	OrderByFieldSourceBeanImpl aOrderGroupByField = null;
 		 	while (it.hasNext()){
-		 		aOrderGroupByField =(IOrderGroupByField)it.next();
+		 		aOrderGroupByField =(OrderByFieldSourceBeanImpl)it.next();
 		 		if (afterFirst)
 		 			finalQuery.append(", ");
-//		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
-//		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
-//		 		else
-		 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
-		 				 		
-		 		afterFirst = true;
+	 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
+	 			finalQuery.append(aOrderGroupByField.isAscendingOrder()? "asc": "desc");	 		
+	 			finalQuery.append(" ");
+	 			afterFirst = true;
 		 	}
 		}
 		

@@ -47,4 +47,12 @@ public interface IWhereField extends Serializable{
 	public EntityClass getFieldEntityClassForRightCondition();
 	
 	public EntityClass getFieldEntityClassForLeftCondition();
+	
+	public int getLeftBracketsNum() ;
+	
+	public void setLeftBracketsNum(int leftBracketsNum);
+	
+	public int getRightBracketsNum();
+	
+	public void setRightBracketsNum(int rightBracketsNum);
 }

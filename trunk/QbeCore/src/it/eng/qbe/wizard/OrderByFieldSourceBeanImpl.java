@@ -18,6 +18,8 @@ public class OrderByFieldSourceBeanImpl  implements IOrderGroupByField{
 	private String id = null;
 	
 	private String fieldName = null;
+	
+	boolean ascendingOrder = true;
 
 	public OrderByFieldSourceBeanImpl(){
 		
@@ -46,6 +48,14 @@ public class OrderByFieldSourceBeanImpl  implements IOrderGroupByField{
 	private static long idcounter = 0;
 	private static String createNewId() {
 		return "orderby" + String.valueOf(idcounter++);
+	}
+
+	public boolean isAscendingOrder() {
+		return ascendingOrder;
+	}
+
+	public void setAscendingOrder(boolean ascendingOrder) {
+		this.ascendingOrder = ascendingOrder;
 	}
 	
 }

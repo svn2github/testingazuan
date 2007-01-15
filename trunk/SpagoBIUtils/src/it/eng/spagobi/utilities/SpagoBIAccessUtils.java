@@ -146,7 +146,7 @@ public class SpagoBIAccessUtils {
 	 * @return The output response body
 	 */
 	public byte[] saveSubObject(String spagoBIBaseUrl, String path, String nameSubObj, 
-			                    String description, String user, boolean visibility, 
+			                    String description, String user, boolean visibility,
 			                    String content) throws GenericSavingException {
 		HttpClient client = new HttpClient();
 		String visibilityStr = "false";

@@ -21,48 +21,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.metadata;
 
-import java.util.Set;
-
 /**
  * @author Gioia
  *
  */
 public class SbiSubreports implements java.io.Serializable {
 
-    // Fields    
-
-     private Integer master_rpt_id;
-     private Integer sub_rpt_id;
-
-
-    // Constructors
-
-    /** default constructor */
-    public SbiSubreports() {
-    }
+	private SbiSubreportsId id;
+	
+	/** default constructor */
+    public SbiSubreports() {}
     
     /** constructor with id */
-    public SbiSubreports(Integer master_rpt_id, Integer sub_rpt_id) {
-        this.master_rpt_id = master_rpt_id;
-        this.sub_rpt_id = sub_rpt_id;
+    public SbiSubreports(SbiSubreportsId id) {
+        this.id = id;
     }
     
+	public SbiSubreportsId getId() {
+		return id;
+	}
 
-    // Property accessors
+	public void setId(SbiSubreportsId id) {
+		this.id = id;
+	}
     
-    public Integer getMaster_rpt_id() {
-		return master_rpt_id;
-	}
-
-	public void setMaster_rpt_id(Integer master_rpt_id) {
-		this.master_rpt_id = master_rpt_id;
-	}
-
-	public Integer getSub_rpt_id() {
-		return sub_rpt_id;
-	}
-
-	public void setSub_rpt_id(Integer sub_rpt_id) {
-		this.sub_rpt_id = sub_rpt_id;
-	}
 }

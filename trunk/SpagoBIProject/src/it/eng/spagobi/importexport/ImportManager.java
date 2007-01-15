@@ -48,6 +48,7 @@ import it.eng.spagobi.metadata.SbiParuseCkId;
 import it.eng.spagobi.metadata.SbiParuseDet;
 import it.eng.spagobi.metadata.SbiParuseDetId;
 import it.eng.spagobi.metadata.SbiSubreports;
+import it.eng.spagobi.metadata.SbiSubreportsId;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -832,34 +833,47 @@ public class ImportManager implements IImportManager {
 			Iterator iterSbiObjLinks = exportedBIObjectsLinks.iterator();
 			while(iterSbiObjLinks.hasNext()){
 				SbiSubreports objlink = (SbiSubreports)iterSbiObjLinks.next();
-				// get ids of master and subreport
-				Integer masterid = objlink.getMaster_rpt_id();
-				Integer subid = objlink.getSub_rpt_id();
-//				 get biobjects
-				SbiObjects masterBIObj = importer.getExportedSbiObject(masterid, txExpDB, sessionExpDB);
-				SbiObjects subBIObj = importer.getExportedSbiObject(subid, txExpDB, sessionExpDB);
+//				// get ids of master and subreport
+//				Integer masterid = objlink.getMaster_rpt_id();
+//				Integer subid = objlink.getSub_rpt_id();
+////				 get biobjects
+//				SbiObjects masterBIObj = importer.getExportedSbiObject(masterid, txExpDB, sessionExpDB);
+//				SbiObjects subBIObj = importer.getExportedSbiObject(subid, txExpDB, sessionExpDB);
+				
+				//get biobjects
+				SbiObjects masterBIObj = objlink.getId().getMasterReport();
+				SbiObjects subBIObj = objlink.getId().getSubReport();
+				Integer masterid = masterBIObj.getBiobjId();
+				Integer subid = subBIObj.getBiobjId();
 				// get association of object
 				Map biobjIdAss = metaAss.getBIobjIDAssociation();
 				// try to get from association the id associate to the exported metadata
 				Integer newMasterId = (Integer)biobjIdAss.get(masterid);
 				Integer newSubId = (Integer)biobjIdAss.get(subid);
-				if(newMasterId!=null) {
+				if (newMasterId!=null) {
 					masterid = newMasterId;
 				}
-				if(newSubId!=null){
+				if (newSubId!=null) {
 					subid = newSubId;
 				}
-				// build a new SbiSubreport
-				SbiSubreports newsubrep  = new SbiSubreports();
-				newsubrep.setMaster_rpt_id(newMasterId);
-				newsubrep.setSub_rpt_id(newSubId);
+				// build a new id for the SbiSubreport
+				SbiSubreportsId sbiSubReportsId = objlink.getId();
+				if (sbiSubReportsId != null) {
+					SbiObjects master = sbiSubReportsId.getMasterReport();
+					SbiObjects sub = sbiSubReportsId.getMasterReport();
+					SbiObjects newMaster = ImportUtilities.makeNewSbiObject(master, newMasterId);
+					SbiObjects newSub = ImportUtilities.makeNewSbiObject(sub, newSubId);
+					sbiSubReportsId.setMasterReport(newMaster);
+					sbiSubReportsId.setSubReport(newSub);
+				}
+				objlink.setId(sbiSubReportsId);
 				// check if the association between metadata already exist
 				Map unique = new HashMap();
 				unique.put("masterid", masterid);
 				unique.put("subid", subid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiSubreports());
-				if(existObj==null) {
-					importer.insertObject(newsubrep, sessionCurrDB);
+				if (existObj==null) {
+					importer.insertObject(objlink, sessionCurrDB);
 					metaLog.log("Inserted new link between master object " + 
 							     masterBIObj.getLabel() + 
 					            " and sub object " + subBIObj.getLabel());

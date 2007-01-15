@@ -558,8 +558,8 @@ public class ImporterMetadata {
 				Map uniqueMap = (Map)unique;
 				Integer masterid = (Integer)uniqueMap.get("masterid");
 				Integer subid = (Integer)uniqueMap.get("subid");
-				hql = "from SbiSubreports subRep where subRep.master_rpt_id = " + masterid +
-					  " and subRep.sub_rpt_id = " + subid;
+				hql = "from SbiSubreports subreport where subreport.id.masterReport.biobjId = " + masterid +
+					  " and subreport.id.subReport.biobjId = " + subid;
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiSubreports hibSubRep = (SbiSubreports)hqlQuery.uniqueResult();
 				return hibSubRep;

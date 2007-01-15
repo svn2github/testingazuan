@@ -25,7 +25,9 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
+import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiSubreports;
+import it.eng.spagobi.metadata.SbiSubreportsId;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,7 +58,7 @@ implements ISubreportDAO {
 			tx = aSession.beginTransaction();
 
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.master_rpt_id = '" + master_rpt_id.toString() + "'";
+	         "where subreport.id.masterReport.biobjId = " + master_rpt_id.toString();
 			
 			hqlQuery = aSession.createQuery(hql);
 			List hibList = hqlQuery.list();
@@ -95,7 +97,7 @@ implements ISubreportDAO {
 			tx = aSession.beginTransaction();
 
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.sub_rpt_id = '" + sub_rpt_id.toString() + "'";
+	         "where subreport.id.subReport.biobjId = " + sub_rpt_id.toString();
 			
 			hqlQuery = aSession.createQuery(hql);
 			List hibList = hqlQuery.list();
@@ -126,11 +128,13 @@ implements ISubreportDAO {
 		Session aSession = null;
 		Transaction tx = null;
 		aSession = getSession();
-		
 		tx = aSession.beginTransaction();
-		SbiSubreports hibSubreport = new SbiSubreports();
-		hibSubreport.setMaster_rpt_id(aSubreport.getMaster_rpt_id());
-		hibSubreport.setSub_rpt_id(aSubreport.getSub_rpt_id());		
+		SbiSubreportsId hibSubreportid = new SbiSubreportsId();
+		SbiObjects masterReport = (SbiObjects) aSession.load(SbiObjects.class, aSubreport.getMaster_rpt_id());
+		SbiObjects subReport = (SbiObjects) aSession.load(SbiObjects.class, aSubreport.getSub_rpt_id());
+		hibSubreportid.setMasterReport(masterReport);
+		hibSubreportid.setSubReport(subReport);
+		SbiSubreports hibSubreport = new SbiSubreports(hibSubreportid);
 		aSession.save(hibSubreport);	
 		tx.commit();
 	}
@@ -146,7 +150,7 @@ implements ISubreportDAO {
 			tx = aSession.beginTransaction();
 			
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.master_rpt_id = '" + master_rpt_id.toString() + "'";
+	         "where subreport.id.masterReport.biobjId = " + master_rpt_id.toString();
 			
 			hqlQuery = aSession.createQuery(hql);
 			subreports = hqlQuery.list();
@@ -184,7 +188,7 @@ implements ISubreportDAO {
 			tx = aSession.beginTransaction();
 			
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.sub_rpt_id = '" + sub_rpt_id.toString() + "'";
+	         "where subreport.id.subReport.biobjId = " + sub_rpt_id.toString();
 			
 			hqlQuery = aSession.createQuery(hql);
 			subreports = hqlQuery.list();
@@ -218,12 +222,10 @@ implements ISubreportDAO {
 	 * @param hibParameters The hybernate parameter
 	 * @return The corrispondent <code>Parameter</code> object
 	 */
-	public Subreport toSubreport(SbiSubreports hibSubreports){
+	public Subreport toSubreport(SbiSubreports hibSubreport){
 		Subreport aSubreport = new Subreport();
-		
-		aSubreport.setMaster_rpt_id(hibSubreports.getMaster_rpt_id());
-		aSubreport.setSub_rpt_id(hibSubreports.getSub_rpt_id());		
-		
+		aSubreport.setMaster_rpt_id(hibSubreport.getId().getMasterReport().getBiobjId());
+		aSubreport.setSub_rpt_id(hibSubreport.getId().getSubReport().getBiobjId());		
 		return aSubreport;
 	}
 

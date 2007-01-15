@@ -60,6 +60,7 @@ import it.eng.spagobi.metadata.SbiParuseCkId;
 import it.eng.spagobi.metadata.SbiParuseDet;
 import it.eng.spagobi.metadata.SbiParuseDetId;
 import it.eng.spagobi.metadata.SbiSubreports;
+import it.eng.spagobi.metadata.SbiSubreportsId;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.Iterator;
@@ -532,17 +533,22 @@ public class ExporterMetadata {
 			Transaction tx = session.beginTransaction();
 			Integer masterId = sub.getMaster_rpt_id();
 			Integer subId = sub.getSub_rpt_id();
-			String query = " from SbiSubreports where master_rpt_id = " + masterId +
-						   " and sub_rpt_id = " + subId;
+			String query = " from SbiSubreports as subreport where " +
+					"subreport.id.masterReport.biobjId = " + masterId + " and " +
+					"subreport.id.masterReport.biobjId = " + subId;
 			Query hibQuery = session.createQuery(query);
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
 				return;
 			}
-			SbiSubreports subRep = new SbiSubreports();
-			subRep.setMaster_rpt_id(masterId);
-			subRep.setSub_rpt_id(subId);
-			session.save(subRep);
+			
+			SbiSubreportsId hibSubreportid = new SbiSubreportsId();
+			SbiObjects masterReport = (SbiObjects) session.load(SbiObjects.class, sub.getMaster_rpt_id());
+			SbiObjects subReport = (SbiObjects) session.load(SbiObjects.class, sub.getSub_rpt_id());
+			hibSubreportid.setMasterReport(masterReport);
+			hibSubreportid.setSubReport(subReport);
+			SbiSubreports hibSubreport = new SbiSubreports(hibSubreportid);
+			session.save(hibSubreport);
 			tx.commit();
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertSubReportAssociation",

@@ -39,6 +39,8 @@ import com.tonbeller.wcf.table.DefaultTableRow;
 import com.tonbeller.wcf.table.TableRow;
 
 /**
+ * @author Engineering Ingegneria Informatica S.p.A. - Luca Barozzi
+ * 
  * A wcf table model for drill through data,
  * requires an sql query and connection information to be set.
  */

@@ -13,7 +13,7 @@ import com.tonbeller.jpivot.olap.model.Cell;
 import com.tonbeller.jpivot.olap.navi.DrillThrough;
 import com.tonbeller.wcf.table.TableModel;
 /**
- * @author Robin Bagot
+ * @author Engineering Ingegneria Informatica S.p.A. - Luca Barozzi
  *
  * Implementation of the DrillExpand Extension for Mondrian Data Source.
 */

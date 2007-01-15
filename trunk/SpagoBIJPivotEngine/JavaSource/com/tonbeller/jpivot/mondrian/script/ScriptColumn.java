@@ -5,7 +5,9 @@
  */
 package com.tonbeller.jpivot.mondrian.script;
 
-
+/**
+ * @author Engineering Ingegneria Informatica S.p.A. - Luca Barozzi
+ */
 public class ScriptColumn {
 	private String title;
 	private int position;

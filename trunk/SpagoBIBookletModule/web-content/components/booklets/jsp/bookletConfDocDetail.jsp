@@ -177,7 +177,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 			if(!findOutPar){
 		%>
+			<tr>
+				<td class='portlet-form-field-label' width="160px">Output:</td>
+				<td><input type="text" size="30" name="param_output_format" value="JPGBASE64" readonly /></td>
+			</tr>
+			<!-- 
 			<input type="hidden" size="30" name="param_output_format" value="JPGBASE64" />
+			-->
 		<%		
 			}
 		%>

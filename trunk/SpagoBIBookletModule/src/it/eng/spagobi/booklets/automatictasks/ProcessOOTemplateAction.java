@@ -313,10 +313,14 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			debug("storeDocImages", "biobject parameter list "+ params);
 			// for each parameter set the configured value
 			Iterator iterParams = params.iterator();
+			boolean findOutPar = false;
 			while(iterParams.hasNext()) {
 				BIObjectParameter par = (BIObjectParameter)iterParams.next();
 				String parUrlName = par.getParameterUrlName();
 				debug("storeDocImages", "processing biparameter with url name "+ parUrlName);
+				if (parUrlName.equalsIgnoreCase("param_output_format")) {
+					findOutPar = true;
+				}
 				String value = (String)confPars.get(parUrlName);
 				debug("storeDocImages", "usign "+ value+" as value for the parameter");
 				if(value!=null) {
@@ -352,6 +356,9 @@ public class ProcessOOTemplateAction implements ActionHandler {
 		    	String parvalue = (String)mapPars.get(parurlname);
 		    	httppost.addParameter(parurlname, parvalue);
 		    }
+			if (!findOutPar) {
+				httppost.addParameter("param_output_format", "JPGBASE64");
+			}
 		    debug("storeDocImages", "post object created " + httppost);
 		    // sent request to the engine
 		    int statusCode = client.executeMethod(httppost);
@@ -383,11 +390,6 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			throw e;
 		}
 	}
-	
-	
-	
-	
-	
 	
 	private static XComponent openTemplate(XComponentLoader xComponentLoader, String pathTempFile){
 		debug("openTemplate", "start open template method");

@@ -44,7 +44,7 @@
     <module>SpagoBIJpivotXMLAEngine</module>
     <module>SpagoBIWekaEngine</module>
     <module>SpagoBIGeoEngine</module>
-    <module>QbeWeb</module>
+    <module>SpagoBIQbeEngine</module>
     <module>SpagoBIUtilityFiles</module>
   </modules>
   

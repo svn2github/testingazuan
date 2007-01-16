@@ -74,7 +74,7 @@ public interface IImportManager {
 	 * Commits all changes made on exported and current databases
 	 * @return String, the path of the log file
 	 */
-	public String commitAllChanges() throws EMFUserError;
+	public ImportResultInfo commitAllChanges() throws EMFUserError;
 	
     /**
      * Check the existance of the exported metadata into the current system metadata

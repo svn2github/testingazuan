@@ -39,6 +39,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.importexport.IExportManager;
 import it.eng.spagobi.importexport.IImportManager;
 import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.importexport.ImportResultInfo;
 import it.eng.spagobi.importexport.MetadataAssociations;
 import it.eng.spagobi.importexport.TransformManager;
 import it.eng.spagobi.utilities.PortletUtilities;
@@ -225,6 +226,7 @@ public class ImportExportModule extends AbstractModule {
 			TransformManager transManager = new TransformManager();
 			archiveBytes = transManager.applyTransformations(archiveBytes, archiveName, pathImpTmpFolder);
 			
+			
 			// instance the importer class
 			String impClassName = (String)importerSB.getAttribute("class");
 	        Class impClass = Class.forName(impClassName);
@@ -409,8 +411,8 @@ public class ImportExportModule extends AbstractModule {
 			impManager.checkExistingMetadata();
 			if(metaAss.isEmpty()) {
 				impManager.importObjects();
-				String logFilePath = impManager.commitAllChanges(); 
-				response.setAttribute(ImportExportConstants.IMPORT_LOG_FILE_PATH, logFilePath);	
+				ImportResultInfo iri = impManager.commitAllChanges(); 
+				response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);	
 			} else {
 				try{
 					response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportExistingMetadataAssociation");
@@ -456,8 +458,8 @@ public class ImportExportModule extends AbstractModule {
 			impManager = (IImportManager)session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
 			MetadataAssociations metaAss = impManager.getMetadataAssociation();
 			impManager.importObjects();
-			String logFilePath = impManager.commitAllChanges();
-			response.setAttribute(ImportExportConstants.IMPORT_LOG_FILE_PATH, logFilePath);	
+			ImportResultInfo iri = impManager.commitAllChanges();
+			response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);	
 		} catch (EMFUserError emfue) {
 			if(impManager!=null)
 				impManager.stopImport();

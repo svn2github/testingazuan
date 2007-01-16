@@ -317,4 +317,40 @@ public class PortletUtilities {
         } 
         return message;
     } // public String getMessage(String code)
+	 
+	 
+	 
+	 
+	 
+	 /**
+		 * Gets the language code of the user portal language. If it's not possible to gather 
+		 * the locale of the portal it returns the default language code   
+		 * @return	A string containing the language code
+		 */
+		 public static String getPortalLanguageCode() {
+			 try {
+			 	Locale portalLocale =  PortletAccess.getPortalLocale();
+			 	if(portalLocale == null) {
+		        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
+		        			            "getLanguageCode", 
+		        			            "Portal locale not found by PortletAccess.getPortalLocale() method!! " +
+				              			"May be there is not a portlet request");
+			 	} else {
+			 		String portalLang = portalLocale.getLanguage();
+			 		return portalLang;
+			 	}
+			 } catch (Exception e) {
+				 SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
+			              			"getLanguageCode", "Error while getting portal locale", e);
+				 
+			 }
+			 // get the configuration sourceBean/language code/country code of the default language
+			 SourceBean defaultLangSB = (SourceBean)ConfigSingleton.getInstance()
+		 	                           .getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+		 	                           		                           "default", "true");
+			 String defaultLang = (String)defaultLangSB.getAttribute("language");
+		 	 return defaultLang;
+	    } 
+	 
+	 
 }

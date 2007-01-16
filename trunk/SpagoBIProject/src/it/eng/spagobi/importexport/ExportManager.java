@@ -227,7 +227,7 @@ public class ExportManager implements IExportManager {
 		try{
 			String propFilePath = pathBaseFolder + "/export.properties";
 			FileOutputStream fos = new FileOutputStream(propFilePath);
-			String properties = "spagobi-version=1.9.1\n";
+			String properties = "spagobi-version=1.9.2\n";
 			fos.write(properties.getBytes());
 			fos.flush();
 			fos.close();

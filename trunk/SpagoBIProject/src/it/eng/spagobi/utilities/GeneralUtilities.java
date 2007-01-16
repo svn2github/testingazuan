@@ -28,21 +28,13 @@ package it.eng.spagobi.utilities;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.dbaccess.DataConnectionManager;
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
@@ -50,13 +42,8 @@ import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
-import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.bo.lov.ILovDetail;
-import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
-import it.eng.spagobi.bo.lov.QueryDetail;
-import it.eng.spagobi.bo.lov.ScriptDetail;
-import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
 import it.eng.spagobi.security.AnonymousCMSUserProfile;
@@ -64,6 +51,7 @@ import it.eng.spagobi.security.AnonymousCMSUserProfile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -71,7 +59,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.portlet.PortletRequest;
 
@@ -140,6 +127,37 @@ public class GeneralUtilities {
 		
 	}
 
+	
+	/**
+	 * Given an <code>InputStream</code> as input flushs the content into an OutputStream 
+	 * and then close the input and output stream.
+	 * @param is The input stream 
+	 * @param os The output stream
+	 * @param closeStreams, if true close both stream 
+	 */
+	public static void flushFromInputStreamToOutputStream(InputStream is, OutputStream os, boolean closeStreams) {
+		try{	
+			int c = 0;
+			byte[] b = new byte[1024];
+			while ((c = is.read(b)) != -1) {
+				if (c == 1024)
+					os.write(b);
+				else
+					os.write(b, 0, c);
+			}
+			os.flush();
+			if(closeStreams) {
+				os.close();
+				is.close();
+			}
+		} catch (IOException ioe) {
+			SpagoBITracer.major(UtilitiesConstants.NAME_MODULE, GeneralUtilities.class.getName(),
+					           "flushFromInputStreamToOutputStream"," Exception", ioe);
+		}
+	}
+	
+	
+	
 	/**
 	 * From a String identifying the complete name for a file, gets the relative file names, 
 	 * which are substrings of the starting String, according to the java separator "/".

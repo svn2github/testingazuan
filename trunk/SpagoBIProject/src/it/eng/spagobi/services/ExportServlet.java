@@ -73,12 +73,15 @@ public class ExportServlet extends HttpServlet{
 		try{
 			String operation = (String)request.getParameter("OPERATION");
 			if((operation!=null) && (operation.equalsIgnoreCase("download"))){
-				manageDownload(request, response);
+				manageDownload(request, response, true);
 				return;
 			} else if((operation!=null) && (operation.equalsIgnoreCase("downloadLog"))) {
-				manageDownload(request, response);
+				manageDownload(request, response, false);
 				return;
-			}
+			} else if((operation!=null) && (operation.equalsIgnoreCase("downloadManualTask"))) {
+				manageDownload(request, response, false);
+				return;
+			} 
 		} finally {}
 	}
 		
@@ -88,8 +91,9 @@ public class ExportServlet extends HttpServlet{
 	 * and in the end deletes the file.
 	 * @param request the http request
 	 * @param response the http response
+	 * @param deleteFile if true delete the downloadedFile
 	 */
-	private void manageDownload(HttpServletRequest request, HttpServletResponse response) {
+	private void manageDownload(HttpServletRequest request, HttpServletResponse response, boolean deleteFile) {
 		try{	
 			String exportFilePath = (String)request.getParameter("PATH");
 			File exportedFile = new File(exportFilePath);
@@ -109,7 +113,9 @@ public class ExportServlet extends HttpServlet{
 		 	response.getOutputStream().flush();
 		 	if(fis!=null)
 		 		fis.close();
-		 	exportedFile.delete();
+		 	if(deleteFile) {
+		 		exportedFile.delete();
+		 	}
 		} catch (IOException ioe) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "manageDownload",
 		                           "Cannot flush response" + ioe);

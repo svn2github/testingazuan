@@ -1,0 +1,3 @@
+
+Dalla versione 1.9.2 di SpagoBI il motore per i documenti di tipo 'Datamart' è un motore esterno.
+Il motore esterno è una applicazione chiamata 'SpagoBIQbeEngine'

@@ -53,6 +53,8 @@ public class ImportExportConstants {
 	public static final String EXISTING_METADATA = "EXISTING_METADATA"; 
 	public static final String IMPORT_MANAGER = "IMPORT_MANAGER"; 
 	public static final String IMPORT_LOG_FILE_PATH = "IMPORT_LOG_FILE_PATH";
+	public static final String IMPORT_RESULT_INFO = "IMPORT_RESULT_INFO";
 	public static final String IMPORTEXPORT_OPERATION = "IMPORTEXPORT_OPERATION";
+	public static final String MANUALTASK_FOLDER_NAME = "MANUAL_TASKS";
 
 }

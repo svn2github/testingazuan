@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%  
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
    String exportFilePath = (String)aServiceRequest.getAttribute(ImportExportConstants.EXPORT_FILE_PATH);
-   String importLogFilePath = (String)aServiceRequest.getAttribute(ImportExportConstants.IMPORT_LOG_FILE_PATH);
+   ImportResultInfo iri = (ImportResultInfo)aServiceRequest.getAttribute(ImportExportConstants.IMPORT_RESULT_INFO);
 
    PortletURL backUrl = renderResponse.createActionURL();
    backUrl.setParameter("ACTION_NAME", "START_ACTION");
@@ -48,15 +48,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
    }
    
-   String downloadLogUrl = renderRequest.getContextPath() + "/ExportService";
-   if((importLogFilePath!=null) && !importLogFilePath.trim().equalsIgnoreCase("") ) {
-	   downloadLogUrl += "?OPERATION=downloadLog&PATH="+  importLogFilePath;
-   }
-   
-   
 %>
 
 
+<%@page import="it.eng.spagobi.importexport.ImportResultInfo"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Iterator"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -91,12 +89,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		downform.submit();
 	}
 	
-	function submitDownloadLogForm(actionurl) {
-		downLogform = document.getElementById('downLogForm');
-		var divLogdown = document.getElementById('divLogDownload');
-		divLogdown.style.display='none';
-		downLogform.submit();
-	}
 </script>
 
 
@@ -150,9 +142,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<form method='POST' action='<%=downloadUrl%>' id='downForm' name='downForm'>
 	</form>
 
-    <form method='POST' action='<%=downloadLogUrl%>' id='downLogForm' name='downLogForm'>
-	</form>
-
     <form method='POST' action='<%=formImportUrl.toString()%>' id='importForm' name='importForm' enctype="multipart/form-data">
 	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">
@@ -173,13 +162,55 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<input type="file"  name="exportedArchive" />
 			<input type='hidden' name='MESSAGEDET' value='Import' />
 		</div>
-		<div id="divLogDownload" 
-			 style="clear:left;display:none;color:#074B88;">	 
+		<%
+		if(iri!=null) {
+		%>	
+		<div id="divImportResult" style="clear:left;color:#074B88;">	 		 
+			<%
+				String pathLogFile = iri.getPathLogFile();
+				if( (pathLogFile!=null) && !pathLogFile.equals("") ) {	
+					 String downloadLogUrl = renderRequest.getContextPath() + "/ExportService";
+					 downloadLogUrl += "?OPERATION=downloadLog&PATH=" + pathLogFile;	
+			%>
 			<spagobi:message key = "SBISet.importexport.opComplete" bundle="component_impexp_messages"/>
-			<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadLogForm()">
+			<a style='text-decoration:none;color:#CC0000;' href='<%=downloadLogUrl%>'>
 				<spagobi:message key = "Sbi.downloadLog" bundle="component_impexp_messages"/>
 			</a>
+			<% 	}
+				Map manualTasks = iri.getManualTasks();
+				if(!manualTasks.isEmpty()) {
+			%>
+			<br/>
+			<br/>
+			<span class="portlet-form-field-label" style="color:#CC0000;">
+				<spagobi:message key = "impexp.manualtask.exists" bundle="component_impexp_messages"/>
+			</span>
+			<ul>
+			<% 	
+					Set keys = manualTasks.keySet();
+			    	Iterator keysIter = keys.iterator();
+			    	while(keysIter.hasNext()){
+			    		String key = (String)keysIter.next();
+			    		String path = (String)manualTasks.get(key);
+			    		String downloadManualTaskUrl = renderRequest.getContextPath() + "/ExportService";
+			    		downloadManualTaskUrl += "?OPERATION=downloadManualTask&PATH=" + path;	
+		    %>
+		    	<li>
+		    		<a style='text-decoration:none;color:#074B88;font-size:9px;' href='<%=downloadManualTaskUrl%>'>
+						<%=key%>
+					</a>
+		    	</li>
+		    <%
+			   	 	}
+			%>
+			</ul>
+			<%
+				}
+			%>
 		</div>
+		<%
+		}
+		%>
 	</div>
 	</form>
 
@@ -203,16 +234,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 
-<%
-	if((importLogFilePath!=null) && !importLogFilePath.trim().equalsIgnoreCase("") ) {
-%>
-	<script>
-		var divLogDown = document.getElementById('divLogDownload');
-		divLogDown.style.display='inline';
-	</script>
-<% 
-	}
-%>
+
 
 
 

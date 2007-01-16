@@ -29,10 +29,10 @@
       					   type="RELATIVE" 
       					   scope="SERVICE_RESPONSE" 
       					   value="IMPORTEXPORTMODULE.EXPORT_FILE_PATH"/>
-      			<PARAMETER name="IMPORT_LOG_FILE_PATH" 
+      			<PARAMETER name="IMPORT_RESULT_INFO" 
       					   type="RELATIVE" 
       					   scope="SERVICE_RESPONSE" 
-      					   value="IMPORTEXPORTMODULE.IMPORT_LOG_FILE_PATH"/>
+      					   value="IMPORTEXPORTMODULE.IMPORT_RESULT_INFO"/>
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

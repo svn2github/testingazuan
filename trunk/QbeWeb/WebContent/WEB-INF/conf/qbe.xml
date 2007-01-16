@@ -11,10 +11,10 @@
 	 
 	<QBE-MODE mode="WEB" page-size="10"/>
 	
-	<QBE-MART_DIR dir="C:\Programmi\QBE\datamarts"/>
+	<QBE-MART_DIR dir="tmp/datamarts"/>
 	
 	<QBE-ENABLE-SCRIPT enablescript="true" calculateFieldPosition="BEFORE_COLUMNS" /> 
-	<QBE-SCRIPT-DIR dir="C:\Programmi\QBE\groovy"/> 
+	<QBE-SCRIPT-DIR dir="tmp/groovy"/> 
 	
 	<!--   <QBE-ENABLE-SCRIPT enablescript="true" calculateFieldPosition="AFTER_COLUMNS" /> -->
 	<!--   <QBE-MSG-HELPER className="it.eng.qbe.utility.QbeSpagoBIMessageHelper"/> -->

@@ -75,11 +75,15 @@
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 				
 		    <!-- delete hibernate configuration file for JOnAS -->
+				<!--
 		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>
-
+				-->
+				
 		    <!-- delete CMS configuration file for JOnAS and JBoss -->
+				<!--
 		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms-jboss-jonas.xml"/>
-
+				-->
+				
 		    <!-- unzip SpagoBIJasperReportEngine -->
 		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine"/>
                     <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine.war" 
@@ -105,10 +109,10 @@
                     <unzip src="${basedir}/../SpagoBIWekaEngine/target/SpagoBIWekaEngine.war" 
 			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIWekaEngine"/>
 
-		    <!-- unzip QbeWeb -->
-		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/QbeWeb"/>
-                    <unzip src="${basedir}/../QbeWeb/target/QbeWeb.war" 
-			   dest="${basedir}/../build/tomcat-server/webapps/QbeWeb"/>
+		    <!-- unzip SpagoBIQbeEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIQbeEngine"/>
+                    <unzip src="${basedir}/../SpagoBIQbeEngine/target/SpagoBIQbeEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIQbeEngine"/>
 				 
                   </tasks>
                 </configuration>
@@ -166,7 +170,7 @@
 		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2alpha.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>			    
 		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.2.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
 
 		    <!-- delete commons-logging library -->
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
@@ -206,13 +210,14 @@
 			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war"/>
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIWekaEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
 
-		    <!-- unzip QbeWeb -->
-		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/QbeWeb.war"/>
-                    <unzip src="${basedir}/../QbeWeb/target/QbeWeb.war" 
-			   dest="${basedir}/../build/jboss-server/server/default/deploy/QbeWeb.war"/>
-				<delete file="${basedir}/../build/jboss-server/server/default/deploy/QbeWeb.war/WEB-INF/lib/commons-logging-1.0.4.jar" />
-				<delete file="${basedir}/../build/jboss-server/server/default/deploy/QbeWeb.war/WEB-INF/lib/log4j-1.2.8.jar" />
-
+		    <!-- unzip SpagoBIQbeEngine -->
+		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIQbeEngine.war"/>
+                    <unzip src="${basedir}/../SpagoBIQbeEngine/target/SpagoBIQbeEngine.war" 
+			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIQbeEngine.war"/>
+				<!--
+				<delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIQbeEngine.war/WEB-INF/lib/commons-logging-1.0.4.jar" />
+				<delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBIQbeEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
+				-->
                   </tasks>
                 </configuration>
                 <goals>
@@ -269,7 +274,7 @@
 		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2alpha.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.2.jar"
-			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
 
 		    <!-- delete commons-logging library -->
 		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
@@ -306,10 +311,10 @@
                     <unzip src="${basedir}/../SpagoBIWekaEngine/target/SpagoBIWekaEngine.war" 
 			   dest="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIWekaEngine.war"/>
 
-		    <!-- unzip QbeWeb -->
+		    <!-- unzip SpagoBIQbeEngine -->
 		    <mkdir dir="${basedir}/../build/jonas-server/webapps/autoload"/>
-                    <unzip src="${basedir}/../QbeWeb/target/QbeWeb.war" 
-			   dest="${basedir}/../build/jonas-server/webapps/autoload/QbeWeb.war"/>
+                    <unzip src="${basedir}/../SpagoBIQbeEngine/target/SpagoBIQbeEngine.war" 
+			   dest="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIQbeEngine.war"/>
 
                   </tasks>
                 </configuration>

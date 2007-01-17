@@ -42,13 +42,17 @@ public class QbeProperties {
 	public static final int FIELD_TYPE_MEASURE = 1;
 	public static final int FIELD_TYPE_DIMENSION = 2;
 	
-	private static Properties qbeProperties = null;
+	private Properties qbeProperties = null;
 	
-	public static boolean isTableVisible(DataMartModel dm, String className) {
-		Properties props = getQbeProperties(dm);
-		if(props == null) return true;
+	
+	public QbeProperties(DataMartModel dm) {
+		qbeProperties = getQbeProperties(dm);
+	}
+	
+	public boolean isTableVisible(String className) {
+		if(qbeProperties == null) return true;
 		
-		String visiblePropertyValue = props.getProperty(className + ".visible");
+		String visiblePropertyValue = qbeProperties.getProperty(className + ".visible");
 		if(visiblePropertyValue == null || visiblePropertyValue.trim().equalsIgnoreCase("true")) {
 			return true;
 		} else {
@@ -56,11 +60,10 @@ public class QbeProperties {
 		}
 	}
 	
-	public static boolean isFieldVisible(DataMartModel dm, String fieldName) {
-		Properties props = getQbeProperties(dm);
-		if(props == null) return true;
+	public boolean isFieldVisible(String fieldName) {
+		if(qbeProperties == null) return true;
 		
-		String visiblePropertyValue = props.getProperty(fieldName + ".visible");
+		String visiblePropertyValue = qbeProperties.getProperty(fieldName + ".visible");
 		if(visiblePropertyValue == null || visiblePropertyValue.trim().equalsIgnoreCase("true")) {
 			return true;
 		} else {
@@ -68,10 +71,9 @@ public class QbeProperties {
 		}
 	}
 	
-	public static int getTableType(DataMartModel dm, String fieldName) {
-		Properties props = getQbeProperties(dm);
-		if(props == null) return CLASS_TYPE_TABLE;
-		String type = props.getProperty(fieldName + ".type");
+	public int getTableType(String fieldName) {
+		if(qbeProperties == null) return CLASS_TYPE_TABLE;
+		String type = qbeProperties.getProperty(fieldName + ".type");
 		if(type == null || type.trim().equalsIgnoreCase("table")) {
 			return CLASS_TYPE_TABLE;
 		} else {
@@ -81,10 +83,9 @@ public class QbeProperties {
 	
 	
 	
-	public static int getFieldType(DataMartModel dm, String className) {
-		Properties props = getQbeProperties(dm);
-		if(props == null) return FIELD_TYPE_DIMENSION;
-		String type = props.getProperty(className + ".type");
+	public int getFieldType(String className) {
+		if(qbeProperties == null) return FIELD_TYPE_DIMENSION;
+		String type = qbeProperties.getProperty(className + ".type");
 		if(type == null || type.trim().equalsIgnoreCase("dimension")) {
 			return FIELD_TYPE_DIMENSION;
 		} else {
@@ -94,17 +95,18 @@ public class QbeProperties {
 
 	public static Properties getQbeProperties(DataMartModel dm) {
 		
-		if(qbeProperties == null) {
-			File dmJarFile = dm.getJarFile();
-			JarFile jf = null;
-			try {
-				jf = new JarFile(dmJarFile);
-				qbeProperties = getQbeProperties(jf);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
-		}
+		Properties qbeProperties = null;
+		
+		File dmJarFile = dm.getJarFile();
+		JarFile jf = null;
+		try {
+			jf = new JarFile(dmJarFile);
+			qbeProperties = getQbeProperties(jf);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
 		
 		return qbeProperties;	
 	}

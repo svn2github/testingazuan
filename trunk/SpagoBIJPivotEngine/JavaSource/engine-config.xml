@@ -28,7 +28,6 @@
 	
 	<SCHEMAS>
 		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="FoodMart" />
-		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="Baseball" />
 	</SCHEMAS>
 	
 </ENGINE-CONFIGURATION>

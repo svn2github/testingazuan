@@ -81,10 +81,16 @@ public class QbeConf {
 	
 	public String getJndiConnectionName(String connectionName) {
 		String jndiConnectionName = null;
+		String jndiContext = null;
 		SourceBean connectionSB = (SourceBean)config.getFilteredSourceBeanAttribute("DATA-ACCESS.CONNECTION", "name", connectionName);
 		if(connectionSB != null) {
 			jndiConnectionName = (String)connectionSB.getAttribute("jndiResourceName");
-			jndiConnectionName = "java:comp/env/" + jndiConnectionName;
+			//jndiConnectionName = "java:comp/env/" + jndiConnectionName; IT DOES NOT WORK ON JOnAS
+			jndiContext = (String) connectionSB.getAttribute("jndiContext");
+			if (jndiContext != null && !jndiContext.trim().equals("")) {
+				if (jndiContext.endsWith("/")) jndiConnectionName = jndiContext + jndiConnectionName;
+				else jndiConnectionName = jndiContext + "/" + jndiConnectionName;
+			}
 		}
 		return jndiConnectionName;
 	}

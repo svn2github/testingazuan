@@ -315,6 +315,11 @@
 		    <mkdir dir="${basedir}/../build/jonas-server/webapps/autoload"/>
                     <unzip src="${basedir}/../SpagoBIQbeEngine/target/SpagoBIQbeEngine.war" 
 			   dest="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIQbeEngine.war"/>
+				 
+				<!-- overwrite the data-access.xml configuration file for Tomcat with the correct file for JOnAS -->
+		    <move file="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIQbeEngine.war/WEB-INF/conf/data_access_jonas.xml"
+			  tofile="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIQbeEngine.war/WEB-INF/conf/data_access.xml"
+			  overwrite="true"/>
 
                   </tasks>
                 </configuration>

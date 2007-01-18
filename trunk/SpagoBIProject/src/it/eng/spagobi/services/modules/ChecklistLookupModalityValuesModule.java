@@ -532,14 +532,16 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			//System.out.println(" - " + attribute);
 		}
 		
-		List values = biParameter.getParameterValues();		
-		for(int i = 0; i < values.size(); i++) {
-			String value = (String)values.get(i);
-			//System.out.println(" -  [" + value + "]");
-			//System.out.println(" -> [" + GeneralUtilities.encode(value) + "]");
-			if(map.get(value) == null) {
-				//System.out.println(" *** ");
-				checkedObjectsMap.remove(GeneralUtilities.encode(value));
+		List values = biParameter.getParameterValues();
+		if (values != null) {
+			for(int i = 0; i < values.size(); i++) {
+				String value = (String)values.get(i);
+				//System.out.println(" -  [" + value + "]");
+				//System.out.println(" -> [" + GeneralUtilities.encode(value) + "]");
+				if(map.get(value) == null) {
+					//System.out.println(" *** ");
+					checkedObjectsMap.remove(GeneralUtilities.encode(value));
+				}
 			}
 		}
 	}

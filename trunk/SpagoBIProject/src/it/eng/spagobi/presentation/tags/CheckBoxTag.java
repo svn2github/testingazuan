@@ -209,9 +209,10 @@ public class CheckBoxTag extends TagSupport {
 		
 		_htmlStream = new StringBuffer();
 		HashMap params = new HashMap();
-		params.put("PAGE", pageName); 
+		//params.put("PAGE", pageName);
+		params.putAll(_providerUrlMap);
 		params.put("MESSAGE", "HANDLE_CHECKLIST"); 
-		params.put("LIGHT_NAVIGATOR_DISABLED", "true"); 
+		//params.put("LIGHT_NAVIGATOR_DISABLED", "true"); 
 		//params.put("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		_session.setAttribute("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		params.put("PAGE_NUMBER", new Integer(pageNumber).toString());

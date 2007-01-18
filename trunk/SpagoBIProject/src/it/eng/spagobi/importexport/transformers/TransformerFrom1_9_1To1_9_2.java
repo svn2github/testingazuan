@@ -114,7 +114,7 @@ public class TransformerFrom1_9_1To1_9_2 implements ITransformer {
 			    String pathNewTemp = pathFolderBiObj + "/template.xml";
 			    FileOutputStream fileNewTempOs = new FileOutputStream(pathNewTemp);
 			    String newTempStr = "<QBE>\n<DATASOURCE name=\"\" dialect=\"\" />\n"+
-			    					"<DATAMART name=\""+templateFile.getName()+"\"/>\n</QBE>";
+			    					"<DATAMART name=\""+getFilenameWithoutExtension(templateFile.getName())+"\"/>\n</QBE>";
 			    fileNewTempOs.write(newTempStr.getBytes());
 			    fileNewTempOs.flush();
 			    fileNewTempOs.close();
@@ -125,7 +125,14 @@ public class TransformerFrom1_9_1To1_9_2 implements ITransformer {
 		}
 	}
 
-
+	private String getFilenameWithoutExtension(String fileName) {
+		String newFileName = fileName;
+		int indLastPoint = fileName.lastIndexOf(".");
+		if(indLastPoint!=-1) {
+			newFileName = fileName.substring(0, indLastPoint);
+		}
+		return newFileName;
+	}
 
 	
 }

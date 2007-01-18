@@ -322,9 +322,15 @@ public class ImporterMetadata {
 				String pathTempFolder = pathContent + obj.getPath();
 				File tempFolder = new File(pathTempFolder);
 				File[] files = tempFolder.listFiles();
-				File template = files[0];
-				String fileTempName = template.getName();
-				FileInputStream fis = new FileInputStream(template);
+				//File template = files[0];
+				File template = null;
+				for (int i = 0; i < files.length; i++) {
+					File aContainedFile = files[i];
+					if (aContainedFile.isFile()) {
+						template = aContainedFile;
+						break;
+					}
+				}
 				// generate an uuid and set it into the object
 				UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 				UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
@@ -348,21 +354,25 @@ public class ImporterMetadata {
 				setOp.setProperties(properties);
 				manager.execSetOperation(setOp);
 				// insert the template node into the cms
-				setOp = new SetOperation();
-				setOp.setContent(fis);
-				setOp.setType(SetOperation.TYPE_CONTENT);
-				setOp.setPath(path + "/template");
-				properties =  new ArrayList();
-				String[] nameFilePropValues = new String[] { fileTempName };
-				String today = new Date().toString();
-				String[] datePropValues = new String[] { today };
-				CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
-				CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);
-				properties.add(propFileName);
-				properties.add(propDateLoad);
-				setOp.setProperties(properties);
-				manager.execSetOperation(setOp);
-				fis.close();
+				if (template != null) {
+					String fileTempName = template.getName();
+					FileInputStream fis = new FileInputStream(template);
+					setOp = new SetOperation();
+					setOp.setContent(fis);
+					setOp.setType(SetOperation.TYPE_CONTENT);
+					setOp.setPath(path + "/template");
+					properties =  new ArrayList();
+					String[] nameFilePropValues = new String[] { fileTempName };
+					String today = new Date().toString();
+					String[] datePropValues = new String[] { today };
+					CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
+					CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);
+					properties.add(propFileName);
+					properties.add(propDateLoad);
+					setOp.setProperties(properties);
+					manager.execSetOperation(setOp);
+					fis.close();
+				}
 				insertObject(obj, session);
 				objToReturn = obj;
 			} catch (Exception e) {

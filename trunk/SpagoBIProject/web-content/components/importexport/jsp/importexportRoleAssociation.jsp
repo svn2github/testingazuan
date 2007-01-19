@@ -70,7 +70,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='roleAssForm' name='roleAssForm'>
-	<div style="float:left;width:50%;" class="div_detail_area_forms">
+	<div style="float:left;width:70%;" class="div_detail_area_forms">
 		<table style="margin:10px;">
 			<tr>
 				<td class='portlet-section-header'><spagobi:message key = "SBISet.impexp.exportedRoles"  bundle="component_impexp_messages"/></td>
@@ -89,7 +89,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    	Role role = (Role)iterExpRoles.next();
 		    %>
 			<tr>
-				<td class='portlet-form-field-label'><%=role.getName()%></td>
+				<td class='portlet-form-field-label'>
+				<%
+				  String rolename = role.getName();
+					if((rolename!=null) && (rolename.length() > 50)) {
+					   rolename = rolename.substring(0, 50);
+					   rolename += "...";
+					}
+				%>
+            <span title="<%=role.getName()%>" alt="<%=role.getName()%>"><%=rolename%></span>
+        </td>
 				<td>
 				    <input type="hidden" name="expRole" value="<%=role.getId()%>" />
 				    <% 
@@ -138,7 +147,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table>
 	</div>
 	
-	<div style="float:left;width:39%;">
+	<div style="float:left;width:18%;">
 		<input type="image" 
 		       name="submit" 
 		       title='<spagobi:message key="Sbi.next"  bundle="component_impexp_messages"/>' 

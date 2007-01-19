@@ -2,6 +2,7 @@
 <ENGINE-CONFIGURATION>
 	<CONNECTIONS-CONFIGURATION>
 
+    <!--
 		<CONNECTION name="hsqldbDWH" 
 					isDefault="false"
 					isJNDI="false" 
@@ -23,6 +24,7 @@
 					user="postgres"
 					password="postgres"
 					jdbcUrl="jdbc:postgresql://localhost:5432/lapam"/>
+		-->			
 
 	</CONNECTIONS-CONFIGURATION>
 	

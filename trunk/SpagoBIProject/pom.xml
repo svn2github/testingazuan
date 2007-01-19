@@ -248,7 +248,7 @@
       <artifactId>quartz</artifactId>
       <version>1.6.0</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/quartz-1.6.0.jar</systemPath>
+      <systemPath>${lib.dir}/quartz-all-1.6.0.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>

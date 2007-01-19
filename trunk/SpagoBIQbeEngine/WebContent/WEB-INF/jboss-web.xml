@@ -6,10 +6,12 @@
     </loader-repository>
  </class-loading>
 
+    <!--
     <resource-ref>
         <res-ref-name>jdbc/sbifoodmart</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <jndi-name>java:/sbifoodmart</jndi-name>
     </resource-ref>
+    -->
 
 </jboss-web>

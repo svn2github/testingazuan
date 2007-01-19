@@ -178,6 +178,9 @@ public class CheckBoxTag extends TagSupport {
 		if (lightNavigatorDisabledObj != null) {
 			String lightNavigatorDisabled = (String) lightNavigatorDisabledObj;
 			_providerUrlMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, lightNavigatorDisabled);
+		} else {
+			// if the LightNavigator is abled, its LIGHT_NAVIGATOR_REPLACE_LAST function will be used while navigating the list
+			_providerUrlMap.put(LightNavigationManager.LIGHT_NAVIGATOR_REPLACE_LAST, "true");
 		}
 		
 		

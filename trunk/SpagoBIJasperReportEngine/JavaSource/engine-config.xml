@@ -24,7 +24,8 @@
 	-->
 	<!-- ====================================================================================== -->
 
-	<CONNECTIONS default="hsqlfoodmart">
+	<CONNECTIONS default="">
+	  <!--
     <CONNECTION name="hsqlfoodmartjdbc" 
 					isJNDI="false"
 					driver="org.hsqldb.jdbcDriver"
@@ -35,7 +36,6 @@
 					isJNDI="true"
 					initialContext="java:comp/env"
 					resourceName="jdbc/sbifoodmart"/> 
-		<!--
 		<CONNECTION name="mysqlfoodmart" 
 					isJNDI="true"
 					initialContext="java:comp/env"

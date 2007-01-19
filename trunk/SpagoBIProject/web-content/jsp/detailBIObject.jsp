@@ -292,13 +292,7 @@ function checkFormVisibility(docType) {
 		      			}
 		      		%>
 		      		</select>
-				</div>
-                 
-          
-				<script>
-					var pos = document.getElementById('type').selectedIndex;
-					showEngField(document.getElementById('type').options[pos].value);
-				</script> 
+				</div> 
 
 			<!-- DISPLAY COMBO FOR STATE SELECTION -->
 			<!-- IF THE USER IS A DEV ACTOR THE COMBO FOR THE STATE SELECTION CONTAINS ONLY A VALUE
@@ -491,7 +485,17 @@ function checkFormVisibility(docType) {
 				 		}
 					%>
 					</div>
-	        </div>						
+	        </div>
+	        
+	        <!-- engine list and template buttons adjustment based on the document type -->
+	        <script>
+	        	var pos = document.getElementById('type').selectedIndex;
+	        	typeValue = document.getElementById('type').options[pos].value;
+				showEngField(typeValue);
+	        	checkFormVisibility(typeValue);					
+			</script>
+			
+			
         </div> 
 
 

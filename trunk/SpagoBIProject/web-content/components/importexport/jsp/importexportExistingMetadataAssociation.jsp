@@ -129,13 +129,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=lovExp.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><<%=lovExp.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=lovExp.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><<%=lovExp.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=lovExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=lovExist.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=lovExist.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=lovExist.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=lovExist.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=lovExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -166,15 +166,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=functExp.getCode()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=functExp.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=functExp.getDescr()%></div>
-					<div alt="<%=functExist.getPath()%>" title="<%=functExist.getPath()%>"  style="width:100%;overflow:auto;"><%=cutLabel(functExp.getPath())%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=functExp.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=functExp.getDescr()%></div>
+					<div alt="<%=functExist.getPath()%>" title="<%=functExist.getPath()%>"  style="width:100%;overflow:auto;font-size:12px;"><%=cutLabel(functExp.getPath())%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=functExist.getCode()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=functExist.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=functExist.getDescr()%></div>
-					<div alt="<%=functExist.getPath()%>" title="<%=functExist.getPath()%>" style="width:100%;overflow:auto;"><%=cutLabel(functExist.getPath())%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=functExist.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=functExist.getDescr()%></div>
+					<div alt="<%=functExist.getPath()%>" title="<%=functExist.getPath()%>" style="width:100%;overflow:auto;font-size:12px;"><%=cutLabel(functExist.getPath())%></div>
 				</td>
 			</tr>
 			<tr>
@@ -205,15 +205,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=engExp.getLabel()%></span><br/>
-					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=engExp.getName() != null ? cutLabel(engExp.getName()) : ""%></div>
-					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=engExp.getDescr() != null ? cutLabel(engExp.getDescr()) : ""%></div>
-					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=engExp.getMainUrl() != null ? cutLabel(engExp.getMainUrl()) : ""%></div>
+					<div alt="<%=engExist.getName()%>" style="width:100%;overflow:auto;font-size:12px;" title="<%=engExist.getName()%>" ><%=engExp.getName() != null ? cutLabel(engExp.getName()) : ""%></div>
+					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;font-size:12px;"><%=engExp.getDescr() != null ? cutLabel(engExp.getDescr()) : ""%></div>
+					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;font-size:12px;"><%=engExp.getMainUrl() != null ? cutLabel(engExp.getMainUrl()) : ""%></div>
 				</td>
 				<td style="overflow:hidden;">
 					<span class='portlet-form-field-label'><%=engExist.getLabel()%></span><br/>
-					<div alt="<%=engExist.getName()%>" title="<%=engExist.getName()%>" style="width:100%;overflow:auto;"><%=engExist.getName() != null ? cutLabel(engExist.getName()) : ""%></div>
-					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;"><%=engExist.getDescr() != null ? cutLabel(engExist.getDescr()) : ""%></div>
-					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;"><%=engExist.getMainUrl() != null ? cutLabel(engExist.getMainUrl()) : ""%></div>
+					<div alt="<%=engExist.getName()%>" style="width:100%;overflow:auto;font-size:12px;" title="<%=engExist.getName()%>" ><%=engExist.getName() != null ? cutLabel(engExist.getName()) : ""%></div>
+					<div alt="<%=engExp.getDescr()%>" title="<%=engExp.getDescr()%>" style="width:100%;overflow:auto;font-size:12px;"><%=engExist.getDescr() != null ? cutLabel(engExist.getDescr()) : ""%></div>
+					<div alt="<%=engExist.getMainUrl()%>" title="<%=engExist.getMainUrl()%>" style="width:100%;overflow:auto;font-size:12px;"><%=engExist.getMainUrl() != null ? cutLabel(engExist.getMainUrl()) : ""%></div>
 				</td>
 			</tr>
 			<tr>
@@ -244,13 +244,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=checkExp.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=checkExp.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=checkExp.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=checkExp.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=checkExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=checkExist.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=checkExist.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=checkExist.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=checkExist.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=checkExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -281,13 +281,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=paramExp.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=paramExp.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=paramExp.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paramExp.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paramExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=paramExist.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=paramExist.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=paramExist.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paramExist.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paramExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -318,13 +318,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=paruseExp.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=paruseExp.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=paruseExp.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paruseExp.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paruseExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=paruseExist.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=paruseExist.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=paruseExist.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paruseExist.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=paruseExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>
@@ -355,13 +355,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 					<span class='portlet-form-field-label'><%=biobjExp.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=biobjExp.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=biobjExp.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=biobjExp.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=biobjExp.getDescr()%></div>
 				</td>
 				<td>
 					<span class='portlet-form-field-label'><%=biobjExist.getLabel()%></span><br/>
-					<div style="width:100%;overflow:auto;"><%=biobjExist.getName()%></div>
-					<div style="width:100%;overflow:auto;"><%=biobjExist.getDescr()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=biobjExist.getName()%></div>
+					<div style="width:100%;overflow:auto;font-size:12px;"><%=biobjExist.getDescr()%></div>
 				</td>
 			</tr>
 			<tr>

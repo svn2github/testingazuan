@@ -84,7 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background_no_img">
 
     <form method='POST' action='<%=formUrl.toString()%>' id='engineAssForm' name='engineAssForm'>
-		<div style="float:left;width:72%;" class="div_detail_area_forms">
+		<div style="float:left;width:68%;" class="div_detail_area_forms">
 
 		<table style="margin:10px;" >
 			<tr>

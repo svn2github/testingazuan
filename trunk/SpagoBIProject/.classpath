@@ -58,6 +58,6 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/jaxrpc.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/saaj.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/wsdl4j-1.5.1.jar"/>
-	<classpathentry kind="lib" path="web-content/WEB-INF/lib/quartz-1.6.0.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/quartz-all-1.6.0.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

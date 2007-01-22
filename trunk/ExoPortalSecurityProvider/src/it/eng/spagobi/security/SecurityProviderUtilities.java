@@ -135,21 +135,21 @@ public class SecurityProviderUtilities {
 		
 	}
 	
-	public void debug(Class classErr, String nameMeth, String message){
+	public static void debug(Class classErr, String nameMeth, String message){
 		SpagoBITracer.debug("SPAGOBI(ExoSecurityProvider)",
 	            			classErr.getName(),
 	            			nameMeth,
 	            			message);
 	}
-	public  Pattern getFilterPattern(){
+	public static  Pattern getFilterPattern(){
 		ConfigSingleton config = ConfigSingleton.getInstance();
-		debug(this.getClass(), "init", "Spago configuration retrived ");
+		debug(SecurityProviderUtilities.class, "init", "Spago configuration retrived ");
 		SourceBean secFilterSB = (SourceBean)config.getAttribute("SPAGOBI.SECURITY.ROLE-NAME-PATTERN-FILTER");
-		debug(this.getClass(), "init", "source bean filter retrived " + secFilterSB);
+		debug(SecurityProviderUtilities.class, "init", "source bean filter retrived " + secFilterSB);
         String rolePatternFilter = secFilterSB.getCharacters();
-        debug(this.getClass(), "init", "filter string retrived " + rolePatternFilter);
+        debug(SecurityProviderUtilities.class, "init", "filter string retrived " + rolePatternFilter);
         Pattern pattern = Pattern.compile(rolePatternFilter);
-        debug(this.getClass(), "init", "regular expression pattern compiled " + pattern);
+        debug(SecurityProviderUtilities.class, "init", "regular expression pattern compiled " + pattern);
         return pattern;
 	}
 	

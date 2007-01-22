@@ -48,7 +48,6 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 	private String userUniqueIdentifier = null;
 	private HashMap userAttributes = null;
 	private Collection roles = null;
-	private SecurityProviderUtilities util = new SecurityProviderUtilities();
 	
 	/**
 	 * @param userUniqueIdentifier
@@ -67,15 +66,15 @@ public class ExoGroupAsRoleUserProfileImpl implements IEngUserProfile {
 			// load user roles
 			Collection tmpRoles = service.getGroupHandler().findGroupsOfUser(userUniqueIdentifier); 
 			GroupHandler groupHandler = service.getGroupHandler();
-			util.debug(this.getClass(), "init", "Group Handler retrived " + groupHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "init", "Group Handler retrived " + groupHandler);
 			MembershipHandler memberHandler = service.getMembershipHandler();
-			util.debug(this.getClass(), "init", "Membership Handler retrived " + memberHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "init", "Membership Handler retrived " + memberHandler);
 			Group group = null;
 			Matcher matcher = null;
 			for (Iterator it = tmpRoles.iterator(); it.hasNext();){
 				group = (Group) it.next();
 				String groupID = group.getId();
-				Pattern pattern = util.getFilterPattern();
+				Pattern pattern = SecurityProviderUtilities.getFilterPattern();
 				matcher = pattern.matcher(groupID);
 				if(!matcher.find()){
         			continue;	

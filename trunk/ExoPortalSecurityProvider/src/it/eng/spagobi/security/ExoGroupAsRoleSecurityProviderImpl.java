@@ -43,7 +43,6 @@ import org.exoplatform.services.organization.OrganizationService;
  */
 public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvider {
 	
-	private SecurityProviderUtilities util = new SecurityProviderUtilities();
 	
 	/** 
 	 * Get all the portal roles 
@@ -59,7 +58,7 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 		    Group group = null;
 		    while(iter.hasNext()) {
 		    	group = (Group)iter.next();
-		    	util.debug(this.getClass(), "getRoles", " Find a Role With Name [" + group.getGroupName() +"]");
+		    	SecurityProviderUtilities.debug(this.getClass(), "getRoles", " Find a Role With Name [" + group.getGroupName() +"]");
 		    	add(group, service, roles);
 		    }
 		} catch (Exception e) {
@@ -107,23 +106,23 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
 	public List getUserRoles(String user, SourceBean config) {
-		util.debug(this.getClass(), "getUserRoles", " Start method");
-		util.debug(this.getClass(), "getUserRoles", " Config SourceBean in input: " + config);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Start method");
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Config SourceBean in input: " + config);
 		List roles = new ArrayList();
 		String paramCont = "NAME_PORTAL_APPLICATION";
-		util.debug(this.getClass(), "getUserRoles", " Use param " + paramCont);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Use param " + paramCont);
 		SourceBean paramContSB = (SourceBean)config.getAttribute(paramCont);
-		util.debug(this.getClass(), "getUserRoles", " Param context name Source Bean " +
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Param context name Source Bean " +
 							"retrived: " + paramContSB);
 		String nameCont = (String)paramContSB.getCharacters();
-		util.debug(this.getClass(), "getUserRoles", " Use context name " + nameCont);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Use context name " + nameCont);
 		RootContainer rootCont = RootContainer.getInstance();
-		util.debug(this.getClass(), "getUserRoles", " Root container retrived: " + rootCont);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Root container retrived: " + rootCont);
 		PortalContainer container = rootCont.getPortalContainer(nameCont);
-		util.debug(this.getClass(), "getUserRoles", " Portal container retrived: " + container);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Portal container retrived: " + container);
 		OrganizationService service = 
 			(OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
-		util.debug(this.getClass(), "getUserRoles", " Organization service retrived: " + service);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Organization service retrived: " + service);
 		try {
 			Collection groups = service.getGroupHandler().findGroupsOfUser(user);
 			Iterator iterGroups = groups.iterator();
@@ -139,7 +138,7 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 					"getUserRoles()",
 					"Error retrieving groups of user "+user, e);
 		}
-		util.debug(this.getClass(), "getUserRoles", " End method return roles: " + roles);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " End method return roles: " + roles);
 		return roles;
 	}
 

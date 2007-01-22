@@ -55,7 +55,6 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
 	private Map userAttributes = null;
 	private Collection roles = null;
 	private Map functionalities = null;
-	private SecurityProviderUtilities util = new SecurityProviderUtilities();
 	
 	/**
 	 * @param userUniqueIdentifier
@@ -76,30 +75,30 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
 		
 		// get istance of the organization service		
 		PortalContainer container = PortalContainer.getInstance();	
-		util.debug(this.getClass(), "init", "Portal Container retrived " + container);
+		SecurityProviderUtilities.debug(this.getClass(), "init", "Portal Container retrived " + container);
 		OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
-		util.debug(this.getClass(), "init", "Organization Service retrived " + service);
+		SecurityProviderUtilities.debug(this.getClass(), "init", "Organization Service retrived " + service);
         // get filter pattern
-		Pattern pattern = util.getFilterPattern();
+		Pattern pattern = SecurityProviderUtilities.getFilterPattern();
 		Matcher matcher = null;
 		
 		
 		// fill functionalities and roles		
 		try{
 			GroupHandler groupHandler = service.getGroupHandler();
-			util.debug(this.getClass(), "init", "Group Handler retrived " + groupHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "init", "Group Handler retrived " + groupHandler);
 			MembershipHandler memberHandler = service.getMembershipHandler();
-			util.debug(this.getClass(), "init", "Membership Handler retrived " + memberHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "init", "Membership Handler retrived " + memberHandler);
 			Collection tmpRoles = groupHandler.findGroupsOfUser(userUniqueIdentifier);
-			util.debug(this.getClass(), "init", "User group collection retrived " + tmpRoles);
+			SecurityProviderUtilities.debug(this.getClass(), "init", "User group collection retrived " + tmpRoles);
 			Group group = null;
 			Membership membership = null;
 			for(Iterator it = tmpRoles.iterator(); it.hasNext();){
 				group = (Group) it.next();
 				String groupID = group.getId();
-				util.debug(this.getClass(), "init", "Process group " + groupID);
+				SecurityProviderUtilities.debug(this.getClass(), "init", "Process group " + groupID);
 				Collection memberCol = memberHandler.findMembershipsByUserAndGroup(userUniqueIdentifier, group.getId());
-				util.debug(this.getClass(), "init", "User/Role membership collection retrived " + memberCol);
+				SecurityProviderUtilities.debug(this.getClass(), "init", "User/Role membership collection retrived " + memberCol);
 				// fill roles
 				Iterator iterMember = memberCol.iterator();
 				while(iterMember.hasNext()){
@@ -109,10 +108,10 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
             		if(!matcher.find()){
             			continue;	
             		}
-					util.debug(this.getClass(), "init", "Process membership " + memberType);
+            		SecurityProviderUtilities.debug(this.getClass(), "init", "Process membership " + memberType);
 					if(!this.roles.contains(memberType)) {
 						this.roles.add(memberType);
-						util.debug(this.getClass(), "init", "Added role " + memberType);
+						SecurityProviderUtilities.debug(this.getClass(), "init", "Added role " + memberType);
 					}
 				}	
 				// fill functionalities
@@ -132,13 +131,13 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
 						List roles = new ArrayList();
 		                roles.add(memberType);
 		                this.functionalities.put(pathFunct, roles);
-		                util.debug(this.getClass(), "init", "Added functionality " + pathFunct + " -> " + roles);
+		                SecurityProviderUtilities.debug(this.getClass(), "init", "Added functionality " + pathFunct + " -> " + roles);
 					} else {
 						List roles = (List)this.functionalities.get(pathFunct);
 						if(!roles.contains(memberType)){
 							roles.add(memberType);
 							functionalities.put(pathFunct, roles);
-							util.debug(this.getClass(), "init", "Added role "+memberType+" to functionality " + pathFunct);
+							SecurityProviderUtilities.debug(this.getClass(), "init", "Added role "+memberType+" to functionality " + pathFunct);
 						}
 					}
 				}

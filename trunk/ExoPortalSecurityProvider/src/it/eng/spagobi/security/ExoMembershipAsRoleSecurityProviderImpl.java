@@ -47,8 +47,6 @@ import org.exoplatform.services.organization.OrganizationService;
  */
 public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityProvider {
 	
-	private SecurityProviderUtilities util = new SecurityProviderUtilities();
-	
 	/** 
 	 * Get all the portal roles 
 	 * @return List of the portal roles (list of it.eng.spagobi.bo.Role)
@@ -56,20 +54,20 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 	public List getRoles() {
 		List roles = new ArrayList();
 		PortalContainer container = PortalContainer.getInstance();
-		util.debug(this.getClass(), "getRoles", "Portal Container retrived " + container);
+		SecurityProviderUtilities.debug(this.getClass(), "getRoles", "Portal Container retrived " + container);
 		OrganizationService service = (OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
-		util.debug(this.getClass(), "getRoles", "Organization Service retrived " + service);
+		SecurityProviderUtilities.debug(this.getClass(), "getRoles", "Organization Service retrived " + service);
 		try{
 			GroupHandler groupHandler = service.getGroupHandler();
-			util.debug(this.getClass(), "getRoles", "Group Handler retrived " + groupHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "getRoles", "Group Handler retrived " + groupHandler);
 			MembershipHandler membershipHandler = service.getMembershipHandler();
-			util.debug(this.getClass(), "getRoles", "Membership Handler retrived " + membershipHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "getRoles", "Membership Handler retrived " + membershipHandler);
 			MembershipTypeHandler membershipTypeHandler = service.getMembershipTypeHandler();
-			util.debug(this.getClass(), "getRoles", "MembershipType Handler retrived " + membershipTypeHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "getRoles", "MembershipType Handler retrived " + membershipTypeHandler);
 			Collection groups = service.getGroupHandler().getAllGroups();
-			util.debug(this.getClass(), "getRoles", "Group collection retrived " + groups);
+			SecurityProviderUtilities.debug(this.getClass(), "getRoles", "Group collection retrived " + groups);
 			roles = getRolesFromMembership(groups, membershipHandler, membershipTypeHandler);
-			util.debug(this.getClass(), "getRoles", "roles retrived " + roles);	
+			SecurityProviderUtilities.debug(this.getClass(), "getRoles", "roles retrived " + roles);	
 		} catch (Exception e) {
 			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
 					               this.getClass().getName(),
@@ -98,7 +96,7 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 	    MembershipType membershipType = null;
 	    while(iter.hasNext()) {
 	    	group = (Group)iter.next();
-	    	util.debug(this.getClass(), "getRolesFromMembership", "Start Process group " + group.getId());
+	    	SecurityProviderUtilities.debug(this.getClass(), "getRolesFromMembership", "Start Process group " + group.getId());
 	    	Collection memebers = null;
 	    	try{
 	    		memebers = membershipHandler.findMembershipsByGroup(group);
@@ -109,7 +107,7 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 			                           "Error while recovering membership of the group", e);
 	    		continue;
 	    	}
-	    	util.debug(this.getClass(), "getRolesFromMembership", "Memberships of the gropu retrived " + memebers);
+	    	SecurityProviderUtilities.debug(this.getClass(), "getRolesFromMembership", "Memberships of the gropu retrived " + memebers);
 	    	Iterator iterMem = memebers.iterator();
 	    	while(iterMem.hasNext()) {
 	    		member = (Membership)iterMem.next();
@@ -128,9 +126,9 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 	    			String membDescr = membershipType.getDescription();
 	    			role = new Role(memberType, membDescr);
 	    			roles.add(role);
-	    			util.debug(this.getClass(), "getRolesFromMembership", "Role " + memberType + " added" );
+	    			SecurityProviderUtilities.debug(this.getClass(), "getRolesFromMembership", "Role " + memberType + " added" );
 	    		} else {
-	    			util.debug(this.getClass(), "getRolesFromMembership", "Role " + memberType + " already present");
+	    			SecurityProviderUtilities.debug(this.getClass(), "getRolesFromMembership", "Role " + memberType + " already present");
 	    		}
 	    	}
 	    }
@@ -146,39 +144,39 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
 	public List getUserRoles(String user, SourceBean config) {
-		util.debug(this.getClass(), "getUserRoles", "getUserRoles:start method");
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "getUserRoles:start method");
 		List roles = new ArrayList();
 		String paramCont = "NAME_PORTAL_APPLICATION";
-		util.debug(this.getClass(), "getUserRoles", "use param " + paramCont);
-		util.debug(this.getClass(), "getUserRoles", "config SourceBean in input: " + config);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "use param " + paramCont);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "config SourceBean in input: " + config);
 		SourceBean paramContSB = (SourceBean)config.getAttribute(paramCont);
-		util.debug(this.getClass(), "getUserRoles", "param context name Source Bean retrived: " + paramContSB);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "param context name Source Bean retrived: " + paramContSB);
 		String nameCont = (String)paramContSB.getCharacters();
-		util.debug(this.getClass(), "getUserRoles", "use context name " + nameCont);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "use context name " + nameCont);
 		RootContainer rootCont = RootContainer.getInstance();
-		util.debug(this.getClass(), "getUserRoles", "root container retrived: " + rootCont);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "root container retrived: " + rootCont);
 		PortalContainer container = rootCont.getPortalContainer(nameCont);
-		util.debug(this.getClass(), "getUserRoles", "portal container retrived: " + container);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "portal container retrived: " + container);
 		OrganizationService service = (OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
-		util.debug(this.getClass(), "getUserRoles", "organization service retrived: " + service);
+		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "organization service retrived: " + service);
 		try{
 			GroupHandler groupHandler = service.getGroupHandler();
-			util.debug(this.getClass(), "getUserRoles", "Group Handler retrived " + groupHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "Group Handler retrived " + groupHandler);
 			MembershipHandler membershipHandler = service.getMembershipHandler();
-			util.debug(this.getClass(), "getUserRoles", "Membership Handler retrived " + membershipHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "Membership Handler retrived " + membershipHandler);
 			MembershipTypeHandler membershipTypeHandler = service.getMembershipTypeHandler();
-			util.debug(this.getClass(), "getUserRoles", "MembershipType Handler retrived " + membershipTypeHandler);
+			SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "MembershipType Handler retrived " + membershipTypeHandler);
 			Collection groups = groupHandler.findGroupsOfUser(user);
-			util.debug(this.getClass(), "getUserRoles", "Group collection retrived " + groups);
+			SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "Group collection retrived " + groups);
 			roles = getRolesFromMembership(groups, membershipHandler, membershipTypeHandler);
-			util.debug(this.getClass(), "getUserRoles", "roles retrived " + roles);		
+			SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", "roles retrived " + roles);		
 		} catch (Exception e) {
 			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
 					               this.getClass().getName(),
 					               "getUserRoles(String, String)",
 					               "Error retrieving groups of user "+user, e);
 		}
-		util.debug(this.getClass(), "getRoles", "roles returned " + roles);		
+		SecurityProviderUtilities.debug(this.getClass(), "getRoles", "roles returned " + roles);		
 		return roles;
 	}
 	

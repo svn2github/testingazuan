@@ -115,6 +115,7 @@ if (queryPersister instanceof LocalFileSystemQueryPersister){
   	 				<option value="org.hibernate.dialect.Oracle9Dialect">Oracle9</option>
   	 				<option value="org.hibernate.dialect.MySQLDialect">MySQL</option>
   	 				<option value="org.hibernate.dialect.MySQLInnoDBDialect">MySQL InnoDB</option>
+  	 				<option value="org.hibernate.dialect.PostgreSQLDialect">Postgres</option>
   	 			</select>
   	 			
   	 		</td>

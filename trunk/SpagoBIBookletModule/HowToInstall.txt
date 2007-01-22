@@ -50,4 +50,8 @@ How to install the Booklet module
     open office server name and port. If open office is running on your machine you can leave the defaul values
 
   <OFFICECONNECTION host="localhost" port="9000" />
-	
+  
+11) Modify the temporary folder where booklets are built: this folder is specified 
+	in file exo-home/webapps/spagobi/WEB-INF/conf/components/booklets/booklets.xml:
+
+	<PATH_TMP_FOLDER path="/mytemp" />

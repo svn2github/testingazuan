@@ -28,7 +28,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIWekaEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9.2alpha</version>
+  <version>1.9.2beta</version>
   <name>SpagoBIWekaEngine</name>
   <url>http://maven.apache.org</url>
   <build>

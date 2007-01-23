@@ -53,31 +53,49 @@ if (spagobiurl != null) session.setAttribute("spagobiurl", spagobiurl);
 
 String action = request.getParameter("action");
 if (action != null && !action.equals("")) {
+	if (action.equalsIgnoreCase("selectConnection")) {
+		session.removeAttribute("MondrianCubes");
+		session.removeAttribute("MondrianVirtualCubes");
+		session.removeAttribute("query01");
+		session.removeAttribute("navi01");
+		session.removeAttribute("table01");
+		session.removeAttribute("selectedSchema");
+		session.removeAttribute("selectedCube");
+		String connectionSelected = request.getParameter("connection");
+		session.setAttribute("selectedConnection", connectionSelected);
+	}
 	if (action.equalsIgnoreCase("selectSchema")) {
 		session.removeAttribute("MondrianCubes");
 		session.removeAttribute("MondrianVirtualCubes");
 		session.removeAttribute("query01");
 		session.removeAttribute("navi01");
 		session.removeAttribute("table01");
+		session.removeAttribute("selectedCube");
+		String schemaSelected = request.getParameter("schema");
+		session.setAttribute("selectedSchema", schemaSelected);
 	}
 	if (action.equalsIgnoreCase("selectCube")) {
 		session.removeAttribute("query01");
 		session.removeAttribute("navi01");
 		session.removeAttribute("table01");
+		String cubeSelected = request.getParameter("cube");
+		session.setAttribute("selectedCube", cubeSelected);
 	}
 }
 
 List schemas = (List) session.getAttribute("schemas");
 List connections = (List) session.getAttribute("connections");
-boolean schemaWasSelected = true;
-if (schemas == null & connections == null) {
-	schemaWasSelected = false;
+if (connections == null) {
+	SAXReader readerConfigFile = new SAXReader();
+	Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
+	connections = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/CONNECTIONS-CONFIGURATION/CONNECTION");
+	session.setAttribute("connections", connections);
+}
+if (schemas == null) {
 	SAXReader readerConfigFile = new SAXReader();
 	Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
 	schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
-	connections = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/CONNECTIONS-CONFIGURATION/CONNECTION");
 	session.setAttribute("schemas", schemas);
-	session.setAttribute("connections", connections);
 }
 if (schemas == null || schemas.size() == 0) {
 	out.write("No schemas defined in engine-config.xml file.");
@@ -98,9 +116,9 @@ if (connections == null || connections.size() == 0) {
 	</div>
 	<div style="height:25px;">
 		<select name="connection" id="connection" style="width:200px" 
-			onchange="document.getElementById('initialQueryForm').submit()">
+			onchange="document.getElementById('action').value='selectConnection';document.getElementById('initialQueryForm').submit()">
 			<%
-			String selectedConnection = request.getParameter("connection");
+			String selectedConnection = (String) session.getAttribute("selectedConnection");
 			Iterator connectionsIt = connections.iterator();
 			Node selectedConnectionNode = null;
 			while (connectionsIt.hasNext()) {
@@ -139,12 +157,12 @@ if (connections == null || connections.size() == 0) {
 		<select name="schema" id="schema" style="width:200px" 
 			onchange="document.getElementById('action').value='selectSchema';document.getElementById('initialQueryForm').submit()">
 			<%
-			if (!schemaWasSelected) {
+			String selectedSchema = (String) session.getAttribute("selectedSchema");
+			if (selectedSchema == null) {
 				%>
 				<option value="" selected="selected">&nbsp;</option>
 				<%
 			}
-			String selectedSchema = request.getParameter("schema");
 			Iterator it = schemas.iterator();
 			Node selectedSchemaNode = null;
 			while (it.hasNext()) {
@@ -164,9 +182,9 @@ if (connections == null || connections.size() == 0) {
 	</div>
 </div>
 <%
-if (selectedSchemaNode == null) selectedSchemaNode = (Node) session.getAttribute("selectedSchemaNode");
-if (selectedSchemaNode != null) {
-	session.setAttribute("selectedSchemaNode", selectedSchemaNode);
+//if (selectedSchemaNode == null) selectedSchemaNode = (Node) session.getAttribute("selectedSchemaNode");
+if (selectedSchema != null) {
+	//session.setAttribute("selectedSchemaNode", selectedSchemaNode);
 	String catalogUri = selectedSchemaNode.valueOf("@catalogUri");
 	MondrianDef.Cube[] cubes = (MondrianDef.Cube[]) session.getAttribute("MondrianCubes");
 	MondrianDef.VirtualCube[] virtualcubes = (MondrianDef.VirtualCube[]) 
@@ -202,7 +220,7 @@ if (selectedSchemaNode != null) {
 					<option value="" selected="selected">&nbsp;</option>
 					<%
 				}
-				String selectedCubeName = request.getParameter("cube");
+				String selectedCubeName = (String) session.getAttribute("selectedCube");
 				MondrianDef.Cube selectedCube = null;
 				for (int i = 0; i < cubes.length; i++) {
 					MondrianDef.Cube aCube = cubes[i];

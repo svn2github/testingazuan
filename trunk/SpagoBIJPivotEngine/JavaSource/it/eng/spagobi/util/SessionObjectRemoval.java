@@ -122,6 +122,18 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("initialMondrianQuery") != null) {
 			session.removeAttribute("initialMondrianQuery");
 		}
+		
+		if (session.getAttribute("selectedConnection") != null) {
+			session.removeAttribute("selectedConnection");
+		}
+		
+		if (session.getAttribute("selectedSchema") != null) {
+			session.removeAttribute("selectedSchema");
+		}
+		
+		if (session.getAttribute("selectedCube") != null) {
+			session.removeAttribute("selectedCube");
+		}
 	}
 	
 }

@@ -3,7 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/spago-core-2.0.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
+	<classpathentry kind="lib" path="lib/sbi.drivers.api-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/spagobi-bo-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/spagobi-utilities-1.9.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

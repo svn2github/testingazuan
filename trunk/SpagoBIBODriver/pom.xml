@@ -52,14 +52,14 @@
       <artifactId>spagobi-bo</artifactId>
       <version>1.9.2</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/spagobi-bo.jar</systemPath>
+      <systemPath>${lib.dir}/spagobi-bo-1.9.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi-utilities</artifactId>
       <version>1.9.2</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/spagobi-utilities.jar</systemPath>
+      <systemPath>${lib.dir}/spagobi-utilities-1.9.2.jar</systemPath>
     </dependency>
   </dependencies>
 </project>

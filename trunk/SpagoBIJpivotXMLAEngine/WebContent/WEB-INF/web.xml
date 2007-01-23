@@ -124,12 +124,14 @@
   </taglib>
 
   <!-- access to Foodmart Database via DataSource -->
+  <!--
   <resource-ref>
     <description>DB Connection</description>
     <res-ref-name>jdbc/mysqlfoodmart</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
+  -->
    
 
 </web-app>

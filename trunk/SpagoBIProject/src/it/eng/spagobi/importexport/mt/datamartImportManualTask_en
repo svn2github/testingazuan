@@ -17,9 +17,9 @@ TODO
 		- access, using SpagoBI, to the detail page of the  Datamart document associated to the jar file loaded.
 		- download the template of the document					(see NOTE 5)
 		- change the template as explained below:
-				- assegnare all'attributo  DATASOURCE name il nome logico della connessione utilizzata per testare il datamart
-				- assegnare all'attributo  DATASOURCE dialect il nome della classe hibernate associata al tipo di database sorgente. (VEDI LISTA SOTTOSTANTE)
-				- Esempio: se il file si chiama foodmart.jar, la connessione logica si chiama dbFood  e il database sorgente è un database oracle 9 il template deve contenere:
+				- assign to the DATASOURCE name attribute the logical name of the connection used for the test of the datamart 
+				- assign to the DATASOURCE dialect attribute the name of the hibernate class associated to the source database. 		(see the class  list below)
+				- Example: if the file name is foodmart.jar, the logical name of the connection is dbFood and the source database is an  oracle 9 the template must contain:
 					<QBE>
 							<DATASOURCE name="dbFood" dialect="org.hibernate.dialect.Oracle9Dialect" />
 			    			<DATAMART name="foodmart"/>
@@ -27,7 +27,7 @@ TODO
 
 
 
-LISTA DELLE CLASSI HIBERNATE RELATIVE AI PRINCIPALI DATABASE
+LIST OF THE HIBERNATE CLASSES RELATIVE TO THE MAIN DATABASES 
 
 oracle						org.hibernate.dialect.OracleDialect
 oracle9						org.hibernate.dialect.Oracle9Dialect
@@ -37,57 +37,59 @@ SQL server				org.hibernate.dialect.SQLServerDialect
 DB2							org.hibernate.dialect.DB2Dialect
 hsqldb						org.hibernate.dialect.HSQLDialect
 
-Per maggiori informazioni e per una lista più completa guarda il sito http://www.hibernate.org/hib_docs/v3/api/org/hibernate/dialect/package-tree.html
+For further information and a more complete list take a look to the url http://www.hibernate.org/hib_docs/v3/api/org/hibernate/dialect/package-tree.html
  
 
 
 
 NOTES
 
-	Nota 1
+	Note 1
 	
-	Dalla versione 1.9.2 di SpagoBI il motore per i documenti di tipo 'Datamart' è un motore esterno.
-	Il motore esterno è una applicazione web chiamata 'SpagoBIQbeEngine', separata da SpagoBI, che deve essere installata in un server.
-	Il nuovo motore richiede una configurazione diversa del documento, rispetto al motore vecchio:
-	Le principali differenza che questa modifica apporta sono:
-			- i file che contengono la rappresentazione ad oggetti del modello analitico (file con estension jar), che nella versione precedente erano il template del documento,
- 			   nella nuova versione  devono essere installati dentro il motore esterno e identificati univocamente da un nome logico.
-			- i file con estensione 'jar' che contengono la rappresentazione ad oggetti del modello analitico non devono contenere il file hibernate.cfg.xml			
-			- Le connessioni utilizzate dai modelli analitici per reperire i dati devono essere configurate nel motore esterno e devono essere identificate univocamente da un nome logico.
-			- il template del documento Datamart è un file xml che contiene le informazioni necessarie per l'esecuzione
+	From the 1.9.2 SpagoBI version the engine for the document of 'Datamart' kind is an external engine.
+    The external engine is an application call 'SpagoBIQbeEngine', separated from SpagoBI, which must be installed on a server.
+    The new engine, respect to the old one, needs a different document configuration. 
+    The main differences are:
+			- The files which contain the object representation of the analytical model (file with jar extension), which in the previous version were the template of the datamart document,
+ 			  in the new release they must be deployed into the external engine and identified univocally by a logical name.
+			- The files with 'jar' extension (which contain the object representation of the analytical model) don't have to contain the file hibernate.cfg.xml			
+			- The database connection used by the analytical models to gather data must be configured into the external engine and identified univocally by a logical name.
+			- The template of the 'Datamart' document is an xml file which contains the information necessary for the execution.
 	
-	La procedura di import non è in grado di eseguire tutte le  configurazioni necessarie in maniera automatica ma prepara la piattaforma per terminare l'importazione manualmente:
-			- ricerca tutti i documenti di tipo datamart esportati
-			- estrae i template dei documenti datamart (file con estensione jar che contengono  la rappresentazione ad oggetti del modello analitico)
-			- importa tutti i documenti e sostituisce i vecchi template dei documenti datamart con i nuovi template 
-			- crea uno zip che contine tutti i file jar e questo file di instruzioni
+	The import procedure is not able to perform all the configurations automatically but prepare the platform to end the importing manually: 
+			- search all the Datamart document exported 
+			- extract the templates of the datamart documents  (file with jar extension which contain the object representation of the analytical model )
+			- import all the documents and substitute the old templates of the Datamart document, with the new ones 
+			- make a zip file which contains all the jar files and this instruction file
 	
 	
-	Nota 2
+	Note 2
 	
-	Il motore per i documenti di tipo datamart è un'applicazione web che deve essere installata su un application server. 
-	Il manuale di Installazione di SpagoBI spiega come effettuare l'installazione se questa non fosse già stata fatta.
-	L'url per collegarsi all'applicazione dipende dal nome del server dove è installata e dalla porta sulla quale il server "ascolta".
-	L'url di collegamento sarà  http://yourserver:yourport/SpagoBIQbeEngine  ovviamente sostituendo il nome del server e la porta di "ascolto"
+	The engine for the Datamart document is a web application which muist be installed on an application server
+    The SpagoBI installation manual explains how to perform the installation (in case no one else has already done it ) 
+    The url useful to connect to the datamart external engine depends on the name and port of the server where SpagoBI is installed  
+	The connection url will be  http://yourserver:yourport/SpagoBIQbeEngine  (obviously replacing the name and teh port of the server)
 	
-	Nota 3
+	Note 3
 	
-	Il motore del qbe permette di censire nuovi datamart.
-	Il censimento viene permesso previa autenticazione
-	Nel form di autenticazione vanno inserite le credenziali di accesso al motore qbe (se non si conoscono contattare chi ne ha effettuato l'installazione 
-	o leggere il file 'How To' della documentazione di SpagoBI per capire come ricavarle)
+	The datamart engine allow to deploy new datamart models (jar files) using the web interface
+	The deployment is allowed only to authenticated users
+	Into the authentication form the user must insert his access credential  to the datamart engine 
+	(if the credential are unknow contacts who installed the SpagoBI platform or read the 'How to' documentation file to discover how to obtain them)
 	
-	Nota 4 
+	Note 4 
 	
-	Il datamart caricato è una rappresentazione di un modello analitico. Il modello non contiene dati e per questo deve essere collegato ad una sorgente dati.
-	Il motore del qbe permette di configurare delle connessioni a database e di assegnare loro dei nomi univoci. Il file 'How To' di SpagoBI spiega come configurare queste connessioni.
-	Prima di lanciare un datamart è necessario scegliere la sorgente dati attraverso la scelta del suo nome logico.
-	Inoltre, dato che i modelli analitici sono fondati su tecnologia Hibernate, è necessario specificare il tipo di database sorgente in modo da settare correttamente 
-	l'ambiente Hibernate.
+	The datamart loaded is a representation of the analytical model. The model doesn't contain data and for this reason it has to be linked with a data source.
+    The datamart engine allow to define database  connections and assign to them a logical unambiguous name. 
+    The 'How to' documentation file explain how to define new database connection for the Datamart engine  
+    Before exec a datamart is necessary to choose the data source (by choosing its logical name)
+    Moreover, considered that the analytical models are based on Hiberante technology,
+     it's necessary to specify the kind of source database so as to setting correctly the Hibernate environment	
 	
-	Nota 5
+	Note 5
 	
-    Il nuovo template dei documenti datamart è un file xml che contiene il nome logico del modello analitico, il nome della connessione al database da utilizzare, 
-  	e il nome di una classe Hibernate  che identifica il database server (oracle, mysql, db2, ....) 
+	The new template of the datamart document is an xml file containing the name of the analytical model, the name of the database connection to use and 
+	the name of an Hiberante class which identify the kind of database server (oracle, mysql, db2, ....) 
+
 
 

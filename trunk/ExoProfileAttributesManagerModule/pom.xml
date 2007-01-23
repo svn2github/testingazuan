@@ -78,7 +78,7 @@
     </plugins>
   </build>
   <properties>
-    <lib.dir>${basedir}/web-content/WEB-INF/lib</lib.dir>
+    <lib.dir>${basedir}/lib</lib.dir>
     <exo.lib.dir>${basedir}/../SpagoBIUtilityFiles/eXo2-libraries</exo.lib.dir>
     <spagobi.compiled.dir>${basedir}/../SpagoBIProject/target/classes</spagobi.compiled.dir>
   </properties>

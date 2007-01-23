@@ -25,8 +25,8 @@
 	<!-- ====================================================================================== -->
 
 	<CONNECTIONS default="">
-	  <!--
-    <CONNECTION name="hsqlfoodmartjdbc" 
+	  	<!--
+    	<CONNECTION name="hsqlfoodmartjdbc" 
 					isJNDI="false"
 					driver="org.hsqldb.jdbcDriver"
 					user="sa"

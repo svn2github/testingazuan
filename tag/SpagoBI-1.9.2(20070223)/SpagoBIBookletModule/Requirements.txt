@@ -1,0 +1,21 @@
+Before using the SpagoBI 1.9.1 Booklet module you must install some required third part software and
+configure some settings.
+
+
+Software required:
+
+- Open Office 2.0.x
+
+Software suggested:
+
+- jbpm eclipse workflow designer 
+
+Settings:
+
+- Open office must be running as a server (obligatorily on the same machine were SpagoBI is installed), so, 
+  go into the directory OPENOFFICE-HOME/program and exec the following command 
+  soffice -quickstart -accept="socket,host=0,port=9000;urp;StarOffice.ServiceManager"
+  This command could open a new open office window. In order to avoid this behaviour you can add -invisible as command line argument. 
+  Anytime you launch the soffice command a new soffice process is created and so, if you use the -invisible argument, the only way  to stop open office is to kill the process.
+
+

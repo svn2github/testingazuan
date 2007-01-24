@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ENGINE-CONFIGURATION>
+	
+	<!-- ====================================================================================== -->
+	<!--  General settings 																		--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		tmpdir = base directory used as temporary storing area for generated reports. 
+		The path must be write in unix form (only with / folder separator and without 
+		any drive letter at the beginning, example: /folder/folder/folder).
+		If the path start with / it will be considered an absolute path, otherwise if it start with 
+		another letter or symbol it will be considered relative to the folder of the jasper report application 
+	-->
+	<!-- ====================================================================================== -->
+	<GENERALSETTINGS tmpdir="tmpdir"/>
+
+
+	<!-- ====================================================================================== -->
+	<!--  Connection settings 																	--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		name 	= 	name of the connection
+		isJNDI 	= 	true if the connection is defined in the jndi namespace of the server 
+	-->
+	<!-- ====================================================================================== -->
+
+	<!-- Decomment and define your own connections here, specify also a default connection -->
+	<!--
+	<CONNECTIONS default="hsqlfoodmart">
+    	<CONNECTION name="hsqlfoodmartjdbc" 
+					isJNDI="false"
+					driver="org.hsqldb.jdbcDriver"
+					user="sa"
+					password=""
+					jdbcUrl="jdbc:hsqldb:hsql://localhost/foodmart"/>			
+		<CONNECTION name="hsqlfoodmart" 
+					isJNDI="true"
+					initialContext="java:comp/env"
+					resourceName="jdbc/sbifoodmart"/> 
+		<CONNECTION name="mysqlfoodmart" 
+					isJNDI="true"
+					initialContext="java:comp/env"
+					resourceName="jdbc/mysqlfoodmart"/>
+		<CONNECTION name="oraclesh" 
+					isJNDI="true"
+					initialContext="java:comp/env"
+					resourceName="jdbc/oracleSH"/>
+	</CONNECTIONS>
+	-->
+	
+	
+	<!-- ====================================================================================== -->
+	<!--  Exporter settings 																	--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		settings for html, pdf, csv, xls, xml and txt exporters are hardcoded in the engine code. 
+		You can override them here or simple add new exporter for other format. 
+	-->
+	<!-- ====================================================================================== -->
+	  
+	<!--
+	<EXPORTERS default="html">
+		
+		<EXPORTER 	format="html" 
+					mime="text/html"
+					class="net.sf.jasperreports.engine.export.JRHtmlExporter"/>			
+		
+		
+		<EXPORTER 	format="pdf" 
+					mime="application/pdf"
+					class="net.sf.jasperreports.engine.export.JRPdfExporter"/>
+		
+	</EXPORTERS>
+	-->
+	
+	<!-- ====================================================================================== -->
+	<!--  Virtualization settings 																--> 
+	<!-- ====================================================================================== -->
+	<!--  
+		  set active parameter to true if you think to work with big report. For more
+		  info on virtualization check jasper documentation.
+		  dir = folder where the temp file for virtualization are created
+		  The dir path must be write in unix form (only with / folder separator and without 
+		  any drive letter at the beginning, example: /folder/folder/folder).
+		  If the path start with / it will be considered an absolute path, otherwise if it start with 
+	      another letter or symbol it will be considered relative to the folder of the jasper report application 
+	-->
+	<!-- ====================================================================================== -->
+	<VIRTUALIZER active="true" 
+				maxSize="10"
+				dir="tmpdir"/>
+
+</ENGINE-CONFIGURATION>

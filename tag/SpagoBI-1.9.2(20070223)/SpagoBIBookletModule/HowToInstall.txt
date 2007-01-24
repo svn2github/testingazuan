@@ -1,0 +1,57 @@
+
+How to install the Booklet module
+
+1) Copy the content of the folder spagobi (that you can find into this package) into the exo-home/webapps/spagobi. 
+  
+
+2) Insert into the file exo-home/webapps/spagobi/WEB-INF/conf/master.xml the following lines:
+
+<!-- start import booklets module -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/booklets.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/initializers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/workflow.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/forms.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/validation.xml" />
+	<!-- end import booklets module -->
+
+4) Insert into the file exo-home/webapps/spagobi/WEB-INF/web.xml the following lines (under the other similar definitions):
+
+	 <servlet>
+        	<servlet-name>BookletServlet</servlet-name>
+        	<servlet-class>it.eng.spagobi.booklets.BookletsServlet</servlet-class>
+   </servlet>
+
+	 <servlet-mapping>
+        	<servlet-name>BookletServlet</servlet-name>
+        	<url-pattern>/BookletService</url-pattern>
+   </servlet-mapping>
+    
+
+7) Open the file exo-home/webapps/spagobi/WEB-INF/conf/spagobi/spagobi_components and set to true the "installed" attribute 
+   of the tag with name "booklets"
+
+   <SPAGOBI_COMPONENT name="booklets" installed="true" /> 
+
+
+8) Open the file exo-home/webapps/spagobi/WEB-INF/conf/inizializer.xml and add the following line
+
+  <INITIALIZER class="it.eng.spagobi.workflow.JbpmContextInitializer" config="" />
+
+	
+9) Configure the file exo-home/webapps/spagobi/WEB-INF/classes/jbpm.hibernate.cfg.hsql.xml. The file set the 
+   database where jbpm will store its data.
+   
+10) Open the file exo-home/webapps/spagobi/WEB-INF/conf/components/booklets/booklets.xml and change the 
+    open office server name and port. If open office is running on your machine you can leave the defaul values
+
+  <OFFICECONNECTION host="localhost" port="9000" />
+  
+11) Modify the temporary folder where booklets are built: this folder is specified 
+	in file exo-home/webapps/spagobi/WEB-INF/conf/components/booklets/booklets.xml:
+
+	<PATH_TMP_FOLDER path="/mytemp" />

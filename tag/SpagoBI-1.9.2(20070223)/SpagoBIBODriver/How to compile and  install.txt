@@ -1,0 +1,8 @@
+========================= COMPILE BO DRIVER ===========================
+
+1 ) From "SpagoBIBODriver" folder launch the Maven 2 command: "mvn package"
+2 ) The command will produce the directory "SpagoBIBODriver/target" containing the file sbi.drivers.bo-{version}.
+
+========================= INSTALL BO DRIVER ===========================
+
+1 ) Copy the produced sbi.drivers.bo-{version} into the folder WEB-INF/lib on your SpagoBI web application folder.

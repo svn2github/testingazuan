@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PUBLISHERS>
+  	
+    <PUBLISHER name="DASHBOARDS_COMPOSITION">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/spagobidashboardsCompositionIE/jsp/dashboardsComposition.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+</PUBLISHERS>

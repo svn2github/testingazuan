@@ -1,0 +1,95 @@
+
+OPERAZIONI DA EFFETTUARE:
+
+- unzippare l'archivio che contiene questo file readme in una cartella qualsiasi  				(VEDI NOTA 1) 
+- collegarsi all'applicazione SpagoBIQbeEngine utilizzando l'url http://yourserver:yourport/SpagoBIQbeEngine    		(VEDI NOTA 2) 
+- cliccare sull'immagine di presentazione
+- digitare nel form di login le credenziali di accesso per  SpagoBIQbeEngine  	 (VEDI NOTA 3)
+- per ogni file con estensione 'jar' contenuto nell'archivio effettuare questi passi
+		- inserire nel campo 'Nome Datamart' il nome del file senza estensione. Esempio: se il file si chima foodmart.jar inserire solo foodmart
+		- nel campo 'Jar File', utilizzando il pulsante 'Sfoglia', caricare il file con estensione 'jar'
+		- premere il pulsante 'Upload'
+		- il file dovrebbe apparire nella lista sopra il form di inserimento 	
+		- clicca sul pulsante di esecuzione corrispondente al datamart inserito  (la lente)
+		- nella pagina successiva selezionare la connessione verso il database sorgente  e il tipo del database sorgente.  (VEDI NOTA 4)
+		  Ricordare il nome della connessione scelta in quanto dovrà essere utilizzato successivamente. 	
+		- verificare il corretto funzionamento del datamart
+		- accedere, utilizzando SpagoBI, al dettaglio dell'oggetto Datamart associato al file.
+		- scaricare il template del documento					(VEDI NOTA 5)
+		- modificare il template come spiegato di seguito:
+				- assegnare all'attributo  DATASOURCE name il nome logico della connessione utilizzata per testare il datamart
+				- assegnare all'attributo  DATASOURCE dialect il nome della classe hibernate associata al tipo di database sorgente. (VEDI LISTA SOTTOSTANTE)
+				- Esempio: se il file si chiama foodmart.jar, la connessione logica si chiama dbFood  e il database sorgente è un database oracle 9 il template deve contenere:
+					<QBE>
+							<DATASOURCE name="dbFood" dialect="org.hibernate.dialect.Oracle9Dialect" />
+			    			<DATAMART name="foodmart"/>
+			    	</QBE>
+	    - ricaricare il template modificato
+	    - assicurarsi che l'engine associato al documento sia configurato correttamente (controllare l'url di invocazione)
+
+
+
+LISTA DELLE CLASSI HIBERNATE RELATIVE AI PRINCIPALI DATABASE
+
+oracle						org.hibernate.dialect.OracleDialect
+oracle9						org.hibernate.dialect.Oracle9Dialect
+mysql						org.hibernate.dialect.MySQLDialect
+postgres					org.hibernate.dialect.PostgreSQLDialect
+SQL server				org.hibernate.dialect.SQLServerDialect
+DB2							org.hibernate.dialect.DB2Dialect
+hsqldb						org.hibernate.dialect.HSQLDialect
+
+Per maggiori informazioni e per una lista più completa guarda il sito http://www.hibernate.org/hib_docs/v3/api/org/hibernate/dialect/package-tree.html
+ 
+
+
+
+NOTES
+
+	Nota 1
+	
+	Dalla versione 1.9.2 di SpagoBI il motore per i documenti di tipo 'Datamart' è un motore esterno.
+	Il motore esterno è una applicazione web chiamata 'SpagoBIQbeEngine', separata da SpagoBI, che deve essere installata in un server.
+	Il nuovo motore richiede una configurazione diversa del documento, rispetto al motore vecchio:
+	Le principali differenza che questa modifica apporta sono:
+			- i file che contengono la rappresentazione ad oggetti del modello analitico (file con estension jar), che nella versione precedente erano il template del documento,
+ 			   nella nuova versione  devono essere installati dentro il motore esterno e identificati univocamente da un nome logico.
+			- i file con estensione 'jar' che contengono la rappresentazione ad oggetti del modello analitico non devono contenere il file hibernate.cfg.xml			
+			- Le connessioni utilizzate dai modelli analitici per reperire i dati devono essere configurate nel motore esterno e devono essere identificate univocamente da un nome logico.
+			- il template del documento Datamart è un file xml che contiene le informazioni necessarie per l'esecuzione
+	
+	La procedura di import non è in grado di eseguire tutte le  configurazioni necessarie in maniera automatica ma prepara la piattaforma per terminare l'importazione manualmente:
+			- ricerca tutti i documenti di tipo datamart esportati
+			- estrae i template dei documenti datamart (file con estensione jar che contengono  la rappresentazione ad oggetti del modello analitico)
+			- importa tutti i documenti e sostituisce i vecchi template dei documenti datamart con i nuovi template 
+			- crea uno zip che contine tutti i file jar e questo file di instruzioni
+	
+	
+	Nota 2
+	
+	Il motore per i documenti di tipo datamart è un'applicazione web che deve essere installata su un application server. 
+	Il manuale di Installazione di SpagoBI spiega come effettuare l'installazione se questa non fosse già stata fatta.
+	L'url per collegarsi all'applicazione dipende dal nome del server dove è installata e dalla porta sulla quale il server "ascolta".
+	L'url di collegamento sarà  http://yourserver:yourport/SpagoBIQbeEngine  ovviamente sostituendo il nome del server e la porta di "ascolto"
+	
+	Nota 3
+	
+	Il motore del qbe permette di censire nuovi datamart.
+	Il censimento viene permesso previa autenticazione
+	Nel form di autenticazione vanno inserite le credenziali di accesso al motore qbe (se non si conoscono contattare chi ne ha effettuato l'installazione 
+	o leggere il file 'How To' della documentazione di SpagoBI per capire come ricavarle)
+	
+	Nota 4 
+	
+	Il datamart caricato è una rappresentazione di un modello analitico. Il modello non contiene dati e per questo deve essere collegato ad una sorgente dati.
+	Il motore del qbe permette di configurare delle connessioni a database e di assegnare loro dei nomi univoci. Il file 'How To' di SpagoBI spiega come configurare queste connessioni.
+	Prima di lanciare un datamart è necessario scegliere la sorgente dati attraverso la scelta del suo nome logico.
+	Inoltre, dato che i modelli analitici sono fondati su tecnologia Hibernate, è necessario specificare il tipo di database sorgente in modo da settare correttamente 
+	l'ambiente Hibernate.
+	
+	Nota 5
+	
+    Il nuovo template dei documenti datamart è un file xml che contiene il nome logico del modello analitico, il nome della connessione al database da utilizzare, 
+  	e il nome di una classe Hibernate  che identifica il database server (oracle, mysql, db2, ....) 
+
+

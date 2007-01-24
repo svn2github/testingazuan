@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MODULES>
+     
+	<MODULE class="it.eng.spagobi.booklets.modules.BookletsManagementModule" name="BookletsManagementModule">
+	</MODULE>
+	
+	<MODULE class="it.eng.spagobi.booklets.modules.BookletsCollaborationModule" name="BookletsCollaborationModule">
+	</MODULE>
+   
+</MODULES>

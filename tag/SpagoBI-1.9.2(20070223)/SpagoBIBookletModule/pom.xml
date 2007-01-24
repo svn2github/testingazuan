@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+ * Copyright 2001-2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>spagobi</groupId>
+  <artifactId>SpagoBIBookletModule</artifactId>
+  <packaging>war</packaging>
+  <version>1.9.2</version>
+  <name>SpagoBIBookletModule</name>
+  <url>http://maven.apache.org</url>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/</directory>
+        <targetPath>/</targetPath>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+          <configuration>
+            <warSourceDirectory>${basedir}/web-content</warSourceDirectory>
+          </configuration>
+      </plugin>
+      <plugin>
+         <artifactId>maven-antrun-plugin</artifactId>
+         <executions>
+           <execution>
+             <phase>compile</phase>
+             <configuration>
+              <tasks>
+                <mkdir dir="${basedir}/build/spagobi/WEB-INF/"/>
+                <copy todir="${basedir}/build/spagobi/WEB-INF/">
+                  <fileset dir="${basedir}/target/"/>
+                </copy>
+                <copy todir="${basedir}/build/spagobi/">
+                  <fileset dir="${basedir}/web-content/"/>
+                </copy>
+                <copy file="${basedir}/HowToInstall.txt"
+                  tofile="${basedir}/build/HowToInstall.txt" />
+                <copy file="${basedir}/Readme.txt"
+                  tofile="${basedir}/build/Readme.txt" />
+                <copy file="${basedir}/Requirements.txt"
+                  tofile="${basedir}/build/Requirements.txt" />
+                <copy todir="${basedir}/build/UtilityFiles">
+                  <fileset dir="${basedir}/UtilityFiles"/>
+                </copy>
+                <zip destfile="${basedir}/build/spagobi.zip" 
+                  basedir="${basedir}/build/" />
+                <delete dir="${basedir}/build/spagobi/" />
+                <delete>
+                  <fileset dir="${basedir}/build/" includes="*" excludes="*.zip"/>
+                </delete>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <lib.dir>${basedir}/web-content/WEB-INF/lib</lib.dir>
+    <spagobi.lib.dir>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib</spagobi.lib.dir>
+    <spagobi.compiled.dir>${basedir}/../SpagoBIProject/target/classes</spagobi.compiled.dir>
+    <drivers.api.compiled.dir>${basedir}/../SpagoBIDriversAPI/target</drivers.api.compiled.dir>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.1.1</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.lib.dir}/commons-fileupload-1.1.1.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.0.1</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.lib.dir}/commons-httpclient-3.0.1.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>jbpm</groupId>
+      <artifactId>jbpm</artifactId>
+      <version>3.1.2</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.lib.dir}/jbpm-3.1.2.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>jbpm</groupId>
+      <artifactId>jbpm-identity</artifactId>
+      <version>3.1.2</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.lib.dir}/jbpm-identity-3.1.2.jar</systemPath>
+    </dependency>      
+    <dependency>
+      <groupId>openoffice</groupId>
+      <artifactId>openoffice_juh</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/openoffice_juh.jar</systemPath>
+    </dependency>                                   
+    <dependency>
+      <groupId>openoffice</groupId>
+      <artifactId>openoffice_ridl</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/openoffice_ridl.jar</systemPath>
+    </dependency>  
+    <dependency>
+      <groupId>openoffice</groupId>
+      <artifactId>openoffice_unoil</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/openoffice_unoil.jar</systemPath>
+    </dependency>      
+    <dependency>
+      <groupId>portlet-api</groupId>
+      <artifactId>portlet-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>spago-core</groupId>
+      <artifactId>spago-core</artifactId>
+      <version>2.1.2</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.lib.dir}/spago-core-2.1.2.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>spago</groupId>
+      <artifactId>spago-portlet</artifactId>
+      <version>2.1.1</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.lib.dir}/spago-portlet-spagobi.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>spagobi</groupId>
+      <artifactId>sbi.drivers.api</artifactId>
+      <version>1.9.2</version>
+      <scope>system</scope>
+      <systemPath>${drivers.api.compiled.dir}/sbi.drivers.api-1.9.2.jar</systemPath>                
+    </dependency>
+    <dependency>
+      <groupId>spagobi</groupId>
+      <artifactId>spagobi</artifactId>
+      <version>1.9.2</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.compiled.dir}</systemPath>
+    </dependency>        
+    <dependency>
+      <groupId>spago</groupId>
+      <artifactId>spagocms.core</artifactId>
+      <version>2.1.1</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.lib.dir}/spagocms-core-2.1.1.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>

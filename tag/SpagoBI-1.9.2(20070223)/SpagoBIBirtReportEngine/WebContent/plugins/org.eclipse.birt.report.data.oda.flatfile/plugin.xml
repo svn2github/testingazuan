@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.eclipse.birt.report.data.oda.flatfile"
+   name="BIRT ODA-Flat File Driver"
+   version="2.0.1"
+   provider-name="Eclipse.org"
+   class="org.eclipse.birt.report.data.oda.flatfile.plugin.FlatfilePlugin">
+   <runtime>
+      <library name="oda-flatfile.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.birt.core"/> 
+      <import plugin="org.junit" optional="true"/>
+      <import plugin="org.eclipse.datatools.connectivity.oda.flatfile"/>
+      <import plugin="org.eclipse.datatools.connectivity.oda"/>
+   </requires>
+   
+</plugin>

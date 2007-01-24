@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+                        
+<taglib xmlns="http://java.sun.com/JSP/TagLibraryDescriptor">
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>spagobi_tags</short-name>
+  <uri></uri>
+  <description>
+    Spago BI Tags
+  </description>
+
+   <tag>
+        <name>list</name>
+        <tag-class>it.eng.spagobi.presentation.tags.ListTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of a list</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>filter</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+	<tag>
+        <name>checklist</name>
+        <tag-class>it.eng.spagobi.presentation.tags.CheckListTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of a check list</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>filter</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+	<tag>
+        <name>checkbox</name>
+        <tag-class>it.eng.spagobi.presentation.tags.CheckBoxTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of a check list</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>filter</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>listBiParameters</name>
+        <tag-class>it.eng.spagobi.presentation.tags.ListBIParametersTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of a list</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>listlookup</name>
+        <tag-class>it.eng.spagobi.presentation.tags.LookupListTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of a list lookup</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>treeObjects</name>
+        <tag-class>it.eng.spagobi.presentation.tags.TreeObjectsTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the objects tree</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>htmlGeneratorClass</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+        <tag>
+        <name>listObjects</name>
+        <tag-class>it.eng.spagobi.presentation.tags.ListObjectsTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the objects list</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>htmlGeneratorClass</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>listPage</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>listTransformerClass</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>error</name>
+        <tag-class>it.eng.spagobi.presentation.tags.ErrorTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Esegue il rendering degli errori, versione HTML</description>
+    </tag>
+    <tag>
+        <name>dynamicPage</name>
+        <tag-class>it.eng.spagobi.presentation.tags.DynamicPageTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the parameters form</description>
+        <attribute>
+            <name>modality</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>actor</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>moduleName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+	<tag>
+        <name>message</name>
+        <tag-class>it.eng.spagobi.presentation.tags.SpagoBIMessageTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Esegue il rendering dei messagi prevedendo 5 parametri opzionali</description>
+        <attribute>
+            <name>key</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>bundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <!-- this parameters contains the argument for the message error, the value is one string 
+        and each argument is separated from a |. Example: argument1|argument2|argument3
+        sep -->
+        <attribute>
+            <name>args</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>queryWizard</name>
+        <tag-class>it.eng.spagobi.presentation.tags.QueryWizardTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the query wizard form</description>
+        <attribute>
+            <name>connectionName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>visibleColumns</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>valueColumns</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>descriptionColumns</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
+            <name>queryDef</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>invisibleColumns</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>scriptWizard</name>
+        <tag-class>it.eng.spagobi.presentation.tags.ScriptWizardTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the script wizard form</description>
+        <attribute>
+            <name>script</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>javaClassWizard</name>
+        <tag-class>it.eng.spagobi.presentation.tags.JavaClassWizardTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the java class wizard form</description>
+        <attribute>
+            <name>javaClassName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+    </tag>
+    <tag>
+        <name>lovWizard</name>
+        <tag-class>it.eng.spagobi.presentation.tags.LovWizardTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the fixed lov wizard form</description>
+        <attribute>
+            <name>lovProvider</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+</taglib>

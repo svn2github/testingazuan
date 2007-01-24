@@ -1,0 +1,50 @@
+
+How to install the Booklet module
+
+1) shutdown the server 
+
+2) Copy the content of the folder spagobi (that you can find into this package) into the exo-home/webapps/spagobi. 
+  
+3) Insert into the file exo-home/webapps/spagobi/WEB-INF/conf/master.xml the following lines:
+
+	<!-- start exo profile manager module -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/publishers.xml" />
+	<!-- end exo profile manager module -->
+	
+4) Insert into the file  exo-home/webapps/spagobi/WEB-INF/portlet.xml the following lines (as a child of the 'portlet-app'  tag):
+
+	<portlet>
+        <description>Exo Profile Attributes Manager</description>		
+        <portlet-name>ExoProfileAttributesManager</portlet-name>		
+        <display-name>Exo Profile Attributes Manager</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>ExoProfileAttributeManagerPage</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<portlet-info>
+        	<title>Exo Profile Attributes Manager</title>
+        	<short-title>Exo Profile Attributes Manager</short-title>
+        	<keywords>Exo Profile Attributes Manager</keywords>
+        </portlet-info>
+	</portlet>
+	
+	

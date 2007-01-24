@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    i possibili valori dell'attributo scope sono:
+        - CONFIG
+	    - USER
+	    - ADAPTER_REQUEST
+	    - SERVICE_REQUEST
+	    - SESSION
+	    - APPLICATION
+	    - ADAPTER_RESPONSE
+	    - SERVICE_RESPONSE
+        - ERROR
+    i possibili valori dell'attributo value sono:
+		- AF_DEFINED
+	    - AF_NOT_DEFINED
+	    - il valore del parametro
+-->
+<PAGES>
+	<!--PAGE name="HttpPage" scope="SESSION">
+		<MODULES>
+			<MODULE name="HttpModule" keep_instance="TRUE" keep_response="FALSE" />
+		</MODULES>
+		<DEPENDENCIES>
+			<DEPENDENCE source="HttpPage" target="HttpModule">
+				<CONDITIONS />
+				<CONSEQUENCES />
+			</DEPENDENCE>
+		</DEPENDENCIES>
+	</PAGE-->
+</PAGES>

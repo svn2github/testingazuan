@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKFLOW>
+     <!-- 
+	<ENGINE name="shark01" factory="it.eng.spago.workflow.shark.impl.SharkWorkflowEngineFactoryImpl">
+	</ENGINE>
+	-->
+</WORKFLOW>

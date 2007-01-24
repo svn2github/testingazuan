@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MODULES>
+	<!--MODULE name="BasicListaUtenti" class="it.eng.spago.dispatching.module.list.basic.impl.DefaultBasicListModule">
+		<CONFIG pool="afdemo" title="Basic Lista Utenti Module" rows="10">
+			<QUERIES>
+				<SELECT_QUERY statement="LISTA_UTENTI"></SELECT_QUERY>
+				<DELETE_QUERY statement="DELETE_UTENTE">
+					<PARAMETER type="RELATIVE" value="userid" scope="SERVICE_REQUEST" />
+				</DELETE_QUERY>
+			</QUERIES>
+			<COLUMNS>
+				<COLUMN name="userid" label="User ID" />
+				<COLUMN name="nome" label="Nome" />
+				<COLUMN name="cognome" label="Cognome" />
+				<COLUMN name="mail" label="Mail" />
+			</COLUMNS>
+			<CAPTIONS>
+				<SELECT_CAPTION image="" label="Dettaglio Utente" confirm="FALSE">
+					<PARAMETER name="PAGE" type="ABSOLUTE" value="BasicPaginaUtenti" scope="" />
+					<PARAMETER name="MODULE" type="ABSOLUTE" value="DettaglioUtente" scope="" />
+					<PARAMETER name="userid" type="RELATIVE" value="userid" scope="LOCAL" />
+				</SELECT_CAPTION>
+				<DELETE_CAPTION image="" label="Elimina Utente" confirm="TRUE">
+					<PARAMETER name="userid" type="RELATIVE" value="userid" scope="LOCAL" />
+				</DELETE_CAPTION>
+			</CAPTIONS>
+			<BUTTONS>
+				<INSERT_BUTTON image="" label="Inserimento Utente" confirm="FALSE">
+					<PARAMETER name="PAGE" type="ABSOLUTE" value="BasicPaginaUtenti" scope="" />
+					<PARAMETER name="MODULE" type="ABSOLUTE" value="DettaglioUtente" scope="" />
+				</INSERT_BUTTON>
+			</BUTTONS>
+		</CONFIG>
+	</MODULE-->
+	<!--MODULE name="HttpModule" class="it.eng.spago.demo.module.HttpModule">
+		<CONFIG />
+	</MODULE>
+	<MODULE name="FirstModule" class="it.eng.spago.demo.module.FirstModule">
+		<CONFIG />
+	</MODULE>
+	<MODULE name="SecondModule" class="it.eng.spago.demo.module.SecondModule">
+		<CONFIG />
+	</MODULE-->
+</MODULES>

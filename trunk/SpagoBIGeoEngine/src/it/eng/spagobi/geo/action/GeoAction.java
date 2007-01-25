@@ -3,7 +3,7 @@
  *	LICENSE: see COPYING file
  *
 **/
-package it.eng.geo.action;
+package it.eng.spagobi.geo.action;
 
 import it.eng.geo.configuration.Constants;
 import it.eng.geo.render.MapRenderer;

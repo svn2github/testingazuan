@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+  <ACTION   class="it.eng.spagobi.geo.action.GeoAction"  name="GEO_ACTION"  scope="REQUEST">
+    <CONFIG/>
+  </ACTION>
+</ACTIONS>

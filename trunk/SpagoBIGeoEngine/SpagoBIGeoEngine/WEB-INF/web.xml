@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app id="WebApp">
-	<display-name>Spago</display-name>
-	<context-param>
-		<param-name>ConfigFile</param-name>
-		<param-value>/WEB-INF/conf/soap/soap.xml</param-value>
-	</context-param>
+	<display-name>SpagoBIGeoEngine</display-name>
 	<servlet>
 		<servlet-name>ConfigServlet</servlet-name>
 		<servlet-class>it.eng.spago.configuration.ConfigServlet</servlet-class>
@@ -19,37 +15,9 @@
 		<servlet-name>AdapterHTTP</servlet-name>
 		<servlet-class>it.eng.spago.dispatching.httpchannel.AdapterHTTP</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>rpcrouter</servlet-name>
-		<display-name>Apache-SOAP RPC Router</display-name>
-		<description>no description</description>
-		<servlet-class>org.apache.soap.server.http.RPCRouterServlet</servlet-class>
-		<init-param>
-			<param-name>faultListener</param-name>
-			<param-value>org.apache.soap.server.DOMFaultListener</param-value>
-		</init-param>
-	</servlet>
-	<servlet>
-		<servlet-name>messagerouter</servlet-name>
-		<display-name>Apache-SOAP Message Router</display-name>
-		<description>no description</description>
-		<servlet-class>org.apache.soap.server.http.MessageRouterServlet</servlet-class>
-		<init-param>
-			<param-name>faultListener</param-name>
-			<param-value>org.apache.soap.server.DOMFaultListener</param-value>
-		</init-param>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>AdapterHTTP</servlet-name>
 		<url-pattern>/servlet/AdapterHTTP</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>rpcrouter</servlet-name>
-		<url-pattern>/servlet/rpcrouter</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>messagerouter</servlet-name>
-		<url-pattern>/servlet/messagerouter</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>30</session-timeout>
@@ -58,20 +26,31 @@
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.html</welcome-file>
-		<welcome-file>default.htm</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
-	<taglib>
-		<taglib-uri>spagotags</taglib-uri>
-		<taglib-location>/WEB-INF/tld/spago.tld</taglib-location>
-	</taglib>
-	<!--
+	
+  <!--
     <resource-ref>
  		<description>SpagoBIGeo</description>
  		<res-ref-name>jdbc/spagobigeo</res-ref-name>
  		<res-type>javax.sql.DataSource</res-type>
  		<res-auth>Container</res-auth>
     </resource-ref>
-    -->
+  -->
+    
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error404.jsp</location>
+  </error-page> 
+  
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error.jsp</location>
+  </error-page> 
+    
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/error.jsp<location>
+  </error-page>
+ 
+    
 </web-app>

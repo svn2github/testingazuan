@@ -7,13 +7,16 @@
 package it.eng.geo.configuration;
 
 /**
- * @author Administrator
- * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
+ * Contains constant definitions
  */
 public class Constants {
 
+	public static final String LOG_NAME = "SPAGOBI_GEO_ENGINE";
+	
+	public static final String TEMPLATE_PARAMETER = "Template";
+	
+	public static final String OUTPUT_FORMAT_PARAMETER = "OutputFormat";
+	
     public static final String CONFIGURATION = "CONFIGURATION";
 
     public static final String LEGEND = "LEGEND";
@@ -54,6 +57,9 @@ public class Constants {
 
 	public static final String TYPE = "type";
 
+
+	// OUTPUT FORMAT TYPES AND MIME TYPES
+	
 	public static final String SVG = "svg";
 
 	public static final String SVG_MIME_TYPE = "image/svg+xml";

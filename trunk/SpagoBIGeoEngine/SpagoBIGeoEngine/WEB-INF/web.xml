@@ -49,7 +49,7 @@
     
   <error-page>
     <exception-type>java.lang.Throwable</exception-type>
-    <location>/error.jsp<location>
+    <location>/error.jsp</location>
   </error-page>
  
     

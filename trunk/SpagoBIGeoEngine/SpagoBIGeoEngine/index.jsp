@@ -3,6 +3,8 @@
 		<title>Welcome</title>
 	</head>
 	<body>
-		<center>Welcome to Spago Startup</center>
+		<center>
+      <h3>Welcome to SpagoBI Geo Engine</h3>
+    </center>
 	</body>
 </html>

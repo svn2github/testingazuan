@@ -4,7 +4,7 @@
  *
 **/
 
-package it.eng.geo.configuration;
+package it.eng.spagobi.geo.configuration;
 
 /**
  * Contains constant definitions
@@ -91,4 +91,6 @@ public class Constants {
 	public static final String HTML = "html";
 	
 	public static final String HTML_MIME_TYPE = "image/html";
+	
+	public static final String TEXT_MIME_TYPE = "text/plan";
 }

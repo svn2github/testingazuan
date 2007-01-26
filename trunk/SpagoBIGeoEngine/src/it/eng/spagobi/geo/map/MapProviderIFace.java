@@ -3,17 +3,15 @@
  *	LICENSE: see COPYING file
  *
 **/
-package it.eng.geo.map;
+package it.eng.spagobi.geo.map;
 
-import it.eng.geo.document.XMLDocumentIFace;
-import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.geo.configuration.MapConfiguration;
 
-/**
- * @author Administrator
- *
- */
+import javax.xml.stream.XMLStreamReader;
+
 public interface MapProviderIFace {
     
-    public abstract XMLDocumentIFace getSVGMapDocument(SourceBean mapProviderConfiguration);// throws ServiceImplementationException;
+	public abstract XMLStreamReader getSVGMapStreamReader(MapConfiguration mapConf) throws EMFUserError;
 
 }

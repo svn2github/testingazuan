@@ -3,31 +3,21 @@
  *	LICENSE: see COPYING file
  *
 **/
-package it.eng.geo.map;
+package it.eng.spagobi.geo.map;
 
-import it.eng.geo.document.XMLDocumentIFace;
-import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.geo.configuration.MapConfiguration;
 
-/**
- * @author Administrator
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
+import javax.xml.stream.XMLStreamReader;
+
 public abstract class AbstractMapProvider implements MapProviderIFace {
 
-    /**
-     * 
-     */
+
     public AbstractMapProvider() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    /* (non-Javadoc)
-     * @see it.eng.geo.mapproviders.SVGMapProviderIFace#getSVGMap()
-     */
-    public abstract XMLDocumentIFace getSVGMapDocument(SourceBean mapProviderConfiguration);
+    public abstract XMLStreamReader getSVGMapStreamReader(MapConfiguration mapConf) throws EMFUserError;
     
 
 }

@@ -1,9 +1,7 @@
 /**
- *
  *	LICENSE: see COPYING file
- *
 **/
-package it.eng.geo.datamart;
+package it.eng.spagobi.geo.datamart;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dbaccess.DataConnectionManager;
@@ -12,87 +10,76 @@ import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.geo.configuration.Constants;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * @author Administrator
- * 
+ * Executes the query and obtains the data associated to the svg map
  */
 public class DefaultDatamartProvider extends AbstractDatamartProvider {
 
-    private static final String REGISTERED_POOL_NAME = "REGISTERED_POOL_NAME";
+    private static final String REGISTERED_POOL_NAME = "connection_name";
 
     private static final String QUERY = "QUERY";
 
-    private static final String ELEMENT_ID = "ELEMENT_ID";
+    private static final String COLUMN_ID = "column_id";
 
-    private static final String ELEMENT_NAME = "ELEMENT_NAME";
+    private static final String COLUMN_VALUE = "column_value";
 
     /**
-     * The constructor
+     * Constructor
      */
     public DefaultDatamartProvider() {
         super();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see it.eng.geo.mapproviders.SVGMapProviderIFace#getSVGMap()
+    /**
+     * Executes the query and obtains the data associated to the svg map
+     * @param datamartProviderConfiguration SourceBean wich contains the configuration 
+     * for the data recovering (see template definition into GeoAction class)
      */
-    public DatamartObject getDatamartObject(SourceBean datamartProviderConfiguration) {
+    public DatamartObject getDatamartObject(SourceBean datamartProviderConfiguration) throws EMFUserError {
 
         DatamartObject datamartObject = new DatamartObject();
-
         SQLCommand cmdSelect = null;
         DataResult dr = null;
         ScrollableDataResult sdr = null;
-        //        ArrayList parameters = new ArrayList(1);
-
         DataConnection dataConnection = null;
         String connectionName = (String) datamartProviderConfiguration.getAttribute(REGISTERED_POOL_NAME);
         String query = (String) datamartProviderConfiguration.getAttribute(QUERY);
-        String elementId = (String) datamartProviderConfiguration.getAttribute(ELEMENT_ID);
-        String elementName = (String) datamartProviderConfiguration.getAttribute(ELEMENT_NAME);
-
-        try {
-
+        String columnid = (String) datamartProviderConfiguration.getAttribute(COLUMN_ID);
+        String columnvalue = (String) datamartProviderConfiguration.getAttribute(COLUMN_VALUE);
+        try{
             dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
             cmdSelect = dataConnection.createSelectCommand(query);
-            /*
-             * parameters.add(
-             * dataConnection.createDataField("path_id",Types.VARCHAR, pathId));
-             * dr = cmdSelect.execute(parameters);
-             */
             dr = cmdSelect.execute();
             sdr = (ScrollableDataResult) dr.getDataObject();
-
             ResultSet resultSet = sdr.getResultSet();
-
-            ArrayList elementIdList = new ArrayList();
-            ArrayList valueList = new ArrayList();
-            if (resultSet.first()) {
-                elementIdList.add(0, resultSet.getString(resultSet.findColumn(elementId)));
-                valueList.add(0, resultSet.getString(resultSet.findColumn(elementName)));
-                for (int i = 1; resultSet.next(); i++) {
-                    elementIdList.add(i, resultSet.getString(resultSet.findColumn(elementId)));
-                    valueList.add(i, resultSet.getString(resultSet.findColumn(elementName)));
-                }
+            Map styles = new HashMap();
+            while(resultSet.next()) {
+            	String id = resultSet.getString(resultSet.findColumn(columnid));
+            	if((id==null) || (id.trim().equals(""))) {
+            		continue;
+            	}
+            	String valueStr = resultSet.getString(resultSet.findColumn(columnvalue));
+            	if((valueStr==null) || (valueStr.trim().equals(""))) {
+            		continue;
+            	}
+            	Integer value = new Integer(valueStr);
+            	styles.put(id, value);
             }
-            datamartObject.setElementIdList(elementIdList);
-            datamartObject.setValueList(valueList);
-            
+            datamartObject.setValues(styles);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            //		KFTracerSingleton.log(
-            //			Constants.NOME_MODULO,
-            //			TracerSingleton.MAJOR,
-            //			"OracleDAO::readData:Non è possibile recuperare le informazioni
-            // per il dettaglio "
-            //				+ ex);
-            //		throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+        	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+        					    "DefaultDatamartProvider :: getDatamartObject : " +
+        					    "Cannot load the data from the datawarehouse", ex);
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
         } finally {
             Utils.releaseResources(dataConnection, cmdSelect, dr);
         }

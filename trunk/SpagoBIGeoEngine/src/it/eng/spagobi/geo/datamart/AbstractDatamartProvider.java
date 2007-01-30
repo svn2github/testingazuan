@@ -3,31 +3,29 @@
  *	LICENSE: see COPYING file
  *
 **/
-package it.eng.geo.datamart;
+package it.eng.spagobi.geo.datamart;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFUserError;
 
 /**
- * @author Administrator
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Executes the query and obtains the data associated to the svg map
  */
 public abstract class AbstractDatamartProvider implements DatamartProviderIFace {
 
-    /**
-     * 
-     */
+	/**
+	 * Builds the class
+	 */
     public AbstractDatamartProvider() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    /* (non-Javadoc)
-     * @see it.eng.geo.mapproviders.SVGMapProviderIFace#getSVGMap()
+    /**
+     * Executes the query and obtains the data associated to the svg map
+     * @param datamartProviderConfiguration SourceBean wich contains the configuration 
+     * for the data recovering (see template definition into GeoAction class)
      */
-    public DatamartObject getDatamartObject(SourceBean datamartProviderConfiguration) {
-        // TODO Auto-generated method stub
+    public DatamartObject getDatamartObject(SourceBean datamartProviderConfiguration) throws EMFUserError  {
         return null;
     }
 

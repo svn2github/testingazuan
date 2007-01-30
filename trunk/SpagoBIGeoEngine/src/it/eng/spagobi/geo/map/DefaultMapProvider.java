@@ -17,13 +17,23 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-
+/**
+ * Defines methods to get an xml stream reader of the svg map.
+ */
 public class DefaultMapProvider extends AbstractMapProvider {
 
+	/**
+	 * Constructor
+	 */
 	public DefaultMapProvider() {
 		super();
 	}
 	
+	/**
+     * Gets an xml stream reader of the svg map.
+     * @param mapConf MapConfiguration object which contains the configuration for the 
+     * map recovering
+     */
 	public XMLStreamReader getSVGMapStreamReader(MapConfiguration mapConf) throws EMFUserError {
 		XMLInputFactory xmlIF = null ;
 		xmlIF = XMLInputFactory.newInstance();

@@ -11,8 +11,11 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.render.MapRenderer;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -29,71 +32,177 @@ public class GeoAction extends AbstractHttpAction {
 	 * The method search into the request two parameters
 	 * <ul>
 	 * <li>Template:an xml message (encodend in base64) which contains the configuration of the request</li>
-	 * <li>OutputFormat: the format of the response (possible values are SVG,PDF,JPEG). Default is SVG</li>
+	 * <li>OutputFormat: the format of the response (possible values are SVG,JPEG). Default is SVG</li>
 	 * </ul>
 	 * The template xml message must have the following structure
 	 * 
-	 * 	<MAP name="logical name of the map">
-	 * 		<DATAMART_PROVIDER connection_name=" name of one pool defined into data_access.xml " 
+	 * 	&lt;MAP name="logical name of the map"&gt;
+	 * 		&lt;DATAMART_PROVIDER connection_name=" name of one pool defined into data_access.xml " 
 	 * 	    	               query=" the query that obtains data "
-	 * 	        	           svg_attribute=" the svg attribute which is related to a column of the resultset "
-	 * 	            	       column_name=" the name of a column of the resultser which is related to an attribute of the svg tags "/>
-	 * 		<CONFIGURATION>
-	 * 			<!-- x,y: position of the first element of the legend  -->
-	 * 			<LEGEND x=" " y=" " width=" " height=" " style=" svg style properties ">
-	 * 				<TITLE description=" title " style=" svg style properties "/>
-	 * 				<!-- ordered by threshold -->
-	 * 				<LEVELS>
-	 * 					<LEVEL threshold="0" style="svg style properties">
-	 * 						<TEXT description="Less then 1.000" style="svg style properties" />
-	 * 					</LEVEL>
-	 * 					<LEVEL threshold="1000" style="svg style properties">
-	 * 						<TEXT description="Da 1.000 a 2.000" style="svg style properties" />
-	 * 					</LEVEL>
+	 * 	        	           column_id=" the name of a column of the resultset which is related to the id attribute of the svg tags "
+	 * 	            	       column_value=" the name of a column of the resultset which contains the value related to the svg element "/&gt;
+	 * 		&lt;CONFIGURATION&gt;
+	 * 			&lt;!-- x,y: position of the first element of the legend  --&gt;
+	 * 			&lt;LEGEND x=" " y=" " width=" " height=" " style=" svg style properties "&gt;
+	 * 				&lt;TITLE description=" title " style=" svg style properties "/&gt;
+	 * 				&lt;!-- ordered by threshold --&gt;
+	 * 				&lt;LEVELS&gt;
+	 * 					&lt;LEVEL threshold="0" style="svg style properties"&gt;
+	 * 						&lt;TEXT description="Less then 1.000" style="svg style properties" /&gt;
+	 * 					&lt;/LEVEL&gt;
+	 * 					&lt;LEVEL threshold="1000" style="svg style properties"&gt;
+	 * 						&lt;TEXT description="Da 1.000 a 2.000" style="svg style properties" /&gt;
+	 * 					&lt;/LEVEL&gt;
 	 * 					......
-	 * 				</LEVELS>
-	 * 			</LEGEND>
-	 * 		</CONFIGURATION>
-	 * 	</MAP>
+	 * 				&lt;/LEVELS&gt;
+	 * 			&lt;/LEGEND&gt;
+	 * 		&lt;/CONFIGURATION&gt;
+	 * 	&lt;/MAP&gt;
 	 * 
+	 * The query attribute can contain some parameters. 
+	 * Each parameter must be specified with the sintax ${parameter_name} 
+	 * During the execution the parameter sintax is substituted with the value ot the 
+	 * same-name parameter send into request. If the request doesn't contain any parameter 
+	 * with name equal to the one of the query the rendering is not performed
 	 * 
 	 * @param serviceRequest the Spago request SourceBean 
 	 * @param serviceResponse the Spago response SourceBean 
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
-		// get the http response and the output stream associated
+		// get the http response 
 		HttpServletResponse response = this.getHttpResponse();
-		ServletOutputStream outputStream = response.getOutputStream();
 		this.freezeHttpResponse();
-		// get the bytes od the template xml file from the request (the template is encoded in byte64)
-		String templateBase64Coded = (String) serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
-		BASE64Decoder bASE64Decoder = new BASE64Decoder();
-		byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
+		ServletOutputStream outputStream = null;
+		try{
+			outputStream = response.getOutputStream();
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+								"GeoAction :: service : " +
+								"Error while getting output stream", e);
+		}
 		// get the output format parameter (SVG is the default)
 		String outputFormat = (String) serviceRequest.getAttribute(Constants.OUTPUT_FORMAT_PARAMETER);
 		if(!checkOutputFormat(outputFormat)) {
 			outputFormat = Constants.SVG;
 		}
+		// get the bytes od the template xml file from the request (the template is encoded in byte64)
+		String templateBase64Coded = (String) serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
+		BASE64Decoder bASE64Decoder = new BASE64Decoder();
+		byte[] template = null;
+		try{
+			template = bASE64Decoder.decodeBuffer(templateBase64Coded);
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+        						"GeoAction :: service : " +
+        						"Error while decoding base64 template", e);
+			sendError(outputStream);
+			return;
+		}
+		
 		// create the map renderer and render the map
 		MapRenderer mapRenderer = new MapRenderer();
-		byte[] map = mapRenderer.renderMap(template);
+		File maptmpfile = null;
+		try{
+			maptmpfile = mapRenderer.renderMap(template, serviceRequest);
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+								"GeoAction :: service : " +
+								"Error while rendering the map", e);
+			sendError(outputStream);
+			return;
+		}
+		
 		// set the content type 
 		String contentType = getContentType(outputFormat);
 		response.setContentType(contentType);
+		
+		
 		// based on the format requested fill the response
 		if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
-			InputStream inputStream = new ByteArrayInputStream(map);
-			mapRenderer.sVGToJPEGTransform(inputStream, outputStream);
-		} else if(outputFormat.equalsIgnoreCase(Constants.PDF)) {
-			InputStream inputStream = new ByteArrayInputStream(map);
-			mapRenderer.sVGToPDFTransform(inputStream, outputStream);
-		} else if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
-			outputStream.write(map);
+			InputStream inputStream = null;
+			try {
+				inputStream = new FileInputStream(maptmpfile);
+				mapRenderer.sVGToJPEGTransform(inputStream, outputStream);
+			} catch (Exception e) {
+				TracerSingleton.log(Constants.LOG_NAME, 
+			            			TracerSingleton.CRITICAL, 
+			            			"GeoAction :: service : error while transforming into jpeg", e);
+				sendError(outputStream);
+				return;
+			}
+			try{
+				inputStream.close();
+			} catch (Exception e ){
+				TracerSingleton.log(Constants.LOG_NAME, 
+            						TracerSingleton.CRITICAL, 
+            						"GeoAction :: service : error while closing input stream", e);
+			}
+		} /* else if(outputFormat.equalsIgnoreCase(Constants.PDF)) {
+			InputStream inputStream = null;
+			try {
+				inputStream = new FileInputStream(maptmpfile);
+				mapRenderer.sVGToPDFTransform(inputStream, outputStream);
+			} catch (Exception e) {
+				TracerSingleton.log(Constants.LOG_NAME, 
+            						TracerSingleton.CRITICAL, 
+            						"GeoAction :: service : error while transforming into pdf", e);
+				sendError(outputStream);
+				return;
+			}
+			try{
+				inputStream.close();
+			} catch (Exception e ){
+				TracerSingleton.log(Constants.LOG_NAME, 
+            						TracerSingleton.CRITICAL, 
+            						"GeoAction :: service : error while closing input stream", e);
+			}
+		}*/ else if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
+			InputStream inputStream = null;
+			try {
+				inputStream = new FileInputStream(maptmpfile);
+				flushFromInputStreamToOutputStream(inputStream, outputStream, false);
+			} catch (Exception e) {
+				TracerSingleton.log(Constants.LOG_NAME, 
+            						TracerSingleton.CRITICAL, 
+            						"GeoAction :: service : error while flushing svg", e);
+				sendError(outputStream);
+				return;
+			}
+			try{
+				inputStream.close();
+			} catch (Exception e ){
+				TracerSingleton.log(Constants.LOG_NAME, 
+									TracerSingleton.CRITICAL, 
+									"GeoAction :: service : error while closing input stream", e);
+			}
 		} else {
 			TracerSingleton.log(Constants.LOG_NAME, 
 					            TracerSingleton.CRITICAL, 
 					            "GeoAction :: service : Output Format not specified");
-			// TODO generate an emf error and check the error page appear 
+			sendError(outputStream);
+			return;
+		}
+		
+		// delete tmp map file
+		maptmpfile.delete();
+	}
+	
+	
+	/**
+	 * sends an error message to the client
+	 * @param out The servlet output stream
+	 */
+	private void sendError(ServletOutputStream out)  {
+		try{
+			out.write("<html>".getBytes());
+			out.write("<body>".getBytes());
+			out.write("<br/><br/><center><h2><span style=\"color:red;\">Unable to produce map</span></h2></center>".getBytes());
+			out.write("</body>".getBytes());
+			out.write("</html>".getBytes());
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+								"GeoAction :: sendError : " +
+								"Unable to write into output stream ", e);
 		}
 	}
 	
@@ -110,11 +219,16 @@ public class GeoAction extends AbstractHttpAction {
 		if(outputFormat.trim().equals("")) {
 			return false;
 		}
-		if( !outputFormat.equalsIgnoreCase(Constants.SVG) || 
-			!outputFormat.equalsIgnoreCase(Constants.JPEG) ||
+		/*
+		if( !outputFormat.equalsIgnoreCase(Constants.SVG) && 
+			!outputFormat.equalsIgnoreCase(Constants.JPEG) &&
 			!outputFormat.equalsIgnoreCase(Constants.PDF)  ) {
 			return false;
-		}
+		}*/
+		if( !outputFormat.equalsIgnoreCase(Constants.SVG) && 
+			!outputFormat.equalsIgnoreCase(Constants.JPEG) ) {
+				return false;
+			}
 		return true;
 	}
 	
@@ -144,5 +258,34 @@ public class GeoAction extends AbstractHttpAction {
 		else return Constants.TEXT_MIME_TYPE;
 	}
 	
+	
+	/**
+	 * Given an <code>InputStream</code> as input flushs the content into an OutputStream 
+	 * and then close the input and output stream.
+	 * @param is The input stream 
+	 * @param os The output stream
+	 * @param closeStreams, if true close both stream 
+	 */
+	public static void flushFromInputStreamToOutputStream(InputStream is, OutputStream os, boolean closeStreams) {
+		try{	
+			int c = 0;
+			byte[] b = new byte[1024];
+			while ((c = is.read(b)) != -1) {
+				if (c == 1024)
+					os.write(b);
+				else
+					os.write(b, 0, c);
+			}
+			os.flush();
+			if(closeStreams) {
+				os.close();
+				is.close();
+			}
+		} catch (IOException ioe) {
+			TracerSingleton.log(Constants.LOG_NAME, 
+		            TracerSingleton.CRITICAL, 
+		            "GeoAction :: flushFromInputStreamToOutputStream : Error while flushing", ioe);
+		}
+	}
 	
 }

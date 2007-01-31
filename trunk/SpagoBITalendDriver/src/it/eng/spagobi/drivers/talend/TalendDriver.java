@@ -31,7 +31,16 @@ public class TalendDriver implements IEngineDriver {
 
 	private void addLocale(Map map) {
 		ConfigSingleton config = ConfigSingleton.getInstance();
-		Locale portalLocale =  PortletUtilities.getPortalLocale();
+		Locale portalLocale = null;
+		try {
+			portalLocale =  PortletUtilities.getPortalLocale();
+		} catch (Exception e) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"addLocale(Map)",
+					"Error while getting portal locale.");
+			portalLocale = new Locale("en", "US");
+		}
 		SourceBean languageSB = null;
 		if(portalLocale != null && portalLocale.getLanguage() != null) {
 			languageSB = (SourceBean)config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 

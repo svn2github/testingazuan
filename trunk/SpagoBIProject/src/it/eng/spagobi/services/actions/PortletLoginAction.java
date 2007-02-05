@@ -63,7 +63,8 @@ public class PortletLoginAction extends AbstractAction{
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", "USER CONNECTED IS [" + remoteUser+"]");
 		Principal principal = portletRequest.getUserPrincipal();
 		SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
-		String engUserProfileFactoryClass =  ((SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS")).getCharacters();
+		SourceBean engUserProfileFactorySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS");
+		String engUserProfileFactoryClass = (String) engUserProfileFactorySB.getAttribute("className");
 		engUserProfileFactoryClass = engUserProfileFactoryClass.trim(); 
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);

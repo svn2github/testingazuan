@@ -498,7 +498,7 @@ public class SchedulerGUIModule extends AbstractModule {
 				query = query + key + "=" + value + "%26";
 			}
 		}
-		query = query.substring(0, query.length()-3);
+		if (query.endsWith("%26")) query = query.substring(0, query.length() - 3);
 		return query;
 	}
 	

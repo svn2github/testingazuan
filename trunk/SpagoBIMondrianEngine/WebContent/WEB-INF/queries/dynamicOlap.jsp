@@ -13,7 +13,6 @@
 				 java.util.List,
 				 com.thoughtworks.xstream.XStream,
 				 it.eng.spagobi.bean.AnalysisBean,
-				 it.eng.spagobi.util.SessionObjectRemoval,
 				 it.eng.spagobi.utilities.SpagoBIAccessUtils,
 				 it.eng.spagobi.util.ParameterSetter,
 				 it.eng.spagobi.bean.SaveAnalysisBean,
@@ -75,15 +74,13 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 
 
 <%
-
-	SessionObjectRemoval.removeSessionObjects(session);
 	List parameters = null;
 	InputStream is = null;
 	String reference = null, nameConnection = null, query= null;
 	AnalysisBean analysis = null;
 	
-	try{
-		SaveAnalysisBean analysisBean = new SaveAnalysisBean();
+	try {
+		SaveAnalysisBean analysisBean = (SaveAnalysisBean) session.getAttribute("save01");
 		String nameSubObject = request.getParameter("nameSubObject");
 	
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
@@ -139,12 +136,12 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 		}
 
 		// put in session the analysis file information bean
-		session.setAttribute("save01", analysisBean);
-		Object formObj = session.getAttribute("saveAnalysis01");
-		if (formObj != null) {
-			FormComponent form = (FormComponent) formObj;
-			form.setBean(analysisBean);
-		}	
+		//session.setAttribute("save01", analysisBean);
+		//Object formObj = session.getAttribute("saveAnalysis01");
+		//if (formObj != null) {
+		//	FormComponent form = (FormComponent) formObj;
+		//	form.setBean(analysisBean);
+		//}	
 		org.dom4j.io.SAXReader readerConFile = new org.dom4j.io.SAXReader();
 		Document documentConFile = readerConFile.read(getClass().getResourceAsStream("/engine-config.xml"));
 		Node connectionDef = null;
@@ -160,7 +157,6 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 		    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+reference+";";
 		    query = substituteQueryParameters(query, parameters, request);
 	    %>
-
 		<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 			<%=query%>
 		</jp:mondrianQuery>

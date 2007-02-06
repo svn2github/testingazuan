@@ -21,7 +21,7 @@
   <tr>
   <td>Nome dell'analisi</td>
   <td>
-   <textField type="string" modelReference="analysisName" size="43" title="enter a title for this analysis"/>
+   <textField type="string" modelReference="analysisName" size="43" title="inserisci un titolo per l'analisi corrente"/>
   </td>
  </tr>
 
@@ -35,7 +35,7 @@
  <tr>
   <td>Visibilità dell'analisi</td>
   <td>
-   <listBox1 type="string" modelReference="analysisVisibility" label="Analysis visibility">
+   <listBox1 type="string" modelReference="analysisVisibility" label="Visibilità dell'analisi">
   	<listItem value="Private" label="Privata"/>
   	<listItem value="Public" label="Pubblica"/>
    </listBox1>

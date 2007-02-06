@@ -5,22 +5,33 @@
  */
 package it.eng.spagobi.bean;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import it.eng.spagobi.bean.adapter.AnalysisAdapterUtil;
 import it.eng.spagobi.utilities.GenericSavingException;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 import javax.servlet.http.HttpSession;
 
+import org.w3c.dom.Document;
+
 import com.thoughtworks.xstream.XStream;
 import com.tonbeller.jpivot.chart.ChartComponent;
-import com.tonbeller.jpivot.mondrian.MondrianMemento;
 import com.tonbeller.jpivot.olap.model.OlapModel;
 import com.tonbeller.jpivot.olap.navi.MdxQuery;
 import com.tonbeller.jpivot.table.TableComponent;
+import com.tonbeller.wcf.component.ComponentSupport;
+import com.tonbeller.wcf.controller.Dispatcher;
+import com.tonbeller.wcf.controller.DispatcherSupport;
 import com.tonbeller.wcf.controller.RequestContext;
 import com.tonbeller.wcf.format.FormatException;
 
-public class SaveAnalysisBean {
+public class SaveAnalysisBean extends ComponentSupport {
+	
+	private PropertyChangeSupport propertySupport;
+	
+	Dispatcher dispatcher = new DispatcherSupport();
 	
 	private String analysisName;
 	
@@ -41,7 +52,17 @@ public class SaveAnalysisBean {
 	public String getAnalysisName() {
 		return analysisName;
 	}
-
+	
+    public SaveAnalysisBean(String id,  RequestContext context) {
+		super(id, null);
+		analysisName = "";
+		analysisDescription = "";
+		analysisVisibility = "Public";
+		recoveryAnalysisName = "";
+        propertySupport = new PropertyChangeSupport(this);
+        getDispatcher().addRequestListener(null, null, dispatcher);
+    }
+	
 	public void setAnalysisName(String analysisName) {
 	    if (analysisName == null || analysisName.trim().equals("")) {
 			throw new FormatException("Please provide an analysis name");
@@ -82,12 +103,6 @@ public class SaveAnalysisBean {
 		if (mdxQuery != null) {
 			query = mdxQuery.getMdxQuery();
 		}
-		
-//		if (olapModel.getBookmarkState(0) instanceof MondrianMemento) {
-//			MondrianMemento olapMem = (MondrianMemento) olapModel.getBookmarkState(0);
-//			query = olapMem.getMdxQuery();
-//		}
-		
 		if (query != null) {
 			ChartComponent chart = (ChartComponent) session.getAttribute("chart01");
 			TableComponent table = (TableComponent) session.getAttribute("table01");
@@ -112,5 +127,24 @@ public class SaveAnalysisBean {
 		    }   
 		}
 	}
+
+	public Document render(RequestContext arg0) throws Exception {
+		return null;
+	}
+	
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.addPropertyChangeListener(listener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * called once by the creating tag
+     */
+    public void initialize(RequestContext context) throws Exception {
+            super.initialize(context);
+    }
 	
 }

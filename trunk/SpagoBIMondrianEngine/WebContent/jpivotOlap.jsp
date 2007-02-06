@@ -1,31 +1,3 @@
-<%@ page session="true" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-	import="com.tonbeller.jpivot.olap.model.OlapModel,
-    		com.tonbeller.jpivot.mondrian.MondrianMemento,
-   			com.tonbeller.jpivot.table.TableComponent,
-    		com.tonbeller.jpivot.chart.ChartComponent,
-    		com.thoughtworks.xstream.XStream,
-   			it.eng.spagobi.bean.AnalysisBean,
-    		it.eng.spagobi.bean.SaveAnalysisBean,
-    		it.eng.spagobi.bean.adapter.AnalysisAdapterUtil,
-   			com.tonbeller.wcf.form.FormComponent,
-   			it.eng.spagobi.utilities.SpagoBIAccessUtils,
-   			it.eng.spagobi.utilities.GenericSavingException,
-   			org.apache.log4j.Logger,
-   			java.security.PublicKey,
-   			it.eng.spagobi.engines.jpivot.security.SecurityUtilities,
-   			java.util.Map,
-   			javax.servlet.ServletContext,
-   			java.util.HashMap"%>
-   			
-<%@page import="java.util.Collections"%>
-<%@page import="java.util.Arrays"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
-
-<%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
-<%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-
 <%--
 
   JPivot / WCF comes with its own "expression language", which simply
@@ -50,104 +22,16 @@
 
 --%>
 
+<%@ page session="true" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%! 
-    private transient PublicKey publicKeyDSASbi = null;
-    private transient Logger logger = Logger.getLogger(this.getClass());
-    private transient SecurityUtilities secUt = null;
-    private transient boolean securityAble = true;
-
-	public void jspInit() {
-		ServletContext context = this.getServletContext();
-		String secAblePar = context.getInitParameter("SECURITY_ABLE");
-		if(!secAblePar.equalsIgnoreCase("true")) {
-        	securityAble = false;
-        }
-        if(securityAble) {
-			secUt = new SecurityUtilities(logger);
-			publicKeyDSASbi = secUt.getPublicKey();
-		} 
-	}
-%>
-
-
-
-
-
-<%
-	//authentication 
-	boolean authorized = true;
-	Object auth = session.getAttribute("authorized");
-	if(auth!=null) {	
-		if(securityAble) {
-			authorized = false;
-			String token = request.getParameter("TOKEN_SIGN");
-			String tokenclear = request.getParameter("TOKEN_CLEAR");
-			if((token!=null) && !token.trim().equals("") &&  (tokenclear!=null) && !tokenclear.trim().equals("")) {
-	    		if(secUt.authenticate(token, tokenclear, publicKeyDSASbi)) {
-	    			authorized = true;
-	    			session.setAttribute("authorized", "true");
-	    		}
-			}
-		} else {
-			String token = request.getParameter("TOKEN_SIGN");
-			if(token!=null) {
-				authorized = false;
-				logger.error("The engine security check is not active but the driver in sending secure calls." + 
-					     	"Please turn on the security check of the engine");
-			}
-		}
-	}
-	
-	if(!authorized) {
-%>	 	
-
-
-<html><body><center><h2>Unauthorized</h2></center></body></html>
-
-<% } else {
-	
-	
-	// if is the first request the following parameters have a request value
-    // and they are put in session, otherwise their values are taken from the session
-    String jcrPath = request.getParameter("templatePath");
-	String spagoBIBaseUrl = request.getParameter("spagobiurl");
-	String user = request.getParameter("user");
-	String role = request.getParameter("role");
-	
-	if(jcrPath != null)
-    	session.setAttribute("templatePath", jcrPath);
-    else jcrPath = (String)session.getAttribute("templatePath");
-    if(spagoBIBaseUrl != null)
-    	session.setAttribute("spagobiurl", spagoBIBaseUrl);
-    else spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
-    if(user != null) 
-    	session.setAttribute("user", user);
-    else user = (String)session.getAttribute("user");
-    if(role != null) 
-    	session.setAttribute("role", role);
-    else role = (String)session.getAttribute("role");
+<%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
+<%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
+<%@ taglib uri="http://spagobi.eng.it/" prefix="spagobi" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %> 
     
-    String dimAccRulStr = request.getParameter("dimension_access_rules");
-    if(dimAccRulStr!=null){
-    	if(dimAccRulStr.trim().equalsIgnoreCase("")) {
-    		session.setAttribute("dimension_access_rules", new ArrayList());
-    	} else {
-    		String[] dimAccArray = dimAccRulStr.split(",");
-    		List dimAccList = Arrays.asList(dimAccArray);
-    		session.setAttribute("dimension_access_rules", dimAccList);
-    	}
-    }
-    
-%>   
-    
-    
-   
-
-
 <html>
 <head>
-  <title>JPivot Test Page</title>
+  <title>JPivot Page</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css" href="jpivot/table/mdxtable.css">
   <link rel="stylesheet" type="text/css" href="jpivot/navi/mdxnavi.css">
@@ -158,10 +42,9 @@
 </head>
 <body bgcolor=white lang="en">
 
-
-   
-
 <form action="jpivotOlap.jsp" method="post">
+
+<spagobi:saveAnalysis id="save01"/>
 
 <%-- include query and title, so this jsp may be used with different queries --%>
 <wcf:include id="include01" httpParam="query" prefix="/WEB-INF/queries/" suffix=".jsp"/>
@@ -174,7 +57,6 @@
 <jp:navigator id="navi01" query="#{query01}" visible="false"/>
 <wcf:form id="mdxedit01" xmlUri="/WEB-INF/jpivot/table/mdxedit.xml" model="#{query01}" visible="false"/>
 <wcf:form id="sortform01" xmlUri="/WEB-INF/jpivot/table/sortform.xml" model="#{table01}" visible="false"/>
-<!-- wcf:form id="uploadAnalysis" xmlUri="/WEB-INF/jpivot/table/uploadAnalysisTable.xml" model="#{upload}" visible="false"/-->
 <wcf:form id="saveAnalysis01" xmlUri="/WEB-INF/jpivot/table/saveAnalysisTable.xml" model="#{save01}" visible="false"/>
 
 <jp:print id="print01"/>
@@ -192,7 +74,6 @@
   <wcf:scriptbutton id="mdxEditButton" tooltip="toolb.mdx.edit" img="mdx-edit" model="#{mdxedit01.visible}"/>
   <wcf:scriptbutton id="sortConfigButton" tooltip="toolb.table.config" img="sort-asc" model="#{sortform01.visible}"/>
   <wcf:scriptbutton id="saveAnalysis" tooltip="toolb.save" img="save" model="#{saveAnalysis01.visible}"/>
-  <!-- wcf:scriptbutton id="uploadAnalysis" tooltip="toolb.upload" img="upload" model="#{uploadAnalysis.visible}"/-->
   <wcf:separator/>
   <wcf:scriptbutton id="levelStyle" tooltip="toolb.level.style" img="level-style" model="#{table01.extensions.axisStyle.levelStyle}"/>
   <wcf:scriptbutton id="hideSpans" tooltip="toolb.hide.spans" img="hide-spans" model="#{table01.extensions.axisStyle.hideSpans}"/>
@@ -293,6 +174,3 @@ Slicer:
 
 </body>
 </html>
-
-
-<% } %>

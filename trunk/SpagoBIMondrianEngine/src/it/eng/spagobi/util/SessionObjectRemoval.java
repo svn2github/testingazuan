@@ -10,13 +10,6 @@ import javax.servlet.http.HttpSession;
 public class SessionObjectRemoval {
 
 	public static void removeSessionObjects(HttpSession session) {
-
-		// could not delete everything from session because some objects are useful (wcf controllers ...)
-//		Enumeration names = session.getAttributeNames();
-//		while (names.hasMoreElements()) {
-//			String name = (String) names.nextElement();
-//			session.removeAttribute(name);
-//		}
 		
 		// remove following objects from session.
 		if (session.getAttribute("query01") != null) {
@@ -71,6 +64,10 @@ public class SessionObjectRemoval {
 			session.removeAttribute("save01");
 		}
 		
+		if (session.getAttribute("saveAnalysis01") != null) {
+			session.removeAttribute("saveAnalysis01");
+		}
+		
 		if (session.getAttribute("schemas") != null) {
 			session.removeAttribute("schemas");
 		}
@@ -91,6 +88,10 @@ public class SessionObjectRemoval {
 			session.removeAttribute("saveTemplate01");
 		}
 
+		if (session.getAttribute("saveTemplateForm01") != null) {
+			session.removeAttribute("saveTemplateForm01");
+		}
+		
 		if (session.getAttribute("toolbar01") != null) {
 			session.removeAttribute("toolbar01");
 		}

@@ -71,10 +71,15 @@ You must accept the terms of that agreement to use this software.
     </init-param>
     -->
   </filter>
-
+  
   <filter-mapping>
     <filter-name>JPivotController</filter-name>
     <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>JPivotController</filter-name>
+    <servlet-name>JPivotServlet</servlet-name>
   </filter-mapping>
 
   <listener>
@@ -125,6 +130,15 @@ You must accept the terms of that agreement to use this software.
     <servlet-class>com.tonbeller.jpivot.print.PrintServlet</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>JPivotServlet</servlet-name>
+    <servlet-class>it.eng.spagobi.engines.jpivot.JPivotServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JPivotServlet</servlet-name>
+    <url-pattern>/JPivotServlet</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>DisplayChart</servlet-name>
     <url-pattern>/DisplayChart</url-pattern>
@@ -160,6 +174,11 @@ You must accept the terms of that agreement to use this software.
   <taglib>
     <taglib-uri>http://www.tonbeller.com/jpivot</taglib-uri>
     <taglib-location>/WEB-INF/jpivot/jpivot-tags.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>http://spagobi.eng.it/</taglib-uri>
+    <taglib-location>/WEB-INF/spagobi/spagobi-tags.tld</taglib-location>
   </taglib>
 
 </web-app>

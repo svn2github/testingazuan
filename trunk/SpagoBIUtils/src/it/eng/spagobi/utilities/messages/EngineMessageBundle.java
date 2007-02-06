@@ -24,7 +24,6 @@ public class EngineMessageBundle {
      * @param code the code of the message.
      * @param bundle the message bundle.
      * @return the internazionalized message.
-     * @throws Exception 
      */
     public static String getMessage(String code, String bundle, Locale userLocale) {
         
@@ -70,11 +69,11 @@ public class EngineMessageBundle {
         else return message;
     }
 	
-    public static String getMessage(String code, Locale userLocale) throws Exception {
+    public static String getMessage(String code, Locale userLocale) {
     	return getMessage(code, DEFAULT_BUNDLE, userLocale);
     }
     
-    public static String getMessage(String code, String bundle, Locale userLocale, String[] arguments) throws Exception {
+    public static String getMessage(String code, String bundle, Locale userLocale, String[] arguments) {
     	String message = getMessage(code, DEFAULT_BUNDLE, userLocale);
         for (int i = 0; i < arguments.length; i++){
         	message = replace(message, i, arguments[i].toString());
@@ -82,7 +81,7 @@ public class EngineMessageBundle {
     	return message;
     }
     
-    public static String getMessage(String code, Locale userLocale, String[] arguments) throws Exception {
+    public static String getMessage(String code, Locale userLocale, String[] arguments) {
     	return getMessage(code, DEFAULT_BUNDLE, userLocale, arguments);
     }
     

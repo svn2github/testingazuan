@@ -40,6 +40,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.drivers.jpivot;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
@@ -53,6 +54,7 @@ import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ParameterValuesEncoder;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -63,6 +65,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import sun.misc.BASE64Encoder;
@@ -73,6 +76,40 @@ import sun.misc.BASE64Encoder;
  */
 public class JPivotDriver implements IEngineDriver {
 
+	private void addLocale(Map map) {
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		Locale portalLocale = null;
+		try {
+			portalLocale =  PortletUtilities.getPortalLocale();
+		} catch (Exception e) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"addLocale(Map)",
+					"Error while getting portal locale.");
+			portalLocale = new Locale("en", "US");
+		}
+		SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+				"Portal locale: " + portalLocale);
+		SourceBean languageSB = null;
+		if (portalLocale != null && portalLocale.getLanguage() != null) {
+			languageSB = (SourceBean)config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+					"language", portalLocale.getLanguage());
+			SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+					"Found language configuration for portal locale [" + portalLocale + "]: " + languageSB);
+		}
+		if (languageSB != null) {
+			map.put("country", (String)languageSB.getAttribute("country"));
+			map.put("language", (String)languageSB.getAttribute("language"));
+			SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+				"Adding [" + languageSB.getAttribute("country") + "," +
+						languageSB.getAttribute("language") + "] locale.");
+		} else {
+			map.put("country", "US");
+			map.put("language", "en");
+			SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+					"Adding [en,US] locale as default.");
+		}			
+	}
 	
 	/**
 	 * Returns a map of parameters which will be send in the request to the 
@@ -254,6 +291,7 @@ public class JPivotDriver implements IEngineDriver {
 	 * @param subObject SubObject to execute
 	 * @param profile Profile of the user 
 	 * @return Map The map of the execution call parameters
+	 * @deprecated
   	 */
     public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
     	Map map = new Hashtable();
@@ -326,6 +364,7 @@ public class JPivotDriver implements IEngineDriver {
 		pars.put("role", roleName);
 		pars = addDataAccessParameter(profile, roleName, pars, template);
         pars = addBIParameters(biobj, pars);
+        addLocale(pars);
         return pars;
 	} 
  

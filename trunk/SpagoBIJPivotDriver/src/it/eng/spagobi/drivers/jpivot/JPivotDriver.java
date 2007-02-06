@@ -504,8 +504,8 @@ public class JPivotDriver implements IEngineDriver {
 		}
 		Engine engine = obj.getEngine();
 		String url = engine.getUrl();
-		url = url.substring(0, url.lastIndexOf("/"));
-		url += "/editQuery.jsp";
+		//url = url.substring(0, url.lastIndexOf("/"));
+		//url += "/editQuery.jsp";
 		obj.loadTemplate();
 		UploadedFile uploadedFile =  obj.getTemplate();
 		byte[] template = uploadedFile.getFileContent();
@@ -522,7 +522,9 @@ public class JPivotDriver implements IEngineDriver {
 		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
 		parameters.put("templateName", templateName);
 		parameters.put("template", bASE64Encoder.encode(template));
-		parameters.put("new_session", "true");
+		//parameters.put("new_session", "true");
+		parameters.put("forward", "editQuery.jsp");
+		addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		return engineURL;
 	}
@@ -545,12 +547,14 @@ public class JPivotDriver implements IEngineDriver {
 		}
 		Engine engine = obj.getEngine();
 		String url = engine.getUrl();
-		url = url.substring(0, url.lastIndexOf("/"));
-		url += "/initialQueryCreator.jsp";
+		//url = url.substring(0, url.lastIndexOf("/"));
+		//url += "/initialQueryCreator.jsp";
 		HashMap parameters = new HashMap();
 		parameters.put("biobject_path", obj.getPath());
 		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-		parameters.put("new_session", "true");
+		//parameters.put("new_session", "true");
+		parameters.put("forward", "initialQueryCreator.jsp");
+		addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		return engineURL;
 	}

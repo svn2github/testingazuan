@@ -120,15 +120,15 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 	<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 	<b><%=EngineMessageBundle.getMessage("add.parameters.type.query", locale)%></b>
 	<br>
-	<textarea style="width:42%;height:100;" name="queryWithParameters" /><%=queryWithParameters%></textarea>
+	<textarea style="width:48%;height:100;" name="queryWithParameters" /><%=queryWithParameters%></textarea>
 	<p>
 	<b><%=EngineMessageBundle.getMessage("add.parameters.type.parameters", locale)%></b>
 	<br>
-	<table cellpadding="5" cellspacing="0" width="42%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
+	<table cellpadding="5" cellspacing="0" width="48%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 		<tr>
-			<td style="width: 45%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.name", locale)%></td>
-			<td style="width: 45%;"><input type="text" name="parameterName" value="<%=(parameterName != null) ? parameterName : ""%>" /></td>
-			<td rowspan="2" align="center" style="width: 10%;">
+			<td style="width: 47%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.name", locale)%></td>
+			<td style="width: 47%;"><input type="text" name="parameterName" value="<%=(parameterName != null) ? parameterName : ""%>" size="30" /></td>
+			<td rowspan="2" align="center" style="width: 6%;">
 				<input type="image" name="action" value="addParameter"
 						title="<%=EngineMessageBundle.getMessage("add.parameters.add", locale)%>" 
 						alt="<%=EngineMessageBundle.getMessage("add.parameters.add", locale)%>" 
@@ -137,7 +137,7 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 		</tr>
 		<tr>
 			<td><%=EngineMessageBundle.getMessage("add.parameters.parameter.urlname", locale)%></td>
-			<td><input type="text" name="parameterUrlName" value="<%=(parameterUrlName != null) ? parameterUrlName : ""%>" /></td>
+			<td><input type="text" name="parameterUrlName" value="<%=(parameterUrlName != null) ? parameterUrlName : ""%>" size="30" /></td>
 		</tr>
 	</table>
 	</span>
@@ -147,17 +147,17 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 if (parameters.size() > 0) {
 	%>
 	<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-	<b><%=EngineMessageBundle.getMessage("add.parameters.parameter.urlname", locale)%></b>
+	<b><%=EngineMessageBundle.getMessage("add.parameters.defined.parameters", locale)%></b>
 	<br>
 	<form action="addParameters.jsp" method="post" name="deleteParametersForm" id="deleteParametersForm">
 		<input type="hidden" name="action" value="deleteParameter" />
 		<input type="hidden" name="queryWithParameters" value="<%=queryWithParameters%>" />
 		
-		<table cellpadding="5" cellspacing="0" width="42%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
+		<table cellpadding="5" cellspacing="0" width="48%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 			<tr>
-				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.name.lbl", locale)%></th>
-				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.urlname.lbl", locale)%></th>
-				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 10%;">&nbsp;</th>
+				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 47%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.name.lbl", locale)%></th>
+				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 47%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.urlname.lbl", locale)%></th>
+				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 6%;">&nbsp;</th>
 			</tr>
 			<%
 			Set keys = parameters.keySet();

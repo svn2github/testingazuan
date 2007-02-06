@@ -200,7 +200,7 @@ if (connection != null && !connection.trim().equals("")) {
 			return;
 		}
 		%>
-		<div style="float:left;clear:left;width:130px;height:25px;margin:5px;">
+		<div style="float:left;clear:left;width:150px;height:25px;margin:5px;">
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 				<%=EngineMessageBundle.getMessage("edit.query.select.connection", locale)%>
 			</span>

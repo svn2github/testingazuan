@@ -109,7 +109,7 @@ if (connections == null || connections.size() == 0) {
 %>
 <p>
 <div style="margin: 0 0 5 5;">
-	<div style="float:left;clear:left;width:130px;height:25px;">
+	<div style="float:left;clear:left;width:150px;height:25px;">
 		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 			<%=EngineMessageBundle.getMessage("query.creation.select.connection", locale)%>
 		</span>
@@ -148,7 +148,7 @@ if (connections == null || connections.size() == 0) {
 
 %>
 <div style="margin: 0 0 5 5;">
-	<div style="float:left;clear:left;width:130px;height:25px;">
+	<div style="float:left;clear:left;width:150px;height:25px;">
 		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 			<%=EngineMessageBundle.getMessage("query.creation.select.schema", locale)%>
 		</span>
@@ -206,7 +206,7 @@ if (selectedSchema != null) {
 	}
 	%>
 	<div style="margin: 0 0 5 5;">
-		<div style="float:left;clear:left;width:130px;height:25px;">
+		<div style="float:left;clear:left;width:150px;height:25px;">
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 				<%=EngineMessageBundle.getMessage("query.creation.select.cube", locale)%>
 			</span>

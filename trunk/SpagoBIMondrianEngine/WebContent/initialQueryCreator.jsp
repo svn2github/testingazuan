@@ -16,7 +16,6 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="java.net.URL"%>
 <%@page import="mondrian.olap.MondrianDef.VirtualCube"%>
-<%@page import="it.eng.spagobi.util.SessionObjectRemoval"%>
 <%@page import="it.eng.spagobi.bean.TemplateBean"%>
 <%@page import="com.tonbeller.wcf.form.FormComponent"%>
 <%@page import="com.tonbeller.jpivot.olap.model.OlapModel"%>
@@ -33,13 +32,6 @@
 </head>
 
 <body bgcolor=white lang="en">
-<%
-//cleans objects from session if necessary
-String newSession = request.getParameter("new_session");
-if (newSession != null && newSession.trim().equalsIgnoreCase("true")) {
-	SessionObjectRemoval.removeSessionObjects(session);
-}
-%>
 
 <form action="initialQueryCreator.jsp" method="post" name="initialQueryForm" id="initialQueryForm">
 <input type="hidden" name="action" id="action" value="" />

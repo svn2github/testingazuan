@@ -12,7 +12,6 @@
 <%@page import="sun.misc.BASE64Decoder"%>
 <%@page import="java.io.ByteArrayInputStream"%>
 <%@page import="it.eng.spagobi.bean.TemplateBean"%>
-<%@page import="it.eng.spagobi.util.SessionObjectRemoval"%>
 <%@page import="com.tonbeller.wcf.form.FormComponent"%>
 <%@page import="com.tonbeller.jpivot.olap.model.OlapModel"%>
 <%@page import="java.util.HashMap"%>
@@ -32,12 +31,6 @@
 <body bgcolor=white lang="en">
 
 <%
-// cleans objects from session if necessary
-String newSession = request.getParameter("new_session");
-if (newSession != null && newSession.trim().equalsIgnoreCase("true")) {
-	SessionObjectRemoval.removeSessionObjects(session);
-}
-
 // puts in session the spagobi content repository servlet url 
 // and the document path for TemplateBean.saveTemplate method
 // and other objects avoiding unuseful http reuqest parameters

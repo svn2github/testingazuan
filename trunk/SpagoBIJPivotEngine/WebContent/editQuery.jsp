@@ -15,6 +15,9 @@
 <%@page import="com.tonbeller.wcf.form.FormComponent"%>
 <%@page import="com.tonbeller.jpivot.olap.model.OlapModel"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
+<%@page import="com.tonbeller.wcf.controller.RequestContext"%>
+<%@page import="java.util.Locale"%>
 
 <html>
 <head>
@@ -31,6 +34,10 @@
 <body bgcolor=white lang="en">
 
 <%
+// retrieves the locale
+RequestContext context = RequestContext.instance();
+Locale locale = context.getLocale();
+
 // puts in session the spagobi content repository servlet url 
 // and the document path for TemplateBean.saveTemplate method
 // and other objects avoiding unuseful http reuqest parameters
@@ -86,14 +93,14 @@ if (connection != null && !connection.trim().equals("")) {
 			// Parameters with SpagoBI sintax were inserted so the query with parameters cannot be executed
 			%>
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;font-weight: bold;">
-			WARNING: Query contains parameters with SpagoBI sintax, so it cannot be executed!!
+			<%=EngineMessageBundle.getMessage("edit.query.parameters.warning", locale)%>
 			<br>
 			</span>
 			<%
 			if (mdxMondrianQueryNode == null) {
 				%>
 				<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;font-weight: bold;">
-				WARNING: Document template does not contain the original Mondrian query so you cannot proceed.
+				<%=EngineMessageBundle.getMessage("edit.query.parameters.no.mondrian.query", locale)%>
 				</span>
 				<%	
 				return;
@@ -195,7 +202,7 @@ if (connection != null && !connection.trim().equals("")) {
 		%>
 		<div style="float:left;clear:left;width:130px;height:25px;margin:5px;">
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-				Select connection:
+				<%=EngineMessageBundle.getMessage("edit.query.select.connection", locale)%>
 			</span>
 		</div>
 		<div style="height:25px;margin:5px;">

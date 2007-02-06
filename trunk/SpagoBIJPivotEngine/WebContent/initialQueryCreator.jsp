@@ -19,6 +19,9 @@
 <%@page import="it.eng.spagobi.bean.TemplateBean"%>
 <%@page import="com.tonbeller.wcf.form.FormComponent"%>
 <%@page import="com.tonbeller.jpivot.olap.model.OlapModel"%>
+<%@page import="com.tonbeller.wcf.controller.RequestContext"%>
+<%@page import="java.util.Locale"%>
+<%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
 
 <html>
 <head>
@@ -35,7 +38,12 @@
 
 <form action="initialQueryCreator.jsp" method="post" name="initialQueryForm" id="initialQueryForm">
 <input type="hidden" name="action" id="action" value="" />
+
 <%
+//retrieves the locale
+RequestContext context = RequestContext.instance();
+Locale locale = context.getLocale();
+
 //puts in session the spagobi content repository servlet url 
 //and the document path for TemplateBean.saveTemplate method
 String biobjectPath = request.getParameter("biobject_path");
@@ -103,7 +111,7 @@ if (connections == null || connections.size() == 0) {
 <div style="margin: 0 0 5 5;">
 	<div style="float:left;clear:left;width:130px;height:25px;">
 		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-			Select connection:
+			<%=EngineMessageBundle.getMessage("query.creation.select.connection", locale)%>
 		</span>
 	</div>
 	<div style="height:25px;">
@@ -142,7 +150,7 @@ if (connections == null || connections.size() == 0) {
 <div style="margin: 0 0 5 5;">
 	<div style="float:left;clear:left;width:130px;height:25px;">
 		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-			Select schema:
+			<%=EngineMessageBundle.getMessage("query.creation.select.schema", locale)%>
 		</span>
 	</div>
 	<div style="height:25px;">
@@ -200,7 +208,7 @@ if (selectedSchema != null) {
 	<div style="margin: 0 0 5 5;">
 		<div style="float:left;clear:left;width:130px;height:25px;">
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-				Select cube:
+				<%=EngineMessageBundle.getMessage("query.creation.select.cube", locale)%>
 			</span>
 		</div>
 		<div style="height:25px;">

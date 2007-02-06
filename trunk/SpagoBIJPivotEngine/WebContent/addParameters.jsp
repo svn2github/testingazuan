@@ -9,8 +9,11 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
-
 <%@page import="org.apache.commons.validator.GenericValidator"%>
+<%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
+<%@page import="com.tonbeller.wcf.controller.RequestContext"%>
+<%@page import="java.util.Locale"%>
+
 <html>
 <head>
   <title>Mdx query edit</title>
@@ -26,6 +29,10 @@
 <body bgcolor=white lang="en">
 
 <%
+//retrieves the locale
+RequestContext context = RequestContext.instance();
+Locale locale = context.getLocale();
+
 // retrieves the Mondrian query
 OlapModel om = (OlapModel) session.getAttribute("query01");
 MdxQuery query = (MdxQuery) om.getExtension("mdxQuery");
@@ -66,21 +73,21 @@ if (action != null && action.trim().equalsIgnoreCase("addParameter")) {
 	if (GenericValidator.isBlankOrNull(parameterName) || GenericValidator.isBlankOrNull(parameterUrlName)) {
 		%>
 		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: red;font-size: 8pt;font-weight: bold;">
-		ERROR: Missing parameter name or parameter url name!!
+		<%=EngineMessageBundle.getMessage("error.no.parameter.name.or.urlname", locale)%>
 		</span>
 		<%
 	} else if (!GenericValidator.maxLength(parameterName, maxLength) 
 			|| !GenericValidator.maxLength(parameterUrlName, maxLength)) {
 		%>
 		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: red;font-size: 8pt;font-weight: bold;">
-		ERROR: Parameter name and parameter url name must not exceed <%=maxLength%> characters!!
+		<%=EngineMessageBundle.getMessage("error.parameter.name.and.urlname.exceed.max", locale, new String[] {new Integer(maxLength).toString()})%>
 		</span>
 		<%
 	} else if (!GenericValidator.matchRegexp(parameterName, ALPHANUMERIC_STRING_REGEXP) 
 			|| !GenericValidator.matchRegexp(parameterUrlName, ALPHANUMERIC_STRING_REGEXP)) {
 		%>
 		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: red;font-size: 8pt;font-weight: bold;">
-		ERROR: Parameter name and parameter url name must be aplhanumeric!!
+		<%=EngineMessageBundle.getMessage("error.parameter.name.and.urlname.alphanumeric", locale)%>
 		</span>
 		<%
 	} else {
@@ -111,24 +118,25 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 	<wcf:render ref="saveTemplateForm01" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 	<p>
 	<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-	<b>Type parameters in the query below:</b>
+	<b><%=EngineMessageBundle.getMessage("add.parameters.type.query", locale)%></b>
 	<br>
 	<textarea style="width:42%;height:100;" name="queryWithParameters" /><%=queryWithParameters%></textarea>
 	<p>
-	<b>Type name and url name for each parameter inserted above:</b>
+	<b><%=EngineMessageBundle.getMessage("add.parameters.type.parameters", locale)%></b>
 	<br>
 	<table cellpadding="5" cellspacing="0" width="42%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 		<tr>
-			<td style="width: 45%;">Insert parameter name:</td>
+			<td style="width: 45%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.name", locale)%></td>
 			<td style="width: 45%;"><input type="text" name="parameterName" value="<%=(parameterName != null) ? parameterName : ""%>" /></td>
 			<td rowspan="2" align="center" style="width: 10%;">
-				<input type="image" title="Add parameter" alt="Add parameter" 
-						name="action" value="addParameter"
+				<input type="image" name="action" value="addParameter"
+						title="<%=EngineMessageBundle.getMessage("add.parameters.add", locale)%>" 
+						alt="<%=EngineMessageBundle.getMessage("add.parameters.add", locale)%>" 
 						src="jpivot/table/drill-position-expand.gif" />
 			</td>
 		</tr>
 		<tr>
-			<td>Insert parameter url name:</td>
+			<td><%=EngineMessageBundle.getMessage("add.parameters.parameter.urlname", locale)%></td>
 			<td><input type="text" name="parameterUrlName" value="<%=(parameterUrlName != null) ? parameterUrlName : ""%>" /></td>
 		</tr>
 	</table>
@@ -139,7 +147,7 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 if (parameters.size() > 0) {
 	%>
 	<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-	<b>Defined parameters:</b>
+	<b><%=EngineMessageBundle.getMessage("add.parameters.parameter.urlname", locale)%></b>
 	<br>
 	<form action="addParameters.jsp" method="post" name="deleteParametersForm" id="deleteParametersForm">
 		<input type="hidden" name="action" value="deleteParameter" />
@@ -147,8 +155,8 @@ if (parameters.size() > 0) {
 		
 		<table cellpadding="5" cellspacing="0" width="42%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 			<tr>
-				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;">Parameter name</th>
-				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;">Parameter url name</th>
+				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.name.lbl", locale)%></th>
+				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 45%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.urlname.lbl", locale)%></th>
 				<th style="background-color: #DEE3EF;color: Black;text-align: left;width: 10%;">&nbsp;</th>
 			</tr>
 			<%
@@ -162,8 +170,9 @@ if (parameters.size() > 0) {
 					<td><%=aParameterName%></td>
 					<td><%=aParameterUrlName%></td>
 					<td align="center">
-						<input type="image" title="Remove parameter" alt="Remove parameter" 
-							name="parameterName" value="<%=aParameterName%>"
+						<input type="image" name="parameterName" value="<%=aParameterName%>"
+							title="<%=EngineMessageBundle.getMessage("add.parameters.remove", locale)%>" 
+							alt="<%=EngineMessageBundle.getMessage("add.parameters.remove", locale)%>" 
 							src="jpivot/table/drill-position-collapse.gif" />
 					</td>
 				</tr>

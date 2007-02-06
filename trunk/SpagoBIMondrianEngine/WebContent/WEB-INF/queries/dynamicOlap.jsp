@@ -240,7 +240,6 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 	    while(iterDimNames.hasNext()){
 	    	String dimName = (String)iterDimNames.next();
 	    	dimName = dimName.substring(1, dimName.length() - 1);
-	    	System.out.println("*********** Nome dimensione da cercare: " + dimName);
 	    	List dimMembers = new ArrayList();
 	    	iterDimAcc = dimAccList.iterator();
 		    while(iterDimAcc.hasNext()) {
@@ -251,7 +250,6 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 		    		String memberDim = dimAccStr.substring(0, dimAccStr.indexOf("."));
 		    		String tmp = "[" + dimName + "]";
 		    		if(tmp.equalsIgnoreCase(memberDim)){
-		    			System.out.println("*********** Sono entrato nell'if");
 		    			dimMembers.add(dimAccStr);
 			    	}
 		    	}
@@ -280,7 +278,6 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 	 		    	//String cubeDimKey = (String)itCubeDimKeys.next();
 	 		    	Dimension dim = dimensions[i];
 	 		    	String cubeDimKey = dim.getName();
-	 		    	System.out.println("*********** Nome dimensione: " + cubeDimKey);
 	 		    	if (cubeDimKey.equalsIgnoreCase(dimName)) {
 	 		    		logger.debug("MondrianModel::initialize: dimension found into the cube");
 	 		    		//MondrianDimension monDim = (MondrianDimension)hDimensions.get(cubeDimKey);
@@ -293,7 +290,6 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 	 		    		} else {
 			 		    	for (int j = 0; j < hierarchies.length; j++) {
 			 		    		mondrian.olap.Hierarchy aHierarchy =  hierarchies[j];
-			 		    		System.out.println("*********** Nome gerarchia: " + aHierarchy.getName());
 			 		    		if (aHierarchy.getName().equalsIgnoreCase(dimName)) {
 			 		    			 logger.debug("MondrianModel::initialize: hierarchy found into the cube");
 			 		    			 connRole.grant(aHierarchy, Access.CUSTOM, null, null);
@@ -309,7 +305,6 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 	    		// logger.debug("MondrianModel::initialize: try to search the hierarchy into the cube");
 	    		// mondrian.olap.Hierarchy hier = cube.getHierarchy();
 	    		// if (hier!= null && hier.getName().equalsIgnoreCase(dimName)) {
-	    		//	 System.out.println("*********** Nome gerarchia: " + hier.getName());
 	    		//	 logger.debug("MondrianModel::initialize: hierarchy found into the cube");
 	    		//	 connRole.grant(hier, Access.CUSTOM, null, null);
 	    		//	 logger.debug("MondrianModel::initialize: setted access.custom to the hierarchy");

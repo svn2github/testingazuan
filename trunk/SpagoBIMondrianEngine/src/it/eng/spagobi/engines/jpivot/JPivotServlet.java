@@ -119,21 +119,17 @@ public class JPivotServlet extends HttpServlet {
 		String user = request.getParameter("user");
 		String role = request.getParameter("role");
 		
-		if(jcrPath != null)
-	    	session.setAttribute("templatePath", jcrPath);
-	    else jcrPath = (String)session.getAttribute("templatePath");
-	    if(spagoBIBaseUrl != null)
-	    	session.setAttribute("spagobiurl", spagoBIBaseUrl);
-	    else spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
-	    if(user != null) 
-	    	session.setAttribute("user", user);
-	    else user = (String)session.getAttribute("user");
-	    if(role != null) 
-	    	session.setAttribute("role", role);
-	    else role = (String)session.getAttribute("role");
+		if (jcrPath != null) session.setAttribute("templatePath", jcrPath);
+	    //else jcrPath = (String)session.getAttribute("templatePath");
+	    if (spagoBIBaseUrl != null) session.setAttribute("spagobiurl", spagoBIBaseUrl);
+	    //else spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
+	    if (user != null) session.setAttribute("user", user);
+	    //else user = (String)session.getAttribute("user");
+	    if (role != null) session.setAttribute("role", role);
+	    //else role = (String)session.getAttribute("role");
 	    
 	    String dimAccRulStr = request.getParameter("dimension_access_rules");
-	    if(dimAccRulStr!=null){
+	    if (dimAccRulStr != null) {
 	    	if(dimAccRulStr.trim().equalsIgnoreCase("")) {
 	    		session.setAttribute("dimension_access_rules", new ArrayList());
 	    	} else {
@@ -143,10 +139,15 @@ public class JPivotServlet extends HttpServlet {
 	    	}
 	    }
 		
+	    String forward = request.getParameter("forward");
+	    if (forward == null || forward.trim().equals("")) {
+	    	forward = "jpivotOlap.jsp";
+	    }
+	    
 		try {
-			request.getRequestDispatcher("jpivotOlap.jsp").forward(request, response);
+			request.getRequestDispatcher(forward).forward(request, response);
 		} catch (ServletException e) {
-			logger.error("Error while forwarding to jpivotOlap.jsp", e);
+			logger.error("Error while forwarding to " + forward, e);
 		}
 		
 	}

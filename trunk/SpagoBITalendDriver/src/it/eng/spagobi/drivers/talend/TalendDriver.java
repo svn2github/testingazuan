@@ -9,14 +9,17 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
+import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -118,7 +121,7 @@ public class TalendDriver implements IEngineDriver {
 		//pars.put("templatePath", biobj.getPath() + "/template");
         //pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
         addLocale(pars);
-        //pars = addBIParameters(biobj, pars);
+        pars = addBIParameters(biobj, pars);
         return pars;
 	} 
 	
@@ -128,36 +131,34 @@ public class TalendDriver implements IEngineDriver {
      * @param pars Map of the parameters for the execution call  
      * @return Map The map of the execution call parameters
      */
-//	private Map addBIParameters(BIObject biobj, Map pars) {
-//		if(biobj==null) {
-//			SpagoBITracer.warning("ENGINES",
-//								  this.getClass().getName(),
-//								  "addBIParameters",
-//								  "BIObject parameter null");
-//			return pars;
-//		}
-//		
-//		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
-//		if(biobj.getBiObjectParameters() != null){
-//			BIObjectParameter biobjPar = null;
-//			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
-//				try {
-//					biobjPar = (BIObjectParameter)it.next();
-//					
-//										
-//					String value = parValuesEncoder.encode(biobjPar);
-//					pars.put(biobjPar.getParameterUrlName(), value);
-//				} catch (Exception e) {
-//					SpagoBITracer.warning("ENGINES",
-//										  this.getClass().getName(),
-//										  "addBIParameters",
-//										  "Error while processing a BIParameter",
-//										  e);
-//				}
-//			}
-//		}
-//  		return pars;
-//	}
+	private Map addBIParameters(BIObject biobj, Map pars) {
+		if(biobj==null) {
+			SpagoBITracer.warning("ENGINES",
+								  this.getClass().getName(),
+								  "addBIParameters",
+								  "BIObject parameter null");
+			return pars;
+		}
+		
+		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
+		if(biobj.getBiObjectParameters() != null){
+			BIObjectParameter biobjPar = null;
+			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
+				try {
+					biobjPar = (BIObjectParameter)it.next();
+					String value = parValuesEncoder.encode(biobjPar);
+					pars.put(biobjPar.getParameterUrlName(), value);
+				} catch (Exception e) {
+					SpagoBITracer.warning("ENGINES",
+										  this.getClass().getName(),
+										  "addBIParameters",
+										  "Error while processing a BIParameter",
+										  e);
+				}
+			}
+		}
+  		return pars;
+	}
 	
 	/**
 	 * Function not implemented. Thid method should not be called

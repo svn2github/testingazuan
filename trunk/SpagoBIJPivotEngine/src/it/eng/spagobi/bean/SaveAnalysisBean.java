@@ -7,13 +7,16 @@ package it.eng.spagobi.bean;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Locale;
 
 import it.eng.spagobi.bean.adapter.AnalysisAdapterUtil;
 import it.eng.spagobi.utilities.GenericSavingException;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
+import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import com.thoughtworks.xstream.XStream;
@@ -28,6 +31,12 @@ import com.tonbeller.wcf.controller.RequestContext;
 import com.tonbeller.wcf.format.FormatException;
 
 public class SaveAnalysisBean extends ComponentSupport {
+	
+	public static final String PUBLIC_VISIBLITY = "Public";
+	public static final String PRIVATE_VISIBLITY = "Private";
+	
+	private transient Logger logger = Logger.getLogger(this.getClass());
+	private RequestContext context = null;
 	
 	private PropertyChangeSupport propertySupport;
 	
@@ -53,25 +62,33 @@ public class SaveAnalysisBean extends ComponentSupport {
 		return analysisName;
 	}
 	
-    public SaveAnalysisBean(String id,  RequestContext context) {
+    public SaveAnalysisBean(String id,  RequestContext aContext) {
 		super(id, null);
+		this.context = aContext;
 		analysisName = "";
 		analysisDescription = "";
-		analysisVisibility = "Public";
+		analysisVisibility = PUBLIC_VISIBLITY;
 		recoveryAnalysisName = "";
         propertySupport = new PropertyChangeSupport(this);
         getDispatcher().addRequestListener(null, null, dispatcher);
     }
 	
 	public void setAnalysisName(String analysisName) {
+		Locale locale = context.getLocale();
 	    if (analysisName == null || analysisName.trim().equals("")) {
-			throw new FormatException("Please provide an analysis name");
+	    	logger.error("Analysis name missing.");
+	    	String msg = EngineMessageBundle.getMessage("error.analysis.name.missing", locale);
+			throw new FormatException(msg);
 		}
 		if (analysisName.indexOf("/") != -1 || analysisName.indexOf("\\") != -1) {
-			throw new FormatException("Analysis name contains file path separators");
+			logger.error("Analysis name contains file path separators.");
+	    	String msg = EngineMessageBundle.getMessage("error.analysis.name.contains.separators", locale);
+			throw new FormatException(msg);
 		}
 		if (analysisName.indexOf("<") != -1 || analysisName.indexOf(">") != -1) {
-			throw new FormatException("Analysis name contains invalid characters");
+			logger.error("Analysis name contains invalid characters.");
+	    	String msg = EngineMessageBundle.getMessage("error.analysis.name.invalid.characters", locale);
+			throw new FormatException(msg);
 		}
 		// save the current analisys name if the recoveryAnalysisName variable
 		this.recoveryAnalysisName = this.analysisName;
@@ -112,18 +129,19 @@ public class SaveAnalysisBean extends ComponentSupport {
 		    XStream dataBinder = new XStream();
 		    String xmlString = dataBinder.toXML(analysis);
             boolean visibilityBoolean = false;
-		    if ("public".equalsIgnoreCase(analysisVisibility)) 
+		    if (PUBLIC_VISIBLITY.equalsIgnoreCase(analysisVisibility)) 
 				visibilityBoolean = true;
 		    SpagoBIAccessUtils sbiutils = new SpagoBIAccessUtils();
 		    try {
 		        byte[] response = sbiutils.saveSubObject(spagoBIBaseUrl, jcrPath, analysisName,
 		        		analysisDescription, user, visibilityBoolean, xmlString);
 		        String message = new String(response);
-		        session.setAttribute("message", message);
+		        session.setAttribute("saveSubObjectMessage", message);
 		        // if the saving operation has no success, the previous 
 		        if (message.toUpperCase().startsWith("KO")) this.analysisName = recoveryAnalysisName;
 		    } catch (GenericSavingException gse) {		
-		    	gse.printStackTrace();
+		    	logger.error("Error while saving analysis.", gse);
+		    	session.setAttribute("saveSubObjectMessage", "KO - " + gse.getMessage());
 		    }   
 		}
 	}

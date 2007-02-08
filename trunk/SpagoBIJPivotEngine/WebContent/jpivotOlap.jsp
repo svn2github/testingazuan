@@ -29,6 +29,9 @@
 <%@ taglib uri="http://spagobi.eng.it/" prefix="spagobi" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %> 
     
+<%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
+<%@page import="com.tonbeller.wcf.controller.RequestContext"%>
+<%@page import="java.util.Locale"%>
 <html>
 <head>
   <title>JPivot Page</title>
@@ -101,18 +104,27 @@
 
 <wcf:render ref="saveAnalysis01" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 <%
-String message = (String) session.getAttribute("message");
+//retrieves the locale
+RequestContext context = RequestContext.instance();
+Locale locale = context.getLocale();
+String message = (String) session.getAttribute("saveSubObjectMessage");
 if (message != null && !message.trim().equals("")) {
 	if (message.toUpperCase().startsWith("KO - ")) {
 		%>
 		<p>
-			<strong style="color:red"><%=message.substring(5)%></strong>
+			<strong style="color:red">
+			<%=EngineMessageBundle.getMessage("save.subobject.ko", null)%><br>
+			<%=EngineMessageBundle.getMessage("save.subobject.ko.message", null)%><br>
+			<%=message.substring(5)%>
+			</strong>
 		<p>
 		<%
 	} else if (message.toUpperCase().startsWith("OK - ")) {
 		%>
 		<p>
-			<strong style="color:black"><%=message.substring(5)%></strong>
+			<strong style="color:black">
+			<%=EngineMessageBundle.getMessage("save.subobject.ok", null)%>
+			</strong>
 		<p>
 		<%
 	} else {
@@ -122,7 +134,7 @@ if (message != null && !message.trim().equals("")) {
 		<p>
 		<%
 	}
-	session.removeAttribute("message");
+	session.removeAttribute("saveSubObjectMessage");
 }
 %>
 <%-- if there was an overflow, show error message --%>

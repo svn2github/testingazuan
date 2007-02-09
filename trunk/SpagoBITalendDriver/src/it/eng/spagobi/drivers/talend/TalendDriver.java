@@ -71,7 +71,7 @@ public class TalendDriver implements IEngineDriver {
 		try{
 			BIObject biobj = (BIObject)biobject;
 			map = getMap(biobj);
-			map.put("user", profile.getUserUniqueIdentifier());
+			//map.put("user", profile.getUserUniqueIdentifier());
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
 					this.getClass().getName(),

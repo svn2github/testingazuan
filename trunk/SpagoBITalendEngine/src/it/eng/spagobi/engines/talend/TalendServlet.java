@@ -1,10 +1,13 @@
 package it.eng.spagobi.engines.talend;
 
-import it.eng.spagobi.engines.talend.messages.TalendMessageBundle;
+import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +47,7 @@ public class TalendServlet extends HttpServlet {
 		String templateBase64Coded = request.getParameter("template");
 		if (templateBase64Coded == null || templateBase64Coded.equals("")) {
 			logger.error("Missing document template!!");
-			String msg = TalendMessageBundle.getMessage("missing.document.template", locale);
+			String msg = EngineMessageBundle.getMessage("missing.document.template", locale);
 			response.getOutputStream().write(msg.getBytes());
 			return;
 		}
@@ -58,7 +61,7 @@ public class TalendServlet extends HttpServlet {
 			document = reader.read(is);
 		} catch (DocumentException e) {
 			logger.error("Error while parsing document template:", e);
-			String msg = TalendMessageBundle.getMessage("template.parsing.error", locale);
+			String msg = EngineMessageBundle.getMessage("template.parsing.error", locale);
 			response.getOutputStream().write(msg.getBytes());
 			return;
 		}
@@ -66,7 +69,7 @@ public class TalendServlet extends HttpServlet {
 	    Node job = document.selectSingleNode("//etl/job");
 	    if (job == null) {
 			logger.error("Missing node //etl/job in document template.");
-			String msg = TalendMessageBundle.getMessage("template.parsing.error", locale);
+			String msg = EngineMessageBundle.getMessage("template.parsing.error", locale);
 			response.getOutputStream().write(msg.getBytes());
 			return;
 	    }
@@ -76,26 +79,60 @@ public class TalendServlet extends HttpServlet {
 	    
 	    if (project == null || project.trim().equalsIgnoreCase("")) {
 	    	logger.error("Missing Talend project name in document template.");
-			String msg = TalendMessageBundle.getMessage("missing.talend.project", locale);
+			String msg = EngineMessageBundle.getMessage("missing.talend.project", locale);
 			response.getOutputStream().write(msg.getBytes());
 			return;
 	    }
 	    
 	    if (jobName == null || jobName.trim().equalsIgnoreCase("")) {
 	    	logger.error("Missing Talend job name in document template.");
-			String msg = TalendMessageBundle.getMessage("missing.talend.job", locale);
+			String msg = EngineMessageBundle.getMessage("missing.talend.job", locale);
 			response.getOutputStream().write(msg.getBytes());
 			return;
 	    }
 	    
-	    if (context == null || context.trim().equalsIgnoreCase("")) {
-	    	logger.debug("Missing Talend context name in document template. Considering \"Default\" as default context value.");
-	    	context = "Default";
+	    // if the context is specified in request, it overrides the context specified in document template 
+	    String requestContext = request.getParameter("context");
+	    if (requestContext != null && !requestContext.trim().equals("")) {
+	    	logger.debug("Context parameter with value '" + requestContext + "' found in request.");
+	    	context = requestContext;
 	    }
+	    
+//	    if (context == null || context.trim().equalsIgnoreCase("")) {
+//	    	logger.debug("Missing Talend context name in document template.");
+//	    	if (requestContext != null && !requestContext.trim().equals("")) {
+//	    	} else {
+//	    		context = DEFAULT_CONTEXT;
+//	    		logger.debug("Considering '" + DEFAULT_CONTEXT + "' as default context value.");
+//	    	}
+//	    }
 		
 		String scriptsBaseDir = this.getServletContext().getRealPath("/jobs");
+		
+		Enumeration e = request.getParameterNames();
+		Map parameters = new HashMap();
+		while (e.hasMoreElements()) {
+			String parameterName = (String) e.nextElement();
+			if (parameterName.trim().equalsIgnoreCase("language") 
+					|| parameterName.trim().equalsIgnoreCase("country")
+					|| parameterName.trim().equalsIgnoreCase("template")
+					|| parameterName.trim().equalsIgnoreCase("context")
+					) continue;
+			String[] parameterValues = request.getParameterValues(parameterName);
+			if (parameterValues == null) continue;
+			if (parameterValues.length == 1) parameters.put(parameterName, parameterValues[0]);
+			else {
+				String temp = parameterValues[0];
+				for (int i = 1; i < parameterValues.length; i++) {
+					temp += ", " + parameterValues[i];
+				}
+				parameters.put(parameterName, temp);
+			}
+		}
+		// now the parameters map contains the biobject document parameters
+		
     	RunProcess aRunProcess = new RunProcess();
-    	String result = aRunProcess.run(scriptsBaseDir, project, jobName, context, locale);
+    	String result = aRunProcess.run(scriptsBaseDir, project, jobName, context, locale, parameters);
     	
     	response.getOutputStream().write(result.getBytes());
     	

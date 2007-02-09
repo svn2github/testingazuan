@@ -67,7 +67,7 @@
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.2.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2alpha.jar"
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2beta.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2beta.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
@@ -165,7 +165,7 @@
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.2.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2alpha.jar"
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2beta.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2beta.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>			    
@@ -269,7 +269,7 @@
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.2.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2alpha.jar"
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2beta.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
 		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2beta.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>

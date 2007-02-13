@@ -138,17 +138,17 @@ public class ScriptableMondrianDrillThroughTableModel extends AbstractTableModel
 		Connection con=null;
 		try {
 			InputStream catExtIs = ScriptableMondrianDrillThroughTableModel.class.getClassLoader().getResourceAsStream("/" + catalogExtension);
-			Digester catExtDigester = new Digester();
-			catExtDigester.push(this);
-			catExtDigester.addSetProperties("extension");
-			catExtDigester.addObjectCreate("extension/script", "com.tonbeller.jpivot.mondrian.script.ScriptColumn");
-			catExtDigester.addSetProperties("extension/script");
-			catExtDigester.addSetNext("extension/script", "addScript");
-			catExtDigester.parse(catExtIs);
-
-			URL scriptsBaseURL = Thread.currentThread().getContextClassLoader().getResource(scriptRootUrl);
-			scriptEngine = new GroovyScriptEngine(new URL[] {scriptsBaseURL});
-			
+			if (catExtIs != null) {
+				Digester catExtDigester = new Digester();
+				catExtDigester.push(this);
+				catExtDigester.addSetProperties("extension");
+				catExtDigester.addObjectCreate("extension/script", "com.tonbeller.jpivot.mondrian.script.ScriptColumn");
+				catExtDigester.addSetProperties("extension/script");
+				catExtDigester.addSetNext("extension/script", "addScript");
+				catExtDigester.parse(catExtIs);
+				URL scriptsBaseURL = Thread.currentThread().getContextClassLoader().getResource(scriptRootUrl);
+				scriptEngine = new GroovyScriptEngine(new URL[] {scriptsBaseURL});
+			}
 			con = getConnection();
 			Statement s = con.createStatement();
 			s.setMaxRows(maxResults);

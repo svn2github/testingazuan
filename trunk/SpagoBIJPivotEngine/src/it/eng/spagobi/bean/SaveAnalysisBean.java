@@ -162,7 +162,7 @@ public class SaveAnalysisBean extends ComponentSupport {
      * called once by the creating tag
      */
     public void initialize(RequestContext context) throws Exception {
-            super.initialize(context);
+    	super.initialize(context);
     }
 	
 }

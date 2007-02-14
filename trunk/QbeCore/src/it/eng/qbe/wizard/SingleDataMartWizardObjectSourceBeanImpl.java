@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 /**
  * @author Zoppello
@@ -653,9 +652,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 			
 			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
-		
+
 			int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
-			if (maxRowsForSQLExecution != null && maxRowsForSQLExecution.trim().length() == 0){
+			if( (maxRowsForSQLExecution!=null) && !(maxRowsForSQLExecution.trim().length()==0) ){
 				maxSQLResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
 			}
 		

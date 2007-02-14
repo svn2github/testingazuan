@@ -1,0 +1,10 @@
+Introduzione all'installazione di SpagoBI Platform.
+
+SpagoBI Platform sta per essere installato sul tuo PC.
+Prima di procedere controlla i seguenti requisiti minimi di sistema:
+   
+- JDK versione 1.5.x
+
+- OpenOffice 2.0.x (per la produzione dei booklets/fascicoli)
+
+- 512 MB di memoria (suggerito).

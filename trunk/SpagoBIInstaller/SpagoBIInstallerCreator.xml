@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+ 	
+	<info>
+        <appname>SpagoBI</appname>
+        <appversion>1.9.2</appversion>
+        <authors>
+        </authors>
+        <url>http://spagobi.eng.it</url>
+        <uninstaller write="no" />
+    </info>
+ 	
+ 	<guiprefs height="360" resizable="yes" width="460">
+  		<laf name="metouia">
+        	<os family="windows" />
+    	</laf>
+	</guiprefs>
+    <locale>
+    	<langpack iso3="eng"/>
+    	<langpack iso3="ita"/>
+    </locale>
+    <resources>
+    	<res src="IzPanels/Logo_Spago_BI_sitoweb.gif" id="installer.langsel.img"/>
+   		<res src="IzPanels/Introduction.txt" id="InfoPanel.info"/>
+   		<res src="IzPanels/Introduction_ita.txt" id="InfoPanel.info_ita"/>
+    	<res src="IzPanels/Licence.txt" id="LicencePanel.licence"/>
+    	<res src="IzPanels/HTMLInfoPanel.txt" id="HTMLInfoPanel.info"/>
+    	<res src="IzPanels/HTMLInfoPanel_ita.txt" id="HTMLInfoPanel.info_ita"/>
+    	<res src="IzPanels/userInputSpec.xml" id="userInputSpec.xml"/>
+    	<res src="IzPanels/userInputLang.xml_ita" id="userInputLang.xml_ita"/>
+    	<res src="IzPanels/userInputLang.xml_eng" id="userInputLang.xml_eng"/>
+	</resources>
+	<panels>
+    	<panel classname="HelloPanel"/>
+   		<panel classname="InfoPanel"/>
+   		<panel classname="LicencePanel"/>
+   		<panel classname="UserInputPanel"/>
+   		<panel classname="UserInputPanel"/>
+   		<panel classname="UserInputPanel"/>
+	    <!--panel classname="PacksPanel"/-->
+	    <panel classname="TargetPanel"/>
+    	<panel classname="InstallPanel"/>
+    	<panel classname="HTMLInfoPanel"/>
+    	<panel classname="SimpleFinishPanel"/>
+	</panels>
+
+    <packs>
+		<pack name="SpagoBIPlaform" required="yes">
+    		<description>SpagoBI platform</description>
+    		<fileset dir="" targetdir="$INSTALL_PATH">
+      			<include name="spagobi/**/*" />
+      			<include name="install_spagobi_support_classes.jar" />
+		    </fileset>
+		    <executable targetfile="$INSTALL_PATH/install_spagobi_support_classes.jar" class="it/eng/spagobi/installer/InstallSpagoBIPlatform" type="jar" stage="postinstall"> 
+		    	<args>
+		    		<arg value="$INSTALL_PATH"/>
+		    		<arg value="$SERVER_TYPE"/>
+		    		<arg value="$BIRT"/>
+		    		<arg value="$GEO"/>
+		    		<arg value="$JASPER"/>
+		    		<arg value="$JPIVOT"/>
+		    		<arg value="$QBE"/>
+		    		<arg value="$WEKA"/>
+		    	</args>
+		    </executable>
+		</pack>
+		<!--
+		<pack name="SpagoBIExamples" required="no">
+    		<description>SpagoBI examples</description>
+    		<fileset dir="" targetdir="$INSTALL_PATH">
+      			<include name="spagobi_examples/**/*" />
+      			<include name="install_spagobi_examples.jar" />
+		    </fileset>
+		    <executable targetfile="$INSTALL_PATH/install_spagobi_examples.jar" class="it/eng/spagobi/installer/InstallSpagoBIExamples" type="jar" stage="postinstall"> 
+		    	<args>
+		    		<arg value="$INSTALL_PATH"/>
+		    		<arg value="$SERVER_TYPE"/>
+		    	</args>
+		    </executable>
+		</pack>
+		-->
+    </packs>
+</installation>

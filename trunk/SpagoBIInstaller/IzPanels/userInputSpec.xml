@@ -1,0 +1,48 @@
+<userInput>
+	<panel order="0">
+		<field type="title">
+			<description id="server.type.title"/>
+		</field>
+		<field type="combo" variable="SERVER_TYPE">
+			<description id="server.type.description"/>
+			<spec>
+				<choice txt="Tomcat" value="tomcat" set="true"/>
+				<choice txt="JBoss" value="jboss"/>
+				<choice txt="JOnAS" value="jonas"/>
+			</spec>
+		</field>
+	</panel>
+	<panel order="1">
+		<field type="title">
+			<description id="engines.to.install"/>
+		</field>
+		<field type="staticText" align="left" id="engines.to.install"/>
+		<field type="check" variable="BIRT">
+			<spec id="SpagoBIBirtEngine.description" true="yes" false="no" set="true"/>
+		</field>
+		<field type="check" variable="GEO">
+			<spec id="SpagoBIGeoEngine.description" true="yes" false="no" set="true"/>
+		</field>
+		<field type="check" variable="JASPER">
+			<spec id="SpagoBIJasperReportEngine.description" true="yes" false="no" set="true"/>
+		</field>
+		<field type="check" variable="JPIVOT">
+			<spec id="SpagoBIJPivotEngine.description" true="yes" false="no" set="true"/>
+		</field>
+		<field type="check" variable="QBE">
+			<spec id="SpagoBIQbeEngine.description" true="yes" false="no" set="true"/>
+		</field>
+		<field type="check" variable="WEKA">
+			<spec id="SpagoBIWekaEngine.description" true="yes" false="no" set="true"/>
+		</field>
+	</panel>
+	<panel order="2">
+		<field type="title">
+			<description id="examples.to.install"/>
+		</field>
+		<field type="staticText" align="left" id="examples.to.install"/>
+		<field type="check" variable="SPAGOBI_EXAMPLES">
+			<spec id="examples.description" true="yes" false="no" set="false"/>
+		</field>
+	</panel>
+</userInput>

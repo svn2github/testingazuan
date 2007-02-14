@@ -1,0 +1,173 @@
+package it.eng.spagobi.installer;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+
+public class FileUtilities {
+
+	
+	public static void explode(String destdir, String pathfile) throws Exception {
+		File war = new File(pathfile);
+		String warname = war.getName();
+		warname = warname.substring(0, warname.lastIndexOf("."));
+		File destDir = new File(destdir);
+		destDir.mkdir();
+		unzip(war, destDir);
+	}
+	
+	public static void copy(String destdir, String pathfile) throws Exception {
+ 		File file = new File(pathfile);
+ 		File destDir = new File(destdir);
+ 		copy(destDir, file);
+	}
+	
+	/**
+	 * Copies a file into a destination directory. If the file exists in the destination directory,
+	 * it is deleted before copying the new file.
+	 */
+	public static void copy(File destDir, File file) throws Exception {
+ 		String name = file.getName();
+ 		if (!destDir.exists()) destDir.mkdirs();
+ 		File oldFile = new File(destDir.getAbsolutePath() + File.separatorChar + name);
+ 		if (oldFile.exists()) oldFile.delete();
+		File fileout = new File(destDir.getAbsolutePath() + File.separatorChar + name);
+	    FileInputStream fileinstr = new FileInputStream(file);
+	    FileOutputStream fileoutstr = new FileOutputStream(fileout);
+	    BufferedOutputStream bufout = new BufferedOutputStream(fileoutstr); 
+	    byte [] b = new byte[1024];
+		int len = 0;
+		while ( (len=fileinstr.read(b))!= -1 ) {
+		     bufout.write(b,0,len);
+		}
+		bufout.flush();
+		bufout.close();
+		fileinstr.close();
+	}
+	
+	/**
+	 * Copy all files and directories contained in the source directory into the destionation directory. 
+	 * @param destDir The String representing the destionation directory
+	 * @param sourceDir The String representing the source directory 
+	 * @param mkdirs Boolean: if it is true, not existing directory (in the destionation directory) are created;
+	 *   if it is false, not existing directory (in the destionation directory) are not created (and files 
+	 *   contained in the relevant souce directories are not copied)
+	 * @throws Exception
+	 */
+	public static void copyDirectory(String destDirStr, String sourceDirStr, boolean mkdirs) throws Exception {
+		File destDir = new File(destDirStr);
+		File sourceDir = new File(sourceDirStr);
+		copyDirectory(destDir, sourceDir, mkdirs);
+	}
+	
+	/**
+	 * Copy all files and directories contained in the source directory into the destionation directories. 
+	 * @param destDir The destionation directory File
+	 * @param sourceDir The source directory File
+	 * @param mkdirs Boolean: if it is true, not existing directory (in the destionation directory) are created;
+	 *   if it is false, not existing directory (in the destionation directory) are not created (and files 
+	 *   contained in the relevant souce directories are not copied)
+	 * @throws Exception
+	 */
+	public static void copyDirectory(File destDir, File sourceDir, boolean mkdirs) throws Exception {
+		if (!destDir.exists() && !destDir.isDirectory()) {
+			if (mkdirs) destDir.mkdirs();
+			else return;
+		}
+		File[] containedFiles = sourceDir.listFiles();
+		for (int i = 0; i < containedFiles.length; i++) {
+			File aFile = containedFiles[i];
+			if (aFile.isFile()) copy(destDir, aFile);
+			else {
+				String dirName = aFile.getName();
+				File newDir = new File(destDir.getAbsolutePath() + File.separatorChar + dirName);
+				copyDirectory(newDir, aFile, mkdirs);
+			}
+		}
+	}
+	   
+	private static void unzip(File repository_zip, File newDirectory) throws ZipException, IOException {
+		ZipFile zipFile = new ZipFile(repository_zip);
+	    Enumeration entries = zipFile.entries();
+	    ZipEntry entry = null;
+	    String name = null;
+	    String path = null;
+	    File file = null;
+	    FileOutputStream fileout = null;
+	    BufferedOutputStream bufout = null;
+	    InputStream in = null;
+	    while(entries.hasMoreElements()) {
+	    	entry = (ZipEntry) entries.nextElement();
+	    	name = entry.getName();
+	    	path = newDirectory.getPath() + File.separator + name;
+	    	file = new File(path);
+
+	    	if(!entry.isDirectory()) {
+	    		file = file.getParentFile();
+	    		file.mkdirs();
+	    		fileout = new FileOutputStream(newDirectory.getPath() + File.separator + entry.getName());
+		    	bufout = new BufferedOutputStream(fileout); 
+		    	in = zipFile.getInputStream(entry);
+		    	copyInputStream(in, bufout);
+		    	bufout.flush();
+		    	in.close();
+		    	bufout.close();
+	    	} else {
+	    		file.mkdirs();
+	    	}
+	    }
+	    zipFile.close();
+	}   
+	        
+	        
+	private static void copyInputStream(InputStream in, OutputStream out) throws IOException {
+		byte [] b = new byte[1024];
+		int len = 0;
+		while ( (len=in.read(b))!= -1 ) {
+		     out.write(b,0,len);
+		}
+	}
+
+	public static boolean deleteDirectory(String pathdest) {
+		try {
+			File directory = new File(pathdest);
+			if (directory.isDirectory()) {
+				File[] files = directory.listFiles();
+				for (int i = 0; i < files.length; i++) {
+					File file = files[i];
+					if (file.isFile()) {
+						boolean deletion = file.delete();
+						if (!deletion)
+							return false;
+					} else
+						deleteDirectory(file.getAbsolutePath());
+				}
+			}
+			boolean deletion = directory.delete();
+			if (!deletion)
+				return false;
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean deleteFile(String fileName, String path) {
+		try {
+			File toDelete = new File(path + File.separatorChar + fileName);
+			if (toDelete.exists()) toDelete.delete();
+		} catch (Exception exc) {
+			return false;
+		}
+		return true;
+	}
+	
+}

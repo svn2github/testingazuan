@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<langpack>
+	<str id="server.type.title" txt="Destination server"/>
+    <str id="server.type.description" txt="Please spacify the server type which you want SpagoBI to be installed on:"/>
+    <str id="engines.to.install" txt="Choose SpagoBI engines to be installed:"/>
+    <str id="SpagoBIBirtEngine.description" txt="SpagoBIBirtEngine: report engine based on Birt"/>
+    <str id="SpagoBIGeoEngine.description" txt="SpagoBIGeoEngine: map engine based on Batik"/>
+    <str id="SpagoBIJasperReportEngine.description" txt="SpagoBIJasperReportEngine: report engine based on JasperReport"/>
+    <str id="SpagoBIJPivotEngine.description" txt="SpagoBIJPivotEngine: OLAP engine based on JPivot-Mondrian"/>
+    <str id="SpagoBIQbeEngine.description" txt="SpagoBIQbeEngine: visual query inquiry based on Qbe"/>
+    <str id="SpagoBIWekaEngine.description" txt="SpagoBIWekaEngine: data-mining engine based on Weka"/>
+    <str id="examples.to.install" txt="Choose SpagoBI example documents to be installed:"/>
+    <str id="examples.description" txt="SpagoBI Demo example documents"/>
+</langpack>

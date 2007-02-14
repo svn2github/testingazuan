@@ -1,0 +1,10 @@
+Introduction to SpagoBI Platform installation procedure.
+
+SpagoBI Platform installation is going to be performed.
+Before proceeding please checks the following system requirements:
+ 
+- JDK version 1.5.x
+
+- OpenOffice 2.0.x (for booklets creation)
+
+- 512 MB memory (suggested).

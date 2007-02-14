@@ -162,7 +162,7 @@ if (connections == null || connections.size() == 0) {
 	}
 	
 	if (schemas == null || schemas.size() == 0) {
-		out.write("No schemas defined in engine-config.xml file.");
+		out.write("Cannot retrive schemas");
 		return;
 	}
 %>
@@ -183,16 +183,29 @@ if (connections == null || connections.size() == 0) {
 				<option value="" selected="selected">&nbsp;</option>
 				<%
 			}
+			String selectedSchemaName = null;
+			String selectedCatalogUri = null;
 			Iterator it = schemas.iterator();
-			
 			while (it.hasNext()) {
-				Node aSchema = (Node) it.next();
-				String aSchemaName = aSchema.valueOf("@name");
+				String aSchemaName = "";
 				String isSchemaSelected = "";
-				if (aSchemaName.equalsIgnoreCase(selectedSchema)) {
-					selectedSchemaNode = aSchema;
-					isSchemaSelected = "selected='selected'";
+				if(type.equalsIgnoreCase("xmla")) {
+					OlapItem aSchema = (OlapItem) it.next();
+					aSchemaName = aSchema.getName();
+					if (aSchemaName.equalsIgnoreCase(selectedSchema)) {
+						selectedSchemaName = aSchemaName;
+						isSchemaSelected = "selected='selected'";
+					}
+				} else {			
+					Node aSchema = (Node) it.next();
+					aSchemaName = aSchema.valueOf("@name");
+					if (aSchemaName.equalsIgnoreCase(selectedSchema)) {
+						selectedSchemaName = aSchemaName;
+						selectedCatalogUri = aSchema.valueOf("@catalogUri");
+						isSchemaSelected = "selected='selected'";
+					}
 				}
+				
 				%>
 				<option value="<%=aSchemaName%>" <%=isSchemaSelected%>><%=aSchemaName%></option>
 				<%
@@ -225,8 +238,7 @@ if (selectedSchema != null) {
 				cubes.add(oi.getName());
 			}
 		} else {			
-			catalogUri = selectedSchemaNode.valueOf("@catalogUri");
-			
+			catalogUri = selectedCatalogUri;
 			Parser xmlParser = XOMUtil.createDefaultParser();
 			URL catalogURL = this.getServletContext().getResource(catalogUri);
 			MondrianDef.Schema schema = new MondrianDef.Schema(xmlParser.parse(catalogURL));
@@ -307,7 +319,6 @@ if (selectedSchema != null) {
 		if (selectedCube != null) {
 			if(type.equalsIgnoreCase("xmla")) {
 				catalogUri = selectedConnectionNode.valueOf("@xmlaServerUrl");
-				
 				XMLA_SOAP olapServer = new XMLA_SOAP(catalogUri, "", "");
 				List olapItems = olapServer.discoverDim(selectedSchema, (String)selectedCube);
 				OlapItem dimension = (OlapItem)olapItems.get(1);
@@ -345,7 +356,7 @@ if (selectedSchema != null) {
 		    String iniCont = selectedConnectionNode.valueOf("@initialContext");
 		    String resName = selectedConnectionNode.valueOf("@resourceName");
 		    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+catalogUri+";";
-		    catalogUri = selectedSchemaNode.valueOf("@catalogUri");
+		    catalogUri = selectedCatalogUri;
 	    	%>
 			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">
 				<%=mdxQuery%>
@@ -357,7 +368,7 @@ if (selectedSchema != null) {
 			String usr = selectedConnectionNode.valueOf("@user");
 			String pwd = selectedConnectionNode.valueOf("@password");
 		    String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
-		    catalogUri = selectedSchemaNode.valueOf("@catalogUri");
+		    catalogUri = selectedCatalogUri;
 			%>
 		    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >
 				<%=mdxQuery%>
@@ -368,7 +379,7 @@ if (selectedSchema != null) {
 		%>
 			<jp:xmlaQuery id="query01"
 		    		uri="<%=catalogUri%>" 
-		    		catalog="<%=selectedSchemaNode.valueOf("@name")%>" >
+		    		catalog="<%=selectedSchemaName%>" >
 				<%=mdxQuery%>
 			</jp:xmlaQuery>
 		<%

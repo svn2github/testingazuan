@@ -32,7 +32,7 @@
     <module>SpagoBIProject</module>
     <module>SpagoBIJasperReportDriver</module>
     <module>SpagoBIJPivotDriver</module>
-    <module>SpagoBIJpivotXMLADriver</module>
+    <module>SpagoBIJPXMLADriver</module>
     <module>SpagoBIBirtReportDriver</module>
     <module>SpagoBIWekaDriver</module>
     <module>SpagoBIGeoDriver</module>
@@ -41,7 +41,7 @@
     <module>SpagoBIBirtReportEngine</module>
     <module>SpagoBIJasperReportEngine</module>
     <module>SpagoBIJPivotEngine</module>
-    <module>SpagoBIJpivotXMLAEngine</module>
+    <module>SpagoBIJPXMLAEngine</module>
     <module>SpagoBIWekaEngine</module>
     <module>SpagoBIGeoEngine</module>
     <module>SpagoBIQbeEngine</module>

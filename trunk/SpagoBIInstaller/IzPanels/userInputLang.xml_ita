@@ -9,7 +9,7 @@
     <str id="SpagoBIJasperReportEngine.description" txt="SpagoBIJasperReportEngine: motore di reportistica basato su JasperReport"/>
     <str id="SpagoBIJPivotEngine.description" txt="SpagoBIJPivotEngine: motore OLAP basato su JPivot-Mondrian"/>
     <str id="SpagoBIQbeEngine.description" txt="SpagoBIQbeEngine: modalità grafica di composizione query basato su Qbe"/>
-    <str id="SpagoBIWekaEngine.description" txt="MSpagoBIWekaEngine: motore di data-mining basato su Weka"/>
+    <str id="SpagoBIWekaEngine.description" txt="SpagoBIWekaEngine: motore di data-mining basato su Weka"/>
     <str id="examples.to.install" txt="Indica se desideri installare i documenti di esempio della demo di SpagoBI:"/>
     <str id="examples.description" txt="Documenti di esempio di SpagoBI Demo"/>
 </langpack>

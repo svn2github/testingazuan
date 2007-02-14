@@ -27,6 +27,7 @@ public class InstallSpagoBIPlatform {
 	
 	public static void main(String[] args) {
 		
+		
 		// initializes variables
 		_pathdest 						= args[0];
 		_spagobi_plaftorm_source_dir 	= args[0] + fs + "spagobi" + fs + "spagobi_platform";
@@ -76,9 +77,6 @@ public class InstallSpagoBIPlatform {
 			installJOnASApplicationXml();
 		}
 		
-		// delete spagobi platform source directory
-		if (!FileUtilities.deleteDirectory(_spagobi_plaftorm_source_dir)) return;
-		
 		// install examples if required
 		if (_install_examples) {
 			if (!installSpagoBIExamplesDwh()) return;
@@ -87,8 +85,8 @@ public class InstallSpagoBIPlatform {
 			if (!installSbiportalDb()) return;
 		}
 		
-		// delete spagobi examples source directory
-		if (!FileUtilities.deleteDirectory(_spagobi_examples_source_dir)) return;
+		// delete source directory
+		if (!FileUtilities.deleteDirectory(_pathdest + fs + "spagobi")) return;
 	}
 	
 	private static boolean installCommonLibs() {

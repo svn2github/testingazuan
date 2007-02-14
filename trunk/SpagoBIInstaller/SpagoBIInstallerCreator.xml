@@ -62,6 +62,7 @@
 		    		<arg value="$JPIVOT"/>
 		    		<arg value="$QBE"/>
 		    		<arg value="$WEKA"/>
+		    		<arg value="$SPAGOBI_EXAMPLES"/>
 		    	</args>
 		    </executable>
 		</pack>

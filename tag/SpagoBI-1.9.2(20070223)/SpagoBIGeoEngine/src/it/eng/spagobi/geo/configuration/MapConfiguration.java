@@ -74,7 +74,7 @@ public class MapConfiguration {
 		// set the default datamart provider class_name (if not already specified) 
 		if(datamartProviderConfiguration.getAttribute("class_name") == null) {
 			try {
-				datamartProviderConfiguration.setAttribute("class_name", "it.eng.geo.datamart.DefaultDatamartProvide");
+				datamartProviderConfiguration.setAttribute("class_name", "it.eng.spagobi.geo.datamart.DefaultDatamartProvider");
 			} catch (Exception e) {
 				throw new ConfigurationException("cannot set default datamart provider class name", e);
 			}

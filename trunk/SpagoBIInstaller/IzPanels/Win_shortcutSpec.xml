@@ -1,0 +1,20 @@
+<shortcuts>
+	<skipIfNotSupported/>
+	<programGroup defaultName="Engineering Ingegneria Informatica\SpagoBI Platform" location="applications"/>
+	<shortcut
+			name="Start SpagoBI Platform"
+			target="$INSTALL_PATH\StartSpagoBI.bat"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="Start SpagoBI Platform"
+			iconFile="$INSTALL_PATH\SpagoBI.ico"
+			iconIndex="0"
+			initialState="noShow"
+			programGroup="yes"
+			desktop="yes"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="SpagoBIPlaform"/>
+	</shortcut>
+</shortcuts>

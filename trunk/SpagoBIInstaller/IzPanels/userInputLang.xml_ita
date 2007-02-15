@@ -8,9 +8,9 @@
     <str id="SpagoBIGeoEngine.description" txt="SpagoBIGeoEngine: motore di mappe basato su Batik"/>
     <str id="SpagoBIJasperReportEngine.description" txt="SpagoBIJasperReportEngine: motore di reportistica basato su JasperReport"/>
     <str id="SpagoBIJPivotEngine.description" txt="SpagoBIJPivotEngine: motore OLAP basato su JPivot-Mondrian"/>
-    <str id="SpagoBIQbeEngine.description" txt="SpagoBIQbeEngine: modalità grafica di composizione query basato su Qbe"/>
+    <str id="SpagoBIQbeEngine.description" txt="SpagoBIQbeEngine: modalità visuale di interrogazione dei dati basato su Qbe"/>
     <str id="SpagoBIWekaEngine.description" txt="SpagoBIWekaEngine: motore di data-mining basato su Weka"/>
     <str id="examples.to.install" txt="Indica se desideri installare i documenti di esempio della demo di SpagoBI:"/>
     <str id="examples.description" txt="Documenti di esempio di SpagoBI Demo"/>
-    <str id="examples.warning" txt="AVVERTENZA: i documenti di esempio di SpagoBI Demo contengono oggetti per tutti i motori supportati dalla piattaforma. Se alcuni motori sono stati esculsi dall'istallazione (al passo precedente), i relativi esempi non funzioneranno!!" />
+    <str id="examples.warning" txt="AVVERTENZA: gli esempi di SpagoBI Demo contengono documenti per tutti i motori supportati dalla piattaforma (vedi lista sopra). Se alcuni motori vengono esculsi dall'istallazione, i relativi esempi non funzioneranno!!" />
 </langpack>

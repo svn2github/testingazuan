@@ -51,6 +51,9 @@
     		<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi/**/*" />
       			<include name="install_spagobi_support_classes.jar" />
+      			<include name="StartSpagoBI.bat" />
+      			<include name="StartSpagoBI_jboss.bat" />
+      			<include name="StartSpagoBI_jonas.bat" />
 		    </fileset>
 		    <executable targetfile="$INSTALL_PATH/install_spagobi_support_classes.jar" class="it/eng/spagobi/installer/InstallSpagoBIPlatform" type="jar" stage="postinstall"> 
 		    	<args>

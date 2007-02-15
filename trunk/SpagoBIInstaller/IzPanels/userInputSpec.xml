@@ -44,5 +44,7 @@
 		<field type="check" variable="SPAGOBI_EXAMPLES">
 			<spec id="examples.description" true="yes" false="no" set="false"/>
 		</field>
+		<divider/>
+		<field type="staticText" align="left" id="examples.warning"/>
 	</panel>
 </userInput>

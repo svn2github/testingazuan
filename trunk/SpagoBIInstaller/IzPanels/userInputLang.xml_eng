@@ -12,4 +12,5 @@
     <str id="SpagoBIWekaEngine.description" txt="SpagoBIWekaEngine: data-mining engine based on Weka"/>
     <str id="examples.to.install" txt="Choose SpagoBI example documents to be installed:"/>
     <str id="examples.description" txt="SpagoBI Demo example documents"/>
+    <str id="examples.warning" txt="WARNING: SpagoBI Demo example documents contains obejcts for all SpagoBI supported engines. If you excluded some engines from the installation procedure (at the previous step), the relevant examples will not work!!"/>
 </langpack>

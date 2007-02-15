@@ -76,6 +76,7 @@ public class InstallSpagoBIPlatform {
 		} else if ("jonas".equalsIgnoreCase(_server_name)) {
 			installJOnASApplicationXml();
 		}
+		if (!installStartBatFile()) return;
 		
 		// install examples if required
 		if (_install_examples) {
@@ -330,7 +331,29 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 	
-
+	private static boolean installStartBatFile() {
+		try {
+			// arrange StartSpagoBI.bat files for different servers
+			File tomcatStartBat = new File(_pathdest + fs + "StartSpagoBI.bat");
+			File jbossStartBat = new File(_pathdest + fs + "StartSpagoBI_jboss.bat");
+			File jonasStartBat = new File(_pathdest + fs + "StartSpagoBI_jonas.bat");
+			if ("tomcat".equalsIgnoreCase(_server_name)) {
+				jbossStartBat.delete();
+				jonasStartBat.delete();
+			} else if ("jboss".equalsIgnoreCase(_server_name)) {
+				tomcatStartBat.delete();
+				jonasStartBat.delete();
+				jbossStartBat.renameTo(tomcatStartBat);
+			} else if ("jonas".equalsIgnoreCase(_server_name)) {
+				tomcatStartBat.delete();
+				jbossStartBat.delete();
+				jonasStartBat.renameTo(tomcatStartBat);
+			}
+		} catch (Exception exc) {
+			return false;
+		}
+		return true;
+	}
 
 	private static boolean installSpagoBIExamplesDwh() {
 		try {

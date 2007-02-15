@@ -1,10 +1,32 @@
-Introduzione all'installazione di SpagoBI Platform.
+Introduzione all'installazione di SpagoBI Platform 1.9.2.
 
-SpagoBI Platform sta per essere installato sul tuo PC.
-Prima di procedere controlla i seguenti requisiti minimi di sistema:
+SpagoBI Platform deve essere installato su un server pre-esistente sul tuo pc.
+Il server può essere Tomcat, JBoss o JOnAS (a scelta) e deve ospitare eXo-Portal.
+I possibili server su cui è possibile installare SpagoBI Platform 1.9.2 sono i seguenti:
+1. Tomcat 5.0.28 con eXo-Portal 1.1.3 
+   scarica il file eXoPortal-tomcat-1.1.3.zip da:
+      http://forge.objectweb.org/project/download.php?group_id=151&file_id=6528
+   poi decomprimi il file su una cartella locale e hai già un server funzionante.
+2. JBoss 4.0.3SP1 con eXo-Portal 1.1.2
+   scarica il file jboss-4.0.3SP1.zip da:
+      http://sourceforge.net/project/showfiles.php?group_id=22866&package_id=16942&release_id=365509
+   scarica il file eXoPortal-jboss-1.1.2.zip da:
+      http://forge.objectweb.org/project/download.php?group_id=151&file_id=6228
+   poi segui le istruzioni di installazione.
+3. JOnAS 4.7.4 con con eXo-Portal 1.1.3
+   scarica il file jonas4.7.4-tomcat5.5.15.tgz da:
+      http://forge.objectweb.org/project/download.php?group_id=5&file_id=6132
+   scarica il file eXoPortal-jboss-1.1.2.zip da:
+      http://forge.objectweb.org/project/download.php?group_id=151&file_id=6838
+   poi segui le istruzioni di installazione.
+
+L'installazione di SpagoBI necessita la sovrascrittura di alcuni files sul server, per cui si consiglia di installare SpagoBI Platform su un server pulito.
+
+
+Prima di procedere controlla inoltre i seguenti requisiti minimi di sistema:
    
 - JDK versione 1.5.x
 
-- OpenOffice 2.0.x (per la produzione dei booklets/fascicoli)
+- OpenOffice 2.0.x (per la produzione dei booklets/fascicoli): una variabile d'ambiente di nome OPENOFFICE_HOME deve puntare alla cartella di installazione di OpenOffice
 
 - 512 MB di memoria (suggerito).

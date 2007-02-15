@@ -4,7 +4,7 @@
 	<str id="server.type.title" txt="Server di destinazione"/>
     <str id="server.type.description" txt="Indica il tipo di server sul quale desideri istallare SpagoBI:"/>
     <str id="engines.to.install" txt="Scegli i motori di SpagoBI da istallare:"/>
-    <str id="SpagoBIBirtEngine.description" txt="SpagoBIBirtEngine: motore di reportistica basato su Birt"/>
+    <str id="SpagoBIBirtReportEngine.description" txt="SpagoBIBirtReportEngine: motore di reportistica basato su Birt"/>
     <str id="SpagoBIGeoEngine.description" txt="SpagoBIGeoEngine: motore di mappe basato su Batik"/>
     <str id="SpagoBIJasperReportEngine.description" txt="SpagoBIJasperReportEngine: motore di reportistica basato su JasperReport"/>
     <str id="SpagoBIJPivotEngine.description" txt="SpagoBIJPivotEngine: motore OLAP basato su JPivot-Mondrian"/>

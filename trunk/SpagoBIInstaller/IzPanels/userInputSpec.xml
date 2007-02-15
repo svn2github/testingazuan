@@ -18,7 +18,7 @@
 		</field>
 		<field type="staticText" align="left" id="engines.to.install"/>
 		<field type="check" variable="BIRT">
-			<spec id="SpagoBIBirtEngine.description" true="yes" false="no" set="true"/>
+			<spec id="SpagoBIBirtReportEngine.description" true="yes" false="no" set="true"/>
 		</field>
 		<field type="check" variable="GEO">
 			<spec id="SpagoBIGeoEngine.description" true="yes" false="no" set="true"/>

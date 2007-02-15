@@ -386,7 +386,7 @@ public class InstallSpagoBIPlatform {
 			FileUtilities.copyDirectory(_pathdest, _spagobi_examples_source_dir + fs + _server_name, false);
 			if ("tomcat".equalsIgnoreCase(_server_name)) {
 				// if engines are not installed, deletes their context files
-				if (!_install_birt) FileUtilities.deleteFile("SpagoBIBirtEngine.xml", 
+				if (!_install_birt) FileUtilities.deleteFile("SpagoBIBirtReportEngine.xml", 
 						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
 				if (!_install_geo) FileUtilities.deleteFile("SpagoBIGeoEngine.xml", 
 						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");

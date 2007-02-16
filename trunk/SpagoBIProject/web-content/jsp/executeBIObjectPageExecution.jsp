@@ -32,9 +32,14 @@
                  
 
 <%
+    // dimensions for note window
+    int heightNotes = 300;
+    int widthNotes = 400;
+    // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
     String requestIdentity = "request" + uuid.toString();  
+    requestIdentity = requestIdentity.replaceAll("-", "");
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
 	// get the BiObject from the response
@@ -191,18 +196,19 @@
 		
         <td class='header-empty-column-portlet-section'>&nbsp;</td>
         <td class='header-button-column-portlet-section'>
-           <a href='javascript:opencloseNotesEditor()'>
-               <img title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+           <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notesEmpty.jpg")%>' 
+                    alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
+           </a>
+           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
+              href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
                     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notes.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
          </td>
-       
-       <td id="tdAlertNotesExists" class='tdAlertNotesExists' valign="middle" nowrap='true'>
-           <div id="divAlertExistNotes" class="divAlertNotesExists">
-           </div>
-       </td>
-       
+              
        <% } %>
        
        <!-- ************************************************************************* -->
@@ -233,6 +239,24 @@
 					title='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' /> 
 			</a>
 		</td>
+		<%
+        if(edNoteAble) {
+       %>
+        <td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-single-object-execution-portlet-section'>
+           <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notesEmpty.jpg")%>' 
+                    alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
+           </a>
+           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
+              href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notes.jpg")%>' 
+                    alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
+           </a>
+        </td>
+       <% } %>
 </table>
 
 
@@ -264,287 +288,217 @@
 
 <%
 	if(edNoteAble) {
-		
 		BIObjectNotesManager objectNotesManager = new BIObjectNotesManager();
 		String execIdentifier = objectNotesManager.getExecutionIdentifier(obj);
 		SessionContainer permSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String nameUser = (String)userProfile.getUserUniqueIdentifier();
+		String linkSbijs = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js");
 		String linkFck = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/FCKeditor/fckeditor.js");
+		String linkProto = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js");
+		String linkProtoWin = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/window.js");
+		String linkProtoEff = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/effects.js");
+		String linkProtoDefThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/default.css");
+		String linkProtoMacThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/mac_os_x.css");
+		String linkProtoAlphaThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/alphacube.css");
+		String linkProtoSpreadThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/spread.css");
 %>
 
-
-<SCRIPT language='JavaScript' src='<%=linkFck%>'>
-</SCRIPT>
-<script>
-  
-  var timeoutResize;
-  var noteOpen = false;
-  
-  function opencloseNotesEditor() {
-    if(noteOpen) {
-      noteOpen = false;
-      timeoutResize = setInterval("restrictNotesDiv()", 5);
-    } else {
-      noteOpen = true;
-      timeoutResize = setInterval("enlargeNotesDiv()", 5);
-    } 
-  }
-  
-  function enlargeNotesDiv() {
-    divIframe = document.getElementById('divIframe<%=requestIdentity%>');
-    divNotes = document.getElementById('divNotes<%=requestIdentity%>');
-    wDivIFrame = divIframe.style.width;
-    wDivNotes = divNotes.style.width;
-    wDivIFrame = wDivIFrame.substring(0, wDivIFrame.length - 1);
-    wDivNotes = wDivNotes.substring(0, wDivNotes.length - 1);
-    wDivIFrameNum = parseInt(wDivIFrame);
-    wDivNotesNum = parseInt(wDivNotes);
-    wDivIFrameNum = wDivIFrameNum - 1;
-    wDivNotesNum = wDivNotesNum + 1;
-    if(wDivIFrameNum<=<%=(100 - 2 - widthNoteEditor)%>){
-      clearInterval(timeoutResize);
-    }
-    wDivIFrame = wDivIFrameNum + '%';
-    wDivNotes = wDivNotesNum + '%';
-    divIframe.style.width=wDivIFrame;
-    divNotes.style.width=wDivNotes;
-  }
-  
-  function restrictNotesDiv() {
-    divIframe = document.getElementById('divIframe<%=requestIdentity%>');
-    divNotes = document.getElementById('divNotes<%=requestIdentity%>');
-    wDivIFrame = divIframe.style.width;
-    wDivNotes = divNotes.style.width;
-    wDivIFrame = wDivIFrame.substring(0, wDivIFrame.length - 1);
-    wDivNotes = wDivNotes.substring(0, wDivNotes.length - 1);
-    wDivIFrameNum = parseInt(wDivIFrame);
-    wDivNotesNum = parseInt(wDivNotes);
-    wDivIFrameNum = wDivIFrameNum + 1;
-    wDivNotesNum = wDivNotesNum - 1;
-    if(wDivIFrameNum>=98){
-      clearInterval(timeoutResize);
-    }
-    wDivIFrame = wDivIFrameNum + '%';
-    wDivNotes = wDivNotesNum + '%';
-    divIframe.style.width=wDivIFrame;
-    divNotes.style.width=wDivNotes;
-  }
-  
-</script>
+<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
+<SCRIPT language='JavaScript' src='<%=linkFck%>'></SCRIPT>
+<script type="text/javascript" src="<%=linkProto%>"></script>
+<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
+<link href="<%=linkProtoMacThem%>" rel="stylesheet" type="text/css"/> 
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/> 
+<link href="<%=linkProtoSpreadThem%>" rel="stylesheet" type="text/css"/> 
 
 
-       
-       
-       
-       
-<div id="divNotes<%=requestIdentity%>" 
-     style="background-color:#efefde;width:0%;float:left;overflow:hidden;">
-  
-  
-  
-  
-  
-  <script type="text/javascript">
+<script type="text/javascript">
     
-    locked = false;
-    var xmlHttp = null;
-    var holdLockInterval = null;  
-      
+    var locked<%=requestIdentity%> = false;
+    var xmlHttp<%=requestIdentity%> = null;
+    var holdLockInterval<%=requestIdentity%> = null;  
     
     
-    function holdLock() {
-    	   xmlHttp = GetXmlHttpObject();
-    	   if(xmlHttp==null) {
-			   alert ("Browser does not support HTTP Request");
-			   return;
-		    }
-		   var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-		   url=url+"?task=holdLock";
-		   url=url+"&user=<%=nameUser%>";
-		   url=url+"&execidentifier=<%=execIdentifier%>";
-		   xmlHttp.onreadystatechange=stateChangedHoldLock; 
-		   xmlHttp.open("GET",url,true);
-		   xmlHttp.send(null); 
-    }
+    function initializeNotes<%=requestIdentity%>() {
+        alert('init');
+        xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
+      	if(xmlHttp<%=requestIdentity%>==null) {
+  			   alert ("Browser does not support HTTP Request");
+  			   return;
+  		  }
+    		url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+    		url=url+"?task=getNotes";
+    		url=url+"&biobjid=<%=obj.getId()%>";
+    		url=url+"&execidentifier=<%=execIdentifier%>";
+    		xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedGetNotes<%=requestIdentity%>; 
+    		xmlHttp<%=requestIdentity%>.open("GET",url,true);
+    		xmlHttp<%=requestIdentity%>.send(null); 
+	}  
       
-      
-      
-    function saveNotes() {
-	      cleanError();
-	      var editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+    function saveNotes<%=requestIdentity%>() {
+	      cleanError<%=requestIdentity%>();
+	      var editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
 	      xhtml = editor.GetXHTML(false);
-	      if(!locked){
+	      if(!locked<%=requestIdentity%>){
 	    		return;
 	    	}
-	      xmlHttp = GetXmlHttpObject();
-	      if(xmlHttp==null) {
+	      xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
+	      if(xmlHttp<%=requestIdentity%>==null) {
 			   alert ("Browser does not support HTTP Request");
 			   return;
 		  }
-		  var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-      	  var postdata ="task=saveNotes";
+		  url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+      postdata ="task=saveNotes";
 		  postdata=postdata+"&biobjid=<%=obj.getId()%>";
 		  postdata=postdata+"&user=<%=nameUser%>";
 		  postdata=postdata+"&execidentifier=<%=execIdentifier%>";
 		  postdata=postdata+"&notes=" + xhtml;
-		  xmlHttp.onreadystatechange=stateChangedSaveNotes; 
-		  xmlHttp.open('POST',url,true);
-      	  xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      	  xmlHttp.setRequestHeader("Content-length", postdata.length);
-      	  xmlHttp.setRequestHeader("Connection", "close");
-		  xmlHttp.send(postdata); 
-    }
-    
-    
-    
-    
-    
-    function requireLock() {
-	       cleanError();
-	       if(locked){
-	    		return;
-	    	}
-    	   xmlHttp = GetXmlHttpObject();
-    	   if(xmlHttp==null) {
+		  xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedSaveNotes<%=requestIdentity%>; 
+		  xmlHttp<%=requestIdentity%>.open('POST',url,true);
+      	  xmlHttp<%=requestIdentity%>.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      	  xmlHttp<%=requestIdentity%>.setRequestHeader("Content-length", postdata.length);
+      	  xmlHttp<%=requestIdentity%>.setRequestHeader("Connection", "close");
+		  xmlHttp<%=requestIdentity%>.send(postdata); 
+    }  
+      
+      
+      
+    function holdLock<%=requestIdentity%>() {
+    	   xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
+    	   if(xmlHttp<%=requestIdentity%>==null) {
 			   alert ("Browser does not support HTTP Request");
 			   return;
 		    }
-		   var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		   url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		   url=url+"?task=holdLock";
+		   url=url+"&user=<%=nameUser%>";
+		   url=url+"&execidentifier=<%=execIdentifier%>";
+		   xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedHoldLock<%=requestIdentity%>; 
+		   xmlHttp<%=requestIdentity%>.open("GET",url,true);
+		   xmlHttp<%=requestIdentity%>.send(null); 
+    }  
+     
+      
+    function requireLock<%=requestIdentity%>() {
+	       cleanError<%=requestIdentity%>();
+	       if(locked<%=requestIdentity%>){
+	    		return;
+	    	}
+    	   xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
+    	   if(xmlHttp<%=requestIdentity%>==null) {
+			   alert ("Browser does not support HTTP Request");
+			   return;
+		    }
+		   url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
 		   url=url+"?task=requireLock";
 		   url=url+"&biobjid=<%=obj.getId()%>";
 		   url=url+"&user=<%=nameUser%>";
 		   url=url+"&execidentifier=<%=execIdentifier%>";
-		   xmlHttp.onreadystatechange=stateChangedRequestLock; 
-		   xmlHttp.open("GET",url,true);
-		   xmlHttp.send(null); 
-    }
+		   xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedRequestLock<%=requestIdentity%>; 
+		   xmlHttp<%=requestIdentity%>.open("GET",url,true);
+		   xmlHttp<%=requestIdentity%>.send(null); 
+    }  
     
-    
-    function reloadNotes() {
-      		xmlHttp = GetXmlHttpObject();
-      		if(xmlHttp==null) {
+    function reloadNotes<%=requestIdentity%>() {
+      	xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
+      	if(xmlHttp<%=requestIdentity%>==null) {
   			   alert ("Browser does not support HTTP Request");
   			   return;
   		  	}
-    		var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+    		url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
     		url=url+"?task=getNotes";
     		url=url+"&biobjid=<%=obj.getId()%>";
     		url=url+"&execidentifier=<%=execIdentifier%>";
-    		xmlHttp.onreadystatechange=stateChangedGetNotes; 
-    		xmlHttp.open("GET",url,true);
-    		xmlHttp.send(null); 
-	}
+    		xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedGetNotes<%=requestIdentity%>; 
+    		xmlHttp<%=requestIdentity%>.open("GET",url,true);
+    		xmlHttp<%=requestIdentity%>.send(null); 
+	   }
     
-    
-    
-     function FCKeditor_OnComplete( editorInstance ) {
-      		xmlHttp = GetXmlHttpObject();
-      		if(xmlHttp==null) {
-  			   alert ("Browser does not support HTTP Request");
-  			   return;
-  		  	}
-    		var url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-    		url=url+"?task=getNotes";
-    		url=url+"&biobjid=<%=obj.getId()%>";
-    		url=url+"&execidentifier=<%=execIdentifier%>";
-    		xmlHttp.onreadystatechange=stateChangedGetNotes; 
-    		xmlHttp.open("GET",url,true);
-    		xmlHttp.send(null); 
-	}
-    
-    
-    
-    function stateChangedHoldLock(){ 
-  	 	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  	 		// do nothing (the hold lock request is useful only to keep alive the lock)
-  	 	}
-	 } 
 
     
-    
-    function stateChangedSaveNotes(){ 
-      	locked = false;
-      	document.getElementById('notesLockImg').style.display='inline';
-      	document.getElementById('notesSaveImg').style.display='none';
-      	document.getElementById('notesReloadImg').style.display='inline';
-      	clearInterval(holdLockInterval);
+  function stateChangedSaveNotes<%=requestIdentity%>(){ 
+      	locked<%=requestIdentity%> = false;
+      	document.getElementById('notesLockImg<%=requestIdentity%>').style.display='inline';
+      	document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='none';
+      	document.getElementById('notesReloadImg<%=requestIdentity%>').style.display='inline';
+      	clearInterval(holdLockInterval<%=requestIdentity%>);
       	try{
       	   editor.EditingArea.Document.body.contentEditable="false";
       	}catch(e){
            // not IE
       	}
-      	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  			response=xmlHttp.responseText; 
-  			if(responseHasError(response)) {
-          		error = getResponseError(response);
-          		divError = document.getElementById('notesErrorMessage');
+      	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
+  			   response=xmlHttp<%=requestIdentity%>.responseText; 
+  			   if(responseHasError<%=requestIdentity%>(response)) {
+          		error = getResponseError<%=requestIdentity%>(response);
+          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
           		divError.innerHTML = error;
           		return;
-        	}
-        	fillAlertExistNotes("Notes");	
+        	} 
+          reloadNotes<%=requestIdentity%>();
+          //fillAlertExistNotes<%=requestIdentity%>("Notes");	
+        }
+    }  
+    
+  
+  function stateChangedHoldLock<%=requestIdentity%>(){ 
+  	 	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
+  	 		// do nothing (the hold lock request is useful only to keep alive the lock)
+  	 	}
+	 } 
+    
+    function stateChangedGetNotes<%=requestIdentity%>(){ 
+      	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
+    			response=xmlHttp<%=requestIdentity%>.responseText; 
+    			if(responseHasError<%=requestIdentity%>(response)) {
+            		error = getResponseError<%=requestIdentity%>(response);
+            		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+            		divError.innerHTML = error;
+            		return;
+          }
+          editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>');
+          editor.SetHTML(response, false);
+          try{
+            	editor.EditingArea.Document.body.contentEditable="false";
+          }catch(e){
+          		 // not IE
+          }   
+          fillAlertExistNotes<%=requestIdentity%>(response);
        }
     }
     
-    
-    
-    
-    function stateChangedRequestLock(){ 
-  	 	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  			response=xmlHttp.responseText; 
-  			if(responseHasError(response)) {
-          		error = getResponseError(response);
-          		divError = document.getElementById('notesErrorMessage');
+    function stateChangedRequestLock<%=requestIdentity%>(){ 
+  	 	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
+  			response=xmlHttp<%=requestIdentity%>.responseText; 
+  			if(responseHasError<%=requestIdentity%>(response)) {
+          		error = getResponseError<%=requestIdentity%>(response);
+          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
           		divError.innerHTML = error;
           		return;
         	}
         	// editor locked
-        	locked=true;
-        	document.getElementById('notesLockImg').style.display='none';
-        	document.getElementById('notesSaveImg').style.display='inline';
-        	document.getElementById('notesReloadImg').style.display='none';
-        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
+        	locked<%=requestIdentity%>=true;
+        	document.getElementById('notesLockImg<%=requestIdentity%>').style.display='none';
+        	document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='inline';
+        	document.getElementById('notesReloadImg<%=requestIdentity%>').style.display='none';
+        	editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
             editor.SetHTML(response, false);
             try{
       	     	editor.EditingArea.Document.body.contentEditable="true";
           	}catch(e){
             	// not IE
           	}
-          	holdLockInterval = setInterval("holdLock()", 30000);
-          	fillAlertExistNotes(response);
+          	holdLockInterval<%=requestIdentity%> = setInterval("holdLock<%=requestIdentity%>()", 30000);
+          	fillAlertExistNotes<%=requestIdentity%>(response);
   		}  
 	 } 
     
-   
     
-    
-    
-    
-    function stateChangedGetNotes(){ 
-      	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  			response=xmlHttp.responseText; 
-      		if(responseHasError(response)) {
-          		error = getResponseError(response);
-          		divError = document.getElementById('notesErrorMessage');
-          		divError.innerHTML = error;
-          		return;
-        	}
-        	editor = FCKeditorAPI.GetInstance('editorfckarea') ;
-          	editor.SetHTML(response, false);
-          	try{
-            	editor.EditingArea.Document.body.contentEditable="false";
-          	}catch(e){
-           		 // not IE
-          	}   
-          	fillAlertExistNotes(response);
-       }
-    }
-    
-    
-    
-    
-    function GetXmlHttpObject(){ 
-  		var objXMLHttp=null
+    function GetXmlHttpObject<%=requestIdentity%>(){ 
+  		objXMLHttp=null
   		if(window.XMLHttpRequest)	{
   			objXMLHttp=new XMLHttpRequest()
   		} else if (window.ActiveXObject) {
@@ -554,7 +508,7 @@
   	}
     
     
-    function responseHasError(response){
+    function responseHasError<%=requestIdentity%>(response){
     	if(response.indexOf('SpagoBIError:')!=-1) {
     		return true;
     	} else {
@@ -562,73 +516,115 @@
     	}
     }
     
-    function getResponseError(response) {
+    function getResponseError<%=requestIdentity%>(response) {
     	error = response.substring(response.indexOf('SpagoBIError:')+13);
     	return error;
     }
     
-    function cleanError(){
-    	divError = document.getElementById('notesErrorMessage');
+    function cleanError<%=requestIdentity%>(){
+    	divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
         divError.innerHTML = "";
     }
     
     
-    function fillAlertExistNotes(notes){
-       divalertNotes = document.getElementById('divAlertExistNotes');
-       tdalertNotes = document.getElementById('tdAlertNotesExists');
+    function fillAlertExistNotes<%=requestIdentity%>(notes){
+       iconempty = document.getElementById('iconNotesEmpty<%=requestIdentity%>');
+       iconfilled = document.getElementById('iconNotesFilled<%=requestIdentity%>');
        notes = notes.replace(/^\s*|\s*$/g,"");
        if(notes!=""){
-        divalertNotes.innerHTML = "<spagobi:message key = "sbi.execution.notes.documentHasNotes" />";
-       	tdalertNotes.style.width="150px";
+          iconempty.style.display='none';
+          iconfilled.style.display='inline';
+       } else {
+          iconempty.style.display='inline';
+          iconfilled.style.display='none';
        }
     }
 
   </script>
+
+
+
+
+<div id="divNotes<%=requestIdentity%>" style="heigth:100%;width:100%;display:none;background-color:#efefde;overflow:hidden;">
   
-  
-  
-  
-  
-  
-  <div id="notescloseImg" style="float:left;display:inline;padding:5px;">
-      <a href="javascript:opencloseNotesEditor()">
-          <img title='<spagobi:message key = "sbi.execution.notes.closeeditor" />' 
-               alt='<spagobi:message key = "sbi.execution.notes.closeeditor" />'
-               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")%>' />
-      </a>  
-  </div>
-  <div id="notesLockImg" style="float:left;display:inline;padding:5px;">
-      <a href="javascript:requireLock()">
+  <div id="notesLockImg<%=requestIdentity%>" style="float:left;display:inline;padding:5px;">
+      <a href="javascript:requireLock<%=requestIdentity%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.lockeditor" />' 
                alt='<spagobi:message key = "sbi.execution.notes.lockeditor" />'
                src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/lock16.gif")%>' />
       </a>  
   </div>
-  <div id="notesSaveImg" style="float:left;display:none;padding:5px;">
-      <a href="javascript:saveNotes()">
+  <div id="notesSaveImg<%=requestIdentity%>" style="float:left;display:none;padding:5px;">
+      <a href="javascript:saveNotes<%=requestIdentity%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.savenotes" />' 
           		alt='<spagobi:message key = "sbi.execution.notes.savenotes" />'
                src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' />
       </a>   
   </div>
-  <div id="notesReloadImg" style="float:left;display:inline;padding:5px;">
-      <a href="javascript:reloadNotes()">
+  <div id="notesReloadImg<%=requestIdentity%>" style="float:left;display:inline;padding:5px;">
+      <a href="javascript:reloadNotes<%=requestIdentity%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.reloadnotes" />' 
           		alt='<spagobi:message key = "sbi.execution.notes.reloadnotes" />'
                src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/reload16.gif")%>' />
       </a>   
   </div>
-  <div id="notesErrorMessage"  style="float:left;color:red;padding:5px;font-family:arial;font-size:11px;">
+  <div id="notesErrorMessage<%=requestIdentity%>"  style="float:left;color:red;padding:5px;font-family:arial;font-size:11px;">
   
   </div>
   <div style="clear:left;"></div>
   
 
-  <textarea id="editorfckarea" name="editorfckarea"></textarea>
+  <textarea id="editorfckarea<%=requestIdentity%>" name="editorfckarea<%=requestIdentity%>"></textarea>
   
   
-</div>       
+</div>   
 
+
+
+
+
+
+
+
+<script>
+  
+  var oFCKeditor<%=requestIdentity%> = new FCKeditor('editorfckarea<%=requestIdentity%>');
+  oFCKeditor<%=requestIdentity%>.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
+  oFCKeditor<%=requestIdentity%>.ToolbarSet = 'SbiObjectNotes';
+  oFCKeditor<%=requestIdentity%>.Height = screen.height; 
+  oFCKeditor<%=requestIdentity%>.Width = "100%"; 
+  oFCKeditor<%=requestIdentity%>.ReplaceTextarea();
+   
+  var noteOpen<%=requestIdentity%> = false;
+    
+  function opencloseNotesEditor<%=requestIdentity%>() {
+    if(noteOpen<%=requestIdentity%>) {
+      // do nothing (close notes with window button)
+    } else {
+      noteOpen<%=requestIdentity%> = true;
+      openNotes<%=requestIdentity%>();
+    } 
+  }
+  
+  function openNotes<%=requestIdentity%>() { 
+    win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "spread", title: "Notes for <%=title%>", width:<%=widthNotes%>, height:<%=heightNotes%>});
+  	win<%=requestIdentity%>.setDestroyOnClose();
+    win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);
+  	win<%=requestIdentity%>.showCenter();
+  	observerClose<%=requestIdentity%> = { 
+      onClose: function(eventName, win) {  
+        if(win == win<%=requestIdentity%>) { 
+          noteOpen<%=requestIdentity%> = false;
+          document.getElementById('divNotes<%=requestIdentity%>').style.display='none';
+        } 
+      }
+    }
+    Windows.addObserver(observerClose<%=requestIdentity%>);
+  }
+  
+  
+  
+</script>
 
 
 <%	} %>
@@ -667,76 +663,93 @@
 
 
 <script>
-		function adaptSize() {
-			iframe = window.frames['iframeexec<%=requestIdentity%>'];
-			navigatorname = navigator.appName;
-			height = 0;
-			navigatorname = navigatorname.toLowerCase();
-			if(navigatorname.indexOf('explorer')) {
-				height = iframe.document.body.offsetHeight;
-			} else {
-				height = iframe.innerHeight;
-			}
-			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-			height = height + 100;
-			if(height < 300){
-				height = 300;
-			}
-			iframeEl.style.height = height + 100 + 'px';
-		}
+		
+		function adaptSize<%=requestIdentity%>() {
+          heightFrame = 0;
+          heightWinArea = 0;
+          // TODO calculate the heightFooter dynamically
+          heightFooter = 0;
+          navigatorname = navigator.appName;
+          navigatorname = navigatorname.toLowerCase();
+			    if(navigatorname.indexOf('explorer') != -1) {
+				     heightWinArea = window.document.body.offsetHeight;
+				     heightFooter = 110;
+			    } else {
+			   	   heightWinArea = window.innerHeight;
+			   	   heightFooter = 70;
+			    }
+			   	diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+          pos = findPos<%=requestIdentity%>(diviframeobj);
+			    heightFrame= heightWinArea - pos[1] - heightFooter;
+			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			    iframeEl.style.height = heightFrame + 'px';
+		  }
+		
+		  
+      function findPos<%=requestIdentity%>(obj) {
+			   curleft = curtop = 0;
+			   if (obj.offsetParent) {
+				    curleft = obj.offsetLeft
+				    curtop = obj.offsetTop
+				    while (obj = obj.offsetParent) {
+					     curleft += obj.offsetLeft
+					     curtop += obj.offsetTop
+				    }
+			   }
+			   return [curleft,curtop];
+		  }
+		
+		
 </script>
 
-<%
-	String styleDiv = "width:100%;";	
-	if(edNoteAble) {
-		styleDiv = "width:98%;float:left;padding-left:2%;";
-	} 
-%>
 
-<div id="divIframe<%=requestIdentity%>" style="<%=styleDiv%>">
+
+
+<div id="divIframe<%=requestIdentity%>" style="width:100%;">
            
            <%
            		String onloadStr = " ";
            		if(!heightSetted)
-           			onloadStr = " onload='adaptSize();' ";
+           			onloadStr = " onload='adaptSize" + requestIdentity + "();' ";
            		String heightStr = "height:400px;";
            		if(heightSetted)
-           			heightStr = "height:"+heightArea+"px;";
+           			heightStr = "height:"+heightArea+"px;";	
            %> 
-             
-           <iframe <%=onloadStr%> 
-				   style='display:inline;<%=heightStr%>' 
-				   id='iframeexec<%=requestIdentity%>' 
-                   name='iframeexec<%=requestIdentity%>'  
-				   src=""
-                   frameborder=0  
-			       width='100%' >
-         	</iframe>       
+            
+            <iframe id="iframeexec<%=requestIdentity%>" 
+                    name="iframeexec<%=requestIdentity%>"
+                    src="" 
+                    style="width:100%;display:inline;<%=heightStr%>" 
+                    frameborder="0" 
+                    <%=onloadStr%> ></iframe>
+                 
+                 
                                 
-         	<form name="formexecution<%=requestIdentity%>" id='formexecution<%=requestIdentity%>' method="post" 
+         	<form name="formexecution<%=requestIdentity%>" 
+                id='formexecution<%=requestIdentity%>' method="post" 
          	      action="<%=engineurl%>" 
          	      target='iframeexec<%=requestIdentity%>'>
          	<%
-         		java.util.Set keys = mapPars.keySet();
-         	    Iterator iterKeys = keys.iterator();
-         	    while(iterKeys.hasNext()) {
+         		 java.util.Set keys = mapPars.keySet();
+         	   Iterator iterKeys = keys.iterator();
+         	   while(iterKeys.hasNext()) {
          	    	String key = iterKeys.next().toString();
          	    	String value = mapPars.get(key).toString();
          	%>
          		<input type="hidden" name="<%=key%>" value="<%=value%>" />
          	<%     	
-         	    }
+         	   }
          	%> 
-         	<center>
-         	<input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>
-			</center>
-			</form>
+         	  <center>
+         	    <input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>
+			       </center>
+			     </form>
          
             <script>
               button = document.getElementById('button<%=requestIdentity%>');
               button.style.display='none';
               button.click();               
-            </script>
+            </script>   
                 
 </div>
        
@@ -748,43 +761,4 @@
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 
-
-
-
-
-
-
-
-
-<!-- ***************************************************************** -->
-<!-- **************** INITIALIZE NOTE EDITOR ************************* -->
-<!-- ***************************************************************** -->
-<%
-	if(edNoteAble) {
-%>
-  <script type="text/javascript">
-    	var oFCKeditor = new FCKeditor('editorfckarea');
-    	oFCKeditor.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
-      iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-      heightif = iframeEl.style.height;
-      heightif = heightif + 'px';
-      oFCKeditor.Height=heightif;
-      oFCKeditor.ToolbarSet = 'SbiObjectNotes';
-      //oFCKeditor.Create();
-      oFCKeditor.ReplaceTextarea();
-  </script>
-<%
-      if(notesEditOpen) {
-%>    
-        <script type="text/javascript">
-            divIframe = document.getElementById('divIframe<%=requestIdentity%>');
-            divNotes = document.getElementById('divNotes<%=requestIdentity%>');
-            divIframe.style.width= <%=(100 - 2 - widthNoteEditor)%> + '%';
-            divNotes.style.width=<%=widthNoteEditor%> + '%';
-            noteOpen = true;
-        </script>
-<%    
-      }
-  }
-%>
 

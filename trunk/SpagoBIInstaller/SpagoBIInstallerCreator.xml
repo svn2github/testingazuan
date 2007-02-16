@@ -13,11 +13,20 @@
  	
  	<native type="izpack" name="ShellLink.dll" />
  	
- 	<guiprefs height="600" resizable="yes" width="600">
-  		<laf name="metouia">
-        	<os family="windows" />
-    	</laf>
-	</guiprefs>
+ 	<guiprefs height="600" resizable="yes" width="800">
+        <laf name="looks">
+            <os family="unix"/>
+        </laf>
+    	<modifier key="layoutAnchor" value="CENTER"/>
+    	<modifier key="headingPanelCounter" value="progressbar"/>
+		<modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+		<modifier key="allYGap" value="3"/>
+		<modifier key="paragraphYGap" value="10"/>	
+		<modifier key="filler1YGap" value="5"/>
+		<modifier key="filler3XGap" value="10"/>
+		<modifier key="useButtonIcons" value="yes"/>
+		<modifier key="useLabelIcons" value="yes"/>
+    </guiprefs>
     <locale>
     	<langpack iso3="eng"/>
     	<langpack iso3="ita"/>
@@ -33,6 +42,10 @@
     	<res src="IzPanels/userInputLang.xml_ita" id="userInputLang.xml_ita"/>
     	<res src="IzPanels/userInputLang.xml_eng" id="userInputLang.xml_eng"/>
     	<res src="IzPanels/Win_shortcutSpec.xml" id="shortcutSpec.xml"/>
+    	<!--
+    	<res src="IzPanels/CustomLangpack_ita.xml" id="CustomLangpack.xml_ita"/>
+    	<res src="IzPanels/CustomLangpack_eng.xml" id="CustomLangpack.xml_eng"/>
+    	-->
 	</resources>
 	<panels>
     	<panel classname="HelloPanel"/>
@@ -40,8 +53,6 @@
    		<panel classname="LicencePanel"/>
    		<panel classname="UserInputPanel"/>
    		<panel classname="UserInputPanel"/>
-   		<!--panel classname="UserInputPanel"/-->
-	    <!--panel classname="PacksPanel"/-->
 	    <panel classname="TargetPanel"/>
     	<panel classname="InstallPanel"/>
     	<panel classname="HTMLInfoPanel"/>
@@ -77,20 +88,5 @@
 		    	</args>
 		    </executable>
 		</pack>
-		<!--
-		<pack name="SpagoBIExamples" required="no">
-    		<description>SpagoBI examples</description>
-    		<fileset dir="" targetdir="$INSTALL_PATH">
-      			<include name="spagobi_examples/**/*" />
-      			<include name="install_spagobi_examples.jar" />
-		    </fileset>
-		    <executable targetfile="$INSTALL_PATH/install_spagobi_examples.jar" class="it/eng/spagobi/installer/InstallSpagoBIExamples" type="jar" stage="postinstall"> 
-		    	<args>
-		    		<arg value="$INSTALL_PATH"/>
-		    		<arg value="$SERVER_TYPE"/>
-		    	</args>
-		    </executable>
-		</pack>
-		-->
     </packs>
 </installation>

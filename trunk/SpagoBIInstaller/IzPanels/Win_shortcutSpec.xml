@@ -15,6 +15,6 @@
 			applications="no"
 			startMenu="no"
 			startup="no">
-		<createForPack name="SpagoBIPlaform"/>
+		<createForPack name="SpagoBIPlatform"/>
 	</shortcut>
 </shortcuts>

@@ -10,6 +10,8 @@ public class InstallSpagoBIPlatform {
 	private static String _server_name;
 	private static String _spagobi_deploy_dir;
 	private static String _engines_deploy_dir;
+	// _common_lib_dir is not the actual server common library folder, 
+	// it is just the folder where we have to put all external jars (jacrabbit, jcr, ehcache ...)
 	private static String _common_lib_dir;
 	private static String _path_hsql_lib_dir;
 	private static String _spagobi_metadata_db_dir;
@@ -58,7 +60,7 @@ public class InstallSpagoBIPlatform {
 			_spagobi_deploy_dir = _pathdest + fs + "apps" + fs + "autoload" + fs + "exoplatform.ear";
 			_engines_deploy_dir = _pathdest + fs + "webapps" + fs + "autoload";
 			_common_lib_dir = _pathdest + fs + "lib" + fs + "apps";
-			_path_hsql_lib_dir = _common_lib_dir;
+			_path_hsql_lib_dir = _pathdest + fs + "lib" + fs + "commons" + fs + "jonas";
 		}
 		
 		_ext = ".war";
@@ -107,13 +109,16 @@ public class InstallSpagoBIPlatform {
 	private static boolean installPatchHsqldb() {
 		try {
 			String pathsource = _spagobi_plaftorm_source_dir + fs + "hsqlPatch";
-			// for Tomcat and JOnAS
 			File hsqloldjar = new File(_path_hsql_lib_dir + fs + "hsqldb-1.8.0.1.jar");
 			if (hsqloldjar.exists()) hsqloldjar.delete();
-			// for JBoss
 			hsqloldjar = new File(_path_hsql_lib_dir + fs + "hsqldb.jar");
 			if (hsqloldjar.exists()) hsqloldjar.delete();
-			FileUtilities.copy(_path_hsql_lib_dir, pathsource	+ fs + "hsqldb1_8_0_2.jar");
+			FileUtilities.copy(_path_hsql_lib_dir, pathsource + fs + "hsqldb1_8_0_2.jar");
+			if ("jonas".equalsIgnoreCase(_server_name)) {
+				hsqloldjar = new File(_common_lib_dir + fs + "hsqldb-1.8.0.1.jar");
+				if (hsqloldjar.exists()) hsqloldjar.delete();
+				FileUtilities.copy(_common_lib_dir, pathsource + fs + "hsqldb1_8_0_2.jar");
+			}
 		} catch (Exception exc) {
 			return false;
 		}
@@ -164,12 +169,18 @@ public class InstallSpagoBIPlatform {
 			if ("jonas".equalsIgnoreCase(_server_name)) {
 				FileUtilities.deleteFile("commons-logging-1.0.jar", _spagobi_deploy_dir + fs + "spagobi.war" 
 						+ fs + "WEB-INF" + fs + "lib");
-				File old = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs 
-						+ "classes" + fs + "hibernate.cfg.hsql.xml");
-				if (old.exists()) old.delete();
-				File newFile = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
+				File oldHibCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs +
+						"classes" + fs + "hibernate.cfg.hsql.xml");
+				if (oldHibCfg.exists()) oldHibCfg.delete();
+				File newHibCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
 						"classes" + fs + "hibernate_jonas.cfg.hsql.xml");
-				newFile.renameTo(old);
+				newHibCfg.renameTo(oldHibCfg);
+				File oldJbpmCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
+						"classes" + fs + "jbpm.hibernate.cfg.jndi.xml");
+				if (oldJbpmCfg.exists()) oldJbpmCfg.delete();
+				File newJbpmCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
+						"classes" + fs + "jbpm.hibernate.cfg.jndi_jonas.xml");
+				newJbpmCfg.renameTo(oldJbpmCfg);
 			}
 		} catch (Exception exc) {
 			return false;

@@ -1,5 +1,11 @@
 Introduzione all'installazione di SpagoBI Platform 1.9.2.
 
+Prima di procedere controlla i seguenti requisiti minimi di sistema:
+- JDK versione 1.5.x
+- OpenOffice 2.0.x (per la produzione dei booklets/fascicoli): una variabile d'ambiente di nome 
+  OPENOFFICE_HOME deve puntare alla cartella di installazione di OpenOffice
+- 512 MB di memoria (suggerito).
+
 SpagoBI Platform deve essere installato su un server pre-esistente sul tuo pc.
 Il server può essere Tomcat, JBoss o JOnAS (a scelta) e deve ospitare eXo-Portal.
 I possibili server su cui è possibile installare SpagoBI Platform 1.9.2 sono i seguenti:
@@ -20,13 +26,5 @@ I possibili server su cui è possibile installare SpagoBI Platform 1.9.2 sono i s
       http://forge.objectweb.org/project/download.php?group_id=151&file_id=6838
    poi segui le istruzioni di installazione.
 
-L'installazione di SpagoBI necessita la sovrascrittura di alcuni files sul server, per cui si consiglia di installare SpagoBI Platform su un server pulito.
-
-
-Prima di procedere controlla inoltre i seguenti requisiti minimi di sistema:
-   
-- JDK versione 1.5.x
-
-- OpenOffice 2.0.x (per la produzione dei booklets/fascicoli): una variabile d'ambiente di nome OPENOFFICE_HOME deve puntare alla cartella di installazione di OpenOffice
-
-- 512 MB di memoria (suggerito).
+L'installazione di SpagoBI necessita la sovrascrittura di alcuni files sul server, per cui si consiglia 
+di installare SpagoBI Platform su un server pulito.

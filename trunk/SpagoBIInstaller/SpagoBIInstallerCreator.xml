@@ -13,7 +13,7 @@
  	
  	<native type="izpack" name="ShellLink.dll" />
  	
- 	<guiprefs height="500" resizable="yes" width="600">
+ 	<guiprefs height="600" resizable="yes" width="600">
   		<laf name="metouia">
         	<os family="windows" />
     	</laf>
@@ -50,7 +50,7 @@
 	</panels>
 
     <packs>
-		<pack name="SpagoBIPlaform" required="yes">
+		<pack name="SpagoBIPlatform" required="yes">
     		<description>SpagoBI platform</description>
     		<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi/**/*" />

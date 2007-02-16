@@ -36,7 +36,6 @@
 			<spec id="SpagoBIWekaEngine.description" true="yes" false="no" set="true"/>
 		</field>
 		<divider/>
-		<divider/>
 		<field type="staticText" align="left" id="examples.to.install"/>
 		<field type="check" variable="SPAGOBI_EXAMPLES">
 			<spec id="examples.description" true="yes" false="no" set="false"/>

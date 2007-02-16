@@ -43,7 +43,7 @@
 		   listResponse = (SourceBean)sessionContainer.getAttribute(it.eng.qbe.action.ExecuteSaveQueryAction.QUERY_RESPONSE_SOURCE_BEAN);
 		   if(listResponse.getAttribute("overflow") != null)
 		   	 overflow = ((Boolean)listResponse.getAttribute("overflow")).booleanValue();
-	}
+	} 
 	
 	
 	

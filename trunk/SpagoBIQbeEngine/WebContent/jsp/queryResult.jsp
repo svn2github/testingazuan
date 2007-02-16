@@ -31,6 +31,7 @@
 	Integer pagesNumber = null;
 	boolean hasPreviousPage = false;
 	boolean hasNextPage = false;
+	boolean overflow = false;
    SourceBean listResponse = null;
    if (msg != null){
 	   flagErrors = true;
@@ -43,6 +44,8 @@
 	   pagesNumber = (Integer)listResponse.getAttribute("pagesNumber");
 	   hasPreviousPage = ((Boolean)listResponse.getAttribute("hasPreviousPage")).booleanValue();
 	   hasNextPage = ((Boolean)listResponse.getAttribute("hasNextPage")).booleanValue();
+	   Boolean b = (Boolean)listResponse.getAttribute("overflow");
+	   overflow = (b == null)? false: b.booleanValue();
    }
    	String qbeQuery = null;
 	String qbeSqlQuery = null;
@@ -96,6 +99,21 @@
 <%@page import="groovy.lang.Binding"%>
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
 <body>
+
+<script>
+function askConfirmation (message) {
+
+	if (confirm(message))
+	{
+		ajxPersistTemporaryQueryAction();
+	}
+	else
+	{
+		
+	}	
+}
+</script>
+
 <%}%>
 
 <%
@@ -233,10 +251,19 @@
 						</td>
 				
 						<td width="20%">					
-							<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
-								alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
-								title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
-								onclick="ajxPersistTemporaryQueryAction()"/>
+							
+							<% if (overflow){ %>
+								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
+									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
+									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
+									onclick='askConfirmation("<%=qbeMsg.getMessage(requestContainer, "QBE.Exportation.warning", bundle)%>")'/>
+							<%} else {%> 
+								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
+									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
+									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
+									onclick='ajxPersistTemporaryQueryAction();'/>
+							<% }%>
+								
 									
 						</td>
 					</tr>
@@ -263,6 +290,55 @@
 			<td width="3%"></td>			
 		</tr>	
 </table>
+		
+				
+<% if (queryLang.equalsIgnoreCase("sql") && overflow){ %>
+<table width="100%" valign="top"> 
+	<tr>
+		<td width="3%">
+		</td>
+		<td width="94%">
+		</td>
+		<td width="3%">
+		</td>
+ 	</tr>
+ 	<tr>
+ 		<td></td> <%-- Rientro  --%>
+		<td>
+			&nbsp;
+		</td>
+		<td></td> <%-- Rientro  --%>
+	</tr>
+ 	<tr>
+ 		<td></td> <%-- Rientro  --%>
+		<td>
+			<span class="qbeError">Warning !!!</span>
+		</td>
+		<td></td> <%-- Rientro  --%>
+	</tr>
+	<tr>
+ 		<td></td> <%-- Rientro  --%>
+		<td>
+			&nbsp;
+		</td>
+		<td></td> <%-- Rientro  --%>
+	</tr>
+ 	<tr>
+ 		<td></td> <%-- Rientro  --%>
+		<td>
+			<textarea id="txtAreaMsgError" readonly="true" rows="3" cols="80"><%=qbeMsg.getMessage(requestContainer, "QBE.Execution.warning", bundle) %></textarea>
+		</td>
+		<td></td> <%-- Rientro  --%>
+	</tr>
+	<tr>
+ 		<td></td> <%-- Rientro  --%>
+		<td>
+			&nbsp;
+		</td>
+		<td></td> <%-- Rientro  --%>
+	</tr>
+</table>
+<%}%>
 		
 <% if (!flagErrors){ %>
 

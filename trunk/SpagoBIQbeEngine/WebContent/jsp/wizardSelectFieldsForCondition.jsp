@@ -304,10 +304,10 @@
 				    		   				</td>
 				    		   				<td>&nbsp;</td> 
 				    		   				<td width="5%">
-				    		   					<a href="<%=urlAddLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/add.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlAddLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/addLeft.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   				<td width="5%">
-				    		   					<a href="<%=urlRemoveLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/remove.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlRemoveLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/removeLeft.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   				<td>&nbsp;</td> 
 				    		   				<td width="5%">
@@ -356,10 +356,10 @@
 				    		   				</td>	
 				    		   				<td>&nbsp;</td> 	
 											<td width="5%">
-				    		   					<a href="<%=urlAddRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/add.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlAddRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/addRight.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addRightBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addRightBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   				<td width="5%">
-				    		   					<a href="<%=urlRemoveRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/remove.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlRemoveRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/removeRight.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeRightBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeRightBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   					
 													

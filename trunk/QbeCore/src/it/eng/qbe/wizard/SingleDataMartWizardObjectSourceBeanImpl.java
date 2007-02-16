@@ -725,9 +725,33 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		try{		
 			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
 		
+			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
+			
+			int maxSQLResults = DEFAULT_MAX_ROWS_NUM;
+			if( (maxRowsForSQLExecution!=null) && !(maxRowsForSQLExecution.trim().length()==0) ){
+				maxSQLResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
+			}
 				
 		//Query aQuery = aSession.createQuery(getFinalQuery());
 		Query aQuery = aSession.createQuery(query);
+		
+		String queryStr = aQuery.getQueryString();		
+		/*
+		queryStr = queryStr.substring(queryStr.indexOf("from"));
+		queryStr = "select count(*) " + queryStr;
+		Query countQuery = aSession.createQuery(queryStr);
+		List countList = countQuery.list();
+		Integer count = (Integer)countList.get(0);
+		*/
+		Query countQuery = aSession.createQuery(queryStr);
+		aQuery.setMaxResults(maxSQLResults);
+		List countList = countQuery.list();
+		
+		int rowsNumber = countList.size();
+		//int pagesNumber = (rowsNumber / pageSize) + ( ((rowsNumber % pageSize) != 0 )? 1: 0 );
+		
+		
+		
 		
 		int firstRow = pageNumber * pageSize;
 		
@@ -758,8 +782,10 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		queryResponseSourceBean.setAttribute("query", query);
 		queryResponseSourceBean.setAttribute("list", result);
 		queryResponseSourceBean.setAttribute("currentPage", new Integer(pageNumber));
+		//queryResponseSourceBean.setAttribute("pagesNumber", new Integer(pagesNumber));
 		queryResponseSourceBean.setAttribute("hasNextPage", new Boolean(hasNextPage));
 		queryResponseSourceBean.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));
+		queryResponseSourceBean.setAttribute("overflow", new Boolean(rowsNumber >= maxSQLResults));
 					
 		return queryResponseSourceBean;
 		}finally{

@@ -42,6 +42,8 @@
     	<res src="IzPanels/userInputLang.xml_ita" id="userInputLang.xml_ita"/>
     	<res src="IzPanels/userInputLang.xml_eng" id="userInputLang.xml_eng"/>
     	<res src="IzPanels/Win_shortcutSpec.xml" id="shortcutSpec.xml"/>
+    	<res src="IzPanels/TargetPanel_dir_windows.txt" id="TargetPanel.dir.windows"/>
+    	<res src="IzPanels/TargetPanel_dir_unix.txt" id="TargetPanel.dir.unix"/>
     	<!--
     	<res src="IzPanels/CustomLangpack_ita.xml" id="CustomLangpack.xml_ita"/>
     	<res src="IzPanels/CustomLangpack_eng.xml" id="CustomLangpack.xml_eng"/>
@@ -53,11 +55,10 @@
    		<panel classname="LicencePanel"/>
    		<panel classname="UserInputPanel"/>
    		<panel classname="UserInputPanel"/>
-	    <panel classname="TargetPanel"/>
+	    <panel classname="SpagoBITargetPanel"/>
     	<panel classname="InstallPanel"/>
     	<!--panel classname="HTMLInfoPanel"/-->
     	<panel classname="ShortcutPanel"/>
-    	<!--panel classname="SpagoBIInfoPanel"/-->
     	<panel classname="SpagoBIFinishPanel"/>
 	</panels>
 

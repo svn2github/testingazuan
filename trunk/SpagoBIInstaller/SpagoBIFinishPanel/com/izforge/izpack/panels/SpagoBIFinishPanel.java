@@ -26,6 +26,7 @@ import com.izforge.izpack.gui.LabelFactory;
 import com.izforge.izpack.installer.InstallData;
 import com.izforge.izpack.installer.InstallerFrame;
 import com.izforge.izpack.installer.IzPanel;
+import com.izforge.izpack.util.OsVersion;
 import com.izforge.izpack.util.VariableSubstitutor;
 
 /**
@@ -144,15 +145,9 @@ public class SpagoBIFinishPanel extends IzPanel
             if (installExamples) {
             	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.startSpagoBIInfo"),
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
-            	String startSpagoCommandWin = parent.langpack.getString("SpagoBIFinishPanel.startSpagoBICommandWin");
-            	startSpagoCommandWin = startSpagoCommandWin.replace("$INSTALL_PATH", path);
-            	startSpagoCommandWin = startSpagoCommandWin.replace('\\', File.separatorChar);
-            	add(LabelFactory.create(startSpagoCommandWin, parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
-            	String startSpagoCommandUnix = parent.langpack.getString("SpagoBIFinishPanel.startSpagoBICommandUnix");
-            	startSpagoCommandUnix = startSpagoCommandUnix.replace("$INSTALL_PATH", path);
-            	startSpagoCommandUnix = startSpagoCommandUnix.replace('\\', File.separatorChar);
-            	add(LabelFactory.create(startSpagoCommandUnix, parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
-                add(IzPanelLayout.createParagraphGap());
+            	if (OsVersion.IS_WINDOWS) add(LabelFactory.create(path + File.separator + "StartSpagoBI.bat", parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
+            	if (OsVersion.IS_UNIX) add(LabelFactory.create(path + File.separator + "StartSpagoBI.sh", parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
+            	add(IzPanelLayout.createParagraphGap());
                 add(IzPanelLayout.createParagraphGap());
             	String connectionUrl = parent.langpack.getString("SpagoBIFinishPanel.examples.connectionUrl");
             	connectionUrl = connectionUrl.replace("$SERVER_PORT", port);
@@ -165,15 +160,9 @@ public class SpagoBIFinishPanel extends IzPanel
                 add(IzPanelLayout.createParagraphGap());
             	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.startSpagoBIInfo"),
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
-            	String startSpagoCommandWin = parent.langpack.getString("SpagoBIFinishPanel.startSpagoBICommandWin");
-            	startSpagoCommandWin = startSpagoCommandWin.replace("$INSTALL_PATH", path);
-            	startSpagoCommandWin = startSpagoCommandWin.replace('\\', File.separatorChar);
-            	add(LabelFactory.create(startSpagoCommandWin, parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
-            	String startSpagoCommandUnix = parent.langpack.getString("SpagoBIFinishPanel.startSpagoBICommandUnix");
-            	startSpagoCommandUnix = startSpagoCommandUnix.replace("$INSTALL_PATH", path);
-            	startSpagoCommandUnix = startSpagoCommandUnix.replace('\\', File.separatorChar);
-            	add(LabelFactory.create(startSpagoCommandUnix, parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
-                add(IzPanelLayout.createParagraphGap());
+            	if (OsVersion.IS_WINDOWS) add(LabelFactory.create(path + File.separator + "StartSpagoBI.bat", parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
+            	if (OsVersion.IS_UNIX) add(LabelFactory.create(path + File.separator + "StartSpagoBI.sh", parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
+            	add(IzPanelLayout.createParagraphGap());
                 add(IzPanelLayout.createParagraphGap());
             	String connectionUrl = parent.langpack.getString("SpagoBIFinishPanel.noExamples.connectionUrl");
             	connectionUrl = connectionUrl.replace("$SERVER_PORT", port);

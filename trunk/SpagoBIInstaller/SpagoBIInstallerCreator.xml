@@ -55,9 +55,10 @@
    		<panel classname="UserInputPanel"/>
 	    <panel classname="TargetPanel"/>
     	<panel classname="InstallPanel"/>
-    	<panel classname="HTMLInfoPanel"/>
+    	<!--panel classname="HTMLInfoPanel"/-->
     	<panel classname="ShortcutPanel"/>
-    	<panel classname="SimpleFinishPanel"/>
+    	<!--panel classname="SpagoBIInfoPanel"/-->
+    	<panel classname="SpagoBIFinishPanel"/>
 	</panels>
 
     <packs>

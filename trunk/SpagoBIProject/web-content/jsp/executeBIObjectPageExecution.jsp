@@ -267,10 +267,9 @@
 
 
 
-
-
-
-
+<div id="divfordimension<%=requestIdentity%>" 
+     style="position:absolute;top:0px;left:0px;height:100%;width:100%;">
+</div>
 
 
 
@@ -320,24 +319,62 @@
     var locked<%=requestIdentity%> = false;
     var xmlHttp<%=requestIdentity%> = null;
     var holdLockInterval<%=requestIdentity%> = null;  
+     
+     
+    function reloadNotes<%=requestIdentity%>() {
+       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService?";
+       pars = "task=getNotes&biobjid=<%=obj.getId()%>&execidentifier=<%=execIdentifier%>";
+       new Ajax.Request(url,
+          {
+            method: 'post',
+            parameters: pars,
+            onSuccess: function(transport){
+                            response = transport.responseText || "";
+                            getNotesCallback<%=requestIdentity%>(response);
+                        },
+            onFailure: somethingWentWrong 
+          }
+        );
+	   }
     
     
-    function initializeNotes<%=requestIdentity%>() {
-        alert('init');
-        xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
-      	if(xmlHttp<%=requestIdentity%>==null) {
-  			   alert ("Browser does not support HTTP Request");
-  			   return;
-  		  }
-    		url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-    		url=url+"?task=getNotes";
-    		url=url+"&biobjid=<%=obj.getId()%>";
-    		url=url+"&execidentifier=<%=execIdentifier%>";
-    		xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedGetNotes<%=requestIdentity%>; 
-    		xmlHttp<%=requestIdentity%>.open("GET",url,true);
-    		xmlHttp<%=requestIdentity%>.send(null); 
-	}  
-      
+    function requireLock<%=requestIdentity%>() {
+	      cleanError<%=requestIdentity%>();
+	      if(locked<%=requestIdentity%>){
+	    		return;
+	    	}
+		    url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		    pars = "task=requireLock&biobjid=<%=obj.getId()%>&user=<%=nameUser%>&execidentifier=<%=execIdentifier%>";
+        new Ajax.Request(url,
+          {
+            method: 'post',
+            parameters: pars,
+            onSuccess: function(transport){
+                            response = transport.responseText || "";
+                            requireLockCallback<%=requestIdentity%>(response);
+                        },
+            onFailure: somethingWentWrong 
+          }
+        );
+    }  
+    
+    function holdLock<%=requestIdentity%>() {
+        url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+		    pars = "task=holdLock&user=<%=nameUser%>&execidentifier=<%=execIdentifier%>"; 
+        new Ajax.Request(url,
+          {
+            method: 'post',
+            parameters: pars,
+            onSuccess: function(transport){
+                            response = transport.responseText || "";
+                            holdLockCallback<%=requestIdentity%>(response);
+                        },
+            onFailure: somethingWentWrong 
+          }
+        );
+    }
+    
+    
     function saveNotes<%=requestIdentity%>() {
 	      cleanError<%=requestIdentity%>();
 	      var editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
@@ -345,81 +382,79 @@
 	      if(!locked<%=requestIdentity%>){
 	    		return;
 	    	}
-	      xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
-	      if(xmlHttp<%=requestIdentity%>==null) {
-			   alert ("Browser does not support HTTP Request");
-			   return;
-		  }
-		  url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-      postdata ="task=saveNotes";
-		  postdata=postdata+"&biobjid=<%=obj.getId()%>";
-		  postdata=postdata+"&user=<%=nameUser%>";
-		  postdata=postdata+"&execidentifier=<%=execIdentifier%>";
-		  postdata=postdata+"&notes=" + xhtml;
-		  xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedSaveNotes<%=requestIdentity%>; 
-		  xmlHttp<%=requestIdentity%>.open('POST',url,true);
-      	  xmlHttp<%=requestIdentity%>.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      	  xmlHttp<%=requestIdentity%>.setRequestHeader("Content-length", postdata.length);
-      	  xmlHttp<%=requestIdentity%>.setRequestHeader("Connection", "close");
-		  xmlHttp<%=requestIdentity%>.send(postdata); 
-    }  
-      
-      
-      
-    function holdLock<%=requestIdentity%>() {
-    	   xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
-    	   if(xmlHttp<%=requestIdentity%>==null) {
-			   alert ("Browser does not support HTTP Request");
-			   return;
-		    }
-		   url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-		   url=url+"?task=holdLock";
-		   url=url+"&user=<%=nameUser%>";
-		   url=url+"&execidentifier=<%=execIdentifier%>";
-		   xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedHoldLock<%=requestIdentity%>; 
-		   xmlHttp<%=requestIdentity%>.open("GET",url,true);
-		   xmlHttp<%=requestIdentity%>.send(null); 
-    }  
+	    	while(xhtml.indexOf("&")!=-1) {
+          xhtml = xhtml.replace(/&/, "@-@-@");
+        }
+	      url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
+        pars="task=saveNotes&biobjid=<%=obj.getId()%>&user=<%=nameUser%>&execidentifier=<%=execIdentifier%>&notes="+xhtml;
+        new Ajax.Request(url,
+          {
+            method: 'post',
+            parameters: pars,
+            onSuccess: function(transport){
+                            response = transport.responseText || "";
+                            saveNotesCallback<%=requestIdentity%>(response);
+                        },
+            onFailure: somethingWentWrong 
+          }
+        );
+    }    
+   
+   
+    function getNotesCallback<%=requestIdentity%>(response){      
+        if(responseHasError<%=requestIdentity%>(response)) {
+         		error = getResponseError<%=requestIdentity%>(response);
+         		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+         		divError.innerHTML = error;
+         		return;
+        }
+        editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>');
+        while(response.indexOf("@-@-@")!=-1) {
+          response = response.replace(/@-@-@/, "&");
+        }
+        editor.SetHTML(response, false);
+        try{
+          	editor.EditingArea.Document.body.contentEditable="false";
+        }catch(e){
+            // not IE
+        }   
+        fillAlertExistNotes<%=requestIdentity%>(response);
+    } 
      
-      
-    function requireLock<%=requestIdentity%>() {
-	       cleanError<%=requestIdentity%>();
-	       if(locked<%=requestIdentity%>){
-	    		return;
-	    	}
-    	   xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
-    	   if(xmlHttp<%=requestIdentity%>==null) {
-			   alert ("Browser does not support HTTP Request");
-			   return;
-		    }
-		   url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-		   url=url+"?task=requireLock";
-		   url=url+"&biobjid=<%=obj.getId()%>";
-		   url=url+"&user=<%=nameUser%>";
-		   url=url+"&execidentifier=<%=execIdentifier%>";
-		   xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedRequestLock<%=requestIdentity%>; 
-		   xmlHttp<%=requestIdentity%>.open("GET",url,true);
-		   xmlHttp<%=requestIdentity%>.send(null); 
-    }  
-    
-    function reloadNotes<%=requestIdentity%>() {
-      	xmlHttp<%=requestIdentity%> = GetXmlHttpObject<%=requestIdentity%>();
-      	if(xmlHttp<%=requestIdentity%>==null) {
-  			   alert ("Browser does not support HTTP Request");
-  			   return;
-  		  	}
-    		url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-    		url=url+"?task=getNotes";
-    		url=url+"&biobjid=<%=obj.getId()%>";
-    		url=url+"&execidentifier=<%=execIdentifier%>";
-    		xmlHttp<%=requestIdentity%>.onreadystatechange=stateChangedGetNotes<%=requestIdentity%>; 
-    		xmlHttp<%=requestIdentity%>.open("GET",url,true);
-    		xmlHttp<%=requestIdentity%>.send(null); 
-	   }
-    
-
-    
-  function stateChangedSaveNotes<%=requestIdentity%>(){ 
+     
+    function requireLockCallback<%=requestIdentity%>(response){ 
+  			if(responseHasError<%=requestIdentity%>(response)) {
+          		error = getResponseError<%=requestIdentity%>(response);
+          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+          		divError.innerHTML = error;
+          		return;
+        }
+        // editor locked
+        locked<%=requestIdentity%>=true;
+        document.getElementById('notesLockImg<%=requestIdentity%>').style.display='none';
+        document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='inline';
+        document.getElementById('notesReloadImg<%=requestIdentity%>').style.display='none';
+        editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
+        while(response.indexOf("@-@-@")!=-1) {
+          response = response.replace(/@-@-@/, "&");
+        }
+        editor.SetHTML(response, false);
+        try{
+      	   	editor.EditingArea.Document.body.contentEditable="true";
+        }catch(e){
+           	// not IE
+        }
+        holdLockInterval<%=requestIdentity%> = setInterval("holdLock<%=requestIdentity%>()", 30000);
+        fillAlertExistNotes<%=requestIdentity%>(response); 
+	  } 
+     
+     
+    function holdLockCallback<%=requestIdentity%>(){ 
+  	 		// do nothing (the hold lock request is useful only to keep alive the lock)
+	  } 
+     
+     
+    function saveNotesCallback<%=requestIdentity%>(response){ 
       	locked<%=requestIdentity%> = false;
       	document.getElementById('notesLockImg<%=requestIdentity%>').style.display='inline';
       	document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='none';
@@ -430,82 +465,24 @@
       	}catch(e){
            // not IE
       	}
-      	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
-  			   response=xmlHttp<%=requestIdentity%>.responseText; 
-  			   if(responseHasError<%=requestIdentity%>(response)) {
-          		error = getResponseError<%=requestIdentity%>(response);
-          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
-          		divError.innerHTML = error;
-          		return;
-        	} 
-          reloadNotes<%=requestIdentity%>();
-          //fillAlertExistNotes<%=requestIdentity%>("Notes");	
-        }
+  			if(responseHasError<%=requestIdentity%>(response)) {
+         		error = getResponseError<%=requestIdentity%>(response);
+         		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+         		divError.innerHTML = error;
+         		return;
+        } 
+        reloadNotes<%=requestIdentity%>();
     }  
     
-  
-  function stateChangedHoldLock<%=requestIdentity%>(){ 
-  	 	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
-  	 		// do nothing (the hold lock request is useful only to keep alive the lock)
-  	 	}
-	 } 
-    
-    function stateChangedGetNotes<%=requestIdentity%>(){ 
-      	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
-    			response=xmlHttp<%=requestIdentity%>.responseText; 
-    			if(responseHasError<%=requestIdentity%>(response)) {
-            		error = getResponseError<%=requestIdentity%>(response);
-            		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
-            		divError.innerHTML = error;
-            		return;
-          }
-          editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>');
-          editor.SetHTML(response, false);
-          try{
-            	editor.EditingArea.Document.body.contentEditable="false";
-          }catch(e){
-          		 // not IE
-          }   
-          fillAlertExistNotes<%=requestIdentity%>(response);
-       }
-    }
-    
-    function stateChangedRequestLock<%=requestIdentity%>(){ 
-  	 	if(xmlHttp<%=requestIdentity%>.readyState==4 || xmlHttp<%=requestIdentity%>.readyState=="complete") { 
-  			response=xmlHttp<%=requestIdentity%>.responseText; 
-  			if(responseHasError<%=requestIdentity%>(response)) {
-          		error = getResponseError<%=requestIdentity%>(response);
-          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
-          		divError.innerHTML = error;
-          		return;
-        	}
-        	// editor locked
-        	locked<%=requestIdentity%>=true;
-        	document.getElementById('notesLockImg<%=requestIdentity%>').style.display='none';
-        	document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='inline';
-        	document.getElementById('notesReloadImg<%=requestIdentity%>').style.display='none';
-        	editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
-            editor.SetHTML(response, false);
-            try{
-      	     	editor.EditingArea.Document.body.contentEditable="true";
-          	}catch(e){
-            	// not IE
-          	}
-          	holdLockInterval<%=requestIdentity%> = setInterval("holdLock<%=requestIdentity%>()", 30000);
-          	fillAlertExistNotes<%=requestIdentity%>(response);
-  		}  
-	 } 
-    
-    
-    function GetXmlHttpObject<%=requestIdentity%>(){ 
-  		objXMLHttp=null
-  		if(window.XMLHttpRequest)	{
-  			objXMLHttp=new XMLHttpRequest()
-  		} else if (window.ActiveXObject) {
-  			objXMLHttp=new ActiveXObject("Microsoft.XMLHTTP")
-  		}
-  		return objXMLHttp
-  	}
+
+    function initializeNotes<%=requestIdentity%>() {
+       reloadNotes<%=requestIdentity%>();
+	   }  
+	   
+	   
+	  function somethingWentWrong() {
+        alert('Something went wrong ...');
+    } 
     
     
     function responseHasError<%=requestIdentity%>(response){
@@ -607,10 +584,12 @@
   }
   
   function openNotes<%=requestIdentity%>() { 
-    win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "spread", title: "Notes for <%=title%>", width:<%=widthNotes%>, height:<%=heightNotes%>});
+    win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", width:<%=widthNotes%>, height:<%=heightNotes%>});
   	win<%=requestIdentity%>.setDestroyOnClose();
-    win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);
-  	win<%=requestIdentity%>.showCenter();
+    win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);    
+    diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+    pos = findPos(diviframeobj);
+  	win<%=requestIdentity%>.showCenter(false, (100+(pos[0]/10)) , (100 + (pos[1]/10)) );
   	observerClose<%=requestIdentity%> = { 
       onClose: function(eventName, win) {  
         if(win == win<%=requestIdentity%>) { 
@@ -665,6 +644,70 @@
 <script>
 		
 		function adaptSize<%=requestIdentity%>() {
+		      
+		      navigatorname = navigator.appName;
+		      navigatorversion = navigator.appVersion;
+          navigatorname = navigatorname.toLowerCase();
+          isIE = false;
+          isIE5 = false;
+          isIE6 = false;
+          isIE7 = false;
+          isMoz = false;
+          isIE = (navigatorname.indexOf('explorer') != -1);
+          isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
+          isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
+          isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
+          isMoz = (navigatorname.indexOf('explorer') == -1);
+          
+          // calculate height of the visible area
+          divdim = document.getElementById('divfordimension<%=requestIdentity%>');
+          heightVisArea = 0;
+          if(isIE5) { heightVisArea = window.document.body.clientHeight; }
+          if(isIE6) { heightVisArea = window.document.body.clientHeight; }
+          if(isIE7) { heightVisArea = divdim.offsetHeight; }
+          if(isMoz) { heightVisArea = divdim.offsetHeight; }
+          divdim.style.display="none";
+          
+          // get the frame div object
+          diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+          // find the frame div position
+          pos = findPos(diviframeobj);
+          // calculate space below position frame div
+          spaceBelowPos = heightVisArea - pos[1];          
+          // set height to the frame
+			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			    iframeEl.style.height = spaceBelowPos + 'px';
+              
+          // calculate height of the win area and height footer
+          heightWinArea = 0;
+          heightFooter = 0;
+          if(isIE5) {
+             heightWinArea = window.document.body.scrollHeight;
+				     heightFooter = heightWinArea - heightVisArea;
+          }
+          if(isIE6) {
+             heightWinArea = window.document.body.scrollHeight;
+				     heightFooter = heightWinArea - heightVisArea;
+          }
+          if(isIE7) {
+				     heightWinArea = window.document.body.offsetHeight;
+				     heightFooter = heightWinArea - heightVisArea;
+          }
+          if(isMoz) {
+			   	   heightWinArea = window.document.body.offsetHeight;
+			   	   heightFooter = (heightWinArea - heightVisArea) + 15; 
+			    }
+			    
+			    // calculate height of the frame
+			    heightFrame = heightVisArea - pos[1] - heightFooter;
+			    // set height to the frame
+			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			    iframeEl.style.height = heightFrame + 'px';
+		  }
+		  
+		  
+		  <%--
+		  function adaptSize<%=requestIdentity%>() {
           heightFrame = 0;
           heightWinArea = 0;
           // TODO calculate the heightFooter dynamically
@@ -679,40 +722,27 @@
 			   	   heightFooter = 70;
 			    }
 			   	diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
-          pos = findPos<%=requestIdentity%>(diviframeobj);
+          pos = findPos(diviframeobj);
 			    heightFrame= heightWinArea - pos[1] - heightFooter;
 			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 			    iframeEl.style.height = heightFrame + 'px';
 		  }
-		
-		  
-      function findPos<%=requestIdentity%>(obj) {
-			   curleft = curtop = 0;
-			   if (obj.offsetParent) {
-				    curleft = obj.offsetLeft
-				    curtop = obj.offsetTop
-				    while (obj = obj.offsetParent) {
-					     curleft += obj.offsetLeft
-					     curtop += obj.offsetTop
-				    }
-			   }
-			   return [curleft,curtop];
-		  }
-		
+		  --%>
 		
 </script>
 
 
 
-
-<div id="divIframe<%=requestIdentity%>" style="width:100%;">
+<center>
+<div id="divIframe<%=requestIdentity%>" style="width:99%;">
            
            <%
            		String onloadStr = " ";
            		if(!heightSetted)
            			onloadStr = " onload='adaptSize" + requestIdentity + "();' ";
-           		String heightStr = "height:400px;";
-           		if(heightSetted)
+           		//String heightStr = "height:200px;";
+           		 String heightStr = "";
+               if(heightSetted)
            			heightStr = "height:"+heightArea+"px;";	
            %> 
             
@@ -752,7 +782,7 @@
             </script>   
                 
 </div>
-       
+</center>       
 
 
 <!-- ***************************************************************** -->

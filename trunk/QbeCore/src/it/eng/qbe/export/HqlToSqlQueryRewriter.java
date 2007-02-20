@@ -50,7 +50,6 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	public String rewrite(String query) {
 		String sqlQuery = null;		
 		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
-		System.out.println("---> HQL query to convert: " + query);
 		
 		
 		Query hibQuery = session.createQuery(query);
@@ -153,17 +152,7 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		String[] selectEntities = getSelectEntities(getSelectClause(hqlQuery));
 		String[] fieldNames = new String[selectEntities.length];
 		for(int i = 0; i < selectEntities.length; i++) {
-			//fieldNames[i] = selectEntities[i];
 			fieldNames[i] = getEntityName(selectEntities[i]);
-			/*
-			if(fieldNames[i].indexOf("as") != -1) {
-				fieldNames[i] = fieldNames[i].substring(fieldNames[i].indexOf("as")+2, fieldNames[i].length());
-			} else {
-				if(fieldNames[i].lastIndexOf('.') != -1) {
-					fieldNames[i] = fieldNames[i].substring(fieldNames[i].lastIndexOf('.') + 1, fieldNames[i].length());
-				}
-			}
-			*/
 		}
 		
 		String selectSqlBody = getSelectClause(sqlQuery);
@@ -171,11 +160,11 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		String newSelectBody = "";
 		for(int i = 0; i < selectEntities.length; i++) {
 			String selectItem = selectEntities[i];
-			selectItem = selectItem.substring(0, selectItem.indexOf("as")+2);
+			selectItem = selectItem.substring(0, selectItem.indexOf(" as ") + 4);
 			selectItem += " " + fieldNames[i];
 			newSelectBody += ((i!=0)?", ":" ") + selectItem;
 		}		
-		String newQueryWithAlias = "select " + newSelectBody + " " + sqlQuery.substring(sqlQuery.indexOf("from"), sqlQuery.length());
+		String newQueryWithAlias = "select " + newSelectBody + " " + sqlQuery.substring(sqlQuery.indexOf(" from "), sqlQuery.length());
 				
 		return newQueryWithAlias;
 	}

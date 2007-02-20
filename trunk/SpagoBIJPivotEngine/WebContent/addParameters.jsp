@@ -100,8 +100,9 @@ if (action != null && action.trim().equalsIgnoreCase("addParameter")) {
 }
 
 if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
-	if (parameterName != null && parameters.containsKey(parameterName)) {
-		parameters.remove(parameterName);
+	String parameterNameToRemove = request.getParameter("parameterNameToRemove");
+	if (parameterNameToRemove != null && parameters.containsKey(parameterNameToRemove)) {
+		parameters.remove(parameterNameToRemove);
 		parameterName = null;
 	}
 }
@@ -124,12 +125,13 @@ if (action != null && action.trim().equalsIgnoreCase("deleteParameter")) {
 	<p>
 	<b><%=EngineMessageBundle.getMessage("add.parameters.type.parameters", locale)%></b>
 	<br>
+	<input type="hidden" name="action" id="action" value="" />
 	<table cellpadding="5" cellspacing="0" width="48%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
 		<tr>
 			<td style="width: 47%;"><%=EngineMessageBundle.getMessage("add.parameters.parameter.name", locale)%></td>
 			<td style="width: 47%;"><input type="text" name="parameterName" value="<%=(parameterName != null) ? parameterName : ""%>" size="30" /></td>
 			<td rowspan="2" align="center" style="width: 6%;">
-				<input type="image" name="action" value="addParameter"
+				<input type="image" onclick="document.getElementById('action').value='addParameter';document.getElementById('addParametersForm').submit();"
 						title="<%=EngineMessageBundle.getMessage("add.parameters.add", locale)%>" 
 						alt="<%=EngineMessageBundle.getMessage("add.parameters.add", locale)%>" 
 						src="jpivot/table/drill-position-expand.gif" />
@@ -151,6 +153,7 @@ if (parameters.size() > 0) {
 	<br>
 	<form action="addParameters.jsp" method="post" name="deleteParametersForm" id="deleteParametersForm">
 		<input type="hidden" name="action" value="deleteParameter" />
+		<input type="hidden" name="parameterNameToRemove" id="parameterNameToRemove" value="" />
 		<input type="hidden" name="queryWithParameters" value="<%=queryWithParameters%>" />
 		
 		<table cellpadding="5" cellspacing="0" width="48%" style="border:1px solid #7f9db9;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
@@ -170,7 +173,7 @@ if (parameters.size() > 0) {
 					<td><%=aParameterName%></td>
 					<td><%=aParameterUrlName%></td>
 					<td align="center">
-						<input type="image" name="parameterName" value="<%=aParameterName%>"
+						<input type="image" onclick="document.getElementById('parameterNameToRemove').value='<%=aParameterName%>';document.getElementById('deleteParametersForm').submit();"
 							title="<%=EngineMessageBundle.getMessage("add.parameters.remove", locale)%>" 
 							alt="<%=EngineMessageBundle.getMessage("add.parameters.remove", locale)%>" 
 							src="jpivot/table/drill-position-collapse.gif" />

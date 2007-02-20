@@ -45,14 +45,29 @@
 	<!--
 	<panel order="2">
 		<field type="title">
-			<description id="examples.to.install"/>
+			<description txt="Database connection"/>
 		</field>
-		<field type="staticText" align="left" id="examples.to.install"/>
-		<field type="check" variable="SPAGOBI_EXAMPLES">
-			<spec id="examples.description" true="yes" false="no" set="false"/>
+		<field type="combo" variable="DRIVER">
+			<description txt="Driver:"/>
+			<spec>
+				<choice txt="Hsqldb" value="hsqldb" set="true"/>
+				<choice txt="Postgres" value="postgres"/>
+				<choice txt="Mysql" value="mysql"/>
+				<choice txt="Oracle" value="oracle"/>
+			</spec>
 		</field>
-		<divider/>
-		<field type="staticText" align="left" id="examples.warning"/>
+		<field type="text" variable="CONNECTION_URL">
+			<description align="left" txt="Connection url:"/>
+			<spec txt="" size="15" set=""/>
+		</field>
+		<field type="text" variable="USERNAME">
+			<description align="left" txt="Username:"/>
+			<spec txt="" size="15" set=""/>
+		</field>
+		<field type="text" variable="PASSWORD">
+			<description align="left" txt="Password:"/>
+			<spec txt="" size="15" set=""/>
+		</field>
 	</panel>
 	-->
 </userInput>

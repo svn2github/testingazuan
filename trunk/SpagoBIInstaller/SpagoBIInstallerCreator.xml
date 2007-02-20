@@ -42,24 +42,27 @@
     	<res src="IzPanels/userInputLang.xml_ita" id="userInputLang.xml_ita"/>
     	<res src="IzPanels/userInputLang.xml_eng" id="userInputLang.xml_eng"/>
     	<res src="IzPanels/Win_shortcutSpec.xml" id="shortcutSpec.xml"/>
+    	<res src="IzPanels/Unix_shortcutSpec.xml" id="Unix_shortcutSpec.xml"/>
     	<res src="IzPanels/TargetPanel_dir_windows.txt" id="TargetPanel.dir.windows"/>
     	<res src="IzPanels/TargetPanel_dir_unix.txt" id="TargetPanel.dir.unix"/>
+    	<res src="IzPanels/conditions.xml" id="conditions.xml"/>
     	<!--
     	<res src="IzPanels/CustomLangpack_ita.xml" id="CustomLangpack.xml_ita"/>
     	<res src="IzPanels/CustomLangpack_eng.xml" id="CustomLangpack.xml_eng"/>
     	-->
 	</resources>
 	<panels>
-    	<panel classname="HelloPanel"/>
-   		<panel classname="InfoPanel"/>
-   		<panel classname="LicencePanel"/>
-   		<panel classname="UserInputPanel"/>
-   		<panel classname="UserInputPanel"/>
-	    <panel classname="SpagoBITargetPanel"/>
-    	<panel classname="InstallPanel"/>
+    	<panel classname="HelloPanel" id="hellopanel"/>
+   		<panel classname="InfoPanel" id="infopanel"/>
+   		<panel classname="LicencePanel" id="licencepanel"/>
+   		<panel classname="UserInputPanel" id="serverType"/>
+   		<panel classname="UserInputPanel" id="engineAndExamples"/>
+	    <panel classname="SpagoBITargetPanel" id="targetpanel"/>
+	    <!--panel classname="UserInputPanel" id="db_connection_def"/-->
+    	<panel classname="InstallPanel" id="installpanel"/>
     	<!--panel classname="HTMLInfoPanel"/-->
-    	<panel classname="ShortcutPanel"/>
-    	<panel classname="SpagoBIFinishPanel"/>
+    	<panel classname="ShortcutPanel" id="shortcutpanel"/>
+    	<panel classname="SpagoBIFinishPanel" id="finishpanel"/>
 	</panels>
 
     <packs>
@@ -75,6 +78,11 @@
       			<include name="StartSpagoBI_jonas.bat" />
       			<include name="OOStart.bat" />
       			<include name="SpagoBI.ico" />
+      			<include name="StartSpagoBI.sh" />
+      			<include name="StartSpagoBI_jboss.sh" />
+      			<include name="StartSpagoBI_jonas.sh" />
+      			<include name="OOStart.sh" />
+      			<include name="SpagoBI.png" />
 		    </fileset>
 		    <executable targetfile="$INSTALL_PATH/install_spagobi_support_classes.jar" class="it/eng/spagobi/installer/InstallSpagoBIPlatform" type="jar" stage="postinstall"> 
 		    	<args>

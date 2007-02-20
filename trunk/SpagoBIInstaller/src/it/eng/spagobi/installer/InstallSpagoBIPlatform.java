@@ -360,6 +360,22 @@ public class InstallSpagoBIPlatform {
 				jbossStartBat.delete();
 				jonasStartBat.renameTo(tomcatStartBat);
 			}
+			// arrange StartSpagoBI.sh files for different servers
+			File tomcatStartSh = new File(_pathdest + fs + "StartSpagoBI.sh");
+			File jbossStartSh = new File(_pathdest + fs + "StartSpagoBI_jboss.sh");
+			File jonasStartSh = new File(_pathdest + fs + "StartSpagoBI_jonas.sh");
+			if ("tomcat".equalsIgnoreCase(_server_name)) {
+				jbossStartSh.delete();
+				jonasStartSh.delete();
+			} else if ("jboss".equalsIgnoreCase(_server_name)) {
+				tomcatStartSh.delete();
+				jonasStartSh.delete();
+				jbossStartSh.renameTo(tomcatStartSh);
+			} else if ("jonas".equalsIgnoreCase(_server_name)) {
+				tomcatStartSh.delete();
+				jbossStartSh.delete();
+				jonasStartSh.renameTo(tomcatStartSh);
+			}
 		} catch (Exception exc) {
 			return false;
 		}

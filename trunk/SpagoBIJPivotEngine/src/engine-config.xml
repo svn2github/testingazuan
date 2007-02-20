@@ -17,19 +17,10 @@
 					initialContext="java:comp/env"
 					resourceName="jdbc/sbifoodmart"/>
 
-		<CONNECTION name="SirvDWH" 
-					isDefault="false"
-					isJNDI="false" 
-					driver="oracle.jdbc.OracleDriver"
-					user="user030o_dw"
-					password="user030o_dw"
-					jdbcUrl="jdbc:oracle:thin:@10.12.1.1:1521:SIRV"/>
-
 	</CONNECTIONS-CONFIGURATION>
 	
 	<SCHEMAS>
 		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="FoodMart" />
-		<SCHEMA catalogUri="/WEB-INF/queries/F_pagato.xml" name="F_pagato" />
 	</SCHEMAS>
 	
 </ENGINE-CONFIGURATION>

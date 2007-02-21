@@ -6,7 +6,7 @@ else
 sleep 3
 fi
 
-BASEDIR=./bin
-exec ./bin/run.sh "$@" start
+cd ./bin
+exec ./run.sh "$@" start
 
 exit 1

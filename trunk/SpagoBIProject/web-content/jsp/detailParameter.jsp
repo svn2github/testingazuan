@@ -453,13 +453,35 @@
 
 <table style="margin-bottom:5px;width:100%;">
 	<tr>
-		<td colspan="3" align="left" class='portlet-section-header'>
-  	   		<spagobi:message key = "SBIDev.paramUse.valTab3" />
+		<td colspan="3" align="left">
+			<table style="margin:0px;width:100%;">
+				<tr>
+					<td align="left" class='portlet-section-header'>
+  	   					<spagobi:message key = "SBIDev.paramUse.valTab3" />
+  	   				</td>
+  	   				<td width="50px" class='portlet-section-header'>
+			  	   		<a onclick = "checkAllFreeRoles()" title='<spagobi:message 
+			  	   		key = "SBIDev.paramUse.checkAllFreeRoles" />' 
+			  	   		alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
+							<img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() 
+									+ "/img/expertok.gif")%>'/>
+						</a>
+						<a onclick = "uncheckAllFreeRoles()" 
+						title='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />' 
+						alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
+							<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() 
+									+ "/img/erase.png")%>'/>
+						</a>
+					</td>
+				</tr>
+			</table>
   	   	</td>
   	</tr>
   	<% 
   		List roleAssociated = paruse.getAssociatedRoles();
   	    int count = 1;
+  	    // checkableRolesStr contains the number of the roles that are checkable, separated by ','
+  	    String checkableRolesStr = "";
   	    for(int i=0; i<allSysRoles.length; i++) { 
            	if(count==1) out.print("<tr class='portlet-font'>");
             boolean isRole = false;
@@ -480,13 +502,13 @@
   	    		}
   	    	}
   	    	out.print("<td class='portlet-section-body'>");
-  	    	out.print("   <input type='checkbox' name='paruseExtRoleId' value='"+roleId+"' ");
+  	    	out.print("   <input type='checkbox' name='paruseExtRoleId' id='extRole_" + i + "' value='"+roleId+"' ");
   	    	if(isRole) {
   	    		out.print(" checked='checked' ");
   	    	}
   	    	if(!isFree && !isRole) {
   	    		out.print(" disabled='disabled' ");
-  	    	}
+  	    	} else checkableRolesStr += i + ",";
   	    	out.print("></input>" + allSysRoles[i][1]);
   	    	out.print("</td>");
   	    	if((count < 3) && (i==(allSysRoles.length-1))){
@@ -763,10 +785,37 @@ if(var1.style.display != 'inline'){
  var2.disabled = true;
   var3.disabled = true;
  }
- }
- 
- 
+}
 
+
+var checkableRoles = new Array(); 
+<%
+  if (checkableRolesStr.endsWith(",")) checkableRolesStr = checkableRolesStr.substring(0, checkableRolesStr.length() - 1);
+  String[] checkableRoles = checkableRolesStr.split(",");
+  if (checkableRoles != null && checkableRoles.length > 0) {
+	  for (int k = 0; k < checkableRoles.length; k++) {
+	  	%>
+		checkableRoles[<%=k%>]='<%=checkableRoles[k]%>';
+	  	<%
+	  }
+  }
+%>
+
+function checkAllFreeRoles() {
+	for (x in checkableRoles) {
+		aFreeCheckId = checkableRoles[x];
+		aFreeCheck = document.getElementById('extRole_' + aFreeCheckId);
+		aFreeCheck.checked = true;
+	}
+}
+
+function uncheckAllFreeRoles() {
+	for (x in checkableRoles) {
+		aFreeCheckId = checkableRoles[x];
+		aFreeCheck = document.getElementById('extRole_' + aFreeCheckId);
+		aFreeCheck.checked = false;
+	}
+}
 </script>
 
 

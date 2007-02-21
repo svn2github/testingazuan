@@ -37,9 +37,7 @@
 #
 # $Id: catalina.sh,v 1.13.2.1 2004/08/21 15:49:49 yoavs Exp $
 # -----------------------------------------------------------------------------
-
 JAVA_OPTS="$JAVA_OPTS -Xms256m -Xmx256m -XX:MaxPermSize=128m"
-
 # OS specific support.  $var _must_ be set to either true or false.
 cygwin=false
 os400=false

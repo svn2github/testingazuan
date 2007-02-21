@@ -7,6 +7,6 @@ sleep 3
 fi
 
 BASEDIR=./bin
-exec "./bin/unix/jonas start" "$@" start
+exec ./bin/unix/jonas start
 
 exit 1

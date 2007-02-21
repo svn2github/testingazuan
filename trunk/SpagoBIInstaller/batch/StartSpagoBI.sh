@@ -6,7 +6,7 @@ else
 sleep 3
 fi
 
-BASEDIR=./bin
-exec ./bin/exo-run.sh "$@" start
+cd ./bin
+exec ./exo-run.sh "$@" start
 
 exit 1

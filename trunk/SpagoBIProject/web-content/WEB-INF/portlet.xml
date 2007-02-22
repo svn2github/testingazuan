@@ -252,11 +252,18 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	</preference>
         	
         	
-        	<!-- set the percentage width dimension of the notes editor  -->
+        	<!-- set the width dimension of the notes editor  -->
             <preference> 
         		<name>NOTES_EDITOR_WIDTH</name>
-        		<!--the range is from 20 to 60 and the number will be treated as percentage -->
-        		<value>40</value>
+        		<!--the number will be treated as number of pixel  -->
+        		<value>600</value>
+        	</preference>
+        	
+        	<!-- set the height  dimension of the notes editor  -->
+            <preference> 
+        		<name>NOTES_EDITOR_HEIGHT</name>
+        		<!--the number will be treated as number of pixel  -->
+        		<value>300</value>
         	</preference>
         	
         	<!-- if set to true the editor will be opened automatically at object execution  -->

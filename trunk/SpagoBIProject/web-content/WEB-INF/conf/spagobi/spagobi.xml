@@ -25,7 +25,8 @@
 				<NAME_PORTAL_APPLICATION>sbiportal</NAME_PORTAL_APPLICATION>
 			</CONFIG>
 		</PORTAL-SECURITY-CLASS>
-		<USER-PROFILE-FACTORY-CLASS>it.eng.spagobi.security.ExoGroupAsRoleUserProfileFactoryImpl</USER-PROFILE-FACTORY-CLASS>
+		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoGroupAsRoleUserProfileFactoryImpl">
+		</USER-PROFILE-FACTORY-CLASS>
     	<ROLE-NAME-PATTERN-FILTER>/spagobi/.*</ROLE-NAME-PATTERN-FILTER>
 	</SECURITY>
     

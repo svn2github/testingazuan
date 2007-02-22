@@ -34,7 +34,7 @@
 <%
     // dimensions for note window
     int heightNotes = 300;
-    int widthNotes = 400;
+    int widthNotes = 600;
     // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -133,8 +133,13 @@
 			notesEditOpen = true;
 		}
 	
+	 String linkSbijs = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js");
+	
 %>
 
+
+   <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
+      
 
 <% 
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
@@ -197,13 +202,13 @@
         <td class='header-empty-column-portlet-section'>&nbsp;</td>
         <td class='header-button-column-portlet-section'>
            <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
                     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notesEmpty.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
            <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
               href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
                     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notes.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
@@ -232,7 +237,7 @@
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
 			<a style="text-decoration:none;" href='<%=refreshUrl.toString()%>'> 
-				<img width="20px" height="20px"
+				<img width="22px" height="22px"
 					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' 
 					name='refresh' 
 					alt='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' 
@@ -245,13 +250,13 @@
         <td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
         <td class='header-button-column-single-object-execution-portlet-section'>
            <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
                     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notesEmpty.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
            <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
               href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="20px" height="20px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
                     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notes.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
@@ -264,12 +269,6 @@
 <% } %>
 
 
-
-
-
-<div id="divfordimension<%=requestIdentity%>" 
-     style="position:absolute;top:0px;left:0px;height:100%;width:100%;">
-</div>
 
 
 
@@ -292,7 +291,6 @@
 		SessionContainer permSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String nameUser = (String)userProfile.getUserUniqueIdentifier();
-		String linkSbijs = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js");
 		String linkFck = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/FCKeditor/fckeditor.js");
 		String linkProto = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js");
 		String linkProtoWin = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/window.js");
@@ -303,7 +301,6 @@
 		String linkProtoSpreadThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/spread.css");
 %>
 
-<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
 <SCRIPT language='JavaScript' src='<%=linkFck%>'></SCRIPT>
 <script type="text/javascript" src="<%=linkProto%>"></script>
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
@@ -568,8 +565,8 @@
   var oFCKeditor<%=requestIdentity%> = new FCKeditor('editorfckarea<%=requestIdentity%>');
   oFCKeditor<%=requestIdentity%>.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
   oFCKeditor<%=requestIdentity%>.ToolbarSet = 'SbiObjectNotes';
-  oFCKeditor<%=requestIdentity%>.Height = screen.height; 
-  oFCKeditor<%=requestIdentity%>.Width = "100%"; 
+  oFCKeditor<%=requestIdentity%>.Height = <%=heightNotes%> - 35;
+  oFCKeditor<%=requestIdentity%>.Width = <%=widthNotes%> - 5;
   oFCKeditor<%=requestIdentity%>.ReplaceTextarea();
    
   var noteOpen<%=requestIdentity%> = false;
@@ -584,13 +581,21 @@
   }
   
   function openNotes<%=requestIdentity%>() { 
+    
+    frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
+    if(frameFcke<%=requestIdentity%>!=null) {
+        frameFcke<%=requestIdentity%>.height= <%=heightNotes%> - 35;
+        frameFcke<%=requestIdentity%>.width= <%=widthNotes%> - 5; 
+    }
+            
     win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", width:<%=widthNotes%>, height:<%=heightNotes%>});
   	win<%=requestIdentity%>.setDestroyOnClose();
     win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);    
     diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
     pos = findPos(diviframeobj);
   	win<%=requestIdentity%>.showCenter(false, (100+(pos[0]/10)) , (100 + (pos[1]/10)) );
-  	observerClose<%=requestIdentity%> = { 
+  	
+    observerClose<%=requestIdentity%> = { 
       onClose: function(eventName, win) {  
         if(win == win<%=requestIdentity%>) { 
           noteOpen<%=requestIdentity%> = false;
@@ -599,6 +604,49 @@
       }
     }
     Windows.addObserver(observerClose<%=requestIdentity%>);
+  
+    observerResize<%=requestIdentity%> = { 
+      onResize: function(eventName, win) {  
+        if(win == win<%=requestIdentity%>) { 
+            heightwin = win.getSize().height;
+            widthwin = win.getSize().width;
+            frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
+            frameFcke<%=requestIdentity%>.height=heightwin - 35;
+            frameFcke<%=requestIdentity%>.width=widthwin - 5; 
+        }
+      }
+    }
+    Windows.addObserver(observerResize<%=requestIdentity%>);
+   
+  
+    observerEndResize<%=requestIdentity%> = { 
+      onEndResize: function(eventName, win) { 
+        if(win == win<%=requestIdentity%>) {   
+            heightwin = win.getSize().height;
+            widthwin = win.getSize().width;
+            frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
+            frameFcke<%=requestIdentity%>.height=heightwin - 35;
+            frameFcke<%=requestIdentity%>.width=widthwin - 5; 
+        }
+      }
+    }
+    Windows.addObserver(observerEndResize<%=requestIdentity%>);
+  
+  
+    observerMaximize<%=requestIdentity%> = { 
+      onMaximize: function(eventName, win) { 
+        if(win == win<%=requestIdentity%>) {    
+            heightwin = win.getSize().height;
+            widthwin = win.getSize().width;
+            frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
+            frameFcke<%=requestIdentity%>.height=heightwin - 35;
+            frameFcke<%=requestIdentity%>.width=widthwin - 5; 
+        }
+      }
+    }
+    Windows.addObserver(observerMaximize<%=requestIdentity%>); 
+  
+  
   }
   
   
@@ -645,7 +693,7 @@
 		
 		function adaptSize<%=requestIdentity%>() {
 		      
-		      navigatorname = navigator.appName;
+          navigatorname = navigator.appName;
 		      navigatorversion = navigator.appVersion;
           navigatorname = navigatorname.toLowerCase();
           isIE = false;
@@ -660,14 +708,12 @@
           isMoz = (navigatorname.indexOf('explorer') == -1);
           
           // calculate height of the visible area
-          divdim = document.getElementById('divfordimension<%=requestIdentity%>');
           heightVisArea = 0;
           if(isIE5) { heightVisArea = window.document.body.clientHeight; }
           if(isIE6) { heightVisArea = window.document.body.clientHeight; }
-          if(isIE7) { heightVisArea = divdim.offsetHeight; }
-          if(isMoz) { heightVisArea = divdim.offsetHeight; }
-          divdim.style.display="none";
-          
+          if(isIE7) { heightVisArea = window.document.documentElement.clientHeight }
+          if(isMoz) { heightVisArea = window.innerHeight; }
+
           // get the frame div object
           diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
           // find the frame div position
@@ -691,7 +737,7 @@
           }
           if(isIE7) {
 				     heightWinArea = window.document.body.offsetHeight;
-				     heightFooter = heightWinArea - heightVisArea;
+             heightFooter = heightWinArea - heightVisArea;
           }
           if(isMoz) {
 			   	   heightWinArea = window.document.body.offsetHeight;
@@ -704,43 +750,16 @@
 			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 			    iframeEl.style.height = heightFrame + 'px';
 		  }
-		  
-		  
-		  <%--
-		  function adaptSize<%=requestIdentity%>() {
-          heightFrame = 0;
-          heightWinArea = 0;
-          // TODO calculate the heightFooter dynamically
-          heightFooter = 0;
-          navigatorname = navigator.appName;
-          navigatorname = navigatorname.toLowerCase();
-			    if(navigatorname.indexOf('explorer') != -1) {
-				     heightWinArea = window.document.body.offsetHeight;
-				     heightFooter = 110;
-			    } else {
-			   	   heightWinArea = window.innerHeight;
-			   	   heightFooter = 70;
-			    }
-			   	diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
-          pos = findPos(diviframeobj);
-			    heightFrame= heightWinArea - pos[1] - heightFooter;
-			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-			    iframeEl.style.height = heightFrame + 'px';
-		  }
-		  --%>
+		
 		
 </script>
 
 
 
 <center>
-<div id="divIframe<%=requestIdentity%>" style="width:99%;">
+<div id="divIframe<%=requestIdentity%>" style="width:100%;">
            
            <%
-           		String onloadStr = " ";
-           		if(!heightSetted)
-           			onloadStr = " onload='adaptSize" + requestIdentity + "();' ";
-           		//String heightStr = "height:200px;";
            		 String heightStr = "";
                if(heightSetted)
            			heightStr = "height:"+heightArea+"px;";	
@@ -749,9 +768,8 @@
             <iframe id="iframeexec<%=requestIdentity%>" 
                     name="iframeexec<%=requestIdentity%>"
                     src="" 
-                    style="width:100%;display:inline;<%=heightStr%>" 
-                    frameborder="0" 
-                    <%=onloadStr%> ></iframe>
+                    style="width:100%;<%=heightStr%>" 
+                    frameborder="0" ></iframe>
                  
                  
                                 
@@ -778,7 +796,7 @@
             <script>
               button = document.getElementById('button<%=requestIdentity%>');
               button.style.display='none';
-              button.click();               
+              button.click();          
             </script>   
                 
 </div>
@@ -791,4 +809,15 @@
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 
+
+<script>
+<%
+              if(!heightSetted) {
+              %>
+                window.onload = adaptSize<%=requestIdentity%>;
+              <%
+              }
+              %>     
+              
+</script>
 

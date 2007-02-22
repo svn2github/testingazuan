@@ -169,6 +169,7 @@ public class SpagoBIConstants {
 	
 	public static final String PREFERENCE_NOTES_EDITOR_ABLE = "NOTES_EDITOR_ABLE";
 	public static final String PREFERENCE_NOTES_EDITOR_WIDTH = "NOTES_EDITOR_WIDTH";
+	public static final String PREFERENCE_NOTES_EDITOR_HEIGHT = "NOTES_EDITOR_HEIGHT";
 	public static final String PREFERENCE_NOTES_EDITOR_OPEN = "NOTES_EDITOR_OPEN";
 	
 	public static final String MESSAGE_GETOBJECTS_SCHED = "MESSAGE_GETOBJECTS_SCHED";

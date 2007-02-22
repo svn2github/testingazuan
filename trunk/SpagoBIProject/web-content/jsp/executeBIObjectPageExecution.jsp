@@ -32,9 +32,7 @@
                  
 
 <%
-    // dimensions for note window
-    int heightNotes = 300;
-    int widthNotes = 600;
+    
     // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -111,6 +109,7 @@
     } 
     
     
+
     // check if notes editor is able
     boolean edNoteAble = false;
     PortletRequest portReq = PortletUtilities.getPortletRequest();
@@ -119,26 +118,40 @@
     if(edNoteAbleStr.equalsIgnoreCase("true")) {
     	edNoteAble = true;
     }
-	int widthNoteEditor = 40;
-		String widthNoteEditorStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_WIDTH, "40");
-		try{
-			widthNoteEditor = new Integer(widthNoteEditorStr).intValue();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		boolean notesEditOpen = false;
-		String notesEditOpenStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_OPEN, "false");
-		if(notesEditOpenStr.equalsIgnoreCase("true")){
-			notesEditOpen = true;
-		}
+    // get the preference width dimension for notes editor
+	int widthNotes = 600;
+	String widthNoteEditorStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_WIDTH, "600");
+	try{
+		widthNotes = new Integer(widthNoteEditorStr).intValue();
+	} catch (Exception e) {
+		widthNotes = 600;
+		SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "executeBIObjectPageExecution", 
+				              " ", "Error while recovering the width preference of the notes editor", e);
+	}
+	// get the preference height dimension for notes editor
+	int heightNotes = 300;
+	String heightNoteEditorStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_HEIGHT, "300");
+	try{
+		heightNotes = new Integer(heightNoteEditorStr).intValue();
+	} catch (Exception e) {
+		heightNotes = 300;
+		SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "executeBIObjectPageExecution", 
+				              " ", "Error while recovering the height preference of the notes editor", e);
+	}
+	// check if the editor notes as to be opened automatically	
+	boolean notesEditOpen = false;
+	String notesEditOpenStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_OPEN, "false");
+	if(notesEditOpenStr.equalsIgnoreCase("true")){
+		notesEditOpen = true;
+	}
 	
-	 String linkSbijs = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js");
-	
+	// urls for resources 
+	String linkSbijs = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js");
 %>
 
 
-   <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
+   <%@page import="it.eng.spagobi.utilities.SpagoBITracer"%>
+<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
       
 
 <% 
@@ -576,11 +589,11 @@
       // do nothing (close notes with window button)
     } else {
       noteOpen<%=requestIdentity%> = true;
-      openNotes<%=requestIdentity%>();
+      openNotes<%=requestIdentity%>(false);
     } 
   }
   
-  function openNotes<%=requestIdentity%>() { 
+  function openNotes<%=requestIdentity%>(automatic) { 
     
     frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
     if(frameFcke<%=requestIdentity%>!=null) {
@@ -588,12 +601,25 @@
         frameFcke<%=requestIdentity%>.width= <%=widthNotes%> - 5; 
     }
             
-    win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", width:<%=widthNotes%>, height:<%=heightNotes%>});
-  	win<%=requestIdentity%>.setDestroyOnClose();
-    win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);    
     diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
-    pos = findPos(diviframeobj);
-  	win<%=requestIdentity%>.showCenter(false, (100+(pos[0]/10)) , (100 + (pos[1]/10)) );
+    pos = findPos(diviframeobj);        
+    win<%=requestIdentity%> = null;
+    if(automatic) {
+       win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
+  	   win<%=requestIdentity%>.setDestroyOnClose();
+       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);    
+       win<%=requestIdentity%>.show(false);
+       win<%=requestIdentity%>.minimize();
+    } else {
+       win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
+  	   win<%=requestIdentity%>.setDestroyOnClose();
+       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false); 
+       win<%=requestIdentity%>.show(false);   
+       <%--
+       win<%=requestIdentity%>.showCenter(false, (100+(pos[0]/10)) , (100 + (pos[1]/10)) );
+       --%>
+    }
+  	
   	
     observerClose<%=requestIdentity%> = { 
       onClose: function(eventName, win) {  
@@ -650,8 +676,19 @@
   }
   
   
+  <% if(notesEditOpen) { %> 
+  	try{
+    	SbiJsInitializer.automaticOpenNotes<%=requestIdentity%> = function() {openNotes<%=requestIdentity%>(true);};
+    } catch (err) {
+        alert('Cannot open automatically the editor note'); 
+    }
+  <% } %>
+  
+  
   
 </script>
+
+
 
 
 <%	} %>
@@ -688,10 +725,12 @@
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 
-
+<%
+  if(!heightSetted) {
+%>
 <script>
 		
-		function adaptSize<%=requestIdentity%>() {
+		function adaptSize<%=requestIdentity%>Funct() {
 		      
           navigatorname = navigator.appName;
 		      navigatorversion = navigator.appVersion;
@@ -752,8 +791,16 @@
 		  }
 		
 		
+		try{
+         	SbiJsInitializer.adaptSize<%=requestIdentity%> = adaptSize<%=requestIdentity%>Funct;
+    	} catch (err) {
+       		alert('Cannot resize the document view area'); 
+    	}
+		
 </script>
-
+<%  
+  }
+%>   
 
 
 <center>
@@ -810,14 +857,19 @@
 <!-- ***************************************************************** -->
 
 
+
+
+
+
+
+
 <script>
-<%
-              if(!heightSetted) {
-              %>
-                window.onload = adaptSize<%=requestIdentity%>;
-              <%
-              }
-              %>     
+    
+    try{
+      window.onload = SbiJsInitializer.initialize;
+  	} catch (err) {
+      alert('Cannot execute javascript initialize functions'); 
+  	}     
               
 </script>
 

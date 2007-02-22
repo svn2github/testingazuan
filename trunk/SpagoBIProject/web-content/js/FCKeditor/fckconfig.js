@@ -76,13 +76,28 @@ FCKConfig.FloatingPanelsZIndex = 10000 ;
 
 FCKConfig.ToolbarLocation = 'In' ;
 
-
+/*
 FCKConfig.ToolbarSets["SbiObjectNotes"] = [
 	['Bold','Italic','Underline','StrikeThrough','-','TextColor','BGColor'],
 	'/',
 	['OrderedList','UnorderedList','-','Outdent','Indent'],
 	'/',
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull']
+] ;
+*/
+
+FCKConfig.ToolbarSets["SbiObjectNotes"] = [
+   ['Cut','Copy','Paste','PasteText','PasteWord','SpellCheck'],
+   ['Undo','Redo','Find','Replace','SelectAll','RemoveFormat'],
+   ['Bold','Italic','Underline','StrikeThrough','Subscript','Superscript'],
+   '/',
+	['OrderedList','UnorderedList','Outdent','Indent'],
+	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
+	['Link','Unlink','Anchor'],
+	['Image','Table','Rule','Smiley','SpecialChar','PageBreak','UniversalKey'],
+	['TextColor','BGColor'],
+	'/',
+	['Style','FontFormat','FontName','FontSize']
 ] ;
 
 FCKConfig.ToolbarSets["Default"] = [

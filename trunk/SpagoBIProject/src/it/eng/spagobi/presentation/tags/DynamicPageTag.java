@@ -256,7 +256,7 @@ public class DynamicPageTag extends TagSupport {
 		htmlStream.append("			var srcValue = document.getElementById(srcId).value;\n");
 		htmlStream.append("			var destObj = document.getElementById(destId);\n");
 		htmlStream.append("			destObj.value = srcValue;\n");
-		//htmlStream.append("			alert(destObj.value);\n");
+		htmlStream.append("			alert(destObj.value);\n");
 		htmlStream.append("		}\n");
 		htmlStream.append("</script>\n");
 	}
@@ -414,7 +414,7 @@ public class DynamicPageTag extends TagSupport {
 								 "class='portlet-form-input-field' " +
 								 "value='" + getParameterValuesAsString(biparam) + "' " +
 								 "onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "')\" " +									
-								 "/>\n");
+								 "autocomplete='off'/>\n");
 		
 	}
 	
@@ -428,7 +428,7 @@ public class DynamicPageTag extends TagSupport {
 							"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
 									   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
 							"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\"" +							 		  
-							" />\n");
+							"autocomplete='off'/>\n");
 		
 		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"LIST\")' \n");
 		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
@@ -445,7 +445,7 @@ public class DynamicPageTag extends TagSupport {
 						"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
 								   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
 						"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\"" +							 		  
-						" />\n");
+						"autocomplete='off'/>\n");
 	
 		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");
 		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");

@@ -238,7 +238,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		} else id = new Integer(idStr);
 		debug("pageCreationHandler", "BIObject id = " + id);
 		
-		// get parameters statically defined in portlet config file
+		// get parameters statically defined in portlet preferences
 		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
 		debug("pageCreationHandler", "using parameters " + userProvidedParametersStr);
 		
@@ -323,11 +323,25 @@ public class ExecuteBIObjectModule extends AbstractModule
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
 		
+	    // try to get the modality
+		boolean isSingleObjExec = false;
+		String modality = (String) session.getAttribute(SpagoBIConstants.MODALITY);
+	   	if (modality != null && modality.equals(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) 
+	   		isSingleObjExec = true;
+		
 		// if the object can be directly executed (because it hasn't any parameter to be
-		// filled by the user) and if the object has no subobject / snapshots saved then execute it
-		// directly without pass for parameters page 	
-		if( controller.directExecution() &&  (subObjects.size() == 0) && (snapshots.size() == 0) ) {
+		// filled by the user) and if the object has no subobject / snapshots saved or it is a 
+	   	// single object execution modality then execute it directly without pass through parameters page 	
+		if (controller.directExecution() &&  
+				((subObjects.size() == 0 && snapshots.size() == 0) || isSingleObjExec)
+			) {
 			debug("pageCreationHandler", "object hasn't any parameter to fill and no subObjects");
+	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
+			// if there are some errors into the errorHandler does not execute the BIObject
+			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
+				return;
+			}
             execute(obj, null, response);
 		}
 		if(controller.directExecution()) {
@@ -492,13 +506,35 @@ public class ExecuteBIObjectModule extends AbstractModule
 		List subObjects = getSubObjectsList(obj, profile);
         // put in response the list of subobject names
 		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+		// get the list of biobject snapshot
+		List snapshots = getSnapshotList(obj);
+		// put in response the list of snapshot 
+		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
 		// set into the execution controlle the object
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
+		
+		Map paramsDescriptionMap = new HashMap();
+		List biparams = obj.getBiObjectParameters(); 
+	    Iterator iterParams = biparams.iterator();
+	    while(iterParams.hasNext()) {
+	    	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
+	        String nameUrl = biparam.getParameterUrlName();
+	        paramsDescriptionMap.put(nameUrl, "");	        
+	    }
+		
+		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
+		
 		// if the object can be directly executed (because it hasn't any parameter to be
 		// filled by the user) and if the object has no subobject saved then execute it
 		// directly without pass for parameters page 	
 		if( controller.directExecution() &&  (subObjects.size() == 0) ) {
+	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
+			// if there are some errors into the errorHandler does not execute the BIObject
+			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
+				return;
+			}
 			obj.loadTemplate();
             execute(obj, null, response);
 		}
@@ -591,7 +627,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	private void execute(BIObject obj, SubObjectDetail subObj, SourceBean response) {
 		debug("execute", "start execute");
 		EMFErrorHandler errorHandler = getErrorHandler();
-		
+
 		// GET ENGINE ASSOCIATED TO THE BIOBJECT
 		Engine engine = obj.getEngine();
 		
@@ -1039,7 +1075,32 @@ public class ExecuteBIObjectModule extends AbstractModule
         	return;
         }
         
-        iterParams = biparams.iterator();
+        IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+        controlInputParameters(biparams, profile, role);
+		// if there are some errors into the errorHandler does not execute the BIObject
+		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
+			// get the list of the subObjects
+			List subObjects = getSubObjectsList(obj, profile);
+	        // put in response the list of subobject names
+			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+			// get the list of biobject snapshot
+			List snapshots = getSnapshotList(obj);
+			// put in response the list of snapshot 
+			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+			return;
+		}
+        // load the template of the object
+        obj.loadTemplate();
+        // call the execution method        
+        execute(obj, null, response);
+	}
+	
+
+	private void controlInputParameters (List biparams, IEngUserProfile profile, String role) throws Exception {
+		if (biparams == null || biparams.size() == 0) return;
+        Iterator iterParams = biparams.iterator();
         while(iterParams.hasNext()) {
         	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
         	ModalitiesValue modVal = biparam.getParameter().getModalityValue();
@@ -1053,6 +1114,13 @@ public class ExecuteBIObjectModule extends AbstractModule
         		for(int i = 0; i < values.size(); i++) {
         			String value = values.get(i).toString();
         			if(!lovResultHandler.containsValue(value)) {
+        				biparam.setHasValidValues(false);
+        				SpagoBITracer.major("SPAGOBI", 
+                    			this.getClass().getName(), 
+                    			"controlInputParameters", 
+                    			"Parameter '" + biparam.getLabel() + "' cannot assume value '" + value + "'" +
+                    					" for user '" + profile.getUserUniqueIdentifier().toString() 
+                    					+ "' with role '" + role + "'.");
         				List l = new ArrayList();
         				l.add(biparam.getLabel());
         				l.add(value);
@@ -1062,27 +1130,6 @@ public class ExecuteBIObjectModule extends AbstractModule
         		}
         	}
         }
-        
-        
-        errorHandler = getErrorHandler();
-		// if there are some errors into the errorHandler does not execute the BIObject
-		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-			response.setAttribute(SpagoBIConstants.ROLE, role);
-			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			// get the list of the subObjects
-			List subObjects = getSubObjectsList(obj, profile);
-	        // put in response the list of subobject names
-			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
-		}
-        // load the template of the object
-        obj.loadTemplate();
-        // call the execution method        
-        execute(obj, null, response);
 	}
-	
-
-	
 	
 }

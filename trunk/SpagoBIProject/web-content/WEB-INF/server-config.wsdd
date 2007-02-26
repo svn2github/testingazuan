@@ -4,7 +4,7 @@
   <parameter name="sendMultiRefs" value="true"/>
   <parameter name="disablePrettyXML" value="true"/>
   <parameter name="adminPassword" value="admin"/>
-  <parameter name="attachments.Directory" value="C:\Progetti\spago\SpagoAxisService\.deployables\SpagoAxisService\WEB-INF\attachments"/>
+  <parameter name="attachments.Directory" value="../attachments"/>
   <parameter name="dotNetSoapEncFix" value="true"/>
   <parameter name="enableNamespacePrefixOptimization" value="true"/>
   <parameter name="sendXMLDeclaration" value="true"/>

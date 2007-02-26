@@ -134,58 +134,62 @@ public class DynamicPageTag extends TagSupport {
 	
 	public int doStartTag() throws JspException {
 		
-		StringBuffer htmlStream = new StringBuffer();
-				
-		createSetLookupFieldJSFunction(htmlStream);
-		createSetDeleteFlagJSFunction(htmlStream);
-		createClearFieldsJSFunction(htmlStream);
-		createRefreshJSFunction(htmlStream);
-		createClearFieldJSFunction(htmlStream);
-		createSetChangedFlagJSFunction(htmlStream);
-		createSelectAllTextJSFunction(htmlStream);
-		
-		
-		
-		htmlStream.append("<div class='div_detail_area_forms' style='width:" + (getParamLabelDivWidth() + 300) + "px;'>\n");
-      
-        Iterator iter = getBIObject().getBiObjectParameters().iterator();
-        while(iter.hasNext()) {
-        	BIObjectParameter biparam = (BIObjectParameter)iter.next();
-        	
-        	
-        	createParamValueHiddenInput(htmlStream, biparam);        	
-        	createParamChangedHiddenInput(htmlStream, biparam);  
-        	
-        	if (!biparam.isTransientParmeters() && !isSingleValue(biparam)) {  
-        		
-        		createParameterLabelDiv(htmlStream, biparam);        		
-        		String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
-        		
-        		if (objParFatherLabel != null) {
-        			String correlation = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages");
-        			correlation += " " + objParFatherLabel ;
-        			htmlStream.append("		<img src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
-        			htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
-        		}
-        		htmlStream.append("		</div>\n");
-        	}
-        }
-        
-        htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
-        htmlStream.append("			&nbsp;\n");
-        htmlStream.append("		</div>\n");
-        
-        createClearFieldsButton(htmlStream);
-		
-        htmlStream.append("</div>\n");		
-
-       
-		try {
-			pageContext.getOut().print(htmlStream);
-		} catch(IOException ioe) {
-			SpagoBITracer.major("", "DynamicPageTag", "doStartTag", "cannot start tag: IO exception occurred",ioe);
+		BIObject obj = getBIObject();
+		List parameters = obj.getBiObjectParameters();
+		if (parameters != null && parameters.size() > 0) {
+			
+			StringBuffer htmlStream = new StringBuffer();
+					
+			createSetLookupFieldJSFunction(htmlStream);
+			createSetDeleteFlagJSFunction(htmlStream);
+			createClearFieldsJSFunction(htmlStream);
+			createRefreshJSFunction(htmlStream);
+			createClearFieldJSFunction(htmlStream);
+			createSetChangedFlagJSFunction(htmlStream);
+			createSelectAllTextJSFunction(htmlStream);
+			
+			htmlStream.append("<div class='div_detail_area_forms' style='width:" + (getParamLabelDivWidth() + 300) + "px;'>\n");
+	      
+	        Iterator iter = parameters.iterator();
+	        while(iter.hasNext()) {
+	        	BIObjectParameter biparam = (BIObjectParameter)iter.next();
+	        	
+	        	createParamValueHiddenInput(htmlStream, biparam);        	
+	        	createParamChangedHiddenInput(htmlStream, biparam);  
+	        	
+	        	// the biparameter is not showed if one of the following conditions is safisfied:
+	        	// 1. the biparameter is transient and has valid values
+	        	// 2. the biparameter has a single value and has valid value
+	        	if ((!biparam.isTransientParmeters() && !isSingleValue(biparam)) 
+	        			|| !biparam.hasValidValues()) {  
+	        		
+	        		createParameterLabelDiv(htmlStream, biparam);        		
+	        		String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
+	        		
+	        		if (objParFatherLabel != null) {
+	        			String correlation = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages");
+	        			correlation += " " + objParFatherLabel ;
+	        			htmlStream.append("		<img src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
+	        			htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
+	        		}
+	        		htmlStream.append("		</div>\n");
+	        	}
+	        }
+	        
+	        htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
+	        htmlStream.append("			&nbsp;\n");
+	        htmlStream.append("		</div>\n");
+	        
+	        createClearFieldsButton(htmlStream);
+			
+	        htmlStream.append("</div>\n");		
+	       
+			try {
+				pageContext.getOut().print(htmlStream);
+			} catch(IOException ioe) {
+				SpagoBITracer.major("", "DynamicPageTag", "doStartTag", "cannot start tag: IO exception occurred",ioe);
+			}
 		}
-		
 		return SKIP_BODY;
 	}
 		
@@ -256,7 +260,7 @@ public class DynamicPageTag extends TagSupport {
 		htmlStream.append("			var srcValue = document.getElementById(srcId).value;\n");
 		htmlStream.append("			var destObj = document.getElementById(destId);\n");
 		htmlStream.append("			destObj.value = srcValue;\n");
-		htmlStream.append("			alert(destObj.value);\n");
+		//htmlStream.append("			alert(destObj.value);\n");
 		htmlStream.append("		}\n");
 		htmlStream.append("</script>\n");
 	}
@@ -427,7 +431,7 @@ public class DynamicPageTag extends TagSupport {
 							"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
 							"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
 									   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
-							"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\"" +							 		  
+							"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\" " +							 		  
 							"autocomplete='off'/>\n");
 		
 		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"LIST\")' \n");
@@ -444,7 +448,7 @@ public class DynamicPageTag extends TagSupport {
 						"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
 						"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
 								   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
-						"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\"" +							 		  
+						"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\" " +							 		  
 						"autocomplete='off'/>\n");
 	
 		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");

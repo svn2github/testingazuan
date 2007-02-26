@@ -132,9 +132,9 @@
 <div class='div_background_no_img' >
 	
 <!-- if there aren't parameters dont't show the parameter form  -->
-<% if(!noPars) { %>
+<%-- if(!noPars) { --%>
 	<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" />
-<% } %>
+<%-- } --%>
 
 
 <div class='errors-object-details-div'>
@@ -148,7 +148,15 @@
 </form>
 
 
-
+<%
+// if is single object modality, does not consider neither subobjects nor snapshots and closes the page div
+if (isSingleObjExec) {
+	%>
+	</div>
+	<%
+	return;
+}
+%>
 
 <% if( ((subObjs!=null)&&(subObjs.size()!=0))  ||  ((snapshots!=null)&&(snapshots.size()!=0))  ) { %>
 

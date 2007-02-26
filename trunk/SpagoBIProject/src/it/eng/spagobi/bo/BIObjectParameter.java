@@ -80,6 +80,8 @@ public class BIObjectParameter implements Serializable {
 	
 	private String lovResult;
 	
+	private boolean hasValidValues = true;
+	
 	/**
 	 * @return Returns the id of the BIObjectParameter
 	 */
@@ -250,5 +252,14 @@ public class BIObjectParameter implements Serializable {
 	public void setLovResult(String lovResult) {
 		this.lovResult = lovResult;
 	}
+	
+	public boolean hasValidValues() {
+		return hasValidValues;
+	}
+	
+	public void setHasValidValues(boolean hasValidValues) {
+		this.hasValidValues = hasValidValues;
+	}
+
 	
 }

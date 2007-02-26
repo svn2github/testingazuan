@@ -4,8 +4,6 @@
 package it.eng.qbe.javascript;
 
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.security.QbeAccessModality;
-import it.eng.qbe.security.QbeAccessModalityFactory;
 import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.IURLGenerator;
 import it.eng.qbe.urlgenerator.PortletQbeUrlGenerator;

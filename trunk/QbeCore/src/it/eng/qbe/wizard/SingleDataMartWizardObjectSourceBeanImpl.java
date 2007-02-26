@@ -8,6 +8,9 @@ package it.eng.qbe.wizard;
 
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.model.IQuery;
+import it.eng.qbe.model.IStatement;
 import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
@@ -33,7 +36,7 @@ import org.hibernate.Session;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMartWizardObject {
+public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMartWizardObject, IQuery {
 
 	
 	private int subQueryCounter = 0;
@@ -71,7 +74,11 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	
-	
+	public boolean isEmpty(){
+		return (selectClause == null 
+				|| selectClause.getSelectFields() == null 
+				|| selectClause.getSelectFields().size() == 0);
+	}
 	
 	public ISelectClause getSelectClause() {
 		return this.selectClause;
@@ -133,8 +140,6 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	public String getFinalSqlQuery(DataMartModel dm) {
-		
-		
 		
 		String finalSqlQuery = null;
 		
@@ -268,187 +273,11 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	
-	public void composeQuery(){
-		this.finalQuery = null;
-		StringBuffer finalQuery = new StringBuffer();
-		ISelectClause aSelectClause = this.getSelectClause();
-		boolean afterFirst = false;
-		Map fieldToAlias = new HashMap();
-		
-		
-		if (aSelectClause != null){
-			
-			finalQuery.append("select ");
-			java.util.List l= aSelectClause.getSelectFields();
-		 	
-			// if select clause is empty than the query itself is empty so set finalQuery to null
-			if(l == null || l.size() <= 0) {
-				return;
-			}
-			
-		 		
-		 	Iterator it = l.iterator();
-		 
-		 	if (this.getDistinct()){
-		 		finalQuery.append("distinct ");
-		 	}
-		 	
-		 	ISelectField aSelectField = null;
-		 	while (it.hasNext()){
-		 		aSelectField =(ISelectField)it.next();
-		 		if (afterFirst)
-		 			finalQuery.append(", ");
-		 		finalQuery.append(aSelectField.getFieldName());
-		 		
-		 		if (aSelectField.getFieldAlias() != null) {
-		 			if(aSelectField.getFieldNameWithoutOperators().equalsIgnoreCase(aSelectField.getFieldName())) {
-		 				String alias = aSelectField.getFieldAlias().replaceAll(" ","_");
-		 				finalQuery.append(" as "+ alias + " ");
-			 			fieldToAlias.put(aSelectField.getFieldNameWithoutOperators(), alias);
-		 			}
-		 			
-		 			
-		 		}
-		 	
-		 		afterFirst = true;
-		 	}
-			
-		 	
-		} else{
-			 return;
-		}
-		
-		List entityClasses = this.getEntityClasses();
-		
-		
-		afterFirst = false;
-		EntityClass ec = null;
-		if (entityClasses != null){
-			finalQuery.append(" from ");
-			
-			for (Iterator it = entityClasses.iterator(); it.hasNext();){
-				ec =(EntityClass)it.next();
-		 		if (afterFirst)
-		 			finalQuery.append(", ");
-		 		finalQuery.append(ec.getClassName() + " as " + ec.getClassAlias() + " ");
-		 		afterFirst = true;
-			}
-		}
-		 
-	
-		IWhereClause aWhereClause = this.getWhereClause();  
-		afterFirst = false;
-		if (aWhereClause != null){
-		 	finalQuery.append("where \n");
-		 	java.util.List l= aWhereClause.getWhereFields();
-		 	Iterator it = l.iterator();
-		 	
-		 	
-		 	IWhereField aWhereField = null;
-		 	String newFieldValue = null;
-		 	String fieldName = null;
-		 	while (it.hasNext()){
-		 		aWhereField =(IWhereField)it.next();
-		 		fieldName = aWhereField.getFieldName();
-		 		
-		 		for(int i = 0; i < aWhereField.getLeftBracketsNum(); i++) finalQuery.append("(");
-		 		
-		 		finalQuery.append(fieldName);  
-		 		finalQuery.append(" ");
-		 		
-		 		if (aWhereField.getFieldOperator().equalsIgnoreCase("start with")){
-		 			aWhereField.setFieldOperator("like");
-		 			newFieldValue = "";
-		 			newFieldValue = aWhereField.getFieldValue()+"%";
-		 			aWhereField.setFieldValue(newFieldValue);
-		 		}else if (aWhereField.getFieldOperator().equalsIgnoreCase("end with")){
-		 			aWhereField.setFieldOperator("like");
-		 			newFieldValue = "";
-		 			newFieldValue = "%"+ aWhereField.getFieldValue();
-		 			aWhereField.setFieldValue(newFieldValue);
-		 		}else if (aWhereField.getFieldOperator().equalsIgnoreCase("contains")){
-		 			aWhereField.setFieldOperator("like");
-		 			newFieldValue = "";
-		 			newFieldValue = "%"+ aWhereField.getFieldValue()+"%";
-		 			aWhereField.setFieldValue(newFieldValue);
-		 		}
-		 		finalQuery.append(aWhereField.getFieldOperator());
-		 		finalQuery.append(" ");
-		 		String fValue = aWhereField.getFieldValue();
-		 		if (fValue.startsWith("$subquery_") && fValue.endsWith("$")){
-		 			int idx1 = fValue.indexOf("$subquery_");
-		 			int idx2 = fValue.lastIndexOf("$");
-		 			
-		 			idx1 += "$subquery_".length();
-		 			String subQueryFldId = fValue.substring(idx1, idx2);
-		 			ISingleDataMartWizardObject subQueryObject = this.getSubQueryOnField(subQueryFldId);
-		 			subQueryObject.composeQuery();
-		 			finalQuery.append(" ( ");
-		 			finalQuery.append(subQueryObject.getFinalQuery());
-		 			finalQuery.append(" ) ");
-		 		}else{
-		 			if ((aWhereField.getFieldEntityClassForRightCondition() == null)&&(aWhereField.getHibernateType().endsWith("StringType")))
-		 				finalQuery.append("'"+ fValue + "'");
-		 			else
-		 				finalQuery.append( fValue );
-		 		}
-		 		
-		 		for(int i = 0; i < aWhereField.getRightBracketsNum(); i++) finalQuery.append(")");
-		 		
-		 		if (it.hasNext())
-		 			finalQuery.append(" "+aWhereField.getNextBooleanOperator()+" ");
-		 		afterFirst = true;
-		 	}
-		 }
-		
-		IGroupByClause aGroupByClause = this.getGroupByClause();  
-		afterFirst = false;
-		
-		if (aGroupByClause != null){
-			finalQuery.append(" group by ");
-			java.util.List l= aGroupByClause.getGroupByFields();
-		 	Iterator it = l.iterator();
-		 
-		 	
-		 	IOrderGroupByField aOrderGroupByField = null;
-		 	while (it.hasNext()){
-		 		aOrderGroupByField =(IOrderGroupByField)it.next();
-		 		if (afterFirst)
-		 			finalQuery.append(", ");
-		 		
-//		 		if(fieldToAlias.containsKey(aOrderGroupByField.getFieldName()))
-//		 			finalQuery.append(fieldToAlias.get(aOrderGroupByField.getFieldName()) + " ");
-//		 		else
-		 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
-		 		
-		 		afterFirst = true;
-		 	}
-		}
-		
-		IOrderByClause aOrderByClause= this.getOrderByClause();  
-		afterFirst = false;
-		
-		if (aOrderByClause != null){
-			finalQuery.append(" order by ");
-			java.util.List l= aOrderByClause.getOrderByFields();
-		 	Iterator it = l.iterator();
-		 
-		 	
-		 	OrderByFieldSourceBeanImpl aOrderGroupByField = null;
-		 	while (it.hasNext()){
-		 		aOrderGroupByField =(OrderByFieldSourceBeanImpl)it.next();
-		 		if (afterFirst)
-		 			finalQuery.append(", ");
-	 			finalQuery.append(aOrderGroupByField.getFieldName() + " ");
-	 			finalQuery.append(aOrderGroupByField.isAscendingOrder()? "asc": "desc");	 		
-	 			finalQuery.append(" ");
-	 			afterFirst = true;
-		 	}
-		}
-		
-		this.finalQuery = (finalQuery != null ? finalQuery.toString() : null);
-		
-		this.finalQuery = this.finalQuery.trim();
+	public void composeQuery(IDataMartModel dataMartModel){
+		finalQuery = null;
+		IStatement statement = dataMartModel.createStatement(this);
+		statement.setParameters(dataMartModel.getDataMartProperties());
+		finalQuery = statement.getQueryString();
 	
 	}//public void composeQuery(){
 
@@ -632,7 +461,19 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 	
 	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
-		return executeHqlQuery(dataMartModel, getFinalQuery(), pageNumber, pageSize);
+		
+		IStatement statement = dataMartModel.createStatement(this);
+		
+		String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
+		int maxResults = DEFAULT_MAX_ROWS_NUM;
+		if( (maxRowsForSQLExecution!=null) && !(maxRowsForSQLExecution.trim().length()==0) ){
+			maxResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
+		}
+		statement.setMaxResults(maxResults);
+		statement.setParameters(dataMartModel.getDataMartProperties());
+		return statement.executeWithPagination(pageNumber, pageSize);
+		
+		//return executeHqlQuery(dataMartModel, getFinalQuery(), pageNumber, pageSize);
 	}
 	
 	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {

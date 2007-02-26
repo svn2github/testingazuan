@@ -7,6 +7,7 @@
 package it.eng.qbe.wizard;
 
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IDataMartModel;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 
@@ -70,7 +71,7 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	
 	public void setDescription(String queryId);
 	
-	public void composeQuery();
+	public void composeQuery(IDataMartModel datamart);
 	
 	public String getExpertQueryDisplayed();
 	

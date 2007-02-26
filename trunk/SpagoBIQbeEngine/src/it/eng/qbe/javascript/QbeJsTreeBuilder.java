@@ -4,6 +4,8 @@
 package it.eng.qbe.javascript;
 
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.security.QbeAccessModality;
+import it.eng.qbe.security.QbeAccessModalityFactory;
 import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.IURLGenerator;
 import it.eng.qbe.urlgenerator.PortletQbeUrlGenerator;
@@ -51,12 +53,14 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	
 	HttpServletRequest httpRequest = null; 
 	IQbeUrlGenerator qbeUrlGenerator = null;
-	 QbeProperties qbeProperties;
+	QbeProperties qbeProperties;
 	
 	String actionName = null;
 	
 	String modality = DEFAULT_MODALITY;
 	boolean checkable = false;
+	
+	//QbeAccessModality qbeAccessModality;
 	
 	public static final String FULL_MODALITY = "FULL";
 	public static final String LIGHT_MODALITY = "LIGHT";
@@ -72,6 +76,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		this.dataMartWizard = dataMartWizard;
 		this.httpRequest = httpRequest;
 		this.qbeProperties = new QbeProperties(dataMartModel);
+		//this.qbeAccessModality = QbeAccessModalityFactory.getAccessModality("", "");
 		
 		selectedNodes = getSelectdNodes();
 		
@@ -192,6 +197,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		}
 		
 		if(!qbeProperties.isTableVisible(newClassName)) return nodeCounter;
+		//if(!qbeAccessModality.isTableAccessible(newClassName)) return nodeCounter;
+		if(!dataMartModel.getDataMartModelAccessModality().isEntityAccessible(newClassName)) return nodeCounter;
 		
 		
 		// add class node
@@ -413,6 +420,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			 		
 				}else{
 						if(!qbeProperties.isFieldVisible(metaPropertyNames[i])) continue;
+						//if(!qbeAccessModality.isFieldAccessible(newClassName, metaPropertyNames[i])) continue;
+						if(!dataMartModel.getDataMartModelAccessModality().isFieldAccessible(className, metaPropertyNames[i])) continue;
+						
+						
+						
 						Logger.debug(this.getClass()," HibType Class" + aHibType.getClass());
 						nodeCounter++;
 						completeFieldName = metaPropertyNames[i];

@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Gioia
+ * @author Andrea Gioia
  *
  */
 public class QbeSelectJsTreeBuilder extends QbeJsTreeBuilder {

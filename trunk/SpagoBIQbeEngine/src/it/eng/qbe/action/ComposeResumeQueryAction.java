@@ -1,10 +1,10 @@
 
 package it.eng.qbe.action;
 
+import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -29,9 +29,10 @@ public class ComposeResumeQueryAction extends AbstractAction {
 			
 			RequestContainer aRequestContainer = getRequestContainer();
 			SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-			
+			DataMartModel dm = (DataMartModel)aSessionContainer.getAttribute("dataMartModel"); 
+		    
 			ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
-			aWizardObject.composeQuery();
+			aWizardObject.composeQuery(dm);
 			
 			Logger.debug(ISingleDataMartWizardObject.class,"LA QUERY FINALE DEL WIZARD "+ aWizardObject.getFinalQuery());
 		}catch(Exception e){

@@ -14,14 +14,11 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,12 +33,9 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.selectors.FilenameSelector;
-import org.apache.xerces.parsers.IntegratedParserConfiguration;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.type.Type;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 

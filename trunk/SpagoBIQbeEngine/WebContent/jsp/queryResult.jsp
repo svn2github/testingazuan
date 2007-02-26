@@ -146,69 +146,85 @@ function askConfirmation (message) {
 			</td>
   	 		<td width="64%">
 				<form id="formUpdateExpertMode" name="formUpdateExpertMode" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
-				<table> 
-					<tr>				
-					<td rowspan="2" width="30%">
-						<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality", bundle)%></span>
-				 		<input type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
-						<input type="hidden" name="SOURCE_FROM_QUERY_RESULT" value="QUERY_RESULT"/>
-					</td>																																			
-					<% if (aWizardObject.isUseExpertedVersion()) { %>
-						<td width="20%">	
-								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
-									<span class="qbe-font">
-									<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
-									</span>
-								</input>
-								</td>	
-								
-								<td>
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
-								</td>
-								
-								<td width="50%">&nbsp;</td>								
-								</tr>	
-								
-								<tr>
-								<td width="20%">	
-								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
-									<span class="qbe-font">
-										<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
-									</span>
-								</input>
-								</td>	
-								<td>
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
-								</td>
-								</tr>
-							<%} else {%>
-								<td width="20%px">	
-								<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
-									<span class="qbe-font">
+				<input type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
+				<input type="hidden" name="SOURCE_FROM_QUERY_RESULT" value="QUERY_RESULT"/>
+						
+				<table> 																																							
+					<% 
+					String editableStr = null;
+					Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
+					
+					if(functionalities != null) {
+						Properties props = (Properties)functionalities.get("expertQuery");
+						if(props != null) editableStr = props.getProperty("editable");
+					}
+					
+					if(editableStr != null && editableStr.equalsIgnoreCase("FALSE")) { %>
+					
+					
+					
+					<%} else { %>
+						<tr>				
+						<td rowspan="2" width="30%">
+							<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality", bundle)%></span>
+					 	</td>	
+					 <%	if (aWizardObject.isUseExpertedVersion()) { %>
+							<td width="20%">	
+									<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
+										<span class="qbe-font">
 										<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
-									</span>
-								</input>
-								</td>	
-								
-								<td>
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
-								</td>
-								<td width="50%">&nbsp;</td>
-								</tr>
-								
-								<tr>
-								<td width="20%">	
-								<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
-									<span class="qbe-font">
-										<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
-									</span>
-								</input>
-								</td>	
-								<td>
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
-								</td>
-								</tr>
-							<%}%>
+										</span>
+									</input>
+									</td>	
+									
+									<td>
+									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
+									</td>
+									
+									<td width="50%">&nbsp;</td>								
+									</tr>	
+									
+									<tr>
+									<td width="20%">	
+									<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
+										<span class="qbe-font">
+											<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+										</span>
+									</input>
+									</td>	
+									<td>
+									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
+									</td>
+									</tr>
+								<%} else {%>
+									<td width="20%px">	
+									<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" checked="checked" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
+										<span class="qbe-font">
+											<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%>
+										</span>
+									</input>
+									</td>	
+									
+									<td>
+									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
+									</td>
+									<td width="50%">&nbsp;</td>
+									</tr>
+									
+									<tr>
+									<td width="20%">	
+									<input type="radio" name="previewModeFromQueryResult" value="ExpertMode" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview.Tooltip", bundle)%>"> 
+										<span class="qbe-font">
+											<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%>
+										</span>
+									</input>
+									</td>	
+									<td>
+									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
+									</td>
+									</tr>
+								<%}
+							}%>
 				</table>
 				</form>
 			</td>	
@@ -562,7 +578,7 @@ function askConfirmation (message) {
 	<tr>
 		<td></td>
  		<td>
- 			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,msg, bundle).trim()%></span>
+ 			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,msg, bundle)%></span>
 		</td>
 		<td></td>
 	</tr>
@@ -617,7 +633,7 @@ function askConfirmation (message) {
 	<tr>
 		<td></td>					
  		<td>
- 			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,"QBE.Error.GenericError", bundle).trim()%></span>
+ 			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer,"QBE.Error.GenericError", bundle)%></span>
 		</td>
 		<td></td>
 	</tr>
@@ -631,7 +647,7 @@ function askConfirmation (message) {
 	<tr>
 		<td></td>					
  		<td>
- 			<textarea id="txtAreaMsgError" readonly="true" rows="10" cols="80"><%=qbeMsg.getMessage(requestContainer,msg, bundle).trim()%></textarea>
+ 			<textarea id="txtAreaMsgError" readonly="true" rows="10" cols="80"><%=msg%></textarea>
 		</td>
 		<td></td>
 	</tr>

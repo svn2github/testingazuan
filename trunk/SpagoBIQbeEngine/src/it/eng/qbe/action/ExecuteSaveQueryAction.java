@@ -2,7 +2,6 @@
 package it.eng.qbe.action;
 
 import it.eng.qbe.conf.QbeConf;
-import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.IQbeMessageHelper;
 import it.eng.qbe.utility.Logger;
@@ -10,23 +9,12 @@ import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereField;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
 
 
 /**
@@ -204,7 +192,7 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 				getDataMartWizard().setUseExpertedVersion( isExpertExecutionModeEnabled(request) );			
 			}  				
 		
-			getDataMartWizard().composeQuery();	
+			getDataMartWizard().composeQuery(getDataMartModel());	
 	
 			if (!checkJoins(request, response)){
 				returnError(response, "QBE.Warning.Join");
@@ -218,14 +206,14 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 					SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
 					getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
 				}catch (HibernateException he) {
-					Logger.error(ExecuteSaveQueryAction.class, he);
-					returnError(response, he.getCause().getMessage());
+					Logger.error(ExecuteSaveQueryAction.class, he);					
+					returnError(response, he.getLocalizedMessage() + "\n" + he.getCause().getLocalizedMessage());
 				}catch (java.sql.SQLException se) {
 					Logger.error(ExecuteSaveQueryAction.class, se);
-					returnError(response, se.getMessage());
+					returnError(response, se.getLocalizedMessage());
 				}catch(Exception e){
 					Logger.error(ExecuteSaveQueryAction.class, e);
-					returnError(response, e.getMessage());					
+					returnError(response, e.getLocalizedMessage());					
 				}
 		}//else
 		}else{

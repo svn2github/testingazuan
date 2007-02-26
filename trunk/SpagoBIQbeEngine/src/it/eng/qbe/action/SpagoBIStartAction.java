@@ -1,7 +1,7 @@
 package it.eng.qbe.action;
 
+import it.eng.qbe.conf.QbeConf;
 import it.eng.qbe.utility.Logger;
-import it.eng.qbe.utility.SpagoBIInfo;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import sun.misc.BASE64Decoder;
 
@@ -90,12 +91,14 @@ public class SpagoBIStartAction extends AbstractAction {
 				
 		try {
 			String templatePath = (String)parameters.get("templatePath");
+			parameters.remove("templatePath");
 			String spagobiurl = (String)parameters.get("spagobiurl");
+			parameters.remove("spagobiurl");
 			String user = (String)parameters.get("user");
-			//SpagoBIInfo spagoBIInfo = new SpagoBIInfo(templatePath, spagobiurl, user);
-			//session.setAttribute("spagobi", spagoBIInfo);
+			parameters.remove("user");
 			
 			String template = (String)parameters.get(TEMPLATE);
+			parameters.remove(TEMPLATE);
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			template = new String(bASE64Decoder.decodeBuffer(template));
 			System.out.println("Template: " + template);
@@ -103,6 +106,14 @@ public class SpagoBIStartAction extends AbstractAction {
 			SourceBean templateSB = SourceBean.fromXMLString(template);
 			SourceBean datamartSB = (SourceBean)templateSB.getAttribute("DATAMART");
 			SourceBean datasourceSB = (SourceBean)templateSB.getAttribute("DATASOURCE");
+			SourceBean modalitySB = (SourceBean)templateSB.getAttribute("MODALITY");
+			
+			session.delAttribute("FUNCTIONALITIES");
+			SourceBean functionalitiesSB = (SourceBean)templateSB.getAttribute("FUNCTIONALITIES");
+			Map functionalities = null;
+			if(functionalitiesSB != null)
+				functionalities = QbeConf.getInstance().getFunctianalityProperties(functionalitiesSB);
+			if(functionalities != null) session.setAttribute("FUNCTIONALITIES", functionalities);
 						
 			String dmName = (String)datamartSB.getAttribute("name");
 			System.out.println("Path: " + dmName);
@@ -113,13 +124,26 @@ public class SpagoBIStartAction extends AbstractAction {
 			System.out.println("Dialect: " + dsDialect);
 						
 			String queryId = (String)parameters.get("query");
+			parameters.remove("query");
 			System.out.println("Query: " + queryId);
 			
 			String country = (String)parameters.get("country");
+			parameters.remove("country");
 			System.out.println("country: " + country);
 			
 			String language = (String)parameters.get("language");
+			parameters.remove("language");
 			System.out.println("language: " + language);
+			
+			String props = "";
+			Iterator it = parameters.keySet().iterator();
+			while(it.hasNext()) {
+				String parameterName = (String)it.next();
+				Object parameterValue = parameters.get(parameterName);
+				if(parameterValue.getClass().getName().equalsIgnoreCase(String.class.getName())) {
+					props += parameterName + "=" + parameterValue + "\n";
+				}
+			}
 			
 			response.setAttribute(SPAGOBI_USER, user);
 			response.setAttribute(SPAGOBI_URL, spagobiurl);
@@ -130,6 +154,8 @@ public class SpagoBIStartAction extends AbstractAction {
 			response.setAttribute(QUERI_ID, queryId);
 			response.setAttribute(SPAGOBI_COUNTRY, country);
 			response.setAttribute(SPAGOBI_LANGUAGE, language);
+			response.setAttribute("DATAMART_PROPERTIES", props.toString());
+			if(modalitySB != null) response.setAttribute("MODALITY", modalitySB.toString());
 		} catch (SourceBeanException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

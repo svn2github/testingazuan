@@ -1,17 +1,10 @@
 package it.eng.qbe.action;
 
+import it.eng.qbe.datasource.HibernateDataSource;
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
-
-import org.hibernate.SessionFactory;
 
 
 /**
@@ -23,12 +16,18 @@ import org.hibernate.SessionFactory;
  */
 public class DetailDataMartAction extends AbstractAction {
 
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	/**
+	 * Builds an empty datamart just to retrive all the datamarts defined and saved
+	 * TODO buid a proper class to do this job and build the datamart only once when
+	 * all the data are in place
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-       DataMartModel dataMartModel = new DataMartModel((String)request.getAttribute("PATH"), null, null);
-       getRequestContainer().getSessionContainer().setAttribute("dataMartModel", dataMartModel);
+		String path = (String)request.getAttribute("PATH");
+		IDataSource dataSource = new HibernateDataSource(path, null, null);
+		DataMartModel dataMartModel = new DataMartModel(dataSource);
+				
+		//DataMartModel dataMartModel = new DataMartModel(, null, null);
+		getRequestContainer().getSessionContainer().setAttribute("dataMartModel", dataMartModel);
        
 	}
 }

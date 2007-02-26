@@ -5,7 +5,6 @@ import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISelectClause;
 import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;

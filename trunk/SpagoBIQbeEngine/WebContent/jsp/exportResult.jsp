@@ -24,7 +24,7 @@
 
 	String jarFilePath = dm.getJarFile().toString();
 	//dm.updateCurrentClassLoader();
-	aWizardObject.composeQuery();
+	aWizardObject.composeQuery(dm);
 	String msg  = null;
 	try{
 		 Object o = aServiceResponse.getAttribute("ERROR_MSG");

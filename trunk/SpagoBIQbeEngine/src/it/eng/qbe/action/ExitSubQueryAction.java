@@ -1,6 +1,5 @@
 package it.eng.qbe.action;
 
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;

@@ -24,7 +24,7 @@
   
    
       
-   aWizardObject.composeQuery();
+   aWizardObject.composeQuery(dm);
    //dm.updateCurrentClassLoader();
    
 %>
@@ -56,8 +56,253 @@
 
 <div class='div_background_no_img'>
 
+<%
+	String editableStr = null;
+	Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
+	
+	if(functionalities != null) {
+		Properties props = (Properties)functionalities.get("expertQuery");
+		if(props != null) editableStr = props.getProperty("editable");
+	}
+	
+	if(editableStr != null && editableStr.equalsIgnoreCase("FALSE")) {
+		if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)){
+%>
+	<table width="100%">
+	<tr>
+		<td width="2%">
+			&nbsp;
+		</td>
+		<td width="86%">
+			&nbsp;
+		</td>
+		<td width="2%">
+			&nbsp;
+		</td>
+	</tr>			
+	
+	
+	
+	
+	<tr>  
 		
-<% if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)){%> 
+		
+		<%-- Left space column  --%>
+		<td>&nbsp;</td> 
+	 
+	 
+	 
+	  <%-- Start Left column  --%>
+		<td class="qbe-td-form">
+			<table valign="top">
+				<tr>
+					<td>
+						<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.QbeAutomaticallyComposition", bundle)%></span>
+					</td>
+				<tr>						
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+				<tr>
+				<tr>
+					<td>
+						<table class="qbe-font" width="100%">
+						<%  int rowsCounter = 1;
+							if (aWizardObject.getFinalQuery() != null){ 
+									 
+									 if (aWizardObject.getSelectClause() != null){ %>
+									
+							<tr border=2>
+								<td colspan="2"> <b>Select </b> 
+										<% if (aWizardObject.getDistinct()) {%>
+								    		<b> distinct</b>
+								    	<% } %>
+								</td> 			
+							</tr>
+									
+									<% List selectedFields = aWizardObject.getSelectClause().getSelectFields(); 
+									   java.util.Iterator it = selectedFields.iterator();
+									   ISelectField selectF = null;
+									   while (it.hasNext()){
+										   selectF = (ISelectField)it.next();
+										   rowsCounter++;
+								    %>
+								    	<tr>
+								    	<td>&nbsp;<%= selectF.getFieldName() %> 
+								    	<% if (selectF.getFieldAlias() != null) {%>
+								    		as <%=selectF.getFieldAlias() %>
+								    	<% } %>
+								    	<% if (it.hasNext()){ %>
+								    		,
+								    	<% } %>
+								    	</td>
+								    	</tr>
+									<%    } %>
+									<%  } %>
+									
+									<% if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)) { 
+										rowsCounter++;
+									%>
+									<tr>
+										<td colspan="2"><b> From </b></td> 
+										
+									</tr>
+									
+									<% List enityClasses = aWizardObject.getEntityClasses();
+									   java.util.Iterator it = enityClasses.iterator();
+									   EntityClass ec = null;
+									   while (it.hasNext()){
+										   ec = (EntityClass)it.next();
+										   rowsCounter++;
+								    %>
+								    	<tr>
+								    	<td>&nbsp;<%= ec.getClassName() %> 
+								    	<% if (ec.getClassAlias() != null) {%>
+								    		as <%=ec.getClassAlias() %>
+								    	<% } %>
+								    	<% if (it.hasNext()){ %>
+								    		,
+								    	<% } %>
+								    	</td>
+								    	</tr>
+									<%    } %>
+									<%  } %>
+									
+									<% if (aWizardObject.getWhereClause() != null){ 
+										rowsCounter++;
+									%>
+									   <tr>
+										<td colspan="2"> <b>Where</b> </td>
+									   </tr>
+									<% List conditionFields = aWizardObject.getWhereClause().getWhereFields(); 
+										java.util.Iterator it = conditionFields.iterator();
+									   IWhereField conditionF = null;
+									   while (it.hasNext()){
+										   conditionF = (IWhereField)it.next();
+										   rowsCounter++;
+										   String leftBracketsStr = "";
+										   for(int j = 0; j < conditionF.getLeftBracketsNum(); j++) leftBracketsStr += "(";
+								    
+										   String rightBracketsStr = "";
+										   for(int j = 0; j < conditionF.getRightBracketsNum(); j++) rightBracketsStr += ")";
+								    
+								    %>
+								    	<tr>
+								    	<td>&nbsp;<%=leftBracketsStr + conditionF.getFieldName()%>
+								    	<b><%= " " + conditionF.getFieldOperator() + " "%></b> 
+								    	<% if ((conditionF.getFieldEntityClassForRightCondition() == null)&&(conditionF.getHibernateType().endsWith("StringType"))){ %>
+								    	<%=" '"+conditionF.getFieldValue()+ "' "%>
+								    	<% }else{ %>
+								    	<%=" "+ conditionF.getFieldValue() + " "%>
+								    	<% } %>
+								    	<%=rightBracketsStr%>
+								    	<% if (it.hasNext()) {%>
+								    	&nbsp;<%=conditionF.getNextBooleanOperator() %>
+								    	<% } %>
+								    	</td>
+								    	</tr>
+									<%    } %>
+									<% } %>
+									
+									
+									<% if (aWizardObject.getGroupByClause() != null){
+										rowsCounter++;
+									%>
+									<tr>
+										<td colspan="2"> <b>Group By</b> </td>
+									  </tr>
+									<% List groupByFields = aWizardObject.getGroupByClause().getGroupByFields(); 
+									   java.util.Iterator it = groupByFields.iterator();
+									   IOrderGroupByField groupF = null;
+									   while (it.hasNext()){
+										   groupF = (IOrderGroupByField)it.next();
+										   rowsCounter++;
+								    %>
+								    	<tr>
+								    		<td>&nbsp;<%= groupF.getFieldName() %>
+								    		<% if (it.hasNext()){ %>
+								    		,
+								    		<% } %>
+								    		</td>
+								    	</tr>
+									<%    } %>
+									<%  } %>
+									<% if (aWizardObject.getOrderByClause() != null){ 
+										rowsCounter++;
+									%>
+									<tr>
+										<td colspan="2"><b> Order By</b> </td>
+									   </tr>
+									<% List orderByFields = aWizardObject.getOrderByClause().getOrderByFields(); 
+									   java.util.Iterator it = orderByFields.iterator();
+									   OrderByFieldSourceBeanImpl orderF = null;
+									   while (it.hasNext()){
+										   orderF = (OrderByFieldSourceBeanImpl)it.next();
+										   rowsCounter++;
+								    %>
+								    	<tr>
+								    	<td>&nbsp;<%= orderF.getFieldName() %> 
+								    	&nbsp;<%= orderF.isAscendingOrder()? "ASC": "DESC"%> 
+								    	<% if (it.hasNext()){ %>
+								    		,
+								    		<% } %>
+								    	 	</td>
+								    	</tr>
+									<%    } %>
+									<%  } %>
+								
+									<% 
+									
+										if (rowsCounter<11) rowsCounter=10;
+										else {
+											rowsCounter = (int)Math.floor((10 + (rowsCounter-10)*1.5));
+
+										}
+										
+									%>
+							
+							<%} %>	
+						</table>
+					</td>	
+				</tr>		
+			</table>
+		</td>
+		
+		<%-- Left space column  --%>
+		<td>&nbsp;</td>
+	</tr>
+</table>
+	<%} else { %>
+<table width="100%">
+	<tr>
+		<td width="3%">
+			&nbsp;
+		</td>
+		<td width="97%">
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="top">
+			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer, "QBE.Warning.NoFieldSelected", bundle) %></span>	
+		</td>
+	</tr>
+	<tr>
+		<td>
+			&nbsp;
+		</td>
+	</tr>
+</table>
+  
+<div id="divSpanCurrent">
+ <span id="currentScreen">DIV_RESUME_QUERY</span>
+</div>
+  
+	<%}%>
+
+<% } else if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)){%> 
 <table width="100%">
 	<tr>
 		<td width="2%">
@@ -267,9 +512,7 @@
     <%-- End Left column  --%>
 
 
-
-
-	  <%-- Start central column --%>
+  <%-- Start central column --%>
 	  <td align="center" valign="middle">
 	   				<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/alignexpert.gif")%>" 
 	   						 alt="<%=qbeMsg.getMessage(requestContainer,"QBE.alt.imgRresumeFromQbe", bundle) %>" 
@@ -280,12 +523,7 @@
 							 <%=qbeMsg.getMessage(requestContainer, "QBE.alt.resumeFromQbe", bundle) %>						
 						</a>
 	  </td>
-		<%-- End central column --%>
-
-
-
-
-
+	  <%-- End central column --%>
 
 
 
@@ -355,15 +593,17 @@
 		</td>
 		<%-- Start right column --%>
 		 
-		 
+		  
+		
 		 
 		<%-- Right space column --%> 
 		<td>&nbsp;</td>
 		
 		
+		
 	</tr>
 	
-	
+
 	
 	
 	<tr>
@@ -402,9 +642,7 @@
 		</td>
     <td colspan="3">&nbsp</td>
 	</tr>
-	
-	
-	
+
 	
 </table> 
 

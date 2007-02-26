@@ -1,11 +1,11 @@
 package it.eng.qbe.action;
 
-import groovy.util.GroovyScriptEngine;
+import it.eng.qbe.datasource.HibernateDataSource;
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractAction;
 
 import org.hibernate.SessionFactory;
@@ -26,20 +26,22 @@ public class SelectDataMartAction extends AbstractAction {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
 		
-		String jndiDataSourceName = (String)request.getAttribute("JNDI_DS");
-		
-		String dialect = (String)request.getAttribute("DIALECT");
-		
+		String jndiDataSourceName = (String)request.getAttribute("JNDI_DS");		
+		String dialect = (String)request.getAttribute("DIALECT");		
 		String dmPath = (String)request.getAttribute("PATH");
 		
-		DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
+		IDataSource dataSource = new HibernateDataSource(dmPath, jndiDataSourceName, dialect);
+		DataMartModel dmModel = new DataMartModel(dataSource);
+			
+		
+		//DataMartModel dmModel = new DataMartModel(dmPath, jndiDataSourceName, dialect);
 		
 		ApplicationContainer application = ApplicationContainer.getInstance();
 		
 		ApplicationContainer.getInstance().setAttribute("CURRENT_THREAD_CONTEXT_LOADER", Thread.currentThread().getContextClassLoader());
 		
-		dmModel.setName(dmModel.getPath());
-		dmModel.setDescription(dmModel.getPath());
+		dmModel.setName(dmPath);
+		dmModel.setDescription(dmPath);
 		
 		
 		

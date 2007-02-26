@@ -1,19 +1,18 @@
 
 package it.eng.qbe.action;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereClause;
 import it.eng.qbe.wizard.IWhereField;
-import it.eng.qbe.wizard.WhereFieldSourceBeanImpl;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+
+import java.util.Iterator;
+import java.util.List;
 
 
 /**

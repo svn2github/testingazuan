@@ -21,13 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.conf;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import it.eng.qbe.utility.IDataMartModelRetriever;
 import it.eng.qbe.utility.IQbeMessageHelper;
-import it.eng.qbe.utility.Utils;
+import it.eng.qbe.utility.IQueryPersister;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -47,7 +51,7 @@ public class QbeConf {
 	}
 	
 	private QbeConf() {
-		config = ConfigSingleton.getInstance();
+		config = ConfigSingleton.getInstance();	
 	}
 	
 	public SourceBean getConfig() {
@@ -94,4 +98,52 @@ public class QbeConf {
 		}
 		return jndiConnectionName;
 	}
+	
+	public IDataMartModelRetriever getDataMartModelRetriever() throws Exception {		
+		String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
+		IDataMartModelRetriever dataMartModelRetriever = (IDataMartModelRetriever)Class.forName(dataMartModelRetrieverClassName).newInstance();
+		return dataMartModelRetriever;
+	}
+	
+	public IQueryPersister getQueryPersister() throws Exception{
+		String queryPersisterClass = (String)ConfigSingleton.getInstance().getAttribute("QBE.QUERY-PERSISTER.className");
+		IQueryPersister queryPersister = (IQueryPersister)Class.forName(queryPersisterClass).newInstance();
+		return queryPersister;
+	}
+	
+	
+	
+	private void addFunctianalityProperties(Map functionalities, String functionalityName, Properties props) {
+		Properties p = (Properties)functionalities.get(functionalityName);
+		if(p == null) {
+			p = new Properties();
+		}
+		p.putAll(props);
+		functionalities.put(functionalityName, p);
+	}
+	
+	public Map getFunctianalityProperties(SourceBean functionalitiesSB) {
+		Map functionalities = new HashMap();
+		
+		List list = functionalitiesSB.getAttributeAsList("FUNCTIONALITY");
+		for(int i = 0; i < list.size(); i++) {
+			SourceBean functionalitySB = (SourceBean)list.get(i);
+			String functionalityName = (String)functionalitySB.getAttribute("name");
+			Properties props = new Properties();
+			List parameters = functionalitySB.getAttributeAsList("PARAMETER");
+			for(int j = 0; j < parameters.size(); j++) {
+				SourceBean parameterSB = (SourceBean)parameters.get(j);
+				String parameterName = (String)parameterSB.getAttribute("name");
+				String parameterValue = (String)parameterSB.getAttribute("value");
+				props.put(parameterName, parameterValue);
+			}
+			addFunctianalityProperties(functionalities, functionalityName, props);
+		}
+		
+		return functionalities;
+	}
+	
+	
+	
+	
 }

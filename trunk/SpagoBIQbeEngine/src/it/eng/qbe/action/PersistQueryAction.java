@@ -5,7 +5,6 @@ import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.SpagoBIInfo;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;

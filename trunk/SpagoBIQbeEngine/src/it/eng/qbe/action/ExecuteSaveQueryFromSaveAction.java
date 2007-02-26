@@ -9,17 +9,12 @@ import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereField;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
 
 
 /**
@@ -123,7 +118,7 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 		if ((getDataMartWizard().getSelectClause() != null) && (getDataMartWizard().getSelectClause().getSelectFields().size() > 0)){
 			
 		
-		getDataMartWizard().composeQuery();
+		getDataMartWizard().composeQuery(getDataMartModel());
 		
 		if ((getDataMartWizard().getExpertQueryDisplayed() == null)||(getDataMartWizard().getExpertQueryDisplayed().trim().length() == 0)){
 			try{

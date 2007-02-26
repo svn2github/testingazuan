@@ -2,6 +2,7 @@ package it.eng.qbe.urlgenerator;
 
 import it.eng.qbe.action.SelectCalculatedFieldForSelectAction;
 import it.eng.qbe.action.SelectFieldForSelectAction;
+
 import java.util.HashMap;
 import java.util.Map;
 

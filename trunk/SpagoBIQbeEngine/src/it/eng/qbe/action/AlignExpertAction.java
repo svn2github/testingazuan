@@ -1,18 +1,17 @@
 
 package it.eng.qbe.action;
 
-import org.hibernate.SessionFactory;
-
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+
+import org.hibernate.SessionFactory;
 
 
 /**
@@ -36,7 +35,7 @@ public class AlignExpertAction extends AbstractAction {
 			DataMartModel dm = (it.eng.qbe.model.DataMartModel)aSessionContainer.getAttribute("dataMartModel"); 
 		    ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 			
-		    aWizardObject.composeQuery();
+		    aWizardObject.composeQuery(dm);
 			SessionFactory sf = Utils.getSessionFactory(dm, ApplicationContainer.getInstance());
 			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(sf.openSession());
 			String sqlQuery = queryRewriter.rewrite( aWizardObject.getFinalQuery() );

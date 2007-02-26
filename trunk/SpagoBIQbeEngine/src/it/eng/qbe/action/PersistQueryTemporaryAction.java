@@ -1,21 +1,17 @@
 
 package it.eng.qbe.action;
 
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.Writer;
-
-import javax.servlet.http.HttpServletResponse;
-
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;

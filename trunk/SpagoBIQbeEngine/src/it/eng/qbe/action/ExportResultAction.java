@@ -1,18 +1,17 @@
 
 package it.eng.qbe.action;
 
-import org.hibernate.HibernateException;
-
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
+
+import org.hibernate.HibernateException;
 
 
 /**
@@ -50,7 +49,7 @@ public class ExportResultAction extends AbstractAction {
 		DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
 			
 		String query = null;
-		aWizardObject.composeQuery();
+		aWizardObject.composeQuery(dataMartModel);
 		if (aWizardObject.isUseExpertedVersion()){
 			query = aWizardObject.getExpertQueryDisplayed();
 		}else{

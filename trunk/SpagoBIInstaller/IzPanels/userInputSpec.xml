@@ -35,39 +35,56 @@
 		<field type="check" variable="WEKA">
 			<spec id="SpagoBIWekaEngine.description" true="yes" false="no" set="true"/>
 		</field>
-		<divider/>
+		<field type="space" />
 		<field type="staticText" align="left" id="examples.to.install"/>
 		<field type="check" variable="SPAGOBI_EXAMPLES">
 			<spec id="examples.description" true="yes" false="no" set="false"/>
 		</field>
 		<field type="staticText" align="left" id="examples.warning"/>
 	</panel>
-	<!--
 	<panel order="2">
 		<field type="title">
-			<description txt="Database connection"/>
+			<description id="database.connection.def"/>
 		</field>
+		<field type="staticText" align="left" id="database.connection.def"/>
+		<field type="space" />
 		<field type="combo" variable="DRIVER">
-			<description txt="Driver:"/>
+			<description id="database.driver"/>
 			<spec>
-				<choice txt="Hsqldb" value="hsqldb" set="true"/>
-				<choice txt="Postgres" value="postgres"/>
-				<choice txt="Mysql" value="mysql"/>
-				<choice txt="Oracle" value="oracle"/>
+				<choice txt="org.hsqldb.jdbcDriver" value="org.hsqldb.jdbcDriver" set="true"/>
+				<choice txt="org.postgresql.Driver" value="org.postgresql.Driver"/>
+				<choice txt="com.mysql.jdbc.Driver" value="com.mysql.jdbc.Driver"/>
+				<choice txt="oracle.jdbc.OracleDriver" value="oracle.jdbc.OracleDriver"/>
 			</spec>
 		</field>
+		<field type="space" />
+		<!--
 		<field type="text" variable="CONNECTION_URL">
-			<description align="left" txt="Connection url:"/>
-			<spec txt="" size="15" set=""/>
+			<description align="left" id="database.connection.url"/>
+			<spec txt="" size="50" set=""/>
 		</field>
+		<field type="space" />
 		<field type="text" variable="USERNAME">
-			<description align="left" txt="Username:"/>
-			<spec txt="" size="15" set=""/>
+			<description align="left" id="database.username"/>
+			<spec txt="" size="25" set=""/>
 		</field>
+		<field type="space" />
+		-->
+		<field type="rule" variable="CONNECTION_URL">
+			<description align="left" id="database.connection.url"/>
+			<spec txt="" layout="O:30:U" resultFormat="plainString"/>
+			<validator class="com.izforge.izpack.util.NotEmptyValidator" txt="The connection url is mandatory!" />
+		</field>
+		<field type="space" />
+		<field type="rule" variable="USERNAME">
+			<description align="left" id="database.username"/>
+			<spec txt="" layout="O:15:U" resultFormat="plainString"/>
+			<validator class="com.izforge.izpack.util.NotEmptyValidator" txt="The username is mandatory!" />
+		</field>
+		<field type="space" />
 		<field type="text" variable="PASSWORD">
-			<description align="left" txt="Password:"/>
-			<spec txt="" size="15" set=""/>
+			<description align="left" id="database.password"/>
+			<spec txt="" size="18" set=""/>
 		</field>
 	</panel>
-	-->
 </userInput>

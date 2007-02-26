@@ -12,6 +12,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.httpclient.DefaultMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.methods.GetMethod;
+
 public class FileUtilities {
 
 	
@@ -170,4 +177,48 @@ public class FileUtilities {
 		return true;
 	}
 	
+	public static void downloadFile(String url, String fileDest) {
+		HttpClient client = new HttpClient();
+	    client.getHostConfiguration().setProxy("proxy.eng.it", 3128);
+	    client.getState().setProxyCredentials(null, "proxy.eng.it",
+	    new UsernamePasswordCredentials("username", "password"));
+	    GetMethod httpget = new GetMethod(url);
+	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
+	    retryhandler.setRequestSentRetryEnabled(false);
+	    retryhandler.setRetryCount(3);
+	    httpget.setMethodRetryHandler(retryhandler);
+        try {
+            // Execute the method.
+            int statusCode = client.executeMethod(httpget);
+            if (statusCode != HttpStatus.SC_OK) {
+              System.err.println("Method failed: " + httpget.getStatusLine());
+            }
+            // Read the response body.
+            Header header = httpget.getResponseHeader("Content-Length");
+            String length = header.getValue();
+            Integer dimension = new Integer(length);
+            InputStream is = httpget.getResponseBodyAsStream();
+            File destFile = new File(fileDest);
+            FileOutputStream fos = new FileOutputStream(destFile);
+			byte[] buffer = new byte[1024];
+			//int len;
+			int count = 0;
+			double readed = 0;
+			while ((count = is.read(buffer)) >= 0) {
+				fos.write(buffer);
+				readed += count;
+				int percent = (int) readed/dimension.intValue()*100;
+				System.out.print("Download: " + percent);
+			}
+			is.close();
+    		fos.flush();
+    		fos.close();
+          } catch (IOException e) {
+            System.err.println("Failed to download file.");
+            e.printStackTrace();
+          } finally {
+            // Release the connection.
+        	  httpget.releaseConnection();
+          }
+	}
 }

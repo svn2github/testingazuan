@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<conditions>
+	<condition type="variable" id="db_connection_setup">
+		<name>SPAGOBI_EXAMPLES</name>
+		<value>no</value>
+	</condition>
+	<panelcondition conditionid="db_connection_setup" panelid="db_connection_def" />  	
+</conditions>

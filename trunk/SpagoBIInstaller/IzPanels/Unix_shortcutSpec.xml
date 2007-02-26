@@ -1,23 +1,45 @@
 <shortcuts>
-  <programGroup defaultName="Engineering Ingegneria Informatica/SpagoBI Platform" location="applications"/>
+  <programGroup defaultName="SpagoBI Platform" location="applications"/>
   <shortcut
      name="Start SpagoBI Platform"
      programGroup="yes"
      desktop="yes"
      applications="no"
-     startMenu="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/StartSpagoBI.sh"
+     commandLine=""
+     initialState="normal"
+     iconFile="$INSTALL_PATH/SpagoBI.png"
+     iconIndex="0" 
+     workingDirectory="$INSTALL_PATH"
+     type="Application"
+     encoding="UTF-8"
+     terminal="true"
+     description="Start SpagoBI Platform">
+     <createForPack name="SpagoBIPlatform" />
+   </shortcut>
+   <!--
+     <shortcut
+     name="Start SpagoBI Platform"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
      startup="no"
      target="$INSTALL_PATH\StartSpagoBI.sh"
      commandLine=""
-     initialState="noShow"
+     initialState="normal"
      iconFile="$INSTALL_PATH\SpagoBI.png"
      iconIndex="0" 
      workingDirectory="$INSTALL_PATH"
      type="Application"
      encoding="UTF-8"
+     terminal="true"
      KdeSubstUID="true"
      KdeUsername="root"
      description="Start SpagoBI Platform">
      <createForPack name="SpagoBIPlatform" />
    </shortcut>
+   -->
 </shortcuts>

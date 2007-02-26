@@ -48,63 +48,27 @@
       </parameter>
     </ResourceParams>
 
-<!--	
-    <Resource name="jdbc/spagobigeo" auth="Container" type="javax.sql.DataSource"/> 
-	<ResourceParams name="jdbc/spagobigeo">
-  		<parameter>
-    			<name>factory</name>
-    			<value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-  		</parameter>
-  	 	<parameter>
-    			<name>driverClassName</name>
-    			<value>org.hsqldb.jdbcDriver</value>
-  		</parameter>
-  		<parameter>
-    			<name>url</name>
-    			<value>jdbc:hsqldb:hsql://localhost/spagobigeo</value>
-  		</parameter>
-  		<parameter>
-    			<name>username</name>
-    			<value>sa</value>
-  		</parameter>
-  		<parameter>
-    			<name>password</name>
-    			<value></value>
-  		</parameter>
-  		<parameter>
-    			<name>maxActive</name>
-    			<value>20</value>
-  		</parameter>
-  		<parameter>
-    			<name>maxIdle</name>
-    			<value>10</value>
-  		</parameter>
-  		<parameter>
-    			<name>maxWait</name>
-    			<value>-1</value>
-  		</parameter>
-	</ResourceParams>
-	<Resource name="jdbc/sbifoodmart" auth="Container" type="javax.sql.DataSource"/> 
-		<ResourceParams name="jdbc/sbifoodmart">
+	<Resource name="jdbc/dwh" auth="Container" type="javax.sql.DataSource"/> 
+		<ResourceParams name="jdbc/dwh">
   			<parameter>
     				<name>factory</name>
     				<value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
   			</parameter>
   			<parameter>
     				<name>driverClassName</name>
-    				<value>org.hsqldb.jdbcDriver</value>
+    				<value>${DRIVER}</value>
   			</parameter>
   			<parameter>
     				<name>url</name>
-    				<value>jdbc:hsqldb:hsql://localhost/foodmart</value>
+    				<value>${CONNECTION_URL}</value>
   			</parameter>
   			<parameter>
     				<name>username</name>
-    				<value>sa</value>
+    				<value>${USERNAME}</value>
   			</parameter>
   			<parameter>
     				<name>password</name>
-    				<value></value>
+    				<value>${PASSWORD}</value>
   			</parameter>
   			<parameter>
     				<name>maxActive</name>

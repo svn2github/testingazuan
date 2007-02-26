@@ -154,10 +154,10 @@ public class SpagoBIFinishPanel extends IzPanel
             	add(LabelFactory.create(connectionUrl,
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
             } else {
-            	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.noExamples.databaseConnection"),
-                		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
-            	add(IzPanelLayout.createParagraphGap());
-                add(IzPanelLayout.createParagraphGap());
+            	//add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.noExamples.databaseConnection"),
+                //		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
+            	//add(IzPanelLayout.createParagraphGap());
+                //add(IzPanelLayout.createParagraphGap());
             	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.startSpagoBIInfo"),
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
             	if (OsVersion.IS_WINDOWS) add(LabelFactory.create(path + File.separator + "StartSpagoBI.bat", parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);

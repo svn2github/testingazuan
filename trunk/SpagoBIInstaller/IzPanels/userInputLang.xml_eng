@@ -13,4 +13,9 @@
     <str id="examples.to.install" txt="Choose SpagoBI example documents to be installed:"/>
     <str id="examples.description" txt="SpagoBI Demo example documents"/>
     <str id="examples.warning" txt="WARNING: SpagoBI Demo examples contains documents for all SpagoBI supported engines (see the list above). If you exclude some engines from the installation procedure, the relevant examples will not work!!"/>
+    <str id="database.connection.def" txt="Insert your Data WareHouse connection parameters:"/>
+    <str id="database.driver" txt="Driver:"/>
+    <str id="database.connection.url" txt="Connection url:"/>
+    <str id="database.username" txt="User name:"/>
+    <str id="database.password" txt="Password:"/>
 </langpack>

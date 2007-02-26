@@ -20,13 +20,13 @@ public class SpagoBITargetPanel extends TargetPanel {
 		String serverType = idata.getVariable("SERVER_TYPE");
 		if ("tomcat".equalsIgnoreCase(serverType)) {
 			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "exo-run.bat"});
-			if (OsVersion.IS_UNIX) setExistFiles(new String [] {"bin" + File.separator + "exo-run.sh"});
+			else setExistFiles(new String [] {"bin" + File.separator + "exo-run.sh"});
 		} else if ("jboss".equalsIgnoreCase(serverType)) {
 			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "run.bat"});
-			if (OsVersion.IS_UNIX) setExistFiles(new String [] {"bin" + File.separator + "run.sh"});
+			else setExistFiles(new String [] {"bin" + File.separator + "run.sh"});
 		} else if ("jonas".equalsIgnoreCase(serverType)) {
 			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "nt" + File.separator + "jonas.bat"});
-			if (OsVersion.IS_UNIX) setExistFiles(new String [] {"bin" + File.separator + "unix" + File.separator + "jonas"});
+			else setExistFiles(new String [] {"bin" + File.separator + "unix" + File.separator + "jonas"});
 		}
     }
 

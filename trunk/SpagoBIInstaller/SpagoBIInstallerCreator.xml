@@ -58,7 +58,7 @@
    		<panel classname="UserInputPanel" id="serverType"/>
    		<panel classname="UserInputPanel" id="engineAndExamples"/>
 	    <panel classname="SpagoBITargetPanel" id="targetpanel"/>
-	    <!--panel classname="UserInputPanel" id="db_connection_def"/-->
+	    <panel classname="UserInputPanel" id="db_connection_def"/>
     	<panel classname="InstallPanel" id="installpanel"/>
     	<!--panel classname="HTMLInfoPanel"/-->
     	<panel classname="ShortcutPanel" id="shortcutpanel"/>
@@ -95,6 +95,10 @@
 		    		<arg value="$QBE"/>
 		    		<arg value="$WEKA"/>
 		    		<arg value="$SPAGOBI_EXAMPLES"/>
+		    		<arg value="$DRIVER"/>
+		    		<arg value="$CONNECTION_URL"/>
+		    		<arg value="$USERNAME"/>
+		    		<arg value="$PASSWORD"/>
 		    	</args>
 		    </executable>
 		</pack>

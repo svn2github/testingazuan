@@ -59,6 +59,8 @@
    		<panel classname="UserInputPanel" id="engineAndExamples"/>
 	    <panel classname="SpagoBITargetPanel" id="targetpanel"/>
 	    <panel classname="UserInputPanel" id="db_connection_def"/>
+	    <panel classname="PacksPanel" id="packspanel"/>
+	    <panel classname="UserInputPanel" id="proxy"/>
     	<panel classname="InstallPanel" id="installpanel"/>
     	<!--panel classname="HTMLInfoPanel"/-->
     	<panel classname="ShortcutPanel" id="shortcutpanel"/>
@@ -66,6 +68,208 @@
 	</panels>
 
     <packs>
+    	<pack name="install-scripts" required="yes">
+			<description>Required Installation Scripts</description>
+			<file targetdir="$INSTALL_PATH" override="asktrue" src="ant/build.xml" />
+			<file targetdir="$INSTALL_PATH" override="asktrue" src="ant/build.properties" />
+			<executable keep="true" type="bin" targetfile="$INSTALL_PATH/build.xml" />
+			<executable keep="true" type="bin" targetfile="$INSTALL_PATH/build.properties" />
+			<file targetdir="$INSTALL_PATH" src="ant/ant.jar" />
+			<file targetdir="$INSTALL_PATH" src="ant/spagobi.get.jar" />
+			<file targetdir="$INSTALL_PATH" src="ant/ant-launcher.jar" />
+			<file targetdir="$INSTALL_PATH" src="ant/ant-nodeps.jar" />
+			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/ant.jar" />
+			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar" />
+			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/myjavapack.jar" />
+			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/myjavapack.jar" />
+
+			<!-- Creates a log directory, so you can log install details. -->
+			<executable keep="true" type="jar" stage="install" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/ant/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/ant/build.properties" />
+					<arg value="logs-init" />
+				</args>
+			</executable>
+		</pack>
+		<pack name="SpagoBI-bin-1.9.2__build02062007" required="yes" bytes="22756582" packType="devtool">
+			<description>SpagoBICore</description>
+			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/build.properties" />
+					<arg value="-logfile" />
+					<arg value="$INSTALL_PATH/logs/SpagoBI-bin-1.9.2__build02062007.log" />
+					
+					<arg value="-Dproxy.host" />
+					<arg value="$PROXY_HOST" />
+					<arg value="-Dproxy.port" />
+					<arg value="$PROXY_PORT" />
+					<arg value="-Dproxy.user" />
+					<arg value="$PROXY_USER" />
+					<arg value="-Dproxy.password" />
+					<arg value="$PROXY_PASSWORD" />
+
+					<!-- Ant task that this pack calls -->
+					<arg value="SpagoBI-bin-1.9.2__build02062007" />
+				</args>
+			</executable>
+		</pack>
+		<pack name="SpagoBIBirtReportEngine-bin-1.9.2" required="no" preselected="yes" bytes="13209415" packType="devtool">
+			<description>SpagoBIBirtReportEngine</description>
+			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/build.properties" />
+					<arg value="-logfile" />
+					<arg value="$INSTALL_PATH/logs/SpagoBIBirtReportEngine-bin-1.9.2.log" />
+					
+					<arg value="-Dproxy.host" />
+					<arg value="$PROXY_HOST" />
+					<arg value="-Dproxy.port" />
+					<arg value="$PROXY_PORT" />
+					<arg value="-Dproxy.user" />
+					<arg value="$PROXY_USER" />
+					<arg value="-Dproxy.password" />
+					<arg value="$PROXY_PASSWORD" />
+
+					<!-- Ant task that this pack calls -->
+					<arg value="SpagoBIBirtReportEngine-bin-1.9.2" />
+				</args>
+			</executable>
+		</pack>
+		<pack name="SpagoBIGeoEngine-bin-1.9.2-Beta" required="no" preselected="yes" bytes="5705122" packType="devtool">
+			<description>SpagoBIGeoEngine</description>
+			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/build.properties" />
+					<arg value="-logfile" />
+					<arg value="$INSTALL_PATH/logs/SpagoBIGeoEngine-bin-1.9.2-Beta.log" />
+					
+					<arg value="-Dproxy.host" />
+					<arg value="$PROXY_HOST" />
+					<arg value="-Dproxy.port" />
+					<arg value="$PROXY_PORT" />
+					<arg value="-Dproxy.user" />
+					<arg value="$PROXY_USER" />
+					<arg value="-Dproxy.password" />
+					<arg value="$PROXY_PASSWORD" />
+
+					<!-- Ant task that this pack calls -->
+					<arg value="SpagoBIGeoEngine-bin-1.9.2-Beta" />
+				</args>
+			</executable>
+		</pack>
+		<pack name="SpagoBIJasperReportEngine-bin-1.9.2" required="no" preselected="yes" bytes="11422036" packType="devtool">
+			<description>SpagoBIJasperReportEngine</description>
+			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/build.properties" />
+					<arg value="-logfile" />
+					<arg value="$INSTALL_PATH/logs/SpagoBIJasperReportEngine-bin-1.9.2.log" />
+					
+					<arg value="-Dproxy.host" />
+					<arg value="$PROXY_HOST" />
+					<arg value="-Dproxy.port" />
+					<arg value="$PROXY_PORT" />
+					<arg value="-Dproxy.user" />
+					<arg value="$PROXY_USER" />
+					<arg value="-Dproxy.password" />
+					<arg value="$PROXY_PASSWORD" />
+
+					<!-- Ant task that this pack calls -->
+					<arg value="SpagoBIJasperReportEngine-bin-1.9.2" />
+				</args>
+			</executable>
+		</pack>
+		<pack name="SpagoBIJPivotEngine-bin-1.9.2" required="no" preselected="yes" bytes="15921117" packType="devtool">
+			<description>SpagoBIJPivotEngine</description>
+			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/build.properties" />
+					<arg value="-logfile" />
+					<arg value="$INSTALL_PATH/logs/SpagoBIJPivotEngine-bin-1.9.2.log" />
+					
+					<arg value="-Dproxy.host" />
+					<arg value="$PROXY_HOST" />
+					<arg value="-Dproxy.port" />
+					<arg value="$PROXY_PORT" />
+					<arg value="-Dproxy.user" />
+					<arg value="$PROXY_USER" />
+					<arg value="-Dproxy.password" />
+					<arg value="$PROXY_PASSWORD" />
+
+					<!-- Ant task that this pack calls -->
+					<arg value="SpagoBIJPivotEngine-bin-1.9.2" />
+				</args>
+			</executable>
+		</pack>
+		<pack name="SpagoBIQbeEngine-bin-1.9.2" required="no" preselected="yes" bytes="16532632" packType="devtool">
+			<description>SpagoBIQbeEngine</description>
+			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/build.properties" />
+					<arg value="-logfile" />
+					<arg value="$INSTALL_PATH/logs/SpagoBIQbeEngine-bin-1.9.2.log" />
+					
+					<arg value="-Dproxy.host" />
+					<arg value="$PROXY_HOST" />
+					<arg value="-Dproxy.port" />
+					<arg value="$PROXY_PORT" />
+					<arg value="-Dproxy.user" />
+					<arg value="$PROXY_USER" />
+					<arg value="-Dproxy.password" />
+					<arg value="$PROXY_PASSWORD" />
+
+					<!-- Ant task that this pack calls -->
+					<arg value="SpagoBIQbeEngine-bin-1.9.2" />
+				</args>
+			</executable>
+		</pack>
+		<pack name="SpagoBIWekaEngine-bin-1.9.2" required="no" preselected="yes" bytes="8931746" packType="devtool">
+			<description>SpagoBIWekaEngine</description>
+			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
+				<args>
+					<arg value="-buildfile" />
+					<arg value="$INSTALL_PATH/build.xml" />
+					<arg value="-propertyfile" />
+					<arg value="$INSTALL_PATH/build.properties" />
+					<arg value="-logfile" />
+					<arg value="$INSTALL_PATH/logs/SpagoBIWekaEngine-bin-1.9.2.log" />
+					
+					<arg value="-Dproxy.host" />
+					<arg value="$PROXY_HOST" />
+					<arg value="-Dproxy.port" />
+					<arg value="$PROXY_PORT" />
+					<arg value="-Dproxy.user" />
+					<arg value="$PROXY_USER" />
+					<arg value="-Dproxy.password" />
+					<arg value="$PROXY_PASSWORD" />
+
+					<!-- Ant task that this pack calls -->
+					<arg value="SpagoBIWekaEngine-bin-1.9.2" />
+				</args>
+			</executable>
+		</pack>
+    	<!--
 		<pack name="SpagoBIPlatform" required="yes">
     		<description>SpagoBI platform</description>
     		<fileset dir="" targetdir="$INSTALL_PATH">
@@ -102,5 +306,6 @@
 		    	</args>
 		    </executable>
 		</pack>
+		-->
     </packs>
 </installation>

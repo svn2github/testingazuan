@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<project name="SpagoBI" default="fetch" basedir=".">
+	
+	<property file="${basedir}/build.properties" />
+
+	<!-- Build classpath -->
+	<path id="classpath">
+		<fileset dir="${basedir}">
+			<include name="spagobi-get.jar" />
+			<include name="ant-nodeps.jar" />
+		</fileset>
+	</path>
+
+	<!-- These packages can be fetched auto-magically
+         Feel free to remove the packages that you don't want.
+         fetch = OS independent packs
+         fetch-win = Windows only packs and all OS independent packs
+         fetch-linux = Linux only packs and all OS independent packs
+    -->
+	<target name="fetch">
+		<ant target="SpagoBIGeoEngine-bin-1.9.2-Beta" />
+	</target>
+	
+	<target name="fetch-windows" depends="fetch">
+		<!-- windows only targets -->
+	</target>
+	
+	<target name="fetch-linux" depends="fetch">
+		<!-- linux only targets -->
+	</target>
+
+	<!-- Define the MyJavaPackGet task, so it can be used in the ant script -->
+	<target name="init">
+		<taskdef name="spagobiget" classname="it.eng.spagobi.taskdefs.SpagoBIGet">
+			<classpath refid="classpath" />
+		</taskdef>
+		<taskdef name="setproxy" classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy">
+			<classpath refid="classpath" />
+		</taskdef>
+	</target>
+
+	<!-- create a directory for install debug logs -->
+	<target name="logs-init">
+		<mkdir dir="${basedir}/logs" />
+	</target>
+	
+	<!-- software package #1 -->
+	<target name="SpagoBI-bin-1.9.2__build02062007" depends="init">
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
+		<spagobiget mirrorSuffix="SpagoBI-bin-1.9.2__build02062007.zip" 
+					 mirrorPrefixList="${objectweb.mirrors}" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 downloadDir="${spagobi.download.dir}" />
+	</target>
+
+	<!-- software package #2 -->
+	<target name="SpagoBIBirtReportEngine-bin-1.9.2" depends="init">
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
+		<spagobiget mirrorSuffix="SpagoBIBirtReportEngine-bin-1.9.2.zip" 
+					 mirrorPrefixList="${objectweb.mirrors}" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 downloadDir="${spagobi.download.dir}" />
+	</target>
+	
+	<!-- software package #3 -->
+	<target name="SpagoBIGeoEngine-bin-1.9.2-Beta" depends="init">
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
+		<spagobiget mirrorSuffix="SpagoBIGeoEngine-bin-1.9.2-Beta.zip" 
+					 mirrorPrefixList="${objectweb.mirrors}" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 downloadDir="${spagobi.download.dir}" />
+	</target>
+	
+	<!-- software package #4 -->
+	<target name="SpagoBIJasperReportEngine-bin-1.9.2" depends="init">
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
+		<spagobiget mirrorSuffix="SpagoBIJasperReportEngine-bin-1.9.2.zip" 
+					 mirrorPrefixList="${objectweb.mirrors}" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 downloadDir="${spagobi.download.dir}" />
+	</target>
+	
+	<!-- software package #5 -->
+	<target name="SpagoBIJPivotEngine-bin-1.9.2" depends="init">
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
+		<spagobiget mirrorSuffix="SpagoBIJPivotEngine-bin-1.9.2.zip" 
+					 mirrorPrefixList="${objectweb.mirrors}" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 downloadDir="${spagobi.download.dir}" />
+	</target>
+	
+	<!-- software package #6 -->
+	<target name="SpagoBIQbeEngine-bin-1.9.2" depends="init">
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
+		<spagobiget mirrorSuffix="SpagoBIQbeEngine-bin-1.9.2.zip" 
+					 mirrorPrefixList="${objectweb.mirrors}" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 downloadDir="${spagobi.download.dir}" />
+	</target>
+	
+	<!-- software package #7 -->
+	<target name="SpagoBIWekaEngine-bin-1.9.2-Beta" depends="init">
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
+		<spagobiget mirrorSuffix="SpagoBIWekaEngine-bin-1.9.2-Beta.zip" 
+					 mirrorPrefixList="${objectweb.mirrors}" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 downloadDir="${spagobi.download.dir}" />
+	</target>
+
+</project>
+

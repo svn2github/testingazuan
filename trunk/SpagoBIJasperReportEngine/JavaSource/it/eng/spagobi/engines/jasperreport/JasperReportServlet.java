@@ -58,6 +58,20 @@ import sun.misc.BASE64Decoder;
  */
 public class JasperReportServlet extends HttpServlet {
 
+	
+	static Map extensions;
+	static {
+		extensions = new HashMap();
+		extensions.put("jrxml", "text/jrxml");
+		extensions.put("html", "text/html");
+		extensions.put("xml", "text/xml");
+		extensions.put("txt", "text/plain");
+		extensions.put("csv", "text/csv");
+		extensions.put("pdf", "application/pdf");
+		extensions.put("rtf", "application/rtf");
+		extensions.put("xls", "application/vnd.ms-excel");
+	}
+	
 	/**
 	 * Logger component
 	 */
@@ -156,7 +170,15 @@ public class JasperReportServlet extends HttpServlet {
 				jasperReportRunner.runReport(con, params,out, getServletContext(), response, request);
 				out.flush();
 				out.close();
+				
+				
+				if(outputType == null) outputType = ExporterFactory.getDefaultType();
+				response.setHeader("Content-Disposition", "filename=\"report." + outputType + "\";");
+				//response.setContentType((String)extensions.get(outputType));
 				response.setContentLength((int)tmpFile.length());
+				
+				
+				
 				BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmpFile));			
 				int b = -1;
 				while((b = in.read()) != -1) {

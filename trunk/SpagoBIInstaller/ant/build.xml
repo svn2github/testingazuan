@@ -49,7 +49,7 @@
 		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
 		<spagobiget mirrorSuffix="SpagoBI-bin-1.9.2__build02062007.zip" 
 					 mirrorPrefixList="${objectweb.mirrors}" 
-					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 md5sum="a664b423fe706f347a31a4fe548a6e96" 
 					 downloadDir="${spagobi.download.dir}" />
 	</target>
 
@@ -58,7 +58,7 @@
 		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
 		<spagobiget mirrorSuffix="SpagoBIBirtReportEngine-bin-1.9.2.zip" 
 					 mirrorPrefixList="${objectweb.mirrors}" 
-					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 md5sum="7c51b5f075e470ce387fd3abe39ac57d" 
 					 downloadDir="${spagobi.download.dir}" />
 	</target>
 	
@@ -67,7 +67,7 @@
 		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
 		<spagobiget mirrorSuffix="SpagoBIGeoEngine-bin-1.9.2-Beta.zip" 
 					 mirrorPrefixList="${objectweb.mirrors}" 
-					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 md5sum="65bd0348595899da37747ff32fbaa03d"
 					 downloadDir="${spagobi.download.dir}" />
 	</target>
 	
@@ -76,7 +76,7 @@
 		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
 		<spagobiget mirrorSuffix="SpagoBIJasperReportEngine-bin-1.9.2.zip" 
 					 mirrorPrefixList="${objectweb.mirrors}" 
-					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 md5sum="e4be037fed649d6140ce5bd2b825f64c" 
 					 downloadDir="${spagobi.download.dir}" />
 	</target>
 	
@@ -85,7 +85,7 @@
 		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
 		<spagobiget mirrorSuffix="SpagoBIJPivotEngine-bin-1.9.2.zip" 
 					 mirrorPrefixList="${objectweb.mirrors}" 
-					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 md5sum="5d4ffc47bfcdbdc472017e426911268f" 
 					 downloadDir="${spagobi.download.dir}" />
 	</target>
 	
@@ -94,7 +94,7 @@
 		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
 		<spagobiget mirrorSuffix="SpagoBIQbeEngine-bin-1.9.2.zip" 
 					 mirrorPrefixList="${objectweb.mirrors}" 
-					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 md5sum="8fc54af5355a7a855f71bcf7547b1fa4" 
 					 downloadDir="${spagobi.download.dir}" />
 	</target>
 	
@@ -103,7 +103,7 @@
 		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}" proxyuser="${proxy.user}" proxypassword="${proxy.password}"/> 
 		<spagobiget mirrorSuffix="SpagoBIWekaEngine-bin-1.9.2-Beta.zip" 
 					 mirrorPrefixList="${objectweb.mirrors}" 
-					 md5sum="65bd0348595899da37747ff32fbaa03d" 
+					 md5sum="ec28371943ff2c8c3c402919b8ae2626" 
 					 downloadDir="${spagobi.download.dir}" />
 	</target>
 

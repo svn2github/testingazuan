@@ -269,6 +269,12 @@
 				</args>
 			</executable>
 		</pack>
+		<pack name="Documentation" required="no" preselected="yes">
+			<description>Documentation</description>
+    		<fileset dir="" targetdir="$INSTALL_PATH/spagobi-docs">
+      			<include name="spagobi-docs" />
+		    </fileset>
+		</pack>
     	<!--
 		<pack name="SpagoBIPlatform" required="yes">
     		<description>SpagoBI platform</description>

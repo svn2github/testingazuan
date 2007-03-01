@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="AntTaskDef"/>
 	<classpathentry kind="src" path="SpagoBIFinishPanel"/>
 	<classpathentry kind="src" path="SpagoBITargetPanel"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="IzPack_Home/lib/installer.jar"/>
 	<classpathentry kind="var" path="IzPack_Home/bin/panels/TargetPanel.jar"/>
-	<classpathentry kind="lib" path="lib/commons-httpclient-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="ant/ant.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

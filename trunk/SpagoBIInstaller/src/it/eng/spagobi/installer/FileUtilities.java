@@ -12,13 +12,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.httpclient.DefaultMethodRetryHandler;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.methods.GetMethod;
-
 public class FileUtilities {
 
 	
@@ -177,6 +170,7 @@ public class FileUtilities {
 		return true;
 	}
 	
+	/*
 	public static void downloadFile(String url, String fileDest) {
 		HttpClient client = new HttpClient();
 	    client.getHostConfiguration().setProxy("proxy.eng.it", 3128);
@@ -221,4 +215,5 @@ public class FileUtilities {
         	  httpget.releaseConnection();
           }
 	}
+	*/
 }

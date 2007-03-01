@@ -87,4 +87,30 @@
 			<spec txt="" size="18" set=""/>
 		</field>
 	</panel>
+	<panel order="3">
+		<field type="title">
+			<description txt="Proxy configuration"/>
+		</field>
+		<field type="staticText" align="left" txt="Proxy configuration"/>
+		<field type="space" />
+		<field type="text" variable="PROXY_HOST">
+			<description align="left" txt="Proxy host:"/>
+			<spec txt="" size="50" set=""/>
+		</field>
+		<field type="space" />
+		<field type="text" variable="PROXY_PORT">
+			<description align="left" txt="Proxy port:"/>
+			<spec txt="" size="50" set=""/>
+		</field>
+		<field type="space" />
+		<field type="text" variable="PROXY_USER">
+			<description align="left" txt="Proxy user:"/>
+			<spec txt="" size="50" set=""/>
+		</field>
+		<field type="space" />
+		<field type="text" variable="PROXY_PASSWORD">
+			<description align="left" txt="Proxy password:"/>
+			<spec txt="" size="50" set=""/>
+		</field>
+	</panel>
 </userInput>

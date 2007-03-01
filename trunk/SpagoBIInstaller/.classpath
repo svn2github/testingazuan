@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="AntTaskDef"/>
 	<classpathentry kind="src" path="SpagoBIFinishPanel"/>
 	<classpathentry kind="src" path="SpagoBITargetPanel"/>
+	<classpathentry kind="src" path="MD5SumCalculator"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="IzPack_Home/lib/installer.jar"/>
 	<classpathentry kind="var" path="IzPack_Home/bin/panels/TargetPanel.jar"/>

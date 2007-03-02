@@ -10,13 +10,13 @@ start OOStart.bat
 rem Run database/databases
 
 @cd .\sbidata\database
-java -cp hsqldb1_8_0_2.jar;testSpagobiHsqldbAlive.jar it.eng.spagobi.testhsqldb.TestSpagobiHsqldbAlive
+java -cp hsqldb1_8_0_2.jar;testSpagobiHsqldbAlive.jar it.eng.spagobi.testhsqldb.TestSpagobiHsqldbAlive 9001
 if %ERRORLEVEL%==0 goto runExo
 if %ERRORLEVEL%==1 start start.bat
 goto wait
 
 :loop
-java -cp hsqldb1_8_0_2.jar;testSpagobiHsqldbAlive.jar it.eng.spagobi.testhsqldb.TestSpagobiHsqldbAlive
+java -cp hsqldb1_8_0_2.jar;testSpagobiHsqldbAlive.jar it.eng.spagobi.testhsqldb.TestSpagobiHsqldbAlive 9001
 if %ERRORLEVEL%==1 goto wait
 
 :runExo

@@ -12,6 +12,7 @@
 			</spec>
 		</field>
 	</panel>
+	<!--
 	<panel order="1">
 		<field type="title">
 			<description id="engines.to.install"/>
@@ -42,7 +43,8 @@
 		</field>
 		<field type="staticText" align="left" id="examples.warning"/>
 	</panel>
-	<panel order="2">
+	-->
+	<panel order="1">
 		<field type="title">
 			<description id="database.connection.def"/>
 		</field>
@@ -87,6 +89,7 @@
 			<spec txt="" size="18" set=""/>
 		</field>
 	</panel>
+	<!--
 	<panel order="3">
 		<field type="title">
 			<description txt="Proxy configuration"/>
@@ -113,4 +116,5 @@
 			<spec txt="" size="50" set=""/>
 		</field>
 	</panel>
+	-->
 </userInput>

@@ -12,6 +12,16 @@
         <!--webdir>http://download.forge.objectweb.org/spagobi</webdir-->
     </info>
  	
+ 	<variables>
+		<variable name="BIRT" value="no"/>
+		<variable name="GEO" value="no"/>
+		<variable name="JASPER" value="no"/>
+		<variable name="JPIVOT" value="no"/>
+		<variable name="QBE" value="no"/>
+		<variable name="WEKA" value="no"/>
+		<variable name="SPAGOBI_EXAMPLES" value="no"/>
+	</variables>
+ 	
  	<native type="izpack" name="ShellLink.dll" />
  	
  	<guiprefs height="600" resizable="yes" width="800">
@@ -88,7 +98,6 @@
       			<include name="OOStart.sh" />
       			<include name="SpagoBI.png" />
 		    </fileset>
-		    <!--
 		    <executable targetfile="$INSTALL_PATH/install_spagobi_support_classes.jar" class="it/eng/spagobi/installer/InstallSpagoBIPlatform" type="jar" stage="postinstall"> 
 		    	<args>
 		    		<arg value="$INSTALL_PATH"/>
@@ -106,41 +115,33 @@
 		    		<arg value="$PASSWORD"/>
 		    	</args>
 		    </executable>
-		    -->
 	    </pack>
-    	<pack name="SpagoBI-1.9.2" required="yes" 
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.2__build02062007.zip" 
-    			bytes="22756582">
+    	<pack name="SpagoBI-1.9.2" required="yes" bytes="22756582" 
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.2__build02062007.zip">
 	    	<description>SpagoBICore</description>
 	    </pack>
-    	<pack name="SpagoBIBirtReportEngine-1.9.2" required="no" preselected="yes" 
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.2.zip" 
-    			bytes="13209415">
+    	<pack name="SpagoBIBirtReportEngine-1.9.2" required="no" preselected="yes" bytes="13209415" 
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.2.zip">
 	    	<description>SpagoBIBirtReportEngine</description>
 	    </pack>
-    	<pack name="SpagoBIGeoEngine-1.9.2" required="no" preselected="yes" 
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIGeoEngine-bin-1.9.2-Beta.zip" 
-    			bytes="5705122">
+    	<pack name="SpagoBIGeoEngine-1.9.2" required="no" preselected="yes" bytes="5705122" 
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIGeoEngine-bin-1.9.2-Beta.zip">
 	    	<description>SpagoBIGeoEngine</description>
 	    </pack>
-    	<pack name="SpagoBIJasperReportEngine-1.9.2" required="no" preselected="yes" 
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJasperReportEngine-bin-1.9.2.zip" 
-    			bytes="11422036">
+    	<pack name="SpagoBIJasperReportEngine-1.9.2" required="no" preselected="yes" bytes="11422036"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJasperReportEngine-bin-1.9.2.zip">
 	    	<description>SpagoBIJasperReportEngine</description>
 	    </pack>
-    	<pack name="SpagoBIJPivotEngine-1.9.2" required="no" preselected="yes" 
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.2.zip" 
-    			bytes="15921117">
+    	<pack name="SpagoBIJPivotEngine-1.9.2" required="no" preselected="yes" bytes="15921117"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.2.zip">
 	    	<description>SpagoBIJPivotEngine</description>
 	    </pack>
-    	<pack name="SpagoBIQbeEngine-1.9.2" required="no" preselected="yes" 
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.2.zip" 
-    			bytes="16532632">
+    	<pack name="SpagoBIQbeEngine-1.9.2" required="no" preselected="yes" bytes="16532632"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.2.zip">
 	    	<description>SpagoBIQbeEngine</description>
 	    </pack>
-    	<pack name="SpagoBIWekaEngine-1.9.2" required="no" preselected="yes" 
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.2.zip" 
-    			bytes="8931746">
+    	<pack name="SpagoBIWekaEngine-1.9.2" required="no" preselected="yes" bytes="8931746"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.2.zip">
 	    	<description>SpagoBIWekaEngine</description>
 	    </pack>
     	<pack name="SpagoBI examples" id="SpagoBI_examples" required="no" preselected="no">
@@ -149,213 +150,12 @@
       			<include name="spagobi/spagobi_examples/**/*" />
 		    </fileset>
 	    </pack>
-		<pack name="Documentation" required="no" preselected="yes">
+		<pack name="Documentation" required="no" preselected="no">
 			<description>Documentation</description>
     		<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi-docs/**/*" />
 		    </fileset>
 		</pack>
-    	<!--
-    	<pack name="install-scripts" required="yes">
-			<description>Required Installation Scripts</description>
-			<file targetdir="$INSTALL_PATH" override="asktrue" src="ant/build.xml" />
-			<file targetdir="$INSTALL_PATH" override="asktrue" src="ant/build.properties" />
-			<executable keep="true" type="bin" targetfile="$INSTALL_PATH/build.xml" />
-			<executable keep="true" type="bin" targetfile="$INSTALL_PATH/build.properties" />
-			<file targetdir="$INSTALL_PATH" src="ant/ant.jar" />
-			<file targetdir="$INSTALL_PATH" src="ant/ant-launcher.jar" />
-			<file targetdir="$INSTALL_PATH" src="ant/ant-nodeps.jar" />
-			<file targetdir="$INSTALL_PATH" src="ant/spagobi-get.jar" />
-			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/ant.jar" />
-			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar" />
-			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/ant-nodeps.jar" />
-			<executable keep="true" type="jar" targetfile="$INSTALL_PATH/spagobi-get.jar" />
-
-			<executable keep="true" type="jar" stage="install" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/ant/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/ant/build.properties" />
-					<arg value="logs-init" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="SpagoBI-bin-1.9.2__build02062007" required="yes" bytes="22756582">
-			<description>SpagoBICore</description>
-			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/build.properties" />
-					<arg value="-logfile" />
-					<arg value="$INSTALL_PATH/logs/SpagoBI-bin-1.9.2__build02062007.log" />
-					
-					<arg value="-Dproxy.host" />
-					<arg value="$PROXY_HOST" />
-					<arg value="-Dproxy.port" />
-					<arg value="$PROXY_PORT" />
-					<arg value="-Dproxy.user" />
-					<arg value="$PROXY_USER" />
-					<arg value="-Dproxy.password" />
-					<arg value="$PROXY_PASSWORD" />
-
-					<arg value="SpagoBI-bin-1.9.2__build02062007" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="SpagoBIBirtReportEngine-bin-1.9.2" required="no" preselected="yes" bytes="13209415">
-			<description>SpagoBIBirtReportEngine</description>
-			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/build.properties" />
-					<arg value="-logfile" />
-					<arg value="$INSTALL_PATH/logs/SpagoBIBirtReportEngine-bin-1.9.2.log" />
-					
-					<arg value="-Dproxy.host" />
-					<arg value="$PROXY_HOST" />
-					<arg value="-Dproxy.port" />
-					<arg value="$PROXY_PORT" />
-					<arg value="-Dproxy.user" />
-					<arg value="$PROXY_USER" />
-					<arg value="-Dproxy.password" />
-					<arg value="$PROXY_PASSWORD" />
-
-					<arg value="SpagoBIBirtReportEngine-bin-1.9.2" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="SpagoBIGeoEngine-bin-1.9.2-Beta" required="no" preselected="yes" bytes="5705122">
-			<description>SpagoBIGeoEngine</description>
-			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/build.properties" />
-					<arg value="-logfile" />
-					<arg value="$INSTALL_PATH/logs/SpagoBIGeoEngine-bin-1.9.2-Beta.log" />
-					
-					<arg value="-Dproxy.host" />
-					<arg value="$PROXY_HOST" />
-					<arg value="-Dproxy.port" />
-					<arg value="$PROXY_PORT" />
-					<arg value="-Dproxy.user" />
-					<arg value="$PROXY_USER" />
-					<arg value="-Dproxy.password" />
-					<arg value="$PROXY_PASSWORD" />
-
-					<arg value="SpagoBIGeoEngine-bin-1.9.2-Beta" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="SpagoBIJasperReportEngine-bin-1.9.2" required="no" preselected="yes" bytes="11422036">
-			<description>SpagoBIJasperReportEngine</description>
-			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/build.properties" />
-					<arg value="-logfile" />
-					<arg value="$INSTALL_PATH/logs/SpagoBIJasperReportEngine-bin-1.9.2.log" />
-					
-					<arg value="-Dproxy.host" />
-					<arg value="$PROXY_HOST" />
-					<arg value="-Dproxy.port" />
-					<arg value="$PROXY_PORT" />
-					<arg value="-Dproxy.user" />
-					<arg value="$PROXY_USER" />
-					<arg value="-Dproxy.password" />
-					<arg value="$PROXY_PASSWORD" />
-
-					<arg value="SpagoBIJasperReportEngine-bin-1.9.2" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="SpagoBIJPivotEngine-bin-1.9.2" required="no" preselected="yes" bytes="15921117">
-			<description>SpagoBIJPivotEngine</description>
-			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/build.properties" />
-					<arg value="-logfile" />
-					<arg value="$INSTALL_PATH/logs/SpagoBIJPivotEngine-bin-1.9.2.log" />
-					
-					<arg value="-Dproxy.host" />
-					<arg value="$PROXY_HOST" />
-					<arg value="-Dproxy.port" />
-					<arg value="$PROXY_PORT" />
-					<arg value="-Dproxy.user" />
-					<arg value="$PROXY_USER" />
-					<arg value="-Dproxy.password" />
-					<arg value="$PROXY_PASSWORD" />
-
-					<arg value="SpagoBIJPivotEngine-bin-1.9.2" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="SpagoBIQbeEngine-bin-1.9.2" required="no" preselected="yes" bytes="16532632">
-			<description>SpagoBIQbeEngine</description>
-			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/build.properties" />
-					<arg value="-logfile" />
-					<arg value="$INSTALL_PATH/logs/SpagoBIQbeEngine-bin-1.9.2.log" />
-					
-					<arg value="-Dproxy.host" />
-					<arg value="$PROXY_HOST" />
-					<arg value="-Dproxy.port" />
-					<arg value="$PROXY_PORT" />
-					<arg value="-Dproxy.user" />
-					<arg value="$PROXY_USER" />
-					<arg value="-Dproxy.password" />
-					<arg value="$PROXY_PASSWORD" />
-
-					<arg value="SpagoBIQbeEngine-bin-1.9.2" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="SpagoBIWekaEngine-bin-1.9.2" required="no" preselected="yes" bytes="8931746">
-			<description>SpagoBIWekaEngine</description>
-			<executable keep="true" failure="abort" stage="install" type="jar" targetfile="$INSTALL_PATH/ant-launcher.jar">
-				<args>
-					<arg value="-buildfile" />
-					<arg value="$INSTALL_PATH/build.xml" />
-					<arg value="-propertyfile" />
-					<arg value="$INSTALL_PATH/build.properties" />
-					<arg value="-logfile" />
-					<arg value="$INSTALL_PATH/logs/SpagoBIWekaEngine-bin-1.9.2.log" />
-					
-					<arg value="-Dproxy.host" />
-					<arg value="$PROXY_HOST" />
-					<arg value="-Dproxy.port" />
-					<arg value="$PROXY_PORT" />
-					<arg value="-Dproxy.user" />
-					<arg value="$PROXY_USER" />
-					<arg value="-Dproxy.password" />
-					<arg value="$PROXY_PASSWORD" />
-
-					<arg value="SpagoBIWekaEngine-bin-1.9.2" />
-				</args>
-			</executable>
-		</pack>
-		<pack name="Documentation" required="no" preselected="yes">
-			<description>Documentation</description>
-    		<fileset dir="" targetdir="$INSTALL_PATH/spagobi-docs">
-      			<include name="spagobi-docs/**/*" />
-		    </fileset>
-		</pack>
-		-->
     	<!--
 		<pack name="SpagoBIPlatform" required="yes">
     		<description>SpagoBI platform</description>

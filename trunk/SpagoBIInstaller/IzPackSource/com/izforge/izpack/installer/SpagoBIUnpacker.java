@@ -309,6 +309,16 @@ public class SpagoBIUnpacker implements IUnpacker
                 
             	final Pack pack = ((Pack) packs.get(i));
             	
+            	// set the variables to the correct values (for the spagobi install support classes)
+            	String packnameUC = pack.name.toUpperCase();
+            	if (packnameUC.indexOf("BIRT") != -1) idata.setVariable("BIRT", "yes");
+            	else if (packnameUC.indexOf("GEO") != -1) idata.setVariable("GEO", "yes");
+            	else if (packnameUC.indexOf("JASPER") != -1) idata.setVariable("JASPER", "yes");
+            	else if (packnameUC.indexOf("JPIVOT") != -1) idata.setVariable("JPIVOT", "yes");
+            	else if (packnameUC.indexOf("QBE") != -1) idata.setVariable("QBE", "yes");
+            	else if (packnameUC.indexOf("WEKA") != -1) idata.setVariable("WEKA", "yes");
+            	else if (packnameUC.indexOf("EXAMPLES") != -1) idata.setVariable("SPAGOBI_EXAMPLES", "yes");
+            	
             	String remoteFile = pack.remoteFile;
             	
             	if (remoteFile != null && !remoteFile.trim().equals("")) {

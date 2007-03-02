@@ -126,10 +126,40 @@ public class FileUtilities {
 	    }
 	    zipFile.close();
 	}   
-	        
+	
+	public static void extractWarFile(String zipFilePath, String newDirectoryPath) throws ZipException, IOException {
+		ZipFile zipFile = new ZipFile(zipFilePath);
+		File newDirectory = new File(newDirectoryPath);
+		extractWarFile(zipFile, newDirectory);
+	}
+	
+	private static void extractWarFile(ZipFile zipFile, File newDirectory) throws ZipException, IOException {
+	    if (!newDirectory.exists()) newDirectory.mkdirs();
+		Enumeration entries = zipFile.entries();
+	    ZipEntry entry = null;
+	    String name = null;
+	    FileOutputStream fileout = null;
+	    BufferedOutputStream bufout = null;
+	    InputStream in = null;
+	    while(entries.hasMoreElements()) {
+	    	entry = (ZipEntry) entries.nextElement();
+	    	name = entry.getName();
+	    	if (!entry.isDirectory() && name.endsWith(".war")) {
+	    		fileout = new FileOutputStream(newDirectory.getPath() + File.separator + entry.getName());
+		    	bufout = new BufferedOutputStream(fileout); 
+		    	in = zipFile.getInputStream(entry);
+		    	copyInputStream(in, bufout);
+		    	bufout.flush();
+		    	in.close();
+		    	bufout.close();
+		    	break;
+	    	}
+	    }
+	    zipFile.close();
+	}
 	        
 	private static void copyInputStream(InputStream in, OutputStream out) throws IOException {
-		byte [] b = new byte[1024];
+		byte [] b = new byte[8 * 1024];
 		int len = 0;
 		while ( (len=in.read(b))!= -1 ) {
 		     out.write(b,0,len);

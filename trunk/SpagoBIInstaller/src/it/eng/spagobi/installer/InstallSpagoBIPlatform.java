@@ -7,6 +7,14 @@ import java.io.IOException;
 
 public class InstallSpagoBIPlatform {
 
+	private static String SPAGOBI_ZIP_FILE = "SpagoBI-bin-1.9.2__build02062007.zip";
+	private static String BIRT_ZIP_FILE = "SpagoBIBirtReportEngine-bin-1.9.2.zip";
+	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.2-Beta.zip";
+	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.2.zip";
+	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.2.zip";
+	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.2.zip";
+	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.2.zip";
+	
 	private static String _pathdest;
 	private static String _spagobi_plaftorm_source_dir;
 	private static String _spagobi_examples_source_dir;
@@ -203,7 +211,8 @@ public class InstallSpagoBIPlatform {
 	
 	private static boolean installSpagoBIWar() {
 		try {
-			String pathsource = _spagobi_plaftorm_source_dir + fs + "wars"; 
+			String pathsource = _spagobi_plaftorm_source_dir + fs + "wars";
+			FileUtilities.extractWarFile(_pathdest + fs + SPAGOBI_ZIP_FILE, pathsource);
 			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext,
 					pathsource + fs + "spagobi.war");
 			if ("jboss".equalsIgnoreCase(_server_name)) { 
@@ -258,6 +267,8 @@ public class InstallSpagoBIPlatform {
 		try {
 			String pathsource = _spagobi_plaftorm_source_dir + fs + "wars";
 			if (_install_birt) {
+				FileUtilities.extractWarFile(_pathdest + fs + BIRT_ZIP_FILE, pathsource);
+				FileUtilities.deleteFile(BIRT_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine" + _ext,
 					pathsource + fs + "SpagoBIBirtReportEngine.war");
 				if ("jboss".equalsIgnoreCase(_server_name)) {
@@ -266,6 +277,8 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_geo) {
+				FileUtilities.extractWarFile(_pathdest + fs + GEO_ZIP_FILE, pathsource);
+				FileUtilities.deleteFile(GEO_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIGeoEngine" + _ext,
 					pathsource + fs + "SpagoBIGeoEngine.war");
 				if ("jboss".equalsIgnoreCase(_server_name)) {
@@ -289,6 +302,8 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_jasper) {
+				FileUtilities.extractWarFile(_pathdest + fs + JASPER_ZIP_FILE, pathsource);
+				FileUtilities.deleteFile(JASPER_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIJasperReportEngine" + _ext,
 					pathsource + fs + "SpagoBIJasperReportEngine.war");
 				if ("jboss".equalsIgnoreCase(_server_name)) {
@@ -297,6 +312,8 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_jpivot) {
+				FileUtilities.extractWarFile(_pathdest + fs + JPIVOT_ZIP_FILE, pathsource);
+				FileUtilities.deleteFile(JPIVOT_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext,
 					pathsource + fs + "SpagoBIJPivotEngine.war");
 				if ("jboss".equalsIgnoreCase(_server_name)) {
@@ -305,6 +322,8 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_qbe) {
+				FileUtilities.extractWarFile(_pathdest + fs + QBE_ZIP_FILE, pathsource);
+				FileUtilities.deleteFile(QBE_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext,
 					pathsource + fs + "SpagoBIQbeEngine.war");
 				if ("jonas".equalsIgnoreCase(_server_name)) {
@@ -317,6 +336,8 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_weka) {
+				FileUtilities.extractWarFile(_pathdest + fs + WEKA_ZIP_FILE, pathsource);
+				FileUtilities.deleteFile(WEKA_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIWekaEngine" + _ext,
 					pathsource + fs + "SpagoBIWekaEngine.war");
 				if ("jboss".equalsIgnoreCase(_server_name)) {

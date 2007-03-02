@@ -2,7 +2,7 @@
 <datasources>
   <local-tx-datasource>
     <jndi-name>spagobi</jndi-name>
-    <connection-url>jdbc:hsqldb:file:../sbidata/database/spagobi</connection-url>
+    <connection-url>jdbc:hsqldb:hsql://localhost:9002/spagobi</connection-url>
     <driver-class>org.hsqldb.jdbcDriver</driver-class>
     <user-name>sa</user-name>
     <password></password>

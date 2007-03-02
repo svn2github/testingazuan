@@ -83,7 +83,7 @@
     				<value>-1</value>
   			</parameter>
 		</ResourceParams>
--->
+
 	<Resource name="jdbc/spagobi" auth="Container" type="javax.sql.DataSource"/> 
 		<ResourceParams name="jdbc/spagobi">
   			<parameter>
@@ -96,7 +96,7 @@
   			</parameter>
   			<parameter>
     				<name>url</name>
-    				<value>jdbc:hsqldb:file:../sbidata/database/spagobi</value>
+    				<value>jdbc:hsqldb:hsql://localhost:9002/spagobi</value>
   			</parameter>
   			<parameter>
     				<name>username</name>

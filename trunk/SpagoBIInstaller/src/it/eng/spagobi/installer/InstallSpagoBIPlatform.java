@@ -368,9 +368,7 @@ public class InstallSpagoBIPlatform {
 			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "start.bat");
 			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "start.sh");
 			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "testSpagobiHsqldbAlive.jar");
-			if ("jonas".equalsIgnoreCase(_server_name)) {
-				FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "server.properties");
-			}
+			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "server.properties");
 			String hsqldb_lib_pathsource = _spagobi_plaftorm_source_dir + fs + "hsqlPatch";
 			FileUtilities.copy(_spagobi_metadata_db_dir, hsqldb_lib_pathsource	+ fs + "hsqldb1_8_0_2.jar");
 		} catch (Exception exc) {

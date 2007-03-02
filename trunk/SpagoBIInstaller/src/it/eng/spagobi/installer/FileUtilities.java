@@ -172,10 +172,18 @@ public class FileUtilities {
 	
 	/*
 	public static void downloadFile(String url, String fileDest) {
+		JFrame frame = new JFrame("Ciao");
+		JProgressBar progressBar = new JProgressBar(0, 100);
+		progressBar.setBounds(0, 0, 250, 100);
+		progressBar.setVisible(true);
+		frame.add(progressBar);
+		progressBar.setStringPainted(true);
+		frame.setVisible(true);
+		
 		HttpClient client = new HttpClient();
 	    client.getHostConfiguration().setProxy("proxy.eng.it", 3128);
 	    client.getState().setProxyCredentials(null, "proxy.eng.it",
-	    new UsernamePasswordCredentials("username", "password"));
+	    new UsernamePasswordCredentials("dzerbett", "dep(.;78"));
 	    GetMethod httpget = new GetMethod(url);
 	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
 	    retryhandler.setRequestSentRetryEnabled(false);
@@ -194,15 +202,19 @@ public class FileUtilities {
             InputStream is = httpget.getResponseBodyAsStream();
             File destFile = new File(fileDest);
             FileOutputStream fos = new FileOutputStream(destFile);
-			byte[] buffer = new byte[1024];
+			byte[] buffer = new byte[8 * 1024];
 			//int len;
 			int count = 0;
 			double readed = 0;
 			while ((count = is.read(buffer)) >= 0) {
+				System.out.println("Downloaded: " + count);
 				fos.write(buffer);
 				readed += count;
-				int percent = (int) readed/dimension.intValue()*100;
-				System.out.print("Download: " + percent);
+				double percentDouble = readed/dimension.intValue()*100;
+				int percent = (int) percentDouble;
+				progressBar.setValue(percent);
+				progressBar.updateUI();
+				System.out.println("Download: " + percent);
 			}
 			is.close();
     		fos.flush();
@@ -216,4 +228,5 @@ public class FileUtilities {
           }
 	}
 	*/
+	
 }

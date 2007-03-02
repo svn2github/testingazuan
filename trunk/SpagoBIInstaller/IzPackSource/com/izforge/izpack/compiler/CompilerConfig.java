@@ -334,8 +334,9 @@ public class CompilerConfig extends Thread
         notifyCompilerListener("loadPackager", CompilerListener.BEGIN, data);
         // Initialisation
         XMLElement root = data.getFirstChildNamed("packaging");
-        String packagerclassname = "com.izforge.izpack.compiler.Packager";
         //****************************START MODIFICATIONS BY DAVIDE ZERBETTO
+        //String packagerclassname = "com.izforge.izpack.compiler.Packager";
+        String packagerclassname = "com.izforge.izpack.compiler.SpagoBIPackager";
         // the name of the unpacker class can be put also in build.xml
         //String unpackerclassname = "com.izforge.izpack.installer.Unpacker";
         String unpackerclassname = "com.izforge.izpack.installer.SpagoBIUnpacker";

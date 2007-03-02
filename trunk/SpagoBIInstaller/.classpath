@@ -12,5 +12,6 @@
 	<classpathentry kind="var" path="IzPack_Home/lib/installer.jar"/>
 	<classpathentry kind="var" path="IzPack_Home/lib/ant.jar"/>
 	<classpathentry kind="var" path="IzPack_Home/lib/izevent.jar"/>
+	<classpathentry kind="var" path="IzPack_Home/bin/panels/PacksPanel.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

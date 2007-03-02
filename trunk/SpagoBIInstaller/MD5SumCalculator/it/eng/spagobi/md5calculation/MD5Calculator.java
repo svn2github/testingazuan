@@ -2,8 +2,13 @@ package it.eng.spagobi.md5calculation;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+
+import com.izforge.izpack.installer.WebAccessor;
 
 public class MD5Calculator {
 
@@ -27,6 +32,7 @@ public class MD5Calculator {
 				String checksum = calculateMd5(fileName);
 				System.out.println("MD5 value for file " + fileNames[i] + " is : [" + checksum + "]");
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

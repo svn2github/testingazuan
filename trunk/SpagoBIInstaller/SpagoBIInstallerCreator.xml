@@ -20,6 +20,11 @@
 		<variable name="QBE" value="no"/>
 		<variable name="WEKA" value="no"/>
 		<variable name="SPAGOBI_EXAMPLES" value="no"/>
+		<variable name="DRIVER" value=""/>
+		<variable name="CONNECTION_URL" value=""/>
+		<variable name="USERNAME" value=""/>
+		<variable name="PASSWORD" value=""/>
+		<variable name="DesktopShortcutCheckboxEnabled" value="true"/>
 	</variables>
  	
  	<native type="izpack" name="ShellLink.dll" />
@@ -57,6 +62,8 @@
     	<res src="IzPanels/TargetPanel_dir_windows.txt" id="TargetPanel.dir.windows"/>
     	<res src="IzPanels/TargetPanel_dir_unix.txt" id="TargetPanel.dir.unix"/>
     	<res src="IzPanels/conditions.xml" id="conditions.xml"/>
+    	<res src="IzPanels/packsLang.xml_ita" id="packsLang.xml_ita"/>
+    	<res src="IzPanels/packsLang.xml_eng" id="packsLang.xml_eng"/>
     	<!--
     	<res src="IzPanels/CustomLangpack_ita.xml" id="CustomLangpack.xml_ita"/>
     	<res src="IzPanels/CustomLangpack_eng.xml" id="CustomLangpack.xml_eng"/>
@@ -80,11 +87,11 @@
 
 
     <packs>
-    	<pack name="Installation files" required="yes">
-	    	<description>Installation files</description>
+    	<pack name="Installation_files" required="yes" id="Installation_files">
+	    	<description/>
 	    	<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi/spagobi_platform/**/*" />
-      			<include name="install_spagobi_support_classes.jar" />
+      			<!--include name="install_spagobi_support_classes.jar" /-->
 		    </fileset>
     		<fileset dir="batch" targetdir="$INSTALL_PATH">
       			<include name="StartSpagoBI.bat" />
@@ -98,6 +105,7 @@
       			<include name="OOStart.sh" />
       			<include name="SpagoBI.png" />
 		    </fileset>
+		    <!--
 		    <executable targetfile="$INSTALL_PATH/install_spagobi_support_classes.jar" class="it/eng/spagobi/installer/InstallSpagoBIPlatform" type="jar" stage="postinstall"> 
 		    	<args>
 		    		<arg value="$INSTALL_PATH"/>
@@ -115,84 +123,53 @@
 		    		<arg value="$PASSWORD"/>
 		    	</args>
 		    </executable>
+		    -->
 	    </pack>
-    	<pack name="SpagoBI-1.9.2" required="yes" bytes="22756582" 
+    	<pack name="SpagoBI-1.9.2" required="yes" bytes="22756582" id="SpagoBI-1.9.2"
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.2__build02062007.zip">
-	    	<description>SpagoBICore</description>
+	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIBirtReportEngine-1.9.2" required="no" preselected="yes" bytes="13209415" 
+    	<pack name="SpagoBIBirtReportEngine-1.9.2" required="no" preselected="yes" bytes="13209415" id="SpagoBIBirtReportEngine-1.9.2"
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.2.zip">
-	    	<description>SpagoBIBirtReportEngine</description>
+	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIGeoEngine-1.9.2" required="no" preselected="yes" bytes="5705122" 
+    	<pack name="SpagoBIGeoEngine-1.9.2" required="no" preselected="yes" bytes="5705122" id="SpagoBIGeoEngine-1.9.2"
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIGeoEngine-bin-1.9.2-Beta.zip">
-	    	<description>SpagoBIGeoEngine</description>
+	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIJasperReportEngine-1.9.2" required="no" preselected="yes" bytes="11422036"
+    	<pack name="SpagoBIJasperReportEngine-1.9.2" required="no" preselected="yes" bytes="11422036" id="SpagoBIJasperReportEngine-1.9.2"
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJasperReportEngine-bin-1.9.2.zip">
-	    	<description>SpagoBIJasperReportEngine</description>
+	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIJPivotEngine-1.9.2" required="no" preselected="yes" bytes="15921117"
+    	<pack name="SpagoBIJPivotEngine-1.9.2" required="no" preselected="yes" bytes="15921117" id="SpagoBIJPivotEngine-1.9.2"
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.2.zip">
-	    	<description>SpagoBIJPivotEngine</description>
+	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIQbeEngine-1.9.2" required="no" preselected="yes" bytes="16532632"
+    	<pack name="SpagoBIQbeEngine-1.9.2" required="no" preselected="yes" bytes="16532632" id="SpagoBIQbeEngine-1.9.2"
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.2.zip">
-	    	<description>SpagoBIQbeEngine</description>
+	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIWekaEngine-1.9.2" required="no" preselected="yes" bytes="8931746"
+    	<pack name="SpagoBIWekaEngine-1.9.2" required="no" preselected="yes" bytes="8931746" id="SpagoBIWekaEngine-1.9.2"
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.2.zip">
-	    	<description>SpagoBIWekaEngine</description>
+	    	<description/>
 	    </pack>
-    	<pack name="SpagoBI examples" id="SpagoBI_examples" required="no" preselected="no">
-	    	<description>SpagoBI examples</description>
+    	<pack name="SpagoBI_examples" required="no" preselected="no" id="SpagoBI_examples">
+	    	<description/>
 	    	<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi/spagobi_examples/**/*" />
 		    </fileset>
 	    </pack>
-		<pack name="Documentation" required="no" preselected="no">
-			<description>Documentation</description>
+		<pack name="Documentation" required="no" preselected="no" id="Documentation">
+			<description/>
     		<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi-docs/**/*" />
 		    </fileset>
 		</pack>
-    	<!--
-		<pack name="SpagoBIPlatform" required="yes">
-    		<description>SpagoBI platform</description>
-    		<fileset dir="" targetdir="$INSTALL_PATH">
-      			<include name="spagobi/**/*" />
-      			<include name="install_spagobi_support_classes.jar" />
-		    </fileset>
-    		<fileset dir="batch" targetdir="$INSTALL_PATH">
-      			<include name="StartSpagoBI.bat" />
-      			<include name="StartSpagoBI_jboss.bat" />
-      			<include name="StartSpagoBI_jonas.bat" />
-      			<include name="OOStart.bat" />
-      			<include name="SpagoBI.ico" />
-      			<include name="StartSpagoBI.sh" />
-      			<include name="StartSpagoBI_jboss.sh" />
-      			<include name="StartSpagoBI_jonas.sh" />
-      			<include name="OOStart.sh" />
-      			<include name="SpagoBI.png" />
-		    </fileset>
-		    <executable targetfile="$INSTALL_PATH/install_spagobi_support_classes.jar" class="it/eng/spagobi/installer/InstallSpagoBIPlatform" type="jar" stage="postinstall"> 
-		    	<args>
-		    		<arg value="$INSTALL_PATH"/>
-		    		<arg value="$SERVER_TYPE"/>
-		    		<arg value="$BIRT"/>
-		    		<arg value="$GEO"/>
-		    		<arg value="$JASPER"/>
-		    		<arg value="$JPIVOT"/>
-		    		<arg value="$QBE"/>
-		    		<arg value="$WEKA"/>
-		    		<arg value="$SPAGOBI_EXAMPLES"/>
-		    		<arg value="$DRIVER"/>
-		    		<arg value="$CONNECTION_URL"/>
-		    		<arg value="$USERNAME"/>
-		    		<arg value="$PASSWORD"/>
-		    	</args>
-		    </executable>
-		</pack>
-		-->
     </packs>
+    
+    <native type="izpack" name="ShellLink.dll"/>
+    <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+        <os family="windows"/>
+    </native>
+    
 </installation>

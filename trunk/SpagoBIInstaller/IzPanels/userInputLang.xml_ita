@@ -3,16 +3,6 @@
 <langpack>
 	<str id="server.type.title" txt="Server di destinazione"/>
     <str id="server.type.description" txt="Indica il tipo di server sul quale desideri istallare SpagoBI:"/>
-    <str id="engines.to.install" txt="Scegli i motori di SpagoBI da istallare:"/>
-    <str id="SpagoBIBirtReportEngine.description" txt="SpagoBIBirtReportEngine: motore di reportistica basato su Birt"/>
-    <str id="SpagoBIGeoEngine.description" txt="SpagoBIGeoEngine: motore di mappe basato su Batik"/>
-    <str id="SpagoBIJasperReportEngine.description" txt="SpagoBIJasperReportEngine: motore di reportistica basato su JasperReport"/>
-    <str id="SpagoBIJPivotEngine.description" txt="SpagoBIJPivotEngine: motore OLAP basato su JPivot-Mondrian"/>
-    <str id="SpagoBIQbeEngine.description" txt="SpagoBIQbeEngine: modalità visuale di interrogazione dei dati basato su Qbe"/>
-    <str id="SpagoBIWekaEngine.description" txt="SpagoBIWekaEngine: motore di data-mining basato su Weka"/>
-    <str id="examples.to.install" txt="Indica se desideri installare i documenti di esempio della demo di SpagoBI:"/>
-    <str id="examples.description" txt="Documenti di esempio di SpagoBI Demo"/>
-    <str id="examples.warning" txt="AVVERTENZA: gli esempi di SpagoBI Demo contengono documenti per tutti i motori supportati dalla piattaforma (vedi lista sopra). Se alcuni motori vengono esculsi dall'istallazione, i relativi esempi non funzioneranno!!" />
     <str id="database.connection.def" txt="Inserisci i parametri di connessione al tuo Data WareHouse:"/>
     <str id="database.driver" txt="Driver:"/>
     <str id="database.connection.url" txt="Url di connessione:"/>

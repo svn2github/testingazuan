@@ -297,7 +297,7 @@ public class SpagoBIUnpacker implements IUnpacker
                     npacks), handler);
             packs = idata.selectedPacks;
             npacks = packs.size();
-
+            
             for (int i = 0; i < npacks; i++)
             {
             	// We get the pack stream
@@ -349,7 +349,7 @@ public class SpagoBIUnpacker implements IUnpacker
                 	// into the local one
                 	if (!file.exists()) {
                 		message = "Downloading " + filename + " from remote repositoty to local repository (" +
-                			spagobiLocalRepository.getPath() + ") ...";
+                			spagobiLocalRepository.getPath() + ")";
                     	InputStream is = getRemotePackAsStream(n, remoteFile);
                         //File destFile = new File(idata.getInstallPath() + File.separator + packname + ".zip");
                         FileOutputStream fos = new FileOutputStream(file);
@@ -370,8 +370,7 @@ public class SpagoBIUnpacker implements IUnpacker
                 		// TODO manage userhome/spagobi/repository/filename isn't an existing file
                 	}
                 	// then copies the file from the local repository into the installation directory
-                	message = "Copying " + filename + " from local repository into " + idata.getInstallPath() 
-                		+ " ...";
+                	message = "Copying " + filename + " from local repository into " + idata.getInstallPath();
                 	handler.progress(0, message);
                 	File oldDestFile = new File(idata.getInstallPath() + File.separator + filename);
                 	if (oldDestFile.exists()) oldDestFile.delete();
@@ -710,6 +709,24 @@ public class SpagoBIUnpacker implements IUnpacker
                 return;
             }
 
+            String pathdest = idata.getInstallPath();
+            String server_name = idata.getVariable("SERVER_TYPE");
+            String install_birt = idata.getVariable("BIRT");
+            String install_geo = idata.getVariable("GEO");
+            String install_jasper = idata.getVariable("JASPER");
+            String install_jpivot = idata.getVariable("JPIVOT");
+            String install_qbe = idata.getVariable("QBE");
+            String install_weka = idata.getVariable("WEKA");
+            String install_examples = idata.getVariable("SPAGOBI_EXAMPLES");
+            String driver = idata.getVariable("DRIVER");
+            String connection_url = idata.getVariable("CONNECTION_URL");
+            String username = idata.getVariable("USERNAME");
+            String password = idata.getVariable("PASSWORD");
+            
+            InstallSpagoBIPlatform.installSpagoBIPlatorm(pathdest, server_name, install_birt, 
+            		install_geo, install_jasper, install_jpivot, install_qbe, install_weka, 
+            		install_examples, driver, connection_url, username, password);
+            
             // The end :-)
             handler.stopAction();
         }

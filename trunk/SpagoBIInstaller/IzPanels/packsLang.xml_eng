@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<langpack>
+	<str id="Installation_files" txt="Installation files"/>
+	<str id="Installation_files.description" txt="Installation files (libraries, configuration files, etc.)"/>
+	<str id="SpagoBI-1.9.2.description" txt="The SpagoBIPlatform core"/>
+	<str id="SpagoBIBirtReportEngine-1.9.2.description" txt="SpagoBIBirtReportEngine: report engine based on Birt"/>
+	<str id="SpagoBIGeoEngine-1.9.2.description" txt="SpagoBIGeoEngine: map engine based on Batik"/>
+	<str id="SpagoBIJasperReportEngine-1.9.2.description" txt="SpagoBIJasperReportEngine: report engine based on JasperReport"/>
+	<str id="SpagoBIJPivotEngine-1.9.2.description" txt="SpagoBIJPivotEngine: OLAP engine based on JPivot-Mondrian"/>
+	<str id="SpagoBIQbeEngine-1.9.2.description" txt="SpagoBIQbeEngine: visual mode for data inquiring based on Qbe"/>
+	<str id="SpagoBIWekaEngine-1.9.2.description" txt="SpagoBIWekaEngine: data-mining engine based on Weka"/>
+	<str id="SpagoBI_examples" txt="SpagoBI Demo example documents"/>
+	<str id="SpagoBI_examples.description" txt="SpagoBI Demo example documents, including the example portal 'sbiportal' with preconfigured groups and users. WARNING: SpagoBI Demo examples contains documents for all SpagoBI supported engines (see the list above). If you exclude some engines from the installation procedure, the relevant examples will not work!!"/>
+	<str id="Documentation" txt="Documentation"/>
+	<str id="Documentation.description" txt="SpagoBI documentation (Quickstart, How To and installation manuals)"/>
+</langpack>

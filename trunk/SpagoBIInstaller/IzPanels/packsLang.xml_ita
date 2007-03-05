@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<langpack>
+	<str id="Installation_files" txt="Files di installazione"/>
+	<str id="Installation_files.description" txt="Files di installazione (librerie, files di configurazione, ecc.)"/>
+	<str id="SpagoBI-1.9.2.description" txt="Il nucleo della piattaforma SpagoBIPlatform"/>
+	<str id="SpagoBIBirtReportEngine-1.9.2.description" txt="SpagoBIBirtReportEngine: motore di reportistica basato su Birt"/>
+	<str id="SpagoBIGeoEngine-1.9.2.description" txt="SpagoBIGeoEngine: motore di mappe basato su Batik"/>
+	<str id="SpagoBIJasperReportEngine-1.9.2.description" txt="SpagoBIJasperReportEngine: motore di reportistica basato su JasperReport"/>
+	<str id="SpagoBIJPivotEngine-1.9.2.description" txt="SpagoBIJPivotEngine: motore OLAP basato su JPivot-Mondrian"/>
+	<str id="SpagoBIQbeEngine-1.9.2.description" txt="SpagoBIQbeEngine: modalità visuale di interrogazione dei dati basato su Qbe"/>
+	<str id="SpagoBIWekaEngine-1.9.2.description" txt="SpagoBIWekaEngine: motore di data-mining basato su Weka"/>
+	<str id="SpagoBI_examples" txt="Documenti di esempio di SpagoBI Demo"/>
+	<str id="SpagoBI_examples.description" txt="Documenti di esempio di SpagoBI Demo, incluso il portale di esempio 'sbiportal' contenente gruppi e utenti preconfigurati. AVVERTENZA: gli esempi di SpagoBI Demo contengono documenti per tutti i motori supportati dalla piattaforma (vedi lista sopra). Se alcuni motori vengono esculsi dall'istallazione, i relativi esempi non funzioneranno!!"/>
+	<str id="Documentation" txt="Documentazione"/>
+	<str id="Documentation.description" txt="Documentazione di SpagoBI (Quickstart, How To e manuali di installazione)"/>
+</langpack>

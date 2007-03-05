@@ -1,3 +1,5 @@
+This installer was developed starting from IzPack 3.10
+
 - The file install_spagobi_support_classes.jar contains the classes used by the Izpack installer. When any changes occurs to the source code of the installer it is necessary to export the new jar.
 - The folder spagobi contains all the contents to include into the intaller. The internal structure of the folder must remain the same. Any changes have to reflect to the source code. 
 

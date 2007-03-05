@@ -17,7 +17,7 @@
      encoding="UTF-8"
      terminal="true"
      description="Start SpagoBI Platform">
-     <createForPack name="SpagoBIPlatform" />
+     <createForPack name="SpagoBI-1.9.2" />
    </shortcut>
    <!--
      <shortcut

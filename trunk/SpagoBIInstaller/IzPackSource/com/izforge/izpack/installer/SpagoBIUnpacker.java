@@ -22,6 +22,7 @@
 
 package com.izforge.izpack.installer;
 
+import java.awt.Cursor;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -43,6 +44,11 @@ import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.UIManager;
 
 import org.apache.regexp.RE;
 import org.apache.regexp.RECompiler;
@@ -723,9 +729,19 @@ public class SpagoBIUnpacker implements IUnpacker
             String username = idata.getVariable("USERNAME");
             String password = idata.getVariable("PASSWORD");
             
+            JProgressBar progressBar = new JProgressBar(1, 100);
+            progressBar.setIndeterminate(true);
+            Object[] contents = { "Completing SpagoBI installation: this operation can take a while ...", 
+            		progressBar };
+            JOptionPane pane = new JOptionPane(contents, 
+            				JOptionPane.INFORMATION_MESSAGE);
+            pane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            JDialog dialog = pane.createDialog(null, "Installing SpagoBI Platform");
+            dialog.setVisible(true);
             InstallSpagoBIPlatform.installSpagoBIPlatorm(pathdest, server_name, install_birt, 
             		install_geo, install_jasper, install_jpivot, install_qbe, install_weka, 
             		install_examples, driver, connection_url, username, password);
+            dialog.setVisible(false);
             
             // The end :-)
             handler.stopAction();

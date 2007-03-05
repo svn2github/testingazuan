@@ -348,7 +348,8 @@ public class SpagoBIUnpacker implements IUnpacker
                 	// if file does not exist into local repositoty, it downloads it from the remote repository 
                 	// into the local one
                 	if (!file.exists()) {
-                		message = "Downloading " + filename + " from remote repositoty to local repository";
+                		message = "Downloading " + filename + " from remote repositoty to local repository (" +
+                			spagobiLocalRepository.getPath() + ") ...";
                     	InputStream is = getRemotePackAsStream(n, remoteFile);
                         //File destFile = new File(idata.getInstallPath() + File.separator + packname + ".zip");
                         FileOutputStream fos = new FileOutputStream(file);
@@ -369,7 +370,8 @@ public class SpagoBIUnpacker implements IUnpacker
                 		// TODO manage userhome/spagobi/repository/filename isn't an existing file
                 	}
                 	// then copies the file from the local repository into the installation directory
-                	message = "Copying " + filename + " from local repositoty to " + idata.getInstallPath();
+                	message = "Copying " + filename + " from local repository into " + idata.getInstallPath() 
+                		+ " ...";
                 	handler.progress(0, message);
                 	File oldDestFile = new File(idata.getInstallPath() + File.separator + filename);
                 	if (oldDestFile.exists()) oldDestFile.delete();

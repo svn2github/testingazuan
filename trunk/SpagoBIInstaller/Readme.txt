@@ -5,5 +5,6 @@ classi cambiate di IzPack:
 com.izforge.izpack.compiler.CompilerConfig: cambiato il nome della classe unpacker --> compiler.jar
 com.izforge.izpack.installer.WebAccessor: modificato il try catch per beccare l'eccezione ottenuta dal proxy --> installer.jar
 com.izforge.izpack.installer.SpagoBIUnpacker: aggiunta --> installer.jar
+com.izforge.izpack.compiler.SpagoBIPackager: aggiunta --> compiler.jar
 com.izforge.izpack.compiler.PackInfo --> compiler.jar
 com.izforge.izpack.Pack --> compiler.jar + installer.jar

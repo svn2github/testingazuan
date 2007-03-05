@@ -145,7 +145,16 @@ public class FileUtilities {
 	    	entry = (ZipEntry) entries.nextElement();
 	    	name = entry.getName();
 	    	if (!entry.isDirectory() && name.endsWith(".war")) {
-	    		fileout = new FileOutputStream(newDirectory.getPath() + File.separator + entry.getName());
+	    		// finds the name of the war file
+	    		int index = name.lastIndexOf('/');
+	    		if (index != -1) {
+	    			name = name.substring(index + 1, name.length());
+	    		}
+	    		index = name.lastIndexOf('\\');
+	    		if (index != -1) {
+	    			name = name.substring(index + 1, name.length());
+	    		}
+	    		fileout = new FileOutputStream(newDirectory.getPath() + File.separator + name);
 		    	bufout = new BufferedOutputStream(fileout); 
 		    	in = zipFile.getInputStream(entry);
 		    	copyInputStream(in, bufout);

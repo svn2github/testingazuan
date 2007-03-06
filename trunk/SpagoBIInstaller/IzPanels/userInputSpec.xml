@@ -44,10 +44,7 @@
 			<description align="left" id="database.password"/>
 			<spec>
                 <pwd txt="" size="18"/>
-            </spec> 
-			<!-- 
-			<spec txt="" size="18" set=""/>
-			 -->
+            </spec>
 		</field>
 	</panel>
 </userInput>

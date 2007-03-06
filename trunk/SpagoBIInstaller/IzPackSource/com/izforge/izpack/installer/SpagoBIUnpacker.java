@@ -48,7 +48,6 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
-import javax.swing.UIManager;
 
 import org.apache.regexp.RE;
 import org.apache.regexp.RECompiler;
@@ -336,11 +335,12 @@ public class SpagoBIUnpacker implements IUnpacker
                 	String packname = pack.name;
                 	handler.nextStep(packname, i + 1, 100);
                 	String message = null;
-                	String userhome = idata.getVariable("USER_HOME");
-                	if (!userhome.endsWith(File.separator)) userhome += File.separator;
                 	
-                	File spagobiLocalRepository = new File(userhome + File.separator + ".spagobi" 
-                			+ File.separator + "repository");
+                	String spagobiLocalRepositoryStr = idata.getVariable("SPAGOBI_REPOSITORY_PATH");
+                	if (spagobiLocalRepositoryStr.endsWith(File.separator)) 
+                		spagobiLocalRepositoryStr = spagobiLocalRepositoryStr.substring(0, 
+                				spagobiLocalRepositoryStr.length() - 1);
+                	File spagobiLocalRepository = new File(spagobiLocalRepositoryStr);
                 	if (!spagobiLocalRepository.exists()) spagobiLocalRepository.mkdirs();
                 	else if (!spagobiLocalRepository.isDirectory()) {
                 		// TODO manage userhome/spagobi/repository is an existing file
@@ -348,7 +348,7 @@ public class SpagoBIUnpacker implements IUnpacker
                 	
                 	int index = remoteFile.lastIndexOf('/') + 1;
                 	String filename = remoteFile.substring(index, remoteFile.length());
-                	String filepath = spagobiLocalRepository + File.separator + filename;
+                	String filepath = spagobiLocalRepositoryStr + File.separator + filename;
                 	
                 	File file = new File(filepath);
                 	// if file does not exist into local repositoty, it downloads it from the remote repository 
@@ -375,28 +375,36 @@ public class SpagoBIUnpacker implements IUnpacker
                 	} else if (!file.isFile()) {
                 		// TODO manage userhome/spagobi/repository/filename isn't an existing file
                 	}
-                	// then copies the file from the local repository into the installation directory
-                	message = "Copying " + filename + " from local repository into " + idata.getInstallPath();
-                	handler.progress(0, message);
-                	File oldDestFile = new File(idata.getInstallPath() + File.separator + filename);
-                	if (oldDestFile.exists()) oldDestFile.delete();
-                	File destFile = new File(idata.getInstallPath() + File.separator + filename);
-            	    FileInputStream fileinstr = new FileInputStream(file);
-            	    FileOutputStream fileoutstr = new FileOutputStream(destFile);
-            	    BufferedOutputStream bufout = new BufferedOutputStream(fileoutstr); 
-            	    byte [] b = new byte[8 * 1024];
-            		int count = 0;
-            		double readed = 0;
-            		while ((count=fileinstr.read(b))!= -1) {
-            		    bufout.write(b,0,count);
-            		    readed += count;
-            		    double percentDouble = readed/dimension*100;
-         				int percent = (int) percentDouble;
-        				handler.progress(percent, message);
-            		}
-            		bufout.flush();
-            		bufout.close();
-            		fileinstr.close();
+                	
+                	String installPath = idata.getInstallPath();
+                	if (installPath.endsWith(File.separator)) 
+                			installPath = installPath.substring(0, installPath.length() - 1);
+                	if (!spagobiLocalRepositoryStr.equals(installPath)) {
+                    	// then copies the file from the local repository into the installation directory
+                		// but only if the local reporitory is not equal to the installation directory
+                    	message = "Copying " + filename + " from local repository into " + idata.getInstallPath();
+                    	handler.progress(0, message);
+                    	File oldDestFile = new File(installPath + File.separator + filename);
+                    	if (oldDestFile.exists()) oldDestFile.delete();
+                    	File destFile = new File(installPath + File.separator + filename);
+                	    FileInputStream fileinstr = new FileInputStream(file);
+                	    FileOutputStream fileoutstr = new FileOutputStream(destFile);
+                	    BufferedOutputStream bufout = new BufferedOutputStream(fileoutstr); 
+                	    byte [] b = new byte[8 * 1024];
+                		int count = 0;
+                		double readed = 0;
+                		while ((count=fileinstr.read(b))!= -1) {
+                		    bufout.write(b,0,count);
+                		    readed += count;
+                		    double percentDouble = readed/dimension*100;
+             				int percent = (int) percentDouble;
+            				handler.progress(percent, message);
+                		}
+                		bufout.flush();
+                		bufout.close();
+                		fileinstr.close();
+                	}
+
             	} else {
             		
                     ObjectInputStream objIn = new ObjectInputStream(getLocalPackAsStream(n));
@@ -1371,7 +1379,7 @@ public class SpagoBIUnpacker implements IUnpacker
     {
         InputStream in = null;
 
-        String webDirURL = idata.info.getWebDirURL();
+        //String webDirURL = idata.info.getWebDirURL();
 
         in = Unpacker.class.getResourceAsStream("/packs/pack" + n);
         

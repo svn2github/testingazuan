@@ -22,11 +22,15 @@ public class SpagoBITargetPanel extends TargetPanel {
 			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "exo-run.bat"});
 			else setExistFiles(new String [] {"bin" + File.separator + "exo-run.sh"});
 		} else if ("jboss".equalsIgnoreCase(serverType)) {
-			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "run.bat"});
-			else setExistFiles(new String [] {"bin" + File.separator + "run.sh"});
+			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "run.bat", 
+					"server" + File.separator + "default" + File.separator + "deploy" + File.separator + "exoplatform.sar"});
+			else setExistFiles(new String [] {"bin" + File.separator + "run.sh", 
+					"server" + File.separator + "default" + File.separator + "deploy" + File.separator + "exoplatform.sar"});
 		} else if ("jonas".equalsIgnoreCase(serverType)) {
-			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "nt" + File.separator + "jonas.bat"});
-			else setExistFiles(new String [] {"bin" + File.separator + "unix" + File.separator + "jonas"});
+			if (OsVersion.IS_WINDOWS) setExistFiles(new String [] {"bin" + File.separator + "nt" + File.separator + "jonas.bat", 
+					"apps" + File.separator + "autoload" + File.separator + "exoplatform.ear"});
+			else setExistFiles(new String [] {"bin" + File.separator + "unix" + File.separator + "jonas", 
+					"apps" + File.separator + "autoload" + File.separator + "exoplatform.ear"});
 		}
     }
 

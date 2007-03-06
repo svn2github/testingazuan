@@ -60,29 +60,47 @@ public class SpagoBIRepositoryPathPanel extends PathInputPanel {
 		    	// if the folder is not writable emits an error
 	            if (!isWriteable())
 	            {
-	                emitError(parent.langpack.getString("installer.error"), getI18nStringForClass(
-	                        "notwritable.spagobirepo.error", "SpagoBIRepositoryPathPanel"));
-	                return false;
+	            	int res = askQuestion(parent.langpack.getString("installer.warning"), 
+			    			getI18nStringForClass("notwritable.spagobirepo.warning", 
+			    					"SpagoBIRepositoryPathPanel"), 
+			    			AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
+	            	ok = res == AbstractUIHandler.ANSWER_YES;
+	            	if (ok) {
+	            		pathSelectionPanel.setPath(idata.getInstallPath());
+	            	}
+	                //emitError(parent.langpack.getString("installer.error"), getI18nStringForClass(
+	                //        "notwritable.spagobirepo.error", "SpagoBIRepositoryPathPanel"));
+	                //return false;
+	            } else {
+			    	int res = askQuestion(parent.langpack.getString("installer.warning"), 
+			    			getI18nStringForClass("empty.spagobirepo.warning", "SpagoBIRepositoryPathPanel"), 
+			    			AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
+		            ok = res == AbstractUIHandler.ANSWER_YES;
 	            }
-		    	int res = askQuestion(parent.langpack.getString("installer.warning"), 
-		    			getI18nStringForClass("empty.spagobirepo.warning", "SpagoBIRepositoryPathPanel"), 
-		    			AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
-	            ok = res == AbstractUIHandler.ANSWER_YES;
 		    } else if (count < selectedPacksNum) {
 		    	// if the folder is not writable emits an error
 	            if (!isWriteable())
 	            {
-	                emitError(parent.langpack.getString("installer.error"), getI18nStringForClass(
-	                        "notwritable.spagobirepo.warning", "SpagoBIRepositoryPathPanel"));
-	                return false;
+	            	int res = askQuestion(parent.langpack.getString("installer.warning"), 
+			    			getI18nStringForClass("notwritable.spagobirepo.warning", 
+			    					"SpagoBIRepositoryPathPanel"), 
+			    			AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
+	            	ok = res == AbstractUIHandler.ANSWER_YES;
+	            	if (ok) {
+	            		pathSelectionPanel.setPath(idata.getInstallPath());
+	            	}
+	                //emitError(parent.langpack.getString("installer.error"), getI18nStringForClass(
+	                //        "notwritable.spagobirepo.warning", "SpagoBIRepositoryPathPanel"));
+	                //return false;
+	            } else {
+			    	String message = parent.langpack.getString("SpagoBIRepositoryPathPanel." +
+			    			"missingpacks.spagobirepo.warning");
+			    	message = message.replaceAll("%0", new Integer(count).toString());
+			    	message = message.replaceAll("%1", new Integer(selectedPacksNum).toString());
+			    	int res = askQuestion(parent.langpack.getString("installer.warning"), message,
+		                    AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
+		            ok = res == AbstractUIHandler.ANSWER_YES;
 	            }
-		    	String message = parent.langpack.getString("SpagoBIRepositoryPathPanel." +
-		    			"missingpacks.spagobirepo.warning");
-		    	message = message.replaceAll("%0", new Integer(count).toString());
-		    	message = message.replaceAll("%1", new Integer(selectedPacksNum).toString());
-		    	int res = askQuestion(parent.langpack.getString("installer.warning"), message,
-	                    AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
-	            ok = res == AbstractUIHandler.ANSWER_YES;
 		    }
 		    
 		    if (ok) {
@@ -95,16 +113,24 @@ public class SpagoBIRepositoryPathPanel extends PathInputPanel {
             // We assume, that we would install something into this dir
             if (!isWriteable())
             {
-                emitError(parent.langpack.getString("installer.error"), getI18nStringForClass(
-                        "notwritable.spagobirepo.warning", "SpagoBIRepositoryPathPanel"));
-                return false;
+            	int res = askQuestion(parent.langpack.getString("installer.warning"), 
+		    			getI18nStringForClass("notwritable.spagobirepo.warning", 
+		    					"SpagoBIRepositoryPathPanel"), 
+		    			AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
+            	ok = res == AbstractUIHandler.ANSWER_YES;
+            	if (ok) {
+            		pathSelectionPanel.setPath(idata.getInstallPath());
+            	}
+                //emitError(parent.langpack.getString("installer.error"), getI18nStringForClass(
+                //        "notwritable.spagobirepo.warning", "SpagoBIRepositoryPathPanel"));
+                //return false;
+            } else {
+	            int res = askQuestion(parent.langpack.getString("installer.warning"), getI18nStringForClass(
+	            		"new.spagobirepo.warning", "SpagoBIRepositoryPathPanel"), 
+	            		AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
+	   		    ok = res == AbstractUIHandler.ANSWER_YES;
             }
-
-            int res = askQuestion(parent.langpack.getString("installer.warning"), getI18nStringForClass(
-            		"new.spagobirepo.warning", "SpagoBIRepositoryPathPanel"), AbstractUIHandler.CHOICES_YES_NO, 
-            		AbstractUIHandler.ANSWER_YES);
-   		    ok = res == AbstractUIHandler.ANSWER_YES;
-
+            
 		    if (ok) {
 		    	idata.setVariable(getVariableName(), pathSelectionPanel.getPath());
 		    	return true;

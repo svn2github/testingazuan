@@ -12,38 +12,6 @@
 			</spec>
 		</field>
 	</panel>
-	<!--
-	<panel order="1">
-		<field type="title">
-			<description id="engines.to.install"/>
-		</field>
-		<field type="staticText" align="left" id="engines.to.install"/>
-		<field type="check" variable="BIRT">
-			<spec id="SpagoBIBirtReportEngine.description" true="yes" false="no" set="true"/>
-		</field>
-		<field type="check" variable="GEO">
-			<spec id="SpagoBIGeoEngine.description" true="yes" false="no" set="true"/>
-		</field>
-		<field type="check" variable="JASPER">
-			<spec id="SpagoBIJasperReportEngine.description" true="yes" false="no" set="true"/>
-		</field>
-		<field type="check" variable="JPIVOT">
-			<spec id="SpagoBIJPivotEngine.description" true="yes" false="no" set="true"/>
-		</field>
-		<field type="check" variable="QBE">
-			<spec id="SpagoBIQbeEngine.description" true="yes" false="no" set="true"/>
-		</field>
-		<field type="check" variable="WEKA">
-			<spec id="SpagoBIWekaEngine.description" true="yes" false="no" set="true"/>
-		</field>
-		<field type="space" />
-		<field type="staticText" align="left" id="examples.to.install"/>
-		<field type="check" variable="SPAGOBI_EXAMPLES">
-			<spec id="examples.description" true="yes" false="no" set="false"/>
-		</field>
-		<field type="staticText" align="left" id="examples.warning"/>
-	</panel>
-	-->
 	<panel order="1">
 		<field type="title">
 			<description id="database.connection.def"/>
@@ -72,9 +40,14 @@
 			<validator class="com.izforge.izpack.util.NotEmptyValidator" txt="The username is mandatory!" />
 		</field>
 		<field type="space" />
-		<field type="text" variable="PASSWORD">
+		<field type="password" variable="PASSWORD">
 			<description align="left" id="database.password"/>
+			<spec>
+                <pwd txt="" size="18"/>
+            </spec> 
+			<!-- 
 			<spec txt="" size="18" set=""/>
+			 -->
 		</field>
 	</panel>
 </userInput>

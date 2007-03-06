@@ -2,7 +2,7 @@
 
 <langpack>
 	<str id="server.type.title" txt="Destination server"/>
-    <str id="server.type.description" txt="Please spacify the server type which you want SpagoBI to be installed on:"/>
+    <str id="server.type.description" txt="Please specify the server type which you want SpagoBI to be installed on:"/>
     <str id="database.connection.def" txt="Insert your Data WareHouse connection parameters:"/>
     <str id="database.driver" txt="Driver:"/>
     <str id="database.connection.url" txt="Connection url:"/>

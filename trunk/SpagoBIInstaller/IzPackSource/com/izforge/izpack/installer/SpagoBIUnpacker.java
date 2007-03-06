@@ -739,13 +739,20 @@ public class SpagoBIUnpacker implements IUnpacker
             
             JProgressBar progressBar = new JProgressBar(1, 100);
             progressBar.setIndeterminate(true);
-            Object[] contents = { "Completing SpagoBI installation: this operation can take a while ...", 
+            Object[] contents = { "Completing SpagoBI installation: this operation can take some minutes ...", 
             		progressBar };
             JOptionPane pane = new JOptionPane(contents, 
             				JOptionPane.INFORMATION_MESSAGE);
             pane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            JDialog dialog = pane.createDialog(null, "Installing SpagoBI Platform");
-            dialog.setVisible(true);
+            final JDialog dialog = pane.createDialog(null, "Installing SpagoBI Platform");
+            
+    		Thread thread = new Thread () {
+    			public void run() {
+    		        //Thread.yield();
+    		        dialog.setVisible(true);
+                }
+    		};
+    		thread.start();
             InstallSpagoBIPlatform.installSpagoBIPlatorm(pathdest, server_name, install_birt, 
             		install_geo, install_jasper, install_jpivot, install_qbe, install_weka, 
             		install_examples, driver, connection_url, username, password);

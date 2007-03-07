@@ -24,7 +24,7 @@ do
 	RESULT=$?
 done
 
-cd ../../bin
-exec ./exo-run.sh "$@" start
+cd ../../${BIN_DIR}
+exec ./${START_COMMAND}
 
 exit 1

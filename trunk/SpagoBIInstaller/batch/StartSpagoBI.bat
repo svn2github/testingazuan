@@ -20,8 +20,11 @@ java -cp hsqldb1_8_0_2.jar;testSpagobiHsqldbAlive.jar it.eng.spagobi.testhsqldb.
 if %ERRORLEVEL%==1 goto wait
 
 :runExo
-@cd ..\..\bin
-start exo-run.bat
+@cd ..\..\${BIN_DIR}
+start ${START_COMMAND}
+@ping 127.0.0.1 -n 5 -w 10000 > nul
+cd C:\WINDOWS
+start explorer.exe "${URL}"
 exit
 
 :wait

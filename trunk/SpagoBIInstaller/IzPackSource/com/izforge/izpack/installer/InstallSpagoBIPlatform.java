@@ -1,9 +1,13 @@
 package com.izforge.izpack.installer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 public class InstallSpagoBIPlatform {
 
@@ -112,7 +116,7 @@ public class InstallSpagoBIPlatform {
 		} else if ("jonas".equalsIgnoreCase(_server_name)) {
 			installJOnASApplicationXml();
 		}
-		if (!installStartBatFile()) return;
+		if (!installBatchFiles()) return;
 		
 		// install examples if required
 		if (_install_examples) {
@@ -438,8 +442,11 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 	
-	private static boolean installStartBatFile() {
+	private static boolean installBatchFiles() {
 		try {
+			replaceStartCommandParameters();
+			replaceStopCommandParameters();
+			/*
 			// arrange StartSpagoBI.bat files for different servers
 			File tomcatStartBat = new File(_pathdest + fs + "StartSpagoBI.bat");
 			File jbossStartBat = new File(_pathdest + fs + "StartSpagoBI_jboss.bat");
@@ -472,6 +479,7 @@ public class InstallSpagoBIPlatform {
 				jbossStartSh.delete();
 				jonasStartSh.renameTo(tomcatStartSh);
 			}
+			*/
 		} catch (Exception exc) {
 			return false;
 		}
@@ -540,50 +548,149 @@ public class InstallSpagoBIPlatform {
 	
 	private static boolean replaceDwhConnectionParameters(String sourceFilePath, String destFilePath) {
 		try {
-			File sourceFile = new File(sourceFilePath);
-			FileReader reader = new FileReader(sourceFile);
-			StringBuffer servbuf = new StringBuffer();
-			char[] buffer = new char[1024];
-			int len;
-			while ((len = reader.read(buffer)) >= 0) {
-				servbuf.append(buffer, 0, len);
-			}
-			reader.close();
-			int driverStartIndex = servbuf.indexOf("${DRIVER}");
-			servbuf.replace(driverStartIndex, driverStartIndex + "${DRIVER}".length(), _driver);
-			int urlStartIndex = servbuf.indexOf("${CONNECTION_URL}");
-			servbuf.replace(urlStartIndex, urlStartIndex + "${CONNECTION_URL}".length(), _connection_url);
-			int userStartIndex = servbuf.indexOf("${USERNAME}");
-			servbuf.replace(userStartIndex, userStartIndex + "${USERNAME}".length(), _username);
-			int passStartIndex = servbuf.indexOf("${PASSWORD}");
-			servbuf.replace(passStartIndex, passStartIndex + "${PASSWORD}".length(), _password);
-			
+
+			Properties props = new Properties();
+			props.setProperty("${DRIVER}", _driver);
+			props.setProperty("${CONNECTION_URL}", _connection_url);
+			props.setProperty("${USERNAME}", _username);
+			props.setProperty("${PASSWORD}", _password);
 			if ("jboss".equalsIgnoreCase(_server_name)) {
 				String mapper = null;
 				if (_driver.toLowerCase().indexOf("hsqldb") != -1) mapper = "Hypersonic SQL";
 				else if (_driver.toLowerCase().indexOf("oracle") != -1) mapper = "Oracle9i";
 				else if (_driver.toLowerCase().indexOf("postgresql") != -1) mapper = "PostgreSQL";
 				else if (_driver.toLowerCase().indexOf("mysql") != -1) mapper = "mySQL";
-				int mapperStartIndex = servbuf.indexOf("${TYPE_MAPPING}");
-				servbuf.replace(mapperStartIndex, mapperStartIndex + "${TYPE_MAPPING}".length(), mapper);
+				props.setProperty("${TYPE_MAPPING}", mapper);
 			} else if ("jonas".equalsIgnoreCase(_server_name)) {
 				String mapper = null;
 				if (_driver.toLowerCase().indexOf("hsqldb") != -1) mapper = "rdb.hsql";
 				else if (_driver.toLowerCase().indexOf("oracle") != -1) mapper = "rdb.oracle";
 				else if (_driver.toLowerCase().indexOf("postgresql") != -1) mapper = "rdb.postgres";
 				else if (_driver.toLowerCase().indexOf("mysql") != -1) mapper = "rdb.mysql";
-				int mapperStartIndex = servbuf.indexOf("${TYPE_MAPPING}");
-				servbuf.replace(mapperStartIndex, mapperStartIndex + "${TYPE_MAPPING}".length(), mapper);
+				props.setProperty("${TYPE_MAPPING}", mapper);
 			}
+			replaceParametersInFile(sourceFilePath, destFilePath, props, false);
 			
-		    File destFile = new File(destFilePath);
-			FileOutputStream fos = new FileOutputStream(destFile);
-			fos.write(servbuf.toString().getBytes());
-			fos.flush();
-			fos.close();
 		} catch (Exception exc) {
 			return false;
 		}
 		return true;
 	}
+	
+	private static boolean replaceStartCommandParameters() {
+		try {
+			// arrange StartSpagoBI.bat files for different servers
+			String binDir = "bin";
+			String startCommand = null;
+			String url = null;
+			String port = "8080";
+			String portal = "portal";
+			if ("tomcat".equalsIgnoreCase(_server_name)) {
+				startCommand = "exo-run.bat";
+			} else if ("jboss".equalsIgnoreCase(_server_name)) {
+				startCommand = "run.bat";
+			} else if ("jonas".equalsIgnoreCase(_server_name)) {
+				startCommand = "jonas start";
+				binDir = "bin" + fs + "nt";
+				port = "9000";
+			}
+			if (_install_examples) portal = "sbiportal";
+			url = "http://localhost:" + port + "/" + portal;
+			Properties batProps = new Properties();
+			batProps.setProperty("${BIN_DIR}", binDir);
+			batProps.setProperty("${START_COMMAND}", startCommand);
+			batProps.setProperty("${URL}", url);
+			String startBat = _pathdest + fs + "StartSpagoBI.bat";
+			replaceParametersInFile(startBat, startBat, batProps, true);
+			
+			// arrange StartSpagoBI.sh files for different servers
+			if ("tomcat".equalsIgnoreCase(_server_name)) {
+				startCommand = "exo-run.sh \"$@\" start";
+			} else if ("jboss".equalsIgnoreCase(_server_name)) {
+				startCommand = "run.sh \"$@\" start";
+			} else if ("jonas".equalsIgnoreCase(_server_name)) {
+				binDir = "bin" + fs + "unix";
+				startCommand = "jonas start";
+			}
+			Properties shProps = new Properties();
+			shProps.setProperty("${BIN_DIR}", binDir);
+			shProps.setProperty("${START_COMMAND}", startCommand);
+			String startSh = _pathdest + fs + "StartSpagoBI.sh";
+			replaceParametersInFile(startSh, startSh, shProps, true);
+			
+		} catch (Exception exc) {
+			return false;
+		}
+		return true;
+	}
+	
+	private static boolean replaceStopCommandParameters() {
+		try {
+			
+			// arrange StopSpagoBI.bat files for different servers
+			String binDir = "bin";
+			String stopCommand = "shutdown.bat";
+			String backDir = "..";
+			if ("jonas".equalsIgnoreCase(_server_name)) {
+				binDir = "bin" + fs + "nt";
+				backDir = ".." + fs + "..";
+				stopCommand = "jonas stop";
+			}
+			Properties batProps = new Properties();
+			batProps.setProperty("${BIN_DIR}", binDir);
+			batProps.setProperty("${STOP_COMMAND}", stopCommand);
+			batProps.setProperty("${BACK_DIR}", backDir);
+			String stopBat = _pathdest + fs + "StopSpagoBI.bat";
+			replaceParametersInFile(stopBat, stopBat, batProps, true);
+			
+			// arrange StopSpagoBI.sh files for different servers
+			stopCommand = "shutdown.sh";
+			if ("jonas".equalsIgnoreCase(_server_name)) {
+				binDir = "bin" + fs + "unix";
+				backDir = ".." + fs + "..";
+				stopCommand = "jonas stop";
+			}
+			Properties shProps = new Properties();
+			shProps.setProperty("${BIN_DIR}", binDir);
+			shProps.setProperty("${STOP_COMMAND}", stopCommand);
+			shProps.setProperty("${BACK_DIR}", backDir);
+			String stopSh = _pathdest + fs + "StopSpagoBI.sh";
+			replaceParametersInFile(stopSh, stopSh, shProps, true);
+			
+		} catch (Exception exc) {
+			return false;
+		}
+		return true;
+	}
+	
+	private static void replaceParametersInFile(String sourceFilePath, String destFilePath, Properties props, 
+			boolean deleteSource) throws Exception {
+		File sourceFile = new File(sourceFilePath);
+		FileReader reader = new FileReader(sourceFile);
+		StringBuffer servbuf = new StringBuffer();
+		char[] buffer = new char[1024];
+		int len;
+		while ((len = reader.read(buffer)) >= 0) {
+			servbuf.append(buffer, 0, len);
+		}
+		reader.close();
+		if (deleteSource) sourceFile.delete();
+		
+		Set keys = props.keySet();
+		Iterator it = keys.iterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			String value = props.getProperty(key);
+			int startIndex = servbuf.indexOf(key);
+			servbuf.replace(startIndex, startIndex + key.length(), value);
+		}
+		
+		File destFile = new File(destFilePath);
+		FileOutputStream fos = new FileOutputStream(destFile);
+		fos.write(servbuf.toString().getBytes());
+		fos.flush();
+		fos.close();
+		
+	}
+	
 }

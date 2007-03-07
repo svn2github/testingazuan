@@ -94,9 +94,19 @@
       			<!--include name="install_spagobi_support_classes.jar" /-->
 		    </fileset>
     		<fileset dir="batch" targetdir="$INSTALL_PATH">
+    		    <include name="StartSpagoBI.bat" />
+      			<include name="OOStart.bat" />
+      			<include name="SpagoBI.ico" />
+      			<include name="StartSpagoBI.sh" />
+      			<include name="OOStart.sh" />
+      			<include name="SpagoBI.png" />
+    		<!--
       			<include name="StartSpagoBI.bat" />
       			<include name="StartSpagoBI_jboss.bat" />
       			<include name="StartSpagoBI_jonas.bat" />
+      			<include name="StartSpagoBI_sbiportal.bat" />
+      			<include name="StartSpagoBI_jboss_sbiportal.bat" />
+      			<include name="StartSpagoBI_jonas_sbiportal.bat" />
       			<include name="OOStart.bat" />
       			<include name="SpagoBI.ico" />
       			<include name="StartSpagoBI.sh" />
@@ -104,6 +114,7 @@
       			<include name="StartSpagoBI_jonas.sh" />
       			<include name="OOStart.sh" />
       			<include name="SpagoBI.png" />
+      		-->
 		    </fileset>
 		    <!--
 		    <executable targetfile="$INSTALL_PATH/install_spagobi_support_classes.jar" class="it/eng/spagobi/installer/InstallSpagoBIPlatform" type="jar" stage="postinstall"> 

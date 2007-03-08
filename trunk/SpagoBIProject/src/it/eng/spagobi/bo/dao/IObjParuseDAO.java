@@ -42,17 +42,17 @@ import java.util.List;
 public interface IObjParuseDAO {
 	
 	/**
-	 * Loads all detail information for a ObjParuse identified by its 
-	 * <code>objParId</code> and its <code>paruseId</code>. All these information,
-	 * achived by a query to the DB, are stored into a <code>ObjParuse</code> object, 
+	 * Loads the list of ObjParuse associated to the input 
+	 * <code>objParId</code> and <code>paruseId</code>. All these information,
+	 * achived by a query to the DB, are stored into a List of <code>ObjParuse</code> object, 
 	 * which is returned.
 	 * 
 	 * @param objParId The id for the BI object parameter to load
 	 * @param paruseId The parameterUse-id for the Parameter to load
-	 * @return	A <code>ObjParuse</code> object containing all loaded information
+	 * @return	A List of <code>ObjParuse</code> object containing all loaded information
 	 * @throws	EMFUserError If an Exception occurred
 	 */
-	public ObjParuse loadObjParuse(Integer objParId, Integer paruseId) throws EMFUserError;
+	public List loadObjParuse(Integer objParId, Integer paruseId) throws EMFUserError;
 
 	/**
 	 * Implements the query to modify a ObjParuse. All information needed is stored 

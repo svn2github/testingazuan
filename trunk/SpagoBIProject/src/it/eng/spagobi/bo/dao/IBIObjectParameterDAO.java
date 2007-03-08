@@ -42,6 +42,22 @@ import it.eng.spagobi.metadata.SbiObjPar;
  */
 public interface IBIObjectParameterDAO {
 	
+	
+	/**
+	 * Loads all detail information for a BI Object Parameter identified by its 
+	 * <code>objParId</code>. 
+	 * All these information, achived by a query to the DB, are stored into a 
+	 * <code>SbiObjPar</code> object, which is returned.
+	 * 
+	 * @param id The id for the BI object parameter to load
+	 * @return	A <code>SbiObjPar</code> object containing all loaded information
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	
+	public SbiObjPar loadById(Integer id) throws EMFUserError;
+	
+	
+	
 	/**
 	 * Loads all detail information for a BI Object Parameter identified by its 
 	 * <code>objParId</code>. 

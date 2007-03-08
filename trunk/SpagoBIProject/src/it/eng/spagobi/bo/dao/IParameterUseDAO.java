@@ -29,6 +29,7 @@ package it.eng.spagobi.bo.dao;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.ParameterUse;
+import it.eng.spagobi.metadata.SbiParuse;
 
 import java.util.List;
 
@@ -40,6 +41,19 @@ import java.util.List;
  * @author zoppello
  */
 public interface IParameterUseDAO {
+	
+	
+	/**
+	 * Loads all detail information for a parameter use mode identified by 
+	 * its <code>id</code>. All these information, achived by a query 
+	 * to the DB, are stored into a<code>SbiParuse</code> object, which is
+	 * returned.
+	 * 
+	 * @param id The id for the parameter use mode to load
+	 * @return A <code>SbiParuse</code> object containing all loaded information
+	 * @throws EMFUserError EMFUserError If an Exception occurred
+	 */
+	public SbiParuse loadById(Integer id) throws EMFUserError;
 	
 	/**
 	 * Loads all detail information for a parameter use mode identified by 

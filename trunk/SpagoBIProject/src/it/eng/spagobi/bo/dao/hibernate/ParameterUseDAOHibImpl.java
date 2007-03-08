@@ -59,6 +59,32 @@ import org.hibernate.Transaction;
 public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 		IParameterUseDAO {
 
+	
+	/** 
+	 * @see it.eng.spagobi.bo.dao.IParameterUseDAO#loadById(java.lang.Integer)
+	 */
+	public SbiParuse loadById(Integer id) throws EMFUserError {
+		SbiParuse toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try{
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = (SbiParuse)aSession.load(SbiParuse.class, id);
+			tx.commit();
+		}catch(HibernateException he){
+			logException(he);
+			if (tx != null) tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
+		}finally{
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return toReturn;
+	}
+	
+	
 	/** 
 	 * @see it.eng.spagobi.bo.dao.IParameterUseDAO#loadByUseID(java.lang.Integer)
 	 */
@@ -572,4 +598,6 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 		
 		return realResult;
 	}
+
+
 }

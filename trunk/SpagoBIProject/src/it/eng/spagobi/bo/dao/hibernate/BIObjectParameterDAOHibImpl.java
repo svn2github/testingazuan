@@ -55,6 +55,31 @@ import org.hibernate.Transaction;
  */
 public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements IBIObjectParameterDAO{
 
+	
+	/** 
+	 * @see it.eng.spagobi.bo.dao.IBIObjectParameterDAO#loadById(java.lang.Integer)
+	 */
+	public SbiObjPar loadById(Integer id) throws EMFUserError {
+		SbiObjPar hibObjPar = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			hibObjPar = (SbiObjPar) aSession.load(SbiObjPar.class,  id);
+			tx.commit();
+		} catch(HibernateException he) {
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return hibObjPar;
+	}
+	
 	/** 
 	 * @see it.eng.spagobi.bo.dao.IBIObjectParameterDAO#loadForDetailByObjParId(java.lang.Integer)
 	 */
@@ -386,6 +411,9 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 		aBIObjectParameter.setParameter(parameter);
 		return aBIObjectParameter;
 	}
+
+
+	
 	
 	
 	

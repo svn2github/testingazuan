@@ -23,24 +23,54 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
 
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Presentation tag for Script details. 
- * 
- * @author Zerbetto
  */
-
 public class ScriptWizardTag extends TagSupport {
 	
+	private HttpServletRequest httpRequest = null;
+    protected RenderRequest renderRequest = null;
+    protected RenderResponse renderResponse = null;
 	private String script;
 	
 	public int doStartTag() throws JspException {
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ScriptWizardTag::doStartTag:: invocato");
+		
+		httpRequest = (HttpServletRequest) pageContext.getRequest();
+		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
+		renderResponse = (RenderResponse) httpRequest.getAttribute("javax.portlet.response");
+		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
+				           "ScriptWizardTag::doStartTag:: invocato");
 		StringBuffer output = new StringBuffer();
+		
+		output.append("<table width='100%' cellspacing='0' border='0'>\n");
+		output.append("	<tr>\n");
+		output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
+		output.append("			&nbsp;&nbsp;&nbsp;"+ PortletUtilities.getMessage("SBIDev.scriptWiz.wizardTitle", "messages") +"\n");
+		output.append("		</td>\n");
+		output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
+		output.append("		<td class='titlebar_level_2_button_section'>\n");
+		output.append("			<a style='text-decoration:none;' href='javascript:opencloseScriptWizardInfo()'> \n");
+		output.append("				<img width='22px' height='22px'\n");
+		output.append("				 	 src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/info22.jpg")+"'\n");
+		output.append("					 name='info'\n");
+		output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.scriptWiz.showSintax", "messages")+"'\n");
+		output.append("					 title='"+PortletUtilities.getMessage("SBIDev.scriptWiz.showSintax", "messages")+"'/>\n");
+		output.append("			</a>\n");
+		output.append("		</td>\n");
+		output.append("	</tr>\n");
+		output.append("</table>\n");
+		
+		output.append("<br/>\n");
+		
 		
 		output.append("<div class='div_detail_area_forms_lov'>\n");
 		output.append("	<div class='div_detail_label_lov'>\n");
@@ -52,29 +82,41 @@ public class ScriptWizardTag extends TagSupport {
 		output.append("	<div class='div_detail_form' style='height:185px;'>\n");
 	    output.append("		<textarea id='script' name='script' onchange='setLovProviderModified(true)' class='portlet-text-area-field' rows='10' cols='50'>" + script + "</textarea>\n");
 	    output.append("	</div>\n");
-	    
-    
-	    /*
-	    output.append("	<div class='div_detail_label_lov'>\n");
-	    String outputTypeLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.outputType", "messages");
-		output.append("			<span class='portlet-form-field-label'>\n");
-		output.append(outputTypeLbl);
-		output.append("			</span>\n");
-		output.append("	</div>\n");
-		output.append("	<div class='div_detail_form' style='height:45px;'>\n");
-        output.append("		<input type='radio' name='numberout' onchange='setLovProviderModified(true)' value='single' " + selectedsingle + ">\n");
-		String singleValLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.SingleValLbl", "messages");
-		output.append("				<span class='portlet-form-field-label'>"+ singleValLbl + "</span>\n");
-		output.append("			</input>\n");
-		output.append("			<br/>\n");
-        output.append("			<input type='radio' name='numberout' onchange='setLovProviderModified(true)' value='list' " + selectedlist + ">\n");
-		String listValLbl = PortletUtilities.getMessage("SBIDev.scriptWiz.ListValLbl", "messages");
-		output.append("				<span class='portlet-form-field-label'>"+ listValLbl + "</span>\n");
-		output.append("			</input>\n");
-		output.append("	</div>\n");
-		*/
 	    output.append("</div>\n");
 		
+	    
+	    output.append("<script>\n");
+		output.append("		var infowizardscriptopen = false;\n");
+		output.append("		var winSWT = null;\n");
+		output.append("		function opencloseScriptWizardInfo() {\n");
+		output.append("			if(!infowizardscriptopen){\n");
+		output.append("				infowizardscriptopen = true;");
+		output.append("				openScriptWizardInfo();\n");
+		output.append("			}\n");
+		output.append("		}\n");
+		output.append("		function openScriptWizardInfo(){\n");
+		output.append("			if(winSWT==null) {\n");
+		output.append("				winSWT = new Window('winSWTInfo', {className: \"alphacube\", minWidth:150, destroyOnClose: false});\n");
+		output.append("         	winSWT.setContent('scriptwizardinfodiv', true, false);\n");
+		output.append("         	winSWT.showCenter(false);\n");
+		output.append("		    } else {\n");
+		output.append("         	winSWT.showCenter(false);\n");
+		output.append("		    }\n");
+		output.append("		}\n");
+		output.append("		observerSWT = { onClose: function(eventName, win) {\n");
+		output.append("			if (win == winSWT) {\n");
+		output.append("				infowizardscriptopen = false;");
+		output.append("			}\n");
+		output.append("		  }\n");
+		output.append("		}\n");
+		output.append("		Windows.addObserver(observerSWT);\n");
+		output.append("</script>\n");
+		
+		output.append("<div id='scriptwizardinfodiv' style='display:none;'>\n");	
+		output.append(PortletUtilities.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/scriptwizardinfo"));
+		output.append("</div>\n");	
+	    
+	    
         try {
             pageContext.getOut().print(output.toString());
         }

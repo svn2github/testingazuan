@@ -25,6 +25,7 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
 
 import java.util.Iterator;
@@ -38,12 +39,155 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Presentation tag for Query Wizard details. 
- * 
- * @author Zerbetto
  */
-
 public class QueryWizardTag extends TagSupport {
 
+	private HttpServletRequest httpRequest = null;
+    protected RenderRequest renderRequest = null;
+    protected RenderResponse renderResponse = null;
+    private String connectionName;
+    private String queryDef;
+	
+	
+	public String getConnectionName() {
+		return connectionName;
+	}
+	
+	public void setConnectionName(String connectionName) {
+		this.connectionName = connectionName;
+	}
+	
+	public String getQueryDef() {
+		return queryDef;
+	}
+	
+	public void setQueryDef(String queryDef) {
+		this.queryDef = queryDef;
+	}
+	
+	public int doEndTag() throws JspException {
+        TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "QueryWizardTag::doEndTag:: invocato");
+        return super.doEndTag();
+    }
+	
+	public int doStartTag() throws JspException {
+		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
+				            "QueryWizardTag::doStartTag:: invoked");
+		httpRequest = (HttpServletRequest) pageContext.getRequest();
+		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
+		renderResponse = (RenderResponse) httpRequest.getAttribute("javax.portlet.response");
+		String connNameField = PortletUtilities.getMessage("SBIDev.queryWiz.connNameField", "messages");
+		String queryDefField = PortletUtilities.getMessage("SBIDev.queryWiz.queryDefField", "messages");
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		List dbConnection = config.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
+		Iterator itDbCon = dbConnection.iterator();
+		
+		StringBuffer output = new StringBuffer();
+		
+		output.append("<table width='100%' cellspacing='0' border='0'>\n");
+		output.append("	<tr>\n");
+		output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
+		output.append("			&nbsp;&nbsp;&nbsp;"+ PortletUtilities.getMessage("SBIDev.queryWiz.wizardTitle", "messages") +"\n");
+		output.append("		</td>\n");
+		output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
+		output.append("		<td class='titlebar_level_2_button_section'>\n");
+		output.append("			<a style='text-decoration:none;' href='javascript:opencloseQueryWizardInfo()'> \n");
+		output.append("				<img width='22px' height='22px'\n");
+		output.append("				 	 src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/info22.jpg")+"'\n");
+		output.append("					 name='info'\n");
+		output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.queryWiz.showSintax", "messages")+"'\n");
+		output.append("					 title='"+PortletUtilities.getMessage("SBIDev.queryWiz.showSintax", "messages")+"'/>\n");
+		output.append("			</a>\n");
+		output.append("		</td>\n");
+		output.append("	</tr>\n");
+		output.append("</table>\n");
+		
+		output.append("<br/>\n");
+		
+	    output.append("<div class='div_detail_area_forms_lov'>\n");	
+	    output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(connNameField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<select onchange='setLovProviderModified(true);' style='width:180px;' class='portlet-form-input-field' name='connName' id='connName' >\n");
+		while (itDbCon.hasNext()) {
+			SourceBean connectionPool = (SourceBean) itDbCon.next();
+			String connectionPoolName = (String) connectionPool.getAttribute("connectionPoolName");
+			String connectionDescription = (String) connectionPool.getAttribute("connectionDescription");
+			if (connectionDescription == null || connectionDescription.trim().equals("")) connectionDescription = connectionPoolName;
+			String connNameSelected = "";
+			if (connectionPoolName.equals(connectionName)) connNameSelected = "selected=\"selected\"";
+			output.append("			<option value='" + connectionPoolName + "' " + connNameSelected + ">" + connectionDescription + "</option>\n");
+		}
+		output.append("			</select>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(queryDefField);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div style='height:110px;' class='div_detail_form'>\n");
+		output.append("			<textarea style='height:100px;' class='portlet-text-area-field' name='queryDef' onchange='setLovProviderModified(true);'  cols='50'>" + queryDef + "</textarea>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			&nbsp;\n");
+		output.append("		</div>\n");
+		output.append("</div>\n");
+	    
+		
+		output.append("<script>\n");
+		output.append("		var infowizardqueryopen = false;\n");
+		output.append("		var winQWT = null;\n");
+		output.append("		function opencloseQueryWizardInfo() {\n");
+		output.append("			if(!infowizardqueryopen){\n");
+		output.append("				infowizardqueryopen = true;");
+		output.append("				openQueryWizardInfo();\n");
+		output.append("			}\n");
+		output.append("		}\n");
+		output.append("		function openQueryWizardInfo(){\n");
+		output.append("			if(winQWT==null) {\n");
+		output.append("				winQWT = new Window('winQWTInfo', {className: \"alphacube\", minWidth:150, destroyOnClose: false});\n");
+		output.append("         	winQWT.setContent('querywizardinfodiv', true, false);\n");
+		output.append("         	winQWT.showCenter(false);\n");
+		output.append("		    } else {\n");
+		output.append("         	winQWT.showCenter(false);\n");
+		output.append("		    }\n");
+		output.append("		}\n");
+		output.append("		observerQWT = { onClose: function(eventName, win) {\n");
+		output.append("			if (win == winQWT) {\n");
+		output.append("				infowizardqueryopen = false;");
+		output.append("			}\n");
+		output.append("		  }\n");
+		output.append("		}\n");
+		output.append("		Windows.addObserver(observerQWT);\n");
+		output.append("</script>\n");
+		
+		output.append("<div id='querywizardinfodiv' style='display:none;'>\n");	
+		output.append(PortletUtilities.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/querywizardinfo"));
+		output.append("</div>\n");	
+		
+		
+        try {
+            pageContext.getOut().print(output.toString());
+        }
+        catch (Exception ex) {
+            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "QueryWizardTag::doStartTag::", ex);
+            throw new JspException(ex.getMessage());
+        }
+		return SKIP_BODY;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
 	private String connectionName;
 	private String visibleColumns;
 	private String invisibleColumns;
@@ -55,8 +199,10 @@ public class QueryWizardTag extends TagSupport {
     protected RenderRequest renderRequest = null;
     protected RenderResponse renderResponse = null;
 	
+    
+    
+    
 	public int doStartTag() throws JspException {
-		///*
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "QueryWizardTag::doStartTag:: invocato");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
@@ -153,7 +299,7 @@ public class QueryWizardTag extends TagSupport {
 		
 		output.append("  </div>\n");
 	    output.append("</div>\n");
-		
+	   
 	    output.append("<div id='queryWizardWithJavascript' style='display:none;'>\n");
 	    output.append("	 <div class='div_detail_area_forms_lov'>\n");	
 	    output.append("		<div class='div_detail_label_lov'>\n");
@@ -287,8 +433,6 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("	else initialIndex = queryDefUC.indexOf(' DISTINCT ') + 10;\n");
 	    output.append("	var finalIndex = queryDefUC.indexOf(' FROM ');\n");
 	    output.append("	var selectClause = queryDef.substring(initialIndex, finalIndex);\n");
-
-	    //******************************************************
 	    output.append(" var splitter = ',';\n");
 	    output.append("	var selectFields = selectClause.split(splitter);\n");
 	    output.append(" var asrad = document.getElementById('asradio');\n");
@@ -322,9 +466,6 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("        }\n");
 	    output.append("    }\n");
 	    output.append(" }\n");
-	    //******************************************************
-
-	    //output.append("	var selectFields = selectClause.split(',');\n");
 	    output.append("	var fields = new Array();\n");
 	    output.append("	for (i = 0; i < selectFields.length; i++) {\n");
 	    output.append("		var temp;\n");
@@ -352,67 +493,36 @@ public class QueryWizardTag extends TagSupport {
 	    output.append("}\n");
 	    
 	    output.append("function updateFields() {\n");
-	    output.append("	var fields = findFieldsFromQuery();\n");
-	    // looks if there are some old fields (no more present in the query definition) in the visible columns field
-	    output.append("	var visibleColumns = document.getElementById('visColumns').value;\n");
-	    output.append("	var visibleFields = visibleColumns.split(',');\n");
-	    output.append("	if (visibleFields.length == 1 && trim(visibleFields[0]) == '') visibleFields.pop();\n");
-	    output.append("	for (i = 0; i < visibleFields.length; i++) {\n");
-	    output.append("		var visibleFieldFound = false;\n");
-	    output.append(" 	var aVisibleField = trim(visibleFields[i]);\n");
-	    output.append(" 	for (j = 0; j < fields.length; j++) {\n");
-	    output.append(" 		var field = trim(fields[j]);\n");
-	    output.append(" 		if (aVisibleField == field) {\n");
+	    // recover fields from query
+	    output.append("	 var fields = findFieldsFromQuery();\n");
+	    // recover previous visible fileds
+	    output.append("	 var visibleColumns = document.getElementById('visColumns').value;\n");
+	    output.append("	 var visibleFields = visibleColumns.split(',');\n");
+	    // create array for new visible and invisible fields
+	    output.append("	 var newVisibleFields = new Array();\n");
+	    output.append("	 var newInvisibleFields = new Array();\n");
+	    // for all the fields of the query
+	    output.append("  for(j=0; j<fields.length; j++) {\n");
+	    output.append(" 	var field = trim(fields[j]);\n");
+	    // if the field is contained into previous visible fields then set into new visible
+	    // else set it into new invisible
+	    output.append("	    for(i=0; i<visibleFields.length; i++) {\n");
+	    output.append("			var visibleFieldFound = false;\n");
+	    output.append(" 		var aVisibleField = trim(visibleFields[i]);\n");
+	    output.append(" 		if(aVisibleField == field) {\n");
 	    output.append(" 			visibleFieldFound = true;\n");
 	    output.append(" 			break;\n");
 	    output.append(" 		}\n");
 	    output.append(" 	}\n");
-	    output.append(" 	if (!visibleFieldFound) visibleFields.splice(i,1,'');\n");
-	    output.append(" }\n");
-	    output.append(" visibleFields = clean(visibleFields);\n");
-	    output.append("	document.getElementById('visColumns').value = visibleFields.join(',');\n");
-	    // looks if there are some old fields in invisible columns field
-	    output.append("	var invisibleColumns = document.getElementById('invisColumns').value;\n");
-	    output.append("	var	invisibleFields = invisibleColumns.split(',');\n");
-	    output.append("	if (invisibleFields.length == 1 && trim(invisibleFields[0]) == '') invisibleFields.pop();\n");
-	    output.append("	for (i = 0; i < invisibleFields.length; i++) {\n");
-	    output.append("		var invisibleFieldFound = false;\n");
-	    output.append(" 	aInvisibleField = trim(invisibleFields[i]);\n");
-	    output.append(" 	for (j = 0; j < fields.length; j++) {\n");
-	    output.append(" 		var field = trim(fields[j]);\n");
-	    output.append(" 		if (aInvisibleField == field) {\n");
-	    output.append(" 			invisibleFieldFound = true;\n");
-	    output.append(" 			break;\n");
-	    output.append(" 		}\n");
+	    output.append("	    if(visibleFieldFound){\n");
+	    output.append("	    	newVisibleFields[newVisibleFields.length] = field;\n");
+	    output.append(" 	} else {\n");
+	    output.append("	    	newInvisibleFields[newInvisibleFields.length] = field;\n");
 	    output.append(" 	}\n");
-	    output.append(" 	if (!invisibleFieldFound) invisibleFields.splice(i,1,'');\n");
-	    output.append(" }\n");
-	    output.append(" invisibleFields = clean(invisibleFields);\n");
-	    // looks if there are new fields; in case of new field, it is inserted into the invisible columns field
-	    output.append("	for (i = 0; i < fields.length; i++) {\n");
-	    output.append("		var fieldFound = false;\n");
-	    output.append(" 	var field = trim(fields[i]);\n");
-	    output.append(" 	for (j = 0; j < invisibleFields.length; j++) {\n");
-	    output.append(" 		aInvisField = trim(invisibleFields[j]);\n");
-	    output.append(" 		if (aInvisField == field) {\n");
-	    output.append(" 			fieldFound = true;\n");
-	    output.append(" 			break;\n");
-	    output.append(" 		}\n");
-	    output.append(" 	}\n");
-	    output.append(" 	if (!fieldFound) {\n");
-	    output.append(" 		for (j = 0; j < visibleFields.length; j++) {\n");
-	    output.append(" 			aVisibleField = trim(visibleFields[j]);\n");
-	    output.append(" 			if (aVisibleField == field) {\n");
-	    output.append(" 				fieldFound = true;\n");
-	    output.append(" 				break;\n");
-	    output.append(" 			}\n");
-	    output.append(" 		}\n");
-	    output.append(" 	}\n");
-	    output.append(" 	if (!fieldFound) invisibleFields.push(field);\n");
-	    output.append(" }\n");
-	    output.append(" invisibleFields = clean(invisibleFields);\n");
-	    output.append("	document.getElementById('invisColumns').value = invisibleFields.join(',');\n");
-	    
+	    output.append("  }\n");
+	    // set the new visible and invisible fields into hidden parameter
+	    output.append("	document.getElementById('visColumns').value = newVisibleFields.join(',');\n");
+	    output.append("	document.getElementById('invisColumns').value = newInvisibleFields.join(',');\n");
 	    // looks if the value column field contains an old field (no more present in the query definition)
 	    output.append("	var valueColumn = trim(document.getElementById('valueColumns').value);\n");
 	    output.append("	var valueColumnFound = false;\n");
@@ -424,8 +534,6 @@ public class QueryWizardTag extends TagSupport {
 	    output.append(" 	}\n");
 	    output.append(" }\n");
 	    output.append(" if (!valueColumnFound) document.getElementById('valueColumns').value = '';\n");
-	    
-	    	    
 	    // looks if the description column field contains an old field (no more present in the query definition)
 	    output.append("	var descriptionColumn = trim(document.getElementById('descriptionColumns').value);\n");
 	    output.append("	var descriptionColumnFound = false;\n");
@@ -437,11 +545,11 @@ public class QueryWizardTag extends TagSupport {
 	    output.append(" 	}\n");
 	    output.append(" }\n");
 	    output.append(" if (!descriptionColumnFound) document.getElementById('descriptionColumns').value = '';\n");
-	    
 	    //	  regenerate the HTML code
 	    output.append("	var strHTML = generateHTML(fields, valueColumn, descriptionColumn, visibleFields);\n");
 	    output.append("	document.getElementById('fieldsDiv').innerHTML = strHTML;\n");
 	    output.append("}\n");
+	   
 	    
 	    output.append("function setConnName(index) {\n");
 	    output.append("		document.getElementById('connName').selectedIndex = index;\n");
@@ -564,9 +672,10 @@ public class QueryWizardTag extends TagSupport {
             TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "QueryWizardTag::doStartTag::", ex);
             throw new JspException(ex.getMessage());
         }
-	    //*/
 		return SKIP_BODY;
 	}
+	
+	
 	
     public int doEndTag() throws JspException {
         TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "QueryWizardTag::doEndTag:: invocato");
@@ -612,4 +721,5 @@ public class QueryWizardTag extends TagSupport {
 		this.descriptionColumns = descriptionColumns;
 	}
 	
+	*/
 }

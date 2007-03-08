@@ -23,8 +23,12 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.PortletUtilities;
 
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -36,11 +40,39 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class JavaClassWizardTag extends TagSupport {
 	
+	private HttpServletRequest httpRequest = null;
+    protected RenderRequest renderRequest = null;
+    protected RenderResponse renderResponse = null;
 	private String javaClassName;
 	
 	public int doStartTag() throws JspException {
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ScriptWizardTag::doStartTag:: invocato");
+		
+		httpRequest = (HttpServletRequest) pageContext.getRequest();
+		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
+		renderResponse = (RenderResponse) httpRequest.getAttribute("javax.portlet.response");
+		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
+				            "ScriptWizardTag::doStartTag:: invoked");
 		StringBuffer output = new StringBuffer();
+		
+		output.append("<table width='100%' cellspacing='0' border='0'>\n");
+		output.append("	<tr>\n");
+		output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
+		output.append("			&nbsp;&nbsp;&nbsp;"+ PortletUtilities.getMessage("SBIDev.javaClassWiz.title", "messages") +"\n");
+		output.append("		</td>\n");
+		output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
+		output.append("		<td class='titlebar_level_2_button_section'>\n");
+		output.append("			<a style='text-decoration:none;' href='javascript:opencloseJavaWizardInfo()'> \n");
+		output.append("				<img width='22px' height='22px'\n");
+		output.append("				 	 src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/info22.jpg")+"'\n");
+		output.append("					 name='info'\n");
+		output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages")+"'\n");
+		output.append("					 title='"+PortletUtilities.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages")+"'/>\n");
+		output.append("			</a>\n");
+		output.append("		</td>\n");
+		output.append("	</tr>\n");
+		output.append("</table>\n");
+		
+		output.append("<br/>\n");
 		
 		output.append("<div class='div_detail_area_forms_lov'>\n");
 		output.append("	<div class='div_detail_label_lov'>\n");
@@ -52,35 +84,39 @@ public class JavaClassWizardTag extends TagSupport {
 		output.append("	<div class='div_detail_form'>\n");
 	    output.append("		<input type='text' id='javaClassName' name='javaClassName' size='50' onchange='setLovProviderModified(true)' class='portlet-form-input-field' value='" + javaClassName + "' maxlength='100'/>&nbsp;*\n");
 	    output.append("	</div>\n");
-	    
-	    /*
-    	String selectedsingle = " checked='checked' ";
-    	String selectedlist = "";
-        if("true".equalsIgnoreCase(isListOfValues)) {
-    		selectedlist = " checked='checked' ";
-    		selectedsingle = "";
-    	}
-	    
-	    output.append("	<div class='div_detail_label_lov'>\n");
-	    String outputTypeLbl = PortletUtilities.getMessage("SBIDev.javaClassWiz.outputType", "messages");
-		output.append("			<span class='portlet-form-field-label'>\n");
-		output.append(outputTypeLbl);
-		output.append("			</span>\n");
-		output.append("	</div>\n");
-		output.append("	<div class='div_detail_form' style='height:45px;'>\n");
-        output.append("		<input type='radio' name='outputType' onchange='setLovProviderModified(true)' value='single' " + selectedsingle + ">\n");
-		String singleValLbl = PortletUtilities.getMessage("SBIDev.javaClassWiz.SingleValLbl", "messages");
-		output.append("				<span class='portlet-form-field-label'>"+ singleValLbl + "</span>\n");
-		output.append("			</input>\n");
-		output.append("			<br/>\n");
-        output.append("			<input type='radio' name='outputType' onchange='setLovProviderModified(true)' value='list' " + selectedlist + ">\n");
-		String listValLbl = PortletUtilities.getMessage("SBIDev.javaClassWiz.ListValLbl", "messages");
-		output.append("				<span class='portlet-form-field-label'>"+ listValLbl + "</span>\n");
-		output.append("			</input>\n");
-		output.append("	</div>\n");
-		*/
 	    output.append("</div>\n");
 		
+	    output.append("<script>\n");
+		output.append("		var infowizardjavaopen = false;\n");
+		output.append("		var winJWT = null;\n");
+		output.append("		function opencloseJavaWizardInfo() {\n");
+		output.append("			if(!infowizardjavaopen){\n");
+		output.append("				infowizardjavaopen = true;");
+		output.append("				openJavaWizardInfo();\n");
+		output.append("			}\n");
+		output.append("		}\n");
+		output.append("		function openJavaWizardInfo(){\n");
+		output.append("			if(winJWT==null) {\n");
+		output.append("				winJWT = new Window('winJWTInfo', {className: \"alphacube\", minWidth:150, destroyOnClose: false});\n");
+		output.append("         	winJWT.setContent('javawizardinfodiv', true, false);\n");
+		output.append("         	winJWT.showCenter(false);\n");
+		output.append("		    } else {\n");
+		output.append("         	winJWT.showCenter(false);\n");
+		output.append("		    }\n");
+		output.append("		}\n");
+		output.append("		observerJWT = { onClose: function(eventName, win) {\n");
+		output.append("			if (win == winJWT) {\n");
+		output.append("				infowizardjavaopen = false;");
+		output.append("			}\n");
+		output.append("		  }\n");
+		output.append("		}\n");
+		output.append("		Windows.addObserver(observerJWT);\n");
+		output.append("</script>\n");
+		
+		output.append("<div id='javawizardinfodiv' style='display:none;'>\n");	
+		output.append(PortletUtilities.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/jclasswizardinfo"));
+		output.append("</div>\n");
+	    
         try {
             pageContext.getOut().print(output.toString());
         }

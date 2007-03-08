@@ -25,6 +25,7 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.lov.FixedListDetail;
 import it.eng.spagobi.bo.lov.FixedListItemDetail;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 
@@ -40,8 +41,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Presentation tag for Fix Lov Wizard details. 
- * 
- * @author Zerbetto
  */
 
 public class LovWizardTag extends TagSupport {
@@ -53,13 +52,34 @@ public class LovWizardTag extends TagSupport {
     protected RenderResponse renderResponse = null;
 	
 	public int doStartTag() throws JspException {
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "LovWizardTag::doStartTag:: invocato");
+		TracerSingleton.log(SpagoBIConstants.NAME_MODULE , TracerSingleton.DEBUG, 
+				            "LovWizardTag::doStartTag:: invocato");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
 		renderResponse = (RenderResponse) httpRequest.getAttribute("javax.portlet.response");
 		StringBuffer output = new StringBuffer();
 		
 		try {
+			
+			output.append("<table width='100%' cellspacing='0' border='0'>\n");
+			output.append("	<tr>\n");
+			output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
+			output.append("			&nbsp;&nbsp;&nbsp;"+ PortletUtilities.getMessage("SBIDev.lovWiz.wizardTitle", "messages") +"\n");
+			output.append("		</td>\n");
+			output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
+			output.append("		<td class='titlebar_level_2_button_section'>\n");
+			output.append("			<a style='text-decoration:none;' href='javascript:opencloseFixListWizardInfo()'> \n");
+			output.append("				<img width='22px' height='22px'\n");
+			output.append("				 	 src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/info22.jpg")+"'\n");
+			output.append("					 name='info'\n");
+			output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages")+"'\n");
+			output.append("					 title='"+PortletUtilities.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages")+"'/>\n");
+			output.append("			</a>\n");
+			output.append("		</td>\n");
+			output.append("	</tr>\n");
+			output.append("</table>\n");
+			
+			output.append("<br/>\n");
 			
 			String newItemNameField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemNameField", "messages");
 			String newItemValueField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemValueField", "messages");
@@ -98,7 +118,7 @@ public class LovWizardTag extends TagSupport {
 			List lovs = new ArrayList();
 			if (lovProvider != null  &&  !lovProvider.equals("")){
 				//lovProvider = GeneralUtilities.substituteQuotesIntoString(lovProvider);
-				lovs = FixedListDetail.fromXML(lovProvider).getLovs();
+				lovs = FixedListDetail.fromXML(lovProvider).getItems();
 			}
 			
 			output.append("<table class=\"table_detail_fix_lov\">\n");
@@ -129,7 +149,7 @@ public class LovWizardTag extends TagSupport {
 		        String rowClass;
 				for (int i = 0; i < lovs.size(); i++) {
 					FixedListItemDetail lovDet = (FixedListItemDetail) lovs.get(i); 
-					String name = lovDet.getName();
+					String name = lovDet.getValue();
 					String description = lovDet.getDescription();
 					
 					//before sending name and description to the hidden input,
@@ -240,6 +260,41 @@ public class LovWizardTag extends TagSupport {
 			output.append(" }\n");
 			
 			output.append("</script>\n");
+			
+			
+			output.append("<script>\n");
+			output.append("		var infowizardfixlistopen = false;\n");
+			output.append("		var winFLWT = null;\n");
+			output.append("		function opencloseFixListWizardInfo() {\n");
+			output.append("			if(!infowizardfixlistopen){\n");
+			output.append("				infowizardfixlistopen = true;");
+			output.append("				openFixListWizardInfo();\n");
+			output.append("			}\n");
+			output.append("		}\n");
+			output.append("		function openFixListWizardInfo(){\n");
+			output.append("			if(winFLWT==null) {\n");
+			output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", minWidth:150, destroyOnClose: false});\n");
+			output.append("         	winFLWT.setContent('fixlistwizardinfodiv', true, false);\n");
+			output.append("         	winFLWT.showCenter(false);\n");
+			output.append("		    } else {\n");
+			output.append("         	winFLWT.showCenter(false);\n");
+			output.append("		    }\n");
+			output.append("		}\n");
+			output.append("		observerFLWT = { onClose: function(eventName, win) {\n");
+			output.append("			if (win == winFLWT) {\n");
+			output.append("				infowizardfixlistopen = false;");
+			output.append("			}\n");
+			output.append("		  }\n");
+			output.append("		}\n");
+			output.append("		Windows.addObserver(observerFLWT);\n");
+			output.append("</script>\n");
+			
+			output.append("<div id='fixlistwizardinfodiv' style='display:none;'>\n");	
+			output.append(PortletUtilities.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/fixlistwizardinfo"));
+			output.append("</div>\n");
+			
+			
+			
             pageContext.getOut().print(output.toString());
         }
         catch (Exception ex) {

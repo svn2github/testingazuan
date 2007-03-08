@@ -1,0 +1,10 @@
+<div style='width:500px' >
+<ul>
+<li>
+Per inserire un attributo di profilo dentro è necessario utilizzare la sintassi ${name_profile_attribute}. 
+Per inserire un attibuto di profilo multivalore è necessario utilizzare la sintassi ${name_profile_attribute(prefix;splitter;suffix)}: 
+l'attributo di profilo verrà sostituito da prefix+(lista di valori separati dallo splitter)+suffix 
+(esempio: ${nome_attributo_profilo( in (';',';') )})
+</li>
+</ul>
+</div>

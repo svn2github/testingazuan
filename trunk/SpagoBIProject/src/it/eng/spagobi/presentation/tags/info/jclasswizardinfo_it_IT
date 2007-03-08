@@ -1,0 +1,10 @@
+<div style='width:500px' >
+<ul>
+<li>
+Java class must implement interface it.eng.spagobi.bo.javaClassLovs.IJavaClassLov
+This interface has a unique method getValues(IEngUserProfile profile) that returns a string
+The returned string must be an xml string with a predefined structure that you can see in the 
+bottom part of the sintax box
+</li>
+</ul>
+</div>

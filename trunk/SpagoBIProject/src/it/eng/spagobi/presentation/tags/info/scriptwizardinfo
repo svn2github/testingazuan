@@ -1,0 +1,24 @@
+<div style='width:500px' >
+<ul>
+<li>
+Sintax for return a default fixed value: returnValue('value to return'). 
+Example: returnValue('myValue')
+</li>
+<li>
+Sintax for return the value of a single-value user profile attribute: 
+getSingleValueProfileAttribute(name of profile attribute). Example: getSingleValueProfileAttribute(branch)
+</li>
+<li>
+Sintax for return the values of a multi-value user profile attribute as a unique string:
+getMultiValueProfileAttribute(name of profile attribute, prefix, splitter, suffix). 
+Example: getMultiValueProfileAttribute(branches, 'in (', ';', ')')
+This method will return a string like this: prefix+(list of values separated by the splitter)+suffix
+</li>
+<li>
+Sintax for a generic script:
+groovy script which returns an xml string structured in a predefined manner. 
+Look at the bottom of the sintax box to learn the xml structure. 
+Inside the script it's possible to use profile attributes as a variable simply writing the name of the attribute.
+</li>
+</ul>
+</div>

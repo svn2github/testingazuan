@@ -1,0 +1,14 @@
+<div style='width:500px' >
+<ul>
+<li>
+ Per utilizzare un attributo di profilo con valore singolo dentro la query usa la sintassi ${nome_attributo_profilo}
+   (esempio: select ... where colonna = '${nome_attributo_profilo}').
+    Per usare un attributo di profilo multi-valore usa la sintassi ${name_profile_attribute(prefix;splitter;suffix)}:
+     il riferimento all'attributo verrà sostituito con prefix+(lista di valori separati dallo splitter)+suffix (esempio: select ... where column ${name_profile_attribute( in (';',';') )})
+</li>
+<li>
+ I nomi di colonna con punti o funzioni di aggregazione non sono permessi, se è necessario utilizzarli assegnare un alias alla colonna (as).
+    Esempio: select sum(colonna) as nome_colonna, select colonna.colonna as nome_colonna
+    </li>
+</ul>
+</div>

@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.tags;
 
-import groovy.lang.Binding;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
@@ -30,13 +29,6 @@ import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dbaccess.DataConnectionManager;
-import it.eng.spago.dbaccess.Utils;
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
-import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -50,12 +42,9 @@ import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
-import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.bo.lov.ILovDetail;
-import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
-import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
@@ -67,8 +56,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -85,9 +72,7 @@ public class DynamicPageTag extends TagSupport {
 	private String actor = null;
 	private String moduleName = "";
 	
-		
 	public static final int PIXEL_PER_CHAR = 9;
-	
 	
 	private RequestContainer getRequestContainer() {
 		HttpServletRequest httpRequest = (HttpServletRequest) pageContext.getRequest();
@@ -121,25 +106,18 @@ public class DynamicPageTag extends TagSupport {
 		return getRenderResponse().encodeURL(getRenderRequest().getContextPath() + relativePath);
 	}
 	
-	public boolean isSingleValue(BIObjectParameter biparam) {
-		boolean isSingleValue = false;
-    	try {
-			LovResultHandler lovResultHandler = new LovResultHandler(biparam.getLovResult());
-			if(lovResultHandler.isSingleValue()) isSingleValue = true;
-		} catch (SourceBeanException e) {
-			// TODO Auto-generated catch block
-		}
-		return isSingleValue;
+	private IEngUserProfile getProfile() {
+		SessionContainer session = getSession();
+		SessionContainer permSession = session.getPermanentContainer();
+		IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		return profile;
 	}
 	
 	public int doStartTag() throws JspException {
-		
 		BIObject obj = getBIObject();
 		List parameters = obj.getBiObjectParameters();
 		if (parameters != null && parameters.size() > 0) {
-			
 			StringBuffer htmlStream = new StringBuffer();
-					
 			createSetLookupFieldJSFunction(htmlStream);
 			createSetDeleteFlagJSFunction(htmlStream);
 			createClearFieldsJSFunction(htmlStream);
@@ -147,16 +125,12 @@ public class DynamicPageTag extends TagSupport {
 			createClearFieldJSFunction(htmlStream);
 			createSetChangedFlagJSFunction(htmlStream);
 			createSelectAllTextJSFunction(htmlStream);
-			
 			htmlStream.append("<div class='div_detail_area_forms' style='width:" + (getParamLabelDivWidth() + 300) + "px;'>\n");
-	      
 	        Iterator iter = parameters.iterator();
 	        while(iter.hasNext()) {
 	        	BIObjectParameter biparam = (BIObjectParameter)iter.next();
-	        	
 	        	createParamValueHiddenInput(htmlStream, biparam);        	
 	        	createParamChangedHiddenInput(htmlStream, biparam);  
-	        	
 	        	// the biparameter is not showed if one of the following conditions is safisfied:
 	        	// 1. the biparameter is transient and has valid values
 	        	// 2. the biparameter has a single value and has valid value
@@ -193,6 +167,9 @@ public class DynamicPageTag extends TagSupport {
 		return SKIP_BODY;
 	}
 		
+	
+	
+	
 	public int doEndTag() throws JspException {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.INFORMATION, "TitleTag::doEndTag:: invocato");
 		return super.doEndTag();
@@ -204,6 +181,19 @@ public class DynamicPageTag extends TagSupport {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	'CREATE HTML' METHODS
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean isSingleValue(BIObjectParameter biparam) {
+		boolean isSingleValue = false;
+    	try {
+			LovResultHandler lovResultHandler = new LovResultHandler(biparam.getLovResult());
+			if(lovResultHandler.isSingleValue()) isSingleValue = true;
+		} catch (SourceBeanException e) {
+			// TODO Auto-generated catch block
+		}
+		return isSingleValue;
+	}
+	
+	
 	
 	/**
 	 * Creates two empty hidden inputs and the correspondent JavaScript to populate it in case 
@@ -457,24 +447,40 @@ public class DynamicPageTag extends TagSupport {
 		htmlStream.append("/>\n");
 	}	
 	
+	
+	
+	/**
+	 * Generate html code for a combobox form
+	 * @param biparam the parameter of the biobject
+	 * @param htmlStream the html of the combobox
+	 */
 	private void createHTMLComboBox(BIObjectParameter biparam, StringBuffer htmlStream) {
     	try{
+    		// create initial html
 	    	htmlStream.append("<select style='width:230px;' " +  
 	    			 			"name='" + biparam.getParameterUrlName() + "Desc' " +
 	    			 			"id='"+ biparam.getParameterUrlName()+ "Desc' " +
 	    			 			"class='portlet-form-field' " +
 	    			 			"onchange=\"refresh('" + biparam.getParameterUrlName()+ "Desc', " +
 	    			 					  "'" + biparam.getParameterUrlName() + "')\" >\n");	    	
-	    	
 	    	htmlStream.append("<option value=''> </option>\n");
-	    	
-	    	
-	    	//String lovResult = getLovResult(biparam);
+            // get the lov associated to the parameter 
+	    	Parameter par = biparam.getParameter();
+	    	ModalitiesValue lov = par.getModalityValue();
+	    	// build the ILovDetail object associated to the lov
+	    	String lovProv = lov.getLovProvider();
+	    	ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(lovProv);
+	    	// get the result of the lov
+	    	IEngUserProfile profile = getProfile();
 	    	String lovResult = biparam.getLovResult();
-	    	
+	    	if((lovResult==null) || (lovResult.trim().equals(""))) {
+	    		lovResult = lovProvDet.getLovResult(profile);
+	    	}
+	    	// get value and description column
+	    	String valueColumn = lovProvDet.getValueColumnName();
+	    	String descriptionColumn = lovProvDet.getDescriptionColumnName();
+	    	// get all the rows of the result and build the option of the combobox
 	    	LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
-	    	String valueColumn = lovResultHandler.getValueColumn();
-	    	String descriptionColumn = lovResultHandler.getDescriptionColumn();
 	    	List rows = lovResultHandler.getRows();
 	    	Iterator it = rows.iterator();
 	    	while(it.hasNext()) {
@@ -486,10 +492,13 @@ public class DynamicPageTag extends TagSupport {
 				htmlStream.append("<option value='"+GeneralUtilities.substituteQuotesIntoString(value) +
 						"' " + selected + ">" + description  + "</option>\n");
 			
-	    	}	    	
+	    	}
+	    	// close combo box
 			htmlStream.append("</select>\n");
 	    }catch (Exception ex) {
-	    	ex.printStackTrace();
+	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+	    			            "createHTMLComboBox", "Error while creating html combo box " +
+	    			            " for biparam " + biparam.getLabel(), ex);
 	    }
     }	
 	
@@ -532,13 +541,6 @@ public class DynamicPageTag extends TagSupport {
 	    	ex.printStackTrace();
 	    }
     }
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	/**
@@ -631,25 +633,28 @@ public class DynamicPageTag extends TagSupport {
 	}
 	
 	
-	
+	/**
+	 * Gets the lov result of a biprameter
+	 * @param biparam teh biparameter
+	 * @return teh lov result of the input biparameter
+	 * @throws SourceBeanException
+	 */
 	private String getLovResult(BIObjectParameter biparam) throws SourceBeanException {
 		String lovResult = null;
-				
-		
-		IEngUserProfile profile = (IEngUserProfile) getSession().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		
-		
+        IEngUserProfile profile = getProfile();
 		String lovProvider = biparam.getParameter().getModalityValue().getLovProvider();
 		ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
-		
 		try {
 			lovResult = lovDetail.getLovResult(profile);
 		} catch (Exception e) {				
-			e.printStackTrace();
-		}	
-						
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "getLovResult", "Error while recovering lov result of the " +
+					            "biparam " + biparam.getLabel(), e);
+		}					
 		return lovResult;
 	}
+	
+	
 	
 	public String getParameterDescription(BIObjectParameter biparam) {
 		String description = null;

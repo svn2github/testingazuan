@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.modules;
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -33,6 +34,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -44,11 +46,14 @@ import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.lov.FixedListDetail;
 import it.eng.spagobi.bo.lov.FixedListItemDetail;
+import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.JavaClassDetail;
+import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.QueryDetail;
 import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.security.FakeUserProfile;
 import it.eng.spagobi.security.IPortalSecurityProvider;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -57,6 +62,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -65,8 +71,6 @@ import java.util.Vector;
  * has methods for LOV load, detail, modify/insertion and deleting operations. 
  * The <code>service</code> method has  a switch for all these operations, differentiated the ones 
  * from the others by a <code>message</code> String.
- * 
- * @author sulis
  */
 
 public class DetailModalitiesValueModule extends AbstractModule {
@@ -74,6 +78,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	private EMFErrorHandler errorHandler;
 	
 	private SessionContainer session;
+	
+	private IEngUserProfile profile;
 	
 	public void init(SourceBean config) {
 	}
@@ -102,6 +108,12 @@ public class DetailModalitiesValueModule extends AbstractModule {
         
 		errorHandler = getErrorHandler();
 		try {
+			// recover user profile
+			RequestContainer reqCont = getRequestContainer();
+			SessionContainer sessCont = reqCont.getSessionContainer();
+			SessionContainer permSess = sessCont.getPermanentContainer();
+			profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			// process message
 			if (message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
 				SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE, "DetailModalitiesValueModule", "service", "The message parameter is null");
@@ -120,6 +132,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				delDetailModValue(request, AdmintoolsConstants.DETAIL_DEL, response);
 			} 	else if (message.trim().equalsIgnoreCase("EXIT_FROM_DETAIL")){
 				exitFromDetail(request, response);
+			}   else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING)) {
+				testLovAfterAttributesFilling(request, response);
 			}
 
 		} catch (EMFUserError eex) {
@@ -135,6 +149,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	private void exitFromDetail (SourceBean request, SourceBean response) throws SourceBeanException {
 		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		response.setAttribute("loopback", "true");
+		session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
+		session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 	}
 	
 	/**
@@ -147,19 +163,12 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param response The response Source Bean
 	 * @throws EMFUserError If an exception occurs
 	 */
-	private void getDetailModValue(String key, SourceBean response)
-			throws EMFUserError {
+	private void getDetailModValue(String key, SourceBean response) throws EMFUserError {
 		try {
-			
-			ModalitiesValue modVal = DAOFactory.getModalitiesValueDAO()
-					.loadModalitiesValueByID(new Integer(key));
+			ModalitiesValue modVal = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(new Integer(key));
 			prepareDetailModalitiesValuePage(modVal, AdmintoolsConstants.DETAIL_MOD, response);
-			
-			if (modVal.getITypeCd().equals("FIX_LOV")) {
-				session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT,
-						modVal);
-			}
-
+			session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "false");
+			session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
 					"DetailModalitiesValueModule", "getDetailModValue",
@@ -171,6 +180,54 @@ public class DetailModalitiesValueModule extends AbstractModule {
 
 		}
 	}
+	
+	private void testLovAfterAttributesFilling(SourceBean request, 	SourceBean response) throws EMFUserError, SourceBeanException  {
+		try {
+			ModalitiesValue modVal = null;
+			modVal = (ModalitiesValue) session.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
+			String lovProv = modVal.getLovProvider();
+		  	ILovDetail lovDet = LovDetailFactory.getLovFromXML(lovProv);
+			List profAttrToFill = getProfileAttributesToFill(lovDet);
+			if(profAttrToFill.size()!=0) {
+				//	create a fake user profile
+				FakeUserProfile fakeUserProf = new FakeUserProfile((String)profile.getUserUniqueIdentifier());
+				// copy all the roles, functionalities of the original profile
+				fakeUserProf.setFunctionalities(profile.getFunctionalities());
+				fakeUserProf.setRoles(profile.getRoles());
+				// copy attributes and add the missing ones
+				Map attributes = new HashMap();
+				Collection origAttrNames = profile.getUserAttributeNames();
+			    Iterator origAttrNamesIter = origAttrNames.iterator();
+			    while(origAttrNamesIter.hasNext()) {
+			    	String profileAttrName = (String)origAttrNamesIter.next();
+			    	String profileAttrValue = profile.getUserAttribute(profileAttrName).toString();
+			    	attributes.put(profileAttrName, profileAttrValue);
+			    }
+			    Iterator profAttrToFillIter = profAttrToFill.iterator();
+			    while(profAttrToFillIter.hasNext()) {
+			    	String profileAttrName = (String)profAttrToFillIter.next();
+			    	String profileAttrValue = (String)request.getAttribute(profileAttrName);
+			    	if(profileAttrValue!=null) {
+			    		attributes.put(profileAttrName, profileAttrValue);
+			    	}
+			    }
+			    fakeUserProf.setAttributes(attributes);
+			    session.setAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST, fakeUserProf);
+			}
+			response.setAttribute("testLov", "true");
+			return;
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "testLovAfterAttributesFilling", "Error while creating user profile for test", e);
+		}
+	}
+				
+				
+				
+				
+				
+				
+		
 	
 	/**
 	 * Inserts/Modifies the detail of a value according to the user 
@@ -184,308 +241,201 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @throws EMFUserError If an exception occurs
 	 * @throws SourceBeanException If a SourceBean exception occurs
 	 */
-	private void modDetailModValue(SourceBean request, String mod,
-			SourceBean response) throws EMFUserError, SourceBeanException {
-
+	private void modDetailModValue(SourceBean request, String mod, 	SourceBean response) throws EMFUserError, SourceBeanException {
 		try {
 			ModalitiesValue modVal = null;
-
-			// if we are coming from the test result page, the Lov object is in
-			// session
-			String returnFromTestMsg = (String) request
-					.getAttribute("RETURN_FROM_TEST_MSG");
-			if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {
-				modVal = (ModalitiesValue) session
-						.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-				session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-				session.delAttribute(SpagoBIConstants.MODALITY);
-			} else if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {
-				modVal = (ModalitiesValue) session
-						.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-				session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-				session.delAttribute(SpagoBIConstants.MODALITY);
-				prepareDetailModalitiesValuePage(modVal, mod, response);
-				String lovProviderModified = (String) request.getAttribute("lovProviderModified");
-				if (lovProviderModified != null && !lovProviderModified.trim().equals(""))
-					response.setAttribute("lovProviderModified", lovProviderModified);
-				// exits without writing into DB and without loop
-				return;
-			}
-
-			// if we are not coming from the test result page, the Lov objects
-			// fields are in request
+			modVal = (ModalitiesValue) session.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
+			// to rember that the lov has been modified 
+			// necessary to show a confirm if the user change the lov and then go back without saving
+			String lovProviderModified = (String) request.getAttribute("lovProviderModified");
+			if(lovProviderModified != null && !lovProviderModified.trim().equals("")) 
+				session.setAttribute(SpagoBIConstants.LOV_MODIFIED, lovProviderModified);
+			
+			// check if we are coming from the test
+			String returnFromTestMsg = (String) request.getAttribute("RETURN_FROM_TEST_MSG");
+			if(returnFromTestMsg!=null) {
+				// save after the test
+				if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {		
+					
+					// validate data
+					ValidationCoordinator.validate("PAGE", "LovTestColumnSelector", this);
+					// if there are some validation errors return to test page 
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if(error instanceof EMFValidationError) {
+								response.setAttribute("testLov", "true");
+								return;
+							}
+						}
+					}
+					String valueColumn = (String)request.getAttribute("valueColumn");
+					String descriptionColumn = (String)request.getAttribute("descriptionColumn");
+					List visibleColumns = (List)request.getAttributeAsList("visibleColumn");
+					List columns = (List)request.getAttributeAsList("column");
+					
+					String lovProvider = modVal.getLovProvider();
+					ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
+					lovDetail.setDescriptionColumnName(descriptionColumn);
+					List invisCols = getInvisibleColumns(columns, visibleColumns); 
+					lovDetail.setInvisibleColumnNames(invisCols);
+					lovDetail.setValueColumnName(valueColumn);
+					lovDetail.setVisibleColumnNames(visibleColumns);
+					String newLovProvider = lovDetail.toXML();
+					modVal.setLovProvider(newLovProvider);
+					
+					session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
+					session.delAttribute(SpagoBIConstants.MODALITY);
+				} 
+				
+				
+				// don't save after the test
+				else if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {
+					modVal = (ModalitiesValue) session.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
+					//session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
+					//session.delAttribute(SpagoBIConstants.MODALITY);
+					prepareDetailModalitiesValuePage(modVal, mod, response);
+					// exits without writing into DB and without loop
+					return;
+				}
+			} 
+			// if we are not coming from the test result page, the Lov objects fields are in request
 			else {
-
 				String idStr = (String) request.getAttribute("id");
 				Integer id = new Integer(idStr);
-				String description = (String) request
-						.getAttribute("description");
+				String description = (String) request.getAttribute("description");
 				String name = (String) request.getAttribute("name");
 				String label = (String) request.getAttribute("label");
 				String input_type = (String) request.getAttribute("input_type");
-				String input_type_cd = input_type.substring(0, input_type
-						.indexOf(","));
-				String input_type_id = input_type.substring(input_type
-						.indexOf(",") + 1);
-
-				if (mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-					modVal = new ModalitiesValue();
+				String input_type_cd = input_type.substring(0, input_type.indexOf(","));
+				String input_type_id = input_type.substring(input_type.indexOf(",") + 1);
+				if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 					modVal.setId(id);
-				} else {
-					modVal = DAOFactory.getModalitiesValueDAO()
-							.loadModalitiesValueByID(id);
+				} 
+				// check if lov type has been changed and in that case reset the lovprovider
+				String oldTypeId = modVal.getITypeId();
+				if((oldTypeId!=null) && (!oldTypeId.trim().equals(""))) {
+					if(!oldTypeId.equals(input_type_id)) {
+						modVal.setLovProvider("");
+					}
 				}
+				// set the properties of the lov object
 				modVal.setDescription(description);
 				modVal.setName(name);
 				modVal.setLabel(label);
 				modVal.setITypeCd(input_type_cd);
 				modVal.setITypeId(input_type_id);
-
-				if (input_type_cd.equalsIgnoreCase("JAVA_CLASS")) {
-					
-					JavaClassDetail javaClassDet = recoverJavaClassWizardValues(request);
-					String lovProvider = javaClassDet.toXML();
-					modVal.setLovProvider(lovProvider);
-
-					labelControl(request, mod);
-					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
-					ValidationCoordinator.validate("PAGE", "JavaClassWizardValidation", this);
-
-					// if there are some validation errors into the errorHandler does not write into DB
-					Collection errors = errorHandler.getErrors();
-					if (errors != null && errors.size() > 0) {
-						Iterator iterator = errors.iterator();
-						while (iterator.hasNext()) {
-							Object error = iterator.next();
-							if (error instanceof EMFValidationError) {
-								prepareDetailModalitiesValuePage(modVal, mod, response);
-								return;
-							}
-						}
+                // check label and validation
+				labelControl(request, mod);
+				ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
+				// based on the type of lov set special properties
+				Object objectToTest = null;
+				
+				
+				if(input_type_cd.equalsIgnoreCase("QUERY")) {
+					String lovProv = modVal.getLovProvider();
+					QueryDetail query = null;
+					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
+						query = new QueryDetail();
+					} else {
+						query = (QueryDetail)LovDetailFactory.getLovFromXML(lovProv);
 					}
-
-					// control if user wants to test the script
-					Object test = request.getAttribute("testLovBeforeSave");
-					if (test != null) {
-						testLovBeforeSave(request, response, javaClassDet);
-						session.setAttribute(SpagoBIConstants.MODALITY, mod);
-						session.setAttribute(
-								SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
-						// exits without writing into DB and without loop
-						return;
-					}
-
-				} else if (input_type_cd.equalsIgnoreCase("QUERY")) {
-
-					QueryDetail query = recoverQueryWizardValues(request);
+					recoverQueryWizardValues(request, query);
 					String lovProvider = query.toXML();
 					modVal.setLovProvider(lovProvider);
-
-					labelControl(request, mod);
-					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
 					ValidationCoordinator.validate("PAGE", "QueryWizardValidation", this);
-
-					// if there are some validation errors into the errorHandler does not write into DB
-					Collection errors = errorHandler.getErrors();
-					if (errors != null && errors.size() > 0) {
-						Iterator iterator = errors.iterator();
-						while (iterator.hasNext()) {
-							Object error = iterator.next();
-							if (error instanceof EMFValidationError) {
-								prepareDetailModalitiesValuePage(modVal, mod, response);
-								return;
-							}
-						}
+					objectToTest = query;
+				} 
+				
+				else if (input_type_cd.equalsIgnoreCase("JAVA_CLASS")) {
+					String lovProv = modVal.getLovProvider();
+					JavaClassDetail javaClassDet =  null;
+					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
+						javaClassDet = new JavaClassDetail();
+					} else {
+						javaClassDet = (JavaClassDetail)LovDetailFactory.getLovFromXML(lovProv);
 					}
-
-					// control if user wants to test the query
-					Object test = request.getAttribute("testLovBeforeSave");
-					if (test != null) {
-						testLovBeforeSave(request, response, query);
-						session.setAttribute(SpagoBIConstants.MODALITY, mod);
-						session.setAttribute(
-								SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
-						// exits without writing into DB and without loop
-						return;
-					}
-
-				} else if (input_type_cd.equalsIgnoreCase("FIX_LOV")) {
-
-					// controls if it is requested to delete a Fix Lov item
-					Object indexOfFixedLovItemToDeleteObj = request
-							.getAttribute("indexOfFixedLovItemToDelete");
-					if (indexOfFixedLovItemToDeleteObj != null) {
-						// it is requested to delete a Fix Lov item
-						int indexOfFixedLovItemToDelete = new Integer((String)indexOfFixedLovItemToDeleteObj).intValue();
-						FixedListDetail lovDetailList = recoverLovWizardValues(request);
-						lovDetailList = deleteFixLovValue(lovDetailList, indexOfFixedLovItemToDelete);
-						String lovProvider = lovDetailList.toXML();
-						modVal.setLovProvider(lovProvider);
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute("lovProviderModified", "true");
-						// exits without writing into DB and without loop
-						return;
-					}
-					
-					// checks if it is requested to change a Fix Lov item
-					Object indOfFixLovItemToChangeObj = request.getAttribute("indexOfFixedLovItemToChange");
-					if (indOfFixLovItemToChangeObj != null) {
-						// it is requested to change a Fix Lov item
-						int indexOfFixedLovItemToChange = new Integer((String)indOfFixLovItemToChangeObj).intValue();
-						FixedListDetail lovDetailList = recoverLovWizardValues(request);
-						String newName = (String)request.getAttribute("nameRow"+indexOfFixedLovItemToChange+"InpText");
-						String newValue = (String)request.getAttribute("descrRow"+indexOfFixedLovItemToChange+"InpText");
-						request.setAttribute("newNameRow", newName);
-						request.setAttribute("newValueRow", newValue);
-						ValidationCoordinator.validate("PAGE", "FixLovChangeValidation", this);
-						if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
-							lovDetailList = changeFixLovValue(lovDetailList, indexOfFixedLovItemToChange, newName, newValue);
-						}
-						String lovProvider = lovDetailList.toXML();
-						modVal.setLovProvider(lovProvider);
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute("lovProviderModified", "true");
-						// exits without writing into DB and without loop
-						return;
-					}
-
-					// ***************************************************************************
-					// ***************************************************************************
-					// ***************************************************************************
-					// checks if it is requested to move down a Fix Lov item
-					Object indexOfItemToDown = request.getAttribute("indexOfItemToDown");
-					if (indexOfItemToDown != null) {
-						// it is requested to move down a Fix Lov item
-						int indexOfItemToDownInt = new Integer((String)indexOfItemToDown).intValue();
-						FixedListDetail lovDetailList = recoverLovWizardValues(request);
-						lovDetailList = moveDownFixLovItem(lovDetailList, indexOfItemToDownInt);
-						String lovProvider = lovDetailList.toXML();
-						modVal.setLovProvider(lovProvider);
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute("lovProviderModified", "true");
-						// exits without writing into DB and without loop
-						return;
-					}
-					
-					// checks if it is requested to move up a Fix Lov item
-					Object indexOfItemToUp = request.getAttribute("indexOfItemToUp");
-					if (indexOfItemToUp != null) {
-						// it is requested to move down a Fix Lov item
-						int indexOfItemToUpInt = new Integer((String)indexOfItemToUp).intValue();
-						FixedListDetail lovDetailList = recoverLovWizardValues(request);
-						lovDetailList = moveUpFixLovItem(lovDetailList, indexOfItemToUpInt);
-						String lovProvider = lovDetailList.toXML();
-						modVal.setLovProvider(lovProvider);
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute("lovProviderModified", "true");
-						// exits without writing into DB and without loop
-						return;
-					}
-					// ***************************************************************************
-					// ***************************************************************************
-					// ***************************************************************************
-					
-					// loads all Fix Lov items
-					FixedListDetail lovDetailList = recoverLovWizardValues(request);
-					String lovProvider = lovDetailList.toXML();
+			        recoverJavaClassWizardValues(request, javaClassDet);
+					String lovProvider = javaClassDet.toXML();
 					modVal.setLovProvider(lovProvider);
-
-					// controls if it is requested to add a Fix Lov item
-					Object insertFixLovItem = request.getAttribute("insertFixLovItem");
-					if (insertFixLovItem != null) {
-						// it is requested to add a Fix Lov item.
-						// If there are no errors, add the new item in the
-						// Lov
-						ValidationCoordinator.validate("PAGE", "FixLovWizardValidation", this);
-						
-						// if there are some validation errors into the errorHandler does not add the new values
-						Collection errors = errorHandler.getErrors();
-						boolean hasValidationErrors = false;
-						if (errors != null && errors.size() > 0) {
-							Iterator iterator = errors.iterator();
-							while (iterator.hasNext()) {
-								Object error = iterator.next();
-								if (error instanceof EMFValidationError) {
-									hasValidationErrors = true;
-									break;
-								}
-							}
-						}
-						if (!hasValidationErrors) {
-							addFixLovItem(request, modVal);
-						}
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						response.setAttribute("lovProviderModified", "true");
-						// exits without writing into DB and without loop
-						return;
+					ValidationCoordinator.validate("PAGE", "JavaClassWizardValidation", this);
+					objectToTest = javaClassDet;
+				} 
+				
+				else if (input_type_cd.equalsIgnoreCase("SCRIPT")) {
+					String lovProv = modVal.getLovProvider();
+					ScriptDetail scriptDet =  null;
+					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
+						scriptDet = new ScriptDetail();
+					} else {
+						scriptDet = (ScriptDetail)LovDetailFactory.getLovFromXML(lovProv);
 					}
-
-					labelControl(request, mod);
-					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
-
-					// if there are some validation errors into the errorHandler does not write into DB
-					Collection errors = errorHandler.getErrors();
-					if (errors != null && errors.size() > 0) {
-						Iterator iterator = errors.iterator();
-						while (iterator.hasNext()) {
-							Object error = iterator.next();
-							if (error instanceof EMFValidationError) {
-								prepareDetailModalitiesValuePage(modVal, mod, response);
-								return;
-							}
-						}
-					}
-
-					// control if user wants to test the fix lov
-					Object test = request.getAttribute("testLovBeforeSave");
-					if (test != null) {
-						testLovBeforeSave(request, response, lovDetailList);
-						session.setAttribute(SpagoBIConstants.MODALITY, mod);
-						session.setAttribute(
-								SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
-						// exits without writing into DB and without loop
-						return;
-					}
-
-				} else if (input_type_cd.equalsIgnoreCase("SCRIPT")) {
-
-					ScriptDetail scriptDet = recoverScriptWizardValues(request);
+					recoverScriptWizardValues(request, scriptDet);
 					String lovProvider = scriptDet.toXML();
 					modVal.setLovProvider(lovProvider);
-
-					labelControl(request, mod);
-					ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
 					ValidationCoordinator.validate("PAGE", "ScriptWizardValidation", this);
-					
-					// if there are some validation errors into the errorHandler does not write into DB
-					Collection errors = errorHandler.getErrors();
-					if (errors != null && errors.size() > 0) {
-						Iterator iterator = errors.iterator();
-						while (iterator.hasNext()) {
-							Object error = iterator.next();
-							if (error instanceof EMFValidationError) {
-								prepareDetailModalitiesValuePage(modVal, mod, response);
-								return;
-							}
-						}
+					objectToTest = scriptDet;
+				} 
+				
+				else  if (input_type_cd.equalsIgnoreCase("FIX_LOV")) {
+					String lovProv = modVal.getLovProvider();
+					FixedListDetail fixlistDet = null;
+					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
+						fixlistDet = new FixedListDetail();
+					} else {
+						fixlistDet = (FixedListDetail)LovDetailFactory.getLovFromXML(lovProv);
 					}
-
-					// control if user wants to test the script
-					Object test = request.getAttribute("testLovBeforeSave");
-					if (test != null) {
-						testLovBeforeSave(request, response, scriptDet);
-						session.setAttribute(SpagoBIConstants.MODALITY, mod);
-						session.setAttribute(
-								SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
+					boolean itemTaskDone = doFixListItemTask(modVal, fixlistDet, request);
+					if(itemTaskDone) {
+						prepareDetailModalitiesValuePage(modVal, mod, response);
+						session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "true");
+						session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
 						// exits without writing into DB and without loop
 						return;
+					} else {
+						List items = fixlistDet.getItems();
+						if(items.size()==0) {
+							modVal.setLovProvider("<LOV/>");
+						}
+						objectToTest = fixlistDet;
+					}	
+				}
+				// if there are some validation errors into the errorHandler does not write into DB
+				Collection errors = errorHandler.getErrors();
+				if (errors != null && errors.size() > 0) {
+					Iterator iterator = errors.iterator();
+					while (iterator.hasNext()) {
+						Object error = iterator.next();
+						if (error instanceof EMFValidationError) {
+							prepareDetailModalitiesValuePage(modVal, mod, response);
+							return;
+						}
 					}
+				}
+				// check if user wants to test
+				Object test = request.getAttribute("testLovBeforeSave");
+				if (test != null) {
+					session.setAttribute(SpagoBIConstants.MODALITY, mod);
+					session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
+					boolean needProfAttrFill = checkProfileAttributes(response, (ILovDetail)objectToTest);
+					if(!needProfAttrFill) {
+						response.setAttribute("testLov", "true");
+					}
+					// exits without writing into DB 
+					return;
 				}
 			}
 		
+			
+			
+			
+			
+			
+			
 			// finally (if there are no error, if there is no request for test or to
 			// add or delete a Fix Lov item) writes into DB
-		
 			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 				DAOFactory.getModalitiesValueDAO().insertModalitiesValue(modVal);
 			} else {
@@ -505,57 +455,54 @@ public class DetailModalitiesValueModule extends AbstractModule {
 						documents.addAll(objParuseDAO.getDocumentLabelsListWithAssociatedDependencies(aParuse.getUseID()));
 						correlations.addAll(objParuseDAO.getAllDependenciesForParameterUse(aParuse.getUseID()));
 					}
+					
+					
+					// if the document list is not empty means that the lov is in correlation in some documents
 					if (documents.size() > 0) {
-						// it means that the lov is in correlation in some documents
 						if (!initialLov.getITypeCd().equals(modVal.getITypeCd())) {
 							// the lov type was changed
-							HashMap params = new HashMap();
-							params.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
-							Vector vector = new Vector();
-							vector.add(documents.toString());
-							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "input_type", "1058", vector, params);
+							HashMap errparams = new HashMap();
+							errparams.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
+							List params = new ArrayList();
+							params.add(documents.toString());
+							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "input_type", "1058", params, errparams);
 							errorHandler.addError(error);
 							prepareDetailModalitiesValuePage(modVal, mod, response);
 							return;
 						} else {
 							// the lov type was not changed, must verify that the dependency columns are still present
+							// load all the columns returned by the lov
 							String queryDetXML = modVal.getLovProvider();
-							SourceBean queryXML = SourceBean.fromXMLString(queryDetXML);
-							String visibleColumns = ((SourceBean) queryXML
-									.getAttribute("VISIBLE-COLUMNS")).getCharacters();
-							StringTokenizer strToken = new StringTokenizer(visibleColumns, ",");
-							Vector columns = new Vector();
-							while (strToken.hasMoreTokens()) {
-								String val = strToken.nextToken().trim();
-								columns.add(val);
-							}
-							String invisibleColumns = ((SourceBean) queryXML
-									.getAttribute("INVISIBLE-COLUMNS")).getCharacters();
-							if (invisibleColumns != null) {
-								strToken = new StringTokenizer(invisibleColumns, ",");
-								while (strToken.hasMoreTokens()) {
-									String val = strToken.nextToken().trim();
-									columns.add(val);
-								}
-							}
+							ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(queryDetXML);
+							List visColumns = lovProvDet.getVisibleColumnNames();
+							List invisColumns = lovProvDet.getInvisibleColumnNames();
+							List columns = new ArrayList();
+							if( (visColumns!=null) && (visColumns.size()!=0) )
+								columns.addAll(visColumns);
+							if( (invisColumns!=null) && (invisColumns.size()!=0) )
+								columns.addAll(invisColumns);
+							// for each correlation column name chechs if the column is still present 
 							Iterator correlationsIt = correlations.iterator();
 							boolean columnNoMorePresent = false;
 							List columnsNoMorePresent = new ArrayList();
 							while (correlationsIt.hasNext()) {
 								ObjParuse aObjParuse = (ObjParuse) correlationsIt.next();
 								String filterColumn = aObjParuse.getFilterColumn();
+								// because spago put all sourcebean attribute to Uppercase
+								//filterColumn = filterColumn.toUpperCase();
 								if (!columns.contains(filterColumn)) {
 									columnNoMorePresent = true;
 									columnsNoMorePresent.add(filterColumn);
 								}
 							}
+							// if there are some column no more present then generate an error and return to the detail page
 							if (columnNoMorePresent) {
-								HashMap params = new HashMap();
-								params.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
-								Vector vector = new Vector();
-								vector.add(documents.toString());
-								vector.add(columnsNoMorePresent.toString());
-								EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1059, vector, params);
+								HashMap errparams = new HashMap();
+								errparams.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
+								List params = new ArrayList();
+								params.add(documents.toString());
+								params.add(columnsNoMorePresent.toString());
+								EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1059, params, errparams);
 								errorHandler.addError(error);
 								prepareDetailModalitiesValuePage(modVal, mod, response);
 								return;
@@ -577,6 +524,107 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		
 	}
+	
+	
+	private boolean checkProfileAttributes(SourceBean response, ILovDetail lovDet) {
+		boolean needFill = false;
+		try{
+			List attrsToFill = getProfileAttributesToFill(lovDet);
+			if(attrsToFill.size()!=0) {
+				response.setAttribute(SpagoBIConstants.PROFILE_ATTRIBUTES_TO_FILL, attrsToFill);
+				needFill = true;
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "checkProfileAttributes", "Error while checking the profile " +
+					            "attributes required for test", e);
+		}
+		return needFill;
+	}
+	
+	
+	private List getProfileAttributesToFill(ILovDetail lovDet) {
+		List attrsToFill = new ArrayList();
+		try{
+			Collection userAttrNames = profile.getUserAttributeNames();
+			List attrsRequired = lovDet.getProfileAttributeNames();
+			Iterator attrsReqIter = attrsRequired.iterator();
+			while(attrsReqIter.hasNext()) {
+				String attrName = (String)attrsReqIter.next();
+				if(!userAttrNames.contains(attrName)) {
+					attrsToFill.add(attrName);
+				}
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+		            "getProfileAttributesToFill", "Error while checking the profile " +
+		            "attributes required for test", e);
+		}
+		return attrsToFill;
+	}
+	
+	
+	private boolean doFixListItemTask(ModalitiesValue modVal, FixedListDetail fixlistDet, SourceBean request) throws Exception {
+		boolean changeItems = false;
+		// checks if it is requested to delete a Fix Lov item
+		Object indexOfFixedLovItemToDeleteObj = request.getAttribute("indexOfFixedLovItemToDelete");
+		if (indexOfFixedLovItemToDeleteObj != null) {
+			// it is requested to delete a Fix Lov item
+			int indexOfFixedLovItemToDelete = new Integer((String)indexOfFixedLovItemToDeleteObj).intValue();
+			fixlistDet = deleteFixLovValue(fixlistDet, indexOfFixedLovItemToDelete);
+			changeItems = true;
+		}
+		// checks if it is requested to change a Fix Lov item
+		Object indOfFixLovItemToChangeObj = request.getAttribute("indexOfFixedLovItemToChange");
+		if (indOfFixLovItemToChangeObj != null) {
+			// it is requested to change a Fix Lov item
+			int indexOfFixedLovItemToChange = new Integer((String)indOfFixLovItemToChangeObj).intValue();
+			String newName = (String)request.getAttribute("nameRow"+indexOfFixedLovItemToChange+"InpText");
+			String newValue = (String)request.getAttribute("descrRow"+indexOfFixedLovItemToChange+"InpText");
+			request.setAttribute("newNameRow", newName);
+			request.setAttribute("newValueRow", newValue);
+			ValidationCoordinator.validate("PAGE", "FixLovChangeValidation", this);
+			if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+				fixlistDet = changeFixLovValue(fixlistDet, indexOfFixedLovItemToChange, newName, newValue);
+				changeItems = true;
+			}
+		}
+		//	checks if it is requested to move down a Fix Lov item
+		Object indexOfItemToDown = request.getAttribute("indexOfItemToDown");
+		if (indexOfItemToDown != null) {
+			// it is requested to move down a Fix Lov item
+			int indexOfItemToDownInt = new Integer((String)indexOfItemToDown).intValue();
+			fixlistDet = moveDownFixLovItem(fixlistDet, indexOfItemToDownInt);
+			changeItems = true;
+		}
+		// checks if it is requested to move up a Fix Lov item
+		Object indexOfItemToUp = request.getAttribute("indexOfItemToUp");
+		if (indexOfItemToUp != null) {
+			// it is requested to move down a Fix Lov item
+			int indexOfItemToUpInt = new Integer((String)indexOfItemToUp).intValue();
+			fixlistDet = moveUpFixLovItem(fixlistDet, indexOfItemToUpInt);
+			changeItems = true;
+		}
+		//	checks if it is requested to add a Fix Lov item
+		Object insertFixLovItem = request.getAttribute("insertFixLovItem");
+		if (insertFixLovItem != null) {
+			ValidationCoordinator.validate("PAGE", "FixLovWizardValidation", this);
+			if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+				fixlistDet = addFixLovItem(request, modVal);
+				changeItems = true;
+			}
+		}
+		// if the request was to insert/delete/modify item of the fix list update the lov
+		if(changeItems) {
+			String lovProvider = fixlistDet.toXML();
+			modVal.setLovProvider(lovProvider);
+		}
+		return changeItems;
+	}
+	
+	
+	
+	
 	
 	/**
 	 * Sets some attributes into the response SourceBean. Those attributes are required for 
@@ -625,57 +673,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	
 	
 	/**
-	 * Tests the ModalitiesValue before saving and sets some attributes to the response SourceBean 
-	 * for the correct visualization of the test result page.
-	 *  
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * @param objectToTest The object to test. It is:
-	 * 			- null in case on manual input;
-	 * 			- a QueryDetail in case of query;
-	 * 			- a LovDetailList in case of Fix Lov;
-	 * 			- a ScriptDetail in case of script;
-	 * 			- a JavaClassDetail in case of java class.
-	 * @throws SourceBeanException
-	 */
-	private void testLovBeforeSave (SourceBean request, SourceBean response, Object objectToTest) throws SourceBeanException {
-
-		String lovProviderModified = (String) request.getAttribute("lovProviderModified");
-		if (lovProviderModified != null && !lovProviderModified.trim().equals("")) 
-			response.setAttribute("lovProviderModified", lovProviderModified);
-		
-    	// case on manual input
-    	if (objectToTest == null) {
-    		response.setAttribute("testedObject", "MAN_IN");
-    		response.setAttribute("testExecuted", "yes");
-    		return;
-    	}
-    	
-    	// case of query
-    	if (objectToTest instanceof QueryDetail) {
-    		response.setAttribute("testedObject", "QUERY");
-    		return;
-    	}
-    	
-    	// case of Fix Lov
-    	if (objectToTest instanceof FixedListDetail) {
-    		response.setAttribute("testedObject", "FIXED_LIST");
-    		response.setAttribute("testExecuted", "yes");    		
-    		return;
-    	}
-    	
-    	// case on script
-    	if (objectToTest instanceof ScriptDetail) {    		
-    		response.setAttribute("testedObject", "SCRIPT");    			
-    	}
-
-    	// case on script
-    	if (objectToTest instanceof JavaClassDetail) {    		
-    		response.setAttribute("testedObject", "JAVA_CLASS");       		
-    	}
-	}
-	
-	/**
 	 * Deletes a value choosed by user from the LOV list.
 	 * 
 	 * @param request	The request SourceBean
@@ -705,9 +702,11 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			params.put(AdmintoolsConstants.PAGE, ListLovsModule.MODULE_PAGE);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1020, new Vector(), params);
 			
+		} finally {
+			session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
+			session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 		}
 		response.setAttribute("loopback", "true");
-		
 		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 	}
 	
@@ -730,6 +729,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			modVal.setLovProvider("");
 			modVal.setITypeCd("QUERY");
 			prepareDetailModalitiesValuePage(modVal, AdmintoolsConstants.DETAIL_INS, response);
+			session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "false");
+			session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE,
 					"DetailModalitiesValueModule", "newDetailModValue",
@@ -765,20 +766,12 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * 
 	 * @param request The request SourceBean
 	 */
-	private JavaClassDetail recoverJavaClassWizardValues (SourceBean request) {
-		JavaClassDetail javaClassDetail = new JavaClassDetail();
+	private void recoverJavaClassWizardValues (SourceBean request, JavaClassDetail jcd) {
 		String javaClassName = (String) request.getAttribute("javaClassName");
 		if (javaClassName == null) {
 			javaClassName = "";
 		}
-		javaClassDetail.setJavaClassName(javaClassName);
-		
-		String singleValueStr = (String) request.getAttribute("singlevalue");
-		boolean singleValue = (singleValueStr != null && singleValueStr.equalsIgnoreCase("true"));
-		javaClassDetail.setSingleValue(singleValue);
-		
-		
-        return javaClassDetail;
+		jcd.setJavaClassName(javaClassName);		
 	}
 	
 	/**
@@ -787,22 +780,11 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * 
 	 * @param request The request SourceBean
 	 */
-	private QueryDetail recoverQueryWizardValues (SourceBean request) {
-		QueryDetail query = new QueryDetail();
+	private void recoverQueryWizardValues (SourceBean request, QueryDetail query) {
 		String connName = (String)request.getAttribute("connName");
-		String visColumns = (String)request.getAttribute("visColumns");
-		String valueColumns = (String)request.getAttribute("valueColumns");
-		String descriptionColumns = (String)request.getAttribute("descriptionColumns");
 		String queryDefinition = (String)request.getAttribute("queryDef");
-		String invisColumns = (String)request.getAttribute("invisColumns");
-		if (invisColumns == null) invisColumns = "";
 		query.setConnectionName(connName);
-		query.setVisibleColumns(visColumns);
-		query.setValueColumns(valueColumns);
-		query.setDescriptionColumns(descriptionColumns);
 		query.setQueryDefinition(queryDefinition);
-		query.setInvisibleColumns(invisColumns);
-		return query;
 	}
 	
 	/**
@@ -812,9 +794,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param request The request SourceBean
 	 */
 	
-	private ScriptDetail recoverScriptWizardValues (SourceBean request) {
-		
-			ScriptDetail scriptDet = new ScriptDetail();
+	private void recoverScriptWizardValues (SourceBean request, ScriptDetail sdet) {
 			String script = (String) request.getAttribute("script");
 			if(script==null) {
 				script = "";
@@ -822,13 +802,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			script = script.replaceAll(">", "&gt;");
 			script = script.replaceAll("<", "&lt;");
 			script = script.replaceAll("\"", "&quot;");
-			scriptDet.setScript(script);
-			
-			String singleValueStr = (String) request.getAttribute("singlevalue");
-			boolean singleValue = (singleValueStr != null && singleValueStr.equalsIgnoreCase("true"));
-			scriptDet.setSingleValue(singleValue);
-			
-	        return scriptDet;	        
+			script = "<![CDATA[" + script + "]]>";
+			sdet.setScript(script);	        
 	}
 	
 	
@@ -841,7 +816,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param modVal	The ModalitiesValue to modify with the new entry
 	 * @throws SourceBeanException	If a SourceBean Exception occurred
 	 */
-	private ModalitiesValue addFixLovItem (SourceBean request, ModalitiesValue modVal) throws SourceBeanException {
+	private FixedListDetail addFixLovItem (SourceBean request, ModalitiesValue modVal) throws SourceBeanException {
 		String lovProv = modVal.getLovProvider();
 		FixedListDetail lovDetList = null;
 		if ((lovProv==null) || (lovProv.trim().equals("")) || (!modVal.getITypeCd().equals("FIX_LOV"))) {
@@ -852,59 +827,9 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		String lovName = (String)request.getAttribute("nameOfFixedLovItemNew");
 		String lovDesc = (String)request.getAttribute("valueOfFixedLovItemNew");
 		lovDetList.add(lovName, lovDesc);
-		modVal.setLovProvider(lovDetList.toXML());
-		return modVal;
-	}
-	
-	
-	/**
-	 * Finds the index of the fixed lov item to delete.
-	 * 
-	 * @param indexOfFixedListItemToDeleteObj	The object obtained from the SourceBean request 
-	 * as an attribute with key "indexOfFixedListItemToDelete" 
-	 */
-	/*
-	private int findIndexOfFixedLovItemToDelete (Object indexOfFixedLovItemToDeleteObj) {
-		String indexOfFixedLovItemToDeleteStr = "";
-		if (indexOfFixedLovItemToDeleteObj instanceof String) {
-			indexOfFixedLovItemToDeleteStr = (String) indexOfFixedLovItemToDeleteObj;
-		} else if (indexOfFixedLovItemToDeleteObj instanceof List) {
-			List indexOfFixedListItemToDeleteList = (List) indexOfFixedLovItemToDeleteObj;
-			Iterator it = indexOfFixedListItemToDeleteList.iterator();
-			while (it.hasNext()) {
-				Object item = it.next();
-				if (item instanceof SourceBean) continue;
-				if (item instanceof String) indexOfFixedLovItemToDeleteStr = (String) item;
-			}
-		}
-		int indexOfFixedLovItemToDelete = Integer.parseInt(indexOfFixedLovItemToDeleteStr);
-		return indexOfFixedLovItemToDelete;
-	}
-	*/
-	
-	/**
-	 * Recovers all the fix lov items from the request, apart from the one with index indexOfFixedListItemToDelete,
-	 * that will be ignorated. If indexOfFixedListItemToDelete is negative, all the items will be recovered and 
-	 * put into the String lovProvider (representing the XML Lov detail list).
-	 * 
-	 * @param request	The request SourceBean
-	 * @param indexOfFixedListItemToDelete	The index of the item to be ignorated.
-	 * @throws Exception	If an Exception occurred
-	 */
-	private FixedListDetail recoverLovWizardValues (SourceBean request) throws Exception {
-		FixedListDetail lovDetList = new FixedListDetail();
-		List names = request.getAttributeAsList("nameOfFixedListItem");
-		List values = request.getAttributeAsList("valueOfFixedListItem");
-		if(names.size() != values.size()) 
-			throw new Exception ("Fixed Lov has different numbers of names and values!");
-		for(int i = 0; i < names.size(); i++) {
-			String name = (String) names.get(i);
-			String value = (String) values.get(i);
-			lovDetList.add(name, value);
-			//	if (indexOfFixedLovItemToDelete != i) lovDetList.add(name, value);
-		}
 		return lovDetList;
 	}
+
 	
 	
 	/**
@@ -913,7 +838,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param indexOfFixedListItemToDelete	The index of the item to be deleted
     */
 	private FixedListDetail deleteFixLovValue (FixedListDetail lovDetList, int indexOfFixedLovItemToDelete)  {
-		List lovs = lovDetList.getLovs();
+		List lovs = lovDetList.getItems();
 		lovs.remove(indexOfFixedLovItemToDelete);
 		lovDetList.setLovs(lovs);
 		return lovDetList;
@@ -925,7 +850,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param indexOfItemToUp	The index of the item to move up
     */
 	private FixedListDetail moveUpFixLovItem (FixedListDetail lovDetList, int indexOfItemToUp)  {
-		List lovs = lovDetList.getLovs();
+		List lovs = lovDetList.getItems();
 		Object o = lovs.get(indexOfItemToUp);
 		lovs.remove(indexOfItemToUp);
 		lovs.add((indexOfItemToUp-1), o);
@@ -939,7 +864,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	 * @param indexOfItemToDown	The index of the item to move down
     */
 	private FixedListDetail moveDownFixLovItem (FixedListDetail lovDetList, int indexOfItemToDown)  {
-		List lovs = lovDetList.getLovs();
+		List lovs = lovDetList.getItems();
 		Object o = lovs.get(indexOfItemToDown);
 		lovs.remove(indexOfItemToDown);
 		lovs.add((indexOfItemToDown+1), o);
@@ -956,10 +881,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
     */
 	private FixedListDetail changeFixLovValue (FixedListDetail lovDetList, int itemToChange, 
 			                                   String newName, String newValue)  {
-		List lovs = lovDetList.getLovs();
+		List lovs = lovDetList.getItems();
 		lovs.remove(itemToChange);
 		FixedListItemDetail lovdet = new FixedListItemDetail();
-		lovdet.setName(newName);
+		lovdet.setValue(newName);
 		lovdet.setDescription(newValue);
 		lovs.add(itemToChange, lovdet);
 		lovDetList.setLovs(lovs);
@@ -1010,6 +935,19 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				}
 			}
 		}
+	}
+	
+	
+	private List getInvisibleColumns(List columns, List visibleColumns) {
+		List invisibleCols = new ArrayList();
+		Iterator iterCols = columns.iterator();
+		while(iterCols.hasNext()){
+			String colName = (String)iterCols.next();
+			if(!visibleColumns.contains(colName)) {
+				invisibleCols.add(colName);
+			}
+		}
+		return invisibleCols;
 	}
 	
 }

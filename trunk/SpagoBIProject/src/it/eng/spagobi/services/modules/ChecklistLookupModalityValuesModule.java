@@ -21,53 +21,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
-import groovy.lang.Binding;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dbaccess.DataConnectionManager;
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.DataRow;
-import it.eng.spago.dbaccess.sql.SQLCommand;
-import it.eng.spago.dbaccess.sql.result.DataResult;
-import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spago.paginator.basic.PaginatorIFace;
-import it.eng.spago.paginator.basic.impl.GenericList;
-import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
-import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
-import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.bo.lov.ILovDetail;
-import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
 import it.eng.spagobi.bo.lov.LovToListService;
-import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.services.commons.AbstractBasicCheckListModule;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -81,14 +63,80 @@ import java.util.Vector;
 public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListModule {
 		
 	private String lovResult = null;
+	private ILovDetail lovProvDetail = null;
 	
 	/**
 	 * Class Constructor
-	 *
 	 */
 	public ChecklistLookupModalityValuesModule() {
 		super();
 	} 
+	
+	
+	public void service(SourceBean request, SourceBean response) throws Exception {		
+		initSession(request);
+		BIObjectParameter biParam = getBIParameter(request);
+		Parameter par = biParam.getParameter();
+		ModalitiesValue lov = par.getModalityValue();
+		String lovProv = lov.getLovProvider();
+		lovProvDetail = LovDetailFactory.getLovFromXML(lovProv);
+		lovResult = biParam.getLovResult();
+		if(lovResult == null) {
+			IEngUserProfile profile = getUserProfile(request);
+			lovResult = lovProvDetail.getLovResult(profile);
+		}
+		response.setAttribute(getLovModuleConfig(lovResult, request));
+		config = getConfig();
+		if(config == null) config = (SourceBean) response.getAttribute("CONFIG");
+		_request = request;
+		_response = response;	
+		String message = (String)request.getAttribute("MESSAGE");
+		if(message == null || message.equalsIgnoreCase("INIT_CHECKLIST")) {
+			preprocess(request);		
+			DelegatedBasicListService.service(this, request, response);
+			postprocess(response); 
+			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
+		} else if(message.equalsIgnoreCase("HANDLE_CHECKLIST")) {						
+			// events rised by navigation buttons defined in CheckListTag class (method makeNavigationButton)
+			if(request.getAttribute("prevPage") != null){
+				navigationHandler(request, response, false);
+				return;
+			}
+			if(request.getAttribute("nextPage") != null){
+				navigationHandler(request, response, true);
+				return;
+			}
+			//	events rised by action buttons defined in module.xml file (module name="ListLookupReportsModule")
+			if(request.getAttribute("saveback") != null){
+				preprocess(request);
+				save();
+				exitFromModule(response, false);
+				return;
+			}				
+			if(request.getAttribute("save") != null) {				
+				preprocess(request);
+				save();
+				request.updAttribute("MESSAGE", "LIST_PAGE");	
+				request.setAttribute("LIST_PAGE", new Integer(pageNumber).toString());	
+				DelegatedBasicListService.service(this, request, response); 
+				postprocess(response); 
+				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
+				return;			
+			}
+			if(request.getAttribute("back") != null) {			
+				exitFromModule(response, true);
+				return;
+			}
+		} else {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "service", "The message parameter value " +message+ "is not allowed" );
+		}				
+	}
+	
+	
+	
+	
+	
 	
 	public void createCheckedObjectMap(SourceBean request) throws Exception {
 		checkedObjectsMap = new HashMap();
@@ -143,7 +191,6 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	 */
 	private void initSession(SourceBean request) {
 		SessionContainer session = this.getRequestContainer().getSessionContainer();
-		
 		if(session.getAttribute("CHK_LIST_INITIALIZED")==null) {
 			session.setAttribute("LOOKUP_PARAMETER_NAME", request.getAttribute("LOOKUP_PARAMETER_NAME"));
 			session.setAttribute("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));
@@ -163,41 +210,34 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		session.delAttribute("LOOKUP_PARAMETER_ID");
 	}
 	
+	
+	
 	public void exitFromModule(SourceBean response, boolean abort) throws Exception{
 		SessionContainer session = this.getRequestContainer().getSessionContainer();		
-		
 		if(!abort && returnValues){
 			List valuesSBList = getCheckedObjects().getAttributeAsList("OBJECT");
-			
-			
 			String valueColumn =(String)((SourceBean)config.getAttribute("KEYS.OBJECT")).getAttribute("key");
-			
 			List values = new ArrayList();
 			List descriptions = new ArrayList();
 			for(int i = 0; i < valuesSBList.size(); i++) {
-				SourceBean valueSB = (SourceBean)valuesSBList.get(i);
-								
+				SourceBean valueSB = (SourceBean)valuesSBList.get(i);		
 				LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
-				SourceBean rowSB = lovResultHandler.getRow((String)valueSB.getAttribute(valueColumn));
+				String valueToSearch = (String)valueSB.getAttribute(valueColumn);
+				SourceBean rowSB = lovResultHandler.getRow(valueToSearch, lovProvDetail.getValueColumnName());
 				if(rowSB != null) {
 					values.add(GeneralUtilities.decode((String)valueSB.getAttribute(valueColumn)));
-					descriptions.add(rowSB.getAttribute(lovResultHandler.getDescriptionColumn()));
+					descriptions.add(rowSB.getAttribute(lovProvDetail.getDescriptionColumnName()));
 				}
 			}
-			
 			session.setAttribute("LOOKUP_VALUE", values);
 			session.setAttribute("LOOKUP_DESC", descriptions);
 		}
-		
 		getRequestContainer().getSessionContainer().delAttribute(CHECKED_OBJECTS);	
-		
 		String moduleName = (String)_request.getAttribute("AF_MODULE_NAME");
-				
 		session.setAttribute("RETURN_FROM_MODULE", moduleName);
 		session.setAttribute("RETURN_STATUS", ((abort)?"ABORT":"OK") );
 		session.setAttribute("LOOKUP_PARAMETER_NAME", (String)getSession(_request).getAttribute("LOOKUP_PARAMETER_NAME"));
 		response.setAttribute("PUBLISHER_NAME", "returnToExecBIObjLoop");
-		
 		clearSession();
 	}
 	
@@ -221,114 +261,30 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
         return null;
 	}
 		
-	public void service(SourceBean request, SourceBean response) throws Exception {		
-		initSession(request);
-				
-		
-		BIObjectParameter biParam = getBIParameter(request);
-		lovResult = biParam.getLovResult();
-		if(lovResult == null) {
-			IEngUserProfile profile = getUserProfile(request);
-			String lovProvider = getModalityValue(request).getLovProvider();
-			ILovDetail  lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
-			lovResult = lovDetail.getLovResult(profile);
-		}
-		
-		response.setAttribute(getLovModuleConfig(lovResult, request));
-		
-		
-		config = getConfig();
-		if(config == null) config = (SourceBean) response.getAttribute("CONFIG");
-		
-		_request = request;
-		_response = response;
-		
-		String message = (String)request.getAttribute("MESSAGE");
-
-		if(message == null || message.equalsIgnoreCase("INIT_CHECKLIST")) {
-			preprocess(request);		
-			DelegatedBasicListService.service(this, request, response);
-			postprocess(response); 
-			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
-			
-			
-		}
-		else if(message.equalsIgnoreCase("HANDLE_CHECKLIST")) {
-									
-			// events rised by navigation buttons defined in CheckListTag class (method makeNavigationButton)
-			if(request.getAttribute("prevPage") != null){
-				navigationHandler(request, response, false);
-				return;
-			}
-			
-			if(request.getAttribute("nextPage") != null){
-				navigationHandler(request, response, true);
-				return;
-			}
-			
-			//	events rised by action buttons defined in module.xml file (module name="ListLookupReportsModule")
-			if(request.getAttribute("saveback") != null){
-				preprocess(request);
-				save();
-				exitFromModule(response, false);
-				return;
-			}
-							
-			if(request.getAttribute("save") != null) {				
-				preprocess(request);
-				save();
-				request.updAttribute("MESSAGE", "LIST_PAGE");	
-				request.setAttribute("LIST_PAGE", new Integer(pageNumber).toString());	
-				DelegatedBasicListService.service(this, request, response); 
-				postprocess(response); 
-				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
-				return;			
-			}
-			
-			if(request.getAttribute("back") != null) {			
-				exitFromModule(response, true);
-				return;
-			}
-			
-		}
-		else {
-			// error
-		}			
-		
-		
-		//super.service(request, response); 	
-	}
+	
 	
 	
 	private SourceBean getLovModuleConfig(String lovResult,  SourceBean request) throws Exception {
-		LovToListService lovToListService = new LovToListService(lovResult);
-		SourceBean config = lovToListService.getListServiceBaseConfig(getModalityValue(request).getDescription());
-		
-		LovResultHandler lovResultHandler = new LovResultHandler(lovResult);						
-		String valueColumn = lovResultHandler.getValueColumn();
-				
+		IEngUserProfile profile = getUserProfile(request);
+		LovToListService lovToListService = new LovToListService(lovProvDetail, profile);
+		SourceBean config = lovToListService.getListServiceBaseConfig(getModalityValue(request).getDescription());					
+		String valsueColumn = lovProvDetail.getValueColumnName();
 		SourceBean captionsSB = new SourceBean("CAPTIONS");
-		
 		config.setAttribute(captionsSB);
-		
 		SourceBean buttonsSB = new SourceBean("BUTTONS");
 		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
 		buttonsSB.setAttribute(backButtonSB);
 		SourceBean selectButtonSB = createSelectButton(getBackButtonParams(request));
 		buttonsSB.setAttribute(selectButtonSB);
 		config.setAttribute(buttonsSB);
-		
 		return config;
 	}
 	
 	private ListIFace getListFromLov(SourceBean request, SourceBean response) throws Exception {
-		ListIFace list = null;
-					
-		LovToListService lovToListService = new LovToListService(lovResult);	
+		ListIFace list = null;			
+		IEngUserProfile profile = getUserProfile(request);
+		LovToListService lovToListService = new LovToListService(lovProvDetail, profile);
 		list = lovToListService.getLovAsListService();	
-		
-		//response.setAttribute(getLovModuleConfig(lovResult, request));	
-		
 		// filter the list 
 		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		if (valuefilter != null) {
@@ -341,16 +297,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, 
 					columnfilter, typeFilter, getResponseContainer().getErrorHandler());
 		}		
-		
 		return list;
 	}	
 	
-	
-	
-	private SessionContainer getSession(SourceBean request) {
-		RequestContainer reqCont = getRequestContainer();
-		return reqCont.getSessionContainer();		
-	}
 	
 	private SessionContainer getPermanentSession(SourceBean request) {
 		return getSession(request).getPermanentContainer();
@@ -402,111 +351,6 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		backButtonParams.put("PAGE", "ValidateExecuteBIObjectPage");
 		backButtonParams.put("LOOKUP_VALUE", "");
 		return backButtonParams;
-	}
-	
-	/*
-	private SourceBean getLovModuleConfig(String lovResult,  SourceBean request) throws Exception {
-		
-		SourceBean moduleConfig = null;
-					
-		LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
-		
-		String visibleColumns = lovResultHandler.getVisibleColumns ();					
-		String valueColumn = lovResultHandler.getValueColumn();
-				
-		Vector columns = findVisibleColumns(visibleColumns);
-						
-		String moduleConfigStr = "";
-		moduleConfigStr += "<CONFIG rows=\"10\" title=\"" + getModalityValue(request).getDescription() + "\">";
-		moduleConfigStr += "	<KEYS>";
-		moduleConfigStr += "		<OBJECT key='"+ valueColumn +"'/>";
-		moduleConfigStr += "	</KEYS>";
-		moduleConfigStr += "	<QUERIES/>";
-		moduleConfigStr += "</CONFIG>";
-		moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
-		
-		SourceBean columnsSB = createColumnsSB(columns);
-		moduleConfig.setAttribute(columnsSB);
-
-		SourceBean captionsSB = new SourceBean("CAPTIONS");
-		
-		moduleConfig.setAttribute(captionsSB);
-		
-		SourceBean buttonsSB = new SourceBean("BUTTONS");
-		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
-		buttonsSB.setAttribute(backButtonSB);
-		SourceBean selectButtonSB = createSelectButton(getBackButtonParams(request));
-		buttonsSB.setAttribute(selectButtonSB);
-		moduleConfig.setAttribute(buttonsSB);
-		
-		return moduleConfig;
-	}
-	*/
-	
-	
-	
-	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
-		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
-		if(objParIdStr == null) objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
-				
-		Integer objParId = Integer.valueOf(objParIdStr);
-		Integer correlatedParuseId = Integer.valueOf((String) request.getAttribute("correlated_paruse_id"));
-		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
-		ObjParuse objParuse = objParuseDAO.loadObjParuse(objParId, correlatedParuseId);
-		Integer objParFatherId = objParuse.getObjParFatherId();
-		// get object from the session
-		BIObject obj = (BIObject) getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-        
-		List biparams = obj.getBiObjectParameters();
-		Iterator iterParams = null;
-		
-		// find the parameter
-		BIObjectParameter lookupBIParameter = null;
-		iterParams = biparams.iterator();
-    	while (iterParams.hasNext()) {
-    		BIObjectParameter aBIParameter = (BIObjectParameter) iterParams.next();
-    		if (aBIParameter.getId().equals(objParId)) {
-    			lookupBIParameter = aBIParameter;
-    			break;
-    		}
-    	}
-		
-		// find the parameter for the correlation
-		BIObjectParameter objParFather = null;
-        iterParams = biparams.iterator();
-        while (iterParams.hasNext()) {
-        	BIObjectParameter aBIObjectParameter = (BIObjectParameter) iterParams.next();
-        	if (aBIObjectParameter.getId().equals(objParFatherId)) {
-        		objParFather = aBIObjectParameter;
-        		break;
-        	}
-        }
-        IParameterDAO parameterDAO = DAOFactory.getParameterDAO();
-        Parameter parameter = parameterDAO.loadForDetailByParameterID(objParFather.getParID());
-        String valueTypeFilter = parameter.getType();
-        
-		String valueFilter = "";
-		List valuesFilter = objParFather.getParameterValues();
-		if (valuesFilter == null) return list;
-
-		switch (valuesFilter.size()) {
-			case 0: return list;
-			case 1: valueFilter = (String) valuesFilter.get(0);
-					if (valueFilter != null && !valueFilter.equals("")) {
-						ListIFace filteredList = DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
-							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-							getResponseContainer().getErrorHandler());
-						deselectFilteredValues(lookupBIParameter, filteredList);
-						return filteredList;
-					}
-					else return list;
-			default: 
-				ListIFace filteredList = DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
-							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-							getResponseContainer().getErrorHandler());
-				deselectFilteredValues(lookupBIParameter, filteredList);
-				return filteredList;
-		}
 	}
 	
 	

@@ -41,10 +41,10 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.ParameterUse;
 import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -65,21 +65,18 @@ public class ListObjParuseModule extends AbstractModule {
 	}
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		
 		RequestContainer requestContainer = this.getRequestContainer();	
-		session = requestContainer.getSessionContainer();
-		
+		session = requestContainer.getSessionContainer();	
 		String message = (String) request.getAttribute("MESSAGEDET");
-		SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE, 
-				            "ListObjParuseModule","service",
-				            "begin of ListObjParuseModule modify/visualization service with message =" +message);
-		
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+				            "service", "begin of ListObjParuseModule modify/visualization " +
+				            "service with message =" +message);
 		errorHandler = getErrorHandler();
-		
 		try {
 			if (message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-				SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE, "ListObjParuseModule", "service", "The message parameter is null");
+				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+						            "service", "The message parameter is null");
 				throw userError;
 			} 
 			if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_SELECT)) {
@@ -99,44 +96,46 @@ public class ListObjParuseModule extends AbstractModule {
 		}
 	}
 
+	
+	
+	
 	private void getDetailObjParuses(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-			
+			// get form session the biobject parameter
 			BIObjectParameter objParameter = (BIObjectParameter) session.getAttribute("LookupBIObjectParameter");
-			Integer objParId = objParameter.getId();
-			List objParuses = DAOFactory.getObjParuseDAO().loadObjParuses(objParId);
-			Integer objId = objParameter.getBiObjectID();
-			List allObjParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(objId);
-			List otherObjParameters = new ArrayList();
-			// otherObjParameters must contain all the BIObjectParameter of the document apart from the 
-			// current BIObjectParameter
-			Iterator allObjParametersIt = allObjParameters.iterator();
+			// get the id of the bi parameter
+			Integer biParamId = objParameter.getId();
+			// get the id of the biobject father
+			Integer biObjectId = objParameter.getBiObjectID();
+			// get the id of the general parameter associated 
+			Integer genParamId = objParameter.getParID();
+			// load all the other bi parameters of the biobject
+			List allBiObjBIParams = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(biObjectId);
+			List otherBiObjBiParams = new ArrayList();
+			Iterator allObjParametersIt = allBiObjBIParams.iterator();
 			while (allObjParametersIt.hasNext()) {
 				BIObjectParameter aBIObjectParameter = (BIObjectParameter) allObjParametersIt.next();
-				if (!aBIObjectParameter.getId().equals(objParId)) otherObjParameters.add(aBIObjectParameter);
+				if (!aBIObjectParameter.getId().equals(biParamId)) 
+					otherBiObjBiParams.add(aBIObjectParameter);
 			}
-			Integer parId = objParameter.getParID();
-			List allParuses = DAOFactory.getParameterUseDAO().loadParametersUseByParId(parId);
+			// get the correlation associated to the bi parameter 
+			List biParamCorrelations = DAOFactory.getObjParuseDAO().loadObjParuses(biParamId);
+			// load all the paruses associated to the general parameter
+			List genParParuses = DAOFactory.getParameterUseDAO().loadParametersUseByParId(genParamId);
+			// exclude form all the paruses the manual input ones	
 			List paruses = new ArrayList();
-			// paruses must contain only parameter uses associated to query lov
-			Iterator allParusesIt = allParuses.iterator();
+			Iterator allParusesIt = genParParuses.iterator();
 			while (allParusesIt.hasNext()) {
 				ParameterUse paruse = (ParameterUse) allParusesIt.next();
-				if (paruse.getManualInput().intValue() == 0) {
-					// manual input modality use cannot be considered;
-					// only the modalities associated to query lov and 
-					// that have not COMBOBOX selection type can be considered
-					Integer lovId = paruse.getIdLov();
-					ModalitiesValue lov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
-					String selectionType = paruse.getSelectionType();
-					if (lov.getITypeCd().equalsIgnoreCase("QUERY") 
-							&& !"COMBOBOX".equalsIgnoreCase(selectionType)) paruses.add(paruse);
+				if(paruse.getManualInput().intValue() == 0) {
+					paruses.add(paruse);
 				}
 			}
-			response.setAttribute("objParameter", objParameter);
+			// fill spago response
+			response.setAttribute("biParameter", objParameter);
 			response.setAttribute("allParuses", paruses);
-			response.setAttribute("objParuses", objParuses);
-			response.setAttribute("otherObjParameters", otherObjParameters);
+			response.setAttribute("biParamCorrelation", biParamCorrelations);
+			response.setAttribute("otherBiParameters", otherBiObjBiParams);
 			
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "ListObjParuseModule","getDetailObjParuses","Cannot fill response container", ex  );
@@ -146,33 +145,62 @@ public class ListObjParuseModule extends AbstractModule {
 		}
 	}
 	
+	
+	
+	
 	private void modObjParuses(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
 		try {
-			String objParIdStr = (String) request.getAttribute("obj_par_id");
-			Integer objParId = new Integer (objParIdStr);
-			// load the previous ObjParuse objects
-			List oldObjParuses = DAOFactory.getObjParuseDAO().loadObjParuses(objParId);
-			if (oldObjParuses == null) oldObjParuses = new ArrayList();
-			List oldParusesId = new ArrayList();
-			Iterator it = oldObjParuses.iterator();
-			while (it.hasNext()) {
-				ObjParuse objParuse = (ObjParuse) it.next();
-				oldParusesId.add(objParuse.getParuseId().toString());
-			}
-			// load the ids of the ParameterUse objects for the new (or modified) ObjParuse objects
-			List newParusesId = request.getAttributeAsList("paruse_id");
-			if (newParusesId == null) newParusesId = new ArrayList();
-			
-			// delete the ObjParuse objects that were unchecked
-			deleteUncheckedObjParuses(oldParusesId, newParusesId, objParId);
-			
-			// insert or modify the checked ObjParuse
-			saveCheckedObjParuses(newParusesId, request, objParId);
-			
+			// get the id of the biparameter
+			String biParamIdStr = (String) request.getAttribute("obj_par_id");
+			Integer biParamId = new Integer (biParamIdStr);
+			// get the xml description of new correlations from request and transform to sourceBean
+			String xmlCorrsStr = (String) request.getAttribute("correlations_xml");
+			SourceBean xmlCorrsSB = SourceBean.fromXMLString(xmlCorrsStr);
+			// get the list of correlations SB
+			List correlations = xmlCorrsSB.getAttributeAsList("correlation");
+			// for each correlation create a new correlation object (SbiObjParuse)
+			List newCorrelations = new ArrayList();
+			Iterator corrIter = correlations.iterator();
+			int prog = 1;
+			while(corrIter.hasNext()) {
+				SourceBean correlationSB = (SourceBean)corrIter.next();
+				String preCondition = (String)correlationSB.getAttribute("precond");
+				String postCondition = (String)correlationSB.getAttribute("postcond");
+				String logicOperator = (String)correlationSB.getAttribute("logicoperator");
+				String idParFatherStr = (String)correlationSB.getAttribute("idparameterfather");
+				Integer idParFather = new Integer(idParFatherStr);
+				String condition = (String)correlationSB.getAttribute("condition");
+				List paruseSettings = correlationSB.getAttributeAsList("parusesettings.parusesetting");
+				Iterator iterPUS = paruseSettings.iterator();
+				while(iterPUS.hasNext()) {
+					SourceBean paruseSetSB = (SourceBean)iterPUS.next();
+					String active = (String)paruseSetSB.getAttribute("active");
+					String paruseidStr = (String)paruseSetSB.getAttribute("paruseid");
+					String oncolumn = (String)paruseSetSB.getAttribute("oncolumn");
+					Integer paruseid = new Integer(paruseidStr);
+					ObjParuse correlation = new ObjParuse();
+					correlation.setFilterColumn(oncolumn);
+					correlation.setFilterOperation(condition);
+					correlation.setLogicOperator(logicOperator);
+					correlation.setObjParFatherId(idParFather);
+					correlation.setObjParId(biParamId);
+					correlation.setParuseId(paruseid);
+					correlation.setPostCondition(postCondition);
+					correlation.setPreCondition(preCondition);
+					correlation.setProg(new Integer(prog));
+					newCorrelations.add(correlation);
+				}
+				prog ++;
+			}		
+			// load the previous saved correlations
+			List oldcorrelations = DAOFactory.getObjParuseDAO().loadObjParuses(biParamId);
+			if(oldcorrelations == null) 
+				oldcorrelations = new ArrayList();
+			// update database
+			updateDatabase(oldcorrelations, newCorrelations);
+			// fill the response 
 			response.setAttribute("loopback", "true");
-			
 			session.setAttribute("RETURN_FROM_MODULE", "ListObjParuseModule");
-			
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "ListObjParuseModule","modObjParuses","Cannot fill response container", ex  );
 			HashMap params = new HashMap();
@@ -183,53 +211,66 @@ public class ListObjParuseModule extends AbstractModule {
 	}
 	
 	
+	private void updateDatabase(List oldCorrelations, List newCorrelations ) throws EMFUserError {
+		IObjParuseDAO corrDao = DAOFactory.getObjParuseDAO();
+		Iterator iterOldCorr = oldCorrelations.iterator();
+		while(iterOldCorr.hasNext()) {
+			ObjParuse oldCorr = (ObjParuse)iterOldCorr.next();
+			corrDao.eraseObjParuse(oldCorr);
+		}
+		Iterator iterNewCorr = newCorrelations.iterator();
+		while(iterNewCorr.hasNext()) {
+			ObjParuse newCorr = (ObjParuse)iterNewCorr.next();
+			corrDao.insertObjParuse(newCorr);
+		}
+		
+		
+		/*
+		List alreadyProcessed = new ArrayList();
+		IObjParuseDAO corrDao = DAOFactory.getObjParuseDAO();
+		Iterator iterOldCorr = oldCorrelations.iterator();
+		Iterator iterNewCorr = newCorrelations.iterator();
+		while(iterOldCorr.hasNext()) {
+			ObjParuse oldCorr = (ObjParuse)iterOldCorr.next();
+			boolean nomoreExist = true;
+			while(iterNewCorr.hasNext()) {
+				ObjParuse newCorr = (ObjParuse)iterNewCorr.next();
+				if( (oldCorr.getObjParId()==newCorr.getObjParId()) && (oldCorr.getParuseId()==newCorr.getParuseId()) ) {
+					corrDao.modifyObjParuse(newCorr);
+					nomoreExist = false;
+					alreadyProcessed.add(newCorr);
+				}
+ 			}
+			if(nomoreExist){
+				corrDao.eraseObjParuse(oldCorr);
+			}
+		}
+		iterNewCorr = newCorrelations.iterator();
+		Iterator iterAlreadyProcessed = alreadyProcessed.iterator();
+		while(iterNewCorr.hasNext()) {
+			ObjParuse newCorr = (ObjParuse)iterNewCorr.next();
+			boolean toInsert = true;
+			while(iterAlreadyProcessed.hasNext()) {
+				ObjParuse processedCorr = (ObjParuse)iterAlreadyProcessed.next();
+				if( (processedCorr.getObjParId()==newCorr.getObjParId()) || 
+				    (processedCorr.getParuseId()==newCorr.getParuseId()) ) {
+					toInsert = false;
+				}
+			}
+			if(toInsert) {
+				corrDao.insertObjParuse(newCorr);
+			}
+		}
+		*/
+	}
+	
+	
+	
 	private void exit(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
 		session.setAttribute("RETURN_FROM_MODULE", "ListObjParuseModule");
 		response.setAttribute("loopback", "true");
 	}
 
-	private void saveCheckedObjParuses(List newParusesId, SourceBean request, Integer objParId) throws EMFUserError {
-		Iterator it = newParusesId.iterator();
-		while (it.hasNext()) {
-			String paruseIdStr = (String) it.next();
-			Integer paruseId = new Integer (paruseIdStr);
-			ObjParuse newObjParuse = recoverObjParuseDetail(objParId, paruseId, request);
-			ObjParuse objParuse = DAOFactory.getObjParuseDAO().loadObjParuse(objParId, paruseId);
-			if (objParuse == null) {
-				DAOFactory.getObjParuseDAO().insertObjParuse(newObjParuse);
-			} else {
-				DAOFactory.getObjParuseDAO().modifyObjParuse(newObjParuse);
-			}
-		}
-	}
-
-	private ObjParuse recoverObjParuseDetail(Integer objParId, Integer paruseId, SourceBean request) {
-		String filterOperation = (String) request.getAttribute(SpagoBIConstants.TYPE_FILTER + "_" + paruseId);
-		String filterColumn = (String) request.getAttribute(SpagoBIConstants.COLUMN_FILTER + "_" + paruseId);
-		String objParFatherIdStr = (String) request.getAttribute("OBJ_PAR_FATHER_ID" + "_" + paruseId);
-		Integer objParFatherId = new Integer(objParFatherIdStr);
-		
-		ObjParuse toReturn = new ObjParuse();
-		toReturn.setObjParId(objParId);
-		toReturn.setParuseId(paruseId);
-		toReturn.setFilterColumn(filterColumn);
-		toReturn.setFilterOperation(filterOperation);
-		toReturn.setObjParFatherId(objParFatherId);
-		
-		return toReturn;
-	}
-
-	private void deleteUncheckedObjParuses(List oldParusesId, List newParusesId, Integer objParId) throws EMFUserError {
-		Iterator it = oldParusesId.iterator();
-		while (it.hasNext()) {
-			String oldParuseId = (String) it.next();
-			// if the paruse id was still checked the ObjParuse is not deleted
-			if (newParusesId.contains(oldParuseId)) continue;
-			// if the paruse id was unchecked the ObjParuse is deleted
-			ObjParuse objParuseToDelete = new ObjParuse();
-			objParuseToDelete.setObjParId(objParId);
-			objParuseToDelete.setParuseId(new Integer(oldParuseId));
-			DAOFactory.getObjParuseDAO().eraseObjParuse(objParuseToDelete);
-		}
-	}
+	
+	
 }

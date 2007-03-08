@@ -21,24 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
-import groovy.lang.Binding;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spago.paginator.basic.PaginatorIFace;
-import it.eng.spago.paginator.basic.impl.GenericList;
-import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
@@ -48,31 +41,23 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
-import it.eng.spagobi.bo.javaClassLovs.IJavaClassLov;
 import it.eng.spagobi.bo.lov.ILovDetail;
-import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
-import it.eng.spagobi.bo.lov.LovResultHandler;
 import it.eng.spagobi.bo.lov.LovToListService;
-import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.services.commons.AbstractListLookupModule;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
-import it.eng.spagobi.utilities.GeneralUtilities;
-import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * Loads the predefined lookup list of values 
  */
-public class ListLookupModalityValuesModule extends AbstractBasicListModule {
+public class ListLookupModalityValuesModule extends AbstractListLookupModule {
 		
 	/**
 	 * Class Constructor
@@ -97,30 +82,18 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {		
 		ListIFace list = null;	
-		HashMap paramsMap = null;	
-						
+		HashMap paramsMap = null;				
 		list = getListFromLov(request, response);
 		paramsMap = getParams(request);
-		
-		String inputType = getModalityValue(request).getITypeCd();
-		if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {		
-			if (isCorrelated(request)) {
-				list = filterListForCorrelatedParam(request, list);		
-				String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
-				paramsMap.put("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));
-				paramsMap.put("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));	
-			}  
-		}		
-				
+		if(isCorrelated(request)) {
+			list = filterListForCorrelatedParam(request, list);		
+			String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
+			paramsMap.put("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));
+			paramsMap.put("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));	
+		}  
 		response.setAttribute("PARAMETERS_MAP", paramsMap);		
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
-		
 		return list;		
-	}
-	
-	private SessionContainer getSession(SourceBean request) {
-		RequestContainer reqCont = getRequestContainer();
-		return reqCont.getSessionContainer();		
 	}
 	
 	private SessionContainer getPermanentSession(SourceBean request) {
@@ -188,20 +161,22 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 	
 	private ListIFace getListFromLov(SourceBean request, SourceBean response) throws Exception {
 		ListIFace list = null;
-		
+		// get user profile
+		IEngUserProfile profile = getUserProfile(request);
+		// get the lov provider detail object
+		String lovProvider = getModalityValue(request).getLovProvider();
+		ILovDetail  lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
+		// get the lov result
 		BIObjectParameter biParam = getBIParameter(request);
 		String lovResult = biParam.getLovResult();
-		if(lovResult == null) {
-			IEngUserProfile profile = getUserProfile(request);
-			String lovProvider = getModalityValue(request).getLovProvider();
-			ILovDetail  lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
+		if(lovResult == null) {	
 			lovResult = lovDetail.getLovResult(profile);		
 		}
-		LovToListService lovToListService = new LovToListService(lovResult);	
+		// get the list of the lov
+		LovToListService lovToListService = new LovToListService(lovDetail, profile);	
 		list = lovToListService.getLovAsListService();
-			
-		response.setAttribute(getLovModuleConfig(lovResult, request));	
-		
+		// put into response the list module configuration	
+		response.setAttribute(getLovModuleConfig(lovToListService, lovDetail, request));	
 		// filter the list 
 		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		if (valuefilter != null) {
@@ -214,7 +189,6 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 			list = DelegatedBasicListService.filterList(list, valuefilter, typeValueFilter, 
 					columnfilter, typeFilter, getResponseContainer().getErrorHandler());
 		}		
-		
 		return list;
 	}
 	
@@ -222,68 +196,19 @@ public class ListLookupModalityValuesModule extends AbstractBasicListModule {
 
 	
 	
-	private SourceBean getLovModuleConfig(String lovResult, SourceBean request) throws Exception {
-		
-		LovToListService lovToListService = new LovToListService(lovResult);
-		SourceBean config = lovToListService.getListServiceBaseConfig(getModalityValue(request).getDescription());
-		
-		LovResultHandler lovResultHandler = new LovResultHandler(lovResult);						
-		String valueColumn = lovResultHandler.getValueColumn();
-		String descriptionColumn = lovResultHandler.getDescriptionColumn();
-				
+	private SourceBean getLovModuleConfig(LovToListService lovToListService, ILovDetail lovDetail, SourceBean request) throws Exception {
+		SourceBean config = lovToListService.getListServiceBaseConfig(getModalityValue(request).getDescription());						
+		String valueColumn = lovDetail.getValueColumnName();
+		String descriptionColumn = lovDetail.getDescriptionColumnName();	
 		SourceBean captionsSB = new SourceBean("CAPTIONS");		
 		SourceBean selectCaptionSB = createSelectCaption(getSelectCaptionParams(request), valueColumn, descriptionColumn);
 		captionsSB.setAttribute(selectCaptionSB);
 		config.setAttribute(captionsSB);
-		
 		SourceBean buttonsSB = new SourceBean("BUTTONS");
 		SourceBean backButtonSB = createBackButton(getBackButtonParams(request));
 		buttonsSB.setAttribute(backButtonSB);		
 		config.setAttribute(buttonsSB);
-		
 		return config;
-	}
-
-	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
-		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
-		Integer objParId = Integer.valueOf(objParIdStr);
-		Integer correlatedParuseId = Integer.valueOf((String) request.getAttribute("correlated_paruse_id"));
-		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
-		ObjParuse objParuse = objParuseDAO.loadObjParuse(objParId, correlatedParuseId);
-		Integer objParFatherId = objParuse.getObjParFatherId();
-		// get object from the session
-		BIObject obj = (BIObject) getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-        // find the parameter for the correlation
-		List biparams = obj.getBiObjectParameters();
-		BIObjectParameter objParFather = null;
-        Iterator iterParams = biparams.iterator();
-        while (iterParams.hasNext()) {
-        	BIObjectParameter aBIObjectParameter = (BIObjectParameter) iterParams.next();
-        	if (aBIObjectParameter.getId().equals(objParFatherId)) {
-        		objParFather = aBIObjectParameter;
-        		break;
-        	}
-        }
-        IParameterDAO parameterDAO = DAOFactory.getParameterDAO();
-        Parameter parameter = parameterDAO.loadForDetailByParameterID(objParFather.getParID());
-        String valueTypeFilter = parameter.getType();
-        
-		String valueFilter = "";
-		List valuesFilter = objParFather.getParameterValues();
-		if (valuesFilter == null) return list;
-
-		switch (valuesFilter.size()) {
-			case 0: return list;
-			case 1: valueFilter = (String) valuesFilter.get(0);
-					if (valueFilter != null && !valueFilter.equals(""))
-						return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
-							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-							getResponseContainer().getErrorHandler());
-					else return list;
-			default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
-							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-							getResponseContainer().getErrorHandler());
-		}
 	}
 
 	/**

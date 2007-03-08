@@ -644,8 +644,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					DetailBIObjectModule.MODULE_PAGE);
 			Vector v = new Vector();
 			v.add(objParametersCorrelated.toString());
-			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1049,
-					v, params);
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1049, v, params);
 			errorHandler.addError(error);
 		}
 	}

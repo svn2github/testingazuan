@@ -42,6 +42,8 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
+import it.eng.spagobi.bo.lov.ILovDetail;
+import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
@@ -1102,18 +1104,22 @@ public class ExecuteBIObjectModule extends AbstractModule
 		if (biparams == null || biparams.size() == 0) return;
         Iterator iterParams = biparams.iterator();
         while(iterParams.hasNext()) {
+        	// get biparameter
         	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
-        	ModalitiesValue modVal = biparam.getParameter().getModalityValue();
-    		String typeCode = modVal.getITypeCd();
-    		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) continue; 	
-        	
+        	// get lov
+        	ModalitiesValue lov = biparam.getParameter().getModalityValue();
+    		// get the lov provider detail 
+        	String lovProvider = lov.getLovProvider();
+        	ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(lovProvider);
+        	// get lov result
         	String lovResult = biparam.getLovResult();
+        	// get lov result handler
         	LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
         	List values = biparam.getParameterValues();
         	if(values != null) {
         		for(int i = 0; i < values.size(); i++) {
         			String value = values.get(i).toString();
-        			if(!lovResultHandler.containsValue(value)) {
+        			if(!lovResultHandler.containsValue(value, lovProvDet.getValueColumnName())) {
         				biparam.setHasValidValues(false);
         				SpagoBITracer.major("SPAGOBI", 
                     			this.getClass().getName(), 

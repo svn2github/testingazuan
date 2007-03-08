@@ -47,7 +47,7 @@ import java.util.Map;
  * @author Gioia
  *
  */
-public class AbstractBasicCheckListModule extends AbstractBasicListModule {
+public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 
 	protected SourceBean config;
 	protected Map checkedObjectsMap = null;

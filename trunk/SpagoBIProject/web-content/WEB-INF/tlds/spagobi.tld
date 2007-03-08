@@ -13,6 +13,9 @@
     Spago BI Tags
   </description>
 
+
+
+    <!-- START LIST TAGS  -->
    <tag>
         <name>list</name>
         <tag-class>it.eng.spagobi.presentation.tags.ListTag</tag-class>
@@ -29,6 +32,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <!-- display the list of biobject links  -->
 	<tag>
         <name>checklist</name>
         <tag-class>it.eng.spagobi.presentation.tags.CheckListTag</tag-class>
@@ -45,6 +50,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <!-- display the list of checkboxs  -->
 	<tag>
         <name>checkbox</name>
         <tag-class>it.eng.spagobi.presentation.tags.CheckBoxTag</tag-class>
@@ -61,6 +68,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    
     <tag>
         <name>listBiParameters</name>
         <tag-class>it.eng.spagobi.presentation.tags.ListBIParametersTag</tag-class>
@@ -72,17 +81,15 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <name>listlookup</name>
-        <tag-class>it.eng.spagobi.presentation.tags.LookupListTag</tag-class>
-        <body-content>EMPTY</body-content>
-        <description>Rendering of a list lookup</description>
-        <attribute>
-            <name>moduleName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+    
+    <!-- END LIST TAGS  -->
+    
+    
+    
+    
+    
+     <!-- START TREE TAGS  -->
+    
     <tag>
         <name>treeObjects</name>
         <tag-class>it.eng.spagobi.presentation.tags.TreeObjectsTag</tag-class>
@@ -99,38 +106,28 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-        <tag>
-        <name>listObjects</name>
-        <tag-class>it.eng.spagobi.presentation.tags.ListObjectsTag</tag-class>
-        <body-content>EMPTY</body-content>
-        <description>Rendering of the objects list</description>
-        <attribute>
-            <name>moduleName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>htmlGeneratorClass</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>listPage</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>listTransformerClass</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
+    
+    <!-- END TREE TAGS  -->
+    
+    
+    
+    
+    <!-- START ERROR TAGS  -->
+    
     <tag>
         <name>error</name>
         <tag-class>it.eng.spagobi.presentation.tags.ErrorTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Esegue il rendering degli errori, versione HTML</description>
     </tag>
+    
+    <!-- END ERROR TAGS  -->
+    
+    
+    
+    
+    <!-- START DINAMIC PAGE TAGS  -->
+    
     <tag>
         <name>dynamicPage</name>
         <tag-class>it.eng.spagobi.presentation.tags.DynamicPageTag</tag-class>
@@ -152,6 +149,14 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+     <!-- END DINAMIC PAGE TAGS  -->
+    
+    
+    
+    
+    <!-- START MESSAGE TAGS  -->
+    
 	<tag>
         <name>message</name>
         <tag-class>it.eng.spagobi.presentation.tags.SpagoBIMessageTag</tag-class>
@@ -176,6 +181,15 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <!-- END MESSAGE TAGS  -->
+    
+    
+    
+    
+    
+    <!-- START LOV TAGS  -->
+    
     <tag>
         <name>queryWizard</name>
         <tag-class>it.eng.spagobi.presentation.tags.QueryWizardTag</tag-class>
@@ -187,31 +201,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>visibleColumns</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>valueColumns</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>descriptionColumns</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>        
-        <attribute>
             <name>queryDef</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <name>invisibleColumns</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
     </tag>
+    
     <tag>
         <name>scriptWizard</name>
         <tag-class>it.eng.spagobi.presentation.tags.ScriptWizardTag</tag-class>
@@ -223,6 +218,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    
     <tag>
         <name>javaClassWizard</name>
         <tag-class>it.eng.spagobi.presentation.tags.JavaClassWizardTag</tag-class>
@@ -234,6 +231,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
     </tag>
+    
+    
     <tag>
         <name>lovWizard</name>
         <tag-class>it.eng.spagobi.presentation.tags.LovWizardTag</tag-class>
@@ -245,5 +244,41 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    
+    <tag>
+        <name>LovColumnsSelector</name>
+        <tag-class>it.eng.spagobi.presentation.tags.LovColumnsSelectorTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the lov column selector</description>
+        <attribute>
+            <name>moduleName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>visibleColumns</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>valueColumn</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>descriptionColumn</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
+            <name>invisibleColumns</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+    
+    <!-- END LOV TAGS  -->
     
 </taglib>

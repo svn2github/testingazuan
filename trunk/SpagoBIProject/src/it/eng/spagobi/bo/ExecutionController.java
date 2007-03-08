@@ -30,7 +30,6 @@ import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.lov.ILovDetail;
-import it.eng.spagobi.bo.lov.JavaClassDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
 import it.eng.spagobi.bo.lov.ScriptDetail;
@@ -200,8 +199,7 @@ public class ExecutionController {
 			BIObjectParameter aBIObjectParameter = null;
 			while (it.hasNext()){
 				aBIObjectParameter = (BIObjectParameter)it.next();
-				// if the value of the parameter is retrived with a script
-				// control if the script return an unique value and preload it
+				// check if the script return an unique value and preload it
 				Parameter par = aBIObjectParameter.getParameter();
 				if(par != null) {
 					ModalitiesValue paruse = par.getModalityValue();
@@ -216,7 +214,7 @@ public class ExecutionController {
 			    			// if the lov is single value and the parameter value is not set, the parameter value 
 			    			// is the lov result
 			    			if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null)
-			    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues());
+			    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues(lovDetail.getValueColumnName()));
 			        	}        	       
 		        	} catch (Exception e1) {
 		        		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 

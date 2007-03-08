@@ -24,17 +24,19 @@ package it.eng.spagobi.bo;
 import java.io.Serializable;
 
 /**
- * Defines a Business Intelligence object.
- * 
- * @author Zerbetto This class map the SBI_OBJ_PARUSE table
+ * Defines a Business Intelligence object
  */
 public class ObjParuse implements Serializable {
 
 	private Integer objParId;
 	private Integer paruseId;
     private Integer objParFatherId;
+    private Integer prog;
     private String filterColumn;
     private String filterOperation;
+    private String preCondition;
+    private String postCondition;
+    private String logicOperator;
     
 	public String getFilterColumn() {
 		return filterColumn;
@@ -66,5 +68,29 @@ public class ObjParuse implements Serializable {
 	public void setParuseId(Integer paruseId) {
 		this.paruseId = paruseId;
 	}
-    
+	public String getLogicOperator() {
+		return logicOperator;
+	}
+	public void setLogicOperator(String logicOperator) {
+		this.logicOperator = logicOperator;
+	}
+	public String getPostCondition() {
+		return postCondition;
+	}
+	public void setPostCondition(String postCondition) {
+		this.postCondition = postCondition;
+	}
+	public String getPreCondition() {
+		return preCondition;
+	}
+	public void setPreCondition(String preCondition) {
+		this.preCondition = preCondition;
+	}
+	public Integer getProg() {
+		return prog;
+	}
+	public void setProg(Integer prog) {
+		this.prog = prog;
+	}
+
 }

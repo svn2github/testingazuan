@@ -5,7 +5,6 @@
      	<CONFIG/>
     </MODULE>
     
-	
 	<MODULE class="it.eng.spagobi.workflow.modules.AcceptActivityModule" name="AcceptActivityModule">
 	</MODULE>
 	
@@ -79,19 +78,9 @@
   	</MODULE>
 	
 	
-	
-	
-	
-	
-	
-	<MODULE class="it.eng.spagobi.services.modules.ListTestFixedListModule" name="ListTestFixedListModule">
+	<MODULE class="it.eng.spagobi.services.modules.ListTestLovModule" name="ListTestLovModule">
 	</MODULE>
-	<MODULE class="it.eng.spagobi.services.modules.ListTestScriptModule" name="ListTestScriptModule">
-	</MODULE>
-	<MODULE class="it.eng.spagobi.services.modules.ListTestQueryModule" name="ListTestQueryModule">
-	</MODULE>
-	<MODULE class="it.eng.spagobi.services.modules.ListTestJavaClassModule" name="ListTestJavaClassModule">
-	</MODULE>
+	
 	<MODULE class="it.eng.spagobi.services.modules.ListLookupModalityValuesModule" name="ListLookupModalityValuesModule">
 	</MODULE>
 	<MODULE class="it.eng.spagobi.services.modules.ChecklistLookupModalityValuesModule" name="ChecklistLookupModalityValuesModule">
@@ -180,52 +169,6 @@
 	      </BUTTONS>
 	    </CONFIG>
   	</MODULE>
-
-<!--
-  	<MODULE class="it.eng.spagobi.services.modules.ListParameterUsesModule" name="ListParameterUsesModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListParamUse.title" >
-      		<QUERIES>
-        		<SELECT_QUERY statement="SELECT_LIST_MODALITIES">
-          			<PARAMETER name = "ID_DOMAIN" scope="SERVICE_REQUEST" type="RELATIVE" value = "ID_DOMAIN"/>
-        		</SELECT_QUERY>
-      		</QUERIES>
-      		<COLUMNS>
-      		    <COLUMN label="USEID" name="USEID" hidden="true" />
-        		<COLUMN label="ID" name="ID" hidden="true" />
-        		<COLUMN label="LOV_ID" name="LOV_ID" hidden="true" />
-        		<COLUMN label="SBIDev.ListParamUse.columnLabel" name="LABEL"/>
-        		<COLUMN label="SBIDev.ListParamUse.columnName" name="NAME"/>
-        		<COLUMN label="SBIDev.ListParamUse.columnDesc" name="DESCRIPTION"/>
-      			<COLUMN label="SBIDev.ListParamUse.columnRolesAss" name="ROLES"/>
-      		</COLUMNS>
-      		<CAPTIONS>
-        		<SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="SBIDev.ListParamUse.selectCaption">
-          			<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesPage"/>
-          			<PARAMETER name="USEID" scope="LOCAL" type="RELATIVE" value="USEID"/>
-          			<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
-        			<PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
-        		</SELECT_CAPTION>
-        		<DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListParamUse.deleteCaption">
-          	  		<PARAMETER name="USEID" scope="LOCAL" type="RELATIVE" value="USEID"/>
-	         		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesPage"/>        
-              		<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>	       
-        		</DELETE_CAPTION>
-      		</CAPTIONS>
-      		<BUTTONS>
-        		<INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="SBIDev.ListParamUse.insertButton">
-          			<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesPage"/>
-          			<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
-        			<PARAMETER name="PAR_ID" scope="SERVICE_REQUEST" type="RELATIVE" value="ID_DOMAIN"/>
-          			
-        		</INSERT_BUTTON>
-        		<BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParamUse.backButton">
-	          		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ListParametersPage"/>
-	          		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE" value="1"/>
-	        	</BACK_BUTTON>
-      		</BUTTONS>
-    	</CONFIG>
-  	</MODULE>
--->
   	
   	<MODULE class="it.eng.spagobi.services.modules.ListLovsModule" name="ListLovsModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.predLovList.title">
@@ -256,9 +199,6 @@
         <INSERT_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.predLovList.insertButton">
           <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	      <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
-	      <!--  
-          <PARAMETER name = "ID_DOMAIN" scope="SERVICE_REQUEST" type="RELATIVE" value = "ID_DOMAIN"/>
-          -->
         </INSERT_BUTTON>
         <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.predLovList.backButton">
 	      <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
@@ -334,54 +274,6 @@
       </BUTTONS>
     </CONFIG>
   	</MODULE>
-  	
-<!--
-	<MODULE class="it.eng.spagobi.services.modules.ListBIObjectParametersModule" name="ListBIObjectParametersModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBIDev.docConf.ListdocDetParam.title" >
-      		<QUERIES>
-        		<SELECT_QUERY statement="SELECT_ALL_BI_OBJECT_PARAMETERS_FOR_BI_OBJECT">
-          			<PARAMETER name = "OBJECT_ID" scope="SERVICE_REQUEST" type="RELATIVE" value = "OBJECT_ID"/>
-        		</SELECT_QUERY>
-      		</QUERIES>
-      		<COLUMNS>
-        		<COLUMN label="PAR_ID" name="PAR_ID" hidden="true" />
-        		<COLUMN label="BIOBJ_ID" name="BIOBJ_ID" hidden="true" />
-        		<COLUMN label="PROG" name="PROG" hidden="true" />
-        		<COLUMN label="SBIDev.docConf.ListdocDetParam.labelColumn" name="LABEL"/>
-        		<COLUMN label="SBIDev.docConf.ListdocDetParam.parLabelColumn" name="PARLABEL"/>
-        		<COLUMN label="SBIDev.docConf.ListdocDetParam.parNameColumn" name="PARNAME"/>
-        		<COLUMN label="SBIDev.docConf.ListdocDetParam.parTypeColumn" name="PARTYPE"/>
-      		</COLUMNS>
-      		<CAPTIONS>
-        		<SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="SBIDev.docConf.ListdocDetParam.detailCaption">
-          			<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectParameterPage"/>
-          			<PARAMETER name="BIOBJ_ID" scope="LOCAL" type="RELATIVE" value="BIOBJ_ID"/>
-          			<PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
-          			<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
-        		</SELECT_CAPTION>
-        		<DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.docConf.ListdocDetParam.deleteCaption">
-          	  		<PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
-          	  		<PARAMETER name="BIOBJ_ID" scope="LOCAL" type="RELATIVE" value="BIOBJ_ID"/>
-          	  		<PARAMETER name="PROG" scope="LOCAL" type="RELATIVE" value="PROG"/>
-	          		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectParameterPage"/>        
-              		<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>	        
-        		</DELETE_CAPTION>
-      		</CAPTIONS>
-      		<BUTTONS>
-        		<INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="SBIDev.docConf.ListdocDetParam.insertButton">
-          			<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectParameterPage"/>
-          			<PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
-        			<PARAMETER name = "OBJECT_ID" scope="SERVICE_REQUEST" type="RELATIVE" value = "OBJECT_ID"/>
-        		</INSERT_BUTTON>
-	        	<BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.docConf.ListdocDetParam.backButton">
-	          		<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="TreeObjectsPage"/>
-	      			<PARAMETER name="ACTOR" scope="" type="ABSOLUTE" value="DEV_ACTOR"/>
-	      			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE" value="1"/>
-	        	</BACK_BUTTON>
-      		</BUTTONS>
-    	</CONFIG>
-  	</MODULE>
- -->
    	
   	<MODULE class="it.eng.spagobi.services.modules.ListLookupLovModule" name="ListLookupLovModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListParamUse.ListLookupLov.title" >
@@ -394,7 +286,6 @@
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_FROM_LOOKUP"/>
-	          <!--PARAMETER name="PAR_ID" scope="" type="ABSOLUTE" value=""/-->
 	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
 	        </SELECT_CAPTION>
 	     </CAPTIONS>
@@ -428,12 +319,6 @@
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="EXIT_FROM_MODULE"/>
 	          <PARAMETER name="RETURN_STATE" scope="" type="ABSOLUTE" value="SELECT"/>
 	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>		          
-	          <!-- 
-	          <PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
-	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
-	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_FROM_LOOKUP"/>	          
-	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
-	          -->
 	        </SELECT_CAPTION>
 	     </CAPTIONS>
 	      <COLUMNS>
@@ -453,11 +338,6 @@
 	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="EXIT_FROM_MODULE"/>
 	        <PARAMETER name="RETURN_STATE" scope="" type="ABSOLUTE" value="BACK"/>
 	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
-	        <!-- 
-	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailBIObjectPage"/>
-	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
-	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
-	      	-->
 	      </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>
@@ -549,12 +429,6 @@
      	<CONFIG/>
     </MODULE>
 
-<!-- 
-    <MODULE class="it.eng.spagobi.services.modules.DetailModalitiesModule" name="DetailModalitiesModule">
-     	<CONFIG/>
-    </MODULE>
--->    
-
     <MODULE class="it.eng.spagobi.services.modules.DetailModalitiesValueModule" name="DetailModalitiesValueModule">
      	<CONFIG/>
     </MODULE>
@@ -570,12 +444,6 @@
     <MODULE class="it.eng.spagobi.services.modules.DetailBIObjectModule" name="DetailBIObjectModule">
      	<CONFIG/>
     </MODULE>
-
-<!--
-    <MODULE class="it.eng.spagobi.services.modules.DetailBIObjectParameterModule" name="DetailBIObjectParameterModule">
-     	<CONFIG/>
-    </MODULE>
--->
 
     <MODULE class="it.eng.spagobi.services.modules.ExecuteBIObjectModule" name="ExecuteBIObjectModule">
      	<CONFIG/>

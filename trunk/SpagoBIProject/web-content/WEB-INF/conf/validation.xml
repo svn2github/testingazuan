@@ -378,6 +378,11 @@
 				    <VALIDATOR validatorName="MANDATORY"/>
 				 	<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>
+				<FIELD name="queryDef" label="#SBIDev.queryWiz.queryDefField">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="3400"/>
+				</FIELD>
+				<!-- 
 				<FIELD name="visColumns" label="#SBIDev.queryWiz.visColumnsField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
@@ -389,13 +394,28 @@
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>	
-				<FIELD name="queryDef" label="#SBIDev.queryWiz.queryDefField">
-					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="3400"/>
-				</FIELD>	
+				-->	
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+
+    <SERVICE name="LovTestColumnSelector" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="visibleColumn" label="#SBIDev.queryWiz.visColumnsField">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>	
+				<FIELD name="valueColumn" label="#SBIDev.queryWiz.valueColumnsField">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>	
+				<FIELD name="descriptionColumn" label="#SBIDev.queryWiz.descriptionColumnsField">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+    
 
 	<!--SERVICE name="DetailParameterPage" type="PAGE">
 		<VALIDATION blocking="true" validators="">

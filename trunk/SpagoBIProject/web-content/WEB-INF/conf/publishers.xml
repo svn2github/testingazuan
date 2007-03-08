@@ -108,13 +108,6 @@
     	</RENDERING>
   	</PUBLISHER>
 	
-	
-	
-	
-	
-	
-	
-	
 	<PUBLISHER name="LookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -177,17 +170,10 @@
   	</PUBLISHER>
   	
   	
-  	<!--  MODIFICHE -->
-  	
-  	
-  	
   	<PUBLISHER name="parametersLookupLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
       		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ParametersLookupPage" />
-      		<!--  
-      		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-      		-->
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -201,16 +187,6 @@
     	</RENDERING>
   	</PUBLISHER>
   	
-  	<!--  ERASE
-  	<PUBLISHER name="reportsLookupLoop">
-    	<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-      		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ReportsLookupPage" />
-      		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-        	</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-	-->
 	<PUBLISHER name="DYN_FORWARD_PUBLISHER">
 		<RENDERING channel="HTTP" type="JAVA" mode="">
 			<RESOURCES>
@@ -229,6 +205,7 @@
 		</RENDERING>
 	</PUBLISHER>
 	
+	
 	<PUBLISHER name="ListEnginesPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
@@ -244,6 +221,7 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
+  	
   	
   	<PUBLISHER name="ListRolesPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
@@ -395,35 +373,6 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
-<!-- 
-  	<PUBLISHER name="DetailModalitiesPubJ">
-    	<RENDERING channel="PORTLET" mode="" type="JAVA">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailModalitiesPublisher"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	
-  	<PUBLISHER name="detailModalitiesLoop">
-    	<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParameterUsesPage" /> 
-                <PARAMETER name="ID_DOMAIN" type = "RELATIVE" scope ="SERVICE_RESPONSE" value = "DetailModalitiesModule.PAR_ID"/>     		
-                <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" /> 
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	
-  	<PUBLISHER name="detailModalities">
-    	<RENDERING channel="PORTLET" mode="" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/detailModalities.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
--->  	
-  	
   	<PUBLISHER name="LoginSBISettingsPublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
@@ -530,32 +479,17 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	
+  	<PUBLISHER name="detailLovFillProfileAttributes">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/detailLovFillProfileAttributes.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
 
-
-  	<PUBLISHER name="querySelectionWizard">
-    	<RENDERING channel="PORTLET" mode="" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/querySelectionWizard.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	<PUBLISHER name="lovSelectionWizard">
-    	<RENDERING channel="PORTLET" mode="" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/lovSelectionWizard.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	<PUBLISHER name="scriptSelectionWizard">
-    	<RENDERING channel="PORTLET" mode="" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/scriptSelectionWizard.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
+  	
   	<PUBLISHER name="DetailModalitiesChecksPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
@@ -628,52 +562,6 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-  	
-<!-- 
-  	<PUBLISHER name="ListBIObjectParametersPubJ">
-    	<RENDERING channel="PORTLET" mode="" type="JAVA">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListBIObjectParametersPublisher"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	<PUBLISHER name="ListBIObjectParameters">
-    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/listBIObjectParameters.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
-      		</RESOURCES>
-    	</RENDERING>
-  	</PUBLISHER>
--->  	
-
-<!-- 
-  	<PUBLISHER name="DetailBIObjectParameterPubJ">
-    	<RENDERING channel="PORTLET" mode="" type="JAVA">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailBIObjectParameterPublisher"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	<PUBLISHER name="DetailBIObjectParameter">
-    	<RENDERING channel="PORTLET" mode="" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/detailBIObjectParameter.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	<PUBLISHER name="DetailBIObjectParameterLoop">
-    	<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListBIObjectParametersPage" /> 
-        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectParameterModule.OBJECT_ID" />
-        		<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailBIObjectParameterModule.PATH" />  
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
--->  	
   	
   	<PUBLISHER name="ExecuteBIObjectPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">

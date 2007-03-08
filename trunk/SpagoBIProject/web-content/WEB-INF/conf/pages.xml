@@ -252,20 +252,6 @@
       		<MODULE keep_instance="false" keep_response="false" name="ListParametersModule"/>
     	</MODULES>
   	</PAGE>
-
-<!-- 
-  	<PAGE name="ListParameterUsesPage" scope="REQUEST" >
-    	<DEPENDENCIES>
-      		<DEPENDENCE source="ListParameterUsesPage" target="ListParameterUsesModule">
-        		<CONDITIONS/>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-    	</DEPENDENCIES>
-    	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="ListParameterUsesModule"/>
-    	</MODULES>
-  	</PAGE>
--->  	
   	
   	<PAGE name="ListLovsPage" scope="REQUEST" >
     	<DEPENDENCIES>
@@ -348,6 +334,10 @@
     	</MODULES>
   	</PAGE>
   	
+  	
+  	
+  	
+  	
   	<PAGE name="DetailModalitiesValuePage" scope="REQUEST" title="Modalities Value Detail" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="DetailModalitiesValuePage" target="DetailModalitiesValueModule">
@@ -356,79 +346,29 @@
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
-      		
-      		<DEPENDENCE source="DetailModalitiesValuePage" target="ListTestFixedListModule">
-				<CONDITIONS>
-        			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
-        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestFixedListModule" />
+      		<DEPENDENCE source="DetailModalitiesValueModule" target="ListTestLovModule">
+        		<CONDITIONS>
+        			<PARAMETER name="DetailModalitiesValueModule.testLov" scope="SERVICE_RESPONSE" value="AF_DEFINED" />
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
-      		<DEPENDENCE source="DetailModalitiesValuePage" target="ListTestQueryModule">
+      		<DEPENDENCE source="DetailModalitiesValuePage" target="ListTestLovModule">
 				<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
-        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestQueryModule" />
+        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestLovModule" />
         		</CONDITIONS>
         		<CONSEQUENCES/>
-      		</DEPENDENCE>
-      		<DEPENDENCE source="DetailModalitiesValuePage" target="ListTestScriptModule">
-				<CONDITIONS>
-        			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
-        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestScriptModule" />
-        		</CONDITIONS>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-      		<DEPENDENCE source="DetailModalitiesValuePage" target="ListTestJavaClassModule">
-				<CONDITIONS>
-        			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
-        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestJavaClassModule" />
-        		</CONDITIONS>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-      		
-      		
-      		<DEPENDENCE source="DetailModalitiesValueModule" target="ListTestFixedListModule">
-        		<CONDITIONS>
-        			<PARAMETER name="DetailModalitiesValueModule.testedObject" scope="SERVICE_RESPONSE" value="FIXED_LIST" />
-        		</CONDITIONS>
-        		<CONSEQUENCES>
-        			<PARAMETER name="lovProviderModified" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.lovProviderModified" />
-        		</CONSEQUENCES>
-      		</DEPENDENCE>
-      		<DEPENDENCE source="DetailModalitiesValueModule" target="ListTestQueryModule">
-        		<CONDITIONS>
-        			<PARAMETER name="DetailModalitiesValueModule.testedObject" scope="SERVICE_RESPONSE" value="QUERY" />
-        		</CONDITIONS>
-        		<CONSEQUENCES>
-        			<PARAMETER name="lovProviderModified" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.lovProviderModified" />
-        		</CONSEQUENCES>
-      		</DEPENDENCE>
-      		<DEPENDENCE source="DetailModalitiesValueModule" target="ListTestScriptModule">
-        		<CONDITIONS>
-        			<PARAMETER name="DetailModalitiesValueModule.testedObject" scope="SERVICE_RESPONSE" value="SCRIPT" />
-        		</CONDITIONS>
-        		<CONSEQUENCES>
-        			<PARAMETER name="lovProviderModified" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.lovProviderModified" />
-        		</CONSEQUENCES>
-      		</DEPENDENCE>
-      		<DEPENDENCE source="DetailModalitiesValueModule" target="ListTestJavaClassModule">
-        		<CONDITIONS>
-        			<PARAMETER name="DetailModalitiesValueModule.testedObject" scope="SERVICE_RESPONSE" value="JAVA_CLASS" />
-        		</CONDITIONS>
-        		<CONSEQUENCES>
-        			<PARAMETER name="lovProviderModified" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.lovProviderModified" />
-        		</CONSEQUENCES>
       		</DEPENDENCE>
     	</DEPENDENCIES>
     	<MODULES>
-    	
     		<MODULE keep_instance="false" keep_response="false" name="DetailModalitiesValueModule"/>
-      		<MODULE keep_instance="false" keep_response="false" name="ListTestFixedListModule"/>
-      		<MODULE keep_instance="false" keep_response="false" name="ListTestQueryModule"/>
-      		<MODULE keep_instance="false" keep_response="false" name="ListTestScriptModule"/>
-      		<MODULE keep_instance="false" keep_response="false" name="ListTestJavaClassModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="ListTestLovModule"/>
     	</MODULES>
   	</PAGE>
+  	
+  	
+  	
+  	
   	
   	<PAGE name="DetailModalitiesChecksPage" scope="REQUEST" title="Modalities Checks Detail" >
     	<DEPENDENCIES>
@@ -442,20 +382,6 @@
     	</MODULES>
   	</PAGE>
   	
-<!--
-	<PAGE name="DetailModalitiesPage" scope="REQUEST" title="Domain Detail" >
-    	<DEPENDENCIES>
-      		<DEPENDENCE source="DetailModalitiesPage" target="DetailModalitiesModule">
-        		<CONDITIONS/>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-    	</DEPENDENCIES>
-    	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="DetailModalitiesModule"/>
-    	</MODULES>
-  	</PAGE>
--->  	
-  	
     <PAGE name="DetailBIObjectPage" scope="REQUEST" title="BIObject Detail" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="DetailBIObjectPage" target="DetailBIObjectModule">
@@ -467,35 +393,7 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailBIObjectModule"/>
     	</MODULES>
   	</PAGE>
-  	
-<!-- 
-  	<PAGE name="ListBIObjectParametersPage" scope="REQUEST" title="BIObject Parameters Management" >
-    	<DEPENDENCIES>
-      		<DEPENDENCE source="ListBIObjectParametersPage" target="ListBIObjectParametersModule">
-        		<CONDITIONS/>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-    	</DEPENDENCIES>
-    	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="ListBIObjectParametersModule"/>
-    	</MODULES>
-  	</PAGE>
--->
 
-<!-- 
-  	<PAGE name="DetailBIObjectParameterPage" scope="REQUEST" title="BIObjectParameter Detail" >
-    	<DEPENDENCIES>
-      		<DEPENDENCE source="DetailBIObjectParameterPage" target="DetailBIObjectParameterModule">
-        		<CONDITIONS/>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-    	</DEPENDENCIES>
-    	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="DetailBIObjectParameterModule"/>
-    	</MODULES>
-  	</PAGE>
- -->
-   	
   	<PAGE name="ExecuteBIObjectPage" scope="REQUEST" title="Execute BIObject" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ExecuteBIObjectPage" target="ExecuteBIObjectModule">
@@ -514,7 +412,6 @@
 			<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ExecuteBIObjectModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_DEFINED"/>
-        			<!--  <PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/> -->
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
@@ -522,9 +419,6 @@
 			<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ChecklistLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
-        			<!--  
-        			<PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_DEFINED"/>
-        			-->
         			<PARAMETER name="TYPE_LIST" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
         		
         		</CONDITIONS>
@@ -534,9 +428,6 @@
       		<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
-        			<!--  
-        			<PARAMETER name="MESSAGE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
-        			-->
         			<PARAMETER name="TYPE_LIST" scope="SERVICE_REQUEST" value="AF_DEFINED"/>
         		</CONDITIONS>
         		<CONSEQUENCES/>
@@ -575,20 +466,6 @@
     		<MODULE keep_instance="false" keep_response="false" name="ChecklistLookupModalityValuesModule"/>
     	</MODULES>
   	</PAGE>
-
-<!--
-  	<PAGE name="TreeObjectsPage" scope="REQUEST" title="BI Objects Tree" >
-    	<DEPENDENCIES>
-      		<DEPENDENCE source="TreeObjectsPage" target="TreeObjectsModule">
-        		<CONDITIONS/>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-    	</DEPENDENCIES>
-    	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="TreeObjectsModule"/>
-    	</MODULES>
-  	</PAGE>
--->  	
 
   	<PAGE name="ListBIObjectsPage" scope="REQUEST" title="BI Objects List" >
     	<DEPENDENCIES>

@@ -36,6 +36,7 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -261,48 +262,9 @@ public class PortletUtilities {
 	 * @return	A string containing the message
 	 */
 	 public static String getMessage(String code, String bundle) {
-		 String portalLang = null;
-		 try {
-		 	// get the locale and the language of the portal
-		 	Locale portalLocale =  PortletAccess.getPortalLocale();
-		 	if (portalLocale == null) {
-	        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
-			              "getMessage", "Portal locale not found by PortletAccess.getPortalLocale() method!! " +
-			              		"May be there is not a portlet request");
-		 	} else {
-		 		portalLang = portalLocale.getLanguage();
-		 	}
-			// Locale portalLocale = (Locale)portletRequest.getPortletSession().getAttribute("LOCALE");
-		} catch (Exception e) {
-        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
-		              "getMessage", "Error while getting portal locale", e);
-		}
-	 	// get the configuration sourceBean/language code/country code of the default language
-	 	SourceBean defaultLangSB = (SourceBean)ConfigSingleton.getInstance()
-	 	                           .getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-	 	                           		                           "default", "true");
-	 	String defaultLang = (String)defaultLangSB.getAttribute("language");
-	 	String defaultCountry = (String)defaultLangSB.getAttribute("country");
-	 	
-	 	// try to get the configuration sourceBean of the language of the portal, if a portal language was found
-	 	SourceBean portalLangSB = null;
-	 	if (portalLang != null) {
-		 	portalLangSB = (SourceBean)ConfigSingleton.getInstance()
-		 			.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-                                              "language", portalLang);
-	 	}
 
-	 	// if the portal language as no configuration sourceBean use the default language
-	 	Locale locale = null;
-	 	if(portalLangSB!=null) {
-	 		String lang = (String)portalLangSB.getAttribute("language");
-		 	String country = (String)portalLangSB.getAttribute("country");
-		 	locale = new Locale(lang, country);
-	 	} else {
-	 		locale = new Locale(defaultLang, defaultCountry);
-	 	}
-	 	
-
+		Locale locale = getLocaleForMessage();  
+		 
 	 	ResourceBundle messages = ResourceBundle.getBundle(bundle, locale);
         if (messages == null) {
             return null;
@@ -320,7 +282,87 @@ public class PortletUtilities {
 	 
 	 
 	 
+	 /**
+		 * Gets a localized information text given teh resource name which contains the text 
+		 * information. 
+		 * @param resourceName	The complete name of the resource. 
+		 * The resource will be searched into the classpath of the application
+		 * @return	A string containing the text
+		 */
+		 public static String getMessageTextFromResource(String resourceName) {
+			String resText = "";
+			try{
+				Locale locale = getLocaleForMessage();
+				String resourceNameLoc = resourceName + "_" + locale.getLanguage() + "_" + locale.getCountry();
+			 	ClassLoader classLoad = PortletUtilities.class.getClassLoader();
+			 	InputStream resIs = classLoad.getResourceAsStream(resourceNameLoc);
+			 	if(resIs==null) {
+			    	SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
+	                                      "getMessageTextFromResource", 
+	                                      "Cannot find resource " + resourceName);
+			 		resIs = classLoad.getResourceAsStream(resourceName);
+			 	}
+			 	byte[] resBytes = GeneralUtilities.getByteArrayFromInputStream(resIs);
+			 	resText = new String(resBytes);
+			} catch (Exception e) {
+				resText = "";
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
+			                        "getMessageTextFromResource", 
+			                        "Error while recovering text of the resource name " + resourceName, e);
+			}
+		 	return resText;
+	    } 
 	 
+	 
+		 
+		 
+		/**
+		 * Get the locale of the portal or the one setted into the configuration files 
+		 * @return locale for message resolution
+		 */
+		private static Locale getLocaleForMessage() {
+			String portalLang = null;
+			 try {
+			 	// get the locale and the language of the portal
+			 	Locale portalLocale =  PortletAccess.getPortalLocale();
+			 	if (portalLocale == null) {
+		        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
+				                        "getLocaleForMessage", 
+				                        "Portal locale not found by PortletAccess.getPortalLocale() method!! " +
+				              		    "May be there is not a portlet request");
+			 	} else {
+			 		portalLang = portalLocale.getLanguage();
+			 	}
+				// Locale portalLocale = (Locale)portletRequest.getPortletSession().getAttribute("LOCALE");
+			} catch (Exception e) {
+	        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
+			                        "getLocaleForMessage", "Error while getting portal locale", e);
+			}
+		 	// get the configuration sourceBean/language code/country code of the default language
+		 	SourceBean defaultLangSB = (SourceBean)ConfigSingleton.getInstance()
+		 	                           .getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+		 	                           		                           "default", "true");
+		 	String defaultLang = (String)defaultLangSB.getAttribute("language");
+		 	String defaultCountry = (String)defaultLangSB.getAttribute("country");
+		 	// try to get the configuration sourceBean of the language of the portal, if a portal language was found
+		 	SourceBean portalLangSB = null;
+		 	if (portalLang != null) {
+			 	portalLangSB = (SourceBean)ConfigSingleton.getInstance()
+			 			.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+	                                              "language", portalLang);
+		 	}
+		 	// if the portal language as no configuration sourceBean use the default language
+		 	Locale locale = null;
+		 	if(portalLangSB!=null) {
+		 		String lang = (String)portalLangSB.getAttribute("language");
+			 	String country = (String)portalLangSB.getAttribute("country");
+			 	locale = new Locale(lang, country);
+		 	} else {
+		 		locale = new Locale(defaultLang, defaultCountry);
+		 	}
+		 	return locale;
+		}
+		 
 	 
 	 /**
 		 * Gets the language code of the user portal language. If it's not possible to gather 

@@ -27,7 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.utilities;
 
 import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -285,28 +284,6 @@ public class GeneralUtilities {
 	}
 	
 	
-	public static Binding fillBinding(HashMap attrs) {
-		Binding bind = new Binding();
-		Set setattrs = attrs.keySet();
-		Iterator iterattrs = setattrs.iterator();
-		String key = null;
-		String value = null;
-		while(iterattrs.hasNext()) {
-			key = iterattrs.next().toString();
-			value = attrs.get(key).toString();
-			bind.setVariable(key, value);
-		}
-		return bind;
-	}
-	
-	
-	public static Binding fillBinding(IEngUserProfile profile) throws EMFInternalError {
-		
-		HashMap allAttrs = GeneralUtilities.getAllProfileAttributes(profile);
-		if (allAttrs == null) return null;
-		return fillBinding(allAttrs);
-	}
-	
 	/**
 	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the string passed at input.
 	 * 
@@ -453,73 +430,7 @@ public class GeneralUtilities {
 		}
 		return profileattrs;
 	}
-	
-	public static String testScript(String script, Binding bind) throws Exception {
-		String result = "";
-		// get the sourcebena of the default script language
-		SourceBean scriptLangSB = (SourceBean)ConfigSingleton.getInstance().
-								  getFilteredSourceBeanAttribute("SPAGOBI.SCRIPT_LANGUAGE_SUPPORTED.SCRIPT_LANGUAGE", 
-																 "default", "true");
-		// get the name of the default script language
-		String name = (String)scriptLangSB.getAttribute("name");
-		// the only language supported now is groovy so if the default script isn't groovy
-		// throw an exception and return an empty string
-		if(!name.equalsIgnoreCase("groovy")) {
-			SpagoBITracer.critical("GeneralUtilities", 
-								   GeneralUtilities.class.getName(), 
-								   "testScript", "The only script language supported is groovy, " +
-								   "the configuration file has no configuration for groovy");
-			return "";
-		}
-		String predefinedScriptFileName = (String)scriptLangSB.getAttribute("predefinedScriptFile");
-		if (predefinedScriptFileName != null && !predefinedScriptFileName.trim().equals("")) {
-			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), "testScript", "Trying to load predefined script file '" + predefinedScriptFileName + "'.");
-			InputStream is = null;
-			try {
-				is = Thread.currentThread().getContextClassLoader().getResourceAsStream(predefinedScriptFileName);
-				StringBuffer servbuf = new StringBuffer();
-				int arrayLength = 1024;
-				byte[] bufferbyte = new byte[arrayLength];
-				char[] bufferchar = new char[arrayLength];
-				int len;
-				while ((len = is.read(bufferbyte)) >= 0) {
-					for (int i = 0; i < arrayLength; i++) {
-						bufferchar[i] = (char) bufferbyte[i];
-					}
-					servbuf.append(bufferchar, 0, len);
-				}
-				is.close();
-				script = servbuf.toString() + script;
-			} catch (Exception e) {
-				SpagoBITracer.warning("SpagoBIUtilities", GeneralUtilities.class.getName(), "testScript", "The predefined script file '" + predefinedScriptFileName + "' was not properly loaded.");
-			} finally {
-				if (is != null) is.close();
-			}
-		}
-		GroovyShell shell = new GroovyShell(bind);
-		Object value = shell.evaluate(script);
-        result = value.toString();
-        return result;
-        
-        /*
-         * implementation with bsf, seems not possible to laucha groovy expression with Bindings
-         * so we use groovy directly
-         * 
-		String name = (String)scriptLangSB.getAttribute("name");
-		String engclass = (String)scriptLangSB.getAttribute("engineclass");
-		String id = (String)scriptLangSB.getAttribute("identifier");
-		String shortid = (String)scriptLangSB.getAttribute("shortidentifier");
-		BSFManager.registerScriptingEngine(name, engclass, new String[] { id, shortid }	);
-        BSFManager manager = new BSFManager(); 
-        try {
-        	Object answer = manager.eval(name, "Test1.groovy", 0, 0, script);
-        	result = answer.toString();
-        } catch (BSFException e1) {
-        	e1.printStackTrace();
-        }
-        */
-	}
-	
+		
 	
 	/**
 	 * Delete a folder and its contents
@@ -732,5 +643,23 @@ public class GeneralUtilities {
 		ILovDetail lovDetail = LovDetailFactory.getLovFromXML(dataProv);
 		return lovDetail.getLovResult(profile);		
 	}
+	
+	
+	public static String fromListToString(List values, String separator) {
+		String valStr = "";
+		if(values==null) {
+			return valStr;
+		}
+		Iterator iterVal = values.iterator();
+		while(iterVal.hasNext()) {
+			String val = (String)iterVal.next();
+			valStr += val + separator;
+		}
+		if(valStr.length()!=0){
+			valStr = valStr.substring(0, valStr.length() - separator.length());
+		}
+		return valStr;
+	}
+	
 	
 }

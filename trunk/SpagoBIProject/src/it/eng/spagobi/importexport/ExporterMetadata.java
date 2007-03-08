@@ -356,13 +356,13 @@ public class ExporterMetadata {
 					SbiObjParuseId hibObjParuseId = new SbiObjParuseId();
 					SbiObjPar hibObjPar = (SbiObjPar)session.load(SbiObjPar.class, objparuse.getObjParId());
 					SbiParuse hibParuse = (SbiParuse)session.load(SbiParuse.class, objparuse.getParuseId());
+					SbiObjPar objparfather = (SbiObjPar)session.load(SbiObjPar.class, objparuse.getObjParFatherId());
 					hibObjParuseId.setSbiObjPar(hibObjPar);
 					hibObjParuseId.setSbiParuse(hibParuse);
+					hibObjParuseId.setFilterOperation(objparuse.getFilterOperation());
+					hibObjParuseId.setSbiObjParFather(objparfather);
 					SbiObjParuse hibObjParuse = new SbiObjParuse(hibObjParuseId);
 					hibObjParuse.setFilterColumn(objparuse.getFilterColumn());
-					hibObjParuse.setFilterOperation(objparuse.getFilterOperation());
-					SbiObjPar objparfather = (SbiObjPar)session.load(SbiObjPar.class, objparuse.getObjParFatherId());
-					hibObjParuse.setSbiObjParFather(objparfather);
 					session.save(hibObjParuse);
 					tx.commit();	
 				}

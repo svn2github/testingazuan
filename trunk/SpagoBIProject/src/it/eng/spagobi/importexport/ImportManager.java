@@ -1136,14 +1136,18 @@ public class ImportManager implements IImportManager {
 				// get ids of objpar and paruse associated
 				Integer objparId = pardep.getId().getSbiObjPar().getObjParId();
 				Integer paruseId = pardep.getId().getSbiParuse().getUseId();
+				Integer objparfathId = pardep.getId().getSbiObjParFather().getObjParId();
+				String filterOp = pardep.getId().getFilterOperation();
 				// get association of objpar and paruses
 				Map objparIdAss = metaAss.getObjparIDAssociation();
 				Map paruseIdAss = metaAss.getParuseIDAssociation();
 				// try to get from association the id associate to the exported metadata
 				Integer newObjparId = (Integer)objparIdAss.get(objparId);
 				Integer newParuseId = (Integer)paruseIdAss.get(paruseId);
+				Integer newObjParFathId = (Integer)objparIdAss.get(objparfathId);
 				// build a new id for the SbiObjParuse
 				SbiObjParuseId objparuseid = pardep.getId();
+				objparuseid.setFilterOperation(filterOp);
 				if(newParuseId!=null) {
 					SbiParuse sbiparuse = objparuseid.getSbiParuse();
 					SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(sbiparuse, newParuseId);
@@ -1156,17 +1160,26 @@ public class ImportManager implements IImportManager {
 					objparuseid.setSbiObjPar(newObjPar);
 					objparId=newObjparId;
 				}
+				if(newObjParFathId!=null){
+					SbiObjPar sbiobjparfath = objparuseid.getSbiObjParFather();
+					SbiObjPar newObjParFath = ImportUtilities.makeNewSbiObjpar(sbiobjparfath, newObjParFathId);
+					objparuseid.setSbiObjParFather(newObjParFath);
+					objparfathId=newObjParFathId;
+				}
+				
 				pardep.setId(objparuseid);
 				// change reference to the parent parameter
-				SbiObjPar parParent = pardep.getSbiObjParFather();
-				Integer parParentId = parParent.getObjParId(); 
-				Integer newparParentId = (Integer)objparIdAss.get(parParentId);
-				SbiObjPar newparParent = ImportUtilities.makeNewSbiObjpar(parParent, newparParentId);
-				pardep.setSbiObjParFather(newparParent);
+				//SbiObjPar parParent = pardep.getSbiObjParFather();
+				//Integer parParentId = parParent.getObjParId(); 
+				//Integer newparParentId = (Integer)objparIdAss.get(parParentId);
+				//SbiObjPar newparParent = ImportUtilities.makeNewSbiObjpar(parParent, newparParentId);
+				//pardep.setSbiObjParFather(newparParent);
 				// check if the association between metadata already exist
 				Map unique = new HashMap();
 				unique.put("objparid", objparId);
 				unique.put("paruseid", paruseId);
+				unique.put("objparfathid", objparfathId);
+				unique.put("filterop", filterOp);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiObjParuse());
 				if(existObj==null) {
 					importer.insertObject(pardep, sessionCurrDB);

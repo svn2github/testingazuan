@@ -577,8 +577,12 @@ public class ImporterMetadata {
 				Map uniqueMap = (Map)unique;
 				Integer objparid = (Integer)uniqueMap.get("objparid");
 				Integer paruseid = (Integer)uniqueMap.get("paruseid");
+				Integer objparfathid = (Integer)uniqueMap.get("objparfathid");
+				String filterOp = (String)uniqueMap.get("filterop");
 				hql = "from SbiObjParuse objparuse where objparuse.id.sbiObjPar.objParId = " + objparid +
-					  " and objparuse.id.sbiParuse.useId = " + paruseid;
+					  " and objparuse.id.sbiParuse.useId = " + paruseid + 
+				      " and objparuse.id.sbiObjParFather.objParId = " + objparfathid + 
+			          " and s.id.filterOperation = '" + filterOp + "'";
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiObjParuse hibObjParUse = (SbiObjParuse)hqlQuery.uniqueResult();
 				return hibObjParUse;

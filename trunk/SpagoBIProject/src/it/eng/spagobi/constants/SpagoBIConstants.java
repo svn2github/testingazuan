@@ -184,4 +184,12 @@ public class SpagoBIConstants {
 	
 	public static final String OBJ_SCHEDULE_DETAIL = "OBJ_SCHEDULE_DETAIL";
 	public static final String OBJ_JOB_EXISTS = "OBJ_JOB_EXISTS";
+	
+	public static final String LOV_MODIFIED = "LOV_MODIFIED";
+	
+	public static final String PROFILE_ATTRIBUTES_TO_FILL = "PROFILE_ATTRIBUTES_TO_FILL";
+	
+	public static final String MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING = "MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING";
+	
+	public static final String USER_PROFILE_FOR_TEST = "USER_PROFILE_FOR_TEST";
 }

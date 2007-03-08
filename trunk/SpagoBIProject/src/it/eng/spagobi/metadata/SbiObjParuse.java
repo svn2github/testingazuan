@@ -23,10 +23,13 @@ package it.eng.spagobi.metadata;
 
 public class SbiObjParuse implements java.io.Serializable {
 
+	
 	private SbiObjParuseId id;
-    private SbiObjPar sbiObjParFather;
+    private Integer prog;
     private String filterColumn;
-    private String filterOperation;
+    private String preCondition;
+    private String postCondition;
+    private String logicOperator;
     
     // Constructors
 
@@ -47,28 +50,46 @@ public class SbiObjParuse implements java.io.Serializable {
 		this.filterColumn = filterColumn;
 	}
 
-	public String getFilterOperation() {
-		return filterOperation;
+	public String getLogicOperator() {
+		return logicOperator;
 	}
 
-	public void setFilterOperation(String filterOperation) {
-		this.filterOperation = filterOperation;
+	public void setLogicOperator(String logicOperator) {
+		this.logicOperator = logicOperator;
+	}
+
+	public String getPostCondition() {
+		return postCondition;
+	}
+
+	public void setPostCondition(String postCondition) {
+		this.postCondition = postCondition;
+	}
+
+	public String getPreCondition() {
+		return preCondition;
+	}
+
+	public void setPreCondition(String preCondition) {
+		this.preCondition = preCondition;
+	}
+
+	public Integer getProg() {
+		return prog;
+	}
+
+	public void setProg(Integer prog) {
+		this.prog = prog;
 	}
 
 	public SbiObjParuseId getId() {
 		return id;
 	}
 
-	public void setId(SbiObjParuseId id) {
-		this.id = id;
+	public void setId(SbiObjParuseId objparuseId) {
+		this.id = objparuseId;
 	}
 
-	public SbiObjPar getSbiObjParFather() {
-		return sbiObjParFather;
-	}
-
-	public void setSbiObjParFather(SbiObjPar sbiObjParFather) {
-		this.sbiObjParFather = sbiObjParFather;
-	}
+	
 	
 }

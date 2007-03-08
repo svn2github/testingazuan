@@ -12,27 +12,21 @@
 			java.util.List,
 			java.util.ArrayList,
 			java.util.Iterator"%>
+<%@page import="it.eng.spagobi.bo.lov.LovDetailFactory"%>
+<%@page import="it.eng.spagobi.bo.lov.ILovDetail"%>
+<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
 
 <%
 
 	SourceBean detailMR = (SourceBean) aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
-	SourceBean listFixedListMR = (SourceBean) aServiceResponse.getAttribute("ListTestFixedListModule"); 
-	SourceBean listQueryMR = (SourceBean) aServiceResponse.getAttribute("ListTestQueryModule"); 
-	SourceBean listScriptMR = (SourceBean) aServiceResponse.getAttribute("ListTestScriptModule");
-	SourceBean listJavaClassMR = (SourceBean) aServiceResponse.getAttribute("ListTestJavaClassModule");
+	SourceBean listLovMR = (SourceBean) aServiceResponse.getAttribute("ListTestLovModule"); 
 
-	String lovProviderModified = null;
-	if (detailMR != null) lovProviderModified = (String) detailMR.getAttribute("lovProviderModified");
-	else if (listFixedListMR != null) lovProviderModified = (String) listFixedListMR.getAttribute("lovProviderModified");
-	else if (listQueryMR != null) lovProviderModified = (String) listQueryMR.getAttribute("lovProviderModified");
-	else if (listScriptMR != null) lovProviderModified = (String) listScriptMR.getAttribute("lovProviderModified");
-	else if (listScriptMR != null) lovProviderModified = (String) listJavaClassMR.getAttribute("lovProviderModified");
+	String lovProviderModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.LOV_MODIFIED);
 	if (lovProviderModified == null) lovProviderModified = "";
 	
 	String modality = null;
 	if (detailMR != null) modality = (String) detailMR.getAttribute("modality");
 	if (modality == null) modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
-		
   	String messagedet = "";
   	if (modality.equals(SpagoBIConstants.DETAIL_INS))
 		messagedet = SpagoBIConstants.DETAIL_INS;
@@ -54,13 +48,21 @@
 		backUrl.setParameter("lovProviderModified", lovProviderModified);
   	
   	ModalitiesValue modVal = (ModalitiesValue) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
+  	String lovProv = modVal.getLovProvider();
+  	ILovDetail lovDet = LovDetailFactory.getLovFromXML(lovProv);
   	
 %>
 
 
+ 
+
+<!--  SCRIPTS  -->
+
+
+
 <script type="text/javascript">
 
-function askForConfirmIfNecessary(url) {
+function askForConfirmIfNecessary() {
 	<%
 	List paruses = DAOFactory.getParameterUseDAO().getParameterUsesAssociatedToLov(modVal.getId());
 	Iterator parusesIt = paruses.iterator();
@@ -74,17 +76,39 @@ function askForConfirmIfNecessary(url) {
 		String documentsStr = documents.toString();
 		%>
 			if (confirm('<spagobi:message key = "SBIDev.predLov.savePreamble" />' + ' ' + '<%=documentsStr%>' + '. ' + '<spagobi:message key = "SBIDev.predLov.saveConfirm" />')) {
-				location.href = url;
+				document.getElementById('formTest').submit();
 			}
 		<%
 	} else {
 		%>
-		location.href = url;
+		document.getElementById('formTest').submit();
 		<%
 	}
 	%>
 }
 </script>
+
+
+<script type="text/javascript">
+
+	function showStacktrace(){
+		document.getElementById("stacktrace").style.display = 'inline';
+		document.getElementById("showStacktraceDiv").style.display = 'none';
+		document.getElementById("hideStacktraceDiv").style.display = 'inline';
+	}
+					
+	function hideStacktrace(){
+		document.getElementById("stacktrace").style.display = 'none';
+		document.getElementById("showStacktraceDiv").style.display = 'inline';
+		document.getElementById("hideStacktraceDiv").style.display = 'none';
+	}
+</script>
+
+
+
+
+
+<!-- TITLE -->
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -94,7 +118,7 @@ function askForConfirmIfNecessary(url) {
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href= 'javascript:askForConfirmIfNecessary("<%=saveUrl.toString()%>");' >
+			<a href= 'javascript:askForConfirmIfNecessary();' >
 				<img class='header-button-image-portlet-section'
 					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
 					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
@@ -110,278 +134,119 @@ function askForConfirmIfNecessary(url) {
 	</tr>
 </table>
 
+
+
+
+<form id="formTest" method="post" action="<%=saveUrl.toString()%>" >
+
+<!-- BODY -->
+
+
 <div class='div_background_no_img' >
 
-<% 	if (modVal.getITypeCd().equalsIgnoreCase("SCRIPT")) {
-	
-		String lovProvider = modVal.getLovProvider();
-		ScriptDetail scriptDetail = ScriptDetail.fromXML(lovProvider);
-		
-		String errorMessage = (String) listScriptMR.getAttribute("errorMessage");
-			  
-		if (errorMessage != null) {				  
-%>				  
-			<br/>
-			<div style="left:10%;width:80%" class='portlet-form-field-label' >
-				<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
-			</div>				  
-<%				  
-			if (!errorMessage.trim().equals("")) { 
+
+   <!-- ERROR TAG --> 
+	<spagobi:error/>
+
+
+
+<%
+	String errorMessage = (String) listLovMR.getAttribute("errorMessage");	
+	String stack = (String) listLovMR.getAttribute("stacktrace");
+	if (errorMessage != null) {				  
+%>
+		<br/>
+		<div style="left:10%;width:80%" class='portlet-form-field-label' >
+			<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
+		</div>	
+<%
+		if (!errorMessage.trim().equals("")) { 
 %>					  
-					<br/>
-				 	<div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testErrorMessage" /></div>
-					<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
-					<div style="left:10%;width:70%" class='portlet-section-alternate'><spagobi:message key = "SBIDev.predLov.testScriptInvalidXMLOutput" /></div>
-					<% } else { %>
-					<div style="left:10%;width:70%" class='portlet-section-alternate'><%= errorMessage %></div>
-					<% } %>
-					<br/>
+			<br/>
+		 	<div style="left:10%;width:80%" class='portlet-form-field-label' >
+		 		<spagobi:message key = "SBIDev.predLov.testErrorMessage" />
+		 	</div>
+			<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
+				<div style="left:10%;width:70%" class='portlet-section-alternate'>
+					<spagobi:message key = "SBIDev.predLov.testScriptInvalidXMLOutput" />
+				</div>
+			<% } else { %>
+				<div style="left:10%;width:70%" class='portlet-section-alternate'>
+					<%= errorMessage %>
+				</div>
+			<% } %>
+			<br/>
 <% 
-			}					 
-		} else { 
-				  
-				  String result = (String) listScriptMR.getAttribute("result");
-				  
-				  if (result != null) { 				  
-					  result = result.replaceAll(">", "&gt;");
-					  result = result.replaceAll("<", "&lt;");
-					  result = result.replaceAll("\"", "&quot;");					  
-				  %>
-					  
-				   	<div width="100%">
-					<br/>
-					<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testScriptNonCorrectResult" /></div>
-					<br/>	
-					<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'><%= result %></div>
-			 		</div>
-					<br/>
-					  
-					  
-<% 
-				  } else { 
-%>				  
-				    <div width="100%">
-						<spagobi:list moduleName="ListTestScriptModule"/>
-				  	</div>
-				  	
-			  <% }
-		  	
-			  }		
-		
-		} else if (modVal.getITypeCd().equalsIgnoreCase("FIX_LOV")) {
-			
-			String lovProvider = modVal.getLovProvider();
-			FixedListDetail fixedListDetail = FixedListDetail.fromXML(lovProvider);
-			
-			String errorMessage = (String) listFixedListMR.getAttribute("errorMessage");
-				  
-			if (errorMessage != null) {				  
-	%>				  
+		}
+
+		if (stack != null) { 
+%>
+			<div id='errorDescriptionJS' style='display:inline;'>
+			  	<br/>
+			  	<div style="left:10%;width:80%;display:inline;" class='portlet-form-field-label' id='showStacktraceDiv'>
+			  		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace1" />
+			  		<a href='javascript:showStacktrace()'>
+			 	 		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace2" />
+					</a>
+			 		.
+			 	</div>
+			    <div style="left:10%;width:80%;display:none;" class='portlet-form-field-label' id='hideStacktraceDiv'>
+			 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace1" />
+			 		<a href='javascript:hideStacktrace()'>
+				 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace2" />
+			 		</a>
+			 		.
+			 	</div>
+				<br/>	
+				<div id='stacktrace' style="left:10%;width:70%;display:none;" class='portlet-section-alternate'>
+					<%= stack %>
+				</div>
+			 </div>
+<%
+		}		
+		String result = (String) listLovMR.getAttribute("result");
+		if(result != null) { 				  
+	  		result = result.replaceAll(">", "&gt;");
+	  		result = result.replaceAll("<", "&lt;");
+	  		result = result.replaceAll("\"", "&quot;");					  
+%>			  
+			<div width="100%">
 				<br/>
-				<div style="left:10%;width:80%" class='portlet-form-field-label' >
-					<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
-				</div>				  
-	<%				  
-				if (!errorMessage.trim().equals("")) { 
-	%>					  
-						<br/>
-					 	<div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testErrorMessage" /></div>
-						<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
-						<div style="left:10%;width:70%" class='portlet-section-alternate'><spagobi:message key = "SBIDev.predLov.testScriptInvalidXMLOutput" /></div>
-						<% } else { %>
-						<div style="left:10%;width:70%" class='portlet-section-alternate'><%= errorMessage %></div>
-						<% } %>
-						<br/>
-	<% 
-				}					 
-			} else { 
-					  
-					  String result = (String) listFixedListMR.getAttribute("result");
-					  
-					  if (result != null) { 				  
-						  result = result.replaceAll(">", "&gt;");
-						  result = result.replaceAll("<", "&lt;");
-						  result = result.replaceAll("\"", "&quot;");					  
-					  %>
-						  
-					   	<div width="100%">
-						<br/>
-						<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testScriptNonCorrectResult" /></div>
-						<br/>	
-						<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'><%= result %></div>
-				 		</div>
-						<br/>
-						  
-						  
-	<% 
-					  } else { 
-	%>				  
-					    <div width="100%">
-							<spagobi:list moduleName="ListTestFixedListModule"/>
-					  	</div>
-					  	
-				  <% }
-			  	
-				  }		
+				<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' >
+					<spagobi:message key = "SBIDev.predLov.testScriptNonCorrectResult" />
+				</div>
+				<br/>	
+				<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'>
+					<%= result %>
+				</div>
+			</div>
+			<br/>					  
+<% 
+		} 
+	}else {
+%>
 		
+		<div width="100%">
+			<spagobi:LovColumnsSelector moduleName="ListTestLovModule" 
+			                            visibleColumns="<%=GeneralUtilities.fromListToString(lovDet.getVisibleColumnNames(), ",")%>" 
+			                            valueColumn="<%=lovDet.getValueColumnName()%>" 
+			                            descriptionColumn="<%=lovDet.getDescriptionColumnName()%>" 
+			                            invisibleColumns="<%=GeneralUtilities.fromListToString(lovDet.getInvisibleColumnNames(), ",")%>" />
+		</div>
 		
-		} else if (modVal.getITypeCd().equalsIgnoreCase("JAVA_CLASS")) {
-			
-			String lovProvider = modVal.getLovProvider();
-			JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(lovProvider);
-			
-			
-				
-				  String errorMessage = (String) listJavaClassMR.getAttribute("errorMessage");
-				  
-				  if (errorMessage != null) { 
-					  
-					  %>
-					  
-					  <br/>
-					  <div style="left:10%;width:80%" class='portlet-form-field-label' >
-					  	<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
-					  </div>
-					  
-					  <%
-					  
-					  if (!errorMessage.trim().equals("")) { %>
-						  
-						<br/>
-					 	<div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testErrorMessage" /></div>
-						<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
-						<div style="left:10%;width:70%" class='portlet-section-alternate'><spagobi:message key = "SBIDev.predLov.testScriptInvalidXMLOutput" /></div>
-						<% } else { %>
-						<div style="left:10%;width:70%" class='portlet-section-alternate'><%= errorMessage %></div>
-						<% } %>
-						<br/>
-					  <% }
-						 
-				  } else { 
-					  
-					  String result = (String) listJavaClassMR.getAttribute("result");
-					  
-					  if (result != null) { 
-					  
-						  result = result.replaceAll(">", "&gt;");
-						  result = result.replaceAll("<", "&lt;");
-						  result = result.replaceAll("\"", "&quot;");
-						  
-					  %>
-						  
-					   	<div width="100%">
-						<br/>
-						<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testScriptNonCorrectResult" /></div>
-						<br/>	
-						<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'><%= result %></div>
-				 		</div>
-						<br/>
-						  
-						  
-					  <% } else { %>
-					  
-					    <div width="100%">
-							<spagobi:list moduleName="ListTestJavaClassModule"/>
-					  	</div>
-					  	
-				  <% }
-			  	
-				  }
-				  
-				
-			
-		} else if (modVal.getITypeCd().equalsIgnoreCase("QUERY")) { 
-	  
-		  String stack = (String) listQueryMR.getAttribute("stacktrace");
-		  String errorMessage = (String) listQueryMR.getAttribute("errorMessage");
-		  
-		  if (stack != null) { 
-			  
-			  %>
-			  
-			  <br/>
-			  <div style="left:10%;width:80%" class='portlet-form-field-label' >
-			  	<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
-			  </div>
-			  
-			  <%
-			  
-			  if (errorMessage != null && !errorMessage.trim().equals("")) { %>
-				  
-				 <br/>
-			 	 <div style="left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testErrorMessage" /></div>
-				 <div style="left:10%;width:70%" class='portlet-section-alternate'><%= errorMessage %></div>
-				  
-			  <% } %>	
-			  	
-			 	 <div id='errorDescription' style='display:inline;'>
-			 	 	<br/>
-			 	 	<div style="left:10%;width:80%" class='portlet-form-field-label' >
-			 	 		<spagobi:message key = "SBIDev.predLov.testErrorDescription" />
-			 	 	</div>
-				 	<br/>	
-				 	<div style="left:10%;width:70%" class='portlet-section-alternate'><%= stack %></div>
-				 </div>
+		<br/>
+		
+		<div width="100%">
+			<spagobi:list moduleName="ListTestLovModule"/>
+		</div>
+<%
+	}
+%>
 				 
-				 <div id='errorDescriptionJS' style='display:none;'>
-			 	 	<br/>
-			 	 	<div style="left:10%;width:80%display:inline;" class='portlet-form-field-label' id='showStacktraceDiv'>
-			 	 		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace1" />
-			 	 		<a href='javascript:showStacktrace()'>
-				 	 		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace2" />
-			 	 		</a>
-			 	 		.
-			 	 	</div>
-			 	 	<div style="left:10%;width:80%display:none;" class='portlet-form-field-label' id='hideStacktraceDiv'>
-			 	 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace1" />
-			 	 		<a href='javascript:hideStacktrace()'>
-				 	 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace2" />
-			 	 		</a>
-			 	 		.
-			 	 	</div>
-				 	<br/>	
-				 	<div id='stacktrace' style="left:10%;width:70%;display:none;" class='portlet-section-alternate'>
-				 		<%= stack %>
-				 	</div>
-				 </div>
-				 
-				<script type="text/javascript">
-					document.getElementById('errorDescriptionJS').style.display = 'inline';
-					document.getElementById('errorDescription').style.display = 'none';
-					document.getElementById("stacktrace").style.display = 'none';
-					document.getElementById("showStacktraceDiv").style.display = 'inline';
-					document.getElementById("hideStacktraceDiv").style.display = 'none';
-				</script>
-				
-				<script type="text/javascript">
-					function showStacktrace(){
-						document.getElementById("stacktrace").style.display = 'inline';
-						document.getElementById("showStacktraceDiv").style.display = 'none';
-						document.getElementById("hideStacktraceDiv").style.display = 'inline';
-					}
-					
-					function hideStacktrace(){
-						document.getElementById("stacktrace").style.display = 'none';
-						document.getElementById("showStacktraceDiv").style.display = 'inline';
-						document.getElementById("hideStacktraceDiv").style.display = 'none';
-					}
-				</script>
-				
-			
-		  <% } else { %>
-		  
-			    <div width="100%">
-					<spagobi:list moduleName="ListTestQueryModule"/>
-			  	</div>
-			  	
-		  <% }
-	  
-	} else { %>
-	
-	<br/>
-	<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' ><spagobi:message key = "SBIDev.predLov.testNotImplemented" /></div>
-	<br/>
-	
-<% } %>
 
 </div>
+
+				
+</form>
+
+

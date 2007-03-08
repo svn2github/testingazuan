@@ -17,7 +17,8 @@
                  java.util.StringTokenizer,
                  javax.portlet.PortletURL,
                  it.eng.spagobi.constants.SpagoBIConstants,
-                 it.eng.spago.navigation.LightNavigationManager" %>
+                 it.eng.spago.navigation.LightNavigationManager,
+                 it.eng.spagobi.utilities.PortletUtilities" %>
 
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
@@ -42,8 +43,6 @@
 	String lovDisplay = "none";
 	String javaClassDisplay = "none";
 	
-	String isSingleValue = "false";
-	
 	QueryDetail query = new QueryDetail();
 	if (modVal != null && modVal.getITypeCd().equalsIgnoreCase("QUERY") ) {
 		queryDisplay = "inline";
@@ -60,7 +59,6 @@
 	  	if (lovProvider != null  &&  !lovProvider.equals("")){
 	  		scriptDet = ScriptDetail.fromXML(lovProvider);
 	  	}
-	  	if(scriptDet.isSingleValue()) isSingleValue = "true";
 	}
 	
 	JavaClassDetail javaClassDetail = new JavaClassDetail();
@@ -70,7 +68,6 @@
 	  	if (lovProvider != null  &&  !lovProvider.equals("")){
 	  		javaClassDetail = JavaClassDetail.fromXML(lovProvider);
 	  	}
-	  	if(javaClassDetail.isSingleValue()) isSingleValue = "true";
 	}
 	
 	FixedListDetail fixedListDetail = new FixedListDetail();
@@ -100,119 +97,135 @@
 			testButtonDisabled="disabled='disabled'";
 	}
 	
+	
+	String linkProto = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js");
+	String linkProtoWin = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/window.js");
+	String linkProtoEff = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/effects.js");
+	String linkProtoDefThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/default.css");
+	String linkProtoAlphaThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/alphacube.css");
+
 %>
 
-
-<%@page import="it.eng.spagobi.utilities.PortletUtilities"%>
-<form method='POST' action='<%= formUrl.toString() %>' id ='modalitiesValueForm' name='modalitiesValueForm'>
-	<input type='hidden' value='<%= modVal.getId() %>' name='id' />
-	<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
-	<input type='hidden' name='lovProviderModified' value='' id='lovProviderModified' />
-	<input type='hidden' name='singlevalue' value='<%=isSingleValue%>' id='singlevalue' />
-
+	<script type="text/javascript" src="<%=linkProto%>"></script>
+	<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+	<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+	<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
+	<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/> 
 
 
 <script type="text/javascript">
 
-<%
-	String lovProviderModified = (String) moduleResponse.getAttribute("lovProviderModified");
-	if (lovProviderModified != null && !lovProviderModified.trim().equals("")) {
-		%>
-		var lovProviderModified = <%=lovProviderModified%>;
-		<%
-	} else {
-		%>
-		var lovProviderModified = false;
-		<%
-	}
-%>
-
-function setLovProviderModified(newValue) {
-	lovProviderModified = newValue;
-}
-
-function showWizard(){
-	var wizard = document.getElementById("input_type").value
-	if (wizard.match("QUERY") != null) {
-		document.getElementById("queryWizard").style.display = "inline"
-		document.getElementById("scriptWizard").style.display = "none"
-		document.getElementById("lovWizard").style.display = "none"
-		document.getElementById("javaClassWizard").style.display = "none"
-		document.getElementById("testButton").style.visibility = "visible"
-		document.getElementById("testButtonImage").disabled = false
-	}
-	if (wizard.match("SCRIPT") != null) {
-		document.getElementById("queryWizard").style.display = "none"
-		document.getElementById("scriptWizard").style.display = "inline"
-		document.getElementById("lovWizard").style.display = "none"
-		document.getElementById("javaClassWizard").style.display = "none"
-		document.getElementById("testButton").style.visibility = "visible"
-		document.getElementById("testButtonImage").disabled = false
-	}
-	if (wizard.match("FIX_LOV") != null) {
-		document.getElementById("queryWizard").style.display = "none"
-		document.getElementById("scriptWizard").style.display = "none"
-		document.getElementById("lovWizard").style.display = "inline"
-		document.getElementById("javaClassWizard").style.display = "none"
-		document.getElementById("testButton").style.visibility = "hidden"
-		document.getElementById("testButtonImage").disabled = true
-	}
-	if (wizard.match("JAVA_CLASS") != null) {
-		document.getElementById("queryWizard").style.display = "none"
-		document.getElementById("scriptWizard").style.display = "none"
-		document.getElementById("lovWizard").style.display = "none"
-		document.getElementById("javaClassWizard").style.display = "inline"
-		document.getElementById("testButton").style.visibility = "visible"
-		document.getElementById("testButtonImage").disabled = false
-	}
-}
-
-function askForConfirmIfNecessary() {
 	<%
-	List paruses = DAOFactory.getParameterUseDAO().getParameterUsesAssociatedToLov(modVal.getId());
-	Iterator parusesIt = paruses.iterator();
-	List documents = new ArrayList();
-	while (parusesIt.hasNext()) {
-		ParameterUse aParuse = (ParameterUse) parusesIt.next();
-		List temp = DAOFactory.getBIObjectParameterDAO().getDocumentLabelsListUsingParameter(aParuse.getId());
-		documents.addAll(temp);
+	//String lovProviderModified = (String) moduleResponse.getAttribute("lovProviderModified");
+	String lovProviderModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.LOV_MODIFIED);
+	if (lovProviderModified != null && !lovProviderModified.trim().equals("")) {
+	%>
+		var lovProviderModified = <%=lovProviderModified%>;
+	<%
+	} else {
+	%>
+		var lovProviderModified = false;
+	<%
 	}
-	if (documents.size() > 0) {
-		String documentsStr = documents.toString();
-		%>
-			if (lovProviderModified) {
-				if (confirm('<spagobi:message key = "SBIDev.predLov.savePreamble" />' + ' ' + '<%=documentsStr%>' + '. ' + '<spagobi:message key = "SBIDev.predLov.saveConfirm" />')) {
+	%>
+
+	function setLovProviderModified(newValue) {
+		lovProviderModified = newValue;
+	}
+
+	function showWizard(){
+		var wizard = document.getElementById("input_type").value
+		if (wizard.match("QUERY") != null) {
+			document.getElementById("queryWizard").style.display = "inline"
+			document.getElementById("scriptWizard").style.display = "none"
+			document.getElementById("lovWizard").style.display = "none"
+			document.getElementById("javaClassWizard").style.display = "none"
+			document.getElementById("testButton").style.visibility = "visible"
+			document.getElementById("testButtonImage").disabled = false
+		}
+		if (wizard.match("SCRIPT") != null) {
+			document.getElementById("queryWizard").style.display = "none"
+			document.getElementById("scriptWizard").style.display = "inline"
+			document.getElementById("lovWizard").style.display = "none"
+			document.getElementById("javaClassWizard").style.display = "none"
+			document.getElementById("testButton").style.visibility = "visible"
+			document.getElementById("testButtonImage").disabled = false
+		}
+		if (wizard.match("FIX_LOV") != null) {
+			document.getElementById("queryWizard").style.display = "none"
+			document.getElementById("scriptWizard").style.display = "none"
+			document.getElementById("lovWizard").style.display = "inline"
+			document.getElementById("javaClassWizard").style.display = "none"
+			document.getElementById("testButtonImage").disabled = false
+		}
+		if (wizard.match("JAVA_CLASS") != null) {
+			document.getElementById("queryWizard").style.display = "none"
+			document.getElementById("scriptWizard").style.display = "none"
+			document.getElementById("lovWizard").style.display = "none"
+			document.getElementById("javaClassWizard").style.display = "inline"
+			document.getElementById("testButton").style.visibility = "visible"
+			document.getElementById("testButtonImage").disabled = false
+		}
+	}
+
+
+	function askForConfirmIfNecessary() {
+		<%
+		List paruses = DAOFactory.getParameterUseDAO().getParameterUsesAssociatedToLov(modVal.getId());
+		Iterator parusesIt = paruses.iterator();
+		List documents = new ArrayList();
+		while (parusesIt.hasNext()) {
+			ParameterUse aParuse = (ParameterUse) parusesIt.next();
+			List temp = DAOFactory.getBIObjectParameterDAO().getDocumentLabelsListUsingParameter(aParuse.getId());
+			documents.addAll(temp);
+		}
+		if (documents.size() > 0) {
+			String documentsStr = documents.toString();
+			%>
+				if (lovProviderModified) {
+					if (confirm('<spagobi:message key = "SBIDev.predLov.savePreamble" />' + ' ' + '<%=documentsStr%>' + '. ' + '<spagobi:message key = "SBIDev.predLov.saveConfirm" />')) {
+						document.getElementById("saveLov").name = 'saveLov';
+						document.getElementById("saveLov").value = 'saveLov';
+						document.getElementById("modalitiesValueForm").submit();
+					}
+				} else {
 					document.getElementById("saveLov").name = 'saveLov';
 					document.getElementById("saveLov").value = 'saveLov';
 					document.getElementById("modalitiesValueForm").submit();
 				}
-			} else {
-				document.getElementById("saveLov").name = 'saveLov';
-				document.getElementById("saveLov").value = 'saveLov';
-				document.getElementById("modalitiesValueForm").submit();
-			}
-		<%
-	} else {
+			<%
+		} else {
+			%>
+			document.getElementById("saveLov").name = 'saveLov';
+			document.getElementById("saveLov").value = 'saveLov';
+			document.getElementById("modalitiesValueForm").submit();
+			<%
+		}
 		%>
-		document.getElementById("saveLov").name = 'saveLov';
-		document.getElementById("saveLov").value = 'saveLov';
-		document.getElementById("modalitiesValueForm").submit();
-		<%
 	}
-	%>
-}
 
-function setLovProviderModifiedField(){
-	if (lovProviderModified) {
-		document.getElementById("lovProviderModified").value = 'true';
-	} else {
-		document.getElementById("lovProviderModified").value = 'false';
+
+	function setLovProviderModifiedField(){
+		if (lovProviderModified) {
+			document.getElementById("lovProviderModified").value = 'true';
+		} else {
+			document.getElementById("lovProviderModified").value = 'false';
+		}
 	}
-}
 </script>
 
 
 
+<!-- OPEN PAGE FORM  -->
+<form method='POST' action='<%= formUrl.toString() %>' id ='modalitiesValueForm' name='modalitiesValueForm'>
+	<input type='hidden' value='<%= modVal.getId() %>' name='id' />
+	<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
+	<input type='hidden' name='lovProviderModified' value='' id='lovProviderModified' />
+
+
+
+
+<!-- OPEN TITLE PART  -->
 <table class='header-table-portlet-section' >		
 	<tr class='header-row-portlet-section'> 
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -228,6 +241,7 @@ function setLovProviderModifiedField(){
 				alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
 		/>
 		</td>
+		<%--
 		<td class='header-button-column-portlet-section'>
 			<input type='hidden' id="saveLov" name="" value="" />
 			<a href= 'javascript:askForConfirmIfNecessary();' >
@@ -238,6 +252,7 @@ function setLovProviderModifiedField(){
 				/>
 			</a>
 		</td>
+		--%>
 		<td class='header-button-column-portlet-section'>
 			<a href= '<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.predLov.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBIDev.predLov.backButt" />' />
@@ -245,92 +260,145 @@ function setLovProviderModifiedField(){
 		</td>
 	</tr>
 </table>
+<!-- TITLE PART CLOSED -->
 
 
+
+
+<!--  OPEN BACKGROUND -->
 <div class='div_background_no_img'>
 
 
 
-<div class="div_detail_area_forms_lov" >
-	<div class='div_detail_label_lov'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBIDev.predLov.labelField" />
-		</span>
-	</div>
-	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" name="label" 
-	      	   size="50" value="<%=modVal.getLabel()%>" maxlength="20">
-	    &nbsp;*
-	</div>
-	<div class='div_detail_label_lov'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBIDev.predLov.nameField" />
-		</span>
-	</div>
-	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" name="name" 
-	      	   size="50" value="<%=modVal.getName()%>" maxlength="40">
-	    &nbsp;*
-	</div>
-	<div class='div_detail_label_lov'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBIDev.predLov.descriptionField" />
-		</span>
-	</div>
-	<div class='div_detail_form'>
-		<% 
-	      String desc = modVal.getDescription();
-	      if((desc==null) || (desc.equalsIgnoreCase("null"))  ) {
-	      		desc = "";
-	      } 
-	    %>
-	    <input class='portlet-form-input-field' type="text" name="description" 
-	      	   size="50" value="<%=desc%>" maxlength="160">
-	</div>
-	<div class='div_detail_label_lov'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBIDev.predLov.input_typeField" />
-		</span>
-	</div>
-	<div class='div_detail_form'>
-		<% 
-      		String selectDis = " ";
-      		if(modality.equals(SpagoBIConstants.DETAIL_MOD)) { 
-      			selectDis = " disabled ";
-      			String valueHid = modVal.getITypeCd()+","+modVal.getITypeId();
-      		} 
-      	%>	
-   		<select style='width:180px;' name="input_type" id="input_type" class='portlet-form-input-field' 
-			onchange="setLovProviderModified(true);showWizard();">
-      	<% 
-      	   	String curr_input_type = modVal.getITypeCd();
-      	   	if(curr_input_type==null) {
-      	   		curr_input_type = "";
-      	   	}
-      		for(int i=0; i<list.size(); i++){
-      			Domain domain = new Domain();
-      	       	domain = (Domain)list.get(i);
-      	       	String selectedStr = "";
-      	       	if(curr_input_type.equals(domain.getValueCd().toString())) {
-      	       		selectedStr = " selected='selected' ";
-      	       	}
-   		%>
-      	 	<option value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <%=selectedStr%>  > 
-      	    	<%= domain.getValueName()%>
-      	    </option>
-		<% 
-   			} 
-		%>
- 		</select>
-	</div>
-</div>
+        <!-- OPEN DIV FOR SHARED FORM --> 
+		<div class="div_detail_area_forms_lov" >
+			<div class='div_detail_label_lov'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBIDev.predLov.labelField" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<input class='portlet-form-input-field' type="text" name="label" 
+			      	   size="50" value="<%=modVal.getLabel()%>" maxlength="20">
+			    &nbsp;*
+			</div>
+			<div class='div_detail_label_lov'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBIDev.predLov.nameField" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<input class='portlet-form-input-field' type="text" name="name" 
+			      	   size="50" value="<%=modVal.getName()%>" maxlength="40">
+			    &nbsp;*
+			</div>
+			<div class='div_detail_label_lov'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBIDev.predLov.descriptionField" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<% 
+			      String desc = modVal.getDescription();
+			      if((desc==null) || (desc.equalsIgnoreCase("null"))  ) {
+			      		desc = "";
+			      } 
+			    %>
+			    <input class='portlet-form-input-field' type="text" name="description" 
+			      	   size="50" value="<%=desc%>" maxlength="160">
+			</div>
+			<div class='div_detail_label_lov'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBIDev.predLov.input_typeField" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<% 
+		      		String selectDis = " ";
+		      		if(modality.equals(SpagoBIConstants.DETAIL_MOD)) { 
+		      			selectDis = " disabled ";
+		      			String valueHid = modVal.getITypeCd()+","+modVal.getITypeId();
+		      		} 
+		      	%>	
+		   		<select style='width:180px;' name="input_type" id="input_type" class='portlet-form-input-field' 
+					onchange="setLovProviderModified(true);showWizard();">
+		      	<% 
+		      	   	String curr_input_type = modVal.getITypeCd();
+		      	   	if(curr_input_type==null) {
+		      	   		curr_input_type = "";
+		      	   	}
+		      		for(int i=0; i<list.size(); i++){
+		      			Domain domain = new Domain();
+		      	       	domain = (Domain)list.get(i);
+		      	       	String selectedStr = "";
+		      	       	if(curr_input_type.equals(domain.getValueCd().toString())) {
+		      	       		selectedStr = " selected='selected' ";
+		      	       	}
+		   		%>
+		      	 	<option value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <%=selectedStr%>  > 
+		      	    	<%= domain.getValueName()%>
+		      	    </option>
+				<% 
+		   			} 
+				%>
+		 		</select>
+			</div>
+		</div>
+        <!-- DIV FOR SHARED FORM CLOSED -->
+
+        
+        <!-- ERROR TAG --> 
+		<spagobi:error/>
+
+
+         <!-- START DIV QUERY WIZARD --> 
+        <div id="queryWizard" style='width:100%;display:<%=queryDisplay%>'>
+			<spagobi:queryWizard 
+				connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 			 
+				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' />
+		</div>	
+		<!-- DIV QUERY WIZARD CLOSED -->
+		
+		
+		<!-- START DIV SCRIPT WIZARD --> 
+        <div id="scriptWizard" style='width:100%;display:<%=scriptDisplay%>'>
+			<spagobi:scriptWizard script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' />
+		</div>	
+		<!-- DIV SCRIPT WIZARD CLOSED -->
+			
+			
+		<!-- START DIV JAVA CLASS WIZARD --> 
+        <div id="javaClassWizard" style='width:100%;display:<%=javaClassDisplay%>'>
+			<spagobi:javaClassWizard javaClassName='<%= javaClassDetail.getJavaClassName()!= null ? javaClassDetail.getJavaClassName() : "" %>'  />
+		</div>	
+		<!-- DIV JAVA CLASS WIZARD CLOSED -->	
+		
+		
+		<!-- START DIV FIX LIST WIZARD --> 
+        <div id="lovWizard" style='width:100%;display:<%=lovDisplay%>'>
+			<spagobi:lovWizard lovProvider='<%= fixedListDetail.toXML() %>' />
+		</div>	
+		<!-- DIV FIX LIST WIZARD CLOSED -->
+
+
+</div> 
+<!-- BACKGROUND DIV CLOSED  -->
+
+</form>
+<!-- PAGE FORM CLOSED -->	
 
 
 
-<spagobi:error/>
 
 
 
+
+
+
+
+
+
+<%--
 	<script type="text/javascript">
 			function showSintaxScript(){
 					var divSintax = document.getElementById("sintaxScript");
@@ -866,3 +934,6 @@ function setLovProviderModifiedField(){
 
 
 </div> <!-- close background --> 
+
+--%>
+

@@ -22,10 +22,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.bo.javaClassLovs;
 
+import java.util.List;
+
 import it.eng.spago.security.IEngUserProfile;
+
 
 public interface IJavaClassLov {
 
+	/**
+	 * Gets the values formatted into an xml structure 
+	 * @param profile a user profile used to fill attributes required by the query
+	 * @return the xml string of the values 
+	 */
 	public String getValues(IEngUserProfile profile);
 	
+	
+	/**
+	 * Gets the list of profile attribute names required by the class
+	 * @return the list of profile attribute names 
+	 */
+	public List getNamesOfProfileAttributeRequired();
 }

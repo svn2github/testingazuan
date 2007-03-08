@@ -24,6 +24,7 @@ package it.eng.spagobi.presentation.publishers;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -39,41 +40,26 @@ import it.eng.spagobi.utilities.SpagoBITracer;
  * is able to call the error page with the error message caught before and put into 
  * the error handler. If the input information don't fall into any of the cases declared,
  * another error is generated. 
- * 
- * @author sulis
  */
 public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace {
 
 	private SourceBean detailMR 			= null;
-	private SourceBean listTestFixedListMR 	= null;
-	private SourceBean listTestQueryMR 		= null;
-	private SourceBean listTestScriptMR 	= null;
-	private SourceBean listTestJavaClassMR 	= null;
+	private SourceBean listTestLovMR 	= null;
 	
 	public static final String DETAIL_MODALITIES_VALUE_MODULE = "DetailModalitiesValueModule";
-	public static final String LIST_TEST_FIXEDLIST_MODULE = "ListTestFixedListModule";
-	public static final String LIST_TEST_QUERY_MODULE = "ListTestQueryModule";
-	public static final String LIST_TEST_SCRIPT_MODULE = "ListTestScriptModule";
-	public static final String LIST_TEST_JAVACLASS_MODULE = "ListTestJavaClassModule";
-	
+	public static final String LIST_TEST_LOV_MODULE = "ListTestLovModule";
+
 	public SourceBean getModuleResponse(ResponseContainer responseContainer, String moduleName) {
 		return (SourceBean) responseContainer.getServiceResponse().getAttribute(moduleName);
 	}
 	
 	public void getModuleResponses(ResponseContainer responseContainer) {
 		detailMR = getModuleResponse(responseContainer, DETAIL_MODALITIES_VALUE_MODULE);
-		listTestFixedListMR = getModuleResponse(responseContainer, LIST_TEST_FIXEDLIST_MODULE);
-		listTestQueryMR = getModuleResponse(responseContainer, LIST_TEST_QUERY_MODULE);
-		listTestScriptMR = getModuleResponse(responseContainer, LIST_TEST_SCRIPT_MODULE);
-		listTestJavaClassMR = getModuleResponse(responseContainer, LIST_TEST_JAVACLASS_MODULE);
+		listTestLovMR = getModuleResponse(responseContainer, LIST_TEST_LOV_MODULE);
 	}
 	
 	private boolean noModuledResponse() {
-		return (detailMR == null 
-				&& listTestFixedListMR == null
-				&& listTestQueryMR == null 
-				&& listTestScriptMR == null 
-				&& listTestJavaClassMR == null);
+		return (detailMR == null && listTestLovMR == null);
 	}
 	
 	private String getErrorPublisherName() {
@@ -81,13 +67,7 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 	}
 	
 	private String getTestErrorPublisherName() {
-		if (listTestFixedListMR != null && isTestExecuted(listTestFixedListMR)) 
-			return "detailLovTestResult";
-		else if (listTestQueryMR != null && isTestExecuted(listTestQueryMR)) 
-			return "detailLovTestResult";
-		else if (listTestJavaClassMR != null && isTestExecuted(listTestJavaClassMR)) 
-			return "detailLovTestResult";
-		else if (listTestScriptMR != null && isTestExecuted(listTestScriptMR)) 
+		if (listTestLovMR != null && isTestExecuted(listTestLovMR)) 
 			return "detailLovTestResult";
 		else
 			return getErrorPublisherName();
@@ -96,15 +76,9 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 	private String getModuleDefaultPublisherName() {
 		if (detailMR != null) {
 			return new String("detailModalitiesValue");
-		} else if (listTestFixedListMR != null) {
+		} else if (listTestLovMR != null) {
 			return "detailLovTestResult";
-		} else if (listTestQueryMR != null) {
-			return "detailLovTestResult";
-		} else if (listTestJavaClassMR != null) {
-			return "detailLovTestResult";
-		} if (listTestScriptMR != null) {
-			return "detailLovTestResult";
-		}	
+		}
 		return getErrorPublisherName();
 	}
 	
@@ -149,86 +123,53 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
 
+		// recover error handler 
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
-
+        // recover all the module responses
 		getModuleResponses(responseContainer);	
-		
+		// if there are no module response return error publisher
 		if (noModuledResponse()) {
 			notifyError(errorHandler, "Module response is null");
 			return getErrorPublisherName();
 		}
-		
+		// if there are some errors into the errorHandler, return the name for the errors publisher 
+		if(!errorHandler.isOKByCategory(EMFErrorCategory.USER_ERROR) || !errorHandler.isOKByCategory(EMFErrorCategory.INTERNAL_ERROR)) {
+			return  getTestErrorPublisherName();
+		}
+		// check if the execution flow is after a test request		
+        boolean afterTest = false;
+        Object testExecuted = getAttributeFromModuleResponse(listTestLovMR, "testExecuted");
+        if(testExecuted != null) {
+	    		afterTest = true;
+        }
+        // check if the request want to do the test but he must fill profile attributes
+        boolean fillProfAttr = false;
+        Object profAttToFillList = getAttributeFromModuleResponse(detailMR, SpagoBIConstants.PROFILE_ATTRIBUTES_TO_FILL);
+        if(profAttToFillList != null) {
+        	fillProfAttr = true;
+        }
 		// if there are errors and they are only validation errors return the name for the detail publisher
 		if(!errorHandler.isOK()) {
 			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
-				return getModuleDefaultPublisherName();
+				if(afterTest) {
+					return "detailLovTestResult";
+				} else {
+					return getModuleDefaultPublisherName();
+				}
 			}
 		}
 		
-		// if there are some errors into the errorHandler, return the name for the errors publisher or the detail publisher
-		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			return  getTestErrorPublisherName();
-		}
-				
-        
-        boolean afterTest = false;
-        
-        Object testedObject = getAttributeFromModuleResponse(detailMR, "testedObject");;
-        
-        if (testedObject != null) {
-        	String testedObjectStr = (String) testedObject;
-        	SourceBean testModuleResponse = null;
-        	boolean validTestObject = true;
-        	
-        	if ("FIXED_LIST".equalsIgnoreCase(testedObjectStr)) {
-        		testModuleResponse = listTestFixedListMR;
-        	} else if ("QUERY".equalsIgnoreCase(testedObjectStr)) {
-        		testModuleResponse = listTestQueryMR;
-        	} else if ("SCRIPT".equalsIgnoreCase(testedObjectStr)) {
-        		testModuleResponse = listTestScriptMR; 	
-        	} else if ("JAVA_CLASS".equalsIgnoreCase(testedObjectStr)) {
-        		testModuleResponse = listTestJavaClassMR;       		     	
-        	} else {
-        		validTestObject = false;
-        	}
-        	
-        	if(validTestObject) {
-	        	if(isTestExecutedSuccesfully(testModuleResponse)) {
-	    			afterTest = true;
-	    		} else {
-	    			notifyError(errorHandler, "Problems occurred during test execution");
-	    			return getErrorPublisherName();
-	    		}   
-        	}
-        	
-        	
-        } else if (detailMR == null) {
-        	if (listTestQueryMR != null && listTestScriptMR != null) {
-    			notifyError(errorHandler,  "The ListTestQueryModule and ListTestScriptModule modules were called both");
-    			return getErrorPublisherName();
-        	}
-        	if (listTestFixedListMR != null) {
-    			if (isAttrbuteDefinedInModuleResponse(listTestFixedListMR, "testExecuted")) afterTest = true;
-    			else return getErrorPublisherName();
-        	}
-        	if (listTestQueryMR != null) {
-    			if (isAttrbuteDefinedInModuleResponse(listTestQueryMR, "testExecuted")) afterTest = true;
-    			else return getErrorPublisherName();
-        	}
-        	if (listTestJavaClassMR != null) {    			
-    			if (isAttrbuteDefinedInModuleResponse(listTestJavaClassMR, "testExecuted")) afterTest = true;
-    			else return getErrorPublisherName();
-        	}
-        	if (listTestScriptMR != null) {    			
-    			if (isAttrbuteDefinedInModuleResponse(listTestScriptMR, "testExecuted")) afterTest = true;
-    			else return getErrorPublisherName();
-        	}
-        }        
+		
+		
 
+        
+        // switch to correct publisher
 		if (isLoop()) {
 			return new String("detailModalitiesValueLoop");
 		} else if (afterTest) {
 			return new String("detailLovTestResult");
+		} else if(fillProfAttr) {
+			return new String("detailLovFillProfileAttributes");
 		} else {
 			return new String("detailModalitiesValue");
 		}

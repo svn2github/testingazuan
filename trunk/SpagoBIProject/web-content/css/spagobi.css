@@ -443,12 +443,37 @@ IMG {
 
 
 
+.titlebar_level_2_text_section {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	border-bottom: 1px solid #bbb;
+	background-color: rgb(228, 236, 242);
+	color: #074B88;
+	height: 25px;
+	border-top: 1px solid #bbb;
+	text-align: left;
+	background-image: url('/spagobi/img/white_corner.gif');
+	background-position: top right;
+	background-repeat: no-repeat;
+	vertical-align:middle;
+}
+
+.titlebar_level_2_empty_section {
+	background-color:white;
+	width:10px;
+	border-bottom: 1px solid #bbb;
+	border-top: 1px solid #bbb;
+}
 
 
-
-
-
-
+.titlebar_level_2_button_section {
+	vertical-align: middle;
+	width: 35px;
+	background-color:white;
+	border-top: 1px solid #bbb;
+	border-bottom: 1px solid #bbb;
+}
 
 
 

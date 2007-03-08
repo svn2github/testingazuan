@@ -1,19 +1,6 @@
 public String getSingleValueProfileAttribute(String attrName) {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append('<ROWS>');
-		strBuf.append('<ROW ');
-		strBuf.append('value=\''+attrName+'\' >');
-		strBuf.append('</ROW>');
-		strBuf.append('<visible-columns>');
-		strBuf.append('value');
-		strBuf.append('</visible-columns>');
-		strBuf.append('<value-column>');
-		strBuf.append('value');
-		strBuf.append('</value-column>');
-		strBuf.append('<description-column>');
-		strBuf.append('value');
-		strBuf.append('</description-column>');
-		strBuf.append('</ROWS>');
+		strBuf.append(attrName);
 		return strBuf.toString();
 };
 
@@ -26,23 +13,8 @@ public String getMultiValueProfileAttribute(String attrName, String prefix, Stri
 		newListOfValues = newListOfValues + newSplit + values[i];
 	};
 	String finalResult = prefix + newListOfValues + suffix;
-	
 	StringBuffer strBuf = new StringBuffer();
-	strBuf.append('<ROWS>');
-	strBuf.append('<ROW ');
-	strBuf.append('value=\''+finalResult+'\' >');
-	strBuf.append('</ROW>');
-	strBuf.append('<visible-columns>');
-	strBuf.append('value');
-	strBuf.append('</visible-columns>');
-	strBuf.append('<value-column>');
-	strBuf.append('value');
-	strBuf.append('</value-column>');
-	strBuf.append('<description-column>');
-	strBuf.append('value');
-	strBuf.append('</description-column>');
-	strBuf.append('</ROWS>');
-	
+	strBuf.append(finalResult);
 	return strBuf.toString();
 };
 
@@ -53,15 +25,6 @@ public String returnValue(String valuein) {
 		strBuf.append('<ROW ');
 		strBuf.append('value=\''+valuein+'\' >');
 		strBuf.append('</ROW>');
-		strBuf.append('<visible-columns>');
-		strBuf.append('value');
-		strBuf.append('</visible-columns>');
-		strBuf.append('<value-column>');
-		strBuf.append('value');
-		strBuf.append('</value-column>');
-		strBuf.append('<description-column>');
-		strBuf.append('value');
-		strBuf.append('</description-column>');
 		strBuf.append('</ROWS>');
 		return strBuf.toString();
 };

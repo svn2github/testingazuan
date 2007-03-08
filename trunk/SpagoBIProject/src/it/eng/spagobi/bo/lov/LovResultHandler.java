@@ -1,103 +1,113 @@
 /**
- * 
- */
-package it.eng.spagobi.bo.lov;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Vector;
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
+package it.eng.spagobi.bo.lov;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dbaccess.sql.DataRow;
-import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spago.paginator.basic.PaginatorIFace;
-import it.eng.spago.paginator.basic.impl.GenericList;
-import it.eng.spago.paginator.basic.impl.GenericPaginator;
-import it.eng.spago.security.IEngUserProfile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author Gioia
- *
+ * Defines method to manage lov result
  */
 public class LovResultHandler {
+	
+	/**
+	 * Sourcebean of the lov result
+	 */
 	private SourceBean lovResultSB = null;
 	
+	/**
+	 * constructor
+	 * @param lovResult the xml string representation of the lov result
+	 * @throws SourceBeanException
+	 */
 	public LovResultHandler(String lovResult) throws SourceBeanException {
 		lovResultSB= SourceBean.fromXMLString(lovResult);
 	}
 	
-	public String  getValueColumn() {
-		String valueColumns = null;
-		SourceBean valCol = (SourceBean)lovResultSB.getAttribute("VALUE-COLUMN");
-		if(valCol != null) valueColumns = valCol.getCharacters();
-		return valueColumns;
-	}
 	
-	public String  getDescriptionColumn() {
-		String descriptionColumns = null;
-		SourceBean valCol = (SourceBean)lovResultSB.getAttribute("DESCRIPTION-COLUMN");
-		if(valCol != null) descriptionColumns = valCol.getCharacters();
-		
-		// just for back compatibility purpose
-		if(descriptionColumns == null) descriptionColumns = getValueColumn();
-		
-		return descriptionColumns;
-	}
-	
-	public String getVisibleColumns() {
-		String visibleColumns = null;
-		SourceBean valCol = (SourceBean)lovResultSB.getAttribute("VISIBLE-COLUMNS");
-		if(valCol != null) visibleColumns = valCol.getCharacters();
-		return visibleColumns;
-	}
-		
-	public List getVisibleColumnsAsList () {		
-		String visibleColumns = getVisibleColumns();
-		
-		if (visibleColumns == null || visibleColumns.trim().equals("")) return new ArrayList ();
-		
-		StringTokenizer strToken = new StringTokenizer(visibleColumns, ",");
-		List columns = new ArrayList();
-		while (strToken.hasMoreTokens()) {
-			String val = strToken.nextToken().trim();
-			columns.add(val);
-		}
-		return columns;
-	}
-	
+	/**
+	 * Gets the list of result rows
+	 * @return list of rows
+	 */
 	public List getRows() {
 		return lovResultSB.getAttributeAsList("ROW");
 	}
 	
-	public SourceBean getRow(String value) {
-		return (SourceBean)lovResultSB.getFilteredSourceBeanAttribute("ROW", getValueColumn(), value);
+	/**
+	 * Gets the SourceBean of the row which value column contains the input value
+	 * @param value input value which identifies the row
+	 * @param valueColumnName name of the column that holds the values
+	 * @return the SourceBean of the row
+	 */
+	public SourceBean getRow(String value, String valueColumnName) {
+		return (SourceBean)lovResultSB.getFilteredSourceBeanAttribute("ROW", valueColumnName, value);
 	}
 	
-	public boolean isSingleValue() {
-		return (getRows().size() == 1);
-	}
-	
-	public List getValues() {
+
+	/**
+	 * Gets the list of values contained into the lov result 
+	 * @param valueColumnName name of the column that holds the values
+	 * @return list of values 
+	 */
+	public List getValues(String valueColumnName) {
 		List values = new ArrayList();
 		List rows = getRows();
 		for(int i = 0; i < rows.size(); i++) {
 			SourceBean row = (SourceBean)rows.get(i);
-			values.add(row.getAttribute(getValueColumn()));
+			values.add(row.getAttribute(valueColumnName));
 		}
 		return values;
 	}
 	
-	public boolean containsValue(String value) {
-		List values = getValues();
+	/**
+	 * Checks if a lov result contains a specific result
+	 * @param value the value to search
+	 * @param valueColumnName name of the column that holds the values
+	 * @return true if the value is contained, false otherwise
+	 */
+	public boolean containsValue(String value, String valueColumnName) {
+		List values = getValues(valueColumnName);
 		for(int i = 0; i < values.size(); i++)
 			if(values.get(i).toString().equalsIgnoreCase(value)) return true;
-		
 		return false;
 	}
 	
+	/**
+	 * Gets the sourcebean of the lov result
+	 * @return the sourcebean of the lov result
+	 */
 	public SourceBean getLovResultSB() {
 		return lovResultSB;
 	}
+	
+	/**
+	 * Checks if the lov result as only one value
+	 * @return true if the result contains only one value, false otherwise
+	 */
+	public boolean isSingleValue() {
+		return (getRows().size() == 1);
+	}
+	
 }

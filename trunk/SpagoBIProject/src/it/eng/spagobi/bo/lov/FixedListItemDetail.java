@@ -26,37 +26,39 @@ import java.io.Serializable;
 /**
  * Defines the <code>LovDetail</code> objects. This object is used to store 
  * Fixed Lov Selection Wizard detail information.
- * 
- * @author sulis
  */
 public class FixedListItemDetail  implements Serializable  {
 	
-	private String name= "" ;
+	private String value= "" ;
 	private String description = "";
 	
 	/**
-	 * @return Returns the description.
+	 * Returns the description.
+	 * @return the description.
 	 */
 	public String getDescription() {
 		return description;
 	}
 	/**
+	 * Sets the description
 	 * @param description The description to set.
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	/**
-	 * @return Returns the name.
+	 * Returns the value.
+	 * @return the value.
 	 */
-	public String getName() {
-		return name;
+	public String getValue() {
+		return value;
 	}
 	/**
+	 * Sets the name
 	 * @param name The name to set.
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 }

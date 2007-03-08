@@ -30,168 +30,198 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
- * Gives us all methods to handle the list of all values 
- * for the Fix Lov Selection Wizard.
+ * Defines method to manage lov of fixed list type
  */
 public class FixedListDetail  implements ILovDetail  {
-
-	List lovs = new ArrayList();
-	private String visibleColumns = "";
-	private String valueColumns = "";
-	private String descriptionColumns = "";
+    
+	/**
+	 * items of the list
+	 */
+	List items = new ArrayList();
 	
-	public FixedListDetail() {}
 	
+	private List visibleColumnNames = null;
+	private String valueColumnName = "VALUE";
+	private String descriptionColumnName = "DESCRIPTION";
+	private List invisibleColumnNames = null;
+	
+	/**
+	 * constructor
+	 */
+	public FixedListDetail() {
+		visibleColumnNames = new ArrayList();
+		visibleColumnNames.add("DESCRIPTION");
+		invisibleColumnNames = new ArrayList();
+		invisibleColumnNames.add("VALUE");
+	} 
+	
+	/**
+	 * constructor 
+	 */
 	public FixedListDetail(String dataDefinition) throws SourceBeanException {
 		loadFromXML(dataDefinition);
 	}
 	
-	
+	/** loads the lov from an xml string 
+	 * @param dataDefinition the xml definition of the lov
+	 * @throws SourceBeanException 
+	 */
 	public void  loadFromXML (String dataDefinition) throws SourceBeanException {
 		dataDefinition.trim();
 		SourceBean source = SourceBean.fromXMLString(dataDefinition);
-		if(source.containsAttribute("LOV-ELEMENT")) {
-			loadFromXMLOld (dataDefinition);
-			setValueColumns("DESCRIPTION");
-			setDescriptionColumns("NAME");
-			setVisibleColumns("NAME");
-			return;
+		if(!source.getName().equals("FIXLISTLOV")) {
+			SourceBean wrapper = new SourceBean("FIXLISTLOV");
+			wrapper.setAttribute(source);	
+			source = wrapper;
 		}
-				
-		List list = source.getAttributeAsList("ROW");
-		Iterator i = list.iterator();
+		// load data from xml
+		List listRows = source.getAttributeAsList("ROWS.ROW");
+		Iterator iterRows = listRows.iterator();
 		ArrayList lovList = new ArrayList();
-		while (i.hasNext()){
+		while(iterRows.hasNext()){
 			FixedListItemDetail lov = new FixedListItemDetail();
-			SourceBean element = (SourceBean)i.next();
-			String name = (String)element.getAttribute("NAME");
-			lov.setName(name);
+			SourceBean element = (SourceBean)iterRows.next();
+			String value = (String)element.getAttribute("VALUE");
+			// ******** only for retro compatibility
+			if(value==null)
+				value = (String)element.getAttribute("NAME");
+			// *************************************
+			lov.setValue(value);
 			String description = (String)element.getAttribute("DESCRIPTION");
 			lov.setDescription(description);
 			lovList.add(lov);
 		}
  		setLovs(lovList);
-		
-		SourceBean valCol = (SourceBean)source.getAttribute("VALUE-COLUMN");
-		String valueColumns = null;
-		if(valCol == null || valCol.getCharacters() == null) valueColumns = "DESCRIPTION";  
-		else valueColumns = valCol.getCharacters();
-		
-		SourceBean visCol = (SourceBean)source.getAttribute("VISIBLE-COLUMNS");
-		String visibleColumns = null;
-		if(visCol == null || visCol.getCharacters() == null) visibleColumns = "NAME";			
-		else visibleColumns = visCol.getCharacters();
-		
-		SourceBean descCol = (SourceBean)source.getAttribute("DESCRIPTION-COLUMN");
-		String descriptionColumns = null;
-		if(descCol == null || descCol.getCharacters() == null) descriptionColumns = "NAME";
-		else descriptionColumns = descCol.getCharacters();	
-		
-		setValueColumns(valueColumns);
-		setDescriptionColumns(descriptionColumns);
-		setVisibleColumns(visibleColumns);
+ 		// set visible and invisible columns
+ 		List visColList = new ArrayList();
+ 		visColList.add("DESCRIPTION");
+ 		List invisColList = new ArrayList();
+		invisColList.add("VALUE");
+		setInvisibleColumnNames(invisColList);
+		setVisibleColumnNames(visColList);
 	}	
 	
-	private void  loadFromXMLOld (String dataDefinition) throws SourceBeanException {
-		SourceBean source = SourceBean.fromXMLString(dataDefinition);
-		List list = source.getAttributeAsList("LOV-ELEMENT");
-		Iterator i = list.iterator();
-		ArrayList lovList = new ArrayList();
-		while (i.hasNext()){
-			FixedListItemDetail lov = new FixedListItemDetail();
-			SourceBean element = (SourceBean)i.next();
-			String name = (String)element.getAttribute("DESC");
-			lov.setName(name);
-			String description = (String)element.getAttribute("VALUE");
-			lov.setDescription(description);
-			lovList.add(lov);
-		}
-		setLovs(lovList);
-	}
-	
 	/**
-	 * Loads the XML string defined by a <code>LovDetail</code> object. The object
-	 * gives us all XML field values. Once obtained, the XML represents the data 
-	 * definition for a Fixed Lov  Type Value LOV object. 
-	 * 
-	 * @return The XML output String
+	 * serialize the lov to an xml string
+	 * @return the serialized xml string
 	 */
-	 
 	public String toXML() {
 		String lovXML = "";
-				
+		lovXML += "<FIXLISTLOV>";
 		lovXML += "<ROWS>";
-		Iterator i = lovs.iterator();
-		while(i.hasNext()){
-			FixedListItemDetail lov = new FixedListItemDetail();
-			lov = (FixedListItemDetail)i.next();
-			String name = lov.getName();
+		FixedListItemDetail lov = null;
+		Iterator iter = items.iterator();
+		while(iter.hasNext()){
+			lov = (FixedListItemDetail)iter.next();
+			String value = lov.getValue();
 			String description = lov.getDescription();
 			lovXML += "<ROW" +
-					  " NAME=\"" + name + "\"" +
+					  " VALUE=\"" + value + "\"" +
 					  " DESCRIPTION=\"" + description + "\"" +
 					  "/>";
 		}
-		lovXML += "<VISIBLE-COLUMNS>" + this.getVisibleColumns() + "</VISIBLE-COLUMNS>";
-		lovXML += "<INVISIBLE-COLUMNS></INVISIBLE-COLUMNS>";
-		lovXML += "<VALUE-COLUMN>" + this.getValueColumns() + "</VALUE-COLUMN>";
-		lovXML += "<DESCRIPTION-COLUMN>" + this.getDescriptionColumns() + "</DESCRIPTION-COLUMN>";
 		lovXML += "</ROWS>";
-		
+		lovXML += "</FIXLISTLOV>";
 		return lovXML;
 	}
 	
+	/**
+	 * Returns the result of the lov using a user profile to fill the lov profile attribute
+	 * @param profile the profile of the user
+	 * @return the string result of the lov
+	 * @throws Exception
+	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
 		String lovResult = this.toXML();
+		if(lovResult.startsWith("<FIXLISTLOV>")) {
+			lovResult = lovResult.substring(12);
+		}
+		if(lovResult.endsWith("</FIXLISTLOV>")) {
+			lovResult = lovResult.substring(0, lovResult.length() - 13);
+		}
 		lovResult = GeneralUtilities.substituteProfileAttributesInString(lovResult, profile);
 		return lovResult;
 	}
 		
+
+	/**
+	 * Gets the list of names of the profile attributes required
+	 * @return list of profile attribute names
+	 * @throws Exception
+	 */
+	public List getProfileAttributeNames() throws Exception {
+		List names = new ArrayList();
+		String lovResult = this.toXML();
+		while(lovResult.indexOf("${")!=-1) {
+			int startind = lovResult.indexOf("${");
+			int endind = lovResult.indexOf("}", startind);
+			String attributeDef = lovResult.substring(startind + 2, endind);
+			if(attributeDef.indexOf("(")!=-1) {
+				int indroundBrack = lovResult.indexOf("(", startind);
+				String nameAttr = lovResult.substring(startind+2, indroundBrack);
+				names.add(nameAttr);
+			} else {
+				names.add(attributeDef);
+			}
+			lovResult = lovResult.substring(endind);
+		}
+		return names;
+	}
+
+	/**
+	 * Checks if the lov requires one or more profile attributes
+	 * @return true if the lov require one or more profile attributes, false otherwise
+	 * @throws Exception
+	 */
+	public boolean requireProfileAttributes() throws Exception {
+		boolean contains = false;
+		String lovResult = this.toXML();
+		if(lovResult.indexOf("${")!=-1) {
+			contains = true;
+		}
+		return contains;
+	}	
+	
+	
 	/**
 	 * Adds a lov to the lov Detail List
-	 * 
 	 * @param name The added lov name
 	 * @param description The added lov description
 	 */
-	
-	public void add(String name, String description) {
-		
+	public void add(String value, String description) {
 		// if name or description are empty don't add
-		if((name==null) || (name.trim().equals("")))
+		if((value==null) || (value.trim().equals("")))
 				return;
 		if((description==null) || (description.trim().equals("")))
 			return;
-		
 		// if the element already exists don't add
-		Iterator iter = lovs.iterator();
+		Iterator iter = items.iterator();
 		while(iter.hasNext()) {
 			FixedListItemDetail lovDet = (FixedListItemDetail)iter.next();
-			if(name.equals(lovDet.getName()) && description.equals(lovDet.getDescription())) {
+			if(value.equals(lovDet.getValue()) && description.equals(lovDet.getDescription())) {
 				return;
 			}
 		}
-		
+		// add the item
 		FixedListItemDetail lovdet = new FixedListItemDetail();
-		lovdet.setName(name);
+		lovdet.setValue(value);
 		lovdet.setDescription(description);
-		lovs.add(lovdet);
+		items.add(lovdet);
 	}
+	
 	
 	/**
 	 * Deletes a lov from the lov Detail List
-	 * 
-	 * @param name The deleted lov name
+	 * @param value The deleted lov name
 	 * @param description The deleted lov description
 	 */
-	
-	public void remove(String name, String description) {
-		Iterator iter = lovs.iterator();
+	public void remove(String value, String description) {
+		Iterator iter = items.iterator();
 		while(iter.hasNext()) {
 			FixedListItemDetail lovDet = (FixedListItemDetail)iter.next();
-			if(name.equals(lovDet.getName()) && description.equals(lovDet.getDescription())) {
-				lovs.remove(lovDet);
+			if(value.equals(lovDet.getValue()) && description.equals(lovDet.getDescription())) {
+				items.remove(lovDet);
 				break;
 			}
 		}
@@ -199,25 +229,9 @@ public class FixedListDetail  implements ILovDetail  {
 	
 	
 	/**
-	 * 
-	 * @return lovs
-	 */
-	public List getLovs() {
-		return lovs;
-	}
-	/**
-	 * 
-	 * @param lovs the lovs to set
-	 */
-	public void setLovs(List lovs) {
-		this.lovs = lovs;
-	}
-	
-	/**
 	 * Splits an XML string by using some <code>SourceBean</code> object methods
 	 * in order to obtain the source <code>LovDetail</code> objects whom XML has been 
 	 * built. 
-	 * 
 	 * @param dataDefinition	The XML input String
 	 * @return The corrispondent <code>LovDetailList</code> object
 	 * @throws SourceBeanException If a SourceBean Exception occurred
@@ -225,28 +239,54 @@ public class FixedListDetail  implements ILovDetail  {
 	public static FixedListDetail  fromXML (String dataDefinition) throws SourceBeanException {
 		return new FixedListDetail(dataDefinition);	
 	}
-
-	private String getDescriptionColumns() {
-		return descriptionColumns;
+	
+	
+	/**
+	 * Gets item of the fixed list
+	 * @return items of the fixed list
+	 */
+	public List getItems() {
+		return items;
+	}
+	/**
+	 * Sets items of the fixed list
+	 * @param items the items to set
+	 */
+	public void setLovs(List items) {
+		this.items = items;
+	}
+	
+	public String getDescriptionColumnName() {
+		return descriptionColumnName;
 	}
 
-	private void setDescriptionColumns(String descriptionColumns) {
-		this.descriptionColumns = descriptionColumns;
+	public void setDescriptionColumnName(String descriptionColumnName) {
+		this.descriptionColumnName = descriptionColumnName;
 	}
 
-	private String getValueColumns() {
-		return valueColumns;
+	public List getInvisibleColumnNames() {
+		return invisibleColumnNames;
 	}
 
-	private void setValueColumns(String valueColumns) {
-		this.valueColumns = valueColumns;
+	public void setInvisibleColumnNames(List invisibleColumnNames) {
+		this.invisibleColumnNames = invisibleColumnNames;
 	}
 
-	private String getVisibleColumns() {
-		return visibleColumns;
+	public String getValueColumnName() {
+		return valueColumnName;
 	}
 
-	private void setVisibleColumns(String visibleColumns) {
-		this.visibleColumns = visibleColumns;
-	}	
+	public void setValueColumnName(String valueColumnName) {
+		this.valueColumnName = valueColumnName;
+	}
+
+	public List getVisibleColumnNames() {
+		return visibleColumnNames;
+	}
+
+	public void setVisibleColumnNames(List visibleColumnNames) {
+		this.visibleColumnNames = visibleColumnNames;
+	}
+
+	
 }

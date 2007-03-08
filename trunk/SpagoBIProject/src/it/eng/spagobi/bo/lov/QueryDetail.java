@@ -32,109 +32,131 @@ import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.utilities.GeneralUtilities;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * Defines the <code>QueryDetail</code> objects. This object is used to store 
  * Query Wizard detail information.
  */
-
-
 public class QueryDetail  implements ILovDetail  {
 	
 	private String connectionName= "" ;
-	private String visibleColumns = "";
-	private String valueColumns = "";
-	private String descriptionColumns = "";
 	private String queryDefinition = "";
-	private String invisibleColumns = "";
 	
+	private List visibleColumnNames = null;
+	private String valueColumnName = "";
+	private String descriptionColumnName = "";
+	private List invisibleColumnNames = null;
+	
+	/**
+	 * constructor
+	 */
 	public QueryDetail() { }
 	
+	/**
+	 * constructor
+	 * @param dataDefinition the xml representation of the lov
+	 * @throws SourceBeanException
+	 */
 	public QueryDetail(String dataDefinition) throws SourceBeanException {
 		loadFromXML(dataDefinition);
 	}
 	
+	/** loads the lov from an xml string 
+	 * @param dataDefinition the xml definition of the lov
+	 * @throws SourceBeanException 
+	 */
 	public void loadFromXML (String dataDefinition) throws SourceBeanException {
 		dataDefinition.trim();
 		SourceBean source = SourceBean.fromXMLString(dataDefinition);
-		
 		SourceBean connection = (SourceBean)source.getAttribute("CONNECTION");
 		String connectionName = connection.getCharacters(); 
-		
 		SourceBean statement = (SourceBean)source.getAttribute("STMT");
 		String queryDefinition = statement.getCharacters();
-		
 		SourceBean valCol = (SourceBean)source.getAttribute("VALUE-COLUMN");
-		String valueColumns = valCol.getCharacters();
-		
+		String valueColumn = valCol.getCharacters();
 		SourceBean visCol = (SourceBean)source.getAttribute("VISIBLE-COLUMNS");
 		String visibleColumns = visCol.getCharacters();
-		
 		SourceBean invisCol = (SourceBean)source.getAttribute("INVISIBLE-COLUMNS");
 		String invisibleColumns = "";
 		// compatibility control (versions till 1.9RC does not have invisible columns definition)
-		if (invisCol != null) invisibleColumns = invisCol.getCharacters();
-		
+		if (invisCol != null) 
+			invisibleColumns = invisCol.getCharacters();
 		SourceBean descCol = (SourceBean)source.getAttribute("DESCRIPTION-COLUMN");
-		String descriptionColumns = null;
+		String descriptionColumn = null;
 		// compatibility control (versions till 1.9.1 does not have description columns definition)
-		if (descCol != null) descriptionColumns = descCol.getCharacters();
-		else descriptionColumns = valueColumns;
-		
-		
-		
+		if (descCol != null) 
+			descriptionColumn = descCol.getCharacters();
+		else descriptionColumn = valueColumn;
 		setConnectionName(connectionName);
 		setQueryDefinition(queryDefinition);
-		setValueColumns(valueColumns);
-		setDescriptionColumns(descriptionColumns);
-		setVisibleColumns(visibleColumns);
-		setInvisibleColumns(invisibleColumns);
+		setValueColumnName(valueColumn);
+		setDescriptionColumnName(descriptionColumn);
+		List visColNames = new ArrayList();
+		if( (visibleColumns!=null) && !visibleColumns.trim().equalsIgnoreCase("") ) {
+			String[] visColArr = visibleColumns.split(",");
+			visColNames = Arrays.asList(visColArr);
+			setVisibleColumnNames(visColNames);
+		}
+		List invisColNames = new ArrayList();
+		if( (invisibleColumns!=null) && !invisibleColumns.trim().equalsIgnoreCase("") ) {
+			String[] invisColArr = invisibleColumns.split(",");
+			invisColNames = Arrays.asList(invisColArr);
+			setInvisibleColumnNames(invisColNames);
+		}
 	}
 	
 	/**
-	 * Loads the XML string defined by a <code>QueryDetail</code> object. The object
-	 * gives us all XML field values. Once obtained, the XML represents the data 
-	 * definition for a query Input Type Value LOV object. 
-	 * 
-	 * @return The XML output String
+	 * serialize the lov to an xml string
+	 * @return the serialized xml string
 	 */
 	public String toXML () { 
 		String XML = "<QUERY>" +
 				     "<CONNECTION>"+this.getConnectionName()+"</CONNECTION>" +
 			         "<STMT>"+this.getQueryDefinition() + "</STMT>" +
-				     "<VALUE-COLUMN>"+this.getValueColumns()+"</VALUE-COLUMN>" +
-				     "<DESCRIPTION-COLUMN>"+this.getDescriptionColumns()+"</DESCRIPTION-COLUMN>" +
-				     "<VISIBLE-COLUMNS>"+this.getVisibleColumns()+"</VISIBLE-COLUMNS>" +
-				     "<INVISIBLE-COLUMNS>"+(this.getInvisibleColumns() != null ? this.getInvisibleColumns() : "") +"</INVISIBLE-COLUMNS>" +
+				     "<VALUE-COLUMN>"+this.getValueColumnName()+"</VALUE-COLUMN>" +
+				     "<DESCRIPTION-COLUMN>"+this.getDescriptionColumnName()+"</DESCRIPTION-COLUMN>" +
+				     "<VISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getVisibleColumnNames(), ",")+"</VISIBLE-COLUMNS>" +
+				     "<INVISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getInvisibleColumnNames(), ",")+"</INVISIBLE-COLUMNS>" +
 				     "</QUERY>";
 		return XML;
 	}
 	
+	
+	/**
+	 * Returns the result of the lov using a user profile to fill the lov profile attribute
+	 * @param profile the profile of the user
+	 * @return the string result of the lov
+	 * @throws Exception
+	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
-		String resStr = null;
-			
-		String pool = getConnectionName();
 		String statement = getQueryDefinition();
+		statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
+		String result = getLovResult(statement);
+		return result;
+	}
+	
+
+	/**
+	 * Gets the values and return them as an xml structure
+	 * @param statement the query statement to execute
+	 * @return the xml string containing values
+	 * @throws Exception
+	 */
+	private String getLovResult(String statement) throws Exception {
+		String resStr = null;
+		String pool = getConnectionName();
 		DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
 		DataConnection dataConnection   = dataConnectionManager.getConnection(pool);
-		statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
 		SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
 		DataResult dataResult = sqlCommand.execute();
         ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
 		SourceBean result = scrollableDataResult.getSourceBean();
-		
-		SourceBean valueColumnSB = buildSourceBean("VALUE-COLUMN", getValueColumns());
-		SourceBean descriptionColumnSB = buildSourceBean("DESCRIPTION-COLUMN", getDescriptionColumns());
-		SourceBean visibleColumnsSB = buildSourceBean("VISIBLE-COLUMNS", getVisibleColumns());
-		SourceBean invisibleColumnsSB = buildSourceBean("INVISIBLE-COLUMNS", getInvisibleColumns());
-		
-		result.setAttribute(valueColumnSB);
-		result.setAttribute(descriptionColumnSB);
-		result.setAttribute(visibleColumnsSB);
-		result.setAttribute(invisibleColumnsSB);
-				
 		resStr = result.toXML(false);
 		resStr = resStr.trim();
 		if(resStr.startsWith("<?")) {
@@ -146,78 +168,56 @@ public class QueryDetail  implements ILovDetail  {
 		return resStr;
 	}
 	
+	/**
+	 * Gets the list of names of the profile attributes required
+	 * @return list of profile attribute names
+	 * @throws Exception
+	 */
+	public List getProfileAttributeNames() throws Exception {
+		List names = new ArrayList();
+		String query = getQueryDefinition();
+		while(query.indexOf("${")!=-1) {
+			int startind = query.indexOf("${");
+			int endind = query.indexOf("}", startind);
+			String attributeDef = query.substring(startind + 2, endind);
+			if(attributeDef.indexOf("(")!=-1) {
+				int indroundBrack = query.indexOf("(", startind);
+				String nameAttr = query.substring(startind+2, indroundBrack);
+				names.add(nameAttr);
+			} else {
+				names.add(attributeDef);
+			}
+			query = query.substring(endind);
+		}
+		return names;
+	}
+
+	/**
+	 * Checks if the lov requires one or more profile attributes
+	 * @return true if the lov require one or more profile attributes, false otherwise
+	 * @throws Exception
+	 */
+	public boolean requireProfileAttributes() throws Exception {
+		boolean contains = false;
+		String query = getQueryDefinition();
+		if(query.indexOf("${")!=-1) {
+			contains = true;
+		}
+		return contains;
+	}
+	
+	/**
+	 * Builds a simple sourcebean 
+	 * @param name name of the sourcebean
+	 * @param value value of the sourcebean
+	 * @return the sourcebean built
+	 * @throws SourceBeanException
+	 */
 	private SourceBean buildSourceBean(String name, String value) throws SourceBeanException {
 		SourceBean sb = null;
 		sb = SourceBean.fromXMLString("<"+name+">" + (value != null ? value : "") + "</"+name+">");
 		return sb;
 	}
-	
-	
-	
-	/**
-	 * @return Returns the connectionName.
-	 */
-	public String getConnectionName() {
-		return connectionName;
-	}
-	/**
-	 * @param connectionName The connectionName to set.
-	 */
-	public void setConnectionName(String connectionName) {
-		this.connectionName = connectionName;
-	}
-	/**
-	 * @return Returns the queryDefinition.
-	 */
-	public String getQueryDefinition() {
-		return queryDefinition;
-	}
-	/**
-	 * @param queryDefinition The queryDefinition to set.
-	 */
-	public void setQueryDefinition(String queryDefinition) {
-		this.queryDefinition = queryDefinition;
-	}
-	/**
-	 * @return Returns the valueColumns.
-	 */
-	public String getValueColumns() {
-		return valueColumns;
-	}
-	/**
-	 * @param valueColumns The valueColumns to set.
-	 */
-	public void setValueColumns(String valueColumns) {
-		this.valueColumns = valueColumns;
-	}
-	/**
-	 * @return Returns the visibleColumns.
-	 */
-	public String getVisibleColumns() {
-		return visibleColumns;
-	}
-	/**
-	 * @param visibleColumns The visibleColumns to set.
-	 */
-	public void setVisibleColumns(String visibleColumns) {
-		this.visibleColumns = visibleColumns;
-	}
-	
-	/**
-	 * @return Returns the invisibleColumns.
-	 */
-	public String getInvisibleColumns() {
-		return invisibleColumns;
-	}
-	/**
-	 * @param invisibleColumns The invisibleColumns to set.
-	 */
-	public void setInvisibleColumns(String invisibleColumns) {
-		this.invisibleColumns = invisibleColumns;
-	}
-	
-	
-	
 	
 	/**
 	 * Splits an XML string by using some <code>SourceBean</code> object methods
@@ -232,13 +232,60 @@ public class QueryDetail  implements ILovDetail  {
 		return new QueryDetail(dataDefinition);
 	}
 
-	public String getDescriptionColumns() {
-		return descriptionColumns;
+	public String getConnectionName() {
+		return connectionName;
 	}
 
-	public void setDescriptionColumns(String descriptionColumns) {
-		this.descriptionColumns = descriptionColumns;
+	public void setConnectionName(String connectionName) {
+		this.connectionName = connectionName;
 	}
+
+	public String getQueryDefinition() {
+		return queryDefinition;
+	}
+
+	public void setQueryDefinition(String queryDefinition) {
+		this.queryDefinition = queryDefinition;
+	}
+
+	public String getDescriptionColumnName() {
+		return descriptionColumnName;
+	}
+
+	public void setDescriptionColumnName(String descriptionColumnName) {
+		this.descriptionColumnName = descriptionColumnName;
+	}
+
+	public List getInvisibleColumnNames() {
+		return invisibleColumnNames;
+	}
+
+	public void setInvisibleColumnNames(List invisibleColumnNames) {
+		this.invisibleColumnNames = invisibleColumnNames;
+	}
+
+	public String getValueColumnName() {
+		return valueColumnName;
+	}
+
+	public void setValueColumnName(String valueColumnName) {
+		this.valueColumnName = valueColumnName;
+	}
+
+	public List getVisibleColumnNames() {
+		return visibleColumnNames;
+	}
+
+	public void setVisibleColumnNames(List visibleColumnNames) {
+		this.visibleColumnNames = visibleColumnNames;
+	}
+
+
+
+	
+
+
+	
 	
 	
 }

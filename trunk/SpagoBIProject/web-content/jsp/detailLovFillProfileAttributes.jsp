@@ -94,7 +94,7 @@
 <!-- BODY -->
 
 
-<div class='div_background_no_img' >
+<div style="padding-left:10px;" class='div_background_no_img' >
 
 	
 		
@@ -104,12 +104,11 @@
 		<div class="div_detail_area_forms" >
 		
 		  <div class='portlet-form-field-label' >
-		    <%--  <spagobi:message key = "SBIDev.predLov.testExecNotCorrect" /> --%>
-			   The lov needs some profile attributes.
-         <br/>
-         Your personal profile doesn't contain all the necessary attributes. 
-			   <br/>
-			   To proceed with the test assign a value to the missing profile attributes. 			
+		     <spagobi:message key = "SBIDev.lov.needProfAttr" /> 
+			 <br/>
+			 <spagobi:message key = "SBIDev.lov.profNotContProfAttr" /> 
+			 <br/>
+			 <spagobi:message key = "SBIDev.lov.assignValToProfAttr" /> 			
 		  </div> 
 		  
 		  <br/>
@@ -120,13 +119,13 @@
 		    while(iterProfAttr.hasNext()) {
 		    	String profAttrName = (String)iterProfAttr.next();
 		%>
-			<div class='div_detail_label'>
+			<div class='div_detail_label' style="width:200px;">
 				<span class='portlet-form-field-label'>
 					<%= profAttrName %>
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<input class='portlet-form-input-field' type="text" name="<%=profAttrName%>" size="50" >
+				<input class='portlet-form-input-field' type="text" name="<%=profAttrName%>" size="35" >
 	    		&nbsp;*
 			</div>
 		<%    	

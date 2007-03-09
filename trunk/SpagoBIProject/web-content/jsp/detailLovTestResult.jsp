@@ -15,6 +15,8 @@
 <%@page import="it.eng.spagobi.bo.lov.LovDetailFactory"%>
 <%@page import="it.eng.spagobi.bo.lov.ILovDetail"%>
 <%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
+<%@page import="it.eng.spagobi.managers.LovManager"%>
+<%@page import="it.eng.spagobi.utilities.PortletUtilities"%>
 
 <%
 
@@ -22,7 +24,8 @@
 	SourceBean listLovMR = (SourceBean) aServiceResponse.getAttribute("ListTestLovModule"); 
 
 	String lovProviderModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.LOV_MODIFIED);
-	if (lovProviderModified == null) lovProviderModified = "";
+	if (lovProviderModified == null) 
+		lovProviderModified = "false";
 	
 	String modality = null;
 	if (detailMR != null) modality = (String) detailMR.getAttribute("modality");
@@ -60,31 +63,43 @@
 
 
 
+
+
 <script type="text/javascript">
 
+<%
+	// get the labels of all documents related to the lov
+	List docLabels = LovManager.getLabelsOfDocumentsWhichUseLov(modVal);
+	String confirmMessage = null;
+	boolean askConfirm = false;
+	if(docLabels.size() > 0) {
+		askConfirm = true;
+		String documentsStr = docLabels.toString();
+		confirmMessage += PortletUtilities.getMessage("SBIDev.predLov.savePreamble", "messages");
+		confirmMessage += " ";
+		confirmMessage += documentsStr;
+		confirmMessage += ". ";
+		confirmMessage += "\\n\\n";
+		confirmMessage += PortletUtilities.getMessage("SBIDev.predLov.saveConfirm", "messages");
+	}	
+	
+%>
+
 function askForConfirmIfNecessary() {
-	<%
-	List paruses = DAOFactory.getParameterUseDAO().getParameterUsesAssociatedToLov(modVal.getId());
-	Iterator parusesIt = paruses.iterator();
-	List documents = new ArrayList();
-	while (parusesIt.hasNext()) {
-		ParameterUse aParuse = (ParameterUse) parusesIt.next();
-		List temp = DAOFactory.getBIObjectParameterDAO().getDocumentLabelsListUsingParameter(aParuse.getId());
-		documents.addAll(temp);
-	}
-	if (documents.size() > 0 && lovProviderModified.equalsIgnoreCase("true")) {
-		String documentsStr = documents.toString();
-		%>
-			if (confirm('<spagobi:message key = "SBIDev.predLov.savePreamble" />' + ' ' + '<%=documentsStr%>' + '. ' + '<spagobi:message key = "SBIDev.predLov.saveConfirm" />')) {
-				document.getElementById('formTest').submit();
-			}
-		<%
+<%
+	if(askConfirm && lovProviderModified.equalsIgnoreCase("true")) {
+		String documentsStr = docLabels.toString();
+%>
+		if (confirm('<spagobi:message key = "SBIDev.predLov.savePreamble" />' + ' ' + '<%=documentsStr%>' + '. ' + '<spagobi:message key = "SBIDev.predLov.saveConfirm" />')) {
+			document.getElementById('formTest').submit();
+		}
+<%
 	} else {
-		%>
+%>
 		document.getElementById('formTest').submit();
-		<%
+<%
 	}
-	%>
+%>
 }
 </script>
 

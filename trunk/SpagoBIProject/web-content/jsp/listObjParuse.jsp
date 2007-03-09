@@ -106,19 +106,53 @@
     	if(correlationManager.correlations.length>0) {
       	for(i=0; i<correlationManager.correlations.length; i++) {
           var correl = correlationManager.correlations[i];
-          html += "<tr  height='30' style='border-bottom:1px solid #bbb;'>";
-          html += "<td style='vertical-align:middle;' width='100px'>";
+          html += "<tr  height='25' style='background:background:rgb(251,247,227);'>";
+          
+   
+          html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='100px'>";
           var value = correl.preCond;
-          html += "<input value='"+value+"' onchange='correlationManager.setPreCondition("+i+", this.value)' type='text' style='width:50px;' />";
+          html += "<a style='text-decoration:none;' href='javascript:addLeftBreak("+i+")'>";
+          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/plus10.gif")%>' ";
+          html += " title='<spagobi:message key = "SBIDev.listObjParuses.addLeftBreak" />' "; 
+          html += " alt='<spagobi:message key = "SBIDev.listObjParuses.addLeftBreak" />' "; 
+          html += "/></a>";
+          html += "<a style='text-decoration:none;' href='javascript:removeLeftBreak("+i+")'>";
+          html += "&nbsp;";
+          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/minus10.gif")%>' ";
+          html += " title='<spagobi:message key = "SBIDev.listObjParuses.removeLeftBreak" />' "; 
+          html += " alt='<spagobi:message key = "SBIDev.listObjParuses.removeLeftBreak" />' "; 
+          html += "/></a>";
+          html += "&nbsp;&nbsp;&nbsp;&nbsp;";
+          html += "<span id='visiblePrecondition"+i+"'>"+value+"</span>";
+          html += "<input id='hiddenPrecondition"+i+"' value='"+value+"' type='hidden' />";
           html += "</td>";
-          html += "<td style='vertical-align:middle;'>";
+          
+          
+          html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;'>";
           html += "<b>" + correl.nameCondition + "</b> the value of the parameter <b>" + correl.nameParFather + "</b>";     
           html += "</td>";
-          html += "<td style='vertical-align:middle;' width='100px'>";
+         
+         
+          html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='100px'>";
           value = correl.postCond;
-          html += "<input value='"+value+"' onchange='correlationManager.setPostCondition("+i+", this.value)' type='text' style='width:50px;' />";
-          html += "</td>";
-          html += "<td style='vertical-align:middle;' width='100px'>";
+          html += "<a style='text-decoration:none;' href='javascript:addRightBreak("+i+")'>";
+          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/plus10.gif")%>' ";
+          html += " title='<spagobi:message key = "SBIDev.listObjParuses.addRightBreak" />' "; 
+          html += " alt='<spagobi:message key = "SBIDev.listObjParuses.addRightBreak" />' "; 
+          html += "/></a>";
+          html += "<a style='text-decoration:none;' href='javascript:removeRightBreak("+i+")'>";
+          html += "&nbsp;";
+          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/minus10.gif")%>' ";
+          html += " title='<spagobi:message key = "SBIDev.listObjParuses.removeRightBreak" />' "; 
+          html += " alt='<spagobi:message key = "SBIDev.listObjParuses.removeRightBreak" />' "; 
+          html += "/></a>";
+          html += "&nbsp;&nbsp;&nbsp;&nbsp;";
+          html += "<span id='visiblePostcondition"+i+"'>"+value+"</span>";
+          html += "<input id='hiddenPostcondition"+i+"' value='"+value+"' type='hidden' />";
+          html += "</td>"; 
+         
+          
+          html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='100px'>";
           html += "<select onchange='correlationManager.setLogicOperator("+i+", this.options[this.selectedIndex].value)'>";
           html += "<option value=''></option>";
           var selLogOp = " ";
@@ -133,11 +167,19 @@
           html += "<option "+selLogOp+" value='OR'>OR</option>";
           html += "</select>";
           html += "</td>";
-          html += "<td style='vertical-align:middle;' width='30px'>";
-          html += "<a href='javascript:viewCorrelation("+i+")'><img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' /></a>";
+          html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='30px'>";
+          html += "<a href='javascript:viewCorrelation("+i+")'>";
+          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' ";
+          html += " title='<spagobi:message key = "SBIDev.listObjParuses.viewCondition" />' "; 
+          html += " alt='<spagobi:message key = "SBIDev.listObjParuses.viewCondition" />' "; 
+          html += "/></a>";
           html += "</td>";
-          html += "<td style='vertical-align:middle;' width='30px'>";
-          html += "<a href='javascript:deleteCorrelation("+i+")'><img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' /></a>";
+          html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='30px'>";
+          html += "<a href='javascript:deleteCorrelation("+i+")'>";
+          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' ";
+          html += " title='<spagobi:message key = "SBIDev.listObjParuses.deleteCondition" />' "; 
+          html += " alt='<spagobi:message key = "SBIDev.listObjParuses.deleteCondition" />' "; 
+          html += "/></a>";
           html += "</td>";
           html += "</tr>";
         }
@@ -152,20 +194,85 @@
 
 	  
 	  
+	  function addLeftBreak(index) {
+	      var hidPreCond = document.getElementById("hiddenPrecondition"+index);
+	      var visPreCond = document.getElementById("visiblePrecondition"+index);
+	      var precond = hidPreCond.text;
+	      if(precond==null) {
+	        precond = "(";
+	      } else {
+	        precond = precond + "(";
+	      }
+	      hidPreCond.text = precond;
+	      visPreCond.innerHTML = precond;
+	      correlationManager.setPreCondition(index, precond);
+	  }	  
+  
+	  function removeLeftBreak(index) {
+	      var hidPreCond = document.getElementById("hiddenPrecondition"+index);
+	      var visPreCond = document.getElementById("visiblePrecondition"+index);
+	      var precond = hidPreCond.text;
+	      if(precond==null) {
+	        return;
+	      }
+	      if(precond.length > 0) {
+	        precond = precond.substring(0, precond.length-1);
+	      } else {
+	        return;
+	      }
+	      hidPreCond.text = precond;
+	      visPreCond.innerHTML = precond;
+	      correlationManager.setPreCondition(index, precond);
+	  }	  
 	  
+	function addRightBreak(index) {
+	      var hidPostCond = document.getElementById("hiddenPostcondition"+index);
+	      var visPostCond = document.getElementById("visiblePostcondition"+index);
+	      var postcond = hidPostCond.text;
+	      if(postcond==null) {
+	        postcond = ")";
+	      } else {
+	        postcond = postcond + ")";
+	      }
+	      hidPostCond.text = postcond;
+	      visPostCond.innerHTML = postcond;
+	      correlationManager.setPostCondition(index, postcond);
+	  }	  
+  
+	  function removeRightBreak(index) {
+	      var hidPostCond = document.getElementById("hiddenPostcondition"+index);
+	      var visPostCond = document.getElementById("visiblePostcondition"+index);
+	      var postcond = hidPostCond.text;
+	      if(postcond==null) {
+	        return;
+	      }
+	      if(postcond.length > 0) {
+	        postcond = postcond.substring(0, postcond.length-1);
+	      } else {
+	        return;
+	      }
+	      hidPostCond.text = postcond;
+	      visPostCond.innerHTML = postcond;
+	      correlationManager.setPostCondition(index, postcond);
+	  }	  	  
 	  
 	  
 	  
 	function generateCorrBlockHtml(indexCorr) {
 		var correlation = null;
-    if(indexCorr!=null) {
-       correlation = correlationManager.getCorrelation(indexCorr);
-    } 
-    blockHtml = "";
+	    if(indexCorr!=null) {
+	       correlation = correlationManager.getCorrelation(indexCorr);
+	    } 
+	    blockHtml = "";
 		blockHtml += "<br/>";
 		blockHtml += "<div class='div_detail_area_forms_objParuse'>";
-		blockHtml += "<table style='border-spacing:5px;border-collapse:separate;'>";
-		blockHtml += "<tr><td>Depends From</td><td><select id='dependSelect' name='dependFrom'>";
+		blockHtml += "<table>";
+		blockHtml += "	<tr>";
+		blockHtml += "		<td width='50%' style='color:#074B88;font-weight:bold;'>";
+		blockHtml += "		 	<spagobi:message key = "SBIDev.listObjParuses.dependsFrom" args="<%=biParam.getLabel()%>"/>";
+		blockHtml += "		</td>";
+		blockHtml += "		<td>";
+		blockHtml += "			<select width='150px' id='dependSelect' name='dependFrom'>";
 		<%
 			for(int i=0; i<otherBiParameters.size(); i++) {
 				BIObjectParameter otherBiParameter = (BIObjectParameter) otherBiParameters.get(i);
@@ -176,13 +283,21 @@
             selBiParam  = " selected ";
         }
     }
-		blockHtml += "  <option value='<%=otherBiParameter.getId()%>' "+selBiParam+" >";
-		blockHtml += "    <%=otherBiParameter.getLabel()%>";
-		blockHtml += "  </option>";
+		blockHtml += "  			<option value='<%=otherBiParameter.getId()%>' "+selBiParam+" >";
+		blockHtml += "    				<%=otherBiParameter.getLabel()%>";
+		blockHtml += "  			</option>";
 		<%
 		   }
 		%>
-		blockHtml += "</select></td><td>Condition</td><td><select id='conditionSelect' name='condition'>";
+		blockHtml += "			</select>";
+		blockHtml += "		</td>";
+		blockHtml += "	</tr>";
+		blockHtml += "	<tr>";
+		blockHtml += "		<td width='50%' style='color:#074B88;font-weight:bold;'>";
+		blockHtml += "			<spagobi:message key="SBIDev.listObjParuses.filterOperator" />";
+		blockHtml += "		</td>";
+		blockHtml += "		<td>";
+		blockHtml += "			<select width='150px' id='conditionSelect' name='condition'>";
 		selLogOper = " ";
 		if(correlation!=null) {
         if(correlation.condition=='<%=SpagoBIConstants.START_FILTER%>') {
@@ -256,9 +371,20 @@
 		blockHtml += "	   <spagobi:message key = "SBIListLookPage.isGreaterOrEqualThan" />";
 		blockHtml += "  </option>";
 		blockHtml += "</select></td></tr>";
+		
+		
+		
+		
 		blockHtml += "</table>";
+		blockHtml += "<br/>";
+		blockHtml += "<span style='color:#074B88;font-weight:bold;'><spagobi:message key="SBIDev.listObjParuses.listParuses" args="<%=biParam.getLabel()%>" /></span>";
 		blockHtml += "<hr/>";
 		blockHtml += "<table style='border-spacing:5px;border-collapse:separate;'>";
+		blockHtml += "<tr height='30px'>";
+		blockHtml += "<td style='color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.isActive" /></td>";
+		blockHtml += "<td style='color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.paruseName" /></td>";
+		blockHtml += "<td style='color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.paruseCols" /></td>";
+		blockHtml += "</tr>";
 		<%
 		  Iterator itallpar = allParuses.iterator();
 		  while(itallpar.hasNext()) {
@@ -269,8 +395,6 @@
 		if(correlation!=null) {
 		  parusesetting = correlation.getParuseSetting(<%=paruse.getUseID()%>);
 		}
-		
-		blockHtml += "  <tr>";
 		blockHtml += "  <tr><td align='center'>";
 		checkActive = " ";
     if(parusesetting!=null) {
@@ -280,10 +404,10 @@
     }
 		blockHtml += "    <input type='checkbox' "+checkActive+" id='corractive_<%=paruse.getUseID()%>' name='paruse_id' value='<%=paruse.getUseID()%>' />";
 		blockHtml += "  </td>";
-		blockHtml += "  <td class='portlet-font'>";
+		blockHtml += "  <td align='center' class='portlet-font'>";
 		blockHtml += "    <%=paruse.getLabel() + ": " + paruse.getDescription() %>";
 		blockHtml += "  </td>";
-		blockHtml += "  <td><select name='oncolumn' id='oncolumnSelect_<%=paruse.getUseID()%>' style='width:150px;'>";
+		blockHtml += "  <td align='center'><select name='oncolumn' id='oncolumnSelect_<%=paruse.getUseID()%>' style='width:150px;'>";
 		<%
 		    IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
 				ModalitiesValue lov = lovDAO.loadModalitiesValueByID(paruse.getIdLov());
@@ -305,7 +429,7 @@
 		<%	
 				}
 		%>
-		blockHtml += "  </td></select>";
+		blockHtml += "  </select></td>";
 		blockHtml += "  </tr>";
     <%
 		  }
@@ -313,12 +437,22 @@
     blockHtml += "</table>";
     blockHtml += "<br/>";
     if(indexCorr==null) {
-		  blockHtml += "<center><input type='button' value='save' onclick='closeWinCorr()' /></center>";
-		} else {
-      blockHtml += "<center><input type='button' value='save' onclick='closeWinCorr("+indexCorr+")' /></center>";
+		  blockHtml += "<center>";
+		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' onclick='closeWinCorr()' ";
+		  blockHtml += " 	     title='<spagobi:message key = "editConf.save = Save" />' ";
+		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save = Save" />' ";
+		  blockHtml += " 	/>";
+		  blockHtml += "</center>";
+	} else {
+      	  blockHtml += "<center>";
+		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' onclick='closeWinCorr("+indexCorr+")' ";
+		  blockHtml += " 	     title='<spagobi:message key = "editConf.save = Save" />' ";
+		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save = Save" />' ";
+		  blockHtml += " 	/>";
+		  blockHtml += "</center>";
     } 
-		blockHtml += "</div>";
-		return blockHtml;
+	blockHtml += "</div>";
+	return blockHtml;
 	}
 
 
@@ -326,14 +460,14 @@
 
 
     function addCorrelation() {
-       winCorr = new Window('win_correlation', {className: "alphacube", title: "Correlation", width:650, height:250});
+       winCorr = new Window('win_correlation', {className: "alphacube", title: "<spagobi:message key = "SBIDev.listObjParuses.condition" />", width:850, height:300});
   	   winCorr.setDestroyOnClose();
        winCorr.getContent().innerHTML=generateCorrBlockHtml();
        winCorr.showCenter(true);
     }
     
     function viewCorrelation(indexCorr) {
-       winCorr = new Window('win_correlation', {className: "alphacube", title: "Correlation", width:650, height:250});
+       winCorr = new Window('win_correlation', {className: "alphacube", title: "<spagobi:message key = "SBIDev.listObjParuses.condition" />", width:850, height:300});
   	   winCorr.setDestroyOnClose();
        winCorr.getContent().innerHTML=generateCorrBlockHtml(indexCorr);
        winCorr.showCenter(true);
@@ -578,7 +712,7 @@
       <table width='100%' cellspacing='0' border='0'>
 				<tr>
 					<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>
-						Correlations
+						<spagobi:message key = "SBIDev.listObjParuses.correlExpression" />
 					</td>
 					<td class='titlebar_level_2_empty_section'>&nbsp;</td>
 					<td class='titlebar_level_2_button_section'>
@@ -586,8 +720,8 @@
 							<img width='20px' height='20px' 
 								 src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/attach.gif")%>'
 								 name='info' 
-								 alt='add'
-								 title='add'/>
+								 alt='<spagobi:message key = "SBIDev.listObjParuses.addCondition" />'
+								 title='<spagobi:message key = "SBIDev.listObjParuses.addCondition" />'/>
 						</a>
 					</td>
 				</tr>

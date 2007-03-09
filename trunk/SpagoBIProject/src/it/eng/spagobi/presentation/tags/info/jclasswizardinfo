@@ -1,10 +1,24 @@
-<div style='width:500px' >
+<div style='width:600px;font-size:10px;font-family:verdana;' >
+<br/>
+The java class must implement the interface it.eng.spagobi.bo.javaClassLovs.IJavaClassLov.
+<br/>
+This interface has two methods:
 <ul>
-<li>
-Java class must implement interface it.eng.spagobi.bo.javaClassLovs.IJavaClassLov
-This interface has a unique method getValues(IEngUserProfile profile) that returns a string
-The returned string must be an xml string with a predefined structure that you can see in the 
-bottom part of the sintax box
-</li>
+  <li>getValues(IEngUserProfile profile): the method returns an xml string containing the list of values. 
+      The xml string must be formatted using the xml structure reported below</li>
+  <li>getNamesOfProfileAttributeRequired(): the method returns a java list containing the names of profile 
+      attributes used by the class. If the class doesn't use profile attributes simply returns an empty list.
+  </li>
 </ul>
+</ul>
+<br/>
+<b>Xml structure of the returned string</b>
+<hr/>
+&lt;ROWS&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  nameAttribute1="valueAttribute1" nameAttribute2="valueAttribute2" ... /&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  nameAttribute1="valueAttribute1" nameAttribute2="valueAttribute2" ... /&gt;<br/>
+&nbsp;&nbsp;...<br/>
+&nbsp;&nbsp;All the rows must have the same attributes !<br/>
+&nbsp;&nbsp;...<br/>
+&lt;/ROWS&gt;<br/>
 </div>

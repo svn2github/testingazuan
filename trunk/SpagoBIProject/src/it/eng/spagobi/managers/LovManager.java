@@ -1,12 +1,17 @@
 package it.eng.spagobi.managers;
 
 import it.eng.spagobi.bo.ModalitiesValue;
+import it.eng.spagobi.bo.ParameterUse;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
+import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class LovManager {
@@ -33,6 +38,25 @@ public class LovManager {
 		return names;
 	}
 	
+	public static List getLabelsOfDocumentsWhichUseLov(ModalitiesValue lov) {
+		List docLabels = new ArrayList();
+		try{
+			IParameterUseDAO parusedao = DAOFactory.getParameterUseDAO();
+			IBIObjectParameterDAO biobjpardao = DAOFactory.getBIObjectParameterDAO();
+			List paruses = parusedao.getParameterUsesAssociatedToLov(lov.getId());
+			Iterator parusesIt = paruses.iterator();
+			while (parusesIt.hasNext()) {
+				ParameterUse aParuse = (ParameterUse) parusesIt.next();
+				List temp = biobjpardao.getDocumentLabelsListUsingParameter(aParuse.getId());
+				docLabels.addAll(temp);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, LovManager.class.getName(), 
+					            "getLabelsOfDocumentsWhichUseLov", "Error while recovering document labels", e);
+			
+		}
+		return docLabels;
+	}
 	
 	
 }

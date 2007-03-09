@@ -522,6 +522,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
     	
 		response.setAttribute("loopback", "true");
 		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
 		
 	}
 	

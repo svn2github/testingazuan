@@ -30,15 +30,12 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Presentation tag for Script details. 
- * 
- * @author Zerbetto
  */
 
-public class JavaClassWizardTag extends TagSupport {
+public class JavaClassWizardTag extends CommonWizardLovTag {
 	
 	private HttpServletRequest httpRequest = null;
     protected RenderRequest renderRequest = null;
@@ -69,6 +66,8 @@ public class JavaClassWizardTag extends TagSupport {
 		output.append("					 title='"+PortletUtilities.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages")+"'/>\n");
 		output.append("			</a>\n");
 		output.append("		</td>\n");
+		String urlImgProfAttr = renderResponse.encodeURL(renderRequest.getContextPath() + "/img/profileAttributes22.jpg");
+		output.append(generateProfAttrTitleSection(urlImgProfAttr));
 		output.append("	</tr>\n");
 		output.append("</table>\n");
 		
@@ -97,7 +96,7 @@ public class JavaClassWizardTag extends TagSupport {
 		output.append("		}\n");
 		output.append("		function openJavaWizardInfo(){\n");
 		output.append("			if(winJWT==null) {\n");
-		output.append("				winJWT = new Window('winJWTInfo', {className: \"alphacube\", minWidth:150, destroyOnClose: false});\n");
+		output.append("				winJWT = new Window('winJWTInfo', {className: \"alphacube\", title:\""+PortletUtilities.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages")+"\", minWidth:150, destroyOnClose: false});\n");
 		output.append("         	winJWT.setContent('javawizardinfodiv', true, false);\n");
 		output.append("         	winJWT.showCenter(false);\n");
 		output.append("		    } else {\n");
@@ -116,7 +115,7 @@ public class JavaClassWizardTag extends TagSupport {
 		output.append("<div id='javawizardinfodiv' style='display:none;'>\n");	
 		output.append(PortletUtilities.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/jclasswizardinfo"));
 		output.append("</div>\n");
-	    
+		
         try {
             pageContext.getOut().print(output.toString());
         }

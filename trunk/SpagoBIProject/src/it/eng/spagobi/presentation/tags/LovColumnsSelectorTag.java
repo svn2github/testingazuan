@@ -135,11 +135,11 @@ public class LovColumnsSelectorTag extends TagSupport {
 		}
 		// create the columns table selector
 		htmlStream.append("<table class=\"object-details-table\" style=\"width:100%;\">\n");
-		htmlStream.append("	<tr>\n");
-		htmlStream.append("		<td class=\"portlet-section-header\">" + columnsField + "</td>\n");
-		htmlStream.append("	    <td class=\"portlet-section-header\" style=\"text-align:center;width:100px;\">" + valueColumnsField + "</td>\n");
-		htmlStream.append("	    <td class=\"portlet-section-header\" style=\"text-align:center;width:100px;\">" + descriptionColumnsField + "</td>\n");
-		htmlStream.append("	    <td class=\"portlet-section-header\" style=\"text-align:center;width:100px;\">" + visColumnsField + "<td>\n");
+		htmlStream.append("	<tr >\n");
+		htmlStream.append("		<td style=\"background:rgb(254,232,186);\" class=\"portlet-section-header\">" + columnsField + "</td>\n");
+		htmlStream.append("	    <td class=\"portlet-section-header\" style=\"background:rgb(254,232,186);text-align:center;width:120px;\">" + valueColumnsField + "</td>\n");
+		htmlStream.append("	    <td class=\"portlet-section-header\" style=\"background:rgb(254,232,186);text-align:center;width:150px;\">" + descriptionColumnsField + "</td>\n");
+		htmlStream.append("	    <td class=\"portlet-section-header\" style=\"background:rgb(254,232,186);text-align:center;width:150px;\">" + visColumnsField + "<td>\n");
 		htmlStream.append("	</tr>\n");
 		
 		String[] visColArr = visibleColumns.split(",");
@@ -162,16 +162,16 @@ public class LovColumnsSelectorTag extends TagSupport {
 			
 			
 			htmlStream.append("	<tr>\n");
-			htmlStream.append("	<td class=\"portlet-section-body\">"+colName+"\n");
+			htmlStream.append("	<td style=\"background:rgb(251,247,227);\" class=\"portlet-section-body\">"+colName+"\n");
 			htmlStream.append("		<INPUT type='hidden' value='"+colName+"' name='column' />\n");
 			htmlStream.append("	</td>\n");
-			htmlStream.append("	<td align=\"center\" class=\"portlet-section-body\">\n");
+			htmlStream.append("	<td align=\"center\" style=\"background:rgb(251,247,227); align=\"center\" class=\"portlet-section-body\">\n");
 			htmlStream.append("		<INPUT "+selectedValue+" type='radio' value='"+colName+"' name='valueColumn' />\n");
 			htmlStream.append("	</td>\n");
-			htmlStream.append("	<td align=\"center\" class=\"portlet-section-body\">\n");
+			htmlStream.append("	<td align=\"center\" style=\"background:rgb(251,247,227); align=\"center\" class=\"portlet-section-body\">\n");
 			htmlStream.append("		<INPUT "+selectedDescr+" type='radio' value='"+colName+"' name='descriptionColumn' />\n");
 			htmlStream.append("	</td>\n");
-			htmlStream.append("	<td align=\"center\" class=\"portlet-section-body\">\n");
+			htmlStream.append("	<td align=\"center\" style=\"background:rgb(251,247,227); align=\"center\" class=\"portlet-section-body\">\n");
 			htmlStream.append("		<INPUT "+checked+" type='checkbox' value='"+colName+"' name='visibleColumn' />\n");
 			htmlStream.append("	</td>\n");
 			htmlStream.append("	</tr>\n");

@@ -37,13 +37,12 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Presentation tag for Fix Lov Wizard details. 
  */
 
-public class LovWizardTag extends TagSupport {
+public class LovWizardTag extends CommonWizardLovTag {
 
 	private String lovProvider;
 	
@@ -76,6 +75,8 @@ public class LovWizardTag extends TagSupport {
 			output.append("					 title='"+PortletUtilities.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages")+"'/>\n");
 			output.append("			</a>\n");
 			output.append("		</td>\n");
+			String urlImgProfAttr = renderResponse.encodeURL(renderRequest.getContextPath() + "/img/profileAttributes22.jpg");
+			output.append(generateProfAttrTitleSection(urlImgProfAttr));
 			output.append("	</tr>\n");
 			output.append("</table>\n");
 			
@@ -105,12 +106,12 @@ public class LovWizardTag extends TagSupport {
 			output.append("			&nbsp;\n");
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_form'>\n");
-			output.append("			<input type='image' name='insertFixLovItem' value='insertFixLovItem'\n");
+			output.append("			<input onclick='setLovProviderModified(true);' type='image' name='insertFixLovItem' value='insertFixLovItem'\n");
 			output.append("				src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/attach.gif") + "'\n");
 			String addButtMsg = PortletUtilities.getMessage("SBIDev.lovWiz.addButt", "messages");
 			output.append("				title='" + addButtMsg + "' alt='" + addButtMsg + "'\n");
 			output.append("			/>\n");
-			output.append("			<a href='javascript:newFixLovItemFormSubmit();' class='portlet-form-field-label' style='text-decoration:none;'>\n");
+			output.append("			<a href='javascript:setLovProviderModified(true);newFixLovItemFormSubmit();' class='portlet-form-field-label' style='text-decoration:none;'>\n");
 			output.append("				" + addButtMsg + "\n");
 			output.append("			</a>\n");
 			output.append("		</div>\n");
@@ -183,7 +184,7 @@ public class LovWizardTag extends TagSupport {
 					output.append("				</a>");
 					output.append("			</div>");
 					output.append("			<div style='display:none;' id='divBtnSaveRow"+i+"'>");
-					output.append("				<input type='image' onclick='saveRowValues(\""+ i +"\")' class ='portlet-menu-item' \n");
+					output.append("				<input type='image' onclick='setLovProviderModified(true);saveRowValues(\""+ i +"\")' class ='portlet-menu-item' \n");
 					output.append("					src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif") + "' \n");
 					output.append("					title='" + tooltipRowSave + "' alt='" + tooltipRowSave + "' />\n");
 					output.append("			</div>");
@@ -192,7 +193,7 @@ public class LovWizardTag extends TagSupport {
 					
 					output.append("		<td class='" + rowClass + "'>\n");
 					String tableCol4 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol4", "messages");
-					output.append("			<input type='image' onclick='setIndexOfFixedLovItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
+					output.append("			<input type='image' onclick='setLovProviderModified(true);setIndexOfFixedLovItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
 					output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif") + "' \n");
 					output.append("				title='" + tableCol4 + "' alt='" + tableCol4 + "' />\n");
 		  			output.append("		</td>\n");
@@ -200,7 +201,7 @@ public class LovWizardTag extends TagSupport {
 		  			output.append("		<td class='" + rowClass + "'>\n");
 		  			if(i<(lovs.size()-1)) {
 						String tableCol5 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol5", "messages");
-						output.append("			<input type='image' onclick='downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
+						output.append("			<input type='image' onclick='setLovProviderModified(true);downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 						output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/down16.gif") + "' \n");
 						output.append("				title='" + tableCol5 + "' alt='" + tableCol5 + "' />\n");
 		  			} else {
@@ -211,7 +212,7 @@ public class LovWizardTag extends TagSupport {
 		  			output.append("		<td class='" + rowClass + "'>\n");
 		  			if(i>0) {
 						String tableCol6 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol6", "messages");
-						output.append("			<input type='image' onclick='upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
+						output.append("			<input type='image' onclick='setLovProviderModified(true);upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 						output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/up16.gif") + "' \n");
 						output.append("				title='" + tableCol6 + "' alt='" + tableCol6 + "' />\n");
 		  			} else {
@@ -273,8 +274,8 @@ public class LovWizardTag extends TagSupport {
 			output.append("		}\n");
 			output.append("		function openFixListWizardInfo(){\n");
 			output.append("			if(winFLWT==null) {\n");
-			output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", minWidth:150, destroyOnClose: false});\n");
-			output.append("         	winFLWT.setContent('fixlistwizardinfodiv', true, false);\n");
+			output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", title:\""+PortletUtilities.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages")+"\", width:650, height:110, destroyOnClose: false});\n");
+			output.append("         	winFLWT.setContent('fixlistwizardinfodiv', false, false);\n");
 			output.append("         	winFLWT.showCenter(false);\n");
 			output.append("		    } else {\n");
 			output.append("         	winFLWT.showCenter(false);\n");
@@ -292,8 +293,6 @@ public class LovWizardTag extends TagSupport {
 			output.append("<div id='fixlistwizardinfodiv' style='display:none;'>\n");	
 			output.append(PortletUtilities.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/fixlistwizardinfo"));
 			output.append("</div>\n");
-			
-			
 			
             pageContext.getOut().print(output.toString());
         }

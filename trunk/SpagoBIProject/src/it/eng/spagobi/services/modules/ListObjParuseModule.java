@@ -212,6 +212,7 @@ public class ListObjParuseModule extends AbstractModule {
 	
 	
 	private void updateDatabase(List oldCorrelations, List newCorrelations ) throws EMFUserError {
+		//TODO all this operations must be performed inside a transaction
 		IObjParuseDAO corrDao = DAOFactory.getObjParuseDAO();
 		Iterator iterOldCorr = oldCorrelations.iterator();
 		while(iterOldCorr.hasNext()) {
@@ -223,45 +224,6 @@ public class ListObjParuseModule extends AbstractModule {
 			ObjParuse newCorr = (ObjParuse)iterNewCorr.next();
 			corrDao.insertObjParuse(newCorr);
 		}
-		
-		
-		/*
-		List alreadyProcessed = new ArrayList();
-		IObjParuseDAO corrDao = DAOFactory.getObjParuseDAO();
-		Iterator iterOldCorr = oldCorrelations.iterator();
-		Iterator iterNewCorr = newCorrelations.iterator();
-		while(iterOldCorr.hasNext()) {
-			ObjParuse oldCorr = (ObjParuse)iterOldCorr.next();
-			boolean nomoreExist = true;
-			while(iterNewCorr.hasNext()) {
-				ObjParuse newCorr = (ObjParuse)iterNewCorr.next();
-				if( (oldCorr.getObjParId()==newCorr.getObjParId()) && (oldCorr.getParuseId()==newCorr.getParuseId()) ) {
-					corrDao.modifyObjParuse(newCorr);
-					nomoreExist = false;
-					alreadyProcessed.add(newCorr);
-				}
- 			}
-			if(nomoreExist){
-				corrDao.eraseObjParuse(oldCorr);
-			}
-		}
-		iterNewCorr = newCorrelations.iterator();
-		Iterator iterAlreadyProcessed = alreadyProcessed.iterator();
-		while(iterNewCorr.hasNext()) {
-			ObjParuse newCorr = (ObjParuse)iterNewCorr.next();
-			boolean toInsert = true;
-			while(iterAlreadyProcessed.hasNext()) {
-				ObjParuse processedCorr = (ObjParuse)iterAlreadyProcessed.next();
-				if( (processedCorr.getObjParId()==newCorr.getObjParId()) || 
-				    (processedCorr.getParuseId()==newCorr.getParuseId()) ) {
-					toInsert = false;
-				}
-			}
-			if(toInsert) {
-				corrDao.insertObjParuse(newCorr);
-			}
-		}
-		*/
 	}
 	
 	

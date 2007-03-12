@@ -92,7 +92,19 @@
         this.correlations[index].logicOper = logop; 
       }
       this.setLogicOperator = setLogicOperatorFunct;
+      this.correlationExist = correlationExistFunct;
+      function correlationExistFunct(idPFath, fOp) {
+         var found = false;
+         for(i=0; i<this.correlations.length; i++) {
+            var corr = this.correlations[i];
+            if( (corr.idParFather==idPFath) && (corr.condition==fOp) ) {
+              found = true;
+            }
+         }
+         return found; 
+      }
     }
+    
     
     
     var correlationManager = new correlationManagerObj(); 
@@ -106,9 +118,7 @@
     	if(correlationManager.correlations.length>0) {
       	for(i=0; i<correlationManager.correlations.length; i++) {
           var correl = correlationManager.correlations[i];
-          html += "<tr  height='25' style='background:background:rgb(251,247,227);'>";
-          
-   
+          html += "<tr  height='25' style='background:rgb(251,247,227);'>";
           html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='100px'>";
           var value = correl.preCond;
           html += "<a style='text-decoration:none;' href='javascript:addLeftBreak("+i+")'>";
@@ -272,7 +282,7 @@
 		blockHtml += "		 	<spagobi:message key = "SBIDev.listObjParuses.dependsFrom" args="<%=biParam.getLabel()%>"/>";
 		blockHtml += "		</td>";
 		blockHtml += "		<td>";
-		blockHtml += "			<select width='150px' id='dependSelect' name='dependFrom'>";
+		blockHtml += "			<select style='width:150px' id='dependSelect' name='dependFrom'>";
 		<%
 			for(int i=0; i<otherBiParameters.size(); i++) {
 				BIObjectParameter otherBiParameter = (BIObjectParameter) otherBiParameters.get(i);
@@ -297,7 +307,8 @@
 		blockHtml += "			<spagobi:message key="SBIDev.listObjParuses.filterOperator" />";
 		blockHtml += "		</td>";
 		blockHtml += "		<td>";
-		blockHtml += "			<select width='150px' id='conditionSelect' name='condition'>";
+		blockHtml += "		  <br/>";
+		blockHtml += "			<select style='width:150px' id='conditionSelect' name='condition'>";
 		selLogOper = " ";
 		if(correlation!=null) {
         if(correlation.condition=='<%=SpagoBIConstants.START_FILTER%>') {
@@ -438,16 +449,16 @@
     blockHtml += "<br/>";
     if(indexCorr==null) {
 		  blockHtml += "<center>";
-		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' onclick='closeWinCorr()' ";
-		  blockHtml += " 	     title='<spagobi:message key = "editConf.save = Save" />' ";
-		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save = Save" />' ";
+		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' onclick='closeWinCorr()' ";
+		  blockHtml += " 	     title='<spagobi:message key = "editConf.save" />' ";
+		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save" />' ";
 		  blockHtml += " 	/>";
 		  blockHtml += "</center>";
 	} else {
       	  blockHtml += "<center>";
-		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' onclick='closeWinCorr("+indexCorr+")' ";
-		  blockHtml += " 	     title='<spagobi:message key = "editConf.save = Save" />' ";
-		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save = Save" />' ";
+		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' onclick='closeWinCorr("+indexCorr+")' ";
+		  blockHtml += " 	     title='<spagobi:message key = "editConf.save" />' ";
+		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save" />' ";
 		  blockHtml += " 	/>";
 		  blockHtml += "</center>";
     } 
@@ -533,6 +544,13 @@
         }
 		    %>
 		    corr = null;
+		    
+		    // check if the correlation already exists
+		    if(correlationManager.correlationExist(valueDepSel, valueConSel)) {
+          alert('<spagobi:message key = "SBIDev.listObjParuses.correlationExist" />');
+          return;
+        }
+		    
 		    if(indexCorr==null) {
           corr = new correlation(valueDepSel, nameDepSel, valueConSel, nameConSel, paruseSettings);
           correlationManager.addCorrelation(corr);
@@ -590,7 +608,6 @@
        xmlgen = generateCorrelationsXml();
        xmlInpHid.value = xmlgen;
        saveform = document.getElementById('objParusesForm');
-       alert(xmlgen);
        saveform.submit();
     }
     
@@ -780,6 +797,9 @@
             correlation<%=pfid%><%=fo%>==null;
           } catch (err) {
             correlation<%=pfid%><%=fo%> = new correlation(<%=corr.getObjParFatherId()%>, getParNameFromParId(<%=corr.getObjParFatherId()%>), "<%=corr.getFilterOperation()%>", getFilterOpNameFromCode("<%=corr.getFilterOperation()%>"), paruseSettings<%=pfid%><%=fo%>);
+            correlation<%=pfid%><%=fo%>.preCond = "<%=corr.getPreCondition()%>";
+    	      correlation<%=pfid%><%=fo%>.postCond = "<%=corr.getPostCondition()%>";
+    	      correlation<%=pfid%><%=fo%>.logicOper = "<%=corr.getLogicOperator()%>";
             correlationManager.addCorrelation(correlation<%=pfid%><%=fo%>);
           }
 	 	<%   

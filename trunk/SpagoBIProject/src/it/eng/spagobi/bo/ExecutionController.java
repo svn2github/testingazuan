@@ -203,6 +203,9 @@ public class ExecutionController {
 				Parameter par = aBIObjectParameter.getParameter();
 				if(par != null) {
 					ModalitiesValue paruse = par.getModalityValue();
+					if(paruse.getITypeCd().equals("MAN_IN")) {
+						continue;
+					}
 					try {
 			        	String lovResult = aBIObjectParameter.getLovResult();
 			        	if(lovResult == null) {

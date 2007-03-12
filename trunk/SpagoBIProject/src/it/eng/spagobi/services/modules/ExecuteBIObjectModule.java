@@ -1108,6 +1108,9 @@ public class ExecuteBIObjectModule extends AbstractModule
         	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();
         	// get lov
         	ModalitiesValue lov = biparam.getParameter().getModalityValue();
+        	if(lov.getITypeCd().equals("MAN_IN")) {
+        		continue;
+        	}
     		// get the lov provider detail 
         	String lovProvider = lov.getLovProvider();
         	ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(lovProvider);

@@ -580,8 +580,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		if (indOfFixLovItemToChangeObj != null) {
 			// it is requested to change a Fix Lov item
 			int indexOfFixedLovItemToChange = new Integer((String)indOfFixLovItemToChangeObj).intValue();
-			String newName = (String)request.getAttribute("nameRow"+indexOfFixedLovItemToChange+"InpText");
-			String newValue = (String)request.getAttribute("descrRow"+indexOfFixedLovItemToChange+"InpText");
+			String newValue = (String)request.getAttribute("nameRow"+indexOfFixedLovItemToChange+"InpText");
+			String newName = (String)request.getAttribute("descrRow"+indexOfFixedLovItemToChange+"InpText");
 			request.setAttribute("newNameRow", newName);
 			request.setAttribute("newValueRow", newValue);
 			ValidationCoordinator.validate("PAGE", "FixLovChangeValidation", this);

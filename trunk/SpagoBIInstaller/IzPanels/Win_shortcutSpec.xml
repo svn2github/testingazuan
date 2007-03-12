@@ -7,7 +7,7 @@
 			commandLine=""
 			workingDirectory="$INSTALL_PATH"
 			description="Start SpagoBI Platform"
-			iconFile="$INSTALL_PATH\SpagoBI.ico"
+			iconFile="$INSTALL_PATH\StartSpagoBI.ico"
 			iconIndex="0"
 			initialState="noShow"
 			programGroup="yes"

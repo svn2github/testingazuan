@@ -10,7 +10,7 @@
      target="$INSTALL_PATH/StartSpagoBI.sh"
      commandLine=""
      initialState="normal"
-     iconFile="$INSTALL_PATH/SpagoBI.png"
+     iconFile="$INSTALL_PATH/StartSpagoBI.png"
      iconIndex="0" 
      workingDirectory="$INSTALL_PATH"
      type="Application"

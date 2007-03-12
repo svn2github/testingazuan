@@ -95,11 +95,15 @@
 		    </fileset>
     		<fileset dir="batch" targetdir="$INSTALL_PATH">
     		    <include name="StartSpagoBI.bat" />
+    		    <include name="StopSpagoBI.bat" />
       			<include name="OOStart.bat" />
-      			<include name="SpagoBI.ico" />
+      			<include name="StartSpagoBI.ico" />
+      			<include name="StopSpagoBI.ico" />
       			<include name="StartSpagoBI.sh" />
+      			<include name="StopSpagoBI.sh" />
       			<include name="OOStart.sh" />
-      			<include name="SpagoBI.png" />
+      			<include name="StartSpagoBI.png" />
+      			<include name="StopSpagoBI.png" />
     		<!--
       			<include name="StartSpagoBI.bat" />
       			<include name="StartSpagoBI_jboss.bat" />

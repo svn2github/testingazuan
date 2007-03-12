@@ -23,8 +23,7 @@ if %ERRORLEVEL%==1 goto wait
 @cd ..\..\${BIN_DIR}
 start ${START_COMMAND}
 @ping 127.0.0.1 -n 5 -w 10000 > nul
-cd C:\WINDOWS
-start explorer.exe "${URL}"
+start ${URL}
 exit
 
 :wait

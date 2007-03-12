@@ -1,7 +1,6 @@
 package com.izforge.izpack.installer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;

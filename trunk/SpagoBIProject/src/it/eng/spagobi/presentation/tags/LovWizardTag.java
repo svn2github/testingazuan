@@ -125,11 +125,11 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("<table class=\"table_detail_fix_lov\">\n");
 		  	output.append("	<tr>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
-		  	String tableCol1 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol1", "messages");
+		  	String tableCol1 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol2", "messages");
 		  	output.append(			tableCol1 + "\n");
 		  	output.append("		</td>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
-		  	String tableCol2 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol2", "messages");
+		  	String tableCol2 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol1", "messages");
 		  	output.append(			tableCol2 + "\n");
 		  	output.append("		</td>\n");
 		  	output.append("		<td colspan='1' width='20' class='portlet-section-header'>&nbsp;\n");

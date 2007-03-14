@@ -24,17 +24,19 @@ package it.eng.spagobi.bo.lov;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.services.commons.AbstractListLookupModule;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.List;
 
-public class LovToListService {
+public class LovToListService extends AbstractListLookupModule  {
 	
 	/**
 	 * lov result string
@@ -57,6 +59,16 @@ public class LovToListService {
 		}
 		
 	}
+	
+	
+	/**
+	 * constructor
+	 * @param lovResult the lov result string
+	 */
+	public LovToListService(String lovRes) {
+		this.lovResult = lovRes;
+	}
+	
 		
 	/**
 	 * Gets the Spago List interface of the lov result
@@ -159,6 +171,11 @@ public class LovToListService {
 
 	public void setLovDetail(ILovDetail lovDetail) {
 		this.lovDetail = lovDetail;
+	}
+
+
+	public ListIFace getList(SourceBean arg0, SourceBean arg1) throws Exception {
+		return getLovAsListService();
 	}
 	
 

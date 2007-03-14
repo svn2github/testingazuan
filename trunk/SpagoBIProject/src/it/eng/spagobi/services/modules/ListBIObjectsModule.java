@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -51,7 +52,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	protected String initialPath = null;
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-
+		
 		RequestContainer requestContainer = this.getRequestContainer();	
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();

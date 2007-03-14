@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -32,12 +31,9 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ModalitiesValue;
-import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
-import it.eng.spagobi.bo.dao.IObjParuseDAO;
-import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
@@ -497,15 +493,13 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		list = getListFromLov(request, response);
 		paramsMap = getParams(request);
 		
-		String inputType = getModalityValue(request).getITypeCd();
-		if (inputType.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {		
-			if (isCorrelated(request)) {
-				list = filterListForCorrelatedParam(request, list);		
-				String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
-				paramsMap.put("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));
-				paramsMap.put("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));	
-			}  
-		}
+		String inputType = getModalityValue(request).getITypeCd();		
+		if (isCorrelated(request)) {
+			list = filterListForCorrelatedParam(request, list);		
+			String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
+			paramsMap.put("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));
+			paramsMap.put("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));	
+		}  
 		
 		
 		response.setAttribute("PARAMETERS_MAP", paramsMap);		

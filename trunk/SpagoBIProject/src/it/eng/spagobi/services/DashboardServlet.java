@@ -68,50 +68,8 @@ public class DashboardServlet extends HttpServlet{
                 	out.flush();
                 } else {
                 	String result = GeneralUtilities.getLovResult(dataName);
-                	
-                	// remove additional information 
-                	// TODO change this part: call a getLovResult method that doens't return additional information
-                	if(result.indexOf("<VALUE-COLUMN>")!=-1) {
-                		int beginIndex = result.indexOf("<VALUE-COLUMN>");
-                		int endIndex =  result.indexOf("</VALUE-COLUMN>") + 15;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	if(result.indexOf("<VALUE-COLUMN/>")!=-1) {
-                		int beginIndex = result.indexOf("<VALUE-COLUMN/>");
-                		int endIndex =  beginIndex + 15;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	if(result.indexOf("<DESCRIPTION-COLUMN>")!=-1) {
-                		int beginIndex = result.indexOf("<DESCRIPTION-COLUMN>");
-                		int endIndex =  result.indexOf("</DESCRIPTION-COLUMN>") + 21;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	if(result.indexOf("<DESCRIPTION-COLUMN/>")!=-1) {
-                		int beginIndex = result.indexOf("<DESCRIPTION-COLUMN/>");
-                		int endIndex =  beginIndex + 21;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	if(result.indexOf("<VISIBLE-COLUMNS>")!=-1) {
-                		int beginIndex = result.indexOf("<VISIBLE-COLUMNS>");
-                		int endIndex =  result.indexOf("</VISIBLE-COLUMNS>") + 18;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	if(result.indexOf("<VISIBLE-COLUMNS/>")!=-1) {
-                		int beginIndex = result.indexOf("<VISIBLE-COLUMNS/>");
-                		int endIndex =  beginIndex + 18;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	if(result.indexOf("<INVISIBLE-COLUMNS>")!=-1) {
-                		int beginIndex = result.indexOf("<INVISIBLE-COLUMNS>");
-                		int endIndex =  result.indexOf("</INVISIBLE-COLUMNS>") + 20;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	if(result.indexOf("<INVISIBLE-COLUMNS/>")!=-1) {
-                		int beginIndex = result.indexOf("<INVISIBLE-COLUMNS/>");
-                		int endIndex =  beginIndex + 20;
-                		result = result.substring(0, beginIndex) + result.substring(endIndex);
-                	}
-                	
+                	result = result.replaceAll("&lt;", "<");
+                	result = result.replaceAll("&gt;", ">");
                 	
                 	// if the lov is a query trasform the result to lower case (for flash dashboard)
                 	if(type.equalsIgnoreCase("QUERY")){

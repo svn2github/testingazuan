@@ -441,72 +441,67 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			} else {
 				// looks for dependencies associated to the previous lov
 				Integer lovId = modVal.getId();
-				ModalitiesValue initialLov = DAOFactory.getModalitiesValueDAO()
-						.loadModalitiesValueByID(lovId);
-				if (initialLov.getITypeCd().equals("QUERY")) {
-					IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
-					IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
-					List paruses = paruseDAO.getParameterUsesAssociatedToLov(lovId);
-					Iterator parusesIt = paruses.iterator();
-					List documents = new ArrayList();
-					List correlations = new ArrayList();
-					while (parusesIt.hasNext()) {
-						ParameterUse aParuse = (ParameterUse) parusesIt.next();
-						documents.addAll(objParuseDAO.getDocumentLabelsListWithAssociatedDependencies(aParuse.getUseID()));
-						correlations.addAll(objParuseDAO.getAllDependenciesForParameterUse(aParuse.getUseID()));
-					}
-					
-					
-					// if the document list is not empty means that the lov is in correlation in some documents
-					if (documents.size() > 0) {
-						if (!initialLov.getITypeCd().equals(modVal.getITypeCd())) {
-							// the lov type was changed
+				ModalitiesValue initialLov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
+				IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+				IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
+				List paruses = paruseDAO.getParameterUsesAssociatedToLov(lovId);
+				Iterator parusesIt = paruses.iterator();
+				List documents = new ArrayList();
+				List correlations = new ArrayList();
+				while (parusesIt.hasNext()) {
+					ParameterUse aParuse = (ParameterUse) parusesIt.next();
+					documents.addAll(objParuseDAO.getDocumentLabelsListWithAssociatedDependencies(aParuse.getUseID()));
+					correlations.addAll(objParuseDAO.getAllDependenciesForParameterUse(aParuse.getUseID()));
+				}
+				// if the document list is not empty means that the lov is in correlation in some documents
+				if (documents.size() > 0) {
+					if (!initialLov.getITypeCd().equals(modVal.getITypeCd())) {
+						// the lov type was changed
+						HashMap errparams = new HashMap();
+						errparams.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
+						List params = new ArrayList();
+						params.add(documents.toString());
+						EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "input_type", "1058", params, errparams);
+						errorHandler.addError(error);
+						prepareDetailModalitiesValuePage(modVal, mod, response);
+						return;
+					} else {
+						// the lov type was not changed, must verify that the dependency columns are still present
+						// load all the columns returned by the lov
+						String queryDetXML = modVal.getLovProvider();
+						ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(queryDetXML);
+						List visColumns = lovProvDet.getVisibleColumnNames();
+						List invisColumns = lovProvDet.getInvisibleColumnNames();
+						List columns = new ArrayList();
+						if( (visColumns!=null) && (visColumns.size()!=0) )
+							columns.addAll(visColumns);
+						if( (invisColumns!=null) && (invisColumns.size()!=0) )
+							columns.addAll(invisColumns);
+						// for each correlation column name chechs if the column is still present 
+						Iterator correlationsIt = correlations.iterator();
+						boolean columnNoMorePresent = false;
+						List columnsNoMorePresent = new ArrayList();
+						while (correlationsIt.hasNext()) {
+							ObjParuse aObjParuse = (ObjParuse) correlationsIt.next();
+							String filterColumn = aObjParuse.getFilterColumn();
+							// because spago put all sourcebean attribute to Uppercase
+							//filterColumn = filterColumn.toUpperCase();
+							if (!columns.contains(filterColumn)) {
+								columnNoMorePresent = true;
+								columnsNoMorePresent.add(filterColumn);
+							}
+						}
+						// if there are some column no more present then generate an error and return to the detail page
+						if (columnNoMorePresent) {
 							HashMap errparams = new HashMap();
 							errparams.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
 							List params = new ArrayList();
 							params.add(documents.toString());
-							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "input_type", "1058", params, errparams);
+							params.add(columnsNoMorePresent.toString());
+							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1059, params, errparams);
 							errorHandler.addError(error);
 							prepareDetailModalitiesValuePage(modVal, mod, response);
 							return;
-						} else {
-							// the lov type was not changed, must verify that the dependency columns are still present
-							// load all the columns returned by the lov
-							String queryDetXML = modVal.getLovProvider();
-							ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(queryDetXML);
-							List visColumns = lovProvDet.getVisibleColumnNames();
-							List invisColumns = lovProvDet.getInvisibleColumnNames();
-							List columns = new ArrayList();
-							if( (visColumns!=null) && (visColumns.size()!=0) )
-								columns.addAll(visColumns);
-							if( (invisColumns!=null) && (invisColumns.size()!=0) )
-								columns.addAll(invisColumns);
-							// for each correlation column name chechs if the column is still present 
-							Iterator correlationsIt = correlations.iterator();
-							boolean columnNoMorePresent = false;
-							List columnsNoMorePresent = new ArrayList();
-							while (correlationsIt.hasNext()) {
-								ObjParuse aObjParuse = (ObjParuse) correlationsIt.next();
-								String filterColumn = aObjParuse.getFilterColumn();
-								// because spago put all sourcebean attribute to Uppercase
-								//filterColumn = filterColumn.toUpperCase();
-								if (!columns.contains(filterColumn)) {
-									columnNoMorePresent = true;
-									columnsNoMorePresent.add(filterColumn);
-								}
-							}
-							// if there are some column no more present then generate an error and return to the detail page
-							if (columnNoMorePresent) {
-								HashMap errparams = new HashMap();
-								errparams.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
-								List params = new ArrayList();
-								params.add(documents.toString());
-								params.add(columnsNoMorePresent.toString());
-								EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1059, params, errparams);
-								errorHandler.addError(error);
-								prepareDetailModalitiesValuePage(modVal, mod, response);
-								return;
-							}
 						}
 					}
 				}
@@ -825,9 +820,9 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		} else {
 			lovDetList = FixedListDetail.fromXML(lovProv);
 		}
-		String lovName = (String)request.getAttribute("nameOfFixedLovItemNew");
-		String lovDesc = (String)request.getAttribute("valueOfFixedLovItemNew");
-		lovDetList.add(lovName, lovDesc);
+		String lovDesc = (String)request.getAttribute("nameOfFixedLovItemNew");
+		String lovValue = (String)request.getAttribute("valueOfFixedLovItemNew");
+		lovDetList.add(lovValue, lovDesc);
 		return lovDetList;
 	}
 

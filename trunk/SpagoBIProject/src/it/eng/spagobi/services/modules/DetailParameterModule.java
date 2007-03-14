@@ -511,15 +511,15 @@ public class DetailParameterModule extends AbstractModule {
 				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "paruseLovId", "1060", vector, params);
 				errorHandler.addError(error);
 			}
-			if (paruse.getManualInput().intValue() == 0 && "COMBOBOX".equalsIgnoreCase(paruse.getSelectionType())) {
+			//if (paruse.getManualInput().intValue() == 0 && "COMBOBOX".equalsIgnoreCase(paruse.getSelectionType())) {
 				// the ParameterUse was associated to a ComboBox
-				HashMap params = new HashMap();
-				params.put(AdmintoolsConstants.PAGE, "DetailParameterPage");
-				Vector vector = new Vector();
-				vector.add(documents.toString());
-				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "paruseLovId", "1068", vector, params);
-				errorHandler.addError(error);
-			}
+			//	HashMap params = new HashMap();
+			//	params.put(AdmintoolsConstants.PAGE, "DetailParameterPage");
+			//	Vector vector = new Vector();
+			//	vector.add(documents.toString());
+			//	EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "paruseLovId", "1068", vector, params);
+			//	errorHandler.addError(error);
+			//}
 			
 		}
 	}

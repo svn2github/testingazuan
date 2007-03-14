@@ -139,7 +139,7 @@
           
           
           html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;'>";
-          html += "<b>" + correl.nameCondition + "</b> the value of the parameter <b>" + correl.nameParFather + "</b>";     
+          html += "<span style='font-size:10pt;'><b>" + correl.nameCondition + "</b> the value of the parameter <b>" + correl.nameParFather + "</b></span>";     
           html += "</td>";
          
          
@@ -279,7 +279,7 @@
 		blockHtml += "<table>";
 		blockHtml += "	<tr>";
 		blockHtml += "		<td width='50%' style='color:#074B88;font-weight:bold;'>";
-		blockHtml += "		 	<spagobi:message key = "SBIDev.listObjParuses.dependsFrom" args="<%=biParam.getLabel()%>"/>";
+		blockHtml += "		 	<span style='font-size:10pt;'><spagobi:message key = "SBIDev.listObjParuses.dependsFrom" args="<%=biParam.getLabel()%>"/></span>";
 		blockHtml += "		</td>";
 		blockHtml += "		<td>";
 		blockHtml += "			<select style='width:150px' id='dependSelect' name='dependFrom'>";
@@ -303,11 +303,13 @@
 		blockHtml += "		</td>";
 		blockHtml += "	</tr>";
 		blockHtml += "	<tr>";
-		blockHtml += "		<td width='50%' style='color:#074B88;font-weight:bold;'>";
-		blockHtml += "			<spagobi:message key="SBIDev.listObjParuses.filterOperator" />";
+		blockHtml += "		<td width='50%' >";
+		blockHtml += "		  <br/>";
+		blockHtml += "			<span style='font-size:10pt;color:#074B88;font-weight:bold;'><spagobi:message key="SBIDev.listObjParuses.filterOperator" /></span>";
+		blockHtml += "			<span style='font-size:8pt;color:#074B88;'><spagobi:message key="SBIDev.listObjParuses.filterOperatorExplanation" args="<%=biParam.getLabel()%>" /></span>";
 		blockHtml += "		</td>";
 		blockHtml += "		<td>";
-		blockHtml += "		  <br/>";
+		//blockHtml += "		  <br/>";
 		blockHtml += "			<select style='width:150px' id='conditionSelect' name='condition'>";
 		selLogOper = " ";
 		if(correlation!=null) {
@@ -392,9 +394,9 @@
 		blockHtml += "<hr/>";
 		blockHtml += "<table style='border-spacing:5px;border-collapse:separate;'>";
 		blockHtml += "<tr height='30px'>";
-		blockHtml += "<td style='color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.isActive" /></td>";
-		blockHtml += "<td style='color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.paruseName" /></td>";
-		blockHtml += "<td style='color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.paruseCols" /></td>";
+		blockHtml += "<td style='font-size:10pt;color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.isActive" /></td>";
+		blockHtml += "<td style='font-size:10pt;color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.paruseName" /></td>";
+		blockHtml += "<td style='font-size:10pt;color:#074B88;' align='center'><spagobi:message key="SBIDev.listObjParuses.paruseCols" /></td>";
 		blockHtml += "</tr>";
 		<%
 		  Iterator itallpar = allParuses.iterator();
@@ -410,7 +412,7 @@
 		checkActive = " ";
     if(parusesetting!=null) {
         if(parusesetting.active) {
-            checkActive  = " checked ";
+            checkActive  = " checked='true' ";
         }
     }
 		blockHtml += "    <input type='checkbox' "+checkActive+" id='corractive_<%=paruse.getUseID()%>' name='paruse_id' value='<%=paruse.getUseID()%>' />";

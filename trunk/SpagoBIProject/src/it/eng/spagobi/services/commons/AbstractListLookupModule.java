@@ -1,9 +1,13 @@
 package it.eng.spagobi.services.commons;
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.RequestContainerPortletAccess;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
@@ -25,16 +29,73 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 
+	private EMFErrorHandler errorHand = null;
+	
 	protected SessionContainer getSession(SourceBean request) {
 		RequestContainer reqCont = getRequestContainer();
 		return reqCont.getSessionContainer();		
 	}
 	
-	protected ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
+	protected void getErroHandler() {
+		ResponseContainer respCont = getResponseContainer();
+		errorHand = respCont.getErrorHandler();
+	}
+	
+	
+	public ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
+		// get error handler
+		getErroHandler();
 		// get biobject from the session
 		BIObject obj = (BIObject) getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		// get the id of the lookup parameter
+		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
+		if(objParIdStr==null) 
+			objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
+		Integer objParId = Integer.valueOf(objParIdStr);
+		// get the id of the paruse correlated 
+		Integer correlatedParuseId = Integer.valueOf((String) request.getAttribute("correlated_paruse_id"));
+		// get dao of objparuse (correlation)
+		IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+		// get all the objparuse associated to the parameter and paruse
+		List ops = objParuseDAO.loadObjParuse(objParId, correlatedParuseId);
+		if( (ops!=null) && (ops.size()!=0) ) {
+			if(ops.size()==1) {
+				ObjParuse objpuse = (ObjParuse)ops.get(0);
+				list = filterForCorrelation(list, objpuse, obj);
+			} else if (ops.size()==2) {
+				ObjParuse objpuse1 = (ObjParuse)ops.get(0);
+				ObjParuse objpuse2 = (ObjParuse)ops.get(1);
+				list = evaluateSingleLogicOperation(objpuse1,objpuse2,list, obj);
+			} else {
+				// build the expression
+				int posinlist = 0;
+				String expr = "";
+				Iterator iterOps = ops.iterator();
+				while(iterOps.hasNext())  {
+					ObjParuse op = (ObjParuse)iterOps.next();
+					expr += op.getPreCondition() + posinlist + op.getPostCondition() + op.getLogicOperator();
+					posinlist ++;
+				}
+				expr = expr.trim();
+				expr = "(" + expr;
+				expr = expr + ")";
+				list = evaluateExpression(expr, list, ops, obj);
+			}
+		}
+		return list;
+	}
+	
+	public ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list, HttpServletRequest httpRequest) throws Exception {
+		RequestContainer reqCont = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		ResponseContainer respCont = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+		errorHand = respCont.getErrorHandler();
+		SessionContainer sessionCont = reqCont.getSessionContainer();
+		// get biobject from the session
+		BIObject obj = (BIObject) sessionCont.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		// get the id of the lookup parameter
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
 		if(objParIdStr==null) 
@@ -296,12 +357,10 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 				case 1: valueFilter = (String) valuesFilter.get(0);
 						if (valueFilter != null && !valueFilter.equals(""))
 							return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
-								objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-								getResponseContainer().getErrorHandler());
+								objParuse.getFilterColumn(), objParuse.getFilterOperation(), errorHand);
 						else return list;
 				default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
-								objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-								getResponseContainer().getErrorHandler());
+								objParuse.getFilterColumn(), objParuse.getFilterOperation(), errorHand);
 			}
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
@@ -312,70 +371,5 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 	
 	
 	
-	/*
-	
-	
-	private ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
-		
-
-		
-		// get object from the session
-		BIObject obj = (BIObject) getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-        
-		List biparams = obj.getBiObjectParameters();
-		Iterator iterParams = null;
-		
-		// find the parameter
-		BIObjectParameter lookupBIParameter = null;
-		iterParams = biparams.iterator();
-    	while (iterParams.hasNext()) {
-    		BIObjectParameter aBIParameter = (BIObjectParameter) iterParams.next();
-    		if (aBIParameter.getId().equals(objParId)) {
-    			lookupBIParameter = aBIParameter;
-    			break;
-    		}
-    	}
-		
-		// find the parameter for the correlation
-		BIObjectParameter objParFather = null;
-        iterParams = biparams.iterator();
-        while (iterParams.hasNext()) {
-        	BIObjectParameter aBIObjectParameter = (BIObjectParameter) iterParams.next();
-        	if (aBIObjectParameter.getId().equals(objParFatherId)) {
-        		objParFather = aBIObjectParameter;
-        		break;
-        	}
-        }
-        IParameterDAO parameterDAO = DAOFactory.getParameterDAO();
-        Parameter parameter = parameterDAO.loadForDetailByParameterID(objParFather.getParID());
-        String valueTypeFilter = parameter.getType();
-        
-		String valueFilter = "";
-		List valuesFilter = objParFather.getParameterValues();
-		if (valuesFilter == null) return list;
-
-		switch (valuesFilter.size()) {
-			case 0: return list;
-			case 1: valueFilter = (String) valuesFilter.get(0);
-					if (valueFilter != null && !valueFilter.equals("")) {
-						ListIFace filteredList = DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
-							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-							getResponseContainer().getErrorHandler());
-						deselectFilteredValues(lookupBIParameter, filteredList);
-						return filteredList;
-					}
-					else return list;
-			default: 
-				ListIFace filteredList = DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
-							objParuse.getFilterColumn(), objParuse.getFilterOperation(), 
-							getResponseContainer().getErrorHandler());
-				deselectFilteredValues(lookupBIParameter, filteredList);
-				return filteredList;
-		}
-	}
-	
-	
-	
-	*/
 	
 }

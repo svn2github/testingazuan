@@ -369,7 +369,9 @@ public class DelegatedBasicListService {
 			params.put(Constants.NOME_MODULO,
 					"DelegatedBasicListService::filterList");
 			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.WARNING, SpagoBIConstants.VALUE_FILTER, "1070", null, params);
-			errorHandler.addError(error);
+			if(errorHandler!=null) {
+				errorHandler.addError(error);
+			}
 			return list;
 		}
 		if ((columnfilter == null) || (columnfilter.trim().equals(""))) {
@@ -396,7 +398,9 @@ public class DelegatedBasicListService {
 			try {
 				doesRowSatisfyCondition = doesRowSatisfyCondition(row, valuefilter, valuetypefilter, columnfilter, typeFilter);
 			} catch (EMFValidationError error) {
-				errorHandler.addError(error);
+				if(errorHandler!=null) {
+					errorHandler.addError(error);
+				}
 				return list;
 			}
 			if (doesRowSatisfyCondition) newPaginator.addRow(row);

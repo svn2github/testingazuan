@@ -544,12 +544,14 @@
         }
 		    %>
 		    corr = null;
-		    
+		  
+		  if(indexCorr==null) {  
 		    // check if the correlation already exists
 		    if(correlationManager.correlationExist(valueDepSel, valueConSel)) {
-          alert('<spagobi:message key = "SBIDev.listObjParuses.correlationExist" />');
-          return;
-        }
+          		alert('<spagobi:message key = "SBIDev.listObjParuses.correlationExist" />');
+          		return;
+        	}
+          }
 		    
 		    if(indexCorr==null) {
           corr = new correlation(valueDepSel, nameDepSel, valueConSel, nameConSel, paruseSettings);

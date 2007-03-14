@@ -31,6 +31,8 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.paginator.basic.ListIFace;
+import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.BIObject;
@@ -45,13 +47,16 @@ import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
+import it.eng.spagobi.bo.lov.LovToListService;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +76,8 @@ public class DynamicPageTag extends TagSupport {
 	private String modality = null;
 	private String actor = null;
 	private String moduleName = "";
+	private SourceBean request = null;
+	private HttpServletRequest httpRequest = null;
 	
 	public static final int PIXEL_PER_CHAR = 9;
 	
@@ -114,6 +121,11 @@ public class DynamicPageTag extends TagSupport {
 	}
 	
 	public int doStartTag() throws JspException {
+		httpRequest = (HttpServletRequest) pageContext.getRequest();
+		RequestContainer requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
+		request = requestContainer.getServiceRequest();
+
+		
 		BIObject obj = getBIObject();
 		List parameters = obj.getBiObjectParameters();
 		if (parameters != null && parameters.size() > 0) {
@@ -355,7 +367,8 @@ public class DynamicPageTag extends TagSupport {
 	 * @return The label of the BIObjectParameter of dependancy, if any
 	 */
 	private String createParameterInputboxDiv(BIObjectParameter biparam, StringBuffer htmlStream) {
-				
+		String objParFathLbl = null;
+		
 		String typeCode = getModalityValue(biparam).getITypeCd();
 		
 		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
@@ -372,8 +385,31 @@ public class DynamicPageTag extends TagSupport {
 				selectionType = "LIST";
 		}			
 		
+		// looks for dependencies 
+		Object[] results = getObjectFather(biparam);
+		BIObjectParameter objParFather = (BIObjectParameter)results[1];
+		ObjParuse objParuse = (ObjParuse)results[0];
+		if (objParFather != null && objParuse != null) {
+			// the BIobjectParameter is correlated to another BIObjectParameter
+			htmlStream.append("<input type='hidden' name='correlatedParuseIdForObjParWithId_" + biparam.getId() + "' value='" + objParuse.getParuseId() + "' />\n");
+			objParFathLbl=  objParFather.getLabel();
+		}
+		
+		// search for biparameter which dependes from this
+		List lblBiParamDependent = new ArrayList();
+		try {
+			lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(biparam.getId());
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "createParameterInputboxDiv", "Error while recovering dependencies " +
+					            " for biparm label " + biparam.getLabel(), e);
+			lblBiParamDependent = new ArrayList();
+		}
+			
+		
+		
 		if(selectionType.equalsIgnoreCase("COMBOBOX")) {
-			createHTMLComboBox(biparam, htmlStream);
+			createHTMLComboBox(biparam, htmlStream, lblBiParamDependent);
 		}
 		else if(selectionType.equalsIgnoreCase("RADIOBUTTON")) {
 			createHTMLRadioButton(biparam, htmlStream);		
@@ -385,20 +421,8 @@ public class DynamicPageTag extends TagSupport {
 			createHTMLCheckListButton(biparam, false, htmlStream);
 		}
 		
-		if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE)) {			
-			// looks for dependencies (this will be ignored if the lov is not of query type)
-			Object[] results = getObjectFather(biparam);
-			BIObjectParameter objParFather = (BIObjectParameter)results[1];
-			ObjParuse objParuse = (ObjParuse)results[0];
-			
-			if (objParFather != null && objParuse != null) {
-				// the BIobjectParameter is correlated to another BIObjectParameter
-				htmlStream.append("<input type='hidden' name='correlatedParuseIdForObjParWithId_" + biparam.getId() + "' value='" + objParuse.getParuseId() + "' />\n");
-				return objParFather.getLabel();
-			}
-		}
 		
-		return null;		
+		return objParFathLbl;		
 	}
 	
 	private void createHTMLManInputButton(BIObjectParameter biparam, StringBuffer htmlStream) {
@@ -413,7 +437,7 @@ public class DynamicPageTag extends TagSupport {
 	}
 	
 	
-	private void createHTMLListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream) {
+	private void createHTMLListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream) {	
 		htmlStream.append("<input type='text' style='width:230px;' " + 
 						  	"name='" + biparam.getParameterUrlName() +"Desc' "+
 						  	"id='" + biparam.getParameterUrlName() + "Desc' " +
@@ -431,6 +455,7 @@ public class DynamicPageTag extends TagSupport {
 	}	
 
 	private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream) {
+		
 		htmlStream.append("<input type='text' style='width:230px;' " + 
 					  	"name='" + biparam.getParameterUrlName() +"Desc' "+
 					  	"id='" + biparam.getParameterUrlName() + "Desc' " +
@@ -454,18 +479,31 @@ public class DynamicPageTag extends TagSupport {
 	 * @param biparam the parameter of the biobject
 	 * @param htmlStream the html of the combobox
 	 */
-	private void createHTMLComboBox(BIObjectParameter biparam, StringBuffer htmlStream) {
+	private void createHTMLComboBox(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
     	try{
+    		/*
+    		String onchangeStr = " onchange=\"refresh('"+biparam.getParameterUrlName()+"Desc','" +  
+			 											 biparam.getParameterUrlName()+"');";
+			 Iterator lblBiParamDependentIter = lblBiParamDependent.iterator();
+			 while(lblBiParamDependentIter.hasNext()) {
+				 String lbl = (String)lblBiParamDependentIter.next();
+				 onchangeStr += "reloadValuesFor"+lbl+"();";
+			 }
+			 onchangeStr += "\" ";
+    		*/
+    		
     		// create initial html
 	    	htmlStream.append("<select style='width:230px;' " +  
 	    			 			"name='" + biparam.getParameterUrlName() + "Desc' " +
 	    			 			"id='"+ biparam.getParameterUrlName()+ "Desc' " +
 	    			 			"class='portlet-form-field' " +
+	    			 			//onchangeStr +
 	    			 			"onchange=\"refresh('" + biparam.getParameterUrlName()+ "Desc', " +
-	    			 					  "'" + biparam.getParameterUrlName() + "')\" >\n");	    	
+	    			 					  "'" + biparam.getParameterUrlName() + "')\" >\n");	
+	    			 			//" >\n");
 	    	htmlStream.append("<option value=''> </option>\n");
             // get the lov associated to the parameter 
-	    	Parameter par = biparam.getParameter();
+	    	Parameter par = biparam.getParameter();	    	
 	    	ModalitiesValue lov = par.getModalityValue();
 	    	// build the ILovDetail object associated to the lov
 	    	String lovProv = lov.getLovProvider();
@@ -476,6 +514,35 @@ public class DynamicPageTag extends TagSupport {
 	    	if((lovResult==null) || (lovResult.trim().equals(""))) {
 	    		lovResult = lovProvDet.getLovResult(profile);
 	    	}
+	    	
+	    	Integer biparId = biparam.getId();
+	    	String biparIdStr = biparId.toString();
+	    	Integer parId = par.getId();
+			Integer lovId = lov.getId();
+	    	String lovIdStr = lovId.toString();
+	    	
+	    	Integer parusecorrId = null;
+	    	IParameterUseDAO parusedao = DAOFactory.getParameterUseDAO();
+	    	List paruses = parusedao.loadParametersUseByParId(parId);
+	    	Iterator iterParuse = paruses.iterator();
+	    	while(iterParuse.hasNext()) {
+	    		 ParameterUse paruse = (ParameterUse)iterParuse.next();
+	    	     if(paruse.getIdLov().equals(lovId)) {
+	    	    	 parusecorrId = paruse.getUseID();
+	    	     }
+	    	}
+	    	
+	    	if(parusecorrId!=null) {			
+				request.setAttribute("LOOKUP_PARAMETER_ID", biparIdStr);
+				request.setAttribute("correlated_paruse_id", parusecorrId.toString());
+		    	LovToListService ltls = new LovToListService(lovResult);
+		    	ListIFace listvalues = ltls.getLovAsListService();
+		    	listvalues = ltls.filterListForCorrelatedParam(request, listvalues, httpRequest);
+		    	PaginatorIFace listPagin = listvalues.getPaginator();
+		    	SourceBean allrows = listPagin.getAll();
+		    	lovResult = allrows.toXML(false);
+	    	}
+	    	
 	    	// get value and description column
 	    	String valueColumn = lovProvDet.getValueColumnName();
 	    	String descriptionColumn = lovProvDet.getDescriptionColumnName();
@@ -495,6 +562,8 @@ public class DynamicPageTag extends TagSupport {
 	    	}
 	    	// close combo box
 			htmlStream.append("</select>\n");
+			
+			
 	    }catch (Exception ex) {
 	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 	    			            "createHTMLComboBox", "Error while creating html combo box " +

@@ -74,7 +74,7 @@ public class ListTag extends TagSupport
 	protected Vector _columns = null;
     protected String labelLinkSaltoPagina;
     protected String _filter = null;
-    private HttpServletRequest httpRequest = null;
+    protected HttpServletRequest httpRequest = null;
     protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
     

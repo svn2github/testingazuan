@@ -1,5 +1,7 @@
 package it.eng.spagobi.utilities.urls;
 
+import it.eng.spagobi.utilities.ChannelUtilities;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -10,10 +12,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class WebUrlBuilder implements IUrlBuilder{
 
-	private String baseURL="/spagobi/servlet/AdapterHTTP";
-	private String baseResourceURL="/spagobi/";
-
 	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
+		String contextName = ChannelUtilities.getSpagoBIContextName(aHttpServletRequest);
+		String baseURL = contextName + "/servlet/AdapterHTTP";
 		StringBuffer sb = new StringBuffer();
 		sb.append(baseURL);
 		if (parameters != null){
@@ -37,11 +38,12 @@ public class WebUrlBuilder implements IUrlBuilder{
 	}
 	
 	public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
+		String contextName = ChannelUtilities.getSpagoBIContextName(aHttpServletRequest);
 		originalUrl = originalUrl.trim();
 		if(originalUrl.startsWith("/")) {
 			originalUrl = originalUrl.substring(1);
 		}
-		originalUrl = baseResourceURL + originalUrl;
+		originalUrl = contextName + "/" + originalUrl;
 		return originalUrl;
 	}
 

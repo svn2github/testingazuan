@@ -8,6 +8,7 @@
          import="it.eng.spago.base.*"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Iterator"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
 
@@ -18,6 +19,7 @@
 	Integer viewWidth = (Integer)moduleResponse.getAttribute("VIEW_WIDTH");
 	Iterator containerIter = containerList.iterator();
 %>
+
 
 <html>
   <head>
@@ -79,7 +81,8 @@
 				SourceBean documentSB = (SourceBean)tabSB.getAttribute("SBIDOCUMENT");
 				String docLabel = (String)documentSB.getAttribute("documentLabel");
 				String docParameters = (String)documentSB.getAttribute("parameters");
-				String link = "/spagobi/servlet/AdapterHTTP?PAGE=DirectExecutionPage" + 
+				String contexName = ChannelUtilities.getSpagoBIContextName(request);
+				String link = contexName + "/servlet/AdapterHTTP?PAGE=DirectExecutionPage" + 
 						      "&DOCUMENT_LABEL=" + docLabel + 
 						      "&DOCUMENT_PARAMETERS="+docParameters;
 				// calculate width iframe

@@ -51,8 +51,8 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 
 	HttpServletRequest httpRequest = null;
 	RequestContainer reqCont = null;
-	private IUrlBuilder urlBuilder = null;
-	private IMessageBuilder msgBuilder = null;
+	protected IUrlBuilder urlBuilder = null;
+	protected IMessageBuilder msgBuilder = null;
 	int progrJSTree = 0;
 	IEngUserProfile profile = null;
 	protected int dTreeRootId = -100;

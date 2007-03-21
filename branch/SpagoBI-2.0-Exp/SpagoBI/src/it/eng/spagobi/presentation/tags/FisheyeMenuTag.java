@@ -14,6 +14,8 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -156,6 +158,9 @@ public class FisheyeMenuTag extends TagSupport {
 			                    String height, String resizable) {
 		
 		String contexName = ChannelUtilities.getSpagoBIContextName(httpRequest);
+		if(link.startsWith("/")) {
+			link = link.substring(1);
+		}
 		String htmlFrame = "<div style='position:absolute;top:30px;left:30px;' id='loading"+code+"'>" +
 								"<center>" +
 									"<br/><br/>" +
@@ -168,10 +173,13 @@ public class FisheyeMenuTag extends TagSupport {
 							"<iframe id='frame"+code+"' " +
 									 "onload='parent.closeLoading"+code+"()' " +
 									 "style='width:"+width+"px;height:"+height+"px;visibility:hidden;' " +
-									 "frameborder='0' scrolling='auto' noresize  src='"+link+"' />";
+									 "frameborder='0' scrolling='auto' noresize  src='"+contexName+"/"+link+"' />";
 		
+        if(iconUrl.startsWith("/")){
+        	iconUrl = iconUrl.substring(1);
+        }
 		htmlStream.append("<div class=\"dojo-FisheyeListItem\" onClick=\"open_win_"+code+"();\" "); 
-		htmlStream.append("		dojo:iconsrc=\""+iconUrl+"\" caption=\""+title+"\"> ");
+		htmlStream.append("		dojo:iconsrc=\""+contexName+"/"+iconUrl+"\" caption=\""+title+"\"> ");
 		htmlStream.append("</div>\n");
 		
 		jsStream.append("<script>\n");

@@ -52,6 +52,7 @@ public class ViewBuilderModule extends AbstractModule {
 		response.setAttribute("CONTAINERS_LIST", containers);
 		response.setAttribute("VIEW_HEIGHT", heightView);
 		response.setAttribute("VIEW_WIDTH", widthView);
+		response.setAttribute("VIEW_CODE", viewCode);
 	}
 
 }

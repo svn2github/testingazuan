@@ -148,14 +148,14 @@ public class FisheyeMenuTag extends TagSupport {
 		String iconUrl = (String)viewSB.getAttribute("iconUrl");
 		String viewCode = (String)viewSB.getAttribute("code");
 		String viewTitle = (String)viewSB.getAttribute("title");
-		String link = "/spagobi/servlet/AdapterHTTP?PAGE=ViewBuilderPage&viewCode="+viewCode;
-		createMenuItem(htmlStream, jsStream, viewCode, iconUrl, viewTitle, link, width, height, "false");
+		String link = "/servlet/AdapterHTTP?PAGE=ViewBuilderPage&viewCode="+viewCode;
+		createMenuItem(htmlStream, jsStream, viewCode, iconUrl, viewTitle, link, width, height, "true");
 	}
 	
 	
 	private void createMenuItem(StringBuffer htmlStream, StringBuffer jsStream, String code, 
 			                    String iconUrl, String title, String link, String width, 
-			                    String height, String resizable) {
+			                    String height, String callResizeCallback) {
 		
 		String contexName = ChannelUtilities.getSpagoBIContextName(httpRequest);
 		if(link.startsWith("/")) {
@@ -171,6 +171,7 @@ public class FisheyeMenuTag extends TagSupport {
 								"</center>" +
 							"</div>" +
 							"<iframe id='frame"+code+"' " +
+							         "name=frame"+code+"' " +  
 									 "onload='parent.closeLoading"+code+"()' " +
 									 "style='width:"+width+"px;height:"+height+"px;visibility:hidden;' " +
 									 "frameborder='0' scrolling='auto' noresize  src='"+contexName+"/"+link+"' />";
@@ -192,7 +193,7 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append(" win"+code+"=null;\n");
 		jsStream.append(" function open_win_"+code+"() { \n");
 		jsStream.append(" 	if(win"+code+"==null) { \n");
-		jsStream.append("		win"+code+" = new Window('win"+code+"', {className: \"alphacube\", title: \""+title+"\", resizable:"+resizable+", destroyOnClose:false, width:"+width+", height:"+height+"});\n");
+		jsStream.append("		win"+code+" = new Window('win"+code+"', {className: \"alphacube\", title: \""+title+"\", resizable:true, destroyOnClose:false, width:"+width+", height:"+height+"});\n");
 		//jsStream.append("		win"+code+".getContent().innerHTML=\"<iframe id='frame"+code+"' style='width:"+width+"px;height:"+height+"px;' frameborder='0' scrolling='auto' noresize src='"+link+"' />\";\n"); 
 		jsStream.append("		win"+code+".getContent().innerHTML=\""+htmlFrame+"\";\n");
 		jsStream.append("		win"+code+".showCenter(false);\n");
@@ -212,9 +213,12 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append("				if(win == win"+code+") { \n");
 		jsStream.append("					var heightwin = win.getSize().height;\n");
 		jsStream.append("				 	var widthwin = win.getSize().width;\n");
-		jsStream.append("				 	var frameapp = document.getElementById('iframe"+code+"');\n");
+		jsStream.append("				 	var frameapp = document.getElementById('frame"+code+"');\n");
 		jsStream.append("				 	frameapp.style.height=heightwin + 'px';\n");
 		jsStream.append("				 	frameapp.style.width=widthwin + 'px'; \n");
+		if(callResizeCallback.equalsIgnoreCase("true")){
+			jsStream.append("				frameapp.contentWindow.resizeContent"+code+"(widthwin, heightwin);\n");
+		}
 		jsStream.append("				}\n");
 		jsStream.append("			}\n");  
 		jsStream.append("		}\n");
@@ -245,6 +249,21 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append("		Windows.addObserver(observerMaximize"+code+");\n");
 		jsStream.append("		Windows.addObserver(observerMinimize"+code+");\n");
 		jsStream.append("		Windows.addObserver(observerClose"+code+");\n");
+		if(callResizeCallback.equalsIgnoreCase("true")){
+			jsStream.append("		observerEndResize"+code+" = {\n");
+			jsStream.append("			onEndResize: function(eventName, win) {\n");
+			jsStream.append("				if(win == win"+code+") { \n");
+			jsStream.append("					var heightwin = win.getSize().height;\n");
+			jsStream.append("				 	var widthwin = win.getSize().width;\n");
+			jsStream.append("				 	var frameapp = document.getElementById('frame"+code+"');\n");
+			jsStream.append("				 	frameapp.style.height=heightwin + 'px';\n");
+			jsStream.append("				 	frameapp.style.width=widthwin + 'px'; \n");
+			jsStream.append("				    frameapp.contentWindow.resizeContent"+code+"(widthwin, heightwin);\n");
+			jsStream.append("				}\n");
+			jsStream.append("			}\n");  
+			jsStream.append("		}\n");
+			jsStream.append("		Windows.addObserver(observerEndResize"+code+");\n");
+		}
 		jsStream.append("	} else {\n");
 		jsStream.append("		win"+code+".show();\n");
 		jsStream.append("	}\n");

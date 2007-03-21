@@ -12,7 +12,7 @@
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/error.jsp"/>
+        		<ITEM prog="0" resource="/jsp/wapp/error.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

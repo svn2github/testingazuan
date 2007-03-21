@@ -17,9 +17,11 @@
 	List containerList = (List)moduleResponse.getAttribute("CONTAINERS_LIST"); 
 	Integer viewHeight = (Integer)moduleResponse.getAttribute("VIEW_HEIGHT");
 	Integer viewWidth = (Integer)moduleResponse.getAttribute("VIEW_WIDTH");
+	String viewCode = (String)moduleResponse.getAttribute("VIEW_CODE");
 	Iterator containerIter = containerList.iterator();
+	
+	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 %>
-
 
 <html>
   <head>
@@ -28,7 +30,7 @@
     <script type="text/javascript">
 	     var djConfig = {isDebug: false, debugAtAllCosts: false};
     </script>
-    <script type="text/javascript" src="/spagobi/js/dojo/dojo.js"></script>
+    <script type="text/javascript" src="<%=contextName%>/js/dojo/dojo.js"></script>
     <script language="JavaScript" type="text/javascript">
     	dojo.require("dojo.widget.TabContainer");
 		dojo.require("dojo.widget.LinkPane");
@@ -55,7 +57,10 @@
 
 
   <body>
+  
 	<%
+	    StringBuffer jsResize = new StringBuffer();
+	    jsResize.append("<script>function resizeContent"+viewCode+"(width, height) {\n");
 		while(containerIter.hasNext()) {
 			SourceBean containerSB = (SourceBean)containerIter.next();
 			String widthcont = (String)containerSB.getAttribute("width");
@@ -103,9 +108,22 @@
 				int heightframe = (viewHeight.intValue() * heightContInt.intValue()) / 100;
 				heightframe = heightframe - 50;
 				
+				jsResize.append("var widthCont_"+viewCode+"_tag"+prog+"_"+idCont+" = ((width * "+widthContInt+")/100);\n");
+				jsResize.append("var heightCont_"+viewCode+"_tag"+prog+"_"+idCont+" = ((height * "+heightContInt+")/100);\n");
+				jsResize.append("widthCont_"+viewCode+"_tag"+prog+"_"+idCont+" = widthCont_"+viewCode+"_tag"+prog+"_"+idCont+" - 30;\n");
+				jsResize.append("var heightCont_"+viewCode+"_tag"+prog+"_"+idCont+" = ((height * "+heightContInt+")/100);\n");
+				jsResize.append("heightCont_"+viewCode+"_tag"+prog+"_"+idCont+" = heightCont_"+viewCode+"_tag"+prog+"_"+idCont+" - 50;\n");
+				jsResize.append("var frame_"+viewCode+"_tag"+prog+"_"+idCont+" = document.getElementById('"+idCont+"_"+idTab+"');\n");
+				jsResize.append("frame_"+viewCode+"_tag"+prog+"_"+idCont+".style.height=heightCont_"+viewCode+"_tag"+prog+"_"+idCont+" + 'px';\n");
+				jsResize.append("frame_"+viewCode+"_tag"+prog+"_"+idCont+".style.width=widthCont_"+viewCode+"_tag"+prog+"_"+idCont+" + 'px'; \n");
+				
+				
 	%>
 				<div id="tab<%=prog%>_<%=idCont%>" dojoType="ContentPane" label="<%=title%>">
-					<iframe id="<%=idCont%>_<%=idTab%>" width="<%=widthiframe%>" width="<%=heightframe%>" src="<%=link%>" frameborder="0" scrolling="no"></iframe>
+					<%--
+					<iframe id="<%=idCont%>_<%=idTab%>" width="<%=widthiframe%>" width="<%=heightframe%>" src="<%=link%>" frameborder="0" scrolling="auto"></iframe>
+        			--%>
+        			<iframe id="<%=idCont%>_<%=idTab%>" style="width:<%=widthiframe%>;height<%=heightframe%>;" src="<%=link%>" frameborder="0" scrolling="auto"></iframe>
         		</div>
 	<%
 				prog ++;
@@ -114,7 +132,9 @@
 			</div>			
 	<%
 		}
+		jsResize.append("}</script>\n");
 	%>
+	<%=jsResize.toString()%>
   </body>
   
 </html>

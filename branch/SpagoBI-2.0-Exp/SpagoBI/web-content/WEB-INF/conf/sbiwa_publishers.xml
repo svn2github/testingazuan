@@ -60,7 +60,7 @@
   	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/error.jsp"/>
+        		<ITEM prog="0" resource="/jsp/wapp/error.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>

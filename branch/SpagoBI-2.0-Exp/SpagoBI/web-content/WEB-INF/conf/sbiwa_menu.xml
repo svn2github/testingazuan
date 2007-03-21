@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MENU>
+	
+	<APPLICATION code="EngMan" 
+	             title="Engines Management"  
+	             functionality="EnginesManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListEnginesPage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/engines64.png">
+	</APPLICATION>
+	<APPLICATION code="FunctMan" 
+	             title="Functionalities Management"  
+	             functionality="FunctionalitiesManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR&amp;OPERATION=FUNCTIONALITIES_OPERATION" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/functionalities64.png">
+	</APPLICATION>
+	<APPLICATION code="LovMan" 
+	             title="List of Values Management"  
+	             functionality="LovsManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListLovsPage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/lovs64.png">
+	</APPLICATION>
+	<APPLICATION code="ConstraintMan" 
+	             title="Parameter Constraints Management"  
+	             functionality="ConstraintManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=LISTMODALITIESCHECKSPAGE" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/checks64.png">
+	</APPLICATION>
+	<APPLICATION code="ParameterMan" 
+	             title="Parameters Management"  
+	             functionality="ParameterManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListParametersPage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/parameters64.png">
+	</APPLICATION>
+	<APPLICATION code="DocumentMan" 
+	             title="Business Documents Management"  
+	             functionality="DocumentManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	
+	<VIEW code="MonitorView" 
+	      title="Monitor"  
+	      role="Administrator" 
+	      width="800" 
+	      height="450"
+	      iconUrl="/spagobi/img/wapp/monitorView64.png">
+	      <CONTAINERS>
+		      <CONTAINER id="cont1" width="44%" height="44%" top="3%" left="3%" style="float:left;">
+		      	<TAB title="first tab" id="tab1">
+		      		<SBIDOCUMENT documentLabel="DASH_STORE_EFF" parameters=""/>
+		      	</TAB>
+		      	<TAB title="second tab" id="tab2" >
+		      		<SBIDOCUMENT documentLabel="TOP_PRODUCTS" parameters=""/>
+		      	</TAB>
+		      </CONTAINER>
+		      <CONTAINER id="cont2" width="44%" height="44%" top="3%" left="53%" style="float:left;">
+		      	<TAB title="Questo e un titolo lungo" id="tab1" >
+		      		<SBIDOCUMENT documentLabel="DASH_EFFORT" parameters=""/>
+		      	</TAB>	
+		      </CONTAINER>
+		      <CONTAINER id="cont3" width="94%" height="44%" top="53%" left="3%" style="clear:left;">
+		      	<TAB title="Anche Questo e un titolo lungo" id="tab1" >
+		      		<SBIDOCUMENT documentLabel="DASH_HEALTH" parameters=""/> 
+		      	</TAB>	
+		      </CONTAINER>
+		  </CONTAINERS>
+	</VIEW>
+	
+</MENU>

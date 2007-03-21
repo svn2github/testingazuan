@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Created-By: Apache Maven
-Built-By: NQT
-Build-Jdk: 1.5.0_05
-Extension-Name: exo-portal.web.portal
-Implementation-Title: exo-portal.web.portal
-Implementation-Version: 1.1
-

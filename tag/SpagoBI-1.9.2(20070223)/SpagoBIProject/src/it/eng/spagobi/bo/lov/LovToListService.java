@@ -13,6 +13,8 @@ import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.List;
 
@@ -34,6 +36,22 @@ public class LovToListService {
 		SourceBean lovResultSB = lovResultHandler.getLovResultSB();
 		
 		PaginatorIFace paginator = new GenericPaginator();
+		
+		int numRows = 10;
+		try{
+			ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+			String lookupnumRows = (String)spagoconfig.getAttribute("SPAGOBI.LOOKUP.numberRows");
+			if(lookupnumRows!=null) {
+				numRows = Integer.parseInt(lookupnumRows);
+			}
+		} catch(Exception e) {
+			numRows = 10;
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					            "getListServiceBaseConfig", "Error while recovering number rows for " +
+					            "lookup from configuration, usign default 10", e);
+		}
+		paginator.setPageSize(numRows);
+		
 		List rows = null;
 		
 		if (lovResultSB != null) {

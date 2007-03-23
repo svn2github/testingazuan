@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGES>
+	
+	<PAGE name="ExecuteJasperReportPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ExecuteJasperReportPage" target="ExecuteJasperReportModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ExecuteJasperReportModule"/>
+    	</MODULES>
+  	</PAGE>
+	
+
+</PAGES>
+

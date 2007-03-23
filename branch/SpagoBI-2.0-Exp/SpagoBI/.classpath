@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_06"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v5.0"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.exoplatform.eclipse.core.EXO_PORTLET_LIBRARY"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
+</classpath>

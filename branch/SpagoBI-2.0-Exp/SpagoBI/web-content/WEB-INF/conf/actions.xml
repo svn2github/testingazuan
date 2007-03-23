@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+  <ACTION class="it.eng.spagobi.services.actions.SessionExpiredAction" name="SESSION_EXPIRED_ACTION" scope="REQUEST">
+    <CONFIG/>
+  </ACTION>
+  <ACTION name="START_ACTION" class="it.eng.spago.dispatching.action.util.PublishAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+  <ACTION name="LOGIN_ACTION_SBI_SETTINGS" class="it.eng.spagobi.services.actions.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_DEVELOPMENT_CONTEXT" class="it.eng.spagobi.services.actions.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_ADMINISTRATION_CONTEXT" class="it.eng.spagobi.services.actions.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+</ACTIONS>
+

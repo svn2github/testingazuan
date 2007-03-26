@@ -11,10 +11,18 @@
 <%@ page import="java.util.HashMap"%>
 
 <% 
+	//get module response
+	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
+
+	//try to get execution identifier and relative session
+	String executionIdentifier = (String)moduleResponse.getAttribute("EXECUTION_IDENTIFIER");
+	if(executionIdentifier!=null) {
+		aSessionContainer = (SessionContainer)aSessionContainer.getAttribute(executionIdentifier);
+	}
+
 	// get the actor type from the session
 	String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-    // get module response
-    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
+    
     // get the list of possible role
     List roles = (List)moduleResponse.getAttribute("roles");
     Iterator iterroles = roles.iterator();
@@ -26,7 +34,11 @@
    	formActPars.put(AdmintoolsConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
    	formActPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE);
    	formActPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    String formAct = urlBuilder.getUrl(request, formActPars);
+    if(executionIdentifier!=null) {
+    	formActPars.put("EXECUTION_IDENTIFIER", executionIdentifier);
+    }
+   	String formAct = urlBuilder.getUrl(request, formActPars);
+    
     
     String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);  
 %>

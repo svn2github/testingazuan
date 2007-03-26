@@ -151,7 +151,7 @@
 	
 <!-- if there aren't parameters dont't show the parameter form  -->
 <%-- if(!noPars) { --%>
-	<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" />
+	<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" moduleName="ExecuteBIObjectModule" />
 <%-- } --%>
 
 

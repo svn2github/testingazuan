@@ -27,6 +27,8 @@ package it.eng.spagobi.booklets.constants;
 		public static final String BOOKLET_MANAGEMENT_MODULE = "BookletsManagementModule";
 		public static final String BOOKLET_COLLABORATION_PAGE = "BookletsCollaborationPage";
 		public static final String BOOKLET_COLLABORATION_MODULE = "BookletsCollaborationModule";
+		public static final String BOOKLET_REFRESH_PAGE = "BookletRefreshPage";
+		public static final String BOOKLET_REFRESH_MODULE = "BookletRefreshModule";
 		public static final String NAME_MODULE = "SPAGOBI[BOOKLET]";
 		public static final String PATH_BOOKLET_CONF = "PATH_BOOKLET_CONF";
 		public static final String OO_TEMPLATE_FILENAME = "OO_TEMPLATE_FILENAME";
@@ -54,6 +56,7 @@ package it.eng.spagobi.booklets.constants;
 		public static final String BOOKLET_PART_INDEX = "spagobi_booklet_pageindex";
 		public static final String BOOKLET_PRESENTATION_VERSIONS = "BOOKLET_PRESENTATION_VERSIONS";
 		public static final String BOOKLET_PRESENTATION_VERSION_NAME = "BOOKLET_PRESENTATION_VERSION_NAME";
+		public static final String BOOKLET_PRESENTATION_LIST_STATES = "BOOKLET_PRESENTATION_LIST_STATES";
 		
 		public static final String BOOKLET_BIOBJECT_ID = "BIOBJ_ID";
 		public static final String BOOKLET_SERVICE_TASK = "task";

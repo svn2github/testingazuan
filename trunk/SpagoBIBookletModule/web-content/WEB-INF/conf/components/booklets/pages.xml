@@ -26,6 +26,18 @@
       		<MODULE keep_instance="false" keep_response="false" name="BookletsCollaborationModule"/>
     	</MODULES>
   	</PAGE>
+  	
+  	<PAGE name="BookletRefreshPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="BookletRefreshPage" target="BookletRefreshModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="BookletRefreshModule"/>
+    	</MODULES>
+  	</PAGE>
 
   	
   	

@@ -6,5 +6,8 @@
 	
 	<MODULE class="it.eng.spagobi.booklets.modules.BookletsCollaborationModule" name="BookletsCollaborationModule">
 	</MODULE>
+	
+	<MODULE class="it.eng.spagobi.booklets.modules.BookletRefreshModule" name="BookletRefreshModule">
+	</MODULE>
    
 </MODULES>

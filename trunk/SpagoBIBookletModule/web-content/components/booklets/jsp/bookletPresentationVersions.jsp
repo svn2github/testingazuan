@@ -40,11 +40,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    if(moduleResponse==null){
 	   moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
    }
+   if(moduleResponse==null){
+	   moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_REFRESH_MODULE); 
+   }
+   
+   
    List presVersions = (List)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS);
    String pathConfBook = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
    
    PortletURL backUrl = renderResponse.createActionURL();
    backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
+   
+   PortletURL refreshUrl = renderResponse.createActionURL();
+   refreshUrl.setParameter("PAGE", BookletsConstants.BOOKLET_REFRESH_PAGE);
+   refreshUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
    
    PortletURL runCollaborationUrl = renderResponse.createActionURL();
    runCollaborationUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
@@ -94,6 +103,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
+			<td class='header-button-column-portlet-section'>
+				<a href='<%= refreshUrl.toString() %>'> 
+	      			<img class='header-button-image-portlet-section' 
+	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/refresh.gif")%>' 
+	      				 alt='<spagobi:message key = "book.refresh"  bundle="component_booklets_messages"/>' />
+				</a>
+			</td>
+			
 		</tr>
 	</table>
 	

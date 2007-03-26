@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
      
+       <PUBLISHER name="BookletsRefreshPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.booklets.publishers.BookletsRefreshPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+     
      <PUBLISHER name="BookletsManagementPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>

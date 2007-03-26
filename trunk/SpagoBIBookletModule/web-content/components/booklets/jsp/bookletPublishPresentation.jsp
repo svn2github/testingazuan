@@ -23,7 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page import="javax.portlet.PortletURL,
 				it.eng.spago.navigation.LightNavigationManager,
-				it.eng.spagobi.booklets.constants.BookletsConstants" %>
+				it.eng.spagobi.booklets.constants.BookletsConstants,
+				java.util.*,
+				it.eng.spagobi.bo.Domain" %>
 <%@page import="it.eng.spago.base.SourceBean"%>
 		
 		
@@ -31,6 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("BookletsCollaborationModule"); 
 	String pathBookConf = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 	String presVerName = (String)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+	List listStates = (List)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES);
 
 	String label = (String)moduleResponse.getAttribute("label");
 	if(label==null) label="";
@@ -121,7 +124,59 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<input class='portlet-form-input-field' style='width:230px;' type="text" 
  								name="description" id="description" value="<%=description%>" maxlength="160">
 					</div>
+					
+					
+					<!-- DISPLAY COMBO FOR STATE SELECTION -->
+					<div class='div_detail_label'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "SBIDev.docConf.docDet.stateField" />
+						</span>
+					</div>  
+ 					<div class='div_detail_form'>
+						<select class='portlet-form-input-field' style='width:230px;' name="state" id="state">
+			      			<% 
+			      		    Iterator iterstates = listStates.iterator();
+			      		    while(iterstates.hasNext()) {
+			      		    	Domain state = (Domain)iterstates.next();
+			      		    	String objState = "REL";
+			      		    	String currState = state.getValueCd();
+			      		    	boolean isState = false;
+			      		    	if(objState.equals(currState)){
+			      		    		isState = true;   
+			      		    	}
+			      			%>
+			      				<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getValueName()%></option>
+			      			<%  
+			      		    }
+			      			%>
+			      		</select>	
+					</div>
+					
+					
+					<!-- DISPLAY RADIO BUTTON FOR VISIBLE SELECTION -->
+			    	<div class='div_detail_label'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "SBIDev.docConf.docDet.visibleField" />
+						</span>
+					</div>
+					<div class='div_detail_form'>
+						<% 
+			      	      boolean isVisible = true;
+			      	    %> 
+					   	<input type="radio" name="visible" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %>>
+									<span class="portlet-font">True</span>
+						</input>
+			      		<input type="radio" name="visible" value="0" <% if(!isVisible) { out.println(" checked='checked' "); } %>>
+								<span class="portlet-font">False</span>
+						</input>
+					</div>
+					
+					
 				</div> 
+				
+				
+				
+				
 				
 				<%
 					if((publishMessage!=null) && !publishMessage.trim().equals("") ){

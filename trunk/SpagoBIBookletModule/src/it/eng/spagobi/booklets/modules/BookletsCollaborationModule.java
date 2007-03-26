@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
@@ -122,6 +123,24 @@ public class BookletsCollaborationModule extends AbstractModule {
 			if(description==null) description = "";
 			String name = (String)request.getAttribute("name");
 			if(name==null) name = "";
+			String state = (String)request.getAttribute("state");
+			Integer stateId = new Integer(57);
+			String stateCode = "REL";
+			if(state==null) {
+				state = "";			
+			} else {
+				StringTokenizer tokenState = new StringTokenizer(state, ",");
+				String stateIdStr = tokenState.nextToken();
+				stateId = new Integer(stateIdStr);
+				stateCode = tokenState.nextToken();
+			}
+			
+			
+			
+			boolean visible = true;
+			String visibleStr = (String)request.getAttribute("visible");
+			if(visibleStr != null && visibleStr.equalsIgnoreCase("0")) visible = false;
+			
 			String pathConfBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 			String presVerName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
@@ -180,11 +199,10 @@ public class BookletsCollaborationModule extends AbstractModule {
 				biobj.setVisible(new Integer(0));
 				biobj.setTemplate(uploadedFile);
 				biobj.setFunctionalities(storeInFunctionalities);
-				//biobj.setCurrentTemplateVersion(currentTemplateVersion);
-				//biobj.setPath(path);
-				//biobj.setNameCurrentTemplateVersion(nameCurrentTemplateVersion);
-				//biobj.setTemplateVersions(templateVersions);
-				//biobj.setUuid(uuid);
+				biobj.setStateCode(stateCode);
+				biobj.setStateID(stateId);
+				biobj.setVisible((visible? new Integer(1): new Integer(0)));
+				
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 				objectDAO.insertBIObject(biobj);
 				// put data into response
@@ -193,9 +211,16 @@ public class BookletsCollaborationModule extends AbstractModule {
 				response.setAttribute("label", "");
 				response.setAttribute("name", "");
 				response.setAttribute("description", "");
+				
+				// load list of states and engines
+				IDomainDAO domaindao = DAOFactory.getDomainDAO();
+				List states = domaindao.loadListDomainsByType("STATE");
+			    response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES, states);
+				
 				response.setAttribute("PublishMessage", PortletUtilities.getMessage("book.presPublished", "component_booklets_messages"));
 				response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
 				response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+				
 				
 			}
 		} catch(Exception e){
@@ -259,6 +284,11 @@ public class BookletsCollaborationModule extends AbstractModule {
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
 			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
 			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+			
+			 // load list of states and engines
+			IDomainDAO domaindao = DAOFactory.getDomainDAO();
+			List states = domaindao.loadListDomainsByType("STATE");
+		    response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES, states);
 		} catch(Exception e){
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
 		                        "publishPresHandler","Error while preparing page for publishing", e);

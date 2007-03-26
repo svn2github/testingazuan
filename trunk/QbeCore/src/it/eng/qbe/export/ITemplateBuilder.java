@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Interface of class that can build a jasper template from a query string
  * 
- * @author Gioia
+ * @author Andrea Gioia
  */
 public interface ITemplateBuilder {
 	public String buildTemplate();

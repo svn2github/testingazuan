@@ -35,7 +35,7 @@ import org.dom4j.io.SAXReader;
 import sun.security.x509.Extension;
 
 /**
- * @author Gioia
+ * @author Andrea Gioia
  *
  */
 public class BasicTemplateBuilder extends AbstractTemplateBuilder {

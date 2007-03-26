@@ -237,7 +237,7 @@ public class HQLStatement extends BasicStatement {
 			}
 			
 			//	check for condition filter on sub entities
-			List subEntities = entity.getSubEntities();
+			List subEntities = entity.getAllSubEntities();
 			for(int i = 0; i < subEntities.size(); i++) {
 				DataMartEntity subEntity = (DataMartEntity)subEntities.get(i);
 				filters = dataMartModelAccessModality.getEntityFilterConditions(subEntity.getName());

@@ -68,17 +68,15 @@
 		      	<TAB title="first tab" id="tab1">
 		      		<SBIDOCUMENT documentLabel="PROC_INST_LIST" parameters=""/>
 		      	</TAB>
-		      	<!-- 
 		      	<TAB title="second tab" id="tab2" >
-		      		<SBIDOCUMENT documentLabel="PROC_INST_LIST" parameters="param_output_format=PDF"/>
+		      		<SBIDOCUMENT documentLabel="PROC_LIST" parameters=""/>
 		      	</TAB>
-		      	-->
 		      </CONTAINER>
 		  </CONTAINERS>
 	</VIEW>
 	
 	
-	
+	<!-- 
 	<VIEW code="MonitorView" 
 	      title="Monitor"  
 	      role="Administrator" 
@@ -106,5 +104,6 @@
 		      </CONTAINER>
 		  </CONTAINERS>
 	</VIEW>
+	-->
 	
 </MENU>

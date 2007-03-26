@@ -119,9 +119,13 @@ public class ListLookupModalityValuesModule extends AbstractListLookupModule {
 		HashMap paramsMap = new HashMap();
 		String lookupParameterName = (String) request.getAttribute("LOOKUP_PARAMETER_NAME");
 		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
+		String execId = (String)request.getAttribute("EXECUTION_IDENTIFIER");
 		paramsMap.put("LOOKUP_PARAMETER_NAME", lookupParameterName);
 		paramsMap.put(SpagoBIConstants.ACTOR, actor);
 		paramsMap.put("mod_val_id", request.getAttribute("mod_val_id"));
+		if(execId!=null) {
+			paramsMap.put("EXECUTION_IDENTIFIER", execId);
+		}
 		return paramsMap;
 	}
 	
@@ -146,7 +150,15 @@ public class ListLookupModalityValuesModule extends AbstractListLookupModule {
 	
 	
 	private BIObjectParameter getBIParameter(SourceBean request) {
-		BIObject obj = (BIObject)getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		BIObject obj = null;
+		SessionContainer mainSession = getSession(request);
+		String execId = (String)request.getAttribute("EXECUTION_IDENTIFIER");
+		if(execId!=null) {
+			SessionContainer relativeSession = (SessionContainer)mainSession.getAttribute(execId);
+			obj = (BIObject)relativeSession.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		} else {
+			obj = (BIObject)getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		}
 		String parameterUrlName = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
 		List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();
@@ -154,7 +166,6 @@ public class ListLookupModalityValuesModule extends AbstractListLookupModule {
         	BIObjectParameter biParam = (BIObjectParameter)iterParams.next();
         	if(biParam.getParameterUrlName().equalsIgnoreCase(parameterUrlName)) return biParam;
         }
-        
         return null;
 	}
 	

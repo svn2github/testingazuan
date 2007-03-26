@@ -23,6 +23,7 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -54,11 +55,13 @@ import it.eng.spagobi.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -74,6 +77,8 @@ public class DynamicPageTag extends TagSupport {
 	private SourceBean request = null;
 	private HttpServletRequest httpRequest = null;
 	private RequestContainer requestContainer = null;
+	private ResponseContainer responseContainer = null;
+	private SourceBean moduleResponse = null;
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
 	public static final int PIXEL_PER_CHAR = 9;
@@ -83,7 +88,14 @@ public class DynamicPageTag extends TagSupport {
 	}
 	
 	private BIObject getBIObject() {
-		return (BIObject)getSession().getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		SessionContainer mainSession = getSession();
+		String execId = (String)moduleResponse.getAttribute("EXECUTION_IDENTIFIER");
+		if(execId!=null) {
+			SessionContainer relativeSession = (SessionContainer)mainSession.getAttribute(execId);
+			return (BIObject)relativeSession.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		} else {
+			return (BIObject)getSession().getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		}
 	}
 	
 	
@@ -104,6 +116,8 @@ public class DynamicPageTag extends TagSupport {
 	public int doStartTag() throws JspException {
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
+		responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
+		moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute(moduleName);
 		request = requestContainer.getServiceRequest();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
@@ -666,10 +680,16 @@ public class DynamicPageTag extends TagSupport {
 	
 	public String getParameterDescription(BIObjectParameter biparam) {
 		String description = null;
-		
-		HashMap paramsDescriptionMap = (HashMap)getSession().getAttribute("PARAMS_DESCRIPTION_MAP");
-		description = (String)paramsDescriptionMap.get(biparam.getParameterUrlName());
-		
+		SessionContainer mainSession = getSession();
+		String execId = (String)moduleResponse.getAttribute("EXECUTION_IDENTIFIER");
+		if(execId!=null) {
+			SessionContainer relativeSession = (SessionContainer)mainSession.getAttribute(execId);
+			HashMap paramsDescriptionMap = (HashMap)relativeSession.getAttribute("PARAMS_DESCRIPTION_MAP");
+			description = (String)paramsDescriptionMap.get(biparam.getParameterUrlName());
+		} else {
+			HashMap paramsDescriptionMap = (HashMap)mainSession.getAttribute("PARAMS_DESCRIPTION_MAP");
+			description = (String)paramsDescriptionMap.get(biparam.getParameterUrlName());
+		}
 		return description;
 	}
 	

@@ -13,6 +13,15 @@
 <%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 
 <%
+	//get the module response 
+	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");	
+    
+	//try to get execution identifier and relative session
+	String executionIdentifier = (String)moduleResponse.getAttribute("EXECUTION_IDENTIFIER");
+	if(executionIdentifier!=null) {
+		aSessionContainer = (SessionContainer)aSessionContainer.getAttribute(executionIdentifier);
+	}
+
 	// control if the portlet act with single object modality.
 	// get the modality of the portlet (single object execution, entire tree or filter tree)
 	boolean isSingleObjExec = false;
@@ -21,8 +30,7 @@
 		isSingleObjExec = true;
     // get the actor
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-    // get the module response 
-    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
+    
     String title = (String)moduleResponse.getAttribute("title");
     String displayTitleBar = (String)moduleResponse.getAttribute("displayTitleBar");
     String movie = ChannelUtilities.getSpagoBIContextName(request);

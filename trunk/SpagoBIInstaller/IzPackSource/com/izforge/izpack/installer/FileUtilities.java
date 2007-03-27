@@ -110,6 +110,9 @@ public class FileUtilities {
 	    	path = newDirectory.getPath() + File.separator + name;
 	    	file = new File(path);
 
+	    	// if file already exists, deletes it
+	    	if (file.exists()) deleteDirectory(file);
+	    	
 	    	if(!entry.isDirectory()) {
 	    		file = file.getParentFile();
 	    		file.mkdirs();
@@ -176,8 +179,12 @@ public class FileUtilities {
 	}
 
 	public static boolean deleteDirectory(String pathdest) {
+		File directory = new File(pathdest);
+		return deleteDirectory(directory);
+	}
+	
+	public static boolean deleteDirectory(File directory) {
 		try {
-			File directory = new File(pathdest);
 			if (directory.isDirectory()) {
 				File[] files = directory.listFiles();
 				for (int i = 0; i < files.length; i++) {

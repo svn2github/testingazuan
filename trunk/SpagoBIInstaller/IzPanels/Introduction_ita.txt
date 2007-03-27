@@ -9,9 +9,9 @@ Prima di procedere controlla i seguenti requisiti minimi di sistema:
 SpagoBI Platform deve essere installato su un server pre-esistente sul tuo pc.
 Il server può essere Tomcat, JBoss o JOnAS (a scelta) e deve ospitare eXo-Portal.
 I possibili server su cui è possibile installare SpagoBI Platform 1.9.2 sono i seguenti:
-1. Tomcat 5.0.28 con eXo-Portal 1.1.3 
-   scarica il file eXoPortal-tomcat-1.1.3.zip da:
-      http://forge.objectweb.org/project/download.php?group_id=151&file_id=6528
+1. Tomcat 5.0.28 con eXo-Portal 1.1.4 
+   scarica il file eXoPortal-tomcat-1.1.4.zip da:
+      http://forge.objectweb.org/project/download.php?group_id=151&file_id=7208
    poi decomprimi il file su una cartella locale e hai già un server funzionante.
 2. JBoss 4.0.3SP1 con eXo-Portal 1.1.2
    scarica il file jboss-4.0.3SP1.zip da:

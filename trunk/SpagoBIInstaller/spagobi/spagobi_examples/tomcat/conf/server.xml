@@ -60,7 +60,7 @@
   		</parameter>
   		<parameter>
     			<name>url</name>
-    			<value>jdbc:hsqldb:file:../sbidata/database/spagobigeo</value>
+    			<value>jdbc:hsqldb:hsql://localhost:9002/spagobigeo</value>
   		</parameter>
   		<parameter>
     			<name>username</name>
@@ -95,7 +95,7 @@
   			</parameter>
   			<parameter>
     				<name>url</name>
-    				<value>jdbc:hsqldb:file:../sbidata/database/foodmart</value>
+    				<value>jdbc:hsqldb:hsql://localhost:9002/foodmart</value>
   			</parameter>
   			<parameter>
     				<name>username</name>
@@ -131,7 +131,7 @@
   			</parameter>
   			<parameter>
     				<name>url</name>
-    				<value>jdbc:hsqldb:file:../sbidata/database/spagobi</value>
+    				<value>jdbc:hsqldb:hsql://localhost:9002/spagobi</value>
   			</parameter>
   			<parameter>
     				<name>username</name>

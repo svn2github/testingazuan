@@ -2,7 +2,7 @@
 <datasources>
   <local-tx-datasource>
     <jndi-name>spagobigeo</jndi-name>
-    <connection-url>jdbc:hsqldb:file:../sbidata/database/spagobigeo</connection-url>
+    <connection-url>jdbc:hsqldb:hsql://localhost:9002/spagobigeo</connection-url>
     <driver-class>org.hsqldb.jdbcDriver</driver-class>
     <user-name>sa</user-name>
     <password></password>

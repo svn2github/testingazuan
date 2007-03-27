@@ -16,7 +16,7 @@ public class InstallSpagoBIPlatform {
 	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.2.zip";
 	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.2.zip";
 	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.2.zip";
-	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.2.zip";
+	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.2-Beta.zip";
 	
 	private static String _pathdest;
 	private static String _spagobi_plaftorm_source_dir;
@@ -112,6 +112,7 @@ public class InstallSpagoBIPlatform {
 		}
 		if ("jboss".equalsIgnoreCase(_server_name)) {
 			installJBossApplicationXml();
+			installJBossXmdescPatch();
 		} else if ("jonas".equalsIgnoreCase(_server_name)) {
 			installJOnASApplicationXml();
 		}
@@ -192,7 +193,7 @@ public class InstallSpagoBIPlatform {
 				installContextFiles();
 			} else if ("jboss".equalsIgnoreCase(_server_name)) {
 				installJBossDSFile();
-				installJBossXmdescPatch();
+				//installJBossXmdescPatch();
 			} else if ("jonas".equalsIgnoreCase(_server_name)) {
 				installJOnASJndiConfiguration();
 			}
@@ -227,6 +228,8 @@ public class InstallSpagoBIPlatform {
 						+ "spagobi.war" + fs + "WEB-INF" + fs + "lib");
 				// in case of jboss the actual common lib is server/default/lib, the same of hsqldb library 
 				FileUtilities.deleteFile("commons-collections.jar", _path_hsql_lib_dir);
+				FileUtilities.copy(_path_hsql_lib_dir, _spagobi_deploy_dir + fs + "spagobi" + _ext 
+						+ fs + "WEB-INF" + fs + "lib" + fs + "commons-collections-3.1.jar");
 			}
 			if ("jonas".equalsIgnoreCase(_server_name)) {
 				FileUtilities.deleteFile("commons-logging-1.0.jar", _spagobi_deploy_dir + fs + "spagobi.war" 
@@ -501,8 +504,6 @@ public class InstallSpagoBIPlatform {
 	
 	private static boolean installSpagoBICms() {
 		try {
-			String spagobi_cms_dir = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "jcrRepositoryFS";
-			FileUtilities.deleteDirectory(spagobi_cms_dir);
 			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
 					_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
 		} catch (Exception exc) {
@@ -581,9 +582,9 @@ public class InstallSpagoBIPlatform {
 			// arrange StartSpagoBI.bat files for different servers
 			String binDir = "bin";
 			String startCommand = null;
-			String url = null;
-			String port = "8080";
-			String portal = "portal";
+			//String url = null;
+			//String port = "8080";
+			//String portal = "portal";
 			if ("tomcat".equalsIgnoreCase(_server_name)) {
 				startCommand = "exo-run.bat";
 			} else if ("jboss".equalsIgnoreCase(_server_name)) {
@@ -591,14 +592,14 @@ public class InstallSpagoBIPlatform {
 			} else if ("jonas".equalsIgnoreCase(_server_name)) {
 				startCommand = "jonas start";
 				binDir = "bin" + fs + "nt";
-				port = "9000";
+				//port = "9000";
 			}
-			if (_install_examples) portal = "sbiportal";
-			url = "http://localhost:" + port + "/" + portal;
+			//if (_install_examples) portal = "sbiportal";
+			//url = "http://localhost:" + port + "/" + portal;
 			Properties batProps = new Properties();
 			batProps.setProperty("${BIN_DIR}", binDir);
 			batProps.setProperty("${START_COMMAND}", startCommand);
-			batProps.setProperty("${URL}", url);
+			//batProps.setProperty("${URL}", url);
 			String startBat = _pathdest + fs + "StartSpagoBI.bat";
 			replaceParametersInFile(startBat, startBat, batProps, true);
 			
@@ -630,6 +631,9 @@ public class InstallSpagoBIPlatform {
 			String binDir = "bin";
 			String stopCommand = "shutdown.bat";
 			String backDir = "..";
+			if ("jboss".equalsIgnoreCase(_server_name)) {
+				stopCommand = "shutdown.bat -S";
+			}
 			if ("jonas".equalsIgnoreCase(_server_name)) {
 				binDir = "bin" + fs + "nt";
 				backDir = ".." + fs + "..";
@@ -644,6 +648,9 @@ public class InstallSpagoBIPlatform {
 			
 			// arrange StopSpagoBI.sh files for different servers
 			stopCommand = "shutdown.sh";
+			if ("jboss".equalsIgnoreCase(_server_name)) {
+				stopCommand = "shutdown.sh -S";
+			}
 			if ("jonas".equalsIgnoreCase(_server_name)) {
 				binDir = "bin" + fs + "unix";
 				backDir = ".." + fs + "..";

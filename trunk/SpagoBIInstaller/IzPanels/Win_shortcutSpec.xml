@@ -17,4 +17,20 @@
 			startup="no">
 		<createForPack name="SpagoBI-1.9.2"/>
 	</shortcut>
+	<shortcut
+			name="Stop SpagoBI Platform"
+			target="$INSTALL_PATH\StopSpagoBI.bat"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="Stop SpagoBI Platform"
+			iconFile="$INSTALL_PATH\StopSpagoBI.ico"
+			iconIndex="0"
+			initialState="normal"
+			programGroup="yes"
+			desktop="yes"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="SpagoBI-1.9.2"/>
+	</shortcut>
 </shortcuts>

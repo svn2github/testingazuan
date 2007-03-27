@@ -2,7 +2,7 @@
 <datasources>
   <local-tx-datasource>
     <jndi-name>sbifoodmart</jndi-name>
-    <connection-url>jdbc:hsqldb:file:../sbidata/database/foodmart</connection-url>
+    <connection-url>jdbc:hsqldb:hsql://localhost:9002/foodmart</connection-url>
     <driver-class>org.hsqldb.jdbcDriver</driver-class>
     <user-name>sa</user-name>
     <password></password>

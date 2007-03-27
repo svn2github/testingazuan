@@ -165,7 +165,7 @@
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIWekaEngine-1.9.2" required="no" preselected="yes" bytes="8931746" id="SpagoBIWekaEngine-1.9.2"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.2.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.2-Beta.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBI_examples" required="no" preselected="no" id="SpagoBI_examples">

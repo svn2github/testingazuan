@@ -24,10 +24,17 @@
     
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
-    // get title
+    // get execution id
+	String execId = (String)moduleResponse.getAttribute("EXECUTION_IDENTIFIER");
+	// get title
     String title = (String) moduleResponse.getAttribute("title");
     // get SpagoBI context name   	
     String contextName = ChannelUtilities.getSpagoBIContextName(request);
+    // build exec url
+    String execUrl = contextName + "/servlet/AdapterHTTP?PAGE=ExecuteJasperReportPage&TASK=EXEC_REPORT";
+    if(execId!=null) {
+    	execUrl += "&EXECUTION_IDENTIFIER="+execId;
+    }
     
    	// build the back link
    	//PortletURL backUrl = renderResponse.createActionURL();
@@ -41,9 +48,7 @@
 	//refreshUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 %>
 
-<%      
-	
-%>
+
 
 <table heigth='40px' width='100%' cellspacing='0' border='0'>
 	<tr>
@@ -55,7 +60,7 @@
 
 
 <iframe id='frameexecution' name='frameexecution' 
-        src="<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteJasperReportPage&TASK=EXEC_REPORT" 
+        src="<%=execUrl%>" 
         frameborder=0  width='100%' >
 </iframe>
 

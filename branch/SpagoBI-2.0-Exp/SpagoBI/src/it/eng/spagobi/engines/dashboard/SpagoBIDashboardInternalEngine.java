@@ -23,15 +23,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.dashboard;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
-import it.eng.spagobi.bo.Domain;
-import it.eng.spagobi.bo.dao.DAOFactory;
-import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.InternalEngineIFace;
@@ -81,52 +77,6 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		
 		
 		try{	
-			
-			
-			/*
-			// extract from the parameters of the dashboard the parameter with url_name = listofvalue 
-			// which is the datasource parameter for the dashboard
-			BIObjectParameter biParameterDataSource = null;
-			List bipars = obj.getBiObjectParameters();
-			if(bipars.size()==1){
-				biParameterDataSource = (BIObjectParameter)bipars.get(0);
-			} else if(bipars.size()>1) {
-				Iterator iterBipars = bipars.iterator();
-				while(iterBipars.hasNext()) {
-					BIObjectParameter biobjpar = (BIObjectParameter)iterBipars.next();
-					String urlName = biobjpar.getParameterUrlName();
-					if(urlName.equalsIgnoreCase("listofvalues")) {
-						biParameterDataSource = biobjpar;
-						break;
-					}
-				}
-			}
-			
-			// if the parameter with url__name  = 'listofvalues' doesn't exist throw an exception
-			if(biParameterDataSource==null) {
-				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-									this.getClass().getName(),
-									"execute",
-			            			"Dashboards need a parameter with a url name = 'listofvalues', which is the datasource");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1004, messageBundle);
-			}
-			
-			// extract from the parameter with url__name  = 'listofvalues' the label of the LOV loaded (loaded based on the user role)
-			Parameter par = biParameterDataSource.getParameter();
-			ModalitiesValue lov = par.getModalityValue();
-			if(lov==null) {
-				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-						this.getClass().getName(),
-						"execute",
-            			"Parameter with url name = 'listofvalues' not associated to a lov (probably is a manual input)");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1005, messageBundle);
-			}
-			String lovlabel = lov.getLabel();
-			String dataurl = "DashboardService";
-			Map dataParameters = new HashMap();
-			dataParameters.put("dataname", lovlabel);
-			*/
-			
 			
 			// get the template of the object
 			obj.loadTemplate();
@@ -192,13 +142,15 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
 				title += ": " + objDescr;
 			}
+			
+			List possibleStates = new ArrayList();
+			/*
 			// get the actor
 			SessionContainer session = requestContainer.getSessionContainer();
 			String actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
 			// get the possible state changes
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
 			List states = domaindao.loadListDomainsByType("STATE");
-		    List possibleStates = new ArrayList();
 		    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
 		    	Iterator it = states.iterator();
 		    	 while(it.hasNext()) {
@@ -216,6 +168,9 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		      				}
 		      	}  
 		    } 
+		    */
+			
+			
 			// set information into reponse
 			response.setAttribute("movie", movie);
 			response.setAttribute("dataurl", dataurl);

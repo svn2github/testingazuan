@@ -68,14 +68,20 @@ public class JasperReportInternalEngine extends AbstractHttpModule implements In
 		            			"execute", "The input object is null.");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
-		
 		try{
-			if(ChannelUtilities.isWebRunning()) {
-				SessionContainer sessionCont = requestContainer.getSessionContainer();
+			if(ChannelUtilities.isWebRunning()) {			
+				SessionContainer sessionCont = null;
+				SourceBean serviceReq = requestContainer.getServiceRequest();
+				String executionIdentifier =  (String)serviceReq.getAttribute("EXECUTION_IDENTIFIER");
+				SessionContainer mainSessCont = requestContainer.getSessionContainer();
+				if(executionIdentifier!=null) {
+					sessionCont = (SessionContainer)mainSessCont.getAttribute(executionIdentifier);
+				} else {
+					sessionCont = mainSessCont;
+				}
 				sessionCont.setAttribute("JR_IE_OBJ_TO_EXEC", obj);
 			}
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "JasperReportIE");
-			
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
 					    		"execute", "Cannot exec the Office document", e);
@@ -96,8 +102,17 @@ public class JasperReportInternalEngine extends AbstractHttpModule implements In
 		String task = (String)request.getAttribute("TASK");
 		if(task.equalsIgnoreCase("EXEC_REPORT")) {
 			
-			RequestContainer reqCont = RequestContainer.getRequestContainer();
-			SessionContainer sessCont = reqCont.getSessionContainer();
+			RequestContainer requestContainer = RequestContainer.getRequestContainer();
+			SessionContainer sessCont = null;
+			SourceBean serviceReq = requestContainer.getServiceRequest();
+			String executionIdentifier =  (String)serviceReq.getAttribute("EXECUTION_IDENTIFIER");
+			SessionContainer mainSessCont = requestContainer.getSessionContainer();
+			if(executionIdentifier!=null) {
+				sessCont = (SessionContainer)mainSessCont.getAttribute(executionIdentifier);
+			} else {
+				sessCont = mainSessCont;
+			}
+			
 			BIObject biobj = (BIObject)sessCont.getAttribute("JR_IE_OBJ_TO_EXEC");
 			sessCont.delAttribute("JR_IE_OBJ_TO_EXEC");
 			Map parameters = new HashMap();

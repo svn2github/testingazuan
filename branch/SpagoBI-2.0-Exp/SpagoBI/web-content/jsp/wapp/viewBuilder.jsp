@@ -23,9 +23,9 @@
 	Iterator containerIter = containerList.iterator();
 	
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
-	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-    UUID uuid = uuidGen.generateTimeBasedUUID();
-    String executionIdentifier = uuid.toString(); 
+	//UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+    //UUID uuid = uuidGen.generateTimeBasedUUID();
+    //String executionIdentifier = uuid.toString(); 
 %>
 
 
@@ -92,6 +92,7 @@
 				SourceBean documentSB = (SourceBean)tabSB.getAttribute("SBIDOCUMENT");
 				String docLabel = (String)documentSB.getAttribute("documentLabel");
 				String docParameters = (String)documentSB.getAttribute("parameters");
+				String executionIdentifier = viewCode + idCont + idTab;
 				String contexName = ChannelUtilities.getSpagoBIContextName(request);
 				String link = contexName + "/servlet/AdapterHTTP?PAGE=DirectExecutionPage" + 
 						      "&DOCUMENT_LABEL=" + docLabel + 
@@ -131,7 +132,7 @@
 					<%--
 					<iframe id="<%=idCont%>_<%=idTab%>" width="<%=widthiframe%>" width="<%=heightframe%>" src="<%=link%>" frameborder="0" scrolling="auto"></iframe>
         			--%>
-        			<iframe id="<%=idCont%>_<%=idTab%>"  style="width:<%=widthiframe%>px;height:<%=heightframe%>px;" src="<%=link%>" frameborder="3" scrolling="auto"></iframe>
+        			<iframe id="<%=idCont%>_<%=idTab%>"  style="width:<%=widthiframe%>px;height:<%=heightframe%>px;" src="<%=link%>" frameborder="0" scrolling="auto"></iframe>
         		</div>
 	<%
 				prog ++;

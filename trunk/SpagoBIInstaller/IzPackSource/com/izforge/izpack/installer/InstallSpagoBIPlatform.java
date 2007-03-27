@@ -38,6 +38,7 @@ public class InstallSpagoBIPlatform {
 	private static boolean _install_qbe;
 	private static boolean _install_weka;
 	private static boolean _install_examples;
+	private static boolean _install_docs;
 	private static String _connection_url;
 	private static String _driver;
 	private static String _username;
@@ -49,8 +50,8 @@ public class InstallSpagoBIPlatform {
 	
 	public static void installSpagoBIPlatorm (String pathdest, String server_name, String install_birt,
 			 String install_geo, String install_jasper, String install_jpivot, String install_qbe, 
-			 String install_weka, String install_examples, String driver, String connection_url,
-			 String username, String password) {
+			 String install_weka, String install_examples, String install_docs, String driver, 
+			 String connection_url, String username, String password) {
 		
 		// initializes variables
 		_pathdest 						= pathdest;
@@ -64,6 +65,7 @@ public class InstallSpagoBIPlatform {
 		_install_qbe 					= install_qbe.equalsIgnoreCase("yes");
 		_install_weka 					= install_weka.equalsIgnoreCase("yes");
 		_install_examples 				= install_examples.equalsIgnoreCase("yes");
+		_install_docs 					= install_docs.equalsIgnoreCase("yes");
 		
 		_driver 						= driver;
 		_connection_url 				= connection_url;
@@ -124,6 +126,10 @@ public class InstallSpagoBIPlatform {
 			if (!installSpagoBICms()) return;
 			if (!overwriteExistingFiles()) return;
 			if (!installSbiportalDb()) return;
+		}
+		
+		if (_install_docs) {
+			if (!arrangeDocs(_pathdest + fs + "spagobi-docs")) return;
 		}
 		
 		// if the os is not Windows (i.e. it is Unix) set the file permissions
@@ -696,7 +702,28 @@ public class InstallSpagoBIPlatform {
 		fos.write(servbuf.toString().getBytes());
 		fos.flush();
 		fos.close();
-		
+	}
+	
+	private static boolean arrangeDocs(String docsFilePath) {
+		File installationManual = new File(docsFilePath + fs + "SpagoBI-Installation-Manual.pdf");
+		if (installationManual.exists() && installationManual.isFile()) installationManual.delete();
+		File tomcatInstallationManual = new File(docsFilePath + fs + "SpagoBI_eXoTomcat_Installation_Manual_1.4.3.pdf");
+		File jbossInstallationManual = new File(docsFilePath + fs + "SpagoBI_JBoss_Installation_Manual-1.4.3.pdf");
+		File jonasInstallationManual = new File(docsFilePath + fs + "SpagoBI_JOnAS_Installation_Manual-1.4.3.pdf");
+		if ("tomcat".equalsIgnoreCase(_server_name)) {
+			if (!tomcatInstallationManual.renameTo(installationManual)) return false;
+			if (!jbossInstallationManual.delete()) return false;
+			if (!jonasInstallationManual.delete()) return false;
+		} else if ("jboss".equalsIgnoreCase(_server_name)) {
+			if (!tomcatInstallationManual.delete()) return false;
+			if (!jbossInstallationManual.renameTo(installationManual)) return false;
+			if (!jonasInstallationManual.delete()) return false;
+		} else if ("jonas".equalsIgnoreCase(_server_name)) {
+			if (!tomcatInstallationManual.delete()) return false;
+			if (!jbossInstallationManual.delete()) return false;
+			if (!jonasInstallationManual.renameTo(installationManual)) return false;
+		}
+		return true;		
 	}
 	
 }

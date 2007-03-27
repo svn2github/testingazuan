@@ -3,7 +3,9 @@ Introduzione all'installazione di SpagoBI Platform 1.9.2.
 Prima di procedere controlla i seguenti requisiti minimi di sistema:
 - JDK versione 1.5.x
 - OpenOffice 2.0.x (per la produzione dei booklets/fascicoli): una variabile d'ambiente di nome 
-  OPENOFFICE_HOME deve puntare alla cartella di installazione di OpenOffice
+  OPENOFFICE_HOME deve puntare alla cartella di installazione di OpenOffice oppure la variabile 
+  d'ambiente PATH deve contenere la cartella "program" presente all'interno dell'installazione 
+  di OpenOffice.
 - 512 MB di memoria (suggerito).
 
 SpagoBI Platform deve essere installato su un server pre-esistente sul tuo pc.

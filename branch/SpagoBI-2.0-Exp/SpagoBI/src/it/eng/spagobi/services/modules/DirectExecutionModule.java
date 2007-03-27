@@ -47,27 +47,39 @@ public class DirectExecutionModule extends AbstractModule {
 		RequestContainer reqContainer = getRequestContainer();
 		SessionContainer mainSessionContainer = reqContainer.getSessionContainer();
 		String executionIdentifier = (String)request.getAttribute("EXECUTION_IDENTIFIER");
-		SessionContainer sessionContainer = new SessionContainer();
-		
-		// get attribute from request
-		String documentLabel = (String)request.getAttribute("DOCUMENT_LABEL");
-		String documentParameters = (String)request.getAttribute("DOCUMENT_PARAMETERS");
-		
-		// load biobject
-		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(documentLabel);
-		// put in session execution modality
-        sessionContainer.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
-        // set into the response the right information for loopback
-        response.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
-        response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-    	// set into the reponse the publisher name for object execution
-        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);
-        // if the parameters is set put it into the session
-        if(documentParameters != null && !documentParameters.trim().equals(""))  {
-           	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, documentParameters);
-        }
-        
-        mainSessionContainer.setAttribute(executionIdentifier, sessionContainer);
+		// check if is a refresh operation
+		String refresh = (String)request.getAttribute("REFRESH");
+		// if is a refresh get the session container otherwise create a new one
+		SessionContainer sessionContainer = null;
+		if(refresh!=null) {
+			sessionContainer = (SessionContainer)mainSessionContainer.getAttribute(executionIdentifier);
+			// get the object
+			BIObject biobj = (BIObject)sessionContainer.getAttribute("SESSION_OBJ_ATTR");
+			// set into the response the right information for loopback
+	        response.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+	        response.setAttribute(ObjectsTreeConstants.OBJECT_ID, biobj.getId().toString());
+	    	// set into the reponse the publisher name for object execution
+	        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);
+		} else {
+			sessionContainer = new SessionContainer();
+			// get attribute from request
+			String documentLabel = (String)request.getAttribute("DOCUMENT_LABEL");
+			String documentParameters = (String)request.getAttribute("DOCUMENT_PARAMETERS");
+			// load biobject
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(documentLabel);
+			// put in session execution modality
+	        sessionContainer.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
+	        // set into the response the right information for loopback
+	        response.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+	        response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+	    	// set into the reponse the publisher name for object execution
+	        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);
+	        // if the parameters is set put it into the session
+	        if(documentParameters != null && !documentParameters.trim().equals(""))  {
+	           	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, documentParameters);
+	        }
+	        mainSessionContainer.setAttribute(executionIdentifier, sessionContainer);
+		}
 	}
 
 }

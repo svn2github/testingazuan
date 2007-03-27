@@ -43,7 +43,7 @@
 		<field type="password" variable="PASSWORD">
 			<description align="left" id="database.password"/>
 			<spec>
-                <pwd txt="" size="18"/>
+                <pwd txt="" size="16"/>
             </spec>
 		</field>
 	</panel>

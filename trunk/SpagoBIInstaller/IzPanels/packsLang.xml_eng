@@ -13,5 +13,5 @@
 	<str id="SpagoBI_examples" txt="SpagoBI Demo example documents"/>
 	<str id="SpagoBI_examples.description" txt="SpagoBI Demo example documents, including the example portal 'sbiportal' with preconfigured groups and users. WARNING: SpagoBI Demo examples contains documents for all SpagoBI supported engines (see the list above). If you exclude some engines from the installation procedure, the relevant examples will not work!!"/>
 	<str id="Documentation" txt="Documentation"/>
-	<str id="Documentation.description" txt="SpagoBI documentation (Quickstart, How To and installation manuals)"/>
+	<str id="Documentation.description" txt="SpagoBI documentation (Quickstart, How To and Installation Manual)"/>
 </langpack>

@@ -58,7 +58,8 @@ public class SpagoBITargetPanel extends TargetPanel {
         File path = new File(spagobiPath);
         if (path.exists())
         {
-            int res = askQuestion(parent.langpack.getString("SpagoBITargetPanel.spagobi.existing"), warnMsg,
+            int res = askQuestion(parent.langpack.getString("installer.warning"), 
+            		getI18nStringForClass("spagobi.existing", "SpagoBITargetPanel"),
                     AbstractUIHandler.CHOICES_YES_NO, AbstractUIHandler.ANSWER_YES);
             ok = res == AbstractUIHandler.ANSWER_YES;
         }

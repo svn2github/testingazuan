@@ -142,6 +142,8 @@ public class InstallSpagoBIPlatform {
 			}
 		}
 		
+		if (!arrangeLinkFile()) return;
+		
 		// delete source directory
 		if (!FileUtilities.deleteDirectory(_pathdest + fs + "spagobi")) return;
 
@@ -724,6 +726,23 @@ public class InstallSpagoBIPlatform {
 			if (!jonasInstallationManual.renameTo(installationManual)) return false;
 		}
 		return true;		
+	}
+	
+	private static boolean arrangeLinkFile() {
+		Properties props = new Properties();
+		String port = "8080";
+		String portal = "portal";
+		if ("jonas".equalsIgnoreCase(_server_name))	port = "9000";
+		if (_install_examples) portal = "sbiportal";
+		props.setProperty("${PORT}", port);
+		props.setProperty("${PORTAL}", portal);
+		String connectToSpagoBIFile = _pathdest + fs + "ConnectToSpagoBI.URL";
+		try {
+			replaceParametersInFile(connectToSpagoBIFile, connectToSpagoBIFile, props, false);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 	
 }

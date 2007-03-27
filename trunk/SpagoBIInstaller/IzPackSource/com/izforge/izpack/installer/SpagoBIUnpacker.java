@@ -322,7 +322,10 @@ public class SpagoBIUnpacker implements IUnpacker
             	else if (packnameUC.indexOf("JPIVOT") != -1) idata.setVariable("JPIVOT", "yes");
             	else if (packnameUC.indexOf("QBE") != -1) idata.setVariable("QBE", "yes");
             	else if (packnameUC.indexOf("WEKA") != -1) idata.setVariable("WEKA", "yes");
-            	else if (packnameUC.indexOf("EXAMPLES") != -1) idata.setVariable("SPAGOBI_EXAMPLES", "yes");
+            	else if (packnameUC.indexOf("EXAMPLES") != -1) {
+            		idata.setVariable("SPAGOBI_EXAMPLES", "yes");
+            		idata.setVariable("PORTAL", "sbiportal");
+            	}
             	else if (packnameUC.indexOf("DOCUMENTATION") != -1) idata.setVariable("DOCUMENTATION", "yes");
             	
             	String remoteFile = pack.remoteFile;
@@ -726,6 +729,7 @@ public class SpagoBIUnpacker implements IUnpacker
 
             String pathdest = idata.getInstallPath();
             String server_name = idata.getVariable("SERVER_TYPE");
+            if ("jonas".equalsIgnoreCase(server_name)) idata.setVariable("PORT", "9000");
             String install_birt = idata.getVariable("BIRT");
             String install_geo = idata.getVariable("GEO");
             String install_jasper = idata.getVariable("JASPER");

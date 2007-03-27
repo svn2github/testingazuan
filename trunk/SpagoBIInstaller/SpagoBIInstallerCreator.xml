@@ -25,12 +25,14 @@
 		<variable name="CONNECTION_URL" value=""/>
 		<variable name="USERNAME" value=""/>
 		<variable name="PASSWORD" value=""/>
+		<variable name="PORT" value="8080"/>
+		<variable name="PORTAL" value="portal"/>
 		<variable name="DesktopShortcutCheckboxEnabled" value="true"/>
 	</variables>
  	
  	<native type="izpack" name="ShellLink.dll" />
  	
- 	<guiprefs height="600" resizable="yes" width="800">
+ 	<guiprefs height="700" resizable="yes" width="900">
         <laf name="looks">
             <os family="unix"/>
         </laf>
@@ -50,11 +52,13 @@
     </locale>
     <resources>
     	<res src="IzPanels/Logo_Spago_BI_sitoweb.gif" id="installer.langsel.img"/>
-   		<res src="IzPanels/Introduction.txt" id="InfoPanel.info"/>
-   		<res src="IzPanels/Introduction_ita.txt" id="InfoPanel.info_ita"/>
+   		<res src="IzPanels/Introduction.html" id="HTMLInfoPanel.info"/>
+   		<res src="IzPanels/Introduction_ita.html" id="HTMLInfoPanel.info_ita"/>
     	<res src="IzPanels/Licence.txt" id="LicencePanel.licence"/>
+    	<!--
     	<res src="IzPanels/HTMLInfoPanel.txt" id="HTMLInfoPanel.info"/>
     	<res src="IzPanels/HTMLInfoPanel_ita.txt" id="HTMLInfoPanel.info_ita"/>
+    	-->
     	<res src="IzPanels/userInputSpec.xml" id="userInputSpec.xml"/>
     	<res src="IzPanels/userInputLang.xml_ita" id="userInputLang.xml_ita"/>
     	<res src="IzPanels/userInputLang.xml_eng" id="userInputLang.xml_eng"/>
@@ -72,7 +76,7 @@
 	</resources>
 	<panels>
     	<panel classname="HelloPanel" id="hellopanel"/>
-   		<panel classname="InfoPanel" id="infopanel"/>
+   		<panel classname="HTMLInfoPanel" id="infopanel"/>
    		<panel classname="LicencePanel" id="licencepanel"/>
    		<panel classname="UserInputPanel" id="serverType"/>
    		<!--panel classname="UserInputPanel" id="engineAndExamples"/-->
@@ -99,6 +103,7 @@
       			<include name="OOStart.bat" />
       			<include name="StartSpagoBI.ico" />
       			<include name="StopSpagoBI.ico" />
+      			<include name="ConnectToSpagoBI.URL" />
       			<include name="StartSpagoBI.sh" />
       			<include name="StopSpagoBI.sh" />
       			<include name="OOStart.sh" />
@@ -134,13 +139,13 @@
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.2-Beta.zip">
 	    	<description/>
 	    </pack>
-    	<pack name="SpagoBI_examples" required="no" preselected="no" id="SpagoBI_examples">
+    	<pack name="SpagoBI_examples" required="no" preselected="yes" id="SpagoBI_examples">
 	    	<description/>
 	    	<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi/spagobi_examples/**/*" />
 		    </fileset>
 	    </pack>
-		<pack name="Documentation" required="no" preselected="no" id="Documentation">
+		<pack name="Documentation" required="no" preselected="yes" id="Documentation">
 			<description/>
     		<fileset dir="" targetdir="$INSTALL_PATH">
       			<include name="spagobi-docs/**/*" />

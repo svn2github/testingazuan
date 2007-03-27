@@ -13,5 +13,5 @@
 	<str id="SpagoBI_examples" txt="Documenti di esempio di SpagoBI Demo"/>
 	<str id="SpagoBI_examples.description" txt="Documenti di esempio di SpagoBI Demo, incluso il portale di esempio 'sbiportal' contenente gruppi e utenti preconfigurati. AVVERTENZA: gli esempi di SpagoBI Demo contengono documenti per tutti i motori supportati dalla piattaforma (vedi lista sopra). Se alcuni motori vengono esculsi dall'istallazione, i relativi esempi non funzioneranno!!"/>
 	<str id="Documentation" txt="Documentazione"/>
-	<str id="Documentation.description" txt="Documentazione di SpagoBI (Quickstart, How To e manuali di installazione)"/>
+	<str id="Documentation.description" txt="Documentazione di SpagoBI (Quickstart, How To e Manuale di Installazione)"/>
 </langpack>

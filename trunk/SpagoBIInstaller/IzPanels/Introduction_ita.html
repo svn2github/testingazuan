@@ -1,0 +1,54 @@
+<html>
+<body bgcolor="white">
+<font style="font-family: verdana, arial, helvetica, sans-serif; font-size: 10px;">
+<h3>Introduzione all'installazione di SpagoBI Platform 1.9.2</h3>
+<p>
+Questo file di installazione ti guiderà nei passi di installazione di SpagoBI Platform.
+</p>
+<p>
+<strong>Tipi di installazione</strong><br>
+Puoi effettuare due tipi di installazione:
+<ul style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;" type="circle">
+   <li>una installazione demo (con esempi): in questo caso il data warehouse è un Hsql db dimostrativo che verrà installato sul tuo pc;</li>
+   <li>un'installazione pulita (senza esmpi): in questo caso ti verranno richiesti i parametri di connessione al tuo data warehouse.</li>
+</ul>
+Potrai scegliere inoltre quali motori esterni della piattaforma installare.
+</p>
+<p>
+<strong>Repository remoto e repository locale</strong><br>
+I pacchetti contenenti i binari di SpagoBI Core e dei suoi motori esterni non sono inclusi in questo file di installazione ma non preoccuparti, verranno scaricati automaticamente da un repository remoto in una cartella di tua scelta (chiameremo questa cartella 'repository locale'). Successivamente, durante altre procedure di installazione, potrai evitare il download selezionando il percorso del repository locale quando richiesto.
+</p>
+<p>
+<strong>Requisiti di sistema</strong><br>
+Prima di procedere controlla i seguenti requisiti minimi di sistema:
+<ul style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;" type="circle">
+   <li>JDK versione 1.5.x</li>
+   <li>OpenOffice 2.0.x (per la produzione dei booklets/fascicoli): una variabile d'ambiente di nome <font face="courier">OPENOFFICE_HOME</font> deve puntare alla cartella di installazione di OpenOffice, oppure la variabile d'ambiente <font face="courier">PATH</font> deve contenere la cartella <font face="courier">program</font> presente all'interno dell'installazione di OpenOffice.</li>
+   <li>512 MB di memoria (suggerito).</li>
+</ul>
+</p>
+<p>
+<strong>Requisiti del server</strong><br>
+SpagoBI Platform deve essere installato su un server pre-esistente sul tuo pc. Il server può essere Tomcat, JBoss o JOnAS (a scelta) e deve ospitare eXo-Portal. I possibili server su cui è possibile installare SpagoBI Platform 1.9.2 sono i seguenti:
+<ol style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;">
+<li><b>Tomcat 5.0.28 con eXo-Portal 1.1.4</b><br>
+   scarica il file eXoPortal-tomcat-1.1.4.zip da:
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=151&file_id=7208</font><br>
+   poi decomprimi il file su una cartella locale e hai già un server funzionante.</li>
+<li><b>JBoss 4.0.3SP1 con eXo-Portal 1.1.2</b><br>
+   scarica il file jboss-4.0.3SP1.zip da:<br>
+   <font face="courier">http://sourceforge.net/project/showfiles.php?group_id=22866&package_id=16942&release_id=365509</font><br>
+   scarica il file eXoPortal-jboss-1.1.2.zip da:<br>
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=151&file_id=6228</font><br>
+   poi segui le istruzioni di installazione.</li>
+<li><b>JOnAS 4.7.4 con eXo-Portal 1.1.3</b><br>
+   scarica il file jonas4.7.4-tomcat5.5.15.tgz da:<br>
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=5&file_id=6132</font><br>
+   scarica il file eXoPortal-jboss-1.1.2.zip da:<br>
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=151&file_id=6838</font><br>
+   poi segui le istruzioni di installazione.</li>
+</ol>
+L'installazione di SpagoBI necessita la sovrascrittura di alcuni files sul server, per cui si consiglia di installare SpagoBI Platform su un server pulito.
+</font>
+</body>
+</html>

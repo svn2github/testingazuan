@@ -126,6 +126,21 @@ public class JasperReportInternalEngine extends AbstractHttpModule implements In
 			dataconn.close();
 			
 		} else if(task.equalsIgnoreCase("GET_REPORT_IMAGE")) {
+
+			String mapName = httpReq.getParameter("mapname");
+			Map imagesMap = (Map)httpSession.getAttribute(mapName);
+			if(imagesMap != null){
+				String imageName = httpReq.getParameter("image");
+				if (imageName != null) {
+					byte[] imageData = (byte[])imagesMap.get(imageName);
+					imagesMap.remove(imageName);
+					if(imagesMap.isEmpty()){
+						httpSession.removeAttribute(mapName);
+					}
+					httpResp.setContentLength(imageData.length);
+					out.write(imageData, 0, imageData.length);
+				}
+			}
 			
 		}
 		

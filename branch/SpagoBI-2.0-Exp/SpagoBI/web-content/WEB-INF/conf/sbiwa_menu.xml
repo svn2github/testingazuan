@@ -75,6 +75,21 @@
 		  </CONTAINERS>
 	</VIEW>
 	
+	<VIEW code="ConsoleView" 
+	      title="Console"  
+	      role="Administrator" 
+	      width="800" 
+	      height="500"
+	      iconUrl="/img/wapp/monitorView64.png">
+	      <CONTAINERS>
+		      <CONTAINER id="cont1" width="96%" height="96%" top="2%" left="2%">
+		      	<TAB title="first tab" id="tab1">
+		      		<SBIDOCUMENT documentLabel="Console" parameters=""/>
+		      	</TAB>
+		      </CONTAINER>
+		  </CONTAINERS>
+	</VIEW>
+	
 	
 	<!-- 
 	<VIEW code="MonitorView" 

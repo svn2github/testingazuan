@@ -60,16 +60,26 @@
 	<VIEW code="MyView" 
 	      title="MyView"  
 	      role="Administrator" 
-	      width="800" 
+	      width="1000" 
 	      height="500"
 	      iconUrl="/img/wapp/monitorView64.png">
 	      <CONTAINERS>
-		      <CONTAINER id="cont1" width="96%" height="96%" top="2%" left="2%">
+		      <CONTAINER id="cont1" width="66%" height="96%" top="2%" left="1%">
 		      	<TAB title="first tab" id="tab1">
-		      		<SBIDOCUMENT documentLabel="PROC_INST_LIST" parameters=""/>
+		      		<SBIDOCUMENT documentLabel="PROC_LIST_COUNT" parameters=""/>
 		      	</TAB>
 		      	<TAB title="second tab" id="tab2" >
 		      		<SBIDOCUMENT documentLabel="PROC_LIST" parameters=""/>
+		      	</TAB>
+		      </CONTAINER>
+		      <CONTAINER id="cont2" width="30%" height="47%" top="2%" left="68%">
+		      	<TAB title="Groovy Process" id="tab21">
+		      		<SBIDOCUMENT documentLabel="GROO_PROC_INST_KPI" parameters=""/>
+		      	</TAB>
+		      </CONTAINER>
+		        <CONTAINER id="cont3" width="30%" height="47%" top="51%" left="68%">
+		      	<TAB title="TestSplitter Process" id="tab31">
+		      		<SBIDOCUMENT documentLabel="TESTSP_PROC_INST_KPI" parameters=""/>
 		      	</TAB>
 		      </CONTAINER>
 		  </CONTAINERS>

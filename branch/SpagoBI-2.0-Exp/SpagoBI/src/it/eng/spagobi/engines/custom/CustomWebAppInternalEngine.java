@@ -66,6 +66,11 @@ public class CustomWebAppInternalEngine implements InternalEngineIFace {
 			String tempContStr = new String(tempContBys);
 			SourceBean tempContSB = SourceBean.fromXMLString(tempContStr);
 			SourceBean entryPointSB = (SourceBean)tempContSB.getAttribute("ENTRY_POINT");
+			
+			String publisher = (String)entryPointSB.getAttribute("publisher");
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, publisher);
+			
+			/*
 			String code = (String)entryPointSB.getAttribute("code");
 			String pathJsp = (String)entryPointSB.getAttribute("jsp");
 			
@@ -77,7 +82,6 @@ public class CustomWebAppInternalEngine implements InternalEngineIFace {
 			                   	"</RENDERING>" +
 			                   "</PUBLISHER>";
 			SourceBean newPub = SourceBean.fromXMLString(newPubStr);
-			
 			ConfigSingleton config = ConfigSingleton.getInstance();
 			SourceBean pubsSB = (SourceBean)config.getAttribute("PUBLISHERS");
 			SourceBean existingNewPub = (SourceBean)pubsSB.getFilteredSourceBeanAttribute("PUBLISHER", "name", code);
@@ -86,16 +90,14 @@ public class CustomWebAppInternalEngine implements InternalEngineIFace {
 				config.updAttribute(pubsSB);
 			}
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, code);
-
+            */  
 				
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
 								"execute", "Error while executing", e);
 		}
-		
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-    						"execute", "End execute method.");		
-			
+    						"execute", "End execute method.");			
 	}
 
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError {

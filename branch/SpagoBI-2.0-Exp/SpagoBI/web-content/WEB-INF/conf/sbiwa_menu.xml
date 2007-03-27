@@ -85,6 +85,7 @@
 		  </CONTAINERS>
 	</VIEW>
 	
+	<!-- 
 	<VIEW code="ConsoleView" 
 	      title="Console"  
 	      role="Administrator" 
@@ -99,7 +100,7 @@
 		      </CONTAINER>
 		  </CONTAINERS>
 	</VIEW>
-	
+	-->
 	
 	<!-- 
 	<VIEW code="MonitorView" 

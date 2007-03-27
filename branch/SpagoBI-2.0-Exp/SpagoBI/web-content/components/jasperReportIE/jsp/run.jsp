@@ -18,6 +18,7 @@
                  it.eng.spago.base.SessionContainer,
                  it.eng.spago.security.IEngUserProfile" %>
 <%@ page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@ page import="java.util.HashMap"%>
                  
 
 <%
@@ -26,8 +27,23 @@
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
     // get execution id
 	String execId = (String)moduleResponse.getAttribute("EXECUTION_IDENTIFIER");
+	// get the relative (to this execution) session container
+	if(execId!=null) {
+		aSessionContainer = (SessionContainer)aSessionContainer.getAttribute(execId);
+	}
+	// get the actor 
+	String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
+	// get the execution modality
+	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
+	// check if is direct execution
+	boolean isDirectExec = false;
+	if( (modality!=null) && modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY))  {
+		isDirectExec = true;
+	}
+	BIObject biobj = (BIObject)aSessionContainer.getAttribute("JR_IE_OBJ_TO_EXEC");
+	
 	// get title
-    String title = (String) moduleResponse.getAttribute("title");
+    String title = biobj.getName();
     // get SpagoBI context name   	
     String contextName = ChannelUtilities.getSpagoBIContextName(request);
     // build exec url
@@ -36,33 +52,69 @@
     	execUrl += "&EXECUTION_IDENTIFIER="+execId;
     }
     
-   	// build the back link
-   	//PortletURL backUrl = renderResponse.createActionURL();
-	//backUrl.setParameter("PAGE", "BIObjectsPage");
-	//backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	//backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-	// build the refresh button
-	//PortletURL refreshUrl = renderResponse.createActionURL();
-	//refreshUrl.setParameter("PAGE", BIObjectsModule.MODULE_PAGE);
-	//refreshUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	//refreshUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	//  build the back link
+	Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "BIObjectsPage");
+    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+    
+	// build the refresh link
+    Map refreshUrlPars = new HashMap();
+    refreshUrlPars.put("PAGE", "DirectExecutionPage");
+    refreshUrlPars.put("REFRESH", "TRUE");
+    if(execId!=null) {
+    	refreshUrlPars.put("EXECUTION_IDENTIFIER", execId);
+    }
+    //refreshUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    //refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+    
 %>
 
+
+<% if(!isDirectExec) { %>
 
 
 <table heigth='40px' width='100%' cellspacing='0' border='0'>
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
-			&nbsp;&nbsp;&nbsp;Titolo
+			&nbsp;&nbsp;&nbsp;<%=title%>
+		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+       	<td class='header-button-column-portlet-section'>
+        	<a href='<%=backUrl%>'>
+           		<img title='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' 
+               		 class='header-button-image-portlet-section'
+               		 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+               		 alt='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' />
+        	</a>
+       	</td>
+	</tr>
+</table>
+
+<% } %>
+
+
+<% if(isDirectExec) { %>
+
+<table heigth='12px' width='100%' cellspacing='0' border='0'>
+	<tr>
+		<td class='header-title-column-single-object-execution-portlet-section' 
+		    style='vertical-align:middle;height:12px;font-size:10px;border:1px solid #bbb;'>
+			&nbsp;&nbsp;&nbsp;<span><a style="text-decoration:none;" href="<%=refreshUrl%>">Refresh</a></span>
 		</td>
 	</tr>
 </table>
 
+<% } %>
+
 
 <iframe id='frameexecution' name='frameexecution' 
         src="<%=execUrl%>" 
-        frameborder=0  width='100%' >
+        frameborder="0"  width='100%' >
 </iframe>
+
 
 
 <script>

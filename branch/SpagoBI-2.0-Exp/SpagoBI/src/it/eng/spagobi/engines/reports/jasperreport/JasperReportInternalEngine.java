@@ -51,7 +51,7 @@ import javax.servlet.http.HttpSession;
 
 public class JasperReportInternalEngine extends AbstractHttpModule implements InternalEngineIFace {
 
-	public static final String messageBundle = "component_spagobiofficedocIE_messages";
+	public static final String messageBundle = "messages";
 	
 	/**
 	 * Executes the document and populates the response 
@@ -137,7 +137,9 @@ public class JasperReportInternalEngine extends AbstractHttpModule implements In
 			DataConnection dataconn = getConnection(parameters);
 			Connection conn = dataconn.getInternalConnection();
 			JasperReportRunner jrr = new JasperReportRunner();
-			jrr.runReport(conn, parameters, out, httpReq, httpResp);
+			synchronized(this) {
+				jrr.runReport(conn, parameters, out, httpReq, httpResp);
+			}
 			dataconn.close();
 			
 		} else if(task.equalsIgnoreCase("GET_REPORT_IMAGE")) {

@@ -24,20 +24,19 @@ package it.eng.spagobi.engines.custom;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
-import java.io.FileOutputStream;
-
-public class CustomWebAppInternalEngine implements InternalEngineIFace {
+public class CustomWebAppInternalEngine extends AbstractHttpModule implements InternalEngineIFace {
+	
+	public static final String messageBundle = "messages";
 	
 	/**
 	 * Executes the document and populates the response 
@@ -45,6 +44,42 @@ public class CustomWebAppInternalEngine implements InternalEngineIFace {
 	 * @param obj The <code>BIObject</code> representing the document to be executed
 	 * @param response The response <code>SourceBean</code> to be populated
 	 */
+	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError {
+		
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+	            			"execute", "Start execute method.");
+		if(obj == null) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		            			"execute", "The input object is null.");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
+		}
+		try{
+			obj.loadTemplate();
+			UploadedFile uplFile = obj.getTemplate();
+			byte[] tempContBys = uplFile.getFileContent();
+			String tempContStr = new String(tempContBys);
+			SourceBean tempContSB = SourceBean.fromXMLString(tempContStr);
+			SourceBean entryPointSB = (SourceBean)tempContSB.getAttribute("ENTRY_POINT");
+			String publisher = (String)entryPointSB.getAttribute("publisher");
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CustomWAIE");
+			response.setAttribute("WA_PUBLISHER_NAME", publisher);
+			response.setAttribute("TITLE", obj.getName());
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					    		"execute", "Cannot exec the document", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
+		}
+	}
+	
+	
+	public void service(SourceBean request, SourceBean response) throws Exception {
+		String pubName = (String)request.getAttribute("WA_PUBLISHER_NAME");
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, pubName);
+	}
+
+	
+	
+	/*
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError {
 		
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
@@ -70,27 +105,27 @@ public class CustomWebAppInternalEngine implements InternalEngineIFace {
 			String publisher = (String)entryPointSB.getAttribute("publisher");
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, publisher);
 			
-			/*
-			String code = (String)entryPointSB.getAttribute("code");
-			String pathJsp = (String)entryPointSB.getAttribute("jsp");
-			
-			String newPubStr = "<PUBLISHER name=\""+code+"\">" +
-			                   	"<RENDERING channel=\"HTTP\" mode=\"\" type=\"JSP\">" +
-			                   		"<RESOURCES>" +
-			                   			"<ITEM prog=\"0\" resource=\""+pathJsp+"\"/>" +
-			                   		"</RESOURCES>" +
-			                   	"</RENDERING>" +
-			                   "</PUBLISHER>";
-			SourceBean newPub = SourceBean.fromXMLString(newPubStr);
-			ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean pubsSB = (SourceBean)config.getAttribute("PUBLISHERS");
-			SourceBean existingNewPub = (SourceBean)pubsSB.getFilteredSourceBeanAttribute("PUBLISHER", "name", code);
-			if(existingNewPub==null) {
-				pubsSB.setAttribute(newPub);
-				config.updAttribute(pubsSB);
-			}
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, code);
-            */  
+		
+//			String code = (String)entryPointSB.getAttribute("code");
+//			String pathJsp = (String)entryPointSB.getAttribute("jsp");
+//			
+//			String newPubStr = "<PUBLISHER name=\""+code+"\">" +
+//			                   	"<RENDERING channel=\"HTTP\" mode=\"\" type=\"JSP\">" +
+//			                   		"<RESOURCES>" +
+//			                   			"<ITEM prog=\"0\" resource=\""+pathJsp+"\"/>" +
+//			                   		"</RESOURCES>" +
+//			                   	"</RENDERING>" +
+//			                   "</PUBLISHER>";
+//			SourceBean newPub = SourceBean.fromXMLString(newPubStr);
+//			ConfigSingleton config = ConfigSingleton.getInstance();
+//			SourceBean pubsSB = (SourceBean)config.getAttribute("PUBLISHERS");
+//			SourceBean existingNewPub = (SourceBean)pubsSB.getFilteredSourceBeanAttribute("PUBLISHER", "name", code);
+//			if(existingNewPub==null) {
+//				pubsSB.setAttribute(newPub);
+//				config.updAttribute(pubsSB);
+//			}
+//			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, code);
+              
 				
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
@@ -99,6 +134,7 @@ public class CustomWebAppInternalEngine implements InternalEngineIFace {
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
     						"execute", "End execute method.");			
 	}
+	 */
 
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError {
 		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
@@ -118,6 +154,7 @@ public class CustomWebAppInternalEngine implements InternalEngineIFace {
 		throw new InvalidOperationRequest();
 	}
 
+	
 	
 	
 }

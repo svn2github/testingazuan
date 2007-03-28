@@ -317,7 +317,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 		
 		
-		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
+		//session.delAttribute(ObjectsTreeConstants.PARAMETERS);
 		debug("pageCreationHandler", "object retrived and setted into session");
 		
 		

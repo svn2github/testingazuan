@@ -33,6 +33,12 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/jasperReportIE/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/jasperReportIE/modules.xml" />
 	<!-- END JASPER REPORT INTERNAL ENGINE -->
+	<!-- START CUSTOM WA  INTERNAL ENGINE  -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/customWAIE/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/customWAIE/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/customWAIE/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/customWAIE/presentation.xml" />
+	<!-- END CUSTOM WA INTERNAL ENGINE -->
 	<!-- START DASHBOARD -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />
 	<!-- END DASHBOARD -->

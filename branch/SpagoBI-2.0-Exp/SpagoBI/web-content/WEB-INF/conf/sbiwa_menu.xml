@@ -69,7 +69,13 @@
 		      		<SBIDOCUMENT documentLabel="PROC_LIST_COUNT" parameters=""/>
 		      	</TAB>
 		      	<TAB title="second tab" id="tab2" >
-		      		<SBIDOCUMENT documentLabel="PROC_LIST" parameters=""/>
+		      		<SBIDOCUMENT documentLabel="PROC_LIST" parameters="param_output_format=HTML"/>
+		      	</TAB>
+		      	<TAB title="third tab" id="tab3" >
+		      		<SBIDOCUMENT documentLabel="INST_X_PROC" parameters="param_output_format=HTML%26idProcess=2"/>
+		      	</TAB>
+		      	<TAB title="third tab" id="tab4" >
+		      		<SBIDOCUMENT documentLabel="myapp" parameters=""/>
 		      	</TAB>
 		      </CONTAINER>
 		      <CONTAINER id="cont2" width="30%" height="47%" top="2%" left="68%">

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGES>
+	
+	<PAGE name="ExecuteCustomWAPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ExecuteCustomWAPage" target="ExecuteCustomWAModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ExecuteCustomWAModule"/>
+    	</MODULES>
+  	</PAGE>
+	
+
+</PAGES>
+

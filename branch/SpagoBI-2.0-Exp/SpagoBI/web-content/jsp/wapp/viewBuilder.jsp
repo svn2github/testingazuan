@@ -23,9 +23,6 @@
 	Iterator containerIter = containerList.iterator();
 	
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
-	//UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-    //UUID uuid = uuidGen.generateTimeBasedUUID();
-    //String executionIdentifier = uuid.toString(); 
 %>
 
 
@@ -124,14 +121,12 @@
 				jsResize.append("var frame_"+viewCode+"_tag"+prog+"_"+idCont+" = document.getElementById('"+idCont+"_"+idTab+"');\n");
 				jsResize.append("frame_"+viewCode+"_tag"+prog+"_"+idCont+".style.height=heightCont_"+viewCode+"_tag"+prog+"_"+idCont+" + 'px';\n");
 				jsResize.append("frame_"+viewCode+"_tag"+prog+"_"+idCont+".style.width=widthCont_"+viewCode+"_tag"+prog+"_"+idCont+" + 'px'; \n");
-				//jsResize.append("frame_"+viewCode+"_tag"+prog+"_"+idCont+".contentWindow.resizeContent(widthCont_"+viewCode+"_tag"+prog+"_"+idCont+", heightCont_"+viewCode+"_tag"+prog+"_"+idCont+"); \n");
-				
+				jsResize.append("try{\n");
+				jsResize.append("	frame_"+viewCode+"_tag"+prog+"_"+idCont+".contentWindow.resizeContent(widthCont_"+viewCode+"_tag"+prog+"_"+idCont+", heightCont_"+viewCode+"_tag"+prog+"_"+idCont+"); \n");
+				jsResize.append("} catch(err) {}\n");
 				
 	%>
-				<div id="tab<%=prog%>_<%=idCont%>" dojoType="ContentPane" label="<%=title%>">
-					<%--
-					<iframe id="<%=idCont%>_<%=idTab%>" width="<%=widthiframe%>" width="<%=heightframe%>" src="<%=link%>" frameborder="0" scrolling="auto"></iframe>
-        			--%>
+				<div onValueChanged="alert('tabchange');" id="tab<%=prog%>_<%=idCont%>" dojoType="ContentPane" label="<%=title%>">
         			<iframe id="<%=idCont%>_<%=idTab%>"  style="width:<%=widthiframe%>px;height:<%=heightframe%>px;" src="<%=link%>" frameborder="0" scrolling="auto"></iframe>
         		</div>
 	<%

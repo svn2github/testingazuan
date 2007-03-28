@@ -17,15 +17,16 @@ public class MD5Calculator {
 	
 	public static void main(String[] args) {
 		try {
-			String basePath = "C:\\Progetti\\SpagoBI\\rilasci\\2007-01-23 SpagoBI 1.9.2\\";
+			System.out.println("************** MD5 sun calculation *****************");
+			String basePath = "C:\\Documents and Settings\\zerbetto\\Documenti\\SpagoBIInstaller\\";
 			String[] fileNames = new String[] { 
-					"SpagoBI-bin-1.9.2__build02062007.zip",
-					"SpagoBIBirtReportEngine-bin-1.9.2.zip",
-					"SpagoBIGeoEngine-bin-1.9.2-Beta.zip",
-					"SpagoBIJasperReportDriver-bin-1.9.2.zip",
-					"SpagoBIJPivotEngine-bin-1.9.2.zip",
-					"SpagoBIQbeEngine-bin-1.9.2.zip",
-					"SpagoBIWekaEngine-bin-1.9.2-Beta.zip"					
+					"SpagoBI-bin-1.9.2-installer-03272007.zip",
+					"SpagoBIBirtReportEngine-bin-1.9.2-installer-03272007.zip",
+					"SpagoBIGeoEngine-bin-1.9.2-Beta-installer-03272007.zip",
+					"SpagoBIJasperReportEngine-bin-1.9.2-installer-03272007.zip",
+					"SpagoBIJPivotEngine-bin-1.9.2-installer-03272007.zip",
+					"SpagoBIQbeEngine-bin-1.9.2-installer-03272007.zip",
+					"SpagoBIWekaEngine-bin-1.9.2-Beta-installer-03272007.zip"					
 					};
 			for (int i = 0; i < fileNames.length; i++) {
 				String fileName = basePath + fileNames[i];
@@ -33,6 +34,14 @@ public class MD5Calculator {
 				System.out.println("MD5 value for file " + fileNames[i] + " is : [" + checksum + "]");
 			}
 
+			System.out.println("************** File dimensions *****************");
+			for (int i = 0; i < fileNames.length; i++) {
+				String fileName = basePath + fileNames[i];
+				File file = new File(fileName);
+				System.out.println(fileNames[i] + " dimension is " + file.length());
+			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

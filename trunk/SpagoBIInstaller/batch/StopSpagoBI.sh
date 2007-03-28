@@ -1,6 +1,6 @@
 # stop exo
 cd ./${BIN_DIR}
-exec ./${STOP_COMMAND}
+exec ./${STOP_COMMAND} &
 sleep 5
 # stop databases
 cd ${BACK_DIR}/sbidata/database

@@ -25,6 +25,10 @@
     
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
+    // get the wa publisher name
+    String wapub = (String)moduleResponse.getAttribute("WA_PUBLISHER_NAME");
+	// get title
+	String title = (String)moduleResponse.getAttribute("TITLE");
     // get execution id
 	String execId = (String)moduleResponse.getAttribute("EXECUTION_IDENTIFIER");
 	// get the relative (to this execution) session container
@@ -40,14 +44,10 @@
 	if( (modality!=null) && modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY))  {
 		isDirectExec = true;
 	}
-	BIObject biobj = (BIObject)aSessionContainer.getAttribute("JR_IE_OBJ_TO_EXEC");
-	
-	// get title
-    String title = biobj.getName();
     // get SpagoBI context name   	
     String contextName = ChannelUtilities.getSpagoBIContextName(request);
     // build exec url
-    String execUrl = contextName + "/servlet/AdapterHTTP?PAGE=ExecuteJasperReportPage&TASK=EXEC_REPORT";
+    String execUrl = contextName + "/servlet/AdapterHTTP?PAGE=ExecuteCustomWAPage&WA_PUBLISHER_NAME=" + wapub;
     if(execId!=null) {
     	execUrl += "&EXECUTION_IDENTIFIER="+execId;
     }
@@ -58,15 +58,6 @@
     backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
-    
-	// build the refresh link
-    Map refreshUrlPars = new HashMap();
-    refreshUrlPars.put("PAGE", "DirectExecutionPage");
-    refreshUrlPars.put("REFRESH", "TRUE");
-    if(execId!=null) {
-    	refreshUrlPars.put("EXECUTION_IDENTIFIER", execId);
-    }
-    String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
     
 %>
 
@@ -90,21 +81,6 @@
        	</td>
 	</tr>
 </table>
-
-<% } %>
-
-
-<% if(isDirectExec) { %>
-
-<table heigth='12px' width='100%' cellspacing='0' border='0'>
-	<tr>
-		<td class='header-title-column-single-object-execution-portlet-section' 
-		    style='vertical-align:middle;height:12px;font-size:10px;border:1px solid #bbb;'>
-			&nbsp;&nbsp;&nbsp;<span><a style="text-decoration:none;" href="<%=refreshUrl%>">Refresh</a></span>
-		</td>
-	</tr>
-</table>
-<br/>
 
 <% } %>
 

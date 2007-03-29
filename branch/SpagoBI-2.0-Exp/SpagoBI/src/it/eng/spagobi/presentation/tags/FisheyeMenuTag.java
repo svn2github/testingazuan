@@ -14,6 +14,8 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
@@ -29,12 +31,15 @@ public class FisheyeMenuTag extends TagSupport {
 
 	private ConfigSingleton configuration = null;
 	private HttpServletRequest httpRequest = null;
+	protected IMessageBuilder msgBuilder = null;
+	private RequestContainer requestContainer = null;
 	
 	public int doStartTag() throws JspException {
 		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 				           "doStartTag", " method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		RequestContainer requestContainer = RequestContainerAccess.getRequestContainer(httpRequest);
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		requestContainer = RequestContainerAccess.getRequestContainer(httpRequest);
 		SessionContainer spagoSession = requestContainer.getSessionContainer();
 		SessionContainer spagoPermSession = spagoSession.getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile)spagoPermSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -157,6 +162,12 @@ public class FisheyeMenuTag extends TagSupport {
 			                    String iconUrl, String title, String link, String width, 
 			                    String height, String callResizeCallback) {
 		
+		title = title.trim();
+		if(title.startsWith("#")){
+			title = title.substring(1);
+			title = msgBuilder.getMessage(requestContainer, title);
+		}
+		
 		String contexName = ChannelUtilities.getSpagoBIContextName(httpRequest);
 		if(link.startsWith("/")) {
 			link = link.substring(1);
@@ -165,7 +176,7 @@ public class FisheyeMenuTag extends TagSupport {
 								"<center>" +
 									"<br/><br/>" +
 									"<span style='font-size:13pt;font-weight:bold;color:darkblue;'>" +
-										"Loading" +
+										msgBuilder.getMessage(requestContainer, "loading") +
 									"</span><br/><br/>" +
 									"<img src='"+contexName+"/img/wapp/loading.gif' />" +
 								"</center>" +

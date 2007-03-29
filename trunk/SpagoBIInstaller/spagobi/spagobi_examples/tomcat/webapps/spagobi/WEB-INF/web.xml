@@ -13,6 +13,9 @@
         This application is a portlet. It can not be used outside a portal.
 	</description>
 	
+	<listener>
+        <listener-class>it.eng.spagobi.scheduler.listeners.SchedulerContextListener</listener-class>
+    </listener>
     <listener>
         <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
     </listener>

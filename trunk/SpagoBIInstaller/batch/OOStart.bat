@@ -1,6 +1,6 @@
 @echo off
 set PATH=%PATH%;%OPENOFFICE_HOME%\program\
-soffice -quickstart -accept="socket,host=localhost,port=9000;urp;StarOffice.ServiceManager"
+soffice -quickstart -accept="socket,host=localhost,port=9005;urp;StarOffice.ServiceManager"
 if %ERRORLEVEL% NEQ 0 goto warning
 exit
 :warning

@@ -6,12 +6,17 @@
          import="it.eng.spago.base.*"
 %>
 <%@ page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.utilities.messages.MessageBuilderFactory"%>
+<%@page import="it.eng.spagobi.utilities.messages.IMessageBuilder"%>
 
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
 
 <%      
+	IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();	
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
+	RequestContainer aRequestContainer = RequestContainerAccess.getRequestContainer(request); 
 %>
+
 
 <html>
   <head>
@@ -71,8 +76,8 @@
             	<div style="position:absolute;right:15px;">
                     <a href="<%=contextName%>/servlet/AdapterHTTP?PAGE=LogoutPage">
                         <img src="<%=contextName%>/img/wapp/exit16.png" 
-                             title="Logout" 
-                             alt="logout" />
+                             title="<%=msgBuilder.getMessage(aRequestContainer, "logout")%>" 
+                             alt="<%=msgBuilder.getMessage(aRequestContainer, "logout")%>" />
                     </a>
                 </div>
             </div>

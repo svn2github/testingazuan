@@ -2,7 +2,7 @@
 <MENU>
 	
 	<APPLICATION code="EngMan" 
-	             title="Engines Management"  
+	             title="#menu.EngMan"  
 	             functionality="EnginesManagement" 
 	             type="link" 
 	             link="/servlet/AdapterHTTP?PAGE=ListEnginesPage" 
@@ -11,7 +11,7 @@
 	             iconUrl="/img/wapp/engines64.png">
 	</APPLICATION>
 	<APPLICATION code="FunctMan" 
-	             title="Functionalities Management"  
+	             title="#menu.FunctMan"  
 	             functionality="FunctionalitiesManagement" 
 	             type="link" 
 	             link="/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR&amp;OPERATION=FUNCTIONALITIES_OPERATION" 
@@ -20,7 +20,7 @@
 	             iconUrl="/img/wapp/functionalities64.png">
 	</APPLICATION>
 	<APPLICATION code="LovMan" 
-	             title="List of Values Management"  
+	             title="#menu.LovMan"  
 	             functionality="LovsManagement" 
 	             type="link" 
 	             link="/servlet/AdapterHTTP?PAGE=ListLovsPage" 
@@ -29,7 +29,7 @@
 	             iconUrl="/img/wapp/lovs64.png">
 	</APPLICATION>
 	<APPLICATION code="ConstraintMan" 
-	             title="Parameter Constraints Management"  
+	             title="#menu.ConstraintMan"  
 	             functionality="ConstraintManagement" 
 	             type="link" 
 	             link="/servlet/AdapterHTTP?PAGE=LISTMODALITIESCHECKSPAGE" 
@@ -38,7 +38,7 @@
 	             iconUrl="/img/wapp/checks64.png">
 	</APPLICATION>
 	<APPLICATION code="ParameterMan" 
-	             title="Parameters Management"  
+	             title="#menu.ParameterMan"  
 	             functionality="ParameterManagement" 
 	             type="link" 
 	             link="/servlet/AdapterHTTP?PAGE=ListParametersPage" 
@@ -47,7 +47,7 @@
 	             iconUrl="/img/wapp/parameters64.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentMan" 
-	             title="Business Documents Management"  
+	             title="#menu.DocumentMan"  
 	             functionality="DocumentManagement" 
 	             type="link" 
 	             link="/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR" 

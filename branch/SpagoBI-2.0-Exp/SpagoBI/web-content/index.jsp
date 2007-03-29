@@ -6,11 +6,15 @@
          import="it.eng.spago.base.*,
                  it.eng.spagobi.constants.SpagoBIConstants"
 %>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.utilities.messages.IMessageBuilder"%>
+<%@page import="it.eng.spagobi.utilities.messages.MessageBuilderFactory"%>
 
 <%      
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	String authFailed = "";
 	ResponseContainer aResponseContainer = ResponseContainerAccess.getResponseContainer(request);
+	RequestContainer requestContainer = RequestContainerAccess.getRequestContainer(request); 
 	if(aResponseContainer!=null) {
 		SourceBean aServiceResponse = aResponseContainer.getServiceResponse();
 		if(aServiceResponse!=null) {
@@ -21,10 +25,12 @@
 			}
 		}
 	}
-    
+	
+	IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 %>
 
-<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+
+
 <html>
   <head>
     <title>SpagoBI</title>
@@ -54,18 +60,34 @@
 		        				   <img src="<%=contextName%>/img/wapp/loginUser64.png" />
 		        				</td>
 		        				<td>
-		        				    <br/>
-		        					UserName:&nbsp;<input name="userID" type="text" size="30" />
-		        					<br/><br/>
-		        				    Password:&nbsp;&nbsp;<input name="password" type="password" size="30" />
-		        				    <br/>
+		        				    <br/> 
+		        				    <table>
+		        				    	<tr>
+		        				    		<td width="150px">
+		        								<%=msgBuilder.getMessage(requestContainer, "username")%>:
+		        							</td>
+		        							<td width="30px">&nbsp;</td>
+		        							<td>
+		        								<input name="userID" type="text" size="30" />
+		        							</td>	
+		        						</tr>
+		        						<tr>
+		        				    	<td width="150px">
+		        								<%=msgBuilder.getMessage(requestContainer, "password")%>:
+		        							</td>
+		        							<td width="30px">&nbsp;</td>
+		        							<td>
+		        								<input name="password" type="password" size="30" />
+		        							</td>	
+		        						</tr>
+		        					</table>	
 		        				</td>
 		        				<td>
-		        				    <br/>
 		        					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		        					<input type="image" 
 		        					       src="<%=contextName%>/img/wapp/next32.png" 
-		        					       title="Login" alt="Login"/>
+		        					       title="<%=msgBuilder.getMessage(requestContainer, "login")%>" 
+		        					       alt="<%=msgBuilder.getMessage(requestContainer, "login")%>"/>
 		        				</td>
 		        			</tr>
 		        			<tr>

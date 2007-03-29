@@ -89,8 +89,8 @@
 
 
 	 <LANGUAGE_SUPPORTED>
-		<LANGUAGE default="false" language="it" country="IT" />
-		<LANGUAGE default="true" language="en" country="US" />
+		<LANGUAGE default="true" language="it" country="IT" />
+		<LANGUAGE default="false" language="en" country="US" />
 		<LANGUAGE default="false" language="fr" country="FR" />
 	 </LANGUAGE_SUPPORTED>	
 	

@@ -85,6 +85,11 @@
 			while(iterTab.hasNext()) {
 				SourceBean tabSB = (SourceBean)iterTab.next();
 				String title = (String)tabSB.getAttribute("title");
+				title = title.trim();
+				if(title.startsWith("#")){
+					title = title.substring(1);
+					title = msgBuilder.getMessage(aRequestContainer, title);
+				}
 				String idTab = (String)tabSB.getAttribute("id");
 				SourceBean documentSB = (SourceBean)tabSB.getAttribute("SBIDOCUMENT");
 				String docLabel = (String)documentSB.getAttribute("documentLabel");

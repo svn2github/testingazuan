@@ -102,7 +102,7 @@ td.header-title-column-portlet-section {
 	font-size: 13px;
 	font-weight: 600;
 	color: #074B88;
-	background-image: url('/spagobi/img/white_corner.gif');
+	background-image: url('../../img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
 }
@@ -118,7 +118,7 @@ td.header-title-column-single-object-execution-portlet-section {
 	height: 25px;
 	border-top: 1px solid #bbb;
 	text-align: left;
-	background-image: url('/spagobi/img/white_corner.gif');
+	background-image: url('../../img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
 }
@@ -134,7 +134,7 @@ td.header-sub-title-column-portlet-section {
 	color: #074B88;
 	horizontal-align: left;
 	vertical-align: middle;
-	background-image: url('/spagobi/img/white_corner.gif');
+	background-image: url('../../img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
 }
@@ -446,7 +446,7 @@ IMG {
 	height: 25px;
 	border-top: 1px solid #bbb;
 	text-align: left;
-	background-image: url('/spagobi/img/white_corner.gif');
+	background-image: url('../../img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
 	vertical-align:middle;
@@ -587,7 +587,7 @@ TD.TESTATA {
 	BACKGROUND-COLOR: #ffe493;
 	TEXT-ALIGN: left;
 	text-transform: uppercase;
-	background-image: url('/spagobi/img/white_corner.gif');
+	background-image: url('../../img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
 	vertical-align: middle;

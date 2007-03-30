@@ -30,6 +30,7 @@
      workingDirectory=""
      commandLine=""
      initialState="noShow"
+     iconFile="help"
      iconIndex="0"
      url="http://localhost:$PORT/$PORTAL"
      type="Link"
@@ -56,78 +57,65 @@
      description="Stop SpagoBI Platform">
      <createForPack name="SpagoBI-1.9.2" />
   </shortcut>
+  
   <shortcut
      name="Installation Manual"
-     programGroup="yes"
-     desktop="no"
-     applications="no"
-     startMenu="yes"
-     startup="no"
-     target="$INSTALL_PATH\spagobi-docs\SpagoBI-Installation-Manual.pdf"
-     commandLine=""
-     initialState="normal"
-     iconIndex="0" 
-     workingDirectory="$INSTALL_PATH"
-     type="Application"
-     encoding="UTF-8"
-     description="Installation Manual document">
-     <createForPack name="Documentation" />
-  </shortcut>
-  <shortcut
-     name="How To"
-     programGroup="yes"
-     desktop="no"
-     applications="no"
-     startMenu="yes"
-     startup="no"
-     target="$INSTALL_PATH\spagobi-docs\SpagoBI_How_To-1.6.pdf"
-     commandLine=""
-     initialState="normal"
-     iconIndex="0" 
-     workingDirectory="$INSTALL_PATH"
-     type="Application"
-     encoding="UTF-8"
-     description="How To document">
-     <createForPack name="Documentation" />
-  </shortcut>
-  <shortcut
-     name="Quick Start"
-     programGroup="yes"
-     desktop="no"
-     applications="no"
-     startMenu="yes"
-     startup="no"
-     target="$INSTALL_PATH\spagobi-docs\QuickStart-0.9.2.pdf"
-     commandLine=""
-     initialState="normal"
-     iconIndex="0" 
-     workingDirectory="$INSTALL_PATH"
-     type="Application"
-     encoding="UTF-8"
-     description="Quick Start document">
-     <createForPack name="Documentation" />
-  </shortcut>
-  <!--
-  <shortcut
-     name="Start SpagoBI Platform"
      programGroup="yes"
      desktop="yes"
      applications="no"
      startMenu="yes"
      startup="no"
-     target="$INSTALL_PATH\StartSpagoBI.sh"
-     commandLine=""
-     initialState="normal"
-     iconFile="$INSTALL_PATH\SpagoBI.png"
-     iconIndex="0" 
-     workingDirectory="$INSTALL_PATH"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/spagobi-docs/SpagoBI-Installation-Manual.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"
+     url="$INSTALL_PATH/spagobi-docs/SpagoBI-Installation-Manual.pdf"
      type="Application"
      encoding="UTF-8"
-     terminal="true"
-     KdeSubstUID="true"
-     KdeUsername="root"
-     description="Start SpagoBI Platform">
-     <createForPack name="SpagoBIPlatform" />
-  </shortcut>
-  -->
+     description="Installation Manual document">
+     <createForPack name="Documentation"/>
+   </shortcut>
+
+  <shortcut
+     name="How To"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/spagobi-docs/SpagoBI_How_To-1.6.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"
+     url="$INSTALL_PATH/spagobi-docs/SpagoBI_How_To-1.6.pdf"
+     type="Application"
+     encoding="UTF-8"
+     description="How To document">
+     <createForPack name="Documentation"/>
+   </shortcut>
+
+  <shortcut
+     name="Quick Start"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/spagobi-docs/QuickStart-0.9.2.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"
+     url="$INSTALL_PATH/spagobi-docs/QuickStart-0.9.2.pdf"
+     type="Application"
+     encoding="UTF-8"
+     description="Quick Start document">
+     <createForPack name="Documentation"/>
+   </shortcut>
+
 </shortcuts>

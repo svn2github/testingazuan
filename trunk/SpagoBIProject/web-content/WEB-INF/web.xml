@@ -7,18 +7,45 @@
 	match the context root of this web application
 	-->
     <display-name>spagobi</display-name>
-    
-   
     <description>
         This application is a portlet. It can not be used outside a portal.
 	</description>
 
+
+
+
+
+
+    <!-- START LISTENERS --> 
     <listener>
         <listener-class>it.eng.spagobi.scheduler.listeners.SchedulerContextListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
     </listener>
+    <!-- END LISTENERS --> 
+    
+    
+    
+    
+    
+    
+    <!-- START SERVLET DEFINITIONS --> 
+    <servlet>
+        <servlet-name>ConfigServlet</servlet-name>
+        <servlet-class>it.eng.spago.configuration.ConfigServlet</servlet-class>
+        <init-param>
+            <param-name>AF_CONFIG_FILE</param-name>
+            <param-value>/WEB-INF/conf/master.xml</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    
+    <servlet>
+		<servlet-name>AdapterHTTP</servlet-name>
+		<servlet-class>it.eng.spago.dispatching.httpchannel.AdapterHTTP</servlet-class>
+	</servlet>
+    
     <servlet>
         <servlet-name>PortletWrapper</servlet-name>
         <servlet-class>org.exoplatform.services.portletcontainer.impl.servlet.ServletWrapper</servlet-class>
@@ -62,16 +89,6 @@
         <servlet-name>ExportServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.ExportServlet</servlet-class>
     </servlet>
-  
-    <servlet>
-        <servlet-name>ConfigServlet</servlet-name>
-        <servlet-class>it.eng.spago.configuration.ConfigServlet</servlet-class>
-        <init-param>
-            <param-name>AF_CONFIG_FILE</param-name>
-            <param-value>/WEB-INF/conf/master.xml</param-value>
-        </init-param>
-        <load-on-startup>0</load-on-startup>
-    </servlet>
 
     <servlet>
         <servlet-name>ReportServlet</servlet-name>
@@ -99,7 +116,23 @@
         <servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
         <load-on-startup>100</load-on-startup>
     </servlet>
+    <!-- END SERVLET DEFINITIONS --> 
 
+
+
+
+
+
+
+
+
+
+    <!-- START SERVLET MAPPINGS --> 
+	<servlet-mapping>
+		<servlet-name>AdapterHTTP</servlet-name>
+		<url-pattern>/servlet/AdapterHTTP</url-pattern>
+	</servlet-mapping>   
+   
     <servlet-mapping>
         <servlet-name>AxisServlet</servlet-name>
         <url-pattern>/servlet/AxisServlet</url-pattern>
@@ -170,10 +203,32 @@
         <servlet-name>ExportServlet</servlet-name>
         <url-pattern>/ExportService</url-pattern>
     </servlet-mapping>
+	<!-- END SERVLET MAPPINGS --> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- OTHER CONFIGURATIONS -->
     
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
 
   <!--
 	<resource-ref>

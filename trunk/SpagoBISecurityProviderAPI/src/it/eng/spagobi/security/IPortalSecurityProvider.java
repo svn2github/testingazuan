@@ -38,10 +38,9 @@ import java.util.List;
 /**
  * This is interface for gethering security information from portal server.
  * A Specific subclass exists for each portal server.
- * 
- * @author Zoppello
  */
 public interface IPortalSecurityProvider {
+	
 	/**
 	 * @return The Role list. (list of it.eng.spagobi.bo.Role)
 	 */
@@ -63,4 +62,11 @@ public interface IPortalSecurityProvider {
 	 */
 	public List getAllProfileAttributesNames ();
 	
+	/**
+	 * Authenticate a user
+	 * @param userName the username
+	 * @param password bytes of the password, certificate, ... 
+	 * @return true if the user is autheticated false otherwise
+	 */
+	public boolean authenticateUser(String userName, byte[] password);
 }

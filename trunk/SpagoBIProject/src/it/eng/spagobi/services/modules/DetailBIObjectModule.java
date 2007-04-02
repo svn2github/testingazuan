@@ -52,13 +52,12 @@ import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.AbstractBasicCheckListModule;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SessionMonitor;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,12 +66,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-
-import org.apache.commons.fileupload.portlet.PortletFileUpload;
 import org.apache.commons.validator.GenericValidator;
 
 /**
@@ -111,19 +104,18 @@ public class DetailBIObjectModule extends AbstractModule {
 	 * 
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		if (portletRequest instanceof ActionRequest) {
-			ActionRequest actionRequest = (ActionRequest) portletRequest;
-			if (PortletFileUpload.isMultipartContent(actionRequest)) {
-				request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
-			}
+		
+		errorHandler = getErrorHandler();
+		
+		if(ChannelUtilities.isPortletRunning()){
+			request = ChannelUtilities.getSpagoRequestFromMultipart();
+			fillRequestContainer(request, errorHandler);
 		}
 		
-		PortletPreferences prefs = portletRequest.getPreferences();
-		String modality = (String) prefs.getValue(BIObjectsModule.MODALITY, "");
+		String modality = (String) ChannelUtilities.getPreferenceValue(request, BIObjectsModule.MODALITY, "");
 		initialPath = null;
-		if (modality != null && modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
-			initialPath = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
+		if(modality != null && modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
+			initialPath = (String) ChannelUtilities.getPreferenceValue(request, TreeObjectsModule.PATH_SUBTREE, "");
 		}
 		
 		RequestContainer requestContainer = this.getRequestContainer();		
@@ -170,7 +162,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		boolean linksLookupButtonClicked =  request.getAttribute("loadLinksLookup") != null;
 		boolean dependenciesButtonClicked =  request.getAttribute("goToDependenciesPage") != null;
 		
-		errorHandler = getErrorHandler();
+		
 		
 		try {
 			if (message == null) {				
@@ -255,7 +247,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	}	
 
 	private void startDependenciesLookupHandler(SourceBean request, String message, SourceBean response) throws Exception {
-		fillRequestContainer(request, errorHandler);
+		//fillRequestContainer(request, errorHandler);
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		BIObject obj = recoverBIObjectDetails(request, message);
 		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
@@ -423,7 +415,7 @@ public class DetailBIObjectModule extends AbstractModule {
 
 		try {
 			// as the request is a multipart request, the fillRequestContainer popolates correctly the service request
-			fillRequestContainer(request, errorHandler);
+			//fillRequestContainer(request, errorHandler);
 			BIObject obj = recoverBIObjectDetails(request, mod);
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			String selectedObjParIdStr = null;
@@ -1365,6 +1357,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("modality");
 		session.delAttribute("actor");
 		response.setAttribute("loopback", "true");
+		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	}
 	
 }

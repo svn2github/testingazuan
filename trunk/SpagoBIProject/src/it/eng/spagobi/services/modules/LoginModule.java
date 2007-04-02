@@ -27,53 +27,81 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.services.modules;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.security.IPortalSecurityProvider;
 import it.eng.spagobi.security.IUserProfileFactory;
-import it.eng.spagobi.utilities.PortletUtilities;
-import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.io.InputStream;
 import java.security.Principal;
 
-import javax.portlet.PortletRequest;
-
-import org.xml.sax.InputSource;
-
-/**
- * This class read user from portal and defines login operations.
- * 
- * @author Zoppello
- */
-public class PortletLoginModule extends AbstractModule {
+public class LoginModule extends AbstractModule {
 
 	/**
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
-		String remoteUser = portletRequest.getRemoteUser();
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", "USER CONNECTED IS [" + remoteUser+"]");
-		Principal principal = portletRequest.getUserPrincipal();
+		
+		// get config
 		SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
+		
+		// create instance of the user profile factory interface
 		SourceBean engUserProfileFactorySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS");
 		String engUserProfileFactoryClass = (String) engUserProfileFactorySB.getAttribute("className");
 		engUserProfileFactoryClass = engUserProfileFactoryClass.trim(); 
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
+		
+		// create instance of the portal security interface
+		SourceBean engPortalSecuritySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
+		String engPortalSecurityClass = (String) engPortalSecuritySB.getAttribute("className");
+		engPortalSecurityClass = engPortalSecurityClass.trim(); 
+		IPortalSecurityProvider engPortalSecurity = (IPortalSecurityProvider)Class.forName(engPortalSecurityClass).newInstance();
+		
+		// authenticate user 
+		String userId = (String)request.getAttribute("userID");
+		String password = (String)request.getAttribute("password");
+		boolean authenticated = engPortalSecurity.authenticateUser(userId, password.getBytes());
+		if(!authenticated) {
+			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.CRITICAL, "User not authenticated");
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "authenticationFailed");
+			response.setAttribute(SpagoBIConstants.AUTHENTICATION_FAILED_MESSAGE, "Authentication Failed");
+			return;
+		}
+		
+		// user is authenticated so get user profile 
+		Principal principal = new SpagoBIPrincipal(userId);
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(principal);
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
-	            "userProfile created " + userProfile);
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
-                "Attributes name of the user profile: " + userProfile.getUserAttributeNames());
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
-    			"Functionalities of the user profile: " + userProfile.getFunctionalities());
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
-                "Roles of the user profile: " + userProfile.getRoles());
-		getRequestContainer().getSessionContainer().getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
+		
+		// put user profile into session
+		RequestContainer reqCont = RequestContainer.getRequestContainer();
+		SessionContainer sessCont = reqCont.getSessionContainer();
+		SessionContainer permSess = sessCont.getPermanentContainer();
+		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
+		
+		// fill response attributes
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
 	}
 
+	
+	
+	
+	public class SpagoBIPrincipal implements Principal {
+
+		String userName = "";
+		
+		public SpagoBIPrincipal(String userName) {
+			this.userName = userName;
+		}
+		
+		public String getName() {
+			return this.userName;
+		}
+		
+	}
+	
 }

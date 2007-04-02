@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.modules;
 
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -40,6 +39,7 @@ import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.DelegatedBasicListService;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 
 import java.util.HashMap;
@@ -326,7 +326,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		   				   "			<PARAMETER name=\"" + SpagoBIConstants.ACTOR + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + SpagoBIConstants.DEV_ACTOR + "\"/> " +
 		   				   "			<PARAMETER name=\"" + SpagoBIConstants.OBJECTS_VIEW + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + SpagoBIConstants.VIEW_OBJECTS_AS_TREE + "\"/> " +
 		   				   "		</CHANGE_VIEW_BUTTON>";	
-		moduleConfigStr += "		<BACK_BUTTON confirm=\"FALSE\" image=\"/img/back.png\" label=\"SBISet.objects.backButt\"> " +
+		moduleConfigStr += "		<BACK_BUTTON confirm=\"FALSE\" image=\"/img/back.png\" label=\"SBISet.objects.backButt\" onlyPortletRunning=\"true\"> " +
         				   "			<PARAMETER name=\"ACTION_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"START_ACTION\"/> " +
         				   "			<PARAMETER name=\"PUBLISHER_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"LoginSBIDevelopmentContextPublisher\"/> " +
         				   "			<PARAMETER name=\"" + LightNavigationManager.LIGHT_NAVIGATOR_RESET + "\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +
@@ -375,12 +375,21 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 						   "	</DELETE_CAPTION>";
 		moduleConfigStr += "	</CAPTIONS>";
 		moduleConfigStr += "	<BUTTONS>";
+		
+		if(ChannelUtilities.isWebRunning()) {
+			moduleConfigStr += "		<INSERT_BUTTON confirm=\"FALSE\" image=\"/img/new.png\" label=\"SBISet.devObjects.newObjButt\"> " +
+			   				   "			<PARAMETER name=\"" + ObjectsTreeConstants.PAGE + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + DetailBIObjectModule.MODULE_PAGE + "\"/> " +
+			   				   "			<PARAMETER name=\"" + ObjectsTreeConstants.MESSAGE_DETAIL + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.DETAIL_NEW + "\"/> " +
+			   				   "			<PARAMETER name=\"" + SpagoBIConstants.ACTOR + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + SpagoBIConstants.ADMIN_ACTOR + "\"/> " +
+			   				   "		</INSERT_BUTTON>";		
+		}
+		
 		moduleConfigStr += "		<CHANGE_VIEW_BUTTON confirm=\"FALSE\" image=\"/img/treeView.png\" label=\"SBISet.objects.treeViewButt\"> " +
 		   				   "			<PARAMETER name=\"PAGE\" scope=\"\" type=\"ABSOLUTE\" value=\"BIObjectsPage\"/> " +
 		   				   "			<PARAMETER name=\"" + SpagoBIConstants.ACTOR + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + SpagoBIConstants.ADMIN_ACTOR + "\"/> " +
 		   				   "			<PARAMETER name=\"" + SpagoBIConstants.OBJECTS_VIEW + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + SpagoBIConstants.VIEW_OBJECTS_AS_TREE + "\"/> " +
 		   				   "		</CHANGE_VIEW_BUTTON>";	
-		moduleConfigStr += "		<BACK_BUTTON confirm=\"FALSE\" image=\"/img/back.png\" label=\"SBISet.objects.backButt\"> " +
+		moduleConfigStr += "		<BACK_BUTTON confirm=\"FALSE\" image=\"/img/back.png\" label=\"SBISet.objects.backButt\"  onlyPortletRunning=\"true\"> " +
         				   "			<PARAMETER name=\"ACTION_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"START_ACTION\"/> " +
         				   "			<PARAMETER name=\"PUBLISHER_NAME\" scope=\"\" type=\"ABSOLUTE\" value=\"LoginSBIAdministrationContextPublisher\"/> " +
         				   "			<PARAMETER name=\"" + LightNavigationManager.LIGHT_NAVIGATOR_RESET + "\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +

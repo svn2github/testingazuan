@@ -67,7 +67,7 @@ public class PortletLoginAction extends AbstractAction{
 		String engUserProfileFactoryClass = (String) engUserProfileFactorySB.getAttribute("className");
 		engUserProfileFactoryClass = engUserProfileFactoryClass.trim(); 
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
-		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(portletRequest, principal);
+		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(principal);
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
 				            "userProfile created " + userProfile);
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 

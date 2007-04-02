@@ -127,8 +127,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			: 
 			<input type="text" name="exportFileName" size="30" />
             <br/>
+            <input type="checkbox" name="exportSubObj" />
 			<spagobi:message key = "SBISet.importexport.expSubView" bundle="component_impexp_messages"/>
-			<input type="checkbox" name="exportSubObj" />	
+			<br/>
+			<input type="checkbox" name="exportSnapshots" />	
+			<spagobi:message key = "SBISet.importexport.expSnapshots" bundle="component_impexp_messages"/>
 		</div>
 		<div style="clear:left;margin-bottom:10px;">
 			<spagobi:treeObjects moduleName="TreeObjectsModule"  

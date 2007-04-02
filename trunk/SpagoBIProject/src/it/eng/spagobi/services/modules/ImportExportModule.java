@@ -146,6 +146,11 @@ public class ImportExportModule extends AbstractModule {
 			if(exportSubObject!=null) {
 				expSubObj = true;
 			}
+			String exportSnapshots = (String)request.getAttribute("exportSnapshots");
+			boolean exportSnaps = false;
+			if(exportSnapshots!=null) {
+				exportSnaps = true;
+			}
 			ConfigSingleton conf = ConfigSingleton.getInstance();
 			SourceBean exporterSB = (SourceBean)conf.getAttribute("IMPORTEXPORT.EXPORTER");
 			String pathExportFolder = (String)exporterSB.getAttribute("exportFolder");
@@ -158,7 +163,7 @@ public class ImportExportModule extends AbstractModule {
 			String expClassName = (String)exporterSB.getAttribute("class");
 	        Class expClass = Class.forName(expClassName);
 			expManager = (IExportManager)expClass.newInstance();
-			expManager.prepareExport(pathExportFolder, exportFileName, expSubObj);
+			expManager.prepareExport(pathExportFolder, exportFileName, expSubObj, exportSnaps);
 			String exportedFilePath = "";
 			exportedFilePath = expManager.exportObjects(ids);
 			response.setAttribute(ImportExportConstants.EXPORT_FILE_PATH, exportedFilePath);	

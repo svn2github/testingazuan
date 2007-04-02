@@ -22,9 +22,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 package it.eng.spagobi.security;
 
 import it.eng.spago.security.IEngUserProfile;
-import java.security.Principal;
 
-import javax.portlet.PortletRequest;
+import java.security.Principal;
 
 
 /**
@@ -34,13 +33,11 @@ import javax.portlet.PortletRequest;
 public class ExoMembershipAsRoleUserProfileFactoryImpl implements IUserProfileFactory {
 	
 	/**
-	 * Return an IEngUserProfile implementation starting from the Portlet Request and the Principal of the 
-	 * user given by exo platform.
-	 * @param request The Portlet Request genrated from the user
+	 * Return an IEngUserProfile implementation starting the Principal of the user
 	 * @param principal Principal of the current user
 	 * @return The User Profile Interface implementation object
 	 */
-	public IEngUserProfile createUserProfile(PortletRequest request, Principal principal){
+	public IEngUserProfile createUserProfile(Principal principal){
 		return new ExoMembershipAsRoleUserProfileImpl(principal);
 	}
 }

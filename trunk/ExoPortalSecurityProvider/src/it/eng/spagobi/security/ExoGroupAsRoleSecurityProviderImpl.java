@@ -22,8 +22,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -144,17 +142,19 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 
 
 	public List getAllProfileAttributesNames() {
-		List toReturn = null;
-		try {
-			toReturn = SecurityProviderUtilities.getAllProfileAtributesNames();
-		} catch (EMFInternalError e) {
-			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
-					this.getClass().getName(),
-		            "getAllProfileAttributesNames()",
-		            "Error retrieving the list of all profile attributes names", e);
-			return new ArrayList();
-		}
+		List toReturn = new ArrayList();;
 		return toReturn;
+	}
+
+	/**
+	 * Authenticate a user
+	 * @param userName the username
+	 * @param password bytes of the password, certificate, ... 
+	 * @return true if the user is autheticated false otherwise
+	 */
+	public boolean authenticateUser(String userName, byte[] password) {
+		// NEVER CALLED BECAUSE AUTHENTICATION IS DONE BY THE PORTAL
+		return false;
 	}
 	
 }

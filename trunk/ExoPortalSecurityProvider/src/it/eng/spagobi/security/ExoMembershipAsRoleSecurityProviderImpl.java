@@ -193,5 +193,17 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 		}
 		return toReturn;
 	}
+
+
+	/**
+	 * Authenticate a user
+	 * @param userName the username
+	 * @param password bytes of the password, certificate, ... 
+	 * @return true if the user is autheticated false otherwise
+	 */
+	public boolean authenticateUser(String userName, byte[] password) {
+		// NEVER CALLED BECAUSE AUTHENTICATION IS DONE BY THE PORTAL
+		return false;
+	}
 	
 }

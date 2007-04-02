@@ -45,14 +45,13 @@ import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.bo.lov.QueryDetail;
-import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -79,6 +78,7 @@ public class ExportManager implements IExportManager {
 	private Session session = null;
 	private ExporterMetadata exporter = null;
 	private boolean exportSubObjects = false;
+	private boolean exportSnapshots = false;
 	SourceBean connections = null;
 	
 	
@@ -87,11 +87,14 @@ public class ExportManager implements IExportManager {
 	 * @param pathExpFold Path of the export folder
 	 * @param nameExpFile the name to give to the exported file
 	 * @param expSubObj Flag which tells if it's necessary to export subobjects
+	 * @param expSnaps Flag which tells if it's necessary to export snapshots
 	 */
-	public void prepareExport(String pathExpFold, String nameExpFile, boolean expSubObj) throws EMFUserError {
+	public void prepareExport(String pathExpFold, String nameExpFile, 
+			boolean expSubObj, boolean expSnaps) throws EMFUserError {
 		nameExportFile = nameExpFile;
 		pathExportFolder = pathExpFold;
 		exportSubObjects = expSubObj;
+		exportSnapshots = expSnaps;
 		if(pathExportFolder.endsWith("/") || pathExportFolder.endsWith("\\") ) {
 			pathExportFolder = pathExportFolder.substring(0, pathExportFolder.length() - 1);
 		}
@@ -227,7 +230,10 @@ public class ExportManager implements IExportManager {
 		try{
 			String propFilePath = pathBaseFolder + "/export.properties";
 			FileOutputStream fos = new FileOutputStream(propFilePath);
-			String properties = "spagobi-version=1.9.2\n";
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean currentVersionSB = (SourceBean) config.getAttribute("IMPORTEXPORT.CURRENTVERSION");
+			String version = (String) currentVersionSB.getAttribute("version");
+			String properties = "spagobi-version=" + version + "\n";
 			fos.write(properties.getBytes());
 			fos.flush();
 			fos.close();
@@ -262,10 +268,12 @@ public class ExportManager implements IExportManager {
 			return;
 		IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
 		BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
-		exportTemplate(biobj, session);
+		exportCmsNodes(biobj, session);
+		/*
 		if(exportSubObjects){
 			exportSubObjects(biobj);
 		}
+		*/
 		Engine engine = biobj.getEngine();		
 		exporter.insertEngine(engine, session);
 		exporter.insertBIObject(biobj, session);
@@ -295,22 +303,61 @@ public class ExportManager implements IExportManager {
 			exporter.insertSubReportAssociation(subRep, session);
 			exportSingleObj(subRep.getSub_rpt_id().toString());
 		}
+		
 	}
 	
 	
 	/**
-	 * Export the template of a single SpagoBI Object
-	 * @param biobj The BIObject to which the template belongs 
+	 * Export the cms nodes relevant to a single SpagoBI Object
+	 * @param biobj The BIObject being exported
 	 * @throws EMFUserError
 	 */
-	private void exportTemplate(BIObject biobj, Session session) throws EMFUserError {
-		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
-		cmsdao.fillBIObjectTemplate(biobj);
-		UploadedFile tempFile = biobj.getTemplate();
-		byte[] tempFileCont = tempFile.getFileContent();
+	private void exportCmsNodes(BIObject biobj, Session session) throws EMFUserError {
+//		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
+//		cmsdao.fillBIObjectTemplate(biobj);
+//		UploadedFile tempFile = biobj.getTemplate();
+//		byte[] tempFileCont = tempFile.getFileContent();
+//		
+//		try{
+//			if(biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+//				String tempFileStr = new String(tempFileCont);
+//				SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
+//				SourceBean datanameSB = (SourceBean)tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
+//				String lovLabel = (String)datanameSB.getAttribute("value");
+//			    IModalitiesValueDAO lovdao = DAOFactory.getModalitiesValueDAO();
+//			    ModalitiesValue lov = lovdao.loadModalitiesValueByLabel(lovLabel);
+//			    exporter.insertLov(lov, session);
+//			}
+//		} catch(Exception e) {
+//			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
+//                                "Error while exporting lov referenced by template of biobj "+ biobj.getName() +" :" + e);
+//		}
+//		
+//		
+//		String tempFileName = tempFile.getFileName();
+//		String folderTempFilePath = pathContentFolder + biobj.getPath();
+//		File folderTempFile = new File(folderTempFilePath);
+//		folderTempFile.mkdirs();
+//		try{
+//			FileOutputStream fos = new FileOutputStream(folderTempFilePath + "/" + tempFileName);
+//			fos.write(tempFileCont);
+//			fos.flush();
+//			fos.close();
+//		} catch (Exception e) {
+//			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
+//		                           "Error while exporting template file " + e);
+//            throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+//		}
 		
+		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
+		cmsdao.exportDocument(biobj, pathContentFolder + biobj.getPath(), exportSubObjects, exportSnapshots);
+		
+		// if the document is a dashboard then also the relevant lov is exported
 		try{
 			if(biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+				cmsdao.fillBIObjectTemplate(biobj);
+				UploadedFile tempFile = biobj.getTemplate();
+				byte[] tempFileCont = tempFile.getFileContent();
 				String tempFileStr = new String(tempFileCont);
 				SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
 				SourceBean datanameSB = (SourceBean)tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
@@ -323,22 +370,6 @@ public class ExportManager implements IExportManager {
 			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
                                 "Error while exporting lov referenced by template of biobj "+ biobj.getName() +" :" + e);
 		}
-		
-		
-		String tempFileName = tempFile.getFileName();
-		String folderTempFilePath = pathContentFolder + biobj.getPath();
-		File folderTempFile = new File(folderTempFilePath);
-		folderTempFile.mkdirs();
-		try{
-			FileOutputStream fos = new FileOutputStream(folderTempFilePath + "/" + tempFileName);
-			fos.write(tempFileCont);
-			fos.flush();
-			fos.close();
-		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
-		                           "Error while exporting template file " + e);
-            throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-		}
 	}
 	
 	
@@ -348,7 +379,7 @@ public class ExportManager implements IExportManager {
 	 * @param path The path of the SpagoBI BIObject
 	 * @throws EMFUserError
 	 */
-	
+	/*
 	private void exportSubObjects(BIObject biobj) throws EMFUserError {
 		try{
 			String folderSubObjPath = pathContentFolder + biobj.getPath() + "/subobjects";
@@ -384,7 +415,7 @@ public class ExportManager implements IExportManager {
             throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
-	
+	*/
 	
 	/**
 	 * Exports the BIParameters of a BIObject 

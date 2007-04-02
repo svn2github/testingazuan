@@ -27,8 +27,11 @@ import it.eng.spago.cms.CmsManager;
 import it.eng.spago.cms.CmsNode;
 import it.eng.spago.cms.CmsProperty;
 import it.eng.spago.cms.operations.DeleteOperation;
+import it.eng.spago.cms.operations.ExportOperation;
 import it.eng.spago.cms.operations.GetOperation;
+import it.eng.spago.cms.operations.ImportOperation;
 import it.eng.spago.cms.operations.SetOperation;
+import it.eng.spago.cms.operations.VersionOperation;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -41,6 +44,9 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -61,6 +67,11 @@ import org.safehaus.uuid.UUIDGenerator;
 
 public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 
+	protected final String DOCUMENT_FILE_NAME = "document.xml";
+	protected final String TEMPLATE_FILE_NAME = "template.xml";
+	protected final String SUBOBJECTS_FILE_NAME = "subobjects.xml";
+	protected final String SNAPSHOTS_FILE_NAME = "snapshots.xml";
+	
 	/**
 	 * Get the template of the object
 	 * 
@@ -338,6 +349,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 				setOp.setEraseOldProperties(false);
 		        setOp.setType(SetOperation.TYPE_CONTAINER);
 		        setOp.setPath(pathParent + "/subobjects");
+		        setOp.setVersionable(false);
 		        manager.execSetOperation(setOp);
 			}
 		} catch(Exception e) {
@@ -585,6 +597,7 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 			setOp.setType(SetOperation.TYPE_CONTENT);
 			String templatePath = path + "/template";
 			setOp.setPath(templatePath);
+			setOp.setVersionable(true);
 			// define properties list
 			List properties = new ArrayList();
 			String[] nameFilePropValues = new String[] { templateName };
@@ -732,6 +745,115 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 		} finally {	}
 	}
 
+	public void exportDocument(BIObject obj, String destFolder, boolean exportSubObjects, 
+															boolean exportSnapshots) throws EMFUserError {
+		try {
+			boolean isBooklet = false;
+			if (obj.getBiObjectTypeCode().equalsIgnoreCase("BOOKLET")) isBooklet = true;
+			File destFolderFile = new File(destFolder);
+			destFolderFile.mkdirs();
+			
+			// exports the document node; if the document is BOOKLET type, all sub nodes are exported
+			exportNode(obj.getPath(), destFolder + "/" + DOCUMENT_FILE_NAME, !isBooklet);
+			
+			if (!isBooklet) {
+				// the template is exported
+				if (existsNode(obj.getPath() + "/template")) {
+					exportNode(obj.getPath() + "/template", destFolder + "/" + TEMPLATE_FILE_NAME, true);
+				}
+				// if requested and if existing, all subobjects are exported
+				if (exportSubObjects && existsNode(obj.getPath() + "/subobjects")) {
+					exportNode(obj.getPath() + "/subobjects", destFolder + "/" + SUBOBJECTS_FILE_NAME, false);
+				}
+				// if requested and if existing, all snapshots are exported
+				if (exportSubObjects && existsNode(obj.getPath() + "/snapshots")) {
+					exportNode(obj.getPath() + "/snapshots", destFolder + "/" + SNAPSHOTS_FILE_NAME, false);
+				}
+			}
+			
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "exportDocument", "Error while exporting object with label " + obj.getLabel(), e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+	}
+
+	public String importDocument(String sourceFolder) throws EMFUserError {
+		try {
+			File documentFile = new File(sourceFolder + "/" + DOCUMENT_FILE_NAME);
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
+			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
+			importNode(biobjectsPath, documentFile);
+			// the name of the biobjects is the last part of the source folder
+			String uuid = sourceFolder.substring(sourceFolder.lastIndexOf(File.separator) + 1);
+			String newDocumentBasePath = biobjectsPath + "/" + uuid;
+			// imports template if exists
+			File templateFile = new File(sourceFolder + "/" + TEMPLATE_FILE_NAME);
+			if (templateFile.exists()) importNode(newDocumentBasePath, templateFile);
+			// imports subobjects if they exist
+			File subObjectsFile = new File(sourceFolder + "/" + SUBOBJECTS_FILE_NAME);
+			if (subObjectsFile.exists()) importNode(newDocumentBasePath, subObjectsFile);
+			// imports snapshots if they exist
+			File snapshotsFile = new File(sourceFolder + "/" + SNAPSHOTS_FILE_NAME);
+			if (snapshotsFile.exists()) importNode(newDocumentBasePath, snapshotsFile);
+			// version template node
+			if (existsNode(newDocumentBasePath + "/template")) {
+				versionNode(newDocumentBasePath + "/template", false);
+			}
+			return newDocumentBasePath;
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+					            "importDocument", "Error while importing object from " + sourceFolder, e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+	}
+
+	private boolean existsNode (String path) {
+		try {
+			GetOperation getOp = new GetOperation();
+			getOp.setPath(path);
+			getOp.setRetriveContentInformation("false");
+			getOp.setRetrivePropertiesInformation("false");
+			getOp.setRetriveVersionsInformation("false");
+			getOp.setRetriveChildsInformation("false");
+			CmsManager manager = new CmsManager();
+			CmsNode cmsnode = manager.execGetOperation(getOp);
+			return cmsnode != null; 
+		} catch (Exception e) {
+			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
+		            "existsNode", "Error while getting node at path " + path, e);
+			return false;
+		}
+	}
+
+	private void exportNode (String nodePath, String destFilePath, boolean noRecurse) throws Exception {
+		FileOutputStream fos = new FileOutputStream(destFilePath);
+		ExportOperation exportOp = new ExportOperation();
+		exportOp.setPath(nodePath);
+		exportOp.setOutputStream(fos);
+		exportOp.setNoRecurse(noRecurse);
+		CmsManager manager = new CmsManager();
+		manager.execExportOperation(exportOp);
+		fos.flush();
+		fos.close();
+	}
+
+	private void importNode (String nodePath, File sourceFile) throws Exception {
+		FileInputStream fis = new FileInputStream(sourceFile);
+		ImportOperation importOp = new ImportOperation();
+		importOp.setPath(nodePath);
+		importOp.setInputStream(fis);
+		CmsManager manager = new CmsManager();
+		manager.execImportOperation(importOp);
+		fis.close();
+	}
+
+	private void versionNode (String path, boolean noRecurse) throws Exception {
+		VersionOperation versionOp = new VersionOperation(path, noRecurse);
+		CmsManager manager = new CmsManager();
+		manager.execVersionOperation(versionOp);
+	}
 }
 
 

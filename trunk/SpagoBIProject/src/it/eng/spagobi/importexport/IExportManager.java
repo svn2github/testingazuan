@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.importexport;
 
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 
 import java.util.List;
@@ -33,8 +32,10 @@ public interface IExportManager {
 	 * @param pathExpFold Path of the export folder
 	 * @param nameExpFile the name to give to the exported file
 	 * @param expSubObj Flag which tells if it's necessary to export subobjects
+	 * @param expSnapObj Flag which tells if it's necessary to export snapshots
 	 */
-	public void prepareExport(String pathExpFold, String nameExpFile, boolean expSubObj) throws EMFUserError;
+	public void prepareExport(String pathExpFold, String nameExpFile, 
+			boolean expSubObj, boolean expSnaps) throws EMFUserError;
 	
 	/**
 	 * Exports objects and creates the archive export file

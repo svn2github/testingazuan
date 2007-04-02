@@ -21,24 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.importexport;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.cms.CmsManager;
-import it.eng.spago.cms.CmsNode;
-import it.eng.spago.cms.CmsProperty;
-import it.eng.spago.cms.operations.GetOperation;
-import it.eng.spago.cms.operations.SetOperation;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.lov.QueryDetail;
-import it.eng.spagobi.constants.AdmintoolsConstants;
-import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiChecks;
 import it.eng.spagobi.metadata.SbiDomains;
 import it.eng.spagobi.metadata.SbiEngines;
@@ -55,27 +45,20 @@ import it.eng.spagobi.metadata.SbiParuse;
 import it.eng.spagobi.metadata.SbiParuseCk;
 import it.eng.spagobi.metadata.SbiParuseDet;
 import it.eng.spagobi.metadata.SbiSubreports;
-import it.eng.spagobi.security.AnonymousCMSUserProfile;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * Implements methods to gather information from exported database 
@@ -269,6 +252,7 @@ public class ImporterMetadata {
 		 * @param relExpPath The path of the functionality to insert
 		 * @throws EMFUserError
 		 */
+		/*
 		public void insertCmsFunctionality(String curBaseFold, String relExpPath) throws EMFUserError {
 			if(relExpPath.startsWith("/"))
 				relExpPath = relExpPath.substring(1);
@@ -302,7 +286,7 @@ public class ImporterMetadata {
 			}
 			
 		}
-		
+		/*
 		
 		
 		/**
@@ -314,10 +298,12 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
-			CmsManager manager = new CmsManager();
+			//CmsManager manager = new CmsManager();
+			IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 			SbiObjects objToReturn = null;
-			SetOperation setOp = null;
+			//SetOperation setOp = null;
 			try {
+				/*
 				// get the inpust stream of the template
 				String pathTempFolder = pathContent + obj.getPath();
 				File tempFolder = new File(pathTempFolder);
@@ -373,6 +359,13 @@ public class ImporterMetadata {
 					manager.execSetOperation(setOp);
 					fis.close();
 				}
+				*/
+				String pathTempFolder = pathContent + obj.getPath();
+				// normalize path
+				File temp = new File(pathTempFolder);
+				pathTempFolder = temp.getAbsolutePath();
+				String newPath = cmsdao.importDocument(pathTempFolder);
+				obj.setPath(newPath);
 				insertObject(obj, session);
 				objToReturn = obj;
 			} catch (Exception e) {
@@ -392,6 +385,7 @@ public class ImporterMetadata {
 		 * @param newObj the new BiObject inserted
 		 * @throws EMFUserError
 		 */
+		/*
 		public void insertSubObjects(String oldPath, String pathContent, SbiObjects newObj) throws EMFUserError {
 			try{	
 				IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
@@ -441,7 +435,7 @@ public class ImporterMetadata {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 			}
 		}
-		
+		*/
 		
 		
 		

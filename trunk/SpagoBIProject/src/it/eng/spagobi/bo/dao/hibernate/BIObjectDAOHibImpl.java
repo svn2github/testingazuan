@@ -536,6 +536,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					setOp.setType(SetOperation.TYPE_CONTENT);
 					String path = hibBIObject.getPath() + "/template";
 					setOp.setPath(path);
+					setOp.setVersionable(true);
 					// define properties list
 					List properties = new ArrayList();
 					String[] nameFilePropValues = new String[] { biObject.getTemplate().getFileName() };
@@ -546,6 +547,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					properties.add(propFileName);
 					properties.add(propDateLoad);
                     setOp.setProperties(properties);
+                    setOp.setEraseOldProperties(true);
                     // exec operation
 					manager.execSetOperation(setOp);
 				} else if (biObject.getNameCurrentTemplateVersion() != null) {
@@ -677,6 +679,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				setOp.setContent(new ByteArrayInputStream(biObject.getTemplate().getFileContent()));
 				setOp.setType(SetOperation.TYPE_CONTENT);
 				setOp.setPath(path + "/template");
+				setOp.setVersionable(true);
 				// define properties
 				properties =  new ArrayList();
 				String[] nameFilePropValues = new String[] { biObject.getTemplate().getFileName() };

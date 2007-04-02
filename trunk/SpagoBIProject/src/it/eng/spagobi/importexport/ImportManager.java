@@ -723,7 +723,7 @@ public class ImportManager implements IImportManager {
 			    Integer newId = newObj.getBiobjId(); 
 			    metaAss.insertCoupleBIObj(oldId, newId);
 			    
-			    importer.insertSubObjects(oldpath, pathContentFolder,newObj); 
+			    //importer.insertSubObjects(oldpath, pathContentFolder,newObj); 
 			   
 			}
 		} finally {}

@@ -32,6 +32,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -162,5 +163,21 @@ public interface IBIObjectCMSDAO {
 	 */
 	public void deleteSnapshot(String snapshotPath) throws EMFUserError;
 	
+	/**
+	 * Exports a document node
+	 * @param obj The BIObject document to be exported: its node is supposed to be existing
+	 * @param destFolder The folder where document will be serialized
+	 * @param exportSubObjects Flag indicating if the subobjects must be exported
+	 * @param exportSnapshots Flag indicating if the snapshots must be exported
+	 */
+	public void exportDocument(BIObject obj, String destFolder, boolean exportSubObjects, boolean exportSnapshots) 
+		throws EMFUserError;
+	
+	/**
+	 * Imports a document
+	 * @param sourceFolder The folder where document will be deserialized from
+	 * @retrun the String representing the new document base node path in the cms
+	 */
+	public String importDocument(String sourceFolder) throws EMFUserError;
 	
 }

@@ -228,6 +228,7 @@ public class IReportPluginServlet extends HttpServlet{
 	        setOp.setContent(fileis);
 	        setOp.setType(SetOperation.TYPE_CONTENT);
 	        setOp.setPath(path+"/template");
+	        setOp.setVersionable(true);
 	        setOp.setEraseOldProperties(false);
 	        List properties = new ArrayList();
 	        String[] nameFilePropValues = new String[] { nameFile };

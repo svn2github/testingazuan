@@ -22,19 +22,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.bo.lov.FixedListDetail;
 import it.eng.spagobi.bo.lov.FixedListItemDetail;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
-import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -45,17 +49,21 @@ import javax.servlet.jsp.JspException;
 public class LovWizardTag extends CommonWizardLovTag {
 
 	private String lovProvider;
-	
 	private HttpServletRequest httpRequest = null;
-    protected RenderRequest renderRequest = null;
-    protected RenderResponse renderResponse = null;
+	protected RequestContainer requestContainer = null;
+	protected ResponseContainer responseContainer = null;
+	protected IUrlBuilder urlBuilder = null;
+    protected IMessageBuilder msgBuilder = null;
+
 	
 	public int doStartTag() throws JspException {
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE , TracerSingleton.DEBUG, 
 				            "LovWizardTag::doStartTag:: invocato");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		renderRequest = (RenderRequest) httpRequest.getAttribute("javax.portlet.request");
-		renderResponse = (RenderResponse) httpRequest.getAttribute("javax.portlet.response");
+		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
+		responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
+		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		StringBuffer output = new StringBuffer();
 		
 		try {
@@ -63,27 +71,27 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("<table width='100%' cellspacing='0' border='0'>\n");
 			output.append("	<tr>\n");
 			output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
-			output.append("			&nbsp;&nbsp;&nbsp;"+ PortletUtilities.getMessage("SBIDev.lovWiz.wizardTitle", "messages") +"\n");
+			output.append("			&nbsp;&nbsp;&nbsp;"+ msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.wizardTitle", "messages") +"\n");
 			output.append("		</td>\n");
 			output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
 			output.append("		<td class='titlebar_level_2_button_section'>\n");
 			output.append("			<a style='text-decoration:none;' href='javascript:opencloseFixListWizardInfo()'> \n");
 			output.append("				<img width='22px' height='22px'\n");
-			output.append("				 	 src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/info22.jpg")+"'\n");
+			output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
 			output.append("					 name='info'\n");
-			output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages")+"'\n");
-			output.append("					 title='"+PortletUtilities.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages")+"'/>\n");
+			output.append("					 alt='"+msgBuilder.getMessage(requestContainer, "SBIDev.fixlovWiz.rulesTitle", "messages")+"'\n");
+			output.append("					 title='"+msgBuilder.getMessage(requestContainer, "SBIDev.fixlovWiz.rulesTitle", "messages")+"'/>\n");
 			output.append("			</a>\n");
 			output.append("		</td>\n");
-			String urlImgProfAttr = renderResponse.encodeURL(renderRequest.getContextPath() + "/img/profileAttributes22.jpg");
+			String urlImgProfAttr = urlBuilder.getResourceLink(httpRequest, "/img/profileAttributes22.jpg");
 			output.append(generateProfAttrTitleSection(urlImgProfAttr));
 			output.append("	</tr>\n");
 			output.append("</table>\n");
 			
 			output.append("<br/>\n");
 			
-			String newItemNameField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemNameField", "messages");
-			String newItemValueField = PortletUtilities.getMessage("SBIDev.lovWiz.newItemValueField", "messages");
+			String newItemNameField = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.newItemNameField", "messages");
+			String newItemValueField = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.newItemValueField", "messages");
 			output.append("<input type='hidden' id='insertFixLovItem' name='' value=''/>\n");
 			output.append("<div class='div_detail_area_forms_lov'>\n");	
 			output.append("		<div class='div_detail_label_lov'>\n");
@@ -107,8 +115,8 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_form'>\n");
 			output.append("			<input onclick='setLovProviderModified(true);' type='image' name='insertFixLovItem' value='insertFixLovItem'\n");
-			output.append("				src='" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/attach.gif") + "'\n");
-			String addButtMsg = PortletUtilities.getMessage("SBIDev.lovWiz.addButt", "messages");
+			output.append("				src='" + urlBuilder.getResourceLink(httpRequest, "/img/attach.gif") + "'\n");
+			String addButtMsg = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.addButt", "messages");
 			output.append("				title='" + addButtMsg + "' alt='" + addButtMsg + "'\n");
 			output.append("			/>\n");
 			output.append("			<a href='javascript:setLovProviderModified(true);newFixLovItemFormSubmit();' class='portlet-form-field-label' style='text-decoration:none;'>\n");
@@ -125,11 +133,11 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("<table class=\"table_detail_fix_lov\">\n");
 		  	output.append("	<tr>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
-		  	String tableCol1 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol2", "messages");
+		  	String tableCol1 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol2", "messages");
 		  	output.append(			tableCol1 + "\n");
 		  	output.append("		</td>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
-		  	String tableCol2 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol1", "messages");
+		  	String tableCol2 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol1", "messages");
 		  	output.append(			tableCol2 + "\n");
 		  	output.append("		</td>\n");
 		  	output.append("		<td colspan='1' width='20' class='portlet-section-header'>&nbsp;\n");
@@ -174,35 +182,35 @@ public class LovWizardTag extends CommonWizardLovTag {
 					output.append("     </td>\n");
 					
 					output.append("		<td class='" + rowClass + "'>\n");
-					String tooltipRowDetail = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol3", "messages");
-					String tooltipRowSave = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol3.1", "messages");
+					String tooltipRowDetail = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol3", "messages");
+					String tooltipRowSave = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol3.1", "messages");
 					output.append("			<div style='display:inline;' id='divBtnDetailRow"+i+"'>");
 					output.append("				<a href='javascript:changeRowValues(\""+ i +"\")'>");
 					output.append("				<img class ='portlet-menu-item' \n");
-					output.append("					src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif") + "' \n");
+					output.append("					src= '" + urlBuilder.getResourceLink(httpRequest, "/img/detail.gif") + "' \n");
 					output.append("					title='" + tooltipRowDetail + "' alt='" + tooltipRowDetail + "' />\n");
 					output.append("				</a>");
 					output.append("			</div>");
 					output.append("			<div style='display:none;' id='divBtnSaveRow"+i+"'>");
 					output.append("				<input type='image' onclick='setLovProviderModified(true);saveRowValues(\""+ i +"\")' class ='portlet-menu-item' \n");
-					output.append("					src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif") + "' \n");
+					output.append("					src= '" + urlBuilder.getResourceLink(httpRequest, "/img/save16.gif") + "' \n");
 					output.append("					title='" + tooltipRowSave + "' alt='" + tooltipRowSave + "' />\n");
 					output.append("			</div>");
 					output.append("		</td>\n");
 					
 					
 					output.append("		<td class='" + rowClass + "'>\n");
-					String tableCol4 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol4", "messages");
+					String tableCol4 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol4", "messages");
 					output.append("			<input type='image' onclick='setLovProviderModified(true);setIndexOfFixedLovItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
-					output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif") + "' \n");
+					output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
 					output.append("				title='" + tableCol4 + "' alt='" + tableCol4 + "' />\n");
 		  			output.append("		</td>\n");
 		  			
 		  			output.append("		<td class='" + rowClass + "'>\n");
 		  			if(i<(lovs.size()-1)) {
-						String tableCol5 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol5", "messages");
+						String tableCol5 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol5", "messages");
 						output.append("			<input type='image' onclick='setLovProviderModified(true);downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
-						output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/down16.gif") + "' \n");
+						output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/down16.gif") + "' \n");
 						output.append("				title='" + tableCol5 + "' alt='" + tableCol5 + "' />\n");
 		  			} else {
 		  				output.append("	        &nbsp;");
@@ -211,9 +219,9 @@ public class LovWizardTag extends CommonWizardLovTag {
 		  			
 		  			output.append("		<td class='" + rowClass + "'>\n");
 		  			if(i>0) {
-						String tableCol6 = PortletUtilities.getMessage("SBIDev.lovWiz.tableCol6", "messages");
+						String tableCol6 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol6", "messages");
 						output.append("			<input type='image' onclick='setLovProviderModified(true);upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
-						output.append("				src= '" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/up16.gif") + "' \n");
+						output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/up16.gif") + "' \n");
 						output.append("				title='" + tableCol6 + "' alt='" + tableCol6 + "' />\n");
 		  			} else {
 		  				output.append("	        &nbsp;");
@@ -274,7 +282,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("		}\n");
 			output.append("		function openFixListWizardInfo(){\n");
 			output.append("			if(winFLWT==null) {\n");
-			output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", title:\""+PortletUtilities.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages")+"\", width:650, height:110, destroyOnClose: false});\n");
+			output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage(requestContainer, "SBIDev.fixlovWiz.rulesTitle", "messages")+"\", width:650, height:110, destroyOnClose: false});\n");
 			output.append("         	winFLWT.setContent('fixlistwizardinfodiv', false, false);\n");
 			output.append("         	winFLWT.showCenter(false);\n");
 			output.append("		    } else {\n");
@@ -291,7 +299,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("</script>\n");
 			
 			output.append("<div id='fixlistwizardinfodiv' style='display:none;'>\n");	
-			output.append(PortletUtilities.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/fixlistwizardinfo"));
+			output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/fixlistwizardinfo"));
 			output.append("</div>\n");
 			
             pageContext.getOut().print(output.toString());

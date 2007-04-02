@@ -21,16 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.tags;
 
-import java.util.Collection;
-import java.util.Iterator;
-
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spago.util.JavaScript;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.ChannelUtilities;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -39,19 +38,17 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  * It is used when any errors occurs during the execution of a tag. 
  * It handles errors throwing exceptions.
- * 
- * @author sulis
  */
 public class ErrorTag extends TagSupport  {
 	/**
 	 * @see it.eng.spagobi.presentation.tags.ListTag#doStartTag()
-	 * 
 	 */
 	public int doStartTag() throws JspException {
-        TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ErrorTag::doStartTag:: invocato");
+        TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
+        		            "ErrorTag::doStartTag:: invoked");
         if (pageContext == null) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL,
-                "ErrorTag::doStartTag:: pageContext nullo");
+            TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.CRITICAL,
+                				"ErrorTag::doStartTag:: pageContext null");
             throw new JspException("pageContext nullo");
         } // if (_httpRequest == null)
         HttpServletRequest httpRequest = null;
@@ -59,19 +56,20 @@ public class ErrorTag extends TagSupport  {
             httpRequest = (HttpServletRequest)pageContext.getRequest();
         } // try
         catch (Exception ex) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "ErrorTag::doStartTag::", ex);
+            TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.CRITICAL, "ErrorTag::doStartTag::", ex);
             throw new JspException(ex.getMessage());
         } // catch (Exception ex)
         if (httpRequest == null) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL,
-                "ErrorTag::doStartTag:: httpRequest nullo");
+            TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.CRITICAL,
+                "ErrorTag::doStartTag:: httpRequest null");
             throw new JspException("httpRequest nullo");
         } // if (_httpRequest == null)
-        ResponseContainer responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+        //ResponseContainer responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+        ResponseContainer responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
         if (responseContainer == null) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL,
-                "ErrorTag::doStartTag:: responseContainer nullo");
-            throw new JspException("responseContainer nullo");
+            TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.CRITICAL,
+                "ErrorTag::doStartTag:: responseContainer null");
+            throw new JspException("responseContainer null");
         } // if (responseContainer == null)
         StringBuffer output = new StringBuffer();
         EMFErrorHandler engErrorHandler = responseContainer.getErrorHandler();
@@ -104,7 +102,7 @@ public class ErrorTag extends TagSupport  {
             pageContext.getOut().print(output.toString());
         } // try
         catch (Exception ex) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "ErrorTag::doStartTag::", ex);
+            TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.CRITICAL, "ErrorTag::doStartTag::", ex);
             throw new JspException(ex.getMessage());
         } // catch (Exception ex)
         return SKIP_BODY;
@@ -114,7 +112,7 @@ public class ErrorTag extends TagSupport  {
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
     public int doEndTag() throws JspException {
-        TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ErrorTag::doEndTag:: invocato");
+        TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, "ErrorTag::doEndTag:: invocato");
         return super.doEndTag();
     } // public int doEndTag() throws JspException
 } // public class ErrorTag extends TagSupport

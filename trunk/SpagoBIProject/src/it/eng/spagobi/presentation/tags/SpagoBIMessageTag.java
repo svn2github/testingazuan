@@ -21,10 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.tags;
 
-import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 
-import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -103,33 +106,39 @@ public class SpagoBIMessageTag extends TagSupport {
     public int doStartTag() throws JspException {
 
         String key = this.key;
-       
         // Construct the optional arguments array we will be using
         Object[] arguments = new Object[0];
         if(args!=null) {
         	arguments = args.split("\\|");
         }
-
+        // get http request    
         HttpServletRequest httpRequest = (HttpServletRequest)pageContext.getRequest();
-    	PortletRequest renderRequest = (PortletRequest)httpRequest.getAttribute("javax.portlet.request");
-        
+    	// get spago request container
+        RequestContainer reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+        // get message builder
+        IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+        // get message 
         String message = null;        
-        if (bundle != null)
-        	message = PortletUtilities.getMessage(key, bundle);
-        else
-        	message = getMessage(renderRequest, key); // Use the default spago bundle
-        
+        if (bundle != null) {
+        	message = msgBuilder.getMessage(reqCont, key, bundle);
+        	//message = PortletUtilities.getMessage(key, bundle);
+        } else {
+        	message = msgBuilder.getMessage(reqCont, key, DEFAULT_BUNDLE);
+        	//message = getMessage(renderRequest, key); // Use the default spago bundle
+        }
+        // replace arguments into message
         for (int i=0; i<arguments.length; i++){
         	message = replace(message, i, arguments[i].toString());
         }
-        
+        // return message
         StringBuffer htmlStream = new StringBuffer();
         htmlStream.append(message);        
         try {
             pageContext.getOut().print(htmlStream);
         } 
         catch (Exception ex) {
-            SpagoBITracer.critical("Utilities", this.getClass().getName(), "doStartTag", "Impossible to elaborate pageContext stream");
+            SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+            		               "doStartTag", "Impossible to elaborate pageContext stream");
             throw new JspException("Impossible to elaborate pageContext stream");
         } 
         return SKIP_BODY;
@@ -173,17 +182,6 @@ public class SpagoBIMessageTag extends TagSupport {
 		}
 	}
     
-   /**
-    * A methd useful to call messages directly into code.
-    * 
-    * @param portReq The portlet request object
-    * @param code	The message code
-    * @return	The message string matching to code
-    */
-    public String getMessage(PortletRequest portReq, String code) {
-		return PortletUtilities.getMessage(code, DEFAULT_BUNDLE);
-	}
-
     
 	
 }

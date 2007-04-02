@@ -23,9 +23,6 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -52,17 +49,16 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
-import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
-
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -72,46 +68,29 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 public class DynamicPageTag extends TagSupport {
 
-
 	private String modality = null;
 	private String actor = null;
 	private String moduleName = "";
 	private SourceBean request = null;
 	private HttpServletRequest httpRequest = null;
-	
+	private RequestContainer requestContainer = null;
+	protected IUrlBuilder urlBuilder = null;
+    protected IMessageBuilder msgBuilder = null;
 	public static final int PIXEL_PER_CHAR = 9;
 	
-	private RequestContainer getRequestContainer() {
-		HttpServletRequest httpRequest = (HttpServletRequest) pageContext.getRequest();
-		return RequestContainerPortletAccess.getRequestContainer(httpRequest);
-	}
-	
-	private ResponseContainer getResponseContainer() {
-		HttpServletRequest httpRequest = (HttpServletRequest) pageContext.getRequest();
-		return ResponseContainerPortletAccess.getResponseContainer(httpRequest);
-	}
-	
 	private SessionContainer getSession() {
-		return getRequestContainer().getSessionContainer();
+		return requestContainer.getSessionContainer();
 	}
 	
 	private BIObject getBIObject() {
 		return (BIObject)getSession().getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 	}
 	
-	private RenderResponse getRenderResponse() {
-		HttpServletRequest httpRequest = (HttpServletRequest) pageContext.getRequest();
-		return (RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-	}
-	
-	private RenderRequest getRenderRequest() {
-		HttpServletRequest httpRequest = (HttpServletRequest) pageContext.getRequest();
-		return (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-	}
 	
 	private String encodeURL(String relativePath) {
-		return getRenderResponse().encodeURL(getRenderRequest().getContextPath() + relativePath);
+		return urlBuilder.getResourceLink(httpRequest, relativePath);
 	}
+	
 	
 	private IEngUserProfile getProfile() {
 		SessionContainer session = getSession();
@@ -120,12 +99,15 @@ public class DynamicPageTag extends TagSupport {
 		return profile;
 	}
 	
+	
+	
 	public int doStartTag() throws JspException {
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		RequestContainer requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
+		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		request = requestContainer.getServiceRequest();
+		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 
-		
 		BIObject obj = getBIObject();
 		List parameters = obj.getBiObjectParameters();
 		if (parameters != null && parameters.size() > 0) {
@@ -153,7 +135,7 @@ public class DynamicPageTag extends TagSupport {
 	        		String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
 	        		
 	        		if (objParFatherLabel != null) {
-	        			String correlation = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages");
+	        			String correlation = msgBuilder.getMessage(requestContainer, "SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages");
 	        			correlation += " " + objParFatherLabel ;
 	        			htmlStream.append("		<img src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
 	        			htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
@@ -340,7 +322,7 @@ public class DynamicPageTag extends TagSupport {
 	}
 	
 	private void createClearFieldsButton(StringBuffer htmlStream) {
-		String resetFieldsLbl = PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.resetFields", "messages");
+		String resetFieldsLbl = msgBuilder.getMessage(requestContainer, "SBIDev.docConf.execBIObjectParams.resetFields", "messages");
 		
 		htmlStream.append("		<div class='div_detail_form'>\n");
 	    htmlStream.append("				<a href='javascript:void(0)' onclick='clearFields()' class='portlet-form-field-label'>\n");
@@ -519,7 +501,6 @@ public class DynamicPageTag extends TagSupport {
 	    	String biparIdStr = biparId.toString();
 	    	Integer parId = par.getId();
 			Integer lovId = lov.getId();
-	    	String lovIdStr = lovId.toString();
 	    	
 	    	Integer parusecorrId = null;
 	    	IParameterUseDAO parusedao = DAOFactory.getParameterUseDAO();
@@ -585,26 +566,6 @@ public class DynamicPageTag extends TagSupport {
 				String selected = "";
 				if (getParameterValuesAsString(biparam).equals(val)) selected = "checked";
 				htmlStream.append("<input type='radio' name='"+biparam.getParameterUrlName()+"' value='"+val+"' " + selected + ">"+desc+"</input>\n");
-			}
-	    }catch (Exception ex) {
-	    	ex.printStackTrace();
-	    }
-    }
-    
-	private void createHTMLCheckBox(BIObjectParameter biparam, StringBuffer htmlStream) {
-    	try{
-	    	List l = getXMLValuesBean(biparam).getAttributeAsList("LOV-ELEMENT");
-			Iterator it = l.iterator();
-			SourceBean sbTemp = null;
-			String desc = null;
-			String val = null;
-			while(it.hasNext()) {
-				sbTemp = (SourceBean)it.next();
-				desc = (String)sbTemp.getAttribute("DESC");
-				val = (String)sbTemp.getAttribute("VALUE");
-				String selected = "";
-				if (getParameterValuesAsString(biparam).equals(val)) selected = "checked";
-				htmlStream.append("<input type='checkbox' name='"+biparam.getParameterUrlName()+"' value='"+val+"' " + selected + ">"+desc+"</input>\n");
 			}
 	    }catch (Exception ex) {
 	    	ex.printStackTrace();
@@ -697,33 +658,11 @@ public class DynamicPageTag extends TagSupport {
 	
 	private SourceBean getXMLValuesBean(BIObjectParameter biparam) throws SourceBeanException {
 		String stringXMLValues = biparam.getParameter().getModalityValue().getLovProvider();
-		stringXMLValues = PortletUtilities.cleanString(stringXMLValues);
+		stringXMLValues = GeneralUtilities.cleanString(stringXMLValues);
 		return SourceBean.fromXMLString(stringXMLValues);
 	}
 	
-	
-	/**
-	 * Gets the lov result of a biprameter
-	 * @param biparam teh biparameter
-	 * @return teh lov result of the input biparameter
-	 * @throws SourceBeanException
-	 */
-	private String getLovResult(BIObjectParameter biparam) throws SourceBeanException {
-		String lovResult = null;
-        IEngUserProfile profile = getProfile();
-		String lovProvider = biparam.getParameter().getModalityValue().getLovProvider();
-		ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
-		try {
-			lovResult = lovDetail.getLovResult(profile);
-		} catch (Exception e) {				
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					            "getLovResult", "Error while recovering lov result of the " +
-					            "biparam " + biparam.getLabel(), e);
-		}					
-		return lovResult;
-	}
-	
-	
+
 	
 	public String getParameterDescription(BIObjectParameter biparam) {
 		String description = null;

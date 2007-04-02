@@ -23,24 +23,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -62,26 +62,33 @@ public class LovColumnsSelectorTag extends TagSupport {
 	private EMFErrorHandler errorHandler = null;
 	private StringBuffer htmlStream = null;
     private HttpServletRequest httpRequest = null;
-    private RenderResponse renderResponse = null;
-    private RenderRequest renderRequest = null;
     private SourceBean moduleResponse = null;
+	protected IUrlBuilder urlBuilder = null;
+    protected IMessageBuilder msgBuilder = null;
     
-	String visColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.visColumnsField", "messages");
-	String invisColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.invisColumnsField", "messages");
-	String valueColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.valueColumnsField", "messages");
-	String descriptionColumnsField = PortletUtilities.getMessage("SBIDev.queryWiz.descriptionColumnsField", "messages");		
-	String columnsField = PortletUtilities.getMessage("SBIDev.queryWiz.columnsField", "messages");
+	String visColumnsField = "";
+	String invisColumnsField = "";
+	String valueColumnsField = "";
+	String descriptionColumnsField = "";		
+	String columnsField = "";
     
     
 	public int doStartTag() throws JspException {
 		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 				           "doStartTag", " method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest =(RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-		requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
+		responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
+		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		
+		visColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.visColumnsField", "messages");
+		invisColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.invisColumnsField", "messages");
+		valueColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.valueColumnsField", "messages");
+		descriptionColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.descriptionColumnsField", "messages");		
+		columnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.columnsField", "messages");
+		
 		serviceRequest = requestContainer.getServiceRequest();
-		responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
 		serviceResponse = responseContainer.getServiceResponse();
 		errorHandler = responseContainer.getErrorHandler();
 		ConfigSingleton configure = ConfigSingleton.getInstance();

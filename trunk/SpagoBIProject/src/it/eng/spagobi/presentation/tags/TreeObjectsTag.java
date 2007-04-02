@@ -23,14 +23,13 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.presentation.treehtmlgenerators.ITreeHtmlGenerator;
 import it.eng.spagobi.services.modules.TreeObjectsModule;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.IOException;
@@ -55,14 +54,12 @@ public class TreeObjectsTag extends TagSupport {
 	 * Starting tag
 	 */
 	public int doStartTag() throws JspException {
-
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		RequestContainer requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
+		ResponseContainer responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
 		SourceBean serviceRequest = requestContainer.getServiceRequest();
-		ResponseContainer responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
 		SourceBean serviceResponse = responseContainer.getServiceResponse();
 		SourceBean moduleResponse = (SourceBean)serviceResponse.getAttribute(moduleName);
-        //SourceBean dataTree = (SourceBean)moduleResponse.getAttribute("SystemFunctionalities");
 		List functionalitiesList = (List) moduleResponse.getAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST);
 		String initialPath = (String) moduleResponse.getAttribute(TreeObjectsModule.PATH_SUBTREE);
         ITreeHtmlGenerator gen = null;
@@ -72,14 +69,11 @@ public class TreeObjectsTag extends TagSupport {
         	return -1;
         }
         StringBuffer htmlStream = gen.makeTree(functionalitiesList, httpRequest, initialPath);
-        //StringBuffer htmlStreamAccessible = gen.makeAccessibleTree(functionalitiesList, httpRequest);
-        //StringBuffer htmlStream = gen.makeTree(dataTree, httpRequest);
-        //StringBuffer htmlStreamAccessible = gen.makeAccessibleTree(dataTree, httpRequest);
 		try {
 			pageContext.getOut().print(htmlStream);
-			//pageContext.getOut().print(htmlStreamAccessible);
 		} catch(IOException ioe) {
-			SpagoBITracer.major("", "TreeObjectsTag", "doStartTag", "cannot start object tree tag: IOexception occurred",ioe);
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "doStartTag", "cannot start object tree tag: IOexception occurred",ioe);
 		}
 		return SKIP_BODY;
 	}

@@ -26,7 +26,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.utilities;
 
-import groovy.lang.Binding;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -57,7 +56,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.portlet.PortletRequest;
 
@@ -73,6 +71,28 @@ public class GeneralUtilities {
 	public static void main(String[] args) {
 	}
 
+	
+	/**
+	 * Cleans a string from spaces and tabulation characters.
+	 * 
+	 * @param original The input string
+	 * @return The cleaned string
+	 */
+	public static String cleanString(String original){
+		StringBuffer sb = new StringBuffer();
+		char[] arrayChar = original.toCharArray();
+		for (int i=0; i < arrayChar.length; i++){
+			if ((arrayChar[i] == '\n')
+				|| (arrayChar[i] == '\t')
+				|| (arrayChar[i] == '\r')){
+				
+			}else{
+				sb.append(arrayChar[i]);
+			}
+		}
+		return sb.toString().trim();
+	}
+	
 	/**
 	 * Checks if the Spago errorHandler contains only validation errors
 	 * @param errorHandler The error handler to check

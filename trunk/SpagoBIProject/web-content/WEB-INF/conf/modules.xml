@@ -31,60 +31,58 @@
 	    </CONFIG>
 	</MODULE>
 	
+	
+	
+	
 	<MODULE class="it.eng.spagobi.services.modules.CheckLinksModule" name="CheckLinksModule">
-		<CONFIG pool="spagobi" rows="10" title="Check-List ">
-      		
+		<CONFIG pool="spagobi" rows="10" title="Check-List ">  		
       		<KEYS>
       			<OBJECT key='OBJ_ID'/>
       			<SUBJECT key='SUBJECT_ID'/>
       		</KEYS>
-      		
       		<QUERIES>
 	        	<CHECKED_QUERY statement="SELECT_CHECKED_OBJECT_LIST">
 	        		<PARAMETER number="0" name="SUBJECT_ID"/>
 	        	</CHECKED_QUERY>
-	      	</QUERIES>
-	      	
+	      	</QUERIES> 	
 	      	<CAPTIONS></CAPTIONS>
-	      	
 	      	<COLUMNS>
 	        	<COLUMN label="OBJ_ID" name="OBJ_ID" hidden="true" />
 	        	<COLUMN label="Label" name="LABEL"/>
 	        	<COLUMN label="Name" name="NAME" />
 	        	<COLUMN label="Description" name="DESCRIPTION" />
 	      	</COLUMNS>
-      
       		<BUTTONS PAGE="CheckLinksPage" MESSAGEDET="RETURN_FROM_LOOKUP" LIGHT_NAVIGATOR_DISABLED="true">	      	        
 		        <SAVE_BUTTON 
 		        	confirm="FALSE" 
 		        	name="save" 
 		        	image="/img/save.png" 
 		        	label="SBIDev.ListSubreport.saveCaption"/>
-	           	
 	           	<SAVE_AND_GOBACK_BUTTON 
 	           		confirm="FALSE" 
 	           		name="saveback" 
 	           		image="/img/saveAndGoBack.png" 
 	           		label="SBIDev.ListSubreport.savebackCaption"/>
-	            
 	            <BACK_BUTTON 
 	            	confirm="FALSE" 
 	            	name="back" 
 	            	image="/img/back.png" 
 	            	label="SBIDev.ListSubreport.backCaption"/>
 	 		</BUTTONS>
-	 		
     	</CONFIG>
   	</MODULE>
 	
 	
 	<MODULE class="it.eng.spagobi.services.modules.ListTestLovModule" name="ListTestLovModule">
 	</MODULE>
-	
 	<MODULE class="it.eng.spagobi.services.modules.ListLookupModalityValuesModule" name="ListLookupModalityValuesModule">
 	</MODULE>
 	<MODULE class="it.eng.spagobi.services.modules.ChecklistLookupModalityValuesModule" name="ChecklistLookupModalityValuesModule">
 	</MODULE>
+	
+	
+	
+	
 	<MODULE class="it.eng.spagobi.services.modules.ListEnginesModule" name="ListEnginesModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListEngine.title" >
 	      <QUERIES>
@@ -116,7 +114,7 @@
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="detailEnginePage"/>
 	        </INSERT_BUTTON>
-	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBISet.ListEngine.backButton">
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBISet.ListEngine.backButton" onlyPortletRunning="true"  >
 	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBISettingsPublisher"/>
 	          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
@@ -161,7 +159,7 @@
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	        </INSERT_BUTTON>
-	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParam.backButton">
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParam.backButton" onlyPortletRunning="true">
 	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIDevelopmentContextPublisher"/>
 	          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
@@ -200,7 +198,7 @@
           <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	      <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
         </INSERT_BUTTON>
-        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.predLovList.backButton">
+        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.predLovList.backButton" onlyPortletRunning="true">
 	      <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	      <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIDevelopmentContextPublisher"/>
 	      <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
@@ -222,10 +220,9 @@
         <COLUMN label="SBIDev.ListConfConst.columnCheckType" name="CONTROLTYPE"/>
       </COLUMNS>
       <CAPTIONS>
-
       </CAPTIONS>
       <BUTTONS>
-        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListConfConst.backButton">
+        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListConfConst.backButton" onlyPortletRunning="true">
 	      <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	      <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIDevelopmentContextPublisher"/>
 	      <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
@@ -233,7 +230,7 @@
       </BUTTONS>
     </CONFIG>
   	</MODULE>
-  	<MODULE class="it.eng.spagobi.services.modules.ListChecksModule" name="ListModalitiesChecksModule">
+  	<MODULE class="it.eng.spagobi.services.modules.ListChecksModule" name="ListModalitiesChecksModule" >
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListConfConst.title">
       <QUERIES>
         <SELECT_QUERY statement="SELECT_LIST_MODALITIES_CHECKS"/>
@@ -264,9 +261,8 @@
         <INSERT_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListConfConst.insertButton">
           <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	      <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesChecksPage"/>
-	      
         </INSERT_BUTTON>
-        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListConfConst.backButton">
+        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListConfConst.backButton" onlyPortletRunning="true">
 	      <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	      <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIDevelopmentContextPublisher"/>
 	      <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>

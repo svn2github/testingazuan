@@ -30,7 +30,6 @@
      workingDirectory=""
      commandLine=""
      initialState="noShow"
-     iconFile="help"
      iconIndex="0"
      url="http://localhost:$PORT/$PORTAL"
      type="Link"

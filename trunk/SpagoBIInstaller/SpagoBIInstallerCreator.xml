@@ -131,8 +131,8 @@
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.2-03272007.zip">
 	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIQbeEngine-1.9.2" required="no" preselected="yes" bytes="16532808" id="SpagoBIQbeEngine-1.9.2"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.2-03272007.zip">
+    	<pack name="SpagoBIQbeEngine-1.9.2" required="no" preselected="yes" bytes="16532696" id="SpagoBIQbeEngine-1.9.2"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.2-03302007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIWekaEngine-1.9.2" required="no" preselected="yes" bytes="8933672" id="SpagoBIWekaEngine-1.9.2"

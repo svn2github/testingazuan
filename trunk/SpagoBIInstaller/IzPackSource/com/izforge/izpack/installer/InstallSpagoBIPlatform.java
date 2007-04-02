@@ -15,7 +15,7 @@ public class InstallSpagoBIPlatform {
 	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.2-Beta-03272007.zip";
 	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.2-03272007.zip";
 	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.2-03272007.zip";
-	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.2-03272007.zip";
+	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.2-03302007.zip";
 	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.2-Beta-03272007.zip";
 	
 	private static String _pathdest;

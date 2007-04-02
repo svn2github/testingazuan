@@ -20,13 +20,13 @@ public class MD5Calculator {
 			System.out.println("************** MD5 sun calculation *****************");
 			String basePath = "C:\\Documents and Settings\\zerbetto\\Documenti\\SpagoBIInstaller\\";
 			String[] fileNames = new String[] { 
-					"SpagoBI-bin-1.9.2-installer-03272007.zip",
-					"SpagoBIBirtReportEngine-bin-1.9.2-installer-03272007.zip",
-					"SpagoBIGeoEngine-bin-1.9.2-Beta-installer-03272007.zip",
-					"SpagoBIJasperReportEngine-bin-1.9.2-installer-03272007.zip",
-					"SpagoBIJPivotEngine-bin-1.9.2-installer-03272007.zip",
-					"SpagoBIQbeEngine-bin-1.9.2-installer-03272007.zip",
-					"SpagoBIWekaEngine-bin-1.9.2-Beta-installer-03272007.zip"					
+					"SpagoBI-bin-1.9.2-03272007.zip",
+					"SpagoBIBirtReportEngine-bin-1.9.2-03272007.zip",
+					"SpagoBIGeoEngine-bin-1.9.2-Beta-03272007.zip",
+					"SpagoBIJasperReportEngine-bin-1.9.2-03272007.zip",
+					"SpagoBIJPivotEngine-bin-1.9.2-03272007.zip",
+					"SpagoBIQbeEngine-bin-1.9.2-03302007.zip",
+					"SpagoBIWekaEngine-bin-1.9.2-Beta-03272007.zip"					
 					};
 			for (int i = 0; i < fileNames.length; i++) {
 				String fileName = basePath + fileNames[i];

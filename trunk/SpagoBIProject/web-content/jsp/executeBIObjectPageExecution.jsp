@@ -5,7 +5,6 @@
                  it.eng.spagobi.constants.ObjectsTreeConstants,
                  java.util.Iterator,
                  it.eng.spagobi.bo.Engine,
-                 javax.portlet.PortletURL,
                  it.eng.spagobi.bo.Domain,
                  it.eng.spagobi.bo.BIObjectParameter,
                  it.eng.spagobi.bo.dao.IDomainDAO,
@@ -13,26 +12,19 @@
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.services.modules.BIObjectsModule,
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
-                 it.eng.spagobi.utilities.PortletUtilities,
                  it.eng.spago.navigation.LightNavigationManager,
-                 org.apache.commons.httpclient.HttpClient,
-                 org.apache.commons.httpclient.methods.PostMethod,
-                 it.eng.spago.base.PortletAccess,
-                 javax.portlet.PortletRequest, 
-                 javax.portlet.PortletSession,
-                 it.eng.spago.base.ApplicationContainer,
                  java.util.Map,
+                 java.util.HashMap,
                  org.safehaus.uuid.UUIDGenerator,
                  org.safehaus.uuid.UUID,
                  it.eng.spagobi.utilities.GeneralUtilities,
                  it.eng.spagobi.managers.BIObjectNotesManager,
                  it.eng.spago.base.SessionContainer,
                  it.eng.spago.security.IEngUserProfile,
-                 javax.portlet.PortletPreferences" %>
-                 
+                 it.eng.spagobi.utilities.SpagoBITracer,
+                 it.eng.spagobi.utilities.ChannelUtilities" %>      
 
 <%
-    
     // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -73,19 +65,19 @@
    		heightSetted = true;
    	}
    	
-   	
    	// build the back link
-   	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "BIObjectsPage");
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+   	Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "BIObjectsPage");
+    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
 	
-	// build the refresh button
-	PortletURL refreshUrl = renderResponse.createActionURL();
-	refreshUrl.setParameter("PAGE", BIObjectsModule.MODULE_PAGE);
-	refreshUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	refreshUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	
+	// build the refresh url
+	Map refreshUrlPars = new HashMap();
+	refreshUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
+	refreshUrlPars.put(SpagoBIConstants.ACTOR, actor);
+	refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
 	
 	IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	List states = domaindao.loadListDomainsByType("STATE");
@@ -112,15 +104,13 @@
 
     // check if notes editor is able
     boolean edNoteAble = false;
-    PortletRequest portReq = PortletUtilities.getPortletRequest();
-	PortletPreferences prefs = portReq.getPreferences();
-	String edNoteAbleStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_ABLE, "FALSE");
+    String edNoteAbleStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_ABLE, "FALSE");
     if(edNoteAbleStr.equalsIgnoreCase("true")) {
     	edNoteAble = true;
     }
     // get the preference width dimension for notes editor
 	int widthNotes = 600;
-	String widthNoteEditorStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_WIDTH, "600");
+	String widthNoteEditorStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_WIDTH, "600");
 	try{
 		widthNotes = new Integer(widthNoteEditorStr).intValue();
 	} catch (Exception e) {
@@ -130,7 +120,7 @@
 	}
 	// get the preference height dimension for notes editor
 	int heightNotes = 300;
-	String heightNoteEditorStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_HEIGHT, "300");
+	String heightNoteEditorStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_HEIGHT, "300");
 	try{
 		heightNotes = new Integer(heightNoteEditorStr).intValue();
 	} catch (Exception e) {
@@ -140,17 +130,17 @@
 	}
 	// check if the editor notes as to be opened automatically	
 	boolean notesEditOpen = false;
-	String notesEditOpenStr = (String) prefs.getValue(SpagoBIConstants.PREFERENCE_NOTES_EDITOR_OPEN, "false");
+	String notesEditOpenStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_OPEN, "false");
 	if(notesEditOpenStr.equalsIgnoreCase("true")){
 		notesEditOpen = true;
 	}
 	
 	// urls for resources 
-	String linkSbijs = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js");
+	String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
 %>
 
 
-   <%@page import="it.eng.spagobi.utilities.SpagoBITracer"%>
+
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
       
 
@@ -166,24 +156,23 @@
        </td>
        <td class='header-empty-column-portlet-section'>&nbsp;</td>
        <td class='header-button-column-portlet-section'>
-           <a href='<%= backUrl.toString() %>'>
+           <a href='<%=backUrl%>'>
                  <img title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
                       class='header-button-image-portlet-section'
-                      src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
                       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
            </a>
        </td>
        <% if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
     		  (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR))) {
-    	   	PortletURL formUrl = renderResponse.createActionURL();
-  		    formUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-  		   	formUrl.setParameter(SpagoBIConstants.ACTOR,actor );
-		   	formUrl.setParameter(SpagoBIConstants.MESSAGEDET, 
-		   			ObjectsTreeConstants.EXEC_CHANGE_STATE);
-			formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    		  
-    		  %>
-       <form method='POST' action='<%= formUrl.toString() %>' id='changeStateForm'  name='changeStateForm'>
+    	   	Map formUrlPars = new HashMap();
+    	   	formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    	   	formUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    	   	formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
+    	   	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    	    String formUrl = urlBuilder.getUrl(request, formUrlPars);	  
+    	%>
+       <form method='POST' action='<%=formUrl%>' id='changeStateForm'  name='changeStateForm'>
 	       <td class='header-select-column-portlet-section'>
       			<select class='portlet-form-field' name="newState">
       			<% 
@@ -197,7 +186,10 @@
       			<!--br/-->
       		</td>
       		<td class='header-select-column-portlet-section'>
-      			<input type='image' class='header-button-image-portlet-section' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
+      			<input type='image' class='header-button-image-portlet-section' 
+      			       src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
+      			       title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' 
+      			       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
       		</td>
         </form>
        <% } %>
@@ -216,13 +208,13 @@
         <td class='header-button-column-portlet-section'>
            <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notesEmpty.jpg")%>' 
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
            <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
               href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notes.jpg")%>' 
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
          </td>
@@ -249,12 +241,12 @@
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
-			<a style="text-decoration:none;" href='<%=refreshUrl.toString()%>'> 
+			<a style="text-decoration:none;" href='<%=refreshUrl%>'> 
 				<img width="22px" height="22px"
-					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' 
+					src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
 					name='refresh' 
-					alt='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' 
-					title='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' /> 
+					alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>' 
+					title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>' /> 
 			</a>
 		</td>
 		<%
@@ -264,13 +256,13 @@
         <td class='header-button-column-single-object-execution-portlet-section'>
            <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notesEmpty.jpg")%>' 
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
            <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
               href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/notes.jpg")%>' 
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>' 
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
         </td>
@@ -304,14 +296,14 @@
 		SessionContainer permSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String nameUser = (String)userProfile.getUserUniqueIdentifier();
-		String linkFck = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/FCKeditor/fckeditor.js");
-		String linkProto = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js");
-		String linkProtoWin = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/window.js");
-		String linkProtoEff = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/effects.js");
-		String linkProtoDefThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/default.css");
-		String linkProtoMacThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/mac_os_x.css");
-		String linkProtoAlphaThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/alphacube.css");
-		String linkProtoSpreadThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/spread.css");
+		String linkFck = urlBuilder.getResourceLink(request, "/js/FCKeditor/fckeditor.js");
+		String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
+		String linkProtoWin = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
+		String linkProtoEff = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
+		String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
+		String linkProtoMacThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/mac_os_x.css");
+		String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
+		String linkProtoSpreadThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/spread.css");
 %>
 
 <SCRIPT language='JavaScript' src='<%=linkFck%>'></SCRIPT>
@@ -538,21 +530,21 @@
       <a href="javascript:requireLock<%=requestIdentity%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.lockeditor" />' 
                alt='<spagobi:message key = "sbi.execution.notes.lockeditor" />'
-               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/lock16.gif")%>' />
+               src='<%= urlBuilder.getResourceLink(request, "/img/lock16.gif")%>' />
       </a>  
   </div>
   <div id="notesSaveImg<%=requestIdentity%>" style="float:left;display:none;padding:5px;">
       <a href="javascript:saveNotes<%=requestIdentity%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.savenotes" />' 
           		alt='<spagobi:message key = "sbi.execution.notes.savenotes" />'
-               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save16.gif")%>' />
+               src='<%= urlBuilder.getResourceLink(request, "/img/save16.gif")%>' />
       </a>   
   </div>
   <div id="notesReloadImg<%=requestIdentity%>" style="float:left;display:inline;padding:5px;">
       <a href="javascript:reloadNotes<%=requestIdentity%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.reloadnotes" />' 
           		alt='<spagobi:message key = "sbi.execution.notes.reloadnotes" />'
-               src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/reload16.gif")%>' />
+               src='<%= urlBuilder.getResourceLink(request, "/img/reload16.gif")%>' />
       </a>   
   </div>
   <div id="notesErrorMessage<%=requestIdentity%>"  style="float:left;color:red;padding:5px;font-family:arial;font-size:11px;">
@@ -615,9 +607,7 @@
   	   win<%=requestIdentity%>.setDestroyOnClose();
        win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false); 
        win<%=requestIdentity%>.show(false);   
-       <%--
-       win<%=requestIdentity%>.showCenter(false, (100+(pos[0]/10)) , (100 + (pos[1]/10)) );
-       --%>
+
     }
   	
   	

@@ -9,14 +9,12 @@
 				 java.util.List,
 				 it.eng.spagobi.constants.ObjectsTreeConstants,
 				 it.eng.spagobi.constants.AdmintoolsConstants,
-				 javax.portlet.PortletURL,
 				 it.eng.spagobi.bo.Domain,
 				 java.util.Iterator,
 				 it.eng.spagobi.bo.Engine,
 				 it.eng.spagobi.bo.TemplateVersion,
 				 it.eng.spagobi.constants.SpagoBIConstants,
 				 it.eng.spagobi.utilities.SpagoBITracer,
-				 it.eng.spagobi.utilities.PortletUtilities,
 				 it.eng.spago.navigation.LightNavigationManager,
 				 it.eng.spago.base.SourceBean,
 				 it.eng.spago.configuration.ConfigSingleton,
@@ -24,6 +22,11 @@
 				 java.util.Collection,
 				 java.util.ArrayList,
 				 java.util.Date" %>
+<%@ page import="it.eng.spagobi.utilities.GeneralUtilities"%>
+<%@ page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
+
 
 <%
 	// GET RESPONSE OBJECTS
@@ -37,18 +40,20 @@
 	
 	
 	// CREATE PAGE URLs
-	PortletURL formUrl = renderResponse.createActionURL();
-   	formUrl.setParameter("PAGE", "detailBIObjectPage");
-   	if (modality != null){
-   		formUrl.setParameter("MESSAGEDET", modality);
-   	}
-   	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "detailBIObjectPage");
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_DETAIL");
-   	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-   	
+	Map formUrlPars = new HashMap();
+	//formUrlPars.put("PAGE", "detailBIObjectPage");
+	//if(modality != null){
+	//	formUrlPars.put("MESSAGEDET", modality);
+   	//}
+	//formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String formUrl = urlBuilder.getUrl(request, formUrlPars);
+	
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "detailBIObjectPage");
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
+    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
    	
    	// CHECK IF BOOKLET MODULE IS INSTALLED
    	boolean isCompBookletsInst = GeneralUtilities.isModuleInstalled("booklets");
@@ -60,8 +65,7 @@
 
 
 
-<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
-<%@page import="java.util.Map"%>
+
 <script>
 function showEngField(docType) {
 	var ind = docType.indexOf(",");
@@ -117,7 +121,19 @@ function checkFormVisibility(docType) {
 
 
 
-<form method='POST' action='<%= formUrl.toString() %>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
+<form method='POST' action='<%=formUrl%>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
+	
+	<input type='hidden' name='PAGE' value='detailBIObjectPage' />
+	<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
+    <%--
+    <%
+		if(modality != null){
+	%>	
+		<input type='hidden' name='MESSAGEDET' value='<%=modality%>' />
+   	<%
+   		}
+    %>
+	--%>
 
 
 <table class='header-table-portlet-section'>
@@ -127,36 +143,43 @@ function checkFormVisibility(docType) {
 			<spagobi:message key = "SBIDev.docConf.docDet.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){%>
+		<% 
+			if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){
+				if(ChannelUtilities.isPortletRunning()) {	
+		%>
 		<td class='header-button-column-portlet-section'>
 			<input type="hidden" name="" value="" id="loadLinksLookup">
 			<a href='javascript:checkDocumentType("<spagobi:message key = "SBIDev.docConf.docDet.saveBeforeLinksConfig" />");'> 
 			<img style="margin-top:2px;height:21px;" name='links' id='links' class='header-button-image-portlet-section'
-				   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/links.jpg") %>'
+				   src='<%=urlBuilder.getResourceLink(request, "/img/links.jpg") %>'
       		 title='<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />' 
       		 alt='<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />' />
 			</a>
 		</td>
-		<% } %>
+		<% 		
+				}
+			}
+		%>
 		<td class='header-button-column-portlet-section'>
 			<input type='image' name='save' id='save' value='true' class='header-button-image-portlet-section'
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png") %>'
+				src='<%=urlBuilder.getResourceLink(request, "/img/save.png") %>'
       				title='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />'
 			/>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<input type='image' name='saveAndGoBack' id='saveAndGoBack' value='true' class='header-button-image-portlet-section'
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/saveAndGoBack.png") %>'
+				src='<%= urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png") %>'
       				title='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />'
 			/> 
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
-				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.docConf.docDet.saveConfirm" />","<%=backUrl.toString()%>")'> 
+				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.docConf.docDet.saveConfirm" />","<%=backUrl%>")'> 
 			<% } else { %>
-				<a href='<%=backUrl.toString()%>'>
+				<a href='<%=backUrl%>'>
 			<% } %>
-      				<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.docConf.docDet.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBIDev.docConf.docDet.backButt"/>' />
+      				<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.docConf.docDet.backButt" />' 
+      				src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "SBIDev.docConf.docDet.backButt"/>' />
 			</a>
 		</td>
 	</tr>
@@ -439,46 +462,35 @@ function checkFormVisibility(docType) {
 						if(!hasTemplates) {
 							String hrefConf = "";
 							if(!modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { 
-								PortletURL configureUrl = renderResponse.createActionURL();
-								configureUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
-								configureUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
-								configureUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-								configureUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-								hrefConf = configureUrl.toString();
-								//PortletURL configureBookletUrl = renderResponse.createActionURL();
-								//configureBookletUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
-								//configureBookletUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_NEW_BOOKLET_TEMPLATE);
-								//configureBookletUrl.setParameter(SpagoBIConstants.CMS_BIOBJECTS_PATH, obj.getPath());
-								//configureBookletUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-								//hrefConf = configureBookletUrl.toString();
+								Map confUrlPars = new HashMap();
+								confUrlPars.put(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
+								confUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
+								confUrlPars.put(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+								confUrlPars.put(SpagoBIConstants.ACTOR, actor);
+							    hrefConf = urlBuilder.getUrl(request, confUrlPars);
 							} else {
-								hrefConf = "javascript:alert('"+PortletUtilities.getMessage("sbi.detailbiobj.objectnotsaved", "messages")+"')";
+								hrefConf = "javascript:alert('"+msgBuilder.getMessage(aRequestContainer, "sbi.detailbiobj.objectnotsaved", "messages")+"')";
 							}				
 					%>	
 							<a href="<%=hrefConf%>">
 								<img class='header-button-image-portlet-section' 
 	      				 			 title='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate" />' 
-	      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/configure_booklet.jpg")%>' 
+	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/configure_booklet.jpg")%>' 
 	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate"  />' />
 							</a>
 					<%
 						} else { // if(!hasTemplates)
-							//PortletURL editBookUrl = renderResponse.createActionURL();
-		 					//editBookUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.BOOKLET_MANAGEMENT_PAGE);
-		 					//editBookUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.OPERATION_EDIT_BOOKLET_TEMPLATE);
-		 					//editBookUrl.setParameter(SpagoBIConstants.PATH, obj.getPath());
-		 					//editBookUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-							PortletURL editUrl = renderResponse.createActionURL();
-							editUrl.setParameter(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
-							editUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
-							editUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-							editUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-		 					String editUrlStr = editUrl.toString();
+							Map editUrlPars = new HashMap();
+							editUrlPars.put(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
+							editUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
+							editUrlPars.put(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+							editUrlPars.put(SpagoBIConstants.ACTOR, actor);
+							String editUrlStr = urlBuilder.getUrl(request, editUrlPars);
 					%>
 							<a href="<%=editUrlStr%>">
 								<img class='header-button-image-portlet-section' 
 	      				 			 title='<spagobi:message key = "sbi.detailbiobj.editTemplate" />' 
-	      				 			 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/edit_temp_booklet.jpg")%>' 
+	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/edit_temp_booklet.jpg")%>' 
 	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.editTemplate"  />' />
 							</a> 	
 					<%
@@ -588,22 +600,24 @@ function checkFormVisibility(docType) {
 		      		    out.print("<td class='portlet-font' width='220px'>"+tempVer.getDataLoad()+"</td>");
 		      		    out.print("<td class='portlet-font' width='150px'>"+tempVer.getNameFileTemplate()+"</td>");
 		      		        
-		      		    PortletURL eraseVerUrl = renderResponse.createActionURL();
-   						eraseVerUrl.setParameter("PAGE", "detailBIObjectPage");
-   						eraseVerUrl.setParameter("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
-   						eraseVerUrl.setParameter(SpagoBIConstants.VERSION, tempVer.getVersionName());
-   						eraseVerUrl.setParameter(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
-   						eraseVerUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-						eraseVerUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+		      			Map eraseVerUrlPars = new HashMap();
+		      			eraseVerUrlPars.put("PAGE", "detailBIObjectPage");
+		      			eraseVerUrlPars.put("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
+		      			eraseVerUrlPars.put(SpagoBIConstants.VERSION, tempVer.getVersionName());
+		      			eraseVerUrlPars.put(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
+		      			eraseVerUrlPars.put(SpagoBIConstants.ACTOR, actor);
+		      			eraseVerUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+						String eraseVerUrlStr = urlBuilder.getUrl(request, eraseVerUrlPars);
+						
 						String pathTemp = obj.getPath() + "/template";
-   						String downl = renderRequest.getContextPath() + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
+   						String downl = ChannelUtilities.getSpagoBIContextName(request) + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
 		      		       
 		      		        if(isCurrentVer) {
 		      		        	out.print("<td class='portlet-font' >&nbsp;</a></td>");
 		      		        } else {
-		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+PortletUtilities.getMessage("SBIDev.docConf.docDet.deleteVersionConfirm", "messages")+"\", \""+eraseVerUrl.toString()+"\")' style='font-size:9px;' >" + PortletUtilities.getMessage("SBIDev.docConf.execBIObject.eraseLink", "messages") + "</a></td>");
+		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.deleteVersionConfirm", "messages")+"\", \""+eraseVerUrlStr+"\")' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.eraseLink", "messages") + "</a></td>");
 		      		        }
-		      		        out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + PortletUtilities.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
+		      		        out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" +msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
 		      		        
 		      		        if(numTemp > 1) {
 		      		        	out.print("<td class='portlet-font'><input type='radio' value='"+tempVer.getVersionName()+" 'name='versionTemplate' onchange='versionTemplateSelected()' "+checkStr+" /></td></tr>");
@@ -899,7 +913,7 @@ function checkDocumentType(message) {
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:void(0);'
 			   onclick='document.getElementById("priority").selectedIndex=<%= objParPriority - 2 %>;document.getElementById("objectForm").submit();'>
-				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Back.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/Back.gif") %>'
 					title='<spagobi:message key = "SBIDev.docConf.docDetParam.increasePriority" />' 
 					alt='<spagobi:message key = "SBIDev.docConf.docDetParam.increasePriority" />'
 				/>
@@ -910,28 +924,32 @@ function checkDocumentType(message) {
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:void(0);' 
 			   onclick='document.getElementById("priority").selectedIndex=<%= objParPriority %>;document.getElementById("objectForm").submit();'>
-				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Forward.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/Forward.gif") %>'
 					title='<spagobi:message key = "SBIDev.docConf.docDetParam.reducePriority" />' 
 					alt='<spagobi:message key = "SBIDev.docConf.docDetParam.reducePriority" />'
 				/>
 			</a>
 		</td>
 		<% } %>
-		<% if (biObjParams != null && biObjParams.size() > 1) { 
-			%>
+		<% 
+			if(biObjParams != null && biObjParams.size() > 1) { 
+				if(ChannelUtilities.isPortletRunning()) {
+		%>
 			<td class='header-button-column-portlet-section'>
 				<a href='javascript:saveBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.saveBIParameterConfirm"/>")'>
-					<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/Class.gif") %>'
+					<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/Class.gif") %>'
 						title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
 						alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
 					/>
 				</a>
 			</td>
 		<%
-		} %>
+				} 
+			}
+		%>
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:deleteBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.deleteBIParameterConfirm"/>")'>
-				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/erase.gif") %>'
 					title='<spagobi:message key = "SBIDev.docConf.docDetParam.eraseButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDetParam.eraseButt" />'
 				/>
 			</a>
@@ -993,7 +1011,7 @@ function checkDocumentType(message) {
 
   		&nbsp;*&nbsp;
 		<a style="text-decoration:none;"  href="javascript:verifyDependencies();">
-			<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
+			<img src='<%=urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
 			   title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' 
 			   alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' />
 		</a>

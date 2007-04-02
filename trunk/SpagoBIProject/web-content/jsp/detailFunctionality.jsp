@@ -11,30 +11,36 @@
                  it.eng.spagobi.bo.dao.DAOFactory,
                  it.eng.spago.navigation.LightNavigationManager,
                  it.eng.spagobi.services.modules.BIObjectsModule" %>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailFunctionalityModule"); 
     LowFunctionality functionality = (LowFunctionality)moduleResponse.getAttribute(DetailFunctionalityModule.FUNCTIONALITY_OBJ);
 	String modality = (String)moduleResponse.getAttribute(AdmintoolsConstants.MODALITY);
-		
-	PortletURL formAct = renderResponse.createActionURL();
-    formAct.setParameter(AdmintoolsConstants.PAGE, DetailFunctionalityModule.MODULE_PAGE);
-    formAct.setParameter(AdmintoolsConstants.MESSAGE_DETAIL, modality);
-    String pathParent = (String) moduleResponse.getAttribute(AdmintoolsConstants.PATH_PARENT);
+	String pathParent = (String) moduleResponse.getAttribute(AdmintoolsConstants.PATH_PARENT);
     LowFunctionality parentFunctionality = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
     
-    if (modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-    	formAct.setParameter(AdmintoolsConstants.PATH_PARENT, pathParent);
+	
+    Map formUrlPars = new HashMap();
+	formUrlPars.put(AdmintoolsConstants.PAGE, DetailFunctionalityModule.MODULE_PAGE);
+	formUrlPars.put(AdmintoolsConstants.MESSAGE_DETAIL, modality);
+	if (modality.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
+		formUrlPars.put(AdmintoolsConstants.PATH_PARENT, pathParent);
     } else {
-    	formAct.setParameter(AdmintoolsConstants.FUNCTIONALITY_ID, functionality.getId().toString());
+    	formUrlPars.put(AdmintoolsConstants.FUNCTIONALITY_ID, functionality.getId().toString());
     }
-    formAct.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String formAct = urlBuilder.getUrl(request, formUrlPars);
 
-    PortletURL backUrl = renderResponse.createActionURL();
-    backUrl.setParameter("PAGE", BIObjectsModule.MODULE_PAGE);
-    backUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-    backUrl.setParameter(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
-    backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
+    backUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+    backUrlPars.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+
     
     List roles = DAOFactory.getRoleDAO().loadAllRoles();
     String[][] sysRoles = new String[roles.size()][3];
@@ -50,7 +56,8 @@
 
 
 
-<form action="<%= formAct.toString() %>" method="post" id='formFunct' name = 'formFunct'>
+
+<form action="<%=formAct%>" method="post" id='formFunct' name = 'formFunct'>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -61,12 +68,19 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('formFunct').submit()"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.Funct.saveButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' alt='<spagobi:message key = "SBISet.Funct.saveButt" />' />
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBISet.Funct.saveButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+      			     alt='<spagobi:message key = "SBISet.Funct.saveButt" />' />
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.Funct.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBISet.Funct.backButt" />'/>
+			<a href='<%=backUrl%>'> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message 
+      			     key = "SBISet.Funct.backButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     alt='<spagobi:message key = "SBISet.Funct.backButt" />'/>
 			</a>
 		</td>
 	</tr>
@@ -215,7 +229,6 @@
 					 	    <input type="checkbox" name="development" id="development" value="<%=ruleId%>" 
 					 	    	<%
 					 	    		if(isDev) out.print(" checked='checked' ");
-					 	    		//else if (!isDev && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isDevParent) out.print(" disabled='disabled' ");
 					 	    		else if (!isDevParent && parentFunctionality.getParentId() != null) out.print(" disabled='disabled' ");
 					 	    	%> 
 					 	    />
@@ -224,7 +237,6 @@
 					 	    <input type="checkbox" name="test" id="test" value="<%=ruleId%>" 
 					 	    <%
 					 	    	if(isTest) out.print(" checked='checked' "); 
-					 	    	//else if (!isTest && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isTestParent) out.print(" disabled='disabled' ");
 					 	    	else if (!isTestParent && parentFunctionality.getParentId() != null) out.print(" disabled='disabled' ");
 					 	    %> 
 					 	    />
@@ -233,17 +245,18 @@
 					 	    <input type="checkbox" name="execution" id="execution" value="<%=ruleId%>" 
 					 	    <%
 					 	    	if(isExec) out.print(" checked='checked' ");
-					 	    	//else if (!isExec && !pathParent.equals(AdmintoolsConstants.FUNCT_ROOT_PATH) && !isExecParent) out.print(" disabled='disabled' "); 
 					 	    	else if (!isExecParent && parentFunctionality.getParentId() != null) out.print(" disabled='disabled' "); 
 					 	    %> 
 					 	    />
 					 	</td> 
 					    <td>
-					    <a onclick = "selectAllInRows('<%=ruleId%>')" title='<spagobi:message key = "SBISet.Funct.selAllRow" />' alt='<spagobi:message key = "SBISet.Funct.selAllRow" />'>
-					    <img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/expertok.gif")%>'/>
+					    <a onclick = "selectAllInRows('<%=ruleId%>')" 
+					       title='<spagobi:message key = "SBISet.Funct.selAllRow" />' 
+					       alt='<spagobi:message key = "SBISet.Funct.selAllRow" />'>
+					    	<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
 					    </a>
 					    <a onclick = "deselectAllInRows('<%=ruleId%>')" title='<spagobi:message key = "SBISet.Funct.deselAllRow" />' alt='<spagobi:message key = "SBISet.Funct.deselAllRow" />'>
-					    <img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png")%>'/>
+					    	<img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
 					    </a>
 					    </td> 
 					 </tr>	
@@ -252,26 +265,26 @@
                         <td align="center">&nbsp;</td>       
                         <td align="center">
                         <a onclick = "selectAllInColumns('development')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        <img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/expertok.gif")%>'/>
+                        <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
                         </a>
 					    <a onclick = "deselectAllInColumns('development')" title='<spagobi:message key = "SBISet.Funct.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    <img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png")%>' />
+					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
 					    </a>
 					    </td>
 					    <td align="center">
                         <a onclick = "selectAllInColumns('test')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        <img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/expertok.gif")%>'/>
+                        <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
                         </a>
 					    <a onclick = "deselectAllInColumns('test')" title='<spagobi:message key = "SBISet.Funct.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    <img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png")%>'/>
+					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
 					    </a>
 					    </td>
 					    <td align="center">
                         <a onclick = "selectAllInColumns('execution')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        <img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/expertok.gif")%>'/>
+                        <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
                         </a>
 					    <a onclick = "deselectAllInColumns('execution')" title='<spagobi:message key = "SBISet.Funct.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    <img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.png")%>'/>
+					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
 					    </a>
 					    </td>
 						<td align="center">&nbsp;</td>   

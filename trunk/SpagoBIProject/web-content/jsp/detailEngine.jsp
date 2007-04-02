@@ -1,28 +1,33 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spagobi.bo.Engine,
-                 javax.portlet.PortletURL,
                  it.eng.spagobi.bo.dao.DAOFactory,
                  it.eng.spagobi.bo.Domain,
-                 it.eng.spago.navigation.LightNavigationManager" %>
+                 it.eng.spago.navigation.LightNavigationManager,
+                 java.util.Map,
+                 java.util.HashMap" %>
 
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailEngineModule"); 
 	Engine engine = (Engine)moduleResponse.getAttribute("engineObj");
 	String modality = (String)moduleResponse.getAttribute("modality");
  
-   	PortletURL formUrl = renderResponse.createActionURL();
-   	formUrl.setParameter("PAGE", "detailEnginePage");
-   	formUrl.setParameter("MESSAGEDET", modality);
-   	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   
-   	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "ListEnginesPage");
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	Map formUrlPars = new HashMap();
+	formUrlPars.put("PAGE", "detailEnginePage");
+	formUrlPars.put("MESSAGEDET", modality);
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String formUrl = urlBuilder.getUrl(request, formUrlPars);
+	
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "ListEnginesPage");
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+
 %>
 		
-<form method='POST' action='<%= formUrl.toString() %>' id='engineForm' name='engineForm'>
-<input type='hidden' value='<%= engine.getId() %>' name='id' />
+
+<form method='POST' action='<%=formUrl%>' id='engineForm' name='engineForm'>
+<input type='hidden' value='<%=engine.getId()%>' name='id' />
 
 
 
@@ -35,12 +40,12 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('engineForm').submit()"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.eng.saveButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' alt='<spagobi:message key = "SBISet.eng.saveButt" />' /> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.eng.saveButt" />' src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' alt='<spagobi:message key = "SBISet.eng.saveButt" />' /> 
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.eng.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBISet.eng.backButt" />' />
+			<a href='<%=backUrl%>'> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.eng.backButt" />' src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "SBISet.eng.backButt" />' />
 			</a>
 		</td>
 	</tr>
@@ -288,6 +293,6 @@ function changeEngineType(value){
 
 </script>
  
-
+<%@ include file="/jsp/footer.jsp"%>
 
 

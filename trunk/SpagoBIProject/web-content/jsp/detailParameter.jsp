@@ -15,10 +15,11 @@
                  it.eng.spagobi.constants.ObjectsTreeConstants,
                  it.eng.spagobi.constants.AdmintoolsConstants,
                  it.eng.spago.navigation.LightNavigationManager,
-				 javax.portlet.PortletURL,
                  java.util.ArrayList,
                  java.util.List,
                  java.util.Iterator" %>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 
 <%
@@ -28,19 +29,22 @@
 	ArrayList list = (ArrayList) moduleResponse.getAttribute("listObj");
 	ArrayList selTypeList = (ArrayList) moduleResponse.getAttribute("listSelType");
 
-	PortletURL formUrl = renderResponse.createActionURL();
-	formUrl.setParameter("PAGE", "detailParameterPage");
-	formUrl.setParameter("MESSAGEDET", modality);
-	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   
-	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "detailParameterPage");
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_DETAIL"); 
+	Map formUrlPars = new HashMap();
+	formUrlPars.put("PAGE", "detailParameterPage");
+	formUrlPars.put("MESSAGEDET", modality);
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String formUrl = urlBuilder.getUrl(request, formUrlPars);
+	
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "detailParameterPage");
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 
 
-<form method='POST' action='<%= formUrl.toString() %>' id ='parametersForm' name='parametersForm'>
+
+<form method='POST' action='<%=formUrl%>' id ='parametersForm' name='parametersForm'>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -50,24 +54,27 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('parametersForm').submit()"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.param.saveButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' alt='<spagobi:message key = "SBIDev.param.saveButt" />' /> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBIDev.param.saveButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+      			     alt='<spagobi:message key = "SBIDev.param.saveButt" />' /> 
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<input type='image' name='saveAndGoBack' id='saveAndGoBack' value='true' class='header-button-image-portlet-section'
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/saveAndGoBack.png") %>'
+				src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png") %>'
       				title='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />'
 			/> 
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
-				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.param.saveConfirm" />","<%=backUrl.toString()%>")'> 
+				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.param.saveConfirm" />","<%=backUrl%>")'> 
 			<% } else { %>
-				<a href='<%=backUrl.toString()%>'>
+				<a href='<%=backUrl%>'>
 			<% } %>
       				<img class='header-button-image-portlet-section' 
 				title='<spagobi:message key = "SBIDev.param.backButt" />'
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+				src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
 				alt='<spagobi:message key = "SBIDev.param.backButt"/>' />
 			</a>
 		</td>
@@ -314,7 +321,7 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:deleteParameterUseConfirm("<spagobi:message key="SBIDev.param.deleteParameterUseConfirm"/>")'>
-				<img 	src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/erase.gif") %>'
 					title='<spagobi:message key = "SBIDev.param.eraseParameterUseButt" />' alt='<spagobi:message key = "SBIDev.param.eraseParameterUseButt" />'
 				/>
 			</a>
@@ -401,13 +408,15 @@
 				value="<%= lovName != null ? lovName : "" %>" maxlength="100" readonly <%if(!isLov) {out.println("disabled = 'disabled'");} %>>
   		
   		<input 	type='hidden' id='paruseLovId' value='<%=(idLov != null?(idLov.intValue() != -1 ? idLov.toString() : ""):"") %>' 
-           		name='paruseLovId' />
-  		<% 	PortletURL lovLookupURL = renderResponse.createActionURL();
-  	   		lovLookupURL.setParameter("PAGE", "lovLookupPage"); 
+           		name='paruseLovId' />           		
+  		<% 	
+	  		Map lovLookupURLPars = new HashMap();
+  			lovLookupURLPars.put("PAGE", "lovLookupPage");
+	  		String lovLookupURL = urlBuilder.getUrl(request, formUrlPars);
   		%>
   		&nbsp;*&nbsp;
     	<input 	type='image' name="loadLovLookup"  id="loadLovLookup" value="LovLookup" style='<%if(isLov) {out.println("display:inline;");} else {out.println("display:none;");} %>'
-		   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
+		   		src='<%=urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
 		   		title='Lov Lookup' alt='Lov Lookup'/>
 			 
 		 </div>	
@@ -463,14 +472,12 @@
 			  	   		<a onclick = "checkAllFreeRoles()" title='<spagobi:message 
 			  	   		key = "SBIDev.paramUse.checkAllFreeRoles" />' 
 			  	   		alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
-							<img  src='<%= renderResponse.encodeURL(renderRequest.getContextPath() 
-									+ "/img/expertok.gif")%>'/>
+							<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
 						</a>
 						<a onclick = "uncheckAllFreeRoles()" 
 						title='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />' 
 						alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
-							<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() 
-									+ "/img/erase.png")%>'/>
+							<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
 						</a>
 					</td>
 				</tr>

@@ -1,25 +1,30 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spagobi.bo.Check,
-                 javax.portlet.PortletURL,
                  it.eng.spago.navigation.LightNavigationManager,
                  it.eng.spagobi.bo.dao.DAOFactory,
                  it.eng.spagobi.bo.Domain" %>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 <% 
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailChecksModule"); 
 	Check check = (Check)moduleResponse.getAttribute("checkObj");
 	String modality = (String)moduleResponse.getAttribute("modality");
 
-   	PortletURL formUrl = renderResponse.createActionURL();
-    formUrl.setParameter("PAGE", "DetailModalitiesChecksPage");
-    formUrl.setParameter("MESSAGEDET", modality);
-	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	Map formUrlPars = new HashMap();
+	formUrlPars.put("PAGE", "DetailModalitiesChecksPage");
+	formUrlPars.put("MESSAGEDET", modality);
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String formUrl = urlBuilder.getUrl(request, formUrlPars);
+	
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "ListModalitiesChecksPage");
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
    	
-   	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "ListModalitiesChecksPage");
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
  %>
+
 
 
 <table class='header-table-portlet-section'>		
@@ -30,12 +35,18 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a id="submit" href="javascript:document.getElementById('checkForm').submit()"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.valConst.saveButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' alt='<spagobi:message key = "SBIDev.valConst.saveButt" />' /> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBIDev.valConst.saveButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+      			     alt='<spagobi:message key = "SBIDev.valConst.saveButt" />' /> 
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.valConst.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBIDev.valConst.backButt" />' />
+			<a href='<%= backUrl %>'> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBIDev.valConst.backButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     alt='<spagobi:message key = "SBIDev.valConst.backButt" />' />
 			</a>
 		</td>
 	</tr>
@@ -49,7 +60,7 @@
  
 <div id="checkDiv1" style='display:inline;'>
  
-	<form method='POST' action='<%= formUrl.toString() %>' name='checkForm1' id='checkForm1'>
+	<form method='POST' action='<%= formUrl %>' name='checkForm1' id='checkForm1'>
  	<input type='hidden' value=<%=(check.getCheckId() != null ? String.valueOf(check.getCheckId().intValue()) : "-1")%> name='id' />
 
 	<div class="div_detail_area_forms">
@@ -182,7 +193,7 @@
 
 
 <div id="checkDiv2" style='display:none;'>
-	<form method='POST' action='<%= formUrl.toString() %>' name='checkForm2' id='checkForm2'>
+	<form method='POST' action='<%= formUrl %>' name='checkForm2' id='checkForm2'>
 	<input type='hidden' value=<%=(check.getCheckId() != null ? String.valueOf(check.getCheckId().intValue()) : "")%> name='id' />
 
 	<div class="div_detail_area_forms">

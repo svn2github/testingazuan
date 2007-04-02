@@ -1,7 +1,6 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-			it.eng.spagobi.constants.SpagoBIConstants,
+<%@ page import="it.eng.spagobi.constants.SpagoBIConstants,
 			it.eng.spagobi.bo.ModalitiesValue,
 			it.eng.spagobi.bo.lov.ScriptDetail,
 			it.eng.spagobi.bo.lov.JavaClassDetail,
@@ -15,6 +14,8 @@
 <%@page import="it.eng.spagobi.bo.lov.LovDetailFactory"%>
 <%@page import="it.eng.spagobi.bo.lov.ILovDetail"%>
 <%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 <%
 
@@ -29,27 +30,24 @@
 		messagedet = SpagoBIConstants.DETAIL_INS;
 	else messagedet = SpagoBIConstants.DETAIL_MOD;
 		
-  	PortletURL backUrl = renderResponse.createActionURL();
-  	backUrl.setParameter("PAGE", "DetailModalitiesValuePage");
-  	backUrl.setParameter(SpagoBIConstants.MESSAGEDET, messagedet);
-  	backUrl.setParameter("modality", modality);
-  	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-  	backUrl.setParameter("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
-  
-    PortletURL testUrl = renderResponse.createActionURL();	
-    testUrl.setParameter("PAGE", "detailModalitiesValuePage");
-    testUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    testUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING);
+  	Map backUrlPars = new HashMap();
+  	backUrlPars.put("PAGE", "DetailModalitiesValuePage");
+  	backUrlPars.put(SpagoBIConstants.MESSAGEDET, messagedet);
+  	backUrlPars.put("modality", modality);
+  	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+  	backUrlPars.put("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+  	
+    Map testUrlPars = new HashMap();
+    testUrlPars.put("PAGE", "detailModalitiesValuePage");
+    testUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    testUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING);
+    String testUrl = urlBuilder.getUrl(request, testUrlPars);		
+    
 %>
 
 
- 
-
-
-
-
-
-<form id="formTest" method="post" action="<%=testUrl.toString()%>" >
+<form id="formTest" method="post" action="<%=testUrl%>" >
 
 
 
@@ -59,17 +57,14 @@
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'
 		    style='vertical-align:middle;padding-left:5px;'>
-		    <%--
-			<spagobi:message key = "SBIDev.predLov.testPageTitle" />
-			--%>
-			Profile  attribute to fill
+			<spagobi:message key = "SBIDev.predLov.profileAttrToFill" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		
 		<td class='header-button-column-portlet-section' id='testButton'>
 			<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
 					name="testLovBeforeSave" value="testLovBeforeSave" 
-					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/test.png")%>' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
 					title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />'  
 					alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
 			/>
@@ -78,10 +73,10 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		
 		<td class='header-button-column-portlet-section'>
-			<a href="<%=backUrl.toString()%>"> 
+			<a href="<%=backUrl%>"> 
       				<img class='header-button-image-portlet-section' 
       				     title='<spagobi:message key = "SBISet.Funct.backButt" />' 
-      				     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+      				     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
       				     alt='<spagobi:message key = "SBISet.Funct.backButt" />' />
 			</a>
 		</td>

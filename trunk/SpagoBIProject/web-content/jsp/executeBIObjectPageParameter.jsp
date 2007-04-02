@@ -1,7 +1,6 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-                 java.util.List,
+<%@ page import="java.util.List,
                  java.util.Iterator,
                  it.eng.spagobi.constants.ObjectsTreeConstants,
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
@@ -11,8 +10,10 @@
                  it.eng.spagobi.bo.BIObject,
                  it.eng.spago.security.IEngUserProfile,
                  it.eng.spago.base.SessionContainer,
-                 it.eng.spagobi.utilities.PortletUtilities,
                  it.eng.spago.navigation.LightNavigationManager" %>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
 
 <% 
     // get object from the session 
@@ -55,22 +56,25 @@
     	title += ": " + objDescr;
    	
    	// build the url for the parameters form
-   	PortletURL execUrl = renderResponse.createActionURL();
-   	execUrl.setParameter("PAGE", "ValidateExecuteBIObjectPage");
-	execUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-   	execUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
-    	execUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    
+   	Map execUrlPars = new HashMap();
+   	execUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
+   	execUrlPars.put(SpagoBIConstants.ACTOR, actor);
+   	execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
+   	execUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String execUrl = urlBuilder.getUrl(request, execUrlPars);
+	    
    	// build the back url 
-   	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "BIObjectsPage");
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-	
+   	Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "BIObjectsPage");
+    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+   		
 %>
 	
-<%@page import="java.util.Date"%>
-<form method='POST' action='<%=execUrl.toString()%>' id='paramsValueForm' name='paramsValueForm'>	
+
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<form method='POST' action='<%=execUrl%>' id='paramsValueForm' name='paramsValueForm'>	
 
 
 <% 
@@ -89,16 +93,16 @@
 				<a href="javascript:document.getElementById('paramsValueForm').submit()"> 
       					<img class='header-button-image-portlet-section' 
 					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.execButt" />' 
-					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.png")%>' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/exec.png")%>' 
 					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.execButt" />' /> 
 				</a>
 			</td>
 		<% } %>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%= backUrl %>'> 
       				<img class='header-button-image-portlet-section' 
 				title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+				src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
 				alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
 			</a>
 		</td>
@@ -119,10 +123,10 @@
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
 			<input type='image' 
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec22.png")%>' 
+				src='<%=urlBuilder.getResourceLink(request, "/img/exec22.png")%>' 
 				name='exec' 
-				alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-				title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+				alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
+				title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
 		</td>
 </table>
 	
@@ -164,20 +168,21 @@ if (isSingleObjExec) {
 
    <!-- if there aren't parameters show the link for the new composition -->
    <% if(noPars) { 
-	   	  	PortletURL execNewCompUrl = renderResponse.createActionURL();
-	   		execNewCompUrl.setParameter("PAGE", "ValidateExecuteBIObjectPage");
-	   		execNewCompUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
-	   		execNewCompUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	   		execNewCompUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			Map execNewCompUrlPars = new HashMap();
+			execNewCompUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
+			execNewCompUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
+			execNewCompUrlPars.put(SpagoBIConstants.ACTOR, actor);
+			execNewCompUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+		    String execNewCompUrl = urlBuilder.getUrl(request, execNewCompUrlPars);
    %>
    <span class='portlet-font'>
-			<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages")%>
+			<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition1", "messages")%>
 	 </span>
-   <a href='<%=execUrl.toString()%>'
+   <a href='<%=execUrl%>'
 			class='portlet-form-field-label'
 			onmouseover="this.style.color='#9297ac';"
 			onmouseout="this.style.color='#074B88';">
-			<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages")%>
+			<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition2", "messages")%>
 	 </a>
 
    <br/><br/> 
@@ -194,7 +199,7 @@ if (isSingleObjExec) {
 				<div class="first-tab-level" style="background-color:#f8f8f8">
 					<div style="overflow: hidden; width:100%">
 						<div class='tab'>
-							<%=PortletUtilities.getMessage("SBIDev.docConf.subBIObject.title","messages")%>
+							<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.title","messages")%>
 						</div>
 					</div>
 				</div>
@@ -242,8 +247,8 @@ if (isSingleObjExec) {
 				    	   String owner = "";
 				    	   String creationDate = "";
 				    	   String lastModificationDate = "";
-				    	   PortletURL execSubObjUrl = null;
-				    	   PortletURL deleteSubObjUrl = null;
+				    	   String execSubObjUrl = null;
+				    	   String deleteSubObjUrl = null;
 					   
 					   boolean alternate = false;
 					   String rowClass = "";
@@ -267,22 +272,23 @@ if (isSingleObjExec) {
 		                        if(owner.equals(currentUser)) {
 		                        	delete = "delete";
 		                        }
-		    	                execSubObjUrl = renderResponse.createActionURL();
-		    	                execSubObjUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
-		    	                execSubObjUrl.setParameter(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
-		    	                execSubObjUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-		    	                execSubObjUrl.setParameter("NAME_SUB_OBJECT", nameSub);
-		    	                execSubObjUrl.setParameter("DESCRIPTION_SUB_OBJECT", descr);
-		    	                execSubObjUrl.setParameter("VISIBILITY_SUB_OBJECT", visib);
-		    	                execSubObjUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
-		    	                
-		    	                deleteSubObjUrl = renderResponse.createActionURL();
-		    	                deleteSubObjUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
-		    	                deleteSubObjUrl.setParameter(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
-		    	                deleteSubObjUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-		    	                deleteSubObjUrl.setParameter("NAME_SUB_OBJECT", nameSub);
-		    	                deleteSubObjUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
-		    	                
+		                        Map execSubObjUrlPars = new HashMap();
+		                        execSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
+		                        execSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
+		                        execSubObjUrlPars.put(SpagoBIConstants.ACTOR, actor);
+		                        execSubObjUrlPars.put("NAME_SUB_OBJECT", nameSub);
+		                        execSubObjUrlPars.put("DESCRIPTION_SUB_OBJECT", descr);
+		                        execSubObjUrlPars.put("VISIBILITY_SUB_OBJECT", visib);
+		                        execSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+		            		    execSubObjUrl = urlBuilder.getUrl(request, execSubObjUrlPars);
+		                        
+		            		    Map deleteSubObjUrlPars = new HashMap();
+		            		    deleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		            		    deleteSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
+		            		    deleteSubObjUrlPars.put(SpagoBIConstants.ACTOR, actor);
+		            		    deleteSubObjUrlPars.put("NAME_SUB_OBJECT", nameSub);
+		            		    deleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+		            		    deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 		                   %>
 		                        <tr class='portlet-font'>
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>'>
@@ -309,25 +315,25 @@ if (isSingleObjExec) {
 		                        	
 		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-		                        		<a href="<%=execSubObjUrl.toString()%>">
+		                        		<a href="<%=execSubObjUrl%>">
 		                        			<img width="20px" height="20px" 
-						  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.gif")%>' 
+						  	   		src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif")%>' 
 						  	                name='execSub' 
-						  	                alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-						                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+						  	                alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
+						                        title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
 		                        		</a>
 		                        	</td>
 		                        	<%
 		                        	if(owner.equals(currentUser)) {
 		                        	%>
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-		                        		<% String eraseMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSubObject", "messages"); %>
+		                        		<% String eraseMsg = msgBuilder.getMessage(aRequestContainer, "ConfirmMessages.DeleteSubObject", "messages"); %>
 		                        		<a href="javascript:var conf = confirm('<%=eraseMsg%>'); if(conf) {document.location='<%=deleteSubObjUrl.toString()%>';}">
 		                        			<img width="20px" height="20px" 
-						  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' 
+						  	   		src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>' 
 						  	                name='deleteSub' 
-						  	                alt='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
-						                        title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' />
+						  	                alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+						                        title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' />
 		                        		</a>
 		                        	</td>
 		                        	<%} else {%>
@@ -355,7 +361,7 @@ if (isSingleObjExec) {
 				<div class="first-tab-level" style="background-color:#f8f8f8">
 					<div style="overflow: hidden; width:100%">
 						<div class='tab'>
-							<%=PortletUtilities.getMessage("SBIDev.docConf.snapshots.title","messages")%>
+							<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.snapshots.title","messages")%>
 						</div>
 					</div>
 				</div>
@@ -385,8 +391,8 @@ if (isSingleObjExec) {
 				    String nameSnap = "";
 				    String descrSnap = "";
 				    Date creationDate = null;
-				    PortletURL execSnapUrl = null;
-				    PortletURL deleteSnapUrl = null;
+				    String execSnapUrl = null;
+				    String deleteSnapUrl = null;
 					boolean alternate = false;
 					String rowClass = "";
 					   
@@ -397,15 +403,20 @@ if (isSingleObjExec) {
 						nameSnap = snap.getName();
 						descrSnap = snap.getDescription();
 						creationDate = snap.getDateCreation();
-		                execSnapUrl = renderResponse.createActionURL();
-		                execSnapUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
-		                execSnapUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
-		                execSnapUrl.setParameter(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
-		                deleteSnapUrl = renderResponse.createActionURL();
-		                deleteSnapUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
-		                deleteSnapUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
-		                deleteSnapUrl.setParameter(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
-		                deleteSnapUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+						
+						Map execSnapUrlPars = new HashMap();
+						execSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+            		    execSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
+            		    execSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+            		    execSnapUrl = urlBuilder.getUrl(request, execSnapUrlPars);
+						
+            		    Map deleteSnapUrlPars = new HashMap();
+            		    deleteSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+            		    deleteSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
+            		    deleteSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+            		    deleteSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+            		    deleteSnapUrl = urlBuilder.getUrl(request, deleteSnapUrlPars);
+		                
 		         %>
 		         <tr class='portlet-font'>
 		           	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameSnap %></td>
@@ -421,23 +432,23 @@ if (isSingleObjExec) {
                     		&nbsp;
                     		<%
                     	} else {
-                    	String eraseSnapMsg = PortletUtilities.getMessage("ConfirmMessages.DeleteSnapshot", "messages"); %>
+                    	String eraseSnapMsg = msgBuilder.getMessage(aRequestContainer, "ConfirmMessages.DeleteSnapshot", "messages"); %>
                     	<a href="javascript:var conf = confirm('<%=eraseSnapMsg%>'); if(conf) {document.location='<%=deleteSnapUrl.toString()%>';}">
                     		<img width="20px" height="20px" 
-                    			src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' 
-  	                			name='deleteSnapshot' alt='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
-                        		title='<%=PortletUtilities.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+                    			src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>' 
+  	                			name='deleteSnapshot' alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+                        		title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
                         	/>
                     	</a>
                     	 <% } %>
                     </td>
 		            <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-		                <a href="<%=execSnapUrl.toString()%>">
+		                <a href="<%=execSnapUrl%>">
 		                       <img width="20px" height="20px" 
-						  	   		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.gif")%>' 
+						  	   		src='<%=urlBuilder.getResourceLink(request, "/img/exec.gif")%>' 
 						  	        name='execSnap' 
-						  	        alt='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-						            title='<%=PortletUtilities.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+						  	        alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
+						            title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
 		               	</a>
 		           	</td>
 		         </tr> 

@@ -15,11 +15,10 @@
                  java.util.Iterator,
                  java.util.ArrayList,
                  java.util.StringTokenizer,
-                 javax.portlet.PortletURL,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spago.navigation.LightNavigationManager,
-                 it.eng.spagobi.utilities.PortletUtilities" %>
-<%@page import="it.eng.spagobi.managers.LovManager"%>
+                 it.eng.spagobi.managers.LovManager,
+                 java.util.Map" %>
 
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
@@ -27,18 +26,19 @@
 	ModalitiesValue modVal = (ModalitiesValue)moduleResponse.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 	String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 	ArrayList list = (ArrayList)moduleResponse.getAttribute(SpagoBIConstants.LIST_INPUT_TYPE); 
-
 	Iterator iterAttrs = null;
 	
-	PortletURL formUrl = renderResponse.createActionURL();
-	formUrl.setParameter("PAGE", "detailModalitiesValuePage");
-	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	  
-	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "detailModalitiesValuePage");
-	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_DETAIL");
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	Map formUrlPars = new HashMap();
+	formUrlPars.put("PAGE", "detailModalitiesValuePage");
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String formUrl = urlBuilder.getUrl(request, formUrlPars);
 	
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "detailModalitiesValuePage");
+    backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+    	
 	String queryDisplay = "none";
 	String scriptDisplay = "none";
 	String lovDisplay = "none";
@@ -80,16 +80,17 @@
 	  	}
 	}
 	
-	String linkProto = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js");
-	String linkProtoWin = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/window.js");
-	String linkProtoEff = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/effects.js");
-	String linkProtoDefThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/default.css");
-	String linkProtoAlphaThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/alphacube.css");
+	String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
+	String linkProtoWin = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
+	String linkProtoEff = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
+	String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
+	String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
 
 %>
 
 	
-<script type="text/javascript" src="<%=linkProto%>"></script>
+
+	<script type="text/javascript" src="<%=linkProto%>"></script>
 	<script type="text/javascript" src="<%=linkProtoWin%>"></script>
 	<script type="text/javascript" src="<%=linkProtoEff%>"></script>
 	<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
@@ -159,18 +160,18 @@
     <%
 	    // get the labels of all documents related to the lov
 		List docLabels = LovManager.getLabelsOfDocumentsWhichUseLov(modVal);
-		String confirmMessage = PortletUtilities.getMessage("SBIDev.predLov.saveWithoutTest", "messages");
+		String confirmMessage = msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.saveWithoutTest", "messages");
 		confirmMessage += ". ";
 		if (docLabels.size() > 0) {
 			String documentsStr = docLabels.toString();
 			confirmMessage += "\\n\\n";
-			confirmMessage += PortletUtilities.getMessage("SBIDev.predLov.savePreamble", "messages");
+			confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.savePreamble", "messages");
 			confirmMessage += " ";
 			confirmMessage += documentsStr;
 			confirmMessage += ". ";
 		}
 		confirmMessage += "\\n\\n";
-		confirmMessage += PortletUtilities.getMessage("SBIDev.predLov.saveConfirm", "messages");
+		confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.saveConfirm", "messages");
 	%>
 	
 	function askForConfirmIfNecessary() {
@@ -212,7 +213,7 @@
 	
 	function openProfileAttributeWin(){
 		if(winPA==null) {
-			winPA = new Window('winPAId', {className: "alphacube", title: "<%=PortletUtilities.getMessage("SBIDev.lov.avaiableProfAttr", "messages")%>", width:400, height:300, destroyOnClose: true});
+			winPA = new Window('winPAId', {className: "alphacube", title: "<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.lov.avaiableProfAttr", "messages")%>", width:400, height:300, destroyOnClose: true});
 	      	winPA.setContent('profileattributeinfodiv', false, false);
 	      	winPA.showCenter(false);
 	    } else {
@@ -254,7 +255,7 @@
 
 
 <!-- OPEN PAGE FORM  -->
-<form method='POST' action='<%= formUrl.toString() %>' id ='modalitiesValueForm' name='modalitiesValueForm'>
+<form method='POST' action='<%= formUrl %>' id ='modalitiesValueForm' name='modalitiesValueForm'>
 	<input type='hidden' value='<%= modVal.getId() %>' name='id' />
 	<input type='hidden' value='<%= modality %>' name='<%= SpagoBIConstants.MESSAGEDET  %>' />
 	<input type='hidden' name='lovProviderModified' value='' id='lovProviderModified' />
@@ -273,7 +274,7 @@
 		<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
 				onclick='setLovProviderModifiedField();'
 				name="testLovBeforeSave" value="testLovBeforeSave"  
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/test.png")%>' 
+				src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
 				title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />'  
 				alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
 		/>
@@ -283,7 +284,7 @@
 			<input type='hidden' id="saveLov" name="" value="" />
 			<a href= 'javascript:askForConfirmIfNecessary();' >
 				<img class='header-button-image-portlet-section'
-					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
 					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
 					alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
 				/>
@@ -291,8 +292,11 @@
 		</td>
 	<%}%>
 		<td class='header-button-column-portlet-section'>
-			<a href= '<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.predLov.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBIDev.predLov.backButt" />' />
+			<a href= '<%= backUrl %>'> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBIDev.predLov.backButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     alt='<spagobi:message key = "SBIDev.predLov.backButt" />' />
 			</a>
 		</td>
 	</tr>

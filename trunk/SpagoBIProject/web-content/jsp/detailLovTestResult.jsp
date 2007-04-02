@@ -17,9 +17,10 @@
 <%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.managers.LovManager"%>
 <%@page import="it.eng.spagobi.utilities.PortletUtilities"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 <%
-
 	SourceBean detailMR = (SourceBean) aServiceResponse.getAttribute("DetailModalitiesValueModule"); 
 	SourceBean listLovMR = (SourceBean) aServiceResponse.getAttribute("ListTestLovModule"); 
 
@@ -34,36 +35,33 @@
   	if (modality.equals(SpagoBIConstants.DETAIL_INS))
 		messagedet = SpagoBIConstants.DETAIL_INS;
 	else messagedet = SpagoBIConstants.DETAIL_MOD;
-		
-  	PortletURL saveUrl = renderResponse.createActionURL();
-  	saveUrl.setParameter("PAGE", "DetailModalitiesValuePage");
-  	saveUrl.setParameter(SpagoBIConstants.MESSAGEDET, messagedet);
-  	saveUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-  	saveUrl.setParameter("RETURN_FROM_TEST_MSG","SAVE");
 	
-  	PortletURL backUrl = renderResponse.createActionURL();
-  	backUrl.setParameter("PAGE", "DetailModalitiesValuePage");
-  	backUrl.setParameter(SpagoBIConstants.MESSAGEDET, messagedet);
-  	backUrl.setParameter("modality", modality);
-  	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-  	backUrl.setParameter("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
-	if (!lovProviderModified.trim().equals(""))
-		backUrl.setParameter("lovProviderModified", lovProviderModified);
+  	Map saveUrlPars = new HashMap();
+  	saveUrlPars.put("PAGE", "DetailModalitiesValuePage");
+  	saveUrlPars.put(SpagoBIConstants.MESSAGEDET, messagedet);
+  	saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+  	saveUrlPars.put("RETURN_FROM_TEST_MSG","SAVE");
+    String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
+  	
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "DetailModalitiesValuePage");
+    backUrlPars.put(SpagoBIConstants.MESSAGEDET, messagedet);
+    backUrlPars.put("modality", modality);
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    backUrlPars.put("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
+    if(!lovProviderModified.trim().equals(""))
+    	backUrlPars.put("lovProviderModified", lovProviderModified);
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
   	
   	ModalitiesValue modVal = (ModalitiesValue) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
   	String lovProv = modVal.getLovProvider();
   	ILovDetail lovDet = LovDetailFactory.getLovFromXML(lovProv);
-  	
 %>
 
 
  
 
 <!--  SCRIPTS  -->
-
-
-
-
 
 <script type="text/javascript">
 
@@ -75,12 +73,12 @@
 	if(docLabels.size() > 0) {
 		askConfirm = true;
 		String documentsStr = docLabels.toString();
-		confirmMessage += PortletUtilities.getMessage("SBIDev.predLov.savePreamble", "messages");
+		confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.savePreamble", "messages");
 		confirmMessage += " ";
 		confirmMessage += documentsStr;
 		confirmMessage += ". ";
 		confirmMessage += "\\n\\n";
-		confirmMessage += PortletUtilities.getMessage("SBIDev.predLov.saveConfirm", "messages");
+		confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.saveConfirm", "messages");
 	}	
 	
 %>
@@ -135,15 +133,18 @@ function askForConfirmIfNecessary() {
 		<td class='header-button-column-portlet-section'>
 			<a href= 'javascript:askForConfirmIfNecessary();' >
 				<img class='header-button-image-portlet-section'
-					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
 					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
 					alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
 				/>
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
-			<a href="<%=backUrl.toString()%>"> 
-      				<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.Funct.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBISet.Funct.backButt" />' />
+			<a href="<%=backUrl%>"> 
+      				<img class='header-button-image-portlet-section' 
+      				     title='<spagobi:message key = "SBISet.Funct.backButt" />' 
+      				     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      				     alt='<spagobi:message key = "SBISet.Funct.backButt" />' />
 			</a>
 		</td>
 	</tr>
@@ -152,7 +153,7 @@ function askForConfirmIfNecessary() {
 
 
 
-<form id="formTest" method="post" action="<%=saveUrl.toString()%>" >
+<form id="formTest" method="post" action="<%=saveUrl%>" >
 
 <!-- BODY -->
 

@@ -4,15 +4,14 @@
                  java.util.Collection, 
                  it.eng.spago.error.EMFAbstractError,
                  it.eng.spago.navigation.LightNavigationManager,
-                 javax.portlet.PortletURL, 
                  java.util.HashMap,
                  java.util.Set,
                  java.util.List,
                  java.util.Iterator" %>
+<%@page import="javax.portlet.PortletURL"%>
 
 
 <%
-    
     // delete validation xml envelope from session
     List sessAttrs = aSessionContainer.getAttributeNames();
     Iterator iterAttrs = sessAttrs.iterator();
@@ -53,12 +52,12 @@
 
 <%
     // built url
-	PortletURL backUrl = null;
+	String backUrl = null;
 
     if(sessionback!=null) {
-    	backUrl = sessionback;
-    } else {   	
-    	backUrl = renderResponse.createActionURL();
+    	backUrl = sessionback.toString();
+    } else {   
+    	Map backUrlPars = new HashMap();     	
 		if( (addInfo!=null) && (addInfo instanceof HashMap) ) {
 		     HashMap map = (HashMap)addInfo;
 		     Set keys = map.keySet();
@@ -66,11 +65,12 @@
 		     while(iterKey.hasNext()) {
 				String key = (String)iterKey.next();
 				String value = (String)map.get(key);
-				backUrl.setParameter(key, value);	     
+				backUrlPars.put(key, value);	     
 		     }
 		 } else {
-			 backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-		 } 
+			 backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		 }
+		 backUrl = urlBuilder.getUrl(request, backUrlPars);
     }
     
 %>
@@ -80,6 +80,7 @@
 
 
 
+<%@page import="java.util.Map"%>
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'>
@@ -88,7 +89,10 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIErrorPage.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBIErrorPage.backButt" />' />
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBIErrorPage.backButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     alt='<spagobi:message key = "SBIErrorPage.backButt" />' />
 			</a>
 		</td>
 	</tr>

@@ -1,13 +1,14 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-                 java.util.List,
+<%@ page import="java.util.List,
                  java.util.Iterator,
                  it.eng.spagobi.constants.ObjectsTreeConstants,
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
                  it.eng.spagobi.constants.AdmintoolsConstants,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spago.navigation.LightNavigationManager" %>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
 
 <% 
 	// get the actor type from the session
@@ -20,15 +21,16 @@
     // get the path of the object
 	Integer id = (Integer) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_ID);
 
-	// build the form url	
-	PortletURL formAct = renderResponse.createActionURL();
-    formAct.setParameter(AdmintoolsConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
-    formAct.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE);
-    formAct.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	// build the url for the parameters form
+   	Map formActPars = new HashMap();
+   	formActPars.put(AdmintoolsConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+   	formActPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE);
+   	formActPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    String formAct = urlBuilder.getUrl(request, formActPars);
     
-    String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
-    
+    String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);  
 %>
+
 
 <form action="<%= formAct.toString() %>" method="post" id='execRolesForm' name='execRolesForm'>
 
@@ -41,23 +43,29 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('execRolesForm').submit()"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.execButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/exec.png")%>' alt='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.execButt" />' /> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.execButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/exec.png")%>' 
+      			     alt='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.execButt" />' /> 
 			</a>
 		</td>
 		<%
 			if (modality == null || !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) {
 				// build the back url (the actor parameter must be passed because the module take it from the request
     			// not from the session)
-    			PortletURL backUrl = renderResponse.createActionURL();
-				backUrl.setParameter("PAGE", "BIObjectsPage");
-				backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-				backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+				
+				Map backUrlPars = new HashMap();
+			    backUrlPars.put("PAGE", "BIObjectsPage");
+			    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+			    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+
 				%>
 				<td class='header-button-column-portlet-section'>
-					<a href='<%= backUrl.toString() %>'> 
+					<a href='<%= backUrl %>'> 
 						<img class='header-button-image-portlet-section' 
 							title='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.backButt" />' 
-							src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+							src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
 							alt='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.backButt" />' />
 					</a>
 				</td>

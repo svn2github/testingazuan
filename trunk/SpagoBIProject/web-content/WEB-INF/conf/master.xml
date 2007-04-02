@@ -17,8 +17,19 @@
 	<CONFIGURATOR path="/WEB-INF/conf/validators.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/validation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/transcoder.xml" />
-	<!--CONFIGURATOR path="/WEB-INF/conf/profileattributes.xml" /-->
+	<CONFIGURATOR path="/WEB-INF/conf/upload.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/spagobi/spagobi_components.xml" />
+	<!-- START WEB APPLICATION -->
+	<!--
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_security.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_authorizations.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_menu.xml" />
+	-->
+	<!-- END WEB APPLICATION -->
 	<!-- START DASHBOARD -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />
 	<!-- END DASHBOARD -->

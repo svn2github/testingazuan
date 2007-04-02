@@ -27,23 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * The interface for the tree html generator.
- * 
- * @author sulis
  */
 public interface ITreeHtmlGenerator {
-	/**
-	 * Make tree method.
-	 * @see it.eng.spagobi.presentation.treehtmlgenerators.
-	 * AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
-	 * 
-	 */
-//	public StringBuffer makeTree(SourceBean dataTree, HttpServletRequest httpRequest);
-	/**
-	 * Make tree method for accessible trees.
-	 * @see it.eng.spagobi.presentation.treehtmlgenerators.
-	 * AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
-	 */
-//	public StringBuffer makeAccessibleTree(SourceBean dataTree, HttpServletRequest httpRequest);
+
 	
 	/**
 	 * Make tree method.

@@ -192,4 +192,10 @@ public class SpagoBIConstants {
 	public static final String MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING = "MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING";
 	
 	public static final String USER_PROFILE_FOR_TEST = "USER_PROFILE_FOR_TEST";
+	
+	public static final String AUTHENTICATION_FAILED_MESSAGE = "AUTHENTICATION_FAILED_MESSAGE";
+	
+	public static final String MESSAGE_BUILDER = "MESSAGE_BUILDER";
+	
+	public static final String URL_BUILDER = "URL_BUILDER";
 }

@@ -9,6 +9,8 @@
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
                  it.eng.spagobi.bo.Domain,
                  java.util.List" %>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 
 <%
 	// control if the portlet act with single object modality.
@@ -23,14 +25,16 @@
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
     String title = (String)moduleResponse.getAttribute("title");
     String displayTitleBar = (String)moduleResponse.getAttribute("displayTitleBar");
-    String movie = renderRequest.getContextPath();
+    String movie = ChannelUtilities.getSpagoBIContextName(request);
+    //String movie = renderRequest.getContextPath();
     String relMovie = (String)moduleResponse.getAttribute("movie");
     if(relMovie.startsWith("/"))
     	movie = movie + relMovie;
     else movie = movie + "/" + relMovie;
 	String width = (String)moduleResponse.getAttribute("width");
 	String height = (String)moduleResponse.getAttribute("height");
-	String dataurl = renderRequest.getContextPath();
+	String dataurl = ChannelUtilities.getSpagoBIContextName(request);
+	//String dataurl = renderRequest.getContextPath();
 	String dataurlRel = (String)moduleResponse.getAttribute("dataurl");
 	if(dataurlRel.startsWith("/"))
 		dataurl = dataurl + dataurlRel;
@@ -62,17 +66,12 @@
     // append to the calling url the dataurl	
 	movie += "&dataurl=" + dataurl;
 	
-    // OLD CODE
-	//dataurl = dataurl.replaceAll("---", "&");
-	//movie += "?paramHeight="+height+"&paramWidth="+width; 
-	//movie += "&" + dataurl;
-	
 	// build the back link
-   	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "BIObjectsPage");
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-	
+	Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "BIObjectsPage");
+    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 
 
@@ -80,28 +79,31 @@
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR WITH BACK BUTTON
 	if(!isSingleObjExec) {
 %>
-		<table class='header-table-portlet-section'>
+
+
+<table class='header-table-portlet-section'>
 			<tr class='header-row-portlet-section'>
     			<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
            			<%=title%>
        			</td>
        			<td class='header-empty-column-portlet-section'>&nbsp;</td>
        			<td class='header-button-column-portlet-section'>
-           			<a href='<%= backUrl.toString() %>'>
+           			<a href='<%=backUrl%>'>
                  		<img title='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' 
                       		 class='header-button-image-portlet-section'
-                      		 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+                      		 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
                       		 alt='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' />
            			</a>
        			</td>
 		   		<% if (!possibleStateChanges.isEmpty()) {
-    	   				PortletURL formUrl = renderResponse.createActionURL();
-  		    			formUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-  		   				formUrl.setParameter(SpagoBIConstants.ACTOR,actor );
-		   				formUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
-						formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			   			Map formUrlPars = new HashMap();
+			   			formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			   			formUrlPars.put(SpagoBIConstants.ACTOR, actor);
+			   			formUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
+			   			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			   		    String formUrl = urlBuilder.getUrl(request, formUrlPars);
     			%>
-       			<form method='POST' action='<%= formUrl.toString() %>' id='changeStateForm'  name='changeStateForm'>
+       			<form method='POST' action='<%=formUrl%>' id='changeStateForm'  name='changeStateForm'>
 	       		<td class='header-select-column-portlet-section'>
       				<select class='portlet-form-field' name="newState">
       				<% 
@@ -114,7 +116,10 @@
       				</select>
       			</td>
       			<td class='header-select-column-portlet-section'>
-      				<input type='image' class='header-button-image-portlet-section' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />'/> 
+      				<input type='image' class='header-button-image-portlet-section' 
+      				       src='<%=urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
+      				       title='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />' 
+      				       alt='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />'/> 
       			</td>
         		</form>
        			<% } %>

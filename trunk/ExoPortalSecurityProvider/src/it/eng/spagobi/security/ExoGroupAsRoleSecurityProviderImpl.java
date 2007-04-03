@@ -22,7 +22,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.bo.Role;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -140,9 +142,20 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 		return roles;
 	}
 
-
+	/**
+	 * Get the names of all the profile attributes defined
+	 * @return a list containig the names of all the profile attributes defined
+	 */
 	public List getAllProfileAttributesNames() {
-		List toReturn = new ArrayList();;
+		List toReturn = null;
+		try {
+			toReturn = SecurityProviderUtilities.getAllProfileAtributesNames();
+		} catch (EMFInternalError e) {
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		               			   "getAllProfileAttributesNames()",
+		               			   "Error while retrieving the list of all profile attributes names", e);
+			return new ArrayList();
+		}
 		return toReturn;
 	}
 

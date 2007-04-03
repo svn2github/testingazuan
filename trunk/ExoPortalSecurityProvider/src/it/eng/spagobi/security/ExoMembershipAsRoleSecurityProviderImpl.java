@@ -24,6 +24,7 @@ package it.eng.spagobi.security;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.bo.Role;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -180,15 +181,18 @@ public class ExoMembershipAsRoleSecurityProviderImpl implements IPortalSecurityP
 		return roles;
 	}
 	
+	/**
+	 * Get the names of all the profile attributes defined
+	 * @return a list containig the names of all the profile attributes defined
+	 */
 	public List getAllProfileAttributesNames() {
 		List toReturn = null;
 		try {
 			toReturn = SecurityProviderUtilities.getAllProfileAtributesNames();
 		} catch (EMFInternalError e) {
-			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
-		               this.getClass().getName(),
-		               "getAllProfileAttributesNames()",
-		               "Error retrieving the list of all profile attributes names", e);
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		               			   "getAllProfileAttributesNames()",
+		               			   "Error while retrieving the list of all profile attributes names", e);
 			return new ArrayList();
 		}
 		return toReturn;

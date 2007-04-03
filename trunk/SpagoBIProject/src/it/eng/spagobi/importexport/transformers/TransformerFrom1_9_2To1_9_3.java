@@ -8,21 +8,16 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-
-import org.apache.jackrabbit.util.Base64;
 
 import sun.misc.BASE64Encoder;
 

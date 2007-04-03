@@ -21,13 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model;
 
-import it.eng.qbe.datasource.HibernateDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.utility.StringUtils;
-import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.IGroupByClause;
 import it.eng.qbe.wizard.IOrderByClause;
@@ -38,10 +36,7 @@ import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereClause;
 import it.eng.qbe.wizard.IWhereField;
 import it.eng.qbe.wizard.OrderByFieldSourceBeanImpl;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -428,7 +423,7 @@ public class HQLStatement extends BasicStatement {
 			
 			int pagesNumber = 1;
 			if(pageSize > 0) {
-				pagesNumber = (resultNumber / pageSize) + ( ((resultNumber % pageSize) != 0)? 1: 0);
+				pagesNumber = (resultNumber.intValue() / pageSize) + ( ((resultNumber.intValue() % pageSize) != 0)? 1: 0);
 			}
 			
 			boolean hasNextPage = false;

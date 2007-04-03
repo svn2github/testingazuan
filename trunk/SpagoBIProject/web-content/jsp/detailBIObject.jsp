@@ -622,7 +622,7 @@ function checkFormVisibility(docType) {
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.deleteVersionConfirm", "messages")+"\", \""+eraseVerUrlStr+"\")' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.eraseLink", "messages") + "</a></td>");
 		      		        }
 		      		        if (subReports == null || subReports.size() == 0) {
-		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + PortletUtilities.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
+		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + msgBuilder.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
 		      		        } else {
 		      		        	String downloadAlsoLinkedTemplateUrl = renderRequest.getContextPath() + "/ContentRepositoryServlet?operation=downloadAll&fileName=template.zip";
 		      		        	downloadAlsoLinkedTemplateUrl += "&jcrPath=" + pathTemp + "&templateFileName=" + tempVer.getNameFileTemplate();
@@ -634,9 +634,9 @@ function checkFormVisibility(docType) {
 		      		        		String templateFileName = aSubRptObj.getCurrentTemplateVersion().getNameFileTemplate();
 		      		        		downloadAlsoLinkedTemplateUrl += "&jcrPath=" + templateSubRptPath + "&templateFileName=" + templateFileName;
 		      		        	}
-		      		        	String downloadAlsoLinkedTemplateMsg = PortletUtilities.getMessage("SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages");
+		      		        	String downloadAlsoLinkedTemplateMsg = msgBuilder.getMessage("SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages");
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:downloadAlsoLinkedTemplatesConfirm(\"" + downloadAlsoLinkedTemplateMsg + "\",\"" + downloadAlsoLinkedTemplateUrl + "\", \"" + downl + "\")' style='font-size:9px;' >" 
-		      		        			+ PortletUtilities.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages") 
+		      		        			+ msgBuilder.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages") 
 		      		        			+ "</a></td>");
 		      		        }
 		      		        

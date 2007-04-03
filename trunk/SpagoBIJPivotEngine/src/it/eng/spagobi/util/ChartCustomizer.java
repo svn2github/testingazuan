@@ -15,37 +15,6 @@ public class ChartCustomizer {
 		
 		chart.setChartHeight(analysis.getChartHeight());
 		chart.setChartWidth(analysis.getChartWidth());
-				
-		// use persisted chart size is set to true, set chart size from restored
-		// values.
-//		if (analysis.isUseChartSize()) {
-//			chart.setChartHeight(analysis.getChartHeight());
-//			chart.setChartWidth(analysis.getChartWidth());
-//
-//			// otherwise set chart size based on screen size.
-//		} else {
-//
-//			// set chart height and width as per client window height and width.
-//			if (session.getAttribute("clientWindowWidth") != null) {
-//				chart.setChartWidth(Integer.parseInt(session.getAttribute(
-//						"clientWindowWidth").toString()) - 250);
-//			}
-//
-//			if (session.getAttribute("clientWindowHeight") != null) {
-//				chart.setChartHeight(Integer.parseInt(session.getAttribute(
-//						"clientWindowHeight").toString()) / 2 + 150);
-//			}
-//
-//		}
-
-		// set color palette
-		// List palette = (List) projectContext.getProject().getColorPalette(
-		// projectContext.getProject().getDefaultPaletteName());
-		// chart.setColorPalette(palette);
-
-		// chart.setShowPareto(analysis.getShowPareto());
-		// chart.setForegroundAlpha(analysis.getForegroundAlpha());
-
 		chart.setChartTitle(analysis.getChartTitle());
 		chart.setChartType(analysis.getChartType());
 		chart.setFontName(analysis.getFontName());
@@ -85,8 +54,6 @@ public class ChartCustomizer {
 
 		chart.setDrillThroughEnabled(analysis.isDrillThroughEnabled());
 		chart.setTickLabelRotate(analysis.getTickLabelRotate());
-
-		// chart.setUseChartSize(analysis.isUseChartSize());
 
 		// set chart visible status
 		chart.setVisible(analysis.isShowChart());

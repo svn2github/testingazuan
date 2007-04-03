@@ -5,10 +5,46 @@
  */
 package it.eng.spagobi.util;
 
-/**
- * @author Gioia
- */
-public class ParameterSetter {
+import it.eng.spagobi.utilities.ParametersDecoder;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.dom4j.Node;
+
+
+public class ParameterUtilities {
+	
+	
+	public static String substituteQueryParameters(String queryStr, List parameters, HttpServletRequest request) {
+		String newQuery = queryStr;
+		if (parameters != null && parameters.size() > 0) {
+	    	for (int i = 0; i < parameters.size(); i++) {
+	    		//update the query if there is more than one parameter (else only the last is correctly settled)
+	    		if(i>0){
+	    			queryStr = newQuery;
+	    		}
+	    		Node parameter = (Node) parameters.get(i);
+	    		String name = "";
+	    		String as = "";
+	    		if (parameter != null) {
+	    			name = parameter.valueOf("@name");
+	    			as = parameter.valueOf("@as");
+	    		}
+	    		String parameterValue = request.getParameter(name);
+	    		if((parameterValue==null) || parameterValue.trim().equals("") ){
+	    			continue;
+	    		}
+	    		String decodedParameterValue = parameterValue;
+	    		ParametersDecoder decoder = new ParametersDecoder();
+	    		if(decoder.isMultiValues(parameterValue)) {
+	    			decodedParameterValue = (String)decoder.decode(parameterValue).get(0);
+	    		}
+				newQuery = ParameterUtilities.setParameters(queryStr, as, parameterValue);				
+	    	}
+	    }		
+	    return newQuery;
+	}
+	
+	
 	public static String setParameters(String query, String pname, String pvalue) {
 		String newQuery = query;
 		// substitute the mondrian parameter sintax		

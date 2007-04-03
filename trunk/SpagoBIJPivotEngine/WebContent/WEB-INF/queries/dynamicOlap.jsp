@@ -8,17 +8,12 @@
 <%@ page session="true" 
          contentType="text/html; charset=UTF-8" 
 		 import="org.dom4j.Document,
-				 org.dom4j.Node,
-				 java.io.InputStreamReader,
+				 org.dom4j.Node,java.io.InputStreamReader,
 				 java.util.List,
 				 com.thoughtworks.xstream.XStream,
 				 it.eng.spagobi.bean.AnalysisBean,
-				 it.eng.spagobi.utilities.SpagoBIAccessUtils,
-				 it.eng.spagobi.util.ParameterSetter,
-				 it.eng.spagobi.bean.SaveAnalysisBean,
-				 com.tonbeller.wcf.form.FormComponent,
-				 java.io.InputStream,
-				 mondrian.olap.*" %>
+				 it.eng.spagobi.utilities.SpagoBIAccessUtils,it.eng.spagobi.util.ParameterUtilities,it.eng.spagobi.bean.SaveAnalysisBean,com.tonbeller.wcf.form.FormComponent,
+				 java.io.InputStream,mondrian.olap.*" %>
 <%@page import="sun.misc.BASE64Decoder"%>
 <%@page import="java.util.Map"%>
 <%@page import="it.eng.spagobi.utilities.ParametersDecoder"%>
@@ -34,43 +29,6 @@
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-
-<%! 
-private String substituteQueryParameters(String queryStr, List parameters, HttpServletRequest request) {
-	
-	
-	String newQuery = queryStr;
-	if (parameters != null && parameters.size() > 0) {
-    	for (int i = 0; i < parameters.size(); i++) {
-    		//update the query if there is more than one parameter (else only the last is correctly settled)
-    		if(i>0){
-    			queryStr = newQuery;
-    		}
-    		Node parameter = (Node) parameters.get(i);
-    		String name = "";
-    		String as = "";
-    		if (parameter != null) {
-    			name = parameter.valueOf("@name");
-    			as = parameter.valueOf("@as");
-    		}
-    		String parameterValue = request.getParameter(name);
-    		if((parameterValue==null) || parameterValue.trim().equals("") ){
-    			continue;
-    		}
-    		
-    		String decodedParameterValue = parameterValue;
-    		ParametersDecoder decoder = new ParametersDecoder();
-    		if(decoder.isMultiValues(parameterValue)) {
-    			decodedParameterValue = (String)decoder.decode(parameterValue).get(0);
-    		}
-    		    		
-			newQuery = ParameterSetter.setParameters(queryStr, as, parameterValue);				
-    	}
-    }		
-    return newQuery;
-}
-%>
-
 
 
 <%
@@ -155,7 +113,7 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 		    String iniCont = connectionDef.valueOf("@initialContext");
 		    String resName = connectionDef.valueOf("@resourceName");
 		    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+reference+";";
-		    query = substituteQueryParameters(query, parameters, request);
+		    query = ParameterUtilities.substituteQueryParameters(query, parameters, request);
 	    %>
 		<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 			<%=query%>
@@ -167,7 +125,7 @@ private String substituteQueryParameters(String queryStr, List parameters, HttpS
 			String usr = connectionDef.valueOf("@user");
 			String pwd = connectionDef.valueOf("@password");
 		    String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+reference+";";
-		    query = substituteQueryParameters(query, parameters, request);
+		    query = ParameterUtilities.substituteQueryParameters(query, parameters, request);
 			%>
 		    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=reference%>" >
 				<%=query%>

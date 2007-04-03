@@ -26,6 +26,7 @@
 <%@ page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
+<%@ page import="it.eng.spagobi.bo.Subreport"%>
 
 
 <%
@@ -585,6 +586,9 @@ function checkFormVisibility(docType) {
 						Object objVer = iterVers.next();
 						reverseVersions.add(0, objVer);
 					}
+					// loads subReports id, if any
+					List subReports = DAOFactory.getSubreportDAO().loadSubreportsByMasterRptId(obj.getId());
+					
 					Iterator iterTemp = reverseVersions.iterator();
 		      		while(iterTemp.hasNext()) {
 		      			TemplateVersion tempVer = (TemplateVersion)iterTemp.next();
@@ -617,7 +621,24 @@ function checkFormVisibility(docType) {
 		      		        } else {
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.deleteVersionConfirm", "messages")+"\", \""+eraseVerUrlStr+"\")' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.eraseLink", "messages") + "</a></td>");
 		      		        }
-		      		        out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" +msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
+		      		        if (subReports == null || subReports.size() == 0) {
+		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + PortletUtilities.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
+		      		        } else {
+		      		        	String downloadAlsoLinkedTemplateUrl = renderRequest.getContextPath() + "/ContentRepositoryServlet?operation=downloadAll&fileName=template.zip";
+		      		        	downloadAlsoLinkedTemplateUrl += "&jcrPath=" + pathTemp + "&templateFileName=" + tempVer.getNameFileTemplate();
+		      		        	Iterator subRptIt = subReports.iterator();
+		      		        	while (subRptIt.hasNext()) {
+		      		        		Subreport subRpt = (Subreport) subRptIt.next();
+		      		        		BIObject aSubRptObj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(subRpt.getSub_rpt_id());
+		      		        		String templateSubRptPath = aSubRptObj.getPath() + "/template";
+		      		        		String templateFileName = aSubRptObj.getCurrentTemplateVersion().getNameFileTemplate();
+		      		        		downloadAlsoLinkedTemplateUrl += "&jcrPath=" + templateSubRptPath + "&templateFileName=" + templateFileName;
+		      		        	}
+		      		        	String downloadAlsoLinkedTemplateMsg = PortletUtilities.getMessage("SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages");
+		      		        	out.print("<td class='portlet-font' ><a href='javascript:downloadAlsoLinkedTemplatesConfirm(\"" + downloadAlsoLinkedTemplateMsg + "\",\"" + downloadAlsoLinkedTemplateUrl + "\", \"" + downl + "\")' style='font-size:9px;' >" 
+		      		        			+ PortletUtilities.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages") 
+		      		        			+ "</a></td>");
+		      		        }
 		      		        
 		      		        if(numTemp > 1) {
 		      		        	out.print("<td class='portlet-font'><input type='radio' value='"+tempVer.getVersionName()+" 'name='versionTemplate' onchange='versionTemplateSelected()' "+checkStr+" /></td></tr>");
@@ -888,6 +909,14 @@ function checkDocumentType(message) {
 	} else {
 		alert('<spagobi:message key = "SBIDev.docConf.docDet.noPermissibleLinks" />');
 	}
+}
+
+function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
+	if (confirm(message)){
+		location.href = urlYes;
+    } else {
+    	location.href = urlNo;
+    }
 }
 </script>
 

@@ -37,11 +37,18 @@ import it.eng.spagobi.utilities.JCRUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -215,6 +222,30 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
 	 		 		biObjCMSDAO.saveTemplate(content.getBytes(), jcrPath, templateName);
 	 		 		return;
+	 			}
+	 			if (operation.equalsIgnoreCase("downloadAll")) {
+	 				String[] paths = request.getParameterValues("jcrPath");
+	 				String[] templateFileNames = request.getParameterValues("templateFileName");
+	 				OutputStream out = response.getOutputStream();
+	 				ZipOutputStream zipOut = new ZipOutputStream(out); 
+	 				for (int i = 0; i < paths.length; i++) {
+	 					String jcrPath = paths[i];
+	 					String templateFileName = templateFileNames[i];
+	 					InputStream jcrContentStream = JCRUtilities.getContentByPath(jcrPath);
+	 					byte[] jcrContent = GeneralUtilities.getByteArrayFromInputStream(jcrContentStream);
+	 					ZipEntry entry = new ZipEntry(templateFileName);
+	 					zipOut.putNextEntry(entry);
+	 					zipOut.write(jcrContent);
+	 					jcrContentStream.close();
+	 				}
+		 			String fileName = request.getParameter("fileName");
+		 			if (fileName == null) {
+		 				fileName = "fileRepository.zip";
+		 			}
+		 			response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\";");
+		 			zipOut.flush();
+		 			zipOut.close();
+		 			out.flush();
 	 			}
 	 		// part for download of the template version
 	 		// TODO manage with the operation parameter logic

@@ -338,5 +338,17 @@ public class PortletUtilities {
 		 	 return defaultLang;
 	    } 
 	 
-	 
+		 
+		 
+		public static boolean isMultipartRequest() {
+			boolean ismultipart = false;
+			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
+			if (portletRequest instanceof ActionRequest) {
+				ActionRequest actionRequest = (ActionRequest) portletRequest;
+				if (PortletFileUpload.isMultipartContent(actionRequest)) {
+					ismultipart = true;
+				}
+			}
+			return ismultipart;
+		}
 }

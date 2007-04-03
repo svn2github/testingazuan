@@ -55,9 +55,11 @@ import it.eng.spagobi.services.commons.AbstractBasicCheckListModule;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SessionMonitor;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,6 +68,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
+
 import org.apache.commons.validator.GenericValidator;
 
 /**
@@ -108,8 +111,9 @@ public class DetailBIObjectModule extends AbstractModule {
 		errorHandler = getErrorHandler();
 		
 		if(ChannelUtilities.isPortletRunning()){
-			request = ChannelUtilities.getSpagoRequestFromMultipart();
-			fillRequestContainer(request, errorHandler);
+			if(PortletUtilities.isMultipartRequest()) {
+				request = ChannelUtilities.getSpagoRequestFromMultipart();
+			}
 		}
 		
 		String modality = (String) ChannelUtilities.getPreferenceValue(request, BIObjectsModule.MODALITY, "");
@@ -247,7 +251,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	}	
 
 	private void startDependenciesLookupHandler(SourceBean request, String message, SourceBean response) throws Exception {
-		//fillRequestContainer(request, errorHandler);
+		fillRequestContainer(request, errorHandler);
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		BIObject obj = recoverBIObjectDetails(request, message);
 		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
@@ -415,7 +419,7 @@ public class DetailBIObjectModule extends AbstractModule {
 
 		try {
 			// as the request is a multipart request, the fillRequestContainer popolates correctly the service request
-			//fillRequestContainer(request, errorHandler);
+			fillRequestContainer(request, errorHandler);
 			BIObject obj = recoverBIObjectDetails(request, mod);
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			String selectedObjParIdStr = null;

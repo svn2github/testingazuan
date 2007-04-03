@@ -2,6 +2,9 @@
 
 <%@ page import="javax.portlet.PortletURL,
                  it.eng.spago.navigation.LightNavigationManager" %>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Iterator"%>
 
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExoProfileAttributeManagerModule"); 
@@ -23,9 +26,7 @@
    	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 %>
 		
-<%@page import="java.util.Map"%>
-<%@page import="java.util.Set"%>
-<%@page import="java.util.Iterator"%>
+
 
 <form method='POST' action='<%= saveUrl.toString() %>' id='attributesForm' name='attributesForm'>
 
@@ -60,43 +61,63 @@
 
 	<div class='div_background_no_img' style='padding:5px;'>
      
-    <table style="margin:5px;">
-    	<tr>
-    		<td class='portlet-section-header'><spagobi:message key = "profileattr.username" /></td>
-    		<td class='portlet-section-header'><spagobi:message key = "profileattr.firstname" /></td>
-    		<td class='portlet-section-header'><spagobi:message key = "profileattr.lastname" /></td>
-    		<td class='portlet-section-header'><spagobi:message key = "profileattr.email" /></td>
-    	</tr>
-    	<tr>
-    	  <td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=username%></td>
-    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=firstname%></td>
-    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=lastname%></td>
-    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=email%></td>    	
-      </tr>
-    </table> 
+	    <table style="margin:5px;">
+	    	<tr>
+	    		<td class='portlet-section-header'><spagobi:message key = "profileattr.username" /></td>
+	    		<td class='portlet-section-header'><spagobi:message key = "profileattr.firstname" /></td>
+	    		<td class='portlet-section-header'><spagobi:message key = "profileattr.lastname" /></td>
+	    		<td class='portlet-section-header'><spagobi:message key = "profileattr.email" /></td>
+	    	</tr>
+	    	<tr>
+	    	  <td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=username%></td>
+	    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=firstname%></td>
+	    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=lastname%></td>
+	    		<td style="border-bottom: 1px solid #cccccc;background-color:#fafafa;"><%=email%></td>    	
+	      </tr>
+	    </table> 
      
-    <br/>
+     
+    	<br/>
     
-    <div class="div_detail_area_forms" style="padding:10px;">
-	  <table>
-	  	<%
-	  		while(iterAttr.hasNext()) {
-	  			String key = (String)iterAttr.next();
-	  			String value = (String)attributes.get(key);
-	   	%>
-			<tr>
-	   			<td width="250">
-	   				<span class='portlet-form-field-label'>
-						<%=key%>
-					</span>
-	   			</td>
-	   			<td>
-	   				<input class='portlet-form-input-field' type="text" name="<%=attributeKeys.get(key)%>" 
-			      	       size="40" value="<%=value%>" >
-	   			</td>  
-	   		</tr>
-	    <%  } %>
-	  </table>  
+    
+    
+		<div class="div_detail_area_forms" style="padding:10px;">    
+	    <%
+	    	if(attributes.isEmpty()) {
+	    %>
+	    	<table>
+	    		<tr>
+	    			<td>
+	    				<span style='font-size:11px;'>
+	    				<spagobi:message key = "noAttributeToSet"  bundle="it.eng.spagobi.exoaddins.component_exoprofman_messages" />
+	    				</span>
+	    			</td>
+	    		</tr>
+	    	</table>
+	    <%  } else { %>
+    
+		  <table>
+		  	<%
+		  		while(iterAttr.hasNext()) {
+		  			String key = (String)iterAttr.next();
+		  			String value = (String)attributes.get(key);
+		   	%>
+				<tr>
+		   			<td width="250">
+		   				<span class='portlet-form-field-label'>
+							<%=key%>
+						</span>
+		   			</td>
+		   			<td>
+		   				<input class='portlet-form-input-field' type="text" name="<%=attributeKeys.get(key)%>" 
+				      	       size="40" value="<%=value%>" >
+		   			</td>  
+		   		</tr>
+		    <%  } %>
+		  </table>  
+
+		<%  } %>
+		
 		</div>
 
 	</div>

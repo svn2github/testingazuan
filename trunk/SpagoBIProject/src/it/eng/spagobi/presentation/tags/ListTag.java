@@ -41,11 +41,13 @@ import it.eng.spagobi.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -74,7 +76,7 @@ public class ListTag extends TagSupport
 	protected Vector _columns = null;
     protected String labelLinkSaltoPagina;
     protected String _filter = null;
-    private HttpServletRequest httpRequest = null;
+    protected HttpServletRequest httpRequest = null;
     protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
     

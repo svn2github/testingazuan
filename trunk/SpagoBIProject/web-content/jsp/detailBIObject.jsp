@@ -42,11 +42,13 @@
 	
 	// CREATE PAGE URLs
 	Map formUrlPars = new HashMap();
-	//formUrlPars.put("PAGE", "detailBIObjectPage");
-	//if(modality != null){
-	//	formUrlPars.put("MESSAGEDET", modality);
-   	//}
-	//formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	if(ChannelUtilities.isPortletRunning()) {
+		formUrlPars.put("PAGE", "detailBIObjectPage");
+		if(modality != null){
+			formUrlPars.put("MESSAGEDET", modality);
+   		}
+		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	}
     String formUrl = urlBuilder.getUrl(request, formUrlPars);
 	
     Map backUrlPars = new HashMap();
@@ -124,17 +126,11 @@ function checkFormVisibility(docType) {
 
 <form method='POST' action='<%=formUrl%>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
 	
-	<input type='hidden' name='PAGE' value='detailBIObjectPage' />
-	<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
-    <%--
-    <%
-		if(modality != null){
-	%>	
-		<input type='hidden' name='MESSAGEDET' value='<%=modality%>' />
-   	<%
-   		}
-    %>
-	--%>
+	<% if(ChannelUtilities.isWebRunning()) { %>
+		<input type='hidden' name='PAGE' value='detailBIObjectPage' />
+		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
+	<% } %>
+
 
 
 <table class='header-table-portlet-section'>

@@ -49,6 +49,7 @@ import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
@@ -380,12 +381,13 @@ public class JPivotDriver implements IEngineDriver {
 	protected Map addDataAccessParameter(IEngUserProfile profile, String roleName, Map pars, byte[] templateBy) {
 		try{
 			// create list of data access functionalities
-			List dataAccessFunct = new ArrayList();
-			// get the user functionalities associated to the execution role
-			Collection profFuncts = profile.getFunctionalitiesByRole(roleName);
+			List dataAccessTokens = new ArrayList();
 			// value of the parameter to send to the engine
 			String valueAccessPar = "";
+			// get the user functionalities associated to the execution role
+			Collection profFuncts = profile.getFunctionalitiesByRole(roleName);
 				
+			
 			// trasnform template bytes into a string
 			String templateStr = new String(templateBy);
 			// read the template as a sourcebena
@@ -396,44 +398,93 @@ public class JPivotDriver implements IEngineDriver {
 			Iterator iterGrantDims = grantDims.iterator();
 			while(iterGrantDims.hasNext()) {
 				SourceBean dimSB = (SourceBean)iterGrantDims.next();
-				// get the dimesion name
-				String dimName = (String)dimSB.getAttribute("name");
-				// for each funtionality check if it is a data access functionality and 
-				// if it is related to the template dimension
-				Iterator iterProfFuncts = profFuncts.iterator();
-				while(iterProfFuncts.hasNext()){
-					Object objFunct = iterProfFuncts.next();
-					if(objFunct instanceof String) {
-						String strFunct = (String)objFunct;
-						if(strFunct.startsWith("data_access:")) {
-							strFunct = strFunct.substring(12);
-							if(strFunct.startsWith("/"+dimName)){
-								dataAccessFunct.add(strFunct);
-							}
-						}
-					}
+				// get the grantSource of the dimension
+				String grantSource = (String)dimSB.getAttribute("grantSource");
+				// based on grant source fill the data access token
+				if( (grantSource!=null) && grantSource.equalsIgnoreCase("ProfileFunctionalities") ) {
+					addToDataAccessMapTokens(dimSB, profFuncts, dataAccessTokens);
+				}
+				if( (grantSource!=null) && grantSource.equalsIgnoreCase("ProfileAttributes") ) {
+					addToDataAccessMapTokens(dimSB, profile, dataAccessTokens); 
 				}
 			}
-			// transform each data access functionality allowed into the right
+			
+			
+			// transform each data access token allowed into the right
 			// sintax for jpivot engine and add them into the parameter value to send
-			Iterator iterdaf = dataAccessFunct.iterator();
-		    while(iterdaf.hasNext()) {
-		    	String accFunct = (String)iterdaf.next();
-		    	accFunct = accFunct.replaceFirst("/", "[");
-		    	if(accFunct.indexOf("/")==-1){
+			Iterator iterdat = dataAccessTokens.iterator();
+		    while(iterdat.hasNext()) {
+		    	String accToken = (String)iterdat.next();
+		    	accToken = accToken.replaceFirst("/", "[");
+		    	if(accToken.indexOf("/")==-1){
 		    		continue; // means that the path has only one element (only the dimension name)
 		    	}
-		    	accFunct = accFunct.replaceAll("/", "].[");
-		    	accFunct = accFunct + "]";
-		    	if(iterdaf.hasNext())
-		    		valueAccessPar = valueAccessPar + accFunct + ",";
-		    	else valueAccessPar = valueAccessPar + accFunct;
+		    	accToken = accToken.replaceAll("/", "].[");
+		    	accToken = accToken + "]";
+		    	if(iterdat.hasNext())
+		    		valueAccessPar = valueAccessPar + accToken + ",";
+		    	else valueAccessPar = valueAccessPar + accToken;
 		    }
 		    pars.put("dimension_access_rules", valueAccessPar);
 		} catch(Exception e) {
 			return pars;
 		}
 		return pars;
+	}
+	
+	
+	private void addToDataAccessMapTokens(SourceBean dimSB, Collection profileFuncts, List daTokens ) {
+		// get the dimension name
+		String dimName = (String)dimSB.getAttribute("name");
+		// for each funtionality check if it is a data access functionality and 
+		// if it is related to the template dimension
+		Iterator iterProfFuncts = profileFuncts.iterator();
+		while(iterProfFuncts.hasNext()){
+			Object objFunct = iterProfFuncts.next();
+			if(objFunct instanceof String) {
+				String strFunct = (String)objFunct;
+				if(strFunct.startsWith("data_access:")) {
+					strFunct = strFunct.substring(12);
+					if(strFunct.startsWith("/"+dimName)){
+						daTokens.add(strFunct);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	private void addToDataAccessMapTokens(SourceBean dimSB, IEngUserProfile profile, List daTokens ) {
+		try {
+			// get the profile attribute name
+			SourceBean attributeSB = (SourceBean)dimSB.getAttribute("ATTRIBUTE");
+			String paName = (String)attributeSB.getAttribute("name");
+			String paValueStr = "";
+	        // get the value from profile
+			Object paValueObj = profile.getUserAttribute(paName);
+			if(paValueObj!=null) {
+				if(paValueObj instanceof String) {
+					paValueStr = (String)paValueObj;
+				} else {
+					paValueStr = paValueObj.toString();
+				}
+			}
+			// split eventual multivalue
+			paValueStr = paValueStr.trim();
+			if(paValueStr.startsWith("{")) {
+				char separator = paValueStr.charAt(1);
+				paValueStr = paValueStr.substring(3, paValueStr.length()-2);
+				String[] values = paValueStr.split(String.valueOf(separator));
+				for(int i=0; i<values.length; i++) {
+					daTokens.add(values[i]);
+				}
+			} else {
+				daTokens.add(paValueStr);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "addToDataAccessMapTokens", "Error while adding data access token", e);
+		}
 	}
 	
          

@@ -22,20 +22,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.presentation.treehtmlgenerators;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.importexport.ImportExportConstants;
-import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.ChannelUtilities;
 
 import java.util.Iterator;
 import java.util.List;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -53,19 +50,16 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {	
 		httpRequest = httpReq;
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		portReq = PortletUtilities.getPortletRequest();
+		RequestContainer requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"component_impexp_messages");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
+		String nameTree = msgBuilder.getMessage(requestContainer, "tree.objectstree.name" ,"component_impexp_messages");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
 		htmlStream.append("		<td width='10px'>&nbsp;</td>");
@@ -107,7 +101,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 		
 		String nameLabel = folder.getName();
-		String name = PortletUtilities.getMessage(nameLabel, "messages");
+		String name = msgBuilder.getMessage(reqCont, nameLabel, "messages");
 		String path = folder.getPath();
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
@@ -117,8 +111,8 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu(event, \\'"+path+"\\')');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
+				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
 				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+path+"\\')');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
@@ -144,9 +138,9 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("		function menu(event, pathFather) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
-		String capSelect = PortletUtilities.getMessage("SBISet.importexport.selectall", "component_impexp_messages");
+		String capSelect = msgBuilder.getMessage(reqCont, "SBISet.importexport.selectall", "component_impexp_messages");
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:select(\\''+pathFather+'\\')\">"+capSelect+"</a></div>';\n");
-		String capDeselect = PortletUtilities.getMessage("SBISet.importexport.deselectall", "component_impexp_messages");
+		String capDeselect = msgBuilder.getMessage(reqCont, "SBISet.importexport.deselectall", "component_impexp_messages");
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:deselect(\\''+pathFather+'\\')\">"+capDeselect+"</a></div>';\n");
 		htmlStream.append("			showMenu(event, divM);\n");
 		htmlStream.append("		}\n");

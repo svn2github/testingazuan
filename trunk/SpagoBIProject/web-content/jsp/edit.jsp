@@ -9,8 +9,10 @@
 				 it.eng.spago.configuration.ConfigSingleton,
 				 it.eng.spagobi.utilities.PortletUtilities" %>
 
-
 <%@page import="java.util.Map"%>
+<%@page import="java.util.Arrays"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<div class='div_background_no_img' >
 <table width='100%' cellspacing='0' border='0'>		
 	<tr height='40'>
 		<th align='left'>&nbsp;&nbsp;<spagobi:message key="editConf.configuration"/></th>
@@ -53,32 +55,37 @@
     //}
 %>
 
+<div class="div_detail_area_forms">
 
 <form action="<%= formUrl.toString() %>" method="POST" > 
+
+<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO%>" value="true" />
+
 <table width="100%" cellspacing="0" border="0" >
   	<tr height='1'>
   		<td width="30px"><span>&nbsp;</span></td>
   		<td width="70px"><span>&nbsp;</span></td>
   		<td width="30px"><span>&nbsp;</span></td>
   		<td><span>&nbsp;</span></td>
-  	</tr>
-  	
+  	</tr>	
   	<%
   	javax.portlet.PortletRequest portReq = PortletUtilities.getPortletRequest();
   	javax.portlet.PortletPreferences prefs = portReq.getPreferences();
-  	Map prefMap = prefs.getMap();
-  	String prefPrefix = "PORTLET_PREF_";
-  	java.util.Enumeration names = prefs.getNames();
-	while (names.hasMoreElements()) {
-		String prefName = (String) names.nextElement();
-		//String prefValue = prefs.getValue(prefName, "");
+  	Map map = prefs.getMap();
+	String[] prefNames = new String[map.size()];
+	prefNames = (String[]) map.keySet().toArray(prefNames);
+	// order the preferences by name
+	Arrays.sort(prefNames);
+	String prefPrefix = "PORTLET_PREF_";
+  	for (int i = 0; i < prefNames.length; i++) {
+  		String prefName = prefNames[i];
 		String[] prefValues = prefs.getValues(prefName, null);
 		String prefValue = prefValues[0];
-		for (int i = 1; i < prefValues.length; i++) {
-			prefValue += "," + prefValues[i];
+		for (int j = 1; j < prefValues.length; j++) {
+			prefValue += "," + prefValues[j];
 		}
 		%>
-		<tr height='40'>
+		<tr height='30'>
       		<td>&nbsp;</td>
       		<td class='portlet-form-field-label' ><%=prefName%>:</td>
       		<td>&nbsp;</td>
@@ -87,22 +94,26 @@
       		</td>
    		</tr>
 		<%	
-	}
+  	}
 	%>
-    <tr height='10'>
-		<td colspan="4">&nbsp;</td>
-	</tr>
-	<tr height='40'>
+	
+	<tr height='30'>
 		<td>&nbsp;</td>
-		<td colspan="3">
-			<input type="submit" value="<spagobi:message key="editConf.save"/>"/>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>
+			<input type='image' name='save' id='save' value='true' class='header-button-image-portlet-section'
+				src='<%=urlBuilder.getResourceLink(request, "/img/save.png") %>'
+      				title='<spagobi:message key="editConf.save"/>' 
+      				alt='<spagobi:message key="editConf.save"/>'
+			/>
 		</td>
 	</tr>
 </table>
 </form>
-
+</div>
 <% } %>
-
+</div>
 
 
 <!-- ************************************************************* -->

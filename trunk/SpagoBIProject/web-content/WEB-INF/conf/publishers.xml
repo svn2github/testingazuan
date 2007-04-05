@@ -1075,6 +1075,13 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>  	
+	<PUBLISHER name="saveConfigurationLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="0" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>  
 
     <PUBLISHER name="loopbackAfterSubObjectDeletion">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">

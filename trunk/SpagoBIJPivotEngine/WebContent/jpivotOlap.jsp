@@ -113,8 +113,8 @@ if (message != null && !message.trim().equals("")) {
 		%>
 		<p>
 			<strong style="color:red">
-			<%=EngineMessageBundle.getMessage("save.subobject.ko", null)%><br>
-			<%=EngineMessageBundle.getMessage("save.subobject.ko.message", null)%><br>
+			<%=EngineMessageBundle.getMessage("save.subobject.ko", locale)%><br>
+			<%=EngineMessageBundle.getMessage("save.subobject.ko.message", locale)%><br>
 			<%=message.substring(5)%>
 			</strong>
 		<p>
@@ -123,7 +123,7 @@ if (message != null && !message.trim().equals("")) {
 		%>
 		<p>
 			<strong style="color:black">
-			<%=EngineMessageBundle.getMessage("save.subobject.ok", null)%>
+			<%=EngineMessageBundle.getMessage("save.subobject.ok", locale)%>
 			</strong>
 		<p>
 		<%

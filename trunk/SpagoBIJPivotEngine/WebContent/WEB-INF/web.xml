@@ -132,7 +132,7 @@ You must accept the terms of that agreement to use this software.
 
   <servlet>
     <servlet-name>JPivotServlet</servlet-name>
-    <servlet-class>it.eng.spagobi.engines.jpivot.JPivotServlet</servlet-class>
+    <servlet-class>it.eng.spagobi.jpivotaddins.engines.JPivotServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>

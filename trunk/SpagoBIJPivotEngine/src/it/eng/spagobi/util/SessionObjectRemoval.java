@@ -3,7 +3,7 @@
  * LICENSE: see LICENSE.html file
  * 
  */
-package it.eng.spagobi.util;
+package it.eng.spagobi.jpivotaddins.util;
 
 import javax.servlet.http.HttpSession;
 

@@ -3,9 +3,9 @@
  * LICENSE: see LICENSE.html file
  * 
  */
-package it.eng.spagobi.util;
+package it.eng.spagobi.jpivotaddins.util;
 
-import it.eng.spagobi.bean.AnalysisBean;
+import it.eng.spagobi.jpivotaddins.bean.AnalysisBean;
 
 import com.tonbeller.jpivot.chart.ChartComponent;
 

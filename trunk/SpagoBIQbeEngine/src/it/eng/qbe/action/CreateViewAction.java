@@ -4,6 +4,7 @@ package it.eng.qbe.action;
 import it.eng.qbe.export.Field;
 import it.eng.qbe.export.SQLFieldsReader;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.views.ViewBuilder;
 import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
@@ -87,11 +88,8 @@ public class CreateViewAction extends AbstractHttpAction {
 		getResponseContainer().setAttribute(Constants.HTTP_RESPONSE_FREEZED, Boolean.TRUE);
 		
 		if ((getDataMartWizard().getSelectClause() != null) && (getDataMartWizard().getSelectClause().getSelectFields().size() > 0)){
-			String query = getDataMartWizard().getExpertQueryDisplayed();
-			if (query  == null){
-				getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
-				query = getDataMartWizard().getExpertQueryDisplayed();
-			}
+			String query = getDataMartWizard().getFinalSqlQuery(getDataMartModel());
+			
 					
 			if (!(query.startsWith("select") || query.startsWith("SELECT"))){  
 						throw new Exception("It's not possible change database status with qbe exepert query");
@@ -101,6 +99,7 @@ public class CreateViewAction extends AbstractHttpAction {
 			Transaction tx = null;
 			Statement s  = null;
 			String thisGenarationTmpDir = null;
+			
 			try{
 				SessionFactory aSessionFactory = Utils.getSessionFactory(getDataMartModel(), ApplicationContainer.getInstance());
 				aSession = aSessionFactory.openSession();
@@ -113,43 +112,16 @@ public class CreateViewAction extends AbstractHttpAction {
 					return;
 				}else{
 				
-				s = sqlConnection.createStatement();
 				
-				String viewTemplateFileName =  qbeDataMartDir + System.getProperty("file.separator") + getDataMartModel().getPath() + System.getProperty("file.separator")+"view.template";
+				
+				String viewTemplateFileName =  qbeDataMartDir + System.getProperty("file.separator") + getDataMartModel().getPath() + 
+												System.getProperty("file.separator")+ "view.template";
 				File tplViewFile = new File(viewTemplateFileName);
 				
-				String createViewDDLString = "CREATE VIEW {0} AS {1}";
-				if (tplViewFile.exists()){
-					Logger.debug(this.getClass(), " Using file "+viewTemplateFileName + " as template for creating view");
-					StringBuffer aStringBuffer = new StringBuffer();
-					try {
-				        BufferedReader in = new BufferedReader(new FileReader(tplViewFile));
-				        String str;
-				        while ((str = in.readLine()) != null) {
-				            aStringBuffer.append(str);
-				        }
-				        in.close();
-				        createViewDDLString = aStringBuffer.toString();
-				    } catch (IOException e) {
-				    	e.printStackTrace();
-				    }
-				}else{
-					Logger.debug(this.getClass(), " Using standardTemplate String ");
-				}
 				
+				ViewBuilder viewBuilder = new ViewBuilder();
+				viewBuilder.buildView(viewName, query, sqlConnection, tplViewFile);
 				
-				
-				
-				Object[] pars = new Object[2];
-				pars[0] = viewName;
-				pars[1] = query;
-				
-				String sqlCreateView = MessageFormat.format(createViewDDLString,pars);
-				
-//				sqlBuffer.append("CREATE VIEW "+viewName+"  AS ");
-//				sqlBuffer.append(query);
-				
-				s.execute(sqlCreateView);
 				
 				Iterator it =  aSessionFactory.getAllClassMetadata().keySet().iterator();
 				String className = "";
@@ -175,19 +147,26 @@ public class CreateViewAction extends AbstractHttpAction {
 				
 				BufferedWriter bwHbm = new BufferedWriter(new FileWriter(destinationFoder+ Utils.asJavaClassIdentifier(viewName)+".hbm.xml"));
 				BufferedWriter bwJava = new BufferedWriter(new FileWriter(destinationFoder+ Utils.asJavaClassIdentifier(viewName)+"Id.java"));
+				BufferedWriter labelProps = new BufferedWriter(new FileWriter(thisGenarationTmpDir+ "label.properties"));
+				BufferedWriter qbeProps = new BufferedWriter(new FileWriter(thisGenarationTmpDir+ "qbe.properties"));
+				
 				
 				bwJava.write("package "+packageName+";\n");
 				bwJava.write("import java.util.Date;\n");
 				bwJava.write("import java.math.*;\n");
-				bwJava.write("import java.lang.*;\n");
-				
+				bwJava.write("import java.lang.*;\n");				
 				bwJava.write("public class "+ Utils.asJavaClassIdentifier(viewName) + "Id implements java.io.Serializable {\n");
+				
 				bwHbm.write("<?xml version=\"1.0\"?>");
 				bwHbm.write("<!DOCTYPE hibernate-mapping PUBLIC \"-//Hibernate/Hibernate Mapping DTD 3.0//EN\"\n");
 				bwHbm.write("\"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd\">\n");
 				bwHbm.write("<hibernate-mapping>\n");
 				bwHbm.write("<class name=\""+packageName+"."+Utils.asJavaClassIdentifier(viewName)+"\" table=\""+viewName+"\">\n");
 				bwHbm.write("  <composite-id name=\"id\" class=\""+packageName+"."+Utils.asJavaClassIdentifier(viewName)+"Id\">\n");
+				
+				labelProps.write("class." + packageName + "." + Utils.asJavaClassIdentifier(viewName) + "=" + Utils.asJavaClassIdentifier(viewName) + "\n\n");
+				qbeProps.write(packageName + "." + Utils.asJavaClassIdentifier(viewName) + ".type=view");
+				
 				it = getDataMartWizard().getSelectClause().getSelectFields().iterator();
 				ISelectField selField = null;
 				SQLFieldsReader sqlFieldsReader = new SQLFieldsReader(query, sqlConnection);
@@ -203,7 +182,7 @@ public class CreateViewAction extends AbstractHttpAction {
 					bwHbm.write("<column name=\""+fld.getName()+"\"/>\n");
 		            bwHbm.write("</key-property>\n");
 		            
-		            bwJava.write("private "+getJavaTypeForHibType(selField.getHibType()) + " " + javaFldName+";\n");
+		            bwJava.write("private "+getJavaTypeForHibType(selField.getHibType()) + " " + javaFldName+";\n");		            
 		            
 		            bwJava.write("public "+getJavaTypeForHibType(selField.getHibType()) + " get"+Utils.capitalize(javaFldName)+"(){\n");
 		            bwJava.write("    return this."+javaFldName+";\n");
@@ -212,15 +191,24 @@ public class CreateViewAction extends AbstractHttpAction {
 		            bwJava.write("public void  set"+Utils.capitalize(javaFldName)+"("+getJavaTypeForHibType(selField.getHibType())+" par ){\n");
 		            bwJava.write("    this."+javaFldName+"=par;\n");
 		            bwJava.write("}\n");
+		            
+		            labelProps.write("field.id." + javaFldName + "=id." + javaFldName + "\n");
 				}
 				bwJava.write("}\n");
+				
 				bwHbm.write("  </composite-id>\n");
 				bwHbm.write("</class>\n");
 				bwHbm.write("</hibernate-mapping>\n");
+				
 				bwJava.flush();
 				bwHbm.flush();
 				bwJava.close();
 				bwHbm.close();
+				labelProps.flush();
+				labelProps.close();
+				qbeProps.flush();
+				qbeProps.close();
+				
 				
 				BufferedWriter bwJavaMain = new BufferedWriter(new FileWriter(destinationFoder+ Utils.asJavaClassIdentifier(viewName)+".java"));
 				bwJavaMain.write("package "+packageName+";\n");
@@ -262,7 +250,8 @@ public class CreateViewAction extends AbstractHttpAction {
 				
 				
 				
-				String completeFileName = qbeDataMartDir + System.getProperty("file.separator") + getDataMartModel().getPath() + System.getProperty("file.separator") + Utils.asJavaClassIdentifier(viewName)+"View.jar";
+				String completeFileName = qbeDataMartDir + System.getProperty("file.separator") + getDataMartModel().getPath() 
+					+ System.getProperty("file.separator") + Utils.asJavaClassIdentifier(viewName)+"View.jar";
 				File destJar = new File(completeFileName);
 				Jar jarTask = new Jar();
 				jarTask.setProject(proj);
@@ -274,9 +263,10 @@ public class CreateViewAction extends AbstractHttpAction {
 				
 				tx.commit();
 				
-				getDataMartModel().setHibCfg(null);
-				getDataMartModel().setClassLoaderExtended(false);
-				getDataMartModel().setAlreadyAddedView(new ArrayList());
+				getDataMartModel().getDataSource().setHibCfg(null);
+				getDataMartModel().getDataSource().setSessionFactory(null);
+				getDataMartModel().getDataSource().setClassLoaderExtended(false);
+				getDataMartModel().getDataSource().setAlreadyAddedView(new ArrayList());
 				
 				ApplicationContainer application = ApplicationContainer.getInstance();
 				application.delAttribute(getDataMartModel().getPath());

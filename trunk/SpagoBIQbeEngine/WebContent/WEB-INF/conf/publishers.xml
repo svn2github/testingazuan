@@ -17,6 +17,9 @@
       			<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="PATH" />
       			<PARAMETER name="DIALECT" type="RELATIVE" scope="SERVICE_RESPONSE" value="DIALECT" />
       			<PARAMETER name="JNDI_DS" type="RELATIVE" scope="SERVICE_RESPONSE" value="JNDI_DS" />
+      			<PARAMETER name="DATAMART_PROPERTIES" type="RELATIVE" scope="SERVICE_RESPONSE" value="DATAMART_PROPERTIES" />
+      			<PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="MODALITY" />
+      			
       			<PARAMETER name="queryId" type="RELATIVE" scope="SERVICE_RESPONSE" value ="queryId" />
       			
       			 <!--  

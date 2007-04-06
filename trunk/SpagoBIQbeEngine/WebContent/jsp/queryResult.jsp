@@ -6,6 +6,7 @@
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="it.eng.qbe.export.*"%>
+<%@ page import="it.eng.qbe.utilities.*"%>
 <%@ page import="java.util.*"%>
 
 
@@ -358,6 +359,8 @@ function askConfirmation (message) {
 		
 <% if (!flagErrors){ %>
 
+<p>
+
 <table width="100%" valign="top"> 
 	<tr>
 		<td width="3%">
@@ -374,7 +377,18 @@ function askConfirmation (message) {
   			   sParams.clear();
   			   String urlPrev = "#";
   			   String urlNext = "#";
+  				int[] pages = PageNavigatorUtils.getPageWindow(currentPage+1, pagesNumber, 6);
   			%>
+  			<% if (hasPreviousPage){ 
+					sParams.clear();
+   		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
+   		   			sParams.put("query",query);
+   		   			sParams.put("pageNumber",String.valueOf(0));
+   		   			sParams.put("ignoreJoins", "true");
+   		   			urlPrev = qbeUrl.getUrl(request, sParams);
+   		   			%>
+				<a class="qbe-title-link" href="<%=urlPrev%>"> << </a>
+			<% } %> 
 			<% if (hasPreviousPage){ 
 					sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
@@ -383,19 +397,42 @@ function askConfirmation (message) {
    		   			sParams.put("ignoreJoins", "true");
    		   			urlPrev = qbeUrl.getUrl(request, sParams);
    		   			%>
-				<a class="qbe-title-link" href="<%=urlPrev%>"> << </a>
+				<a class="qbe-title-link" href="<%=urlPrev%>"> < </a>
 			<% } %> 
 			<span class="qbe-font">
-			<%=qbeMsg.getMessage(requestContainer, "QBE.QueryResult.CurrentPage", bundle) %> <%=currentPage+1 %>
-			<% if (pagesNumber != null){%>
-				/<%=pagesNumber.intValue()%> 
-			<% } %>
+			<%
+				for(int y = 0; y < pages.length; y++) {
+					if((pages[y]-1) == currentPage) {
+			%>
+			&nbsp;[<%=pages[y]%>]&nbsp;
+			<%
+					} else {
+						sParams.clear();
+	   		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
+	   		   			sParams.put("query",query);
+	   		   			sParams.put("pageNumber",String.valueOf(pages[y]-1));
+	   		   			sParams.put("ignoreJoins", "true");
+	   		   			urlNext = qbeUrl.getUrl(request, sParams);
+	   		%>
+			&nbsp;<a class="qbe-title-link" href="<%=urlNext%>"> <%=pages[y]%> </a>&nbsp;
+			<% 		}
+				}
+			%>
 			</span>
 			<% if (hasNextPage){
 				sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
    		   			sParams.put("query",query);
    		   			sParams.put("pageNumber",String.valueOf(currentPage+1));
+   		   			sParams.put("ignoreJoins", "true");
+   		   			urlNext = qbeUrl.getUrl(request, sParams);%>
+				<a class="qbe-title-link" href="<%=urlNext%>"> > </a>
+			<% } %>
+			<% if (hasNextPage){
+				sParams.clear();
+   		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
+   		   			sParams.put("query",query);
+   		   			sParams.put("pageNumber",String.valueOf(pagesNumber-1));
    		   			sParams.put("ignoreJoins", "true");
    		   			urlNext = qbeUrl.getUrl(request, sParams);%>
 				<a class="qbe-title-link" href="<%=urlNext%>"> >> </a>

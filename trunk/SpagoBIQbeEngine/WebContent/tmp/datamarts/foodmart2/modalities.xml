@@ -1,0 +1,38 @@
+<MODALITIES>
+
+	<MODALITY name='ProductManagerAnalysis'>
+	
+		<TABLE name='it.foodmart.Product' accessible='true'>
+			
+			<FILTERS>
+				<FILTER>
+					F{brandName} = 'Jeffers'
+				</FILTER>			
+			</FILTERS>
+		</TABLE>
+		
+		<TABLE name='it.foodmart.Customer' accessible='true'>
+			
+			<FIELDS>
+				<FIELD name='fname' accessible='false'/>
+				<FIELD name='lname' accessible='false'/>
+				<FIELD name='fullname' accessible='false'/>
+				<FIELD name='address1' accessible='false'/>
+				<FIELD name='address2' accessible='false'/>
+				<FIELD name='address3' accessible='false'/>
+				<FIELD name='address4' accessible='false'/>
+				<FIELD name='phone1' accessible='false'/>
+				<FIELD name='phone2' accessible='false'/>
+			</FIELDS>
+			
+		</TABLE>
+		
+		<TABLE name='it.foodmart.Store' accessible='false'>			
+		</TABLE>
+		
+		
+	
+	</MODALITY>
+
+
+</MODALITIES>

@@ -9,7 +9,7 @@
 	<QUERY-PERSISTER className="it.eng.qbe.utility.SpagoBICmsQueryPersister"/>
 	 -->
 	 
-	<QBE-MODE mode="WEB" page-size="10"/>
+	<QBE-MODE mode="WEB" page-size="20"/>
 	
 	<QBE-MART_DIR dir="tmp/datamarts"/>
 	

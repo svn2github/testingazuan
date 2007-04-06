@@ -40,7 +40,7 @@ import org.hibernate.type.ManyToOneType;
 import org.hibernate.type.Type;
 
 /**
- * @author Gioia
+ * @author Andrea Gioia
  *
  */
 public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
@@ -174,7 +174,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 		nodeCounter++;
 		
-		PersistentClass pc = dataMartModel.getHibCfg().getClassMapping(className);
+		PersistentClass pc = dataMartModel.getDataSource().getHibCfg().getClassMapping(className);
 		String classLabel = Utils.getLabelForClass(Utils.getRequestContainer(httpRequest), dataMartModel, className);
 		
 		if (relationOnColumnName != null){
@@ -190,6 +190,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		String classImage;
 		if(qbeProperties.getTableType(newClassName) == QbeProperties.CLASS_TYPE_TABLE) {
 			classImage = "../img/Class.gif";
+		} else if(qbeProperties.getTableType(newClassName) == QbeProperties.CLASS_TYPE_VIEW) {
+			classImage = "../img/view.gif";
 		} else {
 			classImage = "../img/relationship.gif";
 		}

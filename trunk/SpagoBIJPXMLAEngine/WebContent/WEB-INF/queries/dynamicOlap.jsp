@@ -8,20 +8,9 @@
 <%@ page session="true" 
          contentType="text/html; charset=UTF-8" 
 		 import="org.dom4j.Document,
-				 org.dom4j.Node,
-				 java.io.InputStreamReader,
+				 org.dom4j.Node,java.io.InputStreamReader,
 				 java.util.List,
-				 com.thoughtworks.xstream.XStream,
-				 it.eng.spagobi.bean.AnalysisBean,
-				 it.eng.spagobi.utilities.SpagoBIAccessUtils,
-				 it.eng.spagobi.util.ParameterSetter,
-				 it.eng.spagobi.util.ParameterHandler,
-				 it.eng.spagobi.engines.jpivotxmla.conf.EngineXMLAConf,
-				 it.eng.spagobi.engines.jpivotxmla.connection.*,
-				 it.eng.spagobi.bean.SaveAnalysisBean,
-				 com.tonbeller.wcf.form.FormComponent,
-				 java.io.InputStream,
-				 mondrian.olap.*" %>
+				 com.thoughtworks.xstream.XStream,it.eng.spagobi.jpivotaddins.bean.AnalysisBean,it.eng.spagobi.utilities.SpagoBIAccessUtils,it.eng.spagobi.jpivotaddins.util.ParameterSetter,it.eng.spagobi.jpivotaddins.util.ParameterHandler,it.eng.spagobi.engines.jpivotxmla.conf.EngineXMLAConf,it.eng.spagobi.engines.jpivotxmla.connection.*,it.eng.spagobi.jpivotaddins.bean.SaveAnalysisBean,com.tonbeller.wcf.form.FormComponent,java.io.InputStream,mondrian.olap.*" %>
 <%@page import="sun.misc.BASE64Decoder"%>
 <%@page import="java.util.Map"%>
 <%@page import="it.eng.spagobi.utilities.ParametersDecoder"%>
@@ -55,79 +44,79 @@
 	
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {
-			String jcrPath = (String)session.getAttribute("templatePath");
-			String spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
-			String user = (String)session.getAttribute("user");
-			// if subObject execution in the request there are the description and visibility
-			String descrSO = request.getParameter("descriptionSubObject");
-			if(descrSO==null){
-				descrSO = "";
-			}
-			String visSO = request.getParameter("visibilitySubObject");
-			if(visSO==null) {
-				visSO = "Private";
-			}
-			
-			analysisBean.setAnalysisName(nameSubObject);
-			analysisBean.setAnalysisDescription(descrSO);
-			// the possible values of the visibility are (Private/Public)
-			analysisBean.setAnalysisVisibility(visSO);
-			
-			// get content from cms
-			String subobjdata64Coded = request.getParameter("subobjectdata");
-			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
-			is = new java.io.ByteArrayInputStream(subobjBytes);
-			InputStreamReader isr = new InputStreamReader(is);
-			XStream dataBinder = new XStream();
-			try {
-				analysis = (AnalysisBean) dataBinder.fromXML(isr, new AnalysisBean());
-				isr.close();
-				query = analysis.getMdxQuery();
-				nameConnection = analysis.getConnectionName();
-				reference = analysis.getCatalogUri();
-				name = analysis.getCatalog();
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
+	String jcrPath = (String)session.getAttribute("templatePath");
+	String spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
+	String user = (String)session.getAttribute("user");
+	// if subObject execution in the request there are the description and visibility
+	String descrSO = request.getParameter("descriptionSubObject");
+	if(descrSO==null){
+		descrSO = "";
+	}
+	String visSO = request.getParameter("visibilitySubObject");
+	if(visSO==null) {
+		visSO = "Private";
+	}
+	
+	analysisBean.setAnalysisName(nameSubObject);
+	analysisBean.setAnalysisDescription(descrSO);
+	// the possible values of the visibility are (Private/Public)
+	analysisBean.setAnalysisVisibility(visSO);
+	
+	// get content from cms
+	String subobjdata64Coded = request.getParameter("subobjectdata");
+	BASE64Decoder bASE64Decoder = new BASE64Decoder();
+	byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
+	is = new java.io.ByteArrayInputStream(subobjBytes);
+	InputStreamReader isr = new InputStreamReader(is);
+	XStream dataBinder = new XStream();
+	try {
+		analysis = (AnalysisBean) dataBinder.fromXML(isr, new AnalysisBean());
+		isr.close();
+		query = analysis.getMdxQuery();
+		nameConnection = analysis.getConnectionName();
+		reference = analysis.getCatalogUri();
+		name = analysis.getCatalog();
+	} catch (Throwable t) {
+		t.printStackTrace();
+	}
 		
 		// normal execution (no subObject)	
 		} else {
-			String templateBase64Coded = request.getParameter("template");
-			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
-			is = new java.io.ByteArrayInputStream(template);
-			org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
+	String templateBase64Coded = request.getParameter("template");
+	BASE64Decoder bASE64Decoder = new BASE64Decoder();
+	byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
+	is = new java.io.ByteArrayInputStream(template);
+	org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
 		    Document document = reader.read(is);
 		    nameConnection = request.getParameter("connectionName");
-			query = document.selectSingleNode("//olap/MDXquery").getStringValue();
-			Node cube = document.selectSingleNode("//olap/cube");
-			reference = cube.valueOf("@reference");
-			name = cube.valueOf("@name");
-			parameters = document.selectNodes("//olap/MDXquery/parameter");
-			analysis = new AnalysisBean();
-			analysis.setConnectionName(nameConnection);
-			analysis.setCatalogUri(reference);
-			analysis.setCatalog(name);
-			session.setAttribute("analysisBean",analysis);
+	query = document.selectSingleNode("//olap/MDXquery").getStringValue();
+	Node cube = document.selectSingleNode("//olap/cube");
+	reference = cube.valueOf("@reference");
+	name = cube.valueOf("@name");
+	parameters = document.selectNodes("//olap/MDXquery/parameter");
+	analysis = new AnalysisBean();
+	analysis.setConnectionName(nameConnection);
+	analysis.setCatalogUri(reference);
+	analysis.setCatalog(name);
+	session.setAttribute("analysisBean",analysis);
 		}
 		
 		IConnection connection = null;
 		if(nameConnection!=null) {
-			connection = EngineXMLAConf.getInstance().getConnection(nameConnection);
+	connection = EngineXMLAConf.getInstance().getConnection(nameConnection);
 		} else {
-			connection = EngineXMLAConf.getInstance().getDefaultConnection();
+	connection = EngineXMLAConf.getInstance().getDefaultConnection();
 		}
 		
 		if(connection.getType() == IConnection.JDBC_CONNECTION) {
-			JDBCConnection jdbcConnection = (JDBCConnection)connection;
-			/*
-			String driver = jdbcConnection.getDriver();
-			String url = jdbcConnection.getJdbcUrl();
-			String usr = jdbcConnection.getUser();
-			String pwd = jdbcConnection.getPassword();
-			*/
-			%>
+	JDBCConnection jdbcConnection = (JDBCConnection)connection;
+	/*
+	String driver = jdbcConnection.getDriver();
+	String url = jdbcConnection.getJdbcUrl();
+	String usr = jdbcConnection.getUser();
+	String pwd = jdbcConnection.getPassword();
+	*/
+%>
 		    <jp:mondrianQuery id="query01" 
 		    			jdbcDriver="<%=jdbcConnection.getDriver()%>" 
 		    			jdbcUrl="<%=jdbcConnection.getJdbcUrl()%>" 

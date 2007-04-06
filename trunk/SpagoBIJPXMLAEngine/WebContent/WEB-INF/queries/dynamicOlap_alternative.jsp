@@ -11,13 +11,7 @@
 				 org.dom4j.Node,
 				 java.io.InputStreamReader,
 				 java.util.List,
-				 com.thoughtworks.xstream.XStream,
-				 it.eng.spagobi.bean.AnalysisBean,
-				 it.eng.spagobi.util.SessionObjectRemoval,
-				 it.eng.spagobi.utilities.SpagoBIAccessUtils,
-				 it.eng.spagobi.bean.SaveAnalysisBean,
-				 com.tonbeller.wcf.form.FormComponent,
-				 mondrian.olap.*" %>
+				 com.thoughtworks.xstream.XStream,it.eng.spagobi.jpivotaddins.bean.AnalysisBean,it.eng.spagobi.jpivotaddins.util.SessionObjectRemoval,it.eng.spagobi.utilities.SpagoBIAccessUtils,it.eng.spagobi.jpivotaddins.bean.SaveAnalysisBean,com.tonbeller.wcf.form.FormComponent,mondrian.olap.*" %>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
@@ -49,7 +43,6 @@
 
 
 <%
-
 SessionObjectRemoval.removeSessionObjects(session);
 
 List parameters = null;
@@ -68,10 +61,10 @@ try{
 		// if subObject execution in the request there are the description and visibility
 		String descrSO = request.getParameter("descriptionSubObject");
 		if(descrSO==null)
-			descrSO = "";
+	descrSO = "";
 		String visSO = request.getParameter("visibilitySubObject");
 		if(visSO==null)
-			visSO = "Private";
+	visSO = "Private";
 		analysisBean.setAnalysisName(nameSubObject);
 		analysisBean.setAnalysisDescription(descrSO);
 		// the possible values of the visibility are (Private/Public)
@@ -83,13 +76,13 @@ try{
 		InputStreamReader isr = new InputStreamReader(is);
 		XStream dataBinder = new XStream();
 		try {
-			analysis = (AnalysisBean) dataBinder.fromXML(isr, new AnalysisBean());
-			isr.close();
-			query = analysis.getMdxQuery();
-			nameConnection = analysis.getConnectionName();
-			reference = analysis.getCatalogUri();
+	analysis = (AnalysisBean) dataBinder.fromXML(isr, new AnalysisBean());
+	isr.close();
+	query = analysis.getMdxQuery();
+	nameConnection = analysis.getConnectionName();
+	reference = analysis.getCatalogUri();
 		} catch (Throwable t) {
-			t.printStackTrace();
+	t.printStackTrace();
 		}
 	// normal execution (no subObject)	
 	} else {
@@ -102,7 +95,7 @@ try{
 	    Document document = reader.read(is);
 		Node connection = document.selectSingleNode("//olap/connection");
 		if(connection != null) {
-			nameConnection = connection.valueOf("@name");
+	nameConnection = connection.valueOf("@name");
 		}
 		query = document.selectSingleNode("//olap/MDXquery").getStringValue();
 		Node cube = document.selectSingleNode("//olap/cube");
@@ -139,7 +132,7 @@ try{
 	    String resName = connectionDef.valueOf("@resourceName");
 	    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+reference+";";
 	    //query = substituteQueryParameters(query, parameters, request, connectionStr);
-	    %>
+%>
     	<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 			<%=query%>
 		</jp:mondrianQuery>

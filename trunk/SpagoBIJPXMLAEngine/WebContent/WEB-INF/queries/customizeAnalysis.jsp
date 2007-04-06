@@ -14,13 +14,7 @@
     com.tonbeller.jpivot.chart.ChartComponentTag,
     com.tonbeller.jpivot.chart.ChartComponent,
     com.tonbeller.wcf.controller.RequestContext,
-    com.tonbeller.wcf.controller.RequestContextFactoryFinder,
-    it.eng.spagobi.bean.AnalysisBean,
-    com.tonbeller.jpivot.olap.navi.ClickableExtension,
-    com.tonbeller.jpivot.olap.navi.ClickableExtensionImpl,
-    it.eng.spagobi.util.ChartCustomizer,
-    java.util.List,
-    java.util.ArrayList"%>
+    com.tonbeller.wcf.controller.RequestContextFactoryFinder,it.eng.spagobi.jpivotaddins.bean.AnalysisBean,com.tonbeller.jpivot.olap.navi.ClickableExtension,com.tonbeller.jpivot.olap.navi.ClickableExtensionImpl,it.eng.spagobi.jpivotaddins.util.ChartCustomizer,java.util.List,java.util.ArrayList"%>
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 

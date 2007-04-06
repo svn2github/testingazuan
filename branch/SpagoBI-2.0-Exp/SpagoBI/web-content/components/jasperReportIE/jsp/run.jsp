@@ -68,6 +68,16 @@
     }
     String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
     
+    
+    
+    String downPdfUrl = execUrl;
+    downPdfUrl = downPdfUrl.trim();
+  	if(downPdfUrl.endsWith("&")) {
+   		downPdfUrl += "DOWNLOAD_PDF=TRUE";
+   	} else {
+   		downPdfUrl += "&DOWNLOAD_PDF=TRUE";
+   	}
+    
 %>
 
 
@@ -79,13 +89,22 @@
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
 			&nbsp;&nbsp;&nbsp;<%=title%>
 		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-       	<td class='header-button-column-portlet-section'>
+       	<td class='header-button-column-portlet-section' 
+       	    style='border-top: 1px solid #bbb;border-bottom: 1px solid #bbb;' >
         	<a href='<%=backUrl%>'>
            		<img title='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' 
                		 class='header-button-image-portlet-section'
                		 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
                		 alt='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' />
+        	</a>
+       	</td>
+       	<td class='header-button-column-portlet-section'
+       	    style='padding-top:3px;border-top: 1px solid #bbb;border-bottom: 1px solid #bbb;'>
+        	<a href='<%=downPdfUrl%>'>
+           		<img height="25px" title='Download Pdf' 
+               		 class='header-button-image-portlet-section'
+               		 src='<%=urlBuilder.getResourceLink(request, "/img/wapp/pdf32.png")%>' 
+               		 alt='Download Pdf' />
         	</a>
        	</td>
 	</tr>
@@ -99,9 +118,14 @@
 <table heigth='12px' width='100%' cellspacing='0' border='0'>
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' 
-		    style='vertical-align:middle;height:12px;font-size:10px;border:1px solid #bbb;'>
-			&nbsp;&nbsp;&nbsp;<span><a style="text-decoration:none;" href="<%=refreshUrl%>">Refresh</a></span>
+		    style='vertical-align:middle;height:12px;font-size:10px;'>
+		    &nbsp;
 		</td>
+		<td class='header-button-column-portlet-section'
+		    style='color: #074B88;vertical-align:middle;height:12px;width:130px;font-size:10px;border-top: 1px solid #bbb;border-bottom: 1px solid #bbb;' >
+        	&nbsp;&nbsp;&nbsp;<span><a style="text-decoration:none;" href="<%=refreshUrl%>">Refresh</a></span>
+			&nbsp;&nbsp;&nbsp;<span><a style="text-decoration:none;" href="<%=downPdfUrl%>">Download Pdf</a></span>
+       	</td>
 	</tr>
 </table>
 <br/>

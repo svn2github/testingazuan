@@ -27,6 +27,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.utilities.GeneralUtilities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -93,13 +94,49 @@ public class FixedListDetail  implements ILovDetail  {
 			lovList.add(lov);
 		}
  		setLovs(lovList);
- 		// set visible and invisible columns
- 		List visColList = new ArrayList();
- 		visColList.add("DESCRIPTION");
- 		List invisColList = new ArrayList();
-		invisColList.add("VALUE");
-		setInvisibleColumnNames(invisColList);
-		setVisibleColumnNames(visColList);
+ 		
+        // get and set value column
+	    String valueColumn = "";
+	    SourceBean valCol = (SourceBean)source.getAttribute("VALUE-COLUMN");
+		if(valCol!=null)
+			valueColumn = valCol.getCharacters();
+		setValueColumnName(valueColumn);
+		 // get and set the description column
+	    String descrColumn = "";
+	    SourceBean descColSB = (SourceBean)source.getAttribute("DESCRIPTION-COLUMN");
+		if(descColSB!=null)
+			descrColumn = descColSB.getCharacters();
+		setDescriptionColumnName(descrColumn);
+		// get and set list of visible columns
+		List visColNames = new ArrayList();
+		SourceBean visColSB = (SourceBean)source.getAttribute("VISIBLE-COLUMNS");
+		if(visColSB!=null){
+			String visColConc = visColSB.getCharacters();
+			if( (visColConc!=null) && !visColConc.trim().equalsIgnoreCase("") ) {
+				String[] visColArr = visColConc.split(",");
+				visColNames = Arrays.asList(visColArr);
+			}
+		}
+		setVisibleColumnNames(visColNames);
+		// get and set list of invisible columns
+		List invisColNames = new ArrayList();
+		SourceBean invisColSB = (SourceBean)source.getAttribute("INVISIBLE-COLUMNS");
+		if(invisColSB!=null){
+			String invisColConc = invisColSB.getCharacters();
+			if( (invisColConc!=null) && !invisColConc.trim().equalsIgnoreCase("") ) {
+				String[] invisColArr = invisColConc.split(",");
+				invisColNames = Arrays.asList(invisColArr);
+			}
+		}
+		setInvisibleColumnNames(invisColNames);
+
+// 		// set visible and invisible columns
+// 		List visColList = new ArrayList();
+// 		visColList.add("DESCRIPTION");
+// 		List invisColList = new ArrayList();
+//		invisColList.add("VALUE");
+//		setInvisibleColumnNames(invisColList);
+//		setVisibleColumnNames(visColList);
 	}	
 	
 	/**
@@ -122,7 +159,11 @@ public class FixedListDetail  implements ILovDetail  {
 					  "/>";
 		}
 		lovXML += "</ROWS>";
-		lovXML += "</FIXLISTLOV>";
+		lovXML += "<VALUE-COLUMN>"+valueColumnName+"</VALUE-COLUMN>" +
+				  "<DESCRIPTION-COLUMN>"+descriptionColumnName+"</DESCRIPTION-COLUMN>" +
+				  "<VISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(visibleColumnNames, ",")+"</VISIBLE-COLUMNS>" +
+				  "<INVISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(invisibleColumnNames, ",")+"</INVISIBLE-COLUMNS>" +
+				  "</FIXLISTLOV>";
 		return lovXML;
 	}
 	
@@ -133,13 +174,19 @@ public class FixedListDetail  implements ILovDetail  {
 	 * @throws Exception
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
-		String lovResult = this.toXML();
-		if(lovResult.startsWith("<FIXLISTLOV>")) {
-			lovResult = lovResult.substring(12);
+		String lovResult = "<ROWS>";
+		FixedListItemDetail lov = null;
+		Iterator iter = items.iterator();
+		while(iter.hasNext()){
+			lov = (FixedListItemDetail)iter.next();
+			String value = lov.getValue();
+			String description = lov.getDescription();
+			lovResult += "<ROW" +
+					  " VALUE=\"" + value + "\"" +
+					  " DESCRIPTION=\"" + description + "\"" +
+					  "/>";
 		}
-		if(lovResult.endsWith("</FIXLISTLOV>")) {
-			lovResult = lovResult.substring(0, lovResult.length() - 13);
-		}
+		lovResult += "</ROWS>";
 		lovResult = GeneralUtilities.substituteProfileAttributesInString(lovResult, profile);
 		return lovResult;
 	}

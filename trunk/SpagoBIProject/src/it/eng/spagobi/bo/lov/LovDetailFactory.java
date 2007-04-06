@@ -3,6 +3,10 @@
  */
 package it.eng.spagobi.bo.lov;
 
+import java.util.Iterator;
+import java.util.List;
+
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 
 /**
@@ -23,6 +27,7 @@ public class LovDetailFactory {
 	 * @throws SourceBeanException
 	 */
 	public static ILovDetail getLovFromXML(String dataDefinition) throws SourceBeanException {
+		dataDefinition = resolveRetroCompatibility(dataDefinition);
 		ILovDetail lov = null;
 		dataDefinition = dataDefinition.trim();
 		if(dataDefinition.startsWith("<" + JAVACLASSLOV )) {
@@ -31,10 +36,48 @@ public class LovDetailFactory {
 			lov = new ScriptDetail(dataDefinition);
 		} else if(dataDefinition.startsWith("<" + QUERYLOV )) {
 			lov = new QueryDetail(dataDefinition);
-		} else if( dataDefinition.startsWith("<" + FIXEDLISTLOV ) || dataDefinition.startsWith("<" + "ROWS" ) ) {
+		} else if (dataDefinition.startsWith("<" + FIXEDLISTLOV)) {
 			lov = new FixedListDetail(dataDefinition);
 		}
 		return lov;
+	}
+	
+	/**
+	 * Resolves retrocompatibility problems regarding lov prodiver definition
+	 * @param dataDefinition The String
+	 * @return
+	 * @throws SourceBeanException
+	 */
+	private static String resolveRetroCompatibility(String dataDefinition) throws SourceBeanException {
+		if (dataDefinition.startsWith("<LOV>")) {
+			SourceBean oldSB = SourceBean.fromXMLString(dataDefinition);
+			String toReturn = "<" + FIXEDLISTLOV + "><ROWS>";
+			List elements = oldSB.getAttributeAsList("LOV-ELEMENT");
+			Iterator elementsIt = elements.iterator();
+			while (elementsIt.hasNext()) {
+				SourceBean element = (SourceBean) elementsIt.next();
+				String description = (String) element.getAttribute("DESC");
+				String value = (String) element.getAttribute("VALUE");
+				toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
+			}
+			toReturn += "</ROWS></" + FIXEDLISTLOV + ">";
+			return toReturn;
+		}
+		if (dataDefinition.startsWith("<ROWS>")) {
+			SourceBean oldSB = SourceBean.fromXMLString(dataDefinition);
+			String toReturn = "<" + FIXEDLISTLOV + "><ROWS>";
+			List elements = oldSB.getAttributeAsList("ROW");
+			Iterator elementsIt = elements.iterator();
+			while (elementsIt.hasNext()) {
+				SourceBean element = (SourceBean) elementsIt.next();
+				String description = (String) element.getAttribute("DESCRIPTION");
+				String value = (String) element.getAttribute("NAME");
+				toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
+			}
+			toReturn += "</ROWS></" + FIXEDLISTLOV + ">";
+			return toReturn;
+		}
+		return dataDefinition;
 	}
 	
 	/**

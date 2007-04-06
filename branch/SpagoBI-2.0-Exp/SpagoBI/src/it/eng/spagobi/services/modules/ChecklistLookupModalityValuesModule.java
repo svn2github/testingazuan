@@ -106,7 +106,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			if(request.getAttribute("saveback") != null){
 				preprocess(request);
 				save();
-				exitFromModule(response, false);
+				exitFromModule(request, response, false);
 				return;
 			}				
 			if(request.getAttribute("save") != null) {				
@@ -120,7 +120,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 				return;			
 			}
 			if(request.getAttribute("back") != null) {			
-				exitFromModule(response, true);
+				exitFromModule(request, response, true);
 				return;
 			}
 		} else {
@@ -139,8 +139,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		String biobjParId = (String)request.getAttribute("LOOKUP_OBJ_PAR_ID");
 		String biobjParName = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
 		
-		
-		BIObject obj = (BIObject)getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		SessionContainer sessCont = getSessionContainerForExecution(request);
+		BIObject obj = (BIObject)sessCont.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		List parameters = obj.getBiObjectParameters();
 		BIObjectParameter biparam = null;
 		for(int i = 0; i < parameters.size(); i++) {
@@ -166,7 +166,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	public void updateCheckedObjectMap(SourceBean request) throws Exception {
 		checkedObjectsMap = new HashMap();
 		
-		SourceBean checked = (SourceBean)getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS);
+		SessionContainer sessCont = getSessionContainerForExecution(request);
+		SourceBean checked = (SourceBean)sessCont.getAttribute(CHECKED_OBJECTS);
 		List objectsList = checked.getAttributeAsList(OBJECT);
 		for(int i = 0; i < objectsList.size(); i++) {
 			SourceBean object = (SourceBean)objectsList.get(i);
@@ -186,7 +187,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	 * Stores into session all the parameters needed to checklist handling
 	 */
 	private void initSession(SourceBean request) {
-		SessionContainer session = this.getRequestContainer().getSessionContainer();
+		//SessionContainer session = this.getRequestContainer().getSessionContainer();
+		SessionContainer session = getSessionContainerForExecution(request);
 		if(session.getAttribute("CHK_LIST_INITIALIZED")==null) {
 			session.setAttribute("LOOKUP_PARAMETER_NAME", request.getAttribute("LOOKUP_PARAMETER_NAME"));
 			session.setAttribute("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));
@@ -200,16 +202,18 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	 * Removes from session all the parameters used to checklist handling. Leaves in session the 
 	 * output parameters neded by the module caller. Clearing these parameters is a caller task!
 	 */
-	private void clearSession() {
-		SessionContainer session = this.getRequestContainer().getSessionContainer();
+	private void clearSession(SourceBean request) {
+		//SessionContainer session = this.getRequestContainer().getSessionContainer();
+		SessionContainer session = getSessionContainerForExecution(request);
 		session.delAttribute("CHK_LIST_INITIALIZED");
 		session.delAttribute("LOOKUP_PARAMETER_ID");
 	}
 	
 	
 	
-	public void exitFromModule(SourceBean response, boolean abort) throws Exception{
-		SessionContainer session = this.getRequestContainer().getSessionContainer();		
+	public void exitFromModule(SourceBean request, SourceBean response, boolean abort) throws Exception{
+		//SessionContainer session = this.getRequestContainer().getSessionContainer();		
+		SessionContainer session = getSessionContainerForExecution(request);
 		if(!abort && returnValues){
 			List valuesSBList = getCheckedObjects().getAttributeAsList("OBJECT");
 			String valueColumn =(String)((SourceBean)config.getAttribute("KEYS.OBJECT")).getAttribute("key");
@@ -234,7 +238,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		session.setAttribute("RETURN_STATUS", ((abort)?"ABORT":"OK") );
 		session.setAttribute("LOOKUP_PARAMETER_NAME", (String)getSession(_request).getAttribute("LOOKUP_PARAMETER_NAME"));
 		response.setAttribute("PUBLISHER_NAME", "returnToExecBIObjLoop");
-		clearSession();
+		clearSession(request);
 	}
 	
 	
@@ -245,15 +249,15 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	}
 	
 	private BIObjectParameter getBIParameter(SourceBean request) {
-		BIObject obj = (BIObject)getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-		String parameterUrlName = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_NAME");
+		SessionContainer sessionCont = getSessionContainerForExecution(request);
+		BIObject obj = (BIObject)sessionCont.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		String parameterUrlName = (String)sessionCont.getAttribute("LOOKUP_PARAMETER_NAME");
 		List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();
         while(iterParams.hasNext()) {
         	BIObjectParameter biParam = (BIObjectParameter)iterParams.next();
         	if(biParam.getParameterUrlName().equalsIgnoreCase(parameterUrlName)) return biParam;
         }
-        
         return null;
 	}
 		
@@ -308,7 +312,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	private ModalitiesValue getModalityValue(SourceBean request) throws EMFUserError {
 		String modValId = (String)request.getAttribute("mod_val_id");
-		if(modValId == null) modValId = (String)getSession(request).getAttribute("mod_val_id");
+		SessionContainer sessCont = getSessionContainerForExecution(request);
+		if(modValId == null) 
+			modValId = (String)sessCont.getAttribute("mod_val_id");
 		Integer idModVal = Integer.valueOf(modValId);
 		IModalitiesValueDAO aModalitiesValueDAO = DAOFactory.getModalitiesValueDAO(); 
 		return aModalitiesValueDAO.loadModalitiesValueByID(idModVal);
@@ -316,7 +322,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	private boolean isCorrelated(SourceBean request) {
 		String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
-		if(correlatedParuseIdStr == null) correlatedParuseIdStr = (String)getSession(request).getAttribute("correlated_paruse_id");
+		SessionContainer sessCont = getSessionContainerForExecution(request);
+		if(correlatedParuseIdStr == null) 
+			correlatedParuseIdStr = (String)sessCont.getAttribute("correlated_paruse_id");
 		return (correlatedParuseIdStr != null && !correlatedParuseIdStr.equals(""));
 	}
 
@@ -324,9 +332,13 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		HashMap paramsMap = new HashMap();
 		String lookupParameterName = (String) request.getAttribute("LOOKUP_PARAMETER_NAME");
 		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
+		String execId = (String)request.getAttribute("EXECUTION_IDENTIFIER");
 		paramsMap.put("LOOKUP_PARAMETER_NAME", lookupParameterName);
 		paramsMap.put(SpagoBIConstants.ACTOR, actor);
 		paramsMap.put("mod_val_id", request.getAttribute("mod_val_id"));
+		if(execId!=null) {
+			paramsMap.put("EXECUTION_IDENTIFIER", execId);
+		}
 		return paramsMap;
 	}
 	
@@ -508,6 +520,17 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		return list;		
 	}
 	
+	
+	
+	private SessionContainer getSessionContainerForExecution(SourceBean request) {
+		SessionContainer sessCont = null;
+		SessionContainer mainSessCont = getSession(request);
+		String execId = (String)request.getAttribute("EXECUTION_IDENTIFIER");
+		if(execId!=null) {
+			sessCont = (SessionContainer)mainSessCont.getAttribute(execId);
+		} 
+		return sessCont;
+	}
 	
 	
 } 

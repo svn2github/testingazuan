@@ -114,7 +114,7 @@ public class JasperReportInternalEngine extends AbstractHttpModule implements In
 			}
 			
 			BIObject biobj = (BIObject)sessCont.getAttribute("JR_IE_OBJ_TO_EXEC");
-			sessCont.delAttribute("JR_IE_OBJ_TO_EXEC");
+			//sessCont.delAttribute("JR_IE_OBJ_TO_EXEC");
 			Map parameters = new HashMap();
 			List biobjPars = biobj.getBiObjectParameters();
 			Iterator biobjParIter = biobjPars.iterator();
@@ -134,6 +134,16 @@ public class JasperReportInternalEngine extends AbstractHttpModule implements In
 			    parameters.put(biparurl, biparstringvalue);
 			}
 			parameters.put("biobjectPath", biobj.getPath());
+			
+			
+			String downPdf =  (String)serviceReq.getAttribute("DOWNLOAD_PDF");
+			if(downPdf!=null){
+				String reportFileName = biobj.getName() + ".pdf";
+				httpResp.setHeader("Content-Disposition","attachment; filename=\"" + reportFileName + "\";");
+				parameters.put("param_output_format", "PDF");
+			}
+			
+			
 			DataConnection dataconn = getConnection(parameters);
 			Connection conn = dataconn.getInternalConnection();
 			JasperReportRunner jrr = new JasperReportRunner();

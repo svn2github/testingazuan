@@ -29,6 +29,7 @@ package it.eng.spagobi.services;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.security.AnonymousCMSUserProfile;
@@ -224,20 +225,34 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		return;
 	 			}
 	 			if (operation.equalsIgnoreCase("downloadAll")) {
-	 				String[] paths = request.getParameterValues("jcrPath");
-	 				String[] templateFileNames = request.getParameterValues("templateFileName");
-	 				OutputStream out = response.getOutputStream();
-	 				ZipOutputStream zipOut = new ZipOutputStream(out); 
-	 				for (int i = 0; i < paths.length; i++) {
-	 					String jcrPath = paths[i];
-	 					String templateFileName = templateFileNames[i];
-	 					InputStream jcrContentStream = JCRUtilities.getContentByPath(jcrPath);
-	 					byte[] jcrContent = GeneralUtilities.getByteArrayFromInputStream(jcrContentStream);
-	 					ZipEntry entry = new ZipEntry(templateFileName);
-	 					zipOut.putNextEntry(entry);
-	 					zipOut.write(jcrContent);
-	 					jcrContentStream.close();
-	 				}
+	 				String idStr = request.getParameter("biobjectId");
+	 				Integer id = new Integer (idStr);
+	 		 		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+	 		 		// load the current object template
+	 		 		obj.loadTemplate();
+	 		 		OutputStream out = response.getOutputStream();
+	 		 		ZipOutputStream zipOut = new ZipOutputStream(out);
+	 		 		byte[] jcrContent = obj.getTemplate().getFileContent();
+	 		 		String templateFileName = obj.getTemplate().getFileName();
+	 		 		// put the current object template in the zip file root
+	 		 		ZipEntry entry = new ZipEntry(templateFileName);
+	 		 		zipOut.putNextEntry(entry);
+ 					zipOut.write(jcrContent);
+	 		 		List subReports = DAOFactory.getSubreportDAO().loadSubreportsByMasterRptId(id);
+	 		 		Iterator subReportsIt = subReports.iterator();
+	 		 		while (subReportsIt.hasNext()) {
+	 		 			Subreport subRpt = (Subreport) subReportsIt.next();
+  		        		BIObject aSubRptObj = DAOFactory.getBIObjectDAO().loadBIObjectById(subRpt.getSub_rpt_id());
+  		        		// load the subreport template
+  		        		aSubRptObj.loadTemplate();
+  		        		jcrContent = aSubRptObj.getTemplate().getFileContent();
+  		 		 		templateFileName = aSubRptObj.getTemplate().getFileName();
+  		        		String label = aSubRptObj.getLabel();
+  		        		// put the subreport template in a folder which name is the subreport label
+  		        		entry = new ZipEntry(label + "/" + templateFileName);
+  		        		zipOut.putNextEntry(entry);
+  	 					zipOut.write(jcrContent);
+	 		 		}
 		 			String fileName = request.getParameter("fileName");
 		 			if (fileName == null) {
 		 				fileName = "fileRepository.zip";

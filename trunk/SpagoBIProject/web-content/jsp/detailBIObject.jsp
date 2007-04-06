@@ -617,19 +617,11 @@ function checkFormVisibility(docType) {
 		      		        } else {
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.deleteVersionConfirm", "messages")+"\", \""+eraseVerUrlStr+"\")' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.eraseLink", "messages") + "</a></td>");
 		      		        }
-		      		        if (subReports == null || subReports.size() == 0) {
+		      		        if (!isCurrentVer || subReports == null || subReports.size() == 0) {
 		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
 		      		        } else {
-		      		        	String downloadAlsoLinkedTemplateUrl = renderRequest.getContextPath() + "/ContentRepositoryServlet?operation=downloadAll&fileName=template.zip";
-		      		        	downloadAlsoLinkedTemplateUrl += "&jcrPath=" + pathTemp + "&templateFileName=" + tempVer.getNameFileTemplate();
-		      		        	Iterator subRptIt = subReports.iterator();
-		      		        	while (subRptIt.hasNext()) {
-		      		        		Subreport subRpt = (Subreport) subRptIt.next();
-		      		        		BIObject aSubRptObj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(subRpt.getSub_rpt_id());
-		      		        		String templateSubRptPath = aSubRptObj.getPath() + "/template";
-		      		        		String templateFileName = aSubRptObj.getCurrentTemplateVersion().getNameFileTemplate();
-		      		        		downloadAlsoLinkedTemplateUrl += "&jcrPath=" + templateSubRptPath + "&templateFileName=" + templateFileName;
-		      		        	}
+		      		        	String downloadAlsoLinkedTemplateUrl = renderRequest.getContextPath() + "/ContentRepositoryServlet?operation=downloadAll&biobjectId=" + 
+		      		        			obj.getId().toString() + "&fileName=template.zip";
 		      		        	String downloadAlsoLinkedTemplateMsg = msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages");
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:downloadAlsoLinkedTemplatesConfirm(\"" + downloadAlsoLinkedTemplateMsg + "\",\"" + downloadAlsoLinkedTemplateUrl + "\", \"" + downl + "\")' style='font-size:9px;' >" 
 		      		        			+ msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.downloadLink", "messages") 

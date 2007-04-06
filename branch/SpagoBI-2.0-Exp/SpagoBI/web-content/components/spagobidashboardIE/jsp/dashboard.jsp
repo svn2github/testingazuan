@@ -179,10 +179,12 @@
        	  <param name="scale" value="noscale">
        	  <param name="salign" value="LT">
        	  <param name="menu" value="false">
+       	  <param name="wmode" value="transparent">
         <EMBED  src="<%=movie%>" 
                 quality=high 
                 width="<%=width%>" 
                 height="<%=height%>" 
+                wmode="transparent" 
    			 TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
    		</EMBED>
 	</object>    

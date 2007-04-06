@@ -23,9 +23,7 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
@@ -34,8 +32,9 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
-import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.HashMap;
@@ -44,38 +43,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-/**
- * @author Gioia
- *
- */
+
 public class CheckBoxTag extends TagSupport {
 	
-	private HttpServletRequest httpRequest = null;
-	
-	protected RenderRequest renderRequest = null;
-    protected RenderResponse renderResponse = null;
-  	
+	private HttpServletRequest httpRequest = null; 	
     protected RequestContainer _requestContainer = null;
     protected ResponseContainer _responseContainer = null;
-    
     protected SourceBean _serviceRequest = null;	
 	protected SourceBean _serviceResponse = null;
-    
-	PortletRequest portReq = null;
     SessionContainer _session = null;
-	
 	protected String _actionName = null;
 	protected String _moduleName = null;
 	protected String pageName = null;
-	
 	protected String _serviceName = null;
 	protected SourceBean _content = null;
 	protected SourceBean _layout = null;
@@ -86,7 +69,6 @@ public class CheckBoxTag extends TagSupport {
     protected String _filter = null;
     protected int pageNumber;
     protected int pagesNumber;
-    
 	protected EMFErrorHandler _errorHandler = null;
     
     //  the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
@@ -99,21 +81,15 @@ public class CheckBoxTag extends TagSupport {
     
     
 	public int doStartTag() throws JspException {
-		
-		SpagoBITracer.info("Admintools", "ListTag", "doStartTag", " method invoked");
-		
+		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "doStartTag", " method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest =(RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-			
-		_requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		portReq = PortletUtilities.getPortletRequest();
+		_requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		_serviceRequest = _requestContainer.getServiceRequest();
-		_responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
-				
+		_responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
+		_serviceResponse = _responseContainer.getServiceResponse();	
 		_session = _requestContainer.getSessionContainer();
 		
-		_serviceResponse = _responseContainer.getServiceResponse();
+		
 		
 		ConfigSingleton configure = ConfigSingleton.getInstance();
 		if (_actionName != null) {

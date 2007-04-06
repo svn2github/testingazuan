@@ -182,10 +182,10 @@ public class FisheyeMenuTag extends TagSupport {
 								"</center>" +
 							"</div>" +
 							"<iframe id='frame"+code+"' " +
-							         "name=frame"+code+"' " +  
+							         "name='frame"+code+"' " +  
 									 "onload='parent.closeLoading"+code+"()' " +
 									 "style='width:"+width+"px;height:"+height+"px;visibility:hidden;' " +
-									 "frameborder='0' scrolling='auto' noresize  src='"+contexName+"/"+link+"' />";
+									 "frameborder='0' scrolling='auto' noresize  src='"+contexName+"/"+link+"' ></iframe>";
 		
         if(iconUrl.startsWith("/")){
         	iconUrl = iconUrl.substring(1);

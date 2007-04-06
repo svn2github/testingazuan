@@ -16,7 +16,7 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="java.net.URL"%>
 <%@page import="mondrian.olap.MondrianDef.VirtualCube"%>
-<%@page import="it.eng.spagobi.bean.TemplateBean"%>
+<%@page import="it.eng.spagobi.jpivotaddins.bean.TemplateBean"%>
 <%@page import="com.tonbeller.wcf.form.FormComponent"%>
 <%@page import="com.tonbeller.jpivot.olap.model.OlapModel"%>
 <%@page import="com.tonbeller.wcf.controller.RequestContext"%>
@@ -105,7 +105,6 @@ if (connections == null || connections.size() == 0) {
 	out.write("No connections defined in engine-config.xml file.");
 	return;
 }
-
 %>
 <p>
 <div style="margin: 0 0 5 5;">
@@ -118,29 +117,29 @@ if (connections == null || connections.size() == 0) {
 		<select name="connection" id="connection" style="width:200px" 
 			onchange="document.getElementById('action').value='selectConnection';document.getElementById('initialQueryForm').submit()">
 			<%
-			String selectedConnection = (String) session.getAttribute("selectedConnection");
-			Iterator connectionsIt = connections.iterator();
-			Node selectedConnectionNode = null;
-			while (connectionsIt.hasNext()) {
-				Node aConnection = (Node) connectionsIt.next();
-				String aConnectionName = aConnection.valueOf("@name");
-				String isConnectionSelected = "";
-				if (selectedConnection == null) {
-					if (aConnection.valueOf("@isDefault").trim().equalsIgnoreCase("true")) {
-						selectedConnectionNode = aConnection;
-						isConnectionSelected = "selected='selected'";
+				String selectedConnection = (String) session.getAttribute("selectedConnection");
+				Iterator connectionsIt = connections.iterator();
+				Node selectedConnectionNode = null;
+				while (connectionsIt.hasNext()) {
+					Node aConnection = (Node) connectionsIt.next();
+					String aConnectionName = aConnection.valueOf("@name");
+					String isConnectionSelected = "";
+					if (selectedConnection == null) {
+						if (aConnection.valueOf("@isDefault").trim().equalsIgnoreCase("true")) {
+					selectedConnectionNode = aConnection;
+					isConnectionSelected = "selected='selected'";
+						}
+					} else {
+						if (aConnectionName.equalsIgnoreCase(selectedConnection)) {
+					selectedConnectionNode = aConnection;
+					isConnectionSelected = "selected='selected'";
+						}
 					}
-				} else {
-					if (aConnectionName.equalsIgnoreCase(selectedConnection)) {
-						selectedConnectionNode = aConnection;
-						isConnectionSelected = "selected='selected'";
-					}
-				}
-				%>
+			%>
 				<option value="<%=aConnectionName%>" <%=isConnectionSelected%>><%=aConnectionName%></option>
 				<%
-			}
-			%>
+				}
+				%>
 		</select>
 	</div>
 </div>
@@ -157,27 +156,27 @@ if (connections == null || connections.size() == 0) {
 		<select name="schema" id="schema" style="width:200px" 
 			onchange="document.getElementById('action').value='selectSchema';document.getElementById('initialQueryForm').submit()">
 			<%
-			String selectedSchema = (String) session.getAttribute("selectedSchema");
-			if (selectedSchema == null) {
-				%>
+				String selectedSchema = (String) session.getAttribute("selectedSchema");
+				if (selectedSchema == null) {
+			%>
 				<option value="" selected="selected">&nbsp;</option>
 				<%
-			}
-			Iterator it = schemas.iterator();
-			Node selectedSchemaNode = null;
-			while (it.hasNext()) {
-				Node aSchema = (Node) it.next();
-				String aSchemaName = aSchema.valueOf("@name");
-				String isSchemaSelected = "";
-				if (aSchemaName.equalsIgnoreCase(selectedSchema)) {
-					selectedSchemaNode = aSchema;
-					isSchemaSelected = "selected='selected'";
-				}
+					}
+					Iterator it = schemas.iterator();
+					Node selectedSchemaNode = null;
+					while (it.hasNext()) {
+						Node aSchema = (Node) it.next();
+						String aSchemaName = aSchema.valueOf("@name");
+						String isSchemaSelected = "";
+						if (aSchemaName.equalsIgnoreCase(selectedSchema)) {
+							selectedSchemaNode = aSchema;
+							isSchemaSelected = "selected='selected'";
+						}
 				%>
 				<option value="<%=aSchemaName%>" <%=isSchemaSelected%>><%=aSchemaName%></option>
 				<%
-			}
-			%>
+				}
+				%>
 		</select>
 	</div>
 </div>
@@ -188,7 +187,7 @@ if (selectedSchema != null) {
 	String catalogUri = selectedSchemaNode.valueOf("@catalogUri");
 	MondrianDef.Cube[] cubes = (MondrianDef.Cube[]) session.getAttribute("MondrianCubes");
 	MondrianDef.VirtualCube[] virtualcubes = (MondrianDef.VirtualCube[]) 
-								session.getAttribute("MondrianVirtualCubes");
+				session.getAttribute("MondrianVirtualCubes");
 	boolean cubeWasSelected = true;
 	if (cubes == null) {
 		cubeWasSelected = false;
@@ -204,7 +203,7 @@ if (selectedSchema != null) {
 		out.write("No cubes defined in " + catalogUri + " file.");
 		return;
 	}
-	%>
+%>
 	<div style="margin: 0 0 5 5;">
 		<div style="float:left;clear:left;width:150px;height:25px;">
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
@@ -216,100 +215,99 @@ if (selectedSchema != null) {
 				onchange="document.getElementById('action').value='selectCube';document.getElementById('initialQueryForm').submit()">
 				<%
 				if (!cubeWasSelected) {
-					%>
+				%>
 					<option value="" selected="selected">&nbsp;</option>
 					<%
-				}
-				String selectedCubeName = (String) session.getAttribute("selectedCube");
-				MondrianDef.Cube selectedCube = null;
-				for (int i = 0; i < cubes.length; i++) {
-					MondrianDef.Cube aCube = cubes[i];
-					String isCubeSelected = "";
-					if (cubeWasSelected && aCube.name.equalsIgnoreCase(selectedCubeName)) {
-						selectedCube = aCube;
-						isCubeSelected = "selected='selected'";
-					}
+							}
+							String selectedCubeName = (String) session.getAttribute("selectedCube");
+							MondrianDef.Cube selectedCube = null;
+							for (int i = 0; i < cubes.length; i++) {
+								MondrianDef.Cube aCube = cubes[i];
+								String isCubeSelected = "";
+								if (cubeWasSelected && aCube.name.equalsIgnoreCase(selectedCubeName)) {
+							selectedCube = aCube;
+							isCubeSelected = "selected='selected'";
+								}
 					%>
 					<option value="<%=aCube.name%>" <%=isCubeSelected%>><%=aCube.name%></option>
 					<%
-				}
-				MondrianDef.VirtualCube selectedVirtualCube = null;
-				for (int i = 0; i < virtualcubes.length; i++) {
-					MondrianDef.VirtualCube aVirtualCube = virtualcubes[i];
-					String isVirtualCubeSelected = "";
-					if (cubeWasSelected && aVirtualCube.name.equalsIgnoreCase(selectedCubeName)) {
-						selectedVirtualCube = aVirtualCube;
-						isVirtualCubeSelected = "selected='selected'";
-					}
+							}
+							MondrianDef.VirtualCube selectedVirtualCube = null;
+							for (int i = 0; i < virtualcubes.length; i++) {
+								MondrianDef.VirtualCube aVirtualCube = virtualcubes[i];
+								String isVirtualCubeSelected = "";
+								if (cubeWasSelected && aVirtualCube.name.equalsIgnoreCase(selectedCubeName)) {
+							selectedVirtualCube = aVirtualCube;
+							isVirtualCubeSelected = "selected='selected'";
+								}
 					%>
 					<option value="<%=aVirtualCube.name%>" <%=isVirtualCubeSelected%>><%=aVirtualCube.name%></option>
 					<%
-				}
-				%>
+					}
+					%>
 			</select>
 		</div>
 	</div>
 	<%
-	OlapModel om = (OlapModel) session.getAttribute("query01");
-	if ((selectedCube != null || selectedVirtualCube != null) && om == null) {
-		// creates initial mdx query
-		String mdxQuery = null;
-		if (selectedCube != null) {
-			MondrianDef.CubeDimension dimension = selectedCube.dimensions[0];
-			MondrianDef.Measure measure = selectedCube.measures[0];
-			mdxQuery = "select {[Measures].[" + measure.name + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedCube.name + "]";
-		} else {
-			MondrianDef.VirtualCubeDimension dimension = selectedVirtualCube.dimensions[0];
-			MondrianDef.VirtualCubeMeasure measure = selectedVirtualCube.measures[0];
-			String virtualCubeMeasureName = measure.name;
-			String temp = virtualCubeMeasureName.toLowerCase();
-			if (temp.startsWith("[measures].[")) {
-				virtualCubeMeasureName = virtualCubeMeasureName.substring(12, virtualCubeMeasureName.length() - 1);
-			}
-			mdxQuery = "select {[Measures].[" + virtualCubeMeasureName + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedVirtualCube.name + "]";
+		OlapModel om = (OlapModel) session.getAttribute("query01");
+		if ((selectedCube != null || selectedVirtualCube != null) && om == null) {
+			// creates initial mdx query
+			String mdxQuery = null;
+			if (selectedCube != null) {
+		MondrianDef.CubeDimension dimension = selectedCube.dimensions[0];
+		MondrianDef.Measure measure = selectedCube.measures[0];
+		mdxQuery = "select {[Measures].[" + measure.name + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedCube.name + "]";
+			} else {
+		MondrianDef.VirtualCubeDimension dimension = selectedVirtualCube.dimensions[0];
+		MondrianDef.VirtualCubeMeasure measure = selectedVirtualCube.measures[0];
+		String virtualCubeMeasureName = measure.name;
+		String temp = virtualCubeMeasureName.toLowerCase();
+		if (temp.startsWith("[measures].[")) {
+			virtualCubeMeasureName = virtualCubeMeasureName.substring(12, virtualCubeMeasureName.length() - 1);
 		}
-		
-		// puts the catalogUri in session for TemplateBean.saveTemplate() method
-		session.setAttribute("catalogUri", catalogUri);
-		
-		// execute initial query
-		String jndi = selectedConnectionNode.valueOf("@isJNDI");
-		if (jndi.equalsIgnoreCase("true")) {
-		    String iniCont = selectedConnectionNode.valueOf("@initialContext");
-		    String resName = selectedConnectionNode.valueOf("@resourceName");
-		    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+catalogUri+";";
-	    	%>
+		mdxQuery = "select {[Measures].[" + virtualCubeMeasureName + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedVirtualCube.name + "]";
+			}
+			
+			// puts the catalogUri in session for TemplateBean.saveTemplate() method
+			session.setAttribute("catalogUri", catalogUri);
+			
+			// execute initial query
+			String jndi = selectedConnectionNode.valueOf("@isJNDI");
+			if (jndi.equalsIgnoreCase("true")) {
+			    String iniCont = selectedConnectionNode.valueOf("@initialContext");
+			    String resName = selectedConnectionNode.valueOf("@resourceName");
+			    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+catalogUri+";";
+	%>
 			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">
 				<%=mdxQuery%>
 			</jp:mondrianQuery>
 			<%
-		} else {
-			String driver = selectedConnectionNode.valueOf("@driver");
-			String url = selectedConnectionNode.valueOf("@jdbcUrl");
-			String usr = selectedConnectionNode.valueOf("@user");
-			String pwd = selectedConnectionNode.valueOf("@password");
-		    String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
+				} else {
+				String driver = selectedConnectionNode.valueOf("@driver");
+				String url = selectedConnectionNode.valueOf("@jdbcUrl");
+				String usr = selectedConnectionNode.valueOf("@user");
+				String pwd = selectedConnectionNode.valueOf("@password");
+					    String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
 			%>
 		    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >
 				<%=mdxQuery%>
 			</jp:mondrianQuery>	
 			<%
-		}
-	}
-	om = (OlapModel) session.getAttribute("query01");
-	if (om != null) {
-		TemplateBean templateBean = (TemplateBean) session.getAttribute("saveTemplate01");
-		if (templateBean == null) {
-			templateBean = new TemplateBean();
-			session.setAttribute("saveTemplate01", templateBean);
-		}
-		Object formObj = session.getAttribute("saveTemplateForm01");
-		if (formObj != null) {
-			FormComponent form = (FormComponent) formObj;
-			form.setBean(templateBean);
-		}	
-		
-		%>
+					}
+					}
+					om = (OlapModel) session.getAttribute("query01");
+					if (om != null) {
+						TemplateBean templateBean = (TemplateBean) session.getAttribute("saveTemplate01");
+						if (templateBean == null) {
+					templateBean = new TemplateBean();
+					session.setAttribute("saveTemplate01", templateBean);
+						}
+						Object formObj = session.getAttribute("saveTemplateForm01");
+						if (formObj != null) {
+					FormComponent form = (FormComponent) formObj;
+					form.setBean(templateBean);
+						}
+				%>
 		<div style="clear:left">
 		<p>
 		<jp:table id="table01" query="#{query01}"/>

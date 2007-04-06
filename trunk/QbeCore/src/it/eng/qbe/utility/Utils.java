@@ -1,6 +1,7 @@
 package it.eng.qbe.utility;
 
 import groovy.util.GroovyScriptEngine;
+import it.eng.qbe.datasource.HibernateDataSource;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISelectField;
@@ -73,6 +74,23 @@ public class Utils {
 		}
 		
 	}
+	
+	public static IDataMartModelRetriever getDataMartModelRetriever() throws Exception {		
+		String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
+		IDataMartModelRetriever dataMartModelRetriever = (IDataMartModelRetriever)Class.forName(dataMartModelRetrieverClassName).newInstance();
+		return dataMartModelRetriever;
+	}
+	
+	public static List getViewJarFiles(HibernateDataSource dataSource){
+		try{
+			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
+			return dataMartModelRetriever.getViewJarFiles(dataSource.getPath(), dataSource.getDialect());
+		}catch (Exception e) {
+			Logger.error(DataMartModel.class, e);
+			return null;
+		}
+	}
+	
 	/**
 	 * This method is responsible to get Propertis  associated with datamart models, Properties objects
 	 * are cached in Application Container
@@ -83,15 +101,27 @@ public class Utils {
 	public static Properties getLabelProperties(DataMartModel dm, ApplicationContainer application) {
 		
 		Properties props = new Properties();
+		
+		HibernateDataSource dataSource = dm.getDataSource();
 		try{
-			String propEntryInApplicationContext = dm.getPath()+"_labels";
+			String propEntryInApplicationContext = dataSource.getPath()+"_labels";
 			if (application.getAttribute(propEntryInApplicationContext) != null){
 				props =  (Properties)application.getAttribute(propEntryInApplicationContext);
 			}else{
-				File dmJarFile = dm.getJarFile();
+				File dmJarFile = dataSource.getJarFile();
 				JarFile jf = new JarFile(dmJarFile);
 			
 				props = LocaleUtils.getLabelProperties(jf);
+				
+				List views = getViewJarFiles(dataSource);
+				Iterator it = views.iterator();
+				while(it.hasNext()) {
+					File viewJarFile = (File)it.next();
+					jf = new JarFile(viewJarFile);
+					Properties tmpProps = LocaleUtils.getLabelProperties(jf);
+					props.putAll(tmpProps);
+				}
+				
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -112,18 +142,31 @@ public class Utils {
 	public static Properties getLabelProperties(DataMartModel dm, ApplicationContainer application, Locale loc) {
 		
 		Properties props = new Properties();
+		
+		HibernateDataSource dataSource = dm.getDataSource();
 		try{
-			String propEntryInApplicationContext = dm.getPath()+"_labels_"+loc.getLanguage();
+			String propEntryInApplicationContext = dataSource.getPath()+"_labels_"+loc.getLanguage();
 			if (application.getAttribute(propEntryInApplicationContext) != null){
-				props =  (Properties)application.getAttribute(dm.getPath()+"_labels_"+loc.getLanguage());
+				props =  (Properties)application.getAttribute(dataSource.getPath()+"_labels_"+loc.getLanguage());
 			}else{
-				File dmJarFile = dm.getJarFile();
+				File dmJarFile = dataSource.getJarFile();
 				JarFile jf = new JarFile(dmJarFile);
 			
 				props = LocaleUtils.getLabelProperties(jf, loc);
 				
-				if (props.isEmpty())
+				if (props.isEmpty()) {
 					return getLabelProperties(dm, application);
+				} else {
+					List views = getViewJarFiles(dataSource);
+					Iterator it = views.iterator();
+					while(it.hasNext()) {
+						File viewJarFile = (File)it.next();
+						jf = new JarFile(viewJarFile);
+						Properties tmpProps = LocaleUtils.getLabelProperties(jf, loc);
+						if(tmpProps.isEmpty()) tmpProps = LocaleUtils.getLabelProperties(jf);
+						props.putAll(tmpProps);
+					}
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

@@ -84,6 +84,7 @@ public class HibernateDataSource extends BasicDataSource  {
 		
 		cfg = getHibernateConfiguration(getJarFile());
 		
+		/*
 		List viewsJarFile = getViewJarFiles();
 		
 		File f = null;
@@ -94,6 +95,7 @@ public class HibernateDataSource extends BasicDataSource  {
 				alreadyAddedView.add(f.getAbsolutePath());
 			}
 		}
+		*/
 		
 		sf = cfg.buildSessionFactory();
 				
@@ -104,6 +106,10 @@ public class HibernateDataSource extends BasicDataSource  {
 		if (this.configuration == null)
 			this.configuration = initHibernateConfiguration(jarFile);
 		return configuration;
+	}
+	
+	public Configuration getHibernateConfiguration() {
+		return getHibernateConfiguration(getJarFile());
 	}
 	
 	public Configuration initHibernateConfiguration(File jarFile) {
@@ -131,8 +137,6 @@ public class HibernateDataSource extends BasicDataSource  {
 				this.classLoaderExtended = true;
 			}
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
-			if (jarFile == null)
-				System.out.println( " --------------------- JAR FILE NULLO --------------- ");
 			cfg.addJar(jarFile);
 			Logger.debug(DataMartModel.class, "getHibernateConfiguration: add jar file to configuration");			
 		
@@ -171,8 +175,6 @@ public class HibernateDataSource extends BasicDataSource  {
 				}
 				this.classLoaderExtended = true;
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: current class loader updated");
-				if (jarFile == null)
-					System.out.println( " --------------------- JAR FILE NULLO --------------- ");
 				cfg.addJar(jarFile);
 				Logger.debug(DataMartModel.class, "getHibernateConfiguration: add jar file to configuration");
 			
@@ -212,6 +214,19 @@ public class HibernateDataSource extends BasicDataSource  {
 		}
 		else {
 			Logger.error(DataMartModel.class, "getHibernateConfiguration: impossible to build configuration");
+		}
+		
+		if(cfg != null) {
+			List viewsJarFile = getViewJarFiles();
+			
+			File f = null;
+			for (Iterator it = viewsJarFile.iterator(); it.hasNext(); ){
+				f = ((File)it.next());
+				if (!(alreadyAddedView.contains(f.getAbsolutePath()))){
+					cfg.addJar(f);
+					alreadyAddedView.add(f.getAbsolutePath());
+				}
+			}
 		}
 		
 		return cfg;
@@ -344,10 +359,16 @@ public class HibernateDataSource extends BasicDataSource  {
 		this.path = path;
 	}
 	
+	/**
+	 * @deprecated use getHibernateConfiguration()
+	 */
 	public Configuration getHibCfg() {
-		return configuration;
+		return getHibernateConfiguration();
 	}
 
+	/**
+	 * @deprecated external bbject cannot set the configuration
+	 */
 	public void setHibCfg(Configuration hibCfg) {
 		this.configuration = hibCfg;
 	}
@@ -366,5 +387,9 @@ public class HibernateDataSource extends BasicDataSource  {
 
 	public void setAlreadyAddedView(List alreadyAddedView) {
 		this.alreadyAddedView = alreadyAddedView;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

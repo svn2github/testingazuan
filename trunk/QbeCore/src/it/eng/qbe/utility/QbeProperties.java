@@ -26,6 +26,8 @@ import it.eng.spago.base.ApplicationContainer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -38,6 +40,7 @@ public class QbeProperties {
 	
 	public static final int CLASS_TYPE_TABLE = 1;
 	public static final int CLASS_TYPE_RELATION = 2;
+	public static final int CLASS_TYPE_VIEW = 3;
 	
 	public static final int FIELD_TYPE_MEASURE = 1;
 	public static final int FIELD_TYPE_DIMENSION = 2;
@@ -76,6 +79,8 @@ public class QbeProperties {
 		String type = qbeProperties.getProperty(fieldName + ".type");
 		if(type == null || type.trim().equalsIgnoreCase("table")) {
 			return CLASS_TYPE_TABLE;
+		} else if(type.trim().equalsIgnoreCase("view")) {
+			return CLASS_TYPE_VIEW;
 		} else {
 			return CLASS_TYPE_RELATION;
 		}
@@ -102,6 +107,15 @@ public class QbeProperties {
 		try {
 			jf = new JarFile(dmJarFile);
 			qbeProperties = getQbeProperties(jf);
+			
+			List views = Utils.getViewJarFiles(dm.getDataSource());
+			Iterator it = views.iterator();
+			while(it.hasNext()) {
+				File viewJarFile = (File)it.next();
+				jf = new JarFile(viewJarFile);
+				Properties tmpProps = getQbeProperties(jf);
+				qbeProperties.putAll(tmpProps);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

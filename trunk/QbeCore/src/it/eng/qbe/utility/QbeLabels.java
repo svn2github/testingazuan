@@ -307,7 +307,7 @@ public class QbeLabels {
 	}
 	
 	public static void main(String[] args) {
-		String jarFilePath = "C:\\Programmi\\datamart.jar";
+		String jarFilePath = "C:\\Prototipi\\SpagoBI-1.9.2-QbE\\webapps\\SpagoBIQbeEngine\\tmp\\datamarts\\foodmart2\\PropmotiontvView.jar";
 		File jarFile = new File(jarFilePath);
 		QbeLabels qbeLabels = new QbeLabels(jarFile, null);
 		qbeLabels.buildLabels();

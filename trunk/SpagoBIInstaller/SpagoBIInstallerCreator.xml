@@ -55,10 +55,6 @@
    		<res src="IzPanels/Introduction.html" id="HTMLInfoPanel.info"/>
    		<res src="IzPanels/Introduction_ita.html" id="HTMLInfoPanel.info_ita"/>
     	<res src="IzPanels/Licence.txt" id="LicencePanel.licence"/>
-    	<!--
-    	<res src="IzPanels/HTMLInfoPanel.txt" id="HTMLInfoPanel.info"/>
-    	<res src="IzPanels/HTMLInfoPanel_ita.txt" id="HTMLInfoPanel.info_ita"/>
-    	-->
     	<res src="IzPanels/userInputSpec.xml" id="userInputSpec.xml"/>
     	<res src="IzPanels/userInputLang.xml_ita" id="userInputLang.xml_ita"/>
     	<res src="IzPanels/userInputLang.xml_eng" id="userInputLang.xml_eng"/>

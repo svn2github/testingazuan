@@ -1,1 +1,0 @@
-Installation of SpagoBI on you PC is completed.

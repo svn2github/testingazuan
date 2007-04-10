@@ -1,0 +1,26 @@
+<langpack>
+    
+    <str id="SpagoBITargetPanel.info" txt="Select the installation folder of your eXo Portal:"/>
+    
+    <str id="SpagoBITargetPanel.spagobi.existing" txt="The installation path already contains a SpagoBI installation. This will be overwritten therefore existing configurations will be lost. Continue?"/>
+    
+    <str id="SpagoBIFinishPanel.installedEngines" txt="The following SpagoBIPlatform external engines were installed:" />
+    <str id="SpagoBIFinishPanel.noEnginesInstalled" txt="No SpagoBIPlatform external engines were installed." />
+    <str id="SpagoBIFinishPanel.examples.installed" txt="SpagoBI Demo examples and example portal 'sbiportal' were installed" />
+    <str id="SpagoBIFinishPanel.examples.installed" txt="SpagoBI Demo examples and example portal 'sbiportal' were not installed" />
+    <str id="SpagoBIFinishPanel.examples.notinstalled" txt="Non sono stati installati nй i documenti di esempio di SpagoBI Demo nй il portale di esempio 'sbiportal'" />
+    <str id="SpagoBIFinishPanel.startSpagoBIInfo" txt="To start eXo-Portal server with SpagoBIPlatform click on the icon or launch:" />
+    
+    <str id="SpagoBIFinishPanel.noExamples.connectionUrl" txt="Then connect to http://localhost:$SERVER_PORT/portal and start to work with SpagoBI!!" />
+    
+    <str id="SpagoBIFinishPanel.examples.connectionUrl" txt="Then connect to http://localhost:$SERVER_PORT/sbiportal to see the SpagoBI Demo examples." />
+    
+    <str id="SpagoBIRepositoryPathPanel.empty.spagobirepo.warning" txt="The folder does not contain any selected packs. These packs will be downloaded into this folder. Continue?" />
+    <str id="SpagoBIRepositoryPathPanel.missingpacks.spagobirepo.warning" txt="The folder contains %0 of %1 selected packs. Missing packs will be downloaded into this folder. Continue?" />
+    <str id="SpagoBIRepositoryPathPanel.notwritable.spagobirepo.warning" txt="The folder is not writable. The packs will be downloaded from the remote repository. Continue?" />
+    <str id="SpagoBIRepositoryPathPanel.new.spagobirepo.warning" txt="The folder will be created and all selected packs will be downloaded here. Continue?" />
+    
+    <str id="SpagoBIRepositoryPathPanel.intro" txt="Now you have to select the local repository folder. As explained before, SpagoBI Core and its engines binary packs are not included in this installation file. If you have already executed this installation procedure or if you have manually downloaded the packs, select the folder where packs were downloaded. Otherwise select an empty folder: packs will be automatically downloaded inside it from a remote repository."/>
+    <str id="SpagoBIRepositoryPathPanel.info" txt="Select the path of your local SpagoBI repository:"/>
+    
+</langpack>

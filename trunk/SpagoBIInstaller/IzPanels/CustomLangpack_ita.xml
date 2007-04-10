@@ -1,0 +1,25 @@
+<langpack>
+
+	<str id="SpagoBITargetPanel.info" txt="Seleziona il percorso di installazione del tuo eXo Portal:"/>
+
+    <str id="SpagoBITargetPanel.spagobi.existing" txt="La destinazione scelta contiene una precedente installazione di SpagoBI. Questa installazione verrà sovrascritta con conseguente perdita di eventuali configurazioni precedenti. Continuare?"/>
+    
+    <str id="SpagoBIFinishPanel.installedEngines" txt="Sono stati installati i seguenti motori esterni di SpagoBIPlatform:" />
+    <str id="SpagoBIFinishPanel.noEnginesInstalled" txt="Non и stato installato alcun motore esterno di SpagoBIPlatform." />
+    <str id="SpagoBIFinishPanel.examples.installed" txt="Sono stati installati i documenti di esempio di SpagoBI Demo e il portale di esempio 'sbiportal'" />
+    <str id="SpagoBIFinishPanel.examples.notinstalled" txt="Non sono stati installati nй i documenti di esempio di SpagoBI Demo nй il portale di esempio 'sbiportal'" />
+    <str id="SpagoBIFinishPanel.startSpagoBIInfo" txt="Per avviare il server eXo-Portal clicca sull'icona oppure esegui:" />
+
+    <str id="SpagoBIFinishPanel.noExamples.connectionUrl" txt="Poi connettiti a http://localhost:$SERVER_PORT/portal e comincia le tue analisi con SpagoBI!!" />
+    
+    <str id="SpagoBIFinishPanel.examples.connectionUrl" txt="Poi connettiti a http://localhost:$SERVER_PORT/sbiportal per vedere gli esempi di SpagoBI Demo." />
+    
+    <str id="SpagoBIRepositoryPathPanel.empty.spagobirepo.warning" txt="La cartella indicata non contiene alcun pacchetto selezionato. Tali pacchetti verranno scaricati in questa cartella. Continuare?" />
+    <str id="SpagoBIRepositoryPathPanel.missingpacks.spagobirepo.warning" txt="La cartella indicata contiene %0 di %1 pacchetti selezionati. I pacchetti mancanti verranno scaricati in questa cartella. Continuare?" />
+    <str id="SpagoBIRepositoryPathPanel.notwritable.spagobirepo.warning" txt="La cartella indicata non è scrivibile. I pacchetti richiesti verranno scaricati dal repository remoto. Continuare?" />
+    <str id="SpagoBIRepositoryPathPanel.new.spagobirepo.warning" txt="La cartella verrа creata ed in essa verranno scaricati i pacchetti selezionati. Continuare?" />
+    
+    <str id="SpagoBIRepositoryPathPanel.intro" txt="Ora devi selezionare la cartella del tuo repository locale. Come spiegato precedentemente, i pacchetti con i binari del nucleo di SpagoBI e dei suoi motori esterni non sono inclusi in questo file di installazione. Se hai giа eseguito questa procedura di installazione oppure se hai scaricato manualmente i pacchetti, seleziona la cartella in cui i pacchetti sono stati scaricati. Altrimenti seleziona una cartella vuota: i pacchetti verranno scaricati automaticamente all'interno di essa da un repository remoto."/>
+    <str id="SpagoBIRepositoryPathPanel.info" txt="Seleziona la cartella del tuo repository locale di SpagoBI:"/>    
+    
+</langpack>

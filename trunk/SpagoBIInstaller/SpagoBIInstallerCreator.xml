@@ -69,10 +69,8 @@
     	<res src="IzPanels/conditions.xml" id="conditions.xml"/>
     	<res src="IzPanels/packsLang.xml_ita" id="packsLang.xml_ita"/>
     	<res src="IzPanels/packsLang.xml_eng" id="packsLang.xml_eng"/>
-    	<!--
     	<res src="IzPanels/CustomLangpack_ita.xml" id="CustomLangpack.xml_ita"/>
     	<res src="IzPanels/CustomLangpack_eng.xml" id="CustomLangpack.xml_eng"/>
-    	-->
 	</resources>
 	<panels>
     	<panel classname="HelloPanel" id="hellopanel"/>

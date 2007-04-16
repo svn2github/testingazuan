@@ -16,8 +16,6 @@ import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
-import it.eng.spagobi.utilities.urls.IUrlBuilder;
-import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -113,13 +111,18 @@ public class FisheyeMenuTag extends TagSupport {
 		Iterator iterViews = views.iterator();
 		while(iterViews.hasNext()) {
 			SourceBean viewSB = (SourceBean)iterViews.next();
-			String roleAssociated = (String)viewSB.getAttribute("role");
+			String rolesAssociatedStr = (String)viewSB.getAttribute("role");
+			rolesAssociatedStr = rolesAssociatedStr.trim();
+			String[] rolesAssociated = rolesAssociatedStr.split(",");
 			boolean isAllowed = false;
 			Iterator userRolesIter = userRoles.iterator();
 			while(userRolesIter.hasNext()) {
 				String userRole = (String)userRolesIter.next();
-				if(userRole.equalsIgnoreCase(roleAssociated)) {
-					isAllowed = true;
+				for(int i=0; i<rolesAssociated.length; i++) {
+					String roleAssociated = rolesAssociated[i];
+					if(userRole.equalsIgnoreCase(roleAssociated)) {
+						isAllowed = true;
+					}
 				}
 			}
 			if(!isAllowed) {

@@ -21,7 +21,9 @@
 			SourceBean loginModuleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule");
 			if(loginModuleResponse!=null) {
 				String authFailedMessage = (String)loginModuleResponse.getAttribute(SpagoBIConstants.AUTHENTICATION_FAILED_MESSAGE);
-				authFailed = authFailedMessage;
+				if(authFailedMessage!=null) {
+					authFailed = authFailedMessage;
+				}
 			}
 		}
 	}

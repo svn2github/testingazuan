@@ -16,9 +16,14 @@ import java.util.Map;
 public class DatamartObject{
     
 	/**
-	 * Mpa of id and values related to the svg map 
+	 * Map of id and values related to the svg map 
 	 */
 	private Map values = null;
+	
+	/**
+	 * Map of id and values related to the svg map 
+	 */
+	private Map links = null;
 
 	/**
 	 * Constructor
@@ -73,4 +78,23 @@ public class DatamartObject{
     		return " ";
     	}
     }
+    
+    /**
+     * Recover the detail document link associated to a particular id. The method recovers from the
+     * data map the value link associated to the id 
+     * @param id the id of the element 
+     * @return the document detail link associated to the id 
+     */
+    public String getLinkForId(String id) {
+    	String link = (String)links.get(id);
+    	return link;
+    }
+
+	public Map getLinks() {
+		return links;
+	}
+
+	public void setLinks(Map links) {
+		this.links = links;
+	}
 }

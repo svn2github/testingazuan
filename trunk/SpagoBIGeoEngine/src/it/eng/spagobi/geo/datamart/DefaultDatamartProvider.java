@@ -62,6 +62,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
             sdr = (ScrollableDataResult) dr.getDataObject();
             ResultSet resultSet = sdr.getResultSet();
             Map styles = new HashMap();
+            Map links = new HashMap();
             while(resultSet.next()) {
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {
@@ -73,8 +74,10 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
             	}
             	Integer value = new Integer(valueStr);
             	styles.put(id, value);
+            	links.put(id, "http://www.google.com");
             }
             datamartObject.setValues(styles);
+            datamartObject.setLinks(links);
         } catch (Exception ex) {
         	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
         					    "DefaultDatamartProvider :: getDatamartObject : " +

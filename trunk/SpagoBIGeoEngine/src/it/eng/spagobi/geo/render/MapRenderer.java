@@ -32,6 +32,8 @@ import org.apache.batik.transcoder.image.JPEGTranscoder;
  */
 public class MapRenderer {
 
+	private boolean closeLink = false;
+	
 	/**
 	 * Gets the original svg map and the datawarehouse data and then transfor the svg map
 	 * based on the template configuration and data recovered. The new map is stored in a 
@@ -70,14 +72,16 @@ public class MapRenderer {
 		                 break;
 		            case XMLStreamConstants.START_ELEMENT:
 		            	// get the tag name
-		            	String tagname = svgMapStreamReader.getLocalName();
+		            	String tagname = svgMapStreamReader.getLocalName();       	
 			            // if the tag name is the svg tag set the correspondent flag to true
 		            	boolean issvgtag = false;
 		            	if(tagname.trim().equalsIgnoreCase("svg")) {
 		            		issvgtag = true;
 			            }
-		            	// write the tag to output
-		            	fos.write(("<" + tagname + " ").getBytes());    
+		            	String svgcode = "";
+		            	boolean hasLink = false;
+		            	String startlinkcode = "";
+		            	svgcode += "<" + tagname + " ";    
 		            	// for each attribute check if is an xmlsn attribute and write to output
 		            	boolean xmlnsfound = false;
 		            	for(int i=0, n=svgMapStreamReader.getAttributeCount(); i<n; ++i) {
@@ -90,26 +94,52 @@ public class MapRenderer {
 		            		if(attrName.equalsIgnoreCase("id")) {
 		            			if(datamartObject.hasId(attrValue)) {
 		            				String style = datamartObject.getStyleForId(attrValue, mapConfiguration);
-		            				fos.write( (" style=\"" + style + "\" ").getBytes());
+		            				svgcode += " style=\"" + style + "\" ";
+		            			}
+		            			String link = datamartObject.getLinkForId(attrValue);
+		            			if(link!=null){
+		            				hasLink = true;
+		            				closeLink = true;
+		            				startlinkcode = "<a xlink:href=\""+link+"\">";
 		            			}
 		            		}
-		            		fos.write((attrName + "=\"" + attrValue + "\" ").getBytes());
+		            		svgcode += attrName + "=\"" + attrValue + "\" ";
 		            	}
 		            	// if the tag is svg and there isn't a xmlns attribute the set it (otherwise firefox don't work)
 		            	if((issvgtag) && !xmlnsfound) {
-		            		fos.write((" xmlns=\"http://www.w3.org/2000/svg\" ").getBytes());
+		            		svgcode += " xmlns=\"http://www.w3.org/2000/svg\" ";
 		            	}
-		            	fos.write(" > \n".getBytes());
+		            	if(issvgtag) {
+		            		svgcode += " xmlns:xlink=\"http://www.w3.org/1999/xlink\" ";
+		            	}
+		            	svgcode += " > \n";
+		            	
+		            	if(hasLink) {
+		            		svgcode = startlinkcode + svgcode;
+		            	}
+		            	
+		            	// write the tag to output
+		            	fos.write(svgcode.getBytes());
+		            	
 		            	break;
 		            case XMLStreamConstants.CHARACTERS:
-		                  break;
+		            	String text = svgMapStreamReader.getText();
+		            	if( (text!=null) && !text.trim().equalsIgnoreCase("") ){
+		            		fos.write(text.getBytes());
+		            	}
+		            	break;
 		            case XMLStreamConstants.END_ELEMENT:
 		                tagname = svgMapStreamReader.getLocalName();
 		                if(tagname.trim().equalsIgnoreCase("svg")) {
 		                	String legendString = mapConfiguration.getLegend();
 		                	fos.write(legendString.getBytes());
 		                }
-		            	fos.write(("</" + svgMapStreamReader.getLocalName() + "> \n").getBytes());    
+		            	fos.write(("</" + svgMapStreamReader.getLocalName() + "> \n").getBytes());   
+		            	
+		            	if(closeLink) {
+		            		fos.write("</a>".getBytes());
+		            		closeLink = false;
+		            	}
 		            	break;
 		            case XMLStreamConstants.END_DOCUMENT:
 		                  break;

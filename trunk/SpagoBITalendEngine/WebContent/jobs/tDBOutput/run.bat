@@ -1,1 +1,0 @@
-C:\Programmi\Perl\bin\perl.exe TALENDDEMOS.job_tDBOutput.pl --context=TALENDDEMOS.job_tDBOutput_Default.pl

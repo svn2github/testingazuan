@@ -1,0 +1,1 @@
+C:\Programmi\Talend\TOS-2.0.0M2\TOS-Win32-r2461-V2.0.0M2\perl\bin\perl.exe TEST.job_Prova.pl --context=TEST.job_Prova_PROD.pl

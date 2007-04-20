@@ -14,13 +14,33 @@
 	-->
 
 	<servlet>
-		<servlet-name>TalendServlet</servlet-name>
-		<servlet-class>it.eng.spagobi.engines.talend.TalendServlet</servlet-class>
+		<servlet-name>JobRunService</servlet-name>
+		<servlet-class>it.eng.spagobi.engines.talend.services.JobRunService</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>JobUploadService</servlet-name>
+		<servlet-class>it.eng.spagobi.engines.talend.services.JobUploadService</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>EngineInfoService</servlet-name>
+		<servlet-class>it.eng.spagobi.engines.talend.services.EngineInfoService</servlet-class>
 	</servlet>
 	
 	<servlet-mapping>
-		<servlet-name>TalendServlet</servlet-name>
-		<url-pattern>/TalendServlet</url-pattern>
+		<servlet-name>EngineInfoService</servlet-name>
+		<url-pattern>/EngineInfoService</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>JobRunService</servlet-name>
+		<url-pattern>/JobRunService</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>JobUploadService</servlet-name>
+		<url-pattern>/JobUploadService</url-pattern>
 	</servlet-mapping>
 	
 </web-app>

@@ -70,4 +70,55 @@ function SbiJsInitializerClass() {
 
 // END PORLTET JAVASCRIPT INTIIALIZER
 
- 
+// START IFRAMES NAVIGATOR INITIALIZER
+function IFramesNavigator() {
+
+  this.nestedFrames = new Array();
+  
+  this.addFrame = AddFrame;
+  
+  function AddFrame(nestedFrame, label) {
+    aFrameWithLabel = new Array(nestedFrame, label);
+    this.nestedFrames[this.nestedFrames.length] = aFrameWithLabel;
+  }
+  
+  this.removeFrames = RemoveFrames;
+  
+  function RemoveFrames(index) {
+    aFrameWithLabel = this.nestedFrames[index];
+    aFrame = aFrameWithLabel[0];
+    //PER IE
+    //alert(aFrame.contentDocument.getElementById('1'));
+    
+    //PER FIREFOX
+    //aFrame.src = aFrame.contentDocument.getElementById('1');
+    
+    //aFrame.src = "http://www.libero.it";
+    
+    initialLength = this.nestedFrames.length;
+    for (i = 1; i < initialLength - index; i++) {
+      this.nestedFrames.pop();
+    }
+    window.history.go(-(initialLength - 1 - index));
+  }
+  
+  this.getFramesNumber = GetFramesNumber;
+  
+  function GetFramesNumber() {
+    return this.nestedFrames.length;
+  }
+  
+  this.getFrame = GetFrame;
+  
+  function GetFrame(index) {
+    return this.nestedFrames[index];
+  }
+
+}
+
+try {
+  iframesNavigator.prototype;
+} catch (err) {
+  var iframesNavigator = new IFramesNavigator();
+}
+// END IFRAMES NAVIGATOR INITIALIZER

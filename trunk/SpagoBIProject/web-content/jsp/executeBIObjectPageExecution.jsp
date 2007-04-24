@@ -22,13 +22,13 @@
                  it.eng.spago.base.SessionContainer,
                  it.eng.spago.security.IEngUserProfile,
                  it.eng.spagobi.utilities.SpagoBITracer,
-                 it.eng.spagobi.utilities.ChannelUtilities" %>      
+                 it.eng.spagobi.utilities.ChannelUtilities" %>
 
 <%
     // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
-    String requestIdentity = "request" + uuid.toString();  
+    String requestIdentity = "request" + uuid.toString();
     requestIdentity = requestIdentity.replaceAll("-", "");
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
@@ -41,21 +41,21 @@
     Map mapPars = (Map)moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
    	// get the actor
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-	
-    
+
+
 	// build the string of the title
     String title = "";
     title = obj.getName();
     String objDescr = obj.getDescription();
-    if( (objDescr!=null) && !(objDescr.trim().equals("")) ) 
+    if( (objDescr!=null) && !(objDescr.trim().equals("")) )
     	title += ": " + objDescr;
-    
+
 	// try to get the modality
 	boolean isSingleObjExec = false;
 	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
    	if( (modality!=null) && modality.equals(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) )
    		isSingleObjExec = true;
-   	
+
    	// try to get from the session the heigh of the output area
    	boolean heightSetted = false;
    	String heightArea = (String)aSessionContainer.getAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA);
@@ -64,21 +64,26 @@
    	} else {
    		heightSetted = true;
    	}
-   	
+
    	// build the back link
    	Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "BIObjectsPage");
     backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
-	
+
 	// build the refresh url
 	Map refreshUrlPars = new HashMap();
-	refreshUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
-	refreshUrlPars.put(SpagoBIConstants.ACTOR, actor);
-	refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	if (!isSingleObjExec) {
+		refreshUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
+		refreshUrlPars.put(SpagoBIConstants.ACTOR, actor);
+		refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	} else {
+		refreshUrlPars.put("PAGE", "DirectExecutionPage");
+		refreshUrlPars.put("OPERATION", "REFRESH");
+	}
     String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
-	
+
 	IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	List states = domaindao.loadListDomainsByType("STATE");
     List possibleStates = new java.util.ArrayList();
@@ -86,65 +91,65 @@
     	Iterator it = states.iterator();
     	 while(it.hasNext()) {
       		    	Domain state = (Domain)it.next();
-      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){ 
+      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){
       					possibleStates.add(state);
       				}
-      	}  
+      	}
     } else if (actor.equalsIgnoreCase(it.eng.spagobi.constants.SpagoBIConstants.TESTER_ACTOR)){
     	Iterator it = states.iterator();
     	 while(it.hasNext()) {
       		    	Domain state = (Domain)it.next();
-      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) { 
+      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) {
       					possibleStates.add(state);
       				}
-      	}  
-    } 
-    
-    
+      	}
+    }
+
+
 
     // check if notes editor is able
     boolean edNoteAble = false;
-    String edNoteAbleStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_ABLE, "FALSE");
+    String edNoteAbleStr = ChannelUtilities.getPreferenceValue(aRequestContainer, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_ABLE, "FALSE");
     if(edNoteAbleStr.equalsIgnoreCase("true")) {
     	edNoteAble = true;
     }
     // get the preference width dimension for notes editor
 	int widthNotes = 600;
-	String widthNoteEditorStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_WIDTH, "600");
+	String widthNoteEditorStr = ChannelUtilities.getPreferenceValue(aRequestContainer, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_WIDTH, "600");
 	try{
 		widthNotes = new Integer(widthNoteEditorStr).intValue();
 	} catch (Exception e) {
 		widthNotes = 600;
-		SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "executeBIObjectPageExecution", 
+		SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "executeBIObjectPageExecution",
 				              " ", "Error while recovering the width preference of the notes editor", e);
 	}
 	// get the preference height dimension for notes editor
 	int heightNotes = 300;
-	String heightNoteEditorStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_HEIGHT, "300");
+	String heightNoteEditorStr = ChannelUtilities.getPreferenceValue(aRequestContainer, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_HEIGHT, "300");
 	try{
 		heightNotes = new Integer(heightNoteEditorStr).intValue();
 	} catch (Exception e) {
 		heightNotes = 300;
-		SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "executeBIObjectPageExecution", 
+		SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "executeBIObjectPageExecution",
 				              " ", "Error while recovering the height preference of the notes editor", e);
 	}
-	// check if the editor notes as to be opened automatically	
+	// check if the editor notes as to be opened automatically
 	boolean notesEditOpen = false;
-	String notesEditOpenStr = ChannelUtilities.getPreferenceValue(aServiceRequest, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_OPEN, "false");
+	String notesEditOpenStr = ChannelUtilities.getPreferenceValue(aRequestContainer, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_OPEN, "false");
 	if(notesEditOpenStr.equalsIgnoreCase("true")){
 		notesEditOpen = true;
 	}
-	
-	// urls for resources 
+
+	// urls for resources
 	String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
 %>
 
 
 
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
-      
 
-<% 
+
+<%
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
 	if(!isSingleObjExec) {
 %>
@@ -152,30 +157,32 @@
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
+        <div id="navigationBar">
            &nbsp;&nbsp;&nbsp;<%=title%>
+        </div>
        </td>
        <td class='header-empty-column-portlet-section'>&nbsp;</td>
        <td class='header-button-column-portlet-section'>
            <a href='<%=backUrl%>'>
-                 <img title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
+                 <img title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />'
                       class='header-button-image-portlet-section'
-                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>'
                       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
            </a>
        </td>
-       <% if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
+       <% if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) ||
     		  (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR))) {
     	   	Map formUrlPars = new HashMap();
     	   	formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
     	   	formUrlPars.put(SpagoBIConstants.ACTOR, actor);
     	   	formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
     	   	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    	    String formUrl = urlBuilder.getUrl(request, formUrlPars);	  
+    	    String formUrl = urlBuilder.getUrl(request, formUrlPars);
     	%>
        <form method='POST' action='<%=formUrl%>' id='changeStateForm'  name='changeStateForm'>
 	       <td class='header-select-column-portlet-section'>
       			<select class='portlet-form-field' name="newState">
-      			<% 
+      			<%
       		    Iterator iterstates = possibleStates.iterator();
       		    while(iterstates.hasNext()) {
       		    	Domain state = (Domain)iterstates.next();
@@ -186,67 +193,69 @@
       			<!--br/-->
       		</td>
       		<td class='header-select-column-portlet-section'>
-      			<input type='image' class='header-button-image-portlet-section' 
-      			       src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
-      			       title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' 
-      			       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
+      			<input type='image' class='header-button-image-portlet-section'
+      			       src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
+      			       title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'
+      			       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/>
       		</td>
         </form>
        <% } %>
-       
-       
-       
+
+
+
        <!-- ************************************************************************* -->
        <!-- ******************** START BLOCK BUTTON NOTES EDITOR ******************** -->
        <!-- ************************************************************************* -->
-       
+
        <%
         if(edNoteAble) {
        %>
-		
+
         <td class='header-empty-column-portlet-section'>&nbsp;</td>
         <td class='header-button-column-portlet-section'>
            <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
-           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
+           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;"
               href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
          </td>
-              
+
        <% } %>
-       
+
        <!-- ************************************************************************* -->
        <!-- ******************** END BLOCK BUTTON NOTES EDITOR ********************** -->
        <!-- ************************************************************************* -->
-       
+
    </tr>
 </table>
 
 
-<% 
+<%
 	// IF SINGLE OBJECT MODALITY SHOW THE PROPER TITLE BAR
 	} else {
 %>
 
-<table width='100%' cellspacing='0' border='0'>
+<table width='100%' cellspacing='0' border='0' id="singleobjecttitlebar">
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
-			&nbsp;&nbsp;&nbsp;<%=title%>
+      <div id="navigationBar">
+        &nbsp;&nbsp;&nbsp;<%=title%>
+      </div>
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
-			<a style="text-decoration:none;" href='<%=refreshUrl%>'> 
+			<a style="text-decoration:none;" href='<%=refreshUrl%>' id="singleobjectrefreshlink">
 				<img width="22px" height="22px"
-					src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
-					name='refresh' 
-					alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>' 
-					title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>' /> 
+					src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
+					name='refresh'
+					alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>'
+					title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>' />
 			</a>
 		</td>
 		<%
@@ -255,32 +264,21 @@
         <td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
         <td class='header-button-column-single-object-execution-portlet-section'>
            <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
-           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;" 
+           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;"
               href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
-               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' 
-                    src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>' 
+               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
         </td>
        <% } %>
 </table>
 
-
-
 <% } %>
-
-
-
-
-
-
-
-
-
 
 
 <!-- ***************************************************************** -->
@@ -311,18 +309,18 @@
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
-<link href="<%=linkProtoMacThem%>" rel="stylesheet" type="text/css"/> 
-<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/> 
-<link href="<%=linkProtoSpreadThem%>" rel="stylesheet" type="text/css"/> 
+<link href="<%=linkProtoMacThem%>" rel="stylesheet" type="text/css"/>
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
+<link href="<%=linkProtoSpreadThem%>" rel="stylesheet" type="text/css"/>
 
 
 <script type="text/javascript">
-    
+
     var locked<%=requestIdentity%> = false;
     var xmlHttp<%=requestIdentity%> = null;
-    var holdLockInterval<%=requestIdentity%> = null;  
-     
-     
+    var holdLockInterval<%=requestIdentity%> = null;
+
+
     function reloadNotes<%=requestIdentity%>() {
        url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService?";
        pars = "task=getNotes&biobjid=<%=obj.getId()%>&execidentifier=<%=execIdentifier%>";
@@ -334,12 +332,12 @@
                             response = transport.responseText || "";
                             getNotesCallback<%=requestIdentity%>(response);
                         },
-            onFailure: somethingWentWrong 
+            onFailure: somethingWentWrong
           }
         );
 	   }
-    
-    
+
+
     function requireLock<%=requestIdentity%>() {
 	      cleanError<%=requestIdentity%>();
 	      if(locked<%=requestIdentity%>){
@@ -355,14 +353,14 @@
                             response = transport.responseText || "";
                             requireLockCallback<%=requestIdentity%>(response);
                         },
-            onFailure: somethingWentWrong 
+            onFailure: somethingWentWrong
           }
         );
-    }  
-    
+    }
+
     function holdLock<%=requestIdentity%>() {
         url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
-		    pars = "task=holdLock&user=<%=nameUser%>&execidentifier=<%=execIdentifier%>"; 
+		    pars = "task=holdLock&user=<%=nameUser%>&execidentifier=<%=execIdentifier%>";
         new Ajax.Request(url,
           {
             method: 'post',
@@ -371,12 +369,12 @@
                             response = transport.responseText || "";
                             holdLockCallback<%=requestIdentity%>(response);
                         },
-            onFailure: somethingWentWrong 
+            onFailure: somethingWentWrong
           }
         );
     }
-    
-    
+
+
     function saveNotes<%=requestIdentity%>() {
 	      cleanError<%=requestIdentity%>();
 	      var editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
@@ -397,13 +395,13 @@
                             response = transport.responseText || "";
                             saveNotesCallback<%=requestIdentity%>(response);
                         },
-            onFailure: somethingWentWrong 
+            onFailure: somethingWentWrong
           }
         );
-    }    
-   
-   
-    function getNotesCallback<%=requestIdentity%>(response){      
+    }
+
+
+    function getNotesCallback<%=requestIdentity%>(response){
         if(responseHasError<%=requestIdentity%>(response)) {
          		error = getResponseError<%=requestIdentity%>(response);
          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
@@ -419,12 +417,12 @@
           	editor.EditingArea.Document.body.contentEditable="false";
         }catch(e){
             // not IE
-        }   
+        }
         fillAlertExistNotes<%=requestIdentity%>(response);
-    } 
-     
-     
-    function requireLockCallback<%=requestIdentity%>(response){ 
+    }
+
+
+    function requireLockCallback<%=requestIdentity%>(response){
   			if(responseHasError<%=requestIdentity%>(response)) {
           		error = getResponseError<%=requestIdentity%>(response);
           		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
@@ -447,16 +445,16 @@
            	// not IE
         }
         holdLockInterval<%=requestIdentity%> = setInterval("holdLock<%=requestIdentity%>()", 30000);
-        fillAlertExistNotes<%=requestIdentity%>(response); 
-	  } 
-     
-     
-    function holdLockCallback<%=requestIdentity%>(){ 
+        fillAlertExistNotes<%=requestIdentity%>(response);
+	  }
+
+
+    function holdLockCallback<%=requestIdentity%>(){
   	 		// do nothing (the hold lock request is useful only to keep alive the lock)
-	  } 
-     
-     
-    function saveNotesCallback<%=requestIdentity%>(response){ 
+	  }
+
+
+    function saveNotesCallback<%=requestIdentity%>(response){
       	locked<%=requestIdentity%> = false;
       	document.getElementById('notesLockImg<%=requestIdentity%>').style.display='inline';
       	document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='none';
@@ -472,21 +470,21 @@
          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
          		divError.innerHTML = error;
          		return;
-        } 
+        }
         reloadNotes<%=requestIdentity%>();
-    }  
-    
+    }
+
 
     function initializeNotes<%=requestIdentity%>() {
        reloadNotes<%=requestIdentity%>();
-	   }  
-	   
-	   
+	   }
+
+
 	  function somethingWentWrong() {
         alert('Something went wrong ...');
-    } 
-    
-    
+    }
+
+
     function responseHasError<%=requestIdentity%>(response){
     	if(response.indexOf('SpagoBIError:')!=-1) {
     		return true;
@@ -494,18 +492,18 @@
     	    return false;
     	}
     }
-    
+
     function getResponseError<%=requestIdentity%>(response) {
     	error = response.substring(response.indexOf('SpagoBIError:')+13);
     	return error;
     }
-    
+
     function cleanError<%=requestIdentity%>(){
     	divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
         divError.innerHTML = "";
     }
-    
-    
+
+
     function fillAlertExistNotes<%=requestIdentity%>(notes){
        iconempty = document.getElementById('iconNotesEmpty<%=requestIdentity%>');
        iconfilled = document.getElementById('iconNotesFilled<%=requestIdentity%>');
@@ -525,38 +523,38 @@
 
 
 <div id="divNotes<%=requestIdentity%>" style="heigth:100%;width:100%;display:none;background-color:#efefde;overflow:hidden;">
-  
+
   <div id="notesLockImg<%=requestIdentity%>" style="float:left;display:inline;padding:5px;">
       <a href="javascript:requireLock<%=requestIdentity%>()">
-          <img title='<spagobi:message key = "sbi.execution.notes.lockeditor" />' 
+          <img title='<spagobi:message key = "sbi.execution.notes.lockeditor" />'
                alt='<spagobi:message key = "sbi.execution.notes.lockeditor" />'
                src='<%= urlBuilder.getResourceLink(request, "/img/lock16.gif")%>' />
-      </a>  
+      </a>
   </div>
   <div id="notesSaveImg<%=requestIdentity%>" style="float:left;display:none;padding:5px;">
       <a href="javascript:saveNotes<%=requestIdentity%>()">
-          <img title='<spagobi:message key = "sbi.execution.notes.savenotes" />' 
+          <img title='<spagobi:message key = "sbi.execution.notes.savenotes" />'
           		alt='<spagobi:message key = "sbi.execution.notes.savenotes" />'
                src='<%= urlBuilder.getResourceLink(request, "/img/save16.gif")%>' />
-      </a>   
+      </a>
   </div>
   <div id="notesReloadImg<%=requestIdentity%>" style="float:left;display:inline;padding:5px;">
       <a href="javascript:reloadNotes<%=requestIdentity%>()">
-          <img title='<spagobi:message key = "sbi.execution.notes.reloadnotes" />' 
+          <img title='<spagobi:message key = "sbi.execution.notes.reloadnotes" />'
           		alt='<spagobi:message key = "sbi.execution.notes.reloadnotes" />'
                src='<%= urlBuilder.getResourceLink(request, "/img/reload16.gif")%>' />
-      </a>   
+      </a>
   </div>
   <div id="notesErrorMessage<%=requestIdentity%>"  style="float:left;color:red;padding:5px;font-family:arial;font-size:11px;">
-  
+
   </div>
   <div style="clear:left;"></div>
-  
+
 
   <textarea id="editorfckarea<%=requestIdentity%>" name="editorfckarea<%=requestIdentity%>"></textarea>
-  
-  
-</div>   
+
+
+</div>
 
 
 
@@ -566,116 +564,116 @@
 
 
 <script>
-  
+
   var oFCKeditor<%=requestIdentity%> = new FCKeditor('editorfckarea<%=requestIdentity%>');
   oFCKeditor<%=requestIdentity%>.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
   oFCKeditor<%=requestIdentity%>.ToolbarSet = 'SbiObjectNotes';
   oFCKeditor<%=requestIdentity%>.Height = <%=heightNotes%> - 35;
   oFCKeditor<%=requestIdentity%>.Width = <%=widthNotes%> - 5;
   oFCKeditor<%=requestIdentity%>.ReplaceTextarea();
-   
+
   var noteOpen<%=requestIdentity%> = false;
-    
+
   function opencloseNotesEditor<%=requestIdentity%>() {
     if(noteOpen<%=requestIdentity%>) {
       // do nothing (close notes with window button)
     } else {
       noteOpen<%=requestIdentity%> = true;
       openNotes<%=requestIdentity%>(false);
-    } 
+    }
   }
-  
-  function openNotes<%=requestIdentity%>(automatic) { 
-    
+
+  function openNotes<%=requestIdentity%>(automatic) {
+
     frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
     if(frameFcke<%=requestIdentity%>!=null) {
         frameFcke<%=requestIdentity%>.height= <%=heightNotes%> - 35;
-        frameFcke<%=requestIdentity%>.width= <%=widthNotes%> - 5; 
+        frameFcke<%=requestIdentity%>.width= <%=widthNotes%> - 5;
     }
-            
+
     diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
-    pos = findPos(diviframeobj);        
+    pos = findPos(diviframeobj);
     win<%=requestIdentity%> = null;
     if(automatic) {
        win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
   	   win<%=requestIdentity%>.setDestroyOnClose();
-       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);    
+       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);
        win<%=requestIdentity%>.show(false);
        win<%=requestIdentity%>.minimize();
     } else {
        win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
   	   win<%=requestIdentity%>.setDestroyOnClose();
-       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false); 
-       win<%=requestIdentity%>.show(false);   
+       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);
+       win<%=requestIdentity%>.show(false);
 
     }
-  	
-  	
-    observerClose<%=requestIdentity%> = { 
-      onClose: function(eventName, win) {  
-        if(win == win<%=requestIdentity%>) { 
+
+
+    observerClose<%=requestIdentity%> = {
+      onClose: function(eventName, win) {
+        if(win == win<%=requestIdentity%>) {
           noteOpen<%=requestIdentity%> = false;
           document.getElementById('divNotes<%=requestIdentity%>').style.display='none';
-        } 
+        }
       }
     }
     Windows.addObserver(observerClose<%=requestIdentity%>);
-  
-    observerResize<%=requestIdentity%> = { 
-      onResize: function(eventName, win) {  
-        if(win == win<%=requestIdentity%>) { 
+
+    observerResize<%=requestIdentity%> = {
+      onResize: function(eventName, win) {
+        if(win == win<%=requestIdentity%>) {
             heightwin = win.getSize().height;
             widthwin = win.getSize().width;
             frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
             frameFcke<%=requestIdentity%>.height=heightwin - 35;
-            frameFcke<%=requestIdentity%>.width=widthwin - 5; 
+            frameFcke<%=requestIdentity%>.width=widthwin - 5;
         }
       }
     }
     Windows.addObserver(observerResize<%=requestIdentity%>);
-   
-  
-    observerEndResize<%=requestIdentity%> = { 
-      onEndResize: function(eventName, win) { 
-        if(win == win<%=requestIdentity%>) {   
+
+
+    observerEndResize<%=requestIdentity%> = {
+      onEndResize: function(eventName, win) {
+        if(win == win<%=requestIdentity%>) {
             heightwin = win.getSize().height;
             widthwin = win.getSize().width;
             frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
             frameFcke<%=requestIdentity%>.height=heightwin - 35;
-            frameFcke<%=requestIdentity%>.width=widthwin - 5; 
+            frameFcke<%=requestIdentity%>.width=widthwin - 5;
         }
       }
     }
     Windows.addObserver(observerEndResize<%=requestIdentity%>);
-  
-  
-    observerMaximize<%=requestIdentity%> = { 
-      onMaximize: function(eventName, win) { 
-        if(win == win<%=requestIdentity%>) {    
+
+
+    observerMaximize<%=requestIdentity%> = {
+      onMaximize: function(eventName, win) {
+        if(win == win<%=requestIdentity%>) {
             heightwin = win.getSize().height;
             widthwin = win.getSize().width;
             frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
             frameFcke<%=requestIdentity%>.height=heightwin - 35;
-            frameFcke<%=requestIdentity%>.width=widthwin - 5; 
+            frameFcke<%=requestIdentity%>.width=widthwin - 5;
         }
       }
     }
-    Windows.addObserver(observerMaximize<%=requestIdentity%>); 
-  
-  
+    Windows.addObserver(observerMaximize<%=requestIdentity%>);
+
+
   }
-  
-  
-  <% if(notesEditOpen) { %> 
+
+
+  <% if(notesEditOpen) { %>
   	try{
     	SbiJsInitializer.automaticOpenNotes<%=requestIdentity%> = function() {openNotes<%=requestIdentity%>(true);};
     } catch (err) {
-        alert('Cannot open automatically the editor note'); 
+        alert('Cannot open automatically the editor note');
     }
   <% } %>
-  
-  
-  
+
+
+
 </script>
 
 
@@ -688,7 +686,7 @@
 <!-- **************** END BLOCK NOTES EDITOR ************************* -->
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
- 
+
 
 
 
@@ -719,9 +717,9 @@
   if(!heightSetted) {
 %>
 <script>
-		
+
 		function adaptSize<%=requestIdentity%>Funct() {
-		      
+
           navigatorname = navigator.appName;
 		      navigatorversion = navigator.appVersion;
           navigatorname = navigatorname.toLowerCase();
@@ -735,7 +733,7 @@
           isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
           isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
           isMoz = (navigatorname.indexOf('explorer') == -1);
-          
+
           // calculate height of the visible area
           heightVisArea = 0;
           if(isIE5) { heightVisArea = window.document.body.clientHeight; }
@@ -748,11 +746,11 @@
           // find the frame div position
           pos = findPos(diviframeobj);
           // calculate space below position frame div
-          spaceBelowPos = heightVisArea - pos[1];          
+          spaceBelowPos = heightVisArea - pos[1];
           // set height to the frame
 			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 			    iframeEl.style.height = spaceBelowPos + 'px';
-              
+
           // calculate height of the win area and height footer
           heightWinArea = 0;
           heightFooter = 0;
@@ -770,49 +768,48 @@
           }
           if(isMoz) {
 			   	   heightWinArea = window.document.body.offsetHeight;
-			   	   heightFooter = (heightWinArea - heightVisArea) + 15; 
+			   	   heightFooter = (heightWinArea - heightVisArea) + 15;
 			    }
-			    
+
 			    // calculate height of the frame
 			    heightFrame = heightVisArea - pos[1] - heightFooter;
 			    // set height to the frame
 			    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 			    iframeEl.style.height = heightFrame + 'px';
 		  }
-		
-		
+
+
 		try{
          	SbiJsInitializer.adaptSize<%=requestIdentity%> = adaptSize<%=requestIdentity%>Funct;
     	} catch (err) {
-       		alert('Cannot resize the document view area'); 
+       		alert('Cannot resize the document view area');
     	}
-		
-</script>
-<%  
-  }
-%>   
 
+</script>
+<%
+  }
+%>
 
 <center>
 <div id="divIframe<%=requestIdentity%>" style="width:100%;">
-           
+
            <%
            		 String heightStr = "";
                if(heightSetted)
-           			heightStr = "height:"+heightArea+"px;";	
-           %> 
-            
-            <iframe id="iframeexec<%=requestIdentity%>" 
+           			heightStr = "height:"+heightArea+"px;";
+           %>
+
+            <iframe id="iframeexec<%=requestIdentity%>"
                     name="iframeexec<%=requestIdentity%>"
-                    src="" 
-                    style="width:100%;<%=heightStr%>" 
-                    frameborder="0" ></iframe>
-                 
-                 
-                                
-         	<form name="formexecution<%=requestIdentity%>" 
-                id='formexecution<%=requestIdentity%>' method="post" 
-         	      action="<%=engineurl%>" 
+                    src=""
+                    style="width:100%;<%=heightStr%>"
+                    frameborder="0" onLoad="this.contentWindow.document.getElementById('singleobjecttitlebar').style.display='none'"></iframe>
+
+
+
+         	<form name="formexecution<%=requestIdentity%>"
+                id='formexecution<%=requestIdentity%>' method="post"
+         	      action="<%=engineurl%>"
          	      target='iframeexec<%=requestIdentity%>'>
          	<%
          		 java.util.Set keys = mapPars.keySet();
@@ -822,22 +819,22 @@
          	    	String value = mapPars.get(key).toString();
          	%>
          		<input type="hidden" name="<%=key%>" value="<%=value%>" />
-         	<%     	
+         	<%
          	   }
-         	%> 
+         	%>
          	  <center>
          	    <input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>
 			       </center>
 			     </form>
-         
+
             <script>
               button = document.getElementById('button<%=requestIdentity%>');
               button.style.display='none';
-              button.click();          
-            </script>   
-                
+              button.click();
+            </script>
+
 </div>
-</center>       
+</center>
 
 
 <!-- ***************************************************************** -->
@@ -847,19 +844,50 @@
 <!-- ***************************************************************** -->
 
 
-
-
-
-
-
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+<!-- **************** START IFRAMES NAVIGATOR ************************ -->
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+<script>
+function getFramesArray() {
+  return iframesNavigator;
+}
+function changeFrame(index) {
+  tmp = top.getFramesArray();
+  tmp.removeFrames(index);
+  refreshNavigationBar();
+}
+function refreshNavigationBar() {
+  tmp = top.getFramesArray();
+  html = "";
+  for (count = 0; count < tmp.getFramesNumber(); count = count + 1) {
+    aFrame = tmp.getFrame(count);
+    aFrameLabel = aFrame[1];
+    html += "&nbsp;<a href='javascript:changeFrame(" + count + ")'>" + aFrameLabel + "</a>";
+    if (count < tmp.getFramesNumber() - 1) {
+      html += "&nbsp;&gt;";
+    }
+  }
+  navBarDiv = top.document.getElementById("navigationBar");
+  navBarDiv.innerHTML = html;
+}
+tmp = top.getFramesArray();
+tmp.addFrame(document.getElementById('iframeexec<%=requestIdentity%>'), '<%=obj.getName()%>');
+refreshNavigationBar();
+</script>
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
+<!-- **************** END IFRAMES NAVIGATOR ************************** -->
+<!-- ***************************************************************** -->
+<!-- ***************************************************************** -->
 
 <script>
-    
+
     try{
       window.onload = SbiJsInitializer.initialize;
   	} catch (err) {
-      alert('Cannot execute javascript initialize functions'); 
-  	}     
-              
-</script>
+      alert('Cannot execute javascript initialize functions');
+  	}
 
+</script>

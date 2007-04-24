@@ -54,8 +54,22 @@ public class JasperReportDriver implements IEngineDriver {
 					"getParameterMap(Object)",
 					"The parameter is not a BIObject type",
 					cce);
-		} 
+		}
+		map = applyDrillInformation(map, profile);
 		map = applySecurity(map);
+		return map;
+	}
+	
+	/**
+	 * Applies the information that let the document drill, i.e. the information for invokating another document
+	 * execution from the current execution
+	 * @param map The parameters map
+	 * @param profile The user profile
+	 * @return the modified map with the drill information
+	 */
+	private Map applyDrillInformation(Map map, IEngUserProfile profile) {
+		map.put("username", profile.getUserUniqueIdentifier().toString());
+		map.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
 		return map;
 	}
 	

@@ -184,7 +184,20 @@ public class ExecuteBIObjectModule extends AbstractModule
 		String label = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
 		debug("pageCreationHandler", "Request parameters: " +
 				"biobject id = '" + idStr + "'; object label = '" + label + "'.");
-		
+		BIObject obj = getBIObject();
+		if (idStr == null && label == null) {
+			if (obj == null) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+			            "ExecuteBIObjectMOdule", 
+			            "pageCreationHandler", 
+			            "The object id and label are not set and no objects are in session");
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "100")); 
+				return;
+			} else {
+				debug("pageCreationHandler", "Object retrieved from session");
+			}
+		}
+
 		// get the type of actor 
 		String actor = "";
 		Object actorObj =  request.getAttribute(SpagoBIConstants.ACTOR);
@@ -207,7 +220,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		Integer id = null;
 		if (label != null) {
 			debug("pageCreationHandler", "Loading biobject with label = '" + label + "' ...");
-			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+			obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
 			if (obj == null) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 						            "ExecuteBIObjectMOdule", 
@@ -223,22 +236,41 @@ public class ExecuteBIObjectModule extends AbstractModule
 			 * in case the object is executed by its label (it means that it is called by a link 
 			 * in another document) we must verify that the user can see the document
 			*/
-			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
-			if (!canSee) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-			            "ExecuteBIObjectMOdule", 
-			            "pageCreationHandler", 
-			            "Object with label = '" + label + "' cannot be executed by the user!!");
-				Vector v = new Vector();
-				v.add(label);
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
-				return;
-			}
+//			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
+//			if (!canSee) {
+//				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+//			            "ExecuteBIObjectMOdule", 
+//			            "pageCreationHandler", 
+//			            "Object with label = '" + label + "' cannot be executed by the user!!");
+//				Vector v = new Vector();
+//				v.add(label);
+//				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
+//				return;
+//			}
 			/*
 			 * TODO the actor parameter must be updated
 			 */
-		} else id = new Integer(idStr);
+		} else if (idStr != null) {
+			debug("pageCreationHandler", "Loading biobject with id = '" + idStr + "' ...");
+			id = new Integer(idStr);
+			obj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+		} else if (obj != null) {
+			id = obj.getId();
+		}
+		
 		debug("pageCreationHandler", "BIObject id = " + id);
+		
+//		boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
+//		if (!canSee) {
+//			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+//		            "ExecuteBIObjectMOdule", 
+//		            "pageCreationHandler", 
+//		            "Object with label = '" + obj.getLabel() + "' cannot be executed by the user!!");
+//			Vector v = new Vector();
+//			v.add(obj.getLabel());
+//			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
+//			return;
+//		}
 		
 		// get parameters statically defined in portlet preferences
 		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
@@ -287,7 +319,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 				
 		// based on the role selected (or the only for the user) load the object and put it in session
-		BIObject obj = execContr.prepareBIObjectInSession(session, id, role, userProvidedParametersStr);
+		obj = execContr.prepareBIObjectInSession(session, id, role, userProvidedParametersStr);
 		Map paramsDescriptionMap = new HashMap();
 		List biparams = obj.getBiObjectParameters(); 
 	    Iterator iterParams = biparams.iterator();
@@ -299,14 +331,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
 		
-		
-		
-		
-		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
+		//session.delAttribute(ObjectsTreeConstants.PARAMETERS);
 		debug("pageCreationHandler", "object retrived and setted into session");
-		
-		
-		
 		
 		// get the list of the subObjects
 		List subObjects = getSubObjectsList(obj, profile);
@@ -500,7 +526,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		Integer id = new Integer(idStr);
 		// prepare the object in session
 		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);	
-		session.delAttribute(ObjectsTreeConstants.PARAMETERS);
+		//session.delAttribute(ObjectsTreeConstants.PARAMETERS);
 		BIObject obj = execContr.prepareBIObjectInSession(session, id, role, userProvidedParametersStr);		
         // get the current user profile
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);

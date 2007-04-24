@@ -24,5 +24,16 @@ public class UrlBuilderFactory {
 		return urlBuilder;
 	}
 	
+	public static IUrlBuilder getUrlBuilder(String channelType) {
+		IUrlBuilder urlBuilder = null;
+		// based on mode get spago object and url builder
+		if (channelType.equalsIgnoreCase("WEB")) {
+			urlBuilder = new WebUrlBuilder();		
+		} else if  (channelType.equalsIgnoreCase("PORTLET")){
+			urlBuilder = new PortletUrlBuilder();
+		}
+		return urlBuilder;
+	}	
+		
 	
 }

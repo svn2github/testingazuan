@@ -60,7 +60,11 @@ public class LovDetailFactory {
 				String value = (String) element.getAttribute("VALUE");
 				toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
 			}
-			toReturn += "</ROWS></" + FIXEDLISTLOV + ">";
+			toReturn += "</ROWS><VALUE-COLUMN>VALUE</VALUE-COLUMN>" +
+					"<DESCRIPTION-COLUMN>DESCRIPTION</DESCRIPTION-COLUMN>" +
+					"<VISIBLE-COLUMNS>DESCRIPTION</VISIBLE-COLUMNS>" + 
+					"<INVISIBLE-COLUMNS>VALUE</INVISIBLE-COLUMNS>" +
+					"</" + FIXEDLISTLOV + ">";
 			return toReturn;
 		}
 		if (dataDefinition.startsWith("<ROWS>")) {
@@ -74,7 +78,11 @@ public class LovDetailFactory {
 				String value = (String) element.getAttribute("NAME");
 				toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
 			}
-			toReturn += "</ROWS></" + FIXEDLISTLOV + ">";
+			toReturn += "</ROWS><VALUE-COLUMN>VALUE</VALUE-COLUMN>" +
+					"<DESCRIPTION-COLUMN>DESCRIPTION</DESCRIPTION-COLUMN>" +
+					"<VISIBLE-COLUMNS>DESCRIPTION</VISIBLE-COLUMNS>" + 
+					"<INVISIBLE-COLUMNS>VALUE</INVISIBLE-COLUMNS>" +
+					"</" + FIXEDLISTLOV + ">";
 			return toReturn;
 		}
 		return dataDefinition;

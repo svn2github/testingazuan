@@ -116,10 +116,10 @@ public class DetailBIObjectModule extends AbstractModule {
 			}
 		}
 		
-		String modality = (String) ChannelUtilities.getPreferenceValue(request, BIObjectsModule.MODALITY, "");
+		String modality = (String) ChannelUtilities.getPreferenceValue(this.getRequestContainer(), BIObjectsModule.MODALITY, "");
 		initialPath = null;
 		if(modality != null && modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
-			initialPath = (String) ChannelUtilities.getPreferenceValue(request, TreeObjectsModule.PATH_SUBTREE, "");
+			initialPath = (String) ChannelUtilities.getPreferenceValue(this.getRequestContainer(), TreeObjectsModule.PATH_SUBTREE, "");
 		}
 		
 		RequestContainer requestContainer = this.getRequestContainer();		

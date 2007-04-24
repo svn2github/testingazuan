@@ -31,19 +31,33 @@
 	// get configuration
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 	// get mode of execution
-	String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-	
-	// based on mode get spago object 
-	if (sbiMode.equalsIgnoreCase("WEB")) {
+	//String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
+	String sbiMode = null;
+		
+	// case of portlet mode
+	aRequestContainer = RequestContainerPortletAccess.getRequestContainer(request);
+	aResponseContainer = ResponseContainerPortletAccess.getResponseContainer(request);
+	if (aRequestContainer == null) {
+		// case of web mode
 		aRequestContainer = RequestContainerAccess.getRequestContainer(request);
-		aResponseContainer = ResponseContainerAccess.getResponseContainer(request);	
-	} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-		aRequestContainer = RequestContainerPortletAccess.getRequestContainer(request);
-		aResponseContainer = ResponseContainerPortletAccess.getResponseContainer(request);
+		aResponseContainer = ResponseContainerAccess.getResponseContainer(request);
 	}
 	
+	// based on mode get spago object 
+	//if (sbiMode.equalsIgnoreCase("WEB")) {
+	//	aRequestContainer = RequestContainerAccess.getRequestContainer(request);
+	//	aResponseContainer = ResponseContainerAccess.getResponseContainer(request);	
+	//} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
+	//	aRequestContainer = RequestContainerPortletAccess.getRequestContainer(request);
+	//	aResponseContainer = ResponseContainerPortletAccess.getResponseContainer(request);
+	//}
+	
+	String channelType = aRequestContainer.getChannelType();
+	if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
+	else sbiMode = "WEB";
+	
 	// create url builder 
-	urlBuilder = UrlBuilderFactory.getUrlBuilder();
+	urlBuilder = UrlBuilderFactory.getUrlBuilder(sbiMode);
 
 	// create message builder
 	msgBuilder = MessageBuilderFactory.getMessageBuilder();

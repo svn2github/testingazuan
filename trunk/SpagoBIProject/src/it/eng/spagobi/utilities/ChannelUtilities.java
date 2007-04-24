@@ -48,15 +48,19 @@ public class ChannelUtilities {
 	}
 	
 	
-	public static String getPreferenceValue(SourceBean request, String preferenceName, String defaultValue) {
+	public static String getPreferenceValue(RequestContainer requestContainer, String preferenceName, String defaultValue) {
 		String prefValue = defaultValue;
 		try{
-			ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 			// get mode of execution
-			String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
+			String channelType = requestContainer.getChannelType();
+			String sbiMode = null;
+			if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
+			else sbiMode = "WEB";
 			// based on mode get spago object and url builder
 			if (sbiMode.equalsIgnoreCase("WEB")) {
-				prefValue = defaultValue;
+				Object attribute = requestContainer.getSessionContainer().getAttribute(preferenceName);
+				if (attribute != null) prefValue = attribute.toString();
+				else prefValue = defaultValue;
 			} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
 				PortletRequest portReq = PortletUtilities.getPortletRequest();
 				PortletPreferences prefs = portReq.getPreferences();

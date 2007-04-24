@@ -86,13 +86,13 @@ public class BIObjectsModule extends AbstractModule {
 			debug("service", "using "+actor+" actor");
 	        sessionContainer.setAttribute(SpagoBIConstants.ACTOR, actor);
             debug("service", "user profile retrived");
-            String modality = ChannelUtilities.getPreferenceValue(request, MODALITY, "");
+            String modality = ChannelUtilities.getPreferenceValue(requestContainer, MODALITY, "");
             debug("service", "using "+modality+" modality");
             if (modality != null) {
                 if (modality.equalsIgnoreCase(SINGLE_OBJECT)) {
                 	singleObjectModalityHandler(request, response, actor);
                 } else if (modality.equalsIgnoreCase(FILTER_TREE)) {
-                	String initialPath = ChannelUtilities.getPreferenceValue(request, TreeObjectsModule.PATH_SUBTREE, "");
+                	String initialPath = ChannelUtilities.getPreferenceValue(requestContainer, TreeObjectsModule.PATH_SUBTREE, "");
                 	treeModalityHandler(request, response, actor, initialPath);
                 } else {
                 	treeModalityHandler(request, response, actor, null);
@@ -132,7 +132,7 @@ public class BIObjectsModule extends AbstractModule {
 			objectsView = (String) request.getAttribute(SpagoBIConstants.OBJECTS_VIEW);
 			if (objectsView == null) {
 				// finds objects view modality from portlet preferences
-				objectsView = ChannelUtilities.getPreferenceValue(request, SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_TREE);
+				objectsView = ChannelUtilities.getPreferenceValue(this.getRequestContainer(), SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_TREE);
 			}
 			// default value in case it is not specified or in case the value is not valid
 			if (objectsView == null
@@ -167,11 +167,12 @@ public class BIObjectsModule extends AbstractModule {
 	private void singleObjectModalityHandler(SourceBean request, SourceBean response,
 			                                 String actor) throws Exception {
 		debug("singleObjectModalityHandler", "enter singleObjectModalityHandler");
+		RequestContainer requestContainer = this.getRequestContainer();
 		// get from preferences the label of the object
-		String label = ChannelUtilities.getPreferenceValue(request, LABEL_SINGLE_OBJECT, "");
+		String label = ChannelUtilities.getPreferenceValue(requestContainer, LABEL_SINGLE_OBJECT, "");
 		debug("singleObjectModalityHandler", "using object label " + label);
 		// if label is not set then throw an exception
-		if(label == null || label.trim().equals("")) {
+		if (label == null || label.trim().equals("")) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 								"BIObjectsModule", 
 								"singleObjectModalityHandler",  
@@ -179,16 +180,16 @@ public class BIObjectsModule extends AbstractModule {
         	throw new Exception("Label not set");
         }
 		// get from preferences the parameters used by the object during execution
-		String parameters = ChannelUtilities.getPreferenceValue(request, PARAMETERS_SINGLE_OBJECT, "");
+		String parameters = ChannelUtilities.getPreferenceValue(requestContainer, PARAMETERS_SINGLE_OBJECT, "");
 		debug("singleObjectModalityHandler", "using parameters " + parameters);
 		// get from preferences the height of the area
-		String heightArea = ChannelUtilities.getPreferenceValue(request, HEIGHT_AREA, "");
+		String heightArea = ChannelUtilities.getPreferenceValue(requestContainer, HEIGHT_AREA, "");
 		debug("singleObjectModalityHandler", "using height of area " + heightArea);
 		// get from preferences the snapshot name
-		String snapName = ChannelUtilities.getPreferenceValue(request, SNAPSHOT_NAME, "");
+		String snapName = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_NAME, "");
 		debug("singleObjectModalityHandler", "using snapshot name " + snapName);
 		// get from preferences the snapshot history
-		String snapHistStr = ChannelUtilities.getPreferenceValue(request, SNAPSHOT_HISTORY, "0");
+		String snapHistStr = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_HISTORY, "0");
 		debug("singleObjectModalityHandler", "using snapshot history " + snapHistStr);
 		
 		// load biobject

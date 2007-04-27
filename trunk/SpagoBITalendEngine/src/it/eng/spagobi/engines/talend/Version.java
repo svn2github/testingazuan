@@ -33,4 +33,8 @@ public interface Version {
     public static final String MAJOR = "1";
     public static final String MINOR = "9";
     public static final String REVISION = "2";
+    
+    public static final String CLIENT_COMPLIANCE_VERSION = "0.5.0";
+    
+    
 }

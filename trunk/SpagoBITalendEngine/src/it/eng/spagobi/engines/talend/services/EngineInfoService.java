@@ -62,6 +62,8 @@ public class EngineInfoService extends HttpServlet {
 		String infoType = request.getParameter("infoType");
 		if(infoType.equalsIgnoreCase("version")) {
 			response.getOutputStream().write(engine.getVersion().getBytes());
+		} else if(infoType.equalsIgnoreCase("complianceVersion")) {
+				response.getOutputStream().write(engine.getComplianceVersion().getBytes());
 		} else if (infoType.equalsIgnoreCase("name")) {
 			response.getOutputStream().write(engine.getFullName().getBytes());
 		} else {

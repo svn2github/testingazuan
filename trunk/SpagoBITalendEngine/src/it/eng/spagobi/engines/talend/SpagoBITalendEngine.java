@@ -68,6 +68,10 @@ public class SpagoBITalendEngine implements Version {
 	public SpagoBITalendEngineConfig getConfig() {
 		return config;
 	}
+
+	public static String getComplianceVersion() {
+		return CLIENT_COMPLIANCE_VERSION;
+	}
 	
 	
 }

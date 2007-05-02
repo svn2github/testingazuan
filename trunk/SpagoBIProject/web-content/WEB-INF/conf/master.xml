@@ -2,6 +2,7 @@
 <MASTER>
 	<CONFIGURATOR path="/WEB-INF/conf/data_access.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/audit.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/common.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/dispatchers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/initializers.xml" />
@@ -20,7 +21,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/upload.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/spagobi/spagobi_components.xml" />
 	<!-- START WEB APPLICATION -->
-	<!--
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_presentation.xml" />
@@ -28,7 +28,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_security.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_authorizations.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_menu.xml" />
-	-->
 	<!-- END WEB APPLICATION -->
 	<!-- START DASHBOARD -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />
@@ -44,7 +43,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
 	<!-- end import export module -->
 	<!-- start booklets module -->
-	<!--
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/booklets.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/modules.xml" />
@@ -55,7 +53,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/workflow.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/forms.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/validation.xml" />
-	-->
   <!-- end booklets module -->
 	<!-- START OFFICE DOCUMENT -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiofficedocIE/publishers.xml" />

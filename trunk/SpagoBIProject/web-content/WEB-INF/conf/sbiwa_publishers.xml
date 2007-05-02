@@ -55,6 +55,11 @@
         		<ITEM PROG="0" resource="it.eng.spagobi.presentation.publishers.DirectExecutionPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM PROG="0" resource="it.eng.spagobi.presentation.publishers.DirectExecutionPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	
   	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">

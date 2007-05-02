@@ -3,6 +3,16 @@
 <web-app id="WebApp">
 	<display-name>SpagoBIGeoEngine</display-name>
 	
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/servlet/AdapterHTTP</url-pattern>
+	</filter-mapping>
+	
 	<servlet>
 		<servlet-name>ConfigServlet</servlet-name>
 		<servlet-class>it.eng.spago.configuration.ConfigServlet</servlet-class>
@@ -18,10 +28,20 @@
 		<servlet-class>it.eng.spago.dispatching.httpchannel.AdapterHTTP</servlet-class>
 	</servlet>
 
+    <servlet>
+        <servlet-name>SpagoBIDrillServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet</servlet-class>
+    </servlet>
+
 	<servlet-mapping>
 		<servlet-name>AdapterHTTP</servlet-name>
 		<url-pattern>/servlet/AdapterHTTP</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>SpagoBIDrillServlet</servlet-name>
+        <url-pattern>/SpagoBIDrillServlet</url-pattern>
+    </servlet-mapping>
 	
 	<session-config>
 		<session-timeout>30</session-timeout>

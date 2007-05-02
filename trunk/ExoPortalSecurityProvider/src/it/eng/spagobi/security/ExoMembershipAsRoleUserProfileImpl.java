@@ -40,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.RootContainer;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -74,7 +75,23 @@ public class ExoMembershipAsRoleUserProfileImpl implements IEngUserProfile {
 		this.roles = new ArrayList();
 		
 		// get istance of the organization service		
-		PortalContainer container = PortalContainer.getInstance();	
+		PortalContainer container = PortalContainer.getInstance();
+		// aggiunta per chiamare il modulo di esecuzione via AdapterHTTP
+		// TODO improve this point
+		if (container == null) {
+			ConfigSingleton config = ConfigSingleton.getInstance();
+	    	SourceBean securityconfSB = (SourceBean)config.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS.CONFIG");
+			String paramCont = "NAME_PORTAL_APPLICATION";
+			SecurityProviderUtilities.debug(this.getClass(), "<init(Principal)>", " Use param " + paramCont);
+			SourceBean paramContSB = (SourceBean) securityconfSB.getAttribute(paramCont);
+			SecurityProviderUtilities.debug(this.getClass(), "<init(Principal)>", " Param context name Source Bean " +
+								"retrived: " + paramContSB);
+			String nameCont = (String)paramContSB.getCharacters();
+			SecurityProviderUtilities.debug(this.getClass(), "<init(Principal)>", " Use context name " + nameCont);
+			RootContainer rootCont = RootContainer.getInstance();
+			SecurityProviderUtilities.debug(this.getClass(), "<init(Principal)>", " Root container retrived: " + rootCont);
+			container = rootCont.getPortalContainer(nameCont);
+		}
 		SecurityProviderUtilities.debug(this.getClass(), "init", "Portal Container retrived " + container);
 		OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
 		SecurityProviderUtilities.debug(this.getClass(), "init", "Organization Service retrived " + service);

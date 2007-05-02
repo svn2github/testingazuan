@@ -17,6 +17,8 @@ import it.eng.spagobi.geo.configuration.Constants;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +33,10 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
     private static final String COLUMN_ID = "column_id";
 
     private static final String COLUMN_VALUE = "column_value";
+    
+    private static final String DRILL = "DRILL";
+    
+    private static final String PARAMETER = "PARAM";
 
     /**
      * Constructor
@@ -46,7 +52,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
      */
     public DatamartObject getDatamartObject(SourceBean datamartProviderConfiguration) throws EMFUserError {
 
-        DatamartObject datamartObject = new DatamartObject();
+    	DatamartObject datamartObject = new DatamartObject();
         SQLCommand cmdSelect = null;
         DataResult dr = null;
         ScrollableDataResult sdr = null;
@@ -55,6 +61,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
         String query = (String) datamartProviderConfiguration.getAttribute(QUERY);
         String columnid = (String) datamartProviderConfiguration.getAttribute(COLUMN_ID);
         String columnvalue = (String) datamartProviderConfiguration.getAttribute(COLUMN_VALUE);
+        SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
         try{
             dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
             cmdSelect = dataConnection.createSelectCommand(query);
@@ -74,7 +81,8 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
             	}
             	Integer value = new Integer(valueStr);
             	styles.put(id, value);
-            	links.put(id, "http://www.google.com");
+            	String link = createLink(drillSB, resultSet);
+            	links.put(id, link);
             }
             datamartObject.setValues(styles);
             datamartObject.setLinks(links);
@@ -88,4 +96,43 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
         }
         return datamartObject;
     }
+    
+    
+    
+    /**
+     * Creates the link associated to a resultset row
+     * @param drillSB The drill configuration
+     * @param resultSet the resultset 
+     * @return The url link associated to the resultset row
+     */
+    private String createLink(SourceBean drillSB, ResultSet resultSet) {
+    	String link = "../SpagoBIDrillServlet?";
+    	try{
+	    	String docLbl = (String)drillSB.getAttribute("document");
+	    	link += "DOCUMENT_LABEL=" + docLbl + "&amp;";
+	    	List paramSBs = (List)drillSB.getAttribute(PARAMETER);
+	    	Iterator iterPar = paramSBs.iterator();
+	    	while(iterPar.hasNext()) {
+	    		SourceBean paramSB = (SourceBean)iterPar.next();
+	    		String type = (String)paramSB.getAttribute("type");
+	    		String name = (String)paramSB.getAttribute("name");
+	    		String value = (String)paramSB.getAttribute("value");
+	    		if(type.equalsIgnoreCase("absolute")) {
+	    			link += name + "=" + value + "&amp;";
+	    		} else if(type.equalsIgnoreCase("relative")) {
+	    			String realValue = resultSet.getString(resultSet.findColumn(value));
+	    			link += name + "=" + realValue + "&amp;";
+	    		}
+	    	}
+	    	link = link.substring(0, link.length()-5);
+    	} catch (Exception e) {
+    		link = "javascript:void(0)";
+    		TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+				    			"DefaultDatamartProvider :: createLink : " +
+				    			"Cannot create drill link", e);
+    	}
+    	return link;
+    }
+    
+    
 }

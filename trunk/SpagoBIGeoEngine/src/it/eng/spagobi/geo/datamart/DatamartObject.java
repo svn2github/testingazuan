@@ -19,12 +19,12 @@ public class DatamartObject{
 	 * Map of id and values related to the svg map 
 	 */
 	private Map values = null;
-	
+
 	/**
 	 * Map of id and values related to the svg map 
 	 */
 	private Map links = null;
-
+	
 	/**
 	 * Constructor
 	 */
@@ -89,12 +89,22 @@ public class DatamartObject{
     	String link = (String)links.get(id);
     	return link;
     }
-
+    
+    
+    /**
+     * Returns a list of couples id - link (map)
+     * @return map of the link associated to ids
+     */
 	public Map getLinks() {
 		return links;
 	}
 
+	/**
+	 * Sets the map of associations between ids and links
+	 * @param links the associations map
+	 */
 	public void setLinks(Map links) {
 		this.links = links;
 	}
+    
 }

@@ -265,4 +265,12 @@ public class MapConfiguration {
 		this.mapProviderConfiguration = mapProviderConfiguration;
 	}
 
+	public SourceBean getLegenda() {
+		return legenda;
+	}
+
+	public void setLegenda(SourceBean legenda) {
+		this.legenda = legenda;
+	}
+
 }

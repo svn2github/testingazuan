@@ -32,6 +32,7 @@
 <%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
 <%@page import="com.tonbeller.wcf.controller.RequestContext"%>
 <%@page import="java.util.Locale"%>
+<%@page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
 <html>
 <head>
   <title>JPivot Page</title>
@@ -45,6 +46,19 @@
 </head>
 <body bgcolor=white lang="en">
 
+<%
+// AUDIT UPDATE
+String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+AuditAccessUtils auditAccessUtils = 
+	(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+if (auditId != null) {
+	auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+			"EXECUTION_STARTED", null, null);
+}
+
+try {
+%>
+
 <form action="jpivotOlap.jsp" method="post">
 
 <spagobi:saveAnalysis id="save01"/>
@@ -52,6 +66,13 @@
 <%-- include query and title, so this jsp may be used with different queries --%>
 <wcf:include id="include01" httpParam="query" prefix="/WEB-INF/queries/" suffix=".jsp"/>
 <c:if test="${query01 == null}">
+  <%
+	// AUDIT UPDATE
+	if (auditId != null) {
+		auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				"EXECUTION_FAILED", "Error executing query", null);
+	}
+  %>
   <jsp:forward page="/index.jsp"/>
 </c:if>
 
@@ -139,6 +160,13 @@ if (message != null && !message.trim().equals("")) {
 %>
 <%-- if there was an overflow, show error message --%>
 <c:if test="${query01.result.overflowOccured}">
+  <%
+	// AUDIT UPDATE
+	if (auditId != null) {
+		auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				"EXECUTION_FAILED", "Overflow occurred", null);
+	}
+  %>
   <p>
   <strong style="color:red">Resultset overflow occured</strong>
   <p>
@@ -182,7 +210,17 @@ Slicer:
 <a href="index.jsp">back to index</a>
 --%>
 </form>
-
+<%
+	// AUDIT UPDATE
+	auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+			"EXECUTION_PERFOMED", null, null);
+} catch (Exception e) {
+	// AUDIT UPDATE
+	auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+			"EXECUTION_FAILED", e.getMessage(), null);
+	throw e;
+}
+%>
 
 </body>
 </html>

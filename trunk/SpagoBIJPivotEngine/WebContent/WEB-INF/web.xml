@@ -71,6 +71,16 @@ You must accept the terms of that agreement to use this software.
     </init-param>
     -->
   </filter>
+
+  <filter>
+	<filter-name>SpagoBIAccessFilter</filter-name>
+	<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>SpagoBIAccessFilter</filter-name>
+    <url-pattern>/JPivotServlet/*</url-pattern>
+  </filter-mapping>
   
   <filter-mapping>
     <filter-name>JPivotController</filter-name>
@@ -135,6 +145,15 @@ You must accept the terms of that agreement to use this software.
     <servlet-class>it.eng.spagobi.jpivotaddins.engines.JPivotServlet</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>SpagoBIDrillServlet</servlet-name>
+    <servlet-class>it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>SpagoBIDrillServlet</servlet-name>
+    <url-pattern>/SpagoBIDrillServlet</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>JPivotServlet</servlet-name>
     <url-pattern>/JPivotServlet</url-pattern>

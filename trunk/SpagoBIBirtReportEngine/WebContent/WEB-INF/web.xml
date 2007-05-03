@@ -39,6 +39,21 @@
 		<param-value></param-value>
 	</context-param>
 
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/BirtReportServlet/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/BirtReportServletODA/*</url-pattern>
+	</filter-mapping>
+
 	<servlet>
 		<servlet-name>ViewerServlet</servlet-name>
 		<servlet-class>org.eclipse.birt.report.viewer.servlet.ViewerServlet</servlet-class>
@@ -61,7 +76,17 @@
             <param-value>FALSE</param-value>
         </init-param>
     </servlet>
-    
+
+    <servlet>
+        <servlet-name>SpagoBIDrillServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SpagoBIDrillServlet</servlet-name>
+        <url-pattern>/SpagoBIDrillServlet</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>BirtReportServletODA</servlet-name>
         <url-pattern>/BirtReportServletODA</url-pattern>

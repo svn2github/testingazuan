@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.birt;
 
 import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,6 +38,7 @@ public class BirtReportServlet extends BirtReportServletODA {
 	        HttpServletResponse response)
 	        throws IOException, ServletException {
 		
+		logger.debug(this.getClass().getName() +":service:Start processing a new request...");
  		Map params = new HashMap();
 	 	Enumeration enumer = request.getParameterNames();
 	 	String parName = null;
@@ -49,6 +51,7 @@ public class BirtReportServlet extends BirtReportServletODA {
 	 	}		
 
 	 	if (securityAble && !authenticate(request, response)) {
+	 		logger.error(this.getClass().getName() +":service:Authentication failed");
 	 		PrintWriter writer = response.getWriter();
 	 		String resp = "<html><body><center><h2>Unauthorized</h2></center></body></html>";
 	 		writer.write(resp);
@@ -56,6 +59,16 @@ public class BirtReportServlet extends BirtReportServletODA {
 	 		writer.close();
 	 		return;
 	 	} else {
+	 		if(securityAble) 
+				logger.info(this.getClass().getName() +":service:Caller authenticated succesfully");
+	 		
+			// AUDIT UPDATE
+			String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+			AuditAccessUtils auditAccessUtils = 
+				(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+			auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+					"EXECUTION_STARTED", null, null);
+	 		
 	 		String template = (String)params.get("templatePath");
 	 		String spagobibase = (String)params.get("spagobiurl");
 	 		String dateformat = (String)params.get("dateformat");
@@ -65,16 +78,25 @@ public class BirtReportServlet extends BirtReportServletODA {
 	 			logger.error("Engines "+this.getClass().getName()+ " service() Cannot obtain" +
 	 				     " connection for engine ["+this.getClass().getName()+"] control" +
 	 				     " configuration in engine-config.xml config file");
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", "No connection available", null);
 	 			return;
 	 		}
 	 		try {
 	 			birtReportRunner.runReport(connection, params, getServletContext(), response, request);
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_PERFOMED", null, null);
 	 		} catch (Exception e) {
-	 			e.printStackTrace();
+				logger.error(this.getClass().getName() +":service:error " +
+		      			"during report production \n\n " + e);
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", e.getMessage(), null);
 	 		} finally {
 				try {
-					if (connection != null && !connection.isClosed()) 
-						connection.close();
+					if (connection != null && !connection.isClosed()) connection.close();
 				} catch (SQLException sqle) {
 					sqle.printStackTrace();
 					connection = null;

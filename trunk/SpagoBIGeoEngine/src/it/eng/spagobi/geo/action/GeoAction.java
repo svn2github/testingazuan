@@ -10,6 +10,7 @@ import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.render.MapRenderer;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import sun.misc.BASE64Decoder;
@@ -69,6 +71,14 @@ public class GeoAction extends AbstractHttpAction {
 	 * @param serviceResponse the Spago response SourceBean 
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
+		HttpServletRequest request = this.getHttpRequest(); 
+		// AUDIT UPDATE
+		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+		AuditAccessUtils auditAccessUtils = 
+			(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+		auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+				"EXECUTION_STARTED", null, null);
+		
 		// get the http response 
 		HttpServletResponse response = this.getHttpResponse();
 		this.freezeHttpResponse();
@@ -96,6 +106,9 @@ public class GeoAction extends AbstractHttpAction {
         						"GeoAction :: service : " +
         						"Error while decoding base64 template", e);
 			sendError(outputStream);
+			// AUDIT UPDATE
+			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Error while decoding base64 template", null);
 			return;
 		}
 		
@@ -109,6 +122,9 @@ public class GeoAction extends AbstractHttpAction {
 								"GeoAction :: service : " +
 								"Error while rendering the map", e);
 			sendError(outputStream);
+			// AUDIT UPDATE
+			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Error while rendering the map", null);
 			return;
 		}
 		
@@ -128,6 +144,9 @@ public class GeoAction extends AbstractHttpAction {
 			            			TracerSingleton.CRITICAL, 
 			            			"GeoAction :: service : error while transforming into jpeg", e);
 				sendError(outputStream);
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", "Error while transforming into jpeg", null);
 				return;
 			}
 			try{
@@ -166,6 +185,9 @@ public class GeoAction extends AbstractHttpAction {
             						TracerSingleton.CRITICAL, 
             						"GeoAction :: service : error while flushing svg", e);
 				sendError(outputStream);
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", "Error while flushing svg", null);
 				return;
 			}
 			try{
@@ -183,8 +205,13 @@ public class GeoAction extends AbstractHttpAction {
 			return;
 		}
 		
+		// AUDIT UPDATE
+		auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				"EXECUTION_PERFOMED", null, null);
+		
 		// delete tmp map file
 		maptmpfile.delete();
+		
 	}
 	
 	

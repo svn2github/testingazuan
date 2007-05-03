@@ -7,6 +7,7 @@ import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.JobRunner;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
 import java.io.IOException;
@@ -141,9 +142,19 @@ public class JobRunService extends HttpServlet {
 		}
 		// now the parameters map contains the biobject document parameters
 		
+		// AUDIT UPDATE
+		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+		AuditAccessUtils auditAccessUtils = 
+			(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+		auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+				"EXECUTION_STARTED", null, null);
+		
 		RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
 		if(runtimeRepository == null || !runtimeRepository.getRootDir().exists()) {
 			logger.error("Runtime-Repository not available");
+			// AUDIT UPDATE
+			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Runtime-Repository not available", null);
 			response.getOutputStream().write(getLocalizedMessage("repository.not.available").getBytes());
 			return;
 		}
@@ -151,16 +162,28 @@ public class JobRunService extends HttpServlet {
 		String result = EngineMessageBundle.getMessage("etl.process.executed", locale);
     	try {
     		runtimeRepository.runJob(job, parameters);
+			// AUDIT UPDATE
+			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_PERFOMED", null, null);
     	} catch (JobNotFoundException ex) {
     		logger.error(ex.getMessage());
     		result = EngineMessageBundle.getMessage("job.not.existing", locale, 
-					new String[]{job.getName()});    		
+					new String[]{job.getName()});
+			// AUDIT UPDATE
+			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Job not found", null);
     	} catch (ContextNotFoundException ex) {
     		result = EngineMessageBundle.getMessage("context.script.not.existing", locale, 
     				new String[]{job.getContext(), job.getName()});
+			// AUDIT UPDATE
+			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Context not found", null);
     	} catch(JobExecutionException ex) {
     		logger.error(ex.getMessage(), ex);
     		result = EngineMessageBundle.getMessage("perl.exectuion.error", locale);
+			// AUDIT UPDATE
+			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Job execution error", null);
     	}    	
     	
     	response.getOutputStream().write(result.getBytes());

@@ -48,7 +48,7 @@
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
    	
 	// get the execution role
-	String executionRole = (String)session.getAttribute(SpagoBIConstants.ROLE);
+	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 	
 	AuditManager auditManager = AuditManager.getInstance();
 	Integer executionId = auditManager.insertAudit(obj, userProfile, executionRole, aSessionContainer);

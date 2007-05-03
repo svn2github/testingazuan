@@ -42,6 +42,7 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
+import it.eng.spagobi.bo.dao.audit.AuditManager;
 import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
@@ -50,10 +51,12 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.engines.InternalEngineIFace;
+import it.eng.spagobi.metadata.SbiAudit;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -260,17 +263,17 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 		debug("pageCreationHandler", "BIObject id = " + id);
 		
-//		boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
-//		if (!canSee) {
-//			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-//		            "ExecuteBIObjectMOdule", 
-//		            "pageCreationHandler", 
-//		            "Object with label = '" + obj.getLabel() + "' cannot be executed by the user!!");
-//			Vector v = new Vector();
-//			v.add(obj.getLabel());
-//			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
-//			return;
-//		}
+		boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
+		if (!canSee) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+		            "ExecuteBIObjectMOdule", 
+		            "pageCreationHandler", 
+		            "Object with label = '" + obj.getLabel() + "' cannot be executed by the user!!");
+			Vector v = new Vector();
+			v.add(obj.getLabel());
+			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
+			return;
+		}
 		
 		// get parameters statically defined in portlet preferences
 		String userProvidedParametersStr = (String)session.getAttribute(ObjectsTreeConstants.PARAMETERS);
@@ -726,6 +729,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 				//	else mapPars = aEngineDriver.getParameterMap(obj);
 				//}
 				
+				// adding parameters for document-to-document drill
+				mapPars.put("username", profile.getUserUniqueIdentifier().toString());
+				mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
+				
 			    // set into the reponse the parameters map	
 				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
 				
@@ -790,7 +797,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 		}
 
 	}
-	
+
+
 	private boolean isSubRptStatusAdmissible(String masterRptStatus, String subRptStatus) {
 		if(masterRptStatus.equalsIgnoreCase("DEV")) {
 			if(subRptStatus.equalsIgnoreCase("DEV") ||

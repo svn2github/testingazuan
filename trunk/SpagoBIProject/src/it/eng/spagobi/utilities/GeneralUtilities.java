@@ -303,6 +303,15 @@ public class GeneralUtilities {
 	    return getSpagoBiContextAddress() + "/EventsManagerServlet";
 	}
 	
+	/**
+	 * Gets the spagoBI's AuditManager servlet information as a string.
+	 * 
+	 * @return A string containing spagoBI's AuditManager servlet information
+	 */
+	public static String getSpagoBiAuditManagerServlet(){
+		
+	    return getSpagoBiContextAddress() + "/AuditManagerServlet";
+	}
 	
 	/**
 	 * Substitutes the profile attributes with sintax "${attribute_name}" with the correspondent value in the string passed at input.

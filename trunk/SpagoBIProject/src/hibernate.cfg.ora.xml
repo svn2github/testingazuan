@@ -34,5 +34,6 @@
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEventRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiAudit.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

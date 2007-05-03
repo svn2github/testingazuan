@@ -52,11 +52,6 @@
     </servlet>
     
     <servlet>
-        <servlet-name>JasperReportServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.engines.jasperreport.JasperReportServlet</servlet-class>
-    </servlet>
-    
-    <servlet>
         <servlet-name>ContentRepositoryServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.ContentRepositoryServlet</servlet-class>
     </servlet>
@@ -116,6 +111,12 @@
         <servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
         <load-on-startup>100</load-on-startup>
     </servlet>
+    <!-- end axis servlet -->
+    
+    <servlet>
+        <servlet-name>AuditManagerServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.services.AuditManagerServlet</servlet-class>
+    </servlet>
     <!-- END SERVLET DEFINITIONS --> 
 
 
@@ -128,6 +129,11 @@
 
 
     <!-- START SERVLET MAPPINGS --> 
+	<servlet-mapping>
+		<servlet-name>AuditManagerServlet</servlet-name>
+		<url-pattern>/AuditManagerServlet</url-pattern>
+	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>AdapterHTTP</servlet-name>
 		<url-pattern>/servlet/AdapterHTTP</url-pattern>
@@ -172,11 +178,6 @@
     <servlet-mapping>
         <servlet-name>PortletWrapper</servlet-name>
         <url-pattern>/PortletWrapper</url-pattern>
-    </servlet-mapping>
-    
-    <servlet-mapping>
-        <servlet-name>JasperReportServlet</servlet-name>
-        <url-pattern>/JasperReportServlet</url-pattern>
     </servlet-mapping>
     
     <servlet-mapping>

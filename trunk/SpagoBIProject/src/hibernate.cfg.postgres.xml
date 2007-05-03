@@ -34,5 +34,6 @@
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEventRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiAudit.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

@@ -23,6 +23,7 @@
                  it.eng.spago.security.IEngUserProfile,
                  it.eng.spagobi.utilities.SpagoBITracer,
                  it.eng.spagobi.utilities.ChannelUtilities" %>
+<%@page import="it.eng.spagobi.bo.dao.audit.AuditManager"%>
 
 <%
     // identity string for object of the page
@@ -42,7 +43,22 @@
    	// get the actor
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
 
-
+   	// get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+   	
+	// get the execution role
+	String executionRole = (String)session.getAttribute(SpagoBIConstants.ROLE);
+	
+	AuditManager auditManager = AuditManager.getInstance();
+	Integer executionId = auditManager.insertAudit(obj, userProfile, executionRole, aSessionContainer);
+	// adding parameters for AUDIT updating
+	if (executionId != null) {
+		mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
+		mapPars.put(AuditManager.AUDIT_SERVLET, GeneralUtilities.getSpagoBiAuditManagerServlet());
+	}
+	
+	
 	// build the string of the title
     String title = "";
     title = obj.getName();
@@ -143,8 +159,6 @@
 	// urls for resources
 	String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
 %>
-
-
 
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
 
@@ -291,8 +305,6 @@
 	if(edNoteAble) {
 		BIObjectNotesManager objectNotesManager = new BIObjectNotesManager();
 		String execIdentifier = objectNotesManager.getExecutionIdentifier(obj);
-		SessionContainer permSession = aSessionContainer.getPermanentContainer();
-		IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String nameUser = (String)userProfile.getUserUniqueIdentifier();
 		String linkFck = urlBuilder.getResourceLink(request, "/js/FCKeditor/fckeditor.js");
 		String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");

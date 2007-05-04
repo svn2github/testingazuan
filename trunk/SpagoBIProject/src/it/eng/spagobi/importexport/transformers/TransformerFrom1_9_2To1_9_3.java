@@ -34,6 +34,8 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 
 		buildCmsNodes(pathImpTmpFolder, archiveName);
 		
+		// TODO Risolvere problemi legati ai lov, in particolare trasformare i vecchi fix list e script (single-value e multi value)
+		
 		// compress archive
 		try {
 			content = TransformersUtilities.createExportArchive(pathImpTmpFolder, archiveName);

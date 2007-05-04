@@ -74,7 +74,12 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 			SourceBean pathTmpFoldSB = (SourceBean)config.getAttribute("BOOKLETS.PATH_TMP_FOLDER");
 			pathTmpFold = (String)pathTmpFoldSB.getAttribute("path");
 			debug("execute", "Path tmp =" + pathTmpFold);
-			pathTmpFoldPamp = pathTmpFold + pathBookConf;
+			if (pathTmpFold.startsWith("/") || pathTmpFold.charAt(1) == ':') {
+				pathTmpFoldPamp = pathTmpFold + pathBookConf;
+			} else {
+				String root = ConfigSingleton.getRootPath();
+				pathTmpFoldPamp = root + "/" + pathTmpFold + pathBookConf;
+			}
 			debug("execute", "Path tmp folder pamphlet =" + pathTmpFoldPamp);
 			File tempDir = new File(pathTmpFoldPamp); 
 			tempDir.mkdirs();

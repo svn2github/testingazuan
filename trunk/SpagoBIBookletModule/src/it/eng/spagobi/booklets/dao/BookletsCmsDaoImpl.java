@@ -73,6 +73,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			setOp.setType(SetOperation.TYPE_CONTENT);
 			String path =pathBiObj + "/template";
 			setOp.setPath(path);
+			setOp.setVersionable(true);
 			// define properties list
 			List properties = new ArrayList();
 			String[] nameFilePropValues = new String[] { "bookletTemplate" };
@@ -87,6 +88,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			// create node for documents
 			String documentsConfPathNode = path + "/documentsConfigured";
 			setOp = new SetOperation(documentsConfPathNode, SetOperation.TYPE_CONTAINER, true);
+			setOp.setVersionable(true);
 			manager.execSetOperation(setOp);
 			// return path of the booklet
 			pathToReturn = path;
@@ -124,16 +126,20 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			}
 			// create the node and subnodes
 			SetOperation setOp = new SetOperation(pathDocParts, SetOperation.TYPE_CONTAINER, true);
+			setOp.setVersionable(true);
 			manager.execSetOperation(setOp);
 			for(int i=1; i<=numTempParts; i++) {
 				String pathPart = pathDocParts + "/part_" + i;
 				setOp = new SetOperation(pathPart, SetOperation.TYPE_CONTAINER, true);
+				setOp.setVersionable(true);
 				manager.execSetOperation(setOp);
 				String pathImg = pathPart + "/images";
 				setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTAINER, true);
+				setOp.setVersionable(true);
 				manager.execSetOperation(setOp);
 				String pathNotes = pathPart + "/notes";
 				setOp = new SetOperation(pathNotes, SetOperation.TYPE_CONTENT, true);
+				setOp.setVersionable(true);
 				ByteArrayInputStream bais = new ByteArrayInputStream("".getBytes());
 				setOp.setContent(bais);
 				bais.close();
@@ -250,6 +256,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			ByteArrayInputStream bais = new ByteArrayInputStream(xmlBytes);
 			// store all information into cms
 			SetOperation setOp = new SetOperation(newPath, SetOperation.TYPE_CONTENT, true, properties);
+			setOp.setVersionable(true);
 			setOp.setContent(bais);
 	        CmsManager manager = new CmsManager();
 			manager.execSetOperation(setOp);
@@ -341,6 +348,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			ByteArrayInputStream bais = new ByteArrayInputStream(templateContent);
 			// store all information into cms
 			SetOperation setOp = new SetOperation(tempPath, SetOperation.TYPE_CONTENT, true, properties);
+			setOp.setVersionable(true);
 			setOp.setContent(bais);
 	        CmsManager manager = new CmsManager();
 			manager.execSetOperation(setOp);
@@ -466,6 +474,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			ByteArrayInputStream bais = new ByteArrayInputStream(pdFileContent);
 			// store all information into cms
 			SetOperation setOp = new SetOperation(tempPath, SetOperation.TYPE_CONTENT, true, properties);
+			setOp.setVersionable(true);
 			setOp.setContent(bais);
 	        CmsManager manager = new CmsManager();
 			manager.execSetOperation(setOp);
@@ -488,6 +497,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			CmsProperty propname = new CmsProperty("logicalname", namePropValues);
 			properties.add(propname);
 			SetOperation setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTENT, true, properties);
+			setOp.setVersionable(true);
 			ByteArrayInputStream bais = new ByteArrayInputStream(image);
 			setOp.setContent(bais);
 			manager.execSetOperation(setOp);
@@ -572,6 +582,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + "/document_parts/part_" + indPart + "/notes";
 			SetOperation setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTENT, true);
+			setOp.setVersionable(true);
 			ByteArrayInputStream bais = new ByteArrayInputStream(noteContent);
 			setOp.setContent(bais);
 			manager.execSetOperation(setOp);
@@ -590,6 +601,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + CURRENT_PRESENTATION;
 			SetOperation setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTENT, true);
+			setOp.setVersionable(true);
 			setOp.setContent(docContentIS);
 			manager.execSetOperation(setOp);
 			docContentIS.close();
@@ -605,6 +617,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + CURRENT_PRESENTATION;
 			SetOperation setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTENT, true);
+			setOp.setVersionable(true);
 			ByteArrayInputStream bais = new ByteArrayInputStream(docContent);
 			setOp.setContent(bais);
 			manager.execSetOperation(setOp);
@@ -787,6 +800,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + APPROVED_PRESENTATION;
 			SetOperation setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTENT, true);
+			setOp.setVersionable(true);
 			ByteArrayInputStream bais = new ByteArrayInputStream(presContent);
 			setOp.setContent(bais);
 			// get the name of the biobeject

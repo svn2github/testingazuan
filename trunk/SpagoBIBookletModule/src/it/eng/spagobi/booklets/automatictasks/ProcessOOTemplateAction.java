@@ -88,7 +88,13 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			} else {
 				debug("execute", "Booklet base tmp folder retrived " + pathTmpFold);
 			}
-			String pathTmpFoldBook = pathTmpFold + pathBookConf;
+			String pathTmpFoldBook = null;
+			if (pathTmpFold.startsWith("/") || pathTmpFold.charAt(1) == ':') {
+				pathTmpFoldBook = pathTmpFold + pathBookConf;
+			} else {
+				String root = ConfigSingleton.getRootPath();
+				pathTmpFoldBook = root + "/" + pathTmpFold + pathBookConf;
+			}
 			debug("execute", "Using tmp folder path " + pathTmpFoldBook);
 			File tempDir = new File(pathTmpFoldBook); 
 			tempDir.mkdirs();
@@ -118,8 +124,8 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			// INITIALIZE OFFICE ENVIRONMENT
 			SourceBean officeConnectSB = (SourceBean)config.getAttribute("BOOKLETS.OFFICECONNECTION");
 			if(officeConnectSB==null) {
-				major("execute", "Cannot found sourcebean BOOKLETS.PATH_TMP_FOLDER into configuration");
-				throw new Exception("Cannot found sourcebean BOOKLETS.PATH_TMP_FOLDER into configuration");
+				major("execute", "Cannot found sourcebean BOOKLETS.OFFICECONNECTION into configuration");
+				throw new Exception("Cannot found sourcebean BOOKLETS.OFFICECONNECTION into configuration");
 			} else {
 				debug("execute", "Booklet office connection sourcebean retrived " + officeConnectSB);
 			}

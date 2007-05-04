@@ -28,6 +28,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.booklets;
 
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
@@ -68,6 +70,10 @@ public class BookletsServlet extends HttpServlet{
 	 		if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE)){
 	 			String pathimg = (String)request.getParameter(BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE);
 			 	if(pathimg!=null) {
+			 		if (!pathimg.startsWith("/") && !(pathimg.charAt(1) == ':')) {
+			 			String root = ConfigSingleton.getRootPath();
+			 			pathimg = root + "/" + pathimg;
+			 		}
 				 	File imgFile = new File(pathimg);
 				 	FileInputStream fis = new FileInputStream(imgFile);
 				 	byte[] content = GeneralUtilities.getByteArrayFromInputStream(fis);

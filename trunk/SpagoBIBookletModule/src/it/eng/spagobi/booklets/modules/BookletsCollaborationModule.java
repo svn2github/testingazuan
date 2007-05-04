@@ -466,7 +466,14 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    ConfigSingleton configSing = ConfigSingleton.getInstance();
 		SourceBean pathTmpFoldSB = (SourceBean)configSing.getAttribute("BOOKLETS.PATH_TMP_FOLDER");
 		String pathTmpFold = (String)pathTmpFoldSB.getAttribute("path");
-		File tempDir = new File(pathTmpFold); 
+		String pathTmpFoldBook = null;
+		if (pathTmpFold.startsWith("/") || pathTmpFold.charAt(1) == ':') {
+			pathTmpFoldBook = pathTmpFold;
+		} else {
+			String root = ConfigSingleton.getRootPath();
+			pathTmpFoldBook = root + "/" + pathTmpFold;
+		}
+		File tempDir = new File(pathTmpFoldBook); 
 		tempDir.mkdirs();
 		// for each image store into the temp directory and save the url useful to recover it into the map
 	    Map imageurl = new HashMap();

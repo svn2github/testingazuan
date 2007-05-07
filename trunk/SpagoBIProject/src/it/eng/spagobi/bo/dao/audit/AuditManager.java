@@ -23,6 +23,7 @@ package it.eng.spagobi.bo.dao.audit;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -158,10 +159,10 @@ public class AuditManager {
 	 * @param obj The BIObject being executed
 	 * @param profile The user profile
 	 * @param role The execution role
-	 * @param session The Spago SessionContainer
+	 * @param modality The execution modality
 	 * @return The Integer representing the execution id
 	 */
-	public Integer insertAudit(BIObject obj, IEngUserProfile profile, String role, SessionContainer session) {
+	public Integer insertAudit(BIObject obj, IEngUserProfile profile, String role, String modality) {
 		SbiAudit audit = new SbiAudit();
 		audit.setUserName(profile.getUserUniqueIdentifier().toString());
 		audit.setUserGroup(role);
@@ -199,9 +200,7 @@ public class AuditManager {
 			}
 		}
 		audit.setRequestTime(new Timestamp(System.currentTimeMillis()));
-		String modality = (String) session.getAttribute(SpagoBIConstants.MODALITY);
 		audit.setExecutionModality(modality);
-		
 		audit.setExecutionState("EXECUTION_REQUESTED");
 		
 		try {
@@ -214,4 +213,61 @@ public class AuditManager {
 		return audit.getId();
 	}
     
+	public void updateAudit(Integer auditId, Long startTime, Long endTime, String executionState, 
+			String errorMessage, String errorCode) {
+		if (auditId == null) {
+			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+					"Audit record id not specified, no updating is possible.");
+			return;
+		}
+		
+		SbiAudit audit;
+		try {
+			audit = loadAudit(auditId);
+		} catch (EMFUserError e) {
+			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+					"Error loading audit record with id = [" + auditId.toString() + "]", e);
+			return;
+		}
+		if (startTime != null) {
+			Date executionStartTime = new Date(startTime.longValue());
+			if (audit.getExecutionStartTime() == null) {
+				audit.setExecutionStartTime(executionStartTime);
+			} else {
+				SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+						"Audit record with id = [" + auditId.toString() + "] has already a start time! " +
+								"It will be NOT overwritten");
+			}
+		}
+		if (endTime != null) {
+			Date executionEndTime = new Date(endTime.longValue());
+			audit.setExecutionEndTime(executionEndTime);
+			if (audit.getExecutionEndTime() == null) {
+				audit.setExecutionEndTime(executionEndTime);
+			} else {
+				SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+						"Audit record with id = [" + auditId.toString() + "] has already an end time! " +
+								"It will be overwritten");
+				audit.setExecutionEndTime(executionEndTime);
+			}
+		}
+		if (executionState != null && !executionState.trim().equals("")) {
+			audit.setExecutionState(executionState);
+		}
+		if (errorMessage != null && !errorMessage.trim().equals("")) {
+			audit.setErrorMessage(errorMessage);
+		}
+		if (errorCode != null && !errorCode.trim().equals("")) {
+			audit.setErrorCode(errorCode);
+		}
+		
+		try {
+			modifyAudit(audit);
+		} catch (EMFUserError e) {
+			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+					"Error updating audit record with id = [" + auditId.toString() + "]", e);
+			return;
+		}
+	}
+	
 }

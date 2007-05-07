@@ -21,13 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services;
 
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.dao.audit.AuditManager;
-import it.eng.spagobi.metadata.SbiAudit;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,59 +50,38 @@ public class AuditManagerServlet extends HttpServlet {
 			exit();
 		}
 		SpagoBITracer.debug(AuditManager.MODULE_NAME, getClass().getName(), "service:", "Audit id = [" + auditIdStr + "]");
-		Integer id = new Integer(auditIdStr);
-		// getting audit record with the specified id
-		AuditManager auditManager = AuditManager.getInstance();
-		SbiAudit audit = null;
-		try {
-			audit = auditManager.loadAudit(id);
-		} catch (EMFUserError e) {
-			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "service:", "Error while retrieving audit record" +
-					"with id = [" + auditIdStr + "]", e);
-			exit();
-		}
-		// modifying audit record
+		Integer auditId = new Integer(auditIdStr);
+		// getting execution start time
+		Long startTime = null;
 		String executionStartLong = request.getParameter(AuditManager.EXECUTION_START);
 		if (executionStartLong != null && !executionStartLong.trim().equals("")) {
 			try {
-				long startTime = Long.parseLong(executionStartLong);
-				Date executionStartTime = new Date(startTime);
-				audit.setExecutionStartTime(executionStartTime);
+				startTime = new Long(executionStartLong);
 			} catch (NumberFormatException nfe) {
 				SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "service:", 
 						"Execution start time = [" + executionStartLong + "] not correct!", nfe);
 			}
 		}
+		// getting execution end time
+		Long endTime = null;
 		String executionEndLong = request.getParameter(AuditManager.EXECUTION_END);
 		if (executionEndLong != null && !executionEndLong.trim().equals("")) {
 			try {
-				long endTime = Long.parseLong(executionEndLong);
-				Date executionEndTime = new Date(endTime);
-				audit.setExecutionEndTime(executionEndTime);
+				endTime = new Long(executionEndLong);
 			} catch (NumberFormatException nfe) {
 				SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "service:", 
 						"Execution end time = [" + executionStartLong + "] not correct!", nfe);
 			}
 		}
+		// getting execution state
 		String executionState = request.getParameter(AuditManager.EXECUTION_STATE);
-		if (executionState != null && !executionState.trim().equals("")) {
-			audit.setExecutionState(executionState);
-		}
+		// getting error message
 		String errorMessage = request.getParameter(AuditManager.ERROR_MESSAGE);
-		if (errorMessage != null && !errorMessage.trim().equals("")) {
-			audit.setErrorMessage(errorMessage);
-		}
+		// getting error code
 		String errorCode = request.getParameter(AuditManager.ERROR_CODE);
-		if (errorCode != null && !errorCode.trim().equals("")) {
-			audit.setErrorCode(errorCode);
-		}
 		// saving modifications
-		try {
-			auditManager.modifyAudit(audit);
-		} catch (EMFUserError e) {
-			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "service:", 
-					"Error saving audit record", e);
-		}
+		AuditManager auditManager = AuditManager.getInstance();
+		auditManager.updateAudit(auditId, startTime, endTime, executionState, errorMessage, errorCode);
 		// exiting
 		exit();
 	}

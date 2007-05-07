@@ -32,6 +32,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
+import it.eng.spagobi.bo.dao.audit.AuditManager;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -52,6 +53,23 @@ public class DashboardServlet extends HttpServlet{
      } 
 
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		
+		// AUDIT UPDATE
+		Integer auditId = null;
+		String auditIdStr = request.getParameter("SPAGOBI_AUDIT_ID");
+		if (auditIdStr == null) {
+			SpagoBITracer.warning("SpagoBI", getClass().getName(), "service:", "Audit record id not specified! " +
+					"No operations will be performed");
+		} else {
+			SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "Audit id = [" + auditIdStr + "]");
+			auditId = new Integer(auditIdStr);
+		}
+		AuditManager auditManager = AuditManager.getInstance();
+		if (auditId != null) {
+			auditManager.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+					"EXECUTION_STARTED", null, null);
+		}
+		
 		OutputStream out = null;
 		DataConnection dataConnection = null;
 	 	try{
@@ -79,6 +97,10 @@ public class DashboardServlet extends HttpServlet{
                 	// write the result into response
             		out.write(result.getBytes());
     		 		out.flush();
+    		 		
+    		 		// AUDIT UPDATE
+    				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+    						"EXECUTION_PERFOMED", null, null);
                 }		
 		 	} else {
 		 		out.write(createErrorMsg(10, "Param dataname not found"));
@@ -86,6 +108,9 @@ public class DashboardServlet extends HttpServlet{
 		 	}
 	 	}catch(Exception e){
 	 		SpagoBITracer.critical("SpagoBI",getClass().getName(),"service","Exception", e);
+	 		// AUDIT UPDATE
+	 		auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", e.getMessage(), null);
 	 	} finally {
 	 		if (dataConnection != null)
 				try {

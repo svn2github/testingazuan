@@ -32,6 +32,7 @@ import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IDomainDAO;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.InternalEngineIFace;
@@ -217,6 +218,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		      	}  
 		    } 
 			// set information into reponse
+		    response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 			response.setAttribute("movie", movie);
 			response.setAttribute("dataurl", dataurl);
 			response.setAttribute("width", width);

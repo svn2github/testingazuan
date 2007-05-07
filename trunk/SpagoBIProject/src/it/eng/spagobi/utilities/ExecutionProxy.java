@@ -3,6 +3,7 @@ package it.eng.spagobi.utilities;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Engine;
+import it.eng.spagobi.bo.dao.audit.AuditManager;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 
@@ -42,6 +43,16 @@ public class ExecutionProxy {
 			IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
 			// get the map of parameter to send to the engine
 			Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
+			
+		    // AUDIT
+			AuditManager auditManager = AuditManager.getInstance();
+			Integer executionId = auditManager.insertAudit(biObject, profile, "", "SCHEDULATION");
+			// adding parameters for AUDIT updating
+			if (executionId != null) {
+				mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
+				mapPars.put(AuditManager.AUDIT_SERVLET, GeneralUtilities.getSpagoBiAuditManagerServlet());
+			}
+			
 			// built the request to sent to the engine
 			Iterator iterMapPar = mapPars.keySet().iterator();
 			HttpClient client = new HttpClient();

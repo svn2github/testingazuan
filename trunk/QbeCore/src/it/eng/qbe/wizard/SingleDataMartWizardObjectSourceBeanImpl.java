@@ -142,14 +142,20 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public String getFinalSqlQuery(DataMartModel dm) {
 		
 		String finalSqlQuery = null;
-		
-		String finalHQLQuery = getFinalQuery();
-		if (finalHQLQuery != null){
-			Session aSession = Utils.getSessionFactory(dm, ApplicationContainer.getInstance()).openSession();
-			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(aSession);
-			finalSqlQuery = queryRewriter.rewrite( getFinalQuery() );
+		Session aSession = null;
+		try {
+			String finalHQLQuery = getFinalQuery();
+			if (finalHQLQuery != null){
+				aSession = Utils.getSessionFactory(dm, ApplicationContainer.getInstance()).openSession();
+				HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(aSession);
+				finalSqlQuery = queryRewriter.rewrite( getFinalQuery() );
+			}
+			return finalSqlQuery;
+		} finally {
+			if ((aSession != null) && (aSession.isOpen()))
+				aSession.close();
 		}
-		return finalSqlQuery;
+		
 	}
 	
 	public void setFinalQuery(String query) {

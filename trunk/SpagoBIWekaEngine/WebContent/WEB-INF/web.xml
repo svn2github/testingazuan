@@ -6,6 +6,16 @@
         This application is a portlet. It can not be used outside a portal.
 	</description>
 	
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/WekaServlet/*</url-pattern>
+	</filter-mapping>
+	
 	<servlet>
         <servlet-name>WekaServlet</servlet-name>
         <servlet-class>it.eng.spagobi.engines.weka.WekaServlet</servlet-class>

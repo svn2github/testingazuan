@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.weka;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -103,6 +104,8 @@ public class WekaServlet extends HttpServlet {
 	public static final String PROCESS_ACTIVATED_MSG = "processActivatedMsg";
 	public static final String PROCESS_NOT_ACTIVATED_MSG = "processNotActivatedMsg";
 	
+	protected AuditAccessUtils auditAccessUtils;
+	
 	public class RunnerThread extends Thread {
 		private File file = null;		
 		
@@ -150,6 +153,11 @@ public class WekaServlet extends HttpServlet {
 				logger.error(this.getClass().getName() + ":run: problems while registering the start process event", e);
 			}
 			
+			// AUDIT UPDATE
+			String auditId = (String) params.get("SPAGOBI_AUDIT_ID");
+			auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+					"EXECUTION_STARTED", null, null);
+			
 			Connection con = getConnection((String)params.get(CONNECTION));
 			Connection incon = (con!=null)?con: getConnection((String)params.get(INPUT_CONNECTION));
 			Connection outcon = (con!=null)?con: getConnection((String)params.get(OUTPUT_CONNECTION));
@@ -159,6 +167,9 @@ public class WekaServlet extends HttpServlet {
 						+ " connection for engine ["
 						+ this.getClass().getName() + "] control"
 						+ " configuration in engine-config.xml config file");
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", "No connection available", null);
 				return;
 			}
 			
@@ -201,10 +212,16 @@ public class WekaServlet extends HttpServlet {
 				endExecutionEventDescription = "${weka.execution.executionOk}<br/>";
 				endEventParams.put("operation-result", "success");
 				
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_PERFOMED", null, null);
 			} catch (Exception e) {
 				logger.error("Impossible to load/parse templete file", e);
 				endExecutionEventDescription = "${weka.execution.executionKo}<br/>";
 				endEventParams.put("operation-result", "failure");
+				// AUDIT UPDATE
+				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", e.getMessage(), null);
 			}
 			
 			try {	
@@ -311,6 +328,9 @@ public class WekaServlet extends HttpServlet {
 			String message = null;
 			Thread runner = null;
 			boolean startupCorrectlyExecuted = true;
+			
+			auditAccessUtils = 
+				(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 			
 			try {
 				byte[] template = getTemplateContent(request);

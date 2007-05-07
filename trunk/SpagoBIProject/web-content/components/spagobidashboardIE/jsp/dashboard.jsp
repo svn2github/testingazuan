@@ -11,7 +11,10 @@
                  java.util.List" %>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
-
+<%@page import="it.eng.spagobi.bo.dao.audit.AuditManager"%>
+<%@page import="it.eng.spagobi.bo.BIObject"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
 <%
 	// control if the portlet act with single object modality.
 	// get the modality of the portlet (single object execution, entire tree or filter tree)
@@ -19,10 +22,20 @@
 	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
 	if( (modality!=null) && modality.equals(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) )
 		isSingleObjExec = true;
+	
+    // get module response
+    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
+	// get the BiObject from the response
+    BIObject obj = (BIObject)moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+   	// get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	// get the execution role
+	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
+
     // get the actor
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-    // get the module response 
-    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
+	
     String title = (String)moduleResponse.getAttribute("title");
     String displayTitleBar = (String)moduleResponse.getAttribute("displayTitleBar");
     String movie = ChannelUtilities.getSpagoBIContextName(request);
@@ -41,6 +54,16 @@
 	else dataurl = dataurl + "/" + dataurlRel;
 	Map confParameters = (Map)moduleResponse.getAttribute("confParameters");
 	Map dataParameters = (Map)moduleResponse.getAttribute("dataParameters");
+	
+	// AUDIT insert
+	AuditManager auditManager = AuditManager.getInstance();
+	String auditModality = (modality != null) ? modality : "NORMAL_EXECUTION";
+	Integer auditId = auditManager.insertAudit(obj, userProfile, executionRole, auditModality);
+	// adding parameters for AUDIT updating
+	if (auditId != null) {
+		dataParameters.put(AuditManager.AUDIT_ID, auditId.toString());
+	}
+	
 	List possibleStateChanges = (List)moduleResponse.getAttribute("possibleStateChanges");
 	// start to create the calling url
 	// put the two dimensio parameter
@@ -53,16 +76,18 @@
 	while(iterDataKeys.hasNext()) {
 		String name = (String)iterDataKeys.next();
 		String value = (String)dataParameters.get(name);
-	    dataurl += name + "=" + value + "&"; 
+	    dataurl += name + "%3D" + value + "%26"; 
 	}
-    // for each conf parameter append to the data url  
+	
+    // for each conf parameter append to the movie url  
 	Set confKeys = confParameters.keySet();
 	Iterator iterConfKeys = confKeys.iterator();
 	while(iterConfKeys.hasNext()) {
 		String name = (String)iterConfKeys.next();
 		String value = (String)confParameters.get(name);
-	    dataurl += name + "=" + value + "&"; 
+		movie += "&" + name + "=" + value; 
 	}
+	
     // append to the calling url the dataurl	
 	movie += "&dataurl=" + dataurl;
 	
@@ -79,7 +104,6 @@
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR WITH BACK BUTTON
 	if(!isSingleObjExec) {
 %>
-
 
 <table class='header-table-portlet-section'>
 			<tr class='header-row-portlet-section'>
@@ -151,13 +175,6 @@
 		<% } %>
 <%  } %>
 
-
-
-
-
-
-
-
 <% // HTML CODE FOR THE FLASH COMPONENT %>
 <center>  
        <object  classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" 
@@ -179,4 +196,3 @@
    		</EMBED>
 	</object>    
 </center>
-

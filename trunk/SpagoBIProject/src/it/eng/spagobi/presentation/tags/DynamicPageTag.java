@@ -514,8 +514,8 @@ public class DynamicPageTag extends TagSupport {
 	    	}
 	    	
 	    	if(parusecorrId!=null) {			
-				request.setAttribute("LOOKUP_PARAMETER_ID", biparIdStr);
-				request.setAttribute("correlated_paruse_id", parusecorrId.toString());
+				request.updAttribute("LOOKUP_PARAMETER_ID", biparIdStr);
+				request.updAttribute("correlated_paruse_id", parusecorrId.toString());
 		    	LovToListService ltls = new LovToListService(lovResult);
 		    	ListIFace listvalues = ltls.getLovAsListService();
 		    	listvalues = ltls.filterListForCorrelatedParam(request, listvalues, httpRequest);

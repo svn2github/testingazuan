@@ -23,6 +23,7 @@ package it.eng.spagobi.bo.lov;
 
 import groovy.lang.Binding;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.security.IEngUserProfile;
@@ -176,13 +177,55 @@ public class ScriptDetail  implements ILovDetail  {
 				List rowsList = source.getAttributeAsList(DataRow.ROW_TAG);
 				if( (rowsList==null) || (rowsList.size()==0) ) {
 					toconvert = true;
+				} else {
+					// TODO this part can be moved to the import transformer
+					// RESOLVES RETROCOMPATIBILITY PROBLEMS
+					// finds the name of the first attribute of the rows if exists 
+					String defaultName = "";
+					SourceBean rowSB = (SourceBean) rowsList.get(0);
+					List attributes = rowSB.getContainedAttributes();
+					if (attributes != null && attributes.size() > 0) {
+						SourceBeanAttribute attribute = (SourceBeanAttribute) attributes.get(0);
+						defaultName = attribute.getKey();
+					}
+					// if a value column is specified, it is considered
+					SourceBean valueColumnSB = (SourceBean) source.getAttribute("VALUE-COLUMN");
+					if (valueColumnSB != null) {
+						String valueColumn = valueColumnSB.getCharacters();
+						if (valueColumn != null) {
+							valueColumnName = valueColumn;
+						}
+					} else {
+						valueColumnName = defaultName;
+					}
+					SourceBean visibleColumnsSB = (SourceBean) source.getAttribute("VISIBLE-COLUMNS");
+					if (visibleColumnsSB != null) {
+						String allcolumns = visibleColumnsSB.getCharacters();
+						if (allcolumns != null) {
+							String[] columns = allcolumns.split(",");
+							visibleColumnNames = Arrays.asList(columns);
+						}
+					} else {
+						String[] columns = new String[] {defaultName};
+						visibleColumnNames = Arrays.asList(columns);
+					}
+					SourceBean descriptionColumnSB = (SourceBean) source.getAttribute("DESCRIPTION-COLUMN");
+					if (descriptionColumnSB != null) {
+						String descriptionColumn = descriptionColumnSB.getCharacters();
+						if (descriptionColumn != null) {
+							descriptionColumnName = descriptionColumn;
+						}
+					} else {
+						descriptionColumnName = defaultName;
+					}
 				}
 			}
 			
 		} catch (Exception e) {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					              "checkSintax", "the result of the java class lov is not formatted " +
+					              "checkSintax", "the result of the lov is not formatted " +
 					              "with the right structure so it will be wrapped inside an xml envelope");
+			toconvert = true;
 		}
 		return toconvert;
 	}
@@ -243,6 +286,10 @@ public class ScriptDetail  implements ILovDetail  {
 		sb.append("<ROWS>");
 		sb.append("<ROW VALUE=\"" + result +"\"/>");
 		sb.append("</ROWS>");
+		descriptionColumnName = "VALUE";
+		valueColumnName = "VALUE";
+		String [] visibleColumnNamesArray = new String [] {"VALUE"};
+		visibleColumnNames = Arrays.asList(visibleColumnNamesArray);
 		return sb.toString();
 	}
 	

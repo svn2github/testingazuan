@@ -50,8 +50,15 @@
 	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 	
+	// try to get the modality
+	boolean isSingleObjExec = false;
+	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
+   	if( (modality!=null) && modality.equals(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) )
+   		isSingleObjExec = true;
+	
 	AuditManager auditManager = AuditManager.getInstance();
-	Integer executionId = auditManager.insertAudit(obj, userProfile, executionRole, aSessionContainer);
+	String auditModality = (modality != null) ? modality : "NORMAL_EXECUTION";
+	Integer executionId = auditManager.insertAudit(obj, userProfile, executionRole, auditModality);
 	// adding parameters for AUDIT updating
 	if (executionId != null) {
 		mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
@@ -65,12 +72,6 @@
     String objDescr = obj.getDescription();
     if( (objDescr!=null) && !(objDescr.trim().equals("")) )
     	title += ": " + objDescr;
-
-	// try to get the modality
-	boolean isSingleObjExec = false;
-	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
-   	if( (modality!=null) && modality.equals(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) )
-   		isSingleObjExec = true;
 
    	// try to get from the session the heigh of the output area
    	boolean heightSetted = false;

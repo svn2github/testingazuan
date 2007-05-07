@@ -24,6 +24,7 @@ package it.eng.spagobi.engines.talend.runtime;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
+import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 import it.eng.spagobi.engines.talend.utils.ZipUtils;
 import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
@@ -48,20 +49,20 @@ public class RuntimeRepository {
 	public void deployJob(JobDeploymentDescriptor jobDeploymentDescriptor, ZipFile executableJobFiles) {
 		File jobsDir = new File(rootDir, jobDeploymentDescriptor.getLanguage().toLowerCase());
 		File projectDir = new File(jobsDir, jobDeploymentDescriptor.getProject());		
-		ZipUtils.unzip(executableJobFiles, projectDir);
+		ZipUtils.unzipSkipFirstLevel(executableJobFiles, projectDir);		
 	}
 	
 	public void runJob(Job job, Map parameters) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
-		JobRunner jobRunner = getJobRunner(job.getLanguage());
+		IJobRunner jobRunner = getJobRunner(job.getLanguage());
 		if(jobRunner == null) return;
 		jobRunner.run(job, parameters);
 	}
 	
-	public JobRunner getJobRunner(String jobLanguage) {
+	public IJobRunner getJobRunner(String jobLanguage) {
 		if(jobLanguage.equalsIgnoreCase("java")) {
-			return null;
+			return new JavaJobRunner(this);
 		} else if(jobLanguage.equalsIgnoreCase("perl")) {
-			return new JobRunner(this);
+			return new PerlJobRunner(this);
 		} else {
 			return null;
 		}
@@ -87,7 +88,7 @@ public class RuntimeRepository {
 	}
 	
 	public File getExecutableJobFile(Job job) {
-		File jobExecutableFile = new File(getExecutableJobDir(job), job.getExecutableFileName());	
+		File jobExecutableFile = new File(getExecutableJobDir(job), TalendScriptAccessUtils.getExecutableFileName(job));	
 		return jobExecutableFile;
 	}
 	

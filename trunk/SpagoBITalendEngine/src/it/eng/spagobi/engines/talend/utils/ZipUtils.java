@@ -84,6 +84,46 @@ public class ZipUtils {
 		}
 	}
 	
+	public static void unzipSkipFirstLevel(ZipFile zipFile, File destDir) {
+		
+		Enumeration entries;
+		
+		try {
+			
+			entries = zipFile.entries();
+			
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry) entries.nextElement();
+
+				if (!entry.isDirectory()) {
+					String destFileStr = entry.getName();
+					
+					destFileStr = (destFileStr.indexOf('/') > 0)
+									? destFileStr.substring(destFileStr.indexOf('/')) 
+									: null;
+					if(destFileStr == null) continue;
+					File destFile = new File(destDir, destFileStr);
+					File destFileDir = destFile.getParentFile();
+					if(!destFileDir.exists()) {
+						System.err.println("Extracting directory: " + entry.getName().substring(0, entry.getName().lastIndexOf('/')));
+						destFileDir.mkdirs();
+					}
+					
+					System.err.println("Extracting file: " + entry.getName());
+					copyInputStream(zipFile.getInputStream(entry),
+							new BufferedOutputStream(new FileOutputStream(
+									new File(destDir, destFileStr))));
+				}				
+			}
+
+			zipFile.close();
+		} catch (IOException ioe) {
+			System.err.println("Unhandled exception:");
+			ioe.printStackTrace();
+			return;
+		}
+	}
+	
 	
 
 }

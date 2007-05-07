@@ -75,46 +75,7 @@ public class Job {
 	 	    this.context = job.valueOf("@context");
 	    }
 	}
-	
-	public String getExecutableFileName() {
-		StringBuffer buffer = new StringBuffer();
-		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
-		if(isPerlJob()) {
-    		buffer.append(project);
-    		buffer.append(config.getJobSeparator());
-    		buffer.append(config.getWordSeparator());
-    		buffer.append(name);
-    		buffer.append(config.getPerlExt());
-    	} else if(isJavaJob()) {
-    		return null;
-    	} else{
-    		return null;
-    	}
 		
-		
-		return buffer.toString();
-	}
-	
-	public String getContextFileName() {		
-		StringBuffer buffer = new StringBuffer();
-		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
-		if(isPerlJob()) {
-    		buffer.append(project);
-    		buffer.append(config.getJobSeparator());
-    		buffer.append(config.getWordSeparator());
-    		buffer.append(name);
-    		buffer.append(config.getWordSeparator());
-    		buffer.append(context);
-    		buffer.append(config.getPerlExt());
-    	} else if(isJavaJob()) {
-    		return null;
-    	} else{
-    		return null;
-    	}
-				
-		return buffer.toString();
-	}
-	
 	public boolean isPerlJob() {
 		return (language!= null && language.equalsIgnoreCase("perl"));
 	}

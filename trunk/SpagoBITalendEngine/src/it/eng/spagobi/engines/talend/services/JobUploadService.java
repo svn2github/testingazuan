@@ -145,7 +145,8 @@ public class JobUploadService extends HttpServlet {
 		}	
 		
 	    runtimeRepository.deployJob(jobDeploymentDescriptor, new ZipFile(uploadedFile));
-	    uploadedFile.delete();	    	
+	    uploadedFile.delete();	
+	    tmpDir.delete();
 	}
 
 }

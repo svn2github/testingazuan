@@ -6,6 +6,7 @@ import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.exception.TalendEngineException;
+import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
 import java.io.BufferedReader;
@@ -23,9 +24,9 @@ import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUIDGenerator;
 
 
-public class JobRunner {
+public class PerlJobRunner implements IJobRunner {
 
-	private static transient Logger logger = Logger.getLogger(JobRunner.class);
+	private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	
 	private RuntimeRepository runtimeRepository;
 	
@@ -34,7 +35,7 @@ public class JobRunner {
 	
 	
 	
-	JobRunner(RuntimeRepository runtimeRepository) {
+	PerlJobRunner(RuntimeRepository runtimeRepository) {
 		this.runtimeRepository = runtimeRepository;
 	}
 	
@@ -64,7 +65,7 @@ public class JobRunner {
 	    	
 	    	SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
 	    	String cmd = config.getPerlInstallDir() + File.separatorChar + config.getPerlBinDir()+ 
-	    		File.separatorChar + config.getPerlCommand() + " " + job.getExecutableFileName();
+	    		File.separatorChar + config.getPerlCommand() + " " + TalendScriptAccessUtils.getExecutableFileName(job);
 	    	
 	    		    	
 	    	// if the context is not specified, it looks for the defualt context script file;
@@ -76,14 +77,14 @@ public class JobRunner {
 	    	if (job.getContext() == null || job.getContext().trim().equals("")) {
 	    		logger.debug("Context not specified.");
 	    		job.setContext(DEFAULT_CONTEXT);
-	    		String contextFileName = job.getContextFileName();
+	    		String contextFileName = TalendScriptAccessUtils.getContextFileName(job);
 	    		File defaultContextFile = new File(executableJobDir, contextFileName);
 	    		if (defaultContextFile.exists()) {
 	    			logger.debug("Found default script context file.");
 	    			contextFile = defaultContextFile;
 	    		}
 	    	} else {
-	    		String contextFileName = job.getContextFileName();
+	    		String contextFileName = TalendScriptAccessUtils.getContextFileName(job);
 	    		contextFile = new File(executableJobDir, contextFileName);
 	    		if (!contextFile.exists()) {
 		    		throw new ContextNotFoundException("Script context file " + contextFile + " does not exist.");

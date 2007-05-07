@@ -13,15 +13,7 @@
 	</welcome-file-list>
 	-->
 
-	<filter>
-		<filter-name>SpagoBIAccessFilter</filter-name>
-		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
-	</filter>
-	
-	<filter-mapping>
-    	<filter-name>SpagoBIAccessFilter</filter-name>
-    	<url-pattern>/JobRunService/*</url-pattern>
-	</filter-mapping>
+
 
 	<servlet>
 		<servlet-name>JobRunService</servlet-name>

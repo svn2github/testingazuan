@@ -9,6 +9,7 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
 
 import sun.misc.BASE64Decoder;
 
@@ -83,7 +86,16 @@ public class SpagoBIStartAction extends AbstractAction {
 		RequestContainer requestContainer = getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		
-		
+		// AUDIT UPDATE
+		HttpServletRequest httpRequest = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
+		String auditId = httpRequest.getParameter("SPAGOBI_AUDIT_ID");
+		AuditAccessUtils auditAccessUtils = 
+			(AuditAccessUtils) httpRequest.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+		if (auditId != null) {
+			auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+					"EXECUTION_STARTED", null, null);
+		}
+		session.setAttribute("SPAGOBI_AUDIT_ID", auditId);
 		
 		Logger.debug(SpagoBIStartAction.class, this.getClass().getName() + ":service:Start processing a new request...");
 		Map parameters = getParametersMap(request);

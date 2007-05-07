@@ -4,6 +4,7 @@
 <%@ page import="it.eng.spago.base.*"%>
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
 
 
 <%@ include file="../jsp/qbe_base.jsp" %>
@@ -513,5 +514,17 @@
  
  
 <%@include file="../jsp/qbefooter.jsp" %>
+
+<%
+//AUDIT UPDATE
+String auditId = (String) sessionContainer.getAttribute("SPAGOBI_AUDIT_ID");
+AuditAccessUtils auditAccessUtils = 
+	(AuditAccessUtils) session.getAttribute("SPAGOBI_AUDIT_UTILS");
+if (auditId != null) {
+	auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		"EXECUTION_PERFOMED", null, null);
+	sessionContainer.delAttribute("SPAGOBI_AUDIT_ID");
+}
+%>
 
 </div>

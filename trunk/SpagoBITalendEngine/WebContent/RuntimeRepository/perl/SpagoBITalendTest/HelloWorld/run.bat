@@ -1,1 +1,0 @@
-C:\Programmi\Talend\TOS-2.0.0M2\TOS-Win32-r2461-V2.0.0M2\perl\bin\perl.exe SPAGOBITALENDTEST.job_HelloWorld.pl --context=SPAGOBITALENDTEST.job_HelloWorld_Development.pl

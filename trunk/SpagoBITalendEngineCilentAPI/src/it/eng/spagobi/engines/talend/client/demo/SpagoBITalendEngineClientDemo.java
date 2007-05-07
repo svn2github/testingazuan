@@ -69,7 +69,7 @@ public class SpagoBITalendEngineClientDemo {
 			System.out.println("Engine fullname: " + client.getEngineName());
 				
 			// prepare parameters used during deployment
-			JobDeploymentDescriptor jobDeploymentDescriptor = new JobDeploymentDescriptor("Test", "perl");
+			JobDeploymentDescriptor jobDeploymentDescriptor = new JobDeploymentDescriptor("SpagoBITalendTest", "perl");
 			File zipFile = new File(deploymentFile);
 				
 			// deploy job on engine runtime
@@ -91,7 +91,7 @@ public class SpagoBITalendEngineClientDemo {
 		} catch (ServiceInvocationFailedException e) {
 			System.err.println("ERRORE: " + e.getMessage());
 			System.err.println("StatusLine: " + e.getStatusLine()
-							   + "responseBody: " + e.getResponseBody());
+							   + "\nresponseBody: " + e.getResponseBody());
 		} 
 	}
 

@@ -788,6 +788,12 @@
 	 		iterCorr = biParamCorrelations.iterator();
 	 	    while(iterCorr.hasNext()) {
 	 	    	ObjParuse corr = (ObjParuse) iterCorr.next();
+	 	    	if(corr.getPreCondition()==null){
+	 	    		corr.setPreCondition("");
+	 	    	}
+	 	    	if(corr.getPostCondition()==null){
+	 	    		corr.setPostCondition("");
+	 	    	}
 	 	    	Integer pfid = corr.getObjParFatherId();
 	 	    	String fo = corr.getFilterOperation();
 	 	%>

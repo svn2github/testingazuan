@@ -42,7 +42,7 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.scheduler.SchedulerUtilities;
+import it.eng.spagobi.scheduler.utils.SchedulerUtilities;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;

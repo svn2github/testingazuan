@@ -720,6 +720,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 				if(subObj!=null) 
 					mapPars = aEngineDriver.getParameterMap(obj, subObj, profile, executionRole);
 				else mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
+				
+				mapPars.put("username", profile.getUserUniqueIdentifier().toString());
+				mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
+				
 				//String type = obj.getBiObjectTypeCode();
 				//if(type.equalsIgnoreCase("OLAP")) {
 				//    if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);

@@ -96,13 +96,13 @@ public class FixedListDetail  implements ILovDetail  {
  		setLovs(lovList);
  		
         // get and set value column
-	    String valueColumn = "";
+	    String valueColumn = "VALUE";
 	    SourceBean valCol = (SourceBean)source.getAttribute("VALUE-COLUMN");
 		if(valCol!=null)
 			valueColumn = valCol.getCharacters();
 		setValueColumnName(valueColumn);
 		 // get and set the description column
-	    String descrColumn = "";
+	    String descrColumn = "DESCRIPTION";
 	    SourceBean descColSB = (SourceBean)source.getAttribute("DESCRIPTION-COLUMN");
 		if(descColSB!=null)
 			descrColumn = descColSB.getCharacters();

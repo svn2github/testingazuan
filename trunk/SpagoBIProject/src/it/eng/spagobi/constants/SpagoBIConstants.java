@@ -172,18 +172,7 @@ public class SpagoBIConstants {
 	public static final String PREFERENCE_NOTES_EDITOR_HEIGHT = "NOTES_EDITOR_HEIGHT";
 	public static final String PREFERENCE_NOTES_EDITOR_OPEN = "NOTES_EDITOR_OPEN";
 	
-	public static final String MESSAGE_GETOBJECTS_SCHED = "MESSAGE_GETOBJECTS_SCHED";
-	public static final String MESSAGE_SCHEDULE_OBJECT = "MESSAGE_SCHEDULE_OBJECT";
-	public static final String MESSAGE_GET_OBJECT_SCHEDULATIONS = "MESSAGE_GET_OBJECT_SCHEDULATIONS";
-	public static final String MESSAGE_NEW_OBJECT_SCHEDULATION = "MESSAGE_NEW_OBJECT_SCHEDULATION";
-	public static final String MESSAGE_GET_OBJECT_SCHEDULATION_DETAILS = "MESSAGE_GET_OBJECT_SCHEDULATION_DETAILS";
-	public static final String MESSAGE_DELETE_OBJECT_SCHEDULE = "MESSAGE_DELETE_OBJECT_SCHEDULE";
-	
-	
 	public static final String LIST_BIOBJ_PARAMETERS = "LIST_BIOBJ_PARAMETERS";
-	
-	public static final String OBJ_SCHEDULE_DETAIL = "OBJ_SCHEDULE_DETAIL";
-	public static final String OBJ_JOB_EXISTS = "OBJ_JOB_EXISTS";
 	
 	public static final String LOV_MODIFIED = "LOV_MODIFIED";
 	
@@ -198,4 +187,35 @@ public class SpagoBIConstants {
 	public static final String MESSAGE_BUILDER = "MESSAGE_BUILDER";
 	
 	public static final String URL_BUILDER = "URL_BUILDER";
+	
+	
+	
+	
+	
+	
+	public static final String MESSAGE_GETOBJECTS_SCHED = "MESSAGE_GETOBJECTS_SCHED";
+	public static final String MESSAGE_SCHEDULE_OBJECT = "MESSAGE_SCHEDULE_OBJECT";
+	public static final String MESSAGE_GET_OBJECT_SCHEDULATIONS = "MESSAGE_GET_OBJECT_SCHEDULATIONS";
+	public static final String MESSAGE_NEW_OBJECT_SCHEDULATION = "MESSAGE_NEW_OBJECT_SCHEDULATION";
+	public static final String MESSAGE_GET_OBJECT_SCHEDULATION_DETAILS = "MESSAGE_GET_OBJECT_SCHEDULATION_DETAILS";
+	public static final String MESSAGE_DELETE_OBJECT_SCHEDULE = "MESSAGE_DELETE_OBJECT_SCHEDULE";
+	public static final String OBJ_SCHEDULE_DETAIL = "OBJ_SCHEDULE_DETAIL";
+	public static final String OBJ_JOB_EXISTS = "OBJ_JOB_EXISTS";
+	
+	
+	public static final String MESSAGE_GET_ALL_JOBS = "MESSAGE_GET_ALL_JOBS";
+	public static final String MESSAGE_NEW_JOB = "MESSAGE_NEW_JOB";
+	public static final String MESSAGE_DOCUMENTS_SELECTED = "MESSAGE_DOCUMENTS_SELECTED";
+	public static final String MESSAGE_FILL_PARAMETERS = "MESSAGE_FILL_PARAMETERS";
+	public static final String MESSAGE_SAVE_JOB = "MESSAGE_SAVE_JOB";
+	public static final String MESSAGE_DELETE_JOB = "MESSAGE_DELETE_JOB";
+	public static final String MESSAGE_GET_JOB_DETAIL = "MESSAGE_GET_JOB_DETAIL";
+	public static final String MESSAGE_GET_JOB_SCHEDULES = "MESSAGE_GET_JOB_SCHEDULES";
+	public static final String MESSAGE_NEW_SCHEDULE = "MESSAGE_NEW_SCHEDULE";
+	public static final String MESSAGE_SAVE_SCHEDULE = "MESSAGE_SAVE_SCHEDULE";
+	public static final String JOB_INFO = "JOB_INFO";
+	public static final String TRIGGER_INFO = "TRIGGER_INFO";
+	public static final String JOB_NAME = "jobName";
+	public static final String JOB_GROUP_NAME = "jobGroupName";
+	
 }

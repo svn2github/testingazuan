@@ -880,8 +880,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		List lovs = lovDetList.getItems();
 		lovs.remove(itemToChange);
 		FixedListItemDetail lovdet = new FixedListItemDetail();
-		lovdet.setValue(newName);
-		lovdet.setDescription(newValue);
+		lovdet.setValue(newValue);
+		lovdet.setDescription(newName);
 		lovs.add(itemToChange, lovdet);
 		lovDetList.setLovs(lovs);
 		return lovDetList;

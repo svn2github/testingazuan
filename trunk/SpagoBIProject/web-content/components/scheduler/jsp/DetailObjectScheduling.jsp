@@ -27,11 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.bo.BIObjectParameter"%>
-<%@page import="it.eng.spagobi.scheduler.modules.SchedulerGUIModule"%>
+<%@page import="it.eng.spagobi.scheduler.modules.JobManagementModule"%>
 <%@page import="it.eng.spagobi.scheduler.to.ObjExecSchedulation"%>
 <%@page import="it.eng.spagobi.scheduler.to.BIObjectParamInfo"%>
 
-<%  
+<%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("SchedulerGUIModule"); 
    Integer objid = (Integer)moduleResponse.getAttribute(SpagoBIConstants.OBJECT_ID);
    String jobExist = (String)moduleResponse.getAttribute(SpagoBIConstants.OBJ_JOB_EXISTS);
@@ -43,10 +43,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
    
    PortletURL saveUrl = renderResponse.createActionURL();
-   saveUrl.setParameter("PAGE", SchedulerGUIModule.MODULE_PAGE);
+   saveUrl.setParameter("PAGE", JobManagementModule.MODULE_PAGE);
    saveUrl.setParameter("MESSAGEDET", SpagoBIConstants.MESSAGE_SCHEDULE_OBJECT);
    saveUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
-   
 %>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>

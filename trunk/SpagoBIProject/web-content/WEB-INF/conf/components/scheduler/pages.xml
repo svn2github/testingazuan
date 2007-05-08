@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
   	
-  	<PAGE name="SchedulerGUIPage" scope="REQUEST" title="Scheduler GUI Page" >
+  	<PAGE name="JobManagementPage" scope="REQUEST" title="Job Management Page" >
     	<DEPENDENCIES>
-      		<DEPENDENCE source="SchedulerGUIPage" target="SchedulerGUIModule">
+      		<DEPENDENCE source="JobManagementPage" target="JobManagementModule">
         		<CONDITIONS/>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
     	</DEPENDENCIES>
     	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="SchedulerGUIModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="JobManagementModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
+  	<PAGE name="TriggerManagementPage" scope="REQUEST" title="Trigger Management Page" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="TriggerManagementPage" target="TriggerManagementModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="TriggerManagementModule"/>
     	</MODULES>
   	</PAGE>
   	

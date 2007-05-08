@@ -5,6 +5,82 @@
      	<CONFIG/>
     </MODULE>
     
+    
+     <MODULE class="it.eng.spagobi.scheduler.modules.JobManagementModule" name="JobManagementModule">
+     	<CONFIG rows="10" title="scheduler.JobList" >
+	      <QUERIES/>
+	      <COLUMNS>
+	      	<COLUMN label="scheduler.JobName" name="jobName" />
+	        <COLUMN label="scheduler.JobDescription" name="JobDescription" />
+	        <COLUMN label="scheduler.JobGroupName" name="jobGroupName" />
+	        <COLUMN label="scheduler.NumSchedule" name="numSchedule" />
+	      </COLUMNS>
+	      <CAPTIONS> 
+	      	<SCHEDULE_CAPTION confirm="FALSE" image="/components/scheduler/img/schedule.png" label="scheduler.Schedule">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_JOB_SCHEDULES"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="TriggerManagementPage"/>
+	          <PARAMETER name="jobGroupName" scope="LOCAL" type="RELATIVE" value="jobGroupName"/>
+	          <PARAMETER name="jobName" scope="LOCAL" type="RELATIVE" value="jobName"/>
+	        </SCHEDULE_CAPTION>
+	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="scheduler.detail">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_JOB_DETAIL"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="JobManagementPage"/>
+	          <PARAMETER name="jobGroupName" scope="LOCAL" type="RELATIVE" value="jobGroupName"/>
+	          <PARAMETER name="jobName" scope="LOCAL" type="RELATIVE" value="jobName"/>
+	        </DETAIL_CAPTION>
+	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="scheduler.delete">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_DELETE_JOB"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="JobManagementPage"/>
+	          <PARAMETER name="jobGroupName" scope="LOCAL" type="RELATIVE" value="jobGroupName"/>
+	          <PARAMETER name="jobName" scope="LOCAL" type="RELATIVE" value="jobName"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
+	        </DELETE_CAPTION>
+	      </CAPTIONS>
+	      <BUTTONS>
+	        <INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="scheduler.NewJob">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_NEW_JOB"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="JobManagementPage"/>
+	        </INSERT_BUTTON>
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="scheduler.back">
+	          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE" value="1"/>
+	        </BACK_BUTTON>
+	      </BUTTONS>
+	    </CONFIG>
+    </MODULE>
+    
+    
+    
+    <MODULE class="it.eng.spagobi.scheduler.modules.TriggerManagementModule" name="TriggerManagementModule">
+     	<CONFIG rows="10" title="SchedulationListTitle" >
+	      <QUERIES/>
+	      <COLUMNS>
+	      	<COLUMN label="scheduler.TriggerName" name="TriggerName" />
+	        <COLUMN label="scheduler.triggerDescription" name="triggerDescription" />
+			<COLUMN label="scheduler.triggerStartTime" name="triggerStartTime" />
+			<COLUMN label="scheduler.triggerEndTime" name="triggerEndTime" />
+	      </COLUMNS>
+	      <CAPTIONS> 
+	      </CAPTIONS>
+	      <BUTTONS>
+	      	<INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="scheduler.NewSchedule">
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_NEW_SCHEDULE"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="TriggerManagementPage"/>
+	          <PARAMETER name="jobName" scope="SERVICE_REQUEST" type="RELATIVE" value="jobName"/>
+	          <PARAMETER name="jobGroupName" scope="SERVICE_REQUEST" type="RELATIVE" value="jobGroupName"/>
+	        </INSERT_BUTTON>
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="scheduler.back">
+	          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE" value="1"/>
+	        </BACK_BUTTON>
+	      </BUTTONS>
+	    </CONFIG>
+    </MODULE>
+    
+    
+    
+    
+    
+    
+    <!-- 
     <MODULE class="it.eng.spagobi.scheduler.modules.SchedulerGUIModule" name="SchedulerGUIModule">
      	<CONFIG rows="10" title="scheduler.SchedulationListTitle" >
 	      <QUERIES/>
@@ -12,7 +88,6 @@
 	      	<COLUMN label="scheduler.TriggerName" name="TriggerName" />
 	      	<COLUMN label="scheduler.TriggerGroup" name="TriggerGroup" hidden="true" />
 	        <COLUMN label="scheduler.triggerDescription" name="triggerDescription" />
-			<!-- <COLUMN label="triggerCalendarName" name="triggerCalendarName" /> -->
 			<COLUMN label="scheduler.triggerStartTime" name="triggerStartTime" />
 			<COLUMN label="scheduler.triggerEndTime" name="triggerEndTime" />
 	      </COLUMNS>
@@ -46,5 +121,6 @@
 	      </BUTTONS>
 	    </CONFIG>
     </MODULE>
+    -->
     
 </MODULES>

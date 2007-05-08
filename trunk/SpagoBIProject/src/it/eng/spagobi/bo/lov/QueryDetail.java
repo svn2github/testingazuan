@@ -85,13 +85,21 @@ public class QueryDetail  implements ILovDetail  {
 		SourceBean invisCol = (SourceBean)source.getAttribute("INVISIBLE-COLUMNS");
 		String invisibleColumns = "";
 		// compatibility control (versions till 1.9RC does not have invisible columns definition)
-		if (invisCol != null) 
+		if (invisCol != null) {
 			invisibleColumns = invisCol.getCharacters();
+			if(invisibleColumns==null) {
+				invisibleColumns = "";
+			}
+		}
 		SourceBean descCol = (SourceBean)source.getAttribute("DESCRIPTION-COLUMN");
 		String descriptionColumn = null;
 		// compatibility control (versions till 1.9.1 does not have description columns definition)
-		if (descCol != null) 
+		if (descCol != null) { 
 			descriptionColumn = descCol.getCharacters();
+			if(descriptionColumn==null) {
+				descriptionColumn = valueColumn;
+			}
+		}
 		else descriptionColumn = valueColumn;
 		setConnectionName(connectionName);
 		setQueryDefinition(queryDefinition);
@@ -101,14 +109,14 @@ public class QueryDetail  implements ILovDetail  {
 		if( (visibleColumns!=null) && !visibleColumns.trim().equalsIgnoreCase("") ) {
 			String[] visColArr = visibleColumns.split(",");
 			visColNames = Arrays.asList(visColArr);
-			setVisibleColumnNames(visColNames);
 		}
+		setVisibleColumnNames(visColNames);
 		List invisColNames = new ArrayList();
 		if( (invisibleColumns!=null) && !invisibleColumns.trim().equalsIgnoreCase("") ) {
 			String[] invisColArr = invisibleColumns.split(",");
 			invisColNames = Arrays.asList(invisColArr);
-			setInvisibleColumnNames(invisColNames);
 		}
+		setInvisibleColumnNames(invisColNames);
 	}
 	
 	/**

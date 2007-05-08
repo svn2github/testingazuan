@@ -11,12 +11,13 @@ import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.IEngineDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.scheduler.SchedulerUtilities;
-import it.eng.spagobi.scheduler.profile.AnonymousSchedulerProfile;
+import it.eng.spagobi.scheduler.utils.SchedulerUtilities;
+import it.eng.spagobi.security.FakeUserProfile;
 import it.eng.spagobi.utilities.ExecutionProxy;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
+import java.util.Date;
 import java.util.List;
 
 import org.quartz.Job;
@@ -28,6 +29,19 @@ public class ExecuteBIDocumentJob implements Job {
 
 	public void execute(JobExecutionContext jex) throws JobExecutionException {
 
+		
+		System.out.println("*************************************");
+		System.out.println("*************************************");
+		System.out.println("*************************************");
+		System.out.println("*************************************");
+		System.out.println("*************************************");
+		System.out.println("esecuzione " + new Date());
+		System.out.println("*************************************");
+		System.out.println("*************************************");
+		System.out.println("*************************************");
+		System.out.println("*************************************");
+		
+		/*
 		JobDataMap jdm = jex.getMergedJobDataMap();
 	    String docIdStr = jdm.getString("documentid");
 	    Integer docId = new Integer(docIdStr);
@@ -53,7 +67,7 @@ public class ExecuteBIDocumentJob implements Job {
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-				IEngUserProfile profile = new AnonymousSchedulerProfile();
+				IEngUserProfile profile = new FakeUserProfile("scheduler");
 				byte[] response = proxy.exec(profile);
 				// if the user request the store
 				if(storeOutput!=null) {
@@ -142,6 +156,8 @@ public class ExecuteBIDocumentJob implements Job {
 	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 	    			           "execute", "Error while executiong job ", e );
 	    }
+	    
+	    */
 	}
 
 }

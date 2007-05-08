@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.scheduler;
+package it.eng.spagobi.scheduler.gui;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
@@ -29,14 +29,14 @@ import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.presentation.treehtmlgenerators.ITreeHtmlGenerator;
-import it.eng.spagobi.scheduler.modules.SchedulerGUIModule;
+import it.eng.spagobi.scheduler.to.JobInfo;
 import it.eng.spagobi.utilities.PortletUtilities;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +55,8 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 	PortletRequest portReq = null;
 	protected int dTreeRootId = -100;
 	protected int dTreeObjects = -1000;
-	
+	JobInfo jobInfo = null;
+	List biobjIds = new ArrayList();
 
 
 	/**
@@ -116,9 +117,11 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
 		portReq = PortletUtilities.getPortletRequest();
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		jobInfo = (JobInfo)sessionContainer.getAttribute(SpagoBIConstants.JOB_INFO); 
+		biobjIds = jobInfo.getBiobjectIds();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		StringBuffer htmlStream = new StringBuffer();
+        StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
 		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
@@ -160,7 +163,6 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, 
 			boolean isRoot, boolean isInitialPath) {
-		
 		String nameLabel = folder.getName();
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
 		String codeType = folder.getCodType();
@@ -188,7 +190,11 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 					Integer idObj = obj.getId();					
 					String stateObj = obj.getStateCode();
 					if(stateObj.equalsIgnoreCase("REL")) {
-						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '"+createScheduleObjectLink(idObj)+"', '', '', '" + userIcon + "', '', '', '' );\n");
+						String checked = "";
+						if(biobjIds.contains(obj.getId())) {
+							checked = "checked";
+						}
+						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '', '', '', '" + userIcon + "', '', '', '', 'biobject', '"+obj.getId()+"', '"+checked+"' );\n");
 					}
 				}
 			}
@@ -197,7 +203,15 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	
 	
-	private String createScheduleObjectLink(Integer id) {
+	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
+		// TODO code for tree with no javascript
+		return null;
+	}
+	
+	
+	
+	/*
+	 private String createScheduleObjectLink(Integer id) {
 		PortletURL schedUrl = renderResponse.createActionURL();
 		schedUrl.setParameter(SpagoBIConstants.PAGE, SchedulerGUIModule.MODULE_PAGE);
 		schedUrl.setParameter(SpagoBIConstants.OBJECT_ID, id.toString());
@@ -205,12 +219,6 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return schedUrl.toString();
 	}
 
-	
-	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
-		// TODO code for tree with no javascript
-		return null;
-	}
-	
-	
+	*/
 	
 }

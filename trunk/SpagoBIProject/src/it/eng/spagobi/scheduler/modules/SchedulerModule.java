@@ -128,13 +128,13 @@ public class SchedulerModule extends AbstractModule {
 			String jobRequestRecovery = job.requestsRecovery() ? "true" : "false";
 			String jobVolatility = job.isVolatile() ? "true" : "false";
 			buffer.append("<ROW ");
-			buffer.append(" jobName=\"" + jobName != null ? jobName : "" + "\"");
-			buffer.append(" jobGroupName=\"" + jobGroupName != null ? jobGroupName : "" + "\"");
-			buffer.append(" jobDescription=\"" + jobDescription != null ? jobDescription : "" + "\"");
-			buffer.append(" jobClass=\"" + jobClassName != null ? jobClassName : "" + "\"");
-			buffer.append(" jobDurability=\"" + jobDurability);
-			buffer.append(" jobRequestRecovery=\"" + jobRequestRecovery);
-			buffer.append(" jobVolatility=\"" + jobVolatility);
+			buffer.append(" jobName=\"" + (jobName != null ? jobName : "") + "\"");
+			buffer.append(" jobGroupName=\"" + (jobGroupName != null ? jobGroupName : "") + "\"");
+			buffer.append(" jobDescription=\"" + (jobDescription != null ? jobDescription : "") + "\"");
+			buffer.append(" jobClass=\"" + (jobClassName != null ? jobClassName : "") + "\"");
+			buffer.append(" jobDurability=\"" + jobDurability + "\"");
+			buffer.append(" jobRequestRecovery=\"" + jobRequestRecovery + "\"");
+			buffer.append(" jobVolatility=\"" + jobVolatility + "\"");
 			buffer.append(" />");
 		}
 		buffer.append("</ROWS>");

@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	TriggerInfo triggerInfo = (TriggerInfo)aSessionContainer.getAttribute(SpagoBIConstants.TRIGGER_INFO);
 	JobInfo jobInfo = triggerInfo.getJobInfo();
 	List jobBiobjects = jobInfo.getBiobjects();
+	Map saveOptions = triggerInfo.getSaveOptions();
 	
 	PortletURL backUrl = renderResponse.createActionURL();
 	backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
@@ -50,6 +51,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<%@page import="it.eng.spagobi.scheduler.to.SaveInfo"%>
 <script type="text/javascript" src="<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dojo/dojo.js" )%>"></script>
 
 <script type="text/javascript">
@@ -133,8 +135,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input type="hidden" value="<%=triggerInfo.getStartDate()%>" id="startdate" name="startdate" />
-		 	<div dojoType="dropdowndatepicker" widgetId="startDateWidget" ></div>&nbsp;*
+		 	<input type="text" value="<%=triggerInfo.getStartDate()%>" 
+			       name="startdate" id="startdate"  
+			       dojoType="dropdowndatepicker" widgetId="startDateWidget" />
+			&nbsp;*
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -142,8 +146,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input type="hidden" value="<%=triggerInfo.getStartTime()%>" name="starttime" id="starttime" />
-			<div dojoType="dropdowntimepicker" widgetId="startTimeWidget" ></div>
+			<input type="text" value="<%=triggerInfo.getStartTime()%>" 
+			       name="starttime" id="starttime"  
+			       dojoType="dropdowntimepicker" widgetId="startTimeWidget" />
 			&nbsp;*
 		</div>
 		<div class='div_detail_label_scheduler'>
@@ -152,8 +157,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input type="hidden" value="<%=triggerInfo.getEndDate()%>" id="enddate" name="enddate" />
-		 	<div dojoType="dropdowndatepicker" widgetId="endDateWidget" ></div>
+		 	<input type="text" value="<%=triggerInfo.getEndDate()%>" 
+			       name="enddate" id="enddate"  
+			       dojoType="dropdowndatepicker" widgetId="endDateWidget" />
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -161,8 +167,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input type="hidden" value="<%=triggerInfo.getEndTime()%>" name="endtime" id="endtime" />
-			<div dojoType="dropdowntimepicker" widgetId="endTimeWidget" ></div>
+			<input type="text" value="<%=triggerInfo.getEndTime()%>" 
+			       name="endtime" id="endtime"  
+			       dojoType="dropdowntimepicker" widgetId="endTimeWidget" />
 		</div>
 		<div class='div_detail_label_scheduler'>
 			<span class='portlet-form-field-label'>
@@ -238,6 +245,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				setTabOpened = "<script>tabOpened = '"+biobj.getId()+"';</script>";
 			}
 			index ++;
+			
+			
+			Integer biobjid = biobj.getId();
+			SaveInfo sInfo = (SaveInfo)saveOptions.get(biobjid);
 	%>
 	
 	<%=setTabOpened%>
@@ -246,7 +257,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<br/>
 		<div class="div_detail_area_forms_scheduler" >    	
         
-        <input type="checkbox" name="saveassnapshot" />
+        <input type="checkbox" name="saveassnapshot_<%=biobj.getId()%>" 
+               <%if(sInfo.isSaveAsSnapshot()){out.write(" checked='checked' " );} %> />
 			  <span class='portlet-form-field-label'>
 					Salva come Snapshot
 				</span>
@@ -257,7 +269,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				        </span>
 			      </div>
             <div class='div_detail_form'>
-				        <input type="text" id="snaphotname" name="snapshotname" size="35"/>
+				        <input type="text" id="snaphotname" value="<%=sInfo.getSnapshotName()%>"
+				               name="snapshotname_<%=biobj.getId()%>" size="35"/>
 			      </div>
 			      <div class='div_detail_label_scheduler'>
 				        <span class='portlet-form-field-label'>
@@ -265,7 +278,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				        </span>
 			       </div>
 			       <div class='div_detail_form'>
-				        <input type="text" name="snapshotdescription" size="35"/>
+				        <input type="text" value="<%=sInfo.getSnapshotDescription()%>"
+				               name="snapshotdescription_<%=biobj.getId()%>" size="35"/>
 			       </div>
 		      	 <div class='div_detail_label_scheduler'>
 				        <span class='portlet-form-field-label'>
@@ -273,14 +287,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				        </span>
 			       </div>
 			       <div class='div_detail_form'>
-				        <input type="text" name="historylength" size="35"/>
+				        <input type="text" name="snapshothistorylength_<%=biobj.getId()%>" 
+				               value="<%=sInfo.getSnapshotHistoryLength()%>" size="35"/>
 			       </div>		       
         </div>
 
 				
         <br/>
 		
-				<input type="checkbox" name="saveasdocument" />
+				<input type="checkbox" name="saveasdocument_<%=biobj.getId()%>" 
+				       <%if(sInfo.isSaveAsDocument()){out.write(" checked='checked' " );} %> />
 				<span class='portlet-form-field-label'>
 					Salva come nuovo documento
 				</span>
@@ -291,7 +307,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				        </span>
 			      </div>
             <div class='div_detail_form'>
-				        <input type="text" id="documentname" name="documentname" size="35"/>
+				        <input type="text" name="documentname_<%=biobj.getId()%>" 
+				               value="<%=sInfo.getDocumentName()%>" size="35"/>
 			      </div>
 			      <div class='div_detail_label_scheduler'>
 				        <span class='portlet-form-field-label'>
@@ -299,14 +316,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				        </span>
 			       </div>
 			       <div class='div_detail_form'>
-				        <input type="text" name="documentdescription" size="35"/>
+				        <input type="text" name="documentdescription_<%=biobj.getId()%>" 
+				               value="<%=sInfo.getDocumentDescription()%>" size="35"/>
 			       </div>   
+			       
+			       <spagobi:treeObjects moduleName="TriggerManagementModule"  
+										htmlGeneratorClass="it.eng.spagobi.scheduler.gui.SelectFunctionalityTreeHtmlGenerator" 
+										treeName="tree_<%=biobj.getId()%>" />
+			       
         </div>
 				
 				
         <br/>
 
-				<input type="checkbox" name="sendmail" />
+				<input type="checkbox" name="sendmail_<%=biobj.getId()%>" 
+				       <%if(sInfo.isSendMail()){out.write(" checked='checked' " );} %>/>
 				<span class='portlet-form-field-label'>
 					Invia per posta
 				</span>
@@ -317,7 +341,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   		      </span>
   	      </div>
   	      <div class='div_detail_form'>
-  		        <input type="text" name="mailto" size="35" />
+  		        <input type="text" name="mailtos_<%=biobj.getId()%>" 
+  		               value="<%=sInfo.getMailTos()%>" size="35" />
   	      </div>
   	    </div>
   	    

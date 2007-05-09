@@ -48,6 +48,7 @@ public class TreeObjectsTag extends TagSupport {
 
 	private String moduleName = null;
 	private String htmlGeneratorClass = null;
+	private String treeName = null;
 	HttpServletRequest httpRequest = null;
 	
 	/**
@@ -68,7 +69,14 @@ public class TreeObjectsTag extends TagSupport {
         } catch(Exception e) {
         	return -1;
         }
-        StringBuffer htmlStream = gen.makeTree(functionalitiesList, httpRequest, initialPath);
+        
+        StringBuffer htmlStream = null;
+        if(treeName==null) {
+        	htmlStream = gen.makeTree(functionalitiesList, httpRequest, initialPath);
+        } else {
+        	htmlStream = gen.makeTree(functionalitiesList, httpRequest, initialPath, treeName);
+        }
+        
 		try {
 			pageContext.getOut().print(htmlStream);
 		} catch(IOException ioe) {
@@ -110,6 +118,16 @@ public class TreeObjectsTag extends TagSupport {
 	 */
 	public void setHtmlGeneratorClass(String htmlGeneratorClass) {
 		this.htmlGeneratorClass = htmlGeneratorClass;
+	}
+
+
+	public String getTreeName() {
+		return treeName;
+	}
+
+
+	public void setTreeName(String treeName) {
+		this.treeName = treeName;
 	}
 		
 	

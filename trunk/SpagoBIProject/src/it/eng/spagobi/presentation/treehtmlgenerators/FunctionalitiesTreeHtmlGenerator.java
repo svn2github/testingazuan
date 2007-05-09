@@ -52,6 +52,10 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private IMessageBuilder msgBuilder = null;
 	
 
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
+		return makeTree(objectsList, httpRequest, initialPath);
+	}
+	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);

@@ -402,6 +402,11 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 //	}
 	
 	
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
+		return makeTree(objectsList, httpRequest, initialPath);
+	}
+	
+	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
 		httpRequest = httpReq;

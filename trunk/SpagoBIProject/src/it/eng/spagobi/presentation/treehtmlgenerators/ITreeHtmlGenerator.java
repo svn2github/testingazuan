@@ -35,9 +35,16 @@ public interface ITreeHtmlGenerator {
 	 * Make tree method.
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.
 	 * AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
-	 * 
+	 */
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename);
+	
+	/**
+	 * Make tree method.
+	 * @see it.eng.spagobi.presentation.treehtmlgenerators.
+	 * AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath);
+
 	/**
 	 * Make tree method for accessible trees.
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.

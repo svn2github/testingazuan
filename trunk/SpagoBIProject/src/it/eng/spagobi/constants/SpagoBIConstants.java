@@ -213,6 +213,9 @@ public class SpagoBIConstants {
 	public static final String MESSAGE_GET_JOB_SCHEDULES = "MESSAGE_GET_JOB_SCHEDULES";
 	public static final String MESSAGE_NEW_SCHEDULE = "MESSAGE_NEW_SCHEDULE";
 	public static final String MESSAGE_SAVE_SCHEDULE = "MESSAGE_SAVE_SCHEDULE";
+	public static final String MESSAGE_DELETE_SCHEDULE = "MESSAGE_DELETE_SCHEDULE";
+	public static final String MESSAGE_GET_SCHEDULE_DETAIL = "MESSAGE_GET_SCHEDULE_DETAIL";
+	public static final String MESSAGE_RUN_SCHEDULE = "MESSAGE_RUN_SCHEDULE";
 	public static final String JOB_INFO = "JOB_INFO";
 	public static final String TRIGGER_INFO = "TRIGGER_INFO";
 	public static final String JOB_NAME = "jobName";

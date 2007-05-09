@@ -106,6 +106,10 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		StringBuffer htmlStream = new StringBuffer();
 		return htmlStream;
 	}
+	
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
+		return makeTree(objectsList, httpRequest, initialPath);
+	}
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		httpRequest = httpReq;

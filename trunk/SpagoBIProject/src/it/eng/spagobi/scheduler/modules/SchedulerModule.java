@@ -45,7 +45,9 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.TriggerUtils;
 import org.quartz.impl.StdSchedulerFactory;
+import org.safehaus.uuid.UUIDGenerator;
 
 
 public class SchedulerModule extends AbstractModule {
@@ -364,7 +366,36 @@ public class SchedulerModule extends AbstractModule {
 		buffer.append(" triggerEndDate=\"" + triggerEndDateStr + "\"");
 		buffer.append(" triggerEndTime=\"" + triggerEndTimeStr + "\"");
 		buffer.append(" triggerRepeatInterval=\"" + triggerRepeatInterval + "\"");
+		buffer.append(" >");
 		
+		
+		
+		JobDataMap jdm = trigger.getJobDataMap();
+		buffer.append("<JOB_PARAMETERS>");
+		if (jdm != null && !jdm.isEmpty()) {
+			String[] keys = jdm.getKeys();
+			if (keys != null && keys.length > 0) {
+				for (int i = 0; i < keys.length; i++) {
+					buffer.append("<JOB_PARAMETER ");
+					String key = keys[i];
+					String value = jdm.getString(key);
+					if (value == null) {
+						SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+								              "loadJobDetailIntoResponse", 
+								              "Trigger parameter '" + key + "' has no String value!!");	
+					}
+					buffer.append(" name=\"" + key + "\"");
+					buffer.append(" value=\"" + value + "\"");
+					buffer.append(" />");
+				}
+			}
+		}
+		buffer.append("</JOB_PARAMETERS>");
+		
+		
+		
+		
+		/*
 		JobDataMap jdm = trigger.getJobDataMap();
 		String queryStr = jdm.getString("parameters");
 		buffer.append(" queryStr=\"" + queryStr + "\"");
@@ -385,7 +416,10 @@ public class SchedulerModule extends AbstractModule {
 		} else {
 			buffer.append(" storeoutput=\"false\"");
 		}
-		buffer.append(" />");
+		*/
+		
+		
+		buffer.append("</TRIGGER_DETAILS>");
 		SourceBean triggerSB = SourceBean.fromXMLString(buffer.toString());
 		response.setAttribute(triggerSB);
 	}
@@ -468,117 +502,141 @@ public class SchedulerModule extends AbstractModule {
 		StringBuffer servreponse = new StringBuffer();
 		try{
 			servreponse.append("<EXECUTION_OUTCOME ");
-			String triggerName = (String) request.getAttribute("triggerName");
-			String triggerDescription = (String) request.getAttribute("triggerDescription");
-			String triggerGroup = (String) request.getAttribute("triggerGroup");
-			if(triggerGroup==null)
-				triggerGroup = Scheduler.DEFAULT_GROUP;
-			String jobName = (String) request.getAttribute("jobName");
-			String jobGroup = (String) request.getAttribute("jobGroup");
-			if(jobGroup==null)
-				jobGroup = Scheduler.DEFAULT_GROUP;
-			// recover scheduling parameters
-			SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
-			// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
-			JobDataMap jdm = getJobDataMap(jobParameters);
-			// recover and transform dates
-			// get the start date param (format gg/mm/yyyy) and start time (format hh:mm)
-			String startDateStr = (String)request.getAttribute("startDate");
-			String startTimeStr = (String)request.getAttribute("startTime");
-			String startDay = startDateStr.substring(0, 2);
-			String startMonth = startDateStr.substring(3, 5);
-			String startYear = startDateStr.substring(6);
-			Calendar startCal = new GregorianCalendar(new Integer(startYear).intValue(), 
-					                                  new Integer(startMonth).intValue()-1, 
-					                                  new Integer(startDay).intValue());
-			if(startTimeStr!=null) {
-				String startHour = startTimeStr.substring(0, 2);
-				String startMinute = startTimeStr.substring(3);
-				startCal.set(startCal.HOUR_OF_DAY, new Integer(startHour).intValue());
-				startCal.set(startCal.MINUTE, new Integer(startMinute).intValue());
-			}
-			Date startDate = startCal.getTime();
-			// get the end date param (format gg/mm/yyyy) and end time (format hh:mm)
-			Date endDate = null;
-			String endDateStr = (String)request.getAttribute("endDate");
-			if(endDateStr!=null){
-				String endDay = endDateStr.substring(0, 2);
-				String endMonth = endDateStr.substring(3, 5);
-				String endYear = endDateStr.substring(6);
-				Calendar endCal = new GregorianCalendar(new Integer(endYear).intValue(), 
-					                           new Integer(endMonth).intValue()-1, 
-					                           new Integer(endDay).intValue());
-				String endTimeStr = (String)request.getAttribute("endTime");
-				if(endTimeStr!=null) {
-					String endHour = endTimeStr.substring(0, 2);
-					String endMinute = endTimeStr.substring(3);
-					endCal.set(endCal.HOUR_OF_DAY, new Integer(endHour).intValue());
-					endCal.set(endCal.MINUTE, new Integer(endMinute).intValue());
-				}
-				endDate = endCal.getTime();
-			}
-			// get the repeat interval
-			long repeatInterval = -1;
-			String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
-			if( (repeatIntervalStr!=null) && !repeatIntervalStr.trim().equals("") ) {
-				repeatInterval = Long.parseLong(repeatIntervalStr);
-			}
-			// get the repeat count 
-			int repeatCount = 0;
-			String repeatCountStr = (String) request.getAttribute("repeatCount");
-			if( (repeatCountStr!=null) && !repeatCountStr.trim().equals("") ) {
-				repeatCount = Integer.parseInt(repeatCountStr);
-			} else {
-				long startTimeL = startDate.getTime();
-				if(endDate!=null) {
-					long endTimeL = endDate.getTime();
-					if(repeatInterval!=-1) {
-						repeatCount = new Long((endTimeL - startTimeL) / repeatInterval).intValue();
-					}
-				}
+			
+			String runImmediately = (String) request.getAttribute("runImmediately");
+			
+			if( (runImmediately!=null) && runImmediately.equalsIgnoreCase("true")) {
+				String jobName = (String) request.getAttribute("jobName");
+				String jobGroup = (String) request.getAttribute("jobGroup");
+				if(jobGroup==null)
+					jobGroup = Scheduler.DEFAULT_GROUP;
+				// recover scheduling parameters
+				SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
+				// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
+				JobDataMap jdm = getJobDataMap(jobParameters);
+				String nameTrig = UUIDGenerator.getInstance().generateTimeBasedUUID().toString();
+				Trigger trigger = TriggerUtils.makeImmediateTrigger(nameTrig, 0, 10000);
+				trigger.setJobName(jobName);
+			    trigger.setJobGroup(jobGroup);
+				trigger.setJobDataMap(jdm);
+				scheduler.scheduleJob(trigger);
 				
-			}
-			// create trigger
-			SimpleTrigger trigger = new SimpleTrigger();
-			trigger.setName(triggerName);
-			trigger.setDescription(triggerDescription);
-			trigger.setGroup(triggerGroup);
-			trigger.setStartTime(startDate);
-			if(endDate!=null) {
-				trigger.setEndTime(endDate);
-			}
-			if(repeatInterval!=-1) {
-				trigger.setRepeatInterval(repeatInterval);
-			}
-			if(repeatCount!=0) {
-				trigger.setRepeatCount(repeatCount);
-			}
-			trigger.setJobName(jobName);
-		    trigger.setJobGroup(jobGroup);
-		    trigger.setJobDataMap(jdm);
-		    trigger.setVolatility(false);
-			// check if the trigger already exists 
-		    boolean exists = false;
-		    Trigger[] jobTrgs = scheduler.getTriggersOfJob(jobName, jobGroup);
-            for(int ind=0; ind<jobTrgs.length; ind++) {
-            	Trigger trg = jobTrgs[ind];
-            	if(trg.getName().equals(triggerName)) {
-            		exists = true;
-            		break;
-            	}
-            }
-	        // schedule trigger 
-			try{
-				if(!exists) {
-					scheduler.scheduleJob(trigger);
-				} else {
-					scheduler.rescheduleJob(triggerName, triggerGroup, trigger);
+			} else {
+					
+				String triggerName = (String) request.getAttribute("triggerName");
+				String triggerDescription = (String) request.getAttribute("triggerDescription");
+				String triggerGroup = (String) request.getAttribute("triggerGroup");
+				if(triggerGroup==null)
+					triggerGroup = Scheduler.DEFAULT_GROUP;
+				String jobName = (String) request.getAttribute("jobName");
+				String jobGroup = (String) request.getAttribute("jobGroup");
+				if(jobGroup==null)
+					jobGroup = Scheduler.DEFAULT_GROUP;
+				// recover scheduling parameters
+				SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
+				// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
+				JobDataMap jdm = getJobDataMap(jobParameters);
+				// recover and transform dates
+				// get the start date param (format yyyy-mm-gg) and start time (format hh:mm:ss....)
+				String startDateStr = (String)request.getAttribute("startDate");
+				String startTimeStr = (String)request.getAttribute("startTime");
+				String startDay = startDateStr.substring(8);
+				String startMonth = startDateStr.substring(5, 7);
+				String startYear = startDateStr.substring(0,4);
+				Calendar startCal = new GregorianCalendar(new Integer(startYear).intValue(), 
+						                                  new Integer(startMonth).intValue()-1, 
+						                                  new Integer(startDay).intValue());
+				if(startTimeStr!=null) {
+					String startHour = startTimeStr.substring(0, 2);
+					String startMinute = startTimeStr.substring(3, 5);
+					startCal.set(startCal.HOUR_OF_DAY, new Integer(startHour).intValue());
+					startCal.set(startCal.MINUTE, new Integer(startMinute).intValue());
 				}
-			} catch (SchedulerException e) {
-				SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
-						"Error while scheduling job ", e);
-				throw e;
-			}			
+				Date startDate = startCal.getTime();
+				// get the end date param (format yyyy-mm-gg) and end time (format hh:mm:ss)
+				Date endDate = null;
+				String endDateStr = (String)request.getAttribute("endDate");
+				if(endDateStr!=null){
+					String endDay = endDateStr.substring(8);
+					String endMonth = endDateStr.substring(5, 7);
+					String endYear = endDateStr.substring(0, 4);
+					Calendar endCal = new GregorianCalendar(new Integer(endYear).intValue(), 
+						                           new Integer(endMonth).intValue()-1, 
+						                           new Integer(endDay).intValue());
+					String endTimeStr = (String)request.getAttribute("endTime");
+					if(endTimeStr!=null) {
+						String endHour = endTimeStr.substring(0, 2);
+						String endMinute = endTimeStr.substring(3, 5);
+						endCal.set(endCal.HOUR_OF_DAY, new Integer(endHour).intValue());
+						endCal.set(endCal.MINUTE, new Integer(endMinute).intValue());
+					}
+					endDate = endCal.getTime();
+				}
+				// get the repeat interval
+				long repeatInterval = -1;
+				String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
+				if( (repeatIntervalStr!=null) && !repeatIntervalStr.trim().equals("") ) {
+					repeatInterval = Long.parseLong(repeatIntervalStr);
+				}
+				// get the repeat count 
+				int repeatCount = 0;
+				String repeatCountStr = (String) request.getAttribute("repeatCount");
+				if( (repeatCountStr!=null) && !repeatCountStr.trim().equals("") ) {
+					repeatCount = Integer.parseInt(repeatCountStr);
+				} else {
+					long startTimeL = startDate.getTime();
+					if(endDate!=null) {
+						long endTimeL = endDate.getTime();
+						if(repeatInterval!=-1) {
+							repeatCount = new Long((endTimeL - startTimeL) / repeatInterval).intValue();
+						}
+					}
+					
+				}
+				// create trigger
+				SimpleTrigger trigger = new SimpleTrigger();
+				trigger.setName(triggerName);
+				trigger.setDescription(triggerDescription);
+				trigger.setGroup(triggerGroup);
+				trigger.setStartTime(startDate);
+				if(endDate!=null) {
+					trigger.setEndTime(endDate);
+				}
+				if(repeatInterval!=-1) {
+					trigger.setRepeatInterval(repeatInterval);
+				}
+				if(repeatCount!=0) {
+					trigger.setRepeatCount(repeatCount);
+				}
+				trigger.setJobName(jobName);
+			    trigger.setJobGroup(jobGroup);
+			    trigger.setJobDataMap(jdm);
+			    trigger.setVolatility(false);
+				// check if the trigger already exists 
+			    boolean exists = false;
+			    Trigger[] jobTrgs = scheduler.getTriggersOfJob(jobName, jobGroup);
+	            for(int ind=0; ind<jobTrgs.length; ind++) {
+	            	Trigger trg = jobTrgs[ind];
+	            	if(trg.getName().equals(triggerName)) {
+	            		exists = true;
+	            		break;
+	            	}
+	            }
+		        // schedule trigger 
+				try{
+					if(!exists) {
+						scheduler.scheduleJob(trigger);
+					} else {
+						scheduler.rescheduleJob(triggerName, triggerGroup, trigger);
+					}
+				} catch (SchedulerException e) {
+					SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "scheduleJob", 
+							"Error while scheduling job ", e);
+					throw e;
+				}		
+			}	
+				
+				
 		} catch (Exception e) {
 			servreponse.append("outcome=\"fault\"/>");
 		}

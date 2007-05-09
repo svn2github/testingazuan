@@ -25,7 +25,6 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.presentation.treehtmlgenerators.ITreeHtmlGenerator;
@@ -45,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * Contains all methods needed to generate and modify a tree object for scheduling.
  * There are methods to generate tree, configure, insert and modify elements.
  */
-public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
+public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator {
 
 	RenderResponse renderResponse = null;
 	RenderRequest renderRequest = null;
@@ -107,21 +106,13 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("</SCRIPT>\n");
 		
 	}
-	
-	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
-		return makeTree(objectsList, httpRequest, initialPath);
-	}
-	
-	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath, String treename) {
 		httpRequest = httpReq;
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		portReq = PortletUtilities.getPortletRequest();
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
-		jobInfo = (JobInfo)sessionContainer.getAttribute(SpagoBIConstants.JOB_INFO); 
-		biobjIds = jobInfo.getBiobjectIds();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         StringBuffer htmlStream = new StringBuffer();
@@ -139,21 +130,21 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td>&nbsp;</td>");
 		htmlStream.append("		<td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
-	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
-	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
+	   	htmlStream.append("				var nameTree = '"+treename+"';\n");
+	   	htmlStream.append("				treeCMS = new dTree('"+treename+"');\n");
 	   	htmlStream.append("	        	treeCMS.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
 	   		if (initialPath != null) {
-	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, false, true);
-	   			else addItemForJSTree(htmlStream, folder, false, false);
+	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, false, true, treename);
+	   			else addItemForJSTree(htmlStream, folder, false, false, treename);
 	   		} else {
-	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true, false);
-	   			else addItemForJSTree(htmlStream, folder, false, false);
+	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true, false, treename);
+	   			else addItemForJSTree(htmlStream, folder, false, false, treename);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeCMS);\n");
+    	htmlStream.append("				document.write("+treename+");\n");
 		htmlStream.append("			</script>\n");
 		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
@@ -164,8 +155,15 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	
 	
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		return makeTree(objectsList, httpRequest, initialPath, "Tree");
+	}
+	
+	
+	
+	
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, 
-			boolean isRoot, boolean isInitialPath) {
+			boolean isRoot, boolean isInitialPath, String treename) {
 		String nameLabel = folder.getName();
 		String name = PortletUtilities.getMessage(nameLabel, "messages");
 		String codeType = folder.getCodType();
@@ -175,31 +173,12 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		else parentId = folder.getParentId();
 
 		if (isRoot) {
-			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
+			htmlStream.append("	"+treename+".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
-				List objects = folder.getBiObjects();
-				for (Iterator it = objects.iterator(); it.hasNext(); ) {
-					BIObject obj = (BIObject) it.next();
-					String biObjType = obj.getBiObjectTypeCode();
-					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);
-					String biObjState = obj.getStateCode();
-					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-					String stateIcon = PortletUtilities.createPortletURLForResource(httpRequest, stateImgUrl);
-					Integer idObj = obj.getId();					
-					String stateObj = obj.getStateCode();
-					if(stateObj.equalsIgnoreCase("REL")) {
-						String checked = "";
-						if(biobjIds.contains(obj.getId())) {
-							checked = "checked";
-						}
-						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '', '', '', '" + userIcon + "', '', '', '', 'biobject', '"+obj.getId()+"', '"+checked+"' );\n");
-					}
-				}
+				htmlStream.append("	"+treename+".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '', '"+treename+"_funct_id', '"+idFolder+"', 'false');\n");
 			}
 		}
 	}
@@ -211,17 +190,5 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return null;
 	}
 	
-	
-	
-	/*
-	 private String createScheduleObjectLink(Integer id) {
-		PortletURL schedUrl = renderResponse.createActionURL();
-		schedUrl.setParameter(SpagoBIConstants.PAGE, SchedulerGUIModule.MODULE_PAGE);
-		schedUrl.setParameter(SpagoBIConstants.OBJECT_ID, id.toString());
-		schedUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_GET_OBJECT_SCHEDULATIONS);
-		return schedUrl.toString();
-	}
-
-	*/
 	
 }

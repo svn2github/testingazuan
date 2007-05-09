@@ -8,6 +8,8 @@ import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.scheduler.to.JobInfo;
+import it.eng.spagobi.scheduler.to.SaveInfo;
+import it.eng.spagobi.scheduler.to.TriggerInfo;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -122,6 +124,93 @@ public class SchedulerUtilities {
 					            "getJobInfoFromJobSourceBean", "Error while extracting job info from xml", e);
 		}
 		return jobInfo;
+	}
+	
+	
+	
+	
+	public static TriggerInfo getTriggerInfoFromTriggerSourceBean(SourceBean triggerDetSB, SourceBean jobDetSB) {
+	
+		TriggerInfo tInfo = new TriggerInfo();
+		String triggername = (String)triggerDetSB.getAttribute("triggerName");	
+		String triggerDescription  = (String)triggerDetSB.getAttribute("triggerDescription");	
+		String startdate  = (String)triggerDetSB.getAttribute("triggerStartDate");	
+		String starttime = (String)triggerDetSB.getAttribute("triggerStartTime");	
+		String enddate = (String)triggerDetSB.getAttribute("triggerEndDate");	
+		String endtime = (String)triggerDetSB.getAttribute("triggerEndTime");	
+		String repeatinterval = (String)triggerDetSB.getAttribute("triggerRepeatInterval");
+		tInfo.setEndDate(enddate);
+		tInfo.setEndTime(endtime);
+		tInfo.setRepeatInterval(repeatinterval);
+		tInfo.setStartDate(startdate);
+		tInfo.setStartTime(starttime);
+		tInfo.setTriggerDescription(triggerDescription);
+		tInfo.setTriggerName(triggername);
+		
+		JobInfo jInfo = SchedulerUtilities.getJobInfoFromJobSourceBean(jobDetSB);
+		tInfo.setJobInfo(jInfo);
+		
+		Map saveOptions = new HashMap();
+		List biobjIds = jInfo.getBiobjectIds();
+		Iterator iterBiobjIds = biobjIds.iterator();
+		while(iterBiobjIds.hasNext()) {
+			SaveInfo sInfo = new SaveInfo();
+			Integer biobjid = (Integer)iterBiobjIds.next();
+			SourceBean objParSB = (SourceBean)triggerDetSB.getFilteredSourceBeanAttribute("JOB_PARAMETERS.JOB_PARAMETER", "name", "biobject_id_" + biobjid);
+			if(objParSB!=null) {
+				String parString = (String)objParSB.getAttribute("value");
+				sInfo = SchedulerUtilities.fromSaveInfoString(parString);
+			}
+			saveOptions.put(biobjid, sInfo);
+		}
+		
+		tInfo.setSaveOptions(saveOptions);
+		
+		return tInfo;
+	}
+	
+	
+	
+	public static SaveInfo fromSaveInfoString(String saveinfostr) {
+		SaveInfo sInfo = new SaveInfo();
+		String[] couples = saveinfostr.split("%26");
+		for(int i=0; i<couples.length; i++) {
+			String couple = couples[i];
+			String[] couplevals = couple.split("=");
+			String name = couplevals[0];
+			String value = couplevals[1];
+			if(name.equals("saveassnapshot")) {
+				sInfo.setSaveAsSnapshot(true);
+			}
+			if(name.equals("snapshotname")) {
+				sInfo.setSnapshotName(value);
+			}
+			if(name.equals("snapshotdescription")) {
+				sInfo.setSnapshotDescription(value);
+			}
+			if(name.equals("snapshothistorylength")) {
+				sInfo.setSnapshotHistoryLength(value);
+			}
+			if(name.equals("saveasdocument")) {
+				sInfo.setSaveAsDocument(true);
+			}
+			if(name.equals("documentname")) {
+				sInfo.setDocumentName(value);
+			}
+			if(name.equals("documentdescription")) {
+				sInfo.setDocumentDescription(value);
+			}
+			if(name.equals("documenthistorylength")) {
+				sInfo.setDocumentHistoryLength(value);
+			}
+			if(name.equals("sendmail")) {
+				sInfo.setSendMail(true);
+			}
+			if(name.equals("mailtos")) {
+				sInfo.setMailTos(value);
+			}
+		}
+		return sInfo;
 	}
 	
 }

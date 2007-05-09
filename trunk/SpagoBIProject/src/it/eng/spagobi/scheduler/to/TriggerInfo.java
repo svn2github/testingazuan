@@ -1,5 +1,7 @@
 package it.eng.spagobi.scheduler.to;
 
+import java.util.Map;
+
 
 public class TriggerInfo {
 
@@ -12,7 +14,7 @@ public class TriggerInfo {
 	private String endTime = "";
 	private String repeatInterval = "";
 	private JobInfo jobInfo = null;
-	
+	private Map saveOptions = null;
     
 	public String getEndDate() {
 		return endDate;
@@ -63,62 +65,11 @@ public class TriggerInfo {
 	public void setJobInfo(JobInfo jobInfo) {
 		this.jobInfo = jobInfo;
 	}
-	
-	
-	/*
-	private boolean storeOutput = false;
-	private String storeName = "";
-	private String storeDescription = "";
-	private String storeType = "";
-	private String pathDocument = "";
-	private String historyLength = "";
-    private List objExecParameters = new ArrayList();
-    
-    public String getStoreDescription() {
-		return storeDescription;
+	public Map getSaveOptions() {
+		return saveOptions;
 	}
-	public void setStoreDescription(String storeDescription) {
-		this.storeDescription = storeDescription;
+	public void setSaveOptions(Map saveOptions) {
+		this.saveOptions = saveOptions;
 	}
-	public String getStoreName() {
-		return storeName;
-	}
-	public void setStoreName(String storeName) {
-		this.storeName = storeName;
-	}
-	public boolean isStoreOutput() {
-		return storeOutput;
-	}
-	public void setStoreOutput(boolean storeOutput) {
-		this.storeOutput = storeOutput;
-	}
-	public String getStoreType() {
-		return storeType;
-	}
-	public void setStoreType(String storeType) {
-		this.storeType = storeType;
-	}
-    
-    public String getHistoryLength() {
-		return historyLength;
-	}
-	public void setHistoryLength(String historyLength) {
-		this.historyLength = historyLength;
-	}
-	public List getObjExecParameters() {
-		return objExecParameters;
-	}
-	public void setObjExecParameters(List objExecParameters) {
-		this.objExecParameters = objExecParameters;
-	}
-	public String getPathDocument() {
-		return pathDocument;
-	}
-	public void setPathDocument(String pathDocument) {
-		this.pathDocument = pathDocument;
-	}
-    
-    */
-	
 	
 }

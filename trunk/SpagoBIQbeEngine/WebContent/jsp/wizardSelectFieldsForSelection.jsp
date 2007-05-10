@@ -521,8 +521,8 @@ String auditId = (String) sessionContainer.getAttribute("SPAGOBI_AUDIT_ID");
 AuditAccessUtils auditAccessUtils = 
 	(AuditAccessUtils) session.getAttribute("SPAGOBI_AUDIT_UTILS");
 if (auditId != null) {
-	auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
-		"EXECUTION_PERFOMED", null, null);
+	if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		"EXECUTION_PERFORMED", null, null);
 	sessionContainer.delAttribute("SPAGOBI_AUDIT_ID");
 }
 %>

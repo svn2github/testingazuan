@@ -92,7 +92,7 @@ public class SpagoBIStartAction extends AbstractAction {
 		AuditAccessUtils auditAccessUtils = 
 			(AuditAccessUtils) httpRequest.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 		if (auditId != null) {
-			auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 					"EXECUTION_STARTED", null, null);
 		}
 		session.setAttribute("SPAGOBI_AUDIT_ID", auditId);

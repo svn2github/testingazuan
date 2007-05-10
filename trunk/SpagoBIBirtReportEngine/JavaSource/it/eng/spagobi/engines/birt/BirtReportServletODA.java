@@ -188,7 +188,7 @@ public class BirtReportServletODA extends HttpServlet {
 			String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 			AuditAccessUtils auditAccessUtils = 
 				(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
-			auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 					"EXECUTION_STARTED", null, null);
 	 		
 	 		String template = (String)params.get("templatePath");
@@ -198,13 +198,13 @@ public class BirtReportServletODA extends HttpServlet {
 	 		try {
 	 			birtReportRunner.runReport(params, getServletContext(), response, request);
 				// AUDIT UPDATE
-				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_PERFOMED", null, null);
+	 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_PERFORMED", null, null);
 	 		} catch (Exception e){
 				logger.error(this.getClass().getName() +":service:error " +
 		      			"during report production \n\n " + e);
 				// AUDIT UPDATE
-				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", e.getMessage(), null);
 	 		}
 	 	}

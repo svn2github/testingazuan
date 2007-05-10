@@ -26,7 +26,7 @@
 	InputStream is = null;
 	String reference = null, nameConnection = null, query= null;
 	AnalysisBean analysis = null;
-	
+	Document document = null;
 	try {
 		SaveAnalysisBean analysisBean = (SaveAnalysisBean) session.getAttribute("save01");
 		String nameSubObject = request.getParameter("nameSubObject");
@@ -71,7 +71,7 @@
 	byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
 	is = new java.io.ByteArrayInputStream(template);
 	org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
-		    Document document = reader.read(is);
+		    document = reader.read(is);
 		    nameConnection = request.getParameter("connectionName");
 	query = document.selectSingleNode("//olap/MDXquery").getStringValue();
 	Node cube = document.selectSingleNode("//olap/cube");
@@ -103,6 +103,33 @@
 %>
 			<jp:mondrianQuery id="query01" dataSource="<%=jndiCon.getResName()%>"  catalogUri="<%=reference%>">
 				<%=query%>
+				
+				<%
+				if (document != null) {
+				List clickables = document.selectNodes("//olap/MDXquery/clickable");
+				if (clickables != null && clickables.size() > 0) {
+					for (int i = 0; i < clickables.size(); i++) {
+						Node clickable = (Node) clickables.get(i);
+						String urlPattern = clickable.valueOf("@urlPattern");
+						List clickParameters = document.selectNodes("//olap/MDXquery/clickable/clickParameter");
+						if (clickParameters != null && clickParameters.size() > 0) {
+							urlPattern += "?";
+							for (int j = 0; j < clickParameters.size(); j++) {
+								Node clickParameter = (Node) clickParameters.get(j);
+								String clickParameterName = clickParameter.valueOf("@name");
+								String clickParameterValue = clickParameter.valueOf("@value");
+								urlPattern += clickParameterName + "=" + clickParameterValue + "&";
+							}
+						}
+						String uniqueName = clickable.valueOf("@uniqueName");
+						%>
+						<jp:clickable urlPattern="<%=urlPattern%>" uniqueName="<%=uniqueName%>"/>
+						<%
+					}
+				}
+				}
+				%>
+				
 			</jp:mondrianQuery>
 		<%	
 		} else {
@@ -111,6 +138,33 @@
 			 <jp:mondrianQuery id="query01" jdbcDriver="<%=jdbcCon.getDriver()%>" jdbcUrl="<%=jdbcCon.getUrl()%>" 
 			                   jdbcUser="<%=jdbcCon.getUsr()%>" jdbcPassword="<%=jdbcCon.getPwd()%>" catalogUri="<%=reference%>" >
 				<%=query%>
+								
+				<%
+				if (document != null) {
+				List clickables = document.selectNodes("//olap/MDXquery/clickable");
+				if (clickables != null && clickables.size() > 0) {
+					for (int i = 0; i < clickables.size(); i++) {
+						Node clickable = (Node) clickables.get(i);
+						String urlPattern = clickable.valueOf("@urlPattern");
+						List clickParameters = document.selectNodes("//olap/MDXquery/clickable/clickParameter");
+						if (clickParameters != null && clickParameters.size() > 0) {
+							urlPattern += "?";
+							for (int j = 0; j < clickParameters.size(); j++) {
+								Node clickParameter = (Node) clickParameters.get(j);
+								String clickParameterName = clickParameter.valueOf("@name");
+								String clickParameterValue = clickParameter.valueOf("@value");
+								urlPattern += clickParameterName + "=" + clickParameterValue + "&";
+							}
+						}
+						String uniqueName = clickable.valueOf("@uniqueName");
+						%>
+						<jp:clickable urlPattern="<%=urlPattern%>" uniqueName="<%=uniqueName%>"/>
+						<%
+					}
+				}
+				}
+				%>
+				
 			</jp:mondrianQuery>	
 		<%	
 		}		

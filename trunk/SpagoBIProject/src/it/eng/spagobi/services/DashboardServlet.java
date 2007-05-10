@@ -100,7 +100,7 @@ public class DashboardServlet extends HttpServlet{
     		 		
     		 		// AUDIT UPDATE
     				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
-    						"EXECUTION_PERFOMED", null, null);
+    						"EXECUTION_PERFORMED", null, null);
                 }		
 		 	} else {
 		 		out.write(createErrorMsg(10, "Param dataname not found"));

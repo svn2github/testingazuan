@@ -173,10 +173,12 @@ public class AuditManager {
 		audit.setDocumentState(obj.getStateCode());
 		String documentParameters = "";
 		List parameters = obj.getBiObjectParameters();
-		for (int i = 0; i < parameters.size(); i++) {
-			BIObjectParameter parameter = (BIObjectParameter) parameters.get(i);
-			documentParameters += parameter.getParameterUrlName() + "=" + parameter.getParameterValues().toString();
-			if (i < parameters.size() - 1) documentParameters += "&";
+		if (parameters != null && parameters.size() > 0) {
+			for (int i = 0; i < parameters.size(); i++) {
+				BIObjectParameter parameter = (BIObjectParameter) parameters.get(i);
+				documentParameters += parameter.getParameterUrlName() + "=" + parameter.getParameterValues().toString();
+				if (i < parameters.size() - 1) documentParameters += "&";
+			}
 		}
 		audit.setDocumentParameters(documentParameters);
 		Engine engine = obj.getEngine();

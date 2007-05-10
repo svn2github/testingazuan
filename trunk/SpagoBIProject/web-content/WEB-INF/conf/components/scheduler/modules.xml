@@ -12,17 +12,16 @@
 	      <COLUMNS>
 	      	<COLUMN label="scheduler.JobName" name="jobName" />
 	        <COLUMN label="scheduler.JobDescription" name="JobDescription" />
-	        <COLUMN label="scheduler.JobGroupName" name="jobGroupName" />
 	        <COLUMN label="scheduler.NumSchedule" name="numSchedule" />
 	      </COLUMNS>
 	      <CAPTIONS> 
-	      	<SCHEDULE_CAPTION confirm="FALSE" image="/components/scheduler/img/schedule.png" label="scheduler.Schedule">
+	      	<SCHEDULE_CAPTION confirm="FALSE" image="/components/scheduler/img/schedule.png" label="scheduler.TriggerList">
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_JOB_SCHEDULES"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="TriggerManagementPage"/>
 	          <PARAMETER name="jobGroupName" scope="LOCAL" type="RELATIVE" value="jobGroupName"/>
 	          <PARAMETER name="jobName" scope="LOCAL" type="RELATIVE" value="jobName"/>
 	        </SCHEDULE_CAPTION>
-	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="scheduler.detail">
+	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="scheduler.JobDetail">
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_JOB_DETAIL"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="JobManagementPage"/>
 	          <PARAMETER name="jobGroupName" scope="LOCAL" type="RELATIVE" value="jobGroupName"/>
@@ -42,7 +41,9 @@
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="JobManagementPage"/>
 	        </INSERT_BUTTON>
 	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="scheduler.back">
-	          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE" value="1"/>
+	        	<PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
+	          	<PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIAdministrationContextPublisher"/>
+	          	<PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
 	        </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>
@@ -51,7 +52,7 @@
     
     
     <MODULE class="it.eng.spagobi.scheduler.modules.TriggerManagementModule" name="TriggerManagementModule">
-     	<CONFIG rows="10" title="SchedulationListTitle" >
+     	<CONFIG rows="10" title="scheduler.SchedulationListTitle" >
 	      <QUERIES/>
 	      <COLUMNS>
 	      	<COLUMN label="scheduler.TriggerName" name="TriggerName" />
@@ -60,7 +61,7 @@
 			<COLUMN label="scheduler.triggerEndTime" name="triggerEndTime" />
 	      </COLUMNS>
 	      <CAPTIONS> 
-	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="scheduler.detail">
+	      	<DETAIL_CAPTION confirm="FALSE" image="/img/detail.gif" label="scheduler.triggerDetail">
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_GET_SCHEDULE_DETAIL"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="TriggerManagementPage"/>
 	          <PARAMETER name="jobName" scope="SERVICE_REQUEST" type="RELATIVE" value="jobName"/>
@@ -87,7 +88,7 @@
 	        </DELETE_CAPTION>
 	      </CAPTIONS>
 	      <BUTTONS>
-	      	<INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="scheduler.NewSchedule">
+	      	<INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="scheduler.newschedule">
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="MESSAGE_NEW_SCHEDULE"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="TriggerManagementPage"/>
 	          <PARAMETER name="jobName" scope="SERVICE_REQUEST" type="RELATIVE" value="jobName"/>

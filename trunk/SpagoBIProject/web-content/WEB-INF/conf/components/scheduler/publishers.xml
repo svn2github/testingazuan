@@ -43,7 +43,9 @@
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="JobManagementPage" />
       			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="MESSAGE_GET_ALL_JOBS" />
+      			<!-- 
       			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
+      			-->
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -75,7 +77,9 @@
       			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="MESSAGE_GET_JOB_SCHEDULES" />
       			<PARAMETER name="jobName" type="RELATIVE" scope="SERVICE_RESPONSE" value="TriggerManagementModule.jobname" />
       			<PARAMETER name="jobGroupName" type="RELATIVE" scope="SERVICE_RESPONSE" value="TriggerManagementModule.jobGroupName" />
+      			<!-- 
       			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
+      			-->
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

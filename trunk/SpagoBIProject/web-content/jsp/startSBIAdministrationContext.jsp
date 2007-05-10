@@ -21,7 +21,6 @@
 	PortletURL scheduleUrl = renderResponse.createActionURL();
 	scheduleUrl.setParameter("PAGE", "JobManagementPage");
 	scheduleUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_GET_ALL_JOBS);
-
 %>
 
 <LINK rel='StyleSheet' 

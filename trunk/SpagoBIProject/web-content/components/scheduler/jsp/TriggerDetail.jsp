@@ -322,7 +322,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			       
 			       <spagobi:treeObjects moduleName="TriggerManagementModule"  
 										htmlGeneratorClass="it.eng.spagobi.scheduler.gui.SelectFunctionalityTreeHtmlGenerator" 
-										treeName="tree_<%=biobj.getId()%>" />
+										treeName="<%="tree_" + biobj.getId()%>" />
 			       
         </div>
 				

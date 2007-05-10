@@ -732,7 +732,7 @@
 <script>
 
 		function adaptSize<%=requestIdentity%>Funct() {
-
+					
           navigatorname = navigator.appName;
 		      navigatorversion = navigator.appVersion;
           navigatorname = navigatorname.toLowerCase();
@@ -747,17 +747,35 @@
           isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
           isMoz = (navigatorname.indexOf('explorer') == -1);
 
+					if (window != top) {
+						totalVisArea = 0;
+						if(isIE5) { totalVisArea = window.document.body.clientHeight; }
+						if(isIE6) { totalVisArea = window.document.body.clientHeight; }
+						if(isIE7) { totalVisArea = window.document.body.clientHeight; }
+						if(isMoz) { totalVisArea = window.innerHeight; }
+						iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+						//iframeEl.scrollbars="no";
+						iframeEl.style.height = totalVisArea + 'px';
+						//iframeEl.style.height = 2000 + 'px';
+						return;
+					}
+
           // calculate height of the visible area
           heightVisArea = 0;
-          if(isIE5) { heightVisArea = window.document.body.clientHeight; }
-          if(isIE6) { heightVisArea = window.document.body.clientHeight; }
-          if(isIE7) { heightVisArea = window.document.documentElement.clientHeight }
-          if(isMoz) { heightVisArea = window.innerHeight; }
+          //if(isIE5) { heightVisArea = window.document.body.clientHeight; }
+          //if(isIE6) { heightVisArea = window.document.body.clientHeight; }
+          //if(isIE7) { heightVisArea = window.document.documentElement.clientHeight }
+          //if(isMoz) { heightVisArea = window.innerHeight; }
+          if(isIE5) { heightVisArea = top.document.body.clientHeight; }
+          if(isIE6) { heightVisArea = top.document.body.clientHeight; }
+          if(isIE7) { heightVisArea = top.document.documentElement.clientHeight }
+          if(isMoz) { heightVisArea = top.innerHeight; }
 
           // get the frame div object
           diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
           // find the frame div position
           pos = findPos(diviframeobj);
+					
           // calculate space below position frame div
           spaceBelowPos = heightVisArea - pos[1];
           // set height to the frame
@@ -768,19 +786,23 @@
           heightWinArea = 0;
           heightFooter = 0;
           if(isIE5) {
-             heightWinArea = window.document.body.scrollHeight;
+             //heightWinArea = window.document.body.scrollHeight;
+						 heightWinArea = document.body.scrollHeight;
 				     heightFooter = heightWinArea - heightVisArea;
           }
           if(isIE6) {
-             heightWinArea = window.document.body.scrollHeight;
+             //heightWinArea = window.document.body.scrollHeight;
+						 heightWinArea = document.body.scrollHeight;
 				     heightFooter = heightWinArea - heightVisArea;
           }
           if(isIE7) {
-				     heightWinArea = window.document.body.offsetHeight;
+				     //heightWinArea = window.document.body.offsetHeight;
+						 heightWinArea = document.body.offsetHeight;
              heightFooter = heightWinArea - heightVisArea;
           }
           if(isMoz) {
-			   	   heightWinArea = window.document.body.offsetHeight;
+			   	   //heightWinArea = window.document.body.offsetHeight;
+						 heightWinArea = document.body.offsetHeight;
 			   	   heightFooter = (heightWinArea - heightVisArea) + 15;
 			    }
 
@@ -804,7 +826,7 @@
 %>
 
 <center>
-<div id="divIframe<%=requestIdentity%>" style="width:100%;">
+<div id="divIframe<%=requestIdentity%>" style="width:100%;overflow=auto;">
 
            <%
            		 String heightStr = "";
@@ -877,7 +899,11 @@ function refreshNavigationBar() {
   for (count = 0; count < tmp.getFramesNumber(); count = count + 1) {
     aFrame = tmp.getFrame(count);
     aFrameLabel = aFrame[1];
-    html += "&nbsp;<a href='javascript:changeFrame(" + count + ")'>" + aFrameLabel + "</a>";
+		if (count == tmp.getFramesNumber() - 1) {
+			html += "&nbsp;" + aFrameLabel;
+		} else {
+			html += "&nbsp;<a href='javascript:changeFrame(" + count + ")'>" + aFrameLabel + "</a>";
+		}
     if (count < tmp.getFramesNumber() - 1) {
       html += "&nbsp;&gt;";
     }

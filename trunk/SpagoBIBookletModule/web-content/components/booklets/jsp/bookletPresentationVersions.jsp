@@ -106,7 +106,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<td class='header-button-column-portlet-section'>
 				<a href='<%= refreshUrl.toString() %>'> 
 	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+	      				 title='<spagobi:message key = "book.refresh" bundle="component_booklets_messages" />' 
 	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/refresh.gif")%>' 
 	      				 alt='<spagobi:message key = "book.refresh"  bundle="component_booklets_messages"/>' />
 				</a>

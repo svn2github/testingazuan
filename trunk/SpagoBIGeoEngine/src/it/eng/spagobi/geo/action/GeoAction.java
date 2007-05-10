@@ -6,14 +6,17 @@
 package it.eng.spagobi.geo.action;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.render.MapRenderer;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -76,12 +79,13 @@ public class GeoAction extends AbstractHttpAction {
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		AuditAccessUtils auditAccessUtils = 
 			(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
-		auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 				"EXECUTION_STARTED", null, null);
 		
 		// get the http response 
 		HttpServletResponse response = this.getHttpResponse();
 		this.freezeHttpResponse();
+		
 		ServletOutputStream outputStream = null;
 		try{
 			outputStream = response.getOutputStream();
@@ -107,7 +111,7 @@ public class GeoAction extends AbstractHttpAction {
         						"Error while decoding base64 template", e);
 			sendError(outputStream);
 			// AUDIT UPDATE
-			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 					"EXECUTION_FAILED", "Error while decoding base64 template", null);
 			return;
 		}
@@ -123,7 +127,7 @@ public class GeoAction extends AbstractHttpAction {
 								"Error while rendering the map", e);
 			sendError(outputStream);
 			// AUDIT UPDATE
-			auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 					"EXECUTION_FAILED", "Error while rendering the map", null);
 			return;
 		}
@@ -131,7 +135,9 @@ public class GeoAction extends AbstractHttpAction {
 		// set the content type 
 		String contentType = getContentType(outputFormat);
 		response.setContentType(contentType);
-		
+		//response.setHeader("Content-Type", Constants.SVG_MIME_TYPE + "; charset=UTF-8");
+		//response.setHeader("Cache-Control", "Public, max-age=6000");
+		//response.setHeader("Expires", "6000");
 		
 		// based on the format requested fill the response
 		if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
@@ -145,7 +151,7 @@ public class GeoAction extends AbstractHttpAction {
 			            			"GeoAction :: service : error while transforming into jpeg", e);
 				sendError(outputStream);
 				// AUDIT UPDATE
-				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "Error while transforming into jpeg", null);
 				return;
 			}
@@ -186,7 +192,7 @@ public class GeoAction extends AbstractHttpAction {
             						"GeoAction :: service : error while flushing svg", e);
 				sendError(outputStream);
 				// AUDIT UPDATE
-				auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "Error while flushing svg", null);
 				return;
 			}
@@ -206,8 +212,8 @@ public class GeoAction extends AbstractHttpAction {
 		}
 		
 		// AUDIT UPDATE
-		auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
-				"EXECUTION_PERFOMED", null, null);
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				"EXECUTION_PERFORMED", null, null);
 		
 		// delete tmp map file
 		maptmpfile.delete();

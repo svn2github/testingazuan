@@ -28,6 +28,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Domain;
 import it.eng.spagobi.bo.Engine;
@@ -35,10 +36,12 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IDomainDAO;
 import it.eng.spagobi.bo.dao.IEngineDAO;
+import it.eng.spagobi.bo.dao.audit.AuditManager;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.booklets.exceptions.OpenOfficeConnectionException;
+import it.eng.spagobi.booklets.profile.AnonymousWorkflowProfile;
 import it.eng.spagobi.booklets.utils.BookletServiceUtils;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.GeneralUtilities;
@@ -305,6 +308,23 @@ public class BookletsCollaborationModule extends AbstractModule {
 		String executionMsg = null;
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
 		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBookConf);
+		String objPath = bookDao.getBiobjectPath(pathBookConf);
+		BIObject biObject = null;
+		try {
+			biObject = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(objPath);
+		} catch (EMFUserError e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+    			    "runCollaborationHandler", "Error while recovering BIObject", e);
+		}
+		
+		IEngUserProfile profile = new AnonymousWorkflowProfile();
+	    // AUDIT
+		AuditManager auditManager = AuditManager.getInstance();
+		Integer auditId = null;
+		if (biObject != null) {
+			auditId = auditManager.insertAudit(biObject, profile, "", "WORKFLOW");
+		}
+		
 		try {
 			// parse process definition
 			ProcessDefinition processDefinition = null;
@@ -335,7 +355,13 @@ public class BookletsCollaborationModule extends AbstractModule {
 			ProcessInstance processInstance = new ProcessInstance(processDefinition);
 			// get context instance and set the booklet path variable
 			ContextInstance contextInstance = processInstance.getContextInstance();
-			contextInstance.createVariable(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);			
+			contextInstance.createVariable(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+			
+			// adding parameters for AUDIT updating
+			if (auditId != null) {
+				contextInstance.createVariable(AuditManager.AUDIT_ID, auditId);
+			}
+			
 			// start workflow
 			Token token = processInstance.getRootToken();
 			GraphSession graphSess = jbpmContext.getGraphSession();
@@ -343,7 +369,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 				token.signal();
 			} catch (Exception e) {
 				if(e.getCause() instanceof OpenOfficeConnectionException ) {
-					executionMsg = PortletUtilities.getMessage("book.errorConnectionOO", "component_booklets_messages"); 
+					executionMsg = PortletUtilities.getMessage("book.errorConnectionOO", "component_booklets_messages");
 				}
 			    throw e;
 			}
@@ -356,9 +382,15 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    	}
 	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
                                 "runCollaborationHandler","Error while starting workflow",  e);
+			// AUDIT UPDATE
+			auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"STARTUP_FAILED", e.getMessage(), null);
 	    } finally {
 	    	if(executionMsg==null){
 	    		executionMsg = PortletUtilities.getMessage("book.workProcessStartCorrectly", "component_booklets_messages");
+	    		// AUDIT UPDATE
+	    		auditManager.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+						"EXECUTION_STARTED", null, null);
 	    	}
 	    	if(jbpmContext!=null){
 	    		jbpmContext.close();
@@ -380,6 +412,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	private void approveHandler(SourceBean request, SourceBean response) {
+		ContextInstance contextInstance = null;
 		try{
 			// recover task instance and variables
 			String activityKey = (String)request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
@@ -387,7 +420,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
 			JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
-			ContextInstance contextInstance = taskInstance.getContextInstance();
+			contextInstance = taskInstance.getContextInstance();
 			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
 			// store presentation
 			IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
@@ -404,10 +437,25 @@ public class BookletsCollaborationModule extends AbstractModule {
 				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletRejecrActivityLoopback");
 			}
 			response.setAttribute(SpagoBIConstants.ACTIVITYKEY, activityKey);
-	
+			
+			// AUDIT UPDATE
+			if (contextInstance != null) {
+				Integer auditId = (Integer) contextInstance.getVariable(AuditManager.AUDIT_ID);
+				AuditManager auditManager = AuditManager.getInstance();
+				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_PERFORMED", null, null);
+			}
+			
 		} catch(Exception e){
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
 		                        "approveHandler","Error while versioning presentation", e);
+			// AUDIT UPDATE
+			if (contextInstance != null) {
+				Integer auditId = (Integer) contextInstance.getVariable(AuditManager.AUDIT_ID);
+				AuditManager auditManager = AuditManager.getInstance();
+				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", e.getMessage(), null);
+			}
 		}
 	    
 	}

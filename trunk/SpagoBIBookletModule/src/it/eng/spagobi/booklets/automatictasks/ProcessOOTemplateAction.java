@@ -2,17 +2,20 @@ package it.eng.spagobi.booklets.automatictasks;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
+import it.eng.spagobi.bo.dao.audit.AuditManager;
 import it.eng.spagobi.booklets.bo.ConfiguredBIDocument;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
 import it.eng.spagobi.booklets.exceptions.OpenOfficeConnectionException;
+import it.eng.spagobi.booklets.profile.AnonymousWorkflowProfile;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -65,10 +68,12 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	
 	public void execute(ExecutionContext context) throws Exception {
 		
+		ContextInstance contextInstance = null;
+		
 		try {
 			// RECOVER CONFIGURATION PARAMETER
 			debug("execute", "Start execution");
-			ContextInstance contextInstance = context.getContextInstance();
+			contextInstance = context.getContextInstance();
 			debug("execute", "Context Instance retrived " + contextInstance);
 			String pathBookConf = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
 			debug("execute", "Booklet path variable retrived " + pathBookConf);
@@ -252,6 +257,13 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	        
 		} catch (Exception e) {
 			major("execute", "Exception during execution : \n" + e);
+			// AUDIT UPDATE
+			if (contextInstance != null) {
+				Integer auditId = (Integer) contextInstance.getVariable(AuditManager.AUDIT_ID);
+				AuditManager auditManager = AuditManager.getInstance();
+				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", e.getMessage(), null);
+			}
 			throw e;
 		} finally {
 			if(xComponent!=null){
@@ -353,6 +365,17 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			// get the map of parameter to send to the engine
 			Map mapPars = aEngineDriver.getParameterMap(biobj, null, "");
 			debug("storeDocImages", "parameter map returned by engine driver " );
+			
+			IEngUserProfile profile = new AnonymousWorkflowProfile();
+		    // AUDIT
+			AuditManager auditManager = AuditManager.getInstance();
+			Integer executionId = auditManager.insertAudit(biobj, profile, "", "WORKFLOW");
+			// adding parameters for AUDIT updating
+			if (executionId != null) {
+				mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
+				mapPars.put(AuditManager.AUDIT_SERVLET, GeneralUtilities.getSpagoBiAuditManagerServlet());
+			}
+			
 			// built the request to sent to the engine
 			Iterator iterMapPar = mapPars.keySet().iterator();
 			HttpClient client = new HttpClient();

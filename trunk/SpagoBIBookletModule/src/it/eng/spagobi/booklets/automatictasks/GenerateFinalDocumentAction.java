@@ -2,6 +2,7 @@ package it.eng.spagobi.booklets.automatictasks;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.bo.dao.audit.AuditManager;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.booklets.dao.IBookletsCmsDao;
@@ -64,9 +65,10 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 		String pathTmpFoldPamp = null;
 		String pathBookConf = null;
 		XBridge bridge = null;
+		ContextInstance contextInstance = null;
 		try{
 			debug("execute", "Start execution");
-			ContextInstance contextInstance = context.getContextInstance();
+			contextInstance = context.getContextInstance();
 			debug("execute", "Context Instance retrived " + contextInstance);
 			pathBookConf = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
 			debug("execute", "Booklet path variable retrived " + pathBookConf);
@@ -331,9 +333,16 @@ public class GenerateFinalDocumentAction implements ActionHandler {
             pampDao.storeCurrentPresentationContent(pathBookConf, docCont);
             debug("execute", "Document stored in CMS");
             fis.close();
-           
+            
 		} catch(Exception e) {
 			major("execute", "Error during the generation of the final document", e);
+			// AUDIT UPDATE
+			if (contextInstance != null) {
+				Integer auditId = (Integer) contextInstance.getVariable(AuditManager.AUDIT_ID);
+				AuditManager auditManager = AuditManager.getInstance();
+				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", e.getMessage(), null);
+			}
 			// store as final document the template  
 
 		} finally {

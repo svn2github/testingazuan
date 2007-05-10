@@ -202,6 +202,8 @@ public class TriggerManagementModule extends AbstractModule {
 				throw new Exception("Detail not recovered for trigger " + triggerName);
 			}
 			
+			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
 			
 		} catch (Exception ex) {
@@ -257,6 +259,17 @@ public class TriggerManagementModule extends AbstractModule {
 					sInfo.setDocumentName(docname);
 					String docdescr = (String)request.getAttribute("documentdescription_"+biobId);	
 					sInfo.setDocumentDescription(docdescr);
+					String functIdsConcat = "";
+					List functIds = request.getAttributeAsList("tree_"+biobId+"_funct_id");	
+					Iterator iterFunctIds = functIds.iterator();
+					while(iterFunctIds.hasNext()) {
+						String idFunct = (String)iterFunctIds.next();
+						functIdsConcat += idFunct;
+						if(iterFunctIds.hasNext()){
+							functIdsConcat += ",";
+						}
+					}
+					sInfo.setFunctionalityIds(functIdsConcat);
 				}
 				String sendmail = (String)request.getAttribute("sendmail_"+biobId);	
 				if(sendmail!=null) {
@@ -434,6 +447,9 @@ public class TriggerManagementModule extends AbstractModule {
 				}
 				if( (sInfo.getDocumentHistoryLength()!=null) && !sInfo.getDocumentHistoryLength().trim().equals("") ) {
 					saveOptString += "documenthistorylength="+sInfo.getDocumentHistoryLength()+"%26";
+				}
+				if( (sInfo.getFunctionalityIds()!=null) && !sInfo.getFunctionalityIds().trim().equals("") ) {
+					saveOptString += "functionalityids="+sInfo.getFunctionalityIds()+"%26";
 				}
 			}
 			if(sInfo.isSendMail()) {

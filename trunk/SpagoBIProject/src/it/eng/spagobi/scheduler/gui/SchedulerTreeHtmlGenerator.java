@@ -213,15 +213,4 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	
 	
-	/*
-	 private String createScheduleObjectLink(Integer id) {
-		PortletURL schedUrl = renderResponse.createActionURL();
-		schedUrl.setParameter(SpagoBIConstants.PAGE, SchedulerGUIModule.MODULE_PAGE);
-		schedUrl.setParameter(SpagoBIConstants.OBJECT_ID, id.toString());
-		schedUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_GET_OBJECT_SCHEDULATIONS);
-		return schedUrl.toString();
-	}
-
-	*/
-	
 }

@@ -12,7 +12,7 @@ public class SaveInfo {
 	private String documentDescription = "";
 	private String documentHistoryLength = "";
 	private String mailTos = "";
-	private String documentPaths = "";
+	private String functionalityIds = "";
 	
 	public String getDocumentDescription() {
 		return documentDescription;
@@ -74,11 +74,12 @@ public class SaveInfo {
 	public void setSnapshotName(String snapshotName) {
 		this.snapshotName = snapshotName;
 	}
-	public String getDocumentPaths() {
-		return documentPaths;
+	public String getFunctionalityIds() {
+		return functionalityIds;
 	}
-	public void setDocumentPaths(String documentPaths) {
-		this.documentPaths = documentPaths;
+	public void setFunctionalityIds(String functionalityIds) {
+		this.functionalityIds = functionalityIds;
 	}
+	
 	
 }

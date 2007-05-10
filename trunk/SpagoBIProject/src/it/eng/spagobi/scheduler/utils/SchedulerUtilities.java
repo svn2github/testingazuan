@@ -66,13 +66,35 @@ public class SchedulerUtilities {
 	}	
 
 	
-	public static SourceBean getSBFromWebServiceResponse(String response) throws Exception {
-		SourceBean respSB = SourceBean.fromXMLString(response);
-		SourceBean servRespSB = (SourceBean)respSB.getAttribute("SERVICE_RESPONSE");
-		SourceBean schedModRespSB = (SourceBean)servRespSB.getAttribute("SCHEDULERMODULE");
+	public static SourceBean getSBFromWebServiceResponse(String response)  {
+		SourceBean schedModRespSB = null;
+		try{
+			SourceBean respSB = SourceBean.fromXMLString(response);
+			if(respSB!=null) {
+				SourceBean servRespSB = (SourceBean)respSB.getAttribute("SERVICE_RESPONSE");
+				if(servRespSB!=null) {
+					schedModRespSB = (SourceBean)servRespSB.getAttribute("SCHEDULERMODULE");
+				}
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, SchedulerUtilities.class.getName(), 
+					            "getSBFromWebServiceResponse", "Error while parsing service response", e);
+		}
 		return schedModRespSB;
 	}
 	
+	
+	public static boolean checkResultOfWSCall(SourceBean resultSB)  {
+		boolean result = true;
+		SourceBean execOutSB = (SourceBean)resultSB.getAttribute("EXECUTION_OUTCOME");
+		if(execOutSB!=null) {
+			String outcome = (String)execOutSB.getAttribute("outcome");
+			if(outcome.equalsIgnoreCase("fault")) {
+				result = false;
+			}
+		}
+		return result;
+	}
 	
 	
 	public static JobInfo getJobInfoFromJobSourceBean(SourceBean jobDetSB) {
@@ -202,6 +224,9 @@ public class SchedulerUtilities {
 			}
 			if(name.equals("documenthistorylength")) {
 				sInfo.setDocumentHistoryLength(value);
+			}
+			if(name.equals("functionalityids")) {
+				sInfo.setFunctionalityIds(value);
 			}
 			if(name.equals("sendmail")) {
 				sInfo.setSendMail(true);

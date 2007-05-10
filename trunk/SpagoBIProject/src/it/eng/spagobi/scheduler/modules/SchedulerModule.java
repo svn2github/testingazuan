@@ -471,7 +471,7 @@ public class SchedulerModule extends AbstractModule {
 			jobDetail.setJobClass(jobClass);
 			// ADD JOB
 			try {
-				scheduler.addJob(jobDetail, false);
+				scheduler.addJob(jobDetail, true);
 			} catch (SchedulerException e) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE+"(SCHEDULER)", this.getClass().getName(), 
 						               "defineJob", "Error while adding job to the scheduler", e);

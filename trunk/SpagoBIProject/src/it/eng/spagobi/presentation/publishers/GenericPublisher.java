@@ -29,6 +29,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 public abstract class GenericPublisher implements PublisherDispatcherIFace {
@@ -37,9 +38,11 @@ public abstract class GenericPublisher implements PublisherDispatcherIFace {
 			                          SourceBean moduleResponse) {
 		// get error handler
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
-		// if there are some errors into the errorHandler  return the name for the errors publisher
+		// if there are some errors (not validation error) into the errorHandler  return the name for the errors publisher
 		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			return "error";
+			if(!GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+				return "error";
+			}
 		}
 		// if the module response is null throws an error and return the name of the errors publisher
 		if (moduleResponse == null) {

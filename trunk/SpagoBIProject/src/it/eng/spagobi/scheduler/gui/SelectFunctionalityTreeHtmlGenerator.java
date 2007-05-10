@@ -29,11 +29,14 @@ import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.presentation.treehtmlgenerators.ITreeHtmlGenerator;
 import it.eng.spagobi.scheduler.to.JobInfo;
+import it.eng.spagobi.scheduler.to.SaveInfo;
+import it.eng.spagobi.scheduler.to.TriggerInfo;
 import it.eng.spagobi.utilities.PortletUtilities;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
@@ -54,8 +57,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	PortletRequest portReq = null;
 	protected int dTreeRootId = -100;
 	protected int dTreeObjects = -1000;
-	JobInfo jobInfo = null;
-	List biobjIds = new ArrayList();
+    List functIdsChecked = new ArrayList();
 
 
 	/**
@@ -113,6 +115,20 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		TriggerInfo tInfo = (TriggerInfo)sessionContainer.getAttribute(SpagoBIConstants.TRIGGER_INFO);
+		String idObjStr = treename.substring(5);
+		Integer idBiobj = Integer.valueOf(idObjStr);
+		Map saveOpts = tInfo.getSaveOptions();
+		SaveInfo sInfo = (SaveInfo)saveOpts.get(idBiobj);
+		String functIdsConcat = sInfo.getFunctionalityIds();
+		String[] functIds =  functIdsConcat.split(",");
+		for(int i=0; i<functIds.length; i++) {
+			String functIdStr = functIds[i];
+			if(functIdStr.trim().equals(""))
+				continue;
+			Integer functId = Integer.valueOf(functIdStr);
+			functIdsChecked.add(functId);
+		}
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         StringBuffer htmlStream = new StringBuffer();
@@ -131,8 +147,8 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		htmlStream.append("		<td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = '"+treename+"';\n");
-	   	htmlStream.append("				treeCMS = new dTree('"+treename+"');\n");
-	   	htmlStream.append("	        	treeCMS.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
+	   	htmlStream.append("				"+treename+" = new dTree('"+treename+"');\n");
+	   	htmlStream.append("	        	"+treename+".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
@@ -176,9 +192,13 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 			htmlStream.append("	"+treename+".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
+				String checked = "";
+				if(functIdsChecked.contains(idFolder)){
+					checked = "true";
+				}
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	"+treename+".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '', '"+treename+"_funct_id', '"+idFolder+"', 'false');\n");
+				htmlStream.append("	"+treename+".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '', '"+treename+"_funct_id', '"+idFolder+"', '"+checked+"');\n");
 			}
 		}
 	}

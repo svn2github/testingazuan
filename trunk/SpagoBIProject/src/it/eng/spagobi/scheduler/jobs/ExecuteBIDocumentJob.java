@@ -128,7 +128,7 @@ public class ExecuteBIDocumentJob implements Job {
 						IDomainDAO domainDAO = DAOFactory.getDomainDAO();
 						Domain officeDocDom = domainDAO.loadDomainByCodeAndValue("BIOBJ_TYPE", "OFFICE_DOC");
 						// recover development sbidomains
-						Domain devDom = domainDAO.loadDomainByCodeAndValue("STATE", "DEV");
+						Domain relDom = domainDAO.loadDomainByCodeAndValue("STATE", "REL");
 						// recover engine
 						IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 						List engines = engineDAO.loadAllEnginesForBIObjectType(officeDocDom.getValueCd());
@@ -140,31 +140,46 @@ public class ExecuteBIDocumentJob implements Job {
 						uploadedFile.setSizeInBytes(response.length);
 						uploadedFile.setFileContent(response);
 						// load all functionality
-						//List storeInFunctionalities = new ArrayList();
-						//List functIds = request.getAttributeAsList("FUNCT_ID");
-						//Iterator iterFunctIds = functIds.iterator();
-						//while(iterFunctIds.hasNext()) {
-						//	String functIdStr = (String)iterFunctIds.next();
-						//	Integer functId = new Integer(functIdStr);
-						//	storeInFunctionalities.add(functId);
-						//}
+						List storeInFunctionalities = new ArrayList();
+						String functIdsConcat = sInfo.getFunctionalityIds();
+						String[] functIds =  functIdsConcat.split(",");
+						for(int i=0; i<functIds.length; i++) {
+							String functIdStr = functIds[i];
+							if(functIdStr.trim().equals(""))
+								continue;
+							Integer functId = Integer.valueOf(functIdStr);
+							storeInFunctionalities.add(functId);
+						}
 						// create biobject
+						
+						String jobName = jex.getJobDetail().getName();
+						String completeLabel = "scheduler_" + jobName + "_" + docName;
+						String label = "sched_" + String.valueOf(Math.abs(completeLabel.hashCode()));
+						
 						BIObject newbiobj = new BIObject();
 						newbiobj.setDescription(docDesc);
-						newbiobj.setLabel(docName);
+						newbiobj.setLabel(label);
 						newbiobj.setName(docName);
 						newbiobj.setEncrypt(new Integer(0));
 						newbiobj.setEngine(engine);
 						newbiobj.setRelName("");
 						newbiobj.setBiObjectTypeCode(officeDocDom.getValueCd());
 						newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
-						newbiobj.setStateCode(devDom.getValueCd());
-						newbiobj.setStateID(devDom.getValueId());
+						newbiobj.setStateCode(relDom.getValueCd());
+						newbiobj.setStateID(relDom.getValueId());
 						newbiobj.setVisible(new Integer(0));
 						newbiobj.setTemplate(uploadedFile);
-						//newbiobj.setFunctionalities(storeInFunctionalities);
+						newbiobj.setFunctionalities(storeInFunctionalities);
 						IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
-						//objectDAO.insertBIObject(biobj);
+						
+						BIObject biobjexist = objectDAO.loadBIObjectByLabel(label);
+						if(biobjexist==null){
+							objectDAO.insertBIObject(newbiobj);
+						} else {
+							newbiobj.setId(biobjexist.getId());
+							objectDAO.modifyBIObject(newbiobj);
+						}
+						
 					}
 					
 					

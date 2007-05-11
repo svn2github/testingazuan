@@ -19,6 +19,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/validation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/transcoder.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/upload.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/mail.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/spagobi/spagobi_components.xml" />
 	<!-- START WEB APPLICATION -->
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_modules.xml" />

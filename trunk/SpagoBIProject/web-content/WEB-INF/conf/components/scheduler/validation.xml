@@ -13,5 +13,24 @@
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+	
+	<SERVICE name="TriggerManagementPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="MESSAGE_SAVE_SCHEDULE"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="triggername" label="#scheduler.schedname">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="startdate" label="#scheduler.startdate">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="starttime" label="#scheduler.starttime">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
 
 </VALIDATIONS>

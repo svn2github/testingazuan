@@ -63,10 +63,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	tabOpened = ""; 
 	
 	function changeTab(biobjid) {
+		if(tabOpened==biobjid) {
+      		return;
+    	}
 		document.getElementById('areabiobj'+biobjid).style.display="inline";
 		document.getElementById('areabiobj'+tabOpened).style.display="none";
-		document.getElementById('tabbiobj'+biobjid).class="tab selected";
-		document.getElementById('tabbiobj'+tabOpened).class="tab";
+		document.getElementById('tabbiobj'+biobjid).className="tab selected";
+		document.getElementById('tabbiobj'+tabOpened).className="tab";
 		tabOpened = biobjid;
 	}
 	
@@ -184,19 +187,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+	<br/>
 
 
 
+	<spagobi:error/>
 
 
-
-
-
-  <br/>
+  
 	<table>
 		<tr> 
 			<td class='titlebar_level_2_text_section' style='vertical-align:middle;padding-left:5px;'>
-				Opzioni di Salvataggio	
+				<spagobi:message key="scheduler.saveoptions" bundle="component_scheduler_messages" />
 			</td>
 		</tr>
 	</table>
@@ -208,16 +210,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div style="overflow: hidden; width:  100%">
 	
 	<%
-		Iterator iterJobBiobjs = jobBiobjects.iterator();
-	    int index = 0;
-	    String tabClass = "tab selected"; 
-		while(iterJobBiobjs.hasNext()) {
-			BIObject biobj = (BIObject)iterJobBiobjs.next();
-			String biobjName = biobj.getName();
-			if(index > 0) {
-				tabClass = "tab"; 
-			}
-			index ++;
+		if(jobBiobjects.size()==0){
+	%>
+				<br/>
+				<spagobi:message key = "scheduler.jobhasnodocument"  bundle="component_scheduler_messages"/>
+				<br/>
+	<%			
+		} else {
+			Iterator iterJobBiobjs = jobBiobjects.iterator();
+	    	int index = 0;
+	    	String tabClass = "tab selected"; 
+			while(iterJobBiobjs.hasNext()) {
+				BIObject biobj = (BIObject)iterJobBiobjs.next();
+				String biobjName = biobj.getName();
+				if(index > 0) {
+					tabClass = "tab"; 
+				}
+				index ++;
 	%>
 				<div id="tabbiobj<%=biobj.getId()%>"  class='<%= tabClass%>'>
 					<a href="javascript:changeTab('<%=biobj.getId()%>')" style="color:black;"> 
@@ -225,6 +234,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</a>
 				</div>
 	<%	
+			}
 		}
 	%>
 			</div>
@@ -260,7 +270,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         <input type="checkbox" name="saveassnapshot_<%=biobj.getId()%>" 
                <%if(sInfo.isSaveAsSnapshot()){out.write(" checked='checked' " );} %> />
 			  <span class='portlet-form-field-label'>
-					Salva come Snapshot
+					<spagobi:message key="scheduler.saveassnap" bundle="component_scheduler_messages" />
 				</span>
 			  <div style="margin-left:50px;margin-top:10px;">
             <div class='div_detail_label_scheduler'>
@@ -298,7 +308,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<input type="checkbox" name="saveasdocument_<%=biobj.getId()%>" 
 				       <%if(sInfo.isSaveAsDocument()){out.write(" checked='checked' " );} %> />
 				<span class='portlet-form-field-label'>
-					Salva come nuovo documento
+					<spagobi:message key="scheduler.saveasdoc" bundle="component_scheduler_messages" />
 				</span>
 				<div style="margin-left:50px;margin-top:10px;">
             <div class='div_detail_label_scheduler'>
@@ -332,12 +342,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<input type="checkbox" name="sendmail_<%=biobj.getId()%>" 
 				       <%if(sInfo.isSendMail()){out.write(" checked='checked' " );} %>/>
 				<span class='portlet-form-field-label'>
-					Invia per posta
+					<spagobi:message key="scheduler.sendmail" bundle="component_scheduler_messages" />
 				</span>
 				<div style="margin-left:50px;margin-top:10px;">
   				<div class='div_detail_label_scheduler'>
   		      <span class='portlet-form-field-label'>
-  			       Mail To:
+  			       <spagobi:message key="scheduler.mailto" bundle="component_scheduler_messages" />
   		      </span>
   	      </div>
   	      <div class='div_detail_form'>

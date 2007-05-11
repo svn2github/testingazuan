@@ -25,6 +25,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
+import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -235,6 +236,14 @@ public class TriggerManagementModule extends AbstractModule {
 			triggerInfo.setStartTime(starttime);
 			triggerInfo.setTriggerDescription(triggerDescription);
 			triggerInfo.setTriggerName(triggername);
+			
+			// check for input validation errors 
+			if(!this.getErrorHandler().isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+				List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
+				return;
+			}
 			
 			Map saveOptions = new HashMap();
 			List biobjIds = jobInfo.getBiobjectIds();

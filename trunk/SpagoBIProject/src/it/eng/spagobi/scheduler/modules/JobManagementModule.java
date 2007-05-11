@@ -321,8 +321,8 @@ public class JobManagementModule extends AbstractModule {
 			getJobGenericDataFromRequest(request, jobInfo);
 			// recover parameter values
 			getDocParValuesFromRequest(request, jobInfo);
-			// do input validation 
-			ValidationCoordinator.validate("PAGE", "JobManagementPage", this);
+			// check for input validation errors 
+			//ValidationCoordinator.validate("PAGE", "JobManagementPage", this);
 			if(!this.getErrorHandler().isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
 				List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
 				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);

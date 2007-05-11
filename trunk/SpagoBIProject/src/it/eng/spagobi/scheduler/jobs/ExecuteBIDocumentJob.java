@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.Domain;
@@ -186,57 +189,11 @@ public class ExecuteBIDocumentJob implements Job {
 					
 					
 					
-					
+					// SEND MAIL
 					if(sInfo.isSendMail()) {
-						
-						String mailTos = sInfo.getMailTos();
-						if( (mailTos==null) || mailTos.trim().equals("")) {
-							continue;
-						}
-						String[] recipients = mailTos.split(",");
-						//Set the host smtp address
-					    Properties props = new Properties();
-					    props.put("mail.smtp.host", "mail.eng.it");
-					    props.put("mail.smtp.auth", "true");
-                        // create autheticator object
-					    Authenticator auth = new SMTPAuthenticator();
-					    // open session
-					    Session session = Session.getDefaultInstance(props, auth);
-					    // create a message
-					    Message msg = new MimeMessage(session);
-					    // set the from and to address
-					    InternetAddress addressFrom = new InternetAddress("spagobi@eng.it");
-					    msg.setFrom(addressFrom);
-					    InternetAddress[] addressTo = new InternetAddress[recipients.length];
-					    for (int i = 0; i < recipients.length; i++)  {
-					        addressTo[i] = new InternetAddress(recipients[i]);
-					    }
-					    msg.setRecipients(Message.RecipientType.TO, addressTo);
-					    // Setting the Subject and Content Type
- 					    msg.setSubject("Scheduler");
-					    // create and fill the first message part
-					    MimeBodyPart mbp1 = new MimeBodyPart();
-					    mbp1.setText("Messaggio Inviato dallo Scheduler");
-					    // create the second message part
-					    MimeBodyPart mbp2 = new MimeBodyPart();
-			            // attach the file to the message
-					    SchedulerDataSource sds = new SchedulerDataSource(response, "text/html", biobj.getName() + ".html");
-					    mbp2.setDataHandler(new DataHandler(sds));
-					    mbp2.setFileName(sds.getName());
-    				    // create the Multipart and add its parts to it
-					    Multipart mp = new MimeMultipart();
-					    mp.addBodyPart(mbp1);
-					    mp.addBodyPart(mbp2);
-    				    // add the Multipart to the message
-					    msg.setContent(mp);
-					    // send message
-					    Transport.send(msg);
+						sendMail(sInfo, biobj, response);
 					}
-					
-					
-					
-					
-					
+			
 				}
 			}
 		} catch (Exception e) {
@@ -248,13 +205,89 @@ public class ExecuteBIDocumentJob implements Job {
 	}
 
 	
+	
+	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response) {
+		try{
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean mailProfSB = (SourceBean)config.getFilteredSourceBeanAttribute("MAIL.PROFILES.PROFILE", "name", "scheduler");
+			if(mailProfSB==null) {
+				throw new Exception("Mail profile configuration not found");
+			}
+			String smtphost = (String)mailProfSB.getAttribute("smtphost");
+			if( (smtphost==null) || smtphost.trim().equals(""))
+				throw new Exception("Smtp host not configured");
+			String from = (String)mailProfSB.getAttribute("from");
+			if( (from==null) || from.trim().equals(""))
+				from = "spagobi.scheduler@eng.it";
+			String user = (String)mailProfSB.getAttribute("user");
+			if( (user==null) || user.trim().equals(""))
+				throw new Exception("Smtp user not configured");
+			String pass = (String)mailProfSB.getAttribute("password");
+			if( (pass==null) || pass.trim().equals(""))
+				throw new Exception("Smtp password not configured");
+			String mailTos = sInfo.getMailTos();
+			if( (mailTos==null) || mailTos.trim().equals("")) {	
+				throw new Exception("No recipient address found");
+			}
+			String[] recipients = mailTos.split(",");
+			//Set the host smtp address
+		    Properties props = new Properties();
+		    props.put("mail.smtp.host", smtphost);
+		    props.put("mail.smtp.auth", "true");
+	        // create autheticator object
+		    Authenticator auth = new SMTPAuthenticator(user, pass);
+		    // open session
+		    Session session = Session.getDefaultInstance(props, auth);
+		    // create a message
+		    Message msg = new MimeMessage(session);
+		    // set the from and to address
+		    InternetAddress addressFrom = new InternetAddress(from);
+		    msg.setFrom(addressFrom);
+		    InternetAddress[] addressTo = new InternetAddress[recipients.length];
+		    for (int i = 0; i < recipients.length; i++)  {
+		        addressTo[i] = new InternetAddress(recipients[i]);
+		    }
+		    msg.setRecipients(Message.RecipientType.TO, addressTo);
+		    // Setting the Subject and Content Type
+			    msg.setSubject("Scheduler");
+		    // create and fill the first message part
+		    MimeBodyPart mbp1 = new MimeBodyPart();
+		    mbp1.setText("Messaggio Inviato dallo Scheduler");
+		    // create the second message part
+		    MimeBodyPart mbp2 = new MimeBodyPart();
+	        // attach the file to the message
+		    SchedulerDataSource sds = new SchedulerDataSource(response, "text/html", biobj.getName() + ".html");
+		    mbp2.setDataHandler(new DataHandler(sds));
+		    mbp2.setFileName(sds.getName());
+		    // create the Multipart and add its parts to it
+		    Multipart mp = new MimeMultipart();
+		    mp.addBodyPart(mbp1);
+		    mp.addBodyPart(mbp2);
+		    // add the Multipart to the message
+		    msg.setContent(mp);
+		    // send message
+		    Transport.send(msg);
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					            "sendMail", "Error while sending schedule result mail", e);
+		}
+	}
+	
+	
+	
 	private class SMTPAuthenticator extends javax.mail.Authenticator
 	{
+		private String username = "";
+		private String password = "";
+		
 	    public PasswordAuthentication getPasswordAuthentication()
 	    {
-	        String username = "lfiscato";
-	        String password = "fadeto79";
 	        return new PasswordAuthentication(username, password);
+	    }
+	    
+	    public SMTPAuthenticator(String user, String pass) {
+	    	this.username = user;
+	    	this.password = pass;
 	    }
 	}
 	

@@ -93,7 +93,42 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		return funct;
 	}
 	
-	
+	/**
+	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadRootLowFunctionality(boolean)
+	 * 
+	 */
+	public LowFunctionality loadRootLowFunctionality(boolean recoverBIObjects)
+			throws EMFUserError {
+		
+		LowFunctionality lowFunctionaliy = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion domainCdCriterrion = Expression.isNull("parentFunct");
+			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
+			criteria.add(domainCdCriterrion);
+			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
+			if (hibFunct == null) return null;
+			
+			lowFunctionaliy = toLowFunctionality(hibFunct, recoverBIObjects);
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return lowFunctionaliy;
+	}
 	
 	/**
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadLowFunctionalityByPath(java.lang.String)

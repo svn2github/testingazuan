@@ -503,5 +503,22 @@
     	</MODULES>
   	</PAGE>
 
+  	<PAGE name="ExecutionWorkspacePage" scope="REQUEST" title="Execution Workspace Page" >
+    	<DEPENDENCIES>
+    		<DEPENDENCE source="ExecutionWorkspacePage" target="PortletLoginModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+      		<DEPENDENCE source="ExecutionWorkspacePage" target="ExecutionWorkspaceModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="PortletLoginModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="ExecutionWorkspaceModule"/>
+    	</MODULES>
+  	</PAGE>
+
 </PAGES>
 

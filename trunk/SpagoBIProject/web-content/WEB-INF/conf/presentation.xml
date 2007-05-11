@@ -34,6 +34,7 @@
 	<MAPPING business_name="LOGIN_PAGE_SBI_FUNCTIONALITY" business_type="PAGE" publisher_name="BIObjectsPubJ"/>
     <MAPPING business_name="SERVICE_CALLER_PAGE" business_type="PAGE" publisher_name="ServiceCallerPublisher"/>
     <MAPPING business_name="ListObjParusePage" business_type="PAGE" publisher_name="ListObjParusePublisher"/>
+    <MAPPING business_name="ExecutionWorkspacePage" business_type="PAGE" publisher_name="ExecutionWorkspacePublisher"/>
 	
 </PRESENTATION>
 

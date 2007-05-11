@@ -110,6 +110,11 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>attributeToRender</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>   
     </tag>
     
     <!-- END TREE TAGS  -->
@@ -285,5 +290,5 @@
     
     
     <!-- END LOV TAGS  -->
-    
+
 </taglib>

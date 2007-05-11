@@ -1147,4 +1147,13 @@
     	</RENDERING>
   	</PUBLISHER>
 
+  	<PUBLISHER name="ExecutionWorkspacePublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/executionWorkspace.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
 </PUBLISHERS>

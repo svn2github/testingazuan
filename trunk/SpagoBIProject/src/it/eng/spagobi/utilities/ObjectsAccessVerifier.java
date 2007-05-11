@@ -290,9 +290,13 @@ public class ObjectsAccessVerifier {
 		if(!state.equals("REL")) {
 			return false;
 		}
-		//String pathFunct = path.substring(0, path.lastIndexOf('/'));
-		//return canExecInternal(pathFunct,profile);
-		return canExecInternal(folderId, profile);
+		LowFunctionality folder = null;
+		try {
+			folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
+		} catch (Exception e) {
+			return false;
+		}
+		return canExecInternal(folder, profile);
 	}
 	
 	
@@ -342,6 +346,18 @@ public class ObjectsAccessVerifier {
 		return canTestInternal (folderId, profile);
 		
 	}
+
+	/**
+	 * Control if the current user can execute objects into the input functionality
+	 * 
+	 * @param folder The lowFunctionality
+	 * @param profile user profile
+	 * @return A boolean control value
+	 */
+	public static boolean canExec(LowFunctionality folder, IEngUserProfile profile) {
+
+		return canExecInternal(folder,profile);
+	}
 	
 	/**
 	 * Control if the current user can execute new object into the functionality identified by its id
@@ -351,17 +367,22 @@ public class ObjectsAccessVerifier {
 	 * @return A boolean control value
 	 */
 	public static boolean canExec(Integer folderId, IEngUserProfile profile) {
-
-		return canExecInternal(folderId,profile);
+		LowFunctionality folder = null;
+		try {
+			folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
+		} catch (Exception e) {
+			return false;
+		}
+		return canExecInternal(folder,profile);
 	}
 	/**
 	 * Private method called by the corrispondent public method canExec. Executes roles
 	 * functionalities control .
-	 * @param folderId The id of the lowFunctionality
+	 * @param folder The lowFunctionality
 	 * @param profile user profile
 	 * @return A boolean control value
 	 */
-	private static boolean canExecInternal (Integer folderId, IEngUserProfile profile){
+	private static boolean canExecInternal (LowFunctionality folder, IEngUserProfile profile){
 		Collection roles = null;
 		try {
 			roles = profile.getRoles();
@@ -369,13 +390,7 @@ public class ObjectsAccessVerifier {
 			return false;
 		}
 		
-		LowFunctionality funct = null;
-		try{
-			funct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
-		} catch (Exception e) {
-			return false;
-		}
-		Role[] execRoles = funct.getExecRoles();
+		Role[] execRoles = folder.getExecRoles();
 		List execRoleNames = new ArrayList();
 		for(int i=0; i<execRoles.length; i++) {
 			Role role = execRoles[i];

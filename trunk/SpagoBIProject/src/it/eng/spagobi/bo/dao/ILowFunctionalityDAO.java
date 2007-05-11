@@ -144,4 +144,13 @@ public interface ILowFunctionalityDAO {
 	 */
 	public List loadChildFunctionalities(Integer parentId, boolean recoverBIObjects) throws EMFUserError;
 	
+	/**
+	 * Loads the root functionality 
+	 * @param recoverBIObjects If true each <code>LowFunctionality</code> at output will have the 
+	 * list of contained <code>BIObject</code> objects
+	 * @return the root functionality
+	 * @throws EMFUserError
+	 */
+	public LowFunctionality loadRootLowFunctionality(boolean recoverBIObjects) throws EMFUserError;
+	
 }

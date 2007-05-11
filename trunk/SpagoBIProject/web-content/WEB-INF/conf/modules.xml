@@ -502,6 +502,8 @@
      	<CONFIG/>
     </MODULE>
     
-    
+    <MODULE class="it.eng.spagobi.services.modules.ExecutionWorkspaceModule" name="ExecutionWorkspaceModule">
+     	<CONFIG/>
+    </MODULE>
     
 </MODULES>

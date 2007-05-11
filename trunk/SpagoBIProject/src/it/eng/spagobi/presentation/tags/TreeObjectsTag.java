@@ -50,6 +50,7 @@ public class TreeObjectsTag extends TagSupport {
 	private String htmlGeneratorClass = null;
 	private String treeName = null;
 	HttpServletRequest httpRequest = null;
+	private String attributeToRender = null;
 	
 	/**
 	 * Starting tag
@@ -61,7 +62,12 @@ public class TreeObjectsTag extends TagSupport {
 		SourceBean serviceRequest = requestContainer.getServiceRequest();
 		SourceBean serviceResponse = responseContainer.getServiceResponse();
 		SourceBean moduleResponse = (SourceBean)serviceResponse.getAttribute(moduleName);
-		List functionalitiesList = (List) moduleResponse.getAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST);
+		List functionalitiesList = null;
+		if (attributeToRender == null || attributeToRender.trim().equals("")) {
+			functionalitiesList = (List) moduleResponse.getAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST);
+		} else {
+			functionalitiesList = (List) moduleResponse.getAttribute(attributeToRender);
+		}
 		String initialPath = (String) moduleResponse.getAttribute(TreeObjectsModule.PATH_SUBTREE);
         ITreeHtmlGenerator gen = null;
         try{
@@ -128,6 +134,16 @@ public class TreeObjectsTag extends TagSupport {
 
 	public void setTreeName(String treeName) {
 		this.treeName = treeName;
+	}
+
+
+	public String getAttributeToRender() {
+		return attributeToRender;
+	}
+
+
+	public void setAttributeToRender(String attributeToRender) {
+		this.attributeToRender = attributeToRender;
 	}
 		
 	

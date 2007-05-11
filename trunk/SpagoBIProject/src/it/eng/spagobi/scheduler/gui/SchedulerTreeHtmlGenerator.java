@@ -26,10 +26,13 @@ import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.presentation.treehtmlgenerators.ITreeHtmlGenerator;
 import it.eng.spagobi.scheduler.to.JobInfo;
+import it.eng.spagobi.utilities.EngineUtilities;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 
 import java.util.ArrayList;
@@ -184,6 +187,12 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
+					Engine engine = obj.getEngine();
+					if(engine!=null) {
+						if(!EngineUtilities.isExternal(obj.getEngine())){
+							continue;
+						}
+					}
 					String biObjType = obj.getBiObjectTypeCode();
 					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
 					String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);

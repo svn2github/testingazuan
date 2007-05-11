@@ -198,6 +198,9 @@ public class SchedulerUtilities {
 		String[] couples = saveinfostr.split("%26");
 		for(int i=0; i<couples.length; i++) {
 			String couple = couples[i];
+			if(couple.trim().equals("")) {
+				continue;
+			}
 			String[] couplevals = couple.split("=");
 			String name = couplevals[0];
 			String value = couplevals[1];

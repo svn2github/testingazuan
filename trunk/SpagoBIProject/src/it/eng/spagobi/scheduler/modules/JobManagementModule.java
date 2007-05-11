@@ -366,8 +366,8 @@ public class JobManagementModule extends AbstractModule {
 				}
 				if(queryString.length()>0) {
 					queryString = queryString.substring(0, queryString.length()-3);
-					message.append("<PARAMETER name=\""+biobj.getLabel()+"\" value=\""+queryString+"\" />");
 				}
+				message.append("<PARAMETER name=\""+biobj.getLabel()+"\" value=\""+queryString+"\" />");
 				doclabels += biobj.getLabel() + ",";
 			}
 			if(doclabels.length()>0) {
@@ -464,10 +464,15 @@ public class JobManagementModule extends AbstractModule {
 				BIObjectParameter biobjpar = (BIObjectParameter)iterbiobjpars.next();
 				String nameParInRequest = "par_" + biobj.getId() + "_" + biobjpar.getParameterUrlName();
 				String valueParConcat = (String)request.getAttribute(nameParInRequest);
-				if(valueParConcat!=null) {
-					String[] valueParArr = valueParConcat.split(splitter);
-					List valuePar = Arrays.asList(valueParArr);
-					biobjpar.setParameterValues(valuePar);
+				if(valueParConcat!=null){
+					if(valueParConcat.trim().equals("")) {
+						biobjpar.setParameterValues(new ArrayList());
+						continue;
+					} else {
+						String[] valueParArr = valueParConcat.split(splitter);
+						List valuePar = Arrays.asList(valueParArr);
+						biobjpar.setParameterValues(valuePar);
+					}
 				}
 			}
 		}

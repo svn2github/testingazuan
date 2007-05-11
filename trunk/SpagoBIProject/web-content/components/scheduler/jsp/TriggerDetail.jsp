@@ -52,6 +52,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@page import="it.eng.spagobi.scheduler.to.SaveInfo"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.GregorianCalendar"%>
+<%@page import="java.util.Calendar"%>
 <script type="text/javascript" src="<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dojo/dojo.js" )%>"></script>
 
 <script type="text/javascript">
@@ -119,8 +122,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<spagobi:message key="scheduler.schedname" bundle="component_scheduler_messages" />
 			</span>
 		</div>
+		<%
+		String readonly  = "";
+		String trigName = triggerInfo.getTriggerName();
+		if(trigName!=null) {
+			trigName = trigName.trim();
+			if(!trigName.equals("")) {
+				readonly = " readonly ";
+			} else {
+				Calendar cal = new GregorianCalendar();
+			    int hour24 = cal.get(Calendar.HOUR_OF_DAY);     
+			    int min = cal.get(Calendar.MINUTE);             
+			    int sec = cal.get(Calendar.SECOND);             
+				trigName = jobInfo.getJobName() + "_schedule_" + hour24 + "" + min + "" + sec; 
+			}
+		}
+		%>
 		<div class='div_detail_form'>
-			<input id="triggername" value="<%=triggerInfo.getTriggerName()%>" type="text" name="triggername" size="35"/>
+			<input id="triggername" value="<%=trigName%>" type="text" name="triggername" size="35" <%=readonly%> />
 		    &nbsp;*
 		</div>
 		<div class='div_detail_label_scheduler'>
@@ -180,7 +199,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<input type="text" value="<%=triggerInfo.getRepeatInterval()%>" name="repeatInterval" size="35"/>
+		    <%
+		    	String repInterv = triggerInfo.getRepeatInterval();
+		        if(repInterv!=null) {
+		        	if(repInterv.trim().equals("0")) {
+		        		repInterv = "";
+		        	}
+		        } else {
+		        	repInterv = "";
+		        }
+		    	%>
+			<input type="text" value="<%=repInterv%>" name="repeatInterval" size="35"/>
 			&nbsp;<span style="font-size:9pt;">ms<span>
 		</div>
 	</div>
@@ -243,8 +272,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 	<%
-		iterJobBiobjs = jobBiobjects.iterator();
-	    index = 0;
+		Iterator iterJobBiobjs = jobBiobjects.iterator();
+	    int index = 0;
 	    String setTabOpened = "";
 	    String displaytab = "inline";
 		while(iterJobBiobjs.hasNext()) {

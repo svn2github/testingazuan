@@ -1,12 +1,6 @@
 package it.eng.spagobi.scheduler.jobs;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Properties;
-
+import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
@@ -27,19 +21,34 @@ import it.eng.spagobi.security.FakeUserProfile;
 import it.eng.spagobi.utilities.ExecutionProxy;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.*;
-import javax.mail.internet.*;
-import java.util.*;
-import java.io.*;
 
 public class ExecuteBIDocumentJob implements Job {
 
@@ -68,132 +77,37 @@ public class ExecuteBIDocumentJob implements Job {
 					proxy.setBiObject(biobj);
 					IEngUserProfile profile = new FakeUserProfile("scheduler");
 					
+					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+					String startExecMsgIniPart = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.startexecsched", "component_scheduler_messages");
+					String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
+					String endExecMsgIniPart = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.endexecsched", "component_scheduler_messages");
+					String endExecMsg = endExecMsgIniPart + " " + biobj.getName();
+					
 					EventsManager eventManager = EventsManager.getInstance();
 					List roles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(biobj.getId());
-					Integer idEvent = eventManager.registerEvent("Scheduler", "Start scheduled execution of document "+biobj.getName(), docParQueryString, roles);
+					Integer idEvent = eventManager.registerEvent("Scheduler", startExecMsg, "", roles);
 					
 					byte[] response = proxy.exec(profile);
+					String retCT = proxy.getReturnedContentType();
+					String fileextension = proxy.getFileExtensionFromContType(retCT);
 					
-					eventManager.registerEvent("Scheduler", "End scheduled execution of document "+biobj.getName(), docParQueryString, roles);
+					eventManager.registerEvent("Scheduler", endExecMsg, "", roles);
 					
 					if(sInfo.isSaveAsSnapshot()) {
-						String snapName = sInfo.getSnapshotName();
-						if( (snapName==null) || snapName.trim().equals("")) {
-							continue;
-						}
-						String snapDesc = sInfo.getSnapshotDescription();
-						String historylengthStr = sInfo.getSnapshotHistoryLength();
-						// store document as snapshot
-						IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
-						// get the list of snapshots
-						List allsnapshots = objectCMSDAO.getSnapshots(biobj.getPath());
-						// get the list of the snapshot with the store name
-						List snapshots = SchedulerUtilities.getSnapshotsByName(allsnapshots, snapName);
-						// get the number of previous snapshot saved
-						int numSnap = snapshots.size();
-						// if the number of snapshot is greater or equal to the history length then
-						// delete the unecessary snapshots
-						if((historylengthStr!=null) && !historylengthStr.trim().equals("")){
-							try{
-								Integer histLenInt = new Integer(historylengthStr);
-								int histLen = histLenInt.intValue();
-								if(numSnap>=histLen){
-									int delta = numSnap - histLen;
-									for(int i=0; i<=delta; i++) {
-										BIObject.BIObjectSnapshot snap = SchedulerUtilities.getNamedHistorySnapshot(snapshots, snapName, histLen-1);
-										String pathSnap = snap.getPath();
-										objectCMSDAO.deleteSnapshot(pathSnap);
-									}
-								}
-							} catch(Exception e) {
-								SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-				    			           			"execute", "Error while deleting object snapshots", e );
-							}
-						}
-						objectCMSDAO.saveSnapshot(response, biobj.getPath(), snapName, snapDesc);	
+						saveAsSnap(sInfo, biobj, response);
 					}
-					
-					
-					
-					
-					
-					
 					
 					if(sInfo.isSaveAsDocument()) {
-						String docName = sInfo.getDocumentName();
-						if( (docName==null) || docName.trim().equals("")) {
-							continue;
-						}
-						String docDesc = sInfo.getDocumentDescription();
-						String docHistorylengthStr = sInfo.getDocumentHistoryLength();
-						
-						// recover office document sbidomains
-						IDomainDAO domainDAO = DAOFactory.getDomainDAO();
-						Domain officeDocDom = domainDAO.loadDomainByCodeAndValue("BIOBJ_TYPE", "OFFICE_DOC");
-						// recover development sbidomains
-						Domain relDom = domainDAO.loadDomainByCodeAndValue("STATE", "REL");
-						// recover engine
-						IEngineDAO engineDAO = DAOFactory.getEngineDAO();
-						List engines = engineDAO.loadAllEnginesForBIObjectType(officeDocDom.getValueCd());
-						Engine engine = (Engine)engines.get(0);
-						// load the template
-						UploadedFile uploadedFile = new UploadedFile();
-						uploadedFile.setFieldNameInForm("template");
-						uploadedFile.setFileName(docName);
-						uploadedFile.setSizeInBytes(response.length);
-						uploadedFile.setFileContent(response);
-						// load all functionality
-						List storeInFunctionalities = new ArrayList();
-						String functIdsConcat = sInfo.getFunctionalityIds();
-						String[] functIds =  functIdsConcat.split(",");
-						for(int i=0; i<functIds.length; i++) {
-							String functIdStr = functIds[i];
-							if(functIdStr.trim().equals(""))
-								continue;
-							Integer functId = Integer.valueOf(functIdStr);
-							storeInFunctionalities.add(functId);
-						}
-						// create biobject
-						
-						String jobName = jex.getJobDetail().getName();
-						String completeLabel = "scheduler_" + jobName + "_" + docName;
-						String label = "sched_" + String.valueOf(Math.abs(completeLabel.hashCode()));
-						
-						BIObject newbiobj = new BIObject();
-						newbiobj.setDescription(docDesc);
-						newbiobj.setLabel(label);
-						newbiobj.setName(docName);
-						newbiobj.setEncrypt(new Integer(0));
-						newbiobj.setEngine(engine);
-						newbiobj.setRelName("");
-						newbiobj.setBiObjectTypeCode(officeDocDom.getValueCd());
-						newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
-						newbiobj.setStateCode(relDom.getValueCd());
-						newbiobj.setStateID(relDom.getValueId());
-						newbiobj.setVisible(new Integer(0));
-						newbiobj.setTemplate(uploadedFile);
-						newbiobj.setFunctionalities(storeInFunctionalities);
-						IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
-						
-						BIObject biobjexist = objectDAO.loadBIObjectByLabel(label);
-						if(biobjexist==null){
-							objectDAO.insertBIObject(newbiobj);
-						} else {
-							newbiobj.setId(biobjexist.getId());
-							objectDAO.modifyBIObject(newbiobj);
-						}
-						
+						saveAsDocument(sInfo, jex, response, fileextension);
 					}
-					
-					
-					
-					
-					
-					// SEND MAIL
+
 					if(sInfo.isSendMail()) {
-						sendMail(sInfo, biobj, response);
+						sendMail(sInfo, biobj, response, retCT, fileextension);
 					}
-			
+	
+				} else {
+					throw new Exception("The document with label "+docLabel+" cannot be executed directly, " +
+							            "maybe some prameters are not filled ");
 				}
 			}
 		} catch (Exception e) {
@@ -206,7 +120,133 @@ public class ExecuteBIDocumentJob implements Job {
 
 	
 	
-	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response) {
+	
+	private void saveAsSnap(SaveInfo sInfo,BIObject biobj, byte[] response) {
+		try {
+			String snapName = sInfo.getSnapshotName();
+			if( (snapName==null) || snapName.trim().equals("")) {
+				throw new Exception("Document name not specified");
+			}
+			String snapDesc = sInfo.getSnapshotDescription();
+			String historylengthStr = sInfo.getSnapshotHistoryLength();
+			// store document as snapshot
+			IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
+			// get the list of snapshots
+			List allsnapshots = objectCMSDAO.getSnapshots(biobj.getPath());
+			// get the list of the snapshot with the store name
+			List snapshots = SchedulerUtilities.getSnapshotsByName(allsnapshots, snapName);
+			// get the number of previous snapshot saved
+			int numSnap = snapshots.size();
+			// if the number of snapshot is greater or equal to the history length then
+			// delete the unecessary snapshots
+			if((historylengthStr!=null) && !historylengthStr.trim().equals("")){
+				try{
+					Integer histLenInt = new Integer(historylengthStr);
+					int histLen = histLenInt.intValue();
+					if(numSnap>=histLen){
+						int delta = numSnap - histLen;
+						for(int i=0; i<=delta; i++) {
+							BIObject.BIObjectSnapshot snap = SchedulerUtilities.getNamedHistorySnapshot(snapshots, snapName, histLen-1);
+							String pathSnap = snap.getPath();
+							objectCMSDAO.deleteSnapshot(pathSnap);
+						}
+					}
+				} catch(Exception e) {
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+	    			           			"execute", "Error while deleting object snapshots", e );
+				}
+			}
+			objectCMSDAO.saveSnapshot(response, biobj.getPath(), snapName, snapDesc);	
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+								"saveAsSnap", "Error while saving schedule result as new snapshot", e);
+		}
+	}
+	
+	
+	
+	
+	
+	private void saveAsDocument(SaveInfo sInfo, JobExecutionContext jex, byte[] response, String fileExt) {
+		try{
+			String docName = sInfo.getDocumentName();
+			if( (docName==null) || docName.trim().equals("")) {
+				throw new Exception("Document name not specified");
+			}
+			String docDesc = sInfo.getDocumentDescription();
+			String docHistorylengthStr = sInfo.getDocumentHistoryLength();
+			
+			// recover office document sbidomains
+			IDomainDAO domainDAO = DAOFactory.getDomainDAO();
+			Domain officeDocDom = domainDAO.loadDomainByCodeAndValue("BIOBJ_TYPE", "OFFICE_DOC");
+			// recover development sbidomains
+			Domain relDom = domainDAO.loadDomainByCodeAndValue("STATE", "REL");
+			// recover engine
+			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
+			List engines = engineDAO.loadAllEnginesForBIObjectType(officeDocDom.getValueCd());
+			if(engines.isEmpty()) {
+				throw new Exception("No suitable engines for the new document");
+			}
+			Engine engine = (Engine)engines.get(0);
+			// load the template
+			UploadedFile uploadedFile = new UploadedFile();
+			uploadedFile.setFieldNameInForm("template");
+			uploadedFile.setFileName(docName + fileExt);
+			uploadedFile.setSizeInBytes(response.length);
+			uploadedFile.setFileContent(response);
+			// load all functionality
+			List storeInFunctionalities = new ArrayList();
+			String functIdsConcat = sInfo.getFunctionalityIds();
+			String[] functIds =  functIdsConcat.split(",");
+			for(int i=0; i<functIds.length; i++) {
+				String functIdStr = functIds[i];
+				if(functIdStr.trim().equals(""))
+					continue;
+				Integer functId = Integer.valueOf(functIdStr);
+				storeInFunctionalities.add(functId);
+			}
+			if(storeInFunctionalities.isEmpty()) {
+				throw new Exception("No functionality specified where store the new document");
+			}
+			// create biobject
+			
+			String jobName = jex.getJobDetail().getName();
+			String completeLabel = "scheduler_" + jobName + "_" + docName;
+			String label = "sched_" + String.valueOf(Math.abs(completeLabel.hashCode()));
+			
+			BIObject newbiobj = new BIObject();
+			newbiobj.setDescription(docDesc);
+			newbiobj.setLabel(label);
+			newbiobj.setName(docName);
+			newbiobj.setEncrypt(new Integer(0));
+			newbiobj.setEngine(engine);
+			newbiobj.setRelName("");
+			newbiobj.setBiObjectTypeCode(officeDocDom.getValueCd());
+			newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
+			newbiobj.setStateCode(relDom.getValueCd());
+			newbiobj.setStateID(relDom.getValueId());
+			newbiobj.setVisible(new Integer(0));
+			newbiobj.setTemplate(uploadedFile);
+			newbiobj.setFunctionalities(storeInFunctionalities);
+			IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
+			
+			BIObject biobjexist = objectDAO.loadBIObjectByLabel(label);
+			if(biobjexist==null){
+				objectDAO.insertBIObject(newbiobj);
+			} else {
+				newbiobj.setId(biobjexist.getId());
+				objectDAO.modifyBIObject(newbiobj);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+		            "saveAsDocument", "Error while saving schedule result as new document", e);
+		}
+	}
+	
+	
+	
+	
+	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt) {
 		try{
 			ConfigSingleton config = ConfigSingleton.getInstance();
 			SourceBean mailProfSB = (SourceBean)config.getFilteredSourceBeanAttribute("MAIL.PROFILES.PROFILE", "name", "scheduler");
@@ -249,14 +289,18 @@ public class ExecuteBIDocumentJob implements Job {
 		    }
 		    msg.setRecipients(Message.RecipientType.TO, addressTo);
 		    // Setting the Subject and Content Type
-			    msg.setSubject("Scheduler");
+			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+			String subjectfinalpart = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.mailsubject", "component_scheduler_messages");
+			String subject = biobj.getName() + " " + subjectfinalpart;
+			msg.setSubject(subject);
 		    // create and fill the first message part
 		    MimeBodyPart mbp1 = new MimeBodyPart();
-		    mbp1.setText("Messaggio Inviato dallo Scheduler");
+		    String mailtext = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.mailtext", "component_scheduler_messages");
+		    mbp1.setText(mailtext);
 		    // create the second message part
 		    MimeBodyPart mbp2 = new MimeBodyPart();
 	        // attach the file to the message
-		    SchedulerDataSource sds = new SchedulerDataSource(response, "text/html", biobj.getName() + ".html");
+		    SchedulerDataSource sds = new SchedulerDataSource(response, retCT, biobj.getName() + fileExt);
 		    mbp2.setDataHandler(new DataHandler(sds));
 		    mbp2.setFileName(sds.getName());
 		    // create the Multipart and add its parts to it

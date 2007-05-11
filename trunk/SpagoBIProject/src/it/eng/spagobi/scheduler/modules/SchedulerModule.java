@@ -259,6 +259,9 @@ public class SchedulerModule extends AbstractModule {
 		if (triggers != null && triggers.length > 0) {
 			for (int i = 0; i < triggers.length; i++) {
 				Trigger trigger = triggers[i];
+				if(trigger.getName().startsWith("schedule_uuid_")) {
+					continue;
+				}
 				buffer.append("<ROW ");
 				String triggerName = trigger.getName();
 				String triggerGroup = trigger.getGroup();
@@ -514,7 +517,7 @@ public class SchedulerModule extends AbstractModule {
 				SourceBean jobParameters = (SourceBean)request.getAttribute("PARAMETERS");
 				// transform parameters sourcebean into JobDataMap structure and set it into the jobDetail
 				JobDataMap jdm = getJobDataMap(jobParameters);
-				String nameTrig = UUIDGenerator.getInstance().generateTimeBasedUUID().toString();
+				String nameTrig = "schedule_uuid_" + UUIDGenerator.getInstance().generateTimeBasedUUID().toString();
 				Trigger trigger = TriggerUtils.makeImmediateTrigger(nameTrig, 0, 10000);
 				trigger.setJobName(jobName);
 			    trigger.setJobGroup(jobGroup);

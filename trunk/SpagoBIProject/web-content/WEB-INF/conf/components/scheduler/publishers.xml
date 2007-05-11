@@ -73,13 +73,14 @@
     <PUBLISHER name="ReturnToTriggerList">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
+      		    <!-- 
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TriggerManagementPage" />
       			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="MESSAGE_GET_JOB_SCHEDULES" />
       			<PARAMETER name="jobName" type="RELATIVE" scope="SERVICE_RESPONSE" value="TriggerManagementModule.jobname" />
       			<PARAMETER name="jobGroupName" type="RELATIVE" scope="SERVICE_RESPONSE" value="TriggerManagementModule.jobGroupName" />
-      			<!-- 
       			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
       			-->
+      			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

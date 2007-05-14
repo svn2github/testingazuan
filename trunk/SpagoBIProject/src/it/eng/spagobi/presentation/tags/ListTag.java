@@ -105,7 +105,7 @@ public class ListTag extends TagSupport
 		_serviceRequest = _requestContainer.getServiceRequest();
 		_serviceResponse = _responseContainer.getServiceResponse();
 		_errorHandler = _responseContainer.getErrorHandler();
-		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		ConfigSingleton configure = ConfigSingleton.getInstance();
 		if (_actionName != null) {

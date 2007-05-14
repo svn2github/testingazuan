@@ -161,7 +161,6 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 		List objects = folder.getBiObjects();
 		for (Iterator it = objects.iterator(); it.hasNext(); ) {
 			BIObject obj = (BIObject) it.next();
-			Integer idObj = obj.getId();
 			//insert the correct image for each BI Object type
 			String biObjType = obj.getBiObjectTypeCode();
 			String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
@@ -169,7 +168,7 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 			//String userIconTest = PortletUtilities.createPortletURLForResource(httpRequest, "/img/objecticontest.gif");
 			PortletURL execUrl = renderResponse.createActionURL();
 			execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecutionWorkspaceModule.MODULE_PAGE);
-			execUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
+			execUrl.setParameter(ObjectsTreeConstants.OBJECT_LABEL, obj.getLabel());
 			execUrl.setParameter(TreeObjectsModule.PATH_SUBTREE, baseFolderPath);
 			htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
 		}

@@ -50,12 +50,12 @@ public class ExecutionWorkspaceModule extends AbstractModule {
 	protected String basePath = null;
 	protected ILowFunctionalityDAO functionDAO = null;
 	protected IEngUserProfile profile = null;
-	protected String executionObjectId = null; 
+	protected String executionObjectLabel = null; 
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		debug("service", "Enter service method");
 		// finds the id of the document to be executed+
-		executionObjectId = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+		executionObjectLabel = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
 		// finds the user profile
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
@@ -135,7 +135,7 @@ public class ExecutionWorkspaceModule extends AbstractModule {
 		response.setAttribute("FIRST_LEVEL_FOLDERS", firtsLevelExecutableFolders);
 		response.setAttribute("SUB_TREE", subTree);
 		response.setAttribute(TreeObjectsModule.PATH_SUBTREE, basePath);
-		response.setAttribute(ObjectsTreeConstants.OBJECT_ID, executionObjectId);
+		if (executionObjectLabel != null) response.setAttribute(ObjectsTreeConstants.OBJECT_LABEL, executionObjectLabel);
 		debug("exit", "Exit from module");
 	}
 	

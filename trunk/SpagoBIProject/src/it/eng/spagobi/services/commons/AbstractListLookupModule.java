@@ -21,6 +21,7 @@ import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
@@ -90,8 +91,8 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 	}
 	
 	public ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list, HttpServletRequest httpRequest) throws Exception {
-		RequestContainer reqCont = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		ResponseContainer respCont = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+		RequestContainer reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+		ResponseContainer respCont = ChannelUtilities.getResponseContainer(httpRequest);
 		errorHand = respCont.getErrorHandler();
 		SessionContainer sessionCont = reqCont.getSessionContainer();
 		// get biobject from the session

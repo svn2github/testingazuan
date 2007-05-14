@@ -34,6 +34,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -106,10 +107,10 @@ public class CheckBoxTag extends TagSupport {
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest =(RenderRequest)httpRequest.getAttribute("javax.portlet.request");
 			
-		_requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		_requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		portReq = PortletUtilities.getPortletRequest();
 		_serviceRequest = _requestContainer.getServiceRequest();
-		_responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+		_responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
 				
 		_session = _requestContainer.getSessionContainer();
 		

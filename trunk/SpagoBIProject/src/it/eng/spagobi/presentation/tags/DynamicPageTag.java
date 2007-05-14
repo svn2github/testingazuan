@@ -105,7 +105,7 @@ public class DynamicPageTag extends TagSupport {
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		request = requestContainer.getServiceRequest();
-		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 
 		BIObject obj = getBIObject();

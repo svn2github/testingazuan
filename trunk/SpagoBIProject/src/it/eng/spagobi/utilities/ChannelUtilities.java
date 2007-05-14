@@ -21,6 +21,11 @@ public class ChannelUtilities {
 
 	public static RequestContainer getRequestContainer(HttpServletRequest httpRequest) {
 		RequestContainer reqCont = null;
+		// try to find the RequestContainer
+		reqCont = RequestContainerPortletAccess.getRequestContainer(httpRequest);
+		if (reqCont == null) reqCont = RequestContainerAccess.getRequestContainer(httpRequest);
+		
+		/*
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
 		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
@@ -30,11 +35,18 @@ public class ChannelUtilities {
 		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
 			reqCont = RequestContainerPortletAccess.getRequestContainer(httpRequest);
 		}
+		*/
+		
 		return reqCont;
 	}
 	
 	public static ResponseContainer getResponseContainer(HttpServletRequest httpRequest) {
 		ResponseContainer respCont = null;
+		// try to find the ResponseContainer
+		respCont = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
+		if (respCont == null) respCont = ResponseContainerAccess.getResponseContainer(httpRequest);
+		
+		/*
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
 		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
@@ -44,6 +56,8 @@ public class ChannelUtilities {
 		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
 			respCont = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
 		}
+		*/
+		
 		return respCont;
 	}
 	

@@ -851,6 +851,11 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/checklistLookupModalitiesValues.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
   	</PUBLISHER>
   	
   	<PUBLISHER name="returnToExecBIObjLoop">

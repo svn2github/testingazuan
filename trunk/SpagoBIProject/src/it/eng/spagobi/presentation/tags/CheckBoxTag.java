@@ -23,9 +23,7 @@ package it.eng.spagobi.presentation.tags;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
@@ -36,19 +34,17 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
-import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -61,16 +57,12 @@ public class CheckBoxTag extends TagSupport {
 	
 	private HttpServletRequest httpRequest = null;
 	
-	protected RenderRequest renderRequest = null;
-    protected RenderResponse renderResponse = null;
-  	
     protected RequestContainer _requestContainer = null;
     protected ResponseContainer _responseContainer = null;
     
     protected SourceBean _serviceRequest = null;	
 	protected SourceBean _serviceResponse = null;
     
-	PortletRequest portReq = null;
     SessionContainer _session = null;
 	
 	protected String _actionName = null;
@@ -93,28 +85,25 @@ public class CheckBoxTag extends TagSupport {
     //  the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
     protected HashMap _paramsMap = new HashMap();
     
-    
-   
     // the _providerUrlMap contains all the parameters for the navigation buttons ("next", "previous", "filter" and "all" buttons)
     private HashMap _providerUrlMap = new HashMap();
     
+    protected IUrlBuilder urlBuilder = null;
+    protected IMessageBuilder msgBuilder = null;
     
 	public int doStartTag() throws JspException {
 		
 		SpagoBITracer.info("Admintools", "ListTag", "doStartTag", " method invoked");
 		
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest =(RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-			
 		_requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
-		portReq = PortletUtilities.getPortletRequest();
+		//portReq = PortletUtilities.getPortletRequest();
 		_serviceRequest = _requestContainer.getServiceRequest();
 		_responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
-				
 		_session = _requestContainer.getSessionContainer();
-		
 		_serviceResponse = _responseContainer.getServiceResponse();
+		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		
 		ConfigSingleton configure = ConfigSingleton.getInstance();
 		if (_actionName != null) {
@@ -220,9 +209,9 @@ public class CheckBoxTag extends TagSupport {
 		//params.put("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		_session.setAttribute("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		params.put("PAGE_NUMBER", new Integer(pageNumber).toString());
-		PortletURL url = createUrl(params);	
-		
-		_htmlStream.append(" <form method='POST' id='form' action='" + url.toString() + "'>\n");
+		String url = urlBuilder.getUrl(httpRequest, params);
+
+		_htmlStream.append(" <form method='POST' id='form' action='" + url + "'>\n");
 		makeForm();
 		_htmlStream.append(" </form>\n");
 		
@@ -249,7 +238,7 @@ public class CheckBoxTag extends TagSupport {
 		List buttons = buttonsSB.getContainedSourceBeanAttributes();
 		
 		if (titleCode != null && buttons.size() > 0) {
-			String title = PortletUtilities.getMessage(titleCode, "messages");
+			String title = msgBuilder.getMessage(_requestContainer, titleCode, "messages");
 			_htmlStream.append(" <table class=\"header-table-portlet-section\">\n");
 			_htmlStream.append("	<tr class='header-row-portlet-section'>\n");
 			_htmlStream.append("			<td class=\"header-title-column-portlet-section\" style=\"vertical-align:middle;padding-left:5px;\" >" + title + "</td>\n");
@@ -297,7 +286,8 @@ public class CheckBoxTag extends TagSupport {
 			String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 			String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 			String labelColumn = "";
-			if (labelColumnCode != null) labelColumn = PortletUtilities.getMessage(labelColumnCode, "messages");
+			if (labelColumnCode != null) labelColumn = 
+				msgBuilder.getMessage(_requestContainer, labelColumnCode, "messages");
 			else labelColumn = nameColumn;
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
@@ -327,7 +317,7 @@ public class CheckBoxTag extends TagSupport {
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 	    
 		// js function for item action confirm
-		String confirmCaption = PortletUtilities.getMessage("ListTag.confirmCaption", "messages");
+		String confirmCaption = msgBuilder.getMessage(_requestContainer, "ListTag.confirmCaption", "messages");
 		_htmlStream.append(" <script>\n");
 		_htmlStream.append("	function actionConfirm(message, url){\n");
 		_htmlStream.append("		if (confirm('" + confirmCaption + " ' + message + '?')){\n");
@@ -370,8 +360,8 @@ public class CheckBoxTag extends TagSupport {
 				HashMap paramsMap = getParametersMap(parameters, row);
 				String img = (String)captionSB.getAttribute("image");
 				String labelCode = (String)captionSB.getAttribute("label");
-				String label = PortletUtilities.getMessage(labelCode, "messages");
-				PortletURL buttonUrl = createUrl(paramsMap);
+				String label = msgBuilder.getMessage(_requestContainer, labelCode, "messages");
+				String buttonUrl = urlBuilder.getUrl(httpRequest, paramsMap);
 				boolean confirm = false;
 				if (captionSB.getAttribute("confirm") != null &&
 						((String)captionSB.getAttribute("confirm")).equalsIgnoreCase("TRUE")){
@@ -381,9 +371,9 @@ public class CheckBoxTag extends TagSupport {
 				if (confirm){
 					_htmlStream.append("     <a href='javascript:actionConfirm(\"" + label + "\", \"" + buttonUrl.toString() + "\");'>\n");	
 				}else{
-					_htmlStream.append("     <a href='"+buttonUrl.toString()+"'>\n");	
+					_htmlStream.append("     <a href='"+buttonUrl+"'>\n");	
 				}
-				_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + img)+"' />\n");
+				_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
 				_htmlStream.append("     </a>\n");
 				_htmlStream.append(" </td>\n");
 			}
@@ -439,11 +429,11 @@ public class CheckBoxTag extends TagSupport {
 			//_htmlStream.append("		<A href=\""+prevUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "prevPage" + "' " +					  
-					  "src ='"+ renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif") + "' " + 
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif") + "' " + 
 					  "align='left' border=0" +
 					  "alt='" + "GO To Previous Page" + "'>\n");
 		} else {
-			_htmlStream.append("		<IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif")+"' ALIGN=RIGHT border=0>\n");
 		}		
 		_htmlStream.append("		</TD>\n");
 				
@@ -466,7 +456,7 @@ public class CheckBoxTag extends TagSupport {
 			
 			_htmlStream.append("						    <br/><br/>\n");
 			//_htmlStream.append("	<form method='POST' action='" + formUrl.toString() + "' id ='objectForm' name='objectForm'>\n");
-			String label = PortletUtilities.getMessage("CheckboxTag.showChecked","messages");
+			String label = msgBuilder.getMessage(_requestContainer, "CheckboxTag.showChecked", "messages");
 			_htmlStream.append("						    "+label+"\n");
 			_htmlStream.append("<input type=\"checkbox\"" + checked + " \n");
 			_htmlStream.append("				onclick=\"submitForm()\" name=\"filterCheckbox\" id=\"filterCheckbox\" value=\"true\"/>\n");
@@ -498,11 +488,11 @@ public class CheckBoxTag extends TagSupport {
 			//_htmlStream.append("		<A href=\""+nextUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "nextPage" + "' " +
-					  "src ='"+ renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif") + "' " +
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif") + "' " +
 					  "align='right' border='0'" +
 					  "alt='" + "GO To Next Page" + "'>\n");
 		} else {
-			_htmlStream.append("		<IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0>\n");
 		}		
 		_htmlStream.append("		</TD>\n");
 		
@@ -534,16 +524,14 @@ public class CheckBoxTag extends TagSupport {
 			String name = (String) buttonSB.getAttribute("name");
 			String img = (String) buttonSB.getAttribute("image");
 			String labelCode = (String) buttonSB.getAttribute("label");			
-			String label = PortletUtilities.getMessage(labelCode, "messages");
-			
-			PortletURL buttonUrl = createUrl(paramsMap);
+			String label = msgBuilder.getMessage(_requestContainer, labelCode, "messages");
 			
 			htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 			htmlStream.append("<input type='image' " +
 									  "name='" + name + "' " +
 									  "title='" + label + "' " +
 									  "class='header-button-image-portlet-section'" + 	
-									  "src ='"+ renderResponse.encodeURL(renderRequest.getContextPath() + img) + "' " +
+									  "src ='"+ urlBuilder.getResourceLink(httpRequest, img) + "' " +
 									  "alt='" + label + "'>\n");
 			htmlStream.append("</td>\n");
 		}
@@ -606,17 +594,17 @@ public class CheckBoxTag extends TagSupport {
 	 * @param paramsMap The parameter HashMap
 	 * @return A <code>portletURL</code> object representing the navigation URL
 	 */
-	protected PortletURL createUrl(HashMap paramsMap) {
-		PortletURL url = renderResponse.createActionURL();
-		Set paramsKeys = paramsMap.keySet();
-		Iterator iter = paramsKeys.iterator();
-		while(iter.hasNext()) {
-			String paramKey = (String)iter.next();
-			String paramValue = paramsMap.get(paramKey).toString();
-            url.setParameter(paramKey, paramValue); 		
-		}
-		return url;
-	}	
+//	protected PortletURL createUrl(HashMap paramsMap) {
+//		PortletURL url = renderResponse.createActionURL();
+//		Set paramsKeys = paramsMap.keySet();
+//		Iterator iter = paramsKeys.iterator();
+//		while(iter.hasNext()) {
+//			String paramKey = (String)iter.next();
+//			String paramValue = paramsMap.get(paramKey).toString();
+//            url.setParameter(paramKey, paramValue); 		
+//		}
+//		return url;
+//	}	
 	
 	
 	/**

@@ -62,6 +62,7 @@ public class DirectExecutionModule extends AbstractModule {
 			obj = (BIObject) sessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 			documentParameters = (String) sessionContainer.getAttribute(SpagoBIConstants.PARAMETERS);
 		} else {
+			clearSession(sessionContainer);
 			// get the user name from request if available
 			IEngUserProfile profile = null;
 			String username = (String) request.getAttribute("USERNAME");
@@ -117,6 +118,27 @@ public class DirectExecutionModule extends AbstractModule {
         if (documentParameters != null && !documentParameters.trim().equals(""))  {
            	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, documentParameters);
 		}
+	}
+	
+	private void clearSession (SessionContainer session) {
+		session.delAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		session.delAttribute(SpagoBIConstants.PARAMETERS);
+		session.delAttribute(SpagoBIConstants.ROLE);
+		session.delAttribute("VALIDATE_PAGE_VALIDATEEXECUTEBIOBJECTPAGE");
+		// session parameters for check list
+		session.delAttribute("CHK_LIST_INITIALIZED");
+		session.delAttribute("LOOKUP_PARAMETER_NAME");
+		session.delAttribute("LOOKUP_PARAMETER_ID");
+		session.delAttribute("mod_val_id");
+		session.delAttribute("correlated_paruse_id");
+		session.delAttribute("CHECKEDOBJECTS");
+		session.delAttribute("PAGE_NUMBER");
+		session.delAttribute("RETURN_VALUES");
+		session.delAttribute("RETURN_FROM_MODULE");
+		session.delAttribute("RETURN_STATUS");
+		session.delAttribute("LOOKUP_VALUE");
+		session.delAttribute("LOOKUP_DESC");
+		session.delAttribute("PARAMS_DESCRIPTION_MAP");
 	}
 
 }

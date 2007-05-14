@@ -55,6 +55,7 @@
 							action="<%=spagobiurl%>"
 							target='iframeexec<%=requestIdentity%>'>
 	
+						<input type="hidden" name="NEW_SESSION" value="TRUE" />
 						<input type="hidden" name="PAGE" value="DirectExecutionPage" />
 				        <input type="hidden" name="USERNAME" value="<%=username%>" />
 				        <input type="hidden" name="DOCUMENT_LABEL" value="<%=objLabel%>" />

@@ -21,14 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.treehtmlgenerators;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
-import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.ExecutionWorkspaceModule;
 import it.eng.spagobi.services.modules.TreeObjectsModule;
 
@@ -42,12 +36,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class TitleBarHtmlGenerator implements ITreeHtmlGenerator {
 
-	RenderResponse renderResponse = null;
-	RenderRequest renderRequest = null;
-	HttpServletRequest httpRequest = null;
-	private SessionContainer sessionContainer = null;
-	protected SourceBean _serviceRequest = null;
-	
+	protected RenderResponse renderResponse = null;
+	protected RenderRequest renderRequest = null;
+	protected HttpServletRequest httpRequest = null;	
 	
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		// TODO Auto-generated method stub
@@ -58,9 +49,6 @@ public class TitleBarHtmlGenerator implements ITreeHtmlGenerator {
 		httpRequest = httpReq;
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		_serviceRequest = requestContainer.getServiceRequest();
-		sessionContainer = requestContainer.getSessionContainer();
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("				<div class='UITabs' style='width: 100%'>\n");
 		htmlStream.append("					<div class='first-tab-level' style='background-color:#f8f8f8'>\n");

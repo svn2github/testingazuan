@@ -398,6 +398,12 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<short-title>Execution Workspace</short-title>
         	<keywords>Execution Workspace</keywords>
         </portlet-info>
+        <portlet-preferences>
+            <preference>
+        		<name>STYLE_NAME</name>
+        		<value>executionWorkspace</value>
+        	</preference>
+        </portlet-preferences>
 	</portlet>
 
 </portlet-app>

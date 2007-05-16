@@ -30,7 +30,7 @@
 
 	<div style="width: 30%;float: left;clear: left;">
 		<spagobi:treeObjects moduleName="ExecutionWorkspaceModule" attributeToRender="SUB_TREE"
-			htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.ObjectsMenuHtmlGenerator"/>
+			htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.SlideShowMenuHtmlGenerator"/>
 	</div>
 
 	<div style="width: 68%;float: left;">

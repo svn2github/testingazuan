@@ -747,7 +747,7 @@
 	isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
 	isMoz = (navigatorname.indexOf('explorer') == -1);
 
-	function adaptSize<%=requestIdentity%>() {
+	function adaptSize<%=requestIdentity%>Funct() {
 		// evaluates the iframe current height
 		iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 		offsetHeight = 0;
@@ -781,7 +781,7 @@
 			parentHeightFrame = heightFrame + 50;
 			parentIFrame.style.height = parentHeightFrame + 'px';
 		}
-		setTimeout('adaptSize<%=requestIdentity%>()', 500);
+		setTimeout('adaptSize<%=requestIdentity%>Funct()', 500);
 	}
 	
 	try {

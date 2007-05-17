@@ -5,6 +5,8 @@
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.services.modules.DetailBIObjectModule,
                  it.eng.spago.navigation.LightNavigationManager" %>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
+<%@page import="org.safehaus.uuid.UUID"%>
 
 
 <%
@@ -17,6 +19,13 @@
 	viewListUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 	viewListUrl.setParameter(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
 	
+    // identity string for object of the page
+    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+    UUID uuid = uuidGen.generateTimeBasedUUID();
+    String requestIdentity = uuid.toString();
+    requestIdentity = requestIdentity.replaceAll("-", "");
+    String treeName = "treeExecObj" + requestIdentity;
+    
 %>
 
 <table class='header-table-portlet-section'>
@@ -38,7 +47,7 @@
 
 
 <div class="div_background">
-	<spagobi:treeObjects moduleName="TreeObjectsModule"  
+	<spagobi:treeObjects moduleName="TreeObjectsModule" treeName="<%=treeName%>" 
 	    				 htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.ExecTreeHtmlGenerator" />
 	<br/>
 	<br/>

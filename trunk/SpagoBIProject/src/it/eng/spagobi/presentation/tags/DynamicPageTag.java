@@ -63,6 +63,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * Defines a tag to create a dinamic JSP page
  */
@@ -77,6 +80,7 @@ public class DynamicPageTag extends TagSupport {
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
 	public static final int PIXEL_PER_CHAR = 9;
+	protected String requestIdentity = null;
 	
 	private SessionContainer getSession() {
 		return requestContainer.getSessionContainer();
@@ -108,6 +112,12 @@ public class DynamicPageTag extends TagSupport {
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 
+		// identity string for object of the page
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUID uuid = uuidGen.generateTimeBasedUUID();
+		requestIdentity = "request" + uuid.toString();
+		requestIdentity = requestIdentity.replaceAll("-", "");
+		
 		BIObject obj = getBIObject();
 		List parameters = obj.getBiObjectParameters();
 		if (parameters != null && parameters.size() > 0) {
@@ -198,15 +208,15 @@ public class DynamicPageTag extends TagSupport {
 	 * @param htmlStream
 	 */
 	private void createSetLookupFieldJSFunction(StringBuffer htmlStream) {
-		htmlStream.append("<input type='hidden' id='LOOKUP_OBJ_PAR_ID' name='' value=''/>\n");
-		htmlStream.append("<input type='hidden' id='LOOKUP_TYPE' name='' value=''/>\n");
+		htmlStream.append("<input type='hidden' id='LOOKUP_OBJ_PAR_ID" + requestIdentity + "' name='' value=''/>\n");
+		htmlStream.append("<input type='hidden' id='LOOKUP_TYPE" + requestIdentity + "' name='' value=''/>\n");
 		
 		htmlStream.append("<script type='text/javascript'>\n");
-		htmlStream.append("	function setLookupField(idStr, type) {\n");
-		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').value= idStr;\n");
-		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID').name = 'LOOKUP_OBJ_PAR_ID';\n");
-		htmlStream.append("		document.getElementById('LOOKUP_TYPE').value= type;\n");
-		htmlStream.append("		document.getElementById('LOOKUP_TYPE').name = 'LOOKUP_TYPE';\n");
+		htmlStream.append("	function setLookupField" + requestIdentity + "(idStr, type) {\n");
+		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID" + requestIdentity + "').value= idStr;\n");
+		htmlStream.append("		document.getElementById('LOOKUP_OBJ_PAR_ID" + requestIdentity + "').name = 'LOOKUP_OBJ_PAR_ID';\n");
+		htmlStream.append("		document.getElementById('LOOKUP_TYPE" + requestIdentity + "').value= type;\n");
+		htmlStream.append("		document.getElementById('LOOKUP_TYPE" + requestIdentity + "').name = 'LOOKUP_TYPE';\n");
 		htmlStream.append("	}\n");
 		htmlStream.append("</script>\n");
 	}
@@ -219,19 +229,19 @@ public class DynamicPageTag extends TagSupport {
 	 * @param htmlStream
 	 */
 	private void createSetDeleteFlagJSFunction(StringBuffer htmlStream) {
-		htmlStream.append("<input type='hidden' id='PENDING_DELETE' name='' value=''/>\n");
+		htmlStream.append("<input type='hidden' id='PENDING_DELETE" + requestIdentity + "' name='' value=''/>\n");
 		
 		htmlStream.append("<script type='text/javascript'>\n");
-		htmlStream.append("	function setDelateFlag() {\n");
-		htmlStream.append("		document.getElementById('PENDING_DELETE').value = 'true';\n");	
-		htmlStream.append("		document.getElementById('PENDING_DELETE').name = 'PENDING_DELETE';\n");	
+		htmlStream.append("	function setDeleteFlag" + requestIdentity + "() {\n");
+		htmlStream.append("		document.getElementById('PENDING_DELETE" + requestIdentity + "').value = 'true';\n");	
+		htmlStream.append("		document.getElementById('PENDING_DELETE" + requestIdentity + "').name = 'PENDING_DELETE';\n");	
 		htmlStream.append("	}\n");
 		htmlStream.append("</script>\n");
 	}	
 	
 	private void createSetChangedFlagJSFunction(StringBuffer htmlStream) {
 		htmlStream.append("<script type='text/javascript'>\n");
-		htmlStream.append("	function setChangedFlag(paramUrl) {\n");
+		htmlStream.append("	function setChangedFlag" + requestIdentity + "(paramUrl) {\n");
 		//htmlStream.append("		alert(document.getElementById(paramUrl + 'IsChanged').value);\n");
 		htmlStream.append("		document.getElementById(paramUrl + 'IsChanged').value = 'true';\n");	
 		htmlStream.append("	}\n");
@@ -240,7 +250,7 @@ public class DynamicPageTag extends TagSupport {
 	
 	private void createRefreshJSFunction(StringBuffer htmlStream) {
 		htmlStream.append("<script type='text/javascript'>\n");
-		htmlStream.append("		function refresh(srcId, destId) {\n");
+		htmlStream.append("		function refresh" + requestIdentity + "(srcId, destId) {\n");
 		htmlStream.append("			var srcValue = document.getElementById(srcId).value;\n");
 		htmlStream.append("			var destObj = document.getElementById(destId);\n");
 		htmlStream.append("			destObj.value = srcValue;\n");
@@ -251,7 +261,7 @@ public class DynamicPageTag extends TagSupport {
 	
 	private void createClearFieldJSFunction(StringBuffer htmlStream) {
 		htmlStream.append("<script type='text/javascript'>\n");
-		htmlStream.append("		function clearField(targetId) {\n");
+		htmlStream.append("		function clearField" + requestIdentity + "(targetId) {\n");
 		//htmlStream.append("			alert('targetId: ' + targetId)\n");
 		htmlStream.append("			document.getElementById(targetId).value = '';\n");
 		htmlStream.append("		}\n");
@@ -260,7 +270,7 @@ public class DynamicPageTag extends TagSupport {
 	
 	private void createSelectAllTextJSFunction(StringBuffer htmlStream) {
 		htmlStream.append("<script type='text/javascript'>\n");
-		htmlStream.append("		function selectAllText(id) {\n");
+		htmlStream.append("		function selectAllText" + requestIdentity + "(id) {\n");
 		htmlStream.append("			var object = document.getElementById(id);\n");
 		htmlStream.append("			object.select( );\n");
 		htmlStream.append("		}\n");
@@ -269,7 +279,7 @@ public class DynamicPageTag extends TagSupport {
 	
 	private void createClearFieldsJSFunction(StringBuffer htmlStream) {
 		htmlStream.append("<script type='text/javascript'>\n");
-        htmlStream.append("		function clearFields() {\n");
+        htmlStream.append("		function clearFields" + requestIdentity + "() {\n");
         
         Iterator it = getBIObject().getBiObjectParameters().iterator();
         while (it.hasNext()) {
@@ -284,27 +294,27 @@ public class DynamicPageTag extends TagSupport {
     		
     		
     		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
-    			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
-    			htmlStream.append(" document.getElementById('" + id + "Desc').value = '';\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "').value = '';\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
     		} else if(selectionType.equalsIgnoreCase("COMBOBOX")) {
-    			htmlStream.append(" document.getElementById('" + id + "').value = document.getElementById('" + id + "Desc').value;\n");
-    			htmlStream.append(" document.getElementById('" + id + "Desc').selectedIndex = 0;\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "').value = document.getElementById('" + id + requestIdentity + "Desc').value;\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').selectedIndex = 0;\n");
     		} else if(selectionType.equalsIgnoreCase("CHECK_LIST")) {
-    			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
-    			htmlStream.append(" document.getElementById('" + id + "Desc').value = '';\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "').value = '';\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
     		} else if(selectionType.equalsIgnoreCase("LIST")) {
-    			htmlStream.append(" document.getElementById('" + id + "').value = '';\n");
-    			htmlStream.append(" document.getElementById('" + id + "Desc').value = '';\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "').value = '';\n");
+    			htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
     		}
         }
-        htmlStream.append(" setDelateFlag();\n");
+        htmlStream.append(" setDeleteFlag" + requestIdentity + "();\n");
         htmlStream.append("}\n");
         htmlStream.append("</script>\n");
 	}
 	
 	
 	private void createHiddenInput(StringBuffer htmlStream, String id, String name, String value) {
-		htmlStream.append("<input type='hidden' name='"  + name + "' id='" + id + "' value='" + value + "' />\n");
+		htmlStream.append("<input type='hidden' name='"  + name + "' id='" + id + requestIdentity + "' value='" + value + "' />\n");
 	}
 	
 	private void createParamValueHiddenInput(StringBuffer htmlStream, BIObjectParameter biparam) {
@@ -325,7 +335,7 @@ public class DynamicPageTag extends TagSupport {
 		String resetFieldsLbl = msgBuilder.getMessage(requestContainer, "SBIDev.docConf.execBIObjectParams.resetFields", "messages");
 		
 		htmlStream.append("		<div class='div_detail_form'>\n");
-	    htmlStream.append("				<a href='javascript:void(0)' onclick='clearFields()' class='portlet-form-field-label'>\n");
+	    htmlStream.append("				<a href='javascript:void(0)' onclick='clearFields" + requestIdentity+ "()' class='portlet-form-field-label'>\n");
 	    htmlStream.append("					" + resetFieldsLbl + "\n");
 	    htmlStream.append("				</a>\n");
 	    htmlStream.append("		</div>\n");
@@ -410,10 +420,10 @@ public class DynamicPageTag extends TagSupport {
 	private void createHTMLManInputButton(BIObjectParameter biparam, StringBuffer htmlStream) {
 		htmlStream.append("<input style='width:230px;' type='text' " +
 						 		 "name='" + biparam.getParameterUrlName() 		 + "Desc' " +
-						 		 "id='" + biparam.getParameterUrlName() 		 + "Desc' " +								 
+						 		 "id='" + biparam.getParameterUrlName() 		 + requestIdentity + "Desc' " +								 
 								 "class='portlet-form-input-field' " +
 								 "value='" + getParameterValuesAsString(biparam) + "' " +
-								 "onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "')\" " +									
+								 "onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "')\" " +									
 								 "autocomplete='off'/>\n");
 		
 	}
@@ -422,15 +432,15 @@ public class DynamicPageTag extends TagSupport {
 	private void createHTMLListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream) {	
 		htmlStream.append("<input type='text' style='width:230px;' " + 
 						  	"name='" + biparam.getParameterUrlName() +"Desc' "+
-						  	"id='" + biparam.getParameterUrlName() + "Desc' " +
+						  	"id='" + biparam.getParameterUrlName() + requestIdentity + "Desc' " +
 							"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 							"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
-							"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
-									   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
-							"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\" " +							 		  
+							"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
+									   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "')\" " +
+							"onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
 							"autocomplete='off'/>\n");
 		
-		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"LIST\")' \n");
+		htmlStream.append("<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId() + "\", \"LIST\")' \n");
 		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
 		htmlStream.append("		title='Lookup' alt='Lookup' \n");
 		htmlStream.append("/>\n");
@@ -440,15 +450,15 @@ public class DynamicPageTag extends TagSupport {
 		
 		htmlStream.append("<input type='text' style='width:230px;' " + 
 					  	"name='" + biparam.getParameterUrlName() +"Desc' "+
-					  	"id='" + biparam.getParameterUrlName() + "Desc' " +
+					  	"id='" + biparam.getParameterUrlName() + requestIdentity + "Desc' " +
 						"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 						"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
-						"onchange=\"refresh('" + biparam.getParameterUrlName() + "Desc','" +  biparam.getParameterUrlName() + "');" +
-								   "setChangedFlag('" + biparam.getParameterUrlName() + "')\" " +
-						"onclick=\"selectAllText('" + biparam.getParameterUrlName() + "Desc');\" " +							 		  
+						"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
+								   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "')\" " +
+						"onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
 						"autocomplete='off'/>\n");
 	
-		htmlStream.append("<input type='image' onclick='setLookupField(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");
+		htmlStream.append("<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");
 		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
 		htmlStream.append("		title='Lookup' alt='Lookup' \n");
 		htmlStream.append("/>\n");
@@ -477,11 +487,11 @@ public class DynamicPageTag extends TagSupport {
     		// create initial html
 	    	htmlStream.append("<select style='width:230px;' " +  
 	    			 			"name='" + biparam.getParameterUrlName() + "Desc' " +
-	    			 			"id='"+ biparam.getParameterUrlName()+ "Desc' " +
+	    			 			"id='"+ biparam.getParameterUrlName()+ requestIdentity + "Desc' " +
 	    			 			"class='portlet-form-field' " +
 	    			 			//onchangeStr +
-	    			 			"onchange=\"refresh('" + biparam.getParameterUrlName()+ "Desc', " +
-	    			 					  "'" + biparam.getParameterUrlName() + "')\" >\n");	
+	    			 			"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()+ requestIdentity + "Desc', " +
+	    			 					  "'" + biparam.getParameterUrlName() + requestIdentity + "')\" >\n");	
 	    			 			//" >\n");
 	    	htmlStream.append("<option value=''> </option>\n");
             // get the lov associated to the parameter 

@@ -14,8 +14,16 @@
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
+<%@page import="org.safehaus.uuid.UUID"%>
 
 <% 
+	// identity string for object of the page
+	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	UUID uuid = uuidGen.generateTimeBasedUUID();
+	String requestIdentity = "request" + uuid.toString();
+	requestIdentity = requestIdentity.replaceAll("-", "");
     // get object from the session 
     BIObject obj = (BIObject)aSessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);  
 	//substitute profile attributes for FIX LOV parameters
@@ -73,8 +81,7 @@
 %>
 	
 
-<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
-<form method='POST' action='<%=execUrl%>' id='paramsValueForm' name='paramsValueForm'>	
+<form method='POST' action='<%=execUrl%>' id='paramsValueForm<%=requestIdentity%>' name='paramsValueForm'>	
 
 
 <% 
@@ -90,7 +97,7 @@
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<% if ( !noPars ) { %>
 			<td class='header-button-column-portlet-section'>
-				<a href="javascript:document.getElementById('paramsValueForm').submit()"> 
+				<a href="javascript:document.getElementById('paramsValueForm<%=requestIdentity%>').submit()"> 
       					<img class='header-button-image-portlet-section' 
 					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.execButt" />' 
 					src='<%=urlBuilder.getResourceLink(request, "/img/exec.png")%>' 

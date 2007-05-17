@@ -7,10 +7,17 @@
                  it.eng.spagobi.constants.AdmintoolsConstants,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spago.navigation.LightNavigationManager" %>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
+<%@page import="org.safehaus.uuid.UUID"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
 
 <% 
+	// identity string for object of the page
+	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	UUID uuid = uuidGen.generateTimeBasedUUID();
+	String requestIdentity = "request" + uuid.toString();
+	requestIdentity = requestIdentity.replaceAll("-", "");
 	// get the actor type from the session
 	String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
     // get module response
@@ -32,7 +39,7 @@
 %>
 
 
-<form action="<%= formAct.toString() %>" method="post" id='execRolesForm' name='execRolesForm'>
+<form action="<%= formAct.toString() %>" method="post" id='execRolesForm<%=requestIdentity%>' name='execRolesForm'>
 
 
 <table class='header-table-portlet-section'>		
@@ -42,7 +49,7 @@
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href="javascript:document.getElementById('execRolesForm').submit()"> 
+			<a href="javascript:document.getElementById('execRolesForm<%=requestIdentity%>').submit()"> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.execButt" />' 
       			     src='<%=urlBuilder.getResourceLink(request, "/img/exec.png")%>' 

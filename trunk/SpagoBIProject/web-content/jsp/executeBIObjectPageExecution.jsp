@@ -748,40 +748,92 @@
 	isMoz = (navigatorname.indexOf('explorer') == -1);
 
 	function adaptSize<%=requestIdentity%>Funct() {
-		// evaluates the iframe current height
-		iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-		offsetHeight = 0;
-		clientHeight = 0;
-		if(isIE5) {
-			offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
-			clientHeight = iframeEl.clientHeight;
-		}
-		if(isIE6) {
-			offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
-			clientHeight = iframeEl.clientHeight;
-		}
-		if(isIE7) {
-			offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
-			clientHeight = iframeEl.clientHeight;
-		}
-		if(isMoz) {
-			offsetHeight = iframeEl.contentWindow.document.body.offsetHeight;
-			clientHeight = iframeEl.clientHeight;
-		}
-		// adjusts current iframe height
-		if (offsetHeight != clientHeight + 20) {
-			heightFrame = offsetHeight + 20;
+		// try to find out the height if the content of the iframe (it works if the iframe comes from the same
+		// domain of the main page)
+		try {
+			// evaluates the iframe current height
+			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			offsetHeight = 0;
+			clientHeight = 0;
+			if(isIE5) {
+				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			if(isIE6) {
+				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			if(isIE7) {
+				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			if(isMoz) {
+				offsetHeight = iframeEl.contentWindow.document.body.offsetHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			// adjusts current iframe height
+			if (offsetHeight != clientHeight + 40) {
+				heightFrame = offsetHeight + 40;
+				iframeEl.style.height = heightFrame + 'px';
+			}
+			// saves the current iframe height into a variable
+			iframeHeight<%=requestIdentity%> = heightFrame;
+			// adjusts parent iframe height
+			if (window != top) {
+				parentIFrame = parent.document.getElementsByTagName('iframe')[0];
+				parentHeightFrame = heightFrame + 50;
+				parentIFrame.style.height = parentHeightFrame + 'px';
+			}
+			setTimeout('adaptSize<%=requestIdentity%>Funct()', 500);
+		} catch (err) { // in case the previous code generates an error the iframe is sized to the visible area
+						// between iframe start position and footer start position
+			// calculate height of the visible area
+			heightVisArea = 0;
+			if(isIE5) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE6) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE7) { heightVisArea = top.document.documentElement.clientHeight }
+			if(isMoz) { heightVisArea = top.innerHeight; }
+			// get the frame div object
+			diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+			// find the frame div position
+			pos = findPos(diviframeobj);
+						
+			// calculate space below position frame div
+			spaceBelowPos = heightVisArea - pos[1];
+			// set height to the frame
+			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			iframeEl.style.height = spaceBelowPos + 'px';
+	
+			// calculate height of the win area and height footer
+			heightWinArea = 0;
+			heightFooter = 0;
+			if(isIE5) {
+				//heightWinArea = window.document.body.scrollHeight;
+				heightWinArea = document.body.scrollHeight;
+				heightFooter = heightWinArea - heightVisArea;
+			}
+			if(isIE6) {
+				//heightWinArea = window.document.body.scrollHeight;
+				heightWinArea = document.body.scrollHeight;
+				heightFooter = heightWinArea - heightVisArea;
+			}
+			if(isIE7) {
+				//heightWinArea = window.document.body.offsetHeight;
+				heightWinArea = document.body.offsetHeight;
+				heightFooter = heightWinArea - heightVisArea;
+			}
+			if(isMoz) {
+				//heightWinArea = window.document.body.offsetHeight;
+				heightWinArea = document.body.offsetHeight;
+				heightFooter = (heightWinArea - heightVisArea) + 15;
+			}
+	
+			// calculate height of the frame
+			heightFrame = heightVisArea - pos[1] - heightFooter;
+			// set height to the frame
+			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 			iframeEl.style.height = heightFrame + 'px';
 		}
-		// saves the current iframe height into a variable
-		iframeHeight<%=requestIdentity%> = heightFrame;
-		// adjusts parent iframe height
-		if (window != top) {
-			parentIFrame = parent.document.getElementsByTagName('iframe')[0];
-			parentHeightFrame = heightFrame + 50;
-			parentIFrame.style.height = parentHeightFrame + 'px';
-		}
-		setTimeout('adaptSize<%=requestIdentity%>Funct()', 500);
 	}
 	
 	try {

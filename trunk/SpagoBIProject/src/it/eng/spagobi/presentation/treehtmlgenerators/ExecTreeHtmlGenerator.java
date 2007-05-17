@@ -43,6 +43,9 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
+
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 /**
  * Contains all methods needed to generate and modify a tree object for Execution.
  * There are methods to generate tree, configure, insert and modify elements.
@@ -61,6 +64,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	protected SourceBean _serviceRequest = null;
 	private int dTreeRootId = -100;
 	private int dTreeObjects = -1000;
+	private String requestIdentity = null;
 	//ArrayList testRoleNames = new ArrayList();
 	//ArrayList execRoleNames = new ArrayList();
 	/**
@@ -377,6 +381,11 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
@@ -393,7 +402,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("<div id='divmenu' style='position:absolute;left:0;top:0;display:none;width:80px;height:120px;background-color:#FFFFCC;border-color:black;border-style:solid;border-weight:1;' onmouseout='hideMenu();' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
-		htmlStream.append("<div id='viewOnlyTestDocument' style='display:none;'>");
+		htmlStream.append("<div id='viewOnlyTestDocument" + requestIdentity + "' style='display:none;'>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
 		htmlStream.append("		<td width='10px'>&nbsp;</td>");
@@ -408,7 +417,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		if ("true".equalsIgnoreCase(onlyTestObjectsView)) checked = "checked='checked'";
 		htmlStream.append("			<span class=\"dtree\">" + onlyTestObjectsViewLbl + "</span>\n");
 		htmlStream.append("			<input type=\"checkbox\" " + checked + " \n");
-		htmlStream.append("				onclick=\"document.getElementById('view_only_test_objects').checked=this.checked;document.getElementById('objectForm').submit()\" />\n");
+		htmlStream.append("				onclick=\"document.getElementById('view_only_test_objects" + requestIdentity + "').checked=this.checked;document.getElementById('objectForm').submit()\" />\n");
 		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
@@ -423,8 +432,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeExecObj';\n");
-	   	htmlStream.append("				treeExecObj = new dTree('treeExecObj');\n");
-	   	htmlStream.append("	        	treeExecObj.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
+	   	htmlStream.append("				treeExecObj" + requestIdentity + " = new dTree('treeExecObj" + requestIdentity + "');\n");
+	   	htmlStream.append("	        	treeExecObj" + requestIdentity + ".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
@@ -436,7 +445,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeExecObj);\n");
+    	htmlStream.append("				document.write(treeExecObj" + requestIdentity + ");\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
 		htmlStream.append("		</td>");
@@ -454,13 +463,13 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
     		htmlStream.append("	<div style=\"display:none;\">\n");
     		htmlStream.append("	<form method='POST' action='" + formUrl.toString() + "' id ='objectForm' name='objectForm'>\n");
     		htmlStream.append("		<span>" + onlyTestObjectsViewLbl + "</span>\n");
-    		htmlStream.append("		<input type=\"checkbox\" name=\"view_only_test_objects\" id=\"view_only_test_objects\" value=\"true\" " + checked + " />\n");
+    		htmlStream.append("		<input type=\"checkbox\" name=\"view_only_test_objects\" id=\"view_only_test_objects" + requestIdentity + "" + requestIdentity + "\" value=\"true\" " + checked + " />\n");
     		htmlStream.append("		<input type=\"image\" style=\"width:25px;height:25px\" title=\"" + updateTree + "\" alt\"" + updateTree + "\" \n");
     		htmlStream.append("			src=\"" + renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png" ) + "\" />\n");
     		htmlStream.append("	</form>\n");
     		htmlStream.append("	</div>\n");
 			htmlStream.append("<script type='text/javascript'>\n");
-			htmlStream.append("	document.getElementById('viewOnlyTestDocument').style.display='inline';\n");
+			htmlStream.append("	document.getElementById('viewOnlyTestDocument" + requestIdentity + "').style.display='inline';\n");
 			htmlStream.append("</script>\n");
 		}
 		return htmlStream;
@@ -474,12 +483,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		Integer parentId = folder.getParentId();
 		
 		if (isRoot) {
-			htmlStream.append("	treeExecObj.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
+			htmlStream.append("	treeExecObj" + requestIdentity + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
 			if (ObjectsAccessVerifier.canTest(idFolder, profile) || ObjectsAccessVerifier.canExec(idFolder, profile)) {
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeExecObj.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
+				htmlStream.append("	treeExecObj" + requestIdentity + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
@@ -510,10 +519,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 						if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile)) {
 							thereIsOneOrMoreObjectsInTestState = true;
 							execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
-							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
+							htmlStream.append("	treeExecObj" + requestIdentity + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 							execUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
-							htmlStream.append("	treeExecObj.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
+							htmlStream.append("	treeExecObj" + requestIdentity + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl.toString() + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						}
 					}
 				}

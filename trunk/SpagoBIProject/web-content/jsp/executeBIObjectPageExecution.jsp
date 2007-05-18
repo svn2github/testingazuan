@@ -65,6 +65,15 @@
 		mapPars.put(AuditManager.AUDIT_SERVLET, GeneralUtilities.getSpagoBiAuditManagerServlet());
 	}
 	
+	// adding parameters for document-to-document drill
+	mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
+	mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
+	String spagobiExecutionId = (String) aSessionContainer.getAttribute("spagobi_execution_id");
+	if (spagobiExecutionId == null) {
+		// in case it is not a drill a new execution id is created
+		spagobiExecutionId = requestIdentity;
+	}
+	mapPars.put("spagobi_execution_id", spagobiExecutionId);
 	
 	// build the string of the title
     String title = "";
@@ -172,7 +181,7 @@
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
-        <div id="navigationBar">
+        <div id="navigationBar<%=requestIdentity%>">
            &nbsp;&nbsp;&nbsp;<%=title%>
         </div>
        </td>
@@ -259,7 +268,7 @@
 <table width='100%' cellspacing='0' border='0' id="singleobjecttitlebar<%=requestIdentity%>">
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
-      <div id="navigationBar">
+      <div id="navigationBar<%=spagobiExecutionId%>">
         &nbsp;&nbsp;&nbsp;<%=title%>
       </div>
 		</td>
@@ -953,10 +962,7 @@
                     name="iframeexec<%=requestIdentity%>"
                     src=""
                     style="width:100%;<%=heightStr%>;"
-                    frameborder="0"></iframe>
-                    <%--
                     frameborder="0" onLoad="this.contentWindow.document.getElementById('singleobjecttitlebar<%=requestIdentity%>').style.display='none'"></iframe>
-					--%>
 
 
          	<form name="formexecution<%=requestIdentity%>"
@@ -1005,32 +1011,33 @@
 function getFramesArray() {
   return iframesNavigator;
 }
-function changeFrame(index) {
+function changeFrame<%=spagobiExecutionId%>(index) {
   tmp = top.getFramesArray();
-  tmp.removeFrames(index);
-  refreshNavigationBar();
+  tmp.removeFrames('<%=spagobiExecutionId%>', index);
+  refreshNavigationBar<%=spagobiExecutionId%>();
 }
-function refreshNavigationBar() {
+function refreshNavigationBar<%=spagobiExecutionId%>() {
   tmp = top.getFramesArray();
+  frames = tmp.getFrames('<%=spagobiExecutionId%>');
   html = "";
-  for (count = 0; count < tmp.getFramesNumber(); count = count + 1) {
-    aFrame = tmp.getFrame(count);
+  for (count = 0; count < frames.length; count++) {
+    aFrame = frames[count];
     aFrameLabel = aFrame[1];
-		if (count == tmp.getFramesNumber() - 1) {
+		if (count == frames.length - 1) {
 			html += "&nbsp;" + aFrameLabel;
 		} else {
-			html += "&nbsp;<a href='javascript:changeFrame(" + count + ")'>" + aFrameLabel + "</a>";
+			html += "&nbsp;<a href='javascript:changeFrame<%=spagobiExecutionId%>(" + count + ")'>" + aFrameLabel + "</a>";
 		}
-    if (count < tmp.getFramesNumber() - 1) {
+    if (count < frames.length - 1) {
       html += "&nbsp;&gt;";
     }
   }
-  navBarDiv = top.document.getElementById("navigationBar");
+  navBarDiv = top.document.getElementById("navigationBar<%=spagobiExecutionId%>");
   navBarDiv.innerHTML = html;
 }
 tmp = top.getFramesArray();
-tmp.addFrame(document.getElementById('iframeexec<%=requestIdentity%>'), '<%=obj.getName()%>');
-refreshNavigationBar();
+tmp.addFrame('<%=spagobiExecutionId%>', document.getElementById('iframeexec<%=requestIdentity%>'), '<%=obj.getName()%>');
+refreshNavigationBar<%=spagobiExecutionId%>();
 </script>
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->

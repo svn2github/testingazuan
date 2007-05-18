@@ -73,45 +73,76 @@ function SbiJsInitializerClass() {
 // START IFRAMES NAVIGATOR INITIALIZER
 function IFramesNavigator() {
 
-  this.nestedFrames = new Array();
+  /*
+  	Structor of IFramesNavigator navigator:
+  	it contains a variable 'frames' that is an array;
+  	each element of 'frames' is a 'mainFrame';
+  	a mainFrame is an array with length = 2:
+  	- mainFrame[0] contains the String id of the spagobi execution flow id (drill-through share this id);
+  	- mainFrame[1] contains an array: each element of this array is an 'iframeWithLabel', that is
+  				- iframeWithLabel[0] is the nested iframe;
+  				- iframeWithLabel[1] is the iframe label.
+  */
+
+  this.frames = new Array();
   
   this.addFrame = AddFrame;
   
-  function AddFrame(nestedFrame, label) {
-    aFrameWithLabel = new Array(nestedFrame, label);
-    this.nestedFrames[this.nestedFrames.length] = aFrameWithLabel;
+  function AddFrame(id, nestedFrame, label) {
+    frameToAdd = new Array(nestedFrame, label);
+    mainFrame = this.getMainFrame(id);
+    if (mainFrame == null) {
+      mainFrame = new Array();
+      mainFrame[0] = id;
+      temp = new Array();
+      temp[0] = frameToAdd;
+      mainFrame[1] = temp;
+      this.frames[this.frames.length] = mainFrame;
+    } else {
+      temp = mainFrame[1];
+      temp[temp.length] = frameToAdd;
+    }
   }
   
   this.removeFrames = RemoveFrames;
   
-  function RemoveFrames(index) {
-    aFrameWithLabel = this.nestedFrames[index];
-    aFrame = aFrameWithLabel[0];
-    //PER IE
-    //alert(aFrame.contentDocument.getElementById('1'));
-    
-    //PER FIREFOX
-    //aFrame.src = aFrame.contentDocument.getElementById('1');
-    
-    //aFrame.src = "http://www.libero.it";
-    
-    initialLength = this.nestedFrames.length;
+  function RemoveFrames(id, index) {
+    mainFrame = this.getMainFrame(id);
+    if (mainFrame == null) return;
+    initialLength = mainFrame[1].length;
     for (i = 1; i < initialLength - index; i++) {
-      this.nestedFrames.pop();
+      mainFrame[1].pop();
     }
     window.history.go(-(initialLength - 1 - index));
   }
   
-  this.getFramesNumber = GetFramesNumber;
+  this.getFrames = GetFrames;
   
-  function GetFramesNumber() {
-    return this.nestedFrames.length;
+  function GetFrames(id) {
+    mainFrame = this.getMainFrame(id);
+    return mainFrame[1];
   }
   
   this.getFrame = GetFrame;
   
-  function GetFrame(index) {
-    return this.nestedFrames[index];
+  function GetFrame(id, index) {
+    mainFrame = this.getMainFrame(id);
+    if (mainFrame == null) return null;
+    return mainFrame[index];
+  }
+  
+  this.getMainFrame = GetMainFrame;
+  
+  function GetMainFrame(id) {
+  	mainFrame = null;
+    for (i = 0; i < this.frames.length; i++) {
+      temp = this.frames[i];
+      if (temp[0] == id) {
+      	mainFrame = temp;
+      	break;
+      }
+    }
+    return mainFrame;
   }
 
 }

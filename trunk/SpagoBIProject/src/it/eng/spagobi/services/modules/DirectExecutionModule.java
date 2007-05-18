@@ -107,6 +107,11 @@ public class DirectExecutionModule extends AbstractModule {
 				return;
 			}
 		}
+		// drill execution id
+		String spagobiExecutionId = (String) request.getAttribute("spagobi_execution_id");
+		if (spagobiExecutionId != null) {
+			sessionContainer.setAttribute("spagobi_execution_id", spagobiExecutionId);
+		}
 		// put in session execution modality
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
         // set into the response the right information for loopback

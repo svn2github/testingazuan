@@ -721,9 +721,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 					mapPars = aEngineDriver.getParameterMap(obj, subObj, profile, executionRole);
 				else mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
 				
-				mapPars.put("username", profile.getUserUniqueIdentifier().toString());
-				mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
-				
 				//String type = obj.getBiObjectTypeCode();
 				//if(type.equalsIgnoreCase("OLAP")) {
 				//    if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
@@ -732,10 +729,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 				//	if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
 				//	else mapPars = aEngineDriver.getParameterMap(obj);
 				//}
-				
-				// adding parameters for document-to-document drill
-				mapPars.put("username", profile.getUserUniqueIdentifier().toString());
-				mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
 				
 			    // set into the reponse the parameters map	
 				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);

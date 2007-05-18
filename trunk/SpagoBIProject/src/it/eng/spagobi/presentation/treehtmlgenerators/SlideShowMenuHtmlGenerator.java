@@ -43,6 +43,7 @@ public class SlideShowMenuHtmlGenerator implements ITreeHtmlGenerator {
 	RenderRequest renderRequest = null;
 	HttpServletRequest httpRequest = null;
 	private String baseFolderPath = null;
+	List objectsList = new ArrayList();
 	
 	public StringBuffer makeAccessibleTree(List objectsList,
 			HttpServletRequest httpRequest, String initialPath) {
@@ -56,96 +57,118 @@ public class SlideShowMenuHtmlGenerator implements ITreeHtmlGenerator {
 	}
 
 	
-	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+	public StringBuffer makeTree(List objsList, HttpServletRequest httpReq, String initialPath) {
 		
+		objectsList = objsList;
 		httpRequest = httpReq;
 		baseFolderPath = initialPath;
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
+		StringBuffer stream = new StringBuffer();
 		StringBuffer htmlStream = new StringBuffer();
+		StringBuffer jsStream = new StringBuffer();
+		jsStream.append("<script>\n");
+		jsStream.append("	menulevels = new Array();\n");
 		
-		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/reset-fonts-grids/reset-fonts-grids.css" )+"' type='text/css' />");
-		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/menu/assets/menu.css" )+"' type='text/css' />");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/yahoo/yahoo.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/event/event.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/dom/dom.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/animation/animation.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/container/container_core.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/yui/build/menu/menu.js" )+"'></SCRIPT>");
+		//htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/menu.css" )+"' type='text/css' />");
+		//htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js" )+"'></SCRIPT>");
+		//htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/menu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js" )+"'></SCRIPT>");
 		
-		htmlStream.append("<script type='text/javascript'>										\n");
-		htmlStream.append("		onMenuReady = function() { 										\n");
-		htmlStream.append("    		var oMenu = new YAHOO.widget.Menu( 							\n");
-		htmlStream.append("         	\"biobjectsmenu\", 										\n"); 
-		htmlStream.append("           	{ 														\n");
-		htmlStream.append("            		position:\"static\",								\n");
-		htmlStream.append("             	hidedelay:750,										\n");
-		htmlStream.append("             	lazyload:true,										\n");
-		htmlStream.append("             	effect:{  		     								\n");
-		htmlStream.append("           			effect:YAHOO.widget.ContainerEffect.FADE,		\n");
-		htmlStream.append("            			duration:0.25 									\n");
-		htmlStream.append("           		}					 								\n");
-		htmlStream.append("           	} 														\n");
-		htmlStream.append("     	);							 								\n");
-		htmlStream.append("     	oMenu.render();												\n");
-		htmlStream.append("     };							 									\n");
-		htmlStream.append("     YAHOO.util.Event.onContentReady(\"biobjectsmenu\", onMenuReady); \n");
-		htmlStream.append("</script>															\n");
+		LowFunctionality root = findRoot(); 
+		List childs = findChilds(root);
+		if(!childs.isEmpty()) {
+			generateMenu(root, childs, htmlStream, true, 0);
+			processChilds(childs, htmlStream, jsStream, 1);
+		}
 		
+		jsStream.append("</script>\n");
 		
-		
-		htmlStream.append("<div style=\"width:200px;\" id=\"biobjectsmenu\" class=\"yuimenu\">	\n");
-		htmlStream.append("		<div class=\"bd\">	\n");
-		htmlStream.append("			<ul class=\"first-of-type\">	\n");
-		
-		LowFunctionality root = findRoot(objectsList); 
-		List roots = findChilds(objectsList, root);
-		addMenuItemHtmlCode(roots, objectsList, htmlStream);
-		htmlStream.append("			</ul>							\n");
-		htmlStream.append("		</div>	\n");
-		htmlStream.append("</div>	\n");
-		return htmlStream;
+		stream.append(jsStream);
+		stream.append(htmlStream);
+		return stream;
 	}
 
 	
-	private void generateSubMenu(LowFunctionality folder, List objectsList, StringBuffer htmlStream) {
-		List childs = findChilds(objectsList, folder);
-		if(childs.isEmpty()) {
-			return;
+	private void processChilds(List childs, StringBuffer htmlStream, StringBuffer jsStream, int level) {
+		Iterator iterChilds = childs.iterator();
+		while(iterChilds.hasNext()) {
+			Object obj = iterChilds.next();
+			if(obj instanceof LowFunctionality) {
+				LowFunctionality folder = (LowFunctionality)obj;
+				List folderchilds = findChilds(folder);
+				if(!folderchilds.isEmpty()) {
+					jsStream.append("	menulevels[menulevels.length] = new Array('"+folder.getId()+"', '"+level+"');\n");
+					processChilds(folderchilds, htmlStream, jsStream, level + 1);
+					generateMenu(folder, folderchilds, htmlStream, false, level);
+				}
+			} 
 		}
-		htmlStream.append("<div id=\""+folder.getId()+"\" class=\"yuimenu\">	\n");
-		htmlStream.append("		<div class=\"bd\">	\n");
-		htmlStream.append("			<ul class=\"first-of-type\">	\n");
-		addMenuItemHtmlCode(childs, objectsList, htmlStream);
-		htmlStream.append("			</ul>							\n");
-		htmlStream.append("		</div>	\n");
-		htmlStream.append("</div>	\n");           
-		
+	}
+	
+	private void generateMenu(LowFunctionality folder, List childs, StringBuffer htmlStream, boolean isroot, int level) {
+		String style = "";
+		if(!isroot){
+			style = "display:none;position:absolute;";
+		}
+		htmlStream.append("<div style='"+style+"' id=\"menu_"+folder.getId()+"\" class=\"menuBox\">					\n");
+		htmlStream.append("		<table cellspacing='0' cellpadding='0' border='0' >					\n");
+		htmlStream.append("			<tr>															\n");
+		htmlStream.append("				<td height='20' valign='center' align='center' class=\"menuTitleBox\" >								\n");
+		htmlStream.append("					"+folder.getName()+"									\n");
+		htmlStream.append("				</td>														\n");
+		htmlStream.append("			</tr>															\n");
+		htmlStream.append("			<tr>															\n");
+		htmlStream.append("				<td class=\"menuContentBox\">								\n");
+		htmlStream.append("					<table cellspacing='0' cellpadding='0' border='0' >		\n");
+		addMenuItemHtmlCode(childs, htmlStream, level);
+		htmlStream.append("					</table>												\n");
+		htmlStream.append("				</td>														\n");
+		htmlStream.append("			</tr>															\n");
+		htmlStream.append("		</table>															\n");  
+		htmlStream.append("</div>															\n");
 	}
 	
 	
-	private void addMenuItemHtmlCode(List menuobjs, List objectsList, StringBuffer htmlStream) {
+	private void addMenuItemHtmlCode(List menuobjs, StringBuffer htmlStream, int level) {
 		Iterator iterChilds = menuobjs.iterator();
 		while(iterChilds.hasNext()) {
 			Object obj = iterChilds.next();
 			if(obj instanceof LowFunctionality) {
 				LowFunctionality folderchild = (LowFunctionality)obj;
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
-				htmlStream.append("			<li class=\"yuimenuitem\">	\n");
-				htmlStream.append("				<img style='clear:left;border:0px;margin:0px;' width='15' height='15' src=\""+imgFolder+"\" /> \n");
-				htmlStream.append("				"+folderchild.getName()+"\n");
-				generateSubMenu(folderchild, objectsList, htmlStream);
-				htmlStream.append("			</li>	\n");
+				htmlStream.append("			<tr valign='middle' height='30' id='menu_link_"+folderchild.getId()+"' class='menuItem' " +
+						          "             onmouseover=\"overHandler(this, '"+level+"');openmenu('"+folderchild.getId()+"', event);\" " +
+						          "             onmouseout=\"outHandler(this);checkclosemenu('"+folderchild.getId()+"', event)\" >	\n");
+				htmlStream.append("				<td width='40' align='center' valign='middle' >\n");
+				htmlStream.append("					<img width='20' height='20' src=\""+imgFolder+"\" /> \n");
+				htmlStream.append("				</td>\n");
+				htmlStream.append("				<td valign='middle'>\n");
+				htmlStream.append("					"+folderchild.getName()+"\n");
+				htmlStream.append("				</td>\n");
+				htmlStream.append("				<td id='menu_link_last_"+folderchild.getId()+"' width='25' align='center' valign='middle'>\n");
+				htmlStream.append("					&gt;&gt;\n");
+				htmlStream.append("				</td>\n");
+				htmlStream.append("			</tr>	\n");
 			} else if (obj instanceof BIObject) {
 				BIObject biobj = (BIObject)obj;
 				String execUrl = getExecutionLink(biobj);
-				htmlStream.append("			<li class=\"yuimenuitem\">	\n");
 				String biObjType = biobj.getBiObjectTypeCode();
 				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
 				String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);
-				//htmlStream.append("				<img width='15' height='15' src=\""+userIcon+"\" /> \n");
-				htmlStream.append("				<a href=\""+execUrl+"\"><img width='15' height='15' src=\""+userIcon+"\" />"+biobj.getName()+"</a>	\n");
-				htmlStream.append("			</li>	\n");
+				htmlStream.append("			<tr valign='middle' height='30' class='menuItem' " +
+				          		  "             onmouseover=\"overHandler(this, '"+level+"');\" " +
+				          		  "             onmouseout=\"outHandler(this);\" >	\n");
+				htmlStream.append("				<td width='40' align='center' valign='middle'>\n");
+				htmlStream.append("					<img width='20' height='20' src=\""+userIcon+"\" /> \n");
+				htmlStream.append("				</td>\n");
+				htmlStream.append("				<td valign='middle'>\n");
+				htmlStream.append("					<a class='menuLink' href=\""+execUrl+"\">"+biobj.getName()+"</a>\n");
+				htmlStream.append("				</td>\n");
+				htmlStream.append("				<td width='25' align='center' valign='middle'>\n");
+				htmlStream.append("					&nbsp;\n");
+				htmlStream.append("				</td>\n");
+				htmlStream.append("			</tr>	\n");
 			}	
 		}
 	}
@@ -161,7 +184,7 @@ public class SlideShowMenuHtmlGenerator implements ITreeHtmlGenerator {
 	}
 	
 	
-	private List findChilds(List objectsList, LowFunctionality father) {
+	private List findChilds(LowFunctionality father) {
 		List roots = new ArrayList();
 		// add biobjects
 		roots.addAll(father.getBiObjects());
@@ -178,7 +201,7 @@ public class SlideShowMenuHtmlGenerator implements ITreeHtmlGenerator {
 	}
 	
 	
-	private LowFunctionality findRoot(List objectsList) {
+	private LowFunctionality findRoot() {
 		LowFunctionality root = null;
 		Iterator iterFolder1 = objectsList.iterator();
 		while(iterFolder1.hasNext()){

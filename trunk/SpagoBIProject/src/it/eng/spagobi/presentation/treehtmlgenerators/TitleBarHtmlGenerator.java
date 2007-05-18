@@ -50,9 +50,9 @@ public class TitleBarHtmlGenerator implements ITreeHtmlGenerator {
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
 		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("				<div class='UITabs' style='width: 100%'>\n");
-		htmlStream.append("					<div class='first-tab-level' style='background-color:#f8f8f8'>\n");
-		htmlStream.append("						<div style='overflow: hidden; width:  100%'>\n");
+		htmlStream.append("				<div class='UITabs'>\n");
+		htmlStream.append("					<div class='first-tab-level' >\n");
+		//htmlStream.append("						<div style='overflow: hidden;'>\n");
 		Iterator it = objectsList.iterator();
 		while (it.hasNext()) {
 			LowFunctionality folder = (LowFunctionality) it.next();
@@ -62,13 +62,13 @@ public class TitleBarHtmlGenerator implements ITreeHtmlGenerator {
 			PortletURL changeFolderUrl = renderResponse.createActionURL();
 			changeFolderUrl.setParameter(ObjectsTreeConstants.PAGE, ExecutionWorkspaceModule.MODULE_PAGE);
 			changeFolderUrl.setParameter(TreeObjectsModule.PATH_SUBTREE, folder.getPath());
-			htmlStream.append("							<a href='" + changeFolderUrl.toString() + "' style='color:black;'>\n");
+			htmlStream.append("							<a href='" + changeFolderUrl.toString() + "'>\n");
 			htmlStream.append("								" + folder.getName() + "\n");
 			htmlStream.append("							</a>\n");
 			htmlStream.append("						</div>\n");
 		}
 		htmlStream.append("");
-		htmlStream.append("						</div>");
+		//htmlStream.append("						</div>");
 		htmlStream.append("					</div>");
 		htmlStream.append("				</div>");
 		return htmlStream;

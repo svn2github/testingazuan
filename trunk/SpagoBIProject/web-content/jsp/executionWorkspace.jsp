@@ -9,6 +9,156 @@
 <%@page import="java.io.File"%>
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
 
+
+<SCRIPT language='JavaScript' src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js" )%>'></SCRIPT>
+
+<script type='text/javascript'>	
+	
+  var tCloseAll = null;
+  
+  function closeAll() {
+    for(i=0; i<menulevels.length; i++) {
+      menulevel = menulevels[i];
+      idMenu = 'menu_' + menulevel[0];
+      $(idMenu).style.display='none';
+    } 
+  }
+  
+  function overHandler(obj, level) {
+    window.clearTimeout(tCloseAll);
+    for(i=0; i<menulevels.length; i++) {
+      menulevel = menulevels[i];
+      deepMenu = menulevel[1];
+      idMenu = 'menu_' + menulevel[0];
+      if(parseInt(deepMenu)>parseInt(level)) {
+        $(idMenu).style.display='none';
+      }
+    } 
+		obj.className = 'menuItemOver';
+	}
+	
+	
+	function outHandler(obj) {
+		obj.className = 'menuItem';
+		tCloseAll = setTimeout('closeAll()', 500);
+ 	}
+	
+	function openmenu(idfolder, e) {
+	  	var idmenu = 'menu_' + idfolder;
+	  	var idmenulink = 'menu_link_' + idfolder;
+	  	var idmenulinklast = 'menu_link_last_' + idfolder;
+	  	var trlink = $(idmenulink);
+	  	var tdlinklast = $(idmenulinklast);
+	    var postrlink = findPos(trlink);
+	    var postrlinklast = findPos(tdlinklast);
+		  var wid = postrlinklast[0] - postrlink[0] + 25;
+      $(idmenu).style.left= wid + postrlink[0] + 'px';
+      $(idmenu).style.top= postrlink[1] + 'px';
+      $(idmenu).style.display= 'inline';
+	}
+	
+	function checkclosemenu(idfolder, e) {  
+    	var idmenu = 'menu_' + idfolder;
+	  	var idmenulink = 'menu_link_' + idfolder;
+	  	var idmenulinklast = 'menu_link_last_' + idfolder;
+		  var trlink = $(idmenulink);
+	  	var tdlinklast = $(idmenulinklast);
+	    var postrlink = findPos(trlink);
+	    var postrlinklast = findPos(tdlinklast);
+		  var wid = postrlinklast[0] - postrlink[0] + 25;
+		  hei = 30;	  
+      if( (e.clientY <= (postrlink[1]+3)) || (e.clientY > (postrlink[1] + hei - 3)) || (e.clientX <= (postrlink[0]+3)) ) {
+            $(idmenu).style.display= 'none';
+      }
+	}
+	
+</script>	
+
+
+<style>
+
+.menuBox{
+	border:2px solid rgb(254,232,186);
+	background:#f9fbd6;
+	max-width: 200px
+}
+
+.menuTitleBox{
+  font-family:verdana;
+  font-weight:bold;
+  border-bottom:1px solid rgb(254,232,186);
+  font-size:11px;
+  font-weight:bold;
+  color:#173683;
+  background-color:rgb(254,232,186);
+}
+
+.menuContentBox{
+  padding-top:5px;
+	padding-bottom:10px;
+}
+
+.menuItem{
+  padding-left:15px;
+  font-family:verdana;
+  font-size:9px;
+  padding-right:10px;
+}
+
+.menuItemOver{
+  padding-left:15px;
+  padding-right:10px;
+  background-color:white;
+  font-family:verdana;
+  font-size:9px;
+}
+
+.menuItemSelected{
+
+}
+
+.menuLink{
+  text-decoration:none;
+  color:#6f6f8c;
+}
+
+.menuLinkSubMenu{
+  color:#6f6f8c;
+}
+
+.noDocumentSelectedBox{
+	width:100%;
+	height:300px;
+	background-image:url('/spagobi/img/spagobgimg.jpg');
+    background-position: bottom right;
+    background-repeat: no-repeat; 
+    color:#501ca7;
+    font-family:arial;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.workspaceTopBox {
+	width: 100%;
+}
+
+.workspaceLeftBox {
+	width: 20%;
+	float: left;
+	clear: left; 
+	padding-left:5px;
+}
+
+.workspaceRightBox {
+	border:2px solid rgb(254,232,186);
+	width: 78%;
+	float: left;
+	margin-left:5px;
+}
+
+
+</style>
+
 <div class="div_no_background">
 	
 	<%
@@ -23,17 +173,17 @@
 		<%
 	}
 	%>
-	<div style="width: 100%">
+	<div class='workspaceTopBox' >
 		<spagobi:treeObjects moduleName="ExecutionWorkspaceModule" attributeToRender="FIRST_LEVEL_FOLDERS"
 				htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.TitleBarHtmlGenerator" />
 	</div>
 
-	<div style="width: 30%;float: left;clear: left;">
+	<div class='workspaceLeftBox' >
 		<spagobi:treeObjects moduleName="ExecutionWorkspaceModule" attributeToRender="SUB_TREE"
 			htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.SlideShowMenuHtmlGenerator"/>
 	</div>
 
-	<div style="width: 68%;float: left;">
+	<div class='workspaceRightBox' >
 		<%
 	    // identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -154,7 +304,14 @@
 		<%
 		if (objLabel == null) {
 			%>
-			Select a document
+			<div class='noDocumentSelectedBox'>
+				<br/>
+				<br/>
+				<br/>
+				<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				... Select a Document
+			</div>
 			<%
 		} else {
 			%>

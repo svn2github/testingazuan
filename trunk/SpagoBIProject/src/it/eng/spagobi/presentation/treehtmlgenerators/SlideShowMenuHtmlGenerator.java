@@ -70,9 +70,8 @@ public class SlideShowMenuHtmlGenerator implements ITreeHtmlGenerator {
 		jsStream.append("<script>\n");
 		jsStream.append("	menulevels = new Array();\n");
 		
-		//htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/menu.css" )+"' type='text/css' />");
-		//htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js" )+"'></SCRIPT>");
-		//htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/menu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/menu.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/spagobi.js" )+"'></SCRIPT>");
 		
 		LowFunctionality root = findRoot(); 
@@ -138,16 +137,16 @@ public class SlideShowMenuHtmlGenerator implements ITreeHtmlGenerator {
 				LowFunctionality folderchild = (LowFunctionality)obj;
 				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
 				htmlStream.append("			<tr valign='middle' height='30' id='menu_link_"+folderchild.getId()+"' class='menuItem' " +
-						          "             onmouseover=\"overHandler(this, '"+level+"');openmenu('"+folderchild.getId()+"', event);\" " +
-						          "             onmouseout=\"outHandler(this);checkclosemenu('"+folderchild.getId()+"', event)\" >	\n");
-				htmlStream.append("				<td width='40' align='center' valign='middle' >\n");
+						          "             onmouseover=\"openmenu('"+folderchild.getId()+"', event);overHandler(this, '"+level+"', event, '"+folderchild.getId()+"');\" " +
+						          "             onmouseout=\"outHandler(this, event);checkclosemenu('"+folderchild.getId()+"', event);\" >	\n");
+				htmlStream.append("				<td style='vertical-align:middle;' width='40' align='center' valign='middle' >\n");
 				htmlStream.append("					<img width='20' height='20' src=\""+imgFolder+"\" /> \n");
 				htmlStream.append("				</td>\n");
-				htmlStream.append("				<td valign='middle'>\n");
-				htmlStream.append("					"+folderchild.getName()+"\n");
+				htmlStream.append("				<td style='vertical-align:middle;'>\n");
+				htmlStream.append("					<a class='menuLink' href='javascript:void(0)' >"+folderchild.getName()+"</a>\n");
 				htmlStream.append("				</td>\n");
-				htmlStream.append("				<td id='menu_link_last_"+folderchild.getId()+"' width='25' align='center' valign='middle'>\n");
-				htmlStream.append("					&gt;&gt;\n");
+				htmlStream.append("				<td style='vertical-align:middle;' id='menu_link_last_"+folderchild.getId()+"' width='25' align='center'>\n");
+				htmlStream.append("					<span class='menuArrow'>&gt;&gt;</span>\n");
 				htmlStream.append("				</td>\n");
 				htmlStream.append("			</tr>	\n");
 			} else if (obj instanceof BIObject) {
@@ -157,15 +156,15 @@ public class SlideShowMenuHtmlGenerator implements ITreeHtmlGenerator {
 				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
 				String userIcon = PortletUtilities.createPortletURLForResource(httpRequest, imgUrl);
 				htmlStream.append("			<tr valign='middle' height='30' class='menuItem' " +
-				          		  "             onmouseover=\"overHandler(this, '"+level+"');\" " +
-				          		  "             onmouseout=\"outHandler(this);\" >	\n");
-				htmlStream.append("				<td width='40' align='center' valign='middle'>\n");
+				          		  "             onmouseover=\"overHandler(this, '"+level+"', event);\" " +
+				          		  "             onmouseout=\"outHandler(this, event);\" >	\n");
+				htmlStream.append("				<td style='vertical-align:middle;' width='40' align='center' >\n");
 				htmlStream.append("					<img width='20' height='20' src=\""+userIcon+"\" /> \n");
 				htmlStream.append("				</td>\n");
-				htmlStream.append("				<td valign='middle'>\n");
+				htmlStream.append("				<td style='vertical-align:middle;'> \n");
 				htmlStream.append("					<a class='menuLink' href=\""+execUrl+"\">"+biobj.getName()+"</a>\n");
 				htmlStream.append("				</td>\n");
-				htmlStream.append("				<td width='25' align='center' valign='middle'>\n");
+				htmlStream.append("				<td style='vertical-align:middle;' width='25' align='center'>\n");
 				htmlStream.append("					&nbsp;\n");
 				htmlStream.append("				</td>\n");
 				htmlStream.append("			</tr>	\n");

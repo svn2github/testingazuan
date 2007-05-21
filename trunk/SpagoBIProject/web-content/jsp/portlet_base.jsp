@@ -98,6 +98,10 @@
 <LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLink(request, "css/external.css")%>' 
       type='text/css' />
+      
+<LINK rel='StyleSheet' 
+      href='<%=urlBuilder.getResourceLink(request, "css/menu.css")%>' 
+      type='text/css' />
 
 <script>
 	document.onselectstart = function() { return true; }

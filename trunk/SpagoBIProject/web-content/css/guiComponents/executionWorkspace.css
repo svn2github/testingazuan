@@ -1,3 +1,6 @@
+
+/* ************************** TABS ***************************** */
+
 .executionWorkspace .UITabs {
 	padding:5px;
 }
@@ -31,4 +34,93 @@
 
 .executionWorkspace .UITabs .first-tab-level .selected {
 	background:#fbf9d0;
+}
+
+
+/* ************************** MENU ***************************** */
+
+
+.executionWorkspace .menuBox{
+	border:2px solid rgb(254,232,186);
+	/*background:#f9fbd6;*/
+	background:white;
+	/*max-width: 200px;*/
+	/*min-width: 150px;*/
+	width:200px;
+}
+
+.executionWorkspace .menuTitleBox{
+  font-family:verdana;
+  font-weight:bold;
+  border-bottom:1px solid rgb(254,232,186);
+  font-size:11px;
+  font-weight:bold;
+  color:#173683;
+  background-color:rgb(254,232,186);
+}
+
+.executionWorkspace .menuContentBox{
+  padding-top:5px;
+	padding-bottom:10px;
+}
+
+.executionWorkspace .menuItem{
+  padding-left:15px;
+  font-family:verdana;
+  font-size:9px;
+  padding-right:10px;
+}
+
+.executionWorkspace .menuItemOver{
+  padding-left:15px;
+  padding-right:10px;
+  font-family:verdana;
+  font-size:9px;
+  background:#f7ff7e;
+  /*background-image:url('/spagobi/css/guiComponents/executionWorkspace/gradWhiteOrange20.jpg');*/
+  background-position: left;
+  background-repeat: repeat-y; 
+}
+
+
+.executionWorkspace .menuLink{
+  text-decoration:none;
+  color:#6f6f8c;
+}
+
+.executionWorkspace .menuArrow{
+  font-family:arial;
+  font-weight:bold;
+  color:#173683;
+}
+
+.executionWorkspace .noDocumentSelectedBox{
+	width:100%;
+	height:300px;
+	background-image:url('/spagobi/img/spagobgimg.jpg');
+    background-position: bottom right;
+    background-repeat: no-repeat; 
+    color:#501ca7;
+    font-family:arial;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.executionWorkspace .workspaceTopBox {
+	width: 100%;
+}
+
+.executionWorkspace .workspaceLeftBox {
+	width: 20%;
+	float: left;
+	clear: left; 
+	padding-left:5px;
+}
+
+.executionWorkspace .workspaceRightBox {
+	/*border:2px solid rgb(254,232,186);*/
+	/*border:2px solid #dddddd;*/
+	width: 78%;
+	float: left;
+	margin-left:5px;
 }

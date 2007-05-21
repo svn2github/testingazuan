@@ -796,6 +796,25 @@
 			setTimeout('adaptSize<%=requestIdentity%>Funct()', 500);
 		} catch (err) { // in case the previous code generates an error the iframe is sized to the visible area
 						// between iframe start position and footer start position
+						
+			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			
+			if (window != top) {
+				try {
+					parent.adaptSize<%=spagobiExecutionId%>Funct();
+					iframeParent = parent.document.getElementById('iframeexec<%=spagobiExecutionId%>');
+					newHeight = iframeParent.clientHeight;
+					titleBar = document.getElementById('singleobjecttitlebar<%=requestIdentity%>');
+					if (titleBar != null && titleBar.style.display != 'none') {
+						alert('titleBar.clientHeight ' + titleBar.clientHeight);
+						newHeight = newHeight - titleBar.clientHeight - 30;
+					}
+					iframeEl.style.height = newHeight + 'px';
+				} catch (err) {
+				}
+				return;
+			}
+
 			// calculate height of the visible area
 			heightVisArea = 0;
 			if(isIE5) { heightVisArea = top.document.body.clientHeight; }
@@ -810,7 +829,6 @@
 			// calculate space below position frame div
 			spaceBelowPos = heightVisArea - pos[1];
 			// set height to the frame
-			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 			iframeEl.style.height = spaceBelowPos + 'px';
 	
 			// calculate height of the win area and height footer

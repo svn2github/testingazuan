@@ -332,6 +332,7 @@
 						<input type="hidden" name="PAGE" value="DirectExecutionPage" />
 				        <input type="hidden" name="USERNAME" value="<%=username%>" />
 				        <input type="hidden" name="DOCUMENT_LABEL" value="<%=objLabel%>" />
+				        <input type="hidden" name="spagobi_execution_id" value="<%=requestIdentity%>" />
 	
 				        <center>
 				        	<input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>

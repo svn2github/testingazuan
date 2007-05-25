@@ -17,8 +17,8 @@
         <property name="userGroup" type="string">
             <column name="usergroup" length="40" not-null="false" />
         </property>
-        <many-to-one name="sbiObjects" class="it.eng.spagobi.metadata.SbiObjects">
-            <column name="doc_id" not-null="false" />
+        <many-to-one name="sbiObject" class="it.eng.spagobi.metadata.SbiObjects">
+            <column name="doc_ref" not-null="false" />
         </many-to-one>
         <property name="documentId" type="integer">
             <column name="doc_id" not-null="true" />
@@ -38,8 +38,8 @@
         <property name="documentParameters" type="string">
             <column name="doc_parameters" length="400" not-null="false" />
         </property>
-        <many-to-one name="sbiEngines" class="it.eng.spagobi.metadata.SbiEngines">
-            <column name="engine_id" not-null="false" />
+        <many-to-one name="sbiEngine" class="it.eng.spagobi.metadata.SbiEngines">
+            <column name="engine_ref" not-null="false" />
         </many-to-one>
         <property name="engineId" type="integer">
             <column name="engine_id" not-null="true" />
@@ -65,10 +65,10 @@
         <property name="requestTime" type="timestamp">
             <column name="request_time" not-null="true"/>
         </property>
-        <property name="executionStart" type="timestamp">
+        <property name="executionStartTime" type="timestamp">
             <column name="execution_start" not-null="false"/>
         </property>
-        <property name="executionEnd" type="timestamp">
+        <property name="executionEndTime" type="timestamp">
             <column name="execution_end" not-null="false"/>
         </property>
         <property name="executionState" type="string">
@@ -83,5 +83,5 @@
         <property name="executionModality" type="string">
             <column name="execution_modality" length="20" not-null="false" />
         </property>
-    </class>
+     </class>
 </hibernate-mapping>

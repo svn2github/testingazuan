@@ -71,10 +71,18 @@ public class ImportUtilities {
 	         while((entry = zis.getNextEntry()) != null) {
 	            int count;
 	            byte data[] = new byte[BUFFER];
-	            File entryFile = new File(pathImpTmpFolder+ "/" + entry.getName());
+	            // START: to solve problems of windows path
+	            String entryName = entry.getName();
+	            int indexofdp = entryName.indexOf(":\\");
+	            if(indexofdp!=-1) {
+	            	int indexlastslash = entryName.lastIndexOf("\\");
+	            	entryName = entryName.substring(0, indexofdp - 2) + entryName.substring(indexlastslash);
+	            }
+	            // END: to solve problems of windows path
+	            File entryFile = new File(pathImpTmpFolder+ "/" + entryName);
 	            File entryFileFolder = entryFile.getParentFile();
 	            entryFileFolder.mkdirs();
-	            FileOutputStream fos = new FileOutputStream(pathImpTmpFolder+ "/" + entry.getName());
+	            FileOutputStream fos = new FileOutputStream(pathImpTmpFolder+ "/" + entryName);
 	            dest = new BufferedOutputStream(fos, BUFFER);
 	            while ((count = zis.read(data, 0, BUFFER)) != -1) {
 	               dest.write(data, 0, count);

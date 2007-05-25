@@ -60,5 +60,12 @@
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spagocms-repositoryproviders-2.1.2.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-profile-2.1.1.jar"/>
 	<classpathentry kind="lib" path="web-content/WEB-INF/lib/spago-web-2.1.2.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/activation.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/casclient.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/dsn.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/imap.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/mailapi.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/pop3.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/smtp.jar"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

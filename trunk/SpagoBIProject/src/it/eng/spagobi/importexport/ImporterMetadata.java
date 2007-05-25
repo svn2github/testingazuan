@@ -195,25 +195,21 @@ public class ImporterMetadata {
 				                   Session session, MetadataLogger log) throws EMFUserError {
 			try {
 				List lovs = getAllExportedSbiObjects(tx, session, "SbiLov");
-				Set assKeys = associations.keySet();
-				Iterator iterAssKeys = assKeys.iterator();
-				while(iterAssKeys.hasNext()) {
-					String expConnName = (String)iterAssKeys.next();
-					String assConnName = (String)associations.get(expConnName);
-					Iterator iterLovs = lovs.iterator();
-					while(iterLovs.hasNext()) {
-						SbiLov lov = (SbiLov)iterLovs.next();
-						if(lov.getInputTypeCd().equalsIgnoreCase("QUERY")) {
-							String lovProv = lov.getLovProvider();
-							QueryDetail qDet = QueryDetail.fromXML(lovProv);
-							String oldConnName = qDet.getConnectionName();
-							qDet.setConnectionName(assConnName);
-							lovProv = qDet.toXML();
-							lov.setLovProvider(lovProv);
-							session.save(lov);
-							log.log("Changed the connection name from "+oldConnName+" to " +
-									assConnName + " for the lov " + lov.getName());
-						}
+				Iterator iterLovs = lovs.iterator();
+				while(iterLovs.hasNext()) {
+					SbiLov lov = (SbiLov)iterLovs.next();
+					if(lov.getInputTypeCd().equalsIgnoreCase("QUERY")) {
+						String lovProv = lov.getLovProvider();
+						QueryDetail qDet = QueryDetail.fromXML(lovProv);
+						String oldConnName = qDet.getConnectionName();
+						String assConnName = (String) associations.get(oldConnName);
+						if (assConnName == null || assConnName.trim().equals("")) continue;
+						qDet.setConnectionName(assConnName);
+						lovProv = qDet.toXML();
+						lov.setLovProvider(lovProv);
+						session.save(lov);
+						log.log("Changed the connection name from "+oldConnName+" to " +
+								assConnName + " for the lov " + lov.getName());
 					}
 				}
 			} catch (SourceBeanException sbe) {

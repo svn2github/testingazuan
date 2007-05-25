@@ -29,6 +29,8 @@ import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.utilities.ChannelUtilities;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -50,14 +52,16 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {	
 		httpRequest = httpReq;
-		RequestContainer requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
-		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		SessionContainer sessionContainer = reqCont.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage(requestContainer, "tree.objectstree.name" ,"component_impexp_messages");
+		String nameTree = msgBuilder.getMessage(reqCont, "tree.objectstree.name" ,"component_impexp_messages");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");

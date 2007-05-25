@@ -389,7 +389,7 @@ public class ImportManager implements IImportManager {
 		importParuseDet();
 		importParuseCheck();
 		importBIObjPar();
-		importObjParUse();
+		//importObjParUse();
 	}
 	
    
@@ -1027,7 +1027,7 @@ public class ImportManager implements IImportManager {
 					functroleid.setRole(newRole);
 					roleid=newRoleid;
 				}
-				// get sbiomain of the current system
+				// get sbidomain of the current system
 				String stateCd = functrole.getStateCd();
 				Map uniqueDom = new HashMap();
 				uniqueDom.put("valuecd", stateCd);
@@ -1040,7 +1040,7 @@ public class ImportManager implements IImportManager {
 				functrole.setStateCd(existDom.getValueCd());
 				// check if the association between metadata already exist
 				Map unique = new HashMap();
-				unique.put("stateid", stateid);
+				unique.put("stateid", existDom.getValueId());
 				unique.put("roleid", roleid);
 				unique.put("functionid", functid);
 				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiFuncRole());

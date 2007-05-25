@@ -1,7 +1,16 @@
 package it.eng.spagobi.importexport.transformers;
 
+import groovy.lang.Binding;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.dbaccess.sql.DataRow;
+import it.eng.spagobi.bo.lov.LovDetailFactory;
+import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.importexport.ITransformer;
 import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.managers.ScriptManager;
+import it.eng.spagobi.security.FakeUserProfile;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -12,10 +21,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -35,6 +49,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		buildCmsNodes(pathImpTmpFolder, archiveName);
 		
 		// TODO Risolvere problemi legati ai lov, in particolare trasformare i vecchi fix list e script (single-value e multi value)
+		changeDatabase(pathImpTmpFolder, archiveName);
 		
 		// compress archive
 		try {
@@ -49,14 +64,177 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		return content;
 	}
 	
+	private void changeDatabase(String pathImpTmpFolder, String archiveName) {
+		Connection conn = null;
+		try{
+			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
+			Statement stmt = conn.createStatement();
+			String selectAllLovs =  "SELECT LABEL, INPUT_TYPE_CD, LOV_PROVIDER FROM SBI_LOV";
+			ResultSet rs = stmt.executeQuery(selectAllLovs);
+			while(rs.next()){
+				// for each old lov, resolves retrocompatibility problems
+				String label = rs.getString("LABEL");
+				String inputTypeCd = rs.getString("INPUT_TYPE_CD");
+				String oldLovProvider = rs.getString("LOV_PROVIDER");
+				String newLovProvider = resolveRetrocompatibilityProblems(label, inputTypeCd, oldLovProvider);
+				if (newLovProvider != null) {
+					newLovProvider = newLovProvider.replaceAll("'", "''");
+					String updateLov = "UPDATE SBI_LOV SET LOV_PROVIDER = '" + newLovProvider + "' " +
+							"WHERE LABEL = '" + label + "'";
+					stmt.executeUpdate(updateLov);
+					conn.commit();
+				}
+
+			}
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",
+		                           "Error while changing database " + e);	
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) conn.close();
+			} catch (SQLException e) {
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",
+                           "Error while closing connection " + e);	
+			}
+		}
+	}
+	
+	/**
+	 * Tries to resolve retrocompatibility problems relevant to lov_provider definition of lov
+	 * @param label The label of the current lov being updated
+	 * @param inputTypeCd The script type code (QUERY/SCRIPT/FIX_LOV/JAVA_CLASS)
+	 * @param oldLovProvider The previous lov_provider
+	 * @return The new lov_provider or null if the updating process generates an error.
+	 */
+	private String resolveRetrocompatibilityProblems(String label, String inputTypeCd, String oldLovProvider) {
+		String toReturn = null;
+		try {
+			if ("FIX_LOV".equalsIgnoreCase(inputTypeCd)) {
+				SourceBean oldSB = SourceBean.fromXMLString(oldLovProvider);
+				toReturn = "<" + LovDetailFactory.FIXEDLISTLOV + "><ROWS>";
+				List elements = oldSB.getAttributeAsList("LOV-ELEMENT");
+				Iterator elementsIt = elements.iterator();
+				while (elementsIt.hasNext()) {
+					SourceBean element = (SourceBean) elementsIt.next();
+					String description = (String) element.getAttribute("DESC");
+					String value = (String) element.getAttribute("VALUE");
+					toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
+				}
+				toReturn += "</ROWS><VALUE-COLUMN>VALUE</VALUE-COLUMN>" +
+						"<DESCRIPTION-COLUMN>DESCRIPTION</DESCRIPTION-COLUMN>" +
+						"<VISIBLE-COLUMNS>DESCRIPTION</VISIBLE-COLUMNS>" + 
+						"<INVISIBLE-COLUMNS>VALUE</INVISIBLE-COLUMNS>" +
+						"</" + LovDetailFactory.FIXEDLISTLOV + ">";
+			} else if ("SCRIPT".equalsIgnoreCase(inputTypeCd)) {
+				SourceBean oldSB = SourceBean.fromXMLString(oldLovProvider);
+				SourceBean singleValueSB = (SourceBean) oldSB.getAttribute("SINGLE_VALUE");
+				String singleValueStr = null;
+				if (singleValueSB != null) singleValueStr = singleValueSB.getCharacters(); 
+				boolean isSingleValue = (singleValueStr != null && singleValueStr.equalsIgnoreCase("true"));
+				SourceBean scriptSB = (SourceBean) oldSB.getAttribute("SCRIPT");
+				String script = scriptSB.getCharacters();
+				// TODO adapt script encoded characters like '<', '>', '/' ecc.?
+				if (isSingleValue) {
+					toReturn =	"<SCRIPTLOV>" +
+								    "<SCRIPT>" + script + "</SCRIPT>" +	
+								    "<VALUE-COLUMN>VALUE</VALUE-COLUMN>" +
+								    "<DESCRIPTION-COLUMN>VALUE</DESCRIPTION-COLUMN>" +
+								    "<VISIBLE-COLUMNS>VALUE</VISIBLE-COLUMNS>" +
+								    "<INVISIBLE-COLUMNS></INVISIBLE-COLUMNS>" +
+							    "</SCRIPTLOV>";
+				} else {
+					ScriptDetail scriptDet = new ScriptDetail("<SCRIPTLOV><SCRIPT>" + script + "</SCRIPT></SCRIPTLOV>");
+					List requiredProfileAttrs = scriptDet.getProfileAttributeNames();
+					HashMap profileAttributes = new HashMap();
+					Iterator requiredProfileAttrsIt = requiredProfileAttrs.iterator();
+					while (requiredProfileAttrsIt.hasNext()) {
+						String attrName = (String) requiredProfileAttrsIt.next();
+						profileAttributes.put(attrName, "test");
+					}
+					Binding bind = ScriptManager.fillBinding(profileAttributes);
+					String result = ScriptManager.runScript(script, bind);
+					SourceBean source = SourceBean.fromXMLString(result);
+					boolean toconvert = false;
+					if (!source.getName().equalsIgnoreCase("ROWS")) {
+						toconvert = true;
+					} else {
+						List rowsList = source.getAttributeAsList(DataRow.ROW_TAG);
+						if (rowsList == null || rowsList.size() == 0) {
+							toconvert = true;
+						} else {
+							String defaultName = "";
+							SourceBean rowSB = (SourceBean) rowsList.get(0);
+							List attributes = rowSB.getContainedAttributes();
+							if (attributes != null && attributes.size() > 0) {
+								SourceBeanAttribute attribute = (SourceBeanAttribute) attributes.get(0);
+								defaultName = attribute.getKey();
+							}
+							// if a value column is specified, it is considered
+							SourceBean valueColumnSB = (SourceBean) source.getAttribute("VALUE-COLUMN");
+							if (valueColumnSB != null) {
+								String valueColumn = valueColumnSB.getCharacters();
+								if (valueColumn != null) {
+									scriptDet.setValueColumnName(valueColumn);
+								}
+							} else {
+								scriptDet.setValueColumnName(defaultName);
+							}
+							SourceBean visibleColumnsSB = (SourceBean) source.getAttribute("VISIBLE-COLUMNS");
+							if (visibleColumnsSB != null) {
+								String allcolumns = visibleColumnsSB.getCharacters();
+								if (allcolumns != null) {
+									String[] columns = allcolumns.split(",");
+									scriptDet.setVisibleColumnNames(Arrays.asList(columns));
+								}
+							} else {
+								String[] columns = new String[] {defaultName};
+								scriptDet.setVisibleColumnNames(Arrays.asList(columns));
+							}
+							SourceBean descriptionColumnSB = (SourceBean) source.getAttribute("DESCRIPTION-COLUMN");
+							if (descriptionColumnSB != null) {
+								String descriptionColumn = descriptionColumnSB.getCharacters();
+								if (descriptionColumn != null) {
+									scriptDet.setDescriptionColumnName(descriptionColumn);
+								}
+							} else {
+								scriptDet.setDescriptionColumnName(defaultName);
+							}
+						}
+					}
+					if (toconvert) {
+						toReturn =	"<SCRIPTLOV>" +
+					    				"<SCRIPT>" + script + "</SCRIPT>" +	
+									    "<VALUE-COLUMN>VALUE</VALUE-COLUMN>" +
+									    "<DESCRIPTION-COLUMN>VALUE</DESCRIPTION-COLUMN>" +
+									    "<VISIBLE-COLUMNS>VALUE</VISIBLE-COLUMNS>" +
+									    "<INVISIBLE-COLUMNS></INVISIBLE-COLUMNS>" +
+								    "</SCRIPTLOV>";
+					} else {
+						toReturn = scriptDet.toXML();
+					}
+				}
+			} else if ("JAVA_CLASS".equalsIgnoreCase(inputTypeCd)) {
+				
+			}
+			return toReturn;
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "resolveRetrocompatibilityProblems",
+                    "Could not update lov with label [" + label + "] and lov_provider:\n" +
+                    		oldLovProvider + ".\n" + e);
+			return null;
+		}
+		
+	}
+	
 	/**
 	 * Build all cms nodes for all biobjects
 	 * @param pathImpTmpFolder
 	 * @param archiveName
 	 */
 	private void buildCmsNodes(String pathImpTmpFolder, String archiveName) {
+		Connection conn = null;
 		try {
-			Connection conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
+			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
 			String sql = "SELECT PATH, UUID, BIOBJ_TYPE_CD FROM SBI_OBJECTS";
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
@@ -70,12 +248,17 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				String pathFolderBiObj = pathImpTmpFolder + "/" + archiveName + "/contents" + pathBiObj;
 				buildDocumentNodes(pathFolderBiObj, uuid, biobjTypeCd);
 			}
-			
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
 		               "buildCmsNodes", "Error building cms nodes " + e);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) conn.close();
+			} catch (SQLException e) {
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",
+	                       "Error while closing connection " + e);	
+			}
 		}
-		
 	}
 	
 	/**
@@ -215,13 +398,17 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 	 */
 	private static void replaceParametersInFile(InputStream is, String destFilePath, 
 			Properties props) throws Exception {
-		StringBuffer aStringBuffer = new StringBuffer();
-		replaceParametersInBuffer(is, aStringBuffer, props);
-		File destFile = new File(destFilePath);
-		FileOutputStream fos = new FileOutputStream(destFile);
-		fos.write(aStringBuffer.toString().getBytes());
-		fos.flush();
-		fos.close();
+		FileOutputStream fos = null;
+		try {
+			StringBuffer aStringBuffer = new StringBuffer();
+			replaceParametersInBuffer(is, aStringBuffer, props);
+			File destFile = new File(destFilePath);
+			fos = new FileOutputStream(destFile);
+			fos.write(aStringBuffer.toString().getBytes());
+			fos.flush();
+		} finally {
+			if (fos != null) fos.close();
+		}
 	}
 	
 	/**

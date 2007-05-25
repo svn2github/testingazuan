@@ -149,7 +149,7 @@ public class LovColumnsSelectorTag extends TagSupport {
 		htmlStream.append("	    <td class=\"portlet-section-header\" style=\"background:rgb(254,232,186);text-align:center;width:150px;\">" + visColumnsField + "<td>\n");
 		htmlStream.append("	</tr>\n");
 		
-		String[] visColArr = visibleColumns.split(",");
+		String[] visColArr = visibleColumns.toUpperCase().split(",");
 		List visColList = Arrays.asList(visColArr);
 		Iterator iterCoNames = columnNames.iterator();
 		while(iterCoNames.hasNext()) {
@@ -157,13 +157,13 @@ public class LovColumnsSelectorTag extends TagSupport {
 			String checked = " ";
 			String selectedValue = " ";
 			String selectedDescr = " ";
-			if(colName.equals(valueColumn)) {
+			if(colName.equalsIgnoreCase(valueColumn)) {
 				selectedValue = " checked ";
 			}
-			if(colName.equals(descriptionColumn)) {
+			if(colName.equalsIgnoreCase(descriptionColumn)) {
 				selectedDescr = " checked ";
 			}
-			if(visColList.contains(colName)) {
+			if(visColList.contains(colName.toUpperCase())) {
 				checked = " checked ";
 			}
 			

@@ -828,25 +828,33 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 	}
 
 	private void exportNode (String nodePath, String destFilePath, boolean noRecurse) throws Exception {
-		FileOutputStream fos = new FileOutputStream(destFilePath);
-		ExportOperation exportOp = new ExportOperation();
-		exportOp.setPath(nodePath);
-		exportOp.setOutputStream(fos);
-		exportOp.setNoRecurse(noRecurse);
-		CmsManager manager = new CmsManager();
-		manager.execExportOperation(exportOp);
-		fos.flush();
-		fos.close();
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(destFilePath);
+			ExportOperation exportOp = new ExportOperation();
+			exportOp.setPath(nodePath);
+			exportOp.setOutputStream(fos);
+			exportOp.setNoRecurse(noRecurse);
+			CmsManager manager = new CmsManager();
+			manager.execExportOperation(exportOp);
+			fos.flush();
+		} finally {
+			if (fos != null) fos.close();
+		}
 	}
 
 	private void importNode (String nodePath, File sourceFile) throws Exception {
-		FileInputStream fis = new FileInputStream(sourceFile);
-		ImportOperation importOp = new ImportOperation();
-		importOp.setPath(nodePath);
-		importOp.setInputStream(fis);
-		CmsManager manager = new CmsManager();
-		manager.execImportOperation(importOp);
-		fis.close();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(sourceFile);
+			ImportOperation importOp = new ImportOperation();
+			importOp.setPath(nodePath);
+			importOp.setInputStream(fis);
+			CmsManager manager = new CmsManager();
+			manager.execImportOperation(importOp);
+		} finally {
+			if (fis != null) fis.close();
+		}
 	}
 
 	private void versionNode (String path, boolean noRecurse) throws Exception {

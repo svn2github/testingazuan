@@ -795,9 +795,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			if(script==null) {
 				script = "";
 			}
-			script = script.replaceAll(">", "&gt;");
-			script = script.replaceAll("<", "&lt;");
-			script = script.replaceAll("\"", "&quot;");
+			// TODO controllare se si possono togliere i caratteri di escape
+			//script = script.replaceAll(">", "&gt;");
+			//script = script.replaceAll("<", "&lt;");
+			//script = script.replaceAll("\"", "&quot;");
 			script = "<![CDATA[" + script + "]]>";
 			sdet.setScript(script);	        
 	}

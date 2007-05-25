@@ -480,6 +480,49 @@ public class JPivotDriver implements IEngineDriver {
 	private String getDataAccessToken(SourceBean dimSB, IEngUserProfile profile) {
 		String datoken = "";
 		try {
+			String dimensionName = (String) dimSB.getAttribute("name");
+			SourceBean rulesSB = (SourceBean)dimSB.getAttribute("RULES");
+			String access = (String) rulesSB.getAttribute("access");
+			if (access == null) {
+				access = "none";
+				SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+			            "getDataAccessToken", "Access is not defined for dimension " + dimensionName + "." +
+			            		" Default value 'none' will be considered.");
+			} else if (!access.equalsIgnoreCase("custom") && !access.equalsIgnoreCase("all") 
+					&& !access.equalsIgnoreCase("none")) {
+				access = "none";
+				SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+			            "getDataAccessToken", "Access is not defined correctly for dimension " + dimensionName + "." +
+			            		" Default value 'none' will be considered.");
+			}
+			if (access.equalsIgnoreCase("none") || access.equalsIgnoreCase("all")) {
+				datoken = "access=" + access.toLowerCase(); 
+			} else {
+				datoken = "access=custom";
+				String topLevel = (String) rulesSB.getAttribute("topLevel");
+				String bottomLevel = (String) rulesSB.getAttribute("bottomLevel");
+				if (topLevel != null) datoken += ",topLevel=" + topLevel;
+				if (bottomLevel != null) datoken += ",bottomLevel=" + bottomLevel;
+				List members = rulesSB.getAttributeAsList("MEMBERS.MEMBER");
+				Iterator membersIt = members.iterator();
+				while (membersIt.hasNext()) {
+					SourceBean member = (SourceBean) membersIt.next();
+					String memberName = (String) member.getAttribute("name");
+					String memberAccess = (String) member.getAttribute("access");
+					if (memberAccess == null || (!memberAccess.equalsIgnoreCase("all") 
+							&& !memberAccess.equalsIgnoreCase("none"))) {
+						SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "getDataAccessToken", "Access is not defined correctly for member " + memberName + "." +
+					            		" Default value 'none' will be considered.");
+						memberAccess = "none";
+					}
+					if (memberName != null) {
+						memberName = GeneralUtilities.substituteProfileAttributesInString(memberName, profile);
+						datoken += ",member=" + memberName + "=" + memberAccess;
+					}
+				}
+			}
+			
 			// get the profile attribute name
 			SourceBean attributeSB = (SourceBean)dimSB.getAttribute("ATTRIBUTE");
 			String paName = (String)attributeSB.getAttribute("name");

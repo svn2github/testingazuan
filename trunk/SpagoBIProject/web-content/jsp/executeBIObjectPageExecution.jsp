@@ -1036,12 +1036,12 @@ function changeFrame<%=spagobiExecutionId%>(index) {
 }
 function refreshNavigationBar<%=spagobiExecutionId%>() {
   tmp = top.getFramesArray();
-  frames = tmp.getFrames('<%=spagobiExecutionId%>');
+  nestedIFrames = tmp.getFrames('<%=spagobiExecutionId%>');
   html = "";
-  for (count = 0; count < frames.length; count++) {
-    aFrame = frames[count];
+  for (count = 0; count < nestedIFrames.length; count++) {
+    aFrame = nestedIFrames[count];
     aFrameLabel = aFrame[1];
-		if (count == frames.length - 1) {
+		if (count == nestedIFrames.length - 1) {
 			html += "&nbsp;" + aFrameLabel;
 		} else {
 			html += "&nbsp;<a href='javascript:changeFrame<%=spagobiExecutionId%>(" + count + ")'>" + aFrameLabel + "</a>";
@@ -1054,7 +1054,7 @@ function refreshNavigationBar<%=spagobiExecutionId%>() {
   navBarDiv.innerHTML = html;
 }
 tmp = top.getFramesArray();
-tmp.addFrame('<%=spagobiExecutionId%>', document.getElementById('iframeexec<%=requestIdentity%>'), '<%=obj.getName()%>');
+tmp.addFrame('<%=spagobiExecutionId%>', document.getElementById('button<%=requestIdentity%>'), '<%=obj.getName()%>');
 refreshNavigationBar<%=spagobiExecutionId%>();
 </script>
 <!-- ***************************************************************** -->

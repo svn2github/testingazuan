@@ -113,7 +113,16 @@ function IFramesNavigator() {
     for (i = 1; i < initialLength - index; i++) {
       mainFrame[1].pop();
     }
-    window.history.go(-(initialLength - 1 - index));
+    iframesWithLabel = mainFrame[1];
+    iframeWithLabelToReload = iframesWithLabel[iframesWithLabel.length - 1];
+    iframeToReload = iframeWithLabelToReload[0];
+    iframeToReload.click();
+    //try {
+    //  iframeToReload.location.reload();
+    //} catch (err) {
+    //  alert(err.description);
+    //}
+    //window.history.go(-(initialLength - 1 - index));
   }
   
   this.getFrames = GetFrames;

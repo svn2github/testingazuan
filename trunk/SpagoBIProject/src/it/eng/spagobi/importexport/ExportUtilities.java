@@ -48,24 +48,36 @@ public class ExportUtilities {
 	 * @throws EMFUserError
 	 */
 	public static void copyMetadataScript(String pathDBFolder) throws EMFUserError {
+		FileOutputStream fos = null;
+		InputStream ismetadata = null;
 		try {
 	        Thread curThread = Thread.currentThread();
 	        ClassLoader classLoad = curThread.getContextClassLoader();
 	        String resource = "it/eng/spagobi/importexport/metadata/exportdb/metadata.script";
-	        InputStream ismetadata = classLoad.getResourceAsStream(resource);
+	        ismetadata = classLoad.getResourceAsStream(resource);
 	        String pathDBFile = pathDBFolder + "/metadata.script";
-	        FileOutputStream fos = new FileOutputStream(pathDBFile);
+	        fos = new FileOutputStream(pathDBFile);
 	        int read = 0;
 	        while( (read = ismetadata.read()) != -1) {
 	        	fos.write(read);
 	        }
 	        fos.flush();
-	        fos.close();
-	        ismetadata.close();
         } catch (Exception e) {
         	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
         			"Error during the copy of the metadata exportdatabase script " + e);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
+        } finally {
+        	try{
+	        	if(fos!=null){
+	        		fos.close();
+	        	}
+	        	if(ismetadata!=null) {
+	        		ismetadata.close();
+	        	}
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
+            						"Error while closing streams " + e);
+        	}
         }
 	}
 	
@@ -77,24 +89,36 @@ public class ExportUtilities {
 	 * @throws EMFUserError
 	 */
 	public static void copyMetadataScriptProperties(String pathDBFolder) throws EMFUserError {
+		FileOutputStream fos = null;
+		InputStream ismetadata = null;
 		try {
 	        Thread curThread = Thread.currentThread();
 	        ClassLoader classLoad = curThread.getContextClassLoader();
 	        String resource = "it/eng/spagobi/importexport/metadata/exportdb/metadata.properties";
-	        InputStream ismetadata = classLoad.getResourceAsStream(resource);
+	        ismetadata = classLoad.getResourceAsStream(resource);
 	        String pathDBFile = pathDBFolder + "/metadata.properties";
-	        FileOutputStream fos = new FileOutputStream(pathDBFile);
+	        fos = new FileOutputStream(pathDBFile);
 	        int read = 0;
 	        while( (read = ismetadata.read()) != -1) {
 	        	fos.write(read);
 	        }
 	        fos.flush();
-	        fos.close();
-	        ismetadata.close();
         } catch (Exception e) {
         	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScriptProperties",
         			"Error during the copy of the metadata exportdatabase properties " + e);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
+        } finally {
+        	try{
+	        	if(fos!=null){
+	        		fos.close();
+	        	}
+	        	if(ismetadata!=null) {
+	        		ismetadata.close();
+	        	}
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScriptProperties",
+            						"Error while closing streams " + e);
+        	}
         }
 	}
 	

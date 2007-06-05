@@ -170,23 +170,12 @@ public class ImportExportModule extends AbstractModule {
 		} catch (EMFUserError emfue) {
 			expManager.cleanExportEnvironment();
 			throw emfue;
-		}catch (ClassNotFoundException cnde) {
+		} catch (Exception e) {
+			expManager.cleanExportEnvironment();
 			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConf",
-					"Exporter class not found" + cnde);
+								 "Error while exporting " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-		} catch (InstantiationException ie) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConf",
-					"Cannot create an instance of exporter class " + ie);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-		} catch (IllegalAccessException iae) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConf",
-					"Cannot create an instance of exporter class " + iae);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-		} catch (SourceBeanException sbe) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConf",
-					"Cannot populate response " + sbe);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-		}
+		} 
 	}
 	
 	private List extractObjId(List requests) {

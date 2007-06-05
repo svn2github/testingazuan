@@ -402,21 +402,23 @@ public class BIObjectCMSDAOImpl implements IBIObjectCMSDAO {
 			getOp.setRetrivePropertiesInformation("true");
 			getOp.setRetriveVersionsInformation("true");
 			getOp.setRetriveChildsInformation("true");
-            CmsNode cmsnode = manager.execGetOperation(getOp);			
-            List properties = cmsnode.getProperties();
-            String fileName = "";
-            Iterator iterprop = properties.iterator();
-            while(iterprop.hasNext()) {
-            	CmsProperty prop = (CmsProperty)iterprop.next();
-            	if(prop.getName().equalsIgnoreCase("fileName"))
-            		fileName = prop.getStringValues()[0];
+            CmsNode cmsnode = manager.execGetOperation(getOp);
+            if (cmsnode != null) {
+                List properties = cmsnode.getProperties();
+                String fileName = "";
+                Iterator iterprop = properties.iterator();
+                while(iterprop.hasNext()) {
+                	CmsProperty prop = (CmsProperty)iterprop.next();
+                	if(prop.getName().equalsIgnoreCase("fileName"))
+                		fileName = prop.getStringValues()[0];
+                }
+    			InputStream instr = cmsnode.getContent();
+    			byte[] content = GeneralUtilities.getByteArrayFromInputStream(instr);
+                UploadedFile template = new UploadedFile();
+    	        template.setFileContent(content);
+                template.setFileName(fileName);
+                obj.setTemplate(template);
             }
-			InputStream instr = cmsnode.getContent();
-			byte[] content = GeneralUtilities.getByteArrayFromInputStream(instr);
-            UploadedFile template = new UploadedFile();
-	        template.setFileContent(content);
-            template.setFileName(fileName);
-            obj.setTemplate(template);
 		} catch (Exception e) {
 			SpagoBITracer.major("BIObjectModule", 
 								"BIObjectCMSDAOImpl", 

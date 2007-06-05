@@ -45,13 +45,14 @@ import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.bo.lov.QueryDetail;
-import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,7 +79,6 @@ public class ExportManager implements IExportManager {
 	private Session session = null;
 	private ExporterMetadata exporter = null;
 	private boolean exportSubObjects = false;
-	private boolean exportSnapshots = false;
 	SourceBean connections = null;
 	
 	
@@ -87,40 +87,37 @@ public class ExportManager implements IExportManager {
 	 * @param pathExpFold Path of the export folder
 	 * @param nameExpFile the name to give to the exported file
 	 * @param expSubObj Flag which tells if it's necessary to export subobjects
-	 * @param expSnaps Flag which tells if it's necessary to export snapshots
 	 */
-	public void prepareExport(String pathExpFold, String nameExpFile, 
-			boolean expSubObj, boolean expSnaps) throws EMFUserError {
-		nameExportFile = nameExpFile;
-		pathExportFolder = pathExpFold;
-		exportSubObjects = expSubObj;
-		exportSnapshots = expSnaps;
-		if(pathExportFolder.endsWith("/") || pathExportFolder.endsWith("\\") ) {
-			pathExportFolder = pathExportFolder.substring(0, pathExportFolder.length() - 1);
-		}
-		pathBaseFolder = pathExportFolder + "/" + nameExportFile;
-		File baseFold = new File(pathBaseFolder); 
-		// if folder exist delete it
-		if(baseFold.exists()){
-			ImpExpGeneralUtilities.deleteDir(baseFold);
-		}
-	    baseFold.mkdirs();
-	    pathDBFolder =  pathBaseFolder + "/metadata";
-	    File dbFold = new File(pathDBFolder); 
-	    dbFold.mkdirs();
-	    pathContentFolder = pathBaseFolder + "/contents";
-        File contFold =new File(pathContentFolder); 
-        contFold.mkdirs();
-        ExportUtilities.copyMetadataScript(pathDBFolder);
-        ExportUtilities.copyMetadataScriptProperties(pathDBFolder);
-        sessionFactory = ExportUtilities.getHibSessionExportDB(pathDBFolder);
-        session = sessionFactory.openSession();
-        exporter = new ExporterMetadata();
-        try{
+	public void prepareExport(String pathExpFold, String nameExpFile, boolean expSubObj) throws EMFUserError {
+		try{
+			nameExportFile = nameExpFile;
+			pathExportFolder = pathExpFold;
+			exportSubObjects = expSubObj;
+			if(pathExportFolder.endsWith("/") || pathExportFolder.endsWith("\\") ) {
+				pathExportFolder = pathExportFolder.substring(0, pathExportFolder.length() - 1);
+			}
+			pathBaseFolder = pathExportFolder + "/" + nameExportFile;
+			File baseFold = new File(pathBaseFolder); 
+			// if folder exist delete it
+			if(baseFold.exists()){
+				ImpExpGeneralUtilities.deleteDir(baseFold);
+			}
+		    baseFold.mkdirs();
+		    pathDBFolder =  pathBaseFolder + "/metadata";
+		    File dbFold = new File(pathDBFolder); 
+		    dbFold.mkdirs();
+		    pathContentFolder = pathBaseFolder + "/contents";
+	        File contFold =new File(pathContentFolder); 
+	        contFold.mkdirs();
+	        ExportUtilities.copyMetadataScript(pathDBFolder);
+	        ExportUtilities.copyMetadataScriptProperties(pathDBFolder);
+	        sessionFactory = ExportUtilities.getHibSessionExportDB(pathDBFolder);
+	        session = sessionFactory.openSession();
+	        exporter = new ExporterMetadata();
     		connections = new SourceBean("CONNECTIONS");
     	} catch(Exception e) {
     		SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "prepareExport",
-                    			   "Error while creating structure for exported connections " + e);
+                    			   "Error while creating export environment " + e);
     		throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
     	}
 	}
@@ -132,18 +129,26 @@ public class ExportManager implements IExportManager {
 	 * @param objPaths List of path of the objects to export
 	 */
 	public String exportObjects(List objIds) throws EMFUserError {	
-		exportPropertiesFile();
-		exportDomains();
-		Iterator iterObjs = objIds.iterator();
-		while(iterObjs.hasNext()){
-			String idobj = (String)iterObjs.next();
-			exportSingleObj(idobj);
+		try {
+			exportPropertiesFile();
+			exportDomains();
+			Iterator iterObjs = objIds.iterator();
+			while(iterObjs.hasNext()){
+				String idobj = (String)iterObjs.next();
+				exportSingleObj(idobj);
+			}
+		    closeSession();
+			exportConnectionFile(connections);
+			String archivePath = createExportArchive();
+			deleteTmpFolder();
+			return archivePath;
+		} catch (EMFUserError emfue) {
+			throw emfue;
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportObjects",
+		   			              "Error while exporting objects " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
-	    closeSession();
-		exportConnectionFile(connections);
-		String archivePath = createExportArchive();
-		deleteTmpFolder();
-		return archivePath;
 	}	
 		
 	
@@ -163,20 +168,34 @@ public class ExportManager implements IExportManager {
 	 * @throws EMFUserError
 	 */
 	private String createExportArchive() throws EMFUserError {
+		FileOutputStream fos = null;
+		ZipOutputStream out = null;
 		String archivePath = pathExportFolder + "/" + nameExportFile + ".zip";
-		File archiveFile = new File(archivePath);
-		if(archiveFile.exists()){
-			archiveFile.delete();
-		}
 		try{
-			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(archivePath));
+			File archiveFile = new File(archivePath);
+			if(archiveFile.exists()){
+				archiveFile.delete();
+			}
+			fos = new FileOutputStream(archivePath);
+			out = new ZipOutputStream(fos);
 			compressFolder(pathBaseFolder, out);
 			out.flush();
-			out.close();
 		} catch (Exception e){
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "createExportArchive",
 					   			   "Error while creating archive file " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally {
+			try{
+				if(out!=null) {
+	        		out.close();
+	        	}
+	        	if(fos!=null){
+	        		fos.close();
+	        	}	
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "createExportArchive",
+            						"Error while closing streams " + e);
+        	}
 		}
 		return archivePath;
 	}
@@ -193,13 +212,14 @@ public class ExportManager implements IExportManager {
 		String[] entries = folder.list();
 	    byte[] buffer = new byte[4096];   
 	    int bytes_read;
+	    FileInputStream in = null;
 	    try{
 		    for(int i = 0; i < entries.length; i++) {
 		      File f = new File(folder, entries[i]);
 		      if(f.isDirectory()) {  
 		    	  compressFolder(pathFolder + "/" + f.getName(), out); 
 		      } else {
-		    	  FileInputStream in = new FileInputStream(f); 
+		    	  in = new FileInputStream(f); 
 		    	  String completeFileName = pathFolder + "/" + f.getName();
 		    	  String relativeFileName = f.getName();
 		    	  if(completeFileName.lastIndexOf(pathExportFolder)!=-1) {
@@ -218,6 +238,15 @@ public class ExportManager implements IExportManager {
 	    	SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "compressSingleFolder",
 	    						   "Error while creating archive file " + e);
 	    	throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+	    } finally {
+	    	try{
+	        	if(in!=null){
+	        		in.close();
+	        	}
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName() , "compressFolder",
+            						"Error while closing streams " + e);
+        	}
 	    }
 	}
 	
@@ -227,13 +256,11 @@ public class ExportManager implements IExportManager {
 	 * @throws EMFUserError
 	 */
 	private void exportPropertiesFile() throws EMFUserError {
+		FileOutputStream fos = null;
 		try{
 			String propFilePath = pathBaseFolder + "/export.properties";
-			FileOutputStream fos = new FileOutputStream(propFilePath);
-			ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean currentVersionSB = (SourceBean) config.getAttribute("IMPORTEXPORT.CURRENTVERSION");
-			String version = (String) currentVersionSB.getAttribute("version");
-			String properties = "spagobi-version=" + version + "\n";
+			fos = new FileOutputStream(propFilePath);
+			String properties = "spagobi-version=1.9.2\n";
 			fos.write(properties.getBytes());
 			fos.flush();
 			fos.close();
@@ -241,6 +268,15 @@ public class ExportManager implements IExportManager {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportPropertiesFile",
                     			  "Error while exporting properties file " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally {
+			try{
+	        	if(fos!=null){
+	        		fos.close();
+	        	}
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "exportPropertiesFile",
+            						"Error while closing streams " + e);
+        	}
 		}
 	}
 	
@@ -249,11 +285,17 @@ public class ExportManager implements IExportManager {
 	 * @throws EMFUserError
 	 */
 	private void exportDomains() throws EMFUserError {
-		List domains = DAOFactory.getDomainDAO().loadListDomains();
-		Iterator itDom = domains.iterator();
-		while(itDom.hasNext()) {
-			Domain dom = (Domain)itDom.next();
-			exporter.insertDomain(dom, session);
+		try{
+			List domains = DAOFactory.getDomainDAO().loadListDomains();
+			Iterator itDom = domains.iterator();
+			while(itDom.hasNext()) {
+				Domain dom = (Domain)itDom.next();
+				exporter.insertDomain(dom, session);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportDomains",
+      			  				   "Error while exporting domains " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}
 	
@@ -264,100 +306,73 @@ public class ExportManager implements IExportManager {
      * @throws EMFUserError
      */
 	private void exportSingleObj(String idObj) throws EMFUserError {
-		if((idObj==null) || idObj.trim().equals(""))
-			return;
-		IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
-		BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
-		exportCmsNodes(biobj, session);
-		/*
-		if(exportSubObjects){
-			exportSubObjects(biobj);
+		try {
+			if((idObj==null) || idObj.trim().equals(""))
+				return;
+			IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
+			BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
+			exportTemplate(biobj, session);
+			if(exportSubObjects){
+				exportSubObjects(biobj);
+			}
+			Engine engine = biobj.getEngine();		
+			exporter.insertEngine(engine, session);
+			exporter.insertBIObject(biobj, session);
+			
+			// insert functionalities and association with object
+			List functs = biobj.getFunctionalities();
+			Iterator iterFunct = functs.iterator();
+			while(iterFunct.hasNext()) {
+				Integer functId = (Integer)iterFunct.next();
+				ILowFunctionalityDAO lowFunctDAO = DAOFactory.getLowFunctionalityDAO();
+				LowFunctionality funct = lowFunctDAO.loadLowFunctionalityByID(functId, false);
+				exporter.insertFunctionality(funct, session);
+				exporter.insertObjFunct(biobj, funct, session);
+			}
+			// export parameters
+			List biparams = biobjDAO.getBIObjectParameters(biobj);
+			exportBIParamsBIObj(biparams, biobj);
+			// export parameters dependecies
+			exporter.insertBiParamDepend(biparams, session);
+			
+			// export subReport relation
+			ISubreportDAO subRepDao = DAOFactory.getSubreportDAO();
+			List subList = subRepDao.loadSubreportsByMasterRptId(biobj.getId());
+			Iterator itersub = subList.iterator();
+			while(itersub.hasNext()) {
+				Subreport subRep = (Subreport)itersub.next();
+				exporter.insertSubReportAssociation(subRep, session);
+				exportSingleObj(subRep.getSub_rpt_id().toString());
+			}
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportSingleObj",
+                                   "Error while exporting document with id " + idObj + " :" + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
-		*/
-		Engine engine = biobj.getEngine();		
-		exporter.insertEngine(engine, session);
-		exporter.insertBIObject(biobj, session);
-		
-		// insert functionalities and association with object
-		List functs = biobj.getFunctionalities();
-		Iterator iterFunct = functs.iterator();
-		while(iterFunct.hasNext()) {
-			Integer functId = (Integer)iterFunct.next();
-			ILowFunctionalityDAO lowFunctDAO = DAOFactory.getLowFunctionalityDAO();
-			LowFunctionality funct = lowFunctDAO.loadLowFunctionalityByID(functId, false);
-			exporter.insertFunctionality(funct, session);
-			exporter.insertObjFunct(biobj, funct, session);
-		}
-		// export parameters
-		List biparams = biobjDAO.getBIObjectParameters(biobj);
-		exportBIParamsBIObj(biparams, biobj);
-		// export parameters dependecies
-		exporter.insertBiParamDepend(biparams, session);
-		
-		// export subReport relation
-		ISubreportDAO subRepDao = DAOFactory.getSubreportDAO();
-		List subList = subRepDao.loadSubreportsByMasterRptId(biobj.getId());
-		Iterator itersub = subList.iterator();
-		while(itersub.hasNext()) {
-			Subreport subRep = (Subreport)itersub.next();
-			exporter.insertSubReportAssociation(subRep, session);
-			exportSingleObj(subRep.getSub_rpt_id().toString());
-		}
-		
 	}
 	
 	
 	/**
-	 * Export the cms nodes relevant to a single SpagoBI Object
-	 * @param biobj The BIObject being exported
+	 * Export the template of a single SpagoBI Object
+	 * @param biobj The BIObject to which the template belongs 
 	 * @throws EMFUserError
 	 */
-	private void exportCmsNodes(BIObject biobj, Session session) throws EMFUserError {
-//		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
-//		cmsdao.fillBIObjectTemplate(biobj);
-//		UploadedFile tempFile = biobj.getTemplate();
-//		byte[] tempFileCont = tempFile.getFileContent();
-//		
-//		try{
-//			if(biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
-//				String tempFileStr = new String(tempFileCont);
-//				SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
-//				SourceBean datanameSB = (SourceBean)tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
-//				String lovLabel = (String)datanameSB.getAttribute("value");
-//			    IModalitiesValueDAO lovdao = DAOFactory.getModalitiesValueDAO();
-//			    ModalitiesValue lov = lovdao.loadModalitiesValueByLabel(lovLabel);
-//			    exporter.insertLov(lov, session);
-//			}
-//		} catch(Exception e) {
-//			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
-//                                "Error while exporting lov referenced by template of biobj "+ biobj.getName() +" :" + e);
-//		}
-//		
-//		
-//		String tempFileName = tempFile.getFileName();
-//		String folderTempFilePath = pathContentFolder + biobj.getPath();
-//		File folderTempFile = new File(folderTempFilePath);
-//		folderTempFile.mkdirs();
-//		try{
-//			FileOutputStream fos = new FileOutputStream(folderTempFilePath + "/" + tempFileName);
-//			fos.write(tempFileCont);
-//			fos.flush();
-//			fos.close();
-//		} catch (Exception e) {
-//			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
-//		                           "Error while exporting template file " + e);
-//            throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-//		}
-		
+	private void exportTemplate(BIObject biobj, Session session) throws EMFUserError {
 		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
-		cmsdao.exportDocument(biobj, pathContentFolder + biobj.getPath(), exportSubObjects, exportSnapshots);
+		cmsdao.fillBIObjectTemplate(biobj);
+		UploadedFile tempFile = biobj.getTemplate();
+		if (tempFile == null) {
+			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
+                    "The BIObject with label [" + biobj.getLabel() + "] and name ["+ biobj.getName()+ "] has no template. " +
+                    		"An empty template will be built for this document");
+			tempFile = new UploadedFile();
+			tempFile.setFileContent(new byte[] {'e', 'm', 'p', 't', 'y'});
+			tempFile.setFileName("empty.txt");
+		}
+		byte[] tempFileCont = tempFile.getFileContent();
 		
-		// if the document is a dashboard then also the relevant lov is exported
 		try{
 			if(biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
-				cmsdao.fillBIObjectTemplate(biobj);
-				UploadedFile tempFile = biobj.getTemplate();
-				byte[] tempFileCont = tempFile.getFileContent();
 				String tempFileStr = new String(tempFileCont);
 				SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
 				SourceBean datanameSB = (SourceBean)tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
@@ -370,6 +385,31 @@ public class ExportManager implements IExportManager {
 			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
                                 "Error while exporting lov referenced by template of biobj "+ biobj.getName() +" :" + e);
 		}
+		
+		
+		String tempFileName = tempFile.getFileName();
+		String folderTempFilePath = pathContentFolder + biobj.getPath();
+		File folderTempFile = new File(folderTempFilePath);
+		folderTempFile.mkdirs();
+		FileOutputStream fos = null;
+		try{
+			fos = new FileOutputStream(folderTempFilePath + "/" + tempFileName);
+			fos.write(tempFileCont);
+			fos.flush();
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
+		                           "Error while exporting template file " + e);
+            throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally {
+			try{
+	        	if(fos!=null){
+	        		fos.close();
+	        	}
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName() , "exportTemplate",
+            						"Error while closing streams " + e);
+        	}
+		}
 	}
 	
 	
@@ -379,8 +419,9 @@ public class ExportManager implements IExportManager {
 	 * @param path The path of the SpagoBI BIObject
 	 * @throws EMFUserError
 	 */
-	/*
+	
 	private void exportSubObjects(BIObject biobj) throws EMFUserError {
+		FileOutputStream fos = null;
 		try{
 			String folderSubObjPath = pathContentFolder + biobj.getPath() + "/subobjects";
 			File folderSubObjFile = new File(folderSubObjPath);
@@ -397,7 +438,7 @@ public class ExportManager implements IExportManager {
 				if(subObj.isPublicVisible())
 					publicVisibility = "true";
 				String propertiesStr = "name="+nameSub+"\ndescription="+descr+"\nowner="+owner+"\npubvis="+publicVisibility;
-				FileOutputStream fos = new FileOutputStream(folderSubObjPath + "/" + nameSub + ".properties");
+				fos = new FileOutputStream(folderSubObjPath + "/" + nameSub + ".properties");
 				fos.write(propertiesStr.getBytes());
 				fos.flush();
 				fos.close();
@@ -413,9 +454,18 @@ public class ExportManager implements IExportManager {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportSubObjects",
 		                           "Error while exporting subobjects " + e);
             throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally {
+			try{
+	        	if(fos!=null){
+	        		fos.close();
+	        	}
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportSubObjects",
+            						"Error while closing streams " + e);
+        	}
 		}
 	}
-	*/
+	
 	
 	/**
 	 * Exports the BIParameters of a BIObject 
@@ -547,9 +597,12 @@ public class ExportManager implements IExportManager {
 			List testRolesList = Arrays.asList(testRoles);
 			List execRolesList = Arrays.asList(execRoles);
 			List allRoles = new ArrayList();
-			Collections.addAll(allRoles, devRoles);
-			Collections.addAll(allRoles, testRoles);
-			Collections.addAll(allRoles, execRoles);
+			addToList(allRoles, devRolesList);
+			addToList(allRoles, testRolesList);
+			addToList(allRoles, execRolesList);
+			//Collections.addAll(allRoles, devRoles);
+			//Collections.addAll(allRoles, testRoles);
+			//Collections.addAll(allRoles, execRoles);
 			exportRoles(allRoles);
 			exportFunctRoles(devRolesList, funct, "DEV");
 			exportFunctRoles(testRolesList, funct, "TEST");
@@ -558,6 +611,13 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
+	private void addToList(List dest, List src) {
+		Iterator iterSrc = src.iterator();
+		while(iterSrc.hasNext()) {
+			Object obj = iterSrc.next();
+			dest.add(obj);
+		}
+	}
 	
 	
 	/**
@@ -601,17 +661,26 @@ public class ExportManager implements IExportManager {
 	 * @throws EMFUserError
 	 */
 	private void exportConnectionFile(SourceBean conns) throws EMFUserError {
+		FileOutputStream fos = null;
 		try{
 			String connFilePath = pathBaseFolder + "/connections.xml";
-			FileOutputStream fos = new FileOutputStream(connFilePath);
+			fos = new FileOutputStream(connFilePath);
             String xmlString = conns.toXML(false);
 			fos.write(xmlString.getBytes());
 			fos.flush();
-			fos.close();
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConnectionFile",
                     			  "Error while exporting connection file " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally {
+			try{
+	        	if(fos!=null){
+	        		fos.close();
+	        	}
+        	} catch (Exception e) {
+        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConnectionFile",
+            						"Error while closing streams " + e);
+        	}
 		}
 	}
 

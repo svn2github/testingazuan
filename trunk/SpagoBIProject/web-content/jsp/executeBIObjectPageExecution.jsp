@@ -15,8 +15,6 @@
                  it.eng.spago.navigation.LightNavigationManager,
                  java.util.Map,
                  java.util.HashMap,
-                 org.safehaus.uuid.UUIDGenerator,
-                 org.safehaus.uuid.UUID,
                  it.eng.spagobi.utilities.GeneralUtilities,
                  it.eng.spagobi.managers.BIObjectNotesManager,
                  it.eng.spago.base.SessionContainer,
@@ -24,22 +22,46 @@
                  it.eng.spagobi.utilities.SpagoBITracer,
                  it.eng.spagobi.utilities.ChannelUtilities" %>
 <%@page import="it.eng.spagobi.bo.dao.audit.AuditManager"%>
+<%@page import="it.eng.spagobi.managers.ExecutionManager"%>
+<%@page import="it.eng.spagobi.managers.ExecutionManager.ExecutionInstance"%>
+<%@page import="it.eng.spagobi.drivers.IEngineDriver"%>
 
 <%
-    // identity string for object of the page
-    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-    UUID uuid = uuidGen.generateTimeBasedUUID();
-    String requestIdentity = "request" + uuid.toString();
-    requestIdentity = requestIdentity.replaceAll("-", "");
+
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
-	// get the BiObject from the response
-    BIObject obj = (BIObject)moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+
+	String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
+	if (executionId == null) executionId = (String) moduleResponse.getAttribute("spagobi_execution_id");
+	String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id");
+	if (flowId == null) flowId = "";
+
+	ExecutionManager executionManager = ExecutionManager.getInstance();
+	ExecutionManager.ExecutionInstance instance = executionManager.getExecution(executionId);
+	boolean isDrillRequest = false;
+	boolean isRefreshRequest = false;
+	if (instance != null) {
+		flowId = instance.getFlowId();
+	}
+	String lastExecutionId = executionManager.getLastExecutionId(flowId);
+	if (lastExecutionId != null && !lastExecutionId.equalsIgnoreCase(flowId)) {
+		isDrillRequest = true;
+	}
+	if (isDrillRequest && lastExecutionId !=null && !lastExecutionId.equalsIgnoreCase(executionId)) {
+		isRefreshRequest = true;
+	}	
+
+	// get the BiObject
+	BIObject obj = null;
+	if (isRefreshRequest) {
+		obj = executionManager.getLastExecutionObject(flowId);
+	} else {
+	    obj = (BIObject)moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+	}
 	// get the url of the engine
 	Engine engine = obj.getEngine();
-    String engineurl = engine.getUrl();
-    // get the map of parameters dor execution call
-    Map mapPars = (Map)moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
+    String engineurl = engine.getUrl() + ";jsessionid=" + executionId;
+    
    	// get the actor
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
 
@@ -50,6 +72,19 @@
 	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 	
+    // get the map of parameters dor execution call
+    Map mapPars = null;
+    if (isRefreshRequest) {
+    	String driverClassName = obj.getEngine().getDriverName();
+		IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
+		mapPars = aEngineDriver.getParameterMap(obj, userProfile, executionRole);
+		mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
+		mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
+    	//mapPars = executionManager.getLastExecutionParametersMap(flowId);
+    } else {
+    	mapPars = (Map)moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
+    }
+	
 	// try to get the modality
 	boolean isSingleObjExec = false;
 	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
@@ -58,22 +93,12 @@
 	
 	AuditManager auditManager = AuditManager.getInstance();
 	String auditModality = (modality != null) ? modality : "NORMAL_EXECUTION";
-	Integer executionId = auditManager.insertAudit(obj, userProfile, executionRole, auditModality);
+	Integer executionAuditId = auditManager.insertAudit(obj, userProfile, executionRole, auditModality);
 	// adding parameters for AUDIT updating
-	if (executionId != null) {
-		mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
+	if (executionAuditId != null) {
+		mapPars.put(AuditManager.AUDIT_ID, executionAuditId.toString());
 		mapPars.put(AuditManager.AUDIT_SERVLET, GeneralUtilities.getSpagoBiAuditManagerServlet());
 	}
-	
-	// adding parameters for document-to-document drill
-	mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
-	mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
-	String spagobiExecutionId = (String) aSessionContainer.getAttribute("spagobi_execution_id");
-	if (spagobiExecutionId == null) {
-		// in case it is not a drill a new execution id is created
-		spagobiExecutionId = requestIdentity;
-	}
-	mapPars.put("spagobi_execution_id", spagobiExecutionId);
 	
 	// build the string of the title
     String title = "";
@@ -168,9 +193,11 @@
 
 	// urls for resources
 	String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
+	String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
 %>
 
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
+<script type="text/javascript" src="<%=linkProto%>"></script>
 
 
 <%
@@ -181,7 +208,7 @@
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
-        <div id="navigationBar<%=requestIdentity%>">
+        <div id="navigationBar<%=executionId%>">
            &nbsp;&nbsp;&nbsp;<%=title%>
         </div>
        </td>
@@ -237,13 +264,13 @@
 
         <td class='header-empty-column-portlet-section'>&nbsp;</td>
         <td class='header-button-column-portlet-section'>
-           <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+           <a id="iconNotesEmpty<%=executionId%>" href='javascript:opencloseNotesEditor<%=executionId%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
                     src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
-           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;"
-              href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+           <a id="iconNotesFilled<%=executionId%>" style="display:none;"
+              href='javascript:opencloseNotesEditor<%=executionId%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
                     src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
@@ -265,10 +292,10 @@
 	} else {
 %>
 
-<table width='100%' cellspacing='0' border='0' id="singleobjecttitlebar<%=requestIdentity%>">
+<table width='100%' cellspacing='0' border='0' id="singleobjecttitlebar<%=executionId%>">
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
-      <div id="navigationBar<%=spagobiExecutionId%>">
+      <div id="navigationBar<%=executionId%>">
         &nbsp;&nbsp;&nbsp;<%=title%>
       </div>
 		</td>
@@ -287,13 +314,13 @@
        %>
         <td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
         <td class='header-button-column-single-object-execution-portlet-section'>
-           <a id="iconNotesEmpty<%=requestIdentity%>" href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+           <a id="iconNotesEmpty<%=executionId%>" href='javascript:opencloseNotesEditor<%=executionId%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
                     src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
            </a>
-           <a id="iconNotesFilled<%=requestIdentity%>" style="display:none;"
-              href='javascript:opencloseNotesEditor<%=requestIdentity%>()'>
+           <a id="iconNotesFilled<%=executionId%>" style="display:none;"
+              href='javascript:opencloseNotesEditor<%=executionId%>()'>
                <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
                     src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>'
                     alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
@@ -318,7 +345,6 @@
 		String execIdentifier = objectNotesManager.getExecutionIdentifier(obj);
 		String nameUser = (String)userProfile.getUserUniqueIdentifier();
 		String linkFck = urlBuilder.getResourceLink(request, "/js/FCKeditor/fckeditor.js");
-		String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
 		String linkProtoWin = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
 		String linkProtoEff = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
 		String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
@@ -328,7 +354,6 @@
 %>
 
 <SCRIPT language='JavaScript' src='<%=linkFck%>'></SCRIPT>
-<script type="text/javascript" src="<%=linkProto%>"></script>
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
@@ -339,12 +364,12 @@
 
 <script type="text/javascript">
 
-    var locked<%=requestIdentity%> = false;
-    var xmlHttp<%=requestIdentity%> = null;
-    var holdLockInterval<%=requestIdentity%> = null;
+    var locked<%=executionId%> = false;
+    var xmlHttp<%=executionId%> = null;
+    var holdLockInterval<%=executionId%> = null;
 
 
-    function reloadNotes<%=requestIdentity%>() {
+    function reloadNotes<%=executionId%>() {
        url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService?";
        pars = "task=getNotes&biobjid=<%=obj.getId()%>&execidentifier=<%=execIdentifier%>";
        new Ajax.Request(url,
@@ -353,7 +378,7 @@
             parameters: pars,
             onSuccess: function(transport){
                             response = transport.responseText || "";
-                            getNotesCallback<%=requestIdentity%>(response);
+                            getNotesCallback<%=executionId%>(response);
                         },
             onFailure: somethingWentWrong
           }
@@ -361,9 +386,9 @@
 	   }
 
 
-    function requireLock<%=requestIdentity%>() {
-	      cleanError<%=requestIdentity%>();
-	      if(locked<%=requestIdentity%>){
+    function requireLock<%=executionId%>() {
+	      cleanError<%=executionId%>();
+	      if(locked<%=executionId%>){
 	    		return;
 	    	}
 		    url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
@@ -374,14 +399,14 @@
             parameters: pars,
             onSuccess: function(transport){
                             response = transport.responseText || "";
-                            requireLockCallback<%=requestIdentity%>(response);
+                            requireLockCallback<%=executionId%>(response);
                         },
             onFailure: somethingWentWrong
           }
         );
     }
 
-    function holdLock<%=requestIdentity%>() {
+    function holdLock<%=executionId%>() {
         url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/BIObjectNotesService";
 		    pars = "task=holdLock&user=<%=nameUser%>&execidentifier=<%=execIdentifier%>";
         new Ajax.Request(url,
@@ -390,7 +415,7 @@
             parameters: pars,
             onSuccess: function(transport){
                             response = transport.responseText || "";
-                            holdLockCallback<%=requestIdentity%>(response);
+                            holdLockCallback<%=executionId%>(response);
                         },
             onFailure: somethingWentWrong
           }
@@ -398,11 +423,11 @@
     }
 
 
-    function saveNotes<%=requestIdentity%>() {
-	      cleanError<%=requestIdentity%>();
-	      var editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
+    function saveNotes<%=executionId%>() {
+	      cleanError<%=executionId%>();
+	      var editor = FCKeditorAPI.GetInstance('editorfckarea<%=executionId%>') ;
 	      xhtml = editor.GetXHTML(false);
-	      if(!locked<%=requestIdentity%>){
+	      if(!locked<%=executionId%>){
 	    		return;
 	    	}
 	    	while(xhtml.indexOf("&")!=-1) {
@@ -416,7 +441,7 @@
             parameters: pars,
             onSuccess: function(transport){
                             response = transport.responseText || "";
-                            saveNotesCallback<%=requestIdentity%>(response);
+                            saveNotesCallback<%=executionId%>(response);
                         },
             onFailure: somethingWentWrong
           }
@@ -424,14 +449,14 @@
     }
 
 
-    function getNotesCallback<%=requestIdentity%>(response){
-        if(responseHasError<%=requestIdentity%>(response)) {
-         		error = getResponseError<%=requestIdentity%>(response);
-         		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+    function getNotesCallback<%=executionId%>(response){
+        if(responseHasError<%=executionId%>(response)) {
+         		error = getResponseError<%=executionId%>(response);
+         		divError = document.getElementById('notesErrorMessage<%=executionId%>');
          		divError.innerHTML = error;
          		return;
         }
-        editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>');
+        editor = FCKeditorAPI.GetInstance('editorfckarea<%=executionId%>');
         while(response.indexOf("@-@-@")!=-1) {
           response = response.replace(/@-@-@/, "&");
         }
@@ -441,23 +466,23 @@
         }catch(e){
             // not IE
         }
-        fillAlertExistNotes<%=requestIdentity%>(response);
+        fillAlertExistNotes<%=executionId%>(response);
     }
 
 
-    function requireLockCallback<%=requestIdentity%>(response){
-  			if(responseHasError<%=requestIdentity%>(response)) {
-          		error = getResponseError<%=requestIdentity%>(response);
-          		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+    function requireLockCallback<%=executionId%>(response){
+  			if(responseHasError<%=executionId%>(response)) {
+          		error = getResponseError<%=executionId%>(response);
+          		divError = document.getElementById('notesErrorMessage<%=executionId%>');
           		divError.innerHTML = error;
           		return;
         }
         // editor locked
-        locked<%=requestIdentity%>=true;
-        document.getElementById('notesLockImg<%=requestIdentity%>').style.display='none';
-        document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='inline';
-        document.getElementById('notesReloadImg<%=requestIdentity%>').style.display='none';
-        editor = FCKeditorAPI.GetInstance('editorfckarea<%=requestIdentity%>') ;
+        locked<%=executionId%>=true;
+        document.getElementById('notesLockImg<%=executionId%>').style.display='none';
+        document.getElementById('notesSaveImg<%=executionId%>').style.display='inline';
+        document.getElementById('notesReloadImg<%=executionId%>').style.display='none';
+        editor = FCKeditorAPI.GetInstance('editorfckarea<%=executionId%>') ;
         while(response.indexOf("@-@-@")!=-1) {
           response = response.replace(/@-@-@/, "&");
         }
@@ -467,39 +492,39 @@
         }catch(e){
            	// not IE
         }
-        holdLockInterval<%=requestIdentity%> = setInterval("holdLock<%=requestIdentity%>()", 30000);
-        fillAlertExistNotes<%=requestIdentity%>(response);
+        holdLockInterval<%=executionId%> = setInterval("holdLock<%=executionId%>()", 30000);
+        fillAlertExistNotes<%=executionId%>(response);
 	  }
 
 
-    function holdLockCallback<%=requestIdentity%>(){
+    function holdLockCallback<%=executionId%>(){
   	 		// do nothing (the hold lock request is useful only to keep alive the lock)
 	  }
 
 
-    function saveNotesCallback<%=requestIdentity%>(response){
-      	locked<%=requestIdentity%> = false;
-      	document.getElementById('notesLockImg<%=requestIdentity%>').style.display='inline';
-      	document.getElementById('notesSaveImg<%=requestIdentity%>').style.display='none';
-      	document.getElementById('notesReloadImg<%=requestIdentity%>').style.display='inline';
-      	clearInterval(holdLockInterval<%=requestIdentity%>);
+    function saveNotesCallback<%=executionId%>(response){
+      	locked<%=executionId%> = false;
+      	document.getElementById('notesLockImg<%=executionId%>').style.display='inline';
+      	document.getElementById('notesSaveImg<%=executionId%>').style.display='none';
+      	document.getElementById('notesReloadImg<%=executionId%>').style.display='inline';
+      	clearInterval(holdLockInterval<%=executionId%>);
       	try{
       	   editor.EditingArea.Document.body.contentEditable="false";
       	}catch(e){
            // not IE
       	}
-  			if(responseHasError<%=requestIdentity%>(response)) {
-         		error = getResponseError<%=requestIdentity%>(response);
-         		divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+  			if(responseHasError<%=executionId%>(response)) {
+         		error = getResponseError<%=executionId%>(response);
+         		divError = document.getElementById('notesErrorMessage<%=executionId%>');
          		divError.innerHTML = error;
          		return;
         }
-        reloadNotes<%=requestIdentity%>();
+        reloadNotes<%=executionId%>();
     }
 
 
-    function initializeNotes<%=requestIdentity%>() {
-       reloadNotes<%=requestIdentity%>();
+    function initializeNotes<%=executionId%>() {
+       reloadNotes<%=executionId%>();
 	   }
 
 
@@ -508,7 +533,7 @@
     }
 
 
-    function responseHasError<%=requestIdentity%>(response){
+    function responseHasError<%=executionId%>(response){
     	if(response.indexOf('SpagoBIError:')!=-1) {
     		return true;
     	} else {
@@ -516,20 +541,20 @@
     	}
     }
 
-    function getResponseError<%=requestIdentity%>(response) {
+    function getResponseError<%=executionId%>(response) {
     	error = response.substring(response.indexOf('SpagoBIError:')+13);
     	return error;
     }
 
-    function cleanError<%=requestIdentity%>(){
-    	divError = document.getElementById('notesErrorMessage<%=requestIdentity%>');
+    function cleanError<%=executionId%>(){
+    	divError = document.getElementById('notesErrorMessage<%=executionId%>');
         divError.innerHTML = "";
     }
 
 
-    function fillAlertExistNotes<%=requestIdentity%>(notes){
-       iconempty = document.getElementById('iconNotesEmpty<%=requestIdentity%>');
-       iconfilled = document.getElementById('iconNotesFilled<%=requestIdentity%>');
+    function fillAlertExistNotes<%=executionId%>(notes){
+       iconempty = document.getElementById('iconNotesEmpty<%=executionId%>');
+       iconfilled = document.getElementById('iconNotesFilled<%=executionId%>');
        notes = notes.replace(/^\s*|\s*$/g,"");
        if(notes!=""){
           iconempty.style.display='none';
@@ -545,36 +570,36 @@
 
 
 
-<div id="divNotes<%=requestIdentity%>" style="heigth:100%;width:100%;display:none;background-color:#efefde;overflow:hidden;">
+<div id="divNotes<%=executionId%>" style="heigth:100%;width:100%;display:none;background-color:#efefde;overflow:hidden;">
 
-  <div id="notesLockImg<%=requestIdentity%>" style="float:left;display:inline;padding:5px;">
-      <a href="javascript:requireLock<%=requestIdentity%>()">
+  <div id="notesLockImg<%=executionId%>" style="float:left;display:inline;padding:5px;">
+      <a href="javascript:requireLock<%=executionId%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.lockeditor" />'
                alt='<spagobi:message key = "sbi.execution.notes.lockeditor" />'
                src='<%= urlBuilder.getResourceLink(request, "/img/lock16.gif")%>' />
       </a>
   </div>
-  <div id="notesSaveImg<%=requestIdentity%>" style="float:left;display:none;padding:5px;">
-      <a href="javascript:saveNotes<%=requestIdentity%>()">
+  <div id="notesSaveImg<%=executionId%>" style="float:left;display:none;padding:5px;">
+      <a href="javascript:saveNotes<%=executionId%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.savenotes" />'
           		alt='<spagobi:message key = "sbi.execution.notes.savenotes" />'
                src='<%= urlBuilder.getResourceLink(request, "/img/save16.gif")%>' />
       </a>
   </div>
-  <div id="notesReloadImg<%=requestIdentity%>" style="float:left;display:inline;padding:5px;">
-      <a href="javascript:reloadNotes<%=requestIdentity%>()">
+  <div id="notesReloadImg<%=executionId%>" style="float:left;display:inline;padding:5px;">
+      <a href="javascript:reloadNotes<%=executionId%>()">
           <img title='<spagobi:message key = "sbi.execution.notes.reloadnotes" />'
           		alt='<spagobi:message key = "sbi.execution.notes.reloadnotes" />'
                src='<%= urlBuilder.getResourceLink(request, "/img/reload16.gif")%>' />
       </a>
   </div>
-  <div id="notesErrorMessage<%=requestIdentity%>"  style="float:left;color:red;padding:5px;font-family:arial;font-size:11px;">
+  <div id="notesErrorMessage<%=executionId%>"  style="float:left;color:red;padding:5px;font-family:arial;font-size:11px;">
 
   </div>
   <div style="clear:left;"></div>
 
 
-  <textarea id="editorfckarea<%=requestIdentity%>" name="editorfckarea<%=requestIdentity%>"></textarea>
+  <textarea id="editorfckarea<%=executionId%>" name="editorfckarea<%=executionId%>"></textarea>
 
 
 </div>
@@ -588,100 +613,100 @@
 
 <script>
 
-  var oFCKeditor<%=requestIdentity%> = new FCKeditor('editorfckarea<%=requestIdentity%>');
-  oFCKeditor<%=requestIdentity%>.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
-  oFCKeditor<%=requestIdentity%>.ToolbarSet = 'SbiObjectNotes';
-  oFCKeditor<%=requestIdentity%>.Height = <%=heightNotes%> - 35;
-  oFCKeditor<%=requestIdentity%>.Width = <%=widthNotes%> - 5;
-  oFCKeditor<%=requestIdentity%>.ReplaceTextarea();
+  var oFCKeditor<%=executionId%> = new FCKeditor('editorfckarea<%=executionId%>');
+  oFCKeditor<%=executionId%>.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
+  oFCKeditor<%=executionId%>.ToolbarSet = 'SbiObjectNotes';
+  oFCKeditor<%=executionId%>.Height = <%=heightNotes%> - 35;
+  oFCKeditor<%=executionId%>.Width = <%=widthNotes%> - 5;
+  oFCKeditor<%=executionId%>.ReplaceTextarea();
 
-  var noteOpen<%=requestIdentity%> = false;
+  var noteOpen<%=executionId%> = false;
 
-  function opencloseNotesEditor<%=requestIdentity%>() {
-    if(noteOpen<%=requestIdentity%>) {
+  function opencloseNotesEditor<%=executionId%>() {
+    if(noteOpen<%=executionId%>) {
       // do nothing (close notes with window button)
     } else {
-      noteOpen<%=requestIdentity%> = true;
-      openNotes<%=requestIdentity%>(false);
+      noteOpen<%=executionId%> = true;
+      openNotes<%=executionId%>(false);
     }
   }
 
-  function openNotes<%=requestIdentity%>(automatic) {
+  function openNotes<%=executionId%>(automatic) {
 
-    frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
-    if(frameFcke<%=requestIdentity%>!=null) {
-        frameFcke<%=requestIdentity%>.height= <%=heightNotes%> - 35;
-        frameFcke<%=requestIdentity%>.width= <%=widthNotes%> - 5;
+    frameFcke<%=executionId%> = document.getElementById('editorfckarea<%=executionId%>___Frame');
+    if(frameFcke<%=executionId%>!=null) {
+        frameFcke<%=executionId%>.height= <%=heightNotes%> - 35;
+        frameFcke<%=executionId%>.width= <%=widthNotes%> - 5;
     }
 
-    diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+    diviframeobj = document.getElementById('divIframe<%=executionId%>');
     pos = findPos(diviframeobj);
-    win<%=requestIdentity%> = null;
+    win<%=executionId%> = null;
     if(automatic) {
-       win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
-  	   win<%=requestIdentity%>.setDestroyOnClose();
-       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);
-       win<%=requestIdentity%>.show(false);
-       win<%=requestIdentity%>.minimize();
+       win<%=executionId%> = new Window('win_notes_<%=executionId%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
+  	   win<%=executionId%>.setDestroyOnClose();
+       win<%=executionId%>.setContent('divNotes<%=executionId%>', false, false);
+       win<%=executionId%>.show(false);
+       win<%=executionId%>.minimize();
     } else {
-       win<%=requestIdentity%> = new Window('win_notes_<%=requestIdentity%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
-  	   win<%=requestIdentity%>.setDestroyOnClose();
-       win<%=requestIdentity%>.setContent('divNotes<%=requestIdentity%>', false, false);
-       win<%=requestIdentity%>.show(false);
+       win<%=executionId%> = new Window('win_notes_<%=executionId%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
+  	   win<%=executionId%>.setDestroyOnClose();
+       win<%=executionId%>.setContent('divNotes<%=executionId%>', false, false);
+       win<%=executionId%>.show(false);
 
     }
 
 
-    observerClose<%=requestIdentity%> = {
+    observerClose<%=executionId%> = {
       onClose: function(eventName, win) {
-        if(win == win<%=requestIdentity%>) {
-          noteOpen<%=requestIdentity%> = false;
-          document.getElementById('divNotes<%=requestIdentity%>').style.display='none';
+        if(win == win<%=executionId%>) {
+          noteOpen<%=executionId%> = false;
+          document.getElementById('divNotes<%=executionId%>').style.display='none';
         }
       }
     }
-    Windows.addObserver(observerClose<%=requestIdentity%>);
+    Windows.addObserver(observerClose<%=executionId%>);
 
-    observerResize<%=requestIdentity%> = {
+    observerResize<%=executionId%> = {
       onResize: function(eventName, win) {
-        if(win == win<%=requestIdentity%>) {
+        if(win == win<%=executionId%>) {
             heightwin = win.getSize().height;
             widthwin = win.getSize().width;
-            frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
-            frameFcke<%=requestIdentity%>.height=heightwin - 35;
-            frameFcke<%=requestIdentity%>.width=widthwin - 5;
+            frameFcke<%=executionId%> = document.getElementById('editorfckarea<%=executionId%>___Frame');
+            frameFcke<%=executionId%>.height=heightwin - 35;
+            frameFcke<%=executionId%>.width=widthwin - 5;
         }
       }
     }
-    Windows.addObserver(observerResize<%=requestIdentity%>);
+    Windows.addObserver(observerResize<%=executionId%>);
 
 
-    observerEndResize<%=requestIdentity%> = {
+    observerEndResize<%=executionId%> = {
       onEndResize: function(eventName, win) {
-        if(win == win<%=requestIdentity%>) {
+        if(win == win<%=executionId%>) {
             heightwin = win.getSize().height;
             widthwin = win.getSize().width;
-            frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
-            frameFcke<%=requestIdentity%>.height=heightwin - 35;
-            frameFcke<%=requestIdentity%>.width=widthwin - 5;
+            frameFcke<%=executionId%> = document.getElementById('editorfckarea<%=executionId%>___Frame');
+            frameFcke<%=executionId%>.height=heightwin - 35;
+            frameFcke<%=executionId%>.width=widthwin - 5;
         }
       }
     }
-    Windows.addObserver(observerEndResize<%=requestIdentity%>);
+    Windows.addObserver(observerEndResize<%=executionId%>);
 
 
-    observerMaximize<%=requestIdentity%> = {
+    observerMaximize<%=executionId%> = {
       onMaximize: function(eventName, win) {
-        if(win == win<%=requestIdentity%>) {
+        if(win == win<%=executionId%>) {
             heightwin = win.getSize().height;
             widthwin = win.getSize().width;
-            frameFcke<%=requestIdentity%> = document.getElementById('editorfckarea<%=requestIdentity%>___Frame');
-            frameFcke<%=requestIdentity%>.height=heightwin - 35;
-            frameFcke<%=requestIdentity%>.width=widthwin - 5;
+            frameFcke<%=executionId%> = document.getElementById('editorfckarea<%=executionId%>___Frame');
+            frameFcke<%=executionId%>.height=heightwin - 35;
+            frameFcke<%=executionId%>.width=widthwin - 5;
         }
       }
     }
-    Windows.addObserver(observerMaximize<%=requestIdentity%>);
+    Windows.addObserver(observerMaximize<%=executionId%>);
 
 
   }
@@ -689,7 +714,7 @@
 
   <% if(notesEditOpen) { %>
   	try{
-    	SbiJsInitializer.automaticOpenNotes<%=requestIdentity%> = function() {openNotes<%=requestIdentity%>(true);};
+    	SbiJsInitializer.automaticOpenNotes<%=executionId%> = function() {openNotes<%=executionId%>(true);};
     } catch (err) {
         alert('Cannot open automatically the editor note');
     }
@@ -740,7 +765,7 @@
   if(!heightSetted) {
 %>
 <script>
-	var iframeHeight<%=requestIdentity%> = 0;
+	var iframeHeight<%=executionId%> = 0;
 	var isIE = false;
 	var isIE5 = false;
 	var isIE6 = false;
@@ -756,12 +781,12 @@
 	isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
 	isMoz = (navigatorname.indexOf('explorer') == -1);
 
-	function adaptSize<%=requestIdentity%>Funct() {
+	function adaptSize<%=executionId%>Funct() {
 		// try to find out the height if the content of the iframe (it works if the iframe comes from the same
 		// domain of the main page)
 		try {
 			// evaluates the iframe current height
-			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
 			offsetHeight = 0;
 			clientHeight = 0;
 			if(isIE5) {
@@ -786,27 +811,29 @@
 				iframeEl.style.height = heightFrame + 'px';
 			}
 			// saves the current iframe height into a variable
-			iframeHeight<%=requestIdentity%> = heightFrame;
+			iframeHeight<%=executionId%> = heightFrame;
 			// adjusts parent iframe height
 			if (window != top) {
 				parentIFrame = parent.document.getElementsByTagName('iframe')[0];
 				parentHeightFrame = heightFrame + 50;
 				parentIFrame.style.height = parentHeightFrame + 'px';
 			}
-			setTimeout('adaptSize<%=requestIdentity%>Funct()', 500);
+			
+			setTimeout('adaptSize<%=executionId%>Funct()', 2000);
+			
 		} catch (err) { // in case the previous code generates an error the iframe is sized to the visible area
 						// between iframe start position and footer start position
 						
-			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
 			
 			if (window != top) {
 				try {
-					parent.adaptSize<%=spagobiExecutionId%>Funct();
-					iframeParent = parent.document.getElementById('iframeexec<%=spagobiExecutionId%>');
+					parent.adaptSize<%=flowId%>Funct();
+					iframeParent = parent.document.getElementById('iframeexec<%=flowId%>');
 					newHeight = iframeParent.clientHeight;
-					titleBar = document.getElementById('singleobjecttitlebar<%=requestIdentity%>');
+					titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
 					if (titleBar != null && titleBar.style.display != 'none') {
-						alert('titleBar.clientHeight ' + titleBar.clientHeight);
+						//alert('titleBar.clientHeight ' + titleBar.clientHeight);
 						newHeight = newHeight - titleBar.clientHeight - 30;
 					}
 					iframeEl.style.height = newHeight + 'px';
@@ -822,7 +849,7 @@
 			if(isIE7) { heightVisArea = top.document.documentElement.clientHeight }
 			if(isMoz) { heightVisArea = top.innerHeight; }
 			// get the frame div object
-			diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+			diviframeobj = document.getElementById('divIframe<%=executionId%>');
 			// find the frame div position
 			pos = findPos(diviframeobj);
 						
@@ -858,19 +885,19 @@
 			// calculate height of the frame
 			heightFrame = heightVisArea - pos[1] - heightFooter;
 			// set height to the frame
-			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
 			iframeEl.style.height = heightFrame + 'px';
 		}
 	}
 	
 	try {
-		SbiJsInitializer.adaptSize<%=requestIdentity%> = adaptSize<%=requestIdentity%>Funct;
+		SbiJsInitializer.adaptSize<%=executionId%> = adaptSize<%=executionId%>Funct;
     } catch (err) {
 		alert('Cannot resize the document view area');
 	}
 	
 <%--
-	function adaptSize<%=requestIdentity%>Funct() {
+	function adaptSize<%=executionId%>Funct() {
 		
 		navigatorname = navigator.appName;
 		navigatorversion = navigator.appVersion;
@@ -892,8 +919,8 @@
 			if(isIE6) { totalVisArea = window.document.body.clientHeight; }
 			if(isIE7) { totalVisArea = window.document.body.clientHeight; }
 			if(isMoz) { totalVisArea = window.innerHeight; }
-			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-			titleBar = document.getElementById('singleobjecttitlebar<%=requestIdentity%>');
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
+			titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
 			if (titleBar.style.display != 'none') {
 				totalVisArea = totalVisArea - titleBar.clientHeight - 30;
 			}
@@ -913,14 +940,14 @@
 		if(isMoz) { heightVisArea = top.innerHeight; }
 
 		// get the frame div object
-		diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+		diviframeobj = document.getElementById('divIframe<%=executionId%>');
 		// find the frame div position
 		pos = findPos(diviframeobj);
 					
 		// calculate space below position frame div
 		spaceBelowPos = heightVisArea - pos[1];
 		// set height to the frame
-		iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+		iframeEl = document.getElementById('iframeexec<%=executionId%>');
 		iframeEl.style.height = spaceBelowPos + 'px';
 
 		// calculate height of the win area and height footer
@@ -950,13 +977,13 @@
 		// calculate height of the frame
 		heightFrame = heightVisArea - pos[1] - heightFooter;
 		// set height to the frame
-		iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+		iframeEl = document.getElementById('iframeexec<%=executionId%>');
 		iframeEl.style.height = heightFrame + 'px';
 	}
 
 
 	try {
-		SbiJsInitializer.adaptSize<%=requestIdentity%> = adaptSize<%=requestIdentity%>Funct;
+		SbiJsInitializer.adaptSize<%=executionId%> = adaptSize<%=executionId%>Funct;
     } catch (err) {
 		alert('Cannot resize the document view area');
 	}
@@ -968,49 +995,132 @@
 %>
 
 <center>
-<div id="divIframe<%=requestIdentity%>" style="width:100%;overflow=auto;">
+<div id="divIframe<%=executionId%>" style="width:100%;overflow=auto;">
 
            <%
-           		 String heightStr = "";
-               if(heightSetted)
-           			heightStr = "height:"+heightArea+"px;";
+			String heightStr = "";
+			if(heightSetted)
+				heightStr = "height:"+heightArea+"px;";
            %>
 
-            <iframe id="iframeexec<%=requestIdentity%>"
-                    name="iframeexec<%=requestIdentity%>"
+            <iframe id="iframeexec<%=executionId%>"
+                    name="iframeexec<%=executionId%>"
                     src=""
                     style="width:100%;<%=heightStr%>;"
-                    frameborder="0" onLoad="this.contentWindow.document.getElementById('singleobjecttitlebar<%=requestIdentity%>').style.display='none'"></iframe>
+                    frameborder="0" onLoad="this.contentWindow.document.getElementById('singleobjecttitlebar<%=executionId%>').style.display='none'">
+			</iframe>
 
-
-         	<form name="formexecution<%=requestIdentity%>"
-                id='formexecution<%=requestIdentity%>' method="post"
+			<%
+			String target = "iframeexec" + executionId;
+			if (isDrillRequest && !isRefreshRequest) target = "_self";
+			%>
+         	<form name="formexecution<%=executionId%>"
+                id='formexecution<%=executionId%>' method="post"
          	      action="<%=engineurl%>"
-         	      target='iframeexec<%=requestIdentity%>'>
+         	      target='<%=target%>'>
          	<%
-         		 java.util.Set keys = mapPars.keySet();
-         	   Iterator iterKeys = keys.iterator();
-         	   while(iterKeys.hasNext()) {
+				java.util.Set keys = mapPars.keySet();
+				Iterator iterKeys = keys.iterator();
+				while(iterKeys.hasNext()) {
          	    	String key = iterKeys.next().toString();
          	    	String value = mapPars.get(key).toString();
-         	%>
-         		<input type="hidden" name="<%=key%>" value="<%=value%>" />
-         	<%
+	         	%>
+	         		<input type="hidden" name="<%=key%>" value="<%=value%>" />
+	         	<%
          	   }
          	%>
-         	  <center>
-         	    <input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>
-			       </center>
-			     </form>
+	         	  <center>
+	         	    <input id="button<%=executionId%>" type="submit" value="View Output"  style='display:inline;'/>
+				  </center>
+			</form>
 
             <script>
-              button = document.getElementById('button<%=requestIdentity%>');
-              button.style.display='none';
-              button.click();
+            try {
+            	updateExecutioManager<%=executionId%>();
+            } catch (err) {
+            	alert(err);
+            }
+            
+			function updateExecutioManager<%=executionId%>() {
+				winName = window.name;
+				if (window.name != null && window.name.match('iframeexec')) {
+					winName = winName.substring(10);
+					document.getElementById('formexecution<%=executionId%>').target="_self";
+				}
+	        	url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP";
+		    	pars = "NEW_SESSION=TRUE&ACTION_NAME=UPDATE_EXECUTION_MANAGER&windowName=" + winName + "&executionId=<%=executionId%>";
+		    	pars += "&BIOBJECT_ID=<%=obj.getId()%>";
+		    	<%
+		    	List parameters = obj.getBiObjectParameters();
+		    	Iterator parametersIt = parameters.iterator();
+		    	while (parametersIt.hasNext()) {
+		    		BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
+		    		List parValues = aParameter.getParameterValues();
+		    		Iterator parValuesIt = parValues.iterator();
+		    		while (parValuesIt.hasNext()) {
+		    			String aParValue = parValuesIt.next().toString();
+			    		%>
+			    		pars += "&<%=aParameter.getParameterUrlName()%>=<%=aParValue%>";
+			    		<%
+		    		}
+		    	}
+		    	%>
+        		new Ajax.Request(url,
+          			{
+            			method: 'post',
+            			parameters: pars,
+           				onSuccess: function(transport){
+                            			response = transport.responseText || "";
+                            			refreshNavigationBar<%=executionId%>(response);
+                        			},
+           				onFailure: proceedWithExecution<%=executionId%>
+         			}
+       			);
+			}
+
+            function proceedWithExecution<%=executionId%>() {
+				button = document.getElementById('button<%=executionId%>');
+				button.style.display='none';
+				button.click();
+            }
+            
+            function refreshNavigationBar<%=executionId%>(html) {
+            	winName = window.name;
+            	navBarDiv = null;
+				if (winName != null && winName.match('iframeexec')) {
+					winName = winName.substring(10);
+					navBarDiv = top.document.getElementById("navigationBar"+ winName);
+				} else {
+            		navBarDiv = top.document.getElementById("navigationBar<%=executionId%>");
+            	}
+            	navBarDiv.innerHTML = html;
+            	proceedWithExecution<%=executionId%>()
+            }
+            
+			function GetXmlHttpObject<%=executionId%>(){ 
+				var objXMLHttp=null
+				if(window.XMLHttpRequest)	{
+					objXMLHttp=new XMLHttpRequest()
+				} else if (window.ActiveXObject) {
+					objXMLHttp=new ActiveXObject("Microsoft.XMLHTTP")
+				}
+				return objXMLHttp
+			}
+
             </script>
 
 </div>
 </center>
+
+<script type="text/javascript">
+
+    try{
+      window.onload = SbiJsInitializer.initialize;
+  	} catch (err) {
+      alert('Cannot execute javascript initialize functions');
+  	}
+  	
+</script>
 
 
 <!-- ***************************************************************** -->
@@ -1025,18 +1135,19 @@
 <!-- **************** START IFRAMES NAVIGATOR ************************ -->
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
+<%--
 <script>
 function getFramesArray() {
   return iframesNavigator;
 }
-function changeFrame<%=spagobiExecutionId%>(index) {
+function changeFrame<%=flowId%>(index) {
   tmp = top.getFramesArray();
-  tmp.removeFrames('<%=spagobiExecutionId%>', index);
-  refreshNavigationBar<%=spagobiExecutionId%>();
+  tmp.removeFrames('<%=flowId%>', index);
+  refreshNavigationBar<%=flowId%>();
 }
-function refreshNavigationBar<%=spagobiExecutionId%>() {
+function refreshNavigationBar<%=flowId%>() {
   tmp = top.getFramesArray();
-  nestedIFrames = tmp.getFrames('<%=spagobiExecutionId%>');
+  nestedIFrames = tmp.getFrames('<%=flowId%>');
   html = "";
   for (count = 0; count < nestedIFrames.length; count++) {
     aFrame = nestedIFrames[count];
@@ -1044,31 +1155,22 @@ function refreshNavigationBar<%=spagobiExecutionId%>() {
 		if (count == nestedIFrames.length - 1) {
 			html += "&nbsp;" + aFrameLabel;
 		} else {
-			html += "&nbsp;<a href='javascript:changeFrame<%=spagobiExecutionId%>(" + count + ")'>" + aFrameLabel + "</a>";
+			html += "&nbsp;<a href='javascript:changeFrame<%=flowId%>(" + count + ")'>" + aFrameLabel + "</a>";
 		}
     if (count < frames.length - 1) {
       html += "&nbsp;&gt;";
     }
   }
-  navBarDiv = top.document.getElementById("navigationBar<%=spagobiExecutionId%>");
+  navBarDiv = top.document.getElementById("navigationBar<%=flowId%>");
   navBarDiv.innerHTML = html;
 }
 tmp = top.getFramesArray();
-tmp.addFrame('<%=spagobiExecutionId%>', document.getElementById('button<%=requestIdentity%>'), '<%=obj.getName()%>');
-refreshNavigationBar<%=spagobiExecutionId%>();
+tmp.addFrame('<%=flowId%>', document.getElementById('button<%=executionId%>'), '<%=obj.getName()%>');
+refreshNavigationBar<%=flowId%>();
 </script>
+--%>
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 <!-- **************** END IFRAMES NAVIGATOR ************************** -->
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
-
-<script>
-
-    try{
-      window.onload = SbiJsInitializer.initialize;
-  	} catch (err) {
-      alert('Cannot execute javascript initialize functions');
-  	}
-
-</script>

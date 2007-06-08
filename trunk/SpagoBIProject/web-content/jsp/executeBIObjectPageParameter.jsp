@@ -63,12 +63,19 @@
     if( (objDescr!=null) && !(objDescr.trim().equals("")) ) 
     	title += ": " + objDescr;
    	
+    String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
+    String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id");
+    
    	// build the url for the parameters form
    	Map execUrlPars = new HashMap();
    	execUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
    	execUrlPars.put(SpagoBIConstants.ACTOR, actor);
    	execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
    	execUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   	if (executionId != null && flowId != null) {
+   		execUrlPars.put("spagobi_execution_id", executionId);
+   		execUrlPars.put("spagobi_flow_id", flowId);
+   	}
     String execUrl = urlBuilder.getUrl(request, execUrlPars);
 	    
    	// build the back url 
@@ -76,6 +83,10 @@
     backUrlPars.put("PAGE", "BIObjectsPage");
     backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+   	if (executionId != null && flowId != null) {
+   		backUrlPars.put("spagobi_execution_id", executionId);
+   		backUrlPars.put("spagobi_flow_id", flowId);
+   	}
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
    		
 %>
@@ -173,27 +184,24 @@ if (isSingleObjExec) {
 
 
 
-   <!-- if there aren't parameters show the link for the new composition -->
-   <% if(noPars) { 
-			Map execNewCompUrlPars = new HashMap();
-			execNewCompUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
-			execNewCompUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
-			execNewCompUrlPars.put(SpagoBIConstants.ACTOR, actor);
-			execNewCompUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-		    String execNewCompUrl = urlBuilder.getUrl(request, execNewCompUrlPars);
-   %>
-   <span class='portlet-font'>
-			<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition1", "messages")%>
-	 </span>
-   <a href='<%=execUrl%>'
-			class='portlet-form-field-label'
-			onmouseover="this.style.color='#9297ac';"
-			onmouseout="this.style.color='#074B88';">
-			<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition2", "messages")%>
-	 </a>
-
-   <br/><br/> 
-   <% } %>
+	<!-- if there aren't parameters show the link for the new composition -->
+	<% 
+	if(noPars) { 
+	   %>
+	   <span class='portlet-font'>
+				<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition1", "messages")%>
+		 </span>
+	   <a href='<%=execUrl%>'
+				class='portlet-form-field-label'
+				onmouseover="this.style.color='#9297ac';"
+				onmouseout="this.style.color='#074B88';">
+				<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition2", "messages")%>
+		 </a>
+	
+	   <br/><br/>
+	   <%
+	} 
+	%>
 
 	
 	
@@ -287,6 +295,10 @@ if (isSingleObjExec) {
 		                        execSubObjUrlPars.put("DESCRIPTION_SUB_OBJECT", descr);
 		                        execSubObjUrlPars.put("VISIBILITY_SUB_OBJECT", visib);
 		                        execSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+		            		   	if (executionId != null && flowId != null) {
+		            		   		execSubObjUrlPars.put("spagobi_execution_id", executionId);
+		            		   		execSubObjUrlPars.put("spagobi_flow_id", flowId);
+		            		   	}
 		            		    execSubObjUrl = urlBuilder.getUrl(request, execSubObjUrlPars);
 		                        
 		            		    Map deleteSubObjUrlPars = new HashMap();
@@ -295,6 +307,10 @@ if (isSingleObjExec) {
 		            		    deleteSubObjUrlPars.put(SpagoBIConstants.ACTOR, actor);
 		            		    deleteSubObjUrlPars.put("NAME_SUB_OBJECT", nameSub);
 		            		    deleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+		            		   	if (executionId != null && flowId != null) {
+		            		   		deleteSubObjUrlPars.put("spagobi_execution_id", executionId);
+		            		   		deleteSubObjUrlPars.put("spagobi_flow_id", flowId);
+		            		   	}
 		            		    deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 		                   %>
 		                        <tr class='portlet-font'>
@@ -415,6 +431,10 @@ if (isSingleObjExec) {
 						execSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
             		    execSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
             		    execSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+            		   	if (executionId != null && flowId != null) {
+            		   		execSnapUrlPars.put("spagobi_execution_id", executionId);
+            		   		execSnapUrlPars.put("spagobi_flow_id", flowId);
+            		   	}
             		    execSnapUrl = urlBuilder.getUrl(request, execSnapUrlPars);
 						
             		    Map deleteSnapUrlPars = new HashMap();
@@ -422,6 +442,10 @@ if (isSingleObjExec) {
             		    deleteSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
             		    deleteSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
             		    deleteSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+            		   	if (executionId != null && flowId != null) {
+            		   		deleteSnapUrlPars.put("spagobi_execution_id", executionId);
+            		   		deleteSnapUrlPars.put("spagobi_flow_id", flowId);
+            		   	}
             		    deleteSnapUrl = urlBuilder.getUrl(request, deleteSnapUrlPars);
 		                
 		         %>

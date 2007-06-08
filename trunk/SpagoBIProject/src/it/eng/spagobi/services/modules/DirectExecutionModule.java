@@ -36,14 +36,22 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.managers.ExecutionManager;
+import it.eng.spagobi.managers.ExecutionManager.ExecutionInstance;
 import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 public class DirectExecutionModule extends AbstractModule {
@@ -55,12 +63,49 @@ public class DirectExecutionModule extends AbstractModule {
 		// get spago containers
 		RequestContainer reqContainer = getRequestContainer();
 		SessionContainer sessionContainer = reqContainer.getSessionContainer();
+		// drill flow id
+		//String flowId = (String) request.getAttribute("spagobi_flow_id");
+		//if (flowId != null) {
+		//	sessionContainer.setAttribute("spagobi_flow_id", flowId);
+		//}
 		BIObject obj = null;
-		String documentParameters = null;
+		String documentParameters = "";
 		String operation = (String) request.getAttribute("OPERATION");
 		if (operation != null && operation.equalsIgnoreCase("REFRESH")) {
 			obj = (BIObject) sessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 			documentParameters = (String) sessionContainer.getAttribute(SpagoBIConstants.PARAMETERS);
+		} else if (operation != null && operation.equalsIgnoreCase("RECOVER_EXECUTION_FROM_DRILL_FLOW")) {
+			// drill execution id
+			String executionId = (String) request.getAttribute("spagobi_execution_id");
+			String flowId = (String) request.getAttribute("spagobi_flow_id");
+			if (executionId != null && flowId != null) {
+				response.setAttribute("spagobi_execution_id", executionId);
+				response.setAttribute("spagobi_flow_id", flowId);
+				ExecutionManager executionManager = ExecutionManager.getInstance();
+				ExecutionInstance instance = executionManager.recoverExecution(flowId, executionId);
+				obj = instance.getBIObject();
+				List parameters = obj.getBiObjectParameters();
+				Iterator parametersIt = parameters.iterator();
+				while (parametersIt.hasNext()) {
+					BIObjectParameter parameter = (BIObjectParameter) parametersIt.next();
+					String parurlname = parameter.getParameterUrlName();
+					List parValues = parameter.getParameterValues();
+					if (parValues == null || parValues.size() == 0) continue;
+					if (parValues.size() == 1) {
+						documentParameters += "&" + parurlname + "=" + parValues.get(0).toString();
+					} else {
+						documentParameters += "&" + parurlname + "=";
+						for (int i = 0; i < parValues.size(); i++) {
+							String aParValue = parValues.get(i).toString();
+							documentParameters += aParValue;
+							if (i < parValues.size() - 1) documentParameters += ";";
+						}
+					}
+				}
+		    	if (documentParameters.startsWith("&")) {
+		    		documentParameters = documentParameters.substring(1);
+		    	}
+			}
 		} else {
 			clearSession(sessionContainer);
 			// get the user name from request if available
@@ -107,11 +152,7 @@ public class DirectExecutionModule extends AbstractModule {
 				return;
 			}
 		}
-		// drill execution id
-		String spagobiExecutionId = (String) request.getAttribute("spagobi_execution_id");
-		if (spagobiExecutionId != null) {
-			sessionContainer.setAttribute("spagobi_execution_id", spagobiExecutionId);
-		}
+		
 		// put in session execution modality
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
         // set into the response the right information for loopback

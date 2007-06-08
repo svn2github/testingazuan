@@ -35,7 +35,11 @@
    	formActPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String formAct = urlBuilder.getUrl(request, formActPars);
     
-    String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);  
+    String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY); 
+    
+    String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
+    String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id");
+    
 %>
 
 
@@ -86,6 +90,15 @@
 
 		<input type="hidden" value="<%= actor %>" name="<%= SpagoBIConstants.ACTOR %>" />
 		<input type="hidden" value="<%= id %>" name="<%= ObjectsTreeConstants.OBJECT_ID %>" />
+		<%
+		if (executionId != null && flowId != null) {
+			%>
+			<input type="hidden" name="spagobi_execution_id" value="<%= executionId %>" />
+			<input type="hidden" name="spagobi_flow_id" value="<%= flowId %>" />
+			<%
+		}
+		%>
+		
 		
  	<div class="div_detail_area_forms">
 	 	<div class='div_detail_label'>

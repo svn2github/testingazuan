@@ -42,7 +42,6 @@ import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
-import it.eng.spagobi.bo.dao.audit.AuditManager;
 import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
@@ -51,12 +50,10 @@ import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.metadata.SbiAudit;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,6 +64,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * Executes a report, according to four phases; each phase is identified by a message string.
@@ -657,6 +657,13 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 */
 	private void execute(BIObject obj, SubObjectDetail subObj, SourceBean response) {
 		debug("execute", "start execute");
+		
+	    // identity string for object execution
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    String executionId = uuid.toString();
+	    executionId = executionId.replaceAll("-", "");
+		
 		EMFErrorHandler errorHandler = getErrorHandler();
 
 		// GET ENGINE ASSOCIATED TO THE BIOBJECT
@@ -716,22 +723,20 @@ public class ExecuteBIObjectModule extends AbstractModule
 			    // get the map of the parameters
 				Map mapPars = null;
 				
-				
 				if(subObj!=null) 
 					mapPars = aEngineDriver.getParameterMap(obj, subObj, profile, executionRole);
 				else mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
 				
-				//String type = obj.getBiObjectTypeCode();
-				//if(type.equalsIgnoreCase("OLAP")) {
-				//    if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj, profile);
-				//    else mapPars = aEngineDriver.getParameterMap(obj, profile);
-				//} else {
-				//	if (subObj != null) mapPars = aEngineDriver.getParameterMap(obj, subObj);
-				//	else mapPars = aEngineDriver.getParameterMap(obj);
-				//}
-				
-			    // set into the reponse the parameters map	
+				// adding parameters for document-to-document drill
+				mapPars.put("username", profile.getUserUniqueIdentifier().toString());
+				mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
+
+				// set into the reponse the parameters map	
 				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
+				
+				// set into the reponse the execution and flow ids	
+				response.setAttribute("spagobi_execution_id", executionId);
+				//response.setAttribute("FLOW_ID", flowId);
 				
 			} catch (Exception e) {
 				 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 

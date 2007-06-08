@@ -90,7 +90,13 @@ public class ListLookupModalityValuesModule extends AbstractListLookupModule {
 			String correlatedParuseIdStr = (String) request.getAttribute("correlated_paruse_id");
 			paramsMap.put("correlated_paruse_id", request.getAttribute("correlated_paruse_id"));
 			paramsMap.put("LOOKUP_PARAMETER_ID", request.getAttribute("LOOKUP_PARAMETER_ID"));	
-		}  
+		}
+	    String executionId = (String) request.getAttribute("spagobi_execution_id");
+	    String flowId = (String) request.getAttribute("spagobi_flow_id");
+	   	if (executionId != null && flowId != null) {
+	   		paramsMap.put("spagobi_execution_id", executionId);
+	   		paramsMap.put("spagobi_flow_id", flowId);
+	   	}
 		response.setAttribute("PARAMETERS_MAP", paramsMap);		
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
 		return list;		

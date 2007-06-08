@@ -71,10 +71,11 @@ function SbiJsInitializerClass() {
 // END PORLTET JAVASCRIPT INTIIALIZER
 
 // START IFRAMES NAVIGATOR INITIALIZER
+/*
 function IFramesNavigator() {
 
-  /*
-  	Structor of IFramesNavigator navigator:
+  
+  	Structure of IFramesNavigator navigator:
   	it contains a variable 'frames' that is an array;
   	each element of 'frames' is a 'mainFrame';
   	a mainFrame is an array with length = 2:
@@ -82,7 +83,7 @@ function IFramesNavigator() {
   	- mainFrame[1] contains an array: each element of this array is an 'iframeWithLabel', that is
   				- iframeWithLabel[0] is the nested iframe;
   				- iframeWithLabel[1] is the iframe label.
-  */
+  
 
   this.frames = new Array();
   
@@ -162,3 +163,4 @@ try {
   var iframesNavigator = new IFramesNavigator();
 }
 // END IFRAMES NAVIGATOR INITIALIZER
+*/

@@ -55,7 +55,7 @@ public class SpagoBIAccessFilter implements Filter {
 		// parameters required for document-to-document drill
 		String username = request.getParameter("username");
 		String spagobiContextUrl = request.getParameter("spagobicontext");
-		String spagobiExecutionId = request.getParameter("spagobi_execution_id");
+		//String spagobiFlowId = request.getParameter("spagobi_flow_id");
 		// parameters required for auditing
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		String auditServlet = request.getParameter("SPAGOBI_AUDIT_SERVLET");
@@ -64,7 +64,7 @@ public class SpagoBIAccessFilter implements Filter {
 			HttpSession session = httpRequest.getSession();
 			if (username != null) session.setAttribute("username", username);
 			if (spagobiContextUrl != null) session.setAttribute("spagobicontext", spagobiContextUrl);
-			if (spagobiExecutionId != null) session.setAttribute("spagobi_execution_id", spagobiExecutionId);
+			//if (spagobiFlowId != null) session.setAttribute("spagobi_flow_id", spagobiFlowId);
 			if (auditId != null && auditServlet != null) {
 				AuditAccessUtils auditAccessUtils = (AuditAccessUtils) session.getAttribute("SPAGOBI_AUDIT_UTILS");
 				if (auditAccessUtils == null) {

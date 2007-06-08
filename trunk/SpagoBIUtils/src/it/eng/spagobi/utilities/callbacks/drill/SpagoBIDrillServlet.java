@@ -35,16 +35,10 @@ package it.eng.spagobi.utilities.callbacks.drill;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 public class SpagoBIDrillServlet extends HttpServlet {
 
@@ -52,10 +46,11 @@ public class SpagoBIDrillServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		String username = (String) session.getAttribute("username");
 		String spagobiContextUrl = (String) session.getAttribute("spagobicontext");
-		String spagobiExecutionId = (String) session.getAttribute("spagobi_execution_id");
+		//String spagobiExecutionId = (String) session.getAttribute("spagobi_flow_id");
 		String url = spagobiContextUrl + "/servlet/AdapterHTTP?";
-		url += "spagobi_execution_id=" + spagobiExecutionId;
-		url += "&USERNAME=" + username;
+		//url += "spagobi_flow_id=" + spagobiExecutionId;
+		//url += "&USERNAME=" + username;
+		url += "USERNAME=" + username;
 		url += "&NEW_SESSION=TRUE";
 		url += "&PAGE=DirectExecutionPage";
 		url += "&DOCUMENT_LABEL=" + request.getParameter("DOCUMENT_LABEL");

@@ -24,6 +24,8 @@ package it.eng.spagobi.managers;
 import it.eng.spagobi.bo.BIObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +36,8 @@ import java.util.Set;
 public class ExecutionManager {
 
 	private static ExecutionManager _instance = null;
+	// exections before 2 hours ago are deleted  
+	private static int hoursAgo = 2;
 	private Map _flows = null;
 	
 	private ExecutionManager() {
@@ -43,12 +47,30 @@ public class ExecutionManager {
     public static ExecutionManager getInstance() {
         if (_instance == null) {
         	_instance = new ExecutionManager();
+        } else {
+        	// erases old executions
+        	Calendar now = new GregorianCalendar();
+        	Calendar someHoursAgo = new GregorianCalendar();
+        	someHoursAgo.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY) - hoursAgo);
+        	Set keys = _instance._flows.keySet();
+        	List keysToBeDeleted = new ArrayList();
+        	Iterator keysIt = keys.iterator();
+        	while (keysIt.hasNext()) {
+        		String key = (String) keysIt.next();
+        		Calendar lastExecutionCalendar = _instance.getLastExecutionInstance(key).calendar;
+        		if (lastExecutionCalendar.before(someHoursAgo)) keysToBeDeleted.add(key);
+        	}
+        	Iterator keysToBeDeletedIt = keysToBeDeleted.iterator();
+        	while (keysToBeDeletedIt.hasNext()) {
+        		String key = (String) keysToBeDeletedIt.next();
+        		_instance._flows.remove(key);
+        	}
         }
         return _instance;
     }
     
-    public void registerExecution(String flowId, String executionId, BIObject obj) {
-    	ExecutionInstance newInstance = new ExecutionInstance(flowId, executionId, obj);
+    public void registerExecution(String flowId, String executionId, BIObject obj, String executionRole) {
+    	ExecutionInstance newInstance = new ExecutionInstance(flowId, executionId, obj, executionRole);
     	if (_flows.containsKey(flowId)) {
     		List instances = (List) _flows.get(flowId);
     		if (!instances.contains(newInstance)) 
@@ -161,11 +183,15 @@ public class ExecutionManager {
     	private String flowId = null;
     	private String executionId = null;
     	private BIObject object = null;
+    	private String executionRole = null;
+    	private Calendar calendar = null; 
     	
-    	public ExecutionInstance (String flowId, String executionId, BIObject obj) {
+    	public ExecutionInstance (String flowId, String executionId, BIObject obj, String executionRole) {
     		this.flowId = flowId;
     		this.executionId = executionId;
     		this.object = obj;
+    		this.calendar = new GregorianCalendar();
+    		this.executionRole = executionRole;
     	}
     	
     	/*
@@ -244,6 +270,15 @@ public class ExecutionManager {
 			this.object = object;
 		}
     	
+		public Calendar getCalendar() {
+			return calendar;
+		}
+		
+
+		public String getExecutionRole() {
+			return executionRole;
+		}
+		
 		public boolean equals(Object another) {
 			if (another instanceof ExecutionInstance) {;
 				ExecutionInstance anInstance = (ExecutionInstance) another;

@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Domain;
@@ -271,7 +272,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		            "Object with label = '" + obj.getLabel() + "' cannot be executed by the user!!");
 			Vector v = new Vector();
 			v.add(obj.getLabel());
-			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
+			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075", v, null));
 			return;
 		}
 		
@@ -280,7 +281,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		debug("pageCreationHandler", "using parameters " + userProvidedParametersStr);
 		
 		// define the variable for execution role
-		String role = "";
+		String role = (String) request.getAttribute("spagobi_execution_role");
        	List correctRoles = null;
        	if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
        	    (actor.equalsIgnoreCase(SpagoBIConstants.USER_ACTOR)) || 
@@ -290,30 +291,45 @@ public class ExecuteBIObjectModule extends AbstractModule
        		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id);
        	debug("pageCreationHandler", "correct roles for execution retrived " + correctRoles);
        	
-       	// if correct roles is more than one the user has to select one of them
-        // put in the response the right inforamtion for publisher in order to show page role selection
-		if( correctRoles.size() > 1 ) {
-			response.setAttribute("selectionRoleForExecution", "true");
-			response.setAttribute("roles", correctRoles);
-			response.setAttribute(ObjectsTreeConstants.OBJECT_ID, id);
-			debug("pageCreationHandler", "more than one correct roles for execution, redirect to the" +
-				  " role selection page"); 		
-			return;
-		
-		// if there isn't correct role put in the error stack a new error
-		} else if(correctRoles.size() < 1) {
-			    debug("pageCreationHandler", "no correct role for the object execution");
+       	if (role != null) {
+       		// if the role is specified
+       		if (!correctRoles.contains(role)) {
+			    debug("pageCreationHandler", "Role [" + role + "] is not a correct role for execution");
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 						            "ExecuteBIObjectMOdule", 
-						            "service", 
-						            "Object cannot be executed by no role of the user");
-		   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1006)); 
-		   		return;
-		
-		// the list contains only one role which is the right role
-		} else {
-			role = (String)correctRoles.get(0);
-		}
+						            "pageCreationHandler", 
+						            "Role [" + role + "] is not a correct role for execution");
+				Vector v = new Vector();
+				v.add(role);
+				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1078, v, null));
+				return;
+       		}
+       	} else {	
+	       	// if correct roles is more than one the user has to select one of them
+	        // put in the response the right inforamtion for publisher in order to show page role selection
+			if( correctRoles.size() > 1 ) {
+				response.setAttribute("selectionRoleForExecution", "true");
+				response.setAttribute("roles", correctRoles);
+				response.setAttribute(ObjectsTreeConstants.OBJECT_ID, id);
+				debug("pageCreationHandler", "more than one correct roles for execution, redirect to the" +
+					  " role selection page"); 		
+				return;
+			
+			// if there isn't correct role put in the error stack a new error
+			} else if(correctRoles.size() < 1) {
+				    debug("pageCreationHandler", "no correct role for the object execution");
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+							            "ExecuteBIObjectMOdule", 
+							            "service", 
+							            "Object cannot be executed by no role of the user");
+			   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1006)); 
+			   		return;
+			
+			// the list contains only one role which is the right role
+			} else {
+				role = (String)correctRoles.get(0);
+			}
+       	}
 		debug("pageCreationHandler", "using role " + role);
 		
 		// NOW THE EXECUTION ROLE IS SELECTED 

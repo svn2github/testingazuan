@@ -684,6 +684,7 @@
 				<PARAMETER name="NEW_SESSION" type="ABSOLUTE" scope="" value="true" />
 				<PARAMETER name="spagobi_execution_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.spagobi_execution_id" />
 				<PARAMETER name="spagobi_flow_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.spagobi_flow_id" />
+				<PARAMETER name="spagobi_execution_role" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.spagobi_execution_role" />
 			</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

@@ -39,9 +39,10 @@ public class UpdateExecutionManager extends AbstractHttpAction {
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		this.freezeHttpResponse();
-		String executionId = (String) request.getAttribute("executionId");
+		String executionId = (String) request.getAttribute("spagobi_execution_id");
 		String windowName = (String) request.getAttribute("windowName");
 		String objIdStr = (String) request.getAttribute("BIOBJECT_ID");
+		String executionRole = (String) request.getAttribute("spagobi_execution_role");
 		Integer objId = new Integer(objIdStr);
 		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
 		List biObjParams = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(obj.getId());
@@ -63,7 +64,7 @@ public class UpdateExecutionManager extends AbstractHttpAction {
 		if (flowId != null && flowId.startsWith("iframeexec")) 
 			flowId = flowId.substring(10);
 		ExecutionManager executionManager = ExecutionManager.getInstance();
-		executionManager.registerExecution(flowId, executionId, obj);
+		executionManager.registerExecution(flowId, executionId, obj, executionRole);
 		List list = executionManager.getBIObjectsExecutionFlow(flowId);
 		String html = "";
 		// get spagobi url

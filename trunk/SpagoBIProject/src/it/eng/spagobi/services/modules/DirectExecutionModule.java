@@ -47,11 +47,8 @@ import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 public class DirectExecutionModule extends AbstractModule {
@@ -63,19 +60,14 @@ public class DirectExecutionModule extends AbstractModule {
 		// get spago containers
 		RequestContainer reqContainer = getRequestContainer();
 		SessionContainer sessionContainer = reqContainer.getSessionContainer();
-		// drill flow id
-		//String flowId = (String) request.getAttribute("spagobi_flow_id");
-		//if (flowId != null) {
-		//	sessionContainer.setAttribute("spagobi_flow_id", flowId);
-		//}
 		BIObject obj = null;
 		String documentParameters = "";
+		String executionRole = null;
 		String operation = (String) request.getAttribute("OPERATION");
 		if (operation != null && operation.equalsIgnoreCase("REFRESH")) {
 			obj = (BIObject) sessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 			documentParameters = (String) sessionContainer.getAttribute(SpagoBIConstants.PARAMETERS);
 		} else if (operation != null && operation.equalsIgnoreCase("RECOVER_EXECUTION_FROM_DRILL_FLOW")) {
-			// drill execution id
 			String executionId = (String) request.getAttribute("spagobi_execution_id");
 			String flowId = (String) request.getAttribute("spagobi_flow_id");
 			if (executionId != null && flowId != null) {
@@ -105,6 +97,7 @@ public class DirectExecutionModule extends AbstractModule {
 		    	if (documentParameters.startsWith("&")) {
 		    		documentParameters = documentParameters.substring(1);
 		    	}
+		    	executionRole = instance.getExecutionRole();
 			}
 		} else {
 			clearSession(sessionContainer);
@@ -153,6 +146,9 @@ public class DirectExecutionModule extends AbstractModule {
 			}
 		}
 		
+        if (executionRole != null)  {
+        	response.setAttribute("spagobi_execution_role", executionRole);
+		}
 		// put in session execution modality
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
         // set into the response the right information for loopback
@@ -164,6 +160,7 @@ public class DirectExecutionModule extends AbstractModule {
         if (documentParameters != null && !documentParameters.trim().equals(""))  {
            	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, documentParameters);
 		}
+        
 	}
 	
 	private void clearSession (SessionContainer session) {

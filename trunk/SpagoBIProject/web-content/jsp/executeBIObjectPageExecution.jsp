@@ -60,7 +60,7 @@
 	}
 	// get the url of the engine
 	Engine engine = obj.getEngine();
-    String engineurl = engine.getUrl() + ";jsessionid=" + executionId;
+    String engineurl = engine.getUrl();
     
    	// get the actor
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
@@ -1035,11 +1035,9 @@
 			</form>
 
             <script>
-            try {
-            	updateExecutioManager<%=executionId%>();
-            } catch (err) {
-            	alert(err);
-            }
+
+            updateExecutioManager<%=executionId%>();
+
             
 			function updateExecutioManager<%=executionId%>() {
 				winName = window.name;
@@ -1048,8 +1046,10 @@
 					document.getElementById('formexecution<%=executionId%>').target="_self";
 				}
 	        	url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP";
-		    	pars = "NEW_SESSION=TRUE&ACTION_NAME=UPDATE_EXECUTION_MANAGER&windowName=" + winName + "&executionId=<%=executionId%>";
+		    	pars = "NEW_SESSION=TRUE&ACTION_NAME=UPDATE_EXECUTION_MANAGER&windowName=" + winName;
+		    	pars +="&spagobi_execution_id=<%=executionId%>";
 		    	pars += "&BIOBJECT_ID=<%=obj.getId()%>";
+		    	pars += "&spagobi_execution_role=<%=executionRole%>";
 		    	<%
 		    	List parameters = obj.getBiObjectParameters();
 		    	Iterator parametersIt = parameters.iterator();
@@ -1078,12 +1078,6 @@
        			);
 			}
 
-            function proceedWithExecution<%=executionId%>() {
-				button = document.getElementById('button<%=executionId%>');
-				button.style.display='none';
-				button.click();
-            }
-            
             function refreshNavigationBar<%=executionId%>(html) {
             	winName = window.name;
             	navBarDiv = null;
@@ -1093,8 +1087,16 @@
 				} else {
             		navBarDiv = top.document.getElementById("navigationBar<%=executionId%>");
             	}
-            	navBarDiv.innerHTML = html;
+            	if (navBarDiv != null) {
+            		navBarDiv.innerHTML = html;
+            	}
             	proceedWithExecution<%=executionId%>()
+            }
+            
+            function proceedWithExecution<%=executionId%>() {
+				button = document.getElementById('button<%=executionId%>');
+				button.style.display='none';
+				button.click();
             }
             
 			function GetXmlHttpObject<%=executionId%>(){ 

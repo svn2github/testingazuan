@@ -40,7 +40,7 @@
 	    // identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	    UUID uuid = uuidGen.generateTimeBasedUUID();
-	    String requestIdentity = "request" + uuid.toString();
+	    String requestIdentity = uuid.toString();
 	    requestIdentity = requestIdentity.replaceAll("-", "");
 	    // get spagobi url
 	    String spagobiurl = GeneralUtilities.getSpagoBiContextAddress();
@@ -83,7 +83,7 @@
 				if(isIE6) { totalVisArea = window.document.body.clientHeight; }
 				if(isIE7) { totalVisArea = window.document.body.clientHeight; }
 				if(isMoz) { totalVisArea = window.innerHeight; }
-				iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+				iframeEl = document.getElementById('workspaceiframe<%=requestIdentity%>');
 				//iframeEl.scrollbars="no";
 				iframeEl.style.height = totalVisArea + 'px';
 				//iframeEl.style.height = 2000 + 'px';
@@ -109,7 +109,7 @@
 	          // calculate space below position frame div
 	          spaceBelowPos = heightVisArea - pos[1];
 	          // set height to the frame
-				    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+				    iframeEl = document.getElementById('workspaceiframe<%=requestIdentity%>');
 				    iframeEl.style.height = spaceBelowPos + 'px';
 	
 	          // calculate height of the win area and height footer
@@ -139,7 +139,7 @@
 				    // calculate height of the frame
 				    heightFrame = heightVisArea - pos[1] - heightFooter;
 				    // set height to the frame
-				    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+				    iframeEl = document.getElementById('workspaceiframe<%=requestIdentity%>');
 				    iframeEl.style.height = heightFrame + 'px';
 				    //alert('iframe esterno: ' + iframeEl.style.height);
 			  }
@@ -169,8 +169,8 @@
 			%>
 			<center>
 				<div id="divIframe<%=requestIdentity%>" style="width:100%;overflow=auto;">
-					<iframe id="iframeexec<%=requestIdentity%>"
-							name="iframeexec<%=requestIdentity%>"
+					<iframe id="workspaceiframe<%=requestIdentity%>"
+							name="workspaceiframe<%=requestIdentity%>"
 				            src=""
 				            style="width:100%"
 				            frameborder="0"></iframe>
@@ -178,13 +178,14 @@
 					<form 	name="formexecution<%=requestIdentity%>"
 							id='formexecution<%=requestIdentity%>' method="post"
 							action="<%=spagobiurl%>"
-							target='iframeexec<%=requestIdentity%>'>
+							target='workspaceiframe<%=requestIdentity%>'>
 	
 						<input type="hidden" name="NEW_SESSION" value="TRUE" />
 						<input type="hidden" name="PAGE" value="DirectExecutionPage" />
 				        <input type="hidden" name="USERNAME" value="<%=username%>" />
 				        <input type="hidden" name="DOCUMENT_LABEL" value="<%=objLabel%>" />
 				        <input type="hidden" name="spagobi_flow_id" value="<%=requestIdentity%>" />
+				        <input type="hidden" name="spagobi_execution_id" value="<%=requestIdentity%>" />
 	
 				        <center>
 				        	<input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>

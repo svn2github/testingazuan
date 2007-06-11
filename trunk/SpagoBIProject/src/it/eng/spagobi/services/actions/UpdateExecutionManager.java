@@ -77,7 +77,7 @@ public class UpdateExecutionManager extends AbstractHttpAction {
 			if (i == list.size() - 1) {
 				html += "&nbsp;" + aBIObject.getName();
 			} else {
-				html += "<form name=\"navigationBarForm" + instance.getExecutionId() + "\"";
+				html += "<form style='display:none;' name=\"navigationBarForm" + instance.getExecutionId() + "\"";
 		        html += "       id=\"navigationBarForm" + instance.getExecutionId() + "\" method=\"post\"";
 		        html += "	      action=\"" + spagobiurl + "\"";
 		        html += "	      target=\"iframeexec" + flowId + "\">";

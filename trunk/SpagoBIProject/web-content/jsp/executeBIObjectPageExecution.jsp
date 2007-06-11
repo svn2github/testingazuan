@@ -20,11 +20,11 @@
                  it.eng.spago.base.SessionContainer,
                  it.eng.spago.security.IEngUserProfile,
                  it.eng.spagobi.utilities.SpagoBITracer,
-                 it.eng.spagobi.utilities.ChannelUtilities" %>
-<%@page import="it.eng.spagobi.bo.dao.audit.AuditManager"%>
-<%@page import="it.eng.spagobi.managers.ExecutionManager"%>
-<%@page import="it.eng.spagobi.managers.ExecutionManager.ExecutionInstance"%>
-<%@page import="it.eng.spagobi.drivers.IEngineDriver"%>
+                 it.eng.spagobi.utilities.ChannelUtilities,
+                 it.eng.spagobi.bo.dao.audit.AuditManager,
+                 it.eng.spagobi.managers.ExecutionManager,
+                 it.eng.spagobi.managers.ExecutionManager.ExecutionInstance,
+                 it.eng.spagobi.drivers.IEngineDriver" %>
 
 <%
 
@@ -156,8 +156,6 @@
       	}
     }
 
-
-
     // check if notes editor is able
     boolean edNoteAble = false;
     String edNoteAbleStr = ChannelUtilities.getPreferenceValue(aRequestContainer, SpagoBIConstants.PREFERENCE_NOTES_EDITOR_ABLE, "FALSE");
@@ -191,14 +189,23 @@
 		notesEditOpen = true;
 	}
 
-	// urls for resources
-	String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
-	String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
+	
 %>
 
-<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
-<script type="text/javascript" src="<%=linkProto%>"></script>
 
+
+
+
+
+
+
+
+
+
+
+ <!-- ************************************************************************* -->
+ <!-- ******************** START TITLE PART  ********************************** -->
+ <!-- ************************************************************************* -->
 
 <%
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
@@ -292,12 +299,12 @@
 	} else {
 %>
 
-<table width='100%' cellspacing='0' border='0' id="singleobjecttitlebar<%=executionId%>">
+<table  width='100%' cellspacing='0' border='0' id="singleobjecttitlebar<%=executionId%>">
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
-      <div id="navigationBar<%=executionId%>">
-        &nbsp;&nbsp;&nbsp;<%=title%>
-      </div>
+		      <div style='white-space:nowrap;' id="navigationBar<%=executionId%>">
+		        &nbsp;&nbsp;&nbsp;<%=title%>
+		      </div>
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
@@ -309,6 +316,45 @@
 					title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>' />
 			</a>
 		</td>
+		
+		
+		<%-- 
+		<!-- ************** start LUCA ***************** -->
+		<%
+			String linkProto1 = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
+			String linkProtoWin1 = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
+			String linkProtoEff1 = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
+			String linkProtoDefThem1 = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
+			String linkProtoAlphaThem1 = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
+		%> 
+		<script type="text/javascript" src="<%=linkProto1%>"></script>
+		<script type="text/javascript" src="<%=linkProtoWin1%>"></script>
+		<script type="text/javascript" src="<%=linkProtoEff1%>"></script>
+		<link href="<%=linkProtoDefThem1%>" rel="stylesheet" type="text/css"/>
+		<link href="<%=linkProtoAlphaThem1%>" rel="stylesheet" type="text/css"/>
+		<script>
+			function maximize<%=requestIdentity%>() {
+    			win_exec_<%=requestIdentity%> = null;
+       			win_exec_<%=requestIdentity%> = new Window('win_exec_<%=requestIdentity%>', {className: "alphacube", title: "Execution", top:0, left:0});
+  	   			win_exec_<%=requestIdentity%>.setDestroyOnClose();
+       			win_exec_<%=requestIdentity%>.setContent('divIframe<%=requestIdentity%>', false, false);
+      			win_exec_<%=requestIdentity%>.show(true);
+       			win_exec_<%=requestIdentity%>.maximize();
+       			button = document.getElementById('button<%=requestIdentity%>');
+              	button.style.display='none';
+              	button.click();
+			}
+		</script>
+		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-single-object-execution-portlet-section'>
+			<a style="text-decoration:none;" href='javascript:maximize<%=requestIdentity%>();'>
+				maximize
+			</a>
+		</td>
+		<!-- ************** end LUCA ***************** -->
+		
+		--%>
+		
 		<%
         if(edNoteAble) {
        %>
@@ -332,6 +378,27 @@
 
 <% } %>
 
+<!-- ************************************************************************* -->
+ <!-- ******************** END TITLE PART  ********************************** -->
+ <!-- ************************************************************************* -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
@@ -345,21 +412,9 @@
 		String execIdentifier = objectNotesManager.getExecutionIdentifier(obj);
 		String nameUser = (String)userProfile.getUserUniqueIdentifier();
 		String linkFck = urlBuilder.getResourceLink(request, "/js/FCKeditor/fckeditor.js");
-		String linkProtoWin = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
-		String linkProtoEff = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
-		String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
-		String linkProtoMacThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/mac_os_x.css");
-		String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
-		String linkProtoSpreadThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/spread.css");
 %>
 
 <SCRIPT language='JavaScript' src='<%=linkFck%>'></SCRIPT>
-<script type="text/javascript" src="<%=linkProtoWin%>"></script>
-<script type="text/javascript" src="<%=linkProtoEff%>"></script>
-<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
-<link href="<%=linkProtoMacThem%>" rel="stylesheet" type="text/css"/>
-<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
-<link href="<%=linkProtoSpreadThem%>" rel="stylesheet" type="text/css"/>
 
 
 <script type="text/javascript">
@@ -606,11 +661,6 @@
 
 
 
-
-
-
-
-
 <script>
 
   var oFCKeditor<%=executionId%> = new FCKeditor('editorfckarea<%=executionId%>');
@@ -764,90 +814,49 @@
 <%
   if(!heightSetted) {
 %>
-<script>
-	var iframeHeight<%=executionId%> = 0;
-	var isIE = false;
-	var isIE5 = false;
-	var isIE6 = false;
-	var isIE7 = false;
-	var isMoz = false;
-	// finds the browser name
-	navigatorname = navigator.appName;
-	navigatorversion = navigator.appVersion;
-	navigatorname = navigatorname.toLowerCase();
-	isIE = (navigatorname.indexOf('explorer') != -1);
-	isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
-	isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
-	isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
-	isMoz = (navigatorname.indexOf('explorer') == -1);
-
-	function adaptSize<%=executionId%>Funct() {
-		// try to find out the height if the content of the iframe (it works if the iframe comes from the same
-		// domain of the main page)
-		try {
-			// evaluates the iframe current height
-			iframeEl = document.getElementById('iframeexec<%=executionId%>');
-			offsetHeight = 0;
-			clientHeight = 0;
-			if(isIE5) {
-				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
-				clientHeight = iframeEl.clientHeight;
-			}
-			if(isIE6) {
-				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
-				clientHeight = iframeEl.clientHeight;
-			}
-			if(isIE7) {
-				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
-				clientHeight = iframeEl.clientHeight;
-			}
-			if(isMoz) {
-				offsetHeight = iframeEl.contentWindow.document.body.offsetHeight;
-				clientHeight = iframeEl.clientHeight;
-			}
-			// adjusts current iframe height
-			if (offsetHeight != clientHeight + 40) {
-				heightFrame = offsetHeight + 40;
-				iframeEl.style.height = heightFrame + 'px';
-			}
-			// saves the current iframe height into a variable
-			iframeHeight<%=executionId%> = heightFrame;
-			// adjusts parent iframe height
+	<script>
+	
+		function adaptSize<%=executionId%>Funct() {
+			
+			navigatorname = navigator.appName;
+			navigatorversion = navigator.appVersion;
+			navigatorname = navigatorname.toLowerCase();
+			isIE = false;
+			isIE5 = false;
+			isIE6 = false;
+			isIE7 = false;
+			isMoz = false;
+			isIE = (navigatorname.indexOf('explorer') != -1);
+			isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
+			isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
+			isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
+			isMoz = (navigatorname.indexOf('explorer') == -1);
+	
+	        <%--
 			if (window != top) {
-				parentIFrame = parent.document.getElementsByTagName('iframe')[0];
-				parentHeightFrame = heightFrame + 50;
-				parentIFrame.style.height = parentHeightFrame + 'px';
-			}
-			
-			setTimeout('adaptSize<%=executionId%>Funct()', 2000);
-			
-		} catch (err) { // in case the previous code generates an error the iframe is sized to the visible area
-						// between iframe start position and footer start position
-						
-			iframeEl = document.getElementById('iframeexec<%=executionId%>');
-			
-			if (window != top) {
-				try {
-					parent.adaptSize<%=flowId%>Funct();
-					iframeParent = parent.document.getElementById('iframeexec<%=flowId%>');
-					newHeight = iframeParent.clientHeight;
-					titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
-					if (titleBar != null && titleBar.style.display != 'none') {
-						//alert('titleBar.clientHeight ' + titleBar.clientHeight);
-						newHeight = newHeight - titleBar.clientHeight - 30;
-					}
-					iframeEl.style.height = newHeight + 'px';
-				} catch (err) {
+				totalVisArea = 0;
+				if(isIE5) { totalVisArea = window.document.body.clientHeight; }
+				if(isIE6) { totalVisArea = window.document.body.clientHeight; }
+				if(isIE7) { totalVisArea = window.document.body.clientHeight; }
+				if(isMoz) { totalVisArea = window.innerHeight; }
+				iframeEl = document.getElementById('iframeexec<%=executionId%>');
+				titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
+				if (titleBar.style.display != 'none') {
+					totalVisArea = totalVisArea - titleBar.clientHeight - 30;
 				}
+				iframeEl.style.height = totalVisArea + 'px';
 				return;
 			}
-
+	        --%>
+	
 			// calculate height of the visible area
 			heightVisArea = 0;
+
 			if(isIE5) { heightVisArea = top.document.body.clientHeight; }
 			if(isIE6) { heightVisArea = top.document.body.clientHeight; }
 			if(isIE7) { heightVisArea = top.document.documentElement.clientHeight }
 			if(isMoz) { heightVisArea = top.innerHeight; }
+	
 			// get the frame div object
 			diviframeobj = document.getElementById('divIframe<%=executionId%>');
 			// find the frame div position
@@ -856,28 +865,25 @@
 			// calculate space below position frame div
 			spaceBelowPos = heightVisArea - pos[1];
 			// set height to the frame
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
 			iframeEl.style.height = spaceBelowPos + 'px';
 	
 			// calculate height of the win area and height footer
 			heightWinArea = 0;
 			heightFooter = 0;
 			if(isIE5) {
-				//heightWinArea = window.document.body.scrollHeight;
 				heightWinArea = document.body.scrollHeight;
 				heightFooter = heightWinArea - heightVisArea;
 			}
 			if(isIE6) {
-				//heightWinArea = window.document.body.scrollHeight;
 				heightWinArea = document.body.scrollHeight;
 				heightFooter = heightWinArea - heightVisArea;
 			}
 			if(isIE7) {
-				//heightWinArea = window.document.body.offsetHeight;
 				heightWinArea = document.body.offsetHeight;
 				heightFooter = heightWinArea - heightVisArea;
 			}
 			if(isMoz) {
-				//heightWinArea = window.document.body.offsetHeight;
 				heightWinArea = document.body.offsetHeight;
 				heightFooter = (heightWinArea - heightVisArea) + 15;
 			}
@@ -888,113 +894,22 @@
 			iframeEl = document.getElementById('iframeexec<%=executionId%>');
 			iframeEl.style.height = heightFrame + 'px';
 		}
-	}
 	
-	try {
-		SbiJsInitializer.adaptSize<%=executionId%> = adaptSize<%=executionId%>Funct;
-    } catch (err) {
-		alert('Cannot resize the document view area');
-	}
 	
-<%--
-	function adaptSize<%=executionId%>Funct() {
-		
-		navigatorname = navigator.appName;
-		navigatorversion = navigator.appVersion;
-		navigatorname = navigatorname.toLowerCase();
-		isIE = false;
-		isIE5 = false;
-		isIE6 = false;
-		isIE7 = false;
-		isMoz = false;
-		isIE = (navigatorname.indexOf('explorer') != -1);
-		isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
-		isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
-		isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
-		isMoz = (navigatorname.indexOf('explorer') == -1);
-
-		if (window != top) {
-			totalVisArea = 0;
-			if(isIE5) { totalVisArea = window.document.body.clientHeight; }
-			if(isIE6) { totalVisArea = window.document.body.clientHeight; }
-			if(isIE7) { totalVisArea = window.document.body.clientHeight; }
-			if(isMoz) { totalVisArea = window.innerHeight; }
-			iframeEl = document.getElementById('iframeexec<%=executionId%>');
-			titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
-			if (titleBar.style.display != 'none') {
-				totalVisArea = totalVisArea - titleBar.clientHeight - 30;
-			}
-			iframeEl.style.height = totalVisArea + 'px';
-			return;
+		try {
+			SbiJsInitializer.adaptSize<%=executionId%> = adaptSize<%=executionId%>Funct;
+	    } catch (err) {
+			alert('Cannot resize the document view area');
 		}
 
-		// calculate height of the visible area
-		heightVisArea = 0;
-		//if(isIE5) { heightVisArea = window.document.body.clientHeight; }
-		//if(isIE6) { heightVisArea = window.document.body.clientHeight; }
-		//if(isIE7) { heightVisArea = window.document.documentElement.clientHeight }
-		//if(isMoz) { heightVisArea = window.innerHeight; }
-		if(isIE5) { heightVisArea = top.document.body.clientHeight; }
-		if(isIE6) { heightVisArea = top.document.body.clientHeight; }
-		if(isIE7) { heightVisArea = top.document.documentElement.clientHeight }
-		if(isMoz) { heightVisArea = top.innerHeight; }
-
-		// get the frame div object
-		diviframeobj = document.getElementById('divIframe<%=executionId%>');
-		// find the frame div position
-		pos = findPos(diviframeobj);
-					
-		// calculate space below position frame div
-		spaceBelowPos = heightVisArea - pos[1];
-		// set height to the frame
-		iframeEl = document.getElementById('iframeexec<%=executionId%>');
-		iframeEl.style.height = spaceBelowPos + 'px';
-
-		// calculate height of the win area and height footer
-		heightWinArea = 0;
-		heightFooter = 0;
-		if(isIE5) {
-			//heightWinArea = window.document.body.scrollHeight;
-			heightWinArea = document.body.scrollHeight;
-			heightFooter = heightWinArea - heightVisArea;
-		}
-		if(isIE6) {
-			//heightWinArea = window.document.body.scrollHeight;
-			heightWinArea = document.body.scrollHeight;
-			heightFooter = heightWinArea - heightVisArea;
-		}
-		if(isIE7) {
-			//heightWinArea = window.document.body.offsetHeight;
-			heightWinArea = document.body.offsetHeight;
-			heightFooter = heightWinArea - heightVisArea;
-		}
-		if(isMoz) {
-			//heightWinArea = window.document.body.offsetHeight;
-			heightWinArea = document.body.offsetHeight;
-			heightFooter = (heightWinArea - heightVisArea) + 15;
-		}
-
-		// calculate height of the frame
-		heightFrame = heightVisArea - pos[1] - heightFooter;
-		// set height to the frame
-		iframeEl = document.getElementById('iframeexec<%=executionId%>');
-		iframeEl.style.height = heightFrame + 'px';
-	}
-
-
-	try {
-		SbiJsInitializer.adaptSize<%=executionId%> = adaptSize<%=executionId%>Funct;
-    } catch (err) {
-		alert('Cannot resize the document view area');
-	}
---%>
-
-</script>
+	</script>
 <%
   }
 %>
 
-<center>
+
+
+<center id='centerDivIframe'>
 <div id="divIframe<%=executionId%>" style="width:100%;overflow=auto;">
 
            <%
@@ -1007,7 +922,7 @@
                     name="iframeexec<%=executionId%>"
                     src=""
                     style="width:100%;<%=heightStr%>;"
-                    frameborder="0" onLoad="this.contentWindow.document.getElementById('singleobjecttitlebar<%=executionId%>').style.display='none'">
+                    frameborder="0" >
 			</iframe>
 
 			<%
@@ -1132,12 +1047,175 @@
 <!-- ***************************************************************** -->
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 <!-- **************** START IFRAMES NAVIGATOR ************************ -->
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 <%--
+
+
+onLoad="this.contentWindow.document.getElementById('singleobjecttitlebar<%=executionId%>').style.display='none'"
+
+
+var iframeHeight<%=executionId%> = 0;
+	var isIE = false;
+	var isIE5 = false;
+	var isIE6 = false;
+	var isIE7 = false;
+	var isMoz = false;
+	// finds the browser name
+	navigatorname = navigator.appName;
+	navigatorversion = navigator.appVersion;
+	navigatorname = navigatorname.toLowerCase();
+	isIE = (navigatorname.indexOf('explorer') != -1);
+	isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
+	isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
+	isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
+	isMoz = (navigatorname.indexOf('explorer') == -1);
+
+	function adaptSize<%=executionId%>Funct() {
+		// try to find out the height if the content of the iframe (it works if the iframe comes from the same
+		// domain of the main page)
+		try {
+			// evaluates the iframe current height
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
+			offsetHeight = 0;
+			clientHeight = 0;
+			if(isIE5) {
+				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			if(isIE6) {
+				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			if(isIE7) {
+				offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			if(isMoz) {
+				offsetHeight = iframeEl.contentWindow.document.body.offsetHeight;
+				clientHeight = iframeEl.clientHeight;
+			}
+			// adjusts current iframe height
+			if (offsetHeight != clientHeight + 40) {
+				heightFrame = offsetHeight + 40;
+				iframeEl.style.height = heightFrame + 'px';
+			}
+			// saves the current iframe height into a variable
+			iframeHeight<%=executionId%> = heightFrame;
+			// adjusts parent iframe height
+			if (window != top) {
+				parentIFrame = parent.document.getElementsByTagName('iframe')[0];
+				parentHeightFrame = heightFrame + 50;
+				parentIFrame.style.height = parentHeightFrame + 'px';
+			}
+			setTimeout('adaptSize<%=requestIdentity%>Funct()', 500);
+
+		} catch (err) { // in case the previous code generates an error the iframe is sized to the visible area
+						// between iframe start position and footer start position
+						
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
+			
+			if (window != top) {
+				try {
+					parent.adaptSize<%=flowId%>Funct();
+					iframeParent = parent.document.getElementById('iframeexec<%=flowId%>');
+					newHeight = iframeParent.clientHeight;
+					titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
+					if (titleBar != null && titleBar.style.display != 'none') {
+						//alert('titleBar.clientHeight ' + titleBar.clientHeight);
+						newHeight = newHeight - titleBar.clientHeight - 30;
+					}
+					iframeEl.style.height = newHeight + 'px';
+				} catch (err) {
+				}
+				return;
+			}
+
+			// calculate height of the visible area
+			heightVisArea = 0;
+			if(isIE5) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE6) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE7) { heightVisArea = top.document.documentElement.clientHeight }
+			if(isMoz) { heightVisArea = top.innerHeight; }
+			// get the frame div object
+			diviframeobj = document.getElementById('divIframe<%=executionId%>');
+			// find the frame div position
+			pos = findPos(diviframeobj);
+						
+			// calculate space below position frame div
+			spaceBelowPos = heightVisArea - pos[1];
+			// set height to the frame
+			iframeEl.style.height = spaceBelowPos + 'px';
+	
+			// calculate height of the win area and height footer
+			heightWinArea = 0;
+			heightFooter = 0;
+			if(isIE5) {
+				//heightWinArea = window.document.body.scrollHeight;
+				heightWinArea = document.body.scrollHeight;
+				heightFooter = heightWinArea - heightVisArea;
+			}
+			if(isIE6) {
+				//heightWinArea = window.document.body.scrollHeight;
+				heightWinArea = document.body.scrollHeight;
+				heightFooter = heightWinArea - heightVisArea;
+			}
+			if(isIE7) {
+				//heightWinArea = window.document.body.offsetHeight;
+				heightWinArea = document.body.offsetHeight;
+				heightFooter = heightWinArea - heightVisArea;
+			}
+			if(isMoz) {
+				//heightWinArea = window.document.body.offsetHeight;
+				heightWinArea = document.body.offsetHeight;
+				heightFooter = (heightWinArea - heightVisArea) + 15;
+			}
+	
+			// calculate height of the frame
+			heightFrame = heightVisArea - pos[1] - heightFooter;
+			// set height to the frame
+			iframeEl = document.getElementById('iframeexec<%=executionId%>');
+			iframeEl.style.height = heightFrame + 'px';
+		}
+	}
+	
+	try {
+		SbiJsInitializer.adaptSize<%=executionId%> = adaptSize<%=executionId%>Funct;
+    } catch (err) {
+		alert('Cannot resize the document view area');
+	}
+
+
+
+
+
+
 <script>
 function getFramesArray() {
   return iframesNavigator;

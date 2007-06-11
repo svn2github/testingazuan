@@ -43,15 +43,6 @@
 		aResponseContainer = ResponseContainerAccess.getResponseContainer(request);
 	}
 	
-	// based on mode get spago object 
-	//if (sbiMode.equalsIgnoreCase("WEB")) {
-	//	aRequestContainer = RequestContainerAccess.getRequestContainer(request);
-	//	aResponseContainer = ResponseContainerAccess.getResponseContainer(request);	
-	//} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-	//	aRequestContainer = RequestContainerPortletAccess.getRequestContainer(request);
-	//	aResponseContainer = ResponseContainerPortletAccess.getResponseContainer(request);
-	//}
-	
 	String channelType = aRequestContainer.getChannelType();
 	if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
 	else sbiMode = "WEB";
@@ -66,9 +57,24 @@
 	SourceBean aServiceRequest = aRequestContainer.getServiceRequest();
 	SourceBean aServiceResponse = aResponseContainer.getServiceResponse();
 	aSessionContainer = aRequestContainer.getSessionContainer();
+	
+	// urls for resources
+	String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
+	String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
+	String linkProtoWin = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
+	String linkProtoEff = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
+	String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
+	String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
+	
 %>
  
- 
+<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
+<script type="text/javascript" src="<%=linkProto%>"></script>
+<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
+
    
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 

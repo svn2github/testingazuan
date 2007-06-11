@@ -302,7 +302,7 @@
 <table  width='100%' cellspacing='0' border='0' id="singleobjecttitlebar<%=executionId%>">
 	<tr>
 		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
-		      <div style='white-space:nowrap;' id="navigationBar<%=executionId%>">
+		      <div id="navigationBar<%=executionId%>">
 		        &nbsp;&nbsp;&nbsp;<%=title%>
 		      </div>
 		</td>
@@ -318,42 +318,81 @@
 		</td>
 		
 		
-		<%-- 
+
 		<!-- ************** start LUCA ***************** -->
-		<%
-			String linkProto1 = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
-			String linkProtoWin1 = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
-			String linkProtoEff1 = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
-			String linkProtoDefThem1 = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
-			String linkProtoAlphaThem1 = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
-		%> 
-		<script type="text/javascript" src="<%=linkProto1%>"></script>
-		<script type="text/javascript" src="<%=linkProtoWin1%>"></script>
-		<script type="text/javascript" src="<%=linkProtoEff1%>"></script>
-		<link href="<%=linkProtoDefThem1%>" rel="stylesheet" type="text/css"/>
-		<link href="<%=linkProtoAlphaThem1%>" rel="stylesheet" type="text/css"/>
-		<script>
-			function maximize<%=requestIdentity%>() {
-    			win_exec_<%=requestIdentity%> = null;
-       			win_exec_<%=requestIdentity%> = new Window('win_exec_<%=requestIdentity%>', {className: "alphacube", title: "Execution", top:0, left:0});
-  	   			win_exec_<%=requestIdentity%>.setDestroyOnClose();
-       			win_exec_<%=requestIdentity%>.setContent('divIframe<%=requestIdentity%>', false, false);
-      			win_exec_<%=requestIdentity%>.show(true);
-       			win_exec_<%=requestIdentity%>.maximize();
-       			button = document.getElementById('button<%=requestIdentity%>');
-              	button.style.display='none';
-              	button.click();
+		
+		<div id='maximizebackground<%=executionId%>' style='display:none;position:absolute;width:98%;height:98%;top:1%;left:1%;background-color:white;border:2px solid #dddddd;'>
+      <div class='header-title-column-single-object-execution-portlet-section' style='height:5%;vertical-align:middle;'>
+        &nbsp;&nbsp;&nbsp;<%=title%>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href='javascript:minimize<%=executionId%>()'>Chiudi</a>
+      </div>
+    </div> 
+		
+		
+    <script>
+    
+      dimensionHolder<%=executionId%> = new functDimensionHolder<%=executionId%>();
+    
+      function functDimensionHolder<%=executionId%>() {
+        this.width = 0;
+        this.height = 0;
+      }
+	
+			function maximize<%=executionId%>() {
+        isIE = false;
+        isIE5 = false;
+	      isIE6 = false;
+	      isIE7 = false;
+	      isMoz = false;
+      	// finds the browser name
+      	navigatorname = navigator.appName;
+      	navigatorversion = navigator.appVersion;
+      	navigatorname = navigatorname.toLowerCase();
+      	isIE = (navigatorname.indexOf('explorer') != -1);
+      	isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
+      	isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
+      	isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
+      	isMoz = (navigatorname.indexOf('explorer') == -1);
+            
+        divbg = document.getElementById('maximizebackground<%=executionId%>');
+        divbg.style.display='inline';
+        ifram = document.getElementById('iframeexec<%=executionId%>');
+            
+  			clientHeight = ifram.clientHeight;
+				clientWidth = ifram.clientWidth;
+								
+        dimensionHolder<%=executionId%>.width = clientWidth - 25;
+        dimensionHolder<%=executionId%>.height = clientHeight;
+        ifram.style.position='absolute';
+        ifram.style.left='2%';
+        ifram.style.top='7%';
+        ifram.style.width='96%';
+        ifram.style.height='96%';
 			}
+      
+      
+      function minimize<%=executionId%>() {
+          divbg = document.getElementById('maximizebackground<%=executionId%>');
+          divbg.style.display='none';
+          ifram = document.getElementById('iframeexec<%=executionId%>');
+          ifram.style.overflow='auto';
+          ifram.style.position='relative';
+          ifram.style.height=dimensionHolder<%=executionId%>.height + 'px';
+          ifram.style.width= dimensionHolder<%=executionId%>.width + 'px';
+      }
+      
 		</script>
+		
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
-			<a style="text-decoration:none;" href='javascript:maximize<%=requestIdentity%>();'>
+			<a style="text-decoration:none;" href='javascript:maximize<%=executionId%>();'>
 				maximize
 			</a>
 		</td>
 		<!-- ************** end LUCA ***************** -->
 		
-		--%>
+
 		
 		<%
         if(edNoteAble) {
@@ -816,39 +855,24 @@
 %>
 	<script>
 	
+	  navigatorname = navigator.appName;
+		navigatorversion = navigator.appVersion;
+		navigatorname = navigatorname.toLowerCase();
+		isIE = false;
+		isIE5 = false;
+		isIE6 = false;
+		isIE7 = false;
+		isMoz = false;
+		isIE = (navigatorname.indexOf('explorer') != -1);
+		isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
+		isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
+		isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
+		isMoz = (navigatorname.indexOf('explorer') == -1);
+	
+	  pos<%=executionId%> = null; 
+	
 		function adaptSize<%=executionId%>Funct() {
-			
-			navigatorname = navigator.appName;
-			navigatorversion = navigator.appVersion;
-			navigatorname = navigatorname.toLowerCase();
-			isIE = false;
-			isIE5 = false;
-			isIE6 = false;
-			isIE7 = false;
-			isMoz = false;
-			isIE = (navigatorname.indexOf('explorer') != -1);
-			isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
-			isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
-			isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
-			isMoz = (navigatorname.indexOf('explorer') == -1);
-	
-	        <%--
-			if (window != top) {
-				totalVisArea = 0;
-				if(isIE5) { totalVisArea = window.document.body.clientHeight; }
-				if(isIE6) { totalVisArea = window.document.body.clientHeight; }
-				if(isIE7) { totalVisArea = window.document.body.clientHeight; }
-				if(isMoz) { totalVisArea = window.innerHeight; }
-				iframeEl = document.getElementById('iframeexec<%=executionId%>');
-				titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
-				if (titleBar.style.display != 'none') {
-					totalVisArea = totalVisArea - titleBar.clientHeight - 30;
-				}
-				iframeEl.style.height = totalVisArea + 'px';
-				return;
-			}
-	        --%>
-	
+				
 			// calculate height of the visible area
 			heightVisArea = 0;
 
@@ -860,40 +884,46 @@
 			// get the frame div object
 			diviframeobj = document.getElementById('divIframe<%=executionId%>');
 			// find the frame div position
-			pos = findPos(diviframeobj);
+			pos<%=executionId%> = findPos(diviframeobj);	
 						
 			// calculate space below position frame div
-			spaceBelowPos = heightVisArea - pos[1];
+			spaceBelowPos = heightVisArea - pos<%=executionId%>[1];
 			// set height to the frame
 			iframeEl = document.getElementById('iframeexec<%=executionId%>');
 			iframeEl.style.height = spaceBelowPos + 'px';
 	
-			// calculate height of the win area and height footer
-			heightWinArea = 0;
-			heightFooter = 0;
-			if(isIE5) {
-				heightWinArea = document.body.scrollHeight;
-				heightFooter = heightWinArea - heightVisArea;
-			}
-			if(isIE6) {
-				heightWinArea = document.body.scrollHeight;
-				heightFooter = heightWinArea - heightVisArea;
-			}
-			if(isIE7) {
-				heightWinArea = document.body.offsetHeight;
-				heightFooter = heightWinArea - heightVisArea;
-			}
-			if(isMoz) {
-				heightWinArea = document.body.offsetHeight;
-				heightFooter = (heightWinArea - heightVisArea) + 15;
-			}
-	
-			// calculate height of the frame
-			heightFrame = heightVisArea - pos[1] - heightFooter;
-			// set height to the frame
-			iframeEl = document.getElementById('iframeexec<%=executionId%>');
-			iframeEl.style.height = heightFrame + 'px';
+	    // to give time to the browser to update the dom (dimension of the iframe)
+		  setTimeout("adaptSize<%=executionId%>_2Part()", 250);
 		}
+	
+	
+	  function adaptSize<%=executionId%>_2Part() {
+        
+        // calculate height of the win area and height footer
+			  heightWinArea = 0;
+  			heightFooter = 0;
+  			if(isIE5) {
+  				heightWinArea = document.body.scrollHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isIE6) {
+  				heightWinArea = document.body.scrollHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isIE7) {
+  				heightWinArea = document.body.offsetHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isMoz) {
+  				heightWinArea = document.body.offsetHeight;
+  				heightFooter = (heightWinArea - heightVisArea);
+  			}	 
+  	
+  			// calculate height of the frame
+  			heightFrame = heightVisArea - pos<%=executionId%>[1] - heightFooter;
+  			iframeEl = document.getElementById('iframeexec<%=executionId%>');
+  			iframeEl.style.height = heightFrame + 'px';
+    }
 	
 	
 		try {
@@ -1076,6 +1106,23 @@
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 <%--
+
+
+
+			if (window != top) {
+				totalVisArea = 0;
+				if(isIE5) { totalVisArea = window.document.body.clientHeight; }
+				if(isIE6) { totalVisArea = window.document.body.clientHeight; }
+				if(isIE7) { totalVisArea = window.document.body.clientHeight; }
+				if(isMoz) { totalVisArea = window.innerHeight; }
+				iframeEl = document.getElementById('iframeexec<%=executionId%>');
+				titleBar = document.getElementById('singleobjecttitlebar<%=executionId%>');
+				if (titleBar.style.display != 'none') {
+					totalVisArea = totalVisArea - titleBar.clientHeight - 30;
+				}
+				iframeEl.style.height = totalVisArea + 'px';
+				return;
+			}
 
 
 onLoad="this.contentWindow.document.getElementById('singleobjecttitlebar<%=executionId%>').style.display='none'"

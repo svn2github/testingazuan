@@ -572,7 +572,7 @@ public class ImporterMetadata {
 				hql = "from SbiObjParuse objparuse where objparuse.id.sbiObjPar.objParId = " + objparid +
 					  " and objparuse.id.sbiParuse.useId = " + paruseid + 
 				      " and objparuse.id.sbiObjParFather.objParId = " + objparfathid + 
-			          " and s.id.filterOperation = '" + filterOp + "'";
+			          " and objparuse.id.filterOperation = '" + filterOp + "'";
 				hqlQuery = sessionCurrDB.createQuery(hql);
 				SbiObjParuse hibObjParUse = (SbiObjParuse)hqlQuery.uniqueResult();
 				return hibObjParUse;

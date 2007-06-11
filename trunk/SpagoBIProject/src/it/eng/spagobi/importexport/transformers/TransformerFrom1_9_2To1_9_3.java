@@ -3,14 +3,12 @@ package it.eng.spagobi.importexport.transformers;
 import groovy.lang.Binding;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.ScriptDetail;
 import it.eng.spagobi.importexport.ITransformer;
 import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.managers.ScriptManager;
-import it.eng.spagobi.security.FakeUserProfile;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
@@ -29,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -46,9 +43,8 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		}
 		archiveName = archiveName.substring(0, archiveName.lastIndexOf('.'));
 
+		arrangeSubobjects(pathImpTmpFolder, archiveName);
 		buildCmsNodes(pathImpTmpFolder, archiveName);
-		
-		// TODO Risolvere problemi legati ai lov, in particolare trasformare i vecchi fix list e script (single-value e multi value)
 		changeDatabase(pathImpTmpFolder, archiveName);
 		
 		// compress archive
@@ -64,9 +60,73 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		return content;
 	}
 	
+	private void arrangeSubobjects(String pathImpTmpFolder, String archiveName) {
+		Connection conn = null;
+		InputStream is = null;
+		FileOutputStream fos = null;
+		try {
+			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
+			Statement stmt = conn.createStatement();
+			String selectAllOlapDocs =  "SELECT PATH FROM SBI_OBJECTS WHERE BIOBJ_TYPE_CD = 'OLAP'";
+			ResultSet rs = stmt.executeQuery(selectAllOlapDocs);
+			while(rs.next()){
+				// for each old olap subobjects, if present, arrange class name
+				String pathBiObj = rs.getString("PATH");
+				String pathSubobejctsFolder = pathImpTmpFolder + "/" + archiveName + "/contents" + pathBiObj + "/subobjects";
+				// finds the template file
+				File pathSubobejctsFolderFile = new File(pathSubobejctsFolder);
+				if (pathSubobejctsFolderFile.exists() && pathSubobejctsFolderFile.isDirectory()) {
+					File[] files = pathSubobejctsFolderFile.listFiles();
+					for (int i = 0; i < files.length; i++) {
+						File aContainedFile = files[i];
+						if (aContainedFile.isFile() && aContainedFile.getName().endsWith(".content")) {
+							Properties props = new Properties();
+							props.setProperty("it.eng.spagobi.bean.AnalysisBean", 
+									"it.eng.spagobi.jpivotaddins.bean.AnalysisBean");
+							StringBuffer aStringBuffer = new StringBuffer();
+							is = new FileInputStream(aContainedFile);
+							replaceParametersInBuffer(is, aStringBuffer, props);
+							is.close();
+							aContainedFile.delete();
+							File destFile = new File(aContainedFile.getAbsolutePath());
+							fos = new FileOutputStream(destFile);
+							fos.write(aStringBuffer.toString().getBytes());
+							fos.flush();
+							fos.close();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "arrangeSubobjects",
+		                           "Error while changing database " + e);	
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) conn.close();
+			} catch (SQLException e) {
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "arrangeSubobjects",
+                           "Error while closing connection " + e);	
+			}
+			if (is != null)
+				try {
+					is.close();
+				} catch (IOException e) {
+					SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "arrangeSubobjects",
+	                           "Error while closing input stream " + e);
+				}
+			if (fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+					SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "arrangeSubobjects",
+	                           "Error while closing output stream " + e);
+				}
+		}
+	}
+	
 	private void changeDatabase(String pathImpTmpFolder, String archiveName) {
 		Connection conn = null;
-		try{
+		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
 			Statement stmt = conn.createStatement();
 			String selectAllLovs =  "SELECT LABEL, INPUT_TYPE_CD, LOV_PROVIDER FROM SBI_LOV";
@@ -76,7 +136,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				String label = rs.getString("LABEL");
 				String inputTypeCd = rs.getString("INPUT_TYPE_CD");
 				String oldLovProvider = rs.getString("LOV_PROVIDER");
-				String newLovProvider = resolveRetrocompatibilityProblems(label, inputTypeCd, oldLovProvider);
+				String newLovProvider = resolveLovsRetrocompatibilityProblems(label, inputTypeCd, oldLovProvider);
 				if (newLovProvider != null) {
 					newLovProvider = newLovProvider.replaceAll("'", "''");
 					String updateLov = "UPDATE SBI_LOV SET LOV_PROVIDER = '" + newLovProvider + "' " +
@@ -86,6 +146,24 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				}
 
 			}
+			
+			String sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN PROG INTEGER";
+			stmt.execute(sql);
+			sql =  "UPDATE SBI_OBJ_PARUSE SET PROG=1";
+			stmt.executeUpdate(sql);
+			sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN PRE_CONDITION VARCHAR";
+			stmt.execute(sql);
+			sql =  "UPDATE SBI_OBJ_PARUSE SET PRE_CONDITION=''";
+			stmt.executeUpdate(sql);
+			sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN POST_CONDITION VARCHAR";
+			stmt.execute(sql);
+			sql =  "UPDATE SBI_OBJ_PARUSE SET POST_CONDITION=''";
+			stmt.executeUpdate(sql);
+			sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN LOGIC_OPERATOR VARCHAR";
+			stmt.execute(sql);
+			sql =  "UPDATE SBI_OBJ_PARUSE SET LOGIC_OPERATOR=''";
+			stmt.executeUpdate(sql);
+			
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",
 		                           "Error while changing database " + e);	
@@ -106,7 +184,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 	 * @param oldLovProvider The previous lov_provider
 	 * @return The new lov_provider or null if the updating process generates an error.
 	 */
-	private String resolveRetrocompatibilityProblems(String label, String inputTypeCd, String oldLovProvider) {
+	private String resolveLovsRetrocompatibilityProblems(String label, String inputTypeCd, String oldLovProvider) {
 		String toReturn = null;
 		try {
 			if ("FIX_LOV".equalsIgnoreCase(inputTypeCd)) {

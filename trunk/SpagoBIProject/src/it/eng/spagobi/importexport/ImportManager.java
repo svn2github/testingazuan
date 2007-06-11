@@ -389,7 +389,7 @@ public class ImportManager implements IImportManager {
 		importParuseDet();
 		importParuseCheck();
 		importBIObjPar();
-		//importObjParUse();
+		importObjParUse();
 	}
 	
    

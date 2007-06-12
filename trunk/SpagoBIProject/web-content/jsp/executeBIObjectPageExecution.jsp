@@ -1030,6 +1030,9 @@
 					winName = winName.substring(10);
 					document.getElementById('formexecution<%=executionId%>').target="_self";
 				}
+				if (window.name != null && window.name.match('workspaceiframe')) {
+					document.getElementById('formexecution<%=executionId%>').target="_self";
+				}
 	        	url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP";
 		    	pars = "NEW_SESSION=TRUE&ACTION_NAME=UPDATE_EXECUTION_MANAGER&windowName=" + winName;
 		    	pars +="&spagobi_execution_id=<%=executionId%>";

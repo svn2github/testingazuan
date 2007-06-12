@@ -60,9 +60,11 @@ public class UpdateExecutionManager extends AbstractHttpAction {
     		}
     	}
 		String flowId = windowName;
-		if (flowId == null || flowId.trim().equals("")) flowId = executionId;
-		if (flowId != null && flowId.startsWith("iframeexec")) 
+		if (flowId == null || flowId.trim().equals("") || !flowId.startsWith("iframeexec")) {
+			flowId = executionId;
+		} else {
 			flowId = flowId.substring(10);
+		}
 		ExecutionManager executionManager = ExecutionManager.getInstance();
 		executionManager.registerExecution(flowId, executionId, obj, executionRole);
 		List list = executionManager.getBIObjectsExecutionFlow(flowId);

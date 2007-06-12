@@ -73,6 +73,17 @@ public class QueryDetail  implements ILovDetail  {
 	 */
 	public void loadFromXML (String dataDefinition) throws SourceBeanException {
 		dataDefinition.trim();
+		if(dataDefinition.indexOf("<STMT>")!=-1) {
+			int startInd = dataDefinition.indexOf("<STMT>");
+			int endId = dataDefinition.indexOf("</STMT>");
+			String query = dataDefinition.substring(startInd + 6, endId);
+			query =query.trim();
+			if(!query.startsWith("<![CDATA[")) {
+				query = "<![CDATA[" + query  +  "]]>";
+				dataDefinition = dataDefinition.substring(0, startInd+6) + query + dataDefinition.substring(endId); 
+			}
+		}
+		
 		SourceBean source = SourceBean.fromXMLString(dataDefinition);
 		SourceBean connection = (SourceBean)source.getAttribute("CONNECTION");
 		String connectionName = connection.getCharacters(); 

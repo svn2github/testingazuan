@@ -54,10 +54,8 @@
 		SessionContainer permSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String username = userProfile.getUserUniqueIdentifier().toString();
-		// urls for resources
-		String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
+
 		%>
-		<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
 	
 		<script>
 	

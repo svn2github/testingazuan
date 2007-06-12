@@ -779,6 +779,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	private void recoverQueryWizardValues (SourceBean request, QueryDetail query) {
 		String connName = (String)request.getAttribute("connName");
 		String queryDefinition = (String)request.getAttribute("queryDef");
+		queryDefinition = "<![CDATA[" + queryDefinition + "]]>";
 		query.setConnectionName(connName);
 		query.setQueryDefinition(queryDefinition);
 	}

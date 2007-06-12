@@ -115,7 +115,7 @@ public class DynamicPageTag extends TagSupport {
 		// identity string for object of the page
 		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 		UUID uuid = uuidGen.generateTimeBasedUUID();
-		requestIdentity = "request" + uuid.toString();
+		requestIdentity = uuid.toString();
 		requestIdentity = requestIdentity.replaceAll("-", "");
 		
 		BIObject obj = getBIObject();
@@ -242,8 +242,8 @@ public class DynamicPageTag extends TagSupport {
 	private void createSetChangedFlagJSFunction(StringBuffer htmlStream) {
 		htmlStream.append("<script type='text/javascript'>\n");
 		htmlStream.append("	function setChangedFlag" + requestIdentity + "(paramUrl) {\n");
-		//htmlStream.append("		alert(document.getElementById(paramUrl + 'IsChanged').value);\n");
-		htmlStream.append("		document.getElementById(paramUrl + 'IsChanged').value = 'true';\n");	
+		//htmlStream.append("		alert(paramUrl + 'IsChanged');\n");
+		htmlStream.append("		document.getElementById(paramUrl + 'IsChanged' + '" + requestIdentity + "').value = 'true';\n");	
 		htmlStream.append("	}\n");
 		htmlStream.append("</script>\n");
 	}	
@@ -436,7 +436,7 @@ public class DynamicPageTag extends TagSupport {
 							"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 							"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
 							"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
-									   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "')\" " +
+									   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "')\" " +
 							"onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
 							"autocomplete='off'/>\n");
 		
@@ -454,7 +454,7 @@ public class DynamicPageTag extends TagSupport {
 						"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 						"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
 						"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
-								   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "')\" " +
+								   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "')\" " +
 						"onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
 						"autocomplete='off'/>\n");
 	

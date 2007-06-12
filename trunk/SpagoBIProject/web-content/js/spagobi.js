@@ -1,4 +1,38 @@
 
+function isIE() {
+	navigatorname = navigator.appName;
+    navigatorname = navigatorname.toLowerCase();
+    return (navigatorname.indexOf('explorer') != -1);
+}
+
+function isMoz() {
+	navigatorname = navigator.appName;
+    navigatorname = navigatorname.toLowerCase();
+    return (navigatorname.indexOf('explorer') == -1);
+}
+
+function isIE5() {
+	navigatorname = navigator.appName;
+    navigatorversion = navigator.appVersion;
+    navigatorname = navigatorname.toLowerCase();
+    return ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
+}
+
+function isIE6(){
+	navigatorname = navigator.appName;
+    navigatorversion = navigator.appVersion;
+    navigatorname = navigatorname.toLowerCase();
+    return ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
+}
+
+function isIE7() {
+	navigatorname = navigator.appName;
+    navigatorversion = navigator.appVersion;
+    navigatorname = navigatorname.toLowerCase();
+    return ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
+}
+
+
 function FCKeditor_OnComplete( editorInstance ) {
         completeName = editorInstance.Name;
         instanceName = completeName.substring(13, completeName.length);

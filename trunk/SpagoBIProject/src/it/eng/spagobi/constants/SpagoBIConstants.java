@@ -167,6 +167,7 @@ public class SpagoBIConstants {
 	
 	public static final String ACTIVITYKEY = "ACTIVITYKEY";
 	
+	public static final String PREFERENCE_MAXIMIZE_ABLE = "MAXIMIZE_ABLE";
 	
 	public static final String PREFERENCE_NOTES_EDITOR_ABLE = "NOTES_EDITOR_ABLE";
 	public static final String PREFERENCE_NOTES_EDITOR_WIDTH = "NOTES_EDITOR_WIDTH";

@@ -72,7 +72,7 @@ INSERT INTO SBI_CHECKS (VALUE_TYPE_ID, VALUE_TYPE_CD, VALUE_1, VALUE_2, LABEL, N
 
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_MONTH_YEAR', 'Current month of the year', 'Current month of the year format mm', 
-'<SCRIPTLOV><SCRIPT>Date now = new Date();\r\nint month = now.getMonth() + 1;\r\nString monthStr = month.toString();\r\nif (month &lt; 10) monthStr = ''0'' + monthStr;\r\nreturnValue(monthStr);</SCRIPT></SCRIPTLOV>', 
+'<SCRIPTLOV><SCRIPT>Date now = new Date();\r\nint month = now.getMonth() + 1;\r\nString monthStr = month.toString();\r\nif (month < 10) monthStr = ''0'' + monthStr;\r\nreturnValue(monthStr);</SCRIPT></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_YEAR', 'Current year', 'Current year format yyyy', 
@@ -80,9 +80,9 @@ INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_MONTH', 'Current month', 'Current month format mm/yyyy', 
-'<SCRIPTLOV><SCRIPT>Date now = new Date();\r\nint month = now.getMonth() + 1;\r\nString monthStr = month.toString();\r\nif (month &lt; 10) monthStr = ''0'' + monthStr;\r\nint year = now.getYear() + 1900;\r\nString toReturn = monthStr + ''/'' + year.toString();\r\nreturnValue(toReturn);</SCRIPT></SCRIPTLOV>', 
+'<SCRIPTLOV><SCRIPT>Date now = new Date();\r\nint month = now.getMonth() + 1;\r\nString monthStr = month.toString();\r\nif (month < 10) monthStr = ''0'' + monthStr;\r\nint year = now.getYear() + 1900;\r\nString toReturn = monthStr + ''/'' + year.toString();\r\nreturnValue(toReturn);</SCRIPT></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_DATE', 'Current date', 'Current date format dd/mm/yyyy', 
-'<SCRIPTLOV><SCRIPT>Date now = new Date();\r\nint day = now.getDate();\r\nString dayStr = day.toString();\r\nif (day &lt; 10) dayStr = ''0'' + dayStr;\r\nint month = now.getMonth() + 1;\r\nString monthStr = month.toString();\r\nif (month &lt; 10) monthStr = ''0'' + monthStr;\r\nint year = now.getYear() + 1900;\r\nString toReturn = dayStr + ''/'' + monthStr + ''/'' + year.toString();\r\nreturnValue(toReturn);</SCRIPT></SCRIPTLOV>', 
+'<SCRIPTLOV><SCRIPT>Date now = new Date();\r\nint day = now.getDate();\r\nString dayStr = day.toString();\r\nif (day < 10) dayStr = ''0'' + dayStr;\r\nint month = now.getMonth() + 1;\r\nString monthStr = month.toString();\r\nif (month < 10) monthStr = ''0'' + monthStr;\r\nint year = now.getYear() + 1900;\r\nString toReturn = dayStr + ''/'' + monthStr + ''/'' + year.toString();\r\nreturnValue(toReturn);</SCRIPT></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');

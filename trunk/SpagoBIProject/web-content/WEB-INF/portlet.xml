@@ -243,6 +243,14 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<value>VIEW_OBJECTS_AS_TREE</value>
         	</preference>
         	
+        	<!-- able / disable the maximize button into the execution pages -->
+        	<!-- ATTENTION: the maximize works on Firefox and Explorer 7 (for other browsers is disabled automatically)  -->
+            <preference> 
+        		<name>MAXIMIZE_ABLE</name>
+        		<!-- possible values are 	TRUE / FALSE -->
+        		<value>FALSE</value>
+        	</preference>
+        	
         	
         	<!-- able / disable the notes editor into the execution pages -->
             <preference> 
@@ -369,6 +377,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-info>
 	</portlet>
 
+
 	<portlet>
         <description>Execution Workspace</description>		
         <portlet-name>SbiExecutionWorkspace</portlet-name>		
@@ -405,5 +414,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	</preference>
         </portlet-preferences>
 	</portlet>
+
 
 </portlet-app>

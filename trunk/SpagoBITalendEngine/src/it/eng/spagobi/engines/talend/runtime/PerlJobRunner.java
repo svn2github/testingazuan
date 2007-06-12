@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -44,96 +46,84 @@ public class PerlJobRunner implements IJobRunner {
     
     	File contextTempScriptFile = null;
     	
-    	try {
-	    	logger.debug("Starting run method with parameters: " +
-	    			"project = [" + job.getProject() + "] ; " +
-	    			"job name = [" + job.getName() + "] ; " +
-	    			"context = [" + job.getContext() + "] ; " +
-	    			"base dir = [" + runtimeRepository.getRootDir() + "].");
-	
-	    	
-	    	
-	    	File executableJobDir = runtimeRepository.getExecutableJobDir(job);
-	    	logger.debug("Job base folder: " + executableJobDir);
-	    	
-	    	    	
+    	logger.debug("Starting run method with parameters: " +
+    			"project = [" + job.getProject() + "] ; " +
+    			"job name = [" + job.getName() + "] ; " +
+    			"context = [" + job.getContext() + "] ; " +
+    			"base dir = [" + runtimeRepository.getRootDir() + "].");
 
-	    	if (!runtimeRepository.containsJob(job)) {	    		
-	    		throw new JobNotFoundException("Job executable file " + 
-	    				runtimeRepository.getExecutableJobFile(job) + " does not exist.");
-	    	}
-	    	
-	    	SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
-	    	String cmd = config.getPerlInstallDir() + File.separatorChar + config.getPerlBinDir()+ 
-	    		File.separatorChar + config.getPerlCommand() + " " + TalendScriptAccessUtils.getExecutableFileName(job);
-	    	
-	    		    	
-	    	// if the context is not specified, it looks for the defualt context script file;
-	    	// if it exists, the context is assumed to be the default.
-	    	// Instead, if the context is specified, it looks for the relevant context script file;
-	    	// if it does not exist, an error message is returned.
-	    	File contextFile = null;
-	    	
-	    	if (job.getContext() == null || job.getContext().trim().equals("")) {
-	    		logger.debug("Context not specified.");
-	    		job.setContext(DEFAULT_CONTEXT);
-	    		String contextFileName = TalendScriptAccessUtils.getContextFileName(job);
-	    		File defaultContextFile = new File(executableJobDir, contextFileName);
-	    		if (defaultContextFile.exists()) {
-	    			logger.debug("Found default script context file.");
-	    			contextFile = defaultContextFile;
-	    		}
-	    	} else {
-	    		String contextFileName = TalendScriptAccessUtils.getContextFileName(job);
-	    		contextFile = new File(executableJobDir, contextFileName);
-	    		if (!contextFile.exists()) {
-		    		throw new ContextNotFoundException("Script context file " + contextFile + " does not exist.");
-				}
-	    	}
-	    	
-	    	
-    		
-	    	// only if the context file exists, we consider document parameter
-	    	if (contextFile != null) {
-	    		if (parameters.isEmpty()) {
-	    			String contextFileName = contextFile.getName();
-	    			if (contextFileName.indexOf(File.separatorChar) != -1) {
-	    				contextFileName = 
-	    					contextFileName.substring(contextFileName.lastIndexOf(File.separatorChar));
-	    			}
-	    			cmd = cmd + " --context=" + contextFileName;
-	    		} else {
-	    			//String newContextScriptFileName = contextScriptFile.getName();
-					try {
-						contextTempScriptFile = createTempContextScriptFile( contextFile, parameters);
-						//newContextScriptFileName = contextTempScriptFile.getName();
-					} catch (Exception e) {
-						logger.error("Error while creating temp context file", e);
-						logger.error("Document parameter cannot be considered.");
-					}
-					cmd = cmd + " --context=\"" + contextTempScriptFile.getAbsolutePath() + "\"";
-	    		}
-	    	}
-	    	
-	    	
-	    	logger.debug("Perl execution command: " + cmd);
-	    	
-			try { 
-				String line;
-				Process p = Runtime.getRuntime().exec(cmd, null, executableJobDir);
-				BufferedReader input = new BufferedReader (new InputStreamReader(p.getInputStream()));
-				while ((line = input.readLine()) != null) {
-					logger.debug(line);
-				}
-				input.close();
-			} catch(Exception e){
-				throw new JobExecutionException("Error while executing perl command:", e);
-			}
-	    	
-			
-    	} finally {
-    		if (contextTempScriptFile != null && contextTempScriptFile.exists()) contextTempScriptFile.delete();
+    	
+    	
+    	File executableJobDir = runtimeRepository.getExecutableJobDir(job);
+    	logger.debug("Job base folder: " + executableJobDir);
+    	
+    	    	
+
+    	if (!runtimeRepository.containsJob(job)) {	    		
+    		throw new JobNotFoundException("Job executable file " + 
+    				runtimeRepository.getExecutableJobFile(job) + " does not exist.");
     	}
+    	
+    	SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+    	String cmd = config.getPerlInstallDir() + File.separatorChar + config.getPerlBinDir()+ 
+    		File.separatorChar + config.getPerlCommand() + " " + TalendScriptAccessUtils.getExecutableFileName(job);
+    	
+    		    	
+    	// if the context is not specified, it looks for the defualt context script file;
+    	// if it exists, the context is assumed to be the default.
+    	// Instead, if the context is specified, it looks for the relevant context script file;
+    	// if it does not exist, an error message is returned.
+    	File contextFile = null;
+    	
+    	if (job.getContext() == null || job.getContext().trim().equals("")) {
+    		logger.debug("Context not specified.");
+    		job.setContext(DEFAULT_CONTEXT);
+    		String contextFileName = TalendScriptAccessUtils.getContextFileName(job);
+    		File defaultContextFile = new File(executableJobDir, contextFileName);
+    		if (defaultContextFile.exists()) {
+    			logger.debug("Found default script context file.");
+    			contextFile = defaultContextFile;
+    		}
+    	} else {
+    		String contextFileName = TalendScriptAccessUtils.getContextFileName(job);
+    		contextFile = new File(executableJobDir, contextFileName);
+    		if (!contextFile.exists()) {
+	    		throw new ContextNotFoundException("Script context file " + contextFile + " does not exist.");
+			}
+    	}
+    	
+    	
+		
+    	// only if the context file exists, we consider document parameter
+    	if (contextFile != null) {
+    		if (parameters.isEmpty()) {
+    			String contextFileName = contextFile.getName();
+    			if (contextFileName.indexOf(File.separatorChar) != -1) {
+    				contextFileName = 
+    					contextFileName.substring(contextFileName.lastIndexOf(File.separatorChar));
+    			}
+    			cmd = cmd + " --context=" + contextFileName;
+    		} else {
+    			//String newContextScriptFileName = contextScriptFile.getName();
+				try {
+					contextTempScriptFile = createTempContextScriptFile( contextFile, parameters);
+					//newContextScriptFileName = contextTempScriptFile.getName();
+				} catch (Exception e) {
+					logger.error("Error while creating temp context file", e);
+					logger.error("Document parameter cannot be considered.");
+				}
+				cmd = cmd + " --context=\"" + contextTempScriptFile.getAbsolutePath() + "\"";
+    		}
+    	}
+    	
+    	
+    	logger.debug("Perl execution command: " + cmd);
+    	
+    	List filesToBeDeleted = new ArrayList();
+    	filesToBeDeleted.add(contextTempScriptFile);
+    	JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted);
+    	jrt.start();
+			
     }
 
 	private File createTempContextScriptFile(File contextScriptFile, Map parameters) throws Exception {

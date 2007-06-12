@@ -21,29 +21,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.talend.runtime;
 
-import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
-import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -70,7 +60,6 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	
 		
     public void run(Job job, Map parameters) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
-    	File contextTempScriptFile = null;
     	File contextFile = null;
     	String tmpDirName = null;
     	File contextFileDir = null;
@@ -151,24 +140,13 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    		    		    	
 	    	logger.debug("Java execution command: " + cmd);
 	    	
-	    	try { 
-				String line;
-				Process p = Runtime.getRuntime().exec(cmd, null, executableJobDir);
-				BufferedReader input = new BufferedReader (new InputStreamReader(p.getInputStream()));
-				while ((line = input.readLine()) != null) {
-					logger.debug(line);
-					System.out.println(line);
-				}
-				input.close();
-			} catch(Exception e){
-				throw new JobExecutionException("Error while executing perl command:", e);
-			}
+	    	List filesToBeDeleted = new ArrayList();
+	    	filesToBeDeleted.add(contextFileDir);
+	    	JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted);
+	    	jrt.start();
+	    	
     	} catch (Exception e) {
-    		throw new JobExecutionException("Error while executing perl command:", e);
-    	} finally {
-			if (contextTempScriptFile != null && contextTempScriptFile.exists()) contextTempScriptFile.delete();
-			if (contextFile != null && contextFile.exists()) contextFile.delete();
-			if (contextFileDir != null && contextFileDir.exists()) contextFileDir.delete();			
+    		throw new JobExecutionException("Error while preparing java command:", e);
     	}
     }
     
@@ -186,7 +164,8 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
     	
     	classpath.append( (libs.size()>0? ";": "") + TalendScriptAccessUtils.getExecutableFileName(job));
     	
-    	System.out.println(classpath);
+    	logger.debug(classpath);
+    	//System.out.println(classpath);
     	
     	return classpath.toString();
     }

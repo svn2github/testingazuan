@@ -41,6 +41,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 public class ExecutionWorkspaceModule extends AbstractModule {
 
 	public static final String MODULE_PAGE = "ExecutionWorkspacePage";
@@ -135,7 +138,16 @@ public class ExecutionWorkspaceModule extends AbstractModule {
 		response.setAttribute("FIRST_LEVEL_FOLDERS", firtsLevelExecutableFolders);
 		response.setAttribute("SUB_TREE", subTree);
 		response.setAttribute(TreeObjectsModule.PATH_SUBTREE, basePath);
-		if (executionObjectLabel != null) response.setAttribute(ObjectsTreeConstants.OBJECT_LABEL, executionObjectLabel);
+		if (executionObjectLabel != null) {
+			// a document was selected, document execution can start
+			response.setAttribute(ObjectsTreeConstants.OBJECT_LABEL, executionObjectLabel);
+		    // identity string for object execution
+		    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		    UUID uuid = uuidGen.generateTimeBasedUUID();
+		    String requestIdentity = uuid.toString();
+		    requestIdentity = requestIdentity.replaceAll("-", "");
+		    response.setAttribute("spagobi_execution_id", requestIdentity);
+		}
 		debug("exit", "Exit from module");
 	}
 	

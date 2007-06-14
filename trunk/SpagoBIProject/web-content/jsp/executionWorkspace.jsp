@@ -1,15 +1,12 @@
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@page import="org.safehaus.uuid.UUIDGenerator"%>
-<%@page import="org.safehaus.uuid.UUID"%>
 <%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 <%@page import="java.io.File"%>
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
-
-
+<%@page import="it.eng.spagobi.managers.ExecutionManager"%>
 
 <div class="div_no_background">
 	
@@ -37,11 +34,6 @@
 
 	<div class='workspaceRightBox' >
 		<%
-	    // identity string for object of the page
-	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-	    UUID uuid = uuidGen.generateTimeBasedUUID();
-	    String requestIdentity = uuid.toString();
-	    requestIdentity = requestIdentity.replaceAll("-", "");
 	    // get spagobi url
 	    String spagobiurl = GeneralUtilities.getSpagoBiContextAddress();
 	    if (!spagobiurl.endsWith("/")) spagobiurl += "/";
@@ -51,11 +43,8 @@
 		// get the BiObject label from the response
 	    String objLabel = (String) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
 		
-	   	// get the user profile from session
-		SessionContainer permSession = aSessionContainer.getPermanentContainer();
-		IEngUserProfile userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String username = userProfile.getUserUniqueIdentifier().toString();
-
+	    String requestIdentity = (String) moduleResponse.getAttribute("spagobi_execution_id");
+		
 		%>
 	
 		<script>
@@ -165,6 +154,14 @@
 			</div>
 			<%
 		} else {
+			
+			ExecutionManager executionManager = ExecutionManager.getInstance();
+			ExecutionManager.ExecutionInstance instance = executionManager.getLastExecutionInstance(requestIdentity);
+			boolean isRefreshRequest = false;
+			if (instance != null) {
+				isRefreshRequest = true;
+			}
+			
 			%>
 			<div id="navigationBar<%=requestIdentity%>" class='documentName'>
 				<%-- this div we be filled by js code --%>
@@ -183,14 +180,31 @@
 							id='formexecution<%=requestIdentity%>' method="post"
 							action="<%=spagobiurl%>"
 							target='iframeexec<%=requestIdentity%>'>
-	
-						<input type="hidden" name="NEW_SESSION" value="TRUE" />
-						<input type="hidden" name="PAGE" value="DirectExecutionPage" />
-				        <input type="hidden" name="USERNAME" value="<%=username%>" />
-				        <input type="hidden" name="DOCUMENT_LABEL" value="<%=objLabel%>" />
-				        <input type="hidden" name="spagobi_flow_id" value="<%=requestIdentity%>" />
-				        <input type="hidden" name="spagobi_execution_id" value="<%=requestIdentity%>" />
-	
+						
+						<%
+						if (!isRefreshRequest) {
+						   	// get the user profile from session
+							SessionContainer permSession = aSessionContainer.getPermanentContainer();
+							IEngUserProfile userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+							String username = userProfile.getUserUniqueIdentifier().toString();
+							%>
+							<input type="hidden" name="NEW_SESSION" value="TRUE" />
+							<input type="hidden" name="PAGE" value="DirectExecutionPage" />
+					        <input type="hidden" name="USERNAME" value="<%=username%>" />
+					        <input type="hidden" name="DOCUMENT_LABEL" value="<%=objLabel%>" />
+					        <input type="hidden" name="spagobi_flow_id" value="<%=requestIdentity%>" />
+					        <input type="hidden" name="spagobi_execution_id" value="<%=requestIdentity%>" />
+							<%
+						} else {
+							%>
+							<input type="hidden" name="NEW_SESSION" value="TRUE" />
+							<input type="hidden" name="PAGE" value="DirectExecutionPage" />
+							<input type="hidden" name="OPERATION" value="RECOVER_EXECUTION_FROM_DRILL_FLOW" />
+							<input type="hidden" name="spagobi_flow_id" value="<%=requestIdentity%>" />
+							<input type="hidden" name="spagobi_execution_id" value="<%=instance.getExecutionId()%>" />
+							<%
+						}
+						%>						
 				        <center>
 				        	<input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>
 						</center>

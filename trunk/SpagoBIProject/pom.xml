@@ -279,21 +279,21 @@
       <artifactId>spagocms.core</artifactId>
       <version>2.1.1</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/spagocms-core-2.1.1.jar</systemPath>
+      <systemPath>${lib.dir}/spagocms-core-2.1.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spago</groupId>
       <artifactId>spagocms.executioninprocess</artifactId>
       <version>2.1.1</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/spagocms-executioninprocess-2.1.1.jar</systemPath>
+      <systemPath>${lib.dir}/spagocms-executioninprocess-2.1.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spago</groupId>
       <artifactId>spagocms.repositoryproviders</artifactId>
       <version>2.1.1</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/spagocms-repositoryproviders-2.1.1.jar</systemPath>
+      <systemPath>${lib.dir}/spagocms-repositoryproviders-2.1.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spago-web</groupId>
@@ -334,5 +334,17 @@
       <scope>system</scope>
       <systemPath>${lib.dir}/jug-lgpl-2.0.0.jar</systemPath>
     </dependency> 
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.1</version>
+      <scope>provided</scope>
+    </dependency>  
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4</version>
+      <scope>provided</scope>
+    </dependency>        
   </dependencies>
 </project>

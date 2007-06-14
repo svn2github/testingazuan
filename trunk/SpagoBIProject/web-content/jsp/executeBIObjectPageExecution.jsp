@@ -1074,9 +1074,13 @@
 
             function refreshNavigationBar<%=executionId%>(html) {
             	winName = window.name;
+            	alert(winName);
             	navBarDiv = null;
 				if (winName != null && winName.match('iframeexec')) {
 					winName = winName.substring(10);
+					navBarDiv = top.document.getElementById("navigationBar"+ winName);
+				} else if (winName != null && winName.match('workspaceiframe')) {
+					winName = winName.substring(15);
 					navBarDiv = top.document.getElementById("navigationBar"+ winName);
 				} else {
             		navBarDiv = top.document.getElementById("navigationBar<%=executionId%>");

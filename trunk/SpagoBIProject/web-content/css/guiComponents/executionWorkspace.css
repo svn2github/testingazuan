@@ -124,3 +124,11 @@
 	float: left;
 	margin-left:5px;
 }
+
+/* ************************** DOCUMENT NAME ***************************** */
+.executionWorkspace .documentName {
+  font-family:arial;
+  font-weight:bold;
+  color:#173683;
+  font-size:15px;
+}

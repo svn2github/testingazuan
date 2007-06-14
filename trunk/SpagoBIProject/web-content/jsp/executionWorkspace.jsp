@@ -50,6 +50,7 @@
 	    SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecutionWorkspaceModule");
 		// get the BiObject label from the response
 	    String objLabel = (String) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
+		
 	   	// get the user profile from session
 		SessionContainer permSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -81,7 +82,7 @@
 				if(isIE6) { totalVisArea = window.document.body.clientHeight; }
 				if(isIE7) { totalVisArea = window.document.body.clientHeight; }
 				if(isMoz) { totalVisArea = window.innerHeight; }
-				iframeEl = document.getElementById('workspaceiframe<%=requestIdentity%>');
+				iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 				//iframeEl.scrollbars="no";
 				iframeEl.style.height = totalVisArea + 'px';
 				//iframeEl.style.height = 2000 + 'px';
@@ -107,7 +108,7 @@
 	          // calculate space below position frame div
 	          spaceBelowPos = heightVisArea - pos[1];
 	          // set height to the frame
-				    iframeEl = document.getElementById('workspaceiframe<%=requestIdentity%>');
+				    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 				    iframeEl.style.height = spaceBelowPos + 'px';
 	
 	          // calculate height of the win area and height footer
@@ -137,7 +138,7 @@
 				    // calculate height of the frame
 				    heightFrame = heightVisArea - pos[1] - heightFooter;
 				    // set height to the frame
-				    iframeEl = document.getElementById('workspaceiframe<%=requestIdentity%>');
+				    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 				    iframeEl.style.height = heightFrame + 'px';
 				    //alert('iframe esterno: ' + iframeEl.style.height);
 			  }
@@ -165,10 +166,15 @@
 			<%
 		} else {
 			%>
+			<div id="navigationBar<%=requestIdentity%>" class='documentName'>
+				<%-- this div we be filled by js code --%>
+			</div>
+			
+			
 			<center>
 				<div id="divIframe<%=requestIdentity%>" style="width:100%;overflow=auto;">
-					<iframe id="workspaceiframe<%=requestIdentity%>"
-							name="workspaceiframe<%=requestIdentity%>"
+					<iframe id="iframeexec<%=requestIdentity%>"
+							name="iframeexec<%=requestIdentity%>"
 				            src=""
 				            style="width:100%"
 				            frameborder="0"></iframe>
@@ -176,7 +182,7 @@
 					<form 	name="formexecution<%=requestIdentity%>"
 							id='formexecution<%=requestIdentity%>' method="post"
 							action="<%=spagobiurl%>"
-							target='workspaceiframe<%=requestIdentity%>'>
+							target='iframeexec<%=requestIdentity%>'>
 	
 						<input type="hidden" name="NEW_SESSION" value="TRUE" />
 						<input type="hidden" name="PAGE" value="DirectExecutionPage" />

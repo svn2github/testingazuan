@@ -236,14 +236,14 @@
       <artifactId>spago-core</artifactId>
       <version>2.0.1</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/spago-core-2.1.1.jar</systemPath>
+      <systemPath>${lib.dir}/spago-core-2.1.2.jar</systemPath>
     </dependency> 
     <dependency>
       <groupId>spago</groupId>
       <artifactId>spago-web</artifactId>
       <version>2.0.1</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/spago-web-2.1.1.jar</systemPath>
+      <systemPath>${lib.dir}/spago-web-2.1.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>xalan</groupId>
@@ -272,6 +272,11 @@
       <version>1.0</version>
       <scope>system</scope>
       <systemPath>${lib.dir}/jsr173_1.0_api.jar</systemPath>
-    </dependency>  
+    </dependency> 
+    <dependency>
+      <groupId>spagobi</groupId>
+      <artifactId>sbi.utils</artifactId>
+      <version>1.9.2</version>
+    </dependency>   
   </dependencies>
 </project>

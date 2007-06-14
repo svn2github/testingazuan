@@ -147,9 +147,13 @@ public class ExecutionController {
 				if (chunks.length == 2) {
 					parValue = chunks[1];
 				}
-				List parameterValues = new ArrayList();
-				parameterValues.add(parValue);
-				biparameter.setParameterValues(parameterValues);
+				if (parValue != null && parValue.equalsIgnoreCase("NULL")) {
+					biparameter.setParameterValues(null);
+				} else {
+					List parameterValues = new ArrayList();
+					parameterValues.add(parValue);
+					biparameter.setParameterValues(parameterValues);
+				}
 				biparameter.setTransientParmeters(true);
 			}
 			obj.setBiObjectParameters(biparameters);

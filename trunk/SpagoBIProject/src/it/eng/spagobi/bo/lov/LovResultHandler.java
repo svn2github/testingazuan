@@ -89,8 +89,10 @@ public class LovResultHandler {
 	 */
 	public boolean containsValue(String value, String valueColumnName) {
 		List values = getValues(valueColumnName);
-		for(int i = 0; i < values.size(); i++)
-			if(values.get(i).toString().equalsIgnoreCase(value)) return true;
+		for(int i = 0; i < values.size(); i++) {
+			if (value == null && values.get(i) == null) return true;
+			if (values.get(i) != null && values.get(i).toString().equalsIgnoreCase(value)) return true;
+		}
 		return false;
 	}
 	

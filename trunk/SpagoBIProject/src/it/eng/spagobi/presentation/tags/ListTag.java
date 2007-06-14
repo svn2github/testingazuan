@@ -729,6 +729,7 @@ public class ListTag extends TagSupport
 						Object valueObject = row.getAttribute(value);
 						if (valueObject != null)
 							value = valueObject.toString();
+						else value = "";
 					} // if ((scope != null) && scope.equalsIgnoreCase("LOCAL"))
 					else
 						value =	(String)(ContextScooping.getScopedParameter(_requestContainer, _responseContainer, value, scope)).toString();

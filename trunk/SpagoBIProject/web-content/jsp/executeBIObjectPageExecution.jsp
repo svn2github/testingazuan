@@ -1027,7 +1027,7 @@
 			function updateExecutioManager<%=executionId%>() {
 				winName = window.name;
 				if (window.name != null && window.name.match('iframeexec')) {
-					winName = winName.substring(10);
+					//winName = winName.substring(10);
 					document.getElementById('formexecution<%=executionId%>').target="_self";
 				}
 				if (window.name != null && window.name.match('workspaceiframe')) {
@@ -1044,11 +1044,17 @@
 		    	while (parametersIt.hasNext()) {
 		    		BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
 		    		List parValues = aParameter.getParameterValues();
-		    		Iterator parValuesIt = parValues.iterator();
-		    		while (parValuesIt.hasNext()) {
-		    			String aParValue = parValuesIt.next().toString();
+		    		if (parValues != null) {
+			    		Iterator parValuesIt = parValues.iterator();
+			    		while (parValuesIt.hasNext()) {
+			    			String aParValue = parValuesIt.next().toString();
+				    		%>
+				    		pars += "&<%=aParameter.getParameterUrlName()%>=<%=aParValue%>";
+				    		<%
+			    		}
+		    		} else {
 			    		%>
-			    		pars += "&<%=aParameter.getParameterUrlName()%>=<%=aParValue%>";
+			    		pars += "&<%=aParameter.getParameterUrlName()%>=NULL";
 			    		<%
 		    		}
 		    	}

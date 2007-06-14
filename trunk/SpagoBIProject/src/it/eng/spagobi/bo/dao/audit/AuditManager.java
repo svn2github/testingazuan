@@ -176,7 +176,12 @@ public class AuditManager {
 		if (parameters != null && parameters.size() > 0) {
 			for (int i = 0; i < parameters.size(); i++) {
 				BIObjectParameter parameter = (BIObjectParameter) parameters.get(i);
-				documentParameters += parameter.getParameterUrlName() + "=" + parameter.getParameterValues().toString();
+				documentParameters += parameter.getParameterUrlName() + "=";
+				List values = parameter.getParameterValues();
+				if (values != null) 
+					documentParameters += values.toString();
+				else 
+					documentParameters += "NULL";
 				if (i < parameters.size() - 1) documentParameters += "&";
 			}
 		}

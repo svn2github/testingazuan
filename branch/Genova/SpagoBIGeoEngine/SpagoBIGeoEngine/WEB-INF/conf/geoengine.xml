@@ -1,0 +1,28 @@
+<GEOENGINE>
+     <!-- ********************* START DATABASE CONFIGURATION ************************ -->
+     
+     <!-- GEOENGINE HIBERNATE PERSISTENCE CONFIGURATTION -->
+	 <!--  PostgresSQL (Default)  -->
+	 <!--  hibernate.cfg.postgres.xml -->
+	 <!--  MySQL: Uncomment the row below and edit the file  to provide connection info -->
+	 <!--  hibernate.cfg.mysql.xml -->
+	 <!--  Oracle: Uncomment the row below and edit the file to provide connection info -->
+	 <!--  hibernate.cfg.ora.xml-->
+     <!--  Hsqldb: Uncomment the row below and edit the file to provide connection info -->
+     <!--   hibernate.cfg.hsql.xml -->
+	 <HIBERNATE-CFGFILE>hibernate.cfg.hsql.xml</HIBERNATE-CFGFILE>
+	
+     <!-- ********************* END DATABASE CONFIGURATION ************************ -->
+     
+     <!-- ********************* START DAO CONFIGURATION ************************ -->
+     
+     <DAO-CONF>
+		<!--  HIBERNATE DAO (DEFAULT) IMPLEMENTATION -->
+		<DAO name="SbiGeoFeaturesDAO" implementation="it.eng.spagobi.geo.bo.dao.hibernate.SbiGeoFeaturesDAOHibImpl"/>  
+		<DAO name="SbiGeoMapsDAO" implementation="it.eng.spagobi.geo.bo.dao.hibernate.SbiGeoMapsDAOHibImpl"/>  
+		<DAO name="SbiGeoMapFeaturesDAO" implementation="it.eng.spagobi.geo.bo.dao.hibernate.SbiGeoMapFeaturesDAOHibImpl"/>  				
+	</DAO-CONF>     
+     
+     <!-- ********************* END DAO CONFIGURATION ************************ -->
+
+</GEOENGINE>

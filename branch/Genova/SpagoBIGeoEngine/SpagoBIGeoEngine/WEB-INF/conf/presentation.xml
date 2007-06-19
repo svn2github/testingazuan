@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PRESENTATION>
+	<MAPPING business_type="ACTION" business_name="DETAIL_MAP_ACTION" publisher_name="detailMap"/>
+	<MAPPING business_type="ACTION" business_name="DETAIL_FEATURE_ACTION" publisher_name="detailFeature"/>	
+</PRESENTATION>

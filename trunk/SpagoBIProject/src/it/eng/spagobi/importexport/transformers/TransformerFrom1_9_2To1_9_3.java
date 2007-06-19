@@ -129,9 +129,11 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
 			Statement stmt = conn.createStatement();
+			
+			// manages lovs' definition
 			String selectAllLovs =  "SELECT LABEL, INPUT_TYPE_CD, LOV_PROVIDER FROM SBI_LOV";
 			ResultSet rs = stmt.executeQuery(selectAllLovs);
-			while(rs.next()){
+			while (rs.next()){
 				// for each old lov, resolves retrocompatibility problems
 				String label = rs.getString("LABEL");
 				String inputTypeCd = rs.getString("INPUT_TYPE_CD");
@@ -147,6 +149,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 
 			}
 			
+			// manages sbi_obj_paruse table (parameters dependencies)
 			String sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN PROG INTEGER";
 			stmt.execute(sql);
 			sql =  "UPDATE SBI_OBJ_PARUSE SET PROG=1";
@@ -163,6 +166,48 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 			stmt.execute(sql);
 			sql =  "UPDATE SBI_OBJ_PARUSE SET LOGIC_OPERATOR=''";
 			stmt.executeUpdate(sql);
+			conn.commit();
+			
+			// insert new document type ETL
+			sql = "SELECT MAX(VALUE_ID) AS MAXID FROM SBI_DOMAINS";
+			ResultSet domainRs = stmt.executeQuery(sql);
+			int maxid = 1000;
+			if (domainRs.next())
+				maxid = domainRs.getInt("MAXID");
+			int idEtlDocumentTypeDom = maxid + 1;
+			sql =  "INSERT INTO SBI_DOMAINS " +
+					"(VALUE_ID, VALUE_CD, VALUE_NM, DOMAIN_CD, DOMAIN_NM, VALUE_DS) VALUES" +
+					"(" + idEtlDocumentTypeDom + ", 'ETL','ETL process','BIOBJ_TYPE','BI Object types','ETL process')";
+			stmt.execute(sql);
+			conn.commit();
+			
+			// manages sbi_functions table
+			sql =  "ALTER TABLE SBI_FUNCTIONS ADD COLUMN PROG INTEGER";
+			stmt.execute(sql);
+			sql =  "SELECT FUNCT_ID, CODE, PATH FROM SBI_FUNCTIONS";
+			ResultSet foldersRs = stmt.executeQuery(sql);
+			while (foldersRs.next()) {
+				String updateProgQuery = null;
+				int folderId = foldersRs.getInt("FUNCT_ID");
+				String code = foldersRs.getString("CODE");
+				String path = foldersRs.getString("PATH");
+				String parentPath = path.substring(0, path.lastIndexOf("/" + code));
+				String findCurrentMaxProg = "SELECT MAX(PROG) AS MAX_PROG FROM SBI_FUNCTIONS " +
+					"WHERE PROG IS NOT NULL AND PATH = '" + parentPath + "/' + CODE";
+				ResultSet progRs = stmt.executeQuery(findCurrentMaxProg);
+				if (progRs.next()) {
+					int currentMaxProg = progRs.getInt("MAX_PROG");
+					Integer newProg = new Integer(currentMaxProg + 1);
+					updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = " + newProg.toString() + " WHERE FUNCT_ID = " + folderId;
+				} else {
+					updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = 1 WHERE FUNCT_ID = " + folderId;
+				}
+				stmt.execute(updateProgQuery);
+				conn.commit();
+			}
+			
+			conn.commit();
+			conn.close();
 			
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",

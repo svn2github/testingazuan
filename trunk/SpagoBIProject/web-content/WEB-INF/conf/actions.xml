@@ -18,5 +18,11 @@
  <ACTION name="UPDATE_EXECUTION_MANAGER" class="it.eng.spagobi.services.actions.UpdateExecutionManager" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ <ACTION name="MOVE_UP_LOWFUNCTIONALITY" class="it.eng.spagobi.services.actions.MoveUpLowFunctionality" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="MOVE_DOWN_LOWFUNCTIONALITY" class="it.eng.spagobi.services.actions.MoveDownLowFunctionality" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 </ACTIONS>
 

@@ -153,4 +153,15 @@ public interface ILowFunctionalityDAO {
 	 */
 	public LowFunctionality loadRootLowFunctionality(boolean recoverBIObjects) throws EMFUserError;
 	
+	/**
+	 * Moves up the functionality specified by the id at input in the functionalities tree
+	 * @throws EMFUserError
+	 */
+	public void moveUpLowFunctionality(Integer functionalityID) throws EMFUserError;
+	
+	/**
+	 * Moves down the functionality specified by the id at input in the functionalities tree
+	 * @throws EMFUserError
+	 */
+	public void moveDownLowFunctionality(Integer functionalityID) throws EMFUserError;
 }

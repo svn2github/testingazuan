@@ -57,6 +57,8 @@ public class LowFunctionality  implements Serializable  {
 	
 	private List biObjects = null;
 	
+	private Integer prog = null;
+	
 	/**
 	 * 
 	 * @return Low Functionality description
@@ -212,6 +214,14 @@ public class LowFunctionality  implements Serializable  {
 
 	public void setBiObjects(List biObjects) {
 		this.biObjects = biObjects;
+	}
+
+	public Integer getProg() {
+		return prog;
+	}
+
+	public void setProg(Integer prog) {
+		this.prog = prog;
 	}
 
 	

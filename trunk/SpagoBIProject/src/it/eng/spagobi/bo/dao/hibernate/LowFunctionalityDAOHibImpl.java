@@ -357,6 +357,16 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// if it is the root the parent functionality is null
 			hibFunct.setParentFunct(hibParentFunct);
 
+			// manages prog column that determines the folders order
+			if (hibParentFunct == null) hibFunct.setProg(new Integer(1));
+			else {
+				// loads sub functionalities
+				Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = " + parentId);
+				Integer maxProg = (Integer) hibQuery.uniqueResult();
+				if (maxProg != null) hibFunct.setProg(new Integer(maxProg.intValue() + 1));
+				else hibFunct.setProg(new Integer(1));
+			}
+
 			aSession.save(hibFunct);
 			// save roles functionality
 			Set functRoleToSave = new HashSet();
@@ -369,30 +379,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// set new roles into sbiFunctions
 			hibFunct.setSbiFuncRoles(functRoleToSave);
 
-//          CmsManager manager = new CmsManager();
-//			SetOperation setOp = new SetOperation(); 
-//			setOp.setPath(aLowFunctionality.getPath());
-//			setOp.setType(SetOperation.TYPE_CONTAINER);
-//			setOp.setEraseOldProperties(true);
-//			List properties = new ArrayList();
-//			String[] typePropValues = new String[] { AdmintoolsConstants.LOW_FUNCTIONALITY_TYPE };
-//			CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
-//          properties.add(proptype);
-//          setOp.setProperties(properties);
-//			manager.execSetOperation(setOp);
 			tx.commit();
-//		} catch (OperationExecutionException oee) {
-//			logException(oee);
-//			if (tx != null)
-//				tx.rollback();
-//
-//			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-//		} catch (BuildOperationException boe) {
-//			logException(boe);
-//			if (tx != null)
-//				tx.rollback();
-//
-//			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -434,12 +421,14 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				SbiFuncRole role = (SbiFuncRole) iterOldRoles.next();
 				aSession.delete(role);
 			}
-			aSession.delete(hibFunct);
 			
-//			CmsManager manager = new CmsManager();
-//			DeleteOperation delOp = new DeleteOperation();
-//			delOp.setPath(aLowFunctionality.getPath());
-//			manager.execDeleteOperation(delOp);
+			// update prog column in other functions
+			String hqlUpdateProg = "update SbiFunctions s set s.prog = (s.prog - 1) where s.prog > " 
+				+ hibFunct.getProg() + " and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId();
+			Query query = aSession.createQuery(hqlUpdateProg);
+			query.executeUpdate();
+			
+			aSession.delete(hibFunct);
 			
 			tx.commit();
 		} catch (HibernateException he) {
@@ -485,6 +474,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		lowFunct.setDescription(hibFunct.getDescr());
 		lowFunct.setName(hibFunct.getName());
 		lowFunct.setPath(hibFunct.getPath());
+		lowFunct.setProg(hibFunct.getProg());
 		SbiFunctions parentFuntionality = hibFunct.getParentFunct();
 		if (parentFuntionality != null)	
 			// if it is not the root find the id of the parent functionality
@@ -596,7 +586,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			Query hibQuery = aSession.createQuery(" from SbiFunctions");
+			Query hibQuery = aSession.createQuery(" from SbiFunctions s order by s.parentFunct.functId, s.prog");
 			List hibList = hibQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -643,7 +633,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			realResult.add(toLowFunctionality(hibFunct, recoverBIObjects));
 					
 			// loads sub functionalities
-			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.path like '" + initialPath + "/%' ");
+			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.path like '" + initialPath + "/%' order by s.parentFunct.functId, s.prog");
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
@@ -712,37 +702,8 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-		
-		
-		
-//		try{
-//			RequestContainer reqCont = RequestContainer.getRequestContainer();
-//			SessionContainer sessCont = reqCont.getSessionContainer();
-//			SessionContainer permSess = sessCont.getPermanentContainer();
-//			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-//			
-//			CmsManager manager = new CmsManager();
-//            GetOperation getOp = new GetOperation();
-//			getOp.setPath(path);
-//			getOp.setRetriveChildsInformation("true");
-//			getOp.setRetriveContentInformation("false");
-//			getOp.setRetrivePropertiesInformation("false");
-//			getOp.setRetriveVersionsInformation("false");
-//			CmsNode cmsnode = manager.execGetOperation(getOp);
-//			List childs = cmsnode.getChilds();
-//			if(!childs.isEmpty()) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		} catch (Exception e) {
-//			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-//					"LowFunctionalityDAOImpl", 
-//					"hasChild", 
-//					"Error during recovering childs of the functionality", e);
-//			throw new EMFUserError(EMFErrorSeverity.ERROR, 1003);
-//		}
 	}
+	
 	/**
 	 * Deletes a set of inconsistent roles reference from the database, 
 	 * in order to keep functionalities tree permissions consistence.
@@ -770,7 +731,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				sbiFunct.setFunctId(functId);
 		
 				hql = " from SbiFuncRole as funcRole where funcRole.id.function = '" + sbiFunct.getFunctId() + 
-				"' AND  funcRole.id.role = '"+ roleId +"'AND funcRole.stateCd ='"+stateCD+"'"; 
+				"' AND  funcRole.id.role = '"+ roleId +"' AND funcRole.stateCd ='"+stateCD+"'"; 
 			
 				hqlQuery = aSession.createQuery(hql);
 				functions = hqlQuery.list();
@@ -831,6 +792,88 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 		}
 		return realResult;
+	}
+
+	public void moveDownLowFunctionality(Integer functionalityID) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiFunctions hibFunct = (SbiFunctions) aSession.load(SbiFunctions.class, functionalityID);
+			Integer oldProg = hibFunct.getProg();
+			Integer newProg = new Integer(oldProg.intValue() + 1);
+			
+			String upperFolderHql = "from SbiFunctions s where s.prog = " + newProg.toString() + 
+				" and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId().toString();
+			Query query = aSession.createQuery(upperFolderHql);
+			SbiFunctions hibUpperFunct = (SbiFunctions) query.uniqueResult();
+			if (hibUpperFunct == null) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+					    "LowFunctionalityDAOHibImpl", 
+					    "moveDownLowFunctionality", 
+					    "The function with prog [" + newProg + "] does not exist.");
+				return;
+			}
+			
+			hibFunct.setProg(newProg);
+			hibUpperFunct.setProg(oldProg);
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+	}
+
+	public void moveUpLowFunctionality(Integer functionalityID) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiFunctions hibFunct = (SbiFunctions) aSession.load(SbiFunctions.class, functionalityID);
+			Integer oldProg = hibFunct.getProg();
+			Integer newProg = new Integer(oldProg.intValue() - 1);
+			
+			String upperFolderHql = "from SbiFunctions s where s.prog = " + newProg.toString() + 
+				" and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId().toString();
+			Query query = aSession.createQuery(upperFolderHql);
+			SbiFunctions hibUpperFunct = (SbiFunctions) query.uniqueResult();
+			if (hibUpperFunct == null) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+					    "LowFunctionalityDAOHibImpl", 
+					    "moveUpLowFunctionality", 
+					    "The function with prog [" + newProg + "] does not exist.");
+				return;
+			}
+			
+			hibFunct.setProg(newProg);
+			hibUpperFunct.setProg(oldProg);
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 	}
 
 }

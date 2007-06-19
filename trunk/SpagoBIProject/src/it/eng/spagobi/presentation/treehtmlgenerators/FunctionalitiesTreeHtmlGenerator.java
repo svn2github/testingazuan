@@ -25,7 +25,10 @@ package it.eng.spagobi.presentation.treehtmlgenerators;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.AdmintoolsConstants;
+import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.services.actions.MoveDownLowFunctionality;
+import it.eng.spagobi.services.actions.MoveUpLowFunctionality;
 import it.eng.spagobi.services.modules.DetailFunctionalityModule;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.messages.IMessageBuilder;
@@ -50,13 +53,14 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private int dTreeRootId = -100;
 	private IUrlBuilder urlBuilder = null;
 	private IMessageBuilder msgBuilder = null;
-	
+	private List _objectsList = null;
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
 		return makeTree(objectsList, httpRequest, initialPath);
 	}
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		_objectsList = objectsList;
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		StringBuffer htmlStream = new StringBuffer();
@@ -112,17 +116,16 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		Integer parentId = folder.getParentId();
 
 		if (isRoot) {
-			htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'\\')');\n");
+			htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
 		} else {
 			if (codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'"+createDetailFunctionalityLink(path)+"\\', \\'"+createRemoveFunctionalityLink(path)+"\\')');\n");
+				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'"+createDetailFunctionalityLink(path)+"\\', \\'"+createRemoveFunctionalityLink(path)+"\\', \\'"+createMoveUpFunctionalityLink(folder)+"\\', \\'"+createMoveDownFunctionalityLink(folder)+"\\')');\n");
 			} 
 		}
 	}
-	
-	
+
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeConfigurationDtree(java.lang.StringBuffer)
 	 */
@@ -173,7 +176,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
-		htmlStream.append("		function menu(event, urlAdd, urlDetail, urlErase) {\n");
+		htmlStream.append("		function menu(event, urlAdd, urlDetail, urlErase, urlMoveUp, urlMoveDown) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capInsert = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.insertCaption", "messages");
@@ -182,10 +185,13 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
 		String capErase = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.eraseCaption", "messages");
 		htmlStream.append("			if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
+		String capMoveUp = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.moveUpCaption", "messages");
+		htmlStream.append("			if(urlMoveUp!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlMoveUp+'\">"+capMoveUp+"</a></div>';\n");
+		String capMoveDown = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.moveDownCaption", "messages");
+		htmlStream.append("			if(urlMoveDown!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlMoveDown+'\">"+capMoveDown+"</a></div>';\n");
 		htmlStream.append("				showMenu(event, divM);\n");
 		htmlStream.append("		}\n");
 
-		
 		htmlStream.append("		function linkEmpty() {\n");
 		htmlStream.append("		}\n");
 		
@@ -198,7 +204,58 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		}\n");
 
 	}
+
+	/**
+	 * Create URL to call the move up fuctionality operation.
+	 * @param folder	The folder to be moved up
+	 * @return	The URL to call the move up functionality operation
+	 */
+	private String createMoveUpFunctionalityLink(LowFunctionality folder) {
+		if (canBeMovedUp(folder)) {
+			HashMap moveUpUrlParamsMap = new HashMap();
+			moveUpUrlParamsMap.put("ACTION_NAME", MoveUpLowFunctionality.ACTION_NAME);
+			moveUpUrlParamsMap.put(ObjectsTreeConstants.FUNCT_ID, folder.getId().toString());
+			String moveUpUrl = urlBuilder.getUrl(httpRequest, moveUpUrlParamsMap);
+			return moveUpUrl;
+		} else {
+			return "";
+		}
+	}
+
+	/**
+	 * Create URL to call the move down fuctionality operation.
+	 * @param folder	The folder to be moved down
+	 * @return	The URL to call the move down functionality operation
+	 */
+	private String createMoveDownFunctionalityLink(LowFunctionality folder) {
+		if (canBeMovedDown(folder)) {
+			HashMap moveDownUrlParamsMap = new HashMap();
+			moveDownUrlParamsMap.put("ACTION_NAME", MoveDownLowFunctionality.ACTION_NAME);
+			moveDownUrlParamsMap.put(ObjectsTreeConstants.FUNCT_ID, folder.getId().toString());
+			String moveDownUrl = urlBuilder.getUrl(httpRequest, moveDownUrlParamsMap);
+			return moveDownUrl;
+		} else {
+			return "";
+		}
+	}
 	
+	
+	private boolean canBeMovedUp(LowFunctionality folder) {
+		return !(folder.getProg().intValue() == 1);
+	}
+	
+	private boolean canBeMovedDown(LowFunctionality folder) {
+		Integer parentId = folder.getParentId();
+		Integer currentProg = folder.getProg();
+		Iterator it = _objectsList.iterator();
+		while (it.hasNext()) {
+			LowFunctionality aFolder = (LowFunctionality) it.next();
+			if (parentId.equals(aFolder.getParentId()) && currentProg.intValue() < aFolder.getProg().intValue())
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Create URL to call the add fuctionality operation.
 	 * @param path	The object tree path String

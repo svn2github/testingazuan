@@ -585,6 +585,7 @@ public class ExporterMetadata {
 			hibFunct.setFunctType(hibFunctType);
 			hibFunct.setName(funct.getName());
 			hibFunct.setPath(funct.getPath());
+			hibFunct.setProg(funct.getProg());
 			session.save(hibFunct);
 			tx.commit();
 			

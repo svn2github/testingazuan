@@ -43,6 +43,7 @@ public class SbiFunctions  implements java.io.Serializable {
      private String path;
      private Set sbiObjFuncs;
      private Set sbiFuncRoles;
+     private Integer prog;
 
 
     // Constructors
@@ -163,5 +164,13 @@ public class SbiFunctions  implements java.io.Serializable {
 	}
 	public void setParentFunct(SbiFunctions parentFunct) {
 		this.parentFunct = parentFunct;
+	}
+
+	public Integer getProg() {
+		return prog;
+	}
+
+	public void setProg(Integer prog) {
+		this.prog = prog;
 	}
 }

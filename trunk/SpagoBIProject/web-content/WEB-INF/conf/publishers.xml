@@ -1172,4 +1172,15 @@
    	 	</RENDERING>
   	</PUBLISHER>
 
+  	<PUBLISHER name="FunctionalitiesTreeRefresh">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
+        		<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+        		<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="FUNCTIONALITIES_OPERATION" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
 </PUBLISHERS>

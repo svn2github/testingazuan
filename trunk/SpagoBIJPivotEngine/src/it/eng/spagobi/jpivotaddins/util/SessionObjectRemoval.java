@@ -135,6 +135,10 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("selectedCube") != null) {
 			session.removeAttribute("selectedCube");
 		}
+		
+		if (session.getAttribute("dimension_access_rules") != null) {
+			session.removeAttribute("dimension_access_rulesS");
+		}
 	}
 	
 }

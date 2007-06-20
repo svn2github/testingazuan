@@ -526,15 +526,15 @@ public class GeneralUtilities {
 			key = splitted[0].trim();
 			if (splitted.length == 1) {
 				String replacement = PortletUtilities.getMessage(key, bundle);
-				if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
-				//if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
+				//if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
+				if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
 			}
 			if (splitted.length == 2) {
 				if (splitted[1] != null && !splitted[1].trim().equals("")) 
 					bundle = splitted[1].trim();
 				String replacement = PortletUtilities.getMessage(key, bundle);
-				if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
-				//if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
+				//if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
+				if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
 			}
 		}
 		startIndex = message.indexOf("${", endIndex);

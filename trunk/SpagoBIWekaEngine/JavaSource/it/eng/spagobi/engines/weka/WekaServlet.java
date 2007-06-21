@@ -134,7 +134,11 @@ public class WekaServlet extends HttpServlet {
 						&& !key.equalsIgnoreCase("events_manager_url")
 						&& !key.equalsIgnoreCase("processActivatedMsg")
 						&& !key.equalsIgnoreCase("processNotActivatedMsg")
-						&& !key.equalsIgnoreCase("user")) {
+						&& !key.equalsIgnoreCase("user")
+						&& !key.equalsIgnoreCase("SPAGOBI_AUDIT_SERVLET")
+						&& !key.equalsIgnoreCase("spagobicontext")
+						&& !key.equalsIgnoreCase("SPAGOBI_AUDIT_ID")
+						&& !key.equalsIgnoreCase("username")) {
 					Object valueObj = params.get(key);
 					parametersList += "<li>" + key + " = " + (valueObj != null ? valueObj.toString() : "") + "</li>";
 				}

@@ -33,22 +33,7 @@
    	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_MODULE");
    	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");   
    	
-   	String linkProto = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/prototype.js");
-	String linkProtoWin = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/window.js");
-	String linkProtoEff = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/javascripts/effects.js");
-	String linkProtoDefThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/default.css");
-	String linkProtoAlphaThem = renderResponse.encodeURL(renderRequest.getContextPath() + "/js/prototype/themes/alphacube.css");
-   	
 %>
-
-<script type="text/javascript" src="<%=linkProto%>"></script>
-<script type="text/javascript" src="<%=linkProtoWin%>"></script>
-<script type="text/javascript" src="<%=linkProtoEff%>"></script>
-<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
-<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/> 
-
-
-
 
 
 <script>

@@ -8,6 +8,39 @@
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
 <%@page import="it.eng.spagobi.managers.ExecutionManager"%>
 
+
+<script>
+
+    
+
+	function openmenusNMFunct() {
+		alert('openmenus');
+	}
+
+	function openmenuNM(idmenu) {
+	  	try {
+	  		status = $(idmenu).style.display;
+	  		if(status=='inline') {
+	  			$(idmenu).style.display = 'none';
+	  		} else {
+	  			$(idmenu).style.display = 'inline';
+	  			menuopened=getCookie('menuopened');
+	  			alert(menuopened);
+				if (menuopened==null) {
+					setCookie('menuopened',idmenu,365)
+				} else {
+		    		alert('Hi - no menu open ');
+				}
+	  		}
+	  	} catch (e) {
+			alert('Cannot open menu ...');
+      	}
+     }
+	
+</script>
+
+
+
 <div class="div_no_background">
 	
 	<%
@@ -29,8 +62,25 @@
 
 	<div class='workspaceLeftBox' >
 		<spagobi:treeObjects moduleName="ExecutionWorkspaceModule" attributeToRender="SUB_TREE"
-			htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.SlideShowMenuHtmlGenerator"/>
+			htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.NestedMenuHtmlGenerator"/>
 	</div>
+	
+	<script>
+		try{
+	        SbiJsInitializer.openmenusNM = openmenusNMFunct;
+	    } catch (err) {
+	    	alert(err);
+	    }
+	</script>
+
+    <script>
+    	menuopened=getCookie('menuopened');
+		if (menuopened!=null) {
+			alert('Hi - your menu open are '+menuopened)}
+		} else {
+		    alert('Hi - no menu open ');
+		}
+    </script>
 
 	<div class='workspaceRightBox' >
 		<%
@@ -40,13 +90,11 @@
 	    spagobiurl += "servlet/AdapterHTTP";
 	    // get module response
 	    SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecutionWorkspaceModule");
-		// get the BiObject label from the response
-	    String objLabel = (String) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
-		
+		  // get the BiObject label from the response
+	    String objLabel = (String) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);		
 	    String requestIdentity = (String) moduleResponse.getAttribute("spagobi_execution_id");
-		
 		%>
-	
+
 		<script>
 	
 			function adaptSize<%=requestIdentity%>Funct() {

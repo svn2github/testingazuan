@@ -99,11 +99,10 @@ public class JobRunnerThread extends Thread {
 		
 		Integer startEventId = null;
 		try {
-			startEventId = eventsAccessUtils.fireEvent(user, startExecutionEventDescription + parametersList, startEventParams, null, null);
+			startEventId = eventsAccessUtils.fireEvent(user, startExecutionEventDescription + parametersList, startEventParams, TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + ":run: problems while registering the start process event", e);
 		}
-		
 		
 		if (_command == null) {
 			// AUDIT UPDATE
@@ -124,14 +123,14 @@ public class JobRunnerThread extends Thread {
     	try { 
 			String line;
 			Process p = Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
-			// AUDIT UPDATE
-			if (_auditAccessUtils != null) _auditAccessUtils.updateAudit(_auditId, null, new Long(System.currentTimeMillis()), 
-					"EXECUTION_PERFORMED", null, null);
 			BufferedReader input = new BufferedReader (new InputStreamReader(p.getInputStream()));
 			while ((line = input.readLine()) != null) {
 				logger.debug(line);
 				//System.out.println(line);
 			}
+			// AUDIT UPDATE
+			if (_auditAccessUtils != null) _auditAccessUtils.updateAudit(_auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_PERFORMED", null, null);
 			endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
 			endEventParams.put("operation-result", "success");
 			

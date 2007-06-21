@@ -39,6 +39,14 @@ import org.apache.commons.httpclient.methods.PostMethod;
  */
 public class EventsAccessUtils {
 	
+	public static final String START_EVENT_ID = "startEventId";
+	public static final String BIOBJECT_ID = "biobjectId";
+	public static final String USER = "user";
+	public static final String EVENTS_MANAGER_URL = "events_manager_url";
+	public static final String EVENT_TYPE = "event-type";
+	public static final String DOCUMENT_EXECUTION_START = "biobj-start-execution";
+	public static final String DOCUMENT_EXECUTION_END = "biobj-end-execution";
+	
 	private String eventsManagerServletUrl;
 	
 	public EventsAccessUtils(String eventsManagerServletUrl) {

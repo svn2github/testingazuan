@@ -1,3 +1,8 @@
+/**
+ *
+ *	LICENSE: see 'LICENSE-sbi.drivers.weka.txt' file
+ *
+ */
 package it.eng.spagobi.drivers.weka.events.handlers;
 
 import java.util.ArrayList;

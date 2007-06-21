@@ -13,6 +13,7 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -70,7 +71,7 @@ public class TalendDriver implements IEngineDriver {
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)biobject;
-			map = getMap(biobj);
+			map = getMap(biobj, profile);
 			//map.put("user", profile.getUserUniqueIdentifier());
 		} catch (ClassCastException cce) {
 			SpagoBITracer.major("ENGINES",
@@ -111,15 +112,23 @@ public class TalendDriver implements IEngineDriver {
      * @param biobj BIObject to execute
      * @return Map The map of the execution call parameters
      */    
-	private Map getMap(BIObject biobj) {
+	private Map getMap(BIObject biobj, IEngUserProfile profile) {
 		Map pars = new Hashtable();
 		biobj.loadTemplate();
 		UploadedFile uploadedFile =  biobj.getTemplate();
 		byte[] template = uploadedFile.getFileContent();
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
 		pars.put("template", bASE64Encoder.encode(template));
+		pars.put("biobjectId", biobj.getId().toString());
+		pars.put("events_manager_url", GeneralUtilities.getSpagoBiEventsManagerServlet());
 		//pars.put("templatePath", biobj.getPath() + "/template");
         //pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+        if (profile!=null) {
+        	String user = (String) profile.getUserUniqueIdentifier();
+        	pars.put("user", user);
+        } else {
+        	pars.put("user", "[unidentified]");
+        }
         addLocale(pars);
         pars = addBIParameters(biobj, pars);
         return pars;

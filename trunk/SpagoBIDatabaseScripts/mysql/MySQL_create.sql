@@ -89,6 +89,7 @@ CREATE TABLE SBI_FUNCTIONS (
        DESCR                VARCHAR(160) NULL,
        PATH                 VARCHAR(400) NULL,
        CODE                 VARCHAR(20) NOT NULL,
+       PROG 				INTEGER NOT NULL,
        FUNCT_TYPE_ID        INTEGER NOT NULL,
               PRIMARY KEY (FUNCT_ID)
 )TYPE=INNODB;

@@ -205,6 +205,7 @@ CREATE TABLE SBI_FUNCTIONS (
        DESCR                VARCHAR2(160) NULL,
        PATH                 VARCHAR2(400) NULL,
        CODE                 VARCHAR2(20) NOT NULL,
+       PROG					INTEGER NOT NULL,
        FUNCT_TYPE_ID        INTEGER NOT NULL,
        CONSTRAINT XPKSBI_FUNCTIONS 
               PRIMARY KEY (FUNCT_ID)

@@ -37,15 +37,176 @@
 }
 
 
-/* ************************** MENU ***************************** */
+/* ************************** DOCUMENTS ***************************** */
+
+.executionWorkspace .documentName {
+  font-family:arial;
+  font-weight:bold;
+  color:#173683;
+  font-size:15px;
+}
+
+.executionWorkspace .noDocumentSelectedBox{
+	width:100%;
+	height:300px;
+	background-image:url('/spagobi/img/spagobgimg.jpg');
+    background-position: bottom right;
+    background-repeat: no-repeat; 
+    color:#501ca7;
+    font-family:arial;
+    font-weight:bold;
+    font-size:15px;
+}
 
 
+/* ************************** PAGE LAYOUT ***************************** */
+
+.executionWorkspace .workspaceTopBox {
+	width: 100%;
+}
+
+.executionWorkspace .workspaceLeftBox {
+	width: 25%;
+	float: left;
+	clear: left; 
+	padding-left:5px;
+}
+
+.executionWorkspace .workspaceRightBox {
+	width: 73%;
+	float: left;
+	margin-left:5px;
+}
+
+
+
+/* ************************** NESTED MENU ***************************** */
+
+.executionWorkspace .menutitle {
+	border: 1px solid #dddddd;
+	background:#fbf9d0;
+	color:#501ca7;
+	font-size:10px;
+	height:16px;
+	padding-left:5px;
+}
+
+.executionWorkspace .menucontainer0 {
+	border: 1px solid #dddddd;
+	overflow:hidden;
+}
+
+.executionWorkspace .menucontainer1 {
+	border-left: 1px solid #dddddd;
+	border-top: 1px solid #dddddd;
+	border-bottom: 1px solid #dddddd;
+	border-right: 0px solid #ffffff;
+	position:relative;
+	left:5%;
+	width:95%;
+}
+
+.executionWorkspace .menucontainer2 {
+}
+
+.executionWorkspace .menuitemlink {
+	font-family:verdana;
+  	font-size:9px;
+  	color:#173683;
+  	text-decoration:none;
+}
+
+.executionWorkspace .menuitemlink:hover {
+	font-family:verdana;
+  	font-size:9px;
+  	color:#173683;
+  	font-weight:bold;
+  	text-decoration:underline;
+}
+
+.executionWorkspace .menuitem {
+	height:23px;
+	clear:left;
+}
+
+.executionWorkspace .menuitemfolder {
+	background:#eeeeee;
+}
+
+.executionWorkspace .menuitemleft {
+	width: 20px;
+	height:20px;
+	float:left;
+	clear:left;
+}
+
+.executionWorkspace .menuitemcenter{
+	float:left;
+}
+
+.executionWorkspace .menuitemright {
+}
+
+.executionWorkspace .menuitemleftfolder {
+	background-image:url('/spagobi/img/treefolder.gif');
+	background-position:top right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftREPORT {
+	background-image:url('/spagobi/img/objecticon_REPORT.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftOLAP {
+	background-image:url('/spagobi/img/objecticon_OLAP.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftOFFICE_DOC {
+	background-image:url('/spagobi/img/objecticon_OFFICE_DOC.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftMAP {
+	background-image:url('/spagobi/img/objecticon_MAP.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftETL {
+	background-image:url('/spagobi/img/objecticon_ETL.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftDATAMART {
+	background-image:url('/spagobi/img/objecticon_DATAMART.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftDATA_MINING {
+	background-image:url('/spagobi/img/objecticon_DATA_MINING.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftDASH {
+	background-image:url('/spagobi/img/objecticon_DASH.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.executionWorkspace .menuitemleftBOOKLET {
+	background-image:url('/spagobi/img/objecticon_BOOKLET.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+
+
+
+
+/* ************************** SLIDE MENU ***************************** */
+
+/*
 .executionWorkspace .menuBox{
 	border:2px solid rgb(254,232,186);
-	/*background:#f9fbd6;*/
 	background:white;
-	/*max-width: 200px;*/
-	/*min-width: 150px;*/
 	width:200px;
 }
 
@@ -77,7 +238,6 @@
   font-family:verdana;
   font-size:9px;
   background:#f7ff7e;
-  /*background-image:url('/spagobi/css/guiComponents/executionWorkspace/gradWhiteOrange20.jpg');*/
   background-position: left;
   background-repeat: repeat-y; 
 }
@@ -93,42 +253,4 @@
   font-weight:bold;
   color:#173683;
 }
-
-.executionWorkspace .noDocumentSelectedBox{
-	width:100%;
-	height:300px;
-	background-image:url('/spagobi/img/spagobgimg.jpg');
-    background-position: bottom right;
-    background-repeat: no-repeat; 
-    color:#501ca7;
-    font-family:arial;
-    font-weight:bold;
-    font-size:15px;
-}
-
-.executionWorkspace .workspaceTopBox {
-	width: 100%;
-}
-
-.executionWorkspace .workspaceLeftBox {
-	width: 20%;
-	float: left;
-	clear: left; 
-	padding-left:5px;
-}
-
-.executionWorkspace .workspaceRightBox {
-	/*border:2px solid rgb(254,232,186);*/
-	/*border:2px solid #dddddd;*/
-	width: 78%;
-	float: left;
-	margin-left:5px;
-}
-
-/* ************************** DOCUMENT NAME ***************************** */
-.executionWorkspace .documentName {
-  font-family:arial;
-  font-weight:bold;
-  color:#173683;
-  font-size:15px;
-}
+*/

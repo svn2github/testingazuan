@@ -47,20 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   
 	String splitter = ";";
    
-	String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
-	String linkProtoWin = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/window.js");
-	String linkProtoEff = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
-	String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
-	String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
-   
 %>
-
-
-<script type="text/javascript" src="<%=linkProto%>"></script>
-<script type="text/javascript" src="<%=linkProtoWin%>"></script>
-<script type="text/javascript" src="<%=linkProtoEff%>"></script>
-<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
-<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/> 
 
 
 

@@ -26,6 +26,8 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.dao.IAuditDAO;
 import it.eng.spagobi.bo.dao.hibernate.AbstractHibernateDAO;
 import it.eng.spagobi.metadata.SbiAudit;
+import it.eng.spagobi.metadata.SbiEngines;
+import it.eng.spagobi.metadata.SbiObjects;
 
 import java.util.List;
 
@@ -44,7 +46,17 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		Transaction tx = null;
 		try {
 			session = getSession();;
-			tx = session.beginTransaction();;
+			tx = session.beginTransaction();
+			if (aSbiAudit.getSbiObject() == null) {
+				Integer objectId = aSbiAudit.getDocumentId();
+				SbiObjects sbiObject = (SbiObjects) session.load(SbiObjects.class, objectId);
+				aSbiAudit.setSbiObject(sbiObject);
+			}
+			if (aSbiAudit.getSbiEngine() == null) {
+				Integer engineId = aSbiAudit.getEngineId();
+				SbiEngines sbiEngine = (SbiEngines) session.load(SbiEngines.class, engineId);
+				aSbiAudit.setSbiEngine(sbiEngine);
+			}
 			session.save(aSbiAudit);
 			session.flush();
 			tx.commit();
@@ -73,12 +85,14 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			aSbiAudit = (SbiAudit) aSession.load(SbiAudit.class, id);
+			aSbiAudit.getSbiObject();
 			aSbiAudit.getDocumentLabel();
 			aSbiAudit.getDocumentId();
 			aSbiAudit.getDocumentName();
 			aSbiAudit.getDocumentParameters();
 			aSbiAudit.getDocumentState();
 			aSbiAudit.getDocumentType();
+			aSbiAudit.getSbiEngine();
 			aSbiAudit.getEngineClass();
 			aSbiAudit.getEngineDriver();
 			aSbiAudit.getEngineId();
@@ -93,7 +107,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			aSbiAudit.getUserGroup();
 			aSbiAudit.getExecutionStartTime();
 			aSbiAudit.getExecutionEndTime();
+			aSbiAudit.getExecutionTime();
 			aSbiAudit.getExecutionState();
+			aSbiAudit.getError();
 			aSbiAudit.getErrorMessage();
 			aSbiAudit.getErrorCode();
 			tx.commit();
@@ -116,6 +132,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			// TODO forse mettere un controllo per vedere se ci sono sbiobject e sbiengine?
 			aSession.saveOrUpdate(aSbiAudit);
 			tx.commit();
 		} catch (HibernateException he) {

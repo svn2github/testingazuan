@@ -47,7 +47,9 @@ public class SbiAudit implements java.io.Serializable  {
 	private Date requestTime;
 	private Date executionStartTime;
 	private Date executionEndTime;
+	private Integer executionTime;
 	private String executionState;
+	private Short error;
 	private String errorMessage;
 	private String errorCode;
 	private String executionModality;
@@ -261,6 +263,22 @@ public class SbiAudit implements java.io.Serializable  {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public Short getError() {
+		return error;
+	}
+
+	public void setError(Short error) {
+		this.error = error;
+	}
+
+	public Integer getExecutionTime() {
+		return executionTime;
+	}
+
+	public void setExecutionTime(Integer executionTime) {
+		this.executionTime = executionTime;
 	}
 	
 }

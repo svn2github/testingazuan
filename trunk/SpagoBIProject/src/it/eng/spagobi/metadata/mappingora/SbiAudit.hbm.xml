@@ -73,8 +73,14 @@
         <property name="executionEndTime" type="timestamp">
             <column name="execution_end" not-null="false"/>
         </property>
+        <property name="executionTime" type="integer">
+            <column name="execution_time" not-null="false"/>
+        </property>
         <property name="executionState" type="string">
             <column name="execution_state" length="20" not-null="false" />
+        </property>
+        <property name="error" type="short">
+            <column name="error" not-null="false" />
         </property>
         <property name="errorMessage" type="string">
             <column name="error_message" length="400" not-null="false" />

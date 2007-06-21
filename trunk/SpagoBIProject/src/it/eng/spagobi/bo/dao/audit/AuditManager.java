@@ -21,13 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.bo.dao.audit;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
@@ -41,6 +34,12 @@ import it.eng.spagobi.bo.dao.IAuditDAO;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiAudit;
 import it.eng.spagobi.utilities.SpagoBITracer;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class AuditManager {
@@ -257,12 +256,24 @@ public class AuditManager {
 								"It will be overwritten");
 				audit.setExecutionEndTime(executionEndTime);
 			}
+			Date executionStartTime = audit.getExecutionStartTime();
+			if (executionStartTime != null) {
+				// calculates exectuion time as a difference in ms
+				long executionTimeLongMSec = endTime.longValue() - executionStartTime.getTime();
+				// calculates exectuion time as a difference in s
+				int executionTimeIntSec = Math.round(executionTimeLongMSec / 1000);
+				Integer executionTime = new Integer(executionTimeIntSec);
+				audit.setExecutionTime(executionTime);
+			}
 		}
 		if (executionState != null && !executionState.trim().equals("")) {
 			audit.setExecutionState(executionState);
 		}
 		if (errorMessage != null && !errorMessage.trim().equals("")) {
 			audit.setErrorMessage(errorMessage);
+			audit.setError(new Short((short)1));
+		} else {
+			audit.setError(new Short((short)0));
 		}
 		if (errorCode != null && !errorCode.trim().equals("")) {
 			audit.setErrorCode(errorCode);

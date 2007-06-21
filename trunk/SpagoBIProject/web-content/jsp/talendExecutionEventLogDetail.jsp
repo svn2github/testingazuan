@@ -69,7 +69,7 @@
 				<td class='portlet-section-subheader'><p style='margin:5px'><%=event.getUser()%></p></td>
 			</tr>
 			<tr>
-				<td class='portlet-form-field-label'><spagobi:message key = "weka.execution.documentDetails" /></td>
+				<td class='portlet-form-field-label'><spagobi:message key = "talend.execution.documentDetails" /></td>
 				<td class='portlet-section-subheader'>
 					<p style='margin:5px'>
 					<%=biObject.getLabel() + ": " + biObject.getName() + " [" + biObject.getDescription() + "]"%>
@@ -97,7 +97,7 @@
 						startEventDetailUrl.setParameter("MESSAGEDET", "DETAIL_SELECT");
 						startEventDetailUrl.setParameter("ID", startEventIdStr);
 						%>
-						<spagobi:message key = "weka.execution.startEventId" /> <a href='<%= startEventDetailUrl.toString() %>'><%=startEventIdStr%></a>.						
+						<spagobi:message key = "talend.execution.startEventId" /> <a href='<%= startEventDetailUrl.toString() %>'><%=startEventIdStr%></a>.						
 						<%
 					}
 					%>
@@ -105,14 +105,14 @@
 				</td>
 			</tr>
 			<tr>
-				<td class='portlet-form-field-label'><spagobi:message key = "weka.execution.relatedDocuments" /></td>
+				<td class='portlet-form-field-label'><spagobi:message key = "talend.execution.relatedDocuments" /></td>
 				<td class='portlet-section-subheader'>
 					<p style='margin:5px'>
 					<%
 					List linkedBIObjects = (List) moduleResponse.getAttribute("linkedBIObjects");
 					if (linkedBIObjects.size() == 0) {
 						%>
-						<spagobi:message key = "weka.execution.noRelatedDocuments" />
+						<spagobi:message key = "talend.execution.noRelatedDocuments" />
 						<%
 					} else {
 						for (int i = 0; i < linkedBIObjects.size(); i++) {

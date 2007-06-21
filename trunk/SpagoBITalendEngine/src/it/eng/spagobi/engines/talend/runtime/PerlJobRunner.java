@@ -5,21 +5,16 @@ import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
-import it.eng.spagobi.engines.talend.exception.TalendEngineException;
 import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -42,7 +37,7 @@ public class PerlJobRunner implements IJobRunner {
 	}
 	
 		
-    public void run(Job job, Map parameters) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
+    public void run(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
     
     	File contextTempScriptFile = null;
     	
@@ -121,7 +116,8 @@ public class PerlJobRunner implements IJobRunner {
     	
     	List filesToBeDeleted = new ArrayList();
     	filesToBeDeleted.add(contextTempScriptFile);
-    	JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted);
+    	JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted, 
+    			auditAccessUtils, auditId, parameters);
     	jrt.start();
 			
     }

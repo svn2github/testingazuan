@@ -25,6 +25,7 @@ import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,7 +60,7 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	}
 	
 		
-    public void run(Job job, Map parameters) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
+    public void run(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
     	File contextFile = null;
     	String tmpDirName = null;
     	File contextFileDir = null;
@@ -133,7 +134,7 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    	
 	
 	    	
-	    	String classpath = "." + File.separatorChar + tmpDirName + ";" + getCalssPath(job);
+	    	String classpath = "." + File.separatorChar + tmpDirName + ";" + getClassPath(job);
 	    	String cmd = "java -Xms256M -Xmx1024M -cp " + classpath  + " " + TalendScriptAccessUtils.getExecutableClass(job);
 	        
 	    	cmd = cmd + " --context=" + job.getContext();
@@ -142,7 +143,8 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    	
 	    	List filesToBeDeleted = new ArrayList();
 	    	filesToBeDeleted.add(contextFileDir);
-	    	JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted);
+	    	JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted, 
+	    			auditAccessUtils, auditId, parameters);
 	    	jrt.start();
 	    	
     	} catch (Exception e) {
@@ -153,7 +155,7 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
     
 
 
-	public String getCalssPath(Job job) {
+	public String getClassPath(Job job) {
     	StringBuffer classpath = new StringBuffer();
     	
     	List libs = TalendScriptAccessUtils.getIncludedLibs(job, runtimeRepository);

@@ -26,6 +26,7 @@ import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 import it.eng.spagobi.engines.talend.utils.ZipUtils;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 
 import java.io.File;
@@ -34,6 +35,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Andrea Gioia
@@ -52,10 +55,10 @@ public class RuntimeRepository {
 		ZipUtils.unzipSkipFirstLevel(executableJobFiles, projectDir);		
 	}
 	
-	public void runJob(Job job, Map parameters) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
+	public void runJob(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
 		IJobRunner jobRunner = getJobRunner(job.getLanguage());
 		if(jobRunner == null) return;
-		jobRunner.run(job, parameters);
+		jobRunner.run(job, parameters, auditAccessUtils, auditId);
 	}
 	
 	public IJobRunner getJobRunner(String jobLanguage) {

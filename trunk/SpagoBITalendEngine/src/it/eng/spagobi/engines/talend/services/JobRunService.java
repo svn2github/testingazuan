@@ -7,6 +7,7 @@ import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 import it.eng.spagobi.engines.talend.utils.EngineMessageBundle;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class JobRunService extends HttpServlet {
 	private static transient Logger logger = Logger.getLogger(JobRunService.class);
 	
 	private Locale locale;
+	
+	protected AuditAccessUtils auditAccessUtils;
 	
 	private Locale getLocale(HttpServletRequest request) {
 		Locale locale = null;
@@ -72,54 +75,11 @@ public class JobRunService extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		logger.debug("Starting service method...");
-		locale = getLocale(request);
-		InputStream is = getTemplate(request);
-		if(is == null) {
-			logger.error("Missing document template!!");
-			response.getOutputStream().write(getLocalizedMessage("missing.document.template").getBytes());
-			return;
-		}
 		
-		Job job = new Job();
-	    
-	    try {
-	    	job.load(is);
-		} catch (DocumentException e) {
-			logger.error("Error while parsing document template:", e);
-			response.getOutputStream().write(getLocalizedMessage("template.parsing.error").getBytes());
-			return;
-		}
-	  	  	    
-	    if (job.getProject() == null || job.getProject().trim().equalsIgnoreCase("")) {
-	    	logger.error("Missing Talend project name in document template.");
-			response.getOutputStream().write(getLocalizedMessage("missing.talend.project").getBytes());
-			return;
-	    }
-	    
-	    if (job.getName() == null || job.getName().trim().equalsIgnoreCase("")) {
-	    	logger.error("Missing Talend job name in document template.");
-			response.getOutputStream().write(getLocalizedMessage("missing.talend.job").getBytes());
-			return;
-	    }
-	    
-	    if (job.getLanguage() == null || job.getLanguage().trim().equalsIgnoreCase("")) {
-	    	logger.error("Missing Talend job language in document template.");
-	    	response.getOutputStream().write(getLocalizedMessage("missing.talend.lang").getBytes());
-			return;
-	    }
-	    
-	    // if the context is specified in request, it overrides the context specified in document template 
-	    String requestContext = request.getParameter("context");
-	    if (requestContext != null && !requestContext.trim().equals("")) {
-	    	logger.debug("Context parameter with value '" + requestContext + "' found in request.");
-	    	job.setContext(requestContext);
-	    }
-	    
-	
-		Enumeration e = request.getParameterNames();
+		Enumeration paramsEnum = request.getParameterNames();
 		Map parameters = new HashMap();
-		while (e.hasMoreElements()) {
-			String parameterName = (String) e.nextElement();
+		while (paramsEnum.hasMoreElements()) {
+			String parameterName = (String) paramsEnum.nextElement();
 			if (parameterName.trim().equalsIgnoreCase("language") 
 					|| parameterName.trim().equalsIgnoreCase("country")
 					|| parameterName.trim().equalsIgnoreCase("template")
@@ -137,27 +97,103 @@ public class JobRunService extends HttpServlet {
 			}
 		}
 		// now the parameters map contains the biobject document parameters
+
+		auditAccessUtils = (AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+		// AUDIT UPDATE
+		String auditId = (String) parameters.get("SPAGOBI_AUDIT_ID");
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+				"EXECUTION_STARTED", null, null);
 		
+		locale = getLocale(request);
+		InputStream is = getTemplate(request);
+		if(is == null) {
+			logger.error("Missing document template!!");
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Missing document template", null);
+			response.getOutputStream().write(getLocalizedMessage("missing.document.template").getBytes());
+			return;
+		}
 		
+		Job job = new Job();
+	    
+	    try {
+	    	job.load(is);
+		} catch (DocumentException e) {
+			logger.error("Error while parsing document template:", e);
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Error while parsing document template", null);
+			response.getOutputStream().write(getLocalizedMessage("template.parsing.error").getBytes());
+			return;
+		}
+	  	  	    
+	    if (job.getProject() == null || job.getProject().trim().equalsIgnoreCase("")) {
+	    	logger.error("Missing Talend project name in document template.");
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Missing Talend project name in document template", null);
+			response.getOutputStream().write(getLocalizedMessage("missing.talend.project").getBytes());
+			return;
+	    }
+	    
+	    if (job.getName() == null || job.getName().trim().equalsIgnoreCase("")) {
+	    	logger.error("Missing Talend job name in document template.");
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Missing Talend job name in document template", null);
+			response.getOutputStream().write(getLocalizedMessage("missing.talend.job").getBytes());
+			return;
+	    }
+	    
+	    if (job.getLanguage() == null || job.getLanguage().trim().equalsIgnoreCase("")) {
+	    	logger.error("Missing Talend job language in document template.");
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Missing Talend job language in document template", null);
+	    	response.getOutputStream().write(getLocalizedMessage("missing.talend.lang").getBytes());
+			return;
+	    }
+	    
+	    // if the context is specified in request, it overrides the context specified in document template 
+	    String requestContext = request.getParameter("context");
+	    if (requestContext != null && !requestContext.trim().equals("")) {
+	    	logger.debug("Context parameter with value '" + requestContext + "' found in request.");
+	    	job.setContext(requestContext);
+	    }
+	
 		RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
 		if(runtimeRepository == null || !runtimeRepository.getRootDir().exists()) {
 			logger.error("Runtime-Repository not available");
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Runtime-Repository not available", null);
 			response.getOutputStream().write(getLocalizedMessage("repository.not.available").getBytes());
 			return;
 		}
 		
-		String result = EngineMessageBundle.getMessage("etl.process.executed", locale);
+		String result = EngineMessageBundle.getMessage("etl.process.started", locale);
     	try {
-    		runtimeRepository.runJob(job, parameters);
+    		runtimeRepository.runJob(job, parameters, auditAccessUtils, auditId);
     	} catch (JobNotFoundException ex) {
     		logger.error(ex.getMessage());
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Job not existing", null);
     		result = EngineMessageBundle.getMessage("job.not.existing", locale, 
 					new String[]{job.getName()});
     	} catch (ContextNotFoundException ex) {
+    		logger.error(ex.getMessage(), ex);
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Context script not existing", null);
     		result = EngineMessageBundle.getMessage("context.script.not.existing", locale, 
     				new String[]{job.getContext(), job.getName()});
     	} catch(JobExecutionException ex) {
     		logger.error(ex.getMessage(), ex);
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Job execution error", null);
     		result = EngineMessageBundle.getMessage("perl.exectuion.error", locale);
     	}    	
     	

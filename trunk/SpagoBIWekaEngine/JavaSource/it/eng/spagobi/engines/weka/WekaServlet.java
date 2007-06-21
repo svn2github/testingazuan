@@ -87,9 +87,6 @@ public class WekaServlet extends HttpServlet {
 	public static final String CLUSTERNUM = "clusterNum";
 	//public static final String TEMPLATE_PATH = "templatePath"; 
 	public static final String CR_MANAGER_URL = "cr_manager_url"; 
-	public static final String EVENTS_MANAGER_URL = "events_manager_url"; 
-	public static final String START_EVENT = "startEventId"; 
-	public static final String USER = "user"; 
 	public static final String CONNECTION = "connectionName"; 
 	public static final String INPUT_CONNECTION = "inputConnectionName"; 
 	public static final String OUTPUT_CONNECTION = "outputConnectionName"; 
@@ -98,7 +95,6 @@ public class WekaServlet extends HttpServlet {
 	public static final String VERSIONING = "versioning";
 	public static final String VERSION_COLUMN_NAME = "versionColumnName";
 	public static final String VERSION = "version";
-	public static final String BIOBJECT_ID = "biobjectId";
 	public static final String WEKA_ROLES_HANDLER_CLASS_NAME = "it.eng.spagobi.drivers.weka.events.handlers.WekaRolesHandler";
 	public static final String WEKA_PRESENTAION_HANDLER_CLASS_NAME = "it.eng.spagobi.drivers.weka.events.handlers.WekaEventPresentationHandler";
 	public static final String PROCESS_ACTIVATED_MSG = "processActivatedMsg";
@@ -116,9 +112,9 @@ public class WekaServlet extends HttpServlet {
 		public void run() {
 			logger.info(this.getClass().getName() + ":service: Runner thread started succesfully");
 			
-			String events_manager_url = (String) params.get(EVENTS_MANAGER_URL);
+			String events_manager_url = (String) params.get(EventsAccessUtils.EVENTS_MANAGER_URL);
 			EventsAccessUtils eventsAccessUtils = new EventsAccessUtils(events_manager_url);	
-			String user = (String) params.get(USER);
+			String user = (String) params.get(EventsAccessUtils.USER);
 			
 			// registering the start execution event
 			String startExecutionEventDescription = "${weka.execution.started}<br/>";
@@ -146,9 +142,9 @@ public class WekaServlet extends HttpServlet {
 			parametersList += "</ul>";
 			
 			Map startEventParams = new HashMap();				
-			startEventParams.put("operation-type", "biobj-start-execution");
+			startEventParams.put(EventsAccessUtils.EVENT_TYPE, EventsAccessUtils.DOCUMENT_EXECUTION_START);
 			//startEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-			startEventParams.put(BIOBJECT_ID, params.get(BIOBJECT_ID));
+			startEventParams.put(EventsAccessUtils.BIOBJECT_ID, params.get(EventsAccessUtils.BIOBJECT_ID));
 			
 			Integer startEventId = null;
 			try {
@@ -178,10 +174,10 @@ public class WekaServlet extends HttpServlet {
 			}
 			
 			Map endEventParams = new HashMap();				
-			endEventParams.put("operation-type", "biobj-execution");
+			endEventParams.put(EventsAccessUtils.EVENT_TYPE, EventsAccessUtils.DOCUMENT_EXECUTION_END);
 			//endEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-			endEventParams.put(BIOBJECT_ID, params.get(BIOBJECT_ID));
-			endEventParams.put(START_EVENT, startEventId.toString());
+			endEventParams.put(EventsAccessUtils.BIOBJECT_ID, params.get(EventsAccessUtils.BIOBJECT_ID));
+			endEventParams.put(EventsAccessUtils.START_EVENT_ID, startEventId.toString());
 			
 			String endExecutionEventDescription = "";
 			

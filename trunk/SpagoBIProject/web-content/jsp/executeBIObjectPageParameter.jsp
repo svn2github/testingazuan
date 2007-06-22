@@ -170,7 +170,7 @@
 </form>
 
 
-<%
+<%--
 // if is single object modality, does not consider neither subobjects nor snapshots and closes the page div
 if (isSingleObjExec) {
 	%>
@@ -178,7 +178,7 @@ if (isSingleObjExec) {
 	<%
 	return;
 }
-%>
+--%>
 
 <% if( ((subObjs!=null)&&(subObjs.size()!=0))  ||  ((snapshots!=null)&&(snapshots.size()!=0))  ) { %>
 

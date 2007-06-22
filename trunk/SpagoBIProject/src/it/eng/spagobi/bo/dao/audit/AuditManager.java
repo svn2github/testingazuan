@@ -247,7 +247,6 @@ public class AuditManager {
 		}
 		if (endTime != null) {
 			Date executionEndTime = new Date(endTime.longValue());
-			audit.setExecutionEndTime(executionEndTime);
 			if (audit.getExecutionEndTime() == null) {
 				audit.setExecutionEndTime(executionEndTime);
 			} else {

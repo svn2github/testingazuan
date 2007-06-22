@@ -69,6 +69,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	} 
 	
 	
+		
+	
 	public void service(SourceBean request, SourceBean response) throws Exception {		
 		initSession(request);
 		BIObjectParameter biParam = getBIParameter(request);
@@ -220,6 +222,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 				LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
 				String valueToSearch = (String)valueSB.getAttribute(valueColumn);
 				SourceBean rowSB = lovResultHandler.getRow(valueToSearch, lovProvDetail.getValueColumnName());
+				if(rowSB == null) rowSB = lovResultHandler.getRow(GeneralUtilities.decode(valueToSearch), lovProvDetail.getValueColumnName());
 				if(rowSB != null) {
 					values.add(GeneralUtilities.decode((String)valueSB.getAttribute(valueColumn)));
 					descriptions.add(rowSB.getAttribute(lovProvDetail.getDescriptionColumnName()));

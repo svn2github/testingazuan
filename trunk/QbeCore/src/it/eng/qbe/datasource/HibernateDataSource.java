@@ -29,6 +29,7 @@ import it.eng.qbe.utility.IDataMartModelRetriever;
 import it.eng.qbe.utility.IQueryPersister;
 import it.eng.qbe.utility.JarUtils;
 import it.eng.qbe.utility.Logger;
+import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.configuration.ConfigSingleton;
 
 import java.io.File;
@@ -36,9 +37,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -270,13 +274,58 @@ public class HibernateDataSource extends BasicDataSource  {
 	 * @param jarFile
 	 */
 	public static void updateCurrentClassLoader(File jarFile){
+		
+		boolean wasAlreadyLoaded = false;
+		ApplicationContainer container = null;
+		
 		try {
+			
+			container = ApplicationContainer.getInstance();
+			if (container != null) {
+				ClassLoader cl = (ClassLoader) container.getAttribute("DATAMART_CLASS_LOADER");
+				if (cl != null) {
+					Thread.currentThread().setContextClassLoader(cl);
+				}
+			}
+			
+			JarFile jar = new JarFile(jarFile);
+			Enumeration entries = jar.entries();
+			while (entries.hasMoreElements()) {
+				JarEntry entry = (JarEntry) entries.nextElement();
+				if (entry.getName().endsWith(".class")) {
+					String entryName = entry.getName();
+					String className = entryName.substring(0, entryName.lastIndexOf(".class"));
+					className = className.replaceAll("/", ".");
+					className = className.replaceAll("\\\\", ".");
+					try {
+						Thread.currentThread().getContextClassLoader().loadClass(className);
+						wasAlreadyLoaded = true;
+						break;
+					} catch (Exception e) {
+						wasAlreadyLoaded = false;
+						break;
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			Logger.error(DataMartModel.class, e);
+		}
+		
+		try {
+			
+			if (!wasAlreadyLoaded) {
+				
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();
 				
 				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
 				
 				Thread.currentThread().setContextClassLoader(current);
 				
+				if (container != null) container.setAttribute("DATAMART_CLASS_LOADER", current);
+
+			}
+			
 		} catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}

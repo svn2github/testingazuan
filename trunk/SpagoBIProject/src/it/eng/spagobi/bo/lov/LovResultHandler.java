@@ -62,7 +62,18 @@ public class LovResultHandler {
 	 * @return the SourceBean of the row
 	 */
 	public SourceBean getRow(String value, String valueColumnName) {
-		return (SourceBean)lovResultSB.getFilteredSourceBeanAttribute("ROW", valueColumnName, value);
+		SourceBean row = null;
+		Object o = lovResultSB.getFilteredSourceBeanAttribute("ROW", valueColumnName, value);
+		// if there are duplicated row return only the first (this can happen when the checklist lookup
+		// modality is used)
+		if(o instanceof ArrayList) {
+			List list = (ArrayList)o;
+			row = (SourceBean)list.get(0);
+		} else {
+			row = (SourceBean)o;
+		}
+		
+		return (SourceBean)row;
 	}
 	
 

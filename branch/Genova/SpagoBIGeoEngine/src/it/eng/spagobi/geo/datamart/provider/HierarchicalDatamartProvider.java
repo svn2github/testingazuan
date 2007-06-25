@@ -79,21 +79,25 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             sdr = (ScrollableDataResult) dr.getDataObject();
             ResultSet resultSet = sdr.getResultSet();
             Map values = new HashMap();
-            Map attributes = new HashMap();
+            Map attributes = null;
             Map links = new HashMap();
             while(resultSet.next()) {
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {
             		continue;
             	}
+            	
+            	System.out.println("\n-> " + id);
+            	attributes = new HashMap();
             	for(int i = 0; i < columnvalue.length; i++) {
 	            	String value = resultSet.getString(resultSet.findColumn(columnvalue[i]));
 	            	if((value==null) || (value.trim().equals(""))) {
 	            		continue;
 	            	}
+	            	System.out.println(columnvalue[i] + ": " + value);
 	            	attributes.put(columnvalue[i], value);
             	}
-            	System.out.println("-> " + id);
+            	
             	values.put(id, attributes);
             	//String link = createLink(drillSB, resultSet);
             	//links.put(id, link);
@@ -103,6 +107,8 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             datamart.setTargetFeatureName(targetFeatureName);
             datamart.setKpiNames(columnvalue);
             datamart.setSelectedKpi(0);
+            
+            System.out.println("-----------------------------------------------------------------");
             
         } catch (Exception ex) {
         	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 

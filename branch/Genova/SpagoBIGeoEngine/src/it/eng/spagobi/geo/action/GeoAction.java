@@ -84,6 +84,7 @@ public class GeoAction extends AbstractHttpAction {
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		HttpServletRequest request = this.getHttpRequest(); 
 		
+		
 		// AUDIT UPDATE
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		AuditAccessUtils auditAccessUtils = 
@@ -130,7 +131,10 @@ public class GeoAction extends AbstractHttpAction {
 		// read the map configuration
 		MapConfiguration mapConfiguration = null;
 		try{
-			mapConfiguration = new MapConfiguration(template, serviceRequest);
+			String baseUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+			
+			
+			mapConfiguration = new MapConfiguration(baseUrl, template, serviceRequest);
 		} catch (Exception e) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
 					"GeoAction :: service : " +

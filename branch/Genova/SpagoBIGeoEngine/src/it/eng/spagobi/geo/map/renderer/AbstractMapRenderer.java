@@ -26,6 +26,7 @@ import java.io.File;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.configuration.MapRendererConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
 import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
 import it.eng.spagobi.geo.map.provider.IMapProvider;
@@ -36,7 +37,7 @@ import it.eng.spagobi.geo.map.provider.IMapProvider;
  */
 public class AbstractMapRenderer implements IMapRenderer{
 
-	
+	protected MapRendererConfiguration mapRendererConfiguration;
 	
 	/**
 	 * Builds the class
@@ -50,6 +51,15 @@ public class AbstractMapRenderer implements IMapRenderer{
 	 */
 	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider) throws Exception {
 		return null;
+	}
+
+	public MapRendererConfiguration getMapRendererConfiguration() {
+		return mapRendererConfiguration;
+	}
+
+	public void setMapRendererConfiguration(
+			MapRendererConfiguration mapRendererConfiguration) {
+		this.mapRendererConfiguration = mapRendererConfiguration;
 	}
 	
 

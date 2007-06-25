@@ -23,6 +23,7 @@ package it.eng.spagobi.geo.map.renderer;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.configuration.MapRendererConfiguration;
 import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
 import it.eng.spagobi.geo.map.provider.IMapProvider;
 
@@ -41,4 +42,8 @@ public interface IMapRenderer {
 	 * @throws Exception If some errors occur during the elaboration
 	 */
 	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider) throws Exception;
+	
+	public MapRendererConfiguration getMapRendererConfiguration();
+
+	public void setMapRendererConfiguration(MapRendererConfiguration mapRendererConfiguration);
 }

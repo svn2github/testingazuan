@@ -7,17 +7,9 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 
 		<rect x="-3000" y="-500" width="10000" height="3000" stroke="none" fill="cornsilk"/>
 		
-		<!-- don't forget to adopt the pathes to the scripts, or you'll receive a plethora of error messages -->
-		<script type="text/ecmascript" xlink:href="js/helper_functions.js"/>
-		<script type="text/ecmascript" xlink:href="js/mapApp.js"/>
-		<script type="text/ecmascript" xlink:href="js/timer.js"/>
-		<script type="text/ecmascript" xlink:href="js/slider.js"/>
-		<script type="text/ecmascript" xlink:href="js/button.js"/>
-		<script type="text/ecmascript" xlink:href="js/Window.js"/>
-		<script type="text/ecmascript" xlink:href="js/checkbox_and_radiobutton.js"/>
-		<script type="text/ecmascript" xlink:href="js/navigation.js"/>
-		<script type="text/ecmascript" xlink:href="js/tabgroup.js"/>
-		<script type="text/ecmascript" xlink:href="js/barchart.js"/>
+		<g id="imports">
+		
+		</g>
 		
 		
 		<script id="init" type="text/ecmascript"><![CDATA[
@@ -229,10 +221,10 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			var values = [];
 			
 			var detailBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
-			detailBarChartRenderer.maxGridLineValue = 1000;
+			detailBarChartRenderer.maxGridLineValue = 100;
 			
 			var layerBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
-			layerBarChartRenderer.maxGridLineValue = 1000;
+			layerBarChartRenderer.maxGridLineValue = 100;
 			layerBarChartRenderer.gridLineVisible = false;
 			layerBarChartRenderer.labelsVisible = false;
 			
@@ -383,6 +375,8 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 						
 			var child = myMapApp.targetLayer.firstChild;
 			 
+			// alert(child.getAttributeNS(attribNS,myMapApp.curKpi));
+			 
 			while(child) {
 				if (child.nodeName == "path") {
 					var kpiAttrib = parseInt(child.getAttributeNS(attribNS,myMapApp.curKpi));
@@ -395,10 +389,12 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 							break;
 						}
 					}
+					//alert(colIndex + " - " + myMapApp.colArray[colIndex]);
 					child.setAttributeNS(null,"fill",myMapApp.colArray[colIndex]);
 				}
 				child = child.nextSibling;
 			}
+			
 			myMapApp.loadStatus.setAttributeNS(null,"display","none");
 			if (document.documentElement.suspendRedraw) {
 				document.documentElement.unsuspendRedraw(suspendProcess);

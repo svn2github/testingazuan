@@ -23,15 +23,20 @@ public class MapConfiguration {
 
 	private SourceBean legenda = null;
 	
+	
+	
 
 	/**
 	 * Builds the MapConfiguration object loading configuration from xml template into SourceBeans
 	 * @param template The byte array of the xml template
 	 * @throws ConfigurationException raised If some configurations is missing or wrong
 	 */ 
-	public MapConfiguration(byte[] template, SourceBean servReq) throws ConfigurationException {
+	public MapConfiguration(String contextPath, byte[] template, SourceBean servReq) throws ConfigurationException {
 		// load template xml string into a sourcebean
 		SourceBean map = null;
+		
+
+		
 		try {
 			map = SourceBean.fromXMLString(new String(template));
 		} catch (Exception e) {
@@ -51,6 +56,7 @@ public class MapConfiguration {
 		// load mapRendererConfiguration
 		SourceBean mapRendererConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_RENDERER);
 		mapRendererConfiguration = new MapRendererConfiguration(mapRendererConfigurationSB);
+		mapRendererConfiguration.setContextPath(contextPath);
 		
 		// load a predefined map provider SourceBean
 		try {

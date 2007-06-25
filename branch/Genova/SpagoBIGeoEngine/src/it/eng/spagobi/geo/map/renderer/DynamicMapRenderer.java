@@ -55,9 +55,14 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	public void importScipt(SVGDocument map, String scriptName) {
 		Element script = map.createElement("script");
 	    script.setAttribute("type", "text/ecmascript");
-	    //script.setAttributeNS("xlink:", "href", ConfigSingleton.getRootPath() + "/js/" + scriptName);
-	    script.setAttributeNS("xlink:", "href", "js/" + scriptName);
-	    map.getRootElement().appendChild(script);
+	    //script.setAttribute("xlink:href", ConfigSingleton.getRootPath() + "/js/" + scriptName);
+	    //script.setAttribute("xlink:href", "http://172.21.5.69:8080/SpagoBIGeoEngine/js/" + scriptName);
+	    //System.out.println("-->" + (ConfigSingleton.getRootPath() + "/js/" + scriptName) );
+	    script.setAttribute("xlink:href", mapRendererConfiguration.getContextPath() + "/js/" + scriptName);
+	    Element importsBlock = map.getElementById("imports");
+	    importsBlock.appendChild(script);
+	    Node lf = map.createTextNode("\n");
+	    importsBlock.appendChild(lf);
 	}
 	
 	/**
@@ -124,7 +129,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    buffer.append("kpi_descriptions = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + "\"" + kpiNames[i] + "\"");
+	    	buffer.append(separtor + "\"" + mapRendererConfiguration.getKpiDescription(kpiNames[i]) + "\"");
 	    }
 	    buffer.append("];\n");
 	    
@@ -132,17 +137,19 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    buffer.append("kpi_colours = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + rand.nextInt(806450));
+	    	buffer.append(separtor + mapRendererConfiguration.getKpiColour(kpiNames[i]));
 	    }
 	    buffer.append("];\n");
 	    
 	    buffer.append("var selected_kpi_index = " + datamart.getSelectedKpi() + ";\n");
 		
+	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	buffer.append("var col_" + kpiNames[i] + " = new Array(");
-	    	for(int j = 0; j < 5; j++) {
+	    	String[] coloursArray = mapRendererConfiguration.getColoursArray(kpiNames[i]);
+	    	for(int j = 0; j < coloursArray.length; j++) {
 	    		String separtor = j>0? ",": "";
-		    	buffer.append(separtor + rand.nextInt(806450));
+		    	buffer.append(separtor + "\"" + coloursArray[j] + "\"");
 	    	}
 	    	buffer.append(");\n");
 	    }
@@ -150,21 +157,35 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	buffer.append("thresh_" + kpiNames[i] + " = new Array(");
-	    	int lb = 0;
-	    	for(int j = 0; j < 5; j++) {
+	    	String[] trasholdsArray = mapRendererConfiguration.getTresholdsArray(kpiNames[i]);
+	    	for(int j = 0; j < trasholdsArray.length; j++) {
 	    		String separtor = j>0? ",": "";
-		    	buffer.append(separtor + lb);
-		    	lb += rand.nextInt(50);
+		    	buffer.append(separtor + trasholdsArray[j]);
 		    }
 	    	 buffer.append(");\n");
 	    }
 	   
 	    
 	    buffer.append("// LAYERS\n");
-	    buffer.append("var layer_names = [\"circoscrizioni\", \"centroidi_circoscrizioni\", \"grafici\"];\n");
-	    buffer.append("var layer_descriptions = [\"Circoscrizioni\", \"Centroidi Circoscrizioni\", \"Grafici\"];\n");
+	    String[] layerNames = mapRendererConfiguration.getLayerNames();
+	    buffer.append("var layer_names = [");	    
+	    for(int i = 0; i < layerNames.length; i++) {
+	    	String separtor = i>0? ",": "";
+	    	buffer.append(separtor + "\"" + layerNames[i] + "\"");
+	    }
+	    buffer.append(", \"grafici\"];\n");
+	    
+	    buffer.append("var layer_descriptions = [");	    
+	    for(int i = 0; i < layerNames.length; i++) {
+	    	String separtor = i>0? ",": "";
+	    	buffer.append(separtor + "\"" + mapRendererConfiguration.getLayerDescription(layerNames[i]) + "\"");
+	    }	    
+	    buffer.append(", \"Grafici\"];\n");
+	    
 	    buffer.append("var target_layer_index = 0;\n");
 	    
+	    
+	   
 	    
 	    scriptText.setNodeValue(buffer.toString());
 		
@@ -181,7 +202,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		
 		}
 		
-		System.out.println(tmpMap);
+		//System.out.println(tmpMap);
 		
 		return tmpMap;
 	}
@@ -221,10 +242,11 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    		SVGElement child = (SVGElement)childNode;
 	    		String childId = child.getId();
 	    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
-	    		System.out.println(column_id);
+	    		System.out.println("\n" + column_id);
 	    		Map attributes = (Map)datamart.getAttributeseById(column_id);
-	    		if(attributes != null)
+	    		if(attributes != null) {
 	    			addAttributes(child, attributes);
+	    		}
 	    	} 
 	    }
 	}
@@ -235,7 +257,10 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 			String attributeName = (String)it.next();
 			String attributeValue = (String)attributes.get(attributeName);
 			e.setAttribute("attrib:" + attributeName, attributeValue);
+			System.out.println(attributeName + ": " + attributeValue);
 		}
+		//e.setAttribute("fill", "gray");
+		e.setAttribute("attrib:nome", e.getAttribute("id"));
 	}
 	
 	private File getMasterMapFile() {

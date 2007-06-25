@@ -38,7 +38,10 @@ public class MapRendererFactory {
 	 * 
 	 * @throws Exception if the class doesn't exist or it doens't implement the interface
 	 */
-	 public static IMapRenderer getMapRenderer(MapRendererConfiguration mapRendererConfiguration) throws Exception {
-		 return  (IMapRenderer) Class.forName(mapRendererConfiguration.getClassName()).newInstance();
+	public static IMapRenderer getMapRenderer(MapRendererConfiguration mapRendererConfiguration) throws Exception {
+		IMapRenderer mapRenderer = null;
+		mapRenderer =   (IMapRenderer) Class.forName(mapRendererConfiguration.getClassName()).newInstance();
+		mapRenderer.setMapRendererConfiguration(mapRendererConfiguration);		
+		return mapRenderer;
 	 }
 }

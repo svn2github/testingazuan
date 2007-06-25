@@ -7,6 +7,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.geo.bo.SbiGeoFeatures;
 import it.eng.spagobi.geo.bo.SbiGeoMapFeatures;
+import it.eng.spagobi.geo.bo.SbiGeoMapFeaturesId;
 import it.eng.spagobi.geo.bo.SbiGeoMaps;
 import it.eng.spagobi.geo.bo.dao.ISbiGeoMapFeaturesDAO;
 
@@ -187,7 +188,8 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiGeoMapFeatures hibMapFeature = new SbiGeoMapFeatures();			
+			SbiGeoMapFeatures hibMapFeature = new SbiGeoMapFeatures();	
+			hibMapFeature.setId(aMapFeature.getId());
 			hibMapFeature.setSvgGroup(aMapFeature.getSvgGroup());
 			hibMapFeature.setVisibleFlag(aMapFeature.getVisibleFlag());
 			aSession.save(hibMapFeature);

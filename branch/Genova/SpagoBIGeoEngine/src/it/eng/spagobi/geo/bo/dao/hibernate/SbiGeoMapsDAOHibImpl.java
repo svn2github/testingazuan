@@ -7,6 +7,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.geo.bo.SbiGeoFeatures;
 import it.eng.spagobi.geo.bo.SbiGeoMaps;
 import it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.geo.configuration.Constants;
@@ -25,10 +26,13 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Expression;
  
 /**
  * @author giachino
@@ -68,11 +72,12 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		return toReturn;
 	}
 	
+	
 	/**
-	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO#loadMapByName(string)
-	 */
+	 * @see List#loadMapByName(string)
+	 *//*
 	public List loadMapByName(String name) throws EMFUserError {
-		List results = new ArrayList();
+		List results = new ArrayList();		
 		File f = new File(ConfigSingleton.getRootPath() + "/maps/genova/" + name + ".svg");
 		String url = null;
 		try {
@@ -83,13 +88,43 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		            "map file not found, path " + f.toString());
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notfound");
 		}
+		
 		SbiGeoMaps map = new  SbiGeoMaps(1, name, name.toUpperCase(), 
 				url,
 				null);
 		results.add(map);
-		return results;
+		return results;		
 	}
-	
+	*/  
+	/**
+	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO#loadMapByName(string)
+	 */	
+	public SbiGeoMaps loadMapByName(String name) throws EMFUserError {
+		SbiGeoMaps biMap = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion labelCriterrion = Expression.eq("name",
+					name);
+			Criteria criteria = aSession.createCriteria(SbiGeoMaps.class);
+			criteria.add(labelCriterrion);
+			biMap = (SbiGeoMaps) criteria.uniqueResult();			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			/*if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}*/
+		}
+		return biMap;		
+	}
+
 	/**
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#modifyEngine(it.eng.spagobi.bo.Engine)
 	 */
@@ -266,7 +301,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	 * @param url The url about svg file
 	 * @throws Exception raised If there are some problems
 	 */ 
-	public HashMap[] getFeaturesFromSVG(String url) throws Exception {
+	public List getFeaturesFromSVG(String url) throws Exception {
 		// load a svg file
 		XMLInputFactory xmlIF =XMLInputFactory.newInstance();		
 		//xmlIF.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,Boolean.TRUE);
@@ -274,8 +309,8 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		xmlIF.setProperty(XMLInputFactory.IS_COALESCING , Boolean.TRUE);
 		String pathMapFile = url;  
 		FileInputStream fisMap = null;		
-		HashMap[] lstFeatures = null;
-		HashMap feature = null;
+		List lstFeatures = null;
+		HashMap feature;
 		
 		try {
 			fisMap = new FileInputStream(pathMapFile);
@@ -302,6 +337,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		try{
 			int event = streamReader.getEventType();
 			int nFeature=-1;
+			lstFeatures = new ArrayList();
 		    while (true) {
 		    	switch (event) {
 		            case XMLStreamConstants.START_DOCUMENT:
@@ -309,7 +345,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		            case XMLStreamConstants.START_ELEMENT:
 		            	// get the tag name
 		            	String tagname = streamReader.getLocalName();       
-		            	if(tagname.trim().equalsIgnoreCase("g")) {
+		            	if(tagname.trim().equalsIgnoreCase("g")) {		            		
 			            	for(int i=0, n=streamReader.getAttributeCount(); i<n; ++i) {
 			            		String attrName = streamReader.getAttributeName(i).toString();
 			            		String attrValue = streamReader.getAttributeValue(i);
@@ -325,7 +361,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 			            		if(attrName.equalsIgnoreCase("type")) {		            			
 			            			feature.put("type",attrValue);
 				        		}		
-			            		if (feature.size()>0) lstFeatures[nFeature] = feature;
+			            		if (feature.size()>0) lstFeatures.add(feature);						            		
 			            	}			            				            	
 		            	}
 		            	break;

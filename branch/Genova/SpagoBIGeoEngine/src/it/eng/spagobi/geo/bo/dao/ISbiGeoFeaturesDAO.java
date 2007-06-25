@@ -19,11 +19,22 @@ public interface ISbiGeoFeaturesDAO {
 	 * returned.
 	 * 
 	 * @param featureID The id for the feature to load
-	 * @return	A <code>feature</code> object containing all loaded information
+	 * @return	A <code>SbiGeoFeatures</code> object containing all loaded information
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public SbiGeoFeatures loadFeatureByID(Integer featureID) throws EMFUserError;
 		
+	/**
+	 * Loads all detail information for feature whose name is equal to <code>name</code>. Each feature
+	 * that is added into a <code>SbiGeoFeatures</code> object, which is
+	 * returned.
+	 * 
+	 * @param name The name for the feature to load
+	 * @return	An <code>SbiGeoFeatures</code> object containing all loaded information
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public SbiGeoFeatures loadFeatureByName(String name) throws EMFUserError;
+	
 	/**
 	 * Loads all detail information for all features. For each of them, detail 
 	 * information is stored into an <code>feature</code> object. After that, all features 

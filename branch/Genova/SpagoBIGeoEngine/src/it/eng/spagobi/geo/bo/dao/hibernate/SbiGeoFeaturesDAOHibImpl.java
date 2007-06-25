@@ -16,10 +16,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Expression;
  
 /**
  * @author giachino
@@ -58,6 +61,36 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 		
 		return toReturn;
 	}
+	
+	/**
+	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoFeaturesDAO#loadFeatureByName(string)
+	 */
+	public SbiGeoFeatures loadFeatureByName(String name) throws EMFUserError {
+		SbiGeoFeatures biFeature = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion labelCriterrion = Expression.eq("name",
+					name);
+			Criteria criteria = aSession.createCriteria(SbiGeoFeatures.class);
+			criteria.add(labelCriterrion);
+			biFeature = (SbiGeoFeatures) criteria.uniqueResult();			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			/*if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}*/
+		}
+		return biFeature;		
+	}
+
 	
 	/**
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#modifyEngine(it.eng.spagobi.bo.Engine)

@@ -19,7 +19,7 @@ public interface ISbiGeoMapsDAO {
 	 * achived by a query to the DB, are stored into an <code>map</code> object, which is
 	 * returned.
 	 * 
-	 * @param mapID The id for the engine to load
+	 * @param mapID The id for the map to load
 	 * @return	An <code>map</code> object containing all loaded information
 	 * @throws EMFUserError If an Exception occurred
 	 */
@@ -30,11 +30,20 @@ public interface ISbiGeoMapsDAO {
 	 * thatis added into a <code>List</code> object, which is
 	 * returned.
 	 * 
-	 * @param mapID The id for the engine to load
+	 * @param name The name for the map to load
+	 * @return	An <code>List</code> list of objects containing all loaded information
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	//public List loadMapByName(String name) throws EMFUserError;
+	
+	/**
+	 * Loads all detail information for maps whose name is equal to <code>name</code>. 
+	 * 
+	 * @param name The name for the map to load
 	 * @return	An <code>map</code> object containing all loaded information
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public List loadMapByName(String name) throws EMFUserError;
+	public SbiGeoMaps loadMapByName(String name) throws EMFUserError;
 		
 	/**
 	 * Loads all detail information for all maps. For each of them, detail 
@@ -92,6 +101,6 @@ public interface ISbiGeoMapsDAO {
 	 * @param url The url about svg file
 	 * @throws Exception raised If there are some problems
 	 */ 
-	public HashMap[] getFeaturesFromSVG(String url) throws Exception ;
+	public List getFeaturesFromSVG(String url) throws Exception ;
 
 }

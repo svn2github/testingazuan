@@ -16,6 +16,7 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.geo.bo.SbiGeoFeatures;
 import it.eng.spagobi.geo.bo.SbiGeoMapFeatures;
+import it.eng.spagobi.geo.bo.SbiGeoMapFeaturesId;
 import it.eng.spagobi.geo.bo.SbiGeoMaps;
 import it.eng.spagobi.geo.bo.dao.DAOFactory;
 import it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO;
@@ -177,26 +178,24 @@ private void modDetailMap(SourceBean request, String mod, SourceBean response)
 			//inserts a map (SBI_GEO_MAPS)
 			DAOFactory.getSbiGeoMapsDAO().insertMap(map);
 			//through the url of a map, gets and opens the svg file and insert a feature for every tag <g>
-			HashMap[] lstFeatures = DAOFactory.getSbiGeoMapsDAO().getFeaturesFromSVG(map.getUrl());
-			int i = 0;
-			while (lstFeatures[i] != null){				
-				HashMap hFeature =  lstFeatures[i];
-				SbiGeoFeatures aFeature = new SbiGeoFeatures();
-				aFeature.setName((String)hFeature.get("id"));
-				aFeature.setDescr((String)hFeature.get("descr"));
-				aFeature.setType((String)hFeature.get("type"));
-				DAOFactory.getSbiGeoFeaturesDAO().insertFeature(aFeature);
+			List lstFeatures = DAOFactory.getSbiGeoMapsDAO().getFeaturesFromSVG(map.getUrl());			
+			for (int i=0; i < lstFeatures.size(); i++){				
+				HashMap hFeature = (HashMap)lstFeatures.get(i);
+				feature = new SbiGeoFeatures();
+				feature.setName((String)hFeature.get("id"));
+				feature.setDescr((String)hFeature.get("descr"));
+				feature.setType((String)hFeature.get("type"));
+				DAOFactory.getSbiGeoFeaturesDAO().insertFeature(feature);
 //				for every map/feature inserts a row in join table (SBI_GEO_MAP_FEATURES)
-				SbiGeoMapFeatures aMapFeatures = new SbiGeoMapFeatures();
-				//aMapFeatures.setId(); //capire come gestire l'id 
-				DAOFactory.getSbiGeoMapFeaturesDAO().insertMapFeatures(mapFeatures);
-				i++;
+				SbiGeoMapFeatures hibMapFeatures = new SbiGeoMapFeatures();
+				SbiGeoMapFeaturesId hibMapFeatureId = new SbiGeoMapFeaturesId();
+				hibMapFeatureId.setMapId(((SbiGeoMaps)DAOFactory.getSbiGeoMapsDAO().loadMapByName(map.getName())).getMapId());
+				hibMapFeatureId.setFeatureId(((SbiGeoFeatures)DAOFactory.getSbiGeoFeaturesDAO().loadFeatureByName(feature.getName())).getFeatureId());
+				hibMapFeatures.setId(hibMapFeatureId);  
+				hibMapFeatures.setSvgGroup(null);
+				hibMapFeatures.setVisibleFlag(null);
+				DAOFactory.getSbiGeoMapFeaturesDAO().insertMapFeatures(hibMapFeatures);			
 			}
-			
-			
-
-
-			
 		} else {
 			DAOFactory.getSbiGeoMapsDAO().modifyMap(map);
 		}

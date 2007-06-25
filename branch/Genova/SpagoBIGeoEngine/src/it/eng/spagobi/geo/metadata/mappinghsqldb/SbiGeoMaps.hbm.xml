@@ -5,7 +5,8 @@
 <hibernate-mapping>
     <class name="it.eng.spagobi.geo.bo.SbiGeoMaps" table="SBI_GEO_MAPS" schema="PUBLIC">
         <id name="mapId" type="int">
-            <column name="MAP_ID" />          
+            <column name="MAP_ID" />   
+            <generator class="identity"/>
         </id>
         <property name="name" type="string">
             <column name="NAME" />

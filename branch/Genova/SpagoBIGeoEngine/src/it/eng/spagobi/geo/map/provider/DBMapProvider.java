@@ -49,7 +49,8 @@ public class DBMapProvider extends AbstractMapProvider {
 		List maps;
 		SbiGeoMaps map;
 		
-		maps = DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapName);
+		//anto maps = DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapName);
+		maps =null;
 
 		if(maps.size() == 0 || maps.get(0) == null) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 

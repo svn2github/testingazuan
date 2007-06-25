@@ -157,7 +157,7 @@ dTree.prototype.node = function(node, nodeId) {
 		str += '<a id="s' + this.obj + nodeId + '" class="' + ((this.config.useSelection) ? ((node._is ? 'nodeSel' : 'node')) : 'node') + '" href="' + node.url + '"';
 		if (node.title) str += ' title="' + node.title + '"';
 		if (node.target) str += ' target="' + node.target + '"';
-		if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" onFocus="window.status=\'' + node.name + '\';return true;" ';
+		if (this.config.useStatusText) str += ' onmouseover="window.status=\'' + escape(node.name) + '\';return true;" onmouseout="window.status=\'\';return true;" onFocus="window.status=\'' + escape(node.name) + '\';return true;" ';
 		if (this.config.useSelection && ((node._hc && this.config.folderLinks) || !node._hc)) {
 			if(node.onclick != '')
 				str += ' onclick="javascript: ' + this.obj + '.s(' + nodeId + '); ' + node.onclick + ';"';
@@ -169,7 +169,7 @@ dTree.prototype.node = function(node, nodeId) {
 		str += '>';
 	}
 	else if ((!this.config.folderLinks || !node.url) && node._hc && node.pid != this.root.id)
-		if (this.config.useStatusText) {str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');" onmouseover="window.status=\'' + node.name + '\';return true;" onmouseout="window.status=\'\';return true;" onFocus="window.status=\'' + node.name + '\';return true;" class="node">';}
+		if (this.config.useStatusText) {str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');" onmouseover="window.status=\'' + escape(node.name) + '\';return true;" onmouseout="window.status=\'\';return true;" onFocus="window.status=\'' + escape(node.name) + '\';return true;" class="node">';}
 		else {str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');"  class="node">';}
 		//str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');"  class="node">';
 	str += node.name;

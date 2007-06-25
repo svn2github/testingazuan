@@ -6,6 +6,7 @@
 package it.eng.spagobi.geo.configuration;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.tracing.TracerSingleton;
 
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
 public class MapConfiguration {
 
 	private String mapName = null;
+	
+	private MapRendererConfiguration mapRendererConfiguration = null;
 
 	private SourceBean mapProviderConfiguration = null;
 
@@ -27,13 +30,6 @@ public class MapConfiguration {
 	 * @throws ConfigurationException raised If some configurations is missing or wrong
 	 */ 
 	public MapConfiguration(byte[] template, SourceBean servReq) throws ConfigurationException {
-		// load a predefined map provider SourceBean
-		String mapProvConfStr = "<MAP_PROVIDER class_name=\"it.eng.spagobi.geo.map.DefaultMapProvider\" />";
-		try {
-			mapProviderConfiguration = SourceBean.fromXMLString(mapProvConfStr);
-		} catch (Exception e) {
-			throw new ConfigurationException("Cannot load map provider configuration", e);
-		}
 		// load template xml string into a sourcebean
 		SourceBean map = null;
 		try {
@@ -44,24 +40,63 @@ public class MapConfiguration {
 		if (map == null) {
 			throw new ConfigurationException("Cannot load map configuration from template");
 		}
+		
 		// load the logical name of the map  from the template
 		try {
 			mapName = (String) map.getAttribute(Constants.NAME);
 		} catch (Exception e) {
 			throw new ConfigurationException("Cannot load the name of the map from template", e);
 		}
-		if(mapName==null)  {
-			throw new ConfigurationException("cannot load map name from template");
+		
+		// load mapRendererConfiguration
+		SourceBean mapRendererConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_RENDERER);
+		mapRendererConfiguration = new MapRendererConfiguration(mapRendererConfigurationSB);
+		
+		// load a predefined map provider SourceBean
+		try {
+			mapProviderConfiguration = (SourceBean) map.getAttribute(Constants.MAP_PROVIDER);
+			if(mapProviderConfiguration == null) {
+				TracerSingleton.log(Constants.LOG_NAME, 
+            			TracerSingleton.WARNING, 
+            			"MapConfiguration :: service : cannot find map provider configuration: tag " + Constants.MAP_PROVIDER);
+				TracerSingleton.log(Constants.LOG_NAME, 
+            			TracerSingleton.INFORMATION, 
+            			"MapConfiguration :: service : the default map provider configuration will be used");
+				String mapProvConfStr = "<MAP_PROVIDER class_name=\"it.eng.spagobi.geo.map.FSMapProvider\" />";
+				mapProviderConfiguration = SourceBean.fromXMLString(mapProvConfStr);
+			}			
+		} catch (Exception e) {
+			throw new ConfigurationException("Cannot load map provider configuration", e);
 		}
+		
+		//	load the logical name of the map  from the template
+		if(mapProviderConfiguration.getAttribute(Constants.MAP_NAME) == null) {
+			try {
+				mapName = (String) map.getAttribute(Constants.NAME);
+				mapProviderConfiguration.setAttribute(Constants.MAP_NAME, mapName);
+			} catch (Exception e) {
+				throw new ConfigurationException("cannot set default datamart provider map name", e);
+			}
+		} else {
+			mapName = (String)mapProviderConfiguration.getAttribute(Constants.MAP_NAME);
+		}
+		
+		if(mapName == null) {
+			throw new ConfigurationException("cannot set default datamart provider map name");
+		}
+		
 		// recover legenda
 		try {
 			legenda = (SourceBean) map.getAttribute(Constants.CONFIGURATION	+ "." + Constants.LEGEND);
 		} catch (Exception e) {
 			throw new ConfigurationException("cannot find legenda configuration: tag "+ Constants.CONFIGURATION	+ "." + Constants.LEGEND, e);
 		}
+		/*
 		if (legenda == null) {
 			throw new ConfigurationException("cannot load legenda configuration from template");
 		}
+		*/
+		
 		// recover DATAMART_PROVIDER configuration
 		try {
 			datamartProviderConfiguration = (SourceBean) map.getAttribute(Constants.DATAMART_PROVIDER);
@@ -271,6 +306,15 @@ public class MapConfiguration {
 
 	public void setLegenda(SourceBean legenda) {
 		this.legenda = legenda;
+	}
+
+	public MapRendererConfiguration getMapRendererConfiguration() {
+		return mapRendererConfiguration;
+	}
+
+	public void setMapRendererConfiguration(
+			MapRendererConfiguration mapRendererConfiguration) {
+		this.mapRendererConfiguration = mapRendererConfiguration;
 	}
 
 }

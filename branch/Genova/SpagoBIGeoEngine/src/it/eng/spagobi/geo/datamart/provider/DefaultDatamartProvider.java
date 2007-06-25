@@ -1,7 +1,7 @@
 /**
  *	LICENSE: see COPYING file
 **/
-package it.eng.spagobi.geo.datamart;
+package it.eng.spagobi.geo.datamart.provider;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dbaccess.DataConnectionManager;
@@ -14,6 +14,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
+import it.eng.spagobi.geo.datamart.Datamart;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -44,15 +45,18 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
     public DefaultDatamartProvider() {
         super();
     }
+    
+    public DefaultDatamartProvider(SourceBean datamartProviderConfiguration) {
+        super(datamartProviderConfiguration);
+    }
 
     /**
      * Executes the query and obtains the data associated to the svg map
-     * @param datamartProviderConfiguration SourceBean wich contains the configuration 
      * for the data recovering (see template definition into GeoAction class)
      */
-    public DatamartObject getDatamartObject(SourceBean datamartProviderConfiguration) throws EMFUserError {
+    public Datamart getDatamartObject() throws EMFUserError {
 
-    	DatamartObject datamartObject = new DatamartObject();
+    	Datamart datamartObject = new Datamart();
         SQLCommand cmdSelect = null;
         DataResult dr = null;
         ScrollableDataResult sdr = null;

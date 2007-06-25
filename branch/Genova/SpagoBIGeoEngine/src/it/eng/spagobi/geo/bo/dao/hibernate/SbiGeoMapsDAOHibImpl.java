@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.geo.bo.dao.hibernate;
 
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
@@ -10,11 +11,14 @@ import it.eng.spagobi.geo.bo.SbiGeoMaps;
 import it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.geo.configuration.Constants;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -62,6 +66,28 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		}
 		
 		return toReturn;
+	}
+	
+	/**
+	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO#loadMapByName(string)
+	 */
+	public List loadMapByName(String name) throws EMFUserError {
+		List results = new ArrayList();
+		File f = new File(ConfigSingleton.getRootPath() + "/maps/genova/" + name + ".svg");
+		String url = null;
+		try {
+			url = f.toURL().toString();
+		} catch (MalformedURLException e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+		            "DefaultMapProvider :: getSVGMapStreamReader : " +
+		            "map file not found, path " + f.toString());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notfound");
+		}
+		SbiGeoMaps map = new  SbiGeoMaps(1, name, name.toUpperCase(), 
+				url,
+				null);
+		results.add(map);
+		return results;
 	}
 	
 	/**

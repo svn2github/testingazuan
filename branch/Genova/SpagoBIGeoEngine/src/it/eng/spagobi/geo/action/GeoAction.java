@@ -10,7 +10,15 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
-import it.eng.spagobi.geo.render.MapRenderer;
+import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.datamart.Datamart;
+import it.eng.spagobi.geo.datamart.provider.DatamartProviderFactory;
+import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
+import it.eng.spagobi.geo.map.provider.IMapProvider;
+import it.eng.spagobi.geo.map.provider.MapProviderFactory;
+import it.eng.spagobi.geo.map.renderer.IMapRenderer;
+import it.eng.spagobi.geo.map.renderer.MapRendererFactory;
+import it.eng.spagobi.geo.map.utils.MapConverter;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.BufferedInputStream;
@@ -75,6 +83,7 @@ public class GeoAction extends AbstractHttpAction {
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		HttpServletRequest request = this.getHttpRequest(); 
+		
 		// AUDIT UPDATE
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		AuditAccessUtils auditAccessUtils = 
@@ -94,11 +103,13 @@ public class GeoAction extends AbstractHttpAction {
 								"GeoAction :: service : " +
 								"Error while getting output stream", e);
 		}
+		
 		// get the output format parameter (SVG is the default)
 		String outputFormat = (String) serviceRequest.getAttribute(Constants.OUTPUT_FORMAT_PARAMETER);
 		if(!checkOutputFormat(outputFormat)) {
 			outputFormat = Constants.SVG;
 		}
+		
 		// get the bytes od the template xml file from the request (the template is encoded in byte64)
 		String templateBase64Coded = (String) serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
 		BASE64Decoder bASE64Decoder = new BASE64Decoder();
@@ -116,11 +127,30 @@ public class GeoAction extends AbstractHttpAction {
 			return;
 		}
 		
+		// read the map configuration
+		MapConfiguration mapConfiguration = null;
+		try{
+			mapConfiguration = new MapConfiguration(template, serviceRequest);
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+					"GeoAction :: service : " +
+					"Error while reading map configuration", e);
+			sendError(outputStream);
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Error while reading map configuration", null);
+			return;
+		}
+		
 		// create the map renderer and render the map
-		MapRenderer mapRenderer = new MapRenderer();
+		IMapRenderer mapRenderer = null;
 		File maptmpfile = null;
 		try{
-			maptmpfile = mapRenderer.renderMap(template, serviceRequest);
+			mapRenderer = MapRendererFactory.getMapRenderer(mapConfiguration.getMapRendererConfiguration());
+			IMapProvider mapProvider = MapProviderFactory.getMapProvider(mapConfiguration.getMapProviderConfiguration());			
+			IDatamartProvider datamartProvider = DatamartProviderFactory.getDatamartProvider(mapConfiguration.getDatamartProviderConfiguration());
+			
+			maptmpfile = mapRenderer.renderMap(mapProvider, datamartProvider);
 		} catch (Exception e) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
 								"GeoAction :: service : " +
@@ -135,16 +165,13 @@ public class GeoAction extends AbstractHttpAction {
 		// set the content type 
 		String contentType = getContentType(outputFormat);
 		response.setContentType(contentType);
-		//response.setHeader("Content-Type", Constants.SVG_MIME_TYPE + "; charset=UTF-8");
-		//response.setHeader("Cache-Control", "Public, max-age=6000");
-		//response.setHeader("Expires", "6000");
 		
 		// based on the format requested fill the response
 		if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
 			InputStream inputStream = null;
 			try {
 				inputStream = new FileInputStream(maptmpfile);
-				mapRenderer.sVGToJPEGTransform(inputStream, outputStream);
+				MapConverter.SVGToJPEGTransform(inputStream, outputStream);
 			} catch (Exception e) {
 				TracerSingleton.log(Constants.LOG_NAME, 
 			            			TracerSingleton.CRITICAL, 
@@ -162,26 +189,7 @@ public class GeoAction extends AbstractHttpAction {
             						TracerSingleton.CRITICAL, 
             						"GeoAction :: service : error while closing input stream", e);
 			}
-		} /* else if(outputFormat.equalsIgnoreCase(Constants.PDF)) {
-			InputStream inputStream = null;
-			try {
-				inputStream = new FileInputStream(maptmpfile);
-				mapRenderer.sVGToPDFTransform(inputStream, outputStream);
-			} catch (Exception e) {
-				TracerSingleton.log(Constants.LOG_NAME, 
-            						TracerSingleton.CRITICAL, 
-            						"GeoAction :: service : error while transforming into pdf", e);
-				sendError(outputStream);
-				return;
-			}
-			try{
-				inputStream.close();
-			} catch (Exception e ){
-				TracerSingleton.log(Constants.LOG_NAME, 
-            						TracerSingleton.CRITICAL, 
-            						"GeoAction :: service : error while closing input stream", e);
-			}
-		}*/ else if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
+		} else if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
 			InputStream inputStream = null;
 			try {
 				inputStream = new FileInputStream(maptmpfile);

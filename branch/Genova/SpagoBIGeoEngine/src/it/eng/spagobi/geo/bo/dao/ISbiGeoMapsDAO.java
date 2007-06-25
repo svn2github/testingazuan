@@ -24,6 +24,17 @@ public interface ISbiGeoMapsDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public SbiGeoMaps loadMapByID(Integer mapID) throws EMFUserError;
+	
+	/**
+	 * Loads all detail information for maps whose name is equal to <code>name</code>. Each map
+	 * thatis added into a <code>List</code> object, which is
+	 * returned.
+	 * 
+	 * @param mapID The id for the engine to load
+	 * @return	An <code>map</code> object containing all loaded information
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadMapByName(String name) throws EMFUserError;
 		
 	/**
 	 * Loads all detail information for all maps. For each of them, detail 

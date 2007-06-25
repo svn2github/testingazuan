@@ -7,14 +7,21 @@ package it.eng.spagobi.geo.datamart;
 
 import it.eng.spagobi.geo.configuration.MapConfiguration;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
  * Contains the data recovered from the datawarehouse and 
  * associated to the svg map
  */
-public class DatamartObject{
+public class Datamart {
     
+	private String targetFeatureName;
+	
+	private String[] kpiNames;
+	private int selectedKpi;
+	
+	
 	/**
 	 * Map of id and values related to the svg map 
 	 */
@@ -28,7 +35,7 @@ public class DatamartObject{
 	/**
 	 * Constructor
 	 */
-    public DatamartObject() {
+    public Datamart() {
         super();
     }
 
@@ -57,6 +64,10 @@ public class DatamartObject{
     	return values.containsKey(id);
     }
     
+    public Map getAttributeseById(String id) {
+    	return (Map)values.get(id);
+    }
+    
     /**
      * Recover the svg style associated to a particular id. The method recovers from the
      * data map the value associated to the id and then, using the value, it recovers
@@ -65,18 +76,24 @@ public class DatamartObject{
      * @param conf The configuration of the map
      * @return the svg style string assocaited to the id 
      */
-    public String getStyleForId(String id, MapConfiguration conf) {
-    	Integer value = (Integer)values.get(id);
-    	if(value!=null) {
-    		String style = conf.getStyle(value.intValue());
-    		if(style==null) {
-    			return " ";
-    		} else {
-        		return style;
+    public String getStyleById(String id, MapConfiguration conf) {
+    	Map attributes = getAttributeseById(id);
+    	Iterator it = attributes.keySet().iterator();
+    	if(it.hasNext()) {
+    		String attrName = (String)it.next();
+    		String attrValue = (String)attributes.get(attrName);
+    		Integer value = Integer.parseInt(attrValue);
+    		if(value!=null) {
+        		String style = conf.getStyle(value.intValue());
+        		if(style==null) {
+        			return " ";
+        		} else {
+            		return style;
+        		}	
     		}
-    	} else {
-    		return " ";
     	}
+    	
+    	return " ";
     }
     
     /**
@@ -105,6 +122,30 @@ public class DatamartObject{
 	 */
 	public void setLinks(Map links) {
 		this.links = links;
+	}
+
+	public String getTargetFeatureName() {
+		return targetFeatureName;
+	}
+
+	public void setTargetFeatureName(String targetFeatureName) {
+		this.targetFeatureName = targetFeatureName;
+	}
+
+	public String[] getKpiNames() {
+		return kpiNames;
+	}
+
+	public void setKpiNames(String[] kpiNames) {
+		this.kpiNames = kpiNames;
+	}
+
+	public int getSelectedKpi() {
+		return selectedKpi;
+	}
+
+	public void setSelectedKpi(int selectedKpi) {
+		this.selectedKpi = selectedKpi;
 	}
     
 }

@@ -28,10 +28,14 @@ public class Constants {
     public static final String NAME = "NAME";
 
     public static final String MAP = "MAP";
+    
+    public static final String MAP_NAME = "MAP_NAME";
 
     public static final String DATAMART_PROVIDER = "DATAMART_PROVIDER";
 
     public static final String MAP_PROVIDER = "MAP_PROVIDER";
+    
+    public static final String MAP_RENDERER = "MAP_RENDERER";
 
     public static final String ENABLED = "ENABLED";
 

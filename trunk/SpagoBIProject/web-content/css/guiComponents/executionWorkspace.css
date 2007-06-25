@@ -37,14 +37,92 @@
 }
 
 
-/* ************************** DOCUMENTS ***************************** */
+/* ************************** NAVIGATION BAR ***************************** */
 
-.executionWorkspace .documentName {
-  font-family:arial;
-  font-weight:bold;
-  color:#173683;
-  font-size:15px;
+.executionWorkspace .navBarContainerEW {
+	margin:0px;
+	padding:0px;
+	border:0px;
+	width:100%
+  	height:16px;
 }
+
+.executionWorkspace .navBarTextContainerEW{
+	width:90%;
+	height:100%;
+	float:left;
+}
+			
+.executionWorkspace .navBarBottonContainerEW{
+	width:10%;
+  	height:100%;
+  	float:left;
+}
+
+.executionWorkspace .documentNameNavBarEW {
+	font-family:arial;
+	font-weight:bold;
+	color:#173683;
+	font-size:13px;
+	border-left: 1px solid #dddddd;
+	border-top: 1px solid #dddddd;
+	border-bottom: 1px solid #dddddd;
+	background:#fbf9d0;
+	width:100%;
+	height:100%;
+}
+			
+.executionWorkspace .documentMaximizeNavBarEW {
+	border-right: 1px solid #dddddd;
+	border-top: 1px solid #dddddd;
+	border-bottom: 1px solid #dddddd;
+	text-align:center;
+	background:#fbf9d0;
+	width:100%;
+	height:100%;
+}
+			
+.executionWorkspace .documentMaximizeIconNavBarEW {
+	width:13px;
+	height:13px;
+	border:0px;
+	margin:0px;
+	padding:0px;
+}
+			
+.executionWorkspace .documentMaximizeLinkNavBarEW {
+	text-decoration:none;
+}
+
+
+/* ************************** MAXIMIZE ***************************** */
+
+.executionWorkspace .maximizeContainer {
+  	display:none;
+	position:absolute;
+	width:98%;
+	height:98%;
+	top:1%;
+	left:1%;
+	background-color:white;
+	border:2px solid #dddddd;
+}
+			
+.executionWorkspace .closeMaximizeIcon {
+	width:15px;
+	height:15px;
+}
+			
+.executionWorkspace .maximizeTitleTable {
+	height:3%;
+	width:100%;
+	border:0px;
+	cell-spacing:0px;		
+}
+
+
+
+/* ************************** EXECUTION AREA ***************************** */
 
 .executionWorkspace .noDocumentSelectedBox{
 	width:100%;

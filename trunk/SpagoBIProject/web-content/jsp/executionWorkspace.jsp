@@ -9,38 +9,6 @@
 <%@page import="it.eng.spagobi.managers.ExecutionManager"%>
 
 
-<script>
-
-    
-
-	function openmenusNMFunct() {
-		alert('openmenus');
-	}
-
-	function openmenuNM(idmenu) {
-	  	try {
-	  		status = $(idmenu).style.display;
-	  		if(status=='inline') {
-	  			$(idmenu).style.display = 'none';
-	  		} else {
-	  			$(idmenu).style.display = 'inline';
-	  			menuopened=getCookie('menuopened');
-	  			alert(menuopened);
-				if (menuopened==null) {
-					setCookie('menuopened',idmenu,365)
-				} else {
-		    		alert('Hi - no menu open ');
-				}
-	  		}
-	  	} catch (e) {
-			alert('Cannot open menu ...');
-      	}
-     }
-	
-</script>
-
-
-
 <div class="div_no_background">
 	
 	<%
@@ -65,23 +33,7 @@
 			htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.NestedMenuHtmlGenerator"/>
 	</div>
 	
-	<script>
-		try{
-	        SbiJsInitializer.openmenusNM = openmenusNMFunct;
-	    } catch (err) {
-	    	alert(err);
-	    }
-	</script>
-
-    <script>
-    	menuopened=getCookie('menuopened');
-		if (menuopened!=null) {
-			alert('Hi - your menu open are '+menuopened)}
-		} else {
-		    alert('Hi - no menu open ');
-		}
-    </script>
-
+	
 	<div class='workspaceRightBox' >
 		<%
 	    // get spagobi url
@@ -97,89 +49,71 @@
 
 		<script>
 	
+			pos<%=requestIdentity%> = null; 
+	
 			function adaptSize<%=requestIdentity%>Funct() {
-
-	          navigatorname = navigator.appName;
-			  navigatorversion = navigator.appVersion;
-	          navigatorname = navigatorname.toLowerCase();
-	          isIE = false;
-	          isIE5 = false;
-	          isIE6 = false;
-	          isIE7 = false;
-	          isMoz = false;
-	          isIE = (navigatorname.indexOf('explorer') != -1);
-	          isIE5 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 5') != -1) );
-	          isIE6 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 6') != -1) );
-	          isIE7 = ( (navigatorname.indexOf('explorer') != -1) && (navigatorversion.indexOf('MSIE 7') != -1) );
-	          isMoz = (navigatorname.indexOf('explorer') == -1);
-	
-			  if (window != top) {
-				totalVisArea = 0;
-				if(isIE5) { totalVisArea = window.document.body.clientHeight; }
-				if(isIE6) { totalVisArea = window.document.body.clientHeight; }
-				if(isIE7) { totalVisArea = window.document.body.clientHeight; }
-				if(isMoz) { totalVisArea = window.innerHeight; }
+				// calculate height of the visible area
+				heightVisArea = 0;
+				if(isIE5()) { heightVisArea = top.document.body.clientHeight; }
+				if(isIE6()) { heightVisArea = top.document.body.clientHeight; }
+				if(isIE7()) { heightVisArea = top.document.documentElement.clientHeight }
+				if(isMoz()) { heightVisArea = top.innerHeight; }
+				// calculate the total area of the window
+				heightWinArea = 0;
+				if(isIE5()) { heightWinArea = document.body.scrollHeight; }
+				if(isIE6()) { heightWinArea = document.body.scrollHeight; }
+				if(isIE7()) { heightWinArea = document.body.offsetHeight; }
+				if(isMoz()) { heightWinArea = document.body.offsetHeight; }
+				// check if the page has scrollbar
+				hasScroll = false;
+				heightScroll = heightWinArea - heightVisArea;
+				if(heightScroll>0) {
+					hasScroll = true;
+				}
+				// get the frame div object
+				diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
+				// find the frame div position
+				pos<%=requestIdentity%> = findPos(diviframeobj);	
+				// calculate space below position frame div
+				spaceBelowPos = heightVisArea - pos<%=requestIdentity%>[1];
+				// set height to the frame
 				iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-				//iframeEl.scrollbars="no";
-				iframeEl.style.height = totalVisArea + 'px';
-				//iframeEl.style.height = 2000 + 'px';
-				return;
-			  }
+				if(hasScroll) {
+					iframeEl.style.height = spaceBelowPos + heightScroll + 'px';
+		  		} else {
+		  			iframeEl.style.height = spaceBelowPos + 'px';
+		    		// to give time to the browser to update the dom (dimension of the iframe)
+		  			setTimeout("adaptSize<%=requestIdentity%>_2Part()", 250);
+		  		}
+			}
 	
-	          // calculate height of the visible area
-	          heightVisArea = 0;
-	          //if(isIE5) { heightVisArea = window.document.body.clientHeight; }
-	          //if(isIE6) { heightVisArea = window.document.body.clientHeight; }
-	          //if(isIE7) { heightVisArea = window.document.documentElement.clientHeight }
-	          //if(isMoz) { heightVisArea = window.innerHeight; }
-	          if(isIE5) { heightVisArea = top.document.body.clientHeight; }
-	          if(isIE6) { heightVisArea = top.document.body.clientHeight; }
-	          if(isIE7) { heightVisArea = top.document.documentElement.clientHeight }
-	          if(isMoz) { heightVisArea = top.innerHeight; }
-	
-	          // get the frame div object
-	          diviframeobj = document.getElementById('divIframe<%=requestIdentity%>');
-	          // find the frame div position
-	          pos = findPos(diviframeobj);
-						
-	          // calculate space below position frame div
-	          spaceBelowPos = heightVisArea - pos[1];
-	          // set height to the frame
-				    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-				    iframeEl.style.height = spaceBelowPos + 'px';
-	
-	          // calculate height of the win area and height footer
-	          heightWinArea = 0;
-	          heightFooter = 0;
-	          if(isIE5) {
-	             //heightWinArea = window.document.body.scrollHeight;
-							 heightWinArea = document.body.scrollHeight;
-					     heightFooter = heightWinArea - heightVisArea;
-	          }
-	          if(isIE6) {
-	             //heightWinArea = window.document.body.scrollHeight;
-							 heightWinArea = document.body.scrollHeight;
-					     heightFooter = heightWinArea - heightVisArea;
-	          }
-	          if(isIE7) {
-					     //heightWinArea = window.document.body.offsetHeight;
-							 heightWinArea = document.body.offsetHeight;
-	             heightFooter = heightWinArea - heightVisArea;
-	          }
-	          if(isMoz) {
-				   	   //heightWinArea = window.document.body.offsetHeight;
-							 heightWinArea = document.body.offsetHeight;
-				   	   heightFooter = (heightWinArea - heightVisArea) + 15;
-				    }
-	
-				    // calculate height of the frame
-				    heightFrame = heightVisArea - pos[1] - heightFooter;
-				    // set height to the frame
-				    iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-				    iframeEl.style.height = heightFrame + 'px';
-				    //alert('iframe esterno: ' + iframeEl.style.height);
-			  }
-	
+		  	function adaptSize<%=requestIdentity%>_2Part() {
+               	// calculate height of the win area and height footer
+				heightWinArea = 0;
+  				heightFooter = 0;
+  				heightScroll = 0;
+  				if(isIE5()) {
+  					heightWinArea = document.body.scrollHeight;
+  					heightFooter = heightWinArea - heightVisArea;
+  				}
+  				if(isIE6()) {
+  					heightWinArea = document.body.scrollHeight;
+  					heightFooter = heightWinArea - heightVisArea;
+  				}
+  				if(isIE7()) {
+  					heightWinArea = document.body.offsetHeight;
+  					heightFooter = heightWinArea - heightVisArea;
+  				}
+  				if(isMoz()) {
+  					heightWinArea = document.body.offsetHeight;
+  					heightFooter = (heightWinArea - heightVisArea);
+  				}	 
+  	  			// calculate height of the frame
+  				heightFrame = heightVisArea - pos<%=requestIdentity%>[1] - heightFooter;
+  				iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
+  				iframeEl.style.height = heightFrame + 'px';
+    		}
+				
 	
 			try{
 	         	SbiJsInitializer.adaptSize<%=requestIdentity%> = adaptSize<%=requestIdentity%>Funct;
@@ -211,9 +145,125 @@
 			}
 			
 			%>
-			<div id="navigationBar<%=requestIdentity%>" class='documentName'>
-				<%-- this div we be filled by js code --%>
+
+			
+			<div class='navBarContainerEW'>
+				<div id='navigationBarContainer<%=requestIdentity%>' class='navBarTextContainerEW'>
+					<div id="navigationBar<%=requestIdentity%>" class='documentNameNavBarEW'>
+						&nbsp;
+						<%-- this div we be filled by js code --%>
+					</div>
+				</div>
+			<!-- ***************************************************************** -->
+			<!-- ***************************************************************** -->
+			<!-- **************** START MAXIMIZE ********************************* -->
+			<!-- ***************************************************************** -->
+			<!-- ***************************************************************** -->
+				<div class='navBarBottonContainerEW'>	
+					<div class='documentMaximizeNavBarEW'>
+						<div id='maximizeDiv<%=requestIdentity%>' style='visibility:visible;'>
+							<a class='documentMaximizeLinkNavBarEW' href='javascript:maximize<%=requestIdentity%>();'>
+								<img class='documentMaximizeIconNavBarEW'
+									src='<%= urlBuilder.getResourceLink(request, "/img/maximize32.jpg")%>'
+									name='maximize'
+									alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>'
+									title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>' />
+							</a>
+						</div>
+					</div>
+				</div>
 			</div>
+			<script>
+				if(!isIE7() && !isMoz()) {
+	        		$('maximizeDiv<%=requestIdentity%>').style.visibility	= 'hidden';
+	        	}   
+			</script>
+			<div id='maximizebackground<%=requestIdentity%>' class='maximizeContainer'>
+				<table class='maximizeTitleTable'>
+					<tr>
+						<td>
+					        <div id='maximizeNavigationBarContainer<%=requestIdentity%>'>
+							</div>
+						</td>
+						<td align='center'>
+							<a class='documentMaximizeLinkNavBarEW' href='javascript:minimize<%=requestIdentity%>()' >
+								<img class='closeMaximizeIcon'
+									src='<%= urlBuilder.getResourceLink(request, "/img/erase32.png")%>'
+									name='close'
+									alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.close", "messages")%>'
+									title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.close", "messages")%>' />
+							</a>
+						</td>
+					</tr>
+				</table>
+			</div> 
+			<script>
+			      dimensionHolder<%=requestIdentity%> = new functDimensionHolder<%=requestIdentity%>();
+			    
+			      function functDimensionHolder<%=requestIdentity%>() {
+			        this.width = 0;
+			        this.height = 0;
+			      }
+				
+			      function maximize<%=requestIdentity%>() {      
+			        if(!isIE7() && !isMoz()) {
+			        	alert('Works only with Explorer 7 or Firefox ...');
+			        	return;
+			        }   
+			        divbg = document.getElementById('maximizebackground<%=requestIdentity%>');
+			        divbg.style.display='inline';
+			        ifram = document.getElementById('iframeexec<%=requestIdentity%>');
+			        clientHeight = ifram.clientHeight;
+					clientWidth = ifram.clientWidth;						
+			        dimensionHolder<%=requestIdentity%>.width = clientWidth;
+			        dimensionHolder<%=requestIdentity%>.height = clientHeight;
+			        ifram.style.position='absolute';
+			        ifram.style.left='2%';
+			        ifram.style.top='7%';
+			        ifram.style.width='96%';
+			        ifram.style.height='91%';
+			        // get the nav bar container element
+			        navbarContEl = $('navigationBarContainer<%=requestIdentity%>');
+			        // get the html contained
+			        navbarContElinnHTML = navbarContEl.innerHTML;
+			        // get the navigation bar 
+			        navbarEl = $('navigationBar<%=requestIdentity%>');
+			        // remove navigation bar
+			        navbarEl.remove();
+			        // insert html into maximize navigation bar cotainer
+			        new Insertion.Top('maximizeNavigationBarContainer<%=requestIdentity%>', navbarContElinnHTML);
+				  }
+			      
+			      
+			      function minimize<%=requestIdentity%>() {
+			          divbg = document.getElementById('maximizebackground<%=requestIdentity%>');
+			          divbg.style.display='none';
+			          ifram = document.getElementById('iframeexec<%=requestIdentity%>');
+			          ifram.style.top='0px';
+			          ifram.style.left='0px';
+			          ifram.style.paddingLeft='0px';
+			          ifram.style.marginLeft='0px';
+			          ifram.style.width='100%';
+			          ifram.style.position='relative';
+			          ifram.style.height=dimensionHolder<%=requestIdentity%>.height + 'px';
+			          // get the nav bar container element
+			          navbarContEl = $('maximizeNavigationBarContainer<%=requestIdentity%>');
+			          // get the html contained
+			          navbarContElinnHTML = navbarContEl.innerHTML;
+			          // get the navigation bar 
+			          navbarEl = $('navigationBar<%=requestIdentity%>');
+			          // remove navigation bar
+			          navbarEl.remove();
+			          // insert html into navigation bar container
+			          new Insertion.Top('navigationBarContainer<%=requestIdentity%>', navbarContElinnHTML);		          
+			      }
+			      
+			</script>
+			<!-- ***************************************************************** -->
+			<!-- ***************************************************************** -->
+			<!-- **************** END MAXIMIZE *********************************** -->
+			<!-- ***************************************************************** -->
+			<!-- ***************************************************************** -->
 			
 			
 			<center>
@@ -221,7 +271,7 @@
 					<iframe id="iframeexec<%=requestIdentity%>"
 							name="iframeexec<%=requestIdentity%>"
 				            src=""
-				            style="width:100%"
+				            style="width:100%;"
 				            frameborder="0"></iframe>
 	
 					<form 	name="formexecution<%=requestIdentity%>"

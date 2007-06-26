@@ -118,11 +118,8 @@ public class BirtReportDriver implements IEngineDriver {
 		byte[] template = uploadedFile.getFileContent();
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
 		pars.put("template", bASE64Encoder.encode(template));
-   		ConfigSingleton config = ConfigSingleton.getInstance();
-   		String path = biobj.getPath() + "/template";
-   		pars.put("templatePath", path);
-        pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
 		// retrieving the date format
+   		ConfigSingleton config = ConfigSingleton.getInstance();
 	    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
 	    String format = (String) formatSB.getAttribute("format");
 	    pars.put("dateformat", format);

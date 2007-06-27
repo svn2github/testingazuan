@@ -83,8 +83,7 @@ public class AuditAccessUtils {
 	 */
 	public void updateAudit(String auditId, Long startTime, Long endTime, String executionState, 
 			String errorMessage, String errorCode) {
-		//if (!_isNewExecution) return;
-		if (auditId != null && !_auditIds.contains(auditId)) return;
+		if (auditId == null || !_auditIds.contains(auditId)) return;
 		HttpClient client = new HttpClient();
 	    PostMethod httppost = new PostMethod(_auditServlet);
 	    NameValuePair[] parameters = {

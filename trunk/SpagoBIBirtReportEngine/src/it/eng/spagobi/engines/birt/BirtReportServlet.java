@@ -8,6 +8,7 @@ package it.eng.spagobi.engines.birt;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionDefinitionException;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionParameterNotValidException;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionsDefinitionFileNotValidException;
+import it.eng.spagobi.engines.birt.utilities.ParameterConverter;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -25,7 +26,6 @@ import java.security.SignatureException;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -366,44 +366,9 @@ public class BirtReportServlet extends HttpServlet {
 				logger.debug(this.getClass().getName()+ "findReportParams() The report parameter " + paramName + " has no values set.");
 				continue;
 			}
-			int paramType = param.getDataType();
-			Object paramValue = null;
-			if (IScalarParameterDefn.TYPE_DATE_TIME == paramType) {
-				try {
-					SimpleDateFormat dateFormat = new SimpleDateFormat(dateformat);
-					paramValue = dateFormat.parse(paramValueString);
-				} catch (Exception e) {
-					logger.error(this.getClass().getName()+ "findReportParams() " +
-							"Error parsing the string [" + paramValueString + "] " +
-									"as a date using the format [" + dateformat + "].", e);
-				}
-			} else if (IScalarParameterDefn.TYPE_BOOLEAN == paramType) {
-				try {
-					paramValue = new Boolean (paramValueString);
-				} catch (Exception e) {
-					logger.error(this.getClass().getName()+ "findReportParams() " +
-							"Error parsing the string [" + paramValueString + "] as a Boolean.", e);
-				}
-			} else if (IScalarParameterDefn.TYPE_DECIMAL == paramType) {
-				try {
-					// Spago uses Double (and Float) number format
-					paramValue = new Double (paramValueString);
-				} catch (Exception e) {
-					logger.error(this.getClass().getName()+ "findReportParams() " +
-							"Error parsing the string [" + paramValueString + "] as a number.", e);
-				}
-			} else if (IScalarParameterDefn.TYPE_FLOAT == paramType) {
-				try {
-					// Spago uses Double (and Float) number format
-					paramValue = new Float (paramValueString);
-				} catch (Exception e) {
-					logger.debug(this.getClass().getName()+ "findReportParams() " +
-							"Error parsing the string [" + paramValueString + "] as a float.", e);
-				}
-			} else if (IScalarParameterDefn.TYPE_STRING == paramType) {
-				paramValue = paramValueString;
-			}
 			
+			int paramType = param.getDataType();
+			Object paramValue = ParameterConverter.convertParameter(paramType, paramValueString, dateformat);
 			if (paramValue == null) paramValue = paramValueString;
 			
 			toReturn.put(paramName, paramValue);

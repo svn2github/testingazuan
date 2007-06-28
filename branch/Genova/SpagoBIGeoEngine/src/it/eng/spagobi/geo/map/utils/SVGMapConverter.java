@@ -34,7 +34,7 @@ import org.apache.batik.transcoder.image.JPEGTranscoder;
  * @author Andrea Gioia
  *
  */
-public class MapConverter {
+public class SVGMapConverter {
 	/**
 	 * Transform the svg file into a jpeg image
 	 * @param inputStream the strema of the svg map

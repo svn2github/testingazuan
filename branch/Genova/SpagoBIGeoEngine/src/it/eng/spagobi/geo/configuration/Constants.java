@@ -10,6 +10,39 @@ package it.eng.spagobi.geo.configuration;
  * Contains constant definitions
  */
 public class Constants {
+	
+	// TAGS
+	public static final String HIERARCHY_TAG = "HIERARCHY";
+	
+	public static final String LEVEL_TAG = "LEVEL";
+	
+	
+	// ATTRIBUTES
+	public static final String CLASS_NAME_ATTR = "CLASS_NAME";
+	
+	public static final String CONNECTION_NAME_ATTR = "CONNECTION_NAME";
+	
+	public static final String QUERY_ATTR = "QUERY";
+	
+	public static final String COLUMN_ID_ATRR = "COLUMN_ID";
+	
+	public static final String TARGET_FEATURE_NAME_ATRR = "TARGET_FEATURE_NAME";
+	
+	public static final String KPI_COLUMN_NAMES_ATRR = "COLUMN_VALUE";
+	
+	public static final String HIERARCHY_TYPE_ATRR = "TYPE";
+	
+	public static final String HIERARCHY_AGG_LEVEL_ATRR = "TARGET_LEVEL";
+	
+	public static final String LEVEL_NAME_ATTR = "NAME";
+	
+	public static final String LEVEL_COLUMN_ATTR = "COLUMN";
+
+	
+	
+	
+	
+	
 
 	public static final String LOG_NAME = "SPAGOBI_GEO_ENGINE";
 	
@@ -115,6 +148,7 @@ public class Constants {
 	public static final String DATE_TYPE_FILTER= "DATE";
 	public static final String DETAIL_SELECT = "DETAIL_SELECT";
 	public static final String ACTION = "ACTION";
+	
 	//gestione anagrafica
 	public static final String DETAIL_NEW = "DETAIL_NEW";
 	public static final String DETAIL_MOD = "DETAIL_MOD";

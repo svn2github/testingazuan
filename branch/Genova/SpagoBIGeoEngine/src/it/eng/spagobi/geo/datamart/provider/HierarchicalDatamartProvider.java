@@ -14,6 +14,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
+import it.eng.spagobi.geo.configuration.DatamartProviderConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
 
 import java.sql.ResultSet;
@@ -26,21 +27,7 @@ import java.util.Properties;
 /**
  * Executes the query and obtains the data associated to the svg map
  */
-public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
-
-    private static final String REGISTERED_POOL_NAME = "connection_name";
-
-    private static final String QUERY = "QUERY";
-
-    private static final String COLUMN_ID = "column_id";
-
-    private static final String COLUMN_VALUE = "column_value";
-    
-    private static final String DRILL = "DRILL";
-    
-    private static final String PARAMETER = "PARAM";
-    
-    private static final String TARGET_FEATURE_NAME = "target_feature_name";
+public class HierarchicalDatamartProvider extends AbstractDatamartProvider { 
 
     /**
      * Constructor
@@ -49,8 +36,27 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         super();
     }
     
-    public HierarchicalDatamartProvider(SourceBean datamartProviderConfiguration) {
+    public HierarchicalDatamartProvider(DatamartProviderConfiguration datamartProviderConfiguration) {
         super(datamartProviderConfiguration);
+    }
+    
+    private String getAggreagteQuery() {
+    	String aggragateQuery;
+    	String query = datamartProviderConfiguration.getExecutableQuery();
+    	
+    	String subQueryName = "t" + System.currentTimeMillis();
+    	
+    	String aggregationColumnName = datamartProviderConfiguration.getAggregationColumnName(); 
+    	aggragateQuery = "SELECT " + subQueryName + "." + aggregationColumnName + " AS " + aggregationColumnName;
+    	String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
+    	for(int i = 0; i < kpiColumnNames.length; i++) {
+    		aggragateQuery +=  ", SUM(" + subQueryName + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+    	}
+    	aggragateQuery += " FROM ( " + query + ") " + subQueryName;
+    	aggragateQuery += " GROUP BY " + subQueryName + "." + aggregationColumnName;
+    	
+    	
+    	return aggragateQuery;
     }
 
     /**
@@ -65,13 +71,14 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         DataResult dr = null;
         ScrollableDataResult sdr = null;
         DataConnection dataConnection = null;
-        String connectionName = (String) datamartProviderConfiguration.getAttribute(REGISTERED_POOL_NAME);
-        String query = (String) datamartProviderConfiguration.getAttribute(QUERY);
-        String columnid = (String) datamartProviderConfiguration.getAttribute(COLUMN_ID);
-        String targetFeatureName = (String) datamartProviderConfiguration.getAttribute(TARGET_FEATURE_NAME);
-        String columnvalueStr = (String) datamartProviderConfiguration.getAttribute(COLUMN_VALUE);
-        String[] columnvalue = columnvalueStr.split(",");
-        SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
+        String connectionName = datamartProviderConfiguration.getConnectionName();
+        String query = getAggreagteQuery();
+        
+        String columnid = datamartProviderConfiguration.getAggregationColumnName();
+        String targetFeatureName = datamartProviderConfiguration.getAggregationLevelName();
+        String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
+        //SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
+        
         try{
             dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
             cmdSelect = dataConnection.createSelectCommand(query);
@@ -87,15 +94,13 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             		continue;
             	}
             	
-            	System.out.println("\n-> " + id);
             	attributes = new HashMap();
-            	for(int i = 0; i < columnvalue.length; i++) {
-	            	String value = resultSet.getString(resultSet.findColumn(columnvalue[i]));
+            	for(int i = 0; i < kpiColumnNames.length; i++) {
+	            	String value = resultSet.getString(resultSet.findColumn(kpiColumnNames[i]));
 	            	if((value==null) || (value.trim().equals(""))) {
 	            		continue;
 	            	}
-	            	System.out.println(columnvalue[i] + ": " + value);
-	            	attributes.put(columnvalue[i], value);
+	            	attributes.put(kpiColumnNames[i], value);
             	}
             	
             	values.put(id, attributes);
@@ -105,10 +110,8 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             datamart.setValues(values);
             datamart.setLinks(links);
             datamart.setTargetFeatureName(targetFeatureName);
-            datamart.setKpiNames(columnvalue);
+            datamart.setKpiNames(kpiColumnNames);
             datamart.setSelectedKpi(0);
-            
-            System.out.println("-----------------------------------------------------------------");
             
         } catch (Exception ex) {
         	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
@@ -129,6 +132,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
      * @param resultSet the resultset 
      * @return The url link associated to the resultset row
      */
+    /*
     private String createLink(SourceBean drillSB, ResultSet resultSet) {
     	String link = "../SpagoBIDrillServlet?";
     	try{
@@ -157,6 +161,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	}
     	return link;
     }
+    */
     
     
 }

@@ -12,10 +12,14 @@ import it.eng.spagobi.geo.datamart.provider.DatamartProviderFactory;
 import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
 import it.eng.spagobi.geo.map.provider.MapProviderFactory;
 import it.eng.spagobi.geo.map.provider.IMapProvider;
+import it.eng.spagobi.geo.map.utils.SVGMapHandler;
 import it.eng.spagobi.geo.map.utils.SVGMapLoader;
+import it.eng.spagobi.geo.map.utils.SVGMapMerger;
+import it.eng.spagobi.geo.map.utils.SVGMapSaver;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -52,19 +56,6 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		super();
 	}
 	
-	public void importScipt(SVGDocument map, String scriptName) {
-		Element script = map.createElement("script");
-	    script.setAttribute("type", "text/ecmascript");
-	    //script.setAttribute("xlink:href", ConfigSingleton.getRootPath() + "/js/" + scriptName);
-	    //script.setAttribute("xlink:href", "http://172.21.5.69:8080/SpagoBIGeoEngine/js/" + scriptName);
-	    //System.out.println("-->" + (ConfigSingleton.getRootPath() + "/js/" + scriptName) );
-	    script.setAttribute("xlink:href", mapRendererConfiguration.getContextPath() + "/js/" + scriptName);
-	    Element importsBlock = map.getElementById("imports");
-	    importsBlock.appendChild(script);
-	    Node lf = map.createTextNode("\n");
-	    importsBlock.appendChild(lf);
-	}
-	
 	/**
 	 * @see it.eng.spagobi.geo.map.renderer.IMapRenderer#renderMap(MapConfiguration)
 	 */
@@ -74,50 +65,100 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		SVGDocument masterMap;
 		Datamart datamart;
 		
-		masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile());
-		
-		targetMap = mapProvider.getSVGMapDOMDocument();
-				
 		datamart = (Datamart)datamartProvider.getDatamartObject();
 		
+		masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile());		
+		targetMap = mapProvider.getSVGMapDOMDocument(datamart);				
+				
 		addData(targetMap, datamart);
-		margeSVG(targetMap, masterMap, null, "targetMap");
 		
-		String viewBox = targetMap.getRootElement().getAttribute("viewBox");
-	    String[] chunks = viewBox.split(" ");
-	    String x = chunks[0];
-	    String y = chunks[1];
-	    String width = chunks[2];
-	    String height = chunks[2];
-	    Element mapBackgroundRect = masterMap.getElementById("mapBackgroundRect");
-	    mapBackgroundRect.setAttribute("x", x);
-	    mapBackgroundRect.setAttribute("y", y);
-	    mapBackgroundRect.setAttribute("width", width);
-	    mapBackgroundRect.setAttribute("height", height);
-	    	    	   
-	    Element mainMapBlock = masterMap.getElementById("mainMap");
-	    mainMapBlock.setAttribute("viewBox", viewBox);
+		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
+		
+		importScripts(masterMap);
+		setMainMapDimension(masterMap, targetMap);
+		setMainMapBkgRectDimension(masterMap, targetMap);	   	   
 	    
-	    
-	    importScipt(masterMap, "helper_functions.js");
-	    importScipt(masterMap, "timer.js");
-	    importScipt(masterMap, "mapApp.js");
-	    importScipt(masterMap, "timer.js");
-	    importScipt(masterMap, "slider.js");
-	    importScipt(masterMap, "button.js");
-	    importScipt(masterMap, "Window.js");
-	    importScipt(masterMap, "checkbox_and_radiobutton.js");
-	    importScipt(masterMap, "navigation.js");
-	    importScipt(masterMap, "tabgroup.js");
-	    importScipt(masterMap, "barchart.js");
-	    
-	   
-	    
-	    Element scriptInit = masterMap.getElementById("init");
-	    
+	    Element scriptInit = masterMap.getElementById("init");	    
 	    Node scriptText = scriptInit.getFirstChild();
 	    StringBuffer buffer = new StringBuffer();
-	    buffer.append("// MEASURES\n");
+	    buffer.append(getMeasuresConfigurationScript(datamart));
+	    buffer.append(getLayersConfigurationScript(targetMap));    
+	    scriptText.setNodeValue(buffer.toString());
+		
+		File tmpMap = getTempFile();				
+		SVGMapSaver.saveMap(masterMap, tmpMap);
+
+		return tmpMap;
+	}
+	
+	
+	private void addData(SVGDocument map, Datamart datamart) {
+		
+		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());
+		
+		NodeList nodeList = targetLayer.getChildNodes();
+	    for(int i = 0; i < nodeList.getLength(); i++){
+	    	Node childNode = (Node)nodeList.item(i);
+	    	if(childNode instanceof Element) {
+	    		SVGElement child = (SVGElement)childNode;
+	    		String childId = child.getId();
+	    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
+	    		Map attributes = (Map)datamart.getAttributeseById(column_id);
+	    		if(attributes != null) {
+	    			SVGMapHandler.addAttributes(child, attributes);
+	    			child.setAttribute("attrib:nome", child.getAttribute("id"));
+	    		}
+	    	} 
+	    }
+	}
+	
+	private void importScripts(SVGDocument doc) {
+		importScipt(doc, "helper_functions.js");
+	    importScipt(doc, "timer.js");
+	    importScipt(doc, "mapApp.js");
+	    importScipt(doc, "timer.js");
+	    importScipt(doc, "slider.js");
+	    importScipt(doc, "button.js");
+	    importScipt(doc, "Window.js");
+	    importScipt(doc, "checkbox_and_radiobutton.js");
+	    importScipt(doc, "navigation.js");
+	    importScipt(doc, "tabgroup.js");
+	    importScipt(doc, "barchart.js");
+	}
+	
+	private void importScipt(SVGDocument map, String scriptName) {
+		Element script = map.createElement("script");
+	    script.setAttribute("type", "text/ecmascript");
+	    script.setAttribute("xlink:href", mapRendererConfiguration.getContextPath() + "/js/" + scriptName);
+	    Element importsBlock = map.getElementById("imports");
+	    importsBlock.appendChild(script);
+	    Node lf = map.createTextNode("\n");
+	    importsBlock.appendChild(lf);
+	}
+	
+	public void setMainMapDimension(SVGDocument masterMap, SVGDocument targetMap) {
+		String viewBox = targetMap.getRootElement().getAttribute("viewBox");
+		Element mainMapBlock = masterMap.getElementById("mainMap");
+		mainMapBlock.setAttribute("viewBox", viewBox);
+	}
+	
+	public void setMainMapBkgRectDimension(SVGDocument masterMap, SVGDocument targetMap) {
+		String viewBox = targetMap.getRootElement().getAttribute("viewBox");
+		String[] chunks = viewBox.split(" ");
+		String x = chunks[0];
+		String y = chunks[1];
+		String width = chunks[2];
+		String height = chunks[2];
+		Element mapBackgroundRect = masterMap.getElementById("mapBackgroundRect");
+		mapBackgroundRect.setAttribute("x", x);
+		mapBackgroundRect.setAttribute("y", y);
+		mapBackgroundRect.setAttribute("width", width);
+		mapBackgroundRect.setAttribute("height", height);
+	}
+	
+	public String getMeasuresConfigurationScript(Datamart datamart) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("// MEASURES\n");
 	    String[] kpiNames = datamart.getKpiNames();
 	    buffer.append("var kpi_names = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
@@ -133,7 +174,6 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    }
 	    buffer.append("];\n");
 	    
-	    Random rand = new Random();
 	    buffer.append("kpi_colours = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	String separtor = i>0? ",": "";
@@ -164,107 +204,49 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		    }
 	    	 buffer.append(");\n");
 	    }
-	   
 	    
-	    buffer.append("// LAYERS\n");
+	    return buffer.toString();
+	}
+	
+	public String getLayersConfigurationScript(SVGDocument doc) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("// LAYERS\n");
 	    String[] layerNames = mapRendererConfiguration.getLayerNames();
-	    buffer.append("var layer_names = [");	    
-	    for(int i = 0; i < layerNames.length; i++) {
-	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + "\"" + layerNames[i] + "\"");
+	    buffer.append("var layer_names = [");	
+	    String separtor = "";
+	    for(int i = 0; i < layerNames.length; i++) {	    	
+	    	if(doc.getElementById(layerNames[i]) != null) { 
+	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
+	    		separtor = ",";
+	    	}
 	    }
 	    buffer.append(", \"grafici\"];\n");
 	    
-	    buffer.append("var layer_descriptions = [");	    
+	    buffer.append("var layer_descriptions = [");
+	    separtor = "";
 	    for(int i = 0; i < layerNames.length; i++) {
-	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + "\"" + mapRendererConfiguration.getLayerDescription(layerNames[i]) + "\"");
+	    	if(doc.getElementById(layerNames[i]) != null) { 
+	    		buffer.append(separtor + "\"" + mapRendererConfiguration.getLayerDescription(layerNames[i]) + "\"");
+	    		separtor = ",";
+	    	}
 	    }	    
 	    buffer.append(", \"Grafici\"];\n");
 	    
 	    buffer.append("var target_layer_index = 0;\n");
 	    
-	    
-	   
-	    
-	    scriptText.setNodeValue(buffer.toString());
-		
-		
-		String tmpDirPath = System.getProperty("java.io.tmpdir");
-		File tmpDir = new File(tmpDirPath);
-		File tmpMap = File.createTempFile("SpagoBIGeoEngine_", "_tmpMap", tmpDir);
-				
-		try{
-			saveMap(masterMap, tmpMap);
-		} catch(Exception e) {
-			System.err.println("Errore");
-		} finally {
-		
-		}
-		
-		//System.out.println(tmpMap);
-		
-		return tmpMap;
+	    return buffer.toString();
 	}
 	
-	public void saveMap(SVGDocument doc, File ouputFile) throws Exception {
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-	    Transformer transformer = tFactory.newTransformer();
-	    DOMSource source = new DOMSource(doc);
-	    
-	    StreamResult result = new StreamResult(new FileOutputStream(ouputFile));
-	    transformer.transform(source, result); 
-	}
-	
-	private void margeSVG(SVGDocument srcMap, SVGDocument dstMap, String srcId, String dstId) {
-		SVGElement destMapRoot = dstMap.getRootElement();
-		Element dstElement = dstMap.getElementById(dstId);
-		
-		SVGElement srcMapRoot = srcMap.getRootElement();
-		Element srcElement = ( srcId == null? srcMapRoot: srcMap.getElementById(srcId) );
-	    
-		NodeList nodeList = srcElement.getChildNodes();	    
-	    for(int i = 0; i < nodeList.getLength(); i++){
-	    	Node node = (Node)nodeList.item(i);
-	    	Node importedNode = dstMap.importNode(node, true);
-	    	dstElement.appendChild(importedNode);
-	    }
-	}
-	
-	private void addData(SVGDocument map, Datamart datamart) {
-		
-		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());
-		
-		NodeList nodeList = targetLayer.getChildNodes();
-	    for(int i = 0; i < nodeList.getLength(); i++){
-	    	Node childNode = (Node)nodeList.item(i);
-	    	if(childNode instanceof Element) {
-	    		SVGElement child = (SVGElement)childNode;
-	    		String childId = child.getId();
-	    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
-	    		System.out.println("\n" + column_id);
-	    		Map attributes = (Map)datamart.getAttributeseById(column_id);
-	    		if(attributes != null) {
-	    			addAttributes(child, attributes);
-	    		}
-	    	} 
-	    }
-	}
-	
-	public void addAttributes(Element e, Map attributes) {
-		Iterator it = attributes.keySet().iterator();
-		while(it.hasNext()) {
-			String attributeName = (String)it.next();
-			String attributeValue = (String)attributes.get(attributeName);
-			e.setAttribute("attrib:" + attributeName, attributeValue);
-			System.out.println(attributeName + ": " + attributeValue);
-		}
-		//e.setAttribute("fill", "gray");
-		e.setAttribute("attrib:nome", e.getAttribute("id"));
-	}
 	
 	private File getMasterMapFile() {
 		return new File(ConfigSingleton.getRootPath() + "/maps/spagobigeo.svg");
+	}
+	
+	public File getTempFile() throws IOException{
+		String tmpDirPath = System.getProperty("java.io.tmpdir");
+		File tmpDir = new File(tmpDirPath);
+		return File.createTempFile("SpagoBIGeoEngine_", "_tmpMap.svg", tmpDir);
 	}
 	
 

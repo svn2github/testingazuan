@@ -15,6 +15,7 @@ import it.eng.spagobi.geo.bo.dao.DAOFactory;
 import it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.datamart.Datamart;
 import it.eng.spagobi.geo.map.utils.SVGMapLoader;
 
 import java.io.File;
@@ -49,8 +50,7 @@ public class DBMapProvider extends AbstractMapProvider {
 		List maps;
 		SbiGeoMaps map;
 		
-		//anto maps = DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapName);
-		maps =null;
+		maps = DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapName);
 
 		if(maps.size() == 0 || maps.get(0) == null) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
@@ -69,14 +69,15 @@ public class DBMapProvider extends AbstractMapProvider {
      * @param mapProviderConfiguration SourceBean object which contains the configuration for the 
      * map recovering
      */
-	public SVGDocument getSVGMapDOMDocument() throws EMFUserError {
+	public SVGDocument getSVGMapDOMDocument(Datamart datamart) throws EMFUserError {
 		SVGDocument svgDocument;
 		String mapName; 
 		String mapUrl;		
 		
 		svgDocument = null;
 		
-		mapName = (String)mapProviderConfiguration.getAttribute(Constants.MAP_NAME);		
+		//mapName = (String)mapProviderConfiguration.getAttribute(Constants.MAP_NAME);		
+		mapName = datamart.getTargetFeatureName();
 		mapUrl = getMapUrl(mapName);
 		
 		try {

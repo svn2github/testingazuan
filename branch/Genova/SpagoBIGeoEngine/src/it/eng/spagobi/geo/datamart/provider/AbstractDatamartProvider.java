@@ -7,6 +7,7 @@ package it.eng.spagobi.geo.datamart.provider;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.geo.configuration.DatamartProviderConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
 
 /**
@@ -14,12 +15,12 @@ import it.eng.spagobi.geo.datamart.Datamart;
  */
 public abstract class AbstractDatamartProvider implements IDatamartProvider {
 
-	protected SourceBean datamartProviderConfiguration;
+	protected DatamartProviderConfiguration datamartProviderConfiguration;
 	
 	/**
 	 * Builds the class
 	 */
-    public AbstractDatamartProvider(SourceBean datamartProviderConfiguration) {
+    public AbstractDatamartProvider(DatamartProviderConfiguration datamartProviderConfiguration) {
         super();
         setDatamartProviderConfiguration(datamartProviderConfiguration);
     }
@@ -37,12 +38,11 @@ public abstract class AbstractDatamartProvider implements IDatamartProvider {
         return null;
     }
 
-	public SourceBean getDatamartProviderConfiguration() {
+	public DatamartProviderConfiguration getDatamartProviderConfiguration() {
 		return datamartProviderConfiguration;
 	}
 
-	public void setDatamartProviderConfiguration(
-			SourceBean datamartProviderConfiguration) {
+	public void setDatamartProviderConfiguration(DatamartProviderConfiguration datamartProviderConfiguration) {
 		this.datamartProviderConfiguration = datamartProviderConfiguration;
 	}
 

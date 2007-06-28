@@ -8,6 +8,7 @@ package it.eng.spagobi.geo.map.provider;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.datamart.Datamart;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -46,7 +47,7 @@ public class AbstractMapProvider implements IMapProvider {
      * @param mapProviderConfiguration SourceBean object which contains the configuration for the 
      * map recovering
      */
-	public SVGDocument getSVGMapDOMDocument() throws EMFUserError {
+	public SVGDocument getSVGMapDOMDocument(Datamart datamart) throws EMFUserError {
 		return null;
 	}
 

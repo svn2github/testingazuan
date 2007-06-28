@@ -18,8 +18,10 @@ import it.eng.spagobi.geo.map.provider.IMapProvider;
 import it.eng.spagobi.geo.map.provider.MapProviderFactory;
 import it.eng.spagobi.geo.map.renderer.IMapRenderer;
 import it.eng.spagobi.geo.map.renderer.MapRendererFactory;
-import it.eng.spagobi.geo.map.utils.MapConverter;
+import it.eng.spagobi.geo.map.utils.SVGMapConverter;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
+import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -39,6 +41,8 @@ import sun.misc.BASE64Decoder;
  * Spago Action which executes the map producing request  
  */
 public class GeoAction extends AbstractHttpAction {
+	
+	public static final String MAP_CATALOGUE_MANAGER_URL = "mapCatalogueManagerUrl";
 
 	/**
 	 * Method called automatically by Spago framework when the action is invoked.
@@ -83,6 +87,10 @@ public class GeoAction extends AbstractHttpAction {
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		HttpServletRequest request = this.getHttpRequest(); 
+		
+		String map_catalogue_manager_url = (String) request.getAttribute(MAP_CATALOGUE_MANAGER_URL);
+		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
+		String result = mapCatalogueAccessUtils.getStandardHierarchy();
 		
 		
 		// AUDIT UPDATE
@@ -135,6 +143,7 @@ public class GeoAction extends AbstractHttpAction {
 			
 			
 			mapConfiguration = new MapConfiguration(baseUrl, template, serviceRequest);
+			
 		} catch (Exception e) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
 					"GeoAction :: service : " +
@@ -175,7 +184,7 @@ public class GeoAction extends AbstractHttpAction {
 			InputStream inputStream = null;
 			try {
 				inputStream = new FileInputStream(maptmpfile);
-				MapConverter.SVGToJPEGTransform(inputStream, outputStream);
+				SVGMapConverter.SVGToJPEGTransform(inputStream, outputStream);
 			} catch (Exception e) {
 				TracerSingleton.log(Constants.LOG_NAME, 
 			            			TracerSingleton.CRITICAL, 

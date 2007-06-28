@@ -14,6 +14,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
+import it.eng.spagobi.geo.configuration.DatamartProviderConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
 
 import java.sql.ResultSet;
@@ -46,7 +47,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
         super();
     }
     
-    public DefaultDatamartProvider(SourceBean datamartProviderConfiguration) {
+    public DefaultDatamartProvider(DatamartProviderConfiguration datamartProviderConfiguration) {
         super(datamartProviderConfiguration);
     }
 
@@ -61,11 +62,12 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
         DataResult dr = null;
         ScrollableDataResult sdr = null;
         DataConnection dataConnection = null;
-        String connectionName = (String) datamartProviderConfiguration.getAttribute(REGISTERED_POOL_NAME);
-        String query = (String) datamartProviderConfiguration.getAttribute(QUERY);
-        String columnid = (String) datamartProviderConfiguration.getAttribute(COLUMN_ID);
-        String columnvalue = (String) datamartProviderConfiguration.getAttribute(COLUMN_VALUE);
-        SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
+        String connectionName = datamartProviderConfiguration.getConnectionName();
+        String query = datamartProviderConfiguration.getExecutableQuery();
+        String columnid = datamartProviderConfiguration.getColumnId();
+        String targetFeatureName = datamartProviderConfiguration.getTargetFeatureName();
+        String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
+        //SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
         try{
             dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
             cmdSelect = dataConnection.createSelectCommand(query);
@@ -79,14 +81,14 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
             	if((id==null) || (id.trim().equals(""))) {
             		continue;
             	}
-            	String valueStr = resultSet.getString(resultSet.findColumn(columnvalue));
+            	String valueStr = resultSet.getString(resultSet.findColumn(kpiColumnNames[0]));
             	if((valueStr==null) || (valueStr.trim().equals(""))) {
             		continue;
             	}
             	Integer value = new Integer(valueStr);
             	styles.put(id, value);
-            	String link = createLink(drillSB, resultSet);
-            	links.put(id, link);
+            	//String link = createLink(drillSB, resultSet);
+            	//links.put(id, link);
             }
             datamartObject.setValues(styles);
             datamartObject.setLinks(links);

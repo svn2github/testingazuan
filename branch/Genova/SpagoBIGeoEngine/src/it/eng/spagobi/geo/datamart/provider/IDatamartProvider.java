@@ -7,6 +7,7 @@ package it.eng.spagobi.geo.datamart.provider;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.geo.configuration.DatamartProviderConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
 
 /**
@@ -20,8 +21,8 @@ public interface IDatamartProvider {
      */
     public abstract Datamart getDatamartObject() throws EMFUserError;
     
-    public SourceBean getDatamartProviderConfiguration() ;
+    public DatamartProviderConfiguration getDatamartProviderConfiguration() ;
 
-	public void setDatamartProviderConfiguration(SourceBean datamartProviderConfiguration);
+	public void setDatamartProviderConfiguration(DatamartProviderConfiguration datamartProviderConfiguration);
 
 }

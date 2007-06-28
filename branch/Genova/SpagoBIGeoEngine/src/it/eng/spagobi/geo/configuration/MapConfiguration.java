@@ -6,10 +6,12 @@
 package it.eng.spagobi.geo.configuration;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.tracing.TracerSingleton;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class MapConfiguration {
 
@@ -19,7 +21,7 @@ public class MapConfiguration {
 
 	private SourceBean mapProviderConfiguration = null;
 
-	private SourceBean datamartProviderConfiguration = null;
+	private DatamartProviderConfiguration datamartProviderConfiguration = null;
 
 	private SourceBean legenda = null;
 	
@@ -103,71 +105,40 @@ public class MapConfiguration {
 		}
 		*/
 		
-		// recover DATAMART_PROVIDER configuration
+		// recover DATAMART_PROVIDER configuration		
+		SourceBean datamartProviderConfigurationSB = null;
 		try {
-			datamartProviderConfiguration = (SourceBean) map.getAttribute(Constants.DATAMART_PROVIDER);
+			datamartProviderConfigurationSB = (SourceBean) map.getAttribute(Constants.DATAMART_PROVIDER);
+			if(datamartProviderConfigurationSB == null) throw new Exception();
 		} catch (Exception e) {
 			throw new ConfigurationException("cannot load DATAMART PROVIDER configuration: tag " + Constants.DATAMART_PROVIDER, e);
+		}		
+		DatamartProviderConfiguration datamartProviderConfiguration = new DatamartProviderConfiguration(datamartProviderConfigurationSB);
+		datamartProviderConfiguration.setParameters(getParametersFromRequest(servReq));
+		String targetLevelStr = (String)servReq.getAttribute("target_level");
+		if(targetLevelStr != null) {
+			int targetLevel = Integer.parseInt(targetLevelStr);
+			datamartProviderConfiguration.setAggregationLevel(targetLevel);
 		}
-		if (datamartProviderConfiguration == null) {
-			throw new ConfigurationException("Cannot load DATAMART PROVIDER configuration from template");
-		}
-		// set the default datamart provider class_name (if not already specified) 
-		if(datamartProviderConfiguration.getAttribute("class_name") == null) {
-			try {
-				datamartProviderConfiguration.setAttribute("class_name", "it.eng.spagobi.geo.datamart.DefaultDatamartProvider");
-			} catch (Exception e) {
-				throw new ConfigurationException("cannot set default datamart provider class name", e);
-			}
-		}
-		// get the query attribute and check parameters
-		String query = (String)datamartProviderConfiguration.getAttribute("query");
-		if(containsParameters(query)) {
-			if(query==null) { query = ""; }
-			query = substituteParameters(query, servReq);
-			try {
-				datamartProviderConfiguration.updAttribute("query", query);
-			} catch (Exception e) {
-				throw new ConfigurationException("error while updating query after parameters substitution", e);
-			}
-		}
+		setDatamartProviderConfiguration(datamartProviderConfiguration);		
 	}
 
-	/**
-	 * Checks if a query has some parameters
-	 * @param query the query to check
-	 * @return true if the query contains parameters, false otherwise
-	 */
-	private boolean containsParameters(String query) {
-		if(query.indexOf("${") != -1) {
-			return true;
-		} else {
-			return false;
+	
+	public Properties getParametersFromRequest(SourceBean servReq) {
+		Properties parameters = new Properties();
+		List list = servReq.getContainedAttributes();
+		for(int i = 0; i < list.size(); i++) {
+			SourceBeanAttribute attrSB = (SourceBeanAttribute)list.get(i);
+			if(attrSB.getKey().equals("template")) continue;
+			if(attrSB.getKey().equals("ACTION_NAME")) continue;
+			if(attrSB.getKey().equals("NEW_SESSION")) continue;
+			String className = attrSB.getClass().getName();
+			if(!attrSB.getClass().getName().endsWith(".String")) continue;
+			parameters.setProperty(attrSB.getKey(), attrSB.getValue().toString());
 		}
+		return parameters;
 	}
-	
-	/**
-	 * Substitutes the parameter names of the query 
-	 * with the value of the same-name parameter, contained into request
-	 * @param query the query containing parameters
-	 * @param servReq the Spago ServiceRequest
-	 * @return the new query (with parameter names substituted)
-	 */
-	private String substituteParameters(String query, SourceBean servReq) {
-		while(query.indexOf("${")!=-1) {
-			int startInd = query.indexOf("${") + 2;
-			int endInd = query.indexOf("}", startInd);
-			String paramName = query.substring(startInd, endInd);
-			String paramValue = (String)servReq.getAttribute(paramName);
-			if(paramValue==null) {
-				paramValue = "";
-			}
-			query = query.substring(0, startInd - 2) + paramValue + query.substring(endInd + 1);
-		}
-		return query;
-	}
-	
-	
+		
 	
 	/**
 	 * Recovers the svg style associated to the level of the legend which contains the value
@@ -278,7 +249,7 @@ public class MapConfiguration {
 	 * Gets the DatamartProvider Configuration 
 	 * @return SourceBean that contains the configuration
 	 */
-	public SourceBean getDatamartProviderConfiguration() {
+	public DatamartProviderConfiguration getDatamartProviderConfiguration() {
 		return datamartProviderConfiguration;
 	}
 
@@ -286,7 +257,7 @@ public class MapConfiguration {
 	 * Sets the DatamartProvider Configuration 
 	 * @param datamartProviderConfiguration SourceBean that contains the configuration
 	 */
-	public void setDatamartProviderConfiguration(SourceBean datamartProviderConfiguration) {
+	public void setDatamartProviderConfiguration(DatamartProviderConfiguration datamartProviderConfiguration) {
 		this.datamartProviderConfiguration = datamartProviderConfiguration;
 	}
 

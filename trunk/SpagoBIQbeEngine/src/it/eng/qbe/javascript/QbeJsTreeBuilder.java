@@ -223,24 +223,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			
 			Type aHibType = null;
 			
-			/*
-			Map foreignFields = new HashMap();
-			for(int i=0; i < metaPropertyNames.length; i++){
-			 	aHibType = (Type)aClassMetadata.getPropertyType(metaPropertyNames[i]);
-			 	org.hibernate.mapping.Property property = pc.getProperty(metaPropertyNames[i]);
-			 	
-			 	if (aHibType instanceof ManyToOneType){
-			 		
-				 	Iterator it = property.getColumnIterator();
-				 	String columnName = null;
-				 	if (it.hasNext()){
-				 		columnName = ((Column)it.next()).getName();
-				 	}
-			 		
-				 	foreignFields.put(columnName, columnName);																   
-			 	}
-			}
-			*/	
+		
 
 			Type aType = aClassMetadata.getIdentifierType();
 			
@@ -324,7 +307,19 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					completeFieldName = prefix + "." + (String)keyProperties.get(j);
 				}
 				
-				String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName);
+				  // unique name of the field for label resolving procedure
+				String cn = fieldUrlGenerator.getClassName();
+				cn = (cn.lastIndexOf('.') > 0 ?
+					  cn.substring(cn.lastIndexOf('.') + 1 , cn.length()) :
+					  cn);
+						
+				 String completeFieldRef = cn + "." + completeFieldName;
+				
+				String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldRef);
+				if(fldLabel.equalsIgnoreCase(completeFieldRef)) {
+					fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, (String)keyProperties.get(j));
+				}
+				
 				String addParameters = "";
 				if (fieldUrlGenerator instanceof SelectFieldForSelectionURLGenerator ) {
 					addParameters = "";
@@ -333,10 +328,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					addParameters += ";"+hibPrecision[j];
 					fieldAction = fieldUrlGenerator.generateURL(completeFieldName, fldLabel,  addParameters);
 					
-				}else{
-					
+				}else{					
 					fieldAction = fieldUrlGenerator.generateURL(completeFieldName, fldLabel,  keyPropertiesType[j]);
-				
 				}
 				
 				
@@ -349,9 +342,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					
 					
 					addNode("" + nodeCounter, "" + idxClassNode, 
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
+							fldLabel,
 							fieldAction,  
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName), 
+							fldLabel, 
 							"_self",
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
@@ -359,9 +352,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				}
 				else {
 					addNode("" + nodeCounter, "" + idxClassNode, 
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
+							fldLabel,
 							fieldAction,  
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName), 
+							fldLabel, 
 							"_self",
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
@@ -443,7 +436,20 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							completeFieldName = prefix +"." + metaPropertyNames[i];
 						}
 						
-						String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, metaPropertyNames[i]);
+						
+						 // unique name of the field for label resolving procedure
+						String cn = fieldUrlGenerator.getClassName();
+						cn = (cn.lastIndexOf('.') > 0 ?
+							  cn.substring(cn.lastIndexOf('.') + 1 , cn.length()) :
+							  cn);
+								
+						String completeFieldRef = cn + "." + completeFieldName;
+					
+						String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldRef);
+						if(fldLabel.equalsIgnoreCase(completeFieldRef)) {
+							fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, metaPropertyNames[i]);
+						}
+						
 						String fieldImage;
 						if(qbeProperties.getFieldType(metaPropertyNames[i]) == QbeProperties.FIELD_TYPE_DIMENSION) {
 							fieldImage = "../img/redbox.gif"; //"../img/Method.gif";
@@ -623,8 +629,21 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				if (prefix != null) {
 					completeFieldName = prefix + "." + keyProperties[j];
 				}
-				//
-				String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName);
+
+				 // unique name of the field for label resolving procedure
+				String cn = fieldUrlGenerator.getClassName();
+				cn = (cn.lastIndexOf('.') > 0 ?
+					  cn.substring(cn.lastIndexOf('.') + 1 , cn.length()) :
+					  cn);
+						
+				String completeFieldRef = cn + "." + completeFieldName;
+				
+				String fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldRef);
+				if(fldLabel.equalsIgnoreCase(completeFieldRef)) {
+					fldLabel = Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, keyProperties[j]);
+				}
+				
+				
 				fieldAction = fieldUrlGenerator.generateURL(completeFieldName, fldLabel,  keyPropertiesType[j]);
 				
 				if(checkable) {
@@ -635,9 +654,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					
 					
 					addNode("" + nodeCounter, "" + idxClassNode, 
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldRef),
 							fieldAction,  
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName), 
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldRef), 
 							"_self",
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
@@ -645,9 +664,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				}
 				else {
 					addNode("" + nodeCounter, "" + idxClassNode, 
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName),
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldRef),
 							fieldAction,  
-							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldName), 
+							Utils.getLabelForField(Utils.getRequestContainer(httpRequest),dataMartModel, completeFieldRef), 
 							"_self",
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
 							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),

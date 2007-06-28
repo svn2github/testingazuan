@@ -53,4 +53,8 @@ public class SelectClassForWizardURLGenerator implements IURLGenerator{
 	public String generateURL(Object source, Object source2, Object addtionalParameter) {
 		return generateURL(source);
 	}
+
+	public String getClassName() {
+		return null;
+	}
 }

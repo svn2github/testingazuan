@@ -20,7 +20,7 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 	/** 
 	 * @see it.eng.qbe.utility.javascript.IURLGenerator#generateURL(java.lang.Object)
 	 */
-	private String classCompleteName = null;
+	private String className = null;
 	private String aliasedClassName = null;
 	private String classPrefix = null;
 	
@@ -48,7 +48,7 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 		this.qbeUrlGenerator = qbeUrlGenerator;
 		this.httpRequest = httpRequest;
 		
-		this.classCompleteName = classCompleteName;
+		this.className = classCompleteName;
 		if (classPrefix == null){
 			classPrefix = "a";
 		}
@@ -69,7 +69,7 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 		
 		params.put("ACTION_NAME","SELECT_FIELD_FOR_WHERE_ACTION");
 		params.put("COMPLETE_FIELD_NAME", aliasedClassName + "."+source.toString());
-		params.put("CLASS_NAME", this.classCompleteName);
+		params.put("CLASS_NAME", this.className);
 		params.put("ALIAS_CLASS_NAME",this.aliasedClassName);
 	
 		return qbeUrlGenerator.getUrl(httpRequest, params);
@@ -83,7 +83,7 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 		sb.append("javascript: selectFieldForConditionCallBack(");
 		sb.append("\\'SELECT_FIELD_FOR_WHERE_ACTION\\',");
 		sb.append("\\'"+aliasedClassName + "."+source.toString()+"\\',");
-		sb.append("\\'"+this.classCompleteName+"\\',");
+		sb.append("\\'"+this.className+"\\',");
 		sb.append("\\'"+addtionalParameter.toString()+"\\'");
 		sb.append(");");
 		
@@ -103,6 +103,10 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 
 	public void setClassPrefix(String classPrefix) {
 		this.classPrefix = classPrefix;
+	}
+
+	public String getClassName() {
+		return className;
 	}
 	
 }

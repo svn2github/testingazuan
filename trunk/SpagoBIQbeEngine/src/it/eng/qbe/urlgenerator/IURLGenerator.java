@@ -18,4 +18,6 @@ public interface IURLGenerator {
 	public String generateURL(Object source, Object addtionalParameter);
 	
 	public String generateURL(Object source, Object source2, Object addtionalParameter);
+	
+	public String getClassName();
 }

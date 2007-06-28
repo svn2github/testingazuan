@@ -82,4 +82,8 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		params.put(SelectCalculatedFieldForSelectAction.CFIELD_COMPLETE_NAME, cFieldCompleteName);
 		return qbeUrlGenerator.getUrl(httpRequest, params);
 	}
+
+	public String getClassName() {
+		return className;
+	}
 }

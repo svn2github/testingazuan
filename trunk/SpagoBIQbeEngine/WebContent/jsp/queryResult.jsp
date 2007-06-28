@@ -17,6 +17,8 @@
 <% 
    Object spagoBiInfo = sessionContainer.getAttribute("spagobi"); 
 
+	String paddingStyle = "padding-left:4px;padding-right:4px";
+
 
    ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(sessionContainer);
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
@@ -469,7 +471,7 @@ function askConfirmation (message) {
 								 for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
 								  		calcFldHdr =  ((CalculatedField)itCalcFields.next()).getFldLabel();
 								  		%>
-										<td class='portlet-section-header' style='vertical-align:middle;'><%=calcFldHdr %></td>
+										<td class='portlet-section-header' style='vertical-align:middle;<%=paddingStyle%>'><%=calcFldHdr %></td>
 										<%
 								 }
 							 	} %>
@@ -481,14 +483,14 @@ function askConfirmation (message) {
 								   headerName = (String)it.next();
 							%>
 																		
-								<td class='portlet-section-header' style='vertical-align:middle;'><%=headerName %></td>
+								<td class='portlet-section-header' style='vertical-align:middle;<%=paddingStyle%>'><%=headerName %></td>
 							
 							<% } %>
 							<% if (calculateFieldPosition != null && calculateFieldPosition.equalsIgnoreCase("AFTER_COLUMNS")){ 
 								 for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
 								  		calcFldHdr =  ((CalculatedField)itCalcFields.next()).getFldLabel();
 								  		%>
-										<td class='portlet-section-header' style='vertical-align:middle;'><%=calcFldHdr %></td>
+										<td class='portlet-section-header' style='vertical-align:middle;<%=paddingStyle%>'><%=calcFldHdr %></td>
 										<%
 								 }
 							 	} %>
@@ -502,7 +504,7 @@ function askConfirmation (message) {
 								 for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
 								  		calcFldHdr =  ((CalculatedField)itCalcFields.next()).getFldLabel();
 								  		%>
-										<td class='portlet-section-header' style='vertical-align:middle;'><%=calcFldHdr %></td>
+										<td class='portlet-section-header' style='vertical-align:middle;<%=paddingStyle%>'><%=calcFldHdr %></td>
 										<%
 								 }
 							 	} %>
@@ -519,13 +521,13 @@ function askConfirmation (message) {
 								   if(selField.getFieldAlias() != null)
 								   	headerName = headerName.replaceAll(selField.getFieldNameWithoutOperators(), selField.getFieldAlias());
 						%>
-								<td class='portlet-section-header' style='vertical-align:middle;'><%=headerName %></td>
+								<td class='portlet-section-header' style='vertical-align:middle;<%=paddingStyle%>'><%=headerName %></td>
 						<% } %>
 						<% if (calculateFieldPosition != null && calculateFieldPosition.equalsIgnoreCase("AFTER_COLUMNS")){ 
 								 for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
 								  		calcFldHdr =  ((CalculatedField)itCalcFields.next()).getFldLabel();
 								  		%>
-										<td class='portlet-section-header' style='vertical-align:middle;'><%=calcFldHdr %></td>
+										<td class='portlet-section-header' style='vertical-align:middle;<%=paddingStyle%>'><%=calcFldHdr %></td>
 										<%
 								 }
 							 	} %>
@@ -561,14 +563,14 @@ function askConfirmation (message) {
 										for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
 								  			calcFld =  ((CalculatedField)itCalcFields.next()).calculate(gse, row, binding ).toString();
 								  			%>
-											<td class="<%=rowClass%>"><%=calcFld %></td>
+											<td class="<%=rowClass%>" style='<%=paddingStyle%>'><%=calcFld %></td>
 											<%
 								  		}
 								}
 									// Giro le colonne
 								for (int j=0; j < row.length; j++){ 
 										%>
-										<td class="<%=rowClass%>"><%=(row[j] != null ? row[j].toString() : "NULL") %></td>
+										<td class="<%=rowClass%>" style='<%=paddingStyle%>'><%=(row[j] != null ? row[j].toString() : "NULL") %></td>
 										<%
 								}
 									
@@ -576,7 +578,7 @@ function askConfirmation (message) {
 										for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
 								  			calcFld =  ((CalculatedField)itCalcFields.next()).calculate(gse, row, binding ).toString();
 								  			%>
-											<td class="<%=rowClass%>"><%=calcFld %></td>
+											<td class="<%=rowClass%>" style='<%=paddingStyle%>'><%=calcFld %></td>
 											<%
 								  		}
 								}%>

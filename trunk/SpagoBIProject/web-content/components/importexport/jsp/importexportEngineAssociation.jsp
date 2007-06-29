@@ -108,16 +108,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<span class='portlet-form-field-label'><%=engine.getName()%></span>
 					<br/>
 					<%
-						String url = engine.getUrl();
-					    if( (url!=null) && (url.length() > 50)) {
-					    	url = url.substring(0, 50);
-					        url += "...";
-					    }
-					    String driverName = engine.getDriverName();
-					    if( (driverName!=null) && (driverName.length() > 50) ) {
-					    	driverName = driverName.substring(0, 50);
-					        driverName += "...";   
-					    }
 					    String description = engine.getDescription();
 					    if( (description!=null) && (description.length() > 50) ) {
 					    	description = description.substring(0, 50);
@@ -125,8 +115,33 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					    }
 					%>
 					<span title="<%=engine.getDescription()%>" alt="<%=engine.getDescription()%>"><%=description%></span><br/>
-					<span title="<%=engine.getUrl()%>" alt="<%=engine.getUrl()%>"><%=url%></span><br/>
-					<span title="<%=engine.getDriverName()%>" alt="<%=engine.getDriverName()%>"><%=driverName%></span><br/>
+					<%
+						String url = engine.getUrl();
+						if (url != null && !url.trim().equals("")) {
+						    if( url.length() > 50) {
+						    	url = url.substring(0, 50);
+						        url += "...";
+						    }
+						    String driverName = engine.getDriverName();
+						    if( (driverName!=null) && (driverName.length() > 50) ) {
+						    	driverName = driverName.substring(0, 50);
+						        driverName += "...";   
+						    }
+							%>
+							<span title="<%=engine.getUrl()%>" alt="<%=engine.getUrl()%>"><%=url%></span><br/>
+							<span title="<%=engine.getDriverName()%>" alt="<%=engine.getDriverName()%>"><%=driverName%></span><br/>
+							<%
+						} else {
+						    String className = engine.getClassName();
+						    if( (className!=null) && (className.length() > 50) ) {
+						    	className = className.substring(0, 50);
+						    	className += "...";   
+						    }
+							%>
+							<span title="<%=engine.getClassName()%>" alt="<%=engine.getClassName()%>"><%=className%></span><br/>
+							<%
+						}
+					%>
 				</td>
 				<td>
 				    <input type="hidden" name="expEngine" value="<%=engine.getId()%>" />

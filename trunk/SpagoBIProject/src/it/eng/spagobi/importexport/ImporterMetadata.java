@@ -126,6 +126,7 @@ public class ImporterMetadata {
 					eng.setSecondaryUrl(hibEngine.getSecnUrl());
 					eng.setUrl(hibEngine.getMainUrl());
 					eng.setLabel(hibEngine.getLabel());
+					eng.setClassName(hibEngine.getClassNm());
 					engines.add(eng);
 				}
 			} catch (HibernateException he) {

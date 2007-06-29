@@ -121,6 +121,37 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	
+	
+	/**
+	 * @see it.eng.spagobi.bo.dao.IParameterUseDAO#loadByParameterIdandRole(java.lang.Integer, java.lang.String)
+	 */
+	public ParameterUse loadByParameterIdandRole(Integer parameterId, String roleName) throws EMFUserError {
+		ParameterUse toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "select s from SbiParuse s, SbiParuseDet spd where s.sbiParameters.parId="+parameterId+ " and " +
+					     "s.useId = spd.id.sbiParuse.useId and " +
+					     "spd.id.sbiExtRoles.name='"+roleName+"'";
+			Query query = aSession.createQuery(hql);
+			SbiParuse hibParuse = (SbiParuse)query.uniqueResult();	
+			toReturn = toParameterUse(hibParuse);
+			tx.commit();
+		}catch(HibernateException he){
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
+		}finally{
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return toReturn;
+	}
+	
+	
 
 	/**
 	 * @see it.eng.spagobi.bo.dao.IParameterUseDAO#fillAssociatedChecksForParUse(it.eng.spagobi.bo.ParameterUse)
@@ -501,6 +532,11 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			return aParameterUse;
 	}
 	
+	/**
+	 * Fill an empty ParameterUse object extracting data from a SbiParuse object
+	 * @param aParameterUse the destionation ParameterUse object
+	 * @param hibParUse the source SbiParuse object
+	 */
 	public void fillParameterUse(ParameterUse aParameterUse, SbiParuse hibParUse){
 			aParameterUse.setUseID(hibParUse.getUseId());
 			aParameterUse.setDescription(hibParUse.getDescr());
@@ -550,6 +586,10 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			aParameterUse.setAssociatedRoles(roleList);
 			
 			}
+	
+	/**
+	 * @see it.eng.spagobi.bo.dao.IParameterUseDAO#eraseParameterUseByParId(java.lang.Integer)
+	 */
 	public void eraseParameterUseByParId(Integer parId) throws EMFUserError {
 		List parUseList = null;
 		IParameterUseDAO parUseDAO = DAOFactory.getParameterUseDAO();
@@ -558,13 +598,13 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 		while (i.hasNext()){
 			ParameterUse parUse = (ParameterUse) i.next();
 			parUseDAO.eraseParameterUse(parUse);
-			
-			
 		}
-}
+	}
 
 
-
+	/**
+	 * @see it.eng.spagobi.bo.dao.IParameterUseDAO#getParameterUsesAssociatedToLov(java.lang.Integer)
+	 */
 	public List getParameterUsesAssociatedToLov(Integer lovId) throws EMFUserError {
 		List realResult = new ArrayList();
 

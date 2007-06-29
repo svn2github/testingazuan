@@ -31,10 +31,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.bo.BIObject"%>
 <%@page import="it.eng.spagobi.bo.BIObjectParameter"%>
+<%@page import="it.eng.spago.base.SessionContainer"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="it.eng.spagobi.bo.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.bo.dao.IBIObjectDAO"%>
+<%@page import="it.eng.spagobi.bo.dao.IParameterDAO"%>
+<%@page import="it.eng.spagobi.bo.Role"%>
+<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("JobManagementModule"); 
-	   
+
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
 	JobInfo jobInfo = (JobInfo)aSessionContainer.getAttribute(SpagoBIConstants.JOB_INFO);   
 	List jobBiobjects = jobInfo.getBiobjects();
 	
@@ -50,7 +60,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 
-
+<!-- ********************** SCRIPT FOR DOCUMENT SELECTION WINDOW **************************** -->
 <script>
 	var docselwinopen = false;
 	var winDS = null;
@@ -97,7 +107,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 </script>
 
-
+<!-- ********************** SCRIPT FOR TABS **************************** -->
 <script>
 	tabOpened = ""; 
 	
@@ -128,10 +138,189 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </script>
 
 
+<!-- ********************** SCRIPT FOR PARAMETER LOOKUP **************************** -->
+<script>
+
+	var winLRL = null;
+	var parfieldName = '';
+
+	function getLovList(idObj, idPar, urlNamePar) {
+
+		$('loadingdiv').style.display='inline';
+		
+		rolefield = $('role_par_'+idObj+'_'+urlNamePar);
+		parfieldName = 'par_'+idObj+'_'+urlNamePar;
+		role = rolefield.value;
+		if(role==null) {
+			role = rolefield.options[rolefield.selectedIndex].value;
+		}
+		url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP";
+	    pars = "NEW_SESSION=TRUE&PAGE=LovLookupAjaxPage";
+	    pars +="&roleName="+role;
+	    pars += "&parameterId="+idPar;
+	    pars += "&parameterFieldName="+parfieldName;
+		new Ajax.Request(url,
+       			{
+           			method: 'post',
+           			parameters: pars,
+       				onSuccess: function(transport){
+                           			response = transport.responseText || "";
+                           			displayList(response);
+                       			},
+       				onFailure: showError
+       			}
+   		);
+	}
+		
+	function displayList(html) {
+		winLRL = new Window('winLRLId', {className: "alphacube", title: "", width:800, height:400, destroyOnClose: true});
+      	winLRL.setDestroyOnClose();
+      	winLRL.setHTMLContent(html);
+      	winLRL.showCenter(true);
+	}
+		
+	function showError()  {
+		alert('Error while getting values');
+	}
+	
+	    
+	observerLRLshow = { 
+		onShow: function(eventName, win) {
+			if (win == winLRL) {
+			    $('loadingdiv').style.display='none';
+			    parfield = document.getElementById(parfieldName);
+			    parfieldval = parfield.value;
+			    parfieldvalues = parfieldval.split(';');
+			    checks = document.getElementsByName('rowcheck');
+			    for(i=0; i<checks.length; i++) {
+			    	check = checks[i];
+			    	for(j=0; j<parfieldvalues.length; j++) {
+			    		value = parfieldvalues[j];
+			    		if(check.value == value) {
+			    			check.checked = true;
+			    		}
+			    	}
+			    }
+			}
+		}
+	}
+		
+	observerLRLclose = { 
+		onClose: function(eventName, win) {
+			if (win == winLRL) {
+			    valstring = '';
+			    parfield = document.getElementById(parfieldName);
+			    checks = document.getElementsByName('rowcheck');
+			    for(i=0; i<checks.length; i++) {
+			    	check = checks[i];
+			    	if(check.checked) {
+			    		val = check.value;
+			    		valstring = valstring + val + ';';
+			    	}
+			    }
+			    if(valstring.length > 0) {
+			    	valstring = valstring.substring(0, (valstring.length -1) );
+			    }
+			    if(valstring.length > 0) {
+			    	parfield.value = valstring;
+			    }
+			}
+		}
+	}
+	
+	observerLRLdestroy = { 
+		onDestroy: function(eventName, win) { 
+			if (win == winLRL) { 
+				winLRL = null; 
+			} 
+	 	} 
+	}
+
+	Windows.addObserver(observerLRLshow);
+	Windows.addObserver(observerLRLclose);
+	Windows.addObserver(observerLRLdestroy);
+
+</script>
+
+
+
+
+<!-- ********************** PAGE STYLES **************************** -->
+
+<STYLE>
+	
+	.div_form_container {
+    	border: 1px solid #cccccc;
+    	background-color:#fafafa;
+    	float: left;
+	}
+	
+	.div_form_margin {
+		margin: 5px;
+		float: left;
+	}
+	
+	.div_form_row {
+		clear: both;
+		padding-bottom:5px;
+	}
+	
+	.div_form_label {	
+		float: left;
+		width:150px;
+		margin-right:20px;
+	}
+	
+	.div_form_field {
+	}
+
+    .div_form_message {	
+		float: left;
+		margin:20px;
+	}
+	
+    .nowraptext {
+    	white-space:nowrap;
+    }
+    
+    .div_loading {
+        width:20%;
+    	position:absolute;
+    	left:20%;
+    	top:40%;
+    	border:1px solid #bbbbbb;
+    	background:#eeeeee;
+    	padding-left:100px;padding-right:100px;
+    	display:none;
+    }
+    
+    
+    
+    
+</STYLE>
+
+
+
+
+<!-- *********************** START HTML CODE ****************************** -->
+
+
+<div id='loadingdiv' class='div_loading' >
+	<center>
+		<br/><br/>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "loading" />	
+		</span>
+		<br/><br/>
+		<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/wapp/loading.gif")%>' />
+	</center>
+</div>
+
 <form id="jobdetailform" method="post" action="<%=formUrl%>" >
 	<input id="formmsg" type="hidden" name="MESSAGEDET" value="" />
 	<input id="splitterparameter" type="hidden" name="splitter" value="<%=splitter%>" />
 
+<!-- *********************** PAGE TITLE ****************************** -->
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -159,46 +348,62 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</tr>
 </table>
 
+
+<!-- *********************** FIRST FORM ****************************** -->
+
 <br/>
 
-<div class="div_detail_area_forms" >
-	<div class='div_detail_label'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "scheduler.jobName"  bundle="component_scheduler_messages"/>
-		</span>
-	</div>
-	<%
-		String readonly  = "";
-		String jobName = jobInfo.getJobName();
-		if(jobName!=null) {
-			jobName = jobName.trim();
-			if(!jobName.equals(""))
-				readonly = " readonly ";
-		}
-	%>
-	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" name="jobname" 
-	      	   size="50" value="<%=jobInfo.getJobName()%>"  <%=readonly%> >
-	    &nbsp;*
-	</div>
-	<div class='div_detail_label'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "scheduler.jobDescription"  bundle="component_scheduler_messages"/>
-		</span>
-	</div>
-	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" 
-			   name="jobdescription" size="50" value="<%=jobInfo.getJobDescription()%>" >
+<div class="div_form_container" >
+	<div class="div_form_margin" >
+		<div class="div_form_row" >
+			<div class='div_form_label'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "scheduler.jobName"  bundle="component_scheduler_messages"/>
+				</span>
+			</div>
+			<%
+				String readonly  = "";
+				String jobName = jobInfo.getJobName();
+				if(jobName!=null) {
+					jobName = jobName.trim();
+					if(!jobName.equals(""))
+						readonly = " readonly ";
+				}
+			%>
+			<div class='div_form_field'>
+				<input class='portlet-form-input-field' type="text" name="jobname" 
+			      	   size="50" value="<%=jobInfo.getJobName()%>"  <%=readonly%> >
+			    &nbsp;*
+			</div>
+		</div>
+		<div class="div_form_row" >
+			<div class='div_form_label'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "scheduler.jobDescription"  bundle="component_scheduler_messages"/>
+				</span>
+			</div>
+			<div class='div_form_field'>
+				<input class='portlet-form-input-field' type="text" 
+					   name="jobdescription" size="50" value="<%=jobInfo.getJobDescription()%>" >
+			</div>
+		</div>
 	</div>
 </div>
 
+<div style='clear:left;'></div>
+
+
 <br/>
 
 
-
+<!-- *********************** ERROR TAG ****************************** -->
 
 <spagobi:error/>
 
+
+
+
+<!-- *********************** TABS ****************************** -->
 
 
 
@@ -258,11 +463,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	
 	
-	
-	
-	
+<!-- *********************** TAB FORMS ****************************** -->	
 	
 	<%
+		IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
+		IParameterDAO pardao = DAOFactory.getParameterDAO();
 		Iterator iterJobBiobjs = jobBiobjects.iterator();
 	    int index = 0;
 	    String setTabOpened = "";
@@ -285,23 +490,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			if( (pars==null) || (pars.size()==0) ) {
 		%>		
 			
-      <br/>
-			<div class='div_detail_area_forms' >
-			   <br/>
-			   <div class='div_detail_label' style="width:400px;">
-		        <span class='portlet-form-field-label'>
-              <spagobi:message key = "scheduler.noparameter"  bundle="component_scheduler_messages"/>
-            </span>
-         </div>
-         <div>&nbsp;</div>
-         <br/>
+      	<br/>
+		
+		<div class='div_form_container' >
+		   <div class='div_form_margin'>
+		   		<div class='div_form_row' >
+				   <div class='div_form_message nowraptext'>
+				       	<span class='portlet-form-field-label'>
+		        	      <spagobi:message key = "scheduler.noparameter"  bundle="component_scheduler_messages"/>
+		            	</span>
+		         	</div>
+		         </div>
 			</div>
-			<br/>
-			
+		</div>
+		<br/>
 		<%
-      } else {
-			  out.write("<br/>");
-			  out.write("<div class='div_detail_area_forms' >");
+      		} else {
+      	%>
+			<br/>
+			<div class='div_form_container' >
+				<div class='div_form_margin'>
+			
+				<%
 				Iterator iterPars = pars.iterator();
 				while(iterPars.hasNext()) {
 					BIObjectParameter biobjpar = (BIObjectParameter)iterPars.next();
@@ -317,24 +527,75 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							concatenatedValue = concatenatedValue.substring(0, concatenatedValue.length() - 1);
 						}
 					}		
-		%>
+				%>		
+					<div class='div_form_row' >
+						<div class='div_form_label'>
+							<span class='portlet-form-field-label'>
+				            	<%=biobjpar.getLabel()%>
+				          	</span>
+				    	</div>
+				    	
+				    	<div class='div_form_field'>
+						  	<input class='portlet-form-input-field' 
+						  	       id="<%="par_"+biobj.getId()+"_"+biobjpar.getParameterUrlName()%>"
+						  	       name="<%="par_"+biobj.getId()+"_"+biobjpar.getParameterUrlName()%>" 
+						  	       type="text" value="<%=concatenatedValue%>" />
+						  	&nbsp;&nbsp;&nbsp;
+						  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=biobjpar.getParameterUrlName()%>')">
+						  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
+      				 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
+      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
+						  	</a>
+						  	
+						  	&nbsp;&nbsp;&nbsp;
+						  	<%
+								List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
+						  		if(roles.size()==1) {
+						    %>
+						  		<input type='hidden' 
+						  			   id='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>' 
+						  			   name='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>'
+						  			   value='<%=roles.get(0)%>' />
+						  	<%
+						  		} else {
+							%>
+								<span class='portlet-form-field-label'>
+									<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
+								</span>
+								&nbsp;&nbsp;&nbsp;
+								<select name='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>'
+										id='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>' >
+								<% 
+									Iterator iterRoles = roles.iterator(); 
+									while(iterRoles.hasNext()) {
+										String role = (String)iterRoles.next();
+								%>
+									<option value='<%=role%>'><%=role%></option>
+								<%
+									}
+								%>
+								</select>
+							<%
+						  		}
+							%>
+						</div>
+					</div>
 		
-		<div class='div_detail_label'>
-		      <span class='portlet-form-field-label'>
-            <%=biobjpar.getLabel()%>
-          </span>
-    </div>
-    <div class='div_detail_form'>
-		  <input class='portlet-form-input-field' name="<%="par_"+biobj.getId()+"_"+biobjpar.getParameterUrlName()%>" type="text" value="<%=concatenatedValue%>" />
-		</div>
-
+		
 		<%
-				}
-				out.write("</div>");
-				out.write("<br/>");
-			}
+				} // end while
+		%>
+				</div>
+			</div>
+			<br/>
+		<%
+			} // enf if
 		%>
 	</div>
+	
+	
+	
+	
 	
 	<%	
 		}
@@ -344,12 +605,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-
-
-
-
-
-
+<!-- *********************** DIV SELECT DOCUMENT (HIDDEN) ****************************** -->
 
 
 

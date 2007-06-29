@@ -2,11 +2,13 @@
 <MODULES>
     
     <MODULE class="it.eng.spagobi.scheduler.modules.SchedulerModule" name="SchedulerModule">
-     	<CONFIG/>
+    	<CONFIG/>
     </MODULE>
+       
+    <MODULE class="it.eng.spagobi.scheduler.modules.LovLookupAjaxModule" name="LovLookupAjaxModule">
+	</MODULE>
     
-    
-     <MODULE class="it.eng.spagobi.scheduler.modules.JobManagementModule" name="JobManagementModule">
+    <MODULE class="it.eng.spagobi.scheduler.modules.JobManagementModule" name="JobManagementModule">
      	<CONFIG rows="10" title="scheduler.JobList" >
 	      <QUERIES/>
 	      <COLUMNS>
@@ -100,7 +102,5 @@
 	    </CONFIG>
     </MODULE>
     
-    
-
-    
+ 
 </MODULES>

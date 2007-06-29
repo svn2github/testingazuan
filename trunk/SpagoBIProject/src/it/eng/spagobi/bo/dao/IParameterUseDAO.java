@@ -67,16 +67,21 @@ public interface IParameterUseDAO {
 	 */
 	public ParameterUse loadByUseID(Integer useID) throws EMFUserError;
 	
-	/*
-	 * Loads a parameter use detail from its <code>id</code> and <code>lovId</code>.
-	 * 
-	 * @param parameterID The parameter use id (parId)
-	 * @param listOfValuesID The parameter use lovId
-	 * @return A <code>ParameterUse</code> object storing all information
-	 * @throws EMFUserError If an Exception occurs.
 	
-	public ParameterUse loadByParameterIDandListOfValuesID(Integer parameterID, Integer listOfValuesID) throws EMFUserError;
-	*/
+	/**
+	 * Loads all detail information for a parameter use mode identified by 
+	 * a parameter id and a role name. All these information, achived by a query 
+	 * to the DB, are stored into a<code>ParameterUse</code> object, which is
+	 * returned.
+	 * 
+	 * @param parameterId The id for the parameter associated
+	 * @param roleName The role name associated
+	 * @return A <code>ParameterUse</code> object containing all loaded information
+	 * @throws EMFUserError EMFUserError If an Exception occurred
+	 */
+	public ParameterUse loadByParameterIdandRole(Integer parameterId, String roleName) throws EMFUserError;
+	
+
 	/**
 	 * Given at input a <code>ParameterUse</code> objects, asks for all possible Checks 
 	 * associated whith it and fills the <code>AssociatedChecks</code> object's list. 
@@ -132,10 +137,24 @@ public interface IParameterUseDAO {
 	 */
 	public boolean hasParUseModes (String parId) throws EMFUserError;
 	
-	
-	
+	/**
+	 * Loads the list of parameter use modes associated to the input
+	 * parameter id. 
+	 * 
+	 * @param parameterId The id for the parameter associated
+	 * @return A list of <code>ParameterUse</code> objects 
+	 * @throws EMFUserError EMFUserError If an Exception occurred
+	 */
 	public List loadParametersUseByParId(Integer parId) throws EMFUserError;
 	
+	
+	/**
+	 * Delete all the parameter use modes associated to the input
+	 * parameter id. 
+	 * 
+	 * @param parameterId The id for the parameter associated
+	 * @throws EMFUserError EMFUserError If an Exception occurred
+	 */
 	public void eraseParameterUseByParId(Integer parId) throws EMFUserError;
 	
 	/**

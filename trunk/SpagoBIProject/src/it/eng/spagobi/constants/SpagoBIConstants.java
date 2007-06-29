@@ -190,9 +190,11 @@ public class SpagoBIConstants {
 	
 	public static final String URL_BUILDER = "URL_BUILDER";
 	
+	public static final String VALUE_COLUMN_NAME = "VALUE_COLUMN_NAME";
 	
+	public static final String PARAMETER_FIELD_NAME = "PARAMETER_FIELD_NAME";
 	
-	
+	public static final String MESSAGE_INFO = "MESSAGE_INFO";
 	
 	
 	public static final String MESSAGE_GETOBJECTS_SCHED = "MESSAGE_GETOBJECTS_SCHED";

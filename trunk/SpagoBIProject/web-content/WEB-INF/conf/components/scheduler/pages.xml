@@ -36,6 +36,18 @@
       		<MODULE keep_instance="false" keep_response="false" name="SchedulerModule"/>
     	</MODULES>
   	</PAGE>
+  	
+  	<PAGE name="LovLookupAjaxPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="LovLookupAjaxPage" target="LovLookupAjaxModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="LovLookupAjaxModule"/>
+    	</MODULES>
+  	</PAGE>
 
 
 </PAGES>

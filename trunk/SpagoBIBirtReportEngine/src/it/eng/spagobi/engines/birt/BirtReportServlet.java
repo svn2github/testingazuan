@@ -44,10 +44,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-import org.eclipse.birt.report.engine.api.EngineConstants;
 import org.eclipse.birt.report.engine.api.HTMLActionHandler;
-import org.eclipse.birt.report.engine.api.HTMLEmitterConfig;
-import org.eclipse.birt.report.engine.api.HTMLRenderContext;
 import org.eclipse.birt.report.engine.api.HTMLRenderOption;
 import org.eclipse.birt.report.engine.api.HTMLServerImageHandler;
 import org.eclipse.birt.report.engine.api.IGetParameterDefinitionTask;
@@ -57,6 +54,7 @@ import org.eclipse.birt.report.engine.api.IReportRunnable;
 import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
 import org.eclipse.birt.report.engine.api.IScalarParameterDefn;
 import org.eclipse.birt.report.engine.api.PDFRenderOption;
+import org.eclipse.birt.report.utility.BirtUtility;
 
 import sun.misc.BASE64Decoder;
 
@@ -294,20 +292,27 @@ public class BirtReportServlet extends HttpServlet {
 	}
 	
 	
-	protected HashMap prepareHtmlRendering (ServletContext servletContext, HttpServletRequest servletRequest) {
-		
-		// Register new image handler
-		HTMLEmitterConfig emitterConfig = new HTMLEmitterConfig();
-		emitterConfig.setActionHandler(new HTMLActionHandler());
-		HTMLServerImageHandler imageHandler = new HTMLServerImageHandler();
-		emitterConfig.setImageHandler(imageHandler);
-		this.birtReportEngine.getConfig().getEmitterConfigs().put("html", emitterConfig);
+	protected void prepareHtmlRendering (ServletContext servletContext, HttpServletRequest servletRequest) {
 		
 		String imageDirectory = servletContext.getRealPath("/report/images");
 		String contextPath = servletRequest.getContextPath();
 		String imageBaseUrl = "/image.jsp?imagePath=" + "/report/images" + "&" + "imageID=";
 		
-		//RenderOption.BASE_URL;
+		// Register new image handler
+		HTMLRenderOption renderOption = new HTMLRenderOption();
+		renderOption.setActionHandler(new HTMLActionHandler());
+		HTMLServerImageHandler imageHandler = new HTMLServerImageHandler();
+		renderOption.setImageHandler(imageHandler);
+		renderOption.setImageDirectory(imageDirectory);
+		renderOption.setBaseImageURL(contextPath + imageBaseUrl);
+		this.birtReportEngine.getConfig().getEmitterConfigs().put("html", renderOption);
+		
+		/*
+		HTMLEmitterConfig emitterConfig = new HTMLEmitterConfig();
+		emitterConfig.setActionHandler(new HTMLActionHandler());
+		HTMLServerImageHandler imageHandler = new HTMLServerImageHandler();
+		emitterConfig.setImageHandler(imageHandler);
+		this.birtReportEngine.getConfig().getEmitterConfigs().put("html", emitterConfig);
 		
 		HTMLRenderContext renderContext = new HTMLRenderContext();
 		renderContext.setImageDirectory(imageDirectory);
@@ -318,11 +323,11 @@ public class BirtReportServlet extends HttpServlet {
 		HashMap<String, Object> appContext = new HashMap<String, Object>();
 		//appContext.put(DataEngine.DATASET_CACHE_OPTION, Boolean.TRUE);
 		appContext.put(EngineConstants.APPCONTEXT_BIRT_VIEWER_HTTPSERVET_REQUEST, servletRequest);
-		appContext.put(EngineConstants.APPCONTEXT_CLASSLOADER_KEY, BirtEngine.class.getClassLoader());
-		appContext.put(EngineConstants.APPCONTEXT_HTML_RENDER_CONTEXT,
-				renderContext);
-		
-		return appContext;
+		appContext.put(EngineConstants.APPCONTEXT_CLASSLOADER_KEY, BirtReportServlet.class.getClassLoader());
+		//appContext.put(EngineConstants.APPCONTEXT_HTML_RENDER_CONTEXT, renderContext);
+		appContext.put(EngineConstants.APPCONTEXT_HTML_RENDER_CONTEXT, renderOption);
+		*/
+
 	}
 	
 	private InputStream getTemplateContent(HttpServletRequest servletRequest) throws IOException {
@@ -346,7 +351,7 @@ public class BirtReportServlet extends HttpServlet {
 			dateformat = dateformat.replaceAll("Y", "y");
 		}
 		
-		HashMap toReturn = new HashMap();
+		HashMap<String, Object> toReturn = new HashMap<String, Object>();
 		IGetParameterDefinitionTask task = birtReportEngine.createGetParameterDefinitionTask(design);
 		Collection paramsColl = task.getParameterDefns(false);
 		Iterator it = paramsColl.iterator();
@@ -434,15 +439,16 @@ public class BirtReportServlet extends HttpServlet {
 				String iniCont = connectionDescriptorNode.valueOf("@initialContext");
 		        String resName = connectionDescriptorNode.valueOf("@resourceName");
 		        
-		        // TODO control for jonas what happens when the initial context is not defined
-		        
-		        if (resName == null || resName.trim().equals("")) {
-		        	logger.error(this.getClass().getName()+ "getConnection(): "+
-		        			"Missing resource name for connection [" 
-		        			+ connectionDescriptorNode.valueOf("@name") + "]" +
+		        if (iniCont == null || iniCont.trim().equals("") || 
+		        		resName == null || resName.trim().equals("")) {
+		        	String nodeName = connectionDescriptorNode.valueOf("@name");
+		        	logger.error(this.getClass().getName()+ "getConnection(): " +
+		        			"Missing initial context or resource name for connection [" 
+		        			+ nodeName + "]" +
 		        					". Control engine-config.xml file.");
-		        	throw new ConnectionDefinitionException("Missing resource name for connection [" 
-		        			+ connectionDescriptorNode.valueOf("@name") + "]" +
+		        	throw new ConnectionDefinitionException("" +
+		        			"Missing initial context or resource name for connection [" 
+		        			+ nodeName + "]" +
 		        					". Control engine-config.xml file.");
 		        }
 		        
@@ -496,9 +502,10 @@ public class BirtReportServlet extends HttpServlet {
 			options.setOutputStream((OutputStream) response.getOutputStream());
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("html")) {
 			options = new HTMLRenderOption();
-			HashMap appContext = prepareHtmlRendering(servletContext, request);
-			task.setAppContext(appContext);
-			((HTMLRenderOption) options).setEmbeddable(true);
+			prepareHtmlRendering(servletContext, request);
+			Map context = BirtUtility.getAppContext(request, BirtReportServlet.class.getClassLoader());
+			task.setAppContext(context);
+			((HTMLRenderOption) options).setEmbeddable(false);
 			options.setOutputStream((OutputStream) response.getOutputStream());
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("word")) {
 			// TODO
@@ -509,8 +516,9 @@ public class BirtReportServlet extends HttpServlet {
 		} else {
 			logger.debug(this.getClass().getName()+ "runReport() Output format parameter not set or not valid. Using default output format: HTML.");
 			options = new HTMLRenderOption();
-			HashMap appContext = prepareHtmlRendering(servletContext, request);
-			task.setAppContext(appContext);
+			prepareHtmlRendering(servletContext, request);
+			Map context = BirtUtility.getAppContext(request, BirtReportServlet.class.getClassLoader());
+			task.setAppContext(context);
 			((HTMLRenderOption) options).setEmbeddable(true);
 			options.setOutputStream((OutputStream) response.getOutputStream());
 		}

@@ -101,15 +101,21 @@ public class BirtEngine {
 	}
 
 	private static void loadEngineProps() {
+		InputStream in = null;
 		try {
 			// Config File must be in classpath
 			ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			InputStream in = null;
 			in = cl.getResourceAsStream(configFile);
 			configProps.load(in);
-			in.close();
 		} catch (IOException e) {
 			logger.error("Error during configFile properties file [" + configFile + "]", e);
+		} finally {
+			if (in != null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					logger.error("Error during closing input stream", e);
+				}
 		}
 	}
 	

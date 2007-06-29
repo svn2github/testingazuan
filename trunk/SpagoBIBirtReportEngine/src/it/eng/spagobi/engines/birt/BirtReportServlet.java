@@ -221,6 +221,9 @@ public class BirtReportServlet extends HttpServlet {
 						"EXECUTION_FAILED", e.getMessage(), null);
 	 		}
 	 	}
+	 	
+	 	logger.info(this.getClass().getName() + ":service: Request processed");
+	 	
 	}
 	
 	/**
@@ -292,7 +295,8 @@ public class BirtReportServlet extends HttpServlet {
 	}
 	
 	
-	protected void prepareHtmlRendering (ServletContext servletContext, HttpServletRequest servletRequest) {
+	protected HTMLRenderOption prepareHtmlRenderOption (ServletContext servletContext, 
+			HttpServletRequest servletRequest) throws Exception {
 		
 		String imageDirectory = servletContext.getRealPath("/report/images");
 		String contextPath = servletRequest.getContextPath();
@@ -305,7 +309,10 @@ public class BirtReportServlet extends HttpServlet {
 		renderOption.setImageHandler(imageHandler);
 		renderOption.setImageDirectory(imageDirectory);
 		renderOption.setBaseImageURL(contextPath + imageBaseUrl);
+		renderOption.setEmbeddable(false);
 		this.birtReportEngine.getConfig().getEmitterConfigs().put("html", renderOption);
+		
+		return renderOption;
 		
 		/*
 		HTMLEmitterConfig emitterConfig = new HTMLEmitterConfig();
@@ -495,18 +502,16 @@ public class BirtReportServlet extends HttpServlet {
 		
 		String outputFormat = request.getParameter("param_output_format");
 		logger.debug(this.getClass().getName()+ "runReport() param_output_format -- [" + outputFormat +"]");
-		IRenderOption options = null;
+		IRenderOption option = null;
 		if (outputFormat != null && outputFormat.equalsIgnoreCase("pdf")) {
-			options = new PDFRenderOption();
+			option = new PDFRenderOption();
 			response.setContentType("application/pdf");
-			options.setOutputStream((OutputStream) response.getOutputStream());
+			option.setOutputStream((OutputStream) response.getOutputStream());
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("html")) {
-			options = new HTMLRenderOption();
-			prepareHtmlRendering(servletContext, request);
+			option = prepareHtmlRenderOption(servletContext, request);
+			((HTMLRenderOption) option).setOutputStream((OutputStream) response.getOutputStream());
 			Map context = BirtUtility.getAppContext(request, BirtReportServlet.class.getClassLoader());
 			task.setAppContext(context);
-			((HTMLRenderOption) options).setEmbeddable(false);
-			options.setOutputStream((OutputStream) response.getOutputStream());
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("word")) {
 			// TODO
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("xls")) {
@@ -515,15 +520,13 @@ public class BirtReportServlet extends HttpServlet {
 			// TODO
 		} else {
 			logger.debug(this.getClass().getName()+ "runReport() Output format parameter not set or not valid. Using default output format: HTML.");
-			options = new HTMLRenderOption();
-			prepareHtmlRendering(servletContext, request);
+			option = prepareHtmlRenderOption(servletContext, request);
+			((HTMLRenderOption) option).setOutputStream((OutputStream) response.getOutputStream());
 			Map context = BirtUtility.getAppContext(request, BirtReportServlet.class.getClassLoader());
 			task.setAppContext(context);
-			((HTMLRenderOption) options).setEmbeddable(true);
-			options.setOutputStream((OutputStream) response.getOutputStream());
 		}
-		options.setOutputFormat(outputFormat);
-		task.setRenderOption(options);
+		option.setOutputFormat(outputFormat);
+		task.setRenderOption(option);
 		task.run();
 		task.close();
 		

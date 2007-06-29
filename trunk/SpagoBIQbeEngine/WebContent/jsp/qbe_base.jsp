@@ -179,25 +179,17 @@
 			
 			
 			
-			var alertOnClose = { onClose: function(eventName, win) { exitSubQueryMode();} }
-			Windows.addObserver(alertOnClose);
 			
-    		function showSubqueryWin(fieldID){
-    		   
-    			currentSubQueryFieldId = fieldID;
-    			var urlSubQuery = "../servlet/AdapterHTTP?ACTION_NAME=START_WIZARD_SUBQUERY_ACTION&ON_FIELD_ID="+fieldID;
-      			var win = new Window(Application.getNewId(), {className: "dialog", title: "-- Subquery on " + currentSubQueryFieldId + "--", 
-                                              top:70, left:100, width:800, height:400, 
-                                              resizable: true, url: urlSubQuery })
-				win.setDestroyOnClose();
-				
-				
-				win.show(true); 
-				
-    		}
 		
 		</script>	
 <%  } %>
+
+
+
+
+
+
+
 <%  if (qbeMode.equalsIgnoreCase("PORTLET")) { %>	
 	<SCRIPT language=JavaScript>
 			function dTree(objName) {
@@ -238,6 +230,11 @@
 			};
     </SCRIPT>
 <%  }%>
+
+
+
+
+
 	<script language='javascript' src='<%=qbeUrl.conformStaticResourceLink(request,"../js/dtree.js")%>'></script>
 	<script type='text/javascript'>
 				
@@ -323,7 +320,7 @@
 		
 		
 		
-		function selectFieldForConditionCallBack(actionName, completeFieldName, className, hibType){
+	function selectFieldForConditionCallBack(actionName, completeFieldName, className, hibType){
 			
 			//alert("Select Field For condition CallBack");
 			//alert("actionName,"+actionName);
@@ -407,13 +404,11 @@
 			
 		
 			formUpdCond1.submit();
-			return true;
-			
+			return true;			
 		}
 		
 		
 		function selectFieldForJoinWithParentCallBack(actionName, completeFieldName, className, hibType){
-			
 			
 			
 			var valueForField = document.getElementById(valueForFieldId);
@@ -871,12 +866,51 @@
 		}
 					
 			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		var alertOnClose = { onClose: function(eventName, win) { exitSubQueryMode();} }
+		Windows.addObserver(alertOnClose);
+		
+		try{
+			// Giusto per testare l'esistenza della variabile 
+			wiz.name = 'pippo';
+			alert('var already exists')
+		} catch (err) {
+			alert('create var winz')
+			eval('var winz=null');
+		}
 
+
+			
+    	function showSubqueryWin(fieldID){
+    		   
+    		currentSubQueryFieldId = fieldID;
+    		var urlSubQuery = "../servlet/AdapterHTTP?ACTION_NAME=START_WIZARD_SUBQUERY_ACTION&ON_FIELD_ID="+fieldID;
+      		winz = new Window(Application.getNewId(), {className: "dialog", title: "-- Subquery on " + currentSubQueryFieldId + "--", 
+                                              top:70, left:100, width:850, height:400, 
+                                              resizable: true, url: urlSubQuery })
+			winz.setDestroyOnClose();
+			
+				
+			winz.show(true); 					
+			dump();		
+    	}	
+			
+		function dump() {
+			alert(winz);
+		}
 	
 		function vediSchermo(msg, divTxt){
 			
-			//alert ("msg: " + msg);
-			//alert ("divTxt: " + divTxt);
+			alert ("msg: " + msg);
+			alert ("divTxt: " + divTxt);
 			
 			var spanCurrentScreen = document.getElementById('currentScreen');
 			
@@ -891,10 +925,10 @@
 						
 			var formUpdCond = document.getElementById('formUpdateConditions');
 			
-			//alert("current Screen Txt " + currentScreenTxt);
+			alert("current Screen Txt " + currentScreenTxt);
 			
 			if ((currentScreenTxt == 'DIV_FIELD_CONDITION') && (formUpdCond != null)){					
-					//alert ("Branch 1");
+					alert ("Branch 1");
 											
 					var inputNextActionAfterSaveCondition = document.getElementById('nextActionAfterSaveCondition');
 					var inputNextPublisherAfterSaveCondition = document.getElementById('nextPublisherAfterSaveCondition');
@@ -986,7 +1020,7 @@
 					
 			
 			}else if ((currentScreenTxt == 'DIV_RESUME_QUERY_SELECT_OK') && (formUpdCond != null)){
-					//alert ("Branch 2");
+					alert ("Branch 2");
 							
 					var expertSelectTextArea = document.getElementById('expertSelectTextArea');
 					var inputTA = document.getElementById('expertDisplayedForUpdate');
@@ -1057,7 +1091,7 @@
 					}
 				
 			}else{	
-				//alert ("Branch 3 -> " + divTxt);
+				alert ("Branch 3 -> " + divTxt);
 					
 				var frmGoSelectionF = document.getElementById('frmGoSelection');
 				var frmGoConditionF = document.getElementById('frmGoCondition');
@@ -1110,7 +1144,23 @@
 					frmSaveQueryF.submit();
 					return true;
 				}	
+				
+				if(divTxt == 'DIV_SAVE_SUBQUERY') {
+					//alert('DESTROY ' + winz);
+					//winz.destroy();
+					//Windows.closeAll();
+					//alert('iframeEl = '  + iframeEl);
+					//alert('iframeEl.contentDocument = '  + iframeEl.contentWindow.document.body);
+					//parent.closeXXX();
+					window.opener.closeXX()
+					
+				}
 			}//end else
+		}
+		
+		function closeXXX() {
+			alert('Ciao' + winz);
+			winz.destroy();
 		}
 		
 		

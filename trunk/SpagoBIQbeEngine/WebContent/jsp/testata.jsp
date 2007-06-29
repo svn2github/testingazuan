@@ -65,6 +65,14 @@
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Export", bundle) %>
 				</a>
 			</div>
+			<%
+			if(Utils.isSubQueryModeActive(sessionContainer)) {
+			%>
+			<div class='btab' align="right" id='DIV_SAVE_SUBQUERY' title="Save Subquery">
+				<input type='button' value='Save Subquery' style="font-size:10px;height:20px;"  onclick="javascript:vediSchermo('save','DIV_SAVE_SUBQUERY')"/>
+			</div>
+			<%} %>
+			
 		</div>
 	</div>
 </div>

@@ -215,7 +215,7 @@ public class BirtReportServlet extends HttpServlet {
 						"EXECUTION_FAILED", e.getDescription(), null);
 	 		} catch (Exception e){
 	 			logger.error(this.getClass().getName()+ ":service:" +
-		      			"Error during report production \n\n " + e);
+		      			"Error during report production \n\n ", e);
 				// AUDIT UPDATE
 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", e.getMessage(), null);
@@ -300,7 +300,7 @@ public class BirtReportServlet extends HttpServlet {
 		
 		String imageDirectory = servletContext.getRealPath("/report/images");
 		String contextPath = servletRequest.getContextPath();
-		String imageBaseUrl = "/image.jsp?imagePath=" + "/report/images" + "&" + "imageID=";
+		String imageBaseUrl = "/BirtImageServlet?imagePath=" + "/report/images" + "&" + "imageID=";
 		
 		// Register new image handler
 		HTMLRenderOption renderOption = new HTMLRenderOption();

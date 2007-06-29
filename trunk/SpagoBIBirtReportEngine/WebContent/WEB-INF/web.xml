@@ -136,6 +136,11 @@
             <param-value>FALSE</param-value>
         </init-param>
     </servlet>
+
+    <servlet>
+        <servlet-name>BirtImageServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.engines.birt.BirtImageServlet</servlet-class>
+    </servlet>
     
     <servlet>
         <servlet-name>SpagoBIDrillServlet</servlet-name>
@@ -145,6 +150,11 @@
     <servlet-mapping>
         <servlet-name>SpagoBIDrillServlet</servlet-name>
         <url-pattern>/SpagoBIDrillServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>BirtImageServlet</servlet-name>
+        <url-pattern>/BirtImageServlet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

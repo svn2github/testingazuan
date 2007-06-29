@@ -277,7 +277,7 @@
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
 
 		    <!-- delete commons-logging library -->
-		    <delete file="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
+		    <delete file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
 
 		    <!-- overwrite the hibernate configuration file for Tomcat with the correct file for JOnAS -->
 		    <move file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"

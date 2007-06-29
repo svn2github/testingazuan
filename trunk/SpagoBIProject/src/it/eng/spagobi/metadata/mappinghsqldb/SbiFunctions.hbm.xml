@@ -9,8 +9,8 @@
     <class name="it.eng.spagobi.metadata.SbiFunctions" table="sbi_functions">
         <id name="functId" type="integer">
             <column name="funct_id" />
-            <generator class="identity">
-            
+            <generator class="native">
+            	<param name="sequence">sbi_functions_seq</param>
             </generator>
         </id>
         <many-to-one name="functType" class="it.eng.spagobi.metadata.SbiDomains">
@@ -37,7 +37,7 @@
  		<property name="prog" type="integer">
             <column name="prog" not-null="true" />
         </property>
-        <set name="sbiObjFuncs" inverse="true" sort="comparatorClass">
+        <set name="sbiObjFuncs" inverse="true" sort="natural">
             <key>
                 <column name="funct_id" not-null="true" />
             </key>

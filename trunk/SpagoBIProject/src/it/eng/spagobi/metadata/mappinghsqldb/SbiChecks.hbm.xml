@@ -9,7 +9,9 @@
     <class name="it.eng.spagobi.metadata.SbiChecks" table="sbi_checks">
         <id name="checkId" type="integer">
             <column name="check_id" />
-            <generator class="identity"/>
+            <generator class="native">
+            	<param name="sequence">sbi_checks_seq</param>
+            </generator>
         </id>
         <many-to-one name="checkType" class="it.eng.spagobi.metadata.SbiDomains">
             <column name="value_type_id" not-null="true" />

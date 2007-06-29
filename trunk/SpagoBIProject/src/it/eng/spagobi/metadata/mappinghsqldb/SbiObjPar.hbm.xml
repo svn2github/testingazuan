@@ -9,7 +9,8 @@
     <class name="it.eng.spagobi.metadata.SbiObjPar" table="sbi_obj_par" >
         <id name="objParId" type="integer">
             <column name="obj_par_id" />
-            <generator class="identity">
+            <generator class="native">
+            	<param name="sequence">sbi_obj_par_seq</param>
             </generator>
         </id>    
 <!--

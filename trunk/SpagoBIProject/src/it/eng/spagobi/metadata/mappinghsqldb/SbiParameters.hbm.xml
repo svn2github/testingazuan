@@ -9,8 +9,8 @@
     <class name="it.eng.spagobi.metadata.SbiParameters" table="sbi_parameters">
         <id name="parId" type="integer">
             <column name="par_id" />
-            <generator class="identity">
-          
+            <generator class="native">
+            	<param name="sequence">sbi_parameters_seq</param>
             </generator>
         </id>
         <many-to-one name="parameterType" class="it.eng.spagobi.metadata.SbiDomains">

@@ -9,8 +9,8 @@
     <class name="it.eng.spagobi.metadata.SbiEngines" table="sbi_engines">
         <id name="engineId" type="integer">
             <column name="engine_id" />
-            <generator class="identity">
-            
+            <generator class="native">
+            	<param name="sequence">sbi_engines_seq</param>
             </generator>
         </id>
         <property name="encrypt" type="short">

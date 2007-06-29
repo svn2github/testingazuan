@@ -6,12 +6,10 @@
 package it.eng.spagobi.geo.action;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
-import it.eng.spagobi.geo.datamart.Datamart;
 import it.eng.spagobi.geo.datamart.provider.DatamartProviderFactory;
 import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
 import it.eng.spagobi.geo.map.provider.IMapProvider;
@@ -20,16 +18,14 @@ import it.eng.spagobi.geo.map.renderer.IMapRenderer;
 import it.eng.spagobi.geo.map.renderer.MapRendererFactory;
 import it.eng.spagobi.geo.map.utils.SVGMapConverter;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -88,10 +84,14 @@ public class GeoAction extends AbstractHttpAction {
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		HttpServletRequest request = this.getHttpRequest(); 
 		
-		String map_catalogue_manager_url = (String) request.getAttribute(MAP_CATALOGUE_MANAGER_URL);
+		//String map_catalogue_manager_url = (String) request.getAttribute(MAP_CATALOGUE_MANAGER_URL);
+		String map_catalogue_manager_url = (String) serviceRequest.getAttribute(MAP_CATALOGUE_MANAGER_URL);
 		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
-		String result = mapCatalogueAccessUtils.getStandardHierarchy();
-		
+		//anto: test metodi servlet
+		//String livelli = mapCatalogueAccessUtils.getStandardHierarchy();
+		//List mappe = mapCatalogueAccessUtils.getMapsByFeature("circoscrizioni");
+		//List layer = mapCatalogueAccessUtils.getFeaturesInMap("unita_urbanistiche");
+		//anto: fine test metodi servlet		
 		
 		// AUDIT UPDATE
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");

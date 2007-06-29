@@ -155,4 +155,8 @@ public class Constants {
 	public static final String DETAIL_INS = "DETAIL_INS";
 	public static final String DETAIL_DEL = "DETAIL_DEL";
 	public static final String MODALITY = "MODALITY";
+	
+	public static final String MESSAGE_BUILDER = "MESSAGE_BUILDER";	
+	public static final String URL_BUILDER = "URL_BUILDER";
+
 }

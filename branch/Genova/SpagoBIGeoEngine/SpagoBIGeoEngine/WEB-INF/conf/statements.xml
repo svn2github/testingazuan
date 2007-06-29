@@ -1,13 +1,3 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<STATEMENTS>	 		
-	<STATEMENT name="SELECT_ALL_MAPS" 
-  				query="SELECT MAP_ID, NAME, DESCR, URL					 					
-				FROM SBI_GEO_MAPS"/>
-	<STATEMENT name="SELECT_MAP" 
-  				query="SELECT MAP_ID, NAME, DESCR, URL					 					
-				FROM SBI_GEO_MAPS 
-				WHERE MAP_ID = ?"/>				
-	<STATEMENT name="DELETE_MAP" 
-  				query="DELETE FROM SBI_GEO_MAPS
-  					   WHERE MAP_ID=?"/>				
+<STATEMENTS>	 					
 </STATEMENTS>

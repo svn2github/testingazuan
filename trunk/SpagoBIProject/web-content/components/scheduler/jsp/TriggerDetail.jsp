@@ -620,7 +620,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		     		<input id='single_repetitionKind' name='repetitionKind' value='single' 
 		     		       type="radio" onclick="openrepetitionform('single')" checked='checked' />
 					<span class='portlet-form-field-label'>
-						Esecuzione singola
+						<spagobi:message key="scheduler.singleExec" bundle="component_scheduler_messages" />
 					</span>
 				</div>
 			</div>
@@ -633,7 +633,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		     		<input id='minute_repetitionKind' name='repetitionKind' value='minute' 
 		     		       type="radio" onclick="openrepetitionform('minute')" />
 					<span class='portlet-form-field-label'>
-						Esecuzione per minuto
+						<spagobi:message key="scheduler.minuteExec" bundle="component_scheduler_messages" />
 					</span>
 				</div>
 				<div id='minute_repetitionDiv_lbl' style='display:none;' class='div_form_label'>
@@ -644,7 +644,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<div class="div_form_row" >
 							<div class='div_form_label'>
 								<span class='portlet-form-field-label'>
-									Ogni n minuti
+									<spagobi:message key="scheduler.everyNMinutes" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
@@ -670,7 +670,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		     		<input id='hour_repetitionKind' name='repetitionKind' value='hour' 
 		     		       type="radio" onclick="openrepetitionform('hour')" />
 					<span class='portlet-form-field-label'>
-						Esecuzione per ora
+						<spagobi:message key="scheduler.hourExec" bundle="component_scheduler_messages" />
 					</span>
 				</div>
 				<div id='hour_repetitionDiv_lbl' style='display:none;' class='div_form_label'>
@@ -681,7 +681,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<div class="div_form_row" >
 							<div class='div_form_label'>
 								<span class='portlet-form-field-label'>
-									Ogni n ore
+									<spagobi:message key="scheduler.everyNHours" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
@@ -707,7 +707,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		     		<input id='day_repetitionKind' name='repetitionKind' value='day' 
 		     		       type="radio" onclick="openrepetitionform('day')" />
 					<span class='portlet-form-field-label'>
-						Esecuzione giornaliera
+						<spagobi:message key="scheduler.dayExec" bundle="component_scheduler_messages" />
 					</span>
 				</div>
 				<div id='day_repetitionDiv_lbl' style='display:none;' class='div_form_label'>
@@ -718,7 +718,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<div class="div_form_row" >
 							<div class='div_form_label'>
 								<span class='portlet-form-field-label'>
-									Ogni n giorni
+									<spagobi:message key="scheduler.everyNDays" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
@@ -743,7 +743,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		     		<input id='week_repetitionKind' name='repetitionKind' value='week' 
 		     		       type="radio" onclick="openrepetitionform('week')" />
 					<span class='portlet-form-field-label'>
-						Esecuzione settimanale
+						<spagobi:message key="scheduler.weekExec" bundle="component_scheduler_messages" />
 					</span>
 				</div>
 				<div id='week_repetitionDiv_lbl' class='div_form_label' style='display:none;'>
@@ -754,7 +754,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<div class="div_form_row" >
 							<div class='div_form_label'>
 								<span class='portlet-form-field-label'>
-									Ogni n settimane
+									<spagobi:message key="scheduler.everyNWeeks" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
@@ -770,17 +770,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<div class="div_form_row" >
 							<div class='div_form_label'>
 								<span class='portlet-form-field-label'>
-									Nei giorni
+									<spagobi:message key="scheduler.inDays" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
-								<input id='day_in_week_rep_sun' type='checkbox' value='SUN'>Dom
-								<input id='day_in_week_rep_mon' type='checkbox' value='MON'>Lun
-								<input id='day_in_week_rep_tue' type='checkbox' value='TUE'>Mar
-								<input id='day_in_week_rep_wed' type='checkbox' value='WED'>Mer
-								<input id='day_in_week_rep_thu' type='checkbox' value='THU'>Gio
-								<input id='day_in_week_rep_fri' type='checkbox' value='FRI'>Ven
-								<input id='day_in_week_rep_sat' type='checkbox' value='SAT'>Sab
+								<input id='day_in_week_rep_sun' type='checkbox' value='SUN'><spagobi:message key="scheduler.sun" bundle="component_scheduler_messages" />
+								<input id='day_in_week_rep_mon' type='checkbox' value='MON'><spagobi:message key="scheduler.mon" bundle="component_scheduler_messages" />
+								<input id='day_in_week_rep_tue' type='checkbox' value='TUE'><spagobi:message key="scheduler.tue" bundle="component_scheduler_messages" />
+								<input id='day_in_week_rep_wed' type='checkbox' value='WED'><spagobi:message key="scheduler.wed" bundle="component_scheduler_messages" />
+								<input id='day_in_week_rep_thu' type='checkbox' value='THU'><spagobi:message key="scheduler.thu" bundle="component_scheduler_messages" />
+								<input id='day_in_week_rep_fri' type='checkbox' value='FRI'><spagobi:message key="scheduler.fri" bundle="component_scheduler_messages" />
+								<input id='day_in_week_rep_sat' type='checkbox' value='SAT'><spagobi:message key="scheduler.sat" bundle="component_scheduler_messages" />
 							</div>	
 						</div>
 					</div>
@@ -796,7 +796,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		     		<input id='month_repetitionKind' name='repetitionKind' value='month' 
 		     		       type="radio" onclick="openrepetitionform('month')" />
 					<span class='portlet-form-field-label'>
-						Esecuzione mensile
+						<spagobi:message key="scheduler.monthExec" bundle="component_scheduler_messages" />
 					</span>
 				</div>
 				<div id='month_repetitionDiv_lbl' class='div_form_label' style='display:none;'>
@@ -808,7 +808,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<div class='div_form_label'>
 								<input id='month_selection_interval' name='month_selection' type='radio' checked='true'>
 								<span class='portlet-form-field-label'>
-									Ogni n mesi
+									<spagobi:message key="scheduler.everyNMonth" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
@@ -825,22 +825,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<div class='div_form_label'>
 								<input id='month_selection_checks' name='month_selection' type='radio'>
 								<span class='portlet-form-field-label'>
-									Nei mesi
+									<spagobi:message key="scheduler.inMonths" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
-								<input name='monthrep_jan' id='monthrep_jan' type='checkbox' value='JAN'>Gen
-								<input name='monthrep_feb' id='monthrep_feb' type='checkbox' value='FEB'>Feb
-								<input name='monthrep_mar' id='monthrep_mar' type='checkbox' value='MAR'>Mar
-								<input name='monthrep_apr' id='monthrep_apr' type='checkbox' value='APR'>Apr
-								<input name='monthrep_may' id='monthrep_may' type='checkbox' value='MAY'>Mag
-								<input name='monthrep_jun' id='monthrep_jun' type='checkbox' value='JUN'>Giu
-								<input name='monthrep_jul' id='monthrep_jul' type='checkbox' value='JUL'>Lug
-								<input name='monthrep_aug' id='monthrep_aug' type='checkbox' value='AUG'>Ago
-								<input name='monthrep_sep' id='monthrep_sep' type='checkbox' value='SEP'>Set
-								<input name='monthrep_oct' id='monthrep_oct' type='checkbox' value='OCT'>Ott
-								<input name='monthrep_nov' id='monthrep_nov' type='checkbox' value='NOV'>Now
-								<input name='monthrep_dic' id='monthrep_dic' type='checkbox' value='DIC'>Dic			
+								<input name='monthrep_jan' id='monthrep_jan' type='checkbox' value='JAN'><spagobi:message key="scheduler.jan" bundle="component_scheduler_messages" />
+								<input name='monthrep_feb' id='monthrep_feb' type='checkbox' value='FEB'><spagobi:message key="scheduler.feb" bundle="component_scheduler_messages" />
+								<input name='monthrep_mar' id='monthrep_mar' type='checkbox' value='MAR'><spagobi:message key="scheduler.mar" bundle="component_scheduler_messages" />
+								<input name='monthrep_apr' id='monthrep_apr' type='checkbox' value='APR'><spagobi:message key="scheduler.apr" bundle="component_scheduler_messages" />
+								<input name='monthrep_may' id='monthrep_may' type='checkbox' value='MAY'><spagobi:message key="scheduler.may" bundle="component_scheduler_messages" />
+								<input name='monthrep_jun' id='monthrep_jun' type='checkbox' value='JUN'><spagobi:message key="scheduler.jun" bundle="component_scheduler_messages" />
+								<input name='monthrep_jul' id='monthrep_jul' type='checkbox' value='JUL'><spagobi:message key="scheduler.jul" bundle="component_scheduler_messages" />
+								<input name='monthrep_aug' id='monthrep_aug' type='checkbox' value='AUG'><spagobi:message key="scheduler.aug" bundle="component_scheduler_messages" />
+								<input name='monthrep_sep' id='monthrep_sep' type='checkbox' value='SEP'><spagobi:message key="scheduler.sep" bundle="component_scheduler_messages" />
+								<input name='monthrep_oct' id='monthrep_oct' type='checkbox' value='OCT'><spagobi:message key="scheduler.oct" bundle="component_scheduler_messages" />
+								<input name='monthrep_nov' id='monthrep_nov' type='checkbox' value='NOV'><spagobi:message key="scheduler.nov" bundle="component_scheduler_messages" />
+								<input name='monthrep_dic' id='monthrep_dic' type='checkbox' value='DIC'><spagobi:message key="scheduler.dic" bundle="component_scheduler_messages" />			
 							</div>	
 						</div>
 						<br/>
@@ -848,7 +848,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<div class='div_form_label'>
 								<input id='dayinmonth_selection_interval' name='dayinmonth_selection' type='radio' checked='true'>
 								<span class='portlet-form-field-label'>
-									Il giorno
+									<spagobi:message key="scheduler.theDay" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
@@ -865,31 +865,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<div class='div_form_label'>
 							    <input id='dayinmonth_selection_checks' name='dayinmonth_selection' type='radio'>
 								<span class='portlet-form-field-label'>
-									Nelle settimane
+									<spagobi:message key="scheduler.inWeeks" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
-								<input name='dayinmonthrep_week' id='dayinmonthrep_week1' type='radio' value='1'>Prima
-								<input name='dayinmonthrep_week' id='dayinmonthrep_week2' type='radio' value='2'>Seconda
-								<input name='dayinmonthrep_week' id='dayinmonthrep_week3' type='radio' value='3'>Terza
-								<input name='dayinmonthrep_week' id='dayinmonthrep_week4' type='radio' value='4'>Quarta
-								<input name='dayinmonthrep_week' id='dayinmonthrep_weekL' type='radio' value='L'>Ultima
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week1' type='radio' value='1'><spagobi:message key="scheduler.firstweek" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week2' type='radio' value='2'><spagobi:message key="scheduler.secondweek" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week3' type='radio' value='3'><spagobi:message key="scheduler.thirdweek" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week4' type='radio' value='4'><spagobi:message key="scheduler.fourthweek" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_week' id='dayinmonthrep_weekL' type='radio' value='L'><spagobi:message key="scheduler.lastweek" bundle="component_scheduler_messages" />
 							</div>	
 						</div>
 						<div class="div_form_row" >
 							<div class='div_form_label'>
 								<span class='portlet-form-field-label'>
-									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nei giorni
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<spagobi:message key="scheduler.inDays" bundle="component_scheduler_messages" />
 								</span>
 							</div>
 							<div class='div_form_field'>
-								<input name='dayinmonthrep_sun' id='dayinmonthrep_sun' type='checkbox' value='SUN'>Dom
-								<input name='dayinmonthrep_mon' id='dayinmonthrep_mon' type='checkbox' value='MON'>Lun
-								<input name='dayinmonthrep_tue' id='dayinmonthrep_tue' type='checkbox' value='TUE'>Mar
-								<input name='dayinmonthrep_wed' id='dayinmonthrep_wed' type='checkbox' value='WED'>Mer
-								<input name='dayinmonthrep_thu' id='dayinmonthrep_thu' type='checkbox' value='THU'>Gio
-								<input name='dayinmonthrep_fri' id='dayinmonthrep_fri' type='checkbox' value='FRI'>Ven
-								<input name='dayinmonthrep_sat' id='dayinmonthrep_sat' type='checkbox' value='SAT'>Sab
+								<input name='dayinmonthrep_sun' id='dayinmonthrep_sun' type='checkbox' value='SUN'><spagobi:message key="scheduler.sun" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_mon' id='dayinmonthrep_mon' type='checkbox' value='MON'><spagobi:message key="scheduler.mon" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_tue' id='dayinmonthrep_tue' type='checkbox' value='TUE'><spagobi:message key="scheduler.tue" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_wed' id='dayinmonthrep_wed' type='checkbox' value='WED'><spagobi:message key="scheduler.wed" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_thu' id='dayinmonthrep_thu' type='checkbox' value='THU'><spagobi:message key="scheduler.thu" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_fri' id='dayinmonthrep_fri' type='checkbox' value='FRI'><spagobi:message key="scheduler.fri" bundle="component_scheduler_messages" />
+								<input name='dayinmonthrep_sat' id='dayinmonthrep_sat' type='checkbox' value='SAT'><spagobi:message key="scheduler.sat" bundle="component_scheduler_messages" />
 							</div>	
 						</div>
 					</div>

@@ -206,6 +206,20 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				conn.commit();
 			}
 			
+			// manages new SpagoBIJPivotEngine Url
+			sql = "SELECT ENGINE_ID, MAIN_URL FROM SBI_ENGINES " +
+					"WHERE DRIVER_NM LIKE '%it.eng.spagobi.drivers.jpivot.JPivotDriver%'";
+			ResultSet jpivotEnginesRS = stmt.executeQuery(sql);
+			while (jpivotEnginesRS.next()) {
+				int engineId = jpivotEnginesRS.getInt("ENGINE_ID");
+				String url = jpivotEnginesRS.getString("MAIN_URL");
+				if (url != null && url.trim().endsWith("jpivotOlap.jsp")) {
+					url = url.substring(0, url.lastIndexOf("jpivotOlap.jsp")) + "JPivotServlet";
+					String updateEngineQuery = "UPDATE SBI_ENGINES SET MAIN_URL = " + url + " WHERE ENGINE_ID = " + engineId;
+					stmt.execute(updateEngineQuery);
+				}
+			}
+			
 			conn.commit();
 			conn.close();
 			

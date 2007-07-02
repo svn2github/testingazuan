@@ -157,15 +157,20 @@ public class SchedulerUtilities {
 		String triggername = (String)triggerDetSB.getAttribute("triggerName");	
 		String triggerDescription  = (String)triggerDetSB.getAttribute("triggerDescription");	
 		String startdate  = (String)triggerDetSB.getAttribute("triggerStartDate");	
-		String starttime = (String)triggerDetSB.getAttribute("triggerStartTime");	
-		String enddate = (String)triggerDetSB.getAttribute("triggerEndDate");	
+		String starttime = (String)triggerDetSB.getAttribute("triggerStartTime");
+		String chronstring = (String)triggerDetSB.getAttribute("triggerChronString");
+		String enddate = (String)triggerDetSB.getAttribute("triggerEndDate");
+		if(enddate==null) enddate = "";
 		String endtime = (String)triggerDetSB.getAttribute("triggerEndTime");	
+		if(endtime==null) endtime = "";
 		String repeatinterval = (String)triggerDetSB.getAttribute("triggerRepeatInterval");
+		if(repeatinterval==null) repeatinterval = "";
 		tInfo.setEndDate(enddate);
 		tInfo.setEndTime(endtime);
 		tInfo.setRepeatInterval(repeatinterval);
 		tInfo.setStartDate(startdate);
 		tInfo.setStartTime(starttime);
+		tInfo.setChronString(chronstring);
 		tInfo.setTriggerDescription(triggerDescription);
 		tInfo.setTriggerName(triggername);
 		

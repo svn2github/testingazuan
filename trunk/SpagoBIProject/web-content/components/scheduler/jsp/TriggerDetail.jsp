@@ -31,6 +31,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.bo.BIObject"%>
 <%@page import="it.eng.spagobi.scheduler.to.TriggerInfo"%>
+<%@page import="it.eng.spagobi.scheduler.to.SaveInfo"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.GregorianCalendar"%>
+<%@page import="java.util.Calendar"%>
 
 <%  
    	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TriggerManagementModule"); 
@@ -51,16 +55,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-<%@page import="it.eng.spagobi.scheduler.to.SaveInfo"%>
-<%@page import="java.util.Date"%>
-<%@page import="java.util.GregorianCalendar"%>
-<%@page import="java.util.Calendar"%>
+<!-- ********************** SCRIPT FOR DOJO **************************** -->
+
 <script type="text/javascript" src="<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dojo/dojo.js" )%>"></script>
 
 <script type="text/javascript">
        dojo.require("dojo.widget.DropdownDatePicker");
        dojo.require("dojo.widget.DropdownTimePicker");
 </script>
+
+
+<!-- ********************** SCRIPT FOR TABS **************************** -->
 
 <script>
 	tabOpened = ""; 
@@ -76,12 +81,372 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		tabOpened = biobjid;
 	}
 	
-	function saveCall() {
-		document.getElementById('triggerdetailform').submit();
-	}
-	
 </script>
 
+
+<!-- ********************** SCRIPT FOR SAVE **************************** -->
+
+<script>
+
+	function saveCall() {
+		chronStr = getRepetitionString();	
+		$('chronstring').value=chronStr;
+		document.getElementById('triggerdetailform').submit();
+	}
+
+    function getRepetitionString() {
+        repStr = '';
+    	if($('single_repetitionKind').checked) {
+    		repStr = repStr + 'single{}';
+    	}
+    	if($('minute_repetitionKind').checked) {
+    		repStr = repStr + 'minute{';
+    		rep_n = $('minute_repetition_n').options[$('minute_repetition_n').selectedIndex].value;
+    		repStr = repStr + 'numRepetition='+rep_n;
+    		repStr = repStr + '}';
+    	}
+    	if($('hour_repetitionKind').checked) {
+    		repStr = repStr + 'hour{';
+    		rep_n = $('hour_repetition_n').options[$('hour_repetition_n').selectedIndex].value;
+    		repStr = repStr + 'numRepetition='+rep_n;
+    		repStr = repStr + '}';
+    	}
+    	if($('day_repetitionKind').checked) {
+    		repStr = repStr + 'day{';
+    		rep_n = $('day_repetition_n').options[$('day_repetition_n').selectedIndex].value;
+    		repStr = repStr + 'numRepetition='+rep_n;
+    		repStr = repStr + '}';
+    	}
+    	if($('week_repetitionKind').checked) {
+    		repStr = repStr + 'week{';
+    		rep_n = $('week_repetition_n').options[$('week_repetition_n').selectedIndex].value;
+    		repStr = repStr + 'numRepetition='+rep_n+';days=';
+    		
+    		if($('day_in_week_rep_sun').checked) {
+    			repStr = repStr + 'SUN,';
+    		}
+    		if($('day_in_week_rep_mon').checked) {
+    			repStr = repStr + 'MON,';
+    		}
+    		if($('day_in_week_rep_tue').checked) {
+    			repStr = repStr + 'TUE,';
+    		}
+    		if($('day_in_week_rep_wed').checked) {
+    			repStr = repStr + 'WED,';
+    		}
+    		if($('day_in_week_rep_thu').checked) {
+    			repStr = repStr + 'THU,';
+    		}
+    		if($('day_in_week_rep_fri').checked) {
+    			repStr = repStr + 'FRI,';
+    		}
+    		if($('day_in_week_rep_sat').checked) {
+    			repStr = repStr + 'SAT,';
+    		}
+    		repStr = repStr + '}';
+    	}
+    	if($('month_repetitionKind').checked) {
+    		repStr = repStr + 'month{';
+    		if($('month_selection_interval').checked) {
+    			rep_n = $('monthrep_n').options[$('monthrep_n').selectedIndex].value;
+    			repStr = repStr + 'numRepetition='+rep_n+';';
+    			repStr = repStr + 'months=NONE;';
+    		}
+    		if($('month_selection_checks').checked) {
+    			repStr = repStr + 'numRepetition=0;';
+    			repStr = repStr + 'months=';
+    			if($('monthrep_jan').checked) repStr = repStr + 'JAN,';
+    			if($('monthrep_feb').checked) repStr = repStr + 'FEB,';
+    			if($('monthrep_mar').checked) repStr = repStr + 'MAR,';
+    			if($('monthrep_apr').checked) repStr = repStr + 'APR,';
+    			if($('monthrep_may').checked) repStr = repStr + 'MAY,';
+    			if($('monthrep_jun').checked) repStr = repStr + 'JUN,';
+    			if($('monthrep_jul').checked) repStr = repStr + 'JUL,';
+    			if($('monthrep_aug').checked) repStr = repStr + 'AUG,';
+    			if($('monthrep_sep').checked) repStr = repStr + 'SEP,';
+    			if($('monthrep_oct').checked) repStr = repStr + 'OCT,';
+    			if($('monthrep_nov').checked) repStr = repStr + 'NOV,';
+    			if($('monthrep_dic').checked) repStr = repStr + 'DIC,';	
+    			repStr = repStr + ';';
+    		}
+    		if($('dayinmonth_selection_interval').checked) {
+    			rep_n = $('dayinmonthrep_n').options[$('dayinmonthrep_n').selectedIndex].value;
+    			repStr = repStr + 'dayRepetition='+rep_n+';';
+    			repStr = repStr + 'weeks=NONE;';
+    			repStr = repStr + 'days=NONE;';
+    		}
+    		if($('dayinmonth_selection_checks').checked) {
+    			repStr = repStr + 'dayRepetition=0;';
+    			repStr = repStr + 'weeks=';
+    			if($('dayinmonthrep_week1').checked) repStr = repStr + '1';
+    			if($('dayinmonthrep_week2').checked) repStr = repStr + '2';
+    			if($('dayinmonthrep_week3').checked) repStr = repStr + '3';
+    			if($('dayinmonthrep_week4').checked) repStr = repStr + '4';
+    			if($('dayinmonthrep_weekL').checked) repStr = repStr + 'L';
+    			repStr = repStr + ';';
+    			repStr = repStr + 'days=';
+    			if($('dayinmonthrep_sun').checked) repStr = repStr + 'SUN,';
+    			if($('dayinmonthrep_mon').checked) repStr = repStr + 'MON,';
+    			if($('dayinmonthrep_tue').checked) repStr = repStr + 'TUE,';
+    			if($('dayinmonthrep_wed').checked) repStr = repStr + 'WED,';
+    			if($('dayinmonthrep_thu').checked) repStr = repStr + 'THU,';
+    			if($('dayinmonthrep_fri').checked) repStr = repStr + 'FRI,';
+    			if($('dayinmonthrep_sat').checked) repStr = repStr + 'SAT,';
+    			repStr = repStr + ';';
+    		}
+    		repStr = repStr + '}';
+    	}
+    	return repStr;
+    }
+    
+    
+    
+    
+    function selectOption(selobj, val) {
+    	opts = selobj.options;
+    	indsel = 0;
+    	for(i=0; i<opts.length; i++) {
+    		opt = opts[i];
+    		if(opt.value == val) {
+    			indsel= i;
+    		}
+    	}
+    	selobj.selectedIndex=indsel;
+    }
+    
+    
+    
+    
+    
+    function fillFormFromRepetitionString(repStr) {
+    	
+    	type = '';
+    	params = '';
+    	if(repStr.indexOf('{')!=-1) {
+    		indFirstBra = repStr.indexOf('{');
+    		type = repStr.substring(0, indFirstBra);
+    		params = repStr.substring((indFirstBra+1), (repStr.length-1));
+    	} else {
+    		return;
+    	}
+    	if(type=='single') {
+    		$('single_repetitionKind').checked=true;
+    	}
+    	if(type=='minute') {
+    		$('minute_repetitionKind').checked=true;
+    		indeq = params.indexOf('=');
+    		numrep = params.substring(indeq+1);
+    		selectOption($('minute_repetition_n'), numrep);
+    		openrepetitionform('minute');
+    	}
+    	if(type=='hour') {
+    		$('hour_repetitionKind').checked=true;
+    		indeq = params.indexOf('=');
+    		numrep = params.substring(indeq+1);
+    		selectOption($('hour_repetition_n'), numrep);
+    		openrepetitionform('hour');
+    	}
+    	if(type=='day') {
+    		$('day_repetitionKind').checked=true;
+    		indeq = params.indexOf('=');
+    		numrep = params.substring(indeq+1);
+    		selectOption($('day_repetition_n'), numrep);
+    		openrepetitionform('day');
+    	}
+    	if(type=='week') {
+    		$('week_repetitionKind').checked=true;
+    		indeq = params.indexOf('=');
+    		indsplit = params.indexOf(';');
+    		ind2eq = params.indexOf('=', (indeq + 1));
+    		numrep = params.substring((indeq+1), indsplit);
+    		daysstr = params.substring(ind2eq+1);
+    		openrepetitionform('week');
+    		selectOption($('week_repetition_n'), numrep);
+    		days = daysstr.split(',');
+    		for(j=0; j<days.length; j++) {
+    			day = days[j];
+    			if((day!=null) && (day!='')) {
+    				if(day=='SUN') $('day_in_week_rep_sun').checked = 'true'; 
+    				if(day=='MON') $('day_in_week_rep_mon').checked = 'true'; 
+    				if(day=='TUE') $('day_in_week_rep_tue').checked = 'true'; 
+    				if(day=='WED') $('day_in_week_rep_wed').checked = 'true'; 
+    				if(day=='THU') $('day_in_week_rep_thu').checked = 'true'; 
+    				if(day=='FRI') $('day_in_week_rep_fri').checked = 'true'; 
+    				if(day=='SAT') $('day_in_week_rep_sat').checked = 'true';
+    			}
+    		}
+    	}
+    	if(type=='month') {
+    		$('month_repetitionKind').checked=true;
+    		openrepetitionform('month');
+    		parchuncks = params.split(';');
+	    	for(ind=0; ind<parchuncks.length; ind++) {
+	    		parchunk = parchuncks[ind];
+	    		singleparchunks = parchunk.split('=');
+	    		key = singleparchunks[0];
+	    		value = singleparchunks[1];
+	    		if(key=='numRepetition') {
+	    			if(value!='0') {
+	    				$('month_selection_interval').checked = true;
+	    				selectOption($('monthrep_n'), value);
+	    			}
+	    		}
+	    		if(key=='months'){
+	    			if(value!='NONE') {
+	    				$('month_selection_checks').checked = true;
+	    				months = value.split(',');
+	    				for(j=0; j<months.length; j++) {
+    						month = months[j];
+    						if((month!=null) && (month!='')) {
+			    				if(month=='JAN') $('monthrep_jan').checked = 'true';
+			    				if(month=='FEB') $('monthrep_feb').checked = 'true';
+			    				if(month=='MAR') $('monthrep_mar').checked = 'true';
+			    				if(month=='APR') $('monthrep_apr').checked = 'true';
+			    				if(month=='MAY') $('monthrep_may').checked = 'true';
+			    				if(month=='JUN') $('monthrep_jun').checked = 'true';
+			    				if(month=='JUL') $('monthrep_jul').checked = 'true';
+			    				if(month=='AUG') $('monthrep_aug').checked = 'true';
+			    				if(month=='SEP') $('monthrep_sep').checked = 'true';
+			    				if(month=='OCT') $('monthrep_oct').checked = 'true';
+			    				if(month=='NOV') $('monthrep_nov').checked = 'true';
+			    				if(month=='DIC') $('monthrep_dic').checked = 'true';
+    						}
+    					}
+	    			}
+	    		}
+	    		if(key=='dayRepetition') {
+	    			if(value!='0') {
+	    				$('dayinmonth_selection_interval').checked = true;
+	    				selectOption($('dayinmonthrep_n'), value);
+	    			}
+	    		}
+	    		if(key=='weeks'){
+	    			if(value!='NONE') {
+	    				$('dayinmonth_selection_checks').checked = true;
+	    				if(value=='1') $('dayinmonthrep_week1').checked = 'true';
+			    		if(value=='2') $('dayinmonthrep_week2').checked = 'true';
+			    		if(value=='3') $('dayinmonthrep_week3').checked = 'true';
+			    		if(value=='4') $('dayinmonthrep_week4').checked = 'true';
+			    		if(value=='L') $('dayinmonthrep_weekL').checked = 'true';
+			    	}
+			    }
+			    if(key=='days'){
+	    			if(value!='NONE') {
+	    				$('dayinmonth_selection_checks').checked = true;
+	    				days = value.split(',');
+	    				for(j=0; j<days.length; j++) {
+    						day = days[j];
+    						if((day!=null) && (day!='')) {
+			    				if(day=='SUN') $('dayinmonthrep_sun').checked = 'true';
+			    				if(day=='MON') $('dayinmonthrep_mon').checked = 'true';
+			    				if(day=='TUE') $('dayinmonthrep_tue').checked = 'true';
+			    				if(day=='WED') $('dayinmonthrep_wed').checked = 'true';
+			    				if(day=='THU') $('dayinmonthrep_thu').checked = 'true';
+			    				if(day=='FRI') $('dayinmonthrep_fri').checked = 'true';
+			    				if(day=='SAT') $('dayinmonthrep_sat').checked = 'true';
+    						}
+    					}
+	    			}
+	    		}
+    		}
+    	}
+    }
+
+</script>
+
+
+<!-- ********************** SCRIPT FOR REPETITION FORMS **************************** -->
+
+<script>
+
+	function openrepetitionform(namerepetition) {
+		$('minute_repetitionDiv_lbl').style.display='none';
+		$('minute_repetitionDiv_form').style.display='none';
+		$('hour_repetitionDiv_lbl').style.display='none';
+		$('hour_repetitionDiv_form').style.display='none';
+		$('day_repetitionDiv_lbl').style.display='none';
+		$('day_repetitionDiv_form').style.display='none';
+		$('week_repetitionDiv_lbl').style.display='none';
+		$('week_repetitionDiv_form').style.display='none';
+		$('month_repetitionDiv_form').style.display='none';
+		$('month_repetitionDiv_lbl').style.display='none';
+		
+		divlbl = document.getElementById(namerepetition+'_repetitionDiv_lbl');
+		if(divlbl!=null) {
+			divlbl.style.display='inline';
+		}
+		divform = document.getElementById(namerepetition+'_repetitionDiv_form');
+		if(divform!=null) {
+			divform.style.display='inline';
+		}
+	}
+
+</script>
+
+
+
+<!-- ********************** PAGE STYLES **************************** -->
+
+<STYLE>
+	
+	.div_form_container {
+    	border: 1px solid #cccccc;
+    	background-color:#fafafa;
+    	float: left;
+	}
+	
+	.div_form_margin {
+		margin: 5px;
+		float: left;
+	}
+	
+	.div_form_row {
+		clear: both;
+		padding-bottom:5px;
+	}
+	
+	.div_form_label {	
+		float: left;
+		width:150px;
+		margin-right:20px;
+	}
+	
+	.div_form_label_selector {	
+		clear: left;
+		margin-right:20px;
+	}
+	
+	.div_form_field {
+	}
+    
+    .div_form_message {	
+		float: left;
+		margin:20px;
+	}
+	
+    .nowraptext {
+    	white-space:nowrap;
+    }
+    
+    .div_loading {
+        width:20%;
+    	position:absolute;
+    	left:20%;
+    	top:40%;
+    	border:1px solid #bbbbbb;
+    	background:#eeeeee;
+    	padding-left:100px;padding-right:100px;
+    	display:none;
+    }
+    
+</STYLE>
+
+
+
+
+
+
+<!-- *********************** START HTML CODE ****************************** -->
 
 
 <form id="triggerdetailform" method="post" action="<%=formUrl%>" >
@@ -115,110 +480,438 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<br/>
 
+	<input type='hidden' value='' id='chronstring' name='chronstring' />
 
-	<div class="div_detail_area_forms_scheduler" >
-		<div class='div_detail_label_scheduler'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key="scheduler.schedname" bundle="component_scheduler_messages" />
-			</span>
-		</div>
-		<%
-		String readonly  = "";
-		String trigName = triggerInfo.getTriggerName();
-		if(trigName!=null) {
-			trigName = trigName.trim();
-			if(!trigName.equals("")) {
-				readonly = " readonly ";
+
+	<div class="div_form_container" >
+		<div class="div_form_margin" >
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.schedname" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<%
+				String readonly  = "";
+				String trigName = triggerInfo.getTriggerName();
+				if(trigName!=null) {
+					trigName = trigName.trim();
+					if(!trigName.equals("")) {
+						readonly = " readonly ";
+					} else {
+						Calendar cal = new GregorianCalendar();
+					    int hour24 = cal.get(Calendar.HOUR_OF_DAY);     
+					    int min = cal.get(Calendar.MINUTE);             
+					    int sec = cal.get(Calendar.SECOND);             
+						trigName = jobInfo.getJobName() + "_schedule_" + hour24 + "" + min + "" + sec; 
+					}
+				}
+				%>
+				<div class='div_form_field'>
+					<input id="triggername" value="<%=trigName%>" type="text" name="triggername" size="35" <%=readonly%> />
+				    &nbsp;*
+				</div>
+			</div>
+			<div class="div_form_row" >	
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.scheddescription" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input type="text" value="<%=triggerInfo.getTriggerDescription()%>" name="triggerdescription" size="35"/>
+					&nbsp;
+				</div>
+		     </div>
+		     <div class="div_form_row" >
+			 	<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.startdate" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input type="text" value="<%=triggerInfo.getStartDate()%>" 
+			    		   name="startdate" id="startdate"  
+			       		   dojoType="dropdowndatepicker" widgetId="startDateWidget" />
+						   &nbsp;*
+				</div>	
+			</div>
+		    <div class="div_form_row" >	
+		     	<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.starttime" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input type="text" value="<%=triggerInfo.getStartTime()%>" 
+					       name="starttime" id="starttime"  
+					       dojoType="dropdowntimepicker" widgetId="startTimeWidget" />
+					&nbsp;*
+				</div>
+			</div>
+			<div class="div_form_row" >	
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.enddate" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+				 	<input type="text" value="<%=triggerInfo.getEndDate()%>" 
+					       name="enddate" id="enddate"  
+					       dojoType="dropdowndatepicker" widgetId="endDateWidget" />
+				</div>
+			</div>
+			<div class="div_form_row" >	
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.endtime" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input type="text" value="<%=triggerInfo.getEndTime()%>" 
+					       name="endtime" id="endtime"  
+					       dojoType="dropdowntimepicker" widgetId="endTimeWidget" />
+				</div>
+			</div>
+			
+		
+
+			<%
+			String repInterv = triggerInfo.getRepeatInterval();
+			if(repInterv!=null) {
+			   	if(repInterv.trim().equals("0")) {
+			   		repInterv = "";
+			   	}
 			} else {
-				Calendar cal = new GregorianCalendar();
-			    int hour24 = cal.get(Calendar.HOUR_OF_DAY);     
-			    int min = cal.get(Calendar.MINUTE);             
-			    int sec = cal.get(Calendar.SECOND);             
-				trigName = jobInfo.getJobName() + "_schedule_" + hour24 + "" + min + "" + sec; 
+			   	repInterv = "";
 			}
-		}
-		%>
-		<div class='div_detail_form'>
-			<input id="triggername" value="<%=trigName%>" type="text" name="triggername" size="35" <%=readonly%> />
-		    &nbsp;*
-		</div>
-		<div class='div_detail_label_scheduler'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key="scheduler.scheddescription" bundle="component_scheduler_messages" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-			<input type="text" value="<%=triggerInfo.getTriggerDescription()%>" name="triggerdescription" size="35"/>
-			&nbsp;
-		</div>
-		<div class='div_detail_label_scheduler'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key="scheduler.startdate" bundle="component_scheduler_messages" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-		 	<input type="text" value="<%=triggerInfo.getStartDate()%>" 
-			       name="startdate" id="startdate"  
-			       dojoType="dropdowndatepicker" widgetId="startDateWidget" />
-			&nbsp;*
-		</div>
-		<div class='div_detail_label_scheduler'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key="scheduler.starttime" bundle="component_scheduler_messages" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-			<input type="text" value="<%=triggerInfo.getStartTime()%>" 
-			       name="starttime" id="starttime"  
-			       dojoType="dropdowntimepicker" widgetId="startTimeWidget" />
-			&nbsp;*
-		</div>
-		<div class='div_detail_label_scheduler'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key="scheduler.enddate" bundle="component_scheduler_messages" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-		 	<input type="text" value="<%=triggerInfo.getEndDate()%>" 
-			       name="enddate" id="enddate"  
-			       dojoType="dropdowndatepicker" widgetId="endDateWidget" />
-		</div>
-		<div class='div_detail_label_scheduler'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key="scheduler.endtime" bundle="component_scheduler_messages" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-			<input type="text" value="<%=triggerInfo.getEndTime()%>" 
-			       name="endtime" id="endtime"  
-			       dojoType="dropdowntimepicker" widgetId="endTimeWidget" />
-		</div>
-		<div class='div_detail_label_scheduler'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key="scheduler.repeatinterval" bundle="component_scheduler_messages" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-		    <%
-		    	String repInterv = triggerInfo.getRepeatInterval();
-		        if(repInterv!=null) {
-		        	if(repInterv.trim().equals("0")) {
-		        		repInterv = "";
-		        	}
-		        } else {
-		        	repInterv = "";
-		        }
-		    	%>
-			<input type="text" value="<%=repInterv%>" name="repeatInterval" size="35"/>
-			&nbsp;<span style="font-size:9pt;">ms<span>
+			%>
+			<input type="hidden" value="<%=repInterv%>" name="repeatInterval" />
+			<%--
+
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.repeatinterval" bundle="component_scheduler_messages" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+				    <%
+				    	String repInterv = triggerInfo.getRepeatInterval();
+				        if(repInterv!=null) {
+				        	if(repInterv.trim().equals("0")) {
+				        		repInterv = "";
+				        	}
+				        } else {
+				        	repInterv = "";
+				        }
+				    %>
+					<input type="text" value="<%=repInterv%>" name="repeatInterval" size="35"/>
+					&nbsp;<span style="font-size:9pt;">ms<span>
+				</div>
+			</div>
+			--%>
+			
+			
+			
+			<!-- ******* single execution **************** -->
+			<div class="div_form_row" >	
+		     	<div class='div_form_label_selector'>
+		     		<input id='single_repetitionKind' name='repetitionKind' value='single' 
+		     		       type="radio" onclick="openrepetitionform('single')" checked='checked' />
+					<span class='portlet-form-field-label'>
+						Esecuzione singola
+					</span>
+				</div>
+			</div>
+			
+			
+			
+			<!-- ******* per minute execution **************** -->
+			<div class="div_form_row" >	
+		     	<div class='div_form_label_selector'>
+		     		<input id='minute_repetitionKind' name='repetitionKind' value='minute' 
+		     		       type="radio" onclick="openrepetitionform('minute')" />
+					<span class='portlet-form-field-label'>
+						Esecuzione per minuto
+					</span>
+				</div>
+				<div id='minute_repetitionDiv_lbl' style='display:none;' class='div_form_label'>
+					&nbsp;
+				</div>
+				<div id='minute_repetitionDiv_form' style='display:none;' class="div_form_container" >
+					<div class="div_form_margin" >
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<span class='portlet-form-field-label'>
+									Ogni n minuti
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<select name='minute_repetition_n' id='minute_repetition_n' >
+								<%
+								for(int i=1; i<=60; i++) {
+									out.write("<option value='"+i+"'>"+i+"</option>");
+								}
+								%>
+								</select>
+							</div>	
+						</div>
+					</div>
+				</div>
+				<div style='clear:left;'></div>
+			</div>
+			
+			
+			
+			<!-- ******* per hour execution **************** -->
+			<div class="div_form_row" >	
+		     	<div class='div_form_label_selector'>
+		     		<input id='hour_repetitionKind' name='repetitionKind' value='hour' 
+		     		       type="radio" onclick="openrepetitionform('hour')" />
+					<span class='portlet-form-field-label'>
+						Esecuzione per ora
+					</span>
+				</div>
+				<div id='hour_repetitionDiv_lbl' style='display:none;' class='div_form_label'>
+					&nbsp;
+				</div>
+				<div id='hour_repetitionDiv_form'  style='display:none;' class="div_form_container" >
+					<div class="div_form_margin" >
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<span class='portlet-form-field-label'>
+									Ogni n ore
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<select name='hour_repetition_n' id='hour_repetition_n' >
+								<%
+								for(int i=1; i<=24; i++) {
+									out.write("<option value='"+i+"'>"+i+"</option>");
+								}
+								%>
+								</select>
+							</div>	
+						</div>
+					</div>
+				</div>
+				<div style='clear:left;'></div>
+			</div>
+			
+			
+			
+			<!-- ******* per day execution **************** -->
+			<div class="div_form_row" >	
+		     	<div class='div_form_label_selector'>
+		     		<input id='day_repetitionKind' name='repetitionKind' value='day' 
+		     		       type="radio" onclick="openrepetitionform('day')" />
+					<span class='portlet-form-field-label'>
+						Esecuzione giornaliera
+					</span>
+				</div>
+				<div id='day_repetitionDiv_lbl' style='display:none;' class='div_form_label'>
+					&nbsp;
+				</div>
+				<div id='day_repetitionDiv_form' style='display:none;' class="div_form_container" >
+					<div class="div_form_margin" >
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<span class='portlet-form-field-label'>
+									Ogni n giorni
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<select name='day_repetition_n' id='day_repetition_n' >
+								<%
+								for(int i=1; i<=31; i++) {
+									out.write("<option value='"+i+"'>"+i+"</option>");
+								}
+								%>
+								</select>
+							</div>	
+						</div>
+					</div>
+				</div>
+				<div style='clear:left;'></div>
+			</div>
+			
+			
+			<!-- ******* per week execution **************** -->
+			<div class="div_form_row" >	
+		     	<div class='div_form_label_selector'>
+		     		<input id='week_repetitionKind' name='repetitionKind' value='week' 
+		     		       type="radio" onclick="openrepetitionform('week')" />
+					<span class='portlet-form-field-label'>
+						Esecuzione settimanale
+					</span>
+				</div>
+				<div id='week_repetitionDiv_lbl' class='div_form_label' style='display:none;'>
+					&nbsp;
+				</div>
+				<div id='week_repetitionDiv_form' style='display:none;' class="div_form_container" >
+					<div class="div_form_margin" >
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<span class='portlet-form-field-label'>
+									Ogni n settimane
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<select name='week_repetition_n' id='week_repetition_n' >
+								<%
+								for(int i=1; i<=52; i++) {
+									out.write("<option value='"+i+"'>"+i+"</option>");
+								}
+								%>
+								</select>
+							</div>	
+						</div>
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<span class='portlet-form-field-label'>
+									Nei giorni
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<input id='day_in_week_rep_sun' type='checkbox' value='SUN'>Dom
+								<input id='day_in_week_rep_mon' type='checkbox' value='MON'>Lun
+								<input id='day_in_week_rep_tue' type='checkbox' value='TUE'>Mar
+								<input id='day_in_week_rep_wed' type='checkbox' value='WED'>Mer
+								<input id='day_in_week_rep_thu' type='checkbox' value='THU'>Gio
+								<input id='day_in_week_rep_fri' type='checkbox' value='FRI'>Ven
+								<input id='day_in_week_rep_sat' type='checkbox' value='SAT'>Sab
+							</div>	
+						</div>
+					</div>
+				</div>
+				<div style='clear:left;'></div>
+			</div>
+			
+			
+			
+			<!-- ******* per month execution **************** -->
+			<div class="div_form_row" >	
+		     	<div class='div_form_label_selector'>
+		     		<input id='month_repetitionKind' name='repetitionKind' value='month' 
+		     		       type="radio" onclick="openrepetitionform('month')" />
+					<span class='portlet-form-field-label'>
+						Esecuzione mensile
+					</span>
+				</div>
+				<div id='month_repetitionDiv_lbl' class='div_form_label' style='display:none;'>
+					&nbsp;
+				</div>
+				<div  id='month_repetitionDiv_form' style='display:none;' class="div_form_container" >
+					<div class="div_form_margin" >
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<input id='month_selection_interval' name='month_selection' type='radio' checked='true'>
+								<span class='portlet-form-field-label'>
+									Ogni n mesi
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<select name='monthrep_n' id='monthrep_n' >
+								<%
+								for(int i=1; i<=12; i++) {
+									out.write("<option value='"+i+"'>"+i+"</option>");
+								}
+								%>
+								</select>
+							</div>	
+						</div>
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<input id='month_selection_checks' name='month_selection' type='radio'>
+								<span class='portlet-form-field-label'>
+									Nei mesi
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<input name='monthrep_jan' id='monthrep_jan' type='checkbox' value='JAN'>Gen
+								<input name='monthrep_feb' id='monthrep_feb' type='checkbox' value='FEB'>Feb
+								<input name='monthrep_mar' id='monthrep_mar' type='checkbox' value='MAR'>Mar
+								<input name='monthrep_apr' id='monthrep_apr' type='checkbox' value='APR'>Apr
+								<input name='monthrep_may' id='monthrep_may' type='checkbox' value='MAY'>Mag
+								<input name='monthrep_jun' id='monthrep_jun' type='checkbox' value='JUN'>Giu
+								<input name='monthrep_jul' id='monthrep_jul' type='checkbox' value='JUL'>Lug
+								<input name='monthrep_aug' id='monthrep_aug' type='checkbox' value='AUG'>Ago
+								<input name='monthrep_sep' id='monthrep_sep' type='checkbox' value='SEP'>Set
+								<input name='monthrep_oct' id='monthrep_oct' type='checkbox' value='OCT'>Ott
+								<input name='monthrep_nov' id='monthrep_nov' type='checkbox' value='NOV'>Now
+								<input name='monthrep_dic' id='monthrep_dic' type='checkbox' value='DIC'>Dic			
+							</div>	
+						</div>
+						<br/>
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<input id='dayinmonth_selection_interval' name='dayinmonth_selection' type='radio' checked='true'>
+								<span class='portlet-form-field-label'>
+									Il giorno
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<select name='dayinmonthrep_n' id='dayinmonthrep_n' >
+								<%
+								for(int i=1; i<=31; i++) {
+									out.write("<option value='"+i+"'>"+i+"</option>");
+								}
+								%>
+								</select>
+							</div>	
+						</div>
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+							    <input id='dayinmonth_selection_checks' name='dayinmonth_selection' type='radio'>
+								<span class='portlet-form-field-label'>
+									Nelle settimane
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week1' type='radio' value='1'>Prima
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week2' type='radio' value='2'>Seconda
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week3' type='radio' value='3'>Terza
+								<input name='dayinmonthrep_week' id='dayinmonthrep_week4' type='radio' value='4'>Quarta
+								<input name='dayinmonthrep_week' id='dayinmonthrep_weekL' type='radio' value='L'>Ultima
+							</div>	
+						</div>
+						<div class="div_form_row" >
+							<div class='div_form_label'>
+								<span class='portlet-form-field-label'>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nei giorni
+								</span>
+							</div>
+							<div class='div_form_field'>
+								<input name='dayinmonthrep_sun' id='dayinmonthrep_sun' type='checkbox' value='SUN'>Dom
+								<input name='dayinmonthrep_mon' id='dayinmonthrep_mon' type='checkbox' value='MON'>Lun
+								<input name='dayinmonthrep_tue' id='dayinmonthrep_tue' type='checkbox' value='TUE'>Mar
+								<input name='dayinmonthrep_wed' id='dayinmonthrep_wed' type='checkbox' value='WED'>Mer
+								<input name='dayinmonthrep_thu' id='dayinmonthrep_thu' type='checkbox' value='THU'>Gio
+								<input name='dayinmonthrep_fri' id='dayinmonthrep_fri' type='checkbox' value='FRI'>Ven
+								<input name='dayinmonthrep_sat' id='dayinmonthrep_sat' type='checkbox' value='SAT'>Sab
+							</div>	
+						</div>
+					</div>
+				</div>
+				<div style='clear:left;'></div>
+			</div>
+			
+			
 		</div>
 	</div>
+		     
 
-
-
+	<div style='clear:left;'></div>
 	<br/>
 
-
+	
+	
+	<script>
+		fillFormFromRepetitionString('<%=triggerInfo.getChronString()%>');
+	</script>
+	
+	
 
 	<spagobi:error/>
 

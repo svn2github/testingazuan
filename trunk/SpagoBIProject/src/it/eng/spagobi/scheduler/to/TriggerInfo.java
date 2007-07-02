@@ -10,6 +10,7 @@ public class TriggerInfo {
 	private String triggerDescription = "";
 	private String startDate = "";
 	private String startTime = "";
+	private String chronString = "";
 	private String endDate = "";
 	private String endTime = "";
 	private String repeatInterval = "";
@@ -70,6 +71,12 @@ public class TriggerInfo {
 	}
 	public void setSaveOptions(Map saveOptions) {
 		this.saveOptions = saveOptions;
+	}
+	public String getChronString() {
+		return chronString;
+	}
+	public void setChronString(String chronString) {
+		this.chronString = chronString;
 	}
 	
 }

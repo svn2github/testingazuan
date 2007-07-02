@@ -226,6 +226,7 @@ public class TriggerManagementModule extends AbstractModule {
 			String triggerDescription  = (String)request.getAttribute("triggerdescription");	
 			String startdate  = (String)request.getAttribute("startdate");	
 			String starttime = (String)request.getAttribute("starttime");	
+			String chronstr = (String)request.getAttribute("chronstring");
 			String enddate = (String)request.getAttribute("enddate");	
 			String endtime = (String)request.getAttribute("endtime");	
 			String repeatinterval = (String)request.getAttribute("repeatInterval");
@@ -234,6 +235,7 @@ public class TriggerManagementModule extends AbstractModule {
 			triggerInfo.setRepeatInterval(repeatinterval);
 			triggerInfo.setStartDate(startdate);
 			triggerInfo.setStartTime(starttime);
+			triggerInfo.setChronString(chronstr);
 			triggerInfo.setTriggerDescription(triggerDescription);
 			triggerInfo.setTriggerName(triggername);
 			
@@ -413,6 +415,7 @@ public class TriggerManagementModule extends AbstractModule {
 			message.append(" triggerDescription=\""+tInfo.getTriggerDescription()+"\" ");
 			message.append(" startDate=\""+tInfo.getStartDate()+"\" ");
 			message.append(" startTime=\""+tInfo.getStartTime()+"\" ");
+			message.append(" chronString=\""+tInfo.getChronString()+"\" ");
 			String enddate = tInfo.getEndDate();
 			String endtime = tInfo.getEndTime();
 			if(!enddate.trim().equals("")){

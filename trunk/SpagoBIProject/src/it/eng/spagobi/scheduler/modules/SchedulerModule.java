@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -299,7 +300,7 @@ public class SchedulerModule extends AbstractModule {
 				"Missing trigger group name! Using default group...");
 			triggerGroup = Scheduler.DEFAULT_GROUP;
 		}
-		SimpleTrigger trigger = (SimpleTrigger) scheduler.getTrigger(triggerName, triggerGroup);
+		Trigger trigger = (Trigger) scheduler.getTrigger(triggerName, triggerGroup);
 		if (trigger == null) {
 			SpagoBITracer.critical("SCHEDULER", this.getClass().getName(), "getJobSchedulationDefinition", 
 				"Trigger with name '" + triggerName + "' not found in group '" + triggerGroup + "'!");
@@ -311,12 +312,13 @@ public class SchedulerModule extends AbstractModule {
 		loadTriggerIntoResponse(response, trigger);
 	}
 
-	private void loadTriggerIntoResponse(SourceBean response, SimpleTrigger trigger) throws SourceBeanException {
+	private void loadTriggerIntoResponse(SourceBean response, Trigger trigger) throws SourceBeanException {
 		StringBuffer buffer = new StringBuffer("<TRIGGER_DETAILS ");
 		buffer.append(" ");
 		String triggerName = trigger.getName();
 		String triggerDescription = trigger.getDescription();
-		//String triggerCalendarName = trigger.getCalendarName();
+		// get job data map
+		JobDataMap jdm = trigger.getJobDataMap();
 		
 		Date triggerStartTime = trigger.getStartTime();
 		String triggerStartDateStr = "";
@@ -360,28 +362,37 @@ public class SchedulerModule extends AbstractModule {
 			triggerEndTimeStr = ((hour < 10) ? "0" : "") + hour + ":" + ((minute < 10) ? "0" : "") + minute;
 		}
 		
-		String triggerRepeatInterval = new Long(trigger.getRepeatInterval()).toString();
 		buffer.append(" triggerName=\"" + (triggerName != null ? triggerName : "") + "\"");
 		buffer.append(" triggerDescription=\"" + (triggerDescription != null ? triggerDescription : "") + "\"");
-		//buffer.append(" triggerCalendarName=\"" + (triggerCalendarName != null ? triggerCalendarName : "") + "\"");
 		buffer.append(" triggerStartDate=\"" + triggerStartDateStr + "\"");
 		buffer.append(" triggerStartTime=\"" + triggerStartTimeStr + "\"");
 		buffer.append(" triggerEndDate=\"" + triggerEndDateStr + "\"");
 		buffer.append(" triggerEndTime=\"" + triggerEndTimeStr + "\"");
+		/*
+		String triggerRepeatInterval = new Long(trigger.getRepeatInterval()).toString();
 		buffer.append(" triggerRepeatInterval=\"" + triggerRepeatInterval + "\"");
+		*/
+		// extract the chron string and add it the source bean
+		String chronStr = jdm.getString("chronString");
+		if((chronStr == null) || (chronStr.trim().equals(""))) {
+			chronStr = "single{}";
+		}
+		buffer.append(" triggerChronString=\"" + chronStr + "\"");
 		buffer.append(" >");
 		
-		
-		
-		JobDataMap jdm = trigger.getJobDataMap();
+		// extract other parameters and put them into source bean
 		buffer.append("<JOB_PARAMETERS>");
 		if (jdm != null && !jdm.isEmpty()) {
 			String[] keys = jdm.getKeys();
 			if (keys != null && keys.length > 0) {
 				for (int i = 0; i < keys.length; i++) {
-					buffer.append("<JOB_PARAMETER ");
 					String key = keys[i];
 					String value = jdm.getString(key);
+					// already extracted and processed
+					if(key.equals("chronString")) {
+						continue;
+					}
+					buffer.append("<JOB_PARAMETER ");
 					if (value == null) {
 						SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 								              "loadJobDetailIntoResponse", 
@@ -394,33 +405,6 @@ public class SchedulerModule extends AbstractModule {
 			}
 		}
 		buffer.append("</JOB_PARAMETERS>");
-		
-		
-		
-		
-		/*
-		JobDataMap jdm = trigger.getJobDataMap();
-		String queryStr = jdm.getString("parameters");
-		buffer.append(" queryStr=\"" + queryStr + "\"");
-		
-		String storeoutput = jdm.getString("storeoutput");
-		if (storeoutput != null && storeoutput.equalsIgnoreCase("true")) {
-			buffer.append(" storeoutput=\"true\"");
-			buffer.append(" storename=\"" + jdm.getString("storename") + "\"");
-			buffer.append(" storedescription=\"" + jdm.getString("storedescription") + "\"");
-			buffer.append(" lengthhistory=\"" + jdm.getString("lengthhistory") + "\"");
-			String storeassnapshot = jdm.getString("storeassnapshot");
-			if (storeassnapshot != null && storeassnapshot.equalsIgnoreCase("true")) {
-				buffer.append(" storeassnapshot=\"true\"");
-			} else {
-				buffer.append(" storeasdocument=\"true\"");
-				buffer.append(" pathdocument=\"" + jdm.getString("pathdocument") + "\"");
-			}
-		} else {
-			buffer.append(" storeoutput=\"false\"");
-		}
-		*/
-		
 		
 		buffer.append("</TRIGGER_DETAILS>");
 		SourceBean triggerSB = SourceBean.fromXMLString(buffer.toString());
@@ -556,7 +540,7 @@ public class SchedulerModule extends AbstractModule {
 					startCal.set(startCal.MINUTE, new Integer(startMinute).intValue());
 				}
 				Date startDate = startCal.getTime();
-				// get the end date param (format yyyy-mm-gg) and end time (format hh:mm:ss)
+				//	get the end date param (format yyyy-mm-gg) and end time (format hh:mm:ss)
 				Date endDate = null;
 				String endDateStr = (String)request.getAttribute("endDate");
 				if(endDateStr!=null){
@@ -575,6 +559,7 @@ public class SchedulerModule extends AbstractModule {
 					}
 					endDate = endCal.getTime();
 				}
+				/*
 				// get the repeat interval
 				long repeatInterval = -1;
 				String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
@@ -596,8 +581,23 @@ public class SchedulerModule extends AbstractModule {
 					}
 					
 				}
-				// create trigger
-				SimpleTrigger trigger = new SimpleTrigger();
+				*/
+				
+				
+				// get the chron string
+				String chronStr = (String) request.getAttribute("chronString");
+				// add chron string to job parameters
+				jdm.put("chronString", chronStr);
+				// get quartz chron expression
+				String chronExp = getChronExpression(chronStr, startCal, startDate);
+				Trigger trigger = null;
+				if(chronExp==null) {
+					trigger = new SimpleTrigger();
+				} else {
+					CronTrigger crontrigger = new CronTrigger();
+					crontrigger.setCronExpression(chronExp);
+					trigger = crontrigger;
+				}
 				trigger.setName(triggerName);
 				trigger.setDescription(triggerDescription);
 				trigger.setGroup(triggerGroup);
@@ -605,16 +605,20 @@ public class SchedulerModule extends AbstractModule {
 				if(endDate!=null) {
 					trigger.setEndTime(endDate);
 				}
+				/*
 				if(repeatInterval!=-1) {
 					trigger.setRepeatInterval(repeatInterval);
 				}
 				if(repeatCount!=0) {
 					trigger.setRepeatCount(repeatCount);
 				}
+				*/
 				trigger.setJobName(jobName);
 			    trigger.setJobGroup(jobGroup);
 			    trigger.setJobDataMap(jdm);
 			    trigger.setVolatility(false);
+			
+			    
 				// check if the trigger already exists 
 			    boolean exists = false;
 			    Trigger[] jobTrgs = scheduler.getTriggersOfJob(jobName, jobGroup);
@@ -654,6 +658,103 @@ public class SchedulerModule extends AbstractModule {
 		}
 	}
 
+	
+	
+	private String getChronExpression(String chronStr, Calendar sc, Date sd) {
+		String chronExp = null;
+		try{
+			sc.setTime(sd);
+			int day = sc.get(Calendar.DAY_OF_MONTH);
+			int month = sc.get(Calendar.MONTH);
+			int year = sc.get(Calendar.YEAR);
+			int hour = sc.get(Calendar.HOUR_OF_DAY);
+			int minute = sc.get(Calendar.MINUTE);
+			String type = "";
+	    	String params = "";
+	    	if(chronStr.indexOf("{")!=-1) {
+	    		int indFirstBra = chronStr.indexOf("{");
+	    		type = chronStr.substring(0, indFirstBra);
+	    		params = chronStr.substring((indFirstBra+1), (chronStr.length()-1));
+	    	} else {
+	    		return chronExp;
+	    	}
+	    	if(type.equals("single")) {
+	    		return chronExp; // this will be a normal trigger
+	    	}
+	    	if(type.equals("minute")) {
+	    		int indeq = params.indexOf("=");
+	    		String numrep = params.substring(indeq+1);
+	    		chronExp = "0 0/"+numrep+" * * * ? *";
+	    	}
+	    	if(type.equals("hour")) {
+	    		int indeq = params.indexOf("=");
+	    		String numrep = params.substring(indeq+1);
+	    		chronExp = "0 "+minute+" 0/"+numrep+" * * ? *";
+	    	}
+	    	if(type.equals("day")) {
+	    		int indeq = params.indexOf("=");
+	    		String numrep = params.substring(indeq+1);
+	    		chronExp = "0 "+minute+" "+hour+" 1/"+numrep+" * ? *";
+	    	}
+	    	if(type.equals("week")) {
+	    		int indeq = params.indexOf("=");
+	    		int indsplit = params.indexOf(";");
+	    		int ind2eq = params.indexOf("=", (indeq + 1));
+	    		String numrep = params.substring((indeq+1), indsplit);
+	    		String daysstr = params.substring(ind2eq+1);
+	    		if( (daysstr==null) || (daysstr.trim().equals(""))) daysstr = "MON";
+	    		if(daysstr.endsWith(",")) daysstr = daysstr.substring(0, (daysstr.length() - 1));
+	    		chronExp = "0 "+minute+" "+hour+" ? * "+daysstr+"/"+numrep+" *";
+	    	}
+	    	if(type.equals("month")) {
+	    		String numRep = "";
+	    		String selmonths = "";
+	    		String dayRep = "";
+	    		String weeks = "";
+	    		String days = "";
+	    		String[] parchuncks = params.split(";");
+	    		for(int i=0; i<parchuncks.length; i++) {
+	    			String parchunk = parchuncks[i];
+	    			String[] singleparchunks = parchunk.split("=");
+	    			String key = singleparchunks[0];
+	    			String value = singleparchunks[1];
+	    			value = value.trim();
+	    			if(value.endsWith(",")) {
+    					value.substring(0, (value.length()-1));
+    				}
+	    			if(key.equals("numRepetition")) numRep= value;
+	    			if(key.equals("months")) selmonths= value;
+	    			if(key.equals("dayRepetition")) dayRep= value;
+	    			if(key.equals("weeks")) weeks= value;
+	    			if(key.equals("days")) days= value; 
+	    		}
+	            String monthcron = "";
+	            if(selmonths.equals("NONE")){
+	            	monthcron = month + "/" + numRep;
+	            } else {
+	            	if(selmonths.equals("")) selmonths = "*";
+	            	monthcron = selmonths;
+	            }
+	            String daycron = "?";
+	            if( weeks.equals("NONE") && days.equals("NONE") ){
+	            	daycron = dayRep;
+	            }
+	            String dayinweekcron = "";
+	            if( !weeks.equals("NONE") && !days.equals("NONE") ){
+	            	if(days.equals("")) days = "*";
+	            	dayinweekcron = days;
+	            	if(!weeks.equals("")) 
+	            		dayinweekcron = dayinweekcron + "#" + weeks;
+	            }
+	    		chronExp = "0 "+minute+" "+hour+" "+daycron+" "+monthcron+" "+dayinweekcron+ " *";
+	    	}
+	    } catch (Exception e) {
+	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+	    						"getChronExpression", "Error while generating quartz chron expression", e);
+	    }
+		return chronExp;
+	}
+	
 	
 	
 	

@@ -383,9 +383,7 @@ public class JPivotDriver implements IEngineDriver {
 			String valueAccessPar = "";
 			// get the user functionalities associated to the execution role
 			Collection profFuncts = profile.getFunctionalitiesByRole(roleName);
-				
 			String dapv = "{"; //data access parameter value (dapv)
-			
 			// trasnform template bytes into a string
 			String templateStr = new String(templateBy);
 			// read the template as a sourcebena
@@ -415,29 +413,7 @@ public class JPivotDriver implements IEngineDriver {
 				dapv = dapv.substring(0, dapv.length()-1);
 			}
 			dapv = dapv + "}";
-			
-			pars.put("dimension_access_rules", dapv);
-			
-			// transform each data access token allowed into the right
-			// sintax for jpivot engine and add them into the parameter value to send
-			/*
-			Iterator iterdat = dataAccessTokens.iterator();
-		    while(iterdat.hasNext()) {
-		    	String accToken = (String)iterdat.next();
-		    	accToken = accToken.replaceFirst("/", "[");
-		    	if(accToken.indexOf("/")==-1){
-		    		continue; // means that the path has only one element (only the dimension name)
-		    	}
-		    	accToken = accToken.replaceAll("/", "].[");
-		    	accToken = accToken + "]";
-		    	if(iterdat.hasNext())
-		    		valueAccessPar = valueAccessPar + accToken + ",";
-		    	else valueAccessPar = valueAccessPar + accToken;
-		    }
-		    */
-		    
-		    
-		    
+			pars.put("dimension_access_rules", dapv);		    
 		} catch(Exception e) {
 			return pars;
 		}
@@ -520,19 +496,6 @@ public class JPivotDriver implements IEngineDriver {
 						memberName = GeneralUtilities.substituteProfileAttributesInString(memberName, profile);
 						datoken += ",member=" + memberName + "=" + memberAccess;
 					}
-				}
-			}
-			
-			// get the profile attribute name
-			SourceBean attributeSB = (SourceBean)dimSB.getAttribute("ATTRIBUTE");
-			String paName = (String)attributeSB.getAttribute("name");
-	        // get the value from profile
-			Object paValueObj = profile.getUserAttribute(paName);
-			if(paValueObj!=null) {
-				if(paValueObj instanceof String) {
-					datoken = (String)paValueObj;
-				} else {
-					datoken = paValueObj.toString();
 				}
 			}
 		} catch (Exception e) {

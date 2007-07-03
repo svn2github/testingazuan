@@ -31,7 +31,6 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.soap.axis.client.AdapterAxisProxy;
-import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
@@ -274,7 +273,10 @@ public class JobManagementModule extends AbstractModule {
 			// create the list of new biobject selected
 			List biobj_sel_now = new ArrayList();
 		    // get the list of biobject id from the request
-			List biobjIdsFromRequest = request.getAttributeAsList("biobject");
+			String sel_biobj_ids_str = (String)request.getAttribute("selected_biobject_ids");
+			String[] sel_biobj_ids_arr = sel_biobj_ids_str.split(",");
+			List biobjIdsFromRequest = Arrays.asList(sel_biobj_ids_arr);
+			//List biobjIdsFromRequest = request.getAttributeAsList("biobject");
 			// update the job information
 			Iterator iterBiobjIdsFromRequest = biobjIdsFromRequest.iterator();
 			while(iterBiobjIdsFromRequest.hasNext()) {

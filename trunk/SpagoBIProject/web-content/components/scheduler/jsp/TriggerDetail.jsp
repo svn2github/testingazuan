@@ -178,21 +178,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     		if($('dayinmonth_selection_checks').checked) {
     			repStr = repStr + 'dayRepetition=0;';
     			repStr = repStr + 'weeks=';
-    			if($('dayinmonthrep_week1').checked) repStr = repStr + '1';
-    			if($('dayinmonthrep_week2').checked) repStr = repStr + '2';
-    			if($('dayinmonthrep_week3').checked) repStr = repStr + '3';
-    			if($('dayinmonthrep_week4').checked) repStr = repStr + '4';
-    			if($('dayinmonthrep_weekL').checked) repStr = repStr + 'L';
-    			repStr = repStr + ';';
+    			weekstr = '';
+    			if($('dayinmonthrep_week1').checked) weekstr = weekstr + '1';
+    			if($('dayinmonthrep_week2').checked) weekstr = weekstr + '2';
+    			if($('dayinmonthrep_week3').checked) weekstr = weekstr + '3';
+    			if($('dayinmonthrep_week4').checked) weekstr = weekstr + '4';
+    			if($('dayinmonthrep_weekL').checked) weekstr = weekstr + 'L';
+    			if(weekstr=='') weekstr='NONE';
+    			repStr = repStr + weekstr + ';';
     			repStr = repStr + 'days=';
-    			if($('dayinmonthrep_sun').checked) repStr = repStr + 'SUN,';
-    			if($('dayinmonthrep_mon').checked) repStr = repStr + 'MON,';
-    			if($('dayinmonthrep_tue').checked) repStr = repStr + 'TUE,';
-    			if($('dayinmonthrep_wed').checked) repStr = repStr + 'WED,';
-    			if($('dayinmonthrep_thu').checked) repStr = repStr + 'THU,';
-    			if($('dayinmonthrep_fri').checked) repStr = repStr + 'FRI,';
-    			if($('dayinmonthrep_sat').checked) repStr = repStr + 'SAT,';
-    			repStr = repStr + ';';
+    			daystr = '';
+    			if($('dayinmonthrep_sun').checked) daystr = daystr + 'SUN,';
+    			if($('dayinmonthrep_mon').checked) daystr = daystr + 'MON,';
+    			if($('dayinmonthrep_tue').checked) daystr = daystr + 'TUE,';
+    			if($('dayinmonthrep_wed').checked) daystr = daystr + 'WED,';
+    			if($('dayinmonthrep_thu').checked) daystr = daystr + 'THU,';
+    			if($('dayinmonthrep_fri').checked) daystr = daystr + 'FRI,';
+    			if($('dayinmonthrep_sat').checked) daystr = daystr + 'SAT,';
+    			if(daystr=='') daystr='NONE';
+    			repStr = repStr + daystr + ';';
     		}
     		repStr = repStr + '}';
     	}
@@ -219,7 +223,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     
     function fillFormFromRepetitionString(repStr) {
-    	
+
     	type = '';
     	params = '';
     	if(repStr.indexOf('{')!=-1) {
@@ -285,11 +289,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    		singleparchunks = parchunk.split('=');
 	    		key = singleparchunks[0];
 	    		value = singleparchunks[1];
-	    		if(key=='numRepetition') {
+	    		if(key=='dayRepetition') {
 	    			if(value!='0') {
 	    				$('month_selection_interval').checked = true;
 	    				selectOption($('monthrep_n'), value);
-	    			}
+	    			} 
 	    		}
 	    		if(key=='months'){
 	    			if(value!='NONE') {
@@ -318,6 +322,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    			if(value!='0') {
 	    				$('dayinmonth_selection_interval').checked = true;
 	    				selectOption($('dayinmonthrep_n'), value);
+	    			} else {
+	    				$('dayinmonth_selection_checks').checked = true;
 	    			}
 	    		}
 	    		if(key=='weeks'){
@@ -751,7 +757,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</div>
 				<div id='week_repetitionDiv_form' style='display:none;' class="div_form_container" >
 					<div class="div_form_margin" >
-						<div class="div_form_row" >
+						<!-- the following form row is hidden because quartz is not able to manage n week   -->
+						<div style='display:none;' class="div_form_row" >
 							<div class='div_form_label'>
 								<span class='portlet-form-field-label'>
 									<spagobi:message key="scheduler.everyNWeeks" bundle="component_scheduler_messages" />

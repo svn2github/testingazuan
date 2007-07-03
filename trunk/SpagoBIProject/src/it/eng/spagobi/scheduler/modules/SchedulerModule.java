@@ -701,6 +701,7 @@ public class SchedulerModule extends AbstractModule {
 	    		int indsplit = params.indexOf(";");
 	    		int ind2eq = params.indexOf("=", (indeq + 1));
 	    		String numrep = params.substring((indeq+1), indsplit);
+	    		Integer numrepInt = new Integer(numrep);
 	    		String daysstr = params.substring(ind2eq+1);
 	    		if( (daysstr==null) || (daysstr.trim().equals(""))) daysstr = "MON";
 	    		if(daysstr.endsWith(",")) daysstr = daysstr.substring(0, (daysstr.length() - 1));
@@ -720,7 +721,7 @@ public class SchedulerModule extends AbstractModule {
 	    			String value = singleparchunks[1];
 	    			value = value.trim();
 	    			if(value.endsWith(",")) {
-    					value.substring(0, (value.length()-1));
+    					value = value.substring(0, (value.length()-1));
     				}
 	    			if(key.equals("numRepetition")) numRep= value;
 	    			if(key.equals("months")) selmonths= value;
@@ -730,21 +731,32 @@ public class SchedulerModule extends AbstractModule {
 	    		}
 	            String monthcron = "";
 	            if(selmonths.equals("NONE")){
-	            	monthcron = month + "/" + numRep;
+	            	monthcron = (month + 1) + "/" + numRep;
 	            } else {
 	            	if(selmonths.equals("")) selmonths = "*";
 	            	monthcron = selmonths;
 	            }
 	            String daycron = "?";
 	            if( weeks.equals("NONE") && days.equals("NONE") ){
+	            	if(dayRep.equals("0")) dayRep = "1";
 	            	daycron = dayRep;
 	            }
-	            String dayinweekcron = "";
-	            if( !weeks.equals("NONE") && !days.equals("NONE") ){
+	            String dayinweekcron = "?";
+	            if(!days.equals("NONE")){
 	            	if(days.equals("")) days = "*";
 	            	dayinweekcron = days;
+	            }
+	            if( !weeks.equals("NONE")  ){
 	            	if(!weeks.equals("")) 
-	            		dayinweekcron = dayinweekcron + "#" + weeks;
+	            		if(weeks.equals("L")) dayinweekcron = dayinweekcron + weeks;
+	            		else dayinweekcron = dayinweekcron + "#" + weeks;
+	            		dayinweekcron = dayinweekcron.replaceFirst("SUN", "1");
+	            		dayinweekcron = dayinweekcron.replaceFirst("MON", "2");
+	            		dayinweekcron = dayinweekcron.replaceFirst("TUE", "3");
+	            		dayinweekcron = dayinweekcron.replaceFirst("WED", "4");
+	            		dayinweekcron = dayinweekcron.replaceFirst("THU", "5");
+	            		dayinweekcron = dayinweekcron.replaceFirst("FRI", "6");
+	            		dayinweekcron = dayinweekcron.replaceFirst("SAT", "7");
 	            }
 	    		chronExp = "0 "+minute+" "+hour+" "+daycron+" "+monthcron+" "+dayinweekcron+ " *";
 	    	}

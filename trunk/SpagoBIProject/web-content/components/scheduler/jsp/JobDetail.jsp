@@ -123,9 +123,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	
 	function fillParamCall() {
+	
+	    biobidstr = ''; 
+		checkBiObjs = document.getElementsByName('biobject');
+		for(i=0; i<checkBiObjs.length; i++) {
+		    checkBiObj = checkBiObjs[i];
+			if(checkBiObj.checked){
+			    if(biobidstr!='') {
+			    	biobidstr = biobidstr + ',';
+			    }
+				biobidstr = biobidstr + checkBiObj.value;
+			}
+		}
+		$('selected_biobject_ids').value = biobidstr;
+		
 		if(winDS!=null){
 			winDS.destroy();
 		}
+		
 		document.getElementById('formmsg').value='MESSAGE_DOCUMENTS_SELECTED';
 		document.getElementById('jobdetailform').submit();
 	}
@@ -319,6 +334,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <form id="jobdetailform" method="post" action="<%=formUrl%>" >
 	<input id="formmsg" type="hidden" name="MESSAGEDET" value="" />
 	<input id="splitterparameter" type="hidden" name="splitter" value="<%=splitter%>" />
+	<input id="selected_biobject_ids" type="hidden" name="selected_biobject_ids" value="" />
 
 <!-- *********************** PAGE TITLE ****************************** -->
 

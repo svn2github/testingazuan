@@ -10,6 +10,7 @@ import it.eng.spagobi.importexport.ITransformer;
 import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.managers.ScriptManager;
 import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.File;
@@ -46,6 +47,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		arrangeSubobjects(pathImpTmpFolder, archiveName);
 		buildCmsNodes(pathImpTmpFolder, archiveName);
 		changeDatabase(pathImpTmpFolder, archiveName);
+		adviseForBirtDocuments(pathImpTmpFolder, archiveName);
 		
 		// compress archive
 		try {
@@ -231,6 +233,85 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				if (conn != null && !conn.isClosed()) conn.close();
 			} catch (SQLException e) {
 				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",
+                           "Error while closing connection " + e);	
+			}
+		}
+	}
+	
+	
+	private void adviseForBirtDocuments(String pathImpTmpFolder, String archiveName) {
+		Connection conn = null;
+		try {
+			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
+			Statement stmt = conn.createStatement();
+			String sql = "SELECT ENGINE_ID FROM SBI_ENGINES " +
+				"WHERE DRIVER_NM LIKE '%it.eng.spagobi.drivers.birt.BirtReportDriver%'";
+			ResultSet birtEnginesRS = stmt.executeQuery(sql);
+			boolean errBirtDocsFound = false;
+			while (birtEnginesRS.next()) {
+				int engineId = birtEnginesRS.getInt("ENGINE_ID");
+				sql = "SELECT PATH FROM SBI_OBJECTS WHERE ENGINE_ID = " + engineId;
+				ResultSet docsRS = stmt.executeQuery(sql);
+				if (docsRS.next()) {
+					// get the input stream of the template file
+					String pathBiObj = docsRS.getString("PATH");
+					String pathFolderBiObj = pathImpTmpFolder + "/" + archiveName + "/contents" + pathBiObj;
+				    File fileFolderBiObj = new File(pathFolderBiObj);
+				    File[] files = fileFolderBiObj.listFiles();
+				    File templateFile = null;
+				    if (files != null && files.length > 0) {
+				    	templateFile = files[0];
+				    }
+				    if (templateFile != null && templateFile.exists()) {
+				    	FileInputStream fisTemplate = null;
+				    	try {
+					    	fisTemplate = new FileInputStream(templateFile);
+					    	byte[] template = GeneralUtilities.getByteArrayFromInputStream(fisTemplate);
+					    	String templateStr = new String (template);
+					    	if (templateStr.indexOf("org.eclipse.birt.report.data.oda.subjdbc") != -1) {
+								errBirtDocsFound = true;
+								break;
+					    	}
+				    	} finally {
+				    		if (fisTemplate != null) fisTemplate.close();
+				    	}
+				    }
+				}
+			}
+			if (errBirtDocsFound) {
+			    // create the directory for birt update manual task
+			    String pathFolderManualTask = pathImpTmpFolder + "/" + archiveName + 
+											  "/"+ImportExportConstants.MANUALTASK_FOLDER_NAME;
+			    String pathFolderImpQbeManualTask = pathFolderManualTask + "/BirtDocumentsUpdate";
+			    File fileFolderImpQbeManualTask = new File(pathFolderImpQbeManualTask);
+			    fileFolderImpQbeManualTask.mkdirs();
+			    // generate the readme file
+			    String plc = PortletUtilities.getPortalLanguageCode();
+			    ClassLoader cLoad = Thread.currentThread().getContextClassLoader();
+			    InputStream instrIS = cLoad.getResourceAsStream("it/eng/spagobi/importexport/mt/birtDocumentsUpdateManualTask_"+plc);
+			    FileOutputStream readmeFos = new FileOutputStream(pathFolderImpQbeManualTask + "/Readme.txt");
+			    GeneralUtilities.flushFromInputStreamToOutputStream(instrIS, readmeFos, true);
+			    // create properties file 
+			    String pathFileProperties = pathFolderManualTask + "/" + "BirtDocumentsUpdate.properties";
+			    FileOutputStream filePropertiesOs = null;
+			    try {
+				    filePropertiesOs = new FileOutputStream(pathFileProperties);
+				    String propertiesStr = "name=" + PortletUtilities.getMessage("impexp.manualtask.birtDocsUpdate", "component_impexp_messages");
+				    filePropertiesOs.write(propertiesStr.getBytes());
+				    filePropertiesOs.flush();
+			    } finally {
+			    	if (filePropertiesOs != null) filePropertiesOs.close();
+			    }
+			}
+			
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "adviseForBirtDocuments",
+		                           "Error while changing database " + e);	
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) conn.close();
+			} catch (SQLException e) {
+				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "adviseForBirtDocuments",
                            "Error while closing connection " + e);	
 			}
 		}

@@ -328,7 +328,7 @@ public class BirtReportServlet extends HttpServlet {
 		renderContext.setBaseURL(contextPath + "/frameset");
 		//renderContext.setSupportedImageFormats( svgFlag ? "PNG;GIF;JPG;BMP;SVG" : "PNG;GIF;JPG;BMP" ); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		HashMap<String, Object> appContext = new HashMap<String, Object>();
+		HashMap appContext = new HashMap();
 		//appContext.put(DataEngine.DATASET_CACHE_OPTION, Boolean.TRUE);
 		appContext.put(EngineConstants.APPCONTEXT_BIRT_VIEWER_HTTPSERVET_REQUEST, servletRequest);
 		appContext.put(EngineConstants.APPCONTEXT_CLASSLOADER_KEY, BirtReportServlet.class.getClassLoader());
@@ -359,7 +359,7 @@ public class BirtReportServlet extends HttpServlet {
 			dateformat = dateformat.replaceAll("Y", "y");
 		}
 		
-		HashMap<String, Object> toReturn = new HashMap<String, Object>();
+		HashMap toReturn = new HashMap();
 		IGetParameterDefinitionTask task = birtReportEngine.createGetParameterDefinitionTask(design);
 		Collection paramsColl = task.getParameterDefns(false);
 		Iterator it = paramsColl.iterator();

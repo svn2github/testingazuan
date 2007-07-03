@@ -363,6 +363,10 @@ public class ExporterMetadata {
 					hibObjParuseId.setSbiObjParFather(objparfather);
 					SbiObjParuse hibObjParuse = new SbiObjParuse(hibObjParuseId);
 					hibObjParuse.setFilterColumn(objparuse.getFilterColumn());
+					hibObjParuse.setProg(objparuse.getProg());
+					hibObjParuse.setPreCondition(objparuse.getPreCondition());
+					hibObjParuse.setPostCondition(objparuse.getPostCondition());
+					hibObjParuse.setLogicOperator(objparuse.getLogicOperator());
 					session.save(hibObjParuse);
 					tx.commit();	
 				}

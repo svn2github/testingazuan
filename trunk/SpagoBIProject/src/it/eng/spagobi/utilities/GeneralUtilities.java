@@ -165,13 +165,20 @@ public class GeneralUtilities {
 					os.write(b, 0, c);
 			}
 			os.flush();
-			if(closeStreams) {
-				os.close();
-				is.close();
-			}
 		} catch (IOException ioe) {
 			SpagoBITracer.major(UtilitiesConstants.NAME_MODULE, GeneralUtilities.class.getName(),
 					           "flushFromInputStreamToOutputStream"," Exception", ioe);
+		} finally {
+			if (closeStreams) {
+				try {
+					if (os != null) os.close();
+					if (is != null) is.close();
+				} catch (IOException e) {
+					SpagoBITracer.major(UtilitiesConstants.NAME_MODULE, GeneralUtilities.class.getName(),
+					           "flushFromInputStreamToOutputStream"," Error closing streams", e);
+				}
+				
+			}
 		}
 	}
 	
@@ -416,8 +423,8 @@ public class GeneralUtilities {
 		replacement = prefix + newListOfValues + suffix;
 		
 		// replaces the profile attribute declaration
-		statement = statement.replaceAll("${" + attribute + "}", replacement);
-		//statement = statement.replace("${" + attribute + "}", replacement);
+		//statement = statement.replaceAll("${" + attribute + "}", replacement);
+		statement = statement.replace("${" + attribute + "}", replacement);
 
 		profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
 		if (profileAttributeStartIndex != -1) 
@@ -587,7 +594,7 @@ public class GeneralUtilities {
 	    */
 		//input = replace(input, " ", "&#160;");
 		input = replace(input, " ", "_");
-	    return input;
+		return input;
 	 } 
 	
 	/**

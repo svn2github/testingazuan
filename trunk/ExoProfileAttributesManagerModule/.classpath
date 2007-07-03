@@ -8,5 +8,6 @@
 	<classpathentry kind="var" path="EXO_HOME/common/lib/exo-platform.container-2.0.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
 	<classpathentry kind="lib" path="lib/spago-core-2.1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
 	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
 </classpath>

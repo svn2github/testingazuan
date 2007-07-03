@@ -144,7 +144,7 @@ public class ExoProfileAttributeManagerModule extends AbstractModule {
 			if(groupHandler==null) throw new Exception("Group Handler not retrived");
 			PageList pagelist = userHandler.getUserPageList(10);
 			List allUser = pagelist.getAll();
-			allUser = Utilities.getExoUserFiltered(allUser, groupHandler);
+			allUser = Utilities.getExoUserFiltered(allUser);
 			Iterator iterUser = allUser.iterator();
 			while(iterUser.hasNext()) {
 				User user = (User)iterUser.next();

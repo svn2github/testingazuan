@@ -104,7 +104,7 @@ public class ExoProfileAttributeManagerListUserModule extends AbstractBasicListM
 			if(groupHandler==null) throw new Exception("Group handler component not retrived");
 			PageList pagelist = userHandler.getUserPageList(10);
 			List allUser = pagelist.getAll();
-			allUser = Utilities.getExoUserFiltered(allUser, groupHandler);
+			allUser = Utilities.getExoUserFiltered(allUser);
 			Iterator iterUser = allUser.iterator();
 			while(iterUser.hasNext()) {
 				User user = (User)iterUser.next();

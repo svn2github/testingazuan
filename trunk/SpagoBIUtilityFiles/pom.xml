@@ -20,7 +20,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <version>1.9.2</version>
+  <version>1.9.3</version>
   <artifactId>Installation_utilities</artifactId>
   <packaging>pom</packaging>
   <name>SpagoBIUtilityFiles</name>
@@ -59,19 +59,19 @@
 		    -->
 		    
 		    <!-- put external spagobi packages into SpagoBI -->
-		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.2.jar"
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.3.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9.3.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9.3.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.3.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2beta.jar"
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.3beta.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2beta.jar"
+		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.3beta.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.3.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 				
 		    <!-- delete hibernate configuration file for JOnAS -->
@@ -157,19 +157,19 @@
 			  overwrite="true"/>
 
 		    <!-- put external spagobi packages into SpagoBI -->
-		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.2.jar"
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.3.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9.3.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9.3.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.3.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2beta.jar"
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.3beta.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2beta.jar"
+		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.3beta.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>			    
-		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.3.jar"
 			  todir="${basedir}/../build/jboss-server/server/default/deploy/exoplatform.sar/spagobi.war/WEB-INF/lib"/>
 
 		    <!-- delete commons-logging library -->
@@ -261,19 +261,19 @@
 			  overwrite="true"/>
 
 		    <!-- put external spagobi packages into SpagoBI -->
-		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.2.jar"
+		    <copy file="${basedir}/../ExoPortalSecurityProvider/target/sbi.security.exo-1.9.3.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9.3.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9.3.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.3.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.2alpha.jar"
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.3alpha.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.2beta.jar"
+		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.3beta.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
-		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.2.jar"
+		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.3.jar"
 			  todir="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib"/>
 
 		    <!-- delete commons-logging library -->

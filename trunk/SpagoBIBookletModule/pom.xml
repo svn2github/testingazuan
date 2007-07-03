@@ -23,7 +23,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIBookletModule</artifactId>
   <packaging>war</packaging>
-  <version>1.9.2</version>
+  <version>1.9.3</version>
   <name>SpagoBIBookletModule</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -163,23 +163,23 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.drivers.api</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.3</version>
       <scope>system</scope>
-      <systemPath>${drivers.api.compiled.dir}/sbi.drivers.api-1.9.2.jar</systemPath>                
+      <systemPath>${drivers.api.compiled.dir}/sbi.drivers.api-1.9.3.jar</systemPath>                
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.3</version>
       <scope>system</scope>
       <systemPath>${spagobi.compiled.dir}</systemPath>
     </dependency>        
     <dependency>
       <groupId>spago</groupId>
       <artifactId>spagocms.core</artifactId>
-      <version>2.1.1</version>
+      <version>2.1.2</version>
       <scope>system</scope>
-      <systemPath>${spagobi.lib.dir}/spagocms-core-2.1.1.jar</systemPath>
+      <systemPath>${spagobi.lib.dir}/spagocms-core-2.1.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

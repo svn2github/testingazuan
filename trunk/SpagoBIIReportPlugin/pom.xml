@@ -24,7 +24,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIIReportPlugin</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.2</version>
+  <version>1.9.3</version>
   <name>SpagoBIIReportPlugin</name>
   <url>http://maven.apache.org</url>
   <properties>

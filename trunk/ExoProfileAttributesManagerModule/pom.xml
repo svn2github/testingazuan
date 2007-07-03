@@ -23,7 +23,7 @@
   <groupId>spagobi</groupId>
   <artifactId>ExoProfileAttributesManagerModule</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.2</version>
+  <version>1.9.3</version>
   <name>ExoProfileAttributesManagerModule</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -93,23 +93,23 @@
     <dependency>
       <groupId>exo</groupId>
       <artifactId>exo-platform.commons</artifactId>
-      <version>2.0.2</version>
+      <version>2.0.3</version>
       <scope>system</scope>
-      <systemPath>${exo.lib.dir}/exo-platform.commons-2.0.2.jar</systemPath>
+      <systemPath>${exo.lib.dir}/exo-platform.commons-2.0.3.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>exo</groupId>
       <artifactId>exo-platform.container</artifactId>
-      <version>2.0.2</version>
+      <version>2.0.3</version>
       <scope>system</scope>
-      <systemPath>${exo.lib.dir}/exo-platform.container-2.0.2.jar</systemPath>
+      <systemPath>${exo.lib.dir}/exo-platform.container-2.0.3.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>exo</groupId>
       <artifactId>exo-platform.services.organization.api</artifactId>
-      <version>2.0.2</version>
+      <version>2.0.3</version>
       <scope>system</scope>
-      <systemPath>${exo.lib.dir}/exo-platform.services.organization.api-2.0.2.jar</systemPath>
+      <systemPath>${exo.lib.dir}/exo-platform.services.organization.api-2.0.3.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>picocontainer</groupId>
@@ -128,7 +128,7 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.3</version>
       <scope>system</scope>
       <systemPath>${spagobi.compiled.dir}</systemPath>
     </dependency>

@@ -26,10 +26,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <artifactId>sbi.drivers.birt</artifactId>
+  <artifactId>sbi.drivers.talend</artifactId>
   <packaging>jar</packaging>
   <version>1.9.3</version>
-  <name>SpagoBIBirtReportDriver</name>
+  <name>SpagoBITalendDriver</name>
   <url>http://maven.apache.org</url>
   <build>
     <sourceDirectory>src</sourceDirectory>

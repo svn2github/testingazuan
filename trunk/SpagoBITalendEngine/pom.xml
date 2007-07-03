@@ -26,17 +26,17 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
-  <artifactId>SpagoBIWekaEngine</artifactId>
+  <artifactId>SpagoBITalendEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9.2beta</version>
-  <name>SpagoBIWekaEngine</name>
+  <version>1.9.3</version>
+  <name>SpagoBITalendEngine</name>
   <url>http://maven.apache.org</url>
   <build>
     <finalName>${artifactId}</finalName>
-    <sourceDirectory>JavaSource</sourceDirectory>
+    <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
-        <directory>JavaSource/</directory>
+        <directory>src/</directory>
         <targetPath>/</targetPath>
         <excludes>
           <exclude>**/*.java</exclude>
@@ -58,32 +58,53 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>ant</groupId>
-      <artifactId>ant</artifactId>
-      <version>1.5.1</version>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/ant-1.5.1.jar</systemPath>
+      <systemPath>${lib.dir}/commons-codec-1.3.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.5</version>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.2</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/commons-beanutils-1.5.jar</systemPath>
+      <systemPath>${lib.dir}/commons-fileupload-1.2.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>2.1</version>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.0.1</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/commons-collections-2.1.jar</systemPath>
+      <systemPath>${lib.dir}/commons-httpclient-3.0.1.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>commons-digester</groupId>
-      <artifactId>commons-digester</artifactId>
-      <version>1.7</version>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.0</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/commons-digester-1.7.jar</systemPath>
+      <systemPath>${lib.dir}/commons-io-1.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/commons-logging-1.1.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging-adapters</artifactId>
+      <version>1.1</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/commons-logging-adapters-1.1.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging-api</artifactId>
+      <version>1.1</version>
+      <scope>system</scope>
+      <systemPath>${lib.dir}/commons-logging-api-1.1.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>dom4j</groupId>
@@ -93,33 +114,12 @@
       <systemPath>${lib.dir}/dom4j.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>itext</groupId>
-      <artifactId>itext</artifactId>
-      <version>1.3.1</version>
+      <groupId>jug-lgpl</groupId>
+      <artifactId>jug-lgpl</artifactId>
+      <version>2.0.0</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/itext-1.3.1.jar</systemPath>
+      <systemPath>${lib.dir}/jug-lgpl-2.0.0.jar</systemPath>
     </dependency>
-    <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen-full</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${lib.dir}/jaxen-full.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>jcommon</groupId>
-      <artifactId>jcommon</artifactId>
-      <version>1.0.0</version>
-      <scope>system</scope>
-      <systemPath>${lib.dir}/jcommon-1.0.0.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>jdt-compiler</groupId>
-      <artifactId>jdt-compiler</artifactId>
-      <version>3.1.1</version>
-      <scope>system</scope>
-      <systemPath>${lib.dir}/jdt-compiler-3.1.1.jar</systemPath>
-    </dependency>      
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -128,23 +128,9 @@
       <systemPath>${lib.dir}/log4j-1.2.8.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>2.5.1-final-20040804</version>
-      <scope>system</scope>
-      <systemPath>${lib.dir}/poi-2.5.1-final-20040804.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>spago-core</groupId>
-      <artifactId>spago-core</artifactId>
-      <version>2.0.0</version>
-      <scope>system</scope>
-      <systemPath>${lib.dir}/spago-core-2.0.0.jar</systemPath>
-    </dependency>    
-    <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.utils</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.3</version>	
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -157,13 +143,6 @@
       <artifactId>servlet-api</artifactId>
       <version>2.4</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>weka</groupId>
-      <artifactId>weka</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${lib.dir}/weka.jar</systemPath>
     </dependency>
   </dependencies>
 </project>

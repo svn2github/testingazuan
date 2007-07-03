@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9.2</version>
+    <version>1.9.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIJasperReportEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9.2</version>
+  <version>1.9.3</version>
   <name>SpagoBIJasperReportEngine</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -137,7 +137,7 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.utils</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.3</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

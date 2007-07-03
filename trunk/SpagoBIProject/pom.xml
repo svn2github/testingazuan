@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9.2</version>
+    <version>1.9.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>spagobi</artifactId>
   <packaging>war</packaging>
-  <version>1.9.2</version>
+  <version>1.9.3</version>
   <name>SpagoBIProject</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -253,12 +253,12 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.drivers.api</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.3</version>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.securityprovider.api</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.3</version>
     </dependency>
     <dependency>
       <groupId>spago</groupId>
@@ -277,21 +277,21 @@
     <dependency>
       <groupId>spago</groupId>
       <artifactId>spagocms.core</artifactId>
-      <version>2.1.1</version>
+      <version>2.1.2</version>
       <scope>system</scope>
       <systemPath>${lib.dir}/spagocms-core-2.1.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spago</groupId>
       <artifactId>spagocms.executioninprocess</artifactId>
-      <version>2.1.1</version>
+      <version>2.1.2</version>
       <scope>system</scope>
       <systemPath>${lib.dir}/spagocms-executioninprocess-2.1.2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spago</groupId>
       <artifactId>spagocms.repositoryproviders</artifactId>
-      <version>2.1.1</version>
+      <version>2.1.2</version>
       <scope>system</scope>
       <systemPath>${lib.dir}/spagocms-repositoryproviders-2.1.2.jar</systemPath>
     </dependency>

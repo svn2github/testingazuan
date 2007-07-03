@@ -1,0 +1,46 @@
+INTRO:
+
+Some imported documents are relevant to a version of SpagoBIBirtReportEngine older than 1.9.3.
+Those documents use the plugin 'SPAGOBI ECLIPSE BIRT PLUGIN' for the definition of "External (or standard) JDBC Data Source":
+thanks to this plugin the connection to the data source were retrieved by the jndi tree on the server or it were directly created, without framework ODA usage.
+
+TODO:
+
+In case the current SpagoBI platform contains SpagoBIBirtReportEngine version 1.9.3, the mentionned plugin is no more supported. 
+In order to correct the document, you have to:
+- download document template;
+- open it with a text editor;
+- replace occurrences of string 'org.eclipse.birt.report.data.oda.subjdbc' with 'org.eclipse.birt.report.data.oda.jdbc';
+- upload the modified template.
+At this stage, if the document is executed, the engine will try to retrieve the connection to data source through ODA framework.
+If you want the connection to be retrieved from the server, you have to:
+- open the modified template with BIRT Report Designer 2.2.0 (SpagoBIBirtReportEngine 1.9.3 is compatible with this Birt version);
+- configure a report string parameter with name 'connection_name';
+- configure data sources 'Property Binding' section as follows:
+		JNDI URL: params["connection_name"]
+- upload the new template on SpagoBI document detail page;
+- define (if it is not present) a SpagoBI parameter which values are the connections' logical names as per file SpagoBIBirtReportEngine\WEB-INF\classes\engine-config.xml;
+- use the parameter in the Birt document setting as url name the string "connection_name".
+
+Example:
+	Suppose that engine-config.xml is as follows:
+	
+	<ENGINE-CONFIGURATION>
+	
+		<CONNECTION 	name="dwh1" 
+						isDefault="true" 
+						initialContext="java:comp/env"
+						resourceName="jdbc/dwh1"/>
+						
+		<CONNECTION 	name="dwh2" 
+						isDefault="false" 
+						initialContext="java:comp/env"
+						resourceName="jdbc/dwh2"/>
+						
+	</ENGINE-CONFIGURATION>
+	
+	Acceptable parameter values for parameter with 'connection_name' url name are "dwh1" or "dwh2".
+
+If the parameter is not configured in the document, connection defined in engine-config.xml with attribute 'isDefault="true"' wins (regardless of any parameter default value defined in the Birt report template).
+
+Note that since SpagoBIBirtReportEngine 1.9.3 engine-config.xml file can contains only jndi connections (with older versions you could define also direct connections).

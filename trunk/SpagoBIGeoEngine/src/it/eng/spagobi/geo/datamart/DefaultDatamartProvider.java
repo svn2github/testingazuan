@@ -110,7 +110,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
     	try{
 	    	String docLbl = (String)drillSB.getAttribute("document");
 	    	link += "DOCUMENT_LABEL=" + docLbl + "&amp;";
-	    	List paramSBs = (List)drillSB.getAttribute(PARAMETER);
+	    	List paramSBs = drillSB.getAttributeAsList(PARAMETER);
 	    	Iterator iterPar = paramSBs.iterator();
 	    	while(iterPar.hasNext()) {
 	    		SourceBean paramSB = (SourceBean)iterPar.next();

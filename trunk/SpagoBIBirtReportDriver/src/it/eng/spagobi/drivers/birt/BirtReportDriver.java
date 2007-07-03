@@ -118,6 +118,12 @@ public class BirtReportDriver implements IEngineDriver {
 		byte[] template = uploadedFile.getFileContent();
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
 		pars.put("template", bASE64Encoder.encode(template));
+		String templateFileName = uploadedFile.getFileName();
+		int index = templateFileName.lastIndexOf(".");
+		if (index != -1) {
+			templateFileName = templateFileName.substring(0, index);
+		}
+		pars.put("template_file_name", templateFileName);
 		// retrieving the date format
    		ConfigSingleton config = ConfigSingleton.getInstance();
 	    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");

@@ -31,12 +31,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
  */
 
-/*
- * Created on 3-mag-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package it.eng.spagobi.drivers.jpivot;
 
 import it.eng.spagobi.drivers.IEngineDriver;

@@ -20,12 +20,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-/**
- * Created on 22-feb-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package it.eng.spago.dbaccess.pool;
 
 import it.eng.spago.dbaccess.ConnectionPoolDescriptor;

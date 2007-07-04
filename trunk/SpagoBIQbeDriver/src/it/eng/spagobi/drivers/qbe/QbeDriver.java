@@ -1,21 +1,16 @@
 /**
  * 
- * LICENSE: see 'LICENSE.sbi.drivers.jasperreports.txt' file
+ * LICENSE: see 'LICENSE.sbi.drivers.qbe.txt' file
  * 
  */
 package it.eng.spagobi.drivers.qbe;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
-import it.eng.spagobi.bo.Subreport;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
-import it.eng.spagobi.bo.dao.DAOFactory;
-import it.eng.spagobi.bo.dao.IBIObjectDAO;
-import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
@@ -27,7 +22,6 @@ import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 

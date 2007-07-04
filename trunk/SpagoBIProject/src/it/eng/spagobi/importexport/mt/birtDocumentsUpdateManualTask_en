@@ -44,3 +44,9 @@ Example:
 If the parameter is not configured in the document, connection defined in engine-config.xml with attribute 'isDefault="true"' wins (regardless of any parameter default value defined in the Birt report template).
 
 Note that since SpagoBIBirtReportEngine 1.9.3 engine-config.xml file can contains only jndi connections (with older versions you could define also direct connections).
+
+DOCUMENTS TO MODIFY:
+
+Documents to modify for SpagoBIBirtReportEngine 1.9.3 are the following:
+
+Label - Name - Description

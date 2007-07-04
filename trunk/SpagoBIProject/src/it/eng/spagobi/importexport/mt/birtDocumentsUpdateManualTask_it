@@ -44,3 +44,9 @@ Esempio:
 Se il parametro non è configurato all'interno del documento, la connessione definita nel file engine-config.xml con attributo 'isDefault="true"' vince (indipendentemente da eventuali valori di default del parametro 'connection_name' definiti all'interno del template Birt).
 
 Dalla versione 1.9.3 di SpagoBIBirtReportEngine il file engine-config.xml può contenere solo connessioni JNDI (precedenti versioni permettevano la definizione di connessioni dirette).
+
+DOCUMENTI DA MODIFICARE:
+
+I documenti da modificare per SpagoBIBirtReportEngine 1.9.3 sono i seguenti:
+
+Etichetta - Nome - Descrizione

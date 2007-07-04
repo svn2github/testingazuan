@@ -44,10 +44,10 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		}
 		archiveName = archiveName.substring(0, archiveName.lastIndexOf('.'));
 
+		adviseForBirtDocuments(pathImpTmpFolder, archiveName);
 		arrangeSubobjects(pathImpTmpFolder, archiveName);
 		buildCmsNodes(pathImpTmpFolder, archiveName);
 		changeDatabase(pathImpTmpFolder, archiveName);
-		adviseForBirtDocuments(pathImpTmpFolder, archiveName);
 		
 		// compress archive
 		try {
@@ -217,7 +217,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				String url = jpivotEnginesRS.getString("MAIN_URL");
 				if (url != null && url.trim().endsWith("jpivotOlap.jsp")) {
 					url = url.substring(0, url.lastIndexOf("jpivotOlap.jsp")) + "JPivotServlet";
-					String updateEngineQuery = "UPDATE SBI_ENGINES SET MAIN_URL = " + url + " WHERE ENGINE_ID = " + engineId;
+					String updateEngineQuery = "UPDATE SBI_ENGINES SET MAIN_URL = '" + url + "' WHERE ENGINE_ID = " + engineId;
 					stmt.execute(updateEngineQuery);
 				}
 			}
@@ -247,14 +247,17 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 			String sql = "SELECT ENGINE_ID FROM SBI_ENGINES " +
 				"WHERE DRIVER_NM LIKE '%it.eng.spagobi.drivers.birt.BirtReportDriver%'";
 			ResultSet birtEnginesRS = stmt.executeQuery(sql);
-			boolean errBirtDocsFound = false;
+			String errBirtDocsFound = "";
 			while (birtEnginesRS.next()) {
 				int engineId = birtEnginesRS.getInt("ENGINE_ID");
-				sql = "SELECT PATH FROM SBI_OBJECTS WHERE ENGINE_ID = " + engineId;
+				sql = "SELECT LABEL, NAME, DESCR, PATH FROM SBI_OBJECTS WHERE ENGINE_ID = " + engineId;
 				ResultSet docsRS = stmt.executeQuery(sql);
-				if (docsRS.next()) {
+				while (docsRS.next()) {
 					// get the input stream of the template file
 					String pathBiObj = docsRS.getString("PATH");
+					String label = docsRS.getString("LABEL");
+					String name = docsRS.getString("NAME");
+					String descr = docsRS.getString("DESCR");
 					String pathFolderBiObj = pathImpTmpFolder + "/" + archiveName + "/contents" + pathBiObj;
 				    File fileFolderBiObj = new File(pathFolderBiObj);
 				    File[] files = fileFolderBiObj.listFiles();
@@ -269,8 +272,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 					    	byte[] template = GeneralUtilities.getByteArrayFromInputStream(fisTemplate);
 					    	String templateStr = new String (template);
 					    	if (templateStr.indexOf("org.eclipse.birt.report.data.oda.subjdbc") != -1) {
-								errBirtDocsFound = true;
-								break;
+								errBirtDocsFound += label + " - " + name + " - " + descr + "\n";
 					    	}
 				    	} finally {
 				    		if (fisTemplate != null) fisTemplate.close();
@@ -278,7 +280,7 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				    }
 				}
 			}
-			if (errBirtDocsFound) {
+			if (!errBirtDocsFound.trim().equals("")) {
 			    // create the directory for birt update manual task
 			    String pathFolderManualTask = pathImpTmpFolder + "/" + archiveName + 
 											  "/"+ImportExportConstants.MANUALTASK_FOLDER_NAME;
@@ -288,18 +290,24 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 			    // generate the readme file
 			    String plc = PortletUtilities.getPortalLanguageCode();
 			    ClassLoader cLoad = Thread.currentThread().getContextClassLoader();
-			    InputStream instrIS = cLoad.getResourceAsStream("it/eng/spagobi/importexport/mt/birtDocumentsUpdateManualTask_"+plc);
-			    FileOutputStream readmeFos = new FileOutputStream(pathFolderImpQbeManualTask + "/Readme.txt");
-			    GeneralUtilities.flushFromInputStreamToOutputStream(instrIS, readmeFos, true);
-			    // create properties file 
-			    String pathFileProperties = pathFolderManualTask + "/" + "BirtDocumentsUpdate.properties";
+			    InputStream instrIS = null;
+			    FileOutputStream readmeFos = null;
 			    FileOutputStream filePropertiesOs = null;
 			    try {
+				    instrIS = cLoad.getResourceAsStream("it/eng/spagobi/importexport/mt/birtDocumentsUpdateManualTask_"+plc);
+				    readmeFos = new FileOutputStream(pathFolderImpQbeManualTask + "/Readme.txt");
+				    GeneralUtilities.flushFromInputStreamToOutputStream(instrIS, readmeFos, false);
+				    String append = "\n" + errBirtDocsFound;
+				    readmeFos.write(append.getBytes());
+				    // create properties file 
+				    String pathFileProperties = pathFolderManualTask + "/" + "BirtDocumentsUpdate.properties";
 				    filePropertiesOs = new FileOutputStream(pathFileProperties);
 				    String propertiesStr = "name=" + PortletUtilities.getMessage("impexp.manualtask.birtDocsUpdate", "component_impexp_messages");
 				    filePropertiesOs.write(propertiesStr.getBytes());
 				    filePropertiesOs.flush();
 			    } finally {
+			    	if (instrIS != null) instrIS.close();
+			    	if (readmeFos != null) readmeFos.close();
 			    	if (filePropertiesOs != null) filePropertiesOs.close();
 			    }
 			}

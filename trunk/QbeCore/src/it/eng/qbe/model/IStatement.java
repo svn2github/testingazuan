@@ -21,15 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-
-import it.eng.qbe.datasource.IDataSource;
 import it.eng.spago.base.SourceBean;
+
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author Andrea Gioia

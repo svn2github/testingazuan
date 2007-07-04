@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model.views;
 
-import it.eng.qbe.utility.Logger;
-import it.eng.qbe.utility.Utils;
-import it.eng.spago.base.ApplicationContainer;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -33,8 +29,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
-
-import org.hibernate.SessionFactory;
 
 /**
  * @author Andrea Gioia

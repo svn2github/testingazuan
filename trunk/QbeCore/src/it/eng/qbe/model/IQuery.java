@@ -27,7 +27,6 @@ import it.eng.qbe.wizard.IOrderByClause;
 import it.eng.qbe.wizard.ISelectClause;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.IWhereClause;
-import it.eng.spago.base.SourceBean;
 
 import java.util.List;
 import java.util.Map;

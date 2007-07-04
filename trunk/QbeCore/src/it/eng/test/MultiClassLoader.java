@@ -1,3 +1,14 @@
+/**
+ * 
+ * This class is derived from an article by Chuck McManis
+ * http://www.javaworld.com/javaworld/jw-10-1996/indepth.src.html
+ * with large modifications.
+ *
+ * Note that this has been updated to use the non-deprecated version of
+ * defineClass() -- JDM.
+ *
+**/
+
 package it.eng.test;
 
 import it.eng.qbe.utility.Logger;
@@ -8,14 +19,6 @@ import java.util.Hashtable;
 /**
  * A simple test class loader capable of loading from
  * multiple sources, such as local files or a URL.
- *
- * This class is derived from an article by Chuck McManis
- * http://www.javaworld.com/javaworld/jw-10-1996/indepth.src.html
- * with large modifications.
- *
- * Note that this has been updated to use the non-deprecated version of
- * defineClass() -- JDM.
- *
  * @author Jack Harich - 8/18/97
  * @author John D. Mitchell - 99.03.04
  */

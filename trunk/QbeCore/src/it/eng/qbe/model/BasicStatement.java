@@ -24,8 +24,6 @@ package it.eng.qbe.model;
 import java.io.IOException;
 import java.util.Properties;
 
-import it.eng.qbe.datasource.IDataSource;
-
 /**
  * @author Andrea Gioia
  *

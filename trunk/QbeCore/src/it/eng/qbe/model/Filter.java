@@ -24,7 +24,6 @@ package it.eng.qbe.model;
 import it.eng.qbe.utility.StringUtils;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /**

@@ -194,4 +194,5 @@ LICENSE: see LICENSE.txt file
 		
 	} catch (Exception e){
 		logger.error(this.getClass().getName() + ":error while executing query \n" + e);
+		throw e;
 	}%>

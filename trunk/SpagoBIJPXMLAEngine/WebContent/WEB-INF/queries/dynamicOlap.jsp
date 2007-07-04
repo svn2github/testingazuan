@@ -10,7 +10,17 @@
 		 import="org.dom4j.Document,
 				 org.dom4j.Node,java.io.InputStreamReader,
 				 java.util.List,
-				 com.thoughtworks.xstream.XStream,it.eng.spagobi.jpivotaddins.bean.AnalysisBean,it.eng.spagobi.utilities.SpagoBIAccessUtils,it.eng.spagobi.jpivotaddins.util.ParameterSetter,it.eng.spagobi.jpivotaddins.util.ParameterHandler,it.eng.spagobi.engines.jpivotxmla.conf.EngineXMLAConf,it.eng.spagobi.engines.jpivotxmla.connection.*,it.eng.spagobi.jpivotaddins.bean.SaveAnalysisBean,com.tonbeller.wcf.form.FormComponent,java.io.InputStream,mondrian.olap.*" %>
+				 com.thoughtworks.xstream.XStream,
+				 it.eng.spagobi.jpivotaddins.bean.AnalysisBean,
+				 it.eng.spagobi.utilities.SpagoBIAccessUtils,
+				 it.eng.spagobi.jpivotaddins.util.ParameterSetter,
+				 it.eng.spagobi.jpivotaddins.util.ParameterHandler,
+				 it.eng.spagobi.jpivotaddins.engines.jpivotxmla.conf.EngineXMLAConf,
+				 it.eng.spagobi.jpivotaddins.engines.jpivotxmla.connection.*,
+				 it.eng.spagobi.jpivotaddins.bean.SaveAnalysisBean,
+				 com.tonbeller.wcf.form.FormComponent,
+				 java.io.InputStream,
+				 mondrian.olap.*" %>
 <%@page import="sun.misc.BASE64Decoder"%>
 <%@page import="java.util.Map"%>
 <%@page import="it.eng.spagobi.utilities.ParametersDecoder"%>
@@ -100,6 +110,10 @@
 	analysis.setCatalog(name);
 	session.setAttribute("analysisBean",analysis);
 		}
+		
+		// SUBSTITUTE QUERY PARAMETERS
+		ParameterHandler parameterHandler = ParameterHandler.getInstance();
+		query = parameterHandler.substituteQueryParameters(query, parameters, request);
 		
 		IConnection connection = null;
 		if(nameConnection!=null) {
@@ -340,4 +354,5 @@
 		
 	} catch (Exception e){
 		e.printStackTrace();
+		throw e;
 	}%>

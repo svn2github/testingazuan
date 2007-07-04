@@ -1,3 +1,6 @@
+<!--
+ 	LICENSE: see COPYING file
+-->
 <html>
 	<head>
 		<title>Error Page</title>

@@ -1,6 +1,6 @@
 /**
  * 
- * LICENSE: see COPYING file. 
+ * LICENSE: see LICENSE.html file
  * 
  */
 package it.eng.spagobi.jpivotaddins.engines.jpivotxmla.conf;

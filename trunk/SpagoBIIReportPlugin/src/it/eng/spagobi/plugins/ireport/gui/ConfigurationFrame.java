@@ -1,3 +1,8 @@
+/**
+ * This file is released under the LGPL license
+ * See the LICENSE_SpagoBI-IReportPlugin.txt file for the complete text of the LGPL license
+ * 
+ */
 package it.eng.spagobi.plugins.ireport.gui;
 
 

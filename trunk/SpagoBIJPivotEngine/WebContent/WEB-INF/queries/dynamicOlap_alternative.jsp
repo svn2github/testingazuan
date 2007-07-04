@@ -1,9 +1,7 @@
 <%--
-/**
- * 
- * LICENSE: see LICENSE.html file
- * 
- */
+
+LICENSE: see LICENSE.txt file 
+
 --%>
 <%@ page session="true" 
          contentType="text/html; charset=UTF-8" 

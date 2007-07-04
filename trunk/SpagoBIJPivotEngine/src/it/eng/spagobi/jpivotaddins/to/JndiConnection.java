@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.txt file
+ * 
+ */
 package it.eng.spagobi.jpivotaddins.to;
 
 public class JndiConnection {

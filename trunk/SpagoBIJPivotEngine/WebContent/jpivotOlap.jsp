@@ -1,5 +1,10 @@
 <%--
 
+LICENSE: see LICENSE.txt file 
+
+--%>
+<%--
+
   JPivot / WCF comes with its own "expression language", which simply
   is a path of properties. E.g. #{customer.address.name} is
   translated into:

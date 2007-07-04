@@ -1,6 +1,8 @@
-<%--/**
- * LICENSE: see LICENSE.html file
- */--%>
+<%--
+
+LICENSE: see LICENSE.txt file 
+
+--%>
 <%@ page session="true" contentType="text/html; charset=UTF-8" 
 		 import="org.dom4j.Document,
 				 org.dom4j.Node,

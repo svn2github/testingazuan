@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.txt file
+ * 
+ */
 package it.eng.spagobi.jpivotaddins.cache;
 
 import it.eng.spagobi.jpivotaddins.bean.AnalysisBean;

@@ -1,6 +1,6 @@
 /**
  * 
- * LICENSE: see LICENSE.html file
+ * LICENSE: see LICENSE.txt file
  * 
  */
 package it.eng.spagobi.jpivotaddins.bean;

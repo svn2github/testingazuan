@@ -137,7 +137,7 @@ public class SessionObjectRemoval {
 		}
 		
 		if (session.getAttribute("dimension_access_rules") != null) {
-			session.removeAttribute("dimension_access_rulesS");
+			session.removeAttribute("dimension_access_rules");
 		}
 	}
 	

@@ -95,6 +95,10 @@ public class AuditAccessUtils {
 	public void updateAudit(String auditId, Long startTime, Long endTime, String executionState, 
 			String errorMessage, String errorCode) {
 		if (auditId == null || !_auditIds.contains(auditId)) return;
+		// limits errorMessage length
+		if (errorMessage != null && errorMessage.length() > 390) {
+			errorMessage = errorMessage.substring(0, 390);
+		}
 		HttpClient client = new HttpClient();
 	    PostMethod httppost = new PostMethod(_auditServlet);
 	    NameValuePair[] parameters = {

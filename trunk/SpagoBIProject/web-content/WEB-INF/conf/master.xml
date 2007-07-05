@@ -61,10 +61,12 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiofficedocIE/publishers.xml" />
 	<!-- END OFFICE DOCUMENT -->
 	<!-- start exo profile manager module -->
+	<!--
   <CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/publishers.xml" />
+	-->
   <!-- end exo profile manager module -->
 	<!-- start scheduler module -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/pages.xml" />

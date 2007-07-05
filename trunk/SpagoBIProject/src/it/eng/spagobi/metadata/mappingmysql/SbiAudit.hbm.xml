@@ -87,7 +87,7 @@
             <column name="error_code" length="20" not-null="false" />
         </property>
         <property name="executionModality" type="string">
-            <column name="execution_modality" length="20" not-null="false" />
+            <column name="execution_modality" length="40" not-null="false" />
         </property>
      </class>
 </hibernate-mapping>

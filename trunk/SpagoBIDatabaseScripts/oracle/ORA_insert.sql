@@ -73,17 +73,47 @@ INSERT INTO SBI_CHECKS (VALUE_TYPE_ID, VALUE_TYPE_CD, VALUE_1, VALUE_2, LABEL, N
 
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_MONTH_YEAR', 'Current month of the year', 'Current month of the year format mm', 
-'<SCRIPTLOV><SCRIPT>Date now = new Date();'|| chr(10) ||'int month = now.getMonth() + 1;'|| chr(10) ||'String monthStr = month.toString();'|| chr(10) ||'if (month < 10) monthStr = ''0'' + monthStr;'|| chr(10) ||'returnValue(monthStr);</SCRIPT></SCRIPTLOV>', 
+'<SCRIPTLOV><SCRIPT>
+Date now = new Date();
+int month = now.getMonth() + 1;
+String monthStr = month.toString();
+if (month < 10) monthStr = ''0'' + monthStr;
+returnValue(monthStr);
+</SCRIPT><VALUE-COLUMN>VALUE</VALUE-COLUMN><DESCRIPTION-COLUMN>VALUE</DESCRIPTION-COLUMN><VISIBLE-COLUMNS>VALUE</VISIBLE-COLUMNS><INVISIBLE-COLUMNS></INVISIBLE-COLUMNS></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_YEAR', 'Current year', 'Current year format yyyy', 
-'<SCRIPTLOV><SCRIPT>Date now = new Date();'|| chr(10) ||'int year = now.getYear() + 1900;'|| chr(10) ||'String yearStr = year.toString();'|| chr(10) ||'returnValue(yearStr);</SCRIPT></SCRIPTLOV>', 
+'<SCRIPTLOV><SCRIPT>
+Date now = new Date();
+int year = now.getYear() + 1900;
+String yearStr = year.toString();
+returnValue(yearStr);
+</SCRIPT><VALUE-COLUMN>VALUE</VALUE-COLUMN><DESCRIPTION-COLUMN>VALUE</DESCRIPTION-COLUMN><VISIBLE-COLUMNS>VALUE</VISIBLE-COLUMNS><INVISIBLE-COLUMNS></INVISIBLE-COLUMNS></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_MONTH', 'Current month', 'Current month format mm/yyyy', 
-'<SCRIPTLOV><SCRIPT>Date now = new Date();'|| chr(10) ||'int month = now.getMonth() + 1;'|| chr(10) ||'String monthStr = month.toString();'|| chr(10) ||'if (month < 10) monthStr = ''0'' + monthStr;'|| chr(10) ||'int year = now.getYear() + 1900;'|| chr(10) ||'String toReturn = monthStr + ''/'' + year.toString();'|| chr(10) ||'returnValue(toReturn);</SCRIPT></SCRIPTLOV>', 
+'<SCRIPTLOV><SCRIPT>
+Date now = new Date();
+int month = now.getMonth() + 1;
+String monthStr = month.toString();
+if (month < 10) monthStr = ''0'' + monthStr;
+int year = now.getYear() + 1900;
+String toReturn = monthStr + ''/'' + year.toString();
+returnValue(toReturn);
+</SCRIPT><VALUE-COLUMN>VALUE</VALUE-COLUMN><DESCRIPTION-COLUMN>VALUE</DESCRIPTION-COLUMN><VISIBLE-COLUMNS>VALUE</VISIBLE-COLUMNS><INVISIBLE-COLUMNS></INVISIBLE-COLUMNS></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');
 INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE_CD) VALUES 
 ('CURRENT_DATE', 'Current date', 'Current date format dd/mm/yyyy', 
-'<SCRIPTLOV><SCRIPT>Date now = new Date();'|| chr(10) ||'int day = now.getDate();'|| chr(10) ||'String dayStr = day.toString();'|| chr(10) ||'if (day < 10) dayStr = ''0'' + dayStr;'|| chr(10) ||'int month = now.getMonth() + 1;'|| chr(10) ||'String monthStr = month.toString();'|| chr(10) ||'if (month < 10) monthStr = ''0'' + monthStr;'|| chr(10) ||'int year = now.getYear() + 1900;'|| chr(10) ||'String toReturn = dayStr + ''/'' + monthStr + ''/'' + year.toString();'|| chr(10) ||'returnValue(toReturn);</SCRIPT></SCRIPTLOV>', 
+'<SCRIPTLOV><SCRIPT>
+Date now = new Date();
+int day = now.getDate();
+String dayStr = day.toString();
+if (day < 10) dayStr = ''0'' + dayStr;
+int month = now.getMonth() + 1;
+String monthStr = month.toString();
+if (month < 10) monthStr = ''0'' + monthStr;
+int year = now.getYear() + 1900;
+String toReturn = dayStr + ''/'' + monthStr + ''/'' + year.toString();
+returnValue(toReturn);
+</SCRIPT><VALUE-COLUMN>VALUE</VALUE-COLUMN><DESCRIPTION-COLUMN>VALUE</DESCRIPTION-COLUMN><VISIBLE-COLUMNS>VALUE</VISIBLE-COLUMNS><INVISIBLE-COLUMNS></INVISIBLE-COLUMNS></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');

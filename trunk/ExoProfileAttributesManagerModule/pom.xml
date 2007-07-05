@@ -81,6 +81,7 @@
     <lib.dir>${basedir}/lib</lib.dir>
     <exo.lib.dir>${basedir}/../SpagoBIUtilityFiles/eXo2-libraries</exo.lib.dir>
     <spagobi.compiled.dir>${basedir}/../SpagoBIProject/target/classes</spagobi.compiled.dir>
+    <spagobi.securityapi.compiled.dir>${basedir}/../SpagoBISecurityProviderAPI/target/classes</spagobi.securityapi.compiled.dir>
   </properties>
   <dependencies>
     <dependency>
@@ -131,6 +132,13 @@
       <version>1.9.3</version>
       <scope>system</scope>
       <systemPath>${spagobi.compiled.dir}</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>spagobi</groupId>
+      <artifactId>spagobi.securityapi</artifactId>
+      <version>1.9.3</version>
+      <scope>system</scope>
+      <systemPath>${spagobi.securityapi.compiled.dir}</systemPath>
     </dependency>
   </dependencies>
 </project>

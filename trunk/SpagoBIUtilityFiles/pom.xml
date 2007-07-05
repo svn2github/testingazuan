@@ -243,6 +243,7 @@
 		    <mkdir dir="${basedir}/../build/jboss-server/server/default/deploy/SpagoBITalendEngine.war"/>
                     <unzip src="${basedir}/../SpagoBITalendEngine/target/SpagoBITalendEngine.war" 
 			   dest="${basedir}/../build/jboss-server/server/default/deploy/SpagoBITalendEngine.war"/>
+			  <delete file="${basedir}/../build/jboss-server/server/default/deploy/SpagoBITalendEngine.war/WEB-INF/lib/log4j-1.2.8.jar" />
 			   
                   </tasks>
                 </configuration>
@@ -306,6 +307,8 @@
 			  
 		    <!-- delete commons-logging library -->
 		    <delete file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib/commons-logging-1.0.jar"/>
+		    <!-- delete log4j library -->
+		    <delete file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/lib/log4j-1.2.8.jar"/>
 
 		    <!-- overwrite the hibernate configuration file for Tomcat with the correct file for JOnAS -->
 		    <move file="${basedir}/../build/jonas-server/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"

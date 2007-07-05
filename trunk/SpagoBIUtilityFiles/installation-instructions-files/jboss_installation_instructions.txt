@@ -12,3 +12,7 @@ For CMS:
 - open the file cms.xml in JBOSS_HOME/server/default/deploy/exoplatform.ear/spagobi.war/WEB-INF/conf and substitute ${SERVER_HOME} with the actual path of JBOSS_HOME in the following parameters definition: "repository_path" and "conf_file_path".
 Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);
 
+For SpagoBITalendEngine:
+- open the file talend.perl.properties in JBOSS_HOME/server/default/deploy/SpagoBITalendEngine.war/WEB-INF/classes and adjust your Perl installation directory (if you want to executed Perl based jobs);
+- open the file talend.properties in JBOSS_HOME/server/default/deploy/SpagoBITalendEngine.war/WEB-INF/classes and substitute ${SPAGOBI_TALEND_ENGINE_HOME} with the actual path of JBOSS_HOME/server/default/deploy/SpagoBITalendEngine.war.
+Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);

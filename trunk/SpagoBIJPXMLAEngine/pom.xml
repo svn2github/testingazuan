@@ -66,10 +66,14 @@
     </dependency> 
     <dependency>
       <groupId>spagobi</groupId>
-      <artifactId>sbi.utils.precompiled</artifactId>
+      <artifactId>sbi.utils</artifactId>
       <version>1.9.3</version>	
-      <scope>system</scope>
-      <systemPath>${lib.dir}/sbi.utils-1.9.3.jar</systemPath>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>jpivot</groupId>

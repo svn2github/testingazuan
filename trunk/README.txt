@@ -1,13 +1,13 @@
 SPAGOBI BUILD AND INSTALLATION ON EXO-TOMCAT
 
 PRE-REQUIREMENTS:	Maven 2
-			eXo Portal 1.1 Final
+			eXo Portal Tomcat 1.1.4 or eXo Portal JBoss 1.1.2 or eXo Portal Jonas 1.1.3  
 			
 Launch the Maven 2 command at command line from the folder containing "SpagoBIProject", "SpagoBIDriversAPI" .... folders:
 
-		mvn -Pspagobi-tomcat package	for Tomcat server or
-		mvn -Pspagobi-jboss package	for JBoss server or
-		mvn -Pspagobi-jonas package	for JOnAS server
+		'mvn -Pspagobi-tomcat package'	for Tomcat server or
+		'mvn -Pspagobi-jboss package'	for JBoss server or
+		'mvn -Pspagobi-jonas package'	for JOnAS server
 
 A folder "build" will be created; inside it you will find a folder called "<server-name>-server". 
 Please read the relevant installation file and follow its instructions.

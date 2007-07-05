@@ -401,7 +401,7 @@ function askConfirmation (message) {
   			   sParams.clear();
   			   String urlPrev = "#";
   			   String urlNext = "#";
-  				int[] pages = PageNavigatorUtils.getPageWindow(currentPage+1, pagesNumber, 6);
+  				int[] pages = PageNavigatorUtils.getPageWindow(currentPage+1, pagesNumber.intValue(), 6);
   			%>
   			<% if (hasPreviousPage){ 
 					sParams.clear();
@@ -456,7 +456,7 @@ function askConfirmation (message) {
 				sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
    		   			sParams.put("query",query);
-   		   			sParams.put("pageNumber",String.valueOf(pagesNumber-1));
+   		   			sParams.put("pageNumber",String.valueOf(pagesNumber.intValue()-1));
    		   			sParams.put("ignoreJoins", "true");
    		   			urlNext = qbeUrl.getUrl(request, sParams);%>
 				<a class="qbe-title-link" href="<%=urlNext%>"> >> </a>

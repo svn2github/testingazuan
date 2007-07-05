@@ -6,6 +6,7 @@ eXo portal 1.1.3 installed over a JOnAS server (see the eXo installation instruc
 If you want to install SpagoBI on your JOnAS-eXo server, after having launched Maven 2 command, please proceed as follows:
 - copy the content of the folder "jonas-server" (NOT the directory itself but only its content) inside your JOnAD base directory (we will refer to it as JONAS_HOME): overwrite the existing files;
 - delete the jar hsqldb-1.8.0.1.jar from JONAS_HOME/lib/apps;
+- delete the jar dom4j-1.6.1.jar from JONAS_HOME/lib/apps;
 
 For CMS:
 - open the file cms.xml in JONAS_HOME/apps/autoload/exoplatform.ear/spagobi.war/WEB-INF/conf and substitute ${SERVER_HOME} with the actual path of JONAS_HOME in the following parameters definition: "repository_path" and "conf_file_path".

@@ -331,6 +331,10 @@
 		    <mkdir dir="${basedir}/../build/jonas-server/webapps/autoload"/>
                     <unzip src="${basedir}/../SpagoBIBirtReportEngine/target/SpagoBIBirtReportEngine.war" 
 			   dest="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIBirtReportEngine.war"/>
+		    <zip basedir="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIBirtReportEngine.war/WEB-INF/classes"
+         destfile="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIBirtReportEngine.war/WEB-INF/lib/sbi.engines.birt-1.9.3.jar" />
+        <delete dir="${basedir}/../build/jonas-server/webapps/autoload/SpagoBIBirtReportEngine.war/WEB-INF/classes" />
+		    
 		    
 		    <!-- unzip SpagoBIGeoEngine -->
 		    <mkdir dir="${basedir}/../build/jonas-server/webapps/autoload"/>

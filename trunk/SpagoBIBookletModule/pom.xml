@@ -88,7 +88,7 @@
     <lib.dir>${basedir}/web-content/WEB-INF/lib</lib.dir>
     <spagobi.lib.dir>${basedir}/../SpagoBIProject/web-content/WEB-INF/lib</spagobi.lib.dir>
     <spagobi.compiled.dir>${basedir}/../SpagoBIProject/target/classes</spagobi.compiled.dir>
-    <drivers.api.compiled.dir>${basedir}/../SpagoBIDriversAPI/target</drivers.api.compiled.dir>
+    <drivers.api.compiled.dir>${basedir}/../SpagoBIDriversAPI/target/classes</drivers.api.compiled.dir>
   </properties>
   <dependencies>
     <dependency>
@@ -165,7 +165,7 @@
       <artifactId>sbi.drivers.api</artifactId>
       <version>1.9.3</version>
       <scope>system</scope>
-      <systemPath>${drivers.api.compiled.dir}/sbi.drivers.api-1.9.3.jar</systemPath>                
+      <systemPath>${drivers.api.compiled.dir}</systemPath>                
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>

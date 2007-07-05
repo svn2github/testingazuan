@@ -1,5 +1,7 @@
 package it.eng.spagobi.engines.bo;
 
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -38,56 +40,79 @@ public class ViewDocumentHandler {
 	public void handle(HttpServletRequest request, HttpServletResponse response, 
 			           ServletContext servletContext) throws ServletException, IOException{
 		
-		//get template string
-		//String template = (String)request.getParameter("templatePath");
- 		//String spagobibase = (String)request.getParameter("spagobiurl");
- 		//byte[] jcrContent = new SpagoBIAccessUtils().getContent(spagobibase, template);
+		// AUDIT UPDATE
+		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+		AuditAccessUtils auditAccessUtils = 
+			(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+				"EXECUTION_STARTED", null, null);
+		
+		//get template
 		String template64 = (String)request.getParameter("spagobi_template");
+		if(template64==null) {
+ 			logger.error("Engines"+ this.getClass().getName()+ 
+ 			 			 "service() template parameter (spagobi_template) not found");
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) 
+					auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+												"EXECUTION_FAILED", "Template not found", null);
+ 			return;
+ 		} 
  		BASE64Decoder decoder = new BASE64Decoder();
- 		byte[] jcrContent = decoder.decodeBuffer(template64);
- 		
-		//parse template and recover parameters      
- 		   ByteArrayInputStream is = new ByteArrayInputStream(jcrContent);
- 	       org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
- 	       try{
- 	       Document parseDocument = reader.read(is);
- 	       /*<BO_DOCUMENT>
- 	        <REP_NAME>EtaMedia_2<REP_NAME>
- 	        <REP_ID>24</REP_ID>
- 	        <REP_TYPE>wid</REP_TYPE>
- 	        <REPOSITORY>corporate</REPOSITORY>
- 	        </BO_DOCUMENT>
- 	        * 
- 	        * */
-
- 	                     // get cube properties    
- 	       Node cube = parseDocument.selectSingleNode("//BO_DOCUMENT/REP_PROPS");
- 	       String reportName = cube.valueOf("@name");
- 	       String reportID = cube.valueOf("@id"); 
- 	       String repository = cube.valueOf("@repository");
- 	       String reportType = cube.valueOf("@type");
- 	     
- 	    //control parameters
- 	    if((reportName==null) || (reportName.trim().equals(""))) {
- 				logger.error("Engines"+ this.getClass().getName()+ 
- 				 			"service() Cannot find REPORTNAME parameter");
- 				return;
- 			} 
- 	       
+ 		String reportName = null;
+ 		String reportID = null;
+ 		String repository = null;
+ 		String reportType = null;
+ 		try{
+ 	    	byte[] jcrContent = decoder.decodeBuffer(template64);
+ 			//parse template and recover parameters      
+ 	 		ByteArrayInputStream is = new ByteArrayInputStream(jcrContent);
+ 	 	    org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
+ 	    	Document parseDocument = reader.read(is);
+            // get template parameter    
+ 	    	Node cube = parseDocument.selectSingleNode("//BO_DOCUMENT/REP_PROPS");
+ 	    	reportName = cube.valueOf("@name");
+ 	    	reportID = cube.valueOf("@id"); 
+ 	    	repository = cube.valueOf("@repository");
+ 	    	reportType = cube.valueOf("@type");
+ 	    } catch (Exception e){
+ 	 	  	  logger.error("Engines"+ this.getClass().getName()+ 
+ 	 	  	  			   "service() Error while reading template " , e);
+ 	 	  	  // AUDIT UPDATE
+ 	 	  	  if (auditAccessUtils != null) 
+ 	 	  		  auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+ 	 	  				  					   "EXECUTION_FAILED", "Error while parsing template", null);
+ 	 	  	  return;
+ 	 	}
+ 	    
+ 	    //check parameters
+	 	if((reportName==null) || (reportName.trim().equals(""))) {
+	 		logger.error("Engines"+ this.getClass().getName()+ 
+	 		 			"service() Cannot find REPORTNAME parameter");
+	 	  	// AUDIT UPDATE
+	 	  	if (auditAccessUtils != null) 
+	 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+	 	  	                                 "EXECUTION_FAILED", "Cannot find template REPORTNAME parameter", null);
+	 		return;
+	 	} 
 		if((reportID==null) || (reportID.trim().equals(""))) {
 			logger.error("Engines"+ this.getClass().getName()+ 
 			 			"service() Cannot find REPORTID parameter");
+	 	  	// AUDIT UPDATE
+	 	  	if (auditAccessUtils != null) 
+	 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+	 	  	                                 "EXECUTION_FAILED", "Cannot find template REPORTID parameter", null);			
 			return;
 		}
-		
 		String outputType = request.getParameter(BOConstants.OUTPUT_TYPE);
 		if((outputType==null) || (outputType.trim().equals(""))) {
 			logger.info("Engines"+ this.getClass().getName()+ 
- 						 "service() Cannot find OUTPUTTYPE parameter, use default value HTML");
+	 					 "service() Cannot find OUTPUTTYPE parameter, use default value HTML");
 			outputType = BOConstants.HTML_OUTPUT_TYPE;
 		}
-		// get repository name and code
 		
+		
+		// get repository name and code
 		int repCode = 0;
 		if((repository==null) || (repository.trim().equals(""))) {
 			logger.info("Engines"+ this.getClass().getName()+ 
@@ -99,93 +124,102 @@ public class ViewDocumentHandler {
 				repCode = Utils.getRepCodeFromName(repository);
 			} else {
 				logger.error("Engines"+ this.getClass().getName()+ 
-	 						"service() REPOSITORY parameter has a wrong value (possible values are corporate/personal/inbox)"); 			
+	 						"service() REPOSITORY parameter has a wrong value (possible values are corporate/personal/inbox)");
+		 	  	// AUDIT UPDATE
+		 	  	if (auditAccessUtils != null) 
+		 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		 	  	       "EXECUTION_FAILED", "REPOSITORY template parameter is wrong " +
+		 	  	       "(possible values are corporate/personal/inbox) ", null);
 				return;	
 			}
 		}	
-		// set the type of the report
+		
 		logger.info("Engines"+ this.getClass().getName()+ 
 					"service() like report type will be used the wid value. " +
 					"For this release the only possible type of reports are the ones with .wid extension"); 
 		
-		// get wiserver form context
-		WIServer wiServer = (WIServer)servletContext.getAttribute(BOConstants.WEBISERVER);
-		// control connection with the server		
-		if(wiServer==null) {
-			logger.error("Engines"+ this.getClass().getName()+ 
-			 			 "service() No connection with the server");
-		    return;
-		}
-		// initialize wiserver with current request and response
-		wiServer.onStartPage(request, response);
-
-		// get http session 
-		HttpSession httpSession = request.getSession();
-		// get wisession
-		WISession wiSession = (WISession)httpSession.getAttribute(BOConstants.BOSESSION);
-		if(wiSession == null)
-			return;
-		
-		// get report server 
-		ReportEngine repEngine = (ReportEngine)httpSession.getAttribute(BOConstants.REPORTENGINE);
-
-		// open document
-		DocumentInstance document  = null;
-		document = repEngine.openDocument(reportName, reportID, repository, reportType);
-		// fills document parameters values
-		Utils.fillPrompts(document, request);
-		
-		String storageToken = document.getStorageToken();
-
-		// Set image parameters
-		ImageOption cdzImageOption = document.getImageOption();
-	
-		
-		cdzImageOption.setImageCallback("viewDocumentImages.jsp");
-		cdzImageOption.setImageNameHolder("image");
-		cdzImageOption.setStorageTokenHolder("entry");
-		
-		httpSession.setAttribute(BOConstants.STORAGETOKEN, storageToken);
-		
-		// retrieve reports collection:all reports contained inside the document
-		Map docReports = new HashMap();
-		Reports reports = document.getReports();
-		int numReports = reports.getCount();
-		for(int i=0; i<numReports; i++) {
-			Report tmpRep = reports.getItem(i);
-			String nameRep = tmpRep.getName();
-			docReports.put(new Integer(i), nameRep);
-			httpSession.setAttribute(BOConstants.DOCUMENTREPORTMAP, docReports);
-		}
-
-		// select first report the first report
-		document.setSelectedReport(0);
-		Report report = reports.getItem(0);
-		
-		// reload storage token
-		//storageToken = document.getStorageToken();
-		//httpSession.setAttribute(BOConstants.STORAGETOKEN, storageToken);
-	
-		httpSession.setAttribute(BOConstants.BODOCUMENT, document);
-		
-		Utils.addHtmlInSession(report, httpSession);
-		
-		// forward to the execution jsp
-		String jspexecution = "";
-		if(outputType.trim().equalsIgnoreCase(BOConstants.HTML_OUTPUT_TYPE)){
-			jspexecution="/jsp/viewDocumentHTML.jsp";
-		} else {
-			jspexecution="/jsp/viewDocumentPDF.jsp";	
-		}		
-		RequestDispatcher disp = servletContext.getRequestDispatcher(jspexecution);
-		disp.forward(request, response);
- 	    
- 	       
- 	    }
- 	       catch (Exception e){
+		try {
+			// get wiserver form context
+			WIServer wiServer = (WIServer)servletContext.getAttribute(BOConstants.WEBISERVER);
+			// check connection with the server		
+			if(wiServer==null) {
+				logger.error("Engines"+ this.getClass().getName()+ 
+				 			 "service() No connection with the server");
+				// AUDIT UPDATE
+		 	  	if (auditAccessUtils != null) 
+		 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		 	  	       "EXECUTION_FAILED", "No connection with the server", null);
+			    return;
+			}
+			// initialize wiserver with current request and response
+			wiServer.onStartPage(request, response);
+			// get http session 
+			HttpSession httpSession = request.getSession();
+			// get wisession
+			WISession wiSession = (WISession)httpSession.getAttribute(BOConstants.BOSESSION);
+			if(wiSession == null) {
+				logger.error("Engines"+ this.getClass().getName()+ 
+				 			 "service() Session recovered is null");	
+				// AUDIT UPDATE
+		 	  	if (auditAccessUtils != null) 
+		 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		 	  	       "EXECUTION_FAILED", "BO Session recovered is null", null);
+				return;
+			}
+			// get report server 
+			ReportEngine repEngine = (ReportEngine)httpSession.getAttribute(BOConstants.REPORTENGINE);
+			// open document
+			DocumentInstance document  = null;
+			document = repEngine.openDocument(reportName, reportID, repository, reportType);
+			// fills document parameters values
+			Utils.fillPrompts(document, request);
+			// recover storage token
+			String storageToken = document.getStorageToken();
+			// Set image parameters
+			ImageOption cdzImageOption = document.getImageOption();
+			cdzImageOption.setImageCallback("viewDocumentImages.jsp");
+			cdzImageOption.setImageNameHolder("image");
+			cdzImageOption.setStorageTokenHolder("entry");
+			// set storage token into session
+			httpSession.setAttribute(BOConstants.STORAGETOKEN, storageToken);
+			// retrieve reports collection:all reports contained inside the document
+			Map docReports = new HashMap();
+			Reports reports = document.getReports();
+			int numReports = reports.getCount();
+			for(int i=0; i<numReports; i++) {
+				Report tmpRep = reports.getItem(i);
+				String nameRep = tmpRep.getName();
+				docReports.put(new Integer(i), nameRep);
+				httpSession.setAttribute(BOConstants.DOCUMENTREPORTMAP, docReports);
+			}
+			// select first report the first report
+			document.setSelectedReport(0);
+			Report report = reports.getItem(0);
+			// set document in session 
+			httpSession.setAttribute(BOConstants.BODOCUMENT, document);
+			// generate html
+			Utils.addHtmlInSession(report, httpSession);
+			// forward to the execution jsp
+			String jspexecution = "";
+			if(outputType.trim().equalsIgnoreCase(BOConstants.HTML_OUTPUT_TYPE)){
+				jspexecution="/jsp/viewDocumentHTML.jsp";
+			} else {
+				jspexecution="/jsp/viewDocumentPDF.jsp";	
+			}		
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_PERFORMED", null, null);
+			RequestDispatcher disp = servletContext.getRequestDispatcher(jspexecution);
+			disp.forward(request, response);
+ 	
+ 	    } catch (Exception e){
  	    	  logger.error("Engines"+ this.getClass().getName()+ 
-	 		  "service() Cannot parse XML document");
- 	       }
+	 		  			   "service() Error while generating report output");
+ 	    	  // AUDIT UPDATE
+		 	  	if (auditAccessUtils != null) 
+		 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		 	  	       "EXECUTION_FAILED", "Error while generating report output: " + e.getMessage(), null);
+ 	    }
 	}
 	
 	

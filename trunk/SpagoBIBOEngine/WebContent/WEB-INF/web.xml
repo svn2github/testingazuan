@@ -4,16 +4,26 @@
     <display-name>SpagoBIJasperReportEngine</display-name>
     <description>BO engine</description>
 	
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/BOServlet/*</url-pattern>
+	</filter-mapping>
+	
 	<servlet>
         <servlet-name>BOServlet</servlet-name>
         <servlet-class>it.eng.spagobi.engines.bo.BOServlet</servlet-class>
         <init-param>
             <param-name>BOUSER</param-name>
-            <param-value>{username}</param-value>
+            <param-value>fiscato</param-value>
         </init-param>
         <init-param>
             <param-name>BOPASSWORD</param-name>
-            <param-value>{password}</param-value>
+            <param-value>luca</param-value>
         </init-param>
     </servlet>
     

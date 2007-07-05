@@ -123,7 +123,7 @@
 
 		    <!-- unzip SpagoBITalendEngine -->
 		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBITalendEngine"/>
-                    <unzip src="${basedir}/../SpagoBIQbeEngine/target/SpagoBITalendEngine.war" 
+                    <unzip src="${basedir}/../SpagoBITalendEngine/target/SpagoBITalendEngine.war" 
 			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBITalendEngine"/>
 				 
                   </tasks>

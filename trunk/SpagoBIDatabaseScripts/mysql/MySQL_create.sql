@@ -272,7 +272,7 @@ CREATE TABLE SBI_EVENTS_LOG (
 	PARAMS              VARCHAR(1000) NOT NULL,
 	HANDLER 	VARCHAR(1000) NOT NULL DEFAULT 'it.eng.spagobi.events.handlers.DefaultEventPresentationHandler',
               PRIMARY KEY(ID)
-);
+)TYPE=INNODB;
 
 CREATE TABLE SBI_EVENTS_ROLES (
        EVENT_ID            INTEGER NOT NULL,

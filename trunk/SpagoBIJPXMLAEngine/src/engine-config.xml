@@ -5,20 +5,6 @@
 		<CONNECTION name="FoodmartXMLA" 
 					type="xmla"
 					xmlaServerUrl="http://localhost:8080/mondrian/xmla"/>
-				
-		<!--  	
-		<CONNECTION name="Foodmart" 
-						isDefault="true"
-						isJNDI="true" 
-						initialContext="java:comp/env"
-						resourceName="jdbc/foodmart"/>
-		<CONNECTION name="Foodmart" 
-					type="jdbc"
-					driver="com.mysql.jdbc.Driver"
-					user="root"
-					password="mysql"
-					jdbcUrl="jdbc:mysql://localhost/foodmart"/>
-		-->		
 
 	</CONNECTIONS-CONFIGURATION>
 	

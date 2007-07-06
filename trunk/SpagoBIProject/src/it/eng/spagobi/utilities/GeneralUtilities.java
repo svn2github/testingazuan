@@ -424,7 +424,7 @@ public class GeneralUtilities {
 		
 		// replaces the profile attribute declaration
 		//statement = statement.replaceAll("${" + attribute + "}", replacement);
-		statement = statement.replace("${" + attribute + "}", replacement);
+		statement = statement.replaceAll("\\$\\{" + attribute + "\\}", replacement);
 
 		profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
 		if (profileAttributeStartIndex != -1) 
@@ -534,14 +534,14 @@ public class GeneralUtilities {
 			if (splitted.length == 1) {
 				String replacement = PortletUtilities.getMessage(key, bundle);
 				//if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
-				if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
+				if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
 			}
 			if (splitted.length == 2) {
 				if (splitted[1] != null && !splitted[1].trim().equals("")) 
 					bundle = splitted[1].trim();
 				String replacement = PortletUtilities.getMessage(key, bundle);
 				//if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
-				if (!replacement.equalsIgnoreCase(key)) message = message.replace("${" + toBeReplaced + "}", replacement);
+				if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
 			}
 		}
 		startIndex = message.indexOf("${", endIndex);

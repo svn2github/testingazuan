@@ -903,9 +903,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		try{
 			// Giusto per testare l'esistenza della variabile 
 			wiz.name = 'pippo';
-			alert('var already exists')
+			//alert('var already exists')
 		} catch (err) {
-			alert('create var winz')
+			//alert('create var winz')
 			eval('var winz=null');
 		}
 
@@ -926,13 +926,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	}	
 			
 		function dump() {
-			alert(winz);
+			//alert(winz);
 		}
 	
 		function vediSchermo(msg, divTxt){
 			
-			alert ("msg: " + msg);
-			alert ("divTxt: " + divTxt);
+			//alert ("msg: " + msg);
+			//alert ("divTxt: " + divTxt);
 			
 			var spanCurrentScreen = document.getElementById('currentScreen');
 			
@@ -947,10 +947,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						
 			var formUpdCond = document.getElementById('formUpdateConditions');
 			
-			alert("current Screen Txt " + currentScreenTxt);
+			//alert("current Screen Txt " + currentScreenTxt);
 			
 			if ((currentScreenTxt == 'DIV_FIELD_CONDITION') && (formUpdCond != null)){					
-					alert ("Branch 1");
+					//alert ("Branch 1");
 											
 					var inputNextActionAfterSaveCondition = document.getElementById('nextActionAfterSaveCondition');
 					var inputNextPublisherAfterSaveCondition = document.getElementById('nextPublisherAfterSaveCondition');
@@ -1042,7 +1042,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					
 			
 			}else if ((currentScreenTxt == 'DIV_RESUME_QUERY_SELECT_OK') && (formUpdCond != null)){
-					alert ("Branch 2");
+					//alert ("Branch 2");
 							
 					var expertSelectTextArea = document.getElementById('expertSelectTextArea');
 					var inputTA = document.getElementById('expertDisplayedForUpdate');
@@ -1113,7 +1113,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					}
 				
 			}else{	
-				alert ("Branch 3 -> " + divTxt);
+				//alert ("Branch 3 -> " + divTxt);
 					
 				var frmGoSelectionF = document.getElementById('frmGoSelection');
 				var frmGoConditionF = document.getElementById('frmGoCondition');
@@ -1181,7 +1181,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 		
 		function closeXXX() {
-			alert('Ciao' + winz);
+			//alert('Ciao' + winz);
 			winz.destroy();
 		}
 		

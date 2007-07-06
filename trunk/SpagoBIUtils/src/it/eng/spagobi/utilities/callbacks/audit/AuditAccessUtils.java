@@ -32,7 +32,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.utilities.callbacks.audit;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,40 +93,46 @@ public class AuditAccessUtils {
 	 */
 	public void updateAudit(String auditId, Long startTime, Long endTime, String executionState, 
 			String errorMessage, String errorCode) {
-		if (auditId == null || !_auditIds.contains(auditId)) return;
-		// limits errorMessage length
-		if (errorMessage != null && errorMessage.length() > 390) {
-			errorMessage = errorMessage.substring(0, 390);
-		}
-		HttpClient client = new HttpClient();
-	    PostMethod httppost = new PostMethod(_auditServlet);
-	    NameValuePair[] parameters = {
-	    		new NameValuePair("SPAGOBI_AUDIT_ID", auditId), 
-	    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_START", startTime != null ? startTime.toString() : ""), 
-	    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_END", endTime != null ? endTime.toString() : ""),				
-	    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_STATE", executionState != null ? executionState : ""),
-	    		new NameValuePair("SPAGOBI_AUDIT_ERROR_MESSAGE", errorMessage != null ? errorMessage : ""),
-	    		new NameValuePair("SPAGOBI_AUDIT_ERROR_CODE", errorCode != null ? errorCode : "")
-	    };
-	    
-	    // Provide custom retry handler is necessary
-	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
-	    retryhandler.setRequestSentRetryEnabled(false);
-	    retryhandler.setRetryCount(3);
-	    httppost.setMethodRetryHandler(retryhandler);
-	    httppost.setRequestBody(parameters);
-        try {
+		PostMethod httppost = null;
+		try {
+			if (auditId == null || !_auditIds.contains(auditId)) return;
+			// limits errorMessage length
+			if (errorMessage != null && errorMessage.length() > 390) {
+				errorMessage = errorMessage.substring(0, 390);
+			}
+			HttpClient client = new HttpClient();
+		    httppost = new PostMethod(_auditServlet);
+		    NameValuePair[] parameters = {
+		    		new NameValuePair("SPAGOBI_AUDIT_ID", auditId), 
+		    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_START", startTime != null ? startTime.toString() : ""), 
+		    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_END", endTime != null ? endTime.toString() : ""),				
+		    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_STATE", executionState != null ? executionState : ""),
+		    		new NameValuePair("SPAGOBI_AUDIT_ERROR_MESSAGE", errorMessage != null ? errorMessage : ""),
+		    		new NameValuePair("SPAGOBI_AUDIT_ERROR_CODE", errorCode != null ? errorCode : "")
+		    };
+		    
+		    // Provide custom retry handler is necessary
+		    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
+		    retryhandler.setRequestSentRetryEnabled(false);
+		    retryhandler.setRetryCount(3);
+		    httppost.setMethodRetryHandler(retryhandler);
+		    httppost.setRequestBody(parameters);
+        
             // Execute the method.        	
             int statusCode = client.executeMethod(httppost);
             if (statusCode != HttpStatus.SC_OK) {
               System.err.println("Method failed: " + httppost.getStatusLine());
             }
-        } catch (IOException e) {
-            System.err.println("Failed to get response body.");
+        } catch (Exception e) {
+            System.err.println("Audit callback failed.");
             e.printStackTrace();
         } finally {
             // Release the connection.
-          	httppost.releaseConnection();
+        	try {
+        		if (httppost != null) httppost.releaseConnection();
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
         }
 	}
 	

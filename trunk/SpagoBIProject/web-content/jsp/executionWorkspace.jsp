@@ -100,7 +100,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				// set height to the frame
 				iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
 				if(hasScroll) {
-					iframeEl.style.height = spaceBelowPos + heightScroll + 'px';
+					try {
+						if(isIE5) { heightScroll = iframeEl.contentWindow.document.body.scrollHeight; }
+						if(isIE6) { heightScroll = iframeEl.contentWindow.document.body.scrollHeight; }
+						if(isIE7) { heightScroll = iframeEl.contentWindow.document.body.scrollHeight; }
+						if(isMoz) { heightScroll = iframeEl.contentWindow.document.body.offsetHeight; }
+						iframeEl.style.height = heightScroll + 'px';
+					} catch (err) {
+						iframeEl.style.height = spaceBelowPos + heightScroll + 'px';
+					}
 		  		} else {
 		  			iframeEl.style.height = spaceBelowPos + 'px';
 		    		// to give time to the browser to update the dom (dimension of the iframe)

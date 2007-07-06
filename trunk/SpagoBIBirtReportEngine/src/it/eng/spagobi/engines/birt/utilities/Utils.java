@@ -24,7 +24,7 @@ public class Utils {
 				String sysPropertyName = logDir.substring(beginIndex + 2, endIndex);
 				String sysPropertyValue = System.getProperty(sysPropertyName);
 				if (sysPropertyValue != null) {
-					logDir = logDir.replace("${" + sysPropertyName + "}", sysPropertyValue);
+					logDir = logDir.replaceAll("\\$\\{" + sysPropertyName + "\\}", sysPropertyValue);
 				}
 			}
 		}

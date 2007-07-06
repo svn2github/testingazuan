@@ -58,6 +58,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,7 +77,7 @@ import org.hibernate.Transaction;
 /**
  * Implements the interface which defines methods for managing the import requests
  */
-public class ImportManager implements IImportManager {
+public class ImportManager implements IImportManager, Serializable {
 
 	private String pathImportTmpFolder = "";
     private String pathBaseFolder = "";

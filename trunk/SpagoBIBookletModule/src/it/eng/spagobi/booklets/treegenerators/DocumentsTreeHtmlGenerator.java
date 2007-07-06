@@ -184,7 +184,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 					ConfigSingleton config = ConfigSingleton.getInstance();
 					SourceBean technologyFilterSB = (SourceBean) config.getAttribute(BookletsConstants.BOOKLET_DRIVER_FILTER_SB);
 					String technologyFilter = (String) technologyFilterSB.getAttribute("match");
-					if (objTypeCode.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE) && engine.getDriverName().toLowerCase().contains(technologyFilter)) {
+					if (objTypeCode.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE) && engine.getDriverName().toLowerCase().indexOf(technologyFilter) != -1) {
 						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName() + "', 'javascript:linkEmpty()', '', '', '', '', '', '', '" + BookletsConstants.PATH_OBJECT + "', '" + obj.getPath() + "' );\n");
 					}
 				}

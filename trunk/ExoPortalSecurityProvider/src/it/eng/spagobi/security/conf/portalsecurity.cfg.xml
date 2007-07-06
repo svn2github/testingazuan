@@ -1,14 +1,12 @@
 <EXO_PORTAL_SECURITY>
 	<PROFILE_ATTRIBUTES>
 		
-		<ATTRIBUTE name="product" default="" source="absolute" />
-		<ATTRIBUTE name="city" default="" source="absolute" />
-		<ATTRIBUTE name="month" default="9" source="absolute" />
-		<ATTRIBUTE name="limit" default="5" source="absolute" />
-    
+		<ATTRIBUTE name="region" default="" source="exo" exoname="user.region"/>
+		<ATTRIBUTE name="family" default="" source="exo" exoname="user.family"/>
+		
     <!-- 
 		<ATTRIBUTE name="Birthday" default="" source="exo"  exoname="user.bdate" />
-    <ATTRIBUTE name="Gender" default="" source="exo"  exoname="user.gender" />
+    	<ATTRIBUTE name="Gender" default="" source="exo"  exoname="user.gender" />
 		<ATTRIBUTE name="Employer" default="" source="exo"  exoname="user.employer" />
 		<ATTRIBUTE name="Department" default="" source="exo"  exoname="user.department" />
 		<ATTRIBUTE name="JobTitle" default="" source="exo"  exoname="user.jobtitle" />
@@ -41,21 +39,43 @@
 		<ATTRIBUTE name="AvatarUrl" default="" source="exo"  exoname="user.other-info.avatar.url" />
 		<ATTRIBUTE name="Signature" default="" source="exo"  exoname="user.other-info.signature" />
 		-->
-		
+
 		<USER-PROFILES>
 			<USER name="biadmin">
-				<ATTRIBUTE name="product" value="Food" />
-				<ATTRIBUTE name="city" value="{,{Berkeley,Ballard}}" />
+				<ATTRIBUTE name="region" value="South West" />
+				<ATTRIBUTE name="family" value="Food" />
 			</USER>
 			<USER name="bidev">
-				<ATTRIBUTE name="product" value="Drink" />
-				<ATTRIBUTE name="city" value="{,{Albany,Altadena,Colma,Arcadia}}" />
+				<ATTRIBUTE name="region" value="South West" />
+				<ATTRIBUTE name="family" value="Food" />
 			</USER>
 			<USER name="biuser">
-				<ATTRIBUTE name="product" value="Food" />
-				<ATTRIBUTE name="city" value="{,{Novato,Renton}}" />
+				<ATTRIBUTE name="region" value="South West" />
+				<ATTRIBUTE name="family" value="Food" />
+			</USER>
+			<USER name="bitest">
+				<ATTRIBUTE name="region" value="South West" />
+				<ATTRIBUTE name="family" value="Food" />
+			</USER>
+			<USER name="sales_north">
+				<ATTRIBUTE name="region" value="North West" />
+			</USER>
+			<USER name="sales_centre">
+				<ATTRIBUTE name="region" value="Central West" />
+			</USER>
+			<USER name="sales_south">
+				<ATTRIBUTE name="region" value="South West" />
+			</USER>
+			<USER name="prod_food">
+				<ATTRIBUTE name="family" value="Food" />
+			</USER>
+			<USER name="prod_drink">
+				<ATTRIBUTE name="family" value="Drink" />
+			</USER>
+			<USER name="prod_other">
+				<ATTRIBUTE name="family" value="Non-Consumable" />
 			</USER>
 		</USER-PROFILES>
-				
+			
 	</PROFILE_ATTRIBUTES>
 </EXO_PORTAL_SECURITY>

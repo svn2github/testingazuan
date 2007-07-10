@@ -16,6 +16,7 @@ import it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
+import it.eng.spagobi.geo.map.utils.MapCatalogueMock;
 import it.eng.spagobi.geo.map.utils.SVGMapLoader;
 
 import java.io.File;
@@ -47,21 +48,7 @@ public class DBMapProvider extends AbstractMapProvider {
 	}
 	
 	private String getMapUrl(String mapName) throws EMFUserError {
-		List maps;
-		SbiGeoMaps map;
-		
-		maps = DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapName);
-
-		if(maps.size() == 0 || maps.get(0) == null) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-		            "DefaultMapProvider :: getMapUrl: " +
-		            "map " + mapName + " not found in DB");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notfound");
-		}
-		
-		map = (SbiGeoMaps)maps.get(0);
-		
-		return map.getUrl();  
+		return MapCatalogueMock.getMapUrl(mapName);  
 	}
 	
 	/**

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+  <ACTION   class="it.eng.spagobi.geo.action.GeoAction"  name="GEO_ACTION"  scope="REQUEST">
+    <CONFIG/>
+  </ACTION>
+  
+  <ACTION   class="it.eng.spagobi.geo.action.DetailMapAction"  name="DETAIL_MAP_ACTION"  scope="REQUEST" > 
+      <CONFIG/>
+  </ACTION>
+  
+    <ACTION   class="it.eng.spagobi.geo.action.DetailFeatureAction"  name="DETAIL_FEATURE_ACTION"  scope="REQUEST" >
+    	<CONFIG/>
+    </ACTION>
+    
+	<ACTION   class="it.eng.spagobi.geo.action.ListMapsAction"  name="LIST_MAPS_ACTION"  scope="REQUEST" >
+ 	<CONFIG pool="spagobi" rows="10" title="Maps List" >
+      <QUERIES>
+	        <SELECT_QUERY statement="SELECT_ALL_MAPS"/>
+	        <DELETE_QUERY statement="DELETE_MAP">
+	          <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="id"/>
+	        </DELETE_QUERY>
+      </QUERIES>      
+    </CONFIG> 
+  </ACTION>    
+</ACTIONS>

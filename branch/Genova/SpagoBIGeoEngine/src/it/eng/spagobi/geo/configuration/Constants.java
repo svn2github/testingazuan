@@ -12,31 +12,49 @@ package it.eng.spagobi.geo.configuration;
 public class Constants {
 	
 	// TAGS
+	
+	public static final String HIERARCHIES_TAG = "HIERARCHIES";
+	
 	public static final String HIERARCHY_TAG = "HIERARCHY";
 	
-	public static final String LEVEL_TAG = "LEVEL";
+	public static final String HIERARCHY_LEVEL_TAG = "LEVEL";
 	
 	
 	// ATTRIBUTES
-	public static final String CLASS_NAME_ATTR = "CLASS_NAME";
+	public static final String DP_CLASS_NAME_ATTR = "CLASS_NAME";
 	
-	public static final String CONNECTION_NAME_ATTR = "CONNECTION_NAME";
+	public static final String DP_CONNECTION_NAME_ATTR = "CONNECTION_NAME";
 	
-	public static final String QUERY_ATTR = "QUERY";
+	public static final String DP_QUERY_ATTR = "QUERY";
 	
-	public static final String COLUMN_ID_ATRR = "COLUMN_ID";
+	public static final String DP_COLUMN_ID_ATRR = "COLUMN_ID";
 	
-	public static final String TARGET_FEATURE_NAME_ATRR = "TARGET_FEATURE_NAME";
+	public static final String DP_HIERARCHY_NAME_ATRR = "HIERARCHY_NAME";
 	
-	public static final String KPI_COLUMN_NAMES_ATRR = "COLUMN_VALUE";
+	public static final String DP_HIERARCHY_BASE_LEVEL_ATRR = "HIERARCHY_BASE_LEVEL";
+	
+	public static final String DP_HIERARCHY_LEVEL_ATRR = "HIERARCHY_LEVEL";
+	
+	public static final String DP_KPI_COLUMN_NAMES_ATRR = "COLUMN_VALUES";
+	
+	public static final String DP_KPI_AGG_FUNCS_ATRR = "AGG_TYPE";
+	
+	public static final String HIERARCHY_NAME_ATRR = "NAME";
 	
 	public static final String HIERARCHY_TYPE_ATRR = "TYPE";
 	
-	public static final String HIERARCHY_AGG_LEVEL_ATRR = "TARGET_LEVEL";
+	public static final String HIERARCHY_TABLE_ATRR = "TABLE_NAME";
 	
-	public static final String LEVEL_NAME_ATTR = "NAME";
+	public static final String HIERARCHY_LEVEL_NAME_ATRR = "NAME";
 	
-	public static final String LEVEL_COLUMN_ATTR = "COLUMN";
+	public static final String HIERARCHY_LEVEL_COLUMN_ID_ATRR = "COLUMN_ID";
+	
+	public static final String HIERARCHY_LEVEL_COLUMN_DESC_ATRR = "COLUMN_DESC";
+	
+	public static final String HIERARCHY_LEVEL_FEATURE_NAME_ATRR = "FEATURE_NAME";
+	
+	
+	
 
 	
 	
@@ -155,8 +173,4 @@ public class Constants {
 	public static final String DETAIL_INS = "DETAIL_INS";
 	public static final String DETAIL_DEL = "DETAIL_DEL";
 	public static final String MODALITY = "MODALITY";
-	
-	public static final String MESSAGE_BUILDER = "MESSAGE_BUILDER";	
-	public static final String URL_BUILDER = "URL_BUILDER";
-
 }

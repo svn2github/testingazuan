@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.geo.configuration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class MapRendererConfiguration {
 	private Map outboundColourMap;
 	private Map nullColourMap;
 	
-	private String[] layerNames;
+	private List layerNames;
 	private Map layersAttributes;
 	
 	private String contextPath;
@@ -98,10 +99,10 @@ public class MapRendererConfiguration {
 	private void initLayers(SourceBean layersConfigurationSB) {
 		List layers = layersConfigurationSB.getAttributeAsList("LAYER");
 		Properties attributes;
-		layerNames = new String[layers.size()];
+		layerNames = new ArrayList();
 		for(int i = 0; i < layers.size(); i++) {
 			SourceBean layerSB = (SourceBean)layers.get(i);
-			layerNames[i] = (String)layerSB.getAttribute("name");
+			layerNames.add(layerSB.getAttribute("name"));
 			attributes = new Properties();
 			String value;
 			value = (String)layerSB.getAttribute("description");
@@ -110,7 +111,7 @@ public class MapRendererConfiguration {
 			attributes.setProperty("selected", value);
 			value = (String)layerSB.getAttribute("default_fill_color");
 			attributes.setProperty("default_fill_color", value);
-			layersAttributes.put(layerNames[i], attributes);
+			layersAttributes.put(layerNames.get(i), attributes);
 		}
 	}
 	
@@ -142,8 +143,26 @@ public class MapRendererConfiguration {
 		return value;
 	}
 	
+	public void resetLayers() {
+		layersAttributes.clear();
+		layerNames.clear();
+	}
+	
+	public void addLayer(String name, String description, String selected, String default_fill_color) {
+		layerNames.add(name);
+		Properties attributes = new Properties();
+		String value;
+		value = description;
+		attributes.setProperty("description", value);
+		value = selected;
+		attributes.setProperty("selected", value);
+		value = default_fill_color;
+		attributes.setProperty("default_fill_color", value);
+		layersAttributes.put(name, attributes);
+	}
+	
 	public String[] getLayerNames() {
-		return layerNames;
+		return (String[])layerNames.toArray(new String[0]);
 	}
 	
 	public String[] getTresholdsArray(String kpi_name) {

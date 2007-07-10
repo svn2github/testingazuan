@@ -40,21 +40,88 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         super(datamartProviderConfiguration);
     }
     
+    private String getDimGeoQuery() {
+    	String query = "";
+    	
+    	DatamartProviderConfiguration.Hierarchy hierarchy = datamartProviderConfiguration.getSelectedHierarchy();
+    	//DatamartProviderConfiguration.Hierarchy.Level level = datamartProviderConfiguration.getSelectedLevel();
+    	DatamartProviderConfiguration.Hierarchy.Level baseLevel = datamartProviderConfiguration.getBaseLevel();
+    	datamartProviderConfiguration.getHierarchyLevel();
+    	
+    	List levels = hierarchy.getSublevels(baseLevel.getName());
+    	
+    	query += "SELECT " + baseLevel.getColumnId();
+    	for(int i = 0; i < levels.size(); i++) {
+    		DatamartProviderConfiguration.Hierarchy.Level subLevel;
+    		subLevel = (DatamartProviderConfiguration.Hierarchy.Level)levels.get(i);
+    		query += ", " + subLevel.getColumnId();
+    	}
+    	query += " FROM " + hierarchy.getTable();
+    	query += " GROUP BY " + baseLevel.getColumnId();
+    	for(int i = 0; i < levels.size(); i++) {
+    		DatamartProviderConfiguration.Hierarchy.Level subLevel;
+    		subLevel = (DatamartProviderConfiguration.Hierarchy.Level)levels.get(i);
+    		query += ", " + subLevel.getColumnId();
+    	}
+    	
+    	return query;
+    	
+    }
+    
     private String getAggreagteQuery() {
-    	String aggragateQuery;
+    	String aggragateQuery = null;
     	String query = datamartProviderConfiguration.getExecutableQuery();
     	
-    	String subQueryName = "t" + System.currentTimeMillis();
+    	String subQueryAlias = "t" + System.currentTimeMillis();
+    	String normalizedSubQueryAlias = "n" + System.currentTimeMillis();
+    	String dimGeoAlias = "g" + System.currentTimeMillis();
     	
-    	String aggregationColumnName = datamartProviderConfiguration.getAggregationColumnName(); 
-    	aggragateQuery = "SELECT " + subQueryName + "." + aggregationColumnName + " AS " + aggregationColumnName;
-    	String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
-    	for(int i = 0; i < kpiColumnNames.length; i++) {
-    		aggragateQuery +=  ", SUM(" + subQueryName + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+    	DatamartProviderConfiguration.Hierarchy hierarchy = datamartProviderConfiguration.getSelectedHierarchy();
+    	DatamartProviderConfiguration.Hierarchy.Level level = datamartProviderConfiguration.getSelectedLevel();
+    	DatamartProviderConfiguration.Hierarchy.Level baseLevel = datamartProviderConfiguration.getBaseLevel();
+    	
+    	System.out.println("\n\n-----------------------------\nOriginal query:\n" + query);
+    	
+    	if(hierarchy.getType().equalsIgnoreCase("custom")) {
+    		System.out.println("\nCUSTOM HIERARCHY...\n");
+	    	String aggregationColumnName = level.getColumnId(); 
+	    	aggragateQuery = "SELECT " + subQueryAlias + "." + aggregationColumnName + " AS " + aggregationColumnName;
+	    	String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
+	    	for(int i = 0; i < kpiColumnNames.length; i++) {
+	    		aggragateQuery +=  ", SUM(" + subQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+	    	}
+	    	aggragateQuery += " \nFROM ( " + query + ") " + subQueryAlias;
+	    	aggragateQuery += " \nGROUP BY " + subQueryAlias + "." + aggregationColumnName;
+    	} else {
+    		System.out.println("\nDEFAULT HIERARCHY...\n");
+    		String aggregationColumnName = level.getColumnId(); 
+	    	aggragateQuery = "SELECT " + dimGeoAlias + "." + aggregationColumnName + " AS " + aggregationColumnName;
+	    	String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
+	    	for(int i = 0; i < kpiColumnNames.length; i++) {
+	    		aggragateQuery +=  ", SUM(" + subQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+	    	}
+	    	
+	    	String normalizedSubQuery = query;
+	    
+	    	normalizedSubQuery ="SELECT " + normalizedSubQueryAlias + "." + datamartProviderConfiguration.getColumnId() +  " AS " + datamartProviderConfiguration.getColumnId();
+	    	for(int i = 0; i < kpiColumnNames.length; i++) {
+	    		normalizedSubQuery +=  ", SUM(" + normalizedSubQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+	    	}
+	    	normalizedSubQuery += " \nFROM ( " + query + ") " + normalizedSubQueryAlias;
+	    	normalizedSubQuery += " \nGROUP BY " + normalizedSubQueryAlias + "." + datamartProviderConfiguration.getColumnId();
+	    	System.out.println("\nNormalized query:\n" + normalizedSubQuery);
+	    	
+	    	
+	    	aggragateQuery += " \nFROM ( \n" + normalizedSubQuery + "\n ) " + subQueryAlias;
+	    	String dimGeoQuery = getDimGeoQuery();
+	    	System.out.println("\nDimGeo query:\n" + dimGeoQuery);
+	    	aggragateQuery += ", (" + dimGeoQuery + ") " + dimGeoAlias;
+	    	aggragateQuery += " \nWHERE " + subQueryAlias + "." + datamartProviderConfiguration.getColumnId();
+	    	aggragateQuery += " = " + dimGeoAlias + "." + baseLevel.getColumnId();
+	    	aggragateQuery += " \nGROUP BY " + dimGeoAlias + "." + aggregationColumnName;
     	}
-    	aggragateQuery += " FROM ( " + query + ") " + subQueryName;
-    	aggragateQuery += " GROUP BY " + subQueryName + "." + aggregationColumnName;
     	
+    	System.out.println("\nExecutable query:\n" + aggragateQuery);
     	
     	return aggragateQuery;
     }
@@ -74,10 +141,13 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         String connectionName = datamartProviderConfiguration.getConnectionName();
         String query = getAggreagteQuery();
         
-        String columnid = datamartProviderConfiguration.getAggregationColumnName();
-        String targetFeatureName = datamartProviderConfiguration.getAggregationLevelName();
+        DatamartProviderConfiguration.Hierarchy.Level level = datamartProviderConfiguration.getSelectedLevel();
+    	datamart.setTargetFeatureName(level.getFeatureName()); 
+        
+    	String columnid = level.getColumnId();
         String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
         //SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
+        
         
         try{
             dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
@@ -109,7 +179,6 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             }
             datamart.setValues(values);
             datamart.setLinks(links);
-            datamart.setTargetFeatureName(targetFeatureName);
             datamart.setKpiNames(kpiColumnNames);
             datamart.setSelectedKpi(0);
             

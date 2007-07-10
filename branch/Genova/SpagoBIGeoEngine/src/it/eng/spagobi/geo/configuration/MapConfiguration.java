@@ -115,11 +115,13 @@ public class MapConfiguration {
 		}		
 		DatamartProviderConfiguration datamartProviderConfiguration = new DatamartProviderConfiguration(datamartProviderConfigurationSB);
 		datamartProviderConfiguration.setParameters(getParametersFromRequest(servReq));
+		/*
 		String targetLevelStr = (String)servReq.getAttribute("target_level");
 		if(targetLevelStr != null) {
 			int targetLevel = Integer.parseInt(targetLevelStr);
 			datamartProviderConfiguration.setAggregationLevel(targetLevel);
 		}
+		*/
 		setDatamartProviderConfiguration(datamartProviderConfiguration);		
 	}
 

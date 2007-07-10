@@ -23,12 +23,15 @@ package it.eng.spagobi.geo.configuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.geo.map.utils.MapCatalogueMock;
 
 /**
  * @author Andrea Gioia
@@ -36,16 +39,20 @@ import it.eng.spago.tracing.TracerSingleton;
  */
 public class DatamartProviderConfiguration {
 	private String className;
+	
 	private String connectionName;
 	private String query;
 	private String columnId;
-	private String targetFeatureName;
+	private  String hierarchyName;
+	private  String hierarchyBaseLevel;
+	private  String hierarchyLevel;
+	
 	private String[] kpiColumnNames;
+	private String[] kpiAgregationFunctins;
+		
 	private Properties parameters;
-	private String hierarchyType;
-	private Map hierarchyLevelsToColumnMap;
-	private List hierarchyLevels;
-	private int aggregationLevel;
+	
+	private Map hierarchyMap;
 	
 	
 	public static final String DEFAULT_CALSS_NAME = "it.eng.spagobi.geo.datamart.DefaultDatamartProvider";
@@ -53,13 +60,13 @@ public class DatamartProviderConfiguration {
 	public DatamartProviderConfiguration (SourceBean datamartProviderConfigurationSB) throws ConfigurationException {
 
 		// get the class name attribute
-		String className = (String)datamartProviderConfigurationSB.getAttribute(Constants.CLASS_NAME_ATTR);
+		String className = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_CLASS_NAME_ATTR);
 		// set the default datamart provider class_name (if not already specified) 
 		if(className == null) {
 			TracerSingleton.log(Constants.LOG_NAME, 
         			TracerSingleton.WARNING, 
         			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider class name: attribute name " + Constants.CLASS_NAME_ATTR);
+        			"cannot find datamart provider class name: attribute name " + Constants.DP_CLASS_NAME_ATTR);
 			TracerSingleton.log(Constants.LOG_NAME, 
         			TracerSingleton.INFORMATION, 
         			"DatamartProviderConfiguration :: service : " +
@@ -71,163 +78,147 @@ public class DatamartProviderConfiguration {
 		
 		
 		// get the connection name attribute
-		String connectionName = (String)datamartProviderConfigurationSB.getAttribute(Constants.CONNECTION_NAME_ATTR);
+		String connectionName = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_CONNECTION_NAME_ATTR);
 		if(connectionName == null) {
 			TracerSingleton.log(Constants.LOG_NAME, 
         			TracerSingleton.CRITICAL,
         			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's connection name: attribute name " + Constants.CONNECTION_NAME_ATTR);
-			throw new ConfigurationException("cannot load DATAMART PROVIDER's connection name: attribute name " + Constants.CONNECTION_NAME_ATTR);
+        			"cannot find datamart provider's connection name: attribute name " + Constants.DP_CONNECTION_NAME_ATTR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's connection name: attribute name " + Constants.DP_CONNECTION_NAME_ATTR);
 		}
 		setConnectionName(connectionName);		
 		
 		
 		// get the query attribute
-		String query = (String)datamartProviderConfigurationSB.getAttribute(Constants.QUERY_ATTR);
+		String query = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_QUERY_ATTR);
 		if(query == null) {
 			TracerSingleton.log(Constants.LOG_NAME, 
         			TracerSingleton.CRITICAL,
         			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's query: attribute name " + Constants.QUERY_ATTR);
-			throw new ConfigurationException("cannot load DATAMART PROVIDER's query: attribute name " + Constants.QUERY_ATTR);
+        			"cannot find datamart provider's query: attribute name " + Constants.DP_QUERY_ATTR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's query: attribute name " + Constants.DP_QUERY_ATTR);
 		}
 		setQuery(query);
 		
 		//	get the columnid attribute
-		String columnId = (String)datamartProviderConfigurationSB.getAttribute(Constants.COLUMN_ID_ATRR);
+		String columnId = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_COLUMN_ID_ATRR);
 		if(columnId == null) {
 			TracerSingleton.log(Constants.LOG_NAME, 
         			TracerSingleton.CRITICAL,
         			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's query: attribute name " + Constants.COLUMN_ID_ATRR);
-			throw new ConfigurationException("cannot load DATAMART PROVIDER's column id: attribute name " + Constants.COLUMN_ID_ATRR);
+        			"cannot find datamart provider's query: attribute name " + Constants.DP_COLUMN_ID_ATRR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's column id: attribute name " + Constants.DP_COLUMN_ID_ATRR);
 		}
 		setColumnId(columnId);	
 		
 		
-		//	get the targetFeatureName attribute
-		String targetFeatureName = (String)datamartProviderConfigurationSB.getAttribute(Constants.TARGET_FEATURE_NAME_ATRR);
-		if(targetFeatureName == null) {
+		//	get the hierarchyName attribute
+		String hierarchyName = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_HIERARCHY_NAME_ATRR);
+		if(hierarchyName == null) {
 			TracerSingleton.log(Constants.LOG_NAME, 
         			TracerSingleton.CRITICAL,
         			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.TARGET_FEATURE_NAME_ATRR);
-			throw new ConfigurationException("cannot load DATAMART PROVIDER's targetFeature: attribute name " + Constants.TARGET_FEATURE_NAME_ATRR);
+        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_NAME_ATRR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's hierarchyName: attribute name " + Constants.DP_HIERARCHY_NAME_ATRR);
 		}
-		setTargetFeatureName(targetFeatureName);	
+		setHierarchyName(hierarchyName);	
+		
+		// get the hierarchyBaseLevel attribute
+		String hierarchyBaseLevel = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_HIERARCHY_BASE_LEVEL_ATRR);
+		if(hierarchyBaseLevel == null) {
+			TracerSingleton.log(Constants.LOG_NAME, 
+        			TracerSingleton.CRITICAL,
+        			"DatamartProviderConfiguration :: service : " +
+        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_BASE_LEVEL_ATRR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's hierarchyBaseLevel: attribute name " + Constants.DP_HIERARCHY_BASE_LEVEL_ATRR);
+		}
+		setHierarchyBaseLevel(hierarchyBaseLevel);	
+		
+		//	get the hierarchyLevel attribute
+		String hierarchyLevel = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_HIERARCHY_LEVEL_ATRR);
+		if(hierarchyLevel == null) {
+			TracerSingleton.log(Constants.LOG_NAME, 
+        			TracerSingleton.CRITICAL,
+        			"DatamartProviderConfiguration :: service : " +
+        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_LEVEL_ATRR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's hierarchyLevel: attribute name " + Constants.DP_HIERARCHY_LEVEL_ATRR);
+		}
+		setHierarchyLevel(hierarchyLevel);	
+		
+		
 		
 		// get the kpiColumnNames attribute
-		String kpiColumnNameStr = (String)datamartProviderConfigurationSB.getAttribute(Constants.KPI_COLUMN_NAMES_ATRR);
+		String kpiColumnNameStr = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_KPI_COLUMN_NAMES_ATRR);
 		if(kpiColumnNameStr == null) {
 			TracerSingleton.log(Constants.LOG_NAME, 
         			TracerSingleton.CRITICAL,
         			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.KPI_COLUMN_NAMES_ATRR);
-			throw new ConfigurationException("cannot load DATAMART PROVIDER's kpiColumnNames attribute name " + Constants.KPI_COLUMN_NAMES_ATRR);
+        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_KPI_COLUMN_NAMES_ATRR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's kpiColumnNames attribute name " + Constants.DP_KPI_COLUMN_NAMES_ATRR);
 		}
 		String[] kpiColumnName = kpiColumnNameStr.split(",");
 		setKpiColumnNames(kpiColumnName);		
 		
+		// get the kpiAggFuncs attribute
+		String kpiAggFuncsStr = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_KPI_AGG_FUNCS_ATRR);
+		if(kpiAggFuncsStr == null) {
+			TracerSingleton.log(Constants.LOG_NAME, 
+        			TracerSingleton.CRITICAL,
+        			"DatamartProviderConfiguration :: service : " +
+        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_KPI_AGG_FUNCS_ATRR);
+			throw new ConfigurationException("cannot load DATAMART PROVIDER's kpiAggFuncs attribute name " + Constants.DP_KPI_AGG_FUNCS_ATRR);
+		}
+		String[] kpiAggFuncs = kpiAggFuncsStr.split(",");
+		setKpiAgregationFunctins(kpiAggFuncs);	
+				
 		// get hierarchy configuration settings
-		SourceBean hierarchyConfigurationSB = (SourceBean)datamartProviderConfigurationSB.getAttribute(Constants.HIERARCHY_TAG);
-		if(hierarchyConfigurationSB == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.WARNING,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's hierarchy configuration: tag name " + Constants.HIERARCHY_TAG);
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.INFORMATION,
-        			"DatamartProviderConfiguration :: service : " +
-        			"Default hierachy definition will be used. Aggregation level will be set too zero");
-			hierarchyType = "default";
-			aggregationLevel = 0;
-		} else {
-			readHierarchyConfiguration(hierarchyConfigurationSB);
-		}		
-	}
-	
-	public void readHierarchyConfiguration(SourceBean hierarchyConfigurationSB){
-		String hierarchyType = (String)hierarchyConfigurationSB.getAttribute(Constants.HIERARCHY_TYPE_ATRR);
-		if(hierarchyType == null || (!hierarchyType.equalsIgnoreCase("default") && !hierarchyType.equalsIgnoreCase("custom"))) {
-			if(hierarchyType == null) {
-				TracerSingleton.log(Constants.LOG_NAME, 
-	        			TracerSingleton.WARNING,
-	        			"DatamartProviderConfiguration :: service : " +
-	        			"cannot find datamart provider's hierarchy type: attribute name " + Constants.HIERARCHY_TYPE_ATRR);
+		hierarchyMap = new HashMap();
+		SourceBean hierarchiesConfigurationSB = (SourceBean)datamartProviderConfigurationSB.getAttribute(Constants.HIERARCHIES_TAG);		
+		
+		Hierarchy hierarchy = null;
+		List hierarchies = hierarchiesConfigurationSB.getAttributeAsList(Constants.HIERARCHY_TAG);
+		for(int i = 0; i < hierarchies.size(); i++) {
+			
+			SourceBean hierarchySB = (SourceBean)hierarchies.get(i);
+			String name = (String)hierarchySB.getAttribute(Constants.HIERARCHY_NAME_ATRR);
+			String type = (String)hierarchySB.getAttribute(Constants.HIERARCHY_TYPE_ATRR);
+			List levels = null;
+			if(type.equalsIgnoreCase("custom"))  {
+				hierarchy = new Hierarchy(name);
+				levels =  hierarchySB.getAttributeAsList(Constants.HIERARCHY_LEVEL_TAG);
 			} else {
-				TracerSingleton.log(Constants.LOG_NAME, 
-	        			TracerSingleton.WARNING,
-	        			"DatamartProviderConfiguration :: service : " +
-	        			"invalid value for provider's hierarchy type attribute: invalid attribute value " + hierarchyType);
+				try {
+					hierarchySB = SourceBean.fromXMLString(MapCatalogueMock.getStandardHierarchy());
+				} catch (SourceBeanException e) {
+					throw new ConfigurationException("Impossible to obtain default hierarchy");
+				}
+				String table = (String)hierarchySB.getAttribute(Constants.HIERARCHY_TABLE_ATRR);
+				hierarchy = new Hierarchy(name, table);
+				levels = hierarchySB.getAttributeAsList(Constants.HIERARCHY_LEVEL_TAG);
 			}
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.INFORMATION,
-        			"DatamartProviderConfiguration :: service : " +
-        			"Default hierachy definition will be used");
 			
-			hierarchyType = "default";
-		}
-		setHierarchyType(hierarchyType);
-		
-		String aggregationLevelStr = (String)hierarchyConfigurationSB.getAttribute(Constants.HIERARCHY_AGG_LEVEL_ATRR);
-		if(aggregationLevelStr == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-	        		TracerSingleton.WARNING,
-	        		"DatamartProviderConfiguration :: service : " +
-	        		"cannot find datamart provider's hierarchy level: attribute name " + Constants.HIERARCHY_AGG_LEVEL_ATRR);
+			for(int j = 0; j < levels.size(); j++) {
+				SourceBean levelSB = (SourceBean)levels.get(j);
+				String lname = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_NAME_ATRR);
+				String lcolumnid = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_COLUMN_ID_ATRR);
+				String lcolumndesc = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_COLUMN_DESC_ATRR);
+				String lfeaturename = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_FEATURE_NAME_ATRR);
+				Hierarchy.Level level = new Hierarchy.Level();
+				level.setName(lname);
+				level.setColumnId(lcolumnid);
+				level.setColumnDesc(lcolumndesc);
+				level.setFeatureName(lfeaturename);
+				hierarchy.addLevel(level);
+			}
 			
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.INFORMATION,
-        			"DatamartProviderConfiguration :: service : " +
-        			"Hierachy level will be set to zero");
+			hierarchyMap.put(hierarchy.getName(), hierarchy);
+		}	
 		
-			aggregationLevelStr = "0";
-		}
 		
-		int aggregationLevel = 0;
-		try {
-			aggregationLevel = Integer.parseInt(aggregationLevelStr);
-		} catch(Exception e){
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.WARNING,
-        			"DatamartProviderConfiguration :: service : " +
-        			"Attribute hierarchy level is not a valid number: atribute value " + aggregationLevelStr);
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.INFORMATION,
-        			"DatamartProviderConfiguration :: service : " +
-        			"Hierachy level will be set to zero");
-		}		
-		setAggregationLevel(aggregationLevel);
 		
-		if(getHierarchyType().equalsIgnoreCase("custom")) {
-			readHierarchyLevelsConfiguration(hierarchyConfigurationSB);
-		}
 	}
 	
-	private void readHierarchyLevelsConfiguration(SourceBean hierarchyConfigurationSB) {
-		hierarchyLevels = new ArrayList();
-		hierarchyLevelsToColumnMap = new HashMap();
-		List list = hierarchyConfigurationSB.getAttributeAsList(Constants.LEVEL_TAG);
-		for(int i = 0; i < list.size(); i++) {
-			SourceBean levelSB = (SourceBean)list.get(i);
-			String name = (String)levelSB.getAttribute(Constants.LEVEL_NAME_ATTR);
-			String column = (String)levelSB.getAttribute(Constants.LEVEL_COLUMN_ATTR);
-			hierarchyLevels.add(name);
-			hierarchyLevelsToColumnMap.put(name, column);
-		}
-	}
-	
-	public String getAggregationColumnName() {
-		String levelName = (String)hierarchyLevels.get(getAggregationLevel());
-		return (String)hierarchyLevelsToColumnMap.get(levelName);
-	}
-	
-	public String getAggregationLevelName() {
-		return (String)hierarchyLevels.get(getAggregationLevel());
-	}
-	
-	
-	
+		
 	public String getClassName() {
 		return className;
 	}
@@ -280,39 +271,178 @@ public class DatamartProviderConfiguration {
 	public void setQuery(String query) {
 		this.query = query;
 	}
-	public String getTargetFeatureName() {
-		return targetFeatureName;
-	}
-	public void setTargetFeatureName(String targetFeatureName) {
-		this.targetFeatureName = targetFeatureName;
-	}
+	
+	
 	public Properties getParameters() {
 		return parameters;
 	}
-
-
-
-
-
 
 	public void setParameters(Properties parameters) {
 		this.parameters = parameters;
 	}
 
-	public int getAggregationLevel() {
-		return aggregationLevel;
+	
+	public String getHierarchyLevel() {
+		return hierarchyLevel;
 	}
 
-	public void setAggregationLevel(int aggregationLevel) {
-		this.aggregationLevel = aggregationLevel;
+	public void setHierarchyLevel(String hierarchyLevel) {
+		this.hierarchyLevel = hierarchyLevel;
 	}
 
-	public String getHierarchyType() {
-		return hierarchyType;
+	public String getHierarchyName() {
+		return hierarchyName;
 	}
 
-	public void setHierarchyType(String hierarchyType) {
-		this.hierarchyType = hierarchyType;
+	public void setHierarchyName(String hierarchyName) {
+		this.hierarchyName = hierarchyName;
+	}
+
+	public String[] getKpiAgregationFunctins() {
+		return kpiAgregationFunctins;
+	}
+
+	public void setKpiAgregationFunctins(String[] kpiAgregationFunctins) {
+		this.kpiAgregationFunctins = kpiAgregationFunctins;
+	}
+	
+	public Hierarchy getHierarchy(String hierarchyName) {
+		return (Hierarchy)hierarchyMap.get(hierarchyName);
+	}
+	
+	public List getHierarchies() {
+		List hierarchies = new ArrayList();
+		Iterator it = hierarchyMap.keySet().iterator();
+		while(it.hasNext()) hierarchies.add(hierarchyMap.get(it.next()));
+		return hierarchies;
+	}
+	
+	public Hierarchy getSelectedHierarchy() {
+		return getHierarchy(getHierarchyName());
+	}
+	
+	public Hierarchy.Level getSelectedLevel() {
+		return getSelectedHierarchy().getLevel(getHierarchyLevel());
+	}
+	
+	public Hierarchy.Level getBaseLevel() {
+		return getSelectedHierarchy().getLevel(getHierarchyBaseLevel());
+	}
+	
+	
+	
+	
+	public static class Hierarchy {
+		private String name;
+		private String type;
+		private String table;
+		private List levelList;
+		private Map levelMap;
+		
+		public Hierarchy(String name) {
+			this.name = name;
+			this.type = "custom";
+			this.table = null;
+			this.levelList = new ArrayList();
+			this.levelMap = new HashMap();
+		}
+		
+		public Hierarchy(String name , String table) {
+			this.name = name;
+			this.type = "defualt";
+			this.table = table;
+			this.levelList = new ArrayList();
+			this.levelMap = new HashMap();
+		}
+		
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getTable() {
+			return table;
+		}
+		public void setTable(String table) {
+			this.table = table;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		
+		public void addLevel(Level level) {
+			levelList.add(level);
+			levelMap.put(level.getName(), level);
+		}
+		
+		public Level getLevel(String levelName) {
+			return (Level)levelMap.get(levelName);
+		}
+		
+		public List getLevels() {
+			return levelList;
+		}
+		
+		public List getSublevels(String levelName) {
+			List levels = new ArrayList();
+			boolean isSubLevel = false;
+			for(int i = 0; i < levelList.size(); i++) {
+				Level level = (Level)levelList.get(i);
+				if(isSubLevel) {
+					levels.add(level);
+				} else {
+					if(level.getName().equalsIgnoreCase(levelName)) isSubLevel = true;
+				}
+			}
+			
+			return levels;
+		}
+		
+		
+		public static class Level {
+			private String name;
+			private String columnId;
+			private String columnDesc;
+			private String featureName;
+			public String getColumnDesc() {
+				return columnDesc;
+			}
+			public void setColumnDesc(String columnDesc) {
+				this.columnDesc = columnDesc;
+			}
+			public String getColumnId() {
+				return columnId;
+			}
+			public void setColumnId(String columnId) {
+				this.columnId = columnId;
+			}
+			public String getFeatureName() {
+				return featureName;
+			}
+			public void setFeatureName(String featureName) {
+				this.featureName = featureName;
+			}
+			public String getName() {
+				return name;
+			}
+			public void setName(String name) {
+				this.name = name;
+			}
+		}
+	}
+
+
+	public String getHierarchyBaseLevel() {
+		return hierarchyBaseLevel;
+	}
+
+
+	public void setHierarchyBaseLevel(String hierarchyBaseLevel) {
+		this.hierarchyBaseLevel = hierarchyBaseLevel;
 	}
 	
 	

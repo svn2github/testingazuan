@@ -213,15 +213,25 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		
 		buffer.append("// LAYERS\n");
 	    String[] layerNames = mapRendererConfiguration.getLayerNames();
+	    boolean includeChartLayer = false;
+	    boolean includeValuesLayer = false;
 	    buffer.append("var layer_names = [");	
 	    String separtor = "";
 	    for(int i = 0; i < layerNames.length; i++) {	    	
 	    	if(doc.getElementById(layerNames[i]) != null) { 
 	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
 	    		separtor = ",";
+	    	} else if (layerNames[i].equalsIgnoreCase("grafici")){
+	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
+	    		separtor = ",";
+	    		includeChartLayer = true;
+	    	} else if(layerNames[i].equalsIgnoreCase("valori")) {
+	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
+	    		separtor = ",";
+	    		includeValuesLayer = true;
 	    	}
 	    }
-	    buffer.append(", \"grafici\"];\n");
+	    buffer.append("];\n");
 	    
 	    buffer.append("var layer_descriptions = [");
 	    separtor = "";
@@ -229,9 +239,19 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    	if(doc.getElementById(layerNames[i]) != null) { 
 	    		buffer.append(separtor + "\"" + mapRendererConfiguration.getLayerDescription(layerNames[i]) + "\"");
 	    		separtor = ",";
+	    	} else if (layerNames[i].equalsIgnoreCase("grafici")){
+	    		buffer.append(separtor + "\"Grafici\"");
+	    		separtor = ",";
+	    	} else if (layerNames[i].equalsIgnoreCase("valori")){
+	    		buffer.append(separtor + "\"Valori\"");
+	    		separtor = ",";
 	    	}
+	    	
 	    }	    
-	    buffer.append(", \"Grafici\"];\n");
+	    buffer.append("];\n");
+	    
+	    buffer.append("var includeChartLayer = " + includeChartLayer + ";\n");
+	    buffer.append("var includeValuesLayer = " + includeValuesLayer + ";\n");
 	    
 	    buffer.append("var target_layer_index = 0;\n");
 	    

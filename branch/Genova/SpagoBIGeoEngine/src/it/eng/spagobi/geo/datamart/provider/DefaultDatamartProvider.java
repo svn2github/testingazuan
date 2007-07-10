@@ -65,7 +65,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
         String connectionName = datamartProviderConfiguration.getConnectionName();
         String query = datamartProviderConfiguration.getExecutableQuery();
         String columnid = datamartProviderConfiguration.getColumnId();
-        String targetFeatureName = datamartProviderConfiguration.getTargetFeatureName();
+        String targetFeatureName = datamartProviderConfiguration.getHierarchyLevel();
         String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
         //SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
         try{

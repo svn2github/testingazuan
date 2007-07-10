@@ -28,19 +28,5 @@
 		</RENDERING>
 	</PUBLISHER>
 	
-	<PUBLISHER name="detailMap">
-   	 	<RENDERING channel="HTTP" type="JSP" mode="FORWARD" >
-      		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/detailMap.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-	</PUBLISHER>
 	
-	<PUBLISHER name="detailFeature">
-   	 	<RENDERING channel="HTTP" type="JSP" mode="FORWARD" >
-      		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/detailFeature.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-	</PUBLISHER>	
 </PUBLISHERS>

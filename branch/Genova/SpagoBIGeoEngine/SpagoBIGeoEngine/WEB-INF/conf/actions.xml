@@ -2,5 +2,10 @@
 <ACTIONS>
   <ACTION   class="it.eng.spagobi.geo.action.GeoAction"  name="GEO_ACTION"  scope="REQUEST">
     <CONFIG/>
-  </ACTION>  
+  </ACTION>
+  
+  <ACTION   class="it.eng.spagobi.geo.action.MapDrawAction"  name="MAP_DRAW_ACTION"  scope="REQUEST">
+    <CONFIG/>
+  </ACTION>
+    
 </ACTIONS>

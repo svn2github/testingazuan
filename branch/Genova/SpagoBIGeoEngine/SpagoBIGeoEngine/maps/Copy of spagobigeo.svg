@@ -222,15 +222,14 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			var values = [];
 			
 			var detailBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
-			detailBarChartRenderer.maxGridLineValue = 300;
+			detailBarChartRenderer.maxGridLineValue = 100;
 			
 			var layerBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
-			layerBarChartRenderer.maxGridLineValue = 300;
+			layerBarChartRenderer.maxGridLineValue = 100;
 			layerBarChartRenderer.gridLineVisible = false;
 			layerBarChartRenderer.labelsVisible = false;
 			
 			var child = myMapApp.targetLayer.firstChild;
-			
 			 
 			while(child) {
 				if (child.nodeName == "path") {
@@ -246,34 +245,17 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 					detailBarChartRenderer.setDataset(names, values, kpi_colours);
 					detailBarChartRenderer.render(document.getElementById("detailTabGroup__1_content"), child.getAttributeNS(null, "id") + "_chart", "none");
 					
-					if(includeChartLayer == true) {
-						layerBarChartRenderer.setDataset(names, values, kpi_colours);
-						var chartW = 800;
-						var chartH = 1600;
-						var centroide = document.getElementById("centroidi_" + child.getAttributeNS(null, "id"));
-						layerBarChartRenderer.chartX = centroide.getAttributeNS(null, "cx") - (chartW/2);
-						layerBarChartRenderer.chartY = centroide.getAttributeNS(null, "cy") - (chartH);
-						layerBarChartRenderer.chartW = chartW;
-						layerBarChartRenderer.chartH = chartH;
-						layerBarChartRenderer.render(document.getElementById("grafici"), child.getAttributeNS(null, "id") + "_chartLayer", "inherit");
-					}
 					
-					if(includeValuesLayer == true) {
-						var text = values[selected_kpi_index];
-						var valueLabel = document.createElementNS(svgNS,"text");
-						var centroide = document.getElementById("centroidi_" + child.getAttributeNS(null, "id"));
-					    valueLabel.setAttribute("x",centroide.getAttributeNS(null, "cx"));
-						valueLabel.setAttribute("y",centroide.getAttributeNS(null, "cy"));
-						valueLabel.setAttribute("id", "label_" + child.getAttributeNS(null, "id"));
-						valueLabel.setAttribute("text-anchor","middle");
-						valueLabel.setAttribute("font-family","Arial,Helvetica");
-						valueLabel.setAttribute("font-size","600px");
-						valueLabel.setAttribute("fill","black");
-						var textNode = document.createTextNode(text);
-						valueLabel.appendChild(textNode);
-						var valuesLayer = document.getElementById("valori");
-						valuesLayer.appendChild(valueLabel);
-					}
+					layerBarChartRenderer.setDataset(names, values, kpi_colours);
+					var chartW = 800;
+					var chartH = 1600;
+					var centroide = document.getElementById("centroidi_" + child.getAttributeNS(null, "id"));
+					layerBarChartRenderer.chartX = centroide.getAttributeNS(null, "cx") - (chartW/2);
+					layerBarChartRenderer.chartY = centroide.getAttributeNS(null, "cy") - (chartH/2);
+					layerBarChartRenderer.chartW = chartW;
+					layerBarChartRenderer.chartH = chartH;
+					layerBarChartRenderer.render(document.getElementById("grafici"), child.getAttributeNS(null, "id") + "_chartLayer", "inherit");
+					
 					
 			
 				}
@@ -410,11 +392,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 					}
 					//alert(colIndex + " - " + myMapApp.colArray[colIndex]);
 					child.setAttributeNS(null,"fill",myMapApp.colArray[colIndex]);
-					
-					if(includeValuesLayer == true) {
-						var valueLabel = document.getElementById("label_" + child.getAttributeNS(null, "id"));					
-						valueLabel.firstChild.nodeValue = child.getAttributeNS(attribNS,myMapApp.curKpi);
-					}
 				}
 				child = child.nextSibling;
 			}
@@ -579,7 +556,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 				</g>
 				
 				<g id="grafici" fill="white" stroke="black" stroke-width="0.2" stroke-linecap="square " stroke-linejoin="miter">	</g>
-				<g id="valori" fill="white" stroke="black" stroke-width="0.2" stroke-linecap="square " stroke-linejoin="miter">	</g>
 				
 				</g>
 				</g>

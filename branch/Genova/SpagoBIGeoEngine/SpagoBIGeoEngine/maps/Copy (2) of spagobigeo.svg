@@ -258,22 +258,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 						layerBarChartRenderer.render(document.getElementById("grafici"), child.getAttributeNS(null, "id") + "_chartLayer", "inherit");
 					}
 					
-					if(includeValuesLayer == true) {
-						var text = values[selected_kpi_index];
-						var valueLabel = document.createElementNS(svgNS,"text");
-						var centroide = document.getElementById("centroidi_" + child.getAttributeNS(null, "id"));
-					    valueLabel.setAttribute("x",centroide.getAttributeNS(null, "cx"));
-						valueLabel.setAttribute("y",centroide.getAttributeNS(null, "cy"));
-						valueLabel.setAttribute("id", "label_" + child.getAttributeNS(null, "id"));
-						valueLabel.setAttribute("text-anchor","middle");
-						valueLabel.setAttribute("font-family","Arial,Helvetica");
-						valueLabel.setAttribute("font-size","600px");
-						valueLabel.setAttribute("fill","black");
-						var textNode = document.createTextNode(text);
-						valueLabel.appendChild(textNode);
-						var valuesLayer = document.getElementById("valori");
-						valuesLayer.appendChild(valueLabel);
-					}
 					
 			
 				}
@@ -410,11 +394,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 					}
 					//alert(colIndex + " - " + myMapApp.colArray[colIndex]);
 					child.setAttributeNS(null,"fill",myMapApp.colArray[colIndex]);
-					
-					if(includeValuesLayer == true) {
-						var valueLabel = document.getElementById("label_" + child.getAttributeNS(null, "id"));					
-						valueLabel.firstChild.nodeValue = child.getAttributeNS(attribNS,myMapApp.curKpi);
-					}
 				}
 				child = child.nextSibling;
 			}
@@ -579,7 +558,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 				</g>
 				
 				<g id="grafici" fill="white" stroke="black" stroke-width="0.2" stroke-linecap="square " stroke-linejoin="miter">	</g>
-				<g id="valori" fill="white" stroke="black" stroke-width="0.2" stroke-linecap="square " stroke-linejoin="miter">	</g>
 				
 				</g>
 				</g>

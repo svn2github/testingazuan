@@ -10,7 +10,8 @@
                  java.util.List,
                  java.util.ArrayList,
                  it.eng.spagobi.geo.configuration.*,
-                 it.eng.spagobi.geo.map.utils.*" %>
+                 it.eng.spagobi.geo.map.utils.*,
+                 it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils" %>
 <%
 
 	RequestContainer requestContainer = null;
@@ -32,6 +33,9 @@
 	actionUrl += "ACTION_NAME=MAP_DRAW_ACTION";
 	String template = "";
 	String target_level = "0";
+	MapCatalogueAccessUtils mapCatalogueAccessUtils = null;
+	
+	
 	List attributes = serviceResponse.getContainedAttributes();
 	for(int i = 0; i < attributes.size(); i++) {
 		SourceBeanAttribute attributeSB = (SourceBeanAttribute)attributes.get(i);
@@ -39,7 +43,9 @@
 		Object value = attributeSB.getValue();
 		if(name.equalsIgnoreCase("template")) template = value.toString();
 		if(name.equalsIgnoreCase("target_level")) target_level = value.toString();
-		if(name.equalsIgnoreCase("configuration")) mapConfiguration = (MapConfiguration)value;
+		if(name.equalsIgnoreCase("configuration")) mapConfiguration = (MapConfiguration)value;		
+		mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
+		
 	}	
 	
 	String hierarchiesNameArray = "";
@@ -85,7 +91,7 @@
 	List mapsList = new ArrayList();
 	for(int j = 0; j < features.size(); j++ ) {
 		String featureName = (String)features.get(j);
-		String[] maps = MapCatalogueMock.getMapNamesByFeature(featureName);
+		String[] maps = (String[])mapCatalogueAccessUtils.getMapNamesByFeature(featureName).toArray(new String[0]);
 		for(int i = 0; i < maps.length; i++) {
 			initMapsArrayScript += "maps[\"" + featureName + "\"][" + i + "] = \"" + maps[i]  + "\";\n"; 
 			layersArray += "layers[\"" + maps[i] + "\"] = new Array();\n";
@@ -93,7 +99,7 @@
 		}
 	}
 	DatamartProviderConfiguration.Hierarchy.Level level = mapConfiguration.getDatamartProviderConfiguration().getSelectedLevel();
-	String[] maps = MapCatalogueMock.getMapNamesByFeature(level.getName());
+	String[] maps = (String[])mapCatalogueAccessUtils.getMapNamesByFeature(level.getName()).toArray(new String[0]);
 	selectedMap = "var selectedMap = \"" + maps[0] + "\";";
 	
 	
@@ -103,7 +109,7 @@
 	String initLayersArrayScript = "";
 	for(int j = 0; j < mapsList.size(); j++){
 		String mapName = (String)mapsList.get(j);
-		String[] layers = MapCatalogueMock.getFeatureNamesInMap(mapName);
+		String[] layers = (String[])mapCatalogueAccessUtils.getFeatureNamesInMap(mapName).toArray(new String[0]);
 		for(int i = 0; i < layers.length; i++) {
 			initLayersArrayScript += "layers[\"" + mapName + "\"][" + i + "] = \"" + layers[i]  + "\";\n"; 
 		}

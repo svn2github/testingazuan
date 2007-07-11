@@ -8,6 +8,7 @@ package it.eng.spagobi.geo.map.provider;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.configuration.MapProviderConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
 
 import javax.xml.stream.XMLStreamReader;
@@ -19,7 +20,7 @@ import org.w3c.dom.svg.SVGDocument;
  */
 public class AbstractMapProvider implements IMapProvider {
 
-	protected SourceBean mapProviderConfiguration;
+	protected MapProviderConfiguration mapProviderConfiguration;
 	
     /**
      * Constructors
@@ -28,7 +29,7 @@ public class AbstractMapProvider implements IMapProvider {
         super();
     }
 	
-    public AbstractMapProvider(SourceBean mapProviderConfiguration) {
+    public AbstractMapProvider(MapProviderConfiguration mapProviderConfiguration) {
         super();
         setMapProviderConfiguration(mapProviderConfiguration);
     }
@@ -51,13 +52,14 @@ public class AbstractMapProvider implements IMapProvider {
 		return null;
 	}
 
-	public SourceBean getMapProviderConfiguration() {
+	
+	public MapProviderConfiguration getMapProviderConfiguration() {
 		return mapProviderConfiguration;
 	}
 
-	public void setMapProviderConfiguration(SourceBean mapProviderConfiguration) {
+	public void setMapProviderConfiguration(MapProviderConfiguration mapProviderConfiguration) {
 		this.mapProviderConfiguration = mapProviderConfiguration;
 	}
-    
+   
 
 }

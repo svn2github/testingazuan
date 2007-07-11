@@ -14,6 +14,7 @@ import it.eng.spagobi.geo.bo.SbiGeoMaps;
 import it.eng.spagobi.geo.bo.dao.DAOFactory;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.configuration.MapProviderConfiguration;
 import it.eng.spagobi.geo.map.utils.SVGMapLoader;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class FSMapProvider extends AbstractMapProvider {
 		super();
 	}
 	
-	public FSMapProvider(SourceBean mapProviderConfiguration) {
+	public FSMapProvider(MapProviderConfiguration mapProviderConfiguration) {
 		super(mapProviderConfiguration);
 	}
 	
@@ -60,7 +61,7 @@ public class FSMapProvider extends AbstractMapProvider {
 		
 		svgDocument = null;
 		
-		mapName = (String)mapProviderConfiguration.getAttribute(Constants.MAP_NAME);		
+		mapName = (String)mapProviderConfiguration.getMapName();		
 		mapUrl = getMapUrl(mapName);
 		
 		try {

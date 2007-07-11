@@ -31,13 +31,16 @@ import java.util.Properties;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.geo.map.utils.MapCatalogueMock;
+import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 /**
  * @author Andrea Gioia
  *
  */
 public class DatamartProviderConfiguration {
+	
+	private MapConfiguration parentConfiguration;
+	
 	private String className;
 	
 	private String connectionName;
@@ -57,8 +60,10 @@ public class DatamartProviderConfiguration {
 	
 	public static final String DEFAULT_CALSS_NAME = "it.eng.spagobi.geo.datamart.DefaultDatamartProvider";
 	
-	public DatamartProviderConfiguration (SourceBean datamartProviderConfigurationSB) throws ConfigurationException {
+	public DatamartProviderConfiguration (MapConfiguration parentConfiguration, SourceBean datamartProviderConfigurationSB) throws ConfigurationException {
 
+		setParentConfiguration(parentConfiguration);
+		
 		// get the class name attribute
 		String className = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_CLASS_NAME_ATTR);
 		// set the default datamart provider class_name (if not already specified) 
@@ -188,8 +193,11 @@ public class DatamartProviderConfiguration {
 				levels =  hierarchySB.getAttributeAsList(Constants.HIERARCHY_LEVEL_TAG);
 			} else {
 				try {
-					hierarchySB = SourceBean.fromXMLString(MapCatalogueMock.getStandardHierarchy());
-				} catch (SourceBeanException e) {
+					//MapConfiguration mapConfiguration = getParentConfiguration();
+					MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
+					String sdtHierarchy = mapCatalogueAccessUtils.getStandardHierarchy();
+					hierarchySB = SourceBean.fromXMLString(sdtHierarchy);
+				} catch (Exception e) {
 					throw new ConfigurationException("Impossible to obtain default hierarchy");
 				}
 				String table = (String)hierarchySB.getAttribute(Constants.HIERARCHY_TABLE_ATRR);
@@ -443,6 +451,16 @@ public class DatamartProviderConfiguration {
 
 	public void setHierarchyBaseLevel(String hierarchyBaseLevel) {
 		this.hierarchyBaseLevel = hierarchyBaseLevel;
+	}
+
+
+	public MapConfiguration getParentConfiguration() {
+		return parentConfiguration;
+	}
+
+
+	public void setParentConfiguration(MapConfiguration parentConfiguration) {
+		this.parentConfiguration = parentConfiguration;
 	}
 	
 	

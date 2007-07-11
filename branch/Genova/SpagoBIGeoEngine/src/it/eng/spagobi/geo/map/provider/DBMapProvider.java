@@ -6,26 +6,21 @@
 package it.eng.spagobi.geo.map.provider;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.geo.bo.SbiGeoMaps;
-import it.eng.spagobi.geo.bo.dao.DAOFactory;
-import it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.configuration.MapProviderConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
-import it.eng.spagobi.geo.map.utils.MapCatalogueMock;
 import it.eng.spagobi.geo.map.utils.SVGMapLoader;
+import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -43,12 +38,16 @@ public class DBMapProvider extends AbstractMapProvider {
 		super();
 	}
 	
-	public DBMapProvider(SourceBean mapProviderConfiguration) {
+	public DBMapProvider(MapProviderConfiguration mapProviderConfiguration) {
 		super(mapProviderConfiguration);
 	}
 	
 	private String getMapUrl(String mapName) throws EMFUserError {
-		return MapCatalogueMock.getMapUrl(mapName);  
+		try {
+			return getMapProviderConfiguration().getParentConfiguration().getMapCatalogueAccessUtils().getMapUrl(mapName);
+		} catch (Exception e) {
+			return null;
+		}  
 	}
 	
 	/**
@@ -59,17 +58,20 @@ public class DBMapProvider extends AbstractMapProvider {
 	public SVGDocument getSVGMapDOMDocument(Datamart datamart) throws EMFUserError {
 		SVGDocument svgDocument;
 		String mapName; 
-		String mapUrl;		
+		String mapUrl = "?";		
 		
 		svgDocument = null;
 		
-		//mapName = (String)mapProviderConfiguration.getAttribute(Constants.MAP_NAME);		
-		mapName = datamart.getTargetFeatureName();
-		mapUrl = getMapUrl(mapName);
+			
+		
 		
 		try {
+			String targetFeatureName = datamart.getTargetFeatureName();
+			List maps = MapConfiguration.getMapCatalogueAccessUtils().getMapNamesByFeature(targetFeatureName);
+			mapUrl = getMapUrl((String)maps.get(0));
+			//File file = new File(mapUrl);
 			svgDocument = SVGMapLoader.loadMapAsDocument(mapUrl);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
 					            "DefaultMapProvider :: getSVGMapStreamReader : " +
 					            "cannot load map file, path " + mapUrl);

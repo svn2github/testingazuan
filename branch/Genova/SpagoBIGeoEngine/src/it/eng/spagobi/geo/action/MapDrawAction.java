@@ -92,11 +92,11 @@ public class MapDrawAction extends AbstractHttpAction {
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		HttpServletRequest request = this.getHttpRequest(); 
 		
-		/*
+		
 		String map_catalogue_manager_url = (String) request.getAttribute(MAP_CATALOGUE_MANAGER_URL);
 		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
-		String result = mapCatalogueAccessUtils.getStandardHierarchy();
-		*/
+		//String result = mapCatalogueAccessUtils.getStandardHierarchy();
+		
 		
 		// AUDIT UPDATE
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");

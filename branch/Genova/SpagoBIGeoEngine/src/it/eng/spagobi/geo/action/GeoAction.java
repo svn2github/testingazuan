@@ -98,7 +98,15 @@ public class GeoAction extends AbstractHttpAction {
 			serviceResponse.setAttribute(parName, parValue);
 		}	
 		
+			
+		
+		//serviceResponse.setAttribute("mapCatalogueAccessUtils", mapCatalogueAccessUtils);
+		String map_catalogue_manager_url = (String) serviceRequest.getAttribute(MAP_CATALOGUE_MANAGER_URL);
+		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
+		MapConfiguration.setMapCatalogueAccessUtils(mapCatalogueAccessUtils);
 		MapConfiguration mapConfiguration = getConfiguration(serviceRequest);
+		
+		
 		serviceResponse.setAttribute("configuration", mapConfiguration);
 	}
 	

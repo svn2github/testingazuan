@@ -8,6 +8,7 @@ package it.eng.spagobi.geo.configuration;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -19,10 +20,13 @@ public class MapConfiguration {
 	
 	private MapRendererConfiguration mapRendererConfiguration = null;
 
-	private SourceBean mapProviderConfiguration = null;
+	private MapProviderConfiguration mapProviderConfiguration = null;
 
 	private DatamartProviderConfiguration datamartProviderConfiguration = null;
 
+	
+	private static MapCatalogueAccessUtils mapCatalogueAccessUtils;
+	
 	private SourceBean legenda = null;
 	
 	
@@ -36,8 +40,6 @@ public class MapConfiguration {
 	public MapConfiguration(String contextPath, byte[] template, SourceBean servReq) throws ConfigurationException {
 		// load template xml string into a sourcebean
 		SourceBean map = null;
-		
-
 		
 		try {
 			map = SourceBean.fromXMLString(new String(template));
@@ -57,39 +59,18 @@ public class MapConfiguration {
 		
 		// load mapRendererConfiguration
 		SourceBean mapRendererConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_RENDERER);
-		mapRendererConfiguration = new MapRendererConfiguration(mapRendererConfigurationSB);
+		mapRendererConfiguration = new MapRendererConfiguration(this, mapRendererConfigurationSB);
 		mapRendererConfiguration.setContextPath(contextPath);
 		
-		// load a predefined map provider SourceBean
-		try {
-			mapProviderConfiguration = (SourceBean) map.getAttribute(Constants.MAP_PROVIDER);
-			if(mapProviderConfiguration == null) {
-				TracerSingleton.log(Constants.LOG_NAME, 
-            			TracerSingleton.WARNING, 
-            			"MapConfiguration :: service : cannot find map provider configuration: tag " + Constants.MAP_PROVIDER);
-				TracerSingleton.log(Constants.LOG_NAME, 
-            			TracerSingleton.INFORMATION, 
-            			"MapConfiguration :: service : the default map provider configuration will be used");
-				String mapProvConfStr = "<MAP_PROVIDER class_name=\"it.eng.spagobi.geo.map.FSMapProvider\" />";
-				mapProviderConfiguration = SourceBean.fromXMLString(mapProvConfStr);
-			}			
-		} catch (Exception e) {
-			throw new ConfigurationException("Cannot load map provider configuration", e);
-		}
 		
-		//	load the logical name of the map  from the template
-		if(mapProviderConfiguration.getAttribute(Constants.MAP_NAME) == null) {
-			try {
-				mapName = (String) map.getAttribute(Constants.NAME);
-				mapProviderConfiguration.setAttribute(Constants.MAP_NAME, mapName);
-			} catch (Exception e) {
-				throw new ConfigurationException("cannot set default datamart provider map name", e);
-			}
-		} else {
-			mapName = (String)mapProviderConfiguration.getAttribute(Constants.MAP_NAME);
-		}
+		SourceBean mapProviderConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_PROVIDER);
+		mapProviderConfiguration = new MapProviderConfiguration(this, mapProviderConfigurationSB);
+		if(mapProviderConfiguration.getMapName() == null) {
+			mapName = (String) map.getAttribute(Constants.NAME);
+			mapProviderConfiguration.setMapName(mapName);
+		}		
 		
-		if(mapName == null) {
+		if(mapProviderConfiguration.getMapName() == null) {
 			throw new ConfigurationException("cannot set default datamart provider map name");
 		}
 		
@@ -113,7 +94,7 @@ public class MapConfiguration {
 		} catch (Exception e) {
 			throw new ConfigurationException("cannot load DATAMART PROVIDER configuration: tag " + Constants.DATAMART_PROVIDER, e);
 		}		
-		DatamartProviderConfiguration datamartProviderConfiguration = new DatamartProviderConfiguration(datamartProviderConfigurationSB);
+		DatamartProviderConfiguration datamartProviderConfiguration = new DatamartProviderConfiguration(this, datamartProviderConfigurationSB);
 		datamartProviderConfiguration.setParameters(getParametersFromRequest(servReq));
 		/*
 		String targetLevelStr = (String)servReq.getAttribute("target_level");
@@ -267,7 +248,7 @@ public class MapConfiguration {
 	 * Gets the MapProvider Configuration 
 	 * @return SourceBean that contains the configuration
 	 */
-	public SourceBean getMapProviderConfiguration() {
+	public MapProviderConfiguration getMapProviderConfiguration() {
 		return mapProviderConfiguration;
 	}
     
@@ -275,7 +256,7 @@ public class MapConfiguration {
 	 * Sets the MapProvider Configuration 
 	 * @param mapProviderConfiguration SourceBean that contains the configuration
 	 */
-	public void setMapProviderConfiguration(SourceBean mapProviderConfiguration) {
+	public void setMapProviderConfiguration(MapProviderConfiguration mapProviderConfiguration) {
 		this.mapProviderConfiguration = mapProviderConfiguration;
 	}
 
@@ -294,6 +275,17 @@ public class MapConfiguration {
 	public void setMapRendererConfiguration(
 			MapRendererConfiguration mapRendererConfiguration) {
 		this.mapRendererConfiguration = mapRendererConfiguration;
+	}
+
+
+	public static MapCatalogueAccessUtils getMapCatalogueAccessUtils() {
+		return mapCatalogueAccessUtils;
+	}
+
+
+	public static void setMapCatalogueAccessUtils(
+			MapCatalogueAccessUtils mapCatalogueAccessUtils) {
+		MapConfiguration.mapCatalogueAccessUtils = mapCatalogueAccessUtils;
 	}
 
 }

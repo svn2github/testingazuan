@@ -34,6 +34,7 @@ import it.eng.spago.base.SourceBean;
  *
  */
 public class MapRendererConfiguration {
+	private MapConfiguration parentConfiguration;
 	private String className;
 	private Map colourRangeMap;
 	private Map trasholdRangeMap;
@@ -48,7 +49,10 @@ public class MapRendererConfiguration {
 	
 	private String contextPath;
 
-	public MapRendererConfiguration (SourceBean mapRendererConfigurationSB){
+	public MapRendererConfiguration (MapConfiguration parentConfiguration, SourceBean mapRendererConfigurationSB){
+		
+		setParentConfiguration(parentConfiguration);
+		
 		SourceBean measuresConfigurationSB;
 		SourceBean layersConfigurationSB;
 		
@@ -187,6 +191,14 @@ public class MapRendererConfiguration {
 
 	public void setContextPath(String contextPath) {
 		this.contextPath = contextPath;
+	}
+
+	public MapConfiguration getParentConfiguration() {
+		return parentConfiguration;
+	}
+
+	public void setParentConfiguration(MapConfiguration parentConfiguration) {
+		this.parentConfiguration = parentConfiguration;
 	}
 	
 }

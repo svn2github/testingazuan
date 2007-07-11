@@ -57,7 +57,7 @@ public class GeoAction extends AbstractHttpAction {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
         						"GeoAction :: service : " +
         						"Error while decoding base64 template", e);
-			return null;
+			 return null;
 		}
 		
 		// read the map configuration		

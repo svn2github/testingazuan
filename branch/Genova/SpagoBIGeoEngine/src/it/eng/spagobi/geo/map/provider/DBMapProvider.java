@@ -35,7 +35,7 @@ public class DBMapProvider extends AbstractMapProvider {
 	 * Constructors
 	 */
 	public DBMapProvider() {
-		super();
+		 super();
 	}
 	
 	public DBMapProvider(MapProviderConfiguration mapProviderConfiguration) {

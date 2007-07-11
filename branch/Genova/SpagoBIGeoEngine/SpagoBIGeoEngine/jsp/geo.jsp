@@ -143,7 +143,6 @@
 	var selectedLayersMap = null;
 	<%=initLayersArrayScript%> 
 	
-	
 	function updateHierarchySelection() {		
 		var hierarchyNameOpt = document.getElementById("hierarchyName"); 
 		var selectedValue = hierarchyNameOpt.options[hierarchyNameOpt.selectedIndex].value;
@@ -152,10 +151,22 @@
 	}
 	
 	
-	function updateRadioSelections() {	
+	function updateRadioSelections(obj) {	
 			
 		var selectedValue;
 		
+		if(obj.name == "level") {
+			selectedHierarchyLevel = obj.value;
+			targetFeature = selectedHierarchyLevel;
+			selectedMap = null;
+			selectedLayersMap = null;
+		} else if (obj.name == "map") {			
+			selectedMap = obj.value;
+			selectedLayersMap = null;
+		}
+		
+		/*
+		selectedValue = null;
 		var hierarchyLevelRadio = document.getElementById("hierarchyLevelRadio");     
 	    child = hierarchyLevelRadio.firstChild;    	      
 		while(child) {
@@ -166,10 +177,10 @@
 			
 			child = nextChild;
 		}    		
-		selectedHierarchyLevel = selectedValue;
-		targetFeature = selectedHierarchyLevel;
 		
-		var mapRadio = document.getElementById("map");     
+		
+		selectedValue = null;
+		var mapRadio = document.getElementById("mapRadio");   
 	    child = mapRadio.firstChild;    	      
 		while(child) {
 	        var nextChild = child.nextSibling;
@@ -178,8 +189,10 @@
 			}			
 			child = nextChild;
 		}    
+		
 		selectedMap = selectedValue;
 		selectedLayersMap = null;
+		*/
 	}
 	
 	function updateRadioCheckBoxSelections() {	
@@ -223,9 +236,9 @@
       
       if(document.all && !window.opera && document.createElement) {
       		  if(selected) {
-              	radio = document.createElement("<input type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections();refresh();' checked>");
+              	radio = document.createElement("<input type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections(this);refresh();' checked>");
               } else {
-              	radio = document.createElement("<input type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections();refresh();' >");
+              	radio = document.createElement("<input type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections(this);refresh();' >");
               }
       } else {
               radio = document.createElement("input");
@@ -233,7 +246,7 @@
               radio.setAttribute("id", name);
               radio.setAttribute("name", name);
               radio.setAttribute("value", value);
-              radio.setAttribute("onClick","updateRadioSelections();refresh();");
+              radio.setAttribute("onClick","updateRadioSelections(this);refresh();");
               if(selected) radio.setAttribute("checked", "true");
       }
       return radio;
@@ -262,7 +275,6 @@
 	function refresh() {
 	      
 	   var child;
-	    
 	    
 	    // HIERARCHY NAME 
 	    var hierarchyNameOpt = document.getElementById("hierarchyName");       
@@ -314,10 +326,13 @@
 	        var nextChild = child.nextSibling;
 			mapRadio.removeChild(child);
 			child = nextChild;
-		}   
+		} 
 	    for(i = 0; i < maps[targetFeature].length; i++) {
 	    	var selected = false;
-	    	if(maps[targetFeature][i] == selectedMap) {
+	    	if(selectedMap == null && i==0) {
+	    		selectedMap = maps[targetFeature][i];
+	    		selected = true;
+	    	} else if(maps[targetFeature][i] == selectedMap) {
 	    		selected = true;
 	    	}
 	        var radio = createRadio("map", maps[targetFeature][i], selected);	        
@@ -355,7 +370,6 @@
 	}
              
 </script>
-
 
 <table height="100%" border="2px" valign="top">
 

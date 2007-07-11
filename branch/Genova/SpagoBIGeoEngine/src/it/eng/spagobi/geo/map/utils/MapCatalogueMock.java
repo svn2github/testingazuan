@@ -39,6 +39,8 @@ public class MapCatalogueMock {
 	}
 	
 	public static String getMapUrl(String mapName) {
+		if(mapName.equalsIgnoreCase("circoscrizioniBis")) mapName = "circoscrizioni";
+		
 		File file = new File(ConfigSingleton.getRootPath() + "/maps/genova/" + mapName + ".svg");
 		try {
 			return file.toURL().toString();
@@ -49,10 +51,18 @@ public class MapCatalogueMock {
 	}
 	
 	public static String[] getMapNamesByFeature(String featureName) {
+		if(featureName.equalsIgnoreCase("circoscrizioni")) {
+			return new String[]{"circoscrizioni", "circoscrizioniBis"};
+		}
 		return new String[]{featureName};
 	}
 
 	public static String[] getFeatureNamesInMap(String mapName) {
+		if(mapName.equalsIgnoreCase("circoscrizioniBis")) {
+			return new String[]{
+					"circoscrizioni"			
+			};			
+		}
 		return new String[]{
 				mapName			
 		};

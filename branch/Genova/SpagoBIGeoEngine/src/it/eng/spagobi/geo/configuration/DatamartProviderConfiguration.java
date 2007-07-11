@@ -162,6 +162,9 @@ public class DatamartProviderConfiguration {
 			throw new ConfigurationException("cannot load DATAMART PROVIDER's kpiColumnNames attribute name " + Constants.DP_KPI_COLUMN_NAMES_ATRR);
 		}
 		String[] kpiColumnName = kpiColumnNameStr.split(",");
+		for(int i = 0; i < kpiColumnName.length; i++) {
+			kpiColumnName[i] = kpiColumnName[i].trim();
+		}
 		setKpiColumnNames(kpiColumnName);		
 		
 		// get the kpiAggFuncs attribute
@@ -193,7 +196,6 @@ public class DatamartProviderConfiguration {
 				levels =  hierarchySB.getAttributeAsList(Constants.HIERARCHY_LEVEL_TAG);
 			} else {
 				try {
-					//MapConfiguration mapConfiguration = getParentConfiguration();
 					MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
 					String sdtHierarchy = mapCatalogueAccessUtils.getStandardHierarchy();
 					hierarchySB = SourceBean.fromXMLString(sdtHierarchy);

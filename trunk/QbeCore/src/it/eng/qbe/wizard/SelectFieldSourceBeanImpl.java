@@ -47,6 +47,22 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 	public String getFieldAlias() {
 		return fieldAlias;
 	}
+	
+	public ISelectField getCopy() {
+		ISelectField selectField = new SelectFieldSourceBeanImpl();
+		
+		selectField.setId(id);
+		selectField.setFieldName(fieldName);	
+		selectField.setFieldAlias(fieldAlias);
+		selectField.setFieldCompleteName(fieldCompleteName);
+		if(entityClass != null) selectField.setFieldEntityClass(entityClass.getCopy());	
+		selectField.setHibType(hibType);
+		selectField.setScale(scale);
+		selectField.setPrecision(precision);		
+		
+		return selectField;
+	}
+	
 	public void setFieldAlias(String fieldAlias) {
 		this.fieldAlias = fieldAlias;
 	}

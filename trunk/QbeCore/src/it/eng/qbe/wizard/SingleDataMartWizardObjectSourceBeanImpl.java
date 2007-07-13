@@ -79,6 +79,8 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	private Map subqueryMap = null;
 	private Map mapFieldIdSubQUeryId = null;
+	private ISingleDataMartWizardObject selectedSubquery = null;
+	private String subqueryErrMsg = "";
 	
 	public SingleDataMartWizardObjectSourceBeanImpl() {
 		super();
@@ -87,6 +89,34 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		this.mapFieldIdSubQUeryId = new HashMap();
 	
 	}
+	
+	public ISingleDataMartWizardObject getCopy() {
+		SingleDataMartWizardObjectSourceBeanImpl wizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
+		
+		// copy all the query relaed informations
+		wizardObject.setSubQueryCounter(subQueryCounter);
+		if(selectClause != null) wizardObject.setSelectClause(selectClause.getCopy());
+		if(whereClause != null) wizardObject.setWhereClause(whereClause.getCopy());
+		if(orderByClause != null) wizardObject.setOrderByClause(orderByClause.getCopy());
+		if(groupByClause != null) wizardObject.setGroupByClause(groupByClause.getCopy());
+		wizardObject.setFinalQuery(finalQuery);
+		List list = new ArrayList();
+		for(int i = 0; i < entityClasses.size(); i++) {
+			EntityClass entityClass = (EntityClass)entityClasses.get(i);
+			list.add(entityClass.getCopy());
+		}
+		wizardObject.setEntityClasses(list);
+		wizardObject.setOwner(owner);
+		wizardObject.setVisibility(visibility);
+		wizardObject.setDistinct(distinct);
+		wizardObject.setUseExpertedVersion(useExpertedVersion);
+		wizardObject.setQueryId(queryId);
+		wizardObject.setDescription(description);
+				
+		return wizardObject;
+	}
+	
+	
 	
 	
 	public boolean isEmpty(){
@@ -662,9 +692,84 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 
 
-
-
+	
+	
+	public boolean isSelectedSubqueryValid() {
+		ISingleDataMartWizardObject subquery = (ISingleDataMartWizardObject)getSelectedSubquery();
+		return isSubqueryValid(subquery);
+	}
+	
+	public boolean isSubqueryValid(String fieldId) {
+		ISingleDataMartWizardObject subquery = getSubQueryOnField(fieldId);
+		return isSubqueryValid(subquery);
+	}
+	
+	public boolean isSubqueryValid(ISingleDataMartWizardObject subquery) {
+		
+		boolean missingCondition = false;
+		boolean invalidReference = false;
+		subquery.setSubqueryErrMsg(null);
+		subquery.setSubqueryErrMsg(null);
+		
+		if(subquery !=  null) {
+			IWhereClause whereClause = subquery.getWhereClause();
+			if(whereClause != null) {
+				List fields = whereClause.getWhereFields();
+				for(int i = 0; i < fields.size(); i++) {
+					IWhereField whereField = (IWhereField)fields.get(i);
+					// check missing right condition
+					String value = whereField.getFieldValue();
+					if(value == null || value.trim().equalsIgnoreCase("")) {
+						
+						missingCondition = true;
+					}  
+					
+					this.getEntityClasses();
+					EntityClass ec = whereField.getFieldEntityClassForRightCondition();
+					if(ec != null && !this.containEntityClass(ec)) {
+						subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined");
+						invalidReference = true;
+					}
+					
+					if(invalidReference && missingCondition) break;					
+				}
+			}
+		}
+		
+		// resolve all invalid references first; missing right values next
+		if(invalidReference) {
+			subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: invalid reference to a parent entity)");
+		}
+		else if(missingCondition) {
+			subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: missing right end value)");
+		}
+		
+		
+		return (!invalidReference && !missingCondition);		
+	}
+	
+	public void selectSubquery(String fieldId) {
+		ISingleDataMartWizardObject subquery = getSubQueryOnField(fieldId);
+		if(subquery !=  null) {
+			ISingleDataMartWizardObject selectedSubquery = subquery.getCopy();
+			setSelectedSubquery(selectedSubquery);
+		} else {
+			ISingleDataMartWizardObject selectedSubquery = new SingleDataMartWizardObjectSourceBeanImpl();
+			setSelectedSubquery(selectedSubquery);
+			mapFieldIdSubQUeryId.put(fieldId, getNewSubQueryId());
+		}
+	}
+	
+	public void addSubQueryOnField(String fieldId, ISingleDataMartWizardObject subquery) {		
+		this.subqueryMap.put(fieldId, subquery);
+	}
+	
+	/**
+	 * @deprecated
+	 */
 	public void addSubQueryOnField(String fieldId) {
+		
+		
 		this.subqueryMap.put(fieldId, new SingleDataMartWizardObjectSourceBeanImpl());
 		this.mapFieldIdSubQUeryId.put(fieldId, getNewSubQueryId());
 	}
@@ -675,8 +780,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 
 
-	public ISingleDataMartWizardObject getSubQueryOnField(String fieldId) {
-		
+	public ISingleDataMartWizardObject getSubQueryOnField(String fieldId) {		
 		return (ISingleDataMartWizardObject)this.subqueryMap.get(fieldId);
 	}
 
@@ -734,6 +838,24 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 	public void setSubqueryMap(Map subqueryMap) {
 		this.subqueryMap = subqueryMap;
+	}
+
+
+	public ISingleDataMartWizardObject getSelectedSubquery() {
+		return selectedSubquery;
+	}
+
+
+	public void setSelectedSubquery(ISingleDataMartWizardObject selectedSubquery) {
+		this.selectedSubquery = selectedSubquery;
+	}
+
+	public String getSubqueryErrMsg() {
+		return subqueryErrMsg;
+	}
+
+	public void setSubqueryErrMsg(String subqueryErrMsg) {
+		this.subqueryErrMsg = subqueryErrMsg;
 	}
 	
 		

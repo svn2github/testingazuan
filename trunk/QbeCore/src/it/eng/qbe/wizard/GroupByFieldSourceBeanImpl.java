@@ -40,6 +40,15 @@ public class GroupByFieldSourceBeanImpl  implements IOrderGroupByField{
 	
 	}
 	
+	public IOrderGroupByField getCopy() {
+		IOrderGroupByField orderGroupByField = new GroupByFieldSourceBeanImpl();
+		
+		orderGroupByField.setId(id);
+		orderGroupByField.setFieldName(fieldName);
+		
+		return orderGroupByField;
+	}
+	
 	public String getFieldName() {
 		return fieldName;
 	}
@@ -61,6 +70,8 @@ public class GroupByFieldSourceBeanImpl  implements IOrderGroupByField{
 	private static String createNewId() {
 		return "groupby" + String.valueOf(idcounter++);
 	}
+
+	
 	
 	
 	

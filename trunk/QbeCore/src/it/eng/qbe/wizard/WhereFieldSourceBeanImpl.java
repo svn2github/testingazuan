@@ -52,6 +52,26 @@ public class WhereFieldSourceBeanImpl
 		this.id = "where_"+ String.valueOf(System.currentTimeMillis());
 	
 	}
+	
+	public IWhereField getCopy() {
+		IWhereField whereField = new WhereFieldSourceBeanImpl();
+		
+		whereField.setId(id);
+		whereField.setFieldName(fieldName);
+		whereField.setFieldOperator(fieldOperator);
+		whereField.setFieldValue(fieldValue);
+		whereField.setHibernateType(hibernateType);
+		whereField.setNextBooleanOperator(nextBooleanOperator);
+		if(fieldEntityClassForRightCondition != null) whereField.setFieldEntityClassForRightCondition(fieldEntityClassForRightCondition.getCopy());
+		if(fieldEntityClassForLeftCondition != null) whereField.setFieldEntityClassForLeftCondition(fieldEntityClassForLeftCondition.getCopy());
+		whereField.setRightBracketsNum(rightBracketsNum);
+		whereField.setLeftBracketsNum(leftBracketsNum);
+		
+		return whereField;
+	}
+	
+	
+	
 	public String getFieldName() {
 		return fieldName;
 	}

@@ -451,7 +451,8 @@ public class Utils {
 
 		if (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(WizardConstants.SUBQUERY_MODE)){
 			   String subQueryField = (String)sessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
-			   ISingleDataMartWizardObject newWizObject =  aWizardObject.getSubQueryOnField(subQueryField);
+			   //ISingleDataMartWizardObject newWizObject =  aWizardObject.getSubQueryOnField(subQueryField);
+			   ISingleDataMartWizardObject newWizObject =  aWizardObject.getSelectedSubquery();
 			   return newWizObject;
 		}
 		
@@ -463,6 +464,7 @@ public class Utils {
 		
 		return aWizardObject;
 	}
+	
 	public static boolean isSubQueryModeActive(SessionContainer sessionContainer){
 		
 		String qbeQueryMode = (String)sessionContainer.getAttribute(WizardConstants.QUERY_MODE);

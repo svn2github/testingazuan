@@ -46,6 +46,41 @@ public class CalculatedField {
 	private Map mappingMap = new HashMap();
 	
 	
+	public CalculatedField getCopy() {
+		CalculatedField calculatedField = new CalculatedField();
+		
+		calculatedField.setId(id);
+		calculatedField.setEntityName(entityName);
+		calculatedField.setFldLabel(fldLabel);
+		calculatedField.setScript(script);
+		calculatedField.setMappings(mappings);
+		calculatedField.setFldCompleteNameInQuery(fldCompleteNameInQuery);
+		calculatedField.setClassNameInQuery(classNameInQuery);
+		calculatedField.setInExport(inExport);
+		Map map = null;
+		Iterator it = null;
+		
+		map = new HashMap();
+		it = mappingPositions.keySet().iterator();
+		while(it.hasNext()) {
+			Object key = it.next();
+			Object value = mappingPositions.get(key);
+			map.put(key, value);		
+		}
+		calculatedField.setMappingPositions(map);
+		
+		map = new HashMap();
+		it = mappingMap.keySet().iterator();
+		while(it.hasNext()) {
+			Object key = it.next();
+			Object value = mappingPositions.get(key);
+			map.put(key, value);		
+		}
+		calculatedField.setMappingMap(map);
+		
+		return calculatedField;
+	}
+	
 	
 	public String getEntityName() {
 		return entityName;

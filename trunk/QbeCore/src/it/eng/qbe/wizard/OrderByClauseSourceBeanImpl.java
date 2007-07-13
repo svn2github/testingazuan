@@ -43,6 +43,18 @@ public class OrderByClauseSourceBeanImpl
 		this.orderByFields = new ArrayList();
 	}
 	
+	public IOrderByClause getCopy(){
+		IOrderByClause orderByClause = new OrderByClauseSourceBeanImpl();
+		
+		for(int i = 0; i < orderByFields.size(); i++) {
+			IOrderGroupByField orderField = (IOrderGroupByField)orderByFields.get(i);
+			orderByClause.addOrderByField(orderField.getCopy());			
+		}
+		
+		return orderByClause;
+	}
+	
+	
 	public List getOrderByFields() {
 		return this.orderByFields;
 	}

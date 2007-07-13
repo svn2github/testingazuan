@@ -31,6 +31,8 @@ import java.io.Serializable;
  */
 public interface IOrderGroupByField extends  Serializable{
 	
+	public IOrderGroupByField getCopy();
+	
 	public String getId();
 	
 	public void setId(String id);

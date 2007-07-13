@@ -43,6 +43,16 @@ public class OrderByFieldSourceBeanImpl  implements IOrderGroupByField{
 	
 	}
 	
+	public IOrderGroupByField getCopy() {
+		OrderByFieldSourceBeanImpl orderGroupByField = new OrderByFieldSourceBeanImpl();
+		
+		orderGroupByField.setId(id);
+		orderGroupByField.setFieldName(fieldName);
+		orderGroupByField.setAscendingOrder(ascendingOrder);
+		
+		return orderGroupByField;
+	}
+	
 	public String getFieldName() {
 		return fieldName;
 	}

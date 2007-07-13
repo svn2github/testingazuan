@@ -32,6 +32,8 @@ import java.util.List;
  */
 public interface IOrderByClause extends  Serializable {
 
+	public IOrderByClause getCopy();
+	
 	public List getOrderByFields();
 	
 	public void setOrderByFields(List aList);

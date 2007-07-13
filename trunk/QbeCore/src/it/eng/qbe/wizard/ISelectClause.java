@@ -54,5 +54,7 @@ public interface ISelectClause extends  Serializable {
 	
 	public void deleteCalculatedField(String calculatedField);
 	
+	public ISelectClause getCopy();
+	
 	
 }

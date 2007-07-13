@@ -33,6 +33,11 @@ public class EntityClass implements Serializable{
 	public EntityClass(){
 		
 	}
+	
+	public EntityClass getCopy() {
+		return new EntityClass(className, classAlias);
+	}
+	
 	public EntityClass( String name,String alias) {
 		super();
 		// TODO Auto-generated constructor stub

@@ -131,4 +131,26 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	
 	public void purgeNotReferredEntityClasses(String prefix);
 	
+	
+	public ISingleDataMartWizardObject getSelectedSubquery() ;
+
+
+	public void setSelectedSubquery(ISingleDataMartWizardObject selectedSubquery) ;
+	
+	public void selectSubquery(String fieldId);
+	
+	public void addSubQueryOnField(String fieldId, ISingleDataMartWizardObject subquery);
+	
+	public ISingleDataMartWizardObject getCopy();
+	
+	public String getSubqueryErrMsg() ;
+
+	public void setSubqueryErrMsg(String subqueryErrMsg) ;
+	
+	public boolean isSelectedSubqueryValid() ;
+	
+	public boolean isSubqueryValid(String fieldId);
+	
+	public boolean isSubqueryValid(ISingleDataMartWizardObject subquery);
+	
 }

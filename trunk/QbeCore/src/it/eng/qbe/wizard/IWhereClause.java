@@ -40,7 +40,9 @@ public interface IWhereClause extends  Serializable {
 	
 	public void delWhereField(IWhereField whereField);
 	
-public void moveUp(IWhereField whereField);
+	public void moveUp(IWhereField whereField);
 	
 	public void moveDown(IWhereField whereField);
+	
+	public IWhereClause getCopy();
 }

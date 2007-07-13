@@ -32,6 +32,8 @@ import java.util.List;
  */
 public interface IGroupByClause extends Serializable {
 
+	public IGroupByClause getCopy();
+	
 	public List getGroupByFields();
 	
 	public void setGroupByFields(List aList);

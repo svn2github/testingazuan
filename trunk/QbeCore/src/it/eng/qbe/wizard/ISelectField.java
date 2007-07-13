@@ -65,4 +65,6 @@ public interface ISelectField extends Serializable{
 	public String getPrecision();
 	
 	public String getScale();
+	
+	public ISelectField getCopy();
 }

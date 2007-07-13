@@ -32,7 +32,7 @@ import java.util.List;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class WhereClauseSourceBeanImpl implements IWhereClause{
+public class WhereClauseSourceBeanImpl implements IWhereClause {
 
 	
 	
@@ -46,6 +46,17 @@ public class WhereClauseSourceBeanImpl implements IWhereClause{
 		this.whereFields = new ArrayList();
 	}
 
+	public IWhereClause getCopy() {
+		IWhereClause whereClause = new WhereClauseSourceBeanImpl();
+		
+		for(int i = 0; i < whereFields.size(); i++) {
+			IWhereField whereField = (IWhereField)whereFields.get(i);
+			whereClause.addWhereField(whereField.getCopy());			
+		}
+		
+		return whereClause;
+	}
+	
 	public List getWhereFields() {
 		return this.whereFields;
 	}

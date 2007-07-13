@@ -31,6 +31,8 @@ import java.io.Serializable;
  */
 public interface IWhereField extends Serializable{
 	
+	public IWhereField getCopy();
+	
 	public String getId();
 	
 	public void setId(String id);

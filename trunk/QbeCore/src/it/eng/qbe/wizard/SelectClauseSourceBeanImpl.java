@@ -152,14 +152,22 @@ public class SelectClauseSourceBeanImpl
 		if (cField != null)
 			calcuatedFields.remove(cField);
 	}
-
 	
-
-	
-
-	
-
-	
-	
-	
+	public ISelectClause getCopy() {
+		ISelectClause selectClause = new SelectClauseSourceBeanImpl();
+		
+		ISelectField selectField = null;
+		for (int i=0; i < this.selectFields.size(); i++){
+			selectField = (ISelectField)selectFields.get(i);
+			selectClause.addSelectField(selectField.getCopy());
+		}
+		
+		CalculatedField calculatedField = null;
+		for (int i=0; i < this.calcuatedFields.size(); i++){
+			calculatedField = (CalculatedField)calcuatedFields.get(i);
+			selectClause.addCalculatedField(calculatedField.getCopy());
+		}
+		
+		return selectClause;
+	}
 }

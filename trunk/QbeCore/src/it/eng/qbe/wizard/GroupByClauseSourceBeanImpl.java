@@ -42,6 +42,17 @@ public class GroupByClauseSourceBeanImpl
 		this.groupByFields = new ArrayList();
 	}
 	
+	public IGroupByClause getCopy(){
+		IGroupByClause groupByClause = new GroupByClauseSourceBeanImpl();
+		
+		for(int i = 0; i < groupByFields.size(); i++) {
+			IOrderGroupByField orderField = (IOrderGroupByField)groupByFields.get(i);
+			groupByClause.addGroupByField(orderField.getCopy());			
+		}
+		
+		return groupByClause;
+	}
+	
 	public List getGroupByFields() {
 		return this.groupByFields;
 	}

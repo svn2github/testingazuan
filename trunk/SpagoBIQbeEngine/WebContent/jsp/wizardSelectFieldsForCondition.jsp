@@ -368,7 +368,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   					</td>
 													<td>&nbsp;</td> 
 			    		   					<td>
-			    		   						<input type="text" id="<%="VALUE_FOR_FIELD_"+fieldId %>" name="<%="VALUE_FOR_FIELD_"+fieldId %>" value="<%=fieldValue %>"/>
+			    		   						<%
+			    		   						ISingleDataMartWizardObject subquery = aWizardObject.getSubQueryOnField(fieldId);
+			    		   						if(subquery != null && !aWizardObject.isSubqueryValid(subquery)) {
+			    		   						%>
+			    		   							<input type="text" id="<%="VALUE_FOR_FIELD_"+fieldId %>" 
+			    		   								   name="<%="VALUE_FOR_FIELD_"+fieldId %>" value="<%=fieldValue %>" 
+			    		   								   style="background-color:#FF6666;"
+			    		   								   title="<%=subquery.getSubqueryErrMsg()%>"/>
+			    		   						<% 
+			    		   						} else {
+			    		   						%>
+			    		   						<input type="text" id="<%="VALUE_FOR_FIELD_"+fieldId %>" name="<%="VALUE_FOR_FIELD_"+fieldId %>" 
+			    		   							style="background-color:#FFFFFF;"
+			    		   							value="<%=fieldValue %>"/>
+			    		   						<%
+			    		   						}
+			    		   						%>
 			    		   					</td>
 											<td>&nbsp;</td> 
 											<td width="5%">
@@ -451,7 +467,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  			<tr>
 		  			<td></td>
 	  				<td valign="top">
-	  					<span class="qbeError"><%=qbeMsg.getMessage(requestContainer, "QBE.Warning.SelectFieldBeforeOrdering", bundle) %></span>
+	  					<span class="qbeError"><%=qbeMsg.getMessage(requestContainer, "QBE.Warning.SelectFieldBeforeFiltering", bundle) %></span>
   					</td>
   				</tr>
   				<tr>

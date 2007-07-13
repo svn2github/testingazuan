@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
 
+
+	<PUBLISHER name="EXIT_FROM_SUBQUERY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/exitFromSubquery.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+
 	<PUBLISHER name="SPAGOBI_LOOP_PUBLISHER">
     	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>

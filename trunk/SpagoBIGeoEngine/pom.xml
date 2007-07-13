@@ -28,7 +28,7 @@
   <groupId>spagobi</groupId>
   <artifactId>SpagoBIGeoEngine</artifactId>
   <packaging>war</packaging>
-  <version>1.9.3beta</version>
+  <version>1.9.3</version>
   <name>SpagoBIGeoEngine</name>
   <url>http://maven.apache.org</url>
   <build>

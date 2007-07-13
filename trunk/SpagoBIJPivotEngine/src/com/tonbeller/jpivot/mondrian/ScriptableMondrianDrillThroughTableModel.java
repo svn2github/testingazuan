@@ -39,8 +39,6 @@ import com.tonbeller.wcf.table.DefaultTableRow;
 import com.tonbeller.wcf.table.TableRow;
 
 /**
- * @author Engineering Ingegneria Informatica S.p.A. - Luca Barozzi
- * 
  * A wcf table model for drill through data,
  * requires an sql query and connection information to be set.
  */
@@ -161,12 +159,6 @@ public class ScriptableMondrianDrillThroughTableModel extends AbstractTableModel
 				//	columns are 1 based
 				columnTitlesList.add(i, md.getColumnName(i+1));
 			}
-			// loop on script columns
-			for (ListIterator sIt = scripts.listIterator(); sIt.hasNext();) {
-				final ScriptColumn sc = (ScriptColumn)sIt.next();
-				columnTitlesList.add(sc.getPosition() - 1, sc.getTitle());
-			}
-			columnTitles = (String[])columnTitlesList.toArray(new String[0]);
 			// loop through rows
 			List tempRows = new ArrayList();
 			Map scriptInput = new HashMap();
@@ -177,7 +169,7 @@ public class ScriptableMondrianDrillThroughTableModel extends AbstractTableModel
 				// loop on columns, 1 based
 				for ( int i = 0; i < numCols; i++ ) {
 					rowList.add(i, rs.getObject(i+1));
-					scriptInput.put(columnTitles[i], rs.getObject(i+1));
+					scriptInput.put(columnTitlesList.get(i), rs.getObject(i+1));
 				}
 				binding.setVariable("input", scriptInput);
 				// loop on script columns
@@ -191,12 +183,18 @@ public class ScriptableMondrianDrillThroughTableModel extends AbstractTableModel
 					} else if (output instanceof String) {
 						rowList.add(sc.getPosition() - 1, (String)output);
 					} else {
-						throw new Exception("Unknown groovy script return type (not a Map nor String).");
+						throw new Exception("Unknown groovy script return type (neither a Map nor a String).");
 					}
 				}
 				tempRows.add(new DefaultTableRow(rowList.toArray()));
 			}
 			rs.close();
+			// loop on script columns
+			for (ListIterator sIt = scripts.listIterator(); sIt.hasNext();) {
+				final ScriptColumn sc = (ScriptColumn)sIt.next();
+				columnTitlesList.add(sc.getPosition() - 1, sc.getTitle());
+			}
+			columnTitles = (String[])columnTitlesList.toArray(new String[0]);
 			rows = (TableRow[]) tempRows.toArray(new TableRow[0]);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -616,6 +616,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		Session aSession = null;
 		try{		
 			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
+			//dataMartModel.getDataSource().getSessionFactory();
 		
 			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
 			

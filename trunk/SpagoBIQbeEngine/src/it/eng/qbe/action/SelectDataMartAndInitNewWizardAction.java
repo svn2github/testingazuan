@@ -89,13 +89,25 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 		if(modalityStr != null) modalitySB = SourceBean.fromXMLString(modalityStr);
 		
 		
-		IDataSource dataSource = new HibernateDataSource(dmPath, jndiDataSourceName, dialect);
+		ApplicationContainer applicationContainer = ApplicationContainer.getInstance();
+		
+		//IDataSource dataSource = new HibernateDataSource(dmPath, jndiDataSourceName, dialect);
+		
+		IDataSource dataSource = (IDataSource) applicationContainer.getAttribute(dmPath + "_dataSource");
+		if (dataSource == null) {
+			dataSource = new HibernateDataSource(dmPath, jndiDataSourceName, dialect);
+			applicationContainer.setAttribute(dmPath + "_dataSource", dataSource);
+		}
+
+		
+		
+		
 		DataMartModel dmModel = new DataMartModel(dataSource);
 		if(properties != null) dmModel.setDataMartProperties(properties); 
 		if(modalitySB != null) dmModel.setDataMartModelAccessModality(new DataMartModelAccessModality(modalitySB));
 		
 		
-		ApplicationContainer application = ApplicationContainer.getInstance();
+		
 		
 		ApplicationContainer.getInstance().setAttribute("CURRENT_THREAD_CONTEXT_LOADER", Thread.currentThread().getContextClassLoader());
 		

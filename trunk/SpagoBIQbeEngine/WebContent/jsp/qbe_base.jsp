@@ -95,13 +95,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%  if (qbeMode.equalsIgnoreCase("WEB")) { %>
 		<script language=JavaScript>
 			var currentSubQueryFieldId = '';
-			
+			var errMsg = null;
 			
 			
 			function exitSubQueryMode(){
 				var url = '../servlet/AdapterHTTP';
-				var pars = 'ACTION_NAME=EXIT_SUBQUERY_ACTION';
+				var pars = 'ACTION_NAME=EXIT_SUBQUERY_ACTION&SAVE=' + saveSubQuery;
 		
+				
+				
+								
 				var myAjax = new Ajax.Request( url, 
 												   { method: 'post', 
 												     parameters: pars, 
@@ -111,11 +114,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 
 			function showResponse(originalRequest) {
+				var valueForFieldOfSubqueryId = 'VALUE_FOR_FIELD_'+ currentSubQueryFieldId;
 				
 				
-				var valueForFieldOfSubqueryId = 'VALUE_FOR_FIELD_'+currentSubQueryFieldId;
+				if(saveSubQuery == true) {					
+					$(valueForFieldOfSubqueryId).value='$subquery_'+currentSubQueryFieldId+'$';
+				}
 				
-				$(valueForFieldOfSubqueryId).value='$subquery_'+currentSubQueryFieldId+'$';
+				
+				if(errMsg != null && errMsg.length > 0) {
+					$(valueForFieldOfSubqueryId).title = errMsg;
+					$(valueForFieldOfSubqueryId).style.backgroundColor = '#FF6666';					
+				} else {
+					$(valueForFieldOfSubqueryId).style.backgroundColor = '#FFFFFF';
+					$(valueForFieldOfSubqueryId).title = '';
+				}
+				
 				return;
 			}
 			
@@ -899,7 +913,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 		var alertOnClose = { onClose: function(eventName, win) { exitSubQueryMode();} }
 		Windows.addObserver(alertOnClose);
+		var saveSubQuery;
 		
+<<<<<<< .mine
+=======
 		try{
 			// Giusto per testare l'esistenza della variabile 
 			wiz.name = 'pippo';
@@ -910,24 +927,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 
 
+>>>>>>> .r2702
 			
     	function showSubqueryWin(fieldID){
     		   
     		currentSubQueryFieldId = fieldID;
+    		saveSubQuery = false;
     		var urlSubQuery = "../servlet/AdapterHTTP?ACTION_NAME=START_WIZARD_SUBQUERY_ACTION&ON_FIELD_ID="+fieldID;
-      		winz = new Window(Application.getNewId(), {className: "dialog", title: "-- Subquery on " + currentSubQueryFieldId + "--", 
+      		var winz = new Window(Application.getNewId(), {className: "dialog", title: "-- Subquery on " + currentSubQueryFieldId + "--", 
                                               top:70, left:100, width:850, height:400, 
                                               resizable: true, url: urlSubQuery })
 			winz.setDestroyOnClose();
 			
 				
-			winz.show(true); 					
-			dump();		
+			winz.show(true); 						
     	}	
 			
+<<<<<<< .mine
+=======
 		function dump() {
 			//alert(winz);
 		}
+>>>>>>> .r2702
 	
 		function vediSchermo(msg, divTxt){
 			
@@ -1040,6 +1061,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						return true;
 					}
 					
+					if (divTxt == 'DIV_SAVE_SUBQUERY'){
+						inputNextActionAfterSaveCondition.value='PUBLISH_ACTION';
+						inputNextPublisherAfterSaveCondition.value='EXIT_FROM_SUBQUERY_PUBLISHER';
+						formUpdCond.submit();
+						return true;
+					}
+					
 			
 			}else if ((currentScreenTxt == 'DIV_RESUME_QUERY_SELECT_OK') && (formUpdCond != null)){
 					//alert ("Branch 2");
@@ -1111,6 +1139,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						formUpdCond.submit();
 						return true;
 					}
+					
+					if (divTxt == 'DIV_SAVE_SUBQUERY'){
+						
+						inputNextActionAfterSaveCondition.value='PUBLISH_ACTION';
+						inputNextPublisherAfterSaveCondition.value='EXIT_FROM_SUBQUERY_PUBLISHER';
+						formUpdCond.submit();
+						return true;
+					}
+					
+					
 				
 			}else{	
 				//alert ("Branch 3 -> " + divTxt);
@@ -1123,6 +1161,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				var frmExecuteQueryF = document.getElementById('frmExecuteQuery');
 				var frmExportResultF = document.getElementById('frmExportResult');
 				var frmSaveQueryF = document.getElementById('frmSaveQuery');
+				var frmSaveSubQuery = document.getElementById('frmSaveSubQuery');
+				
 			
 				if (divTxt == 'DIV_FIELD_SELECTION'){
 					frmGoSelectionF.submit();
@@ -1167,24 +1207,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					return true;
 				}	
 				
+				/*
 				if(divTxt == 'DIV_SAVE_SUBQUERY') {
-					//alert('DESTROY ' + winz);
-					//winz.destroy();
-					//Windows.closeAll();
-					//alert('iframeEl = '  + iframeEl);
-					//alert('iframeEl.contentDocument = '  + iframeEl.contentWindow.document.body);
-					//parent.closeXXX();
-					window.opener.closeXX()
-					
+					parent.saveSubQuery = true;
+					parent.Windows.closeAll();					
 				}
+				*/
+				
+				if (divTxt == 'DIV_SAVE_SUBQUERY'){
+						parent.saveSubQuery = true;
+						frmSaveSubQuery.submit()
+						return true;
+					}
 			}//end else
 		}
 		
+<<<<<<< .mine
+=======
 		function closeXXX() {
 			//alert('Ciao' + winz);
 			winz.destroy();
 		}
 		
+>>>>>>> .r2702
 		
 		
 	</script>
@@ -1205,7 +1250,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
      }
     
    %>
-   
+   		
 		
 		<form id="frmGoSelection" name="frmGoSelection" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
@@ -1242,8 +1287,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<form id="frmSaveQuery" name="frmSaveQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_FROM_SAVE_ACTION"/>
 		</form>
-
-     
+		
+		<form id="frmSaveSubQuery" name="frmSaveSubQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
+			<input id="publisher" type="hidden" name="PUBLISHER_NAME" value="EXIT_FROM_SUBQUERY_PUBLISHER"/>
+		</form>
 
 
 

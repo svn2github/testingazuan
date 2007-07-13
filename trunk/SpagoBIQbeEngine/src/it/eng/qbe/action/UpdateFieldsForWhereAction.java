@@ -101,6 +101,7 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 		
 		IWhereField aWhereField = null; 
 		
+		
 		if (aWhereClause != null){
 			java.util.List l= aWhereClause.getWhereFields();
 			Iterator it = l.iterator();
@@ -111,7 +112,8 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 			String fieldId = null;
 			while (it.hasNext()){
 				aWhereField = (IWhereField)it.next();
-			 	fieldName = aWhereField.getFieldName();
+			 	
+				fieldName = aWhereField.getFieldName();
 			 	fieldId =  aWhereField.getId();
 			 	operatorForField =(String)request.getAttribute("OPERATOR_FOR_FIELD_"+fieldId);
 			 	if (operatorForField != null){
@@ -119,6 +121,10 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 			 	}
 			 	valueForField =(String)request.getAttribute("VALUE_FOR_FIELD_"+fieldId);
 			 	if (valueForField != null){
+			 		if(!valueForField.equals(aWhereField.getFieldValue())) {
+			 			EntityClass entity = aWhereField.getFieldEntityClassForRightCondition();
+			 			aWhereField.setFieldEntityClassForRightCondition(null);
+			 		}
 			 		aWhereField.setFieldValue(valueForField);
 			 	}
 			 	

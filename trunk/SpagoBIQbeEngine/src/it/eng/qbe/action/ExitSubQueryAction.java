@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.action;
 
+import it.eng.qbe.utility.Utils;
+import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
@@ -40,14 +42,18 @@ public class ExitSubQueryAction extends AbstractAction {
 	/** 
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
-	public void service(SourceBean request, SourceBean response) throws Exception {
-		
-		
-		
-		
-		
+	public void service(SourceBean request, SourceBean response) throws Exception {		
         RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+				
+		ISingleDataMartWizardObject mainQuery = Utils.getMainWizardObject(aSessionContainer);
+		ISingleDataMartWizardObject subQuery = Utils.getWizardObject(aSessionContainer);
+		String fieldId = (String)aSessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
+		
+		String exitStatus = (String)request.getAttribute("SAVE");
+		if(exitStatus != null && exitStatus.equalsIgnoreCase("TRUE")) {
+			mainQuery.addSubQueryOnField(fieldId, subQuery);
+		}
 		
 		
 		aSessionContainer.delAttribute(WizardConstants.QUERY_MODE);

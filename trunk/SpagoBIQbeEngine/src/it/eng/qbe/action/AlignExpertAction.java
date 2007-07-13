@@ -48,7 +48,7 @@ public class AlignExpertAction extends AbstractAction {
 	 */
 	public void service(SourceBean request, SourceBean response) {
 		
-		try{
+		try {
 			
 			RequestContainer aRequestContainer = getRequestContainer();
 			SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();

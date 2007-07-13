@@ -41,11 +41,7 @@ public class StartWizardSubQueryAction extends AbstractAction {
 	/** 
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
-	public void service(SourceBean request, SourceBean response) throws Exception {
-		
-		
-		
-		
+	public void service(SourceBean request, SourceBean response) throws Exception {		
 		
         RequestContainer aRequestContainer = getRequestContainer();
 		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
@@ -57,8 +53,6 @@ public class StartWizardSubQueryAction extends AbstractAction {
 		aSessionContainer.setAttribute(WizardConstants.QUERY_MODE, WizardConstants.SUBQUERY_MODE);
 		aSessionContainer.setAttribute(WizardConstants.SUBQUERY_FIELD, fieldID);
 		
-		if (aWizardObject.getSubQueryOnField(fieldID) == null ){
-			aWizardObject.addSubQueryOnField(fieldID);	
-		} 
+		aWizardObject.selectSubquery(fieldID);
 	}
 }

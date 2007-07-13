@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.utilities;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -58,6 +59,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Contains some SpagoBI's general utilities.
@@ -256,18 +258,28 @@ public class GeneralUtilities {
 			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "Portlet request obtained: " + portletRequest);
+			Object internalRequest = RequestContainer.getRequestContainer().getInternalRequest();
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+					"getSpagoBiContextAddress", "RequestContainer internal request obtained: " + internalRequest);
 			if (portletRequest != null) {
 				path = portletRequest.getScheme() + "://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath();
 			} else {
-				SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
-						"getSpagoBiContextAddress", "Trying to recover spagobi context path from ConfigSingleton");
-				ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-				SourceBean spagobiContextPathSB = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_CONTEXT_PATH");
-				if (spagobiContextPathSB != null) {
-					path = spagobiContextPathSB.getCharacters();
+				if (internalRequest != null && internalRequest instanceof HttpServletRequest) {
+					SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+							"getSpagoBiContextAddress", "Trying to recover spagobi context from HttpServletRequest");
+					HttpServletRequest servletRequest = (HttpServletRequest) internalRequest;					
+					path = servletRequest.getScheme() + "://"+servletRequest.getServerName()+ ":"+servletRequest.getServerPort() + servletRequest.getContextPath();
 				} else {
-					SpagoBITracer.critical("SpagoBIUtilities", GeneralUtilities.class.getName(), 
-							"getSpagoBiContextAddress", "SpagoBI context path not found neither from PortletRequest nor from ConfigSingleton");
+					SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+							"getSpagoBiContextAddress", "Trying to recover spagobi context path from ConfigSingleton");
+					ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+					SourceBean spagobiContextPathSB = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_CONTEXT_PATH");
+					if (spagobiContextPathSB != null) {
+						path = spagobiContextPathSB.getCharacters();
+					} else {
+						SpagoBITracer.critical("SpagoBIUtilities", GeneralUtilities.class.getName(), 
+								"getSpagoBiContextAddress", "SpagoBI context path not found neither from PortletRequest nor from ConfigSingleton");
+					}
 				}
 			}
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 

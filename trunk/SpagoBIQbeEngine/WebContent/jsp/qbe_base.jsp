@@ -1,25 +1,3 @@
-<%-- 
-
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
---%>
-
 <%@ page import="it.eng.spago.base.*"%>
 <%@ page import="it.eng.qbe.utility.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
@@ -915,19 +893,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Windows.addObserver(alertOnClose);
 		var saveSubQuery;
 		
-<<<<<<< .mine
-=======
-		try{
-			// Giusto per testare l'esistenza della variabile 
-			wiz.name = 'pippo';
-			//alert('var already exists')
-		} catch (err) {
-			//alert('create var winz')
-			eval('var winz=null');
-		}
-
-
->>>>>>> .r2702
 			
     	function showSubqueryWin(fieldID){
     		   
@@ -943,12 +908,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			winz.show(true); 						
     	}	
 			
-<<<<<<< .mine
-=======
-		function dump() {
-			//alert(winz);
-		}
->>>>>>> .r2702
 	
 		function vediSchermo(msg, divTxt){
 			
@@ -1222,14 +1181,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}//end else
 		}
 		
-<<<<<<< .mine
-=======
-		function closeXXX() {
-			//alert('Ciao' + winz);
-			winz.destroy();
-		}
-		
->>>>>>> .r2702
 		
 		
 	</script>

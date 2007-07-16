@@ -28,3 +28,17 @@ public String returnValue(String valuein) {
 		strBuf.append('</ROWS>');
 		return strBuf.toString();
 };
+
+
+public String getListFromMultiValueProfileAttribute(String attrName) {
+	String splitter = attrName.substring(1,2);
+	String valuesList = attrName.substring(3, attrName.length() - 2);
+	String [] values = valuesList.split(splitter);
+	StringBuffer strBuf = new StringBuffer();
+	strBuf.append("<ROWS>");
+	for (i in 0..<values.length) {
+		strBuf.append("<ROW VALUE=\"" + values[i] +  "\" />");
+	};
+	strBuf.append("</ROWS>");
+	return strBuf.toString();
+};

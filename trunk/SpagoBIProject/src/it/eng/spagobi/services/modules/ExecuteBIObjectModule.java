@@ -1013,6 +1013,14 @@ public class ExecuteBIObjectModule extends AbstractModule
 		return ( getLookedUpObjId(request) != null );
 	}
 	
+	private Object getRefreshCorrelationObj(SourceBean request) {
+		return ( request.getAttribute("REFRESH_CORRELATION") );
+	}
+	
+	private boolean isRefreshCorrelationCall(SourceBean request) {
+		return ( getRefreshCorrelationObj(request) != null );
+	}
+	
 	private Integer getLookedUpParameterId(SourceBean request) {
 		return ( new Integer(findBIObjParId(getLookedUpObjId(request))) );
 	}
@@ -1130,6 +1138,19 @@ public class ExecuteBIObjectModule extends AbstractModule
         }
         
         IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+        if (isRefreshCorrelationCall(request)) {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
+			// get the list of the subObjects
+			List subObjects = getSubObjectsList(obj, profile);
+	        // put in response the list of subobject names
+			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+			// get the list of biobject snapshot
+			List snapshots = getSnapshotList(obj);
+			// put in response the list of snapshot 
+			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+			return;
+        }
+        
         String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
         controlInputParameters(biparams, profile, role);
 		// if there are some errors into the errorHandler does not execute the BIObject

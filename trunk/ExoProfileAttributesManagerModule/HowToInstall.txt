@@ -1,5 +1,5 @@
 
-How to install the Booklet module
+How to install the ExoProfileAttributeManagerModule module
 
 1) shutdown the server 
 

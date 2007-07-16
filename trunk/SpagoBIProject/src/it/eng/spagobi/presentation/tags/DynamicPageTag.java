@@ -129,6 +129,7 @@ public class DynamicPageTag extends TagSupport {
 			createClearFieldJSFunction(htmlStream);
 			createSetChangedFlagJSFunction(htmlStream);
 			createSelectAllTextJSFunction(htmlStream);
+			createSetRefreshCorrelationJSFunction(htmlStream);
 			htmlStream.append("<div class='div_detail_area_forms' style='width:" + (getParamLabelDivWidth() + 300) + "px;'>\n");
 	        Iterator iter = parameters.iterator();
 	        while(iter.hasNext()) {
@@ -282,11 +283,13 @@ public class DynamicPageTag extends TagSupport {
         htmlStream.append("		function clearFields" + requestIdentity + "() {\n");
         
         Iterator it = getBIObject().getBiObjectParameters().iterator();
+        String anId = null;
         while (it.hasNext()) {
         	BIObjectParameter biparam = (BIObjectParameter) it.next();
         	if(isSingleValue(biparam)) continue;
         	
         	String id = biparam.getParameterUrlName();
+        	anId = id;
     		ModalitiesValue modVal = biparam.getParameter().getModalityValue();
     		
     		String typeCode = modVal.getITypeCd();
@@ -308,10 +311,22 @@ public class DynamicPageTag extends TagSupport {
     		}
         }
         htmlStream.append(" setDeleteFlag" + requestIdentity + "();\n");
+        htmlStream.append(" setRefreshCorrelationFlag" + requestIdentity + "();\n");
+        htmlStream.append(" document.getElementById('" + anId + requestIdentity + "').form.submit();\n");
         htmlStream.append("}\n");
         htmlStream.append("</script>\n");
 	}
 	
+	private void createSetRefreshCorrelationJSFunction(StringBuffer htmlStream) {
+		htmlStream.append("<input type='hidden' id='REFRESH_CORRELATION" + requestIdentity + "' name='' value=''/>\n");
+		
+		htmlStream.append("<script type='text/javascript'>\n");
+		htmlStream.append("	function setRefreshCorrelationFlag" + requestIdentity + "() {\n");
+		htmlStream.append("		document.getElementById('REFRESH_CORRELATION" + requestIdentity + "').value = 'true';\n");	
+		htmlStream.append("		document.getElementById('REFRESH_CORRELATION" + requestIdentity + "').name = 'REFRESH_CORRELATION';\n");	
+		htmlStream.append("	}\n");
+		htmlStream.append("</script>\n");
+	}	
 	
 	private void createHiddenInput(StringBuffer htmlStream, String id, String name, String value) {
 		htmlStream.append("<input type='hidden' name='"  + name + "' id='" + id + requestIdentity + "' value='" + value + "' />\n");
@@ -361,10 +376,21 @@ public class DynamicPageTag extends TagSupport {
 	private String createParameterInputboxDiv(BIObjectParameter biparam, StringBuffer htmlStream) {
 		String objParFathLbl = null;
 		
+		// search for biparameter which dependes from this
+		List lblBiParamDependent = new ArrayList();
+		try {
+			lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(biparam.getId());
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "createParameterInputboxDiv", "Error while recovering dependencies " +
+					            " for biparm label " + biparam.getLabel(), e);
+			lblBiParamDependent = new ArrayList();
+		}
+		
 		String typeCode = getModalityValue(biparam).getITypeCd();
 		
 		if(typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
-			createHTMLManInputButton(biparam, htmlStream);
+			createHTMLManInputButton(biparam, htmlStream, lblBiParamDependent);
 			return null;
 		}		
 		
@@ -387,19 +413,6 @@ public class DynamicPageTag extends TagSupport {
 			objParFathLbl=  objParFather.getLabel();
 		}
 		
-		// search for biparameter which dependes from this
-		List lblBiParamDependent = new ArrayList();
-		try {
-			lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(biparam.getId());
-		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					            "createParameterInputboxDiv", "Error while recovering dependencies " +
-					            " for biparm label " + biparam.getLabel(), e);
-			lblBiParamDependent = new ArrayList();
-		}
-			
-		
-		
 		if(selectionType.equalsIgnoreCase("COMBOBOX")) {
 			createHTMLComboBox(biparam, htmlStream, lblBiParamDependent);
 		}
@@ -407,38 +420,48 @@ public class DynamicPageTag extends TagSupport {
 			createHTMLRadioButton(biparam, htmlStream);		
 		}		
 		else if(selectionType.equalsIgnoreCase("LIST")) {
-			createHTMLListButton(biparam, false, htmlStream);
+			createHTMLListButton(biparam, false, htmlStream, lblBiParamDependent);
 		}		
 		else if(selectionType.equalsIgnoreCase("CHECK_LIST")) {
-			createHTMLCheckListButton(biparam, false, htmlStream);
+			createHTMLCheckListButton(biparam, false, htmlStream, lblBiParamDependent);
 		}
 		
 		
 		return objParFathLbl;		
 	}
 	
-	private void createHTMLManInputButton(BIObjectParameter biparam, StringBuffer htmlStream) {
+	private void createHTMLManInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
 		htmlStream.append("<input style='width:230px;' type='text' " +
 						 		 "name='" + biparam.getParameterUrlName() 		 + "Desc' " +
 						 		 "id='" + biparam.getParameterUrlName() 		 + requestIdentity + "Desc' " +								 
 								 "class='portlet-form-input-field' " +
 								 "value='" + getParameterValuesAsString(biparam) + "' " +
-								 "onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "')\" " +									
-								 "autocomplete='off'/>\n");
-		
+								 "autocomplete='off' " +
+								 "onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');");
+    	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+    		htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+    		htmlStream.append("this.form.submit();");
+    	}
+    	htmlStream.append("\" >\n");		
 	}
 	
 	
-	private void createHTMLListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream) {	
+	private void createHTMLListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream, 
+			List lblBiParamDependent) {	
 		htmlStream.append("<input type='text' style='width:230px;' " + 
 						  	"name='" + biparam.getParameterUrlName() +"Desc' "+
 						  	"id='" + biparam.getParameterUrlName() + requestIdentity + "Desc' " +
 							"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 							"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
 							"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
-									   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "')\" " +
-							"onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
-							"autocomplete='off'/>\n");
+									   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "');");
+    	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+    		htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+    		htmlStream.append("this.form.submit();");
+    	}
+    	htmlStream.append("\" ");
+    	htmlStream.append("onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
+						  "autocomplete='off'/>\n");
 		
 		htmlStream.append("<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId() + "\", \"LIST\")' \n");
 		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
@@ -446,7 +469,8 @@ public class DynamicPageTag extends TagSupport {
 		htmlStream.append("/>\n");
 	}	
 
-	private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream) {
+	private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream, 
+			List lblBiParamDependent) {
 		
 		htmlStream.append("<input type='text' style='width:230px;' " + 
 					  	"name='" + biparam.getParameterUrlName() +"Desc' "+
@@ -454,9 +478,14 @@ public class DynamicPageTag extends TagSupport {
 						"class='portlet-form-input-field' " + (isReadOnly?"readonly='true' ":" ") +
 						"value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' " +
 						"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
-								   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "')\" " +
-						"onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
-						"autocomplete='off'/>\n");
+								   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "');");
+    	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+    		htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+    		htmlStream.append("this.form.submit();");
+    	}
+    	htmlStream.append("\" ");
+    	htmlStream.append("onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc');\" " +							 		  
+						  "autocomplete='off'/>\n");
 	
 		htmlStream.append("<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId() + "\", \"CHECK_LIST\")' \n");
 		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
@@ -491,8 +520,12 @@ public class DynamicPageTag extends TagSupport {
 	    			 			"class='portlet-form-field' " +
 	    			 			//onchangeStr +
 	    			 			"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()+ requestIdentity + "Desc', " +
-	    			 					  "'" + biparam.getParameterUrlName() + requestIdentity + "')\" >\n");	
-	    			 			//" >\n");
+	    			 					  "'" + biparam.getParameterUrlName() + requestIdentity + "');");	
+	    	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+	    		htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+	    		htmlStream.append("this.form.submit();");
+	    	}
+	    	htmlStream.append("\" >\n");
 	    	htmlStream.append("<option value=''> </option>\n");
             // get the lov associated to the parameter 
 	    	Parameter par = biparam.getParameter();	    	
@@ -561,6 +594,12 @@ public class DynamicPageTag extends TagSupport {
 	    			            " for biparam " + biparam.getLabel(), ex);
 	    }
     }	
+	
+	private void eraseParameterValues (BIObjectParameter biparam) {
+		biparam.setParameterValues(null);
+		HashMap paramsDescriptionMap = (HashMap)getSession().getAttribute("PARAMS_DESCRIPTION_MAP");
+		paramsDescriptionMap.put(biparam.getParameterUrlName(), "");
+	}
 	
 	private void createHTMLRadioButton(BIObjectParameter biparam, StringBuffer htmlStream) {
     	try{

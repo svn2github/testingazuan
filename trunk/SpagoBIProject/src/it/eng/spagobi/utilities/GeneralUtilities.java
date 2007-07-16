@@ -57,6 +57,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -436,6 +437,7 @@ public class GeneralUtilities {
 		
 		// replaces the profile attribute declaration
 		//statement = statement.replaceAll("${" + attribute + "}", replacement);
+		attribute = quote(attribute); 
 		statement = statement.replaceAll("\\$\\{" + attribute + "\\}", replacement);
 
 		profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
@@ -444,6 +446,27 @@ public class GeneralUtilities {
 		return statement;
 	}
 	
+	/*
+	 * This method exists since jdk 1.5 (java.util.regexp.Patter.quote())
+	 */
+    public static String quote(String s) {
+        int slashEIndex = s.indexOf("\\E");
+        if (slashEIndex == -1)
+            return "\\Q" + s + "\\E";
+
+        StringBuffer sb = new StringBuffer(s.length() * 2);
+        sb.append("\\Q");
+        slashEIndex = 0;
+        int current = 0;
+        while ((slashEIndex = s.indexOf("\\E", current)) != -1) {
+            sb.append(s.substring(current, slashEIndex));
+            current = slashEIndex + 2;
+            sb.append("\\E\\\\E\\Q");
+        }
+        sb.append(s.substring(current, s.length()));
+        sb.append("\\E");
+        return sb.toString();
+    }
 	
 	/**
 	 * Find the attribute values in case of multi value attribute.

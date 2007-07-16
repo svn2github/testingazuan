@@ -192,6 +192,7 @@ public class ExecutionController {
 			conditionsSrt += "	<PARAMETER name=\"LOOKUP_PARAMETER_NAME\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
 			conditionsSrt += "	<PARAMETER name=\"MESSAGE\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
 			conditionsSrt += "	<PARAMETER name=\"valueFilter\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
+			conditionsSrt += "	<PARAMETER name=\"REFRESH_CORRELATION\" scope=\"SERVICE_REQUEST\" value=\"AF_NOT_DEFINED\" />";
 			conditionsSrt += "</CONDITIONS>";
 			SourceBean conditions = SourceBean.fromXMLString(conditionsSrt);
 			if(conditions!=null) {

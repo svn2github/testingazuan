@@ -37,7 +37,7 @@
  		<property name="prog" type="integer">
             <column name="prog" not-null="true" />
         </property>
-        <set name="sbiObjFuncs" inverse="true" sort="comparatorClass">
+        <set name="sbiObjFuncs" inverse="true" sort="natural">
             <key>
                 <column name="funct_id" not-null="true" />
             </key>

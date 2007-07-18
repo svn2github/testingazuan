@@ -2,13 +2,8 @@ package it.eng.spagobi.md5calculation;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-
-import com.izforge.izpack.installer.WebAccessor;
 
 public class MD5Calculator {
 
@@ -17,22 +12,25 @@ public class MD5Calculator {
 	
 	public static void main(String[] args) {
 		try {
-			System.out.println("************** MD5 sun calculation *****************");
-			String basePath = "C:\\Documents and Settings\\zerbetto\\Documenti\\SpagoBIInstaller\\";
+			String basePath = "C:\\Progetti\\SpagoBI\\Rilasci\\2007-07-06 SpagoBI platform 1.9.3\\";
 			String[] fileNames = new String[] { 
-					"SpagoBI-bin-1.9.2-03272007.zip",
-					"SpagoBIBirtReportEngine-bin-1.9.2-03272007.zip",
-					"SpagoBIGeoEngine-bin-1.9.2-Beta-03272007.zip",
-					"SpagoBIJasperReportEngine-bin-1.9.2-03272007.zip",
-					"SpagoBIJPivotEngine-bin-1.9.2-03272007.zip",
-					"SpagoBIQbeEngine-bin-1.9.2-03302007.zip",
-					"SpagoBIWekaEngine-bin-1.9.2-Beta-03272007.zip"					
+					"SpagoBI-bin-1.9.3_07062007.zip",
+					"SpagoBIBirtReportEngine-bin-1.9.3_07062007.zip",
+					"SpagoBIGeoEngine-bin-1.9.3_07062007.zip",
+					"SpagoBIJasperReportEngine-bin-1.9.3_07062007.zip",
+					"SpagoBIJPivotEngine-bin-1.9.3_07062007.zip",
+					"SpagoBIQbeEngine-bin-1.9.3_07062007.zip",
+					"SpagoBIWekaEngine-bin-1.9.3_07062007.zip",
+					"SpagoBITalendEngine-bin-1.9.3_07062007.zip",
+					"ExoProfileAttributesManagerModule-bin-1.9.3_07062007.zip",
+					"SpagoBIBookletsComponent-bin-1.9.3_07062007.zip"
 					};
-			for (int i = 0; i < fileNames.length; i++) {
-				String fileName = basePath + fileNames[i];
-				String checksum = calculateMd5(fileName);
-				System.out.println("MD5 value for file " + fileNames[i] + " is : [" + checksum + "]");
-			}
+//			System.out.println("************** MD5 sun calculation *****************");
+//			for (int i = 0; i < fileNames.length; i++) {
+//				String fileName = basePath + fileNames[i];
+//				String checksum = calculateMd5(fileName);
+//				System.out.println("MD5 value for file " + fileNames[i] + " is : [" + checksum + "]");
+//			}
 
 			System.out.println("************** File dimensions *****************");
 			for (int i = 0; i < fileNames.length; i++) {

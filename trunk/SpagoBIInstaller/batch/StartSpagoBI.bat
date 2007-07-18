@@ -1,5 +1,5 @@
 @echo off
-start "Starting OpenOffice" OOStart.bat
+${OO_START_COMMAND}
 
 rem Run database/databases
 @cd .\sbidata\database

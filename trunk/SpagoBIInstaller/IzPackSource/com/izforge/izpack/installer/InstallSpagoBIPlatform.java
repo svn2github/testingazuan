@@ -10,13 +10,16 @@ import java.util.Set;
 
 public class InstallSpagoBIPlatform {
 
-	private static String SPAGOBI_ZIP_FILE = "SpagoBI-bin-1.9.2-03272007.zip";
-	private static String BIRT_ZIP_FILE = "SpagoBIBirtReportEngine-bin-1.9.2-03272007.zip";
-	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.2-Beta-03272007.zip";
-	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.2-03272007.zip";
-	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.2-03272007.zip";
-	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.2-03302007.zip";
-	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.2-Beta-03272007.zip";
+	private static String SPAGOBI_ZIP_FILE = "SpagoBI-bin-1.9.3-07062007.zip";
+	private static String BIRT_ZIP_FILE = "SpagoBIBirtReportEngine-bin-1.9.3-07062007.zip";
+	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.3-07062007.zip";
+	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.3-07062007.zip";
+	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.3-07062007.zip";
+	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.3-07062007.zip";
+	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.3-07062007.zip";
+	private static String TALEND_ZIP_FILE = "SpagoBITalendEngine-bin-1.9.3-07062007.zip";
+	private static String EXOPROFILEATTRMANAGER_ZIP_FILE = "ExoProfileAttributesManagerModule-bin-1.9.3-07062007.zip";
+	private static String BOOKLETS_ZIP_FILE = "SpagoBIBookletsComponent-bin-1.9.3_07062007.zip";
 	
 	private static String _pathdest;
 	private static String _spagobi_plaftorm_source_dir;
@@ -37,6 +40,9 @@ public class InstallSpagoBIPlatform {
 	private static boolean _install_jpivot;
 	private static boolean _install_qbe;
 	private static boolean _install_weka;
+	private static boolean _install_talend;
+	private static boolean _install_exoprofileattrmanager;
+	private static boolean _install_booklets;
 	private static boolean _install_examples;
 	private static boolean _install_docs;
 	private static String _connection_url;
@@ -50,7 +56,8 @@ public class InstallSpagoBIPlatform {
 	
 	public static void installSpagoBIPlatorm (String pathdest, String server_name, String install_birt,
 			 String install_geo, String install_jasper, String install_jpivot, String install_qbe, 
-			 String install_weka, String install_examples, String install_docs, String driver, 
+			 String install_weka, String install_talend, String install_exoprofileattrmanager, 
+			 String install_booklets, String install_examples, String install_docs, String driver, 
 			 String connection_url, String username, String password) {
 		
 		// initializes variables
@@ -64,6 +71,9 @@ public class InstallSpagoBIPlatform {
 		_install_jpivot 				= install_jpivot.equalsIgnoreCase("yes");
 		_install_qbe 					= install_qbe.equalsIgnoreCase("yes");
 		_install_weka 					= install_weka.equalsIgnoreCase("yes");
+		_install_talend 				= install_talend.equalsIgnoreCase("yes");
+		_install_exoprofileattrmanager 	= install_exoprofileattrmanager.equalsIgnoreCase("yes");
+		_install_booklets				= install_booklets.equalsIgnoreCase("yes");
 		_install_examples 				= install_examples.equalsIgnoreCase("yes");
 		_install_docs 					= install_docs.equalsIgnoreCase("yes");
 		
@@ -127,6 +137,20 @@ public class InstallSpagoBIPlatform {
 			if (!overwriteExistingFiles()) return;
 			if (!installSbiportalDb()) return;
 		}
+		
+		if (_install_exoprofileattrmanager) {
+			// the following method simply copies required file into spagobi; 
+			// configuration files are arranged by arrangeSpagoBIConfFiles method
+			if (!installExoprofileattrmanager()) return;
+		}
+		
+		if (_install_booklets) {
+			// the following method simply copies required file into spagobi; 
+			// configuration files are arranged by arrangeSpagoBIConfFiles method
+			if (!installBookletsComponent()) return;
+		}
+		
+		if (!arrangeSpagoBIConfFiles()) return;
 		
 		if (_install_docs) {
 			if (!arrangeDocs(_pathdest + fs + "spagobi-docs")) return;
@@ -227,7 +251,7 @@ public class InstallSpagoBIPlatform {
 	private static boolean installSpagoBIWar() {
 		try {
 			String pathsource = _spagobi_plaftorm_source_dir + fs + "wars";
-			FileUtilities.extractWarFile(_pathdest + fs + SPAGOBI_ZIP_FILE, pathsource);
+			FileUtilities.extractArchiveFile(_pathdest + fs + SPAGOBI_ZIP_FILE, pathsource, "war");
 			FileUtilities.deleteFile(SPAGOBI_ZIP_FILE, _pathdest);
 			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext,
 					pathsource + fs + "spagobi.war");
@@ -285,7 +309,7 @@ public class InstallSpagoBIPlatform {
 		try {
 			String pathsource = _spagobi_plaftorm_source_dir + fs + "wars";
 			if (_install_birt) {
-				FileUtilities.extractWarFile(_pathdest + fs + BIRT_ZIP_FILE, pathsource);
+				FileUtilities.extractArchiveFile(_pathdest + fs + BIRT_ZIP_FILE, pathsource, "war");
 				FileUtilities.deleteFile(BIRT_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine" + _ext,
 					pathsource + fs + "SpagoBIBirtReportEngine.war");
@@ -293,9 +317,12 @@ public class InstallSpagoBIPlatform {
 					FileUtilities.deleteFile("log4j-1.2.8.jar", _engines_deploy_dir + fs + 
 							"SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "lib");
 				}
+				if ("jonas".equalsIgnoreCase(_server_name)) {
+					// TODO zip classes folder into a jar to be put into lib dir
+				}
 			}
 			if (_install_geo) {
-				FileUtilities.extractWarFile(_pathdest + fs + GEO_ZIP_FILE, pathsource);
+				FileUtilities.extractArchiveFile(_pathdest + fs + GEO_ZIP_FILE, pathsource, "war");
 				FileUtilities.deleteFile(GEO_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIGeoEngine" + _ext,
 					pathsource + fs + "SpagoBIGeoEngine.war");
@@ -320,7 +347,7 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_jasper) {
-				FileUtilities.extractWarFile(_pathdest + fs + JASPER_ZIP_FILE, pathsource);
+				FileUtilities.extractArchiveFile(_pathdest + fs + JASPER_ZIP_FILE, pathsource, "war");
 				FileUtilities.deleteFile(JASPER_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIJasperReportEngine" + _ext,
 					pathsource + fs + "SpagoBIJasperReportEngine.war");
@@ -330,7 +357,7 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_jpivot) {
-				FileUtilities.extractWarFile(_pathdest + fs + JPIVOT_ZIP_FILE, pathsource);
+				FileUtilities.extractArchiveFile(_pathdest + fs + JPIVOT_ZIP_FILE, pathsource, "war");
 				FileUtilities.deleteFile(JPIVOT_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext,
 					pathsource + fs + "SpagoBIJPivotEngine.war");
@@ -340,7 +367,7 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_qbe) {
-				FileUtilities.extractWarFile(_pathdest + fs + QBE_ZIP_FILE, pathsource);
+				FileUtilities.extractArchiveFile(_pathdest + fs + QBE_ZIP_FILE, pathsource, "war");
 				FileUtilities.deleteFile(QBE_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext,
 					pathsource + fs + "SpagoBIQbeEngine.war");
@@ -354,7 +381,7 @@ public class InstallSpagoBIPlatform {
 				}
 			}
 			if (_install_weka) {
-				FileUtilities.extractWarFile(_pathdest + fs + WEKA_ZIP_FILE, pathsource);
+				FileUtilities.extractArchiveFile(_pathdest + fs + WEKA_ZIP_FILE, pathsource, "war");
 				FileUtilities.deleteFile(WEKA_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIWekaEngine" + _ext,
 					pathsource + fs + "SpagoBIWekaEngine.war");
@@ -370,6 +397,16 @@ public class InstallSpagoBIPlatform {
 					// TODO manage database.properties
 				} else if (_driver.toLowerCase().indexOf("mysql") != -1) {
 					// TODO manage database.properties
+				}
+			}
+			if (_install_talend) {
+				FileUtilities.extractArchiveFile(_pathdest + fs + TALEND_ZIP_FILE, pathsource, "war");
+				FileUtilities.deleteFile(TALEND_ZIP_FILE, _pathdest);
+				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext,
+					pathsource + fs + "SpagoBITalendEngine.war");
+				if ("jboss".equalsIgnoreCase(_server_name)) {
+					FileUtilities.deleteFile("log4j-1.2.8.jar", _engines_deploy_dir + fs + 
+							"SpagoBITalendEngine.war" + fs + "WEB-INF" + fs + "lib");
 				}
 			}
 		} catch (Exception exc) {
@@ -456,40 +493,6 @@ public class InstallSpagoBIPlatform {
 		try {
 			replaceStartCommandParameters();
 			replaceStopCommandParameters();
-			/*
-			// arrange StartSpagoBI.bat files for different servers
-			File tomcatStartBat = new File(_pathdest + fs + "StartSpagoBI.bat");
-			File jbossStartBat = new File(_pathdest + fs + "StartSpagoBI_jboss.bat");
-			File jonasStartBat = new File(_pathdest + fs + "StartSpagoBI_jonas.bat");
-			if ("tomcat".equalsIgnoreCase(_server_name)) {
-				jbossStartBat.delete();
-				jonasStartBat.delete();
-			} else if ("jboss".equalsIgnoreCase(_server_name)) {
-				tomcatStartBat.delete();
-				jonasStartBat.delete();
-				jbossStartBat.renameTo(tomcatStartBat);
-			} else if ("jonas".equalsIgnoreCase(_server_name)) {
-				tomcatStartBat.delete();
-				jbossStartBat.delete();
-				jonasStartBat.renameTo(tomcatStartBat);
-			}
-			// arrange StartSpagoBI.sh files for different servers
-			File tomcatStartSh = new File(_pathdest + fs + "StartSpagoBI.sh");
-			File jbossStartSh = new File(_pathdest + fs + "StartSpagoBI_jboss.sh");
-			File jonasStartSh = new File(_pathdest + fs + "StartSpagoBI_jonas.sh");
-			if ("tomcat".equalsIgnoreCase(_server_name)) {
-				jbossStartSh.delete();
-				jonasStartSh.delete();
-			} else if ("jboss".equalsIgnoreCase(_server_name)) {
-				tomcatStartSh.delete();
-				jonasStartSh.delete();
-				jbossStartSh.renameTo(tomcatStartSh);
-			} else if ("jonas".equalsIgnoreCase(_server_name)) {
-				tomcatStartSh.delete();
-				jbossStartSh.delete();
-				jonasStartSh.renameTo(tomcatStartSh);
-			}
-			*/
 		} catch (Exception exc) {
 			return false;
 		}
@@ -590,9 +593,6 @@ public class InstallSpagoBIPlatform {
 			// arrange StartSpagoBI.bat files for different servers
 			String binDir = "bin";
 			String startCommand = null;
-			//String url = null;
-			//String port = "8080";
-			//String portal = "portal";
 			if ("tomcat".equalsIgnoreCase(_server_name)) {
 				startCommand = "exo-run.bat";
 			} else if ("jboss".equalsIgnoreCase(_server_name)) {
@@ -600,14 +600,15 @@ public class InstallSpagoBIPlatform {
 			} else if ("jonas".equalsIgnoreCase(_server_name)) {
 				startCommand = "jonas start";
 				binDir = "bin" + fs + "nt";
-				//port = "9000";
 			}
-			//if (_install_examples) portal = "sbiportal";
-			//url = "http://localhost:" + port + "/" + portal;
+			String openOfficeStartCommand = "";
+			if (_install_booklets) {
+				openOfficeStartCommand = "start \"Starting OpenOffice\" OOStart.bat";
+			}
 			Properties batProps = new Properties();
+			batProps.setProperty("${OO_START_COMMAND}", openOfficeStartCommand);
 			batProps.setProperty("${BIN_DIR}", binDir);
 			batProps.setProperty("${START_COMMAND}", startCommand);
-			//batProps.setProperty("${URL}", url);
 			String startBat = _pathdest + fs + "StartSpagoBI.bat";
 			replaceParametersInFile(startBat, startBat, batProps, true);
 			
@@ -620,7 +621,12 @@ public class InstallSpagoBIPlatform {
 				binDir = "bin" + fs + "unix";
 				startCommand = "jonas start";
 			}
+			openOfficeStartCommand = "";
+			if (_install_booklets) {
+				openOfficeStartCommand = "./OOStart.sh &";
+			}
 			Properties shProps = new Properties();
+			shProps.setProperty("${OO_START_COMMAND}", openOfficeStartCommand);
 			shProps.setProperty("${BIN_DIR}", binDir);
 			shProps.setProperty("${START_COMMAND}", startCommand);
 			String startSh = _pathdest + fs + "StartSpagoBI.sh";
@@ -743,6 +749,142 @@ public class InstallSpagoBIPlatform {
 			return false;
 		}
 		return true;
+	}
+	
+	private static boolean installExoprofileattrmanager() {
+		String pathsource = _spagobi_plaftorm_source_dir + fs + "exo_profile_attr_manager";
+		try {
+			FileUtilities.extractArchiveFile(_pathdest + fs + EXOPROFILEATTRMANAGER_ZIP_FILE, pathsource, "zip");
+			FileUtilities.deleteFile(EXOPROFILEATTRMANAGER_ZIP_FILE, _pathdest);
+			FileUtilities.explode(pathsource, pathsource + fs + "spagobi.zip");
+			FileUtilities.copyDirectory( _spagobi_deploy_dir + fs + "spagobi" + _ext, pathsource + fs + "spagobi", true);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private static boolean installBookletsComponent() {
+		String pathsource = _spagobi_plaftorm_source_dir + fs + "booklets_component";
+		try {
+			FileUtilities.extractArchiveFile(_pathdest + fs + BOOKLETS_ZIP_FILE, pathsource, "zip");
+			FileUtilities.deleteFile(BOOKLETS_ZIP_FILE, _pathdest);
+			FileUtilities.explode(pathsource, pathsource + fs + "spagobi.zip");
+			FileUtilities.copyDirectory( _spagobi_deploy_dir + fs + "spagobi" + _ext, pathsource + fs + "spagobi", true);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private static boolean arrangeSpagoBIConfFiles() {
+		try {
+			/* manages master.xml */
+			Properties props = new Properties();
+			String exoProfileManagerModuleConfFiles = "";
+			// deletes old master.xml file
+			FileUtilities.deleteFile("master.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
+			String masterSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "master.xml";
+			String masterDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "master.xml";
+			if (_install_exoprofileattrmanager) {
+				exoProfileManagerModuleConfFiles =
+					"	<!-- start exo profile manager module -->\n" + 
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/exoprofileattributemanager/pages.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/exoprofileattributemanager/modules.xml\" />\n" + 
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/exoprofileattributemanager/presentation.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/exoprofileattributemanager/publishers.xml\" />\n" + 
+					"	<!-- end exo profile manager module -->\n";
+			}
+			String bookletsModuleConfFiles = "";
+			if (_install_booklets) {
+				bookletsModuleConfFiles =
+					"	<!-- start booklets module -->\n" + 
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/booklets.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/pages.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/modules.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/presentation.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/publishers.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/initializers.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/actions.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/workflow.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/forms.xml\" />\n" +
+					"	<CONFIGURATOR path=\"/WEB-INF/conf/components/booklets/validation.xml\" />\n" +
+					"	<!-- end booklets module -->\n";
+			}
+			props.setProperty("${EXO_PROFILE_ATTRIBUTE_MANAGER_CONF_FILES}", exoProfileManagerModuleConfFiles);
+			props.setProperty("${BOOKLETS_COMPONENT_CONF_FILES}", bookletsModuleConfFiles);
+			replaceParametersInFile(masterSourceFile, masterDestFile, props, false);
+	
+			
+			/* manages portlet.xml */
+			if (_install_exoprofileattrmanager) {
+				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF", 
+					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "portlet.xml");
+			}
+			
+			/* manages web.xml */
+			props = new Properties();
+			String bookletServlet = "";
+			String bookletMapping = "";
+			String dwhResourceRef = ""; 
+			// deletes old web.xml file
+			FileUtilities.deleteFile("web.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF");
+			String webSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "web.xml";
+			String webDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "web.xml";
+			if (_install_booklets) {
+				bookletServlet = 
+					"	<servlet>\n" +
+					"		<servlet-name>BookletServlet</servlet-name>\n" +
+					"		<servlet-class>it.eng.spagobi.booklets.BookletsServlet</servlet-class>\n" +
+					"	</servlet>\n";
+				bookletMapping =
+					"	<servlet-mapping>\n" +
+					"		<servlet-name>BookletServlet</servlet-name>\n" +
+					"		<url-pattern>/BookletService</url-pattern>\n" +
+					"	</servlet-mapping>\n";
+			}
+			if (_install_examples) {
+				dwhResourceRef =
+					"	<resource-ref>\n" +
+					"		<description>Foodmart db</description>\n" +
+					"		<res-ref-name>jdbc/sbifoodmart</res-ref-name>\n" +
+					"		<res-type>javax.sql.DataSource</res-type>\n" +
+					"		<res-auth>Container</res-auth>\n" +
+					"	</resource-ref>\n";
+			} else {
+				dwhResourceRef =
+					"	<resource-ref>\n" +
+					"		<description>Data WareHouse</description>\n" +
+					"		<res-ref-name>jdbc/dwh</res-ref-name>\n" +
+					"		<res-type>javax.sql.DataSource</res-type>\n" +
+					"		<res-auth>Container</res-auth>\n" +
+					"	</resource-ref>\n";
+			}
+			props.setProperty("${BOOKLET_SERVLET}", bookletServlet);
+			props.setProperty("${BOOKLET_SERVLET_MAPPING}", bookletMapping);
+			props.setProperty("${DWH_RESOURCE_REF}", dwhResourceRef);
+			replaceParametersInFile(webSourceFile, webDestFile, props, false);
+	
+			
+			if (_install_booklets) {
+				/* manages spagobi_components.xml */
+				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "spagobi", 
+					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi_components.xml");
+				/* manages initializers.xml */
+				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf", 
+						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "initializers.xml");
+				/* manages jbpm.hibernate.cfg.hsql.xml */
+				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes", 
+						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "jbpm.hibernate.cfg.hsql.xml");
+				/* manages booklets.xml */
+				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "components" + fs + "booklets", 
+						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "booklets.xml");
+	
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 }

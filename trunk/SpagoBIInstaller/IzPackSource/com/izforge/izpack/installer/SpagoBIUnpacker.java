@@ -322,6 +322,9 @@ public class SpagoBIUnpacker implements IUnpacker
             	else if (packnameUC.indexOf("JPIVOT") != -1) idata.setVariable("JPIVOT", "yes");
             	else if (packnameUC.indexOf("QBE") != -1) idata.setVariable("QBE", "yes");
             	else if (packnameUC.indexOf("WEKA") != -1) idata.setVariable("WEKA", "yes");
+            	else if (packnameUC.indexOf("TALEND") != -1) idata.setVariable("TALEND", "yes");
+            	else if (packnameUC.indexOf("EXOPROFILE") != -1) idata.setVariable("EXOPROFILEATTRMANAGER", "yes");
+            	else if (packnameUC.indexOf("BOOKLETS") != -1) idata.setVariable("BOOKLETS", "yes");
             	else if (packnameUC.indexOf("EXAMPLES") != -1) {
             		idata.setVariable("SPAGOBI_EXAMPLES", "yes");
             		idata.setVariable("PORTAL", "sbiportal");
@@ -736,6 +739,9 @@ public class SpagoBIUnpacker implements IUnpacker
             String install_jpivot = idata.getVariable("JPIVOT");
             String install_qbe = idata.getVariable("QBE");
             String install_weka = idata.getVariable("WEKA");
+            String install_talend = idata.getVariable("TALEND");
+            String install_exoprofileattrmanager = idata.getVariable("EXOPROFILEATTRMANAGER");
+            String install_booklets = idata.getVariable("BOOKLETS");
             String install_examples = idata.getVariable("SPAGOBI_EXAMPLES");
             String install_docs = idata.getVariable("DOCUMENTATION");
             String driver = idata.getVariable("DRIVER");
@@ -760,8 +766,8 @@ public class SpagoBIUnpacker implements IUnpacker
     		};
     		thread.start();
             InstallSpagoBIPlatform.installSpagoBIPlatorm(pathdest, server_name, install_birt, 
-            		install_geo, install_jasper, install_jpivot, install_qbe, install_weka, 
-            		install_examples, install_docs, driver, connection_url, username, password);
+            		install_geo, install_jasper, install_jpivot, install_qbe, install_weka, install_talend,
+            		install_exoprofileattrmanager, install_booklets, install_examples, install_docs, driver, connection_url, username, password);
             dialog.setVisible(false);
             
             // The end :-)

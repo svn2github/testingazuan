@@ -15,7 +15,7 @@ PRGDIR=`dirname "$PRG"`
 
 cd $PRGDIR
 
-./OOStart.sh &
+${OO_START_COMMAND}
 sleep 3
 
 # start database/databases

@@ -130,13 +130,13 @@ public class FileUtilities {
 	    zipFile.close();
 	}   
 	
-	public static void extractWarFile(String zipFilePath, String newDirectoryPath) throws ZipException, IOException {
+	public static void extractArchiveFile(String zipFilePath, String newDirectoryPath, String archiveFileExt) throws ZipException, IOException {
 		ZipFile zipFile = new ZipFile(zipFilePath);
 		File newDirectory = new File(newDirectoryPath);
-		extractWarFile(zipFile, newDirectory);
+		extractArchiveFile(zipFile, newDirectory, archiveFileExt);
 	}
 	
-	private static void extractWarFile(ZipFile zipFile, File newDirectory) throws ZipException, IOException {
+	private static void extractArchiveFile(ZipFile zipFile, File newDirectory, String archiveFileExt) throws ZipException, IOException {
 	    if (!newDirectory.exists()) newDirectory.mkdirs();
 		Enumeration entries = zipFile.entries();
 	    ZipEntry entry = null;
@@ -147,7 +147,7 @@ public class FileUtilities {
 	    while(entries.hasMoreElements()) {
 	    	entry = (ZipEntry) entries.nextElement();
 	    	name = entry.getName();
-	    	if (!entry.isDirectory() && name.endsWith(".war")) {
+	    	if (!entry.isDirectory() && name.endsWith("." + archiveFileExt)) {
 	    		// finds the name of the war file
 	    		int index = name.lastIndexOf('/');
 	    		if (index != -1) {

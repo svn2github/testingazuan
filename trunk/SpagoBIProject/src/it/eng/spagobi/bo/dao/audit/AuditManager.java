@@ -235,26 +235,36 @@ public class AuditManager {
 					"Error loading audit record with id = [" + auditId.toString() + "]", e);
 			return;
 		}
+		
+		if (audit.getExecutionStartTime() != null && audit.getExecutionEndTime() != null) {
+			SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+					"Audit record with id = [" + auditId.toString() + "] has already a start time and an " +
+							"end time. This record will not be modified.");
+			return;
+		}
+		
 		if (startTime != null) {
 			Date executionStartTime = new Date(startTime.longValue());
-			if (audit.getExecutionStartTime() == null) {
-				audit.setExecutionStartTime(executionStartTime);
-			} else {
-				SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
-						"Audit record with id = [" + auditId.toString() + "] has already a start time! " +
-								"It will be NOT overwritten");
-			}
+			audit.setExecutionStartTime(executionStartTime);
+//			if (audit.getExecutionStartTime() == null) {
+//				audit.setExecutionStartTime(executionStartTime);
+//			} else {
+//				SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+//						"Audit record with id = [" + auditId.toString() + "] has already a start time! " +
+//								"It will be NOT overwritten");
+//			}
 		}
 		if (endTime != null) {
 			Date executionEndTime = new Date(endTime.longValue());
-			if (audit.getExecutionEndTime() == null) {
-				audit.setExecutionEndTime(executionEndTime);
-			} else {
-				SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
-						"Audit record with id = [" + auditId.toString() + "] has already an end time! " +
-								"It will be overwritten");
-				audit.setExecutionEndTime(executionEndTime);
-			}
+			audit.setExecutionEndTime(executionEndTime);
+//			if (audit.getExecutionEndTime() == null) {
+//				audit.setExecutionEndTime(executionEndTime);
+//			} else {
+//				SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
+//						"Audit record with id = [" + auditId.toString() + "] has already an end time! " +
+//								"It will be overwritten");
+//				audit.setExecutionEndTime(executionEndTime);
+//			}
 			Date executionStartTime = audit.getExecutionStartTime();
 			if (executionStartTime != null) {
 				// calculates exectuion time as a difference in ms

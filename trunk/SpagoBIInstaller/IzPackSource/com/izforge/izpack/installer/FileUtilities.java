@@ -4,10 +4,14 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -274,5 +278,37 @@ public class FileUtilities {
           }
 	}
 	*/
+	
+	public static void replaceParametersInFile(String sourceFilePath, String destFilePath, Properties props, 
+			boolean deleteSource) throws Exception {
+		File sourceFile = new File(sourceFilePath);
+		FileReader reader = new FileReader(sourceFile);
+		StringBuffer servbuf = new StringBuffer();
+		char[] buffer = new char[1024];
+		int len;
+		while ((len = reader.read(buffer)) >= 0) {
+			servbuf.append(buffer, 0, len);
+		}
+		reader.close();
+		if (deleteSource) sourceFile.delete();
+		
+		Set keys = props.keySet();
+		Iterator it = keys.iterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			String value = props.getProperty(key);
+			int startIndex = servbuf.indexOf(key);
+			while (startIndex != -1) {
+				servbuf.replace(startIndex, startIndex + key.length(), value);
+				startIndex = servbuf.indexOf(key);
+			}
+		}
+		
+		File destFile = new File(destFilePath);
+		FileOutputStream fos = new FileOutputStream(destFile);
+		fos.write(servbuf.toString().getBytes());
+		fos.flush();
+		fos.close();
+	}
 	
 }

@@ -763,7 +763,7 @@ public class InstallSpagoBIPlatform {
 			String exoProfileManagerModuleConfFiles = "";
 			// deletes old master.xml file
 			FileUtilities.deleteFile("master.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
-			String masterSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "master.xml";
+			String masterSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + "WEB-INF" + fs + "conf" + fs + "master.xml";
 			String masterDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "master.xml";
 			if (_install_exoprofileattrmanager) {
 				exoProfileManagerModuleConfFiles =
@@ -798,7 +798,7 @@ public class InstallSpagoBIPlatform {
 			/* manages portlet.xml */
 			if (_install_exoprofileattrmanager) {
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF", 
-					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "portlet.xml");
+					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "portlet.xml");
 			}
 			
 			/* manages web.xml */
@@ -807,7 +807,7 @@ public class InstallSpagoBIPlatform {
 			String bookletMapping = "";
 			// deletes old web.xml file
 			FileUtilities.deleteFile("web.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF");
-			String webSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "web.xml";
+			String webSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "web.xml";
 			String webDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "web.xml";
 			if (_install_booklets) {
 				bookletServlet = 
@@ -830,16 +830,16 @@ public class InstallSpagoBIPlatform {
 			if (_install_booklets) {
 				/* manages spagobi_components.xml */
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "spagobi", 
-					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "spagobi_components.xml");
+					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "spagobi" + fs + "spagobi_components.xml");
 				/* manages initializers.xml */
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf", 
-						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "initializers.xml");
+						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "initializers.xml");
 				/* manages jbpm.hibernate.cfg.hsql.xml */
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes", 
-						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "jbpm.hibernate.cfg.hsql.xml");
+						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "classes" + fs + "jbpm.hibernate.cfg.hsql.xml");
 				/* manages booklets.xml */
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "components" + fs + "booklets", 
-						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "booklets.xml");
+						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "components" + fs + "booklets" + fs + "booklets.xml");
 	
 			}
 			
@@ -849,7 +849,7 @@ public class InstallSpagoBIPlatform {
 			props = new Properties();
 			// deletes old data-access.xml file
 			FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
-			String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "data-access.xml";
+			String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
 			String dataAccessDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
 			String connectionDescription = null;
 			if (_install_examples) {
@@ -877,7 +877,7 @@ public class InstallSpagoBIPlatform {
 			FileUtilities.deleteFile("cms-jboss-jonas.xml", _spagobi_deploy_dir + fs + 
 					"spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
 			FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf", 
-					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "cms.xml");
+					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "cms.xml");
 			
 			return true;
 		} catch (Exception e) {
@@ -910,7 +910,7 @@ public class InstallSpagoBIPlatform {
 				Properties props = new Properties();
 				// deletes old data-access.xml file
 				FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf");
-				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIGeoEngine" + fs + "data-access.xml";
+				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIGeoEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
 				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
 				props.setProperty("${JNDI_REF}", jndiRef);
 				FileUtilities.replaceParametersInFile(dataAccessSourceFile, dataAccessDestFile, props, false);
@@ -928,7 +928,7 @@ public class InstallSpagoBIPlatform {
 				Properties props = new Properties();
 				// deletes old engine-config.xml file
 				FileUtilities.deleteFile("engine-config.xml", _spagobi_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext + fs + "WEB-INF" + fs + "classes");
-				String engineConfigSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIJPivotEngine" + fs + "engine-config.xml";
+				String engineConfigSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIJPivotEngine" + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
 				String engineConfigDestFile = _spagobi_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
 				props.setProperty("${JNDI_NAME}", jndiName);
 				String foodmartRef = null;
@@ -961,7 +961,7 @@ public class InstallSpagoBIPlatform {
 				FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
 				// deletes data_access_jonas.xml file
 				FileUtilities.deleteFile("data_access_jonas.xml", _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
-				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIQbeEngine" + fs + "data-access.xml";
+				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIQbeEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
 				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
 				props.setProperty("${CONN_NAME}", connectionName);
 				props.setProperty("${JNDI_CONTEXT}", jndiContext);
@@ -1002,21 +1002,21 @@ public class InstallSpagoBIPlatform {
 			/* manages jboss-web.xml */
 			// deletes old jboss-web.xml file
 			FileUtilities.deleteFile("jboss-web.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF");
-			String jbosswebSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "jboss-web.xml";
+			String jbosswebSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "jboss-web.xml";
 			String jbosswebDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "jboss-web.xml";
 			FileUtilities.replaceParametersInFile(jbosswebSourceFile, jbosswebDestFile, props, false);
 		} else if ("jonas".equalsIgnoreCase(_server_name)) {
 			/* manages jonas-web.xml */
 			// deletes old jonas-web.xml file
 			FileUtilities.deleteFile("jonas-web.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF");
-			String jonaswebSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "jonas-web.xml";
+			String jonaswebSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "jonas-web.xml";
 			String jonaswebDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "jonas-web.xml";
 			FileUtilities.replaceParametersInFile(jonaswebSourceFile, jonaswebDestFile, props, false);
 		}
 		if (manageWebXml) {
 			// deletes old web.xml file
 			FileUtilities.deleteFile("web.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF");
-			String webSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "web.xml";
+			String webSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "web.xml";
 			String webDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "web.xml";
 			FileUtilities.replaceParametersInFile(webSourceFile, webDestFile, props, false);
 		}
@@ -1026,7 +1026,7 @@ public class InstallSpagoBIPlatform {
 		Properties props = new Properties();
 		// deletes old engine-config.xml file
 		FileUtilities.deleteFile("engine-config.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "classes");
-		String engineConfigSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "engine-config.xml";
+		String engineConfigSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
 		String engineConfigDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
 		props.setProperty("${JNDI_NAME}", jndiName);
 		FileUtilities.replaceParametersInFile(engineConfigSourceFile, engineConfigDestFile, props, false);

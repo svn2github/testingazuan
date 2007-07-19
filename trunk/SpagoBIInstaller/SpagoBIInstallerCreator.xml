@@ -76,13 +76,12 @@
    		<panel classname="HTMLInfoPanel" id="infopanel"/>
    		<panel classname="LicencePanel" id="licencepanel"/>
    		<panel classname="UserInputPanel" id="serverType"/>
-   		<!--panel classname="UserInputPanel" id="engineAndExamples"/-->
 	    <panel classname="PacksPanel" id="packspanel"/>
 	    <panel classname="UserInputPanel" id="db_connection_def"/>
+	    <panel classname="SpagoBIPerlPathPanel" id="perl_dir_panel"/>
 	    <panel classname="SpagoBITargetPanel" id="targetpanel"/>
 	    <panel classname="SpagoBIRepositoryPathPanel" id="spagobirepopanel"/>
     	<panel classname="InstallPanel" id="installpanel"/>
-    	<!--panel classname="HTMLInfoPanel"/-->
     	<panel classname="ShortcutPanel" id="shortcutpanel"/>
     	<panel classname="SpagoBIFinishPanel" id="finishpanel"/>
 	</panels>
@@ -109,39 +108,39 @@
 		    </fileset>
 	    </pack>
     	<pack name="SpagoBI-1.9.3" required="yes" bytes="23830476" id="SpagoBI-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIBirtReportEngine-1.9.3" required="no" preselected="yes" bytes="35084928" id="SpagoBIBirtReportEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIGeoEngine-1.9.3" required="no" preselected="yes" bytes="6043408" id="SpagoBIGeoEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIGeoEngine-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIGeoEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIJasperReportEngine-1.9.3" required="no" preselected="yes" bytes="11433378" id="SpagoBIJasperReportEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJasperReportEngine-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJasperReportEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIJPivotEngine-1.9.3" required="no" preselected="yes" bytes="17465110" id="SpagoBIJPivotEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIQbeEngine-1.9.3" required="no" preselected="yes" bytes="17091964" id="SpagoBIQbeEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIWekaEngine-1.9.3" required="no" preselected="yes" bytes="8933577" id="SpagoBIWekaEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBITalendEngine-1.9.3" required="no" preselected="yes" bytes="9657701" id="SpagoBITalendEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBITalendEngine-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBITalendEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="ExoProfileAttributesManagerModule-1.9.3" required="no" preselected="yes" bytes="89580" id="ExoProfileAttributesManagerModule-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/ExoProfileAttributesManagerModule-bin-1.9.3-07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/ExoProfileAttributesManagerModule-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIBookletsComponent-1.9.3" required="no" preselected="yes" bytes="1532608" id="SpagoBIBookletsComponent-1.9.3"

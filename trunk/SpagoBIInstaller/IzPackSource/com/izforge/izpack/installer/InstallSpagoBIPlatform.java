@@ -51,13 +51,14 @@ public class InstallSpagoBIPlatform {
 	private static String _ext;
 	private static String jndiName;
 	private static String spagobigeoJndiName;
+	private static String _perlBaseFolderPath;
 	
 	
 	public static void installSpagoBIPlatorm (String pathdest, String server_name, String install_birt,
 			 String install_geo, String install_jasper, String install_jpivot, String install_qbe, 
 			 String install_weka, String install_talend, String install_exoprofileattrmanager, 
 			 String install_booklets, String install_examples, String install_docs, String driver, 
-			 String connection_url, String username, String password) {
+			 String connection_url, String username, String password, String perlBaseFolderPath) {
 		
 		// initializes variables
 		_pathdest 						= pathdest;
@@ -82,6 +83,8 @@ public class InstallSpagoBIPlatform {
 		_username 						= username;
 		_password 						= password;
 		if (_password == null) password = "";
+		
+		_perlBaseFolderPath 			= perlBaseFolderPath != null ? perlBaseFolderPath : "";
 		
 		_spagobi_metadata_db_dir = _pathdest + fs + "sbidata" + fs + "database";
 		_exo_metadata_db_dir = _pathdest + fs + "temp" + fs + "data";
@@ -1016,12 +1019,26 @@ public class InstallSpagoBIPlatform {
 			}
 			
 			/* SpagoBITalendEngine */
-			String spagobiTalendEngineHome = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext;
-			spagobiTalendEngineHome = spagobiTalendEngineHome.replace('\\', '/');
-			String talendPropertiesFile = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
-			Properties props = new Properties();
-			props.setProperty("${SPAGOBI_TALEND_ENGINE_HOME}", spagobiTalendEngineHome);
-			FileUtilities.replaceParametersInFile(talendPropertiesFile, talendPropertiesFile, props, true);
+			if (_install_talend) {
+				String spagobiTalendEngineHome = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext;
+				spagobiTalendEngineHome = spagobiTalendEngineHome.replace('\\', '/');
+				// deletes old talend.properties file
+				FileUtilities.deleteFile("talend.properties", _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes");
+				String talendPropertiesSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
+				String talendPropertiesDestFile = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
+				Properties props = new Properties();
+				props.setProperty("${SPAGOBI_TALEND_ENGINE_HOME}", spagobiTalendEngineHome);
+				FileUtilities.replaceParametersInFile(talendPropertiesSourceFile, talendPropertiesDestFile, props, true);
+				
+				_perlBaseFolderPath = _perlBaseFolderPath.replace('\\', '/');
+				// deletes old talend.perl.properties file
+				FileUtilities.deleteFile("talend.perl.properties", _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes");
+				String talendPerlPropertiesSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.perl.properties";
+				String talendPerlPropertiesDestFile = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.perl.properties";
+				props = new Properties();
+				props.setProperty("${PERL_INSTALL_DIR}", _perlBaseFolderPath);
+				FileUtilities.replaceParametersInFile(talendPerlPropertiesSourceFile, talendPerlPropertiesDestFile, props, true);
+			}
 			
 			return true;
 		} catch (Exception e) {

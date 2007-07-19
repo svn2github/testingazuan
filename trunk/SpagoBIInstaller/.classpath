@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="SpagoBITargetPanel"/>
 	<classpathentry kind="src" path="MD5SumCalculator"/>
 	<classpathentry kind="src" path="SpagoBIRepositoryPathPanel"/>
+	<classpathentry kind="src" path="SpagoBIPerlPathPanel"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="IzPack_Home/bin/panels/PacksPanel.jar"/>
 	<classpathentry kind="var" path="IzPack_Home/bin/panels/TargetPanel.jar"/>

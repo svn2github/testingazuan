@@ -21,5 +21,10 @@
     
     <str id="SpagoBIRepositoryPathPanel.intro" txt="Ora devi selezionare la cartella del tuo repository locale. Come spiegato precedentemente, i pacchetti con i binari del nucleo di SpagoBI e dei suoi motori esterni non sono inclusi in questo file di installazione. Se hai giа eseguito questa procedura di installazione oppure se hai scaricato manualmente i pacchetti, seleziona la cartella in cui i pacchetti sono stati scaricati. Altrimenti seleziona una cartella vuota: i pacchetti verranno scaricati automaticamente all'interno di essa da un repository remoto."/>
     <str id="SpagoBIRepositoryPathPanel.info" txt="Seleziona la cartella del tuo repository locale di SpagoBI:"/>    
+
+	<str id="SpagoBIPerlPathPanel.intro" txt="Per eseguire processi ETL scritti in linguaggio Perl, il motore SpagoBITalendEngine si appoggia ad un'installazione locale di un interprete Perl. Se disponi di un interprete di Perl sul tuo pc inserisci nel box sottostante la sua cartella principale. Altrimenti potrai eseguire solo processi scritti in linguaggio java, non in Perl; per procedere oltre clicca su 'Prossimo' e ignora il messaggio di avvertimento."/>    
+    <str id="SpagoBIPerlPathPanel.info" txt="Seleziona la cartella di installazione dell'interprete Perl:"/>    
+    <str id="SpagoBIPerlPathPanel.perl.dir.missing" txt="Non è stata selezionata alcuna cartella, i processi scritti in linguaggio Perl non potranno essere eseguiti. Continuare?"/>
+    <str id="SpagoBIPerlPathPanel.perl.dir.not.valid" txt="La cartella selezionata non sembra contenere un'installazione di un interprete Perl, i processi scritti in linguaggio Perl potrebbero non funzionare correttamente. Continuare?"/>
     
 </langpack>

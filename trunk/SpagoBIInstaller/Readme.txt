@@ -18,6 +18,11 @@ SpagoBIRepositoryPathPanel: deve contenere le classi
 	com\izforge\izpack\panels\PathInputPanel
 	com\izforge\izpack\panels\PathSelectionPanel
 	com\izforge\izpack\panels\SpagoBIRepositoryPathPanel
+
+SpagoBIPerlPathPanel: deve contenere le classi 
+	com\izforge\izpack\panels\PathInputPanel
+	com\izforge\izpack\panels\PathSelectionPanel
+	com\izforge\izpack\panels\SpagoBIPerlPathPanel
 	
 2. Ricreare le librerie compiler.jar e installer.jar presenti dentro IzPack_Home\lib con le seguenti classi modificate:
 

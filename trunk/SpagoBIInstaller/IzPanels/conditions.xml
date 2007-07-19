@@ -1,10 +1,19 @@
 <?xml version="1.0" ?>
 <conditions>
+	
+	<!-- se non vengono selezionati gli esempi viene mostrato il form per i parametri di connessione ad data warehouse -->
 	<condition type="packselection" id="examples_selected">
 		<packid>SpagoBI_examples</packid>
 	</condition>
 	<condition type="not" id="db_connection_setup">
 		<condition type="ref" refid="examples_selected"/>
 	</condition> 
-	<panelcondition conditionid="db_connection_setup" panelid="db_connection_def" />  
+	<panelcondition conditionid="db_connection_setup" panelid="db_connection_def" />
+	
+	<!-- se viene selezionato SpagoBITalendEngine viene chiesta la directory di installazione di Perl -->
+	<condition type="packselection" id="talend_selected">
+		<packid>SpagoBITalendEngine-1.9.3</packid>
+	</condition>
+	<panelcondition conditionid="talend_selected" panelid="perl_dir_panel" />
+	
 </conditions>

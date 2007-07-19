@@ -22,5 +22,10 @@
     
     <str id="SpagoBIRepositoryPathPanel.intro" txt="Now you have to select the local repository folder. As explained before, SpagoBI Core and its engines binary packs are not included in this installation file. If you have already executed this installation procedure or if you have manually downloaded the packs, select the folder where packs were downloaded. Otherwise select an empty folder: packs will be automatically downloaded inside it from a remote repository."/>
     <str id="SpagoBIRepositoryPathPanel.info" txt="Select the path of your local SpagoBI repository:"/>
+
+	<str id="SpagoBIPerlPathPanel.intro" txt="In order to execute Perl based ETL jobs, SpagoBITalendEngine needs a local Perl interpreter installation. If you have a Perl interpreter installed on your pc, select in the box below its home folder. Otherwise you will be able to execute only java based jobs, not Perl based ones; click on 'Next' and ignore the alert message."/>    
+    <str id="SpagoBIPerlPathPanel.info" txt="Select the home directory of your Perl interpreter installation:"/>    
+    <str id="SpagoBIPerlPathPanel.perl.dir.missing" txt="No folder has been selected. Perl based jobs will not work. Continue?"/>
+    <str id="SpagoBIPerlPathPanel.perl.dir.not.valid" txt="Selected folder does not seem to be a Perl interpreter installation home folder. Perl based jobs may not work. Continue?"/>
     
 </langpack>

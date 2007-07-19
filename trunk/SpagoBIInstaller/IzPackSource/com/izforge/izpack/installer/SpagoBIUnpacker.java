@@ -748,6 +748,7 @@ public class SpagoBIUnpacker implements IUnpacker
             String connection_url = idata.getVariable("CONNECTION_URL");
             String username = idata.getVariable("USERNAME");
             String password = idata.getVariable("PASSWORD");
+            String perlBaseFolderPath = idata.getVariable("SPAGOBI_PERL_HOME_PATH");
             
             JProgressBar progressBar = new JProgressBar(1, 100);
             progressBar.setIndeterminate(true);
@@ -767,7 +768,7 @@ public class SpagoBIUnpacker implements IUnpacker
     		thread.start();
             InstallSpagoBIPlatform.installSpagoBIPlatorm(pathdest, server_name, install_birt, 
             		install_geo, install_jasper, install_jpivot, install_qbe, install_weka, install_talend,
-            		install_exoprofileattrmanager, install_booklets, install_examples, install_docs, driver, connection_url, username, password);
+            		install_exoprofileattrmanager, install_booklets, install_examples, install_docs, driver, connection_url, username, password, perlBaseFolderPath);
             dialog.setVisible(false);
             
             // The end :-)

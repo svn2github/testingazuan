@@ -879,6 +879,39 @@ public class InstallSpagoBIPlatform {
 			FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf", 
 					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "cms.xml");
 			
+			/* manages spagobi.xml */
+			props = new Properties();
+			// deletes old spagobi.xml file
+			FileUtilities.deleteFile("spagobi.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "spagobi");
+			String spagobiSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "spagobi" + fs + "spagobi.xml";
+			String spagobiDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "spagobi" + fs + "spagobi.xml";
+			String portal = null;
+			String rolesFilter = null;
+			String serverPort = null;
+			String portletEditRole = null;
+			if (_install_examples || _install_auditAndMonitoring) {
+				portal = "sbiportal";
+			} else {
+				portal = "portal";
+			}
+			if (_install_examples) {
+				portal = "/spagobi/.*";
+				portletEditRole = "/spagobi/admin";
+			} else {
+				portal = ".*";
+				portletEditRole = "/admin";
+			}
+			if ("jonas".equalsIgnoreCase(_server_name)) {
+				serverPort = "9000";
+			} else {
+				serverPort = "8080";
+			}
+			props.setProperty("${PORTAL}", portal);
+			props.setProperty("${ROLES_FILTER}", rolesFilter);
+			props.setProperty("${SERVER_PORT}", serverPort);
+			props.setProperty("${PORTLET_EDIT_ROLE}", portletEditRole);
+			FileUtilities.replaceParametersInFile(spagobiSourceFile, spagobiDestFile, props, false);
+			
 			return true;
 		} catch (Exception e) {
 			return false;

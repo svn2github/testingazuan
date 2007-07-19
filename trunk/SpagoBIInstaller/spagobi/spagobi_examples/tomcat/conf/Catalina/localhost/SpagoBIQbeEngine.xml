@@ -1,5 +1,0 @@
-  <Context path="/SpagoBIQbeEngine" docBase="${catalina.home}/webapps/SpagoBIQbeEngine" debug="0" privileged="true">
-  	<Logger className="org.apache.catalina.logger.SystemOutLogger" verbosity="4"/>
-    <Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
-  	<ResourceLink name="jdbc/sbifoodmart" type="javax.sql.DataSource" global="jdbc/sbifoodmart"/>
-  </Context>

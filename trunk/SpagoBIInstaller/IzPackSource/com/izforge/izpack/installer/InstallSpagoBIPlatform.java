@@ -261,6 +261,8 @@ public class InstallSpagoBIPlatform {
 			FileUtilities.deleteFile(SPAGOBI_ZIP_FILE, _pathdest);
 			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext,
 					pathsource + fs + "spagobi.war");
+			FileUtilities.deleteFile("log4j-1.2.8.jar", _spagobi_deploy_dir + fs + 
+					"spagobi" + _ext + fs + "WEB-INF" + fs + "lib");
 			if ("jboss".equalsIgnoreCase(_server_name)) { 
 				FileUtilities.deleteFile("commons-logging-1.0.jar", _spagobi_deploy_dir + fs 
 						+ "spagobi.war" + fs + "WEB-INF" + fs + "lib");
@@ -272,18 +274,6 @@ public class InstallSpagoBIPlatform {
 			if ("jonas".equalsIgnoreCase(_server_name)) {
 				FileUtilities.deleteFile("commons-logging-1.0.jar", _spagobi_deploy_dir + fs + "spagobi.war" 
 						+ fs + "WEB-INF" + fs + "lib");
-				File oldHibCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs +
-						"classes" + fs + "hibernate.cfg.hsql.xml");
-				if (oldHibCfg.exists()) oldHibCfg.delete();
-				File newHibCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
-						"classes" + fs + "hibernate_jonas.cfg.hsql.xml");
-				newHibCfg.renameTo(oldHibCfg);
-				File oldJbpmCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
-						"classes" + fs + "jbpm.hibernate.cfg.jndi.xml");
-				if (oldJbpmCfg.exists()) oldJbpmCfg.delete();
-				File newJbpmCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
-						"classes" + fs + "jbpm.hibernate.cfg.jndi_jonas.xml");
-				newJbpmCfg.renameTo(oldJbpmCfg);
 			}
 		} catch (Exception exc) {
 			return false;
@@ -344,13 +334,6 @@ public class InstallSpagoBIPlatform {
 							"SpagoBIGeoEngine.war" + fs + "WEB-INF" + fs + "lib");
 					FileUtilities.deleteFile("xercesImpl.jar", _engines_deploy_dir + fs + 
 							"SpagoBIGeoEngine.war" + fs + "WEB-INF" + fs + "lib");
-//					// TODO this part must be moved on engine configuration
-//					File data_access = new File(_engines_deploy_dir + fs + 
-//							"SpagoBIGeoEngine.war" + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml");
-//					data_access.delete();
-//					File data_access_jonas = new File(_engines_deploy_dir + fs + 
-//							"SpagoBIGeoEngine.war" + fs + "WEB-INF" + fs + "conf" + fs + "data_access_jonas.xml");
-//					data_access_jonas.renameTo(data_access);
 				}
 			}
 			if (_install_jasper) {
@@ -378,15 +361,6 @@ public class InstallSpagoBIPlatform {
 				FileUtilities.deleteFile(QBE_ZIP_FILE, _pathdest);
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext,
 					pathsource + fs + "SpagoBIQbeEngine.war");
-				if ("jonas".equalsIgnoreCase(_server_name)) {
-//					// TODO this part must be moved on engine configuration
-//					File data_access = new File(_engines_deploy_dir + fs + "SpagoBIQbeEngine.war" + fs + 
-//							"WEB-INF" + fs + "conf" + fs + "data_access");
-//					if (data_access.exists()) data_access.delete();
-//					File data_access_jonas = new File(_engines_deploy_dir + fs + "SpagoBIQbeEngine.war" 
-//							+ fs + "WEB-INF" + fs + "conf" + fs + "data_access_jonas");
-//					data_access_jonas.renameTo(data_access);
-				}
 			}
 			if (_install_weka) {
 				FileUtilities.extractArchiveFile(_pathdest + fs + WEKA_ZIP_FILE, pathsource, "war");
@@ -480,27 +454,14 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 	
-//	private static boolean installContextFiles() {
-//		try {
-//			String pathdest = _pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost";
-//			String pathsource = _spagobi_plaftorm_source_dir + fs + "tomcat" + fs + "jndi";
-//			FileUtilities.copy(pathdest, pathsource + fs + "spagobi.xml");
-//			if (_install_birt) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIBirtReportEngine.xml");
-//			if (_install_geo) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIGeoEngine.xml");
-//			if (_install_jasper) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIJasperReportEngine.xml");
-//			if (_install_jpivot) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIJPivotEngine.xml");
-//			if (_install_qbe) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIQbeEngine.xml");
-//			if (_install_weka) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIWekaEngine.xml");
-//		} catch (Exception exc) {
-//			return false;
-//		}
-//		return true;
-//	}
-	
 	private static boolean installBatchFiles() {
 		try {
 			replaceStartCommandParameters();
 			replaceStopCommandParameters();
+			if (!_install_booklets) {
+				FileUtilities.deleteFile("OOStart.bat", _pathdest);
+				FileUtilities.deleteFile("OOStart.sh", _pathdest);
+			}
 		} catch (Exception exc) {
 			return false;
 		}
@@ -831,12 +792,26 @@ public class InstallSpagoBIPlatform {
 				/* manages spagobi_components.xml */
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "spagobi", 
 					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "spagobi" + fs + "spagobi_components.xml");
+				
 				/* manages initializers.xml */
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf", 
 						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "initializers.xml");
+				
 				/* manages jbpm.hibernate.cfg.hsql.xml */
-				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes", 
-						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "classes" + fs + "jbpm.hibernate.cfg.hsql.xml");
+				// deletes old jbpm.hibernate.cfg.hsql.xml file
+				FileUtilities.deleteFile("jbpm.hibernate.cfg.hsql.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes");
+				String jndiRef = null;
+				if ("jonas".equalsIgnoreCase(_server_name)) {
+					jndiRef = "jdbc/spagobi";
+				} else {
+					jndiRef = "java:comp/env/jdbc/spagobi";
+				}
+				props = new Properties();
+				String jbpmHibernateSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "jbpm.hibernate.cfg.hsql.xml";
+				String jbpmHibernateDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "jbpm.hibernate.cfg.hsql.xml";
+				props.setProperty("${JNDI_REF}", jndiRef);
+				FileUtilities.replaceParametersInFile(jbpmHibernateSourceFile, jbpmHibernateDestFile, props, false);
+				
 				/* manages booklets.xml */
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "components" + fs + "booklets", 
 						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "components" + fs + "booklets" + fs + "booklets.xml");
@@ -911,6 +886,38 @@ public class InstallSpagoBIPlatform {
 			props.setProperty("${SERVER_PORT}", serverPort);
 			props.setProperty("${PORTLET_EDIT_ROLE}", portletEditRole);
 			FileUtilities.replaceParametersInFile(spagobiSourceFile, spagobiDestFile, props, false);
+			
+			/* manages hibernate.cfg.hsql.xml */
+			// deletes old hibernate.cfg.hsql.xml file
+			FileUtilities.deleteFile("hibernate.cfg.hsql.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes");
+			String jndiRef = null;
+			if ("jonas".equalsIgnoreCase(_server_name)) {
+				jndiRef = "jdbc/spagobi";
+			} else {
+				jndiRef = "java:comp/env/jdbc/spagobi";
+			}
+			props = new Properties();
+			String hibernateSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "hibernate.cfg.hsql.xml";
+			String hibernateDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "hibernate.cfg.hsql.xml";
+			props.setProperty("${JNDI_REF}", jndiRef);
+			FileUtilities.replaceParametersInFile(hibernateSourceFile, hibernateDestFile, props, false);
+			
+			
+			/* manages hibernate.cfg.hsql.xml for jonas */
+			if ("jonas".equalsIgnoreCase(_server_name)) {
+				File oldHibCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs +
+						"classes" + fs + "hibernate.cfg.hsql.xml");
+				if (oldHibCfg.exists()) oldHibCfg.delete();
+				File newHibCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
+						"classes" + fs + "hibernate_jonas.cfg.hsql.xml");
+				newHibCfg.renameTo(oldHibCfg);
+				File oldJbpmCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
+						"classes" + fs + "jbpm.hibernate.cfg.jndi.xml");
+				if (oldJbpmCfg.exists()) oldJbpmCfg.delete();
+				File newJbpmCfg = new File(_spagobi_deploy_dir + fs + "spagobi.war" + fs + "WEB-INF" + fs + 
+						"classes" + fs + "jbpm.hibernate.cfg.jndi_jonas.xml");
+				newJbpmCfg.renameTo(oldJbpmCfg);
+			}
 			
 			return true;
 		} catch (Exception e) {

@@ -17,7 +17,7 @@
     <property name="hibernate.connection.username">postgres</property>
     <property name="hibernate.connection.password">postgres</property>
     -->
-    <property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
+    <property name="hibernate.connection.datasource">${JNDI_REF}</property>
         
     <!-- other hibernate properties 
     <property name="hibernate.show_sql">true</property>

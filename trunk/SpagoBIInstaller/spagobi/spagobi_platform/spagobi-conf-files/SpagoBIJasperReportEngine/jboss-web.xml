@@ -1,0 +1,13 @@
+<jboss-web>
+    <class-loading java2ClassLoadingCompliance="false">
+    <loader-repository>
+        dot.com:loader=SpagoBIJasperReportEngine
+        <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
+    </loader-repository>
+ </class-loading>
+    <resource-ref>
+        <res-ref-name>jdbc/${JNDI_NAME}</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <jndi-name>java:/${JNDI_NAME}</jndi-name>
+    </resource-ref>
+</jboss-web>

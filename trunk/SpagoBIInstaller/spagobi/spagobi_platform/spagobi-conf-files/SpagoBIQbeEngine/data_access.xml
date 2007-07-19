@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DATA-ACCESS>
+		<CONNECTION name="${CONN_NAME}" jndiResourceName="jdbc/${JNDI_NAME}" jndiContext="${JNDI_CONTEXT}" />
+</DATA-ACCESS>

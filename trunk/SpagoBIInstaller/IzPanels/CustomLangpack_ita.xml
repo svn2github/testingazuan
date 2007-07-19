@@ -25,6 +25,6 @@
 	<str id="SpagoBIPerlPathPanel.intro" txt="Per eseguire processi ETL scritti in linguaggio Perl, il motore SpagoBITalendEngine si appoggia ad un'installazione locale di un interprete Perl. Se disponi di un interprete di Perl sul tuo pc inserisci nel box sottostante la sua cartella principale. Altrimenti potrai eseguire solo processi scritti in linguaggio java, non in Perl; per procedere oltre clicca su 'Prossimo' e ignora il messaggio di avvertimento."/>    
     <str id="SpagoBIPerlPathPanel.info" txt="Seleziona la cartella di installazione dell'interprete Perl:"/>    
     <str id="SpagoBIPerlPathPanel.perl.dir.missing" txt="Non è stata selezionata alcuna cartella, i processi scritti in linguaggio Perl non potranno essere eseguiti. Continuare?"/>
-    <str id="SpagoBIPerlPathPanel.perl.dir.not.valid" txt="La cartella selezionata non sembra contenere un'installazione di un interprete Perl, i processi scritti in linguaggio Perl potrebbero non funzionare correttamente. Continuare?"/>
+    <str id="SpagoBIPerlPathPanel.perl.dir.not.valid" txt="La cartella selezionata non sembra contenere un'installazione di un interprete Perl. I processi scritti in linguaggio Perl potrebbero non funzionare correttamente. Continuare?"/>
     
 </langpack>

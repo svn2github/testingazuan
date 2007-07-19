@@ -6,15 +6,15 @@ import java.util.Properties;
 
 public class InstallSpagoBIPlatform {
 
-	private static String SPAGOBI_ZIP_FILE = "SpagoBI-bin-1.9.3-07062007.zip";
-	private static String BIRT_ZIP_FILE = "SpagoBIBirtReportEngine-bin-1.9.3-07062007.zip";
-	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.3-07062007.zip";
-	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.3-07062007.zip";
-	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.3-07062007.zip";
-	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.3-07062007.zip";
-	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.3-07062007.zip";
-	private static String TALEND_ZIP_FILE = "SpagoBITalendEngine-bin-1.9.3-07062007.zip";
-	private static String EXOPROFILEATTRMANAGER_ZIP_FILE = "ExoProfileAttributesManagerModule-bin-1.9.3-07062007.zip";
+	private static String SPAGOBI_ZIP_FILE = "SpagoBI-bin-1.9.3_07062007.zip";
+	private static String BIRT_ZIP_FILE = "SpagoBIBirtReportEngine-bin-1.9.3_07062007.zip";
+	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.3_07062007.zip";
+	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.3_07062007.zip";
+	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.3_07062007.zip";
+	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.3_07062007.zip";
+	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.3_07062007.zip";
+	private static String TALEND_ZIP_FILE = "SpagoBITalendEngine-bin-1.9.3_07062007.zip";
+	private static String EXOPROFILEATTRMANAGER_ZIP_FILE = "ExoProfileAttributesManagerModule-bin-1.9.3_07062007.zip";
 	private static String BOOKLETS_ZIP_FILE = "SpagoBIBookletsComponent-bin-1.9.3_07062007.zip";
 	
 	private static String _pathdest;
@@ -58,7 +58,7 @@ public class InstallSpagoBIPlatform {
 			 String install_geo, String install_jasper, String install_jpivot, String install_qbe, 
 			 String install_weka, String install_talend, String install_exoprofileattrmanager, 
 			 String install_booklets, String install_examples, String install_docs, String driver, 
-			 String connection_url, String username, String password, String perlBaseFolderPath) {
+			 String connection_url, String username, String password, String perlBaseFolderPath) throws Exception {
 		
 		// initializes variables
 		_pathdest 						= pathdest;
@@ -160,8 +160,13 @@ public class InstallSpagoBIPlatform {
 			if (!installBookletsComponent()) return;
 		}
 		
+		try {
 		if (!arrangeSpagoBIConfFiles()) return;
 		if (!arrangeEnginesConfFiles()) return;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 		
 		if (_install_docs) {
 			if (!arrangeDocs(_pathdest + fs + "spagobi-docs")) return;
@@ -720,14 +725,14 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 	
-	private static boolean arrangeSpagoBIConfFiles() {
+	private static boolean arrangeSpagoBIConfFiles() throws Exception {
 		try {
 			/* manages master.xml */
 			Properties props = new Properties();
 			String exoProfileManagerModuleConfFiles = "";
 			// deletes old master.xml file
 			FileUtilities.deleteFile("master.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
-			String masterSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + "WEB-INF" + fs + "conf" + fs + "master.xml";
+			String masterSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "master.xml";
 			String masterDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "master.xml";
 			if (_install_exoprofileattrmanager) {
 				exoProfileManagerModuleConfFiles =
@@ -823,12 +828,12 @@ public class InstallSpagoBIPlatform {
 			
 			arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("spagobi", false, jndiName);
 			
-			/* manages data-access.xml */
+			/* manages data_access.xml */
 			props = new Properties();
-			// deletes old data-access.xml file
-			FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
-			String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
-			String dataAccessDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
+			// deletes old data_access.xml file
+			FileUtilities.deleteFile("data_access.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
+			String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
+			String dataAccessDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
 			String connectionDescription = null;
 			if (_install_examples) {
 				connectionDescription = "Foodmart Data Warehouse on HSQL DB";
@@ -873,10 +878,10 @@ public class InstallSpagoBIPlatform {
 				portal = "portal";
 			}
 			if (_install_examples) {
-				portal = "/spagobi/.*";
+				rolesFilter = "/spagobi/.*";
 				portletEditRole = "/spagobi/admin";
 			} else {
-				portal = ".*";
+				rolesFilter = ".*";
 				portletEditRole = "/admin";
 			}
 			if ("jonas".equalsIgnoreCase(_server_name)) {
@@ -924,11 +929,13 @@ public class InstallSpagoBIPlatform {
 			
 			return true;
 		} catch (Exception e) {
-			return false;
+			e.printStackTrace();
+			throw e;
+			//return false;
 		}
 	}
 	
-	private static boolean arrangeEnginesConfFiles() {
+	private static boolean arrangeEnginesConfFiles() throws Exception {
 		try {
 			/* SpagoBIBirtReportEngine */
 			if (_install_birt) {
@@ -951,10 +958,10 @@ public class InstallSpagoBIPlatform {
 					jndiRef += "jdbc/dwh";
 				}
 				Properties props = new Properties();
-				// deletes old data-access.xml file
-				FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf");
-				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIGeoEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
-				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
+				// deletes old data_access.xml file
+				FileUtilities.deleteFile("data_access.xml", _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf");
+				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIGeoEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
+				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
 				props.setProperty("${JNDI_REF}", jndiRef);
 				FileUtilities.replaceParametersInFile(dataAccessSourceFile, dataAccessDestFile, props, false);
 			}
@@ -1000,12 +1007,12 @@ public class InstallSpagoBIPlatform {
 					connectionName = "defaultDwh";
 				}
 				Properties props = new Properties();
-				// deletes old data-access.xml file
-				FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
+				// deletes old data_access.xml file
+				FileUtilities.deleteFile("data_access.xml", _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
 				// deletes data_access_jonas.xml file
 				FileUtilities.deleteFile("data_access_jonas.xml", _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
-				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIQbeEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
-				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
+				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIQbeEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
+				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
 				props.setProperty("${CONN_NAME}", connectionName);
 				props.setProperty("${JNDI_CONTEXT}", jndiContext);
 				props.setProperty("${JNDI_NAME}", jndiName);
@@ -1042,7 +1049,9 @@ public class InstallSpagoBIPlatform {
 			
 			return true;
 		} catch (Exception e) {
-			return false;
+			e.printStackTrace();
+			throw e;
+			//return false;
 		}
 	}
 	

@@ -40,6 +40,7 @@ public class InstallSpagoBIPlatform {
 	private static boolean _install_exoprofileattrmanager;
 	private static boolean _install_booklets;
 	private static boolean _install_examples;
+	private static boolean _install_auditAndMonitoring;
 	private static boolean _install_docs;
 	private static String _connection_url;
 	private static String _driver;
@@ -108,6 +109,14 @@ public class InstallSpagoBIPlatform {
 		_ext = ".war";
 		if ("tomcat".equalsIgnoreCase(_server_name)) _ext = "";
 		
+		if (_install_examples) {
+			jndiName = "sbifoodmart";
+			spagobigeoJndiName = "spagobigeo";
+		} else {
+			jndiName = "dwh";
+			spagobigeoJndiName = "dwh";
+		}
+		
 		// install spagobi platform
 		if (!installCommonLibs()) return;
 		if (!installDrivers()) return;
@@ -118,7 +127,7 @@ public class InstallSpagoBIPlatform {
 		// configure jndi resources only for a clean installation;
 		// if the user selected installation with examples, all jndi files are copied from spagobi_examples folder
 		if (!_install_examples) {
-			if (!installJndiConfiguration()) return;
+			if (!installJndiDwhConfiguration()) return;
 		}
 		if ("jboss".equalsIgnoreCase(_server_name)) {
 			installJBossApplicationXml();
@@ -127,14 +136,6 @@ public class InstallSpagoBIPlatform {
 			installJOnASApplicationXml();
 		}
 		if (!installBatchFiles()) return;
-		
-		if (_install_examples) {
-			jndiName = "sbifoodmart";
-			spagobigeoJndiName = "spagobigeo";
-		} else {
-			jndiName = "dwh";
-			spagobigeoJndiName = "dwh";
-		}
 		
 		// install examples if required
 		if (_install_examples) {
@@ -225,14 +226,12 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 
-	private static boolean installJndiConfiguration() {
+	private static boolean installJndiDwhConfiguration() {
 		try {
 			if ("tomcat".equalsIgnoreCase(_server_name)) {
 				installTomcatServerXml();
-				installContextFiles();
 			} else if ("jboss".equalsIgnoreCase(_server_name)) {
 				installJBossDSFile();
-				//installJBossXmdescPatch();
 			} else if ("jonas".equalsIgnoreCase(_server_name)) {
 				installJOnASJndiConfiguration();
 			}
@@ -380,13 +379,13 @@ public class InstallSpagoBIPlatform {
 				FileUtilities.explode(_engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext,
 					pathsource + fs + "SpagoBIQbeEngine.war");
 				if ("jonas".equalsIgnoreCase(_server_name)) {
-					// TODO this part must be moved on engine configuration
-					File data_access = new File(_engines_deploy_dir + fs + "SpagoBIQbeEngine.war" + fs + 
-							"WEB-INF" + fs + "conf" + fs + "data_access");
-					if (data_access.exists()) data_access.delete();
-					File data_access_jonas = new File(_engines_deploy_dir + fs + "SpagoBIQbeEngine.war" 
-							+ fs + "WEB-INF" + fs + "conf" + fs + "data_access_jonas");
-					data_access_jonas.renameTo(data_access);
+//					// TODO this part must be moved on engine configuration
+//					File data_access = new File(_engines_deploy_dir + fs + "SpagoBIQbeEngine.war" + fs + 
+//							"WEB-INF" + fs + "conf" + fs + "data_access");
+//					if (data_access.exists()) data_access.delete();
+//					File data_access_jonas = new File(_engines_deploy_dir + fs + "SpagoBIQbeEngine.war" 
+//							+ fs + "WEB-INF" + fs + "conf" + fs + "data_access_jonas");
+//					data_access_jonas.renameTo(data_access);
 				}
 			}
 			if (_install_weka) {
@@ -417,12 +416,6 @@ public class InstallSpagoBIPlatform {
 					FileUtilities.deleteFile("log4j-1.2.8.jar", _engines_deploy_dir + fs + 
 							"SpagoBITalendEngine.war" + fs + "WEB-INF" + fs + "lib");
 				}
-				String spagobiTalendEngineHome = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext;
-				spagobiTalendEngineHome = spagobiTalendEngineHome.replace('\\', '/');
-				String talendPropertiesFile = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
-				Properties props = new Properties();
-				props.setProperty("${SPAGOBI_TALEND_ENGINE_HOME}", spagobiTalendEngineHome);
-				FileUtilities.replaceParametersInFile(talendPropertiesFile, talendPropertiesFile, props, true);
 			}
 		} catch (Exception exc) {
 			return false;
@@ -487,22 +480,22 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 	
-	private static boolean installContextFiles() {
-		try {
-			String pathdest = _pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost";
-			String pathsource = _spagobi_plaftorm_source_dir + fs + "tomcat" + fs + "jndi";
-			FileUtilities.copy(pathdest, pathsource + fs + "spagobi.xml");
-			if (_install_birt) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIBirtReportEngine.xml");
-			if (_install_geo) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIGeoEngine.xml");
-			if (_install_jasper) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIJasperReportEngine.xml");
-			if (_install_jpivot) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIJPivotEngine.xml");
-			if (_install_qbe) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIQbeEngine.xml");
-			if (_install_weka) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIWekaEngine.xml");
-		} catch (Exception exc) {
-			return false;
-		}
-		return true;
-	}
+//	private static boolean installContextFiles() {
+//		try {
+//			String pathdest = _pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost";
+//			String pathsource = _spagobi_plaftorm_source_dir + fs + "tomcat" + fs + "jndi";
+//			FileUtilities.copy(pathdest, pathsource + fs + "spagobi.xml");
+//			if (_install_birt) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIBirtReportEngine.xml");
+//			if (_install_geo) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIGeoEngine.xml");
+//			if (_install_jasper) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIJasperReportEngine.xml");
+//			if (_install_jpivot) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIJPivotEngine.xml");
+//			if (_install_qbe) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIQbeEngine.xml");
+//			if (_install_weka) FileUtilities.copy(pathdest, pathsource + fs + "SpagoBIWekaEngine.xml");
+//		} catch (Exception exc) {
+//			return false;
+//		}
+//		return true;
+//	}
 	
 	private static boolean installBatchFiles() {
 		try {
@@ -853,10 +846,36 @@ public class InstallSpagoBIPlatform {
 			arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("spagobi", false, jndiName);
 			
 			/* manages data-access.xml */
-			arrangeDataAccessFile("spagobi", "${JNDI_NAME}", jndiName);
+			props = new Properties();
+			// deletes old data-access.xml file
+			FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
+			String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "data-access.xml";
+			String dataAccessDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
+			String connectionDescription = null;
+			if (_install_examples) {
+				connectionDescription = "Foodmart Data Warehouse on HSQL DB";
+			} else {
+				connectionDescription = "Data Warehouse";
+			}
+			String spagobiConnectionRef = null;
+			if (_install_auditAndMonitoring) {
+				spagobiConnectionRef = "<REGISTER-POOL registeredPoolName=\"spagobi\"/>";
+			} else {
+				spagobiConnectionRef = "<!--REGISTER-POOL registeredPoolName=\"spagobi\"/-->";
+			}
+			props.setProperty("${CONN_DESCR}", connectionDescription);
+			props.setProperty("${SPAGOBI_CONN_REF}", spagobiConnectionRef);
+			props.setProperty("${JNDI_NAME}", jndiName);
+			FileUtilities.replaceParametersInFile(dataAccessSourceFile, dataAccessDestFile, props, false);
 			
 			/* manages cms.xml */
-			// TODO cambiare il cms.xml a cms_jndi.xml, cancellare il cms_jboss_jonas.xml e poi copiare il file
+			File cms = new File(_spagobi_deploy_dir + fs + 
+					"spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "cms.xml");
+			File cmsjndi = new File(_spagobi_deploy_dir + fs + 
+					"spagobi" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "cms-jndi.xml");
+			cms.renameTo(cmsjndi);
+			FileUtilities.deleteFile("cms-jboss-jonas.xml", _spagobi_deploy_dir + fs + 
+					"spagobi" + _ext + fs + "WEB-INF" + fs + "conf");
 			FileUtilities.copy(_spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "conf", 
 					_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "cms.xml");
 			
@@ -888,7 +907,13 @@ public class InstallSpagoBIPlatform {
 				} else {
 					jndiRef += "jdbc/dwh";
 				}
-				arrangeDataAccessFile("SpagoBIGeoEngine", "${JNDI_REF}", jndiRef);
+				Properties props = new Properties();
+				// deletes old data-access.xml file
+				FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf");
+				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIGeoEngine" + fs + "data-access.xml";
+				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
+				props.setProperty("${JNDI_REF}", jndiRef);
+				FileUtilities.replaceParametersInFile(dataAccessSourceFile, dataAccessDestFile, props, false);
 			}
 			
 			/* SpagoBIJasperReportEngine */
@@ -950,6 +975,14 @@ public class InstallSpagoBIPlatform {
 				arrangeEngineConfigFile("SpagoBIWekaEngine");
 			}
 			
+			/* SpagoBITalendEngine */
+			String spagobiTalendEngineHome = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext;
+			spagobiTalendEngineHome = spagobiTalendEngineHome.replace('\\', '/');
+			String talendPropertiesFile = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
+			Properties props = new Properties();
+			props.setProperty("${SPAGOBI_TALEND_ENGINE_HOME}", spagobiTalendEngineHome);
+			FileUtilities.replaceParametersInFile(talendPropertiesFile, talendPropertiesFile, props, true);
+			
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -999,13 +1032,4 @@ public class InstallSpagoBIPlatform {
 		FileUtilities.replaceParametersInFile(engineConfigSourceFile, engineConfigDestFile, props, false);
 	}
 	
-	private static void arrangeDataAccessFile(String webappName, String placeHolder, String resourceName) throws Exception {
-		Properties props = new Properties();
-		// deletes old data-access.xml file
-		FileUtilities.deleteFile("data-access.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "conf");
-		String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "data-access.xml";
-		String dataAccessDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data-access.xml";
-		props.setProperty(placeHolder, resourceName);
-		FileUtilities.replaceParametersInFile(dataAccessSourceFile, dataAccessDestFile, props, false);
-	}
 }

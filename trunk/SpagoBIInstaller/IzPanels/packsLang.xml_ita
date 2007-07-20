@@ -15,8 +15,8 @@
 	<str id="SpagoBIBookletsComponent-1.9.3.description" txt="SpagoBIBookletsComponent: modulo per la creazione di fascicoli (richiede Open Office). Questo pacchetto verrà automaticamente scaricato da un repository remoto oppure copiato da un repository locale, se disponibile."/>
 	<str id="SpagoBI_examples" txt="Documenti di esempio di SpagoBI Demo"/>
 	<str id="SpagoBI_examples.description" txt="Documenti di esempio di SpagoBI Demo, incluso il portale di esempio 'sbiportal' contenente gruppi e utenti preconfigurati. AVVERTENZA: gli esempi di SpagoBI Demo contengono documenti per tutti i motori supportati dalla piattaforma (vedi lista sopra). Se alcuni motori vengono esculsi dall'istallazione, i relativi esempi non funzioneranno!!"/>
-	<str id="SpagoBI_A&M" txt="Documenti di Auditing e Monitoring per la piattaforma SpagoBI"/>
-	<str id="SpagoBI_A&M.description" txt="Documenti di Auditing e Monitoring per la piattaforma SpagoBI, cioè documenti predefiniti di amministrazione che analizzano dati relativi alle esecuzioni dei documenti analitici; è incluso anche il portale di esempio 'sbiportal' nel quale è stato definito il solo utente 'biadmin/biadmin' con pagine dedicate a tali documenti di amministrazione."/>
+	<str id="SpagoBI_AM" txt="Documenti di Auditing e Monitoring per la piattaforma SpagoBI"/>
+	<str id="SpagoBI_AM.description" txt="Documenti di Auditing e Monitoring per la piattaforma SpagoBI, cioè documenti predefiniti di amministrazione che analizzano dati relativi alle esecuzioni dei documenti analitici; è incluso anche il portale di esempio 'sbiportal' nel quale è stato definito il solo utente 'biadmin/biadmin' con pagine dedicate a tali documenti di amministrazione."/>
 	<str id="Documentation" txt="Documentazione"/>
 	<str id="Documentation.description" txt="Documentazione di SpagoBI (Quickstart, How To e Manuale di Installazione)"/>
 </langpack>

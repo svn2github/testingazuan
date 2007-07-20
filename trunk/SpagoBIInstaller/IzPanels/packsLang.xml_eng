@@ -15,6 +15,8 @@
 	<str id="SpagoBIBookletsComponent-1.9.3.description" txt="SpagoBIBookletsComponent: module for booklets creation (Open Office is required). This pack will be automatically downloaded from a remote repository or it will be copied from a local repository, if available."/>
 	<str id="SpagoBI_examples" txt="SpagoBI Demo example documents"/>
 	<str id="SpagoBI_examples.description" txt="SpagoBI Demo example documents, including the example portal 'sbiportal' with preconfigured groups and users. WARNING: SpagoBI Demo examples contains documents for all SpagoBI supported engines (see the list above). If you exclude some engines from the installation procedure, the relevant examples will not work!!"/>
+	<str id="SpagoBI_A&M" txt="SpagoBI platform Auditing and Monitoring documents"/>
+	<str id="SpagoBI_A&M.description" txt="SpagoBI Auditing and Monitoring documents, i.e. predefined administration documents that analyse analytical documents execution performance and statistics; the example portal 'sbiportal' is included, with a preconfigured 'biadmin/biadmin' user having those administration documents on his pages."/>
 	<str id="Documentation" txt="Documentation"/>
 	<str id="Documentation.description" txt="SpagoBI documentation (Quickstart, How To and Installation Manual)"/>
 </langpack>

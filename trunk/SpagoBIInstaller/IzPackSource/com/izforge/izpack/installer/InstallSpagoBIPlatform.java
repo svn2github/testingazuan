@@ -57,8 +57,9 @@ public class InstallSpagoBIPlatform {
 	public static void installSpagoBIPlatorm (String pathdest, String server_name, String install_birt,
 			 String install_geo, String install_jasper, String install_jpivot, String install_qbe, 
 			 String install_weka, String install_talend, String install_exoprofileattrmanager, 
-			 String install_booklets, String install_examples, String install_docs, String driver, 
-			 String connection_url, String username, String password, String perlBaseFolderPath) throws Exception {
+			 String install_booklets, String install_examples, String install_auditingAndMonitoring, 
+			 String install_docs, String driver, String connection_url, String username, 
+			 String password, String perlBaseFolderPath) throws Exception {
 		
 		// initializes variables
 		_pathdest 						= pathdest;
@@ -75,6 +76,7 @@ public class InstallSpagoBIPlatform {
 		_install_exoprofileattrmanager 	= install_exoprofileattrmanager.equalsIgnoreCase("yes");
 		_install_booklets				= install_booklets.equalsIgnoreCase("yes");
 		_install_examples 				= install_examples.equalsIgnoreCase("yes");
+		_install_auditAndMonitoring		= install_auditingAndMonitoring.equalsIgnoreCase("yes");
 		_install_docs 					= install_docs.equalsIgnoreCase("yes");
 		
 		_driver 						= driver;

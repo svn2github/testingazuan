@@ -329,6 +329,7 @@ public class SpagoBIUnpacker implements IUnpacker
             		idata.setVariable("SPAGOBI_EXAMPLES", "yes");
             		idata.setVariable("PORTAL", "sbiportal");
             	}
+            	else if (packnameUC.indexOf("SPAGOBI_A&M") != -1) idata.setVariable("SPAGOBI_A&M", "yes");
             	else if (packnameUC.indexOf("DOCUMENTATION") != -1) idata.setVariable("DOCUMENTATION", "yes");
             	
             	String remoteFile = pack.remoteFile;
@@ -743,6 +744,7 @@ public class SpagoBIUnpacker implements IUnpacker
             String install_exoprofileattrmanager = idata.getVariable("EXOPROFILEATTRMANAGER");
             String install_booklets = idata.getVariable("BOOKLETS");
             String install_examples = idata.getVariable("SPAGOBI_EXAMPLES");
+            String install_auditingAndMonitoring = idata.getVariable("SPAGOBI_A&M");
             String install_docs = idata.getVariable("DOCUMENTATION");
             String driver = idata.getVariable("DRIVER");
             String connection_url = idata.getVariable("CONNECTION_URL");
@@ -768,7 +770,8 @@ public class SpagoBIUnpacker implements IUnpacker
     		thread.start();
             InstallSpagoBIPlatform.installSpagoBIPlatorm(pathdest, server_name, install_birt, 
             		install_geo, install_jasper, install_jpivot, install_qbe, install_weka, install_talend,
-            		install_exoprofileattrmanager, install_booklets, install_examples, install_docs, driver, connection_url, username, password, perlBaseFolderPath);
+            		install_exoprofileattrmanager, install_booklets, install_examples, install_auditingAndMonitoring, 
+            		install_docs, driver, connection_url, username, password, perlBaseFolderPath);
             dialog.setVisible(false);
             
             // The end :-)

@@ -478,7 +478,7 @@ public class BirtReportServlet extends HttpServlet {
 	protected void runReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		ServletContext servletContext = getServletContext();
-		this.birtReportEngine = BirtEngine.getBirtEngine(servletContext);
+		this.birtReportEngine = BirtEngine.getBirtEngine(request, servletContext);
 		IReportRunnable design = null;
 		InputStream is = getTemplateContent(request);
 		logger.debug(this.getClass().getName() + "runReport(): template document retrieved.");

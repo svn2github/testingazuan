@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.eclipse.birt.core.exception.BirtException;
@@ -41,7 +42,7 @@ public class BirtEngine {
 		loadEngineProps();
 	}
 
-	public static synchronized IReportEngine getBirtEngine(ServletContext sc) {
+	public static synchronized IReportEngine getBirtEngine(HttpServletRequest request, ServletContext sc) {
 		if (birtEngine == null) {
 			EngineConfig config = new EngineConfig();
 			if (configProps != null && !configProps.isEmpty()) {
@@ -74,7 +75,10 @@ public class BirtEngine {
 			config.setEngineHome("");
 			IPlatformContext context = new PlatformServletContext(sc);
 			config.setPlatformContext(context);
-
+			
+			ParameterAccessor.initParameters(sc);
+			config.setResourcePath(ParameterAccessor.getResourceFolder(request));
+			
 			// Prepare ScriptLib location
 			String scriptLibDir = ParameterAccessor.scriptLibDir;
 			ArrayList jarFileList = new ArrayList();

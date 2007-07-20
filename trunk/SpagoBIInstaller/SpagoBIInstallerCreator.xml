@@ -23,7 +23,7 @@
 		<variable name="EXOPROFILEATTRMANAGER" value="no"/>
 		<variable name="BOOKLETS" value="no"/>
 		<variable name="SPAGOBI_EXAMPLES" value="no"/>
-		<variable name="SPAGOBI_A&M" value="no"/>
+		<variable name="SPAGOBI_AM" value="no"/>
 		<variable name="DOCUMENTATION" value="no"/>
 		<variable name="DRIVER" value=""/>
 		<variable name="CONNECTION_URL" value=""/>
@@ -154,10 +154,10 @@
       			<include name="spagobi/spagobi_examples/**/*" />
 		    </fileset>
 	    </pack>
-    	<pack name="SpagoBI_A&M" required="no" preselected="yes" id="SpagoBI_A&M">
+    	<pack name="SpagoBI_AM" required="no" preselected="yes" id="SpagoBI_AM">
 	    	<description/>
 	    	<fileset dir="" targetdir="$INSTALL_PATH">
-      			<include name="spagobi/spagobi_A&M/**/*" />
+      			<include name="spagobi/spagobi_AM/**/*" />
 		    </fileset>
 	    </pack>
 		<pack name="Documentation" required="no" preselected="yes" id="Documentation">

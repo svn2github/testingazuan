@@ -20,6 +20,7 @@ public class InstallSpagoBIPlatform {
 	private static String _pathdest;
 	private static String _spagobi_plaftorm_source_dir;
 	private static String _spagobi_examples_source_dir;
+	private static String _spagobi_AM_source_dir;
 	private static String _server_name;
 	private static String _spagobi_deploy_dir;
 	private static String _engines_deploy_dir;
@@ -65,6 +66,7 @@ public class InstallSpagoBIPlatform {
 		_pathdest 						= pathdest;
 		_spagobi_plaftorm_source_dir 	= _pathdest + fs + "spagobi" + fs + "spagobi_platform";
 		_spagobi_examples_source_dir 	= _pathdest + fs + "spagobi" + fs + "spagobi_examples";
+		_spagobi_AM_source_dir			= _pathdest + fs + "spagobi" + fs + "spagobi_AM";
 		_server_name 					= server_name;
 		_install_birt 					= install_birt.equalsIgnoreCase("yes");
 		_install_geo 					= install_geo.equalsIgnoreCase("yes");
@@ -88,8 +90,8 @@ public class InstallSpagoBIPlatform {
 		
 		_perlBaseFolderPath 			= perlBaseFolderPath != null ? perlBaseFolderPath : "";
 		
-		_spagobi_metadata_db_dir = _pathdest + fs + "sbidata" + fs + "database";
-		_exo_metadata_db_dir = _pathdest + fs + "temp" + fs + "data";
+		_spagobi_metadata_db_dir 		= _pathdest + fs + "sbidata" + fs + "database";
+		_exo_metadata_db_dir 			= _pathdest + fs + "temp" + fs + "data";
 		
 		if ("tomcat".equalsIgnoreCase(_server_name)) {
 			_spagobi_deploy_dir = _pathdest + fs + "webapps";
@@ -128,7 +130,7 @@ public class InstallSpagoBIPlatform {
 		if (!installPatchHsqldb()) return;
 		if (!installSpagoBIWar()) return;
 		if (!installEngines()) return;
-		if (!installSpagoBIMetadataDb()) return;
+		
 		// configure jndi resources only for a clean installation;
 		// if the user selected installation with examples, all jndi files are copied from spagobi_examples folder
 		if (!_install_examples) {
@@ -145,10 +147,12 @@ public class InstallSpagoBIPlatform {
 		// install examples if required
 		if (_install_examples) {
 			if (!installSpagoBIExamplesDwh()) return;
-			if (!installSpagoBICms()) return;
 			if (!overwriteExistingFiles()) return;
-			if (!installSbiportalDb()) return;
 		}
+		
+		if (!installSpagoBICms()) return;
+		if (!installSbiportalDb()) return;
+		if (!installSpagoBIMetadataDb()) return;
 		
 		if (_install_exoprofileattrmanager) {
 			// the following method simply copies required file into spagobi; 
@@ -409,15 +413,26 @@ public class InstallSpagoBIPlatform {
 	
 	private static boolean installSpagoBIMetadataDb() {
 		try {
-			String pathsource = _spagobi_plaftorm_source_dir + fs + "spagobiMetadataDb";
-			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "spagobi.properties");
-			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "spagobi.script");
-			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "start.bat");
-			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "start.sh");
-			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "testSpagobiHsqldbAlive.jar");
-			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "server.properties");
+			FileUtilities.copyDirectory(_spagobi_metadata_db_dir, 
+					_spagobi_plaftorm_source_dir + fs + "spagobiMetadataDb", true);
 			String hsqldb_lib_pathsource = _spagobi_plaftorm_source_dir + fs + "hsqlPatch";
 			FileUtilities.copy(_spagobi_metadata_db_dir, hsqldb_lib_pathsource	+ fs + "hsqldb1_8_0_2.jar");
+			if (_install_examples && _install_auditAndMonitoring) {
+				FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_examples_source_dir + fs + "spagobiMetadataDb" + "spagobiWithAM.script");
+			} else if (_install_examples && !_install_auditAndMonitoring) {
+				FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_examples_source_dir + fs + "spagobiMetadataDb" + "spagobi.script");
+			} else if (!_install_examples && _install_auditAndMonitoring) {
+				FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_AM_source_dir + fs + "spagobiMetadataDb" + "spagobi.script");
+			}
+			
+			// TODO non dovrebbe servire più
+//			String pathsource = _spagobi_plaftorm_source_dir + fs + "spagobiMetadataDb";
+//			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "spagobi.properties");
+//			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "spagobi.script");
+//			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "start.bat");
+//			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "start.sh");
+//			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "testSpagobiHsqldbAlive.jar");
+//			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "server.properties");
 		} catch (Exception exc) {
 			return false;
 		}
@@ -494,8 +509,22 @@ public class InstallSpagoBIPlatform {
 	
 	private static boolean installSpagoBICms() {
 		try {
-			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
-					_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
+			if (_install_examples && _install_auditAndMonitoring) {
+				FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+						_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFSWithAM.zip");
+			} else if (_install_examples && !_install_auditAndMonitoring) {
+				FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+						_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
+			} else if (!_install_examples && _install_auditAndMonitoring) {
+				FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+						_spagobi_AM_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
+			} else if (!_install_examples && !_install_auditAndMonitoring) {
+				/* puts an empty repository */
+				if (!_install_examples && !_install_auditAndMonitoring) {
+					FileUtilities.copyDirectory(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+							_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "jcrRepositoryFS", true);
+				}
+			}
 		} catch (Exception exc) {
 			return false;
 		}
@@ -505,21 +534,22 @@ public class InstallSpagoBIPlatform {
 	private static boolean overwriteExistingFiles() {
 		try {
 			FileUtilities.copyDirectory(_pathdest, _spagobi_examples_source_dir + fs + _server_name, false);
-			if ("tomcat".equalsIgnoreCase(_server_name)) {
-				// if engines are not installed, deletes their context files
-				if (!_install_birt) FileUtilities.deleteFile("SpagoBIBirtReportEngine.xml", 
-						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
-				if (!_install_geo) FileUtilities.deleteFile("SpagoBIGeoEngine.xml", 
-						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
-				if (!_install_jasper) FileUtilities.deleteFile("SpagoBIJasperReportEngine.xml", 
-						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
-				if (!_install_jpivot) FileUtilities.deleteFile("SpagoBIJPivotEngine.xml", 
-						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
-				if (!_install_qbe) FileUtilities.deleteFile("SpagoBIQbeEngine.xml", 
-						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
-				if (!_install_weka) FileUtilities.deleteFile("SpagoBIWekaEngine.xml", 
-						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
-			}
+			// TODO controllare che il codice qui sotto non serve più
+//			if ("tomcat".equalsIgnoreCase(_server_name)) {
+//				// if engines are not installed, deletes their context files
+//				if (!_install_birt) FileUtilities.deleteFile("SpagoBIBirtReportEngine.xml", 
+//						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
+//				if (!_install_geo) FileUtilities.deleteFile("SpagoBIGeoEngine.xml", 
+//						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
+//				if (!_install_jasper) FileUtilities.deleteFile("SpagoBIJasperReportEngine.xml", 
+//						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
+//				if (!_install_jpivot) FileUtilities.deleteFile("SpagoBIJPivotEngine.xml", 
+//						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
+//				if (!_install_qbe) FileUtilities.deleteFile("SpagoBIQbeEngine.xml", 
+//						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
+//				if (!_install_weka) FileUtilities.deleteFile("SpagoBIWekaEngine.xml", 
+//						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
+//			}
 		} catch (Exception exc) {
 			return false;
 		}
@@ -528,8 +558,18 @@ public class InstallSpagoBIPlatform {
 	
 	private static boolean installSbiportalDb() {
 		try {
-			FileUtilities.copyDirectory(_exo_metadata_db_dir, 
-					_spagobi_examples_source_dir + fs + "sbiportalDB", true);
+			if (_install_examples && _install_auditAndMonitoring) {
+				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportal.properties");
+				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportalWithAM.script");
+			} else if (_install_examples && !_install_auditAndMonitoring) {
+				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportal.properties");
+				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportal.script");
+			} else if (!_install_examples && _install_auditAndMonitoring) {
+				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDb" + fs + "sbiportal.properties");
+				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDb" + fs + "sbiportal.script");
+			} else if (!_install_examples && !_install_auditAndMonitoring) {
+				/* does nothing */
+			}
 		} catch (Exception exc) {
 			return false;
 		}

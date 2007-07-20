@@ -28,6 +28,10 @@ public class FileUtilities {
 		unzip(war, destDir);
 	}
 	
+	/**
+	 * Copies a file into a destination directory. If the file exists in the destination directory,
+	 * it is deleted before copying the new file.
+	 */
 	public static void copy(String destdir, String pathfile) throws Exception {
  		File file = new File(pathfile);
  		File destDir = new File(destdir);

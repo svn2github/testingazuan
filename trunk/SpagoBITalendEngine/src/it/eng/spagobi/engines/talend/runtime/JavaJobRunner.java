@@ -134,7 +134,7 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    	
 	
 	    	
-	    	String classpath = "." + File.separatorChar + tmpDirName + ";" + getClassPath(job);
+	    	String classpath = "." + File.separatorChar + tmpDirName + File.pathSeparator + getClassPath(job);
 	    	String cmd = "java -Xms256M -Xmx1024M -cp " + classpath  + " " + TalendScriptAccessUtils.getExecutableClass(job);
 	        
 	    	cmd = cmd + " --context=" + job.getContext();
@@ -161,10 +161,10 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
     	List libs = TalendScriptAccessUtils.getIncludedLibs(job, runtimeRepository);
     	for(int i = 0; i < libs.size(); i++){
     		File file = (File)libs.get(i);    		
-    		classpath.append( (i>0? ";": "") + "../lib/" + file.getName());
+    		classpath.append( (i>0? File.pathSeparator : "") + "../lib/" + file.getName());
     	}
     	
-    	classpath.append( (libs.size()>0? ";": "") + TalendScriptAccessUtils.getExecutableFileName(job));
+    	classpath.append( (libs.size()>0? File.pathSeparator : "") + TalendScriptAccessUtils.getExecutableFileName(job));
     	
     	logger.debug(classpath);
     	//System.out.println(classpath);

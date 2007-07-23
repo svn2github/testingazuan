@@ -7,5 +7,6 @@
 		<res-ref-name>jdbc/${JNDI_NAME}</res-ref-name>
 		<jndi-name>jdbc/${JNDI_NAME}</jndi-name>
 	</jonas-resource>
+	${SPAGOBI_CONN_REF}
 	<java2-delegation-model>false</java2-delegation-model>
 </jonas-web-app> 

@@ -2,4 +2,5 @@
   	<Logger className="org.apache.catalina.logger.SystemOutLogger" verbosity="4"/>
     <Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
   	<ResourceLink name="jdbc/${JNDI_NAME}" type="javax.sql.DataSource" global="jdbc/${JNDI_NAME}"/>
+  	${SPAGOBI_CONN_REF}
   </Context>

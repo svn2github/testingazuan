@@ -10,4 +10,5 @@
         <res-type>javax.sql.DataSource</res-type>
         <jndi-name>java:/${JNDI_NAME}</jndi-name>
     </resource-ref>
+    ${SPAGOBI_CONN_REF}
 </jboss-web>

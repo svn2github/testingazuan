@@ -221,4 +221,6 @@ You must accept the terms of that agreement to use this software.
     <res-auth>Container</res-auth>
   </resource-ref>
 
+	${SPAGOBI_CONN_REF}
+
 </web-app>

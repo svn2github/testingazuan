@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 public class FileUtilities {
 
@@ -315,4 +316,47 @@ public class FileUtilities {
 		fos.close();
 	}
 	
+	private static void zipFolder(String pathFolder, String pathBaseFolder, ZipOutputStream zip) throws Exception {
+		File folder = new File(pathFolder);
+		String[] entries = folder.list();
+		byte[] buffer = new byte[4096];   
+		int bytes_read;
+		FileInputStream in = null;
+		for (int i = 0; i < entries.length; i++) {
+			File f = new File(folder, entries[i]);
+			if(f.isDirectory()) {
+				zipFolder(pathFolder + "/" + f.getName(), pathBaseFolder, zip);
+			} else {
+				in = new FileInputStream(f); 
+				String completeFileName = pathFolder + File.separatorChar + f.getName();
+				String elementName = f.getName();
+				if (completeFileName.lastIndexOf(pathBaseFolder)!=-1) {
+					int index = completeFileName.lastIndexOf(pathBaseFolder);
+					int len = pathBaseFolder.length();
+					elementName = completeFileName.substring(index + len + 1);
+				}
+				ZipEntry entry = new ZipEntry( elementName );
+				entry.setTime( f.lastModified() );
+				int fileLength = (int)f.length();
+				FileInputStream fis = new FileInputStream ( f );
+				byte[] wholeFile = new byte [fileLength];
+				int bytesRead = fis.read( wholeFile , 0 /* offset */ , fileLength );
+				fis.close();
+
+				zip.putNextEntry( entry );
+
+				zip.write( wholeFile , 0, fileLength );
+				zip.closeEntry();
+			}
+		}
+	}
+	
+	public static void zipFolder(String pathFolder, String destFilePath) throws Exception {
+		FileOutputStream fos = new FileOutputStream(destFilePath);
+		ZipOutputStream zip = new ZipOutputStream (fos);
+		zip.setLevel(9);
+		zip.setMethod(ZipOutputStream.DEFLATED);
+		zipFolder(pathFolder, pathFolder, zip);
+		zip.close();
+	}
 }

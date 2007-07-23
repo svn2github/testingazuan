@@ -11,7 +11,7 @@ public class InstallSpagoBIPlatform {
 	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.3_07062007.zip";
 	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.3_07062007.zip";
 	private static String JPIVOT_ZIP_FILE = "SpagoBIJPivotEngine-bin-1.9.3_07062007.zip";
-	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.3_07062007.zip";
+	private static String QBE_ZIP_FILE = "SpagoBIQbeEngine-bin-1.9.3_07182007.zip";
 	private static String WEKA_ZIP_FILE = "SpagoBIWekaEngine-bin-1.9.3_07062007.zip";
 	private static String TALEND_ZIP_FILE = "SpagoBITalendEngine-bin-1.9.3_07062007.zip";
 	private static String EXOPROFILEATTRMANAGER_ZIP_FILE = "ExoProfileAttributesManagerModule-bin-1.9.3_07062007.zip";
@@ -124,51 +124,56 @@ public class InstallSpagoBIPlatform {
 			spagobigeoJndiName = "dwh";
 		}
 		
-		// install spagobi platform
-		if (!installCommonLibs()) return;
-		if (!installDrivers()) return;
-		if (!installPatchHsqldb()) return;
-		if (!installSpagoBIWar()) return;
-		if (!installEngines()) return;
-		
-		// configure jndi resources only for a clean installation;
-		// if the user selected installation with examples, all jndi files are copied from spagobi_examples folder
-		if (!_install_examples) {
-			if (!installJndiDwhConfiguration()) return;
-		}
-		if ("jboss".equalsIgnoreCase(_server_name)) {
-			installJBossApplicationXml();
-			installJBossXmdescPatch();
-		} else if ("jonas".equalsIgnoreCase(_server_name)) {
-			installJOnASApplicationXml();
-		}
-		if (!installBatchFiles()) return;
-		
-		// install examples if required
-		if (_install_examples) {
-			if (!installSpagoBIExamplesDwh()) return;
-			if (!overwriteExistingFiles()) return;
-		}
-		
-		if (!installSpagoBICms()) return;
-		if (!installSbiportalDb()) return;
-		if (!installSpagoBIMetadataDb()) return;
-		
-		if (_install_exoprofileattrmanager) {
-			// the following method simply copies required file into spagobi; 
-			// configuration files are arranged by arrangeSpagoBIConfFiles method
-			if (!installExoprofileattrmanager()) return;
-		}
-		
-		if (_install_booklets) {
-			// the following method simply copies required file into spagobi; 
-			// configuration files are arranged by arrangeSpagoBIConfFiles method
-			if (!installBookletsComponent()) return;
-		}
-		
 		try {
-		if (!arrangeSpagoBIConfFiles()) return;
-		if (!arrangeEnginesConfFiles()) return;
+		
+			// install spagobi platform
+			if (!installCommonLibs()) return;
+			if (!installDrivers()) return;
+			if (!installPatchHsqldb()) return;
+			if (!installSpagoBIWar()) return;
+			if (!installEngines()) return;
+			
+			// configure jndi resources only for a clean installation;
+			// if the user selected installation with examples, all jndi files are copied from spagobi_examples folder
+			if (!_install_examples) {
+				if (!installJndiDwhConfiguration()) return;
+			}
+			if ("jboss".equalsIgnoreCase(_server_name)) {
+				installJBossApplicationXml();
+				installJBossXmdescPatch();
+			} else if ("jonas".equalsIgnoreCase(_server_name)) {
+				installJOnASApplicationXml();
+			}
+			if (!installBatchFiles()) return;
+			
+			if (!installSpagoBICms()) return;
+			if (!installSbiportalDb()) return;
+			if (!installSpagoBIMetadataDb()) return;
+			
+			// install examples if required
+			if (_install_examples) {
+				if (!installSpagoBIExamplesDwh()) return;
+				if (!overwriteExistingFiles()) return;
+				if (_install_qbe) {
+					if (!installExampleDatamarts()) return;
+				}
+			}
+		
+		
+			if (_install_exoprofileattrmanager) {
+				// the following method simply copies required file into spagobi; 
+				// configuration files are arranged by arrangeSpagoBIConfFiles method
+				if (!installExoprofileattrmanager()) return;
+			}
+			
+			if (_install_booklets) {
+				// the following method simply copies required file into spagobi; 
+				// configuration files are arranged by arrangeSpagoBIConfFiles method
+				if (!installBookletsComponent()) return;
+			}
+			
+			if (!arrangeSpagoBIConfFiles()) return;
+			if (!arrangeEnginesConfFiles()) return;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -192,7 +197,13 @@ public class InstallSpagoBIPlatform {
 		
 		// delete source directory
 		if (!FileUtilities.deleteDirectory(_pathdest + fs + "spagobi")) return;
-
+		
+		if ("jonas".equalsIgnoreCase(_server_name) && _install_birt) {
+			FileUtilities.zipFolder(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes", 
+					_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "lib" + fs + "sbi.engines.birt-1.9.3.jar");
+			FileUtilities.deleteDirectory(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes");
+		}
+		
 	}
 	
 	private static boolean installCommonLibs() {
@@ -404,6 +415,10 @@ public class InstallSpagoBIPlatform {
 					FileUtilities.deleteFile("log4j-1.2.8.jar", _engines_deploy_dir + fs + 
 							"SpagoBITalendEngine.war" + fs + "WEB-INF" + fs + "lib");
 				}
+				if ("jonas".equalsIgnoreCase(_server_name)) {
+					FileUtilities.copy(_engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF", 
+							_spagobi_plaftorm_source_dir + fs + "jonas" + fs + "SpagoBITalendEngine" + fs + "jonas-web.xml");
+				}
 			}
 		} catch (Exception exc) {
 			return false;
@@ -411,19 +426,22 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 	
-	private static boolean installSpagoBIMetadataDb() {
-		try {
-			FileUtilities.copyDirectory(_spagobi_metadata_db_dir, 
-					_spagobi_plaftorm_source_dir + fs + "spagobiMetadataDb", true);
-			String hsqldb_lib_pathsource = _spagobi_plaftorm_source_dir + fs + "hsqlPatch";
-			FileUtilities.copy(_spagobi_metadata_db_dir, hsqldb_lib_pathsource	+ fs + "hsqldb1_8_0_2.jar");
-			if (_install_examples && _install_auditAndMonitoring) {
-				FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_examples_source_dir + fs + "spagobiMetadataDb" + "spagobiWithAM.script");
-			} else if (_install_examples && !_install_auditAndMonitoring) {
-				FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_examples_source_dir + fs + "spagobiMetadataDb" + "spagobi.script");
-			} else if (!_install_examples && _install_auditAndMonitoring) {
-				FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_AM_source_dir + fs + "spagobiMetadataDb" + "spagobi.script");
-			}
+	private static boolean installSpagoBIMetadataDb() throws Exception {
+		FileUtilities.copyDirectory(_spagobi_metadata_db_dir, 
+				_spagobi_plaftorm_source_dir + fs + "spagobiMetadataDb", true);
+		String hsqldb_lib_pathsource = _spagobi_plaftorm_source_dir + fs + "hsqlPatch";
+		FileUtilities.copy(_spagobi_metadata_db_dir, hsqldb_lib_pathsource	+ fs + "hsqldb1_8_0_2.jar");
+		if (_install_examples && _install_auditAndMonitoring) {
+			FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_examples_source_dir + fs + "spagobiMetadataDb" + fs + "spagobiWithAM.script");
+			File scriptFile = new File(_spagobi_metadata_db_dir + fs + "spagobi.script");
+			if (scriptFile.exists()) scriptFile.delete();
+			File newScriptFile = new File(_spagobi_metadata_db_dir + fs + "spagobiWithAM.script");
+			newScriptFile.renameTo(scriptFile);
+		} else if (_install_examples && !_install_auditAndMonitoring) {
+			FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_examples_source_dir + fs + "spagobiMetadataDb" + fs + "spagobi.script");
+		} else if (!_install_examples && _install_auditAndMonitoring) {
+			FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_AM_source_dir + fs + "spagobiMetadataDb" + fs + "spagobi.script");
+		}
 			
 			// TODO non dovrebbe servire più
 //			String pathsource = _spagobi_plaftorm_source_dir + fs + "spagobiMetadataDb";
@@ -433,9 +451,6 @@ public class InstallSpagoBIPlatform {
 //			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "start.sh");
 //			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "testSpagobiHsqldbAlive.jar");
 //			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "server.properties");
-		} catch (Exception exc) {
-			return false;
-		}
 		return true;
 	}
 	
@@ -493,47 +508,38 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 
-	private static boolean installSpagoBIExamplesDwh() {
-		try {
-			String dwhsource = _spagobi_examples_source_dir + fs + "dwh";
-			String dwhdest = _pathdest + fs + "sbidata" + fs + "database";
-			FileUtilities.copy(dwhdest, dwhsource + fs + "foodmart.script");
-			FileUtilities.copy(dwhdest, dwhsource + fs + "foodmart.properties");
-			FileUtilities.copy(dwhdest, dwhsource + fs + "spagobigeo.script");
-			FileUtilities.copy(dwhdest, dwhsource + fs + "spagobigeo.properties");
-		} catch (Exception exc) {
-			return false;
-		}
+	private static boolean installSpagoBIExamplesDwh() throws Exception {
+		String dwhsource = _spagobi_examples_source_dir + fs + "dwh";
+		String dwhdest = _pathdest + fs + "sbidata" + fs + "database";
+		FileUtilities.copy(dwhdest, dwhsource + fs + "foodmart.script");
+		FileUtilities.copy(dwhdest, dwhsource + fs + "foodmart.properties");
+		FileUtilities.copy(dwhdest, dwhsource + fs + "spagobigeo.script");
+		FileUtilities.copy(dwhdest, dwhsource + fs + "spagobigeo.properties");
 		return true;
 	}
 	
-	private static boolean installSpagoBICms() {
-		try {
-			if (_install_examples && _install_auditAndMonitoring) {
-				FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
-						_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFSWithAM.zip");
-			} else if (_install_examples && !_install_auditAndMonitoring) {
-				FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
-						_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
-			} else if (!_install_examples && _install_auditAndMonitoring) {
-				FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
-						_spagobi_AM_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
-			} else if (!_install_examples && !_install_auditAndMonitoring) {
-				/* puts an empty repository */
-				if (!_install_examples && !_install_auditAndMonitoring) {
-					FileUtilities.copyDirectory(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
-							_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "jcrRepositoryFS", true);
-				}
+	private static boolean installSpagoBICms() throws Exception {
+		if (_install_examples && _install_auditAndMonitoring) {
+			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+					_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFSWithAM.zip");
+		} else if (_install_examples && !_install_auditAndMonitoring) {
+			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+					_spagobi_examples_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
+		} else if (!_install_examples && _install_auditAndMonitoring) {
+			FileUtilities.explode(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+					_spagobi_AM_source_dir + fs + "cms" + fs + "jcrRepositoryFS.zip");
+		} else if (!_install_examples && !_install_auditAndMonitoring) {
+			/* puts an empty repository */
+			if (!_install_examples && !_install_auditAndMonitoring) {
+				FileUtilities.copyDirectory(_spagobi_deploy_dir + fs + "spagobi" + _ext, 
+						_spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "jcrRepositoryFS", true);
 			}
-		} catch (Exception exc) {
-			return false;
 		}
 		return true;
 	}
 	
-	private static boolean overwriteExistingFiles() {
-		try {
-			FileUtilities.copyDirectory(_pathdest, _spagobi_examples_source_dir + fs + _server_name, false);
+	private static boolean overwriteExistingFiles() throws Exception {
+		FileUtilities.copyDirectory(_pathdest, _spagobi_examples_source_dir + fs + _server_name, false);
 			// TODO controllare che il codice qui sotto non serve più
 //			if ("tomcat".equalsIgnoreCase(_server_name)) {
 //				// if engines are not installed, deletes their context files
@@ -550,28 +556,31 @@ public class InstallSpagoBIPlatform {
 //				if (!_install_weka) FileUtilities.deleteFile("SpagoBIWekaEngine.xml", 
 //						_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost");
 //			}
-		} catch (Exception exc) {
-			return false;
-		}
 		return true;
 	}
 	
-	private static boolean installSbiportalDb() {
-		try {
-			if (_install_examples && _install_auditAndMonitoring) {
-				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportal.properties");
-				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportalWithAM.script");
-			} else if (_install_examples && !_install_auditAndMonitoring) {
-				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportal.properties");
-				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDb" + fs + "sbiportal.script");
-			} else if (!_install_examples && _install_auditAndMonitoring) {
-				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDb" + fs + "sbiportal.properties");
-				FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDb" + fs + "sbiportal.script");
-			} else if (!_install_examples && !_install_auditAndMonitoring) {
-				/* does nothing */
-			}
-		} catch (Exception exc) {
-			return false;
+	private static boolean installExampleDatamarts() throws Exception {
+		FileUtilities.copyDirectory(_engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext, 
+					_spagobi_examples_source_dir + fs + "exampleDatamarts", true);
+		return true;
+	}
+	
+	private static boolean installSbiportalDb() throws Exception {
+		if (_install_examples && _install_auditAndMonitoring) {
+			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDB" + fs + "sbiportal.properties");
+			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDB" + fs + "sbiportalWithAM.script");
+			File scriptFile = new File(_exo_metadata_db_dir + fs + "sbiportal.script");
+			if (scriptFile.exists()) scriptFile.delete();
+			File newScriptFile = new File(_exo_metadata_db_dir + fs + "sbiportalWithAM.script");
+			newScriptFile.renameTo(scriptFile);
+		} else if (_install_examples && !_install_auditAndMonitoring) {
+			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDB" + fs + "sbiportal.properties");
+			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_examples_source_dir + fs + "sbiportalDB" + fs + "sbiportal.script");
+		} else if (!_install_examples && _install_auditAndMonitoring) {
+			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDB" + fs + "sbiportal.properties");
+			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDB" + fs + "sbiportal.script");
+		} else if (!_install_examples && !_install_auditAndMonitoring) {
+			/* does nothing */
 		}
 		return true;
 	}
@@ -741,29 +750,22 @@ public class InstallSpagoBIPlatform {
 		return true;
 	}
 	
-	private static boolean installExoprofileattrmanager() {
+	private static boolean installExoprofileattrmanager() throws Exception {
 		String pathsource = _spagobi_plaftorm_source_dir + fs + "exo_profile_attr_manager";
-		try {
-			FileUtilities.extractArchiveFile(_pathdest + fs + EXOPROFILEATTRMANAGER_ZIP_FILE, pathsource, "zip");
-			FileUtilities.deleteFile(EXOPROFILEATTRMANAGER_ZIP_FILE, _pathdest);
-			FileUtilities.explode(pathsource, pathsource + fs + "spagobi.zip");
-			FileUtilities.copyDirectory( _spagobi_deploy_dir + fs + "spagobi" + _ext, pathsource + fs + "spagobi", true);
-		} catch (Exception e) {
-			return false;
-		}
+		FileUtilities.extractArchiveFile(_pathdest + fs + EXOPROFILEATTRMANAGER_ZIP_FILE, pathsource, "zip");
+		FileUtilities.deleteFile(EXOPROFILEATTRMANAGER_ZIP_FILE, _pathdest);
+		FileUtilities.explode(pathsource, pathsource + fs + "spagobi.zip");
+		FileUtilities.copyDirectory( _spagobi_deploy_dir + fs + "spagobi" + _ext, pathsource + fs + "spagobi", true);
 		return true;
+		
 	}
 	
-	private static boolean installBookletsComponent() {
+	private static boolean installBookletsComponent() throws Exception {
 		String pathsource = _spagobi_plaftorm_source_dir + fs + "booklets_component";
-		try {
-			FileUtilities.extractArchiveFile(_pathdest + fs + BOOKLETS_ZIP_FILE, pathsource, "zip");
-			FileUtilities.deleteFile(BOOKLETS_ZIP_FILE, _pathdest);
-			FileUtilities.explode(pathsource, pathsource + fs + "spagobi.zip");
-			FileUtilities.copyDirectory( _spagobi_deploy_dir + fs + "spagobi" + _ext, pathsource + fs + "spagobi", true);
-		} catch (Exception e) {
-			return false;
-		}
+		FileUtilities.extractArchiveFile(_pathdest + fs + BOOKLETS_ZIP_FILE, pathsource, "zip");
+		FileUtilities.deleteFile(BOOKLETS_ZIP_FILE, _pathdest);
+		FileUtilities.explode(pathsource, pathsource + fs + "spagobi.zip");
+		FileUtilities.copyDirectory( _spagobi_deploy_dir + fs + "spagobi" + _ext, pathsource + fs + "spagobi", true);
 		return true;
 	}
 	
@@ -857,7 +859,7 @@ public class InstallSpagoBIPlatform {
 					jndiRef = "java:comp/env/jdbc/spagobi";
 				}
 				props = new Properties();
-				String jbpmHibernateSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "jbpm.hibernate.cfg.hsql.xml";
+				String jbpmHibernateSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "classes" + fs + "jbpm.hibernate.cfg.hsql.xml";
 				String jbpmHibernateDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "jbpm.hibernate.cfg.hsql.xml";
 				props.setProperty("${JNDI_REF}", jndiRef);
 				FileUtilities.replaceParametersInFile(jbpmHibernateSourceFile, jbpmHibernateDestFile, props, false);
@@ -868,7 +870,7 @@ public class InstallSpagoBIPlatform {
 	
 			}
 			
-			arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("spagobi", false, jndiName);
+			arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("spagobi", _spagobi_deploy_dir, false, jndiName);
 			
 			/* manages data_access.xml */
 			props = new Properties();
@@ -947,7 +949,7 @@ public class InstallSpagoBIPlatform {
 				jndiRef = "java:comp/env/jdbc/spagobi";
 			}
 			props = new Properties();
-			String hibernateSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "hibernate.cfg.hsql.xml";
+			String hibernateSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "spagobi" + fs + "WEB-INF" + fs + "classes" + fs + "hibernate.cfg.hsql.xml";
 			String hibernateDestFile = _spagobi_deploy_dir + fs + "spagobi" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "hibernate.cfg.hsql.xml";
 			props.setProperty("${JNDI_REF}", jndiRef);
 			FileUtilities.replaceParametersInFile(hibernateSourceFile, hibernateDestFile, props, false);
@@ -981,13 +983,13 @@ public class InstallSpagoBIPlatform {
 		try {
 			/* SpagoBIBirtReportEngine */
 			if (_install_birt) {
-				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIBirtReportEngine", true, jndiName);
+				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIBirtReportEngine", _engines_deploy_dir, true, jndiName);
 				arrangeEngineConfigFile("SpagoBIBirtReportEngine");
 			}
 			
 			/* SpagoBIGeoEngine */
 			if (_install_geo) {
-				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIGeoEngine", true, spagobigeoJndiName);
+				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIGeoEngine", _engines_deploy_dir, true, spagobigeoJndiName);
 				String jndiRef = null;
 				if ("jonas".equalsIgnoreCase(_server_name)) {
 					jndiRef = "";
@@ -1001,27 +1003,27 @@ public class InstallSpagoBIPlatform {
 				}
 				Properties props = new Properties();
 				// deletes old data_access.xml file
-				FileUtilities.deleteFile("data_access.xml", _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf");
+				FileUtilities.deleteFile("data_access.xml", _engines_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf");
 				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIGeoEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
-				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
+				String dataAccessDestFile = _engines_deploy_dir + fs + "SpagoBIGeoEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
 				props.setProperty("${JNDI_REF}", jndiRef);
 				FileUtilities.replaceParametersInFile(dataAccessSourceFile, dataAccessDestFile, props, false);
 			}
 			
 			/* SpagoBIJasperReportEngine */
 			if (_install_jasper) {
-				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIJasperReportEngine", true, jndiName);
+				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIJasperReportEngine", _engines_deploy_dir, true, jndiName);
 				arrangeEngineConfigFile("SpagoBIJasperReportEngine");
 			}
 			
 			/* SpagoBIJPivotEngine */
 			if (_install_jpivot) {
-				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIJPivotEngine", true, jndiName);
+				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIJPivotEngine", _engines_deploy_dir, true, jndiName);
 				Properties props = new Properties();
 				// deletes old engine-config.xml file
-				FileUtilities.deleteFile("engine-config.xml", _spagobi_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext + fs + "WEB-INF" + fs + "classes");
+				FileUtilities.deleteFile("engine-config.xml", _engines_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext + fs + "WEB-INF" + fs + "classes");
 				String engineConfigSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIJPivotEngine" + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
-				String engineConfigDestFile = _spagobi_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
+				String engineConfigDestFile = _engines_deploy_dir + fs + "SpagoBIJPivotEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
 				props.setProperty("${JNDI_NAME}", jndiName);
 				String foodmartRef = null;
 				if (_install_examples) {
@@ -1035,7 +1037,7 @@ public class InstallSpagoBIPlatform {
 			
 			/* SpagoBIQbeEngine */
 			if (_install_qbe) {
-				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIQbeEngine", true, jndiName);
+				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIQbeEngine", _engines_deploy_dir, true, jndiName);
 				String connectionName = null;
 				String jndiContext = null;
 				if ("jonas".equalsIgnoreCase(_server_name)) {
@@ -1050,11 +1052,11 @@ public class InstallSpagoBIPlatform {
 				}
 				Properties props = new Properties();
 				// deletes old data_access.xml file
-				FileUtilities.deleteFile("data_access.xml", _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
+				FileUtilities.deleteFile("data_access.xml", _engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
 				// deletes data_access_jonas.xml file
-				FileUtilities.deleteFile("data_access_jonas.xml", _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
+				FileUtilities.deleteFile("data_access_jonas.xml", _engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf");
 				String dataAccessSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBIQbeEngine" + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
-				String dataAccessDestFile = _spagobi_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
+				String dataAccessDestFile = _engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "WEB-INF" + fs + "conf" + fs + "data_access.xml";
 				props.setProperty("${CONN_NAME}", connectionName);
 				props.setProperty("${JNDI_CONTEXT}", jndiContext);
 				props.setProperty("${JNDI_NAME}", jndiName);
@@ -1063,7 +1065,7 @@ public class InstallSpagoBIPlatform {
 			
 			/* SpagoBIWekaEngine */
 			if (_install_weka) {
-				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIWekaEngine", true, jndiName);
+				arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles("SpagoBIWekaEngine", _engines_deploy_dir, true, jndiName);
 				arrangeEngineConfigFile("SpagoBIWekaEngine");
 			}
 			
@@ -1073,7 +1075,7 @@ public class InstallSpagoBIPlatform {
 				spagobiTalendEngineHome = spagobiTalendEngineHome.replace('\\', '/');
 				// deletes old talend.properties file
 				FileUtilities.deleteFile("talend.properties", _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes");
-				String talendPropertiesSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
+				String talendPropertiesSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBITalendEngine" + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
 				String talendPropertiesDestFile = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.properties";
 				Properties props = new Properties();
 				props.setProperty("${SPAGOBI_TALEND_ENGINE_HOME}", spagobiTalendEngineHome);
@@ -1082,7 +1084,7 @@ public class InstallSpagoBIPlatform {
 				_perlBaseFolderPath = _perlBaseFolderPath.replace('\\', '/');
 				// deletes old talend.perl.properties file
 				FileUtilities.deleteFile("talend.perl.properties", _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes");
-				String talendPerlPropertiesSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.perl.properties";
+				String talendPerlPropertiesSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBITalendEngine" + fs + "WEB-INF" + fs + "classes" + fs + "talend.perl.properties";
 				String talendPerlPropertiesDestFile = _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes" + fs + "talend.perl.properties";
 				props = new Properties();
 				props.setProperty("${PERL_INSTALL_DIR}", _perlBaseFolderPath);
@@ -1097,7 +1099,7 @@ public class InstallSpagoBIPlatform {
 		}
 	}
 	
-	private static void arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles(String webappName, boolean manageWebXml, String resourceName) throws Exception {
+	private static void arrangeContextXmlJbossWebXmlJonasWebXmlAndWebXmlConfFiles(String webappName, String webAppDir, boolean manageWebXml, String resourceName) throws Exception {
 		Properties props = new Properties();
 		props.setProperty("${JNDI_NAME}", resourceName);
 		if ("tomcat".equalsIgnoreCase(_server_name)) {
@@ -1109,23 +1111,23 @@ public class InstallSpagoBIPlatform {
 		} else if ("jboss".equalsIgnoreCase(_server_name)) {
 			/* manages jboss-web.xml */
 			// deletes old jboss-web.xml file
-			FileUtilities.deleteFile("jboss-web.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF");
+			FileUtilities.deleteFile("jboss-web.xml", webAppDir + fs + webappName + _ext + fs + "WEB-INF");
 			String jbosswebSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "jboss-web.xml";
-			String jbosswebDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "jboss-web.xml";
+			String jbosswebDestFile = webAppDir + fs + webappName + _ext + fs + "WEB-INF" + fs + "jboss-web.xml";
 			FileUtilities.replaceParametersInFile(jbosswebSourceFile, jbosswebDestFile, props, false);
 		} else if ("jonas".equalsIgnoreCase(_server_name)) {
 			/* manages jonas-web.xml */
 			// deletes old jonas-web.xml file
-			FileUtilities.deleteFile("jonas-web.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF");
+			FileUtilities.deleteFile("jonas-web.xml", webAppDir + fs + webappName + _ext + fs + "WEB-INF");
 			String jonaswebSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "jonas-web.xml";
-			String jonaswebDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "jonas-web.xml";
+			String jonaswebDestFile = webAppDir + fs + webappName + _ext + fs + "WEB-INF" + fs + "jonas-web.xml";
 			FileUtilities.replaceParametersInFile(jonaswebSourceFile, jonaswebDestFile, props, false);
 		}
 		if (manageWebXml) {
 			// deletes old web.xml file
-			FileUtilities.deleteFile("web.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF");
+			FileUtilities.deleteFile("web.xml", webAppDir + fs + webappName + _ext + fs + "WEB-INF");
 			String webSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "web.xml";
-			String webDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "web.xml";
+			String webDestFile = webAppDir + fs + webappName + _ext + fs + "WEB-INF" + fs + "web.xml";
 			FileUtilities.replaceParametersInFile(webSourceFile, webDestFile, props, false);
 		}
 	}
@@ -1133,9 +1135,9 @@ public class InstallSpagoBIPlatform {
 	private static void arrangeEngineConfigFile(String webappName) throws Exception {
 		Properties props = new Properties();
 		// deletes old engine-config.xml file
-		FileUtilities.deleteFile("engine-config.xml", _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "classes");
+		FileUtilities.deleteFile("engine-config.xml", _engines_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "classes");
 		String engineConfigSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + webappName + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
-		String engineConfigDestFile = _spagobi_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
+		String engineConfigDestFile = _engines_deploy_dir + fs + webappName + _ext + fs + "WEB-INF" + fs + "classes" + fs + "engine-config.xml";
 		props.setProperty("${JNDI_NAME}", jndiName);
 		FileUtilities.replaceParametersInFile(engineConfigSourceFile, engineConfigDestFile, props, false);
 	}

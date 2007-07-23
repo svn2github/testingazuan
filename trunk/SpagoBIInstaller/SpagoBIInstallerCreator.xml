@@ -129,7 +129,7 @@
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIQbeEngine-1.9.3" required="no" preselected="yes" bytes="17091964" id="SpagoBIQbeEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.3_07062007.zip">
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.3_07182007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIWekaEngine-1.9.3" required="no" preselected="yes" bytes="8933577" id="SpagoBIWekaEngine-1.9.3"

@@ -111,6 +111,10 @@ public class SpagoBIFinishPanel extends IzPanel
             boolean installJPivot = idata.getVariable("JPIVOT").equalsIgnoreCase("yes");
             boolean installQbe = idata.getVariable("QBE").equalsIgnoreCase("yes");
             boolean installWeka = idata.getVariable("WEKA").equalsIgnoreCase("yes");
+            boolean installTalend = idata.getVariable("TALEND").equalsIgnoreCase("yes");
+            boolean installExoProfileAttrManager = idata.getVariable("EXOPROFILEATTRMANAGER").equalsIgnoreCase("yes");
+            boolean installBooklets = idata.getVariable("BOOKLETS").equalsIgnoreCase("yes");
+            boolean installAuditingAndMonitoring = idata.getVariable("SPAGOBI_AM").equalsIgnoreCase("yes");
             boolean installExamples = idata.getVariable("SPAGOBI_EXAMPLES").equalsIgnoreCase("yes");
             
             if (installBirt || installGeo || installJasper || installJPivot || installQbe || installWeka) {
@@ -134,6 +138,9 @@ public class SpagoBIFinishPanel extends IzPanel
             	if (installWeka) 
             		add(LabelFactory.create("SpagoBIWekaEngine",
                     		parent.icons.getImageIcon("done"), LEADING), NEXT_LINE);
+            	if (installTalend) 
+            		add(LabelFactory.create("SpagoBITalendEngine",
+                    		parent.icons.getImageIcon("done"), LEADING), NEXT_LINE);
             } else {
             	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.noEnginesInstalled"),
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
@@ -141,9 +148,30 @@ public class SpagoBIFinishPanel extends IzPanel
             
             add(IzPanelLayout.createParagraphGap());
             add(IzPanelLayout.createParagraphGap());
+
+            if (installExoProfileAttrManager || installBooklets) {
+            	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.modulesInstalled"),
+                		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
+            	if (installExoProfileAttrManager) 
+            		add(LabelFactory.create("Exo Profile Attribute Manager module",
+                    		parent.icons.getImageIcon("done"), LEADING), NEXT_LINE);
+            	if (installBooklets) 
+            		add(LabelFactory.create("Booklets module",
+                    		parent.icons.getImageIcon("done"), LEADING), NEXT_LINE);
+            } else {
+            	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.noModulesInstalled"),
+                		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
+            }
             
-            if (installExamples) {
-            	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.examples.installed"),
+            add(IzPanelLayout.createParagraphGap());
+            add(IzPanelLayout.createParagraphGap());
+            
+            if (installExamples || installAuditingAndMonitoring) {
+            	if (installExamples && installAuditingAndMonitoring) add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.examplesAndAM.installed"),
+                		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
+            	else if (installExamples) add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.examples.installed"),
+                		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
+            	else add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.AM.installed"),
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
                 add(IzPanelLayout.createParagraphGap());
                 add(IzPanelLayout.createParagraphGap());
@@ -153,12 +181,15 @@ public class SpagoBIFinishPanel extends IzPanel
             	if (OsVersion.IS_UNIX) add(LabelFactory.create(path + File.separator + "StartSpagoBI.sh", parent.icons.getImageIcon("empty"), LEADING), NEXT_LINE);
             	add(IzPanelLayout.createParagraphGap());
                 add(IzPanelLayout.createParagraphGap());
-            	String connectionUrl = parent.langpack.getString("SpagoBIFinishPanel.examples.connectionUrl");
+            	String connectionUrl = null;
+            	if (installExamples && installAuditingAndMonitoring) connectionUrl = parent.langpack.getString("SpagoBIFinishPanel.examplesWithAM.connectionUrl");
+            	else if (installExamples) connectionUrl = parent.langpack.getString("SpagoBIFinishPanel.examples.connectionUrl");
+            	else connectionUrl = parent.langpack.getString("SpagoBIFinishPanel.AM.connectionUrl");
             	connectionUrl = connectionUrl.replace("$SERVER_PORT", port);
             	add(LabelFactory.create(connectionUrl,
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
             } else {
-            	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.examples.notinstalled"),
+            	add(LabelFactory.create(parent.langpack.getString("SpagoBIFinishPanel.examplesAndAM.notinstalled"),
                 		parent.icons.getImageIcon("information"), LEADING), NEXT_LINE);
                 add(IzPanelLayout.createParagraphGap());
                 add(IzPanelLayout.createParagraphGap());

@@ -133,7 +133,7 @@ public class QbeDriver implements IEngineDriver {
 		pars.put("template", bASE64Encoder.encode(template));
 		pars.put("templatePath",biobj.getPath() + "/template");
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-        pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
+        //pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
         addLocale(pars);
         pars = addBIParameters(biobj, pars);
         

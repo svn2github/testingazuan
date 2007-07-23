@@ -369,7 +369,7 @@ public class BirtReportServlet extends HttpServlet {
 			String paramValueString = request.getParameter(paramName);
 			paramValueString = decodeParameter(paramValueString);
 			
-			if (paramName.trim().equalsIgnoreCase("connection_name")) {
+			if (paramName.trim().equalsIgnoreCase("connectionName")) {
 				String connection = findConnectionName(paramValueString, param);
 				if (connection != null) toReturn.put(paramName, connection);
 				continue;

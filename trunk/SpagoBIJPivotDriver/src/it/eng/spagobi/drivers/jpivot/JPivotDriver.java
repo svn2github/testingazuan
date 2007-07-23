@@ -54,6 +54,7 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -487,8 +488,16 @@ public class JPivotDriver implements IEngineDriver {
 						memberAccess = "none";
 					}
 					if (memberName != null) {
-						memberName = GeneralUtilities.substituteProfileAttributesInString(memberName, profile);
-						datoken += ",member=" + memberName + "=" + memberAccess;
+						// memberName = GeneralUtilities.substituteProfileAttributesInString(memberName, profile);
+						// datoken += ",member=" + memberName + "=" + memberAccess;
+						List memberNames = new ArrayList();
+						memberNames.add(memberName);
+						memberNames = generateMemeberNames(memberNames, profile);
+						Iterator memberNamesIter = memberNames.iterator();
+						while(memberNamesIter.hasNext()){
+							String membName = (String)memberNamesIter.next();
+							datoken += ",member=" + membName + "=" + memberAccess;
+						}
 					}
 				}
 			}
@@ -498,8 +507,96 @@ public class JPivotDriver implements IEngineDriver {
 		}
 		return datoken;
 	}
+    
 	
-         
+	
+	
+	private List generateMemeberNames(List memNames, IEngUserProfile profile) {
+		List generatedMemList = new ArrayList();
+		Iterator memNamesIter = memNames.iterator();
+		// for all member names
+		while(memNamesIter.hasNext()) {
+			String memName = (String)memNamesIter.next();
+			String tmpMemName = memName;
+			// check if the name has a profile attribute
+			int startInd = memName.indexOf("${");
+			if(startInd!=-1) {
+				// if it has, recover the name and value of the profile attribute
+				int endInd = memName.indexOf("}", startInd);
+				String nameProfAttr = memName.substring((startInd+2), endInd);
+				String valueProfAttr = null;
+				try {
+					valueProfAttr = (String)profile.getUserAttribute(nameProfAttr);
+				} catch (Exception e) {
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+							            "generateMemeberNames", "Error while recovering profile attribute " +
+							            nameProfAttr + " of the user " + profile.getUserUniqueIdentifier(), e);
+				}
+				// if the value of the profile attribute is not null
+				if(valueProfAttr!=null) {
+					// all values special character
+					if(valueProfAttr.equalsIgnoreCase("*")) {
+						String tmp = tmpMemName.substring(0, startInd);
+						int indlp = tmp.lastIndexOf(".");
+						if(indlp!=-1){
+							tmpMemName = tmpMemName.substring(0, indlp);
+						} else {
+							tmpMemName = "";
+						}
+						generatedMemList.add(tmpMemName);
+					// the attribute is multivalue
+					} else if(isAttributeMultivalue(valueProfAttr)) {
+						String[] values = splitProfAttrValues(valueProfAttr);
+						List tmpMemNames = new ArrayList();
+						for(int i=0; i<values.length; i++) {
+							String val = values[i];
+							String tmpMemNamei = tmpMemName.substring(0, startInd) + val + tmpMemName.substring(endInd+1);
+							tmpMemNames.add(tmpMemNamei);
+						}
+						tmpMemNames = generateMemeberNames(tmpMemNames, profile);
+						generatedMemList.addAll(tmpMemNames);
+					// the attribute is single value	
+					} else {
+						tmpMemName = tmpMemName.substring(0, startInd) + valueProfAttr + tmpMemName.substring(endInd+1);
+						List tmpMemNames = new ArrayList();
+						tmpMemNames.add(tmpMemName);
+						tmpMemNames = generateMemeberNames(tmpMemNames, profile);
+						generatedMemList.addAll(tmpMemNames);
+					}
+				} else { // if(valueProfAttr!=null)
+					generatedMemList.add(memName);
+				}
+			} else { // if(startInd!=-1)
+				generatedMemList.add(memName);
+			}
+		}
+		return generatedMemList;
+	}
+          
+	
+	private boolean isAttributeMultivalue(String value) {
+		if(!value.startsWith("{")) {
+			return false;
+		} 
+		if(value.length() < 6) {
+			return false;
+		}
+		if(!value.endsWith("}}")) {
+			return false;
+		}
+		if(value.charAt(2) != '{') {
+			return false;
+		}
+		return true;
+	}
+	
+	private String[] splitProfAttrValues(String value) {
+		char splitter = value.charAt(1);
+		String valuesList = value.substring(3, value.length() - 2);
+		String [] values = valuesList.split(String.valueOf(splitter));
+		return values;
+	}
+	
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
      * @param biobj BIOBject to execute

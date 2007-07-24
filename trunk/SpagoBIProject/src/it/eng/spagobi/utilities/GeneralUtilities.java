@@ -259,7 +259,9 @@ public class GeneralUtilities {
 			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "Portlet request obtained: " + portletRequest);
-			Object internalRequest = RequestContainer.getRequestContainer().getInternalRequest();
+			RequestContainer req = RequestContainer.getRequestContainer();
+			Object internalRequest = null;
+			if (req != null) internalRequest = req.getInternalRequest();
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "RequestContainer internal request obtained: " + internalRequest);
 			if (portletRequest != null) {

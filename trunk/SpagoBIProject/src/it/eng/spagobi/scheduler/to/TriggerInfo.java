@@ -99,5 +99,23 @@ public class TriggerInfo {
 	public void setChronString(String chronString) {
 		this.chronString = chronString;
 	}
+	public String getStartDateRFC3339() {
+		String startDRFC = "";
+		String startD = this.getStartDate();
+		if( (startD!=null) && !startD.trim().equals("") ) {
+			String[] dateParts = startD.split("/");
+			startDRFC = dateParts[2] + "-" + dateParts[1] + "-" +  dateParts[0];
+		}
+		return startDRFC;
+	}
+	public String getEndDateRFC3339() {
+		String endDRFC = "";
+		String endD = this.getEndDate();
+		if( (endD!=null) && !endD.trim().equals("") ) {
+			String[] dateParts = endD.split("/");
+			endDRFC = dateParts[2] + "-" + dateParts[1] + "-" +  dateParts[0];
+		}
+		return endDRFC;
+	}
 	
 }

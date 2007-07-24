@@ -5,14 +5,21 @@
     <str id="SpagoBITargetPanel.spagobi.existing" txt="La destinazione scelta contiene una precedente installazione di SpagoBI. Questa installazione verrà sovrascritta con conseguente perdita di eventuali configurazioni precedenti. Continuare?"/>
     
     <str id="SpagoBIFinishPanel.installedEngines" txt="Sono stati installati i seguenti motori esterni di SpagoBIPlatform:" />
-    <str id="SpagoBIFinishPanel.noEnginesInstalled" txt="Non и stato installato alcun motore esterno di SpagoBIPlatform." />
-    <str id="SpagoBIFinishPanel.examples.installed" txt="Sono stati installati i documenti di esempio di SpagoBI Demo e il portale di esempio 'sbiportal'" />
-    <str id="SpagoBIFinishPanel.examples.notinstalled" txt="Non sono stati installati nй i documenti di esempio di SpagoBI Demo nй il portale di esempio 'sbiportal'" />
+    <str id="SpagoBIFinishPanel.noEnginesInstalled" txt="Non è stato installato alcun motore esterno di SpagoBIPlatform." />
+    
+    <str id="SpagoBIFinishPanel.examples.installed" txt="Sono stati installati i documenti di esempio di SpagoBI Demo e il portale di esempio 'sbiportal'." />
+    <str id="SpagoBIFinishPanel.AM.installed" txt="Sono stati installati i documenti di Auditing and Monitoring e il portale di monitoraggio 'sbiportal'." />
+    <str id="SpagoBIFinishPanel.examplesAndAM.installed" txt="Sono stati installati i documenti di esempio di SpagoBI Demo, i documenti di Auditing and Monitoring e il portale di esempio 'sbiportal'." />
+    <str id="SpagoBIFinishPanel.examplesAndAM.notinstalled" txt="Non sono stati installati né i documenti di esempio di SpagoBI Demo né i documenti di Auditing and Monitoring né il portale di esempio 'sbiportal'" />
     <str id="SpagoBIFinishPanel.startSpagoBIInfo" txt="Per avviare il server eXo-Portal clicca sull'icona oppure esegui:" />
+	
+	<str id="SpagoBIFinishPanel.modulesInstalled" txt="Sono stati installati i seguenti moduli aggiuntivi di SpagoBIPlatform:" />
+	<str id="SpagoBIFinishPanel.noModulesInstalled" txt="Non sono stati installati i moduli aggiuntivi di SpagoBIPlatform." />
 
     <str id="SpagoBIFinishPanel.noExamples.connectionUrl" txt="Poi connettiti a http://localhost:$SERVER_PORT/portal e comincia le tue analisi con SpagoBI!!" />
-    
     <str id="SpagoBIFinishPanel.examples.connectionUrl" txt="Poi connettiti a http://localhost:$SERVER_PORT/sbiportal per vedere gli esempi di SpagoBI Demo." />
+    <str id="SpagoBIFinishPanel.AM.connectionUrl" txt="Poi connettiti a http://localhost:$SERVER_PORT/sbiportal per vedere i documenti di Auditing and Monitoring e comincia le tue analisi con SpagoBI!!" />
+    <str id="SpagoBIFinishPanel.examplesWithAM.connectionUrl" txt="Poi connettiti a http://localhost:$SERVER_PORT/sbiportal per vedere gli esempi di SpagoBI Demo e i documenti di Auditing and Monitoring." />
     
     <str id="SpagoBIRepositoryPathPanel.empty.spagobirepo.warning" txt="La cartella indicata non contiene alcun pacchetto selezionato. Tali pacchetti verranno scaricati in questa cartella. Continuare?" />
     <str id="SpagoBIRepositoryPathPanel.missingpacks.spagobirepo.warning" txt="La cartella indicata contiene %0 di %1 pacchetti selezionati. I pacchetti mancanti verranno scaricati in questa cartella. Continuare?" />

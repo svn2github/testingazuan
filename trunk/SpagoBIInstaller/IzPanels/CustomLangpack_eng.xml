@@ -6,14 +6,20 @@
     
     <str id="SpagoBIFinishPanel.installedEngines" txt="The following SpagoBIPlatform external engines were installed:" />
     <str id="SpagoBIFinishPanel.noEnginesInstalled" txt="No SpagoBIPlatform external engines were installed." />
-    <str id="SpagoBIFinishPanel.examples.installed" txt="SpagoBI Demo examples and example portal 'sbiportal' were installed" />
-    <str id="SpagoBIFinishPanel.examples.installed" txt="SpagoBI Demo examples and example portal 'sbiportal' were not installed" />
-    <str id="SpagoBIFinishPanel.examples.notinstalled" txt="Non sono stati installati nй i documenti di esempio di SpagoBI Demo nй il portale di esempio 'sbiportal'" />
+    
+    <str id="SpagoBIFinishPanel.examples.installed" txt="SpagoBI Demo examples and example portal 'sbiportal' were installed." />
+    <str id="SpagoBIFinishPanel.AM.installed" txt="SpagoBI Auditing and Monitoring documents and monitoring portal 'sbiportal' were installed." />
+    <str id="SpagoBIFinishPanel.examplesAndAM.installed" txt="SpagoBI Demo examples with Auditing and Monitoring documents and example portal 'sbiportal' were installed." />
+    <str id="SpagoBIFinishPanel.examplesAndAM.notinstalled" txt="Neither Demo examples nor Auditing and Monitoring documents nor example portal 'sbiportal' were installed." />
     <str id="SpagoBIFinishPanel.startSpagoBIInfo" txt="To start eXo-Portal server with SpagoBIPlatform click on the icon or launch:" />
+	
+	<str id="SpagoBIFinishPanel.modulesInstalled" txt="The following SpagoBIPlatform additional modules were installed:" />
+	<str id="SpagoBIFinishPanel.noModulesInstalled" txt="No SpagoBIPlatform additional modules were installed." />
     
     <str id="SpagoBIFinishPanel.noExamples.connectionUrl" txt="Then connect to http://localhost:$SERVER_PORT/portal and start to work with SpagoBI!!" />
-    
     <str id="SpagoBIFinishPanel.examples.connectionUrl" txt="Then connect to http://localhost:$SERVER_PORT/sbiportal to see the SpagoBI Demo examples." />
+    <str id="SpagoBIFinishPanel.AM.connectionUrl" txt="Then connect to http://localhost:$SERVER_PORT/sbiportal to see the Auditing and Monitoring documents and start to work with SpagoBI!!" />
+    <str id="SpagoBIFinishPanel.examplesWithAM.connectionUrl" txt="Then connect to http://localhost:$SERVER_PORT/sbiportal to see the SpagoBI Demo examples and Auditing and Monitoring documents." />
     
     <str id="SpagoBIRepositoryPathPanel.empty.spagobirepo.warning" txt="The folder does not contain any selected packs. These packs will be downloaded into this folder. Continue?" />
     <str id="SpagoBIRepositoryPathPanel.missingpacks.spagobirepo.warning" txt="The folder contains %0 of %1 selected packs. Missing packs will be downloaded into this folder. Continue?" />

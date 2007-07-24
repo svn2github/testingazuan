@@ -10,5 +10,7 @@
 					isDefault="true" 
 					initialContext="java:comp/env"
 					resourceName="jdbc/${JNDI_NAME}"/>
+	
+	${SPAGOBI_CONN_REF}
 
 </ENGINE-CONFIGURATION>

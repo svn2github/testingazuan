@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class InstallSpagoBIPlatform {
 
-	private static String SPAGOBI_ZIP_FILE = "SpagoBI-bin-1.9.3_07232007.zip";
+	private static String SPAGOBI_ZIP_FILE = "SpagoBI-bin-1.9.3_07242007.zip";
 	private static String BIRT_ZIP_FILE = "SpagoBIBirtReportEngine-bin-1.9.3_07232007.zip";
 	private static String GEO_ZIP_FILE = "SpagoBIGeoEngine-bin-1.9.3_07062007.zip";
 	private static String JASPER_ZIP_FILE = "SpagoBIJasperReportEngine-bin-1.9.3_07062007.zip";
@@ -449,7 +449,14 @@ public class InstallSpagoBIPlatform {
 		} else if (!_install_examples && _install_auditAndMonitoring) {
 			FileUtilities.copy(_spagobi_metadata_db_dir, _spagobi_AM_source_dir + fs + "spagobiMetadataDb" + fs + "spagobi.script");
 		}
-			
+		
+		if ("jonas".equalsIgnoreCase(_server_name)) {
+			Properties props = new Properties();
+			props.setProperty("localhost:8080", "localhost:9000");
+			String spagobiScriptFile = _spagobi_metadata_db_dir + fs + "spagobi.script";
+			FileUtilities.replaceParametersInFile(spagobiScriptFile, spagobiScriptFile, props, true);
+		}
+		
 			// TODO non dovrebbe servire più
 //			String pathsource = _spagobi_plaftorm_source_dir + fs + "spagobiMetadataDb";
 //			FileUtilities.copy(_spagobi_metadata_db_dir, pathsource	+ fs + "spagobi.properties");
@@ -573,15 +580,15 @@ public class InstallSpagoBIPlatform {
 	}
 	
 	private static boolean installSbiportal() throws Exception {
-		if (_install_examples && _install_auditAndMonitoring) {
-			FileUtilities.copy(_spagobi_deploy_dir, _spagobi_examples_source_dir + fs + "sbiportalWar" + fs + "sbiportal.war");
+		if (_install_examples || _install_auditAndMonitoring) {
+			FileUtilities.copy(_spagobi_deploy_dir, _spagobi_plaftorm_source_dir + fs + "sbiportalWar" + fs + "sbiportal.war");
 			if ("tomcat".equalsIgnoreCase(_server_name)) {
 				FileUtilities.copy(_pathdest + fs + "conf" + fs + "Catalina" + fs + "localhost",
-						_spagobi_examples_source_dir + fs + "sbiportalWar" + fs + "tomcat" + fs + "sbiportal.xml");
+						_spagobi_plaftorm_source_dir + fs + "sbiportalWar" + fs + "tomcat" + fs + "sbiportal.xml");
 			} 
 			if ("jonas".equalsIgnoreCase(_server_name)) {
 				FileUtilities.copy(_spagobi_deploy_dir + fs + "META-INF",
-						_spagobi_examples_source_dir + fs + "sbiportalWar" + fs + "jonas" + fs + "application.xml");
+						_spagobi_plaftorm_source_dir + fs + "sbiportalWar" + fs + "jonas" + fs + "application.xml");
 			}
 			installSbiportalDb();
 		}

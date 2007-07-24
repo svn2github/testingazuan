@@ -39,6 +39,14 @@ public class MD5Calculator {
 				System.out.println(fileNames[i] + " dimension is " + file.length());
 			}
 			
+			basePath = "C:\\Progetti\\SpagoBI\\Rilasci\\2007-07-23 Correzioni\\";
+			File folder = new File(basePath);
+			File[] files = folder.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				String fileName = file.getName();
+				System.out.println(fileName + " dimension is " + file.length());
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();

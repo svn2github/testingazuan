@@ -108,12 +108,12 @@
       			<include name="StopSpagoBI.png" />
 		    </fileset>
 	    </pack>
-    	<pack name="SpagoBI-1.9.3" required="yes" bytes="23830476" id="SpagoBI-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.3_07062007.zip">
+    	<pack name="SpagoBI-1.9.3" required="yes" bytes="23832623" id="SpagoBI-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.3_07242007.zip">
 	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIBirtReportEngine-1.9.3" required="no" preselected="yes" bytes="35084928" id="SpagoBIBirtReportEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.3_07062007.zip">
+    	<pack name="SpagoBIBirtReportEngine-1.9.3" required="no" preselected="yes" bytes="35085035" id="SpagoBIBirtReportEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.3_07232007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIGeoEngine-1.9.3" required="no" preselected="yes" bytes="6043408" id="SpagoBIGeoEngine-1.9.3"
@@ -124,8 +124,8 @@
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJasperReportEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
-    	<pack name="SpagoBIJPivotEngine-1.9.3" required="no" preselected="yes" bytes="17465110" id="SpagoBIJPivotEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.3_07062007.zip">
+    	<pack name="SpagoBIJPivotEngine-1.9.3" required="no" preselected="yes" bytes="17465117" id="SpagoBIJPivotEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.3_07232007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="SpagoBIQbeEngine-1.9.3" required="no" preselected="yes" bytes="17091964" id="SpagoBIQbeEngine-1.9.3"
@@ -136,8 +136,8 @@
     			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.3_07062007.zip">
 	    	<description/>
 	    </pack>
-    	<pack name="SpagoBITalendEngine-1.9.3" required="no" preselected="yes" bytes="9657701" id="SpagoBITalendEngine-1.9.3"
-    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBITalendEngine-bin-1.9.3_07062007.zip">
+    	<pack name="SpagoBITalendEngine-1.9.3" required="no" preselected="yes" bytes="9654336" id="SpagoBITalendEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBITalendEngine-bin-1.9.3_07232007.zip">
 	    	<description/>
 	    </pack>
     	<pack name="ExoProfileAttributesManagerModule-1.9.3" required="no" preselected="yes" bytes="89580" id="ExoProfileAttributesManagerModule-1.9.3"

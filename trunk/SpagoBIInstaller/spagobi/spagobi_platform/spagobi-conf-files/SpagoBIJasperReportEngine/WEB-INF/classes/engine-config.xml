@@ -31,6 +31,9 @@
 					isJNDI="true"
 					initialContext="java:comp/env"
 					resourceName="jdbc/${JNDI_NAME}"/>
+					
+		${SPAGOBI_CONN_REF}
+		
 		<!--
     	<CONNECTION name="hsqlfoodmartjdbc" 
 					isJNDI="false"

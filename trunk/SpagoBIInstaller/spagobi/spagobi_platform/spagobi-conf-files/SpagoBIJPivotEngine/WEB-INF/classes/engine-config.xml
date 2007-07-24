@@ -19,10 +19,13 @@
 					initialContext="java:comp/env"
 					resourceName="jdbc/${JNDI_NAME}"/>
 
+		${SPAGOBI_CONN_REF}
+
 	</CONNECTIONS-CONFIGURATION>
 	
 	<SCHEMAS>
 		${FOODMART_REF}
+		${SBIMONITOR_REF}
 	</SCHEMAS>
 	
 </ENGINE-CONFIGURATION>

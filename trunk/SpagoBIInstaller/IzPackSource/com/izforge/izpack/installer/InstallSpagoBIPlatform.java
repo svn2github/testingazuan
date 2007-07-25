@@ -168,6 +168,10 @@ public class InstallSpagoBIPlatform {
 					FileUtilities.copy(_engines_deploy_dir + fs + "SpagoBIQbeEngine" + _ext + fs + "tmp" + fs +"datamarts" + fs + "spagobi", 
 							_spagobi_AM_source_dir + fs + "spagobiDatamart" + fs + "datamart.jar");
 				}
+				if (_install_jasper) {
+					FileUtilities.copyDirectory(_engines_deploy_dir + fs + "SpagoBIJasperReportEngine" + _ext + fs + "WEB-INF" + fs +"classes", 
+							_spagobi_AM_source_dir + fs + "JasperImages", true);
+				}
 			}
 		
 			if (_install_exoprofileattrmanager) {
@@ -609,9 +613,19 @@ public class InstallSpagoBIPlatform {
 		} else if (!_install_examples && _install_auditAndMonitoring) {
 			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDB" + fs + "sbiportal.properties");
 			FileUtilities.copy(_exo_metadata_db_dir, _spagobi_AM_source_dir + fs + "sbiportalDB" + fs + "sbiportal.script");
-		} else if (!_install_examples && !_install_auditAndMonitoring) {
-			/* does nothing */
 		}
+		// if exo profile attribute manager portlet is required, register the portlet
+		Properties props = new Properties();
+		String sbiportalScriptFile = _exo_metadata_db_dir + fs + "sbiportal.script";
+		String exoProfileManagerPortletDef = "";
+		String exoProfileManagerPortletPermission = "";
+		if (_install_exoprofileattrmanager) {
+			exoProfileManagerPortletDef = "INSERT INTO PORTLET VALUES('spagobi/ExoProfileAttributesManager','ExoProfileAttributesManager','spagobi','ExoProfileAttributesManager','','2007-07-25 10:58:48.234000000','2007-07-25 10:58:48.234000000','spagobi')";
+			exoProfileManagerPortletPermission = "INSERT INTO PORTLET_PERMISSION VALUES('fc998e2ac0a8147600c3feb6ea84b896','member','/user','spagobi/ExoProfileAttributesManager','default user permission')";
+		}
+		props.setProperty("${EXO_PROFILE_MANAGER_PORTLET_DEF}", exoProfileManagerPortletDef);
+		props.setProperty("${EXO_PROFILE_MANAGER_PORTLET_PERMISSION}", exoProfileManagerPortletPermission);
+		FileUtilities.replaceParametersInFile(sbiportalScriptFile, sbiportalScriptFile, props, true);
 		return true;
 	}
 	

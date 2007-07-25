@@ -15,7 +15,7 @@
 			applications="no"
 			startMenu="no"
 			startup="no">
-		<createForPack name="SpagoBI-1.9.2"/>
+		<createForPack name="SpagoBI-1.9.3"/>
 	</shortcut>
 	<shortcut
 			name="Connect to SpagoBI"
@@ -30,7 +30,7 @@
 			applications="no"
 			startMenu="no"
 			startup="no">
-		<createForPack name="SpagoBI-1.9.2"/>
+		<createForPack name="SpagoBI-1.9.3"/>
 	</shortcut>
 	<shortcut
 			name="Stop SpagoBI Platform"
@@ -46,7 +46,7 @@
 			applications="no"
 			startMenu="no"
 			startup="no">
-		<createForPack name="SpagoBI-1.9.2"/>
+		<createForPack name="SpagoBI-1.9.3"/>
 	</shortcut>
 	<shortcut
 			name="Installation Manual"
@@ -65,7 +65,7 @@
 	</shortcut>
 	<shortcut
 			name="How To"
-			target="$INSTALL_PATH\spagobi-docs\SpagoBI_How_To-1.6.pdf"
+			target="$INSTALL_PATH\spagobi-docs\SpagoBI_How_To-v1.7.pdf"
 			commandLine=""
 			workingDirectory="$INSTALL_PATH"
 			description="How To document"
@@ -80,7 +80,7 @@
 	</shortcut>
 	<shortcut
 			name="Quick Start"
-			target="$INSTALL_PATH\spagobi-docs\QuickStart-0.9.2.pdf"
+			target="$INSTALL_PATH\spagobi-docs\QuickStart-0.9.3.pdf"
 			commandLine=""
 			workingDirectory="$INSTALL_PATH"
 			description="Quick Start document"

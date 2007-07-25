@@ -46,8 +46,34 @@ public class SpagoBIPerlPathPanel extends TargetPanel {
 	            ok = res == AbstractUIHandler.ANSWER_YES;
             }
         }
-        return ok;
+        
+	    if (ok) {
+	    	idata.setVariable(getVariableName(), pathSelectionPanel.getPath());
+	    	return true;
+	    } else return false;
     }
+    
+    /** Called when the panel becomes active. */
+    public void panelActivate() {
+        // Resolve the default for chosenPath
+        super.panelActivate();
+        String chosenPath;
+        // The variable will be exist if we enter this panel
+        // second time. We would maintain the previos
+        // selected path.
+        if (idata.getVariable(getVariableName()) != null)
+            chosenPath = idata.getVariable(getVariableName());
+        else
+            // Try the USER_HOME as child dir of the jdk path
+            chosenPath = (new File(idata.getVariable("USER_HOME"))).getAbsolutePath();
+        // Set the path for method pathIsValid ...
+        pathSelectionPanel.setPath(chosenPath);
+
+        if (!pathIsValid()) chosenPath = "";
+        
+        idata.setVariable(getVariableName(), chosenPath);
+    }
+    
 
     /**
      * Returns the name of the variable which should be used for the path.

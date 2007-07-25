@@ -89,6 +89,7 @@ public class InstallSpagoBIPlatform {
 		if (_password == null) password = "";
 		
 		_perlBaseFolderPath 			= perlBaseFolderPath != null ? perlBaseFolderPath : "";
+		_perlBaseFolderPath = _perlBaseFolderPath.replace('\\', '/');
 		
 		_spagobi_metadata_db_dir 		= _pathdest + fs + "sbidata" + fs + "database";
 		_exo_metadata_db_dir 			= _pathdest + fs + "temp" + fs + "data";
@@ -188,6 +189,7 @@ public class InstallSpagoBIPlatform {
 			
 			if (!arrangeSpagoBIConfFiles()) return;
 			if (!arrangeEnginesConfFiles()) return;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -213,9 +215,32 @@ public class InstallSpagoBIPlatform {
 		if (!FileUtilities.deleteDirectory(_pathdest + fs + "spagobi")) return;
 		
 		if ("jonas".equalsIgnoreCase(_server_name) && _install_birt) {
-			FileUtilities.zipFolder(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes", 
-					_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "lib" + fs + "sbi.engines.birt-1.9.3.jar");
-			FileUtilities.deleteDirectory(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes");
+			
+//			String birtClassesPath = _engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes";
+//			if (os.indexOf("windows") == -1) {
+//				try {
+//					Runtime runTime = Runtime.getRuntime();
+//					runTime.exec("export PATH=$JAVA_HOME/bin:$PATH", null, new File(birtClassesPath));
+//					runTime.exec("jar cf sbi.engines.birt-1.9.3.jar .", null, new File(birtClassesPath));
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			} else {
+//				try {
+//					Runtime runTime = Runtime.getRuntime();
+//					runTime.exec("set PATH=%JAVA_HOME%\\bin;%PATH%", null, new File(birtClassesPath));
+//					runTime.exec("jar cf sbi.engines.birt-1.9.3.jar .", null, new File(birtClassesPath));
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+			
+//			FileUtilities.copy(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "lib", 
+//					_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes" + fs + "sbi.engines.birt-1.9.3.jar");
+			
+//			FileUtilities.zipFolder(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes", 
+//					_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "lib" + fs + "sbi.engines.birt-1.9.3.jar");
+//			FileUtilities.deleteDirectory(_engines_deploy_dir + fs + "SpagoBIBirtReportEngine.war" + fs + "WEB-INF" + fs + "classes");
 		}
 		
 	}
@@ -1147,7 +1172,6 @@ public class InstallSpagoBIPlatform {
 				props.setProperty("${SPAGOBI_TALEND_ENGINE_HOME}", spagobiTalendEngineHome);
 				FileUtilities.replaceParametersInFile(talendPropertiesSourceFile, talendPropertiesDestFile, props, true);
 				
-				_perlBaseFolderPath = _perlBaseFolderPath.replace('\\', '/');
 				// deletes old talend.perl.properties file
 				FileUtilities.deleteFile("talend.perl.properties", _engines_deploy_dir + fs + "SpagoBITalendEngine" + _ext + fs + "WEB-INF" + fs + "classes");
 				String talendPerlPropertiesSourceFile = _spagobi_plaftorm_source_dir + fs + "spagobi-conf-files" + fs + "SpagoBITalendEngine" + fs + "WEB-INF" + fs + "classes" + fs + "talend.perl.properties";

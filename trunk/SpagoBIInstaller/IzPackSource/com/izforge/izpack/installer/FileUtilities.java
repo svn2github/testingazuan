@@ -354,9 +354,10 @@ public class FileUtilities {
 	public static void zipFolder(String pathFolder, String destFilePath) throws Exception {
 		FileOutputStream fos = new FileOutputStream(destFilePath);
 		ZipOutputStream zip = new ZipOutputStream (fos);
-		zip.setLevel(9);
+		zip.setLevel(5);
 		zip.setMethod(ZipOutputStream.DEFLATED);
 		zipFolder(pathFolder, pathFolder, zip);
 		zip.close();
 	}
+	
 }

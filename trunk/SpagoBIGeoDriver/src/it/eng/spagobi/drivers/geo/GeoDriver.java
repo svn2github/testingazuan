@@ -37,6 +37,10 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
+
+import it.eng.spagobi.utilities.GeneralUtilities;
+
+
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -112,6 +116,7 @@ public class GeoDriver implements IEngineDriver {
 		byte[] template = uploadedFile.getFileContent();
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
 		pars.put("template", bASE64Encoder.encode(template));
+		pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
         pars = addBIParameters(biobj, pars);
         return pars;
 	} 

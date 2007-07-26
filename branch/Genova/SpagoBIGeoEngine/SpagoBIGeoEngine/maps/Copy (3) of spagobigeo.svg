@@ -43,9 +43,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			if (document.documentElement.suspendRedraw) {
 				suspendProcess = document.documentElement.suspendRedraw(30000);
 			}
-			
-			setTresholds();
-			
 			//dynamic layer array that allow loading from database
 			var dynamicLayers = new Array();
 			//initialize digiLayers (layers that allow digitizing)
@@ -107,22 +104,22 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			
 		  //tab panel instance creation
 			var tabStyles = {"fill":"rgb(180,180,180)","stroke":"dimgray","stroke-width":1,"cursor":"pointer"};
-		      var tabwindowStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
-		      var tabtextStyles = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal"};
-		      var tabtextStylesCenter = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal","text-anchor":"middle"};
-		                
-		      //setting tabTitles
-		      var tabTitles = new Array("Values","Chart");
-		     
-		      detailTabGroup = new tabgroup("detailTabGroup","detailTabGroup",5,21,200,175,20,"round","round",5,0,tabStyles,"lightgray",tabwindowStyles,tabtextStyles,tabTitles,0,false,undefined);
-		              
-		      //add new content
-		      detailTabGroup.addContent("detailTabGroup__0_content",0,true);
-		      detailTabGroup.addContent("detailTabGroup__1_content",1,true);
-		                      
-		      //activate tab
-		      //detailTabGroup.activateTabByIndex(0,false);
-		      //detailTabGroup.resize(400,100);   
+      var tabwindowStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
+      var tabtextStyles = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal"};
+      var tabtextStylesCenter = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal","text-anchor":"middle"};
+                
+      //setting tabTitles
+      var tabTitles = new Array("Values","Chart");
+     
+      detailTabGroup = new tabgroup("detailTabGroup","detailTabGroup",5,21,200,175,20,"round","round",5,0,tabStyles,"lightgray",tabwindowStyles,tabtextStyles,tabTitles,0,false,undefined);
+              
+      //add new content
+      detailTabGroup.addContent("detailTabGroup__0_content",0,true);
+      detailTabGroup.addContent("detailTabGroup__1_content",1,true);
+                      
+      //activate tab
+      //detailTabGroup.activateTabByIndex(0,false);
+      //detailTabGroup.resize(400,100);   
 			
 			//now initialize buttons
 			myMapApp.buttons = new Array();
@@ -191,46 +188,20 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 				
 				myMapApp.infoPanel[i] = panel;
 			}
+
 			
-			// create legendpanels & legendrect
-			myMapApp.legPanel = new Array();	
-			myMapApp.legRect = new Array();
-			var coulourBoxes = document.getElementById("coulourboxes");			
-			for(i = 0; i < 5; i++) {
-				// ...legendpanel
-				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
-				panel.setAttribute("id","legpanel" + (i+1));
-				panel.setAttribute("x", "70");
-				panel.setAttribute("y", "" + offset);
-				panel.setAttribute("fill", "dimgray");
-				panel.setAttribute("font-family", "Arial,Helvetica");
-				panel.setAttribute("font-size", "14px");
-				panel.setAttribute("startOffset", "0");
-				
-				var text_node = document.createTextNode("legpanel-" + (i+1));
-				panel.appendChild(text_node);
-				
-				coulourBoxes.appendChild(panel);
-				
-				myMapApp.legPanel[i] = panel;
-				
-				// ...legendrect
-				var offset = 35 + (i*25);
-				var rect = document.createElementNS(svgNS,"rect");
-				rect.setAttribute("id","rect" + (i+1));
-				rect.setAttribute("stroke","dimgray");
-				rect.setAttribute("x","30");
-				rect.setAttribute("y",offset);
-				rect.setAttribute("width","30");
-				rect.setAttribute("height","20");
-				rect.setAttribute("fill","#500000");
-				
-				coulourBoxes.appendChild(rect);
-				
-				myMapApp.legRect[i] = rect;
-			}	
 			
+			myMapApp.legPanel1 = document.getElementById("legpanel1");
+			myMapApp.legPanel2 = document.getElementById("legpanel2");
+			myMapApp.legPanel3 = document.getElementById("legpanel3");
+			myMapApp.legPanel4 = document.getElementById("legpanel4");
+			myMapApp.legPanel5 = document.getElementById("legpanel5");
+			
+			myMapApp.legRect1 = document.getElementById("rect1");
+			myMapApp.legRect2 = document.getElementById("rect2");
+			myMapApp.legRect3 = document.getElementById("rect3");
+			myMapApp.legRect4 = document.getElementById("rect4");
+			myMapApp.legRect5 = document.getElementById("rect5");
 			
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
@@ -251,26 +222,26 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
        function loadProjectSpecific() {
            var names = [];
            var values = [];
-           var maxValue = 0;
-           var child = myMapApp.targetLayer.firstChild;
+                     var maxValue = 0;
+                     var child = myMapApp.targetLayer.firstChild;
            while(child) {
                if (child.nodeName == "path") {
                                      for(i = 0; i < kpi_names.length; i++) {
                        var t = parseFloat(child.getAttributeNS(attribNS, kpi_names[i]));
                        if(t > maxValue) {
                            maxValue = t;
+                           alert(kpi_names[i] + " = " + maxValue);
                        }
                    }
                }
                child = child.nextSibling;
-           }                                         
-           var detailBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
+           }                                          var detailBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
            detailBarChartRenderer.maxGridLineValue = maxValue;
-           var layerBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
+                     var layerBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
            layerBarChartRenderer.maxGridLineValue = maxValue;
            layerBarChartRenderer.gridLineVisible = false;
            layerBarChartRenderer.labelsVisible = false;
-           child = myMapApp.targetLayer.firstChild;
+                               child = myMapApp.targetLayer.firstChild;
            while(child) {
                if (child.nodeName == "path") {
                                      names = new Array();
@@ -281,7 +252,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                    }
                                      detailBarChartRenderer.setDataset(names, values, kpi_colours);
                    detailBarChartRenderer.render(document.getElementById("detailTabGroup__1_content"), child.getAttributeNS(null, "id") + "_chart", "none");
-                   if(includeChartLayer == true) {
+                                     if(includeChartLayer == true) {
                        layerBarChartRenderer.setDataset(names, values, kpi_colours);
                        var chartW = 800;
                        var chartH = 1600;
@@ -326,90 +297,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
            }
        } 
 		
-	   var num_group = new Array();
-	   for(i = 0; i < kpi_names.length; i++) num_group[kpi_names[i]] = 5;
-	   
-	   var lb = new Array();
-	   for(i = 0; i < kpi_names.length; i++) lb[kpi_names[i]] = 0;
-	    
-	   var ub = new Array();	
-	   for(i = 0; i < kpi_names.length; i++) ub[kpi_names[i]] = 5;
-	    
-	   var lb_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) lb_color[kpi_names[i]] = "#FFFFFF";
-	    
-	   var ub_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) ub_color[kpi_names[i]] = "#000000";
-	    
-	   var null_values_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) null_values_color[kpi_names[i]] = "#123456";
-	   
 		
-		var trasholdCalculationType = new Array();
-		for(i = 0; i < kpi_names.length; i++) trasholdCalculationType[kpi_names[i]] = "quantile";
-		
-	   function setTresholds() {	   		
-	   
-			for(i = 0; i < kpi_names.length; i++) {			
-				
-				setQuantileTrasholds(kpi_names[i]);
-				
-				alert("--> " + kpi_names[i]);
-			}
-		}
-		
-		function setQuantileTrasholds(kpiName) {
-			if(lb[kpiName] == null) {
-		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
-		   		}
-		   		if(ub[kpiName] == null) {
-		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpi_names[kpiName]].length-1];
-		   		}
-		   		
-		   		if(lb[kpiName] > ub[kpiName]) {
-		   			var t = lb[kpiName];
-		   			ub[kpiName] = lb[kpiName];
-		   			lb[kpiName] = t;
-		   		}
-		   		
-		   		if(ub[kpiName] < kpi_ordered_values[kpiName][0] || lb[kpiName] >  kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1]) {
-		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
-		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1];
-		   		}
-				
-				eval("thresh_"+kpiName+"=new Array()");
-				var trasholds = eval("thresh_"+kpiName);
-				
-				var diff_value_num = 0;	
-				var start_index = 0;	
-				if(kpi_ordered_values[kpiName][0] >= lb[kpiName] && kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1] <= ub[kpiName]) {
-					diff_value_num = kpi_ordered_values[kpiName].length;
-					start_index = 0;
-				} else {
-					for(j = 0; j < kpi_ordered_values[kpiName].length; j++) {
-						
-			   			if(kpi_ordered_values[kpiName][j] >= lb[kpiName] && kpi_ordered_values[kpiName][j] <= ub[kpiName]) {
-			   				start_index = (start_index == 0?j:start_index);
-			   				diff_value_num++;
-			   				//alert(kpi_ordered_values[kpiName][j] + "; " + diff_value_num + "; " + start_index);
-			   			}
-		   			}
-		   		}
-		   		
-		   		//alert(start_index + " - " + diff_value_num)
-				
-				if(diff_value_num < num_group[kpiName]) num_group[kpiName] = diff_value_num;
-				var blockSize = Math.floor( diff_value_num / num_group[kpiName] );
-			
-				trasholds[0] = lb[kpiName];
-				for(j = 1; j < num_group[kpiName] ; j++){
-					//alert( (j*blockSize) + " < " + kpi_ordered_values[kpiName].length + " = " + kpi_ordered_values[kpiName][j*blockSize]);
-					trasholds[j] = kpi_ordered_values[kpiName][start_index + (j*blockSize)];
-				}
-				trasholds[num_group[kpiName]] = ub[kpiName];
-				
-				alert(kpiName + " - " + trasholds);
-		}
 		
 			
 		//this function toggles the display attribute of a map layer
@@ -435,62 +323,13 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			myMapApp.threshArray = eval("thresh_"+myMapApp.curKpi);
 			myMapApp.curLabel = label;
 			
-			var coulourBoxes = document.getElementById("coulourboxes");			
-			for(i = 0; i < myMapApp.legRect.length; i++) {
-				coulourBoxes.removeChild(myMapApp.legRect[i]);
-				coulourBoxes.removeChild(myMapApp.legPanel[i]);
-			}
-			
-			
-			
-			myMapApp.legPanel = new Array();	
-			myMapApp.legRect = new Array();		
-			for(i = 0; i < num_group[myMapApp.curKpi]; i++) {
-				// ...legendpanel
-				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
-				panel.setAttribute("id","legpanel" + (i+1));
-				panel.setAttribute("x", "70");
-				panel.setAttribute("y", "" + offset);
-				panel.setAttribute("fill", "dimgray");
-				panel.setAttribute("font-family", "Arial,Helvetica");
-				panel.setAttribute("font-size", "14px");
-				panel.setAttribute("startOffset", "0");
-				var closingChar = (i!=myMapApp.colArray.length-1?")":"]");
-				var textString = "-   ["+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1] + closingChar;
-				var text_node = document.createTextNode(textString);
-				panel.appendChild(text_node);
-				
-				coulourBoxes.appendChild(panel);
-				
-				myMapApp.legPanel[i] = panel;
-				
-				// ...legendrect
-				var offset = 35 + (i*25);
-				var rect = document.createElementNS(svgNS,"rect");
-				rect.setAttribute("id","rect" + (i+1));
-				rect.setAttribute("stroke","dimgray");
-				rect.setAttribute("x","30");
-				rect.setAttribute("y",offset);
-				rect.setAttribute("width","30");
-				rect.setAttribute("height","20");
-				rect.setAttribute("fill",myMapApp.colArray[i]);
-				
-				coulourBoxes.appendChild(rect);
-				
-				myMapApp.legRect[i] = rect;
-			}	
-			
-			
-			/*
-			for (var i = 0;i<num_group[myMapApp.curKpi];i++) {
+			for (var i = 0;i<myMapApp.colArray.length;i++) {
 				//color rectangle
-				eval("myMapApp.legRect["+i+"]").setAttributeNS(null,"fill",myMapApp.colArray[i]);
-				var closingChar = (i!=myMapApp.colArray.length-1?")":"]");
-				var textString = "-   ["+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1] + closingChar;
-				eval("myMapApp.legPanel["+i+"]").firstChild.nodeValue = textString;
+				eval("myMapApp.legRect"+(i+1)).setAttributeNS(null,"fill",myMapApp.colArray[i]);
+				var textString = "> "+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1];
+				eval("myMapApp.legPanel"+(i+1)).firstChild.nodeValue = textString;
 			}
-			*/
+			
 			
 			myMapApp.loadStatus.setAttributeNS(null,"display","inline");		
 			
@@ -562,8 +401,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
         function showData(evt){
            var el = evt.target;
            var nome = el.getAttributeNS(attribNS,"nome");
-           if(nome == null || nome == "") nome = el.getAttribute("id");
-           
            var id = el.getAttributeNS(null,"id");
            var kpi_values = [];
            
@@ -574,20 +411,16 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
            var targetValue = parseFloat(kpi_values[myMapApp.curKpi]);
            
            //determine class
-           var colIndex = -1;   
+           var colIndex = 0;              
            
-           if(targetValue ==  myMapApp.threshArray[myMapApp.threshArray.length-1] ) {
-           		colIndex = myMapApp.threshArray.length-2;
-           } else {             
-	           for (var i = 0;i<myMapApp.threshArray.length-1;i++) {
-	               if (targetValue >= myMapApp.threshArray[i] && targetValue <  myMapApp.threshArray[i+1]) {
-	                   colIndex = i;
-	                   break;
-	               }
-	           }
-	       }
+           for (var i = 0;i<myMapApp.threshArray.length-1;i++) {
+               if (targetValue > myMapApp.threshArray[i] && targetValue <=  myMapApp.threshArray[i+1]) {
+                   colIndex = i;
+                   break;
+               }
+           }
            
-           var curLegendRect = (colIndex != -1? eval("myMapApp.legRect[" + colIndex + "]") : null);
+           var curLegendRect = eval("myMapApp.legRect"+(colIndex+1));
            
            if (evt.type=="mouseover"){
                myMapApp.Windows["detail"].setTitleText(nome);
@@ -609,7 +442,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                 }
                              
                 myMapApp.Windows["legend"].setTitleText(myMapApp.curKpi + ": " + round_decimals(targetValue,2));
-               	if (curLegendRect != null && !myMapApp.Windows["legend"].closed) {
+               	if (!myMapApp.Windows["legend"].closed) {
                    curLegendRect.setAttributeNS(null, "stroke-width",2);
                    curLegendRect.setAttributeNS(null, "stroke","black");
                	}
@@ -626,7 +459,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                    }
                }
                myMapApp.Windows["legend"].setTitleText("Legend");
-               if (curLegendRect != null && !myMapApp.Windows["legend"].closed) {
+               if (!myMapApp.Windows["legend"].closed) {
                    curLegendRect.setAttributeNS(null, "stroke-width",1);
                    curLegendRect.setAttributeNS(null, "stroke","dimgray");
                }
@@ -647,30 +480,15 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 					var kpiAttrib = parseInt(child.getAttributeNS(attribNS,myMapApp.curKpi));
 			
 			
-					var targetColor = "#666666";
-					
-					
-					if(child.getAttributeNS(attribNS,myMapApp.curKpi) == "") {
-						//alert("FOUND " + null_values_color[myMapApp.curKpi]);
-						targetColor = null_values_color[myMapApp.curKpi];
-					} else if(kpiAttrib < lb[myMapApp.curKpi]) {
-						targetColor = lb_color[myMapApp.curKpi];
-					} else if(kpiAttrib > ub[myMapApp.curKpi]) {
-						targetColor = ub_color[myMapApp.curKpi];
-					} else if(kpiAttrib == ub[myMapApp.curKpi]) {
-						targetColor = myMapApp.colArray[myMapApp.threshArray.length-2];
-					} else  {
-						for (var i = 0;i<myMapApp.threshArray.length-1;i++) {
-							if (kpiAttrib >= myMapApp.threshArray[i] && kpiAttrib <  myMapApp.threshArray[i+1]) {
-								targetColor = myMapApp.colArray[i];
-								break;
-							}
+					var colIndex = 0;	
+					for (var i = 0;i<myMapApp.threshArray.length-1;i++) {
+						if (kpiAttrib > myMapApp.threshArray[i] && kpiAttrib <=  myMapApp.threshArray[i+1]) {
+							colIndex = i;
+							break;
 						}
 					}
-					
-					//if(targetColor == "#666666") alert(child.getAttribute("id") + " - " + child.getAttributeNS(attribNS,myMapApp.curKpi));
-					
-					child.setAttributeNS(null,"fill",targetColor);
+					//alert(colIndex + " - " + myMapApp.colArray[colIndex]);
+					child.setAttributeNS(null,"fill",myMapApp.colArray[colIndex]);
 					
 					if(includeValuesLayer == true) {
 					   var text = "";
@@ -1176,21 +994,17 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 							
 						<g id="coulourboxes" display="inherit">
 							
-							<!--
 							<text id="legpanel5" x="70" y="50" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 2.5 - 22</text>
 							<text id="legpanel4" x="70" y="75" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 1 - 2.5</text>
 							<text id="legpanel3" x="70" y="100" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.2 - 1</text>
 							<text id="legpanel2" x="70" y="125" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.02 - 0.2</text>
 							<text id="legpanel1" x="70" y="150" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0 - 0.02</text>
 							
-							
 							<rect id="rect5" fill="#500000" stroke="dimgray" x="30" y="35" width="30" height="20"/> 
 							<rect id="rect4" fill="#BD3618" stroke="dimgray" x="30" y="60" width="30" height="20" stroke-width="1"/> 
 							<rect id="rect3" fill="#F77B11" stroke="dimgray" x="30" y="85" width="30" height="20" stroke-width="1"/> 
 							<rect id="rect2" fill="#FECC55" stroke="dimgray" x="30" y="110" width="30" height="20" stroke-width="1"/> 
 							<rect id="rect1" fill="#F7F791" stroke="dimgray" x="30" y="135" width="30" height="20" stroke-width="1"/>		
-						-->
-						
 						</g>
 					</g>
 				

@@ -6,33 +6,15 @@
 package it.eng.spagobi.geo.action;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
-import it.eng.spagobi.geo.datamart.Datamart;
-import it.eng.spagobi.geo.datamart.provider.DatamartProviderFactory;
-import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
-import it.eng.spagobi.geo.map.provider.IMapProvider;
-import it.eng.spagobi.geo.map.provider.MapProviderFactory;
-import it.eng.spagobi.geo.map.renderer.IMapRenderer;
-import it.eng.spagobi.geo.map.renderer.MapRendererFactory;
-import it.eng.spagobi.geo.map.utils.SVGMapConverter;
-import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.Properties;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -86,6 +68,7 @@ public class GeoAction extends AbstractHttpAction {
 		HttpServletResponse response = this.getHttpResponse();
 		//this.freezeHttpResponse();
 		
+		Properties props = new Properties();
 		Enumeration enumer = request.getParameterNames();
 		String parName = null;
 		String parValue = null;
@@ -96,15 +79,17 @@ public class GeoAction extends AbstractHttpAction {
 			if(parName.equalsIgnoreCase("NEW_SESSION")) continue;
 			if(parName.equalsIgnoreCase("ACTION_NAME")) continue;
 			serviceResponse.setAttribute(parName, parValue);
+			props.setProperty(parName, parValue);			
 		}	
 		
-			
+		
 		
 		//serviceResponse.setAttribute("mapCatalogueAccessUtils", mapCatalogueAccessUtils);
 		String map_catalogue_manager_url = (String) serviceRequest.getAttribute(MAP_CATALOGUE_MANAGER_URL);
 		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
 		MapConfiguration.setMapCatalogueAccessUtils(mapCatalogueAccessUtils);
 		MapConfiguration mapConfiguration = getConfiguration(serviceRequest);
+		mapConfiguration.getDatamartProviderConfiguration().setParameters(props);
 		
 		
 		serviceResponse.setAttribute("configuration", mapConfiguration);

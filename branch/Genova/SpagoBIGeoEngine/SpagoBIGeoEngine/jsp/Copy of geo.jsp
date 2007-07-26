@@ -8,8 +8,7 @@
                  java.util.Map,
                  java.util.HashMap,
                  java.util.List,
-                 java.util.ArrayList,
-                 it.eng.spagobi.geo.configuration.*,
+                 java.util.ArrayList,it.eng.qbe.geo.configuration.*,
                  it.eng.spagobi.geo.map.utils.*" %>
 <%
 

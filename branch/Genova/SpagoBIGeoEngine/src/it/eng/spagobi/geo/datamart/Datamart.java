@@ -7,8 +7,10 @@ package it.eng.spagobi.geo.datamart;
 
 import it.eng.spagobi.geo.configuration.MapConfiguration;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Contains the data recovered from the datawarehouse and 
@@ -21,6 +23,7 @@ public class Datamart {
 	private String[] kpiNames;
 	private int selectedKpi;
 	
+	Map orderedKpiValuesMap = null;
 	
 	/**
 	 * Map of id and values related to the svg map 
@@ -146,6 +149,19 @@ public class Datamart {
 
 	public void setSelectedKpi(int selectedKpi) {
 		this.selectedKpi = selectedKpi;
+	}
+
+	
+	public Map getOrderedKpiValuesMap() {
+		return orderedKpiValuesMap;
+	}
+
+	public void setOrderedKpiValuesMap(Map orderedKpiValuesMap) {
+		this.orderedKpiValuesMap = orderedKpiValuesMap;
+	}
+	
+	public Set getOrderedKpiValuesSet(String kpiName) {
+		return (Set)orderedKpiValuesMap.get(kpiName);
 	}
     
 }

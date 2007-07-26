@@ -8,10 +8,13 @@
                  java.util.Map,
                  java.util.HashMap,
                  java.util.List,
+                 java.util.Properties,
+                 java.util.Enumeration,
                  java.util.ArrayList,
                  it.eng.spagobi.geo.configuration.*,
                  it.eng.spagobi.geo.map.utils.*,
-                 it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils" %>
+                 it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils,
+                 it.eng.spago.tracing.TracerSingleton;" %>
 <%
 
 	RequestContainer requestContainer = null;
@@ -31,6 +34,7 @@
 	
 	String actionUrl = "http://localhost:8080/SpagoBIGeoEngine/servlet/AdapterHTTP?";
 	actionUrl += "ACTION_NAME=MAP_DRAW_ACTION";
+	
 	String template = "";
 	String target_level = "0";
 	MapCatalogueAccessUtils mapCatalogueAccessUtils = null;
@@ -47,6 +51,17 @@
 		mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
 		
 	}	
+	
+	/*
+	Properties parameters = mapConfiguration.getDatamartProviderConfiguration().getParameters();
+	Enumeration enumer = parameters.keys();
+	while (enumer.hasMoreElements()) {
+		String parName = (String) enumer.nextElement();
+		String parValue = parameters.getProperty(parName);
+		actionUrl += "&" + parName + "=" + parValue;
+	}
+	*/
+	
 	
 	String hierarchiesNameArray = "";
 	String selectedHiearchy = "";
@@ -142,6 +157,11 @@
 	var selectedLayers = null;
 	var selectedLayersMap = null;
 	<%=initLayersArrayScript%> 
+	
+	
+	function showTable(featureId) {
+		alert(">>> " + featureId + " <<<");
+	}
 	
 	function updateHierarchySelection() {		
 		var hierarchyNameOpt = document.getElementById("hierarchyName"); 

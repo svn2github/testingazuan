@@ -60,6 +60,11 @@ public class DatamartProviderConfiguration {
 	
 	public static final String DEFAULT_CALSS_NAME = "it.eng.spagobi.geo.datamart.DefaultDatamartProvider";
 	
+	public DatamartProviderConfiguration (MapConfiguration parentConfiguration) {
+		this.parentConfiguration = parentConfiguration;
+		this.hierarchyMap = new HashMap();
+	}
+	
 	public DatamartProviderConfiguration (MapConfiguration parentConfiguration, SourceBean datamartProviderConfigurationSB) throws ConfigurationException {
 
 		setParentConfiguration(parentConfiguration);

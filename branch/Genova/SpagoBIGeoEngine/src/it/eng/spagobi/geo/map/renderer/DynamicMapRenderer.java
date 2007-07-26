@@ -27,6 +27,7 @@ import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -174,12 +175,29 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    }
 	    buffer.append("];\n");
 	    
+	    buffer.append("var kpi_ordered_values = new Array();\n");	
+	    for(int i = 0; i < kpiNames.length; i++) {
+	    	Set orderedKpiValuesSet = datamart.getOrderedKpiValuesSet(kpiNames[i]);
+	    	Iterator it = orderedKpiValuesSet.iterator();
+	    	buffer.append("kpi_ordered_values['" + kpiNames[i] + "'] = [");
+	    	String separtor = "";
+	    	while(it.hasNext()) {
+	    		Double value = (Double)it.next();
+	    		buffer.append( separtor +  value.toString() );
+	    		separtor = ",";    		
+	    	}
+	    	 buffer.append("];\n");
+	    }
+	    
+	    
 	    buffer.append("kpi_colours = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	String separtor = i>0? ",": "";
 	    	buffer.append(separtor + mapRendererConfiguration.getKpiColour(kpiNames[i]));
 	    }
 	    buffer.append("];\n");
+	    
+	    
 	    
 	    buffer.append("var selected_kpi_index = " + datamart.getSelectedKpi() + ";\n");
 		

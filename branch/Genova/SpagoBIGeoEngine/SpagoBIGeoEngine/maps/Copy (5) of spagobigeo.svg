@@ -191,46 +191,20 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 				
 				myMapApp.infoPanel[i] = panel;
 			}
+
 			
-			// create legendpanels & legendrect
-			myMapApp.legPanel = new Array();	
-			myMapApp.legRect = new Array();
-			var coulourBoxes = document.getElementById("coulourboxes");			
-			for(i = 0; i < 5; i++) {
-				// ...legendpanel
-				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
-				panel.setAttribute("id","legpanel" + (i+1));
-				panel.setAttribute("x", "70");
-				panel.setAttribute("y", "" + offset);
-				panel.setAttribute("fill", "dimgray");
-				panel.setAttribute("font-family", "Arial,Helvetica");
-				panel.setAttribute("font-size", "14px");
-				panel.setAttribute("startOffset", "0");
-				
-				var text_node = document.createTextNode("legpanel-" + (i+1));
-				panel.appendChild(text_node);
-				
-				coulourBoxes.appendChild(panel);
-				
-				myMapApp.legPanel[i] = panel;
-				
-				// ...legendrect
-				var offset = 35 + (i*25);
-				var rect = document.createElementNS(svgNS,"rect");
-				rect.setAttribute("id","rect" + (i+1));
-				rect.setAttribute("stroke","dimgray");
-				rect.setAttribute("x","30");
-				rect.setAttribute("y",offset);
-				rect.setAttribute("width","30");
-				rect.setAttribute("height","20");
-				rect.setAttribute("fill","#500000");
-				
-				coulourBoxes.appendChild(rect);
-				
-				myMapApp.legRect[i] = rect;
-			}	
 			
+			myMapApp.legPanel1 = document.getElementById("legpanel1");
+			myMapApp.legPanel2 = document.getElementById("legpanel2");
+			myMapApp.legPanel3 = document.getElementById("legpanel3");
+			myMapApp.legPanel4 = document.getElementById("legpanel4");
+			myMapApp.legPanel5 = document.getElementById("legpanel5");
+			
+			myMapApp.legRect1 = document.getElementById("rect1");
+			myMapApp.legRect2 = document.getElementById("rect2");
+			myMapApp.legRect3 = document.getElementById("rect3");
+			myMapApp.legRect4 = document.getElementById("rect4");
+			myMapApp.legRect5 = document.getElementById("rect5");
 			
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
@@ -435,62 +409,13 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			myMapApp.threshArray = eval("thresh_"+myMapApp.curKpi);
 			myMapApp.curLabel = label;
 			
-			var coulourBoxes = document.getElementById("coulourboxes");			
-			for(i = 0; i < myMapApp.legRect.length; i++) {
-				coulourBoxes.removeChild(myMapApp.legRect[i]);
-				coulourBoxes.removeChild(myMapApp.legPanel[i]);
-			}
-			
-			
-			
-			myMapApp.legPanel = new Array();	
-			myMapApp.legRect = new Array();		
-			for(i = 0; i < num_group[myMapApp.curKpi]; i++) {
-				// ...legendpanel
-				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
-				panel.setAttribute("id","legpanel" + (i+1));
-				panel.setAttribute("x", "70");
-				panel.setAttribute("y", "" + offset);
-				panel.setAttribute("fill", "dimgray");
-				panel.setAttribute("font-family", "Arial,Helvetica");
-				panel.setAttribute("font-size", "14px");
-				panel.setAttribute("startOffset", "0");
-				var closingChar = (i!=myMapApp.colArray.length-1?")":"]");
-				var textString = "-   ["+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1] + closingChar;
-				var text_node = document.createTextNode(textString);
-				panel.appendChild(text_node);
-				
-				coulourBoxes.appendChild(panel);
-				
-				myMapApp.legPanel[i] = panel;
-				
-				// ...legendrect
-				var offset = 35 + (i*25);
-				var rect = document.createElementNS(svgNS,"rect");
-				rect.setAttribute("id","rect" + (i+1));
-				rect.setAttribute("stroke","dimgray");
-				rect.setAttribute("x","30");
-				rect.setAttribute("y",offset);
-				rect.setAttribute("width","30");
-				rect.setAttribute("height","20");
-				rect.setAttribute("fill",myMapApp.colArray[i]);
-				
-				coulourBoxes.appendChild(rect);
-				
-				myMapApp.legRect[i] = rect;
-			}	
-			
-			
-			/*
 			for (var i = 0;i<num_group[myMapApp.curKpi];i++) {
 				//color rectangle
-				eval("myMapApp.legRect["+i+"]").setAttributeNS(null,"fill",myMapApp.colArray[i]);
+				eval("myMapApp.legRect"+(i+1)).setAttributeNS(null,"fill",myMapApp.colArray[i]);
 				var closingChar = (i!=myMapApp.colArray.length-1?")":"]");
 				var textString = "-   ["+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1] + closingChar;
-				eval("myMapApp.legPanel["+i+"]").firstChild.nodeValue = textString;
+				eval("myMapApp.legPanel"+(i+1)).firstChild.nodeValue = textString;
 			}
-			*/
 			
 			myMapApp.loadStatus.setAttributeNS(null,"display","inline");		
 			
@@ -587,7 +512,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 	           }
 	       }
            
-           var curLegendRect = (colIndex != -1? eval("myMapApp.legRect[" + colIndex + "]") : null);
+           var curLegendRect = (colIndex != -1? eval("myMapApp.legRect"+(colIndex+1)) : null);
            
            if (evt.type=="mouseover"){
                myMapApp.Windows["detail"].setTitleText(nome);
@@ -1176,21 +1101,17 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 							
 						<g id="coulourboxes" display="inherit">
 							
-							<!--
 							<text id="legpanel5" x="70" y="50" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 2.5 - 22</text>
 							<text id="legpanel4" x="70" y="75" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 1 - 2.5</text>
 							<text id="legpanel3" x="70" y="100" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.2 - 1</text>
 							<text id="legpanel2" x="70" y="125" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.02 - 0.2</text>
 							<text id="legpanel1" x="70" y="150" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0 - 0.02</text>
 							
-							
 							<rect id="rect5" fill="#500000" stroke="dimgray" x="30" y="35" width="30" height="20"/> 
 							<rect id="rect4" fill="#BD3618" stroke="dimgray" x="30" y="60" width="30" height="20" stroke-width="1"/> 
 							<rect id="rect3" fill="#F77B11" stroke="dimgray" x="30" y="85" width="30" height="20" stroke-width="1"/> 
 							<rect id="rect2" fill="#FECC55" stroke="dimgray" x="30" y="110" width="30" height="20" stroke-width="1"/> 
 							<rect id="rect1" fill="#F7F791" stroke="dimgray" x="30" y="135" width="30" height="20" stroke-width="1"/>		
-						-->
-						
 						</g>
 					</g>
 				

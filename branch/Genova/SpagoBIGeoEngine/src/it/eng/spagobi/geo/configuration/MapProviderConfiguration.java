@@ -14,6 +14,10 @@ public class MapProviderConfiguration {
 	private String className;
 	private String mapName;
 	
+	public MapProviderConfiguration(MapConfiguration parentConfiguration) {
+		this.parentConfiguration = parentConfiguration;
+	}
+	
 	public MapProviderConfiguration(MapConfiguration parentConfiguration, SourceBean mapProviderConfigurationSB) {
 		setParentConfiguration(parentConfiguration);
 		String mapProviderClassName = (String) mapProviderConfigurationSB.getAttribute(Constants.CLASS_NAME);

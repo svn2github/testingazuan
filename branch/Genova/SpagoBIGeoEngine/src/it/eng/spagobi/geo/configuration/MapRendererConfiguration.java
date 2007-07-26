@@ -48,6 +48,10 @@ public class MapRendererConfiguration {
 	private Map layersAttributes;
 	
 	private String contextPath;
+	
+	public MapRendererConfiguration (MapConfiguration parentConfiguration) {
+		this.parentConfiguration = parentConfiguration;
+	}
 
 	public MapRendererConfiguration (MapConfiguration parentConfiguration, SourceBean mapRendererConfigurationSB){
 		

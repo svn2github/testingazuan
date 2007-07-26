@@ -3,7 +3,6 @@
 **/
 package it.eng.spagobi.geo.datamart.provider;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
@@ -22,7 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Executes the query and obtains the data associated to the svg map
@@ -155,6 +155,15 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             dr = cmdSelect.execute();
             sdr = (ScrollableDataResult) dr.getDataObject();
             ResultSet resultSet = sdr.getResultSet();
+            
+            
+           
+            
+            HashMap orderedKpiValuesMap = new HashMap();                 
+            for(int i = 0; i < kpiColumnNames.length; i++) {
+            	orderedKpiValuesMap.put(kpiColumnNames[i], new TreeSet());
+            }           
+            
             Map values = new HashMap();
             Map attributes = null;
             Map links = new HashMap();
@@ -171,6 +180,9 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
 	            		continue;
 	            	}
 	            	attributes.put(kpiColumnNames[i], value);
+	            	
+	            	((Set)orderedKpiValuesMap.get(kpiColumnNames[i])).add(new Double(value));
+	            	
             	}
             	
             	values.put(id, attributes);
@@ -181,6 +193,15 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             datamart.setLinks(links);
             datamart.setKpiNames(kpiColumnNames);
             datamart.setSelectedKpi(0);
+            datamart.setOrderedKpiValuesMap(orderedKpiValuesMap);
+            
+            /*
+            Iterator it = ((Set)orderedKpiValuesMap.get(kpiColumnNames[0])).iterator();
+            while(it.hasNext()) {
+            	Double t = (Double)it.next();
+            	System.out.println(t.toString());
+            }
+            */
             
         } catch (Exception ex) {
         	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 

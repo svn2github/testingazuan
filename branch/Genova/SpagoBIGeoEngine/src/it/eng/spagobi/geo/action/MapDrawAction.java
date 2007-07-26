@@ -6,6 +6,7 @@
 package it.eng.spagobi.geo.action;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.tracing.TracerSingleton;
@@ -34,6 +35,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -89,9 +91,25 @@ public class MapDrawAction extends AbstractHttpAction {
 	 * @param serviceRequest the Spago request SourceBean 
 	 * @param serviceResponse the Spago response SourceBean 
 	 */
+	
+	public Properties getParametersFromRequest(SourceBean servReq) {
+		Properties parameters = new Properties();
+		List list = servReq.getContainedAttributes();
+		for(int i = 0; i < list.size(); i++) {
+			SourceBeanAttribute attrSB = (SourceBeanAttribute)list.get(i);
+			if(attrSB.getKey().equals("template")) continue;
+			if(attrSB.getKey().equals("ACTION_NAME")) continue;
+			if(attrSB.getKey().equals("NEW_SESSION")) continue;
+			String className = attrSB.getClass().getName();
+			parameters.setProperty(attrSB.getKey(), attrSB.getValue().toString());
+		}
+		return parameters;
+	}
+	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		HttpServletRequest request = this.getHttpRequest(); 
 		
+		Properties properties = getParametersFromRequest(serviceRequest);
 		
 		String map_catalogue_manager_url = (String) request.getAttribute(MAP_CATALOGUE_MANAGER_URL);
 		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
@@ -125,7 +143,16 @@ public class MapDrawAction extends AbstractHttpAction {
 		}
 		
 		// get the bytes od the template xml file from the request (the template is encoded in byte64)
-		String templateBase64Coded = (String) serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
+		String templateBase64Coded ;
+		Object object = serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
+		if(object instanceof ArrayList) {
+			List list = (List)object;
+			templateBase64Coded = (String)list.get(0);
+		} else {
+			templateBase64Coded = (String)object;
+		}
+		
+		
 		BASE64Decoder bASE64Decoder = new BASE64Decoder();
 		byte[] template = null;
 		try{
@@ -148,6 +175,7 @@ public class MapDrawAction extends AbstractHttpAction {
 			
 			
 			mapConfiguration = new MapConfiguration(baseUrl, template, serviceRequest);
+			mapConfiguration.getDatamartProviderConfiguration().setParameters(properties);
 			
 			String selectedHierarchyName = (String)serviceRequest.getAttribute("hierarchyName");
 			String selectedLevelName = (String)serviceRequest.getAttribute("level");

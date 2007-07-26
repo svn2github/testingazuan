@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+ 	
+	<info>
+        <appname>SpagoBI</appname>
+        <appversion>1.9.3</appversion>
+        <authors>
+        </authors>
+        <url>http://spagobi.eng.it</url>
+        <uninstaller write="no" />
+        <!--webdir>http://download.forge.objectweb.org/spagobi</webdir-->
+    </info>
+ 	
+ 	<variables>
+		<variable name="BIRT" value="no"/>
+		<variable name="GEO" value="no"/>
+		<variable name="JASPER" value="no"/>
+		<variable name="JPIVOT" value="no"/>
+		<variable name="QBE" value="no"/>
+		<variable name="WEKA" value="no"/>
+		<variable name="TALEND" value="no"/>
+		<variable name="EXOPROFILEATTRMANAGER" value="no"/>
+		<variable name="BOOKLETS" value="no"/>
+		<variable name="SPAGOBI_EXAMPLES" value="no"/>
+		<variable name="SPAGOBI_AM" value="no"/>
+		<variable name="DOCUMENTATION" value="no"/>
+		<variable name="DRIVER" value=""/>
+		<variable name="CONNECTION_URL" value=""/>
+		<variable name="USERNAME" value=""/>
+		<variable name="PASSWORD" value=""/>
+		<variable name="PORT" value="8080"/>
+		<variable name="PORTAL" value="portal"/>
+		<variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+	</variables>
+ 	
+ 	<native type="izpack" name="ShellLink.dll" />
+ 	
+ 	<guiprefs height="700" resizable="yes" width="900">
+        <laf name="looks">
+            <os family="unix"/>
+        </laf>
+    	<modifier key="layoutAnchor" value="CENTER"/>
+    	<modifier key="headingPanelCounter" value="progressbar"/>
+		<modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+		<modifier key="allYGap" value="3"/>
+		<modifier key="paragraphYGap" value="10"/>	
+		<modifier key="filler1YGap" value="5"/>
+		<modifier key="filler3XGap" value="10"/>
+		<modifier key="useButtonIcons" value="yes"/>
+		<modifier key="useLabelIcons" value="yes"/>
+    </guiprefs>
+    <locale>
+    	<langpack iso3="eng"/>
+    	<langpack iso3="ita"/>
+    </locale>
+    <resources>
+    	<res src="IzPanels/Logo_Spago_BI_sitoweb.gif" id="installer.langsel.img"/>
+   		<res src="IzPanels/Introduction.html" id="HTMLInfoPanel.info"/>
+   		<res src="IzPanels/Introduction_ita.html" id="HTMLInfoPanel.info_ita"/>
+    	<res src="IzPanels/Licence.txt" id="LicencePanel.licence"/>
+    	<res src="IzPanels/userInputSpec.xml" id="userInputSpec.xml"/>
+    	<res src="IzPanels/userInputLang.xml_ita" id="userInputLang.xml_ita"/>
+    	<res src="IzPanels/userInputLang.xml_eng" id="userInputLang.xml_eng"/>
+    	<res src="IzPanels/Win_shortcutSpec.xml" id="shortcutSpec.xml"/>
+    	<res src="IzPanels/Unix_shortcutSpec.xml" id="Unix_shortcutSpec.xml"/>
+    	<res src="IzPanels/TargetPanel_dir_windows.txt" id="TargetPanel.dir.windows"/>
+    	<res src="IzPanels/TargetPanel_dir_unix.txt" id="TargetPanel.dir.unix"/>
+    	<res src="IzPanels/conditions.xml" id="conditions.xml"/>
+    	<res src="IzPanels/packsLang.xml_ita" id="packsLang.xml_ita"/>
+    	<res src="IzPanels/packsLang.xml_eng" id="packsLang.xml_eng"/>
+    	<res src="IzPanels/CustomLangpack_ita.xml" id="CustomLangpack.xml_ita"/>
+    	<res src="IzPanels/CustomLangpack_eng.xml" id="CustomLangpack.xml_eng"/>
+	</resources>
+	<panels>
+    	<panel classname="HelloPanel" id="hellopanel"/>
+   		<panel classname="HTMLInfoPanel" id="infopanel"/>
+   		<panel classname="LicencePanel" id="licencepanel"/>
+   		<panel classname="UserInputPanel" id="serverType"/>
+	    <panel classname="PacksPanel" id="packspanel"/>
+	    <panel classname="UserInputPanel" id="db_connection_def"/>
+	    <panel classname="SpagoBIPerlPathPanel" id="perl_dir_panel"/>
+	    <panel classname="SpagoBITargetPanel" id="targetpanel"/>
+	    <panel classname="SpagoBIRepositoryPathPanel" id="spagobirepopanel"/>
+    	<panel classname="InstallPanel" id="installpanel"/>
+    	<panel classname="ShortcutPanel" id="shortcutpanel"/>
+    	<panel classname="SpagoBIFinishPanel" id="finishpanel"/>
+	</panels>
+
+
+    <packs>
+    	<pack name="Installation_files" required="yes" id="Installation_files">
+	    	<description/>
+	    	<fileset dir="" targetdir="$INSTALL_PATH">
+      			<include name="spagobi/spagobi_platform/**/*" />
+		    </fileset>
+    		<fileset dir="batch" targetdir="$INSTALL_PATH">
+    		    <include name="StartSpagoBI.bat" />
+    		    <include name="StopSpagoBI.bat" />
+      			<include name="OOStart.bat" />
+      			<include name="StartSpagoBI.ico" />
+      			<include name="StopSpagoBI.ico" />
+      			<include name="ConnectToSpagoBI.URL" />
+      			<include name="StartSpagoBI.sh" />
+      			<include name="StopSpagoBI.sh" />
+      			<include name="OOStart.sh" />
+      			<include name="StartSpagoBI.png" />
+      			<include name="StopSpagoBI.png" />
+		    </fileset>
+	    </pack>
+    	<pack name="SpagoBI-1.9.3" required="yes" bytes="23832623" id="SpagoBI-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBI-bin-1.9.3_07242007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBIBirtReportEngine-1.9.3" required="no" preselected="yes" bytes="35085035" id="SpagoBIBirtReportEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBirtReportEngine-bin-1.9.3_07232007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBIGeoEngine-1.9.3" required="no" preselected="yes" bytes="6043408" id="SpagoBIGeoEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIGeoEngine-bin-1.9.3_07062007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBIJasperReportEngine-1.9.3" required="no" preselected="yes" bytes="11433378" id="SpagoBIJasperReportEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJasperReportEngine-bin-1.9.3_07062007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBIJPivotEngine-1.9.3" required="no" preselected="yes" bytes="17465117" id="SpagoBIJPivotEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIJPivotEngine-bin-1.9.3_07232007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBIQbeEngine-1.9.3" required="no" preselected="yes" bytes="17091964" id="SpagoBIQbeEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIQbeEngine-bin-1.9.3_07182007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBIWekaEngine-1.9.3" required="no" preselected="yes" bytes="8933577" id="SpagoBIWekaEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIWekaEngine-bin-1.9.3_07062007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBITalendEngine-1.9.3" required="no" preselected="yes" bytes="9654336" id="SpagoBITalendEngine-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBITalendEngine-bin-1.9.3_07232007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="ExoProfileAttributesManagerModule-1.9.3" required="no" preselected="yes" bytes="89580" id="ExoProfileAttributesManagerModule-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/ExoProfileAttributesManagerModule-bin-1.9.3_07062007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBIBookletsComponent-1.9.3" required="no" preselected="yes" bytes="1532608" id="SpagoBIBookletsComponent-1.9.3"
+    			remoteFile="http://download.forge.objectweb.org/spagobi/SpagoBIBookletsComponent-bin-1.9.3_07062007.zip">
+	    	<description/>
+	    </pack>
+    	<pack name="SpagoBI_examples" required="no" preselected="yes" id="SpagoBI_examples">
+	    	<description/>
+	    	<fileset dir="" targetdir="$INSTALL_PATH">
+      			<include name="spagobi/spagobi_examples/**/*" />
+		    </fileset>
+	    </pack>
+    	<pack name="SpagoBI_AM" required="no" preselected="yes" id="SpagoBI_AM">
+	    	<description/>
+	    	<fileset dir="" targetdir="$INSTALL_PATH">
+      			<include name="spagobi/spagobi_AM/**/*" />
+		    </fileset>
+	    </pack>
+		<pack name="Documentation" required="no" preselected="yes" id="Documentation">
+			<description/>
+    		<fileset dir="" targetdir="$INSTALL_PATH">
+      			<include name="spagobi-docs/**/*" />
+		    </fileset>
+		</pack>
+    </packs>
+    
+    <native type="izpack" name="ShellLink.dll"/>
+    <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+        <os family="windows"/>
+    </native>
+    
+</installation>

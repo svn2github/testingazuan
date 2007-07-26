@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<langpack>
+	<str id="server.type.title" txt="Server di destinazione"/>
+    <str id="server.type.description" txt="Indica il tipo di server sul quale desideri istallare SpagoBI:"/>
+    <str id="database.connection.def" txt="Inserisci i parametri di connessione al tuo Data WareHouse:"/>
+    <str id="database.driver" txt="Driver:"/>
+    <str id="database.connection.url" txt="Url di connessione:"/>
+    <str id="database.username" txt="Nome utente:"/>
+    <str id="database.password" txt="Password:"/>
+</langpack>

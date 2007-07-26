@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PUBLISHERS>
+
+
+	<PUBLISHER name="EXIT_FROM_SUBQUERY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/exitFromSubquery.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+
+	<PUBLISHER name="SPAGOBI_LOOP_PUBLISHER">
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			
+      			<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="SELECT_DATAMART_AND_INIT_NEW_WIZARD_ACTION" />
+      			<PARAMETER name="NEW_SESSION" type="ABSOLUTE" scope="" value="TRUE" />
+      			<PARAMETER name="SPAGOBI_USER" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_USER" />
+      			<PARAMETER name="SPAGOBI_URL" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_URL" />
+      			<PARAMETER name="SPAGOBI_PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_PATH" />
+      			
+      			<PARAMETER name="SPAGOBI_COUNTRY" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_COUNTRY" />
+      			<PARAMETER name="SPAGOBI_LANGUAGE" type="RELATIVE" scope="SERVICE_RESPONSE" value="SPAGOBI_LANGUAGE" />
+      			
+      			<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="PATH" />
+      			<PARAMETER name="DIALECT" type="RELATIVE" scope="SERVICE_RESPONSE" value="DIALECT" />
+      			<PARAMETER name="JNDI_DS" type="RELATIVE" scope="SERVICE_RESPONSE" value="JNDI_DS" />
+      			<PARAMETER name="DATAMART_PROPERTIES" type="RELATIVE" scope="SERVICE_RESPONSE" value="DATAMART_PROPERTIES" />
+      			<PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="MODALITY" />
+      			
+      			<PARAMETER name="queryId" type="RELATIVE" scope="SERVICE_RESPONSE" value ="queryId" />
+      			
+      			 <!--  
+      			<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="SELECT_DATAMART_AND_INIT_NEW_WIZARD_ACTION" />
+      			<PARAMETER name="PATH" type="ABSOLUTE" scope="" value="foodmart" />
+      			<PARAMETER name="DIALECT" type="ABSOLUTE" scope="" value="org.hibernate.dialect.HSQLDialect" />
+      			<PARAMETER name="JNDI_DS" type="ABSOLUTE" scope="" value="java:comp/env/jdbc/foodmart" />
+      			<PARAMETER name="queryId" type="ABSOLUTE" scope="" value="#" />
+      			 -->
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+	
+	<PUBLISHER name="INDEX_HTML_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/index.html" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+
+	<PUBLISHER name="LOGIN_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/login.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<!--  START PAGE WITH AUTHORIZATION CHECK ENABLED -->
+  	<PUBLISHER name="START_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/index.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+
+	
+	<!--  START PAGE WITH AUTHORIZATION CHECK DISABLED -->
+	<!--
+	<PUBLISHER name="START_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/indexNoAuth.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	-->
+	
+  	<PUBLISHER name="EXPORT_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/exportResult.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/exportResult.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/exportResult.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+  	
+  	<PUBLISHER name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForSelection.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForSelection.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForSelection.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	
+	</PUBLISHER>
+	
+	<PUBLISHER name="SELECT_FIELDS_FOR_CONDITION_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForCondition.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForCondition.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForSelection.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForOrderBy.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForOrderBy.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForOrderBy.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	
+	<PUBLISHER name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/wizardSelectFieldsForGroupBy.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/wizardSelectFieldsForGroupBy.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/wizardSelectFieldsForGroupBy.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="RESUME_QUERY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/resumeQuery.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/resumeQuery.jsp" />
+        		<ITEM mode="EDIT" resource="/jsp/resumeQuery.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="QUERY_RESULT_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/queryResult.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/queryResult.jsp" />
+        		<ITEM mode="EDIT" resource="/jsp/queryResult.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+
+	<PUBLISHER name="DYNAMIC_FORWARD_PUBLISHER">
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0" resource="it.eng.spago.presentation.DynamicForwardPublisher" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spago.presentation.DynamicForwardPublisher" />
+        		
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="DATA_MART_MAIN_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/dataMartMain.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/dataMartMain.jsp" />
+        		<ITEM mode="EDIT" resource="/jsp/dataMartMain.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+
+<!--
+	<PUBLISHER name="MAIN_TAB_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/mainTab.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/mainTab.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/mainTab.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+-->
+
+	<PUBLISHER name="INDEX_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/index.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/index.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/index.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	
+  	<PUBLISHER name="LOOPBACK_AFTER_UPDATE_CONDITION">
+  		<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="LOOPBACK_AFTER_UPDATE_RESUME">
+  		<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_ACTION" />
+                <PARAMETER name="PUBLISHER_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="NEXT_PUBLISHER" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+  	<PUBLISHER name="QBE_LOOP_TREEOBJECT_PAGE">
+  		
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
+                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ACTOR" />
+			</RESOURCES>
+   	 	</RENDERING>
+   	 	
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="QBE_LOOP_START_PUBLISHER">
+  		
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      	
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="ACTION" />
+        		<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="PATH" />
+                <PARAMETER name="NEW_SESSION" type="ABSOLUTE" scope="" value="TRUE" />
+			</RESOURCES>
+   	 	
+   	 	</RENDERING>
+   	 	
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="SAVE_QUERY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/saveQuery.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/saveQuery.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/saveQuery.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+  	
+</PUBLISHERS>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SPAGOBI>
+
+    <!-- ********************* START MODE CONFIGURATION ************************ -->
+
+	 <!-- SPAGOBI-MODE mode="WEB" /-->
+	 <SPAGOBI-MODE mode="PORTLET" />
+
+    <!-- ********************* END MODE CONFIGURATION ************************** -->
+     
+     
+     
+     
+     
+    <!-- ********************* START SECURITY CONFIGURATION ************************ -->
+     
+     <!-- Xml (Spago framework) security Provider  -->
+     <!-- 
+     <SECURITY>
+  		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
+		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityProviderImpl">
+			<CONFIG />
+		</PORTAL-SECURITY-CLASS>
+		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlUserProfileFactoryImpl" />
+    	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
+	 </SECURITY>
+	  -->
+     <!-- Exo security Provider  -->
+     <SECURITY>
+  		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
+		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoGroupAsRoleSecurityProviderImpl">
+			<CONFIG>
+				<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
+			</CONFIG>
+		</PORTAL-SECURITY-CLASS>
+		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoGroupAsRoleUserProfileFactoryImpl">
+		</USER-PROFILE-FACTORY-CLASS>
+    	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
+	 </SECURITY>
+	
+         
+    <!-- ********************* END SECURITY CONFIGURATION ************************** --> 
+     
+     
+     
+     
+     
+     
+     
+     <!-- ********************* START DATABASE CONFIGURATION ************************ -->
+     
+     <!-- SPAGOBI HIBERNATE PERSISTENCE CONFIGURATTION -->
+	 <!--  PostgresSQL (Default)  -->
+	 <!--  hibernate.cfg.postgres.xml -->
+	 <!--  MySQL: Uncomment the row below and edit the file  to provide connection info -->
+	 <!--  hibernate.cfg.mysql.xml -->
+	 <!--  Oracle: Uncomment the row below and edit the file to provide connection info -->
+	 <!--  hibernate.cfg.ora.xml-->
+     <!--  Hsqldb: Uncomment the row below and edit the file to provide connection info -->
+     <!--   hibernate.cfg.hsql.xml -->
+	 <HIBERNATE-CFGFILE>hibernate.cfg.hsql.xml</HIBERNATE-CFGFILE>
+	
+     <!-- ********************* END DATABASE CONFIGURATION ************************ -->
+     
+
+
+
+
+
+
+     <!-- ********************* START GENERAL CONFIGURATION ************************ -->
+     
+     <LOOKUP numberRows = "20" />
+    
+ 	 <SPAGOBI_CONTEXT_PATH>http://localhost:8080/spagobi</SPAGOBI_CONTEXT_PATH>
+	
+	 <PORTLET_EDIT_MODE_ROLES>
+		<ROLE name="/spagobi/admin" />
+	 </PORTLET_EDIT_MODE_ROLES>
+	
+	 <!-- root paths of SpagoBI data into the cms system -->
+     <CMS_PATHS>
+		<BIOBJECTSPATH path="/BIObjects" />
+	 </CMS_PATHS>
+    
+    
+ 	 <SERVICE_SECURITY>
+		<SPAGOBI_PRIVATE_KEY_DSA>spagobi_privatekey</SPAGOBI_PRIVATE_KEY_DSA>
+     </SERVICE_SECURITY>
+
+
+	 <LANGUAGE_SUPPORTED>
+		<LANGUAGE default="false" language="it" country="IT" />
+		<LANGUAGE default="true" language="en" country="US" />
+		<LANGUAGE default="false" language="fr" country="FR" />
+	 </LANGUAGE_SUPPORTED>	
+	
+	
+	 <SCRIPT_LANGUAGE_SUPPORTED>
+		<SCRIPT_LANGUAGE default="true" 
+						name="groovy" 
+						engineclass="org.codehaus.groovy.bsf.GroovyEngine"
+						identifier="groovy"
+						shortidentifier="gy" 
+						predefinedScriptFile="predefinedGroovyScript.groovy"/>
+	 </SCRIPT_LANGUAGE_SUPPORTED>	
+	
+	
+	 <TREE_INITIALIZATION>
+		<TREE_INITIAL_STRUCTURE>
+			<NODE code="Functionalities" name="Functionalities" 
+					description="Functionalities" parentPath="" codeType="LOW_FUNCT" />
+			<!-- 
+			<NODE code="SystemFunctionalities" name="System Functionalities" 
+					description="System Functionalities" parentPath="/Functionalities" codeType="LOW_FUNCT" />
+			-->
+		</TREE_INITIAL_STRUCTURE>
+	 </TREE_INITIALIZATION>
+     
+	 <!-- ********************* START GENERAL CONFIGURATION ************************ -->
+
+
+
+
+
+
+
+     <!-- ********************* START DAO CONFIGURATION ************************ -->
+     
+     <DAO-CONF>
+		<!--  HIBERNATE DAO (DEFAULT) IMPLEMENTATION -->
+		<DAO name="BIObjectDAO" implementation="it.eng.spagobi.bo.dao.hibernate.BIObjectDAOHibImpl"/>  
+		<DAO name="ChecksDAO" implementation="it.eng.spagobi.bo.dao.hibernate.CheckDAOHibImpl"/>
+		<DAO name="EngineDAO" implementation="it.eng.spagobi.bo.dao.hibernate.EngineDAOHibImpl"/>
+		<DAO name="ParameterDAO" implementation="it.eng.spagobi.bo.dao.hibernate.ParameterDAOHibImpl"/>
+		<DAO name="DomainDAO" implementation="it.eng.spagobi.bo.dao.hibernate.DomainDAOHibImpl"/>
+		<DAO name="BIObjectParameterDAO" implementation="it.eng.spagobi.bo.dao.hibernate.BIObjectParameterDAOHibImpl"/>
+		<DAO name="RoleDAO" implementation="it.eng.spagobi.bo.dao.hibernate.RoleDAOHibImpl"/>
+		<DAO name="ModalitiesValueDAO" implementation="it.eng.spagobi.bo.dao.hibernate.LovDAOHibImpl"/>
+		<DAO name="ParameterUseDAO" implementation="it.eng.spagobi.bo.dao.hibernate.ParameterUseDAOHibImpl"/>
+		<DAO name="LowFunctionalityDAO" implementation="it.eng.spagobi.bo.dao.hibernate.LowFunctionalityDAOHibImpl"/>
+		<DAO name="ObjParuseDAO" implementation="it.eng.spagobi.bo.dao.hibernate.ObjParuseDAOHibImpl"/>
+		<DAO name="SubreportDAO" implementation="it.eng.spagobi.bo.dao.hibernate.SubreportDAOHibImpl"/>
+		<!-- CMS DAO IMPLEMENTATION -->
+ 		<DAO name="BIObjectCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.BIObjectCMSDAOImpl"/>		
+		<DAO name="FunctionalityCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.FunctionalityCMSDAOImpl"/>		
+	 </DAO-CONF>     
+     
+     <!-- ********************* END DAO CONFIGURATION ************************ -->
+
+
+    
+	
+</SPAGOBI>

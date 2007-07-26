@@ -1,0 +1,15 @@
+Installation of SpagoBIDemo on you PC is completed.
+
+Now you can start database and Exo-Tomcat platform.
+Run the following files:
+
+- start.bat for Windows or start.sh for Unix in 
+sbidata/databases folder inside Exo-Tomcat directory (Pay attention to execution permission);
+- exo-run.bat for Windows or exo-run.sh for Unix in 
+bin folder inside Exo-Tomcat directory.
+- for booklets, close all OpenOffice applications and go into the 
+directory OPENOFFICE-HOME/program and exec the following command 
+soffice -quickstart -accept="socket,host=0,port=9000;urp;StarOffice.ServiceManager"
+
+Connect, with your browser (Explorer/Firefox), to the address
+http://localhost:8080/sbiportal

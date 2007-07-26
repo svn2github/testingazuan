@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+ 	
+	<info>
+        <appname>SpagoBIDemo</appname>
+        <appversion>1.9.1</appversion>
+        <authors>
+        </authors>
+        <url>http://spagobi.eng.it</url>
+        <uninstaller write="no" />
+    </info>
+ 	
+ 	<guiprefs height="360" resizable="yes" width="460">
+  		<laf name="metouia">
+        	<os family="windows" />
+    	</laf>
+	</guiprefs>
+    <locale>
+    	<langpack iso3="eng"/>
+    	<langpack iso3="ita"/>
+    </locale>
+    <resources>
+    	<res src="IzPanels/Logo_Spago_BI_sitoweb.gif" id="installer.langsel.img"/>
+   		<res src="IzPanels/Introduction.txt" id="InfoPanel.info"/>
+   		<res src="IzPanels/Introduction_ita.txt" id="InfoPanel.info_ita"/>
+    	<res src="IzPanels/Licence.txt" id="LicencePanel.licence"/>
+    	<res src="IzPanels/HTMLInfoPanel.txt" id="HTMLInfoPanel.info"/>
+    	<res src="IzPanels/HTMLInfoPanel_ita.txt" id="HTMLInfoPanel.info_ita"/>
+    	<!-- <res src="processPanel.xml" id="ProcessPanel.Spec.xml"/> -->
+	</resources>
+	<panels>
+    	<panel classname="HelloPanel"/>
+   		<panel classname="InfoPanel"/>
+   		<panel classname="LicencePanel"/>
+	    <panel classname="PacksPanel"/>
+	    <panel classname="TargetPanel"/>
+    	<panel classname="InstallPanel"/>
+    	<!-- <panel classname="ProcessPanel"/> -->
+    	<panel classname="HTMLInfoPanel"/>
+    	<panel classname="SimpleFinishPanel"/>
+	</panels>
+
+    <packs>
+		<pack name="SpagoBIDemo" required="yes">
+    		<description>SpagoBIDemo files</description>
+    		<fileset dir="" targetdir="$INSTALL_PATH">
+      			<include name="spagobi_demo_contents/**/*" />
+      			<include name="sbi_inst_support_classes.jar" />
+		    </fileset>
+		    <executable targetfile="$INSTALL_PATH/sbi_inst_support_classes.jar" class="it/eng/spagobi/installers/demoinstaller/InstallSpagoBIDemo" type="jar" stage="postinstall"> 
+		    	<args>
+		    		<arg value="$INSTALL_PATH"/>
+		    	</args>
+		    </executable>
+		</pack>
+    </packs>
+</installation>

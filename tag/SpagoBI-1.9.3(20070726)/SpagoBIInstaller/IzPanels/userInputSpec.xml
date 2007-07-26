@@ -1,0 +1,50 @@
+<userInput>
+	<panel order="0">
+		<field type="title">
+			<description id="server.type.title"/>
+		</field>
+		<field type="combo" variable="SERVER_TYPE">
+			<description id="server.type.description"/>
+			<spec>
+				<choice txt="Tomcat" value="tomcat" set="true"/>
+				<choice txt="JBoss" value="jboss"/>
+				<choice txt="JOnAS" value="jonas"/>
+			</spec>
+		</field>
+	</panel>
+	<panel order="1">
+		<field type="title">
+			<description id="database.connection.def"/>
+		</field>
+		<field type="staticText" align="left" id="database.connection.def"/>
+		<field type="space" />
+		<field type="combo" variable="DRIVER">
+			<description id="database.driver"/>
+			<spec>
+				<choice txt="org.hsqldb.jdbcDriver" value="org.hsqldb.jdbcDriver" set="true"/>
+				<choice txt="org.postgresql.Driver" value="org.postgresql.Driver"/>
+				<choice txt="com.mysql.jdbc.Driver" value="com.mysql.jdbc.Driver"/>
+				<choice txt="oracle.jdbc.OracleDriver" value="oracle.jdbc.OracleDriver"/>
+			</spec>
+		</field>
+		<field type="space" />
+		<field type="rule" variable="CONNECTION_URL">
+			<description align="left" id="database.connection.url"/>
+			<spec txt="" layout="O:30:U" resultFormat="plainString"/>
+			<validator class="com.izforge.izpack.util.NotEmptyValidator" txt="The connection url is mandatory!" />
+		</field>
+		<field type="space" />
+		<field type="rule" variable="USERNAME">
+			<description align="left" id="database.username"/>
+			<spec txt="" layout="O:15:U" resultFormat="plainString"/>
+			<validator class="com.izforge.izpack.util.NotEmptyValidator" txt="The username is mandatory!" />
+		</field>
+		<field type="space" />
+		<field type="password" variable="PASSWORD">
+			<description align="left" id="database.password"/>
+			<spec>
+                <pwd txt="" size="16"/>
+            </spec>
+		</field>
+	</panel>
+</userInput>

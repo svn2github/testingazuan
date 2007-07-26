@@ -1,0 +1,1 @@
+start /MIN java -jar ./SpagoBIInstaller.jar

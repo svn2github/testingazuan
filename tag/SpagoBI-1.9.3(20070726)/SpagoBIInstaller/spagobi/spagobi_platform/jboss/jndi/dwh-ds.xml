@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>dwh</jndi-name>
+    <connection-url>${CONNECTION_URL}</connection-url>
+    <driver-class>${DRIVER}</driver-class>
+    <user-name>${USERNAME}</user-name>
+    <password>${PASSWORD}</password>
+   
+    
+    <min-pool-size>5</min-pool-size>
+
+      <!-- The maximum connections in a pool/sub-pool -->
+    <max-pool-size>20</max-pool-size>
+    
+    <metadata>
+         <type-mapping>${TYPE_MAPPING}</type-mapping>
+    </metadata>
+    
+  </local-tx-datasource>
+</datasources>

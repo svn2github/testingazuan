@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PUBLISHERS>
+     
+       <PUBLISHER name="BookletsRefreshPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.booklets.publishers.BookletsRefreshPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+     
+     <PUBLISHER name="BookletsManagementPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.booklets.publishers.BookletsManagementPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="BookletDetail">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletDetail.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="BookletConfiguredDocumentDetail">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletConfDocDetail.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	<PUBLISHER name="BookletsLoopbackBookletDetail">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsManagementPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="OPERATION_DETAIL_BOOKLET" />
+      			<PARAMETER name="PATH_BOOKLET_CONF" type="RELATIVE" scope="SERVICE_RESPONSE" value="BookletsManagementModule.PATH_BOOKLET_CONF" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+    <PUBLISHER name="BookletsManagementLoopCall">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsManagementPage" />
+      			<PARAMETER name="OPERATION" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.OPERATION" />
+      			<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.PATH" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" type="ABSOLUTE" scope="" value="TRUE" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+     
+    <PUBLISHER name="BookletsExecution">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletExecution.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+  	
+  	
+  	 <PUBLISHER name="BookletsPresentationVersion">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletPresentationVersions.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+     
+    
+    <PUBLISHER name="BookletsCollaborationPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.booklets.publishers.BookletsCollaborationPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+     
+     
+    <PUBLISHER name="AddNoteHandler">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsCollaborationPage" />
+      			<PARAMETER name="ActivityKey" type="RELATIVE" scope="SERVICE_REQUEST" value="ActivityKey" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="OPERATION_OPEN_NOTE_EDITOR" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+    
+    
+    <PUBLISHER name="BookletEditNotesTemplatePart">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletEditNotesTempPart.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+     
+     
+     
+     <PUBLISHER name="ValidateFinalDocumentHandler">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletCheckFinalDocument.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+     
+     
+     
+     <PUBLISHER name="BookletCompleteActivityLoopback">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="CompleteOrRejectActivityPage" />
+      			<PARAMETER name="CompleteActivity" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="ActivityKey" type="RELATIVE" scope="SERVICE_REQUEST" value="ActivityKey" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	
+  	
+  	<PUBLISHER name="BookletRejecrActivityLoopback">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="CompleteOrRejectActivityPage" />
+      			<PARAMETER name="ActivityKey" type="RELATIVE" scope="SERVICE_REQUEST" value="ActivityKey" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+     
+     
+     
+     <PUBLISHER name="publishPresentation">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletPublishPresentation.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+     
+     
+     <!-- 
+	<PUBLISHER name="PamphletsLoopbackManagementHome">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="PamphletsManagementPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="OPERATION_PAMPHLETS_VIEW_TREE" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+	<PUBLISHER name="BookletssManagementPub">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/booklets/jsp/bookletsManagementHome.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+
+	
+  	
+  	<PUBLISHER name="PamphletsCollaborationPub">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletCollaborationHome.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="PamphletEditNotesTemplatePart">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletEditNotesTempPart.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="PamphletCheckFinalDocument">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletCheckFinalDocument.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+	<PUBLISHER name="PamphletWorkList">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="WORKLIST_ACTION" />
+        	</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+
+
+
+
+
+
+
+
+
+
+
+
+	<PUBLISHER name="ACCEPT_ACTIVITY_PUBLISHER" scope="">
+		<RENDERING channel="PORTLET" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="it.eng.spago.workflow.worklist.publisher.AcceptActivityPublisher" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="COMPLETE_OR_REJECT_ACTIVITY_PUBLISHER" scope="">
+		<RENDERING channel="PORTLET" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="it.eng.spago.workflow.worklist.publisher.CompleteOrRejectActivityPublisher" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="AUTO_GENERATE_FORM_PUBLISHER">
+		<RENDERING channel="PORTLET" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="/jsp/autoForm.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="WORKLIST_PUBLISHER">
+  		<RENDERING channel="PORTLET" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="/components/pamphlets/jsp/pamphletCollaborationHome.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="LOOP_WORKLIST_PUBLISHER">
+		<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="WORKLIST_ACTION" /> 
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+ 
+    -->
+
+
+</PUBLISHERS>

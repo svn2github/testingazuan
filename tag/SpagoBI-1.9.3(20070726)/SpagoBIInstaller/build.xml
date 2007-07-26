@@ -1,0 +1,9 @@
+<project basedir="." name="test" default="all">
+<taskdef name="izpack" classpath="/Programmi/IzPack/lib/compiler.jar" classname="com.izforge.izpack.ant.IzPackTask"/>
+	<target name="all">
+		<izpack input="/Progetti/SpagoBI/workspace/trunk/SpagoBIInstaller/SpagoBIInstallerCreator.xml"
+		        output="/Documents and Settings/zerbetto/Desktop/SpagoBIInstaller.jar"
+		        installerType="standard" basedir="/Progetti/SpagoBI/workspace/trunk/SpagoBIInstaller"
+		        izPackDir="/Programmi/IzPack"/>
+	</target>
+</project>

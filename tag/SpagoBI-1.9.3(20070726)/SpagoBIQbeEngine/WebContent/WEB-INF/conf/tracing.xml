@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<TRACING>
+	<LOGGER name="DEFAULT_LOGGER" class="it.eng.spago.tracing.DefaultLogger">
+		<CONFIG trace_min_log_severity="4" debug="false" trace_path="/WEB-INF/log/" trace_name="spagobi-qbe-" append="true" trace_thread_name="false" /> 
+	</LOGGER>
+</TRACING>

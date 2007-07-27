@@ -19,6 +19,10 @@ public class Constants {
 	
 	public static final String HIERARCHY_LEVEL_TAG = "LEVEL";
 	
+	public static final String DRILL_TAG = "DRILL";
+	
+	public static final String PARAM_TAG = "PARAM";
+	
 	
 	// ATTRIBUTES
 	public static final String DP_CLASS_NAME_ATTR = "CLASS_NAME";
@@ -52,6 +56,14 @@ public class Constants {
 	public static final String HIERARCHY_LEVEL_COLUMN_DESC_ATRR = "COLUMN_DESC";
 	
 	public static final String HIERARCHY_LEVEL_FEATURE_NAME_ATRR = "FEATURE_NAME";
+	
+	public static final String DRILL_DOCUMENT_ATRR = "DOCUMENT";
+	
+	public static final String PARAM_TYPE_ATRR = "TYPE";
+	
+	public static final String PARAM_NAME_ATRR = "NAME";
+	
+	public static final String PARAM_VALUE_ATRR = "VALUE";
 	
 	
 	

@@ -3,6 +3,7 @@
 **/
 package it.eng.spagobi.geo.datamart.provider;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
@@ -28,6 +29,9 @@ import java.util.TreeSet;
  * Executes the query and obtains the data associated to the svg map
  */
 public class HierarchicalDatamartProvider extends AbstractDatamartProvider { 
+    private static final String DRILL = "DRILL";
+
+    private static final String PARAMETER = "PARAM";
 
     /**
      * Constructor
@@ -146,7 +150,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         
     	String columnid = level.getColumnId();
         String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
-        //SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getAttribute(DRILL);
+        SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getDrillConfigurationSB();
         
         
         try{
@@ -186,8 +190,8 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             	}
             	
             	values.put(id, attributes);
-            	//String link = createLink(drillSB, resultSet);
-            	//links.put(id, link);
+            	String link = createLink(drillSB, resultSet);
+            	links.put(id, link);
             }
             datamart.setValues(values);
             datamart.setLinks(links);
@@ -222,7 +226,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
      * @param resultSet the resultset 
      * @return The url link associated to the resultset row
      */
-    /*
+   
     private String createLink(SourceBean drillSB, ResultSet resultSet) {
     	String link = "../SpagoBIDrillServlet?";
     	try{
@@ -251,7 +255,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	}
     	return link;
     }
-    */
+    
     
     
 }

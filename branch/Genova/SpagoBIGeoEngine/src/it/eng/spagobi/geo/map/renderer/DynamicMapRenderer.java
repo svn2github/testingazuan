@@ -107,12 +107,60 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    		Map attributes = (Map)datamart.getAttributeseById(column_id);
 	    		if(attributes != null) {
 	    			SVGMapHandler.addAttributes(child, attributes);
-	    			child.setAttribute("attrib:nome", child.getAttribute("id"));
+	    			child.setAttribute("attrib:nome", child.getAttribute("id"));	    			
 	    		}
 	    	} 
 	    }
 	}
+
 	
+	private void addLink(SVGDocument map, Datamart datamart) {
+		/* example:     
+		 * DOMParser parser = new DOMParser();
+
+            // Create the first document
+            parser.parse(new InputSource(args[0]));
+            Document doc1 = parser.getDocument();
+
+            // Create the second document
+            parser.parse(new InputSource(args[1]));
+            Document doc2 = parser.getDocument();
+
+            // Get root of first document
+            Element firstRoot = doc1.getDocumentElement();
+
+            // Get Node to move
+            Element secondRoot = doc2.getDocumentElement();
+            NodeList kids = secondRoot.getElementsByTagName("game");
+            Element oneToMove = (Element)kids.item(0);
+
+            // Add to first document
+
+            Node newOneToMove = doc1.importNode(oneToMove, true);
+            firstRoot.appendChild(newOneToMove);
+            */
+		//anto:
+		/*Element targetLayer = map.getElementById(datamart.getTargetFeatureName());		
+		NodeList nodeList = targetLayer.getChildNodes();
+	    for(int i = 0; i < nodeList.getLength(); i++){
+	    	Node childNode= (Node)nodeList.item(i);	    
+	    	if(childNode instanceof Element) {
+	    		SVGElement childOrig = (SVGElement)childNode;
+	    		SVGElement childNew = (SVGElement)childNode;
+	    		String childId = childOrig.getId();
+	    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
+	    		String link = datamart.getLinkForId(column_id);
+	    		link = "<a xlink:href=\" " + link  + "\">";
+	    		SVGElement nodeLink = (SVGElement) map.createElement(link);
+	    		map.appendChild(nodeLink);
+	    		//move
+	    		childNew = childOrig;
+	    		map.appendChild(childNew);
+	    		map.removeChild(childOrig);
+	    	} 
+	    }
+	    */
+	}
 	private void importScripts(SVGDocument doc) {
 		importScipt(doc, "helper_functions.js");
 	    importScipt(doc, "timer.js");

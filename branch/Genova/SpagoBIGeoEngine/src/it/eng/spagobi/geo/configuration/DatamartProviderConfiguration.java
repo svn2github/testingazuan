@@ -56,6 +56,10 @@ public class DatamartProviderConfiguration {
 	private Properties parameters;
 	
 	private Map hierarchyMap;
+	private Map drillMap;
+	
+	private SourceBean drillConfigurationSB; 
+
 	
 	
 	public static final String DEFAULT_CALSS_NAME = "it.eng.spagobi.geo.datamart.DefaultDatamartProvider";
@@ -63,6 +67,7 @@ public class DatamartProviderConfiguration {
 	public DatamartProviderConfiguration (MapConfiguration parentConfiguration) {
 		this.parentConfiguration = parentConfiguration;
 		this.hierarchyMap = new HashMap();
+		this.drillMap = new HashMap();
 	}
 	
 	public DatamartProviderConfiguration (MapConfiguration parentConfiguration, SourceBean datamartProviderConfigurationSB) throws ConfigurationException {
@@ -229,7 +234,8 @@ public class DatamartProviderConfiguration {
 			hierarchyMap.put(hierarchy.getName(), hierarchy);
 		}	
 		
-		
+		// get drill configuration settings
+		drillConfigurationSB = (SourceBean)datamartProviderConfigurationSB.getAttribute(Constants.DRILL_TAG);		
 		
 	}
 	
@@ -470,5 +476,11 @@ public class DatamartProviderConfiguration {
 		this.parentConfiguration = parentConfiguration;
 	}
 	
-	
+	public SourceBean getDrillConfigurationSB() {
+		return drillConfigurationSB;
+	}
+
+	public void setDrillConfigurationSB(SourceBean drillConfigurationSB) {
+		this.drillConfigurationSB = drillConfigurationSB;
+	}
 }

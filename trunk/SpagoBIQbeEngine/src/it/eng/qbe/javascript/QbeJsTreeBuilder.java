@@ -751,7 +751,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			 		associatedClassesArrayList.add(aRelationField);																   
 			 	}else {
 			 		if (aHibType instanceof CollectionType) {
-						System.out.println(" Collection type skip........");
+						//System.out.println(" Collection type skip........");
 					}else{
 						Logger.debug(this.getClass()," HibType Class" + aHibType.getClass());
 						nodeCounter++;

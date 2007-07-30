@@ -231,20 +231,22 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	String link = "../SpagoBIDrillServlet?";
     	try{
 	    	String docLbl = (String)drillSB.getAttribute("document");
-	    	link += "DOCUMENT_LABEL=" + docLbl + "&amp;";
+	    	link += "DOCUMENT_LABEL=" + docLbl + "&";
 	    	List paramSBs = (List)drillSB.getAttribute(PARAMETER);
-	    	Iterator iterPar = paramSBs.iterator();
-	    	while(iterPar.hasNext()) {
-	    		SourceBean paramSB = (SourceBean)iterPar.next();
-	    		String type = (String)paramSB.getAttribute("type");
-	    		String name = (String)paramSB.getAttribute("name");
-	    		String value = (String)paramSB.getAttribute("value");
-	    		if(type.equalsIgnoreCase("absolute")) {
-	    			link += name + "=" + value + "&amp;";
-	    		} else if(type.equalsIgnoreCase("relative")) {
-	    			String realValue = resultSet.getString(resultSet.findColumn(value));
-	    			link += name + "=" + realValue + "&amp;";
-	    		}
+	    	if (paramSBs != null){
+		    	Iterator iterPar = paramSBs.iterator();
+		    	while(iterPar.hasNext()) {
+		    		SourceBean paramSB = (SourceBean)iterPar.next();
+		    		String type = (String)paramSB.getAttribute("type");
+		    		String name = (String)paramSB.getAttribute("name");
+		    		String value = (String)paramSB.getAttribute("value");
+		    		if(type.equalsIgnoreCase("absolute")) {
+		    			link += name + "=" + value + "&";
+		    		} else if(type.equalsIgnoreCase("relative")) {
+		    			String realValue = resultSet.getString(resultSet.findColumn(value));
+		    			link += name + "=" + realValue + "&";
+		    		}
+		    	}
 	    	}
 	    	link = link.substring(0, link.length()-5);
     	} catch (Exception e) {

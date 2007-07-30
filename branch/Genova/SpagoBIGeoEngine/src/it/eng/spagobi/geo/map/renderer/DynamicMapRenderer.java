@@ -3,14 +3,10 @@
 **/
 package it.eng.spagobi.geo.map.renderer;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.geo.configuration.Constants;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
-import it.eng.spagobi.geo.datamart.provider.DatamartProviderFactory;
 import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
-import it.eng.spagobi.geo.map.provider.MapProviderFactory;
 import it.eng.spagobi.geo.map.provider.IMapProvider;
 import it.eng.spagobi.geo.map.utils.SVGMapHandler;
 import it.eng.spagobi.geo.map.utils.SVGMapLoader;
@@ -18,27 +14,13 @@ import it.eng.spagobi.geo.map.utils.SVGMapMerger;
 import it.eng.spagobi.geo.map.utils.SVGMapSaver;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -72,6 +54,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		targetMap = mapProvider.getSVGMapDOMDocument(datamart);				
 				
 		addData(targetMap, datamart);
+		addLink(targetMap, datamart);
 		
 		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
 		
@@ -114,50 +97,37 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	}
 
 	
-	private void addLink(SVGDocument map, Datamart datamart) {
-		/* example:     
-		 * DOMParser parser = new DOMParser();
-
-            // Create the first document
-            parser.parse(new InputSource(args[0]));
-            Document doc1 = parser.getDocument();
-
-            // Create the second document
-            parser.parse(new InputSource(args[1]));
-            Document doc2 = parser.getDocument();
-
-            // Get root of first document
-            Element firstRoot = doc1.getDocumentElement();
-
-            // Get Node to move
-            Element secondRoot = doc2.getDocumentElement();
-            NodeList kids = secondRoot.getElementsByTagName("game");
-            Element oneToMove = (Element)kids.item(0);
-
-            // Add to first document
-
-            Node newOneToMove = doc1.importNode(oneToMove, true);
-            firstRoot.appendChild(newOneToMove);
-            */
-		//anto:
-		/*Element targetLayer = map.getElementById(datamart.getTargetFeatureName());		
+	private void addLink(SVGDocument map, Datamart datamart) {	
+		/*
+		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());		
 		NodeList nodeList = targetLayer.getChildNodes();
+		List lstLink = new ArrayList();
 	    for(int i = 0; i < nodeList.getLength(); i++){
-	    	Node childNode= (Node)nodeList.item(i);	    
-	    	if(childNode instanceof Element) {
-	    		SVGElement childOrig = (SVGElement)childNode;
-	    		SVGElement childNew = (SVGElement)childNode;
-	    		String childId = childOrig.getId();
-	    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
-	    		String link = datamart.getLinkForId(column_id);
-	    		link = "<a xlink:href=\" " + link  + "\">";
-	    		SVGElement nodeLink = (SVGElement) map.createElement(link);
-	    		map.appendChild(nodeLink);
-	    		//move
-	    		childNew = childOrig;
-	    		map.appendChild(childNew);
-	    		map.removeChild(childOrig);
-	    	} 
+	    	Node childNode= (Node)nodeList.item(i);
+	    	try{
+		    	if(childNode instanceof Element) {
+		    		SVGElement childOrig =(SVGElement)childNode;	    		
+		    		String childId = childOrig.getId();
+		    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");	    		
+		    		Map mapLinks = datamart.getLinks();
+		    		String link = (String)mapLinks.get(column_id);
+		    		if (link != null) {
+		    			int toSubStr = childId.indexOf("_"+column_id);
+		    			Element mapPathBlock = map.getElementById(childId.substring(0,toSubStr));
+		    			Element linkElement = map.createElement("a");
+		    			linkElement.setAttribute("xlink:href", link);
+		    			lstLink.add(linkElement);
+		    			//mapPathBlock.appendChild(linkElement);
+		    			//Element mapBlock = map.getElementById(childId);
+		    			//mapPathBlock.appendChild(mapBlock);
+		    			//Node href_stop = map.createTextNode("<//a>");
+		    			//mapPathBlock.appendChild(href_stop);
+		    			//map.removeChild(childOrig);
+		    		}
+		    	}
+	    	}catch (Exception e){
+	    		e.printStackTrace();
+	    	}
 	    }
 	    */
 	}

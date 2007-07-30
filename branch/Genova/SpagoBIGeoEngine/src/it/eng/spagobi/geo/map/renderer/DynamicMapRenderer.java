@@ -5,6 +5,7 @@ package it.eng.spagobi.geo.map.renderer;
 
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.geo.configuration.MapConfiguration;
+import it.eng.spagobi.geo.configuration.MapRendererConfiguration.Measure;
 import it.eng.spagobi.geo.datamart.Datamart;
 import it.eng.spagobi.geo.datamart.provider.IDatamartProvider;
 import it.eng.spagobi.geo.map.provider.IMapProvider;
@@ -177,8 +178,10 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	
 	public String getMeasuresConfigurationScript(Datamart datamart) {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("// MEASURES\n");
+		buffer.append("\n\n// MEASURES\n");
 	    String[] kpiNames = datamart.getKpiNames();
+	    
+	    // ...kpi_names
 	    buffer.append("var kpi_names = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	String separtor = i>0? ",": "";
@@ -186,10 +189,19 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    }
 	    buffer.append("];\n");
 	    
+	    //	  ...kpi_descriptions
 	    buffer.append("kpi_descriptions = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	String separtor = i>0? ",": "";
 	    	buffer.append(separtor + "\"" + mapRendererConfiguration.getKpiDescription(kpiNames[i]) + "\"");
+	    }
+	    buffer.append("];\n");
+	    
+	    //	  ...kpi_descriptions
+	    buffer.append("kpi_colours = [");	    
+	    for(int i = 0; i < kpiNames.length; i++) {
+	    	String separtor = i>0? ",": "";
+	    	buffer.append(separtor + mapRendererConfiguration.getKpiColour(kpiNames[i]));
 	    }
 	    buffer.append("];\n");
 	    
@@ -207,17 +219,78 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    	 buffer.append("];\n");
 	    }
 	    
+	    buffer.append("var num_group = new Array();\n");
+	    buffer.append("var lb = new Array();\n");
+	    buffer.append("var ub = new Array();\n");
+	    buffer.append("var lb_color = new Array();\n");
+	    buffer.append("var ub_color = new Array();\n");
+	    buffer.append("var null_values_color = new Array();\n");
+	    buffer.append("var trasholdCalculationType = new Array();\n");
+	    buffer.append("var trasholdCalculationPercParams = new Array();\n");
+	    buffer.append("var trasholdCalculationUniformParams = new Array();\n");
+	    buffer.append("var colorRangeCalculationType = new Array();\n");
+	    buffer.append("var colorRangeCalculationGradParams = new Array();\n");
 	    
-	    buffer.append("kpi_colours = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
-	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + mapRendererConfiguration.getKpiColour(kpiNames[i]));
+	    	Measure measure  = mapRendererConfiguration.getMeasure(kpiNames[i]);
+	    	buffer.append("\n ");
+	    	buffer.append("\n// " + kpiNames[i] + "\n");
+	    	
+	    	if( measure.getTresholdLb() == null 
+	    			|| measure.getTresholdLb().trim().equalsIgnoreCase("")
+	    			|| measure.getTresholdLb().equalsIgnoreCase("none") ) {
+	    		buffer.append("lb['"+ kpiNames[i] +"'] = null;\n");
+	    	} else {
+	    		buffer.append("lb['"+ kpiNames[i] +"'] = " + measure.getTresholdLb() + ";\n");
+	    	}
+	    	
+	    	if( measure.getTresholdUb() == null 
+	    			|| measure.getTresholdUb().trim().equalsIgnoreCase("")
+	    			|| measure.getTresholdUb().equalsIgnoreCase("none") ) {
+	    		buffer.append("ub['"+ kpiNames[i] +"'] = null;\n");
+	    	} else {
+	    		buffer.append("ub['"+ kpiNames[i] +"'] = " + measure.getTresholdUb() + ";\n");
+	    	}
+	    	
+	    	
+	    	buffer.append("lb_color['"+ kpiNames[i] +"'] = '" + measure.getColurOutboundCol() + "';\n");
+	    	buffer.append("ub_color['"+ kpiNames[i] +"'] = '" + measure.getColurOutboundCol() + "';\n");
+	    	buffer.append("null_values_color['"+ kpiNames[i] +"'] = '" + measure.getColurNullCol() + "';\n");
+	    	buffer.append("trasholdCalculationType['"+ kpiNames[i] +"'] = '" + measure.getTresholdCalculatorType() + "';\n");
+	    	
+	    	String[] values = mapRendererConfiguration.getTresholdsArray(measure.getColumnId());
+	    	if(values != null && values.length < 0) {
+		    	buffer.append("trasholdCalculationPercParams['"+ kpiNames[i] +"'] = [");
+		    	
+		    	buffer.append(values[0]);
+		    	for(int j = 1; j < values.length; j++) {
+		    		buffer.append("," + values[j]);
+		    	}	    	
+		    	buffer.append("];\n");
+	    	}
+	    	
+	    	String value = measure.getTresholdCalculatorParameters().getProperty("GROUPS_NUMBER");
+	    	if(value != null) {
+	    		buffer.append("trasholdCalculationUniformParams['"+ kpiNames[i] +"'] = " + value + ";\n");	    	
+	    	}
+	    	
+	    	buffer.append("colorRangeCalculationType['"+ kpiNames[i] +"'] = '" + measure.getColurCalculatorType() + "';\n");
+	    	
+	    	value = measure.getColurCalculatorParameters().getProperty("BASE_COLOR");
+	    	if(value != null) {
+	    		buffer.append("colorRangeCalculationGradParams['"+ kpiNames[i] +"'] = '" + value + "';\n");
+	    	}
 	    }
-	    buffer.append("];\n");
+	    
+	    buffer.append("\n ");
 	    
 	    
 	    
-	    buffer.append("var selected_kpi_index = " + datamart.getSelectedKpi() + ";\n");
+	    
+	    
+	    
+	    
+	    buffer.append("\nvar selected_kpi_index = " + datamart.getSelectedKpi() + ";\n");
 		
 	    
 	    for(int i = 0; i < kpiNames.length; i++) {

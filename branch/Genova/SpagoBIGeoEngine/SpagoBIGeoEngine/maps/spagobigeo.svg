@@ -18,6 +18,45 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 		
 		
 		<script type="text/ecmascript"><![CDATA[
+		
+		/*
+	   var num_group = new Array();
+	   for(i = 0; i < kpi_names.length; i++) num_group[kpi_names[i]] = 5;
+	   
+	   var lb = new Array();
+	   for(i = 0; i < kpi_names.length; i++) lb[kpi_names[i]] = 0;
+	    
+	   var ub = new Array();	
+	   for(i = 0; i < kpi_names.length; i++) ub[kpi_names[i]] = null;
+	    
+	   var lb_color = new Array();
+	   for(i = 0; i < kpi_names.length; i++) lb_color[kpi_names[i]] = "#FFFFFF";
+	    
+	   var ub_color = new Array();
+	   for(i = 0; i < kpi_names.length; i++) ub_color[kpi_names[i]] = "#000000";
+	    
+	   var null_values_color = new Array();
+	   for(i = 0; i < kpi_names.length; i++) null_values_color[kpi_names[i]] = "#123456";
+	   
+		
+	   var trasholdCalculationType = new Array();
+	   for(i = 0; i < kpi_names.length; i++) trasholdCalculationType[kpi_names[i]] = "uniform";
+		
+		var trasholdCalculationPercParams = new Array();
+		for(i = 0; i < kpi_names.length; i++) trasholdCalculationPercParams[kpi_names[i]] = [10, 25, 15, 50];
+		
+		var trasholdCalculationUniformParams = new Array();
+		for(i = 0; i < kpi_names.length; i++) trasholdCalculationUniformParams[kpi_names[i]] = 5;
+		
+	   var colorRangeCalculationType = new Array();
+	   for(i = 0; i < kpi_names.length; i++) colorRangeCalculationType[kpi_names[i]] = "gradient";
+	   
+	   var colorRangeCalculationGradParams = new Array();
+	   for(i = 0; i < kpi_names.length; i++) colorRangeCalculationGradParams[kpi_names[i]] = "#000088";
+	   */
+	   
+	   
+	   
 				
 		//global variables for mapApp and map object
 		var myMapApp = new mapApp();
@@ -45,6 +84,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			}
 			
 			setTresholds();
+			setColourRange();
 			
 			//dynamic layer array that allow loading from database
 			var dynamicLayers = new Array();
@@ -326,44 +366,138 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
            }
        } 
 		
-	   var num_group = new Array();
-	   for(i = 0; i < kpi_names.length; i++) num_group[kpi_names[i]] = 5;
-	   
-	   var lb = new Array();
-	   for(i = 0; i < kpi_names.length; i++) lb[kpi_names[i]] = 0;
-	    
-	   var ub = new Array();	
-	   for(i = 0; i < kpi_names.length; i++) ub[kpi_names[i]] = 5;
-	    
-	   var lb_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) lb_color[kpi_names[i]] = "#FFFFFF";
-	    
-	   var ub_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) ub_color[kpi_names[i]] = "#000000";
-	    
-	   var null_values_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) null_values_color[kpi_names[i]] = "#123456";
-	   
+	  
 		
-		var trasholdCalculationType = new Array();
-		for(i = 0; i < kpi_names.length; i++) trasholdCalculationType[kpi_names[i]] = "quantile";
+		
+		function setColourRange() {
+			for(i = 0; i < kpi_names.length; i++) {	
+				if(colorRangeCalculationType[kpi_names[i]] == "gradient") {
+					setGradientColourRange(kpi_names[i]);
+				} else if (colorRangeCalculationType[kpi_names[i]] == "static") {
+					// do nothing
+				} else {
+					setGradientColourRange(kpi_names[i]);
+				}
+			}
+		}	
+		
+		function setGradientColourRange(kpiName) { 
+			var A = new Array();
+			var Grad = new Array();
+			var new_rA;
+			var new_gA;
+			var new_bA;
+			var shade;
+			
+			// splitting color components, conversion to decimal, and storing in array
+			A["r"] = parseInt(colorRangeCalculationGradParams[kpiName].substring(1,3),16);
+			A["g"] = parseInt(colorRangeCalculationGradParams[kpiName].substring(3,5),16);
+			A["b"] = parseInt(colorRangeCalculationGradParams[kpiName].substring(5),16);
+			RGB = [A["r"],A["g"],A["b"]].sort(function(a,b) {return parseInt(a) - parseInt(b)}); 
+			for(comp in A) {
+				if(A[comp] == RGB[2]) Grad[comp] = parseInt((240 - A[comp]) / (num_group[kpiName] - 1));	
+				else if(A[comp] == RGB[1]) Grad[comp] = parseInt((230 - A[comp]) / (num_group[kpiName] - 1));
+				else  Grad[comp] = parseInt((220 - A[comp]) / (num_group[kpiName] - 1));
+			}
+			
+			eval("col_"+kpiName+"=new Array()");
+		    var colorRangeArray = eval("col_"+kpiName);
+		    colorRangeArray[0] = colorRangeCalculationGradParams[kpiName];
+		   
+		    
+			for(var j = 1; j < num_group[kpiName]; j++) {
+				new_rA = A["r"] + Grad["r"] * j;
+				new_gA = A["g"] + Grad["g"] * j;
+				new_bA = A["b"] + Grad["b"] * j;
+				//alert(new_rA + " " + new_gA + " " + new_bA);
+				shade = "#" + new_rA.toString(16) + new_gA.toString(16) + new_bA.toString(16);	
+				colorRangeArray[j] = shade;		
+			}
+			colorRangeArray.reverse();
+			
+			//alert(kpiName + " - " + colorRangeArray);	
+		}
+		
+		
+		
+		
 		
 	   function setTresholds() {	   		
 	   
-			for(i = 0; i < kpi_names.length; i++) {			
+	   		//alert('setTresholds');
+			for(i = 0; i < kpi_names.length; i++) {					
 				
-				setQuantileTrasholds(kpi_names[i]);
+				if(lb[kpi_names[i]] == null) {
+		   			lb[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
+		   		}
+		   		if(ub[kpi_names[i]] == null) {
+		   			ub[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
+		   		}
+		   		
+		   		if(lb[kpi_names[i]] > ub[kpi_names[i]]) {
+		   			var t = lb[kpi_names[i]];
+		   			ub[kpi_names[i]] = lb[kpi_names[i]];
+		   			lb[kpi_names[i]] = t;
+		   		}
+		   		
+		   		if(ub[kpi_names[i]] < kpi_ordered_values[kpi_names[i]][0] || lb[kpi_names[i]] >  kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1]) {
+		   			lb[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
+		   			ub[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
+		   		}
 				
-				alert("--> " + kpi_names[i]);
+				
+				
+				if(trasholdCalculationType[kpi_names[i]] == "quantile") {
+					setQuantileTrasholds(kpi_names[i]);
+				} else if (trasholdCalculationType[kpi_names[i]] == "perc") {
+					setPercTrasholds(kpi_names[i]);
+				} else if (trasholdCalculationType[kpi_names[i]] == "uniform") {
+					setUniformTrasholds(kpi_names[i]);
+				} else if (trasholdCalculationType[kpi_names[i]] == "static") {
+					num_group[kpi_names[i]] = eval("thresh_"+kpi_names[i]+".length-1");
+				} else {
+					setQuantileTrasholds(kpi_names[i]);
+				}
+				
+				
+				
 			}
 		}
 		
+		function setPercTrasholds(kpiName) { 
+			var range = ub[kpiName] - lb[kpiName];
+			
+			eval("thresh_"+kpiName+"=new Array()");
+		    var trasholds = eval("thresh_"+kpiName);
+		    trasholds[0] = lb[kpiName];
+		   
+			for(var j = 0; j < trasholdCalculationPercParams[kpiName].length-1; j++) {
+				var groupSize = (range / 100.0) * trasholdCalculationPercParams[kpiName][j];
+				trasholds[j+1] = trasholds[j] + groupSize;
+			}
+			
+			trasholds[trasholdCalculationPercParams[kpiName].length] = ub[kpiName];	
+			
+			num_group[kpiName] = trasholdCalculationPercParams[kpiName].length;
+		}
+		
+		function setUniformTrasholds(kpiName) { 
+			trasholdCalculationPercParams[kpiName] = new Array();
+			var perc = 100 / trasholdCalculationUniformParams[kpiName];
+			for(var j = 0; j < trasholdCalculationUniformParams[kpiName]; j++) {
+				trasholdCalculationPercParams[kpiName][j] = perc;
+			}
+			setPercTrasholds(kpiName);
+		}
+		
 		function setQuantileTrasholds(kpiName) {
-			if(lb[kpiName] == null) {
+				
+				/*
+				if(lb[kpiName] == null) {
 		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
 		   		}
 		   		if(ub[kpiName] == null) {
-		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpi_names[kpiName]].length-1];
+		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpi_name].length-1];
 		   		}
 		   		
 		   		if(lb[kpiName] > ub[kpiName]) {
@@ -376,39 +510,34 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
 		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1];
 		   		}
+		   		*/
 				
 				eval("thresh_"+kpiName+"=new Array()");
 				var trasholds = eval("thresh_"+kpiName);
 				
 				var diff_value_num = 0;	
-				var start_index = 0;	
+				var start_index = -1;	
 				if(kpi_ordered_values[kpiName][0] >= lb[kpiName] && kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1] <= ub[kpiName]) {
 					diff_value_num = kpi_ordered_values[kpiName].length;
 					start_index = 0;
 				} else {
-					for(j = 0; j < kpi_ordered_values[kpiName].length; j++) {
-						
+					for(j = 0; j < kpi_ordered_values[kpiName].length; j++) {						
 			   			if(kpi_ordered_values[kpiName][j] >= lb[kpiName] && kpi_ordered_values[kpiName][j] <= ub[kpiName]) {
-			   				start_index = (start_index == 0?j:start_index);
+			   				start_index = (start_index == -1?j:start_index);
 			   				diff_value_num++;
-			   				//alert(kpi_ordered_values[kpiName][j] + "; " + diff_value_num + "; " + start_index);
 			   			}
 		   			}
 		   		}
 		   		
-		   		//alert(start_index + " - " + diff_value_num)
-				
+		   		
 				if(diff_value_num < num_group[kpiName]) num_group[kpiName] = diff_value_num;
 				var blockSize = Math.floor( diff_value_num / num_group[kpiName] );
 			
 				trasholds[0] = lb[kpiName];
 				for(j = 1; j < num_group[kpiName] ; j++){
-					//alert( (j*blockSize) + " < " + kpi_ordered_values[kpiName].length + " = " + kpi_ordered_values[kpiName][j*blockSize]);
 					trasholds[j] = kpi_ordered_values[kpiName][start_index + (j*blockSize)];
 				}
 				trasholds[num_group[kpiName]] = ub[kpiName];
-				
-				alert(kpiName + " - " + trasholds);
 		}
 		
 			
@@ -456,8 +585,8 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 				panel.setAttribute("font-family", "Arial,Helvetica");
 				panel.setAttribute("font-size", "14px");
 				panel.setAttribute("startOffset", "0");
-				var closingChar = (i!=myMapApp.colArray.length-1?")":"]");
-				var textString = "-   ["+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1] + closingChar;
+				var closingChar = (i!=num_group[myMapApp.curKpi]-1?")":"]");
+				var textString = "-   [" + number_to_string(myMapApp.threshArray[i],2) + " - " + number_to_string(myMapApp.threshArray[i+1],2) + closingChar;
 				var text_node = document.createTextNode(textString);
 				panel.appendChild(text_node);
 				
@@ -509,13 +638,8 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			if(isShowTableModalityActive) {
 				var parameters = new Array();
          		parameters[0] = targetElemet.getAttribute("id");
-         		alert("fine1");
-         		alert("p-->" + this.parent); 
-         		alert("t-->" + this.top); 
-         		alert("fine2");
          		top.executeFunctionInChildFrame(0, "showTable", parameters);
 				
-				alert("fine");
 				
 				//alert("bella di padella: " + targetElemet.getAttribute("id"));
 				//parent.showTable(targetElemet.getAttribute("id"));				
@@ -557,6 +681,20 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 		   		for (var counter = 1; counter <= pad_total; counter++) value_string += "0";
 		   }
 		   return value_string;
+		}
+		
+		function number_to_string(rounded_value, decimals) {
+			var result = null;
+			var value_string = rounded_value.toString();
+		   	var decimal_location = value_string.indexOf(".");		
+		    if (decimal_location != -1) {
+                var value_float = parseFloat(value_string);
+            	result = round_decimals(value_float, decimals);
+             } else {                       	
+                result = value_string;
+             }
+             
+             return result;
 		}
 
         function showData(evt){
@@ -639,8 +777,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			}
 						
 			var child = myMapApp.targetLayer.firstChild;
-			 
-			// alert(child.getAttributeNS(attribNS,myMapApp.curKpi));
 			 
 			while(child) {
 				if (child.nodeName == "path") {

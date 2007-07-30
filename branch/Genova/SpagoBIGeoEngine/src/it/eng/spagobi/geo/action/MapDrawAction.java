@@ -203,7 +203,12 @@ public class MapDrawAction extends AbstractHttpAction {
 				mapRendererConfiguration.resetLayers();
 				for(int i = 0; i < selectedLayers.size(); i++) {
 					String layerName = (String)selectedLayers.get(i);
-					mapRendererConfiguration.addLayer(layerName, layerName, "true", "white");
+					MapRendererConfiguration.Layer layer = new MapRendererConfiguration.Layer();
+					layer.setName(layerName);
+					layer.setDescription(layerName);
+					layer.setSelected(true);
+					layer.setDefaultFillColor("white");
+					mapRendererConfiguration.addLayer(layer);
 				}
 			}
 			

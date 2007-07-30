@@ -37,7 +37,9 @@ import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.ApplicationContainer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -149,7 +151,16 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			return null;
 		}
 		Logger.debug(this.getClass(), "writeSelectionTree: metadata class map retrived successfully");
-		return getHibernateSession().getAllClassMetadata().keySet();
+		Set namesSet = getHibernateSession().getAllClassMetadata().keySet();
+		QbeTreeFields fields = new QbeTreeFields();
+		fields.addAllFields(namesSet);
+		List namesList = fields.getFieldsOrderedByLabel();
+		return namesList;
+		
+//		Object[] namesArr = namesSet.toArray();
+//		Arrays.sort(namesArr);
+//		List namesList = Arrays.asList(namesArr);
+//		return namesList;
 	}
 	
 	protected Collection getSelectedClassNames() {
@@ -558,7 +569,14 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				
 			}
 			
-			Iterator associatedClassIterator = associatedClassesArrayList.iterator();
+			// ordinare qui
+			//List sortedList = sortList(associatedClassesArrayList);
+			QbeTreeRelations fields = new QbeTreeRelations();
+			fields.addAllRelations(associatedClassesArrayList);
+			List sortedList = fields.getFieldsOrderedByLabel();
+			
+			//Iterator associatedClassIterator = associatedClassesArrayList.iterator();
+			Iterator associatedClassIterator = sortedList.iterator();
 			while (associatedClassIterator.hasNext()){
 				RelationField aRelationField = (RelationField)associatedClassIterator.next();
 				//if(true) {
@@ -578,6 +596,31 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return nodeCounter;
 	}
 	
+//	private static List sortList(List source) {
+//		List toReturn = new ArrayList();
+//		if (source != null && source.size() > 0) {
+//			Iterator it = source.iterator();
+//			RelationField aRelationField = (RelationField) it.next();
+//			addToSortedList(aRelationField, toReturn);
+//		}
+//		return toReturn;
+//	}
+	
+//	private static void addToSortedList(RelationField aRelationField, List ordered) {
+//		if (ordered == null) return;
+//		if (aRelationField == null) return;
+//		for (int i = 0; i < ordered.size(); i++) {
+//			RelationField aField = (RelationField) ordered.get(i);
+//			System.out.println("******************* Class name: " + aField.getClassName());
+//			System.out.println("******************* Field name: " + aField.getFieldName());
+//			System.out.println("******************* RelationOnColumnName: " + aField.getRelationOnColumnName());
+//			if (aRelationField.getFieldName().compareTo(aField.getFieldName()) < 0) {
+//				ordered.add(i, aField);
+//				return;
+//			}
+//		}
+//		ordered.add(aRelationField);
+//	}
 	
 	public final int addFieldNodesNoRecursion (String className, String relationFieldName, int rootNode, int nodeCounter, String prefix, IURLGenerator fieldUrlGenerator, int recursionLevel){
 		
@@ -781,7 +824,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				
 			}
 			
-			Iterator associatedClassIterator = associatedClassesArrayList.iterator();
+			QbeTreeRelations fields = new QbeTreeRelations();
+			fields.addAllRelations(associatedClassesArrayList);
+			List sortedList = fields.getFieldsOrderedByLabel();
+			
+			Iterator associatedClassIterator = sortedList.iterator();
 			while (associatedClassIterator.hasNext()){
 				RelationField aRelationField = (RelationField)associatedClassIterator.next();
 				if (aRelationField.getClassName().equalsIgnoreCase(className)){
@@ -831,5 +878,176 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 
 	public void setCheckable(boolean checkable) {
 		this.checkable = checkable;
+	}
+	
+	private class QbeTreeFields {
+
+		private List list;
+		
+		QbeTreeFields() {
+			list = new ArrayList();
+		}
+		
+		void addField(String hibernateClassName) {
+			String label = 
+				Utils.getLabelForClass(Utils.getRequestContainer(httpRequest), 
+						dataMartModel, hibernateClassName);
+			QbeTreeField field = new QbeTreeField(label, hibernateClassName);
+			list.add(field);
+		}
+		
+		void addAllFields(Set hibernateClassNames) {
+			if (hibernateClassNames != null && hibernateClassNames.size() > 0) {
+				Iterator it = hibernateClassNames.iterator();
+				while (it.hasNext()) {
+					String hibernateClassName = (String) it.next();
+					addField(hibernateClassName);
+				}
+			}
+		}
+		
+		void addAllFields(List hibernateClassNames) {
+			if (hibernateClassNames != null && hibernateClassNames.size() > 0) {
+				Iterator it = hibernateClassNames.iterator();
+				while (it.hasNext()) {
+					String hibernateClassName = (String) it.next();
+					addField(hibernateClassName);
+				}
+			}
+		}
+		
+		List getFieldsOrderedByLabel () {
+			Collections.sort(list);
+			List toReturn = new ArrayList();
+			Iterator it = list.iterator();
+			while (it.hasNext()) {
+				QbeTreeField field = (QbeTreeField) it.next();
+				toReturn.add(field.getHibernateClassName());
+			}
+			return toReturn;
+		}
+		
+	}
+	
+	private class QbeTreeField implements Comparable {
+		
+		private String hibernateClassName;
+		private String label;
+		
+		QbeTreeField (String label, String hibernateClassName) {
+			this.hibernateClassName = hibernateClassName;
+			this.label = label;
+		}
+		
+		public int compareTo(Object o) {
+			if (o == null) throw new NullPointerException();
+			if (!(o instanceof QbeTreeField)) throw new ClassCastException();
+			QbeTreeField anotherField = (QbeTreeField) o;
+			return this.getLabel().compareTo(anotherField.getLabel());
+		}
+		
+		public String getHibernateClassName() {
+			return hibernateClassName;
+		}
+		public void setHibernateClassName(String hibernateClassName) {
+			this.hibernateClassName = hibernateClassName;
+		}
+		public String getLabel() {
+			return label;
+		}
+		public void setLabel(String label) {
+			this.label = label;
+		}
+		
+	}
+	
+	private class QbeTreeRelations {
+
+		private List list;
+		
+		QbeTreeRelations() {
+			list = new ArrayList();
+		}
+		
+		void addRelation(RelationField relationField) {
+			String label = null;
+			String classLabel = Utils.getLabelForClass(Utils.getRequestContainer(httpRequest), 
+					dataMartModel, relationField.getClassName());
+			String labelForRelation =
+				Utils.getLabelForForeignKey(Utils.getRequestContainer(httpRequest), 
+						dataMartModel, relationField.getClassName() + "(" + relationField.getRelationOnColumnName() + ")");
+			if (labelForRelation != null){
+				label = labelForRelation;
+			} else {
+				label = classLabel + "(" + relationField.getRelationOnColumnName() + ")";
+			}
+			QbeTreeRelation field = new QbeTreeRelation(label, relationField);
+			list.add(field);
+		}
+		
+		void addAllRelations(Set relations) {
+			if (relations != null && relations.size() > 0) {
+				Iterator it = relations.iterator();
+				while (it.hasNext()) {
+					RelationField relation = (RelationField) it.next();
+					addRelation(relation);
+				}
+			}
+		}
+		
+		void addAllRelations(List relations) {
+			if (relations != null && relations.size() > 0) {
+				Iterator it = relations.iterator();
+				while (it.hasNext()) {
+					RelationField relation = (RelationField) it.next();
+					addRelation(relation);
+				}
+			}
+		}
+		
+		List getFieldsOrderedByLabel () {
+			Collections.sort(list);
+			List toReturn = new ArrayList();
+			Iterator it = list.iterator();
+			while (it.hasNext()) {
+				QbeTreeRelation field = (QbeTreeRelation) it.next();
+				toReturn.add(field.getRelationField());
+			}
+			return toReturn;
+		}
+		
+	}
+	
+	
+	private class QbeTreeRelation implements Comparable {
+		
+		private RelationField relationField;
+		private String label;
+		
+		QbeTreeRelation (String label, RelationField relationField) {
+			this.relationField = relationField;
+			this.label = label;
+		}
+		
+		public int compareTo(Object o) {
+			if (o == null) throw new NullPointerException();
+			if (!(o instanceof QbeTreeRelation)) throw new ClassCastException();
+			QbeTreeRelation anotherField = (QbeTreeRelation) o;
+			return this.getLabel().compareTo(anotherField.getLabel());
+		}
+		
+		public RelationField getRelationField() {
+			return relationField;
+		}
+		public void setRelationField(RelationField relationField) {
+			this.relationField = relationField;
+		}
+		public String getLabel() {
+			return label;
+		}
+		public void setLabel(String label) {
+			this.label = label;
+		}
+		
 	}
 }

@@ -627,8 +627,15 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 		nodeCounter++;
 		
-		
 		String classLabel = Utils.getLabelForClass(Utils.getRequestContainer(httpRequest), dataMartModel, className);
+		if (relationFieldName != null){
+			String labelForRelation = Utils.getLabelForForeignKey(Utils.getRequestContainer(httpRequest), dataMartModel,className+"("+relationFieldName+")");
+			if (labelForRelation != null){
+				classLabel = labelForRelation;
+			}else{
+				classLabel += "("+ relationFieldName +")";
+			}
+		}
 		
 		// add class node
 		addNode("" + nodeCounter, "" + rootNode, classLabel, "", "", classLabel, 

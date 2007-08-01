@@ -61,6 +61,7 @@ public class SpagoBIStartAction extends AbstractAction {
 	public static final String SPAGOBI_PATH =  "SPAGOBI_PATH";
 	public static final String SPAGOBI_COUNTRY =  "SPAGOBI_COUNTRY";
 	public static final String SPAGOBI_LANGUAGE =  "SPAGOBI_LANGUAGE";
+	public static final String MAP_CATALOGUE_MANAGER_URL = "MAP_CATALOGUE_MANAGER_URL";
 	
 	
 	private void addParToParMap(Map params, String parName, String parValue) {
@@ -127,8 +128,12 @@ public class SpagoBIStartAction extends AbstractAction {
 			parameters.remove("templatePath");
 			String spagobiurl = (String)parameters.get("spagobiurl");
 			parameters.remove("spagobiurl");
+			String mapCatalogueManagerUrl = (String)parameters.get("mapCatalogueManagerUrl");
+			parameters.remove("mapCatalogueManagerUrl");
+			
 			String user = (String)parameters.get("user");
 			parameters.remove("user");
+			
 			
 			String template = (String)parameters.get(TEMPLATE);
 			parameters.remove(TEMPLATE);
@@ -180,6 +185,7 @@ public class SpagoBIStartAction extends AbstractAction {
 			
 			response.setAttribute(SPAGOBI_USER, user);
 			response.setAttribute(SPAGOBI_URL, spagobiurl);
+			response.setAttribute(MAP_CATALOGUE_MANAGER_URL, mapCatalogueManagerUrl);
 			response.setAttribute(SPAGOBI_PATH, templatePath);
 			response.setAttribute(DATA_SOURCE_DIALECT, dsDialect);
 			response.setAttribute(DATA_SOURCE_NAME, dsName);

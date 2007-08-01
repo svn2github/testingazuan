@@ -37,6 +37,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
@@ -59,6 +60,7 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 		
 		String user = (String)request.getAttribute("SPAGOBI_USER");
 		String spagobiurl = (String)request.getAttribute("SPAGOBI_URL");
+		String mapCatalogueManagerUrl = (String)request.getAttribute("MAP_CATALOGUE_MANAGER_URL");
 		String templatePath = (String)request.getAttribute("SPAGOBI_PATH");
 		String country = (String)request.getAttribute("SPAGOBI_COUNTRY");
 		String language = (String)request.getAttribute("SPAGOBI_LANGUAGE");
@@ -70,6 +72,8 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 		if(user != null && spagobiurl != null && templatePath != null) {
 			SpagoBIInfo spagoBIInfo = new SpagoBIInfo(templatePath, spagobiurl, user, spagobiLocale);		
 			session.setAttribute("spagobi", spagoBIInfo);
+			MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(mapCatalogueManagerUrl);
+			session.setAttribute("MAP_CATALOGUE_CLIENT", mapCatalogueAccessUtils);
 		}
 		
 		

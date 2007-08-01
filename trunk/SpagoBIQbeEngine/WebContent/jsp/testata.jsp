@@ -21,8 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
  <div style='visibility:visible;width:100%' class='UITabs'>
+ 
 	<div class="first-tab-level" style="background-color:#f8f8f8">
+	
 		<div style="overflow: hidden;width:100%">
+		
 			<div class='tab' id='DIV_FIELD_SELECTION'>
 				<a href="javascript:vediSchermo('Field Selection','DIV_FIELD_SELECTION')" 
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.FieldSelectionTooltip", bundle)%> " 
@@ -31,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.FieldSelection", bundle) %>
 				</a>
 			</div>
+			
 			<div class='tab' id='DIV_FIELD_CONDITION'>
 				<a href="javascript:vediSchermo('Conditions','DIV_FIELD_CONDITION')"
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.ConditionsTooltip", bundle) %>" 
@@ -39,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Conditions", bundle) %>
 				</a>
 			</div>
+			
 			<div class='tab' id='DIV_FIELD_ORDER_BY'>
 				<a href="javascript:vediSchermo('Ordering','DIV_FIELD_ORDER_BY')" 
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.OrderingTooltip", bundle) %>"
@@ -47,6 +52,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Ordering", bundle) %>
 				</a>
 			</div>
+			
 			<div class='tab' id='DIV_FIELD_GROUP_BY'>
 				<a href="javascript:vediSchermo('Grouping','DIV_FIELD_GROUP_BY')"
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.GroupingTooltip", bundle) %>"
@@ -55,6 +61,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Grouping", bundle) %>
 				</a>
 			</div>
+			
 			<div class='tab' id='DIV_RESUME_QUERY'>
 				<a href="javascript:vediSchermo('ResumeQuery','DIV_RESUME_QUERY')"
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.ResumeTooltip", bundle) %>"
@@ -63,6 +70,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Resume", bundle) %>
 				</a>
 			</div>
+			
 			<div class='tab' id='DIV_SAVE_QUERY'>
 				<a href="javascript:vediSchermo('SaveQuery','DIV_SAVE_QUERY')"
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.SaveTooltip", bundle) %>"
@@ -71,6 +79,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Save", bundle) %>
 				</a>
 			</div>
+			
 			<div class='tab' id='DIV_EXEC'>
 				<a href="javascript:vediSchermo('Grouping','DIV_EXEC')"
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.PreviewTooltip", bundle) %>"
@@ -79,6 +88,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Preview", bundle) %>
 				</a>
 			</div>
+			
 			<div class='tab' id='DIV_EXPORT'>
 				<a href="javascript:vediSchermo('Export','DIV_EXPORT')"
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.ExportTooltip", bundle)%> " 
@@ -86,7 +96,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   >
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Export", bundle) %>
 				</a>
+			</div>	
+			
+			<div class='tab' id='DIV_GEO'>
+				<a href="javascript:vediSchermo('Geo','DIV_GEO')" 
+				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.GeoTooltip", bundle)%> " 
+				   style="color:black;"
+				   >
+					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.GeoSelection", bundle) %>
+				</a>
 			</div>
+			
+			
 			<%
 			if(Utils.isSubQueryModeActive(sessionContainer)) {
 			%>
@@ -96,6 +117,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%} %>
 			
 		</div>
+		
 	</div>
+	
 </div>
 

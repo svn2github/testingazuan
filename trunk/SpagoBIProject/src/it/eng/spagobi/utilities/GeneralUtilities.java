@@ -324,6 +324,16 @@ public class GeneralUtilities {
 		
 	    return getSpagoBiContextAddress() + "/EventsManagerServlet";
 	}
+	/**
+	 * Gets the spagoBI's MapCatalogueManager servlet information as a string.
+	 * 
+	 * @return A string containing spagoBI's MapCatalogueManager servlet information
+	 */	
+	public static String getMapCatalogueManagerServlet(){
+		
+	    return getSpagoBiContextAddress() + "/MapCatalogueManagerServlet";
+	}
+
 	
 	/**
 	 * Gets the spagoBI's AuditManager servlet information as a string.

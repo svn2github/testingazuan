@@ -18,6 +18,7 @@ import it.eng.spagobi.geo.configuration.DatamartProviderConfiguration;
 import it.eng.spagobi.geo.datamart.Datamart;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -130,6 +131,58 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	return aggragateQuery;
     }
 
+    private String getFilteredQuery(String filterValue) {
+    	String aggragateQuery = null;
+    	String query = datamartProviderConfiguration.getExecutableQuery();
+    	
+    	String subQueryAlias = "t" + System.currentTimeMillis();
+    	String normalizedSubQueryAlias = "n" + System.currentTimeMillis();
+    	String dimGeoAlias = "g" + System.currentTimeMillis();
+    	
+    	DatamartProviderConfiguration.Hierarchy hierarchy = datamartProviderConfiguration.getSelectedHierarchy();
+    	DatamartProviderConfiguration.Hierarchy.Level level = datamartProviderConfiguration.getSelectedLevel();
+    	DatamartProviderConfiguration.Hierarchy.Level baseLevel = datamartProviderConfiguration.getBaseLevel();
+    	
+    	if(hierarchy.getType().equalsIgnoreCase("custom")) {
+    		System.out.println("\nCUSTOM HIERARCHY...\n");
+	    	String aggregationColumnName = level.getColumnId(); 
+	    	aggragateQuery = "SELECT * " ;
+	    	aggragateQuery += " \nFROM ( " + query + ") " + subQueryAlias;
+	    	aggragateQuery += " \nWHERE " + subQueryAlias + "." + baseLevel.getColumnId();
+    	} else {
+    		System.out.println("\nDEFAULT HIERARCHY...\n");
+    		String aggregationColumnName = level.getColumnId(); 
+	    	aggragateQuery = "SELECT * ";
+	    	String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
+	    	
+	    	
+	    	String normalizedSubQuery = query;
+	    
+	    	normalizedSubQuery ="SELECT " + normalizedSubQueryAlias + "." + datamartProviderConfiguration.getColumnId() +  " AS " + datamartProviderConfiguration.getColumnId();
+	    	for(int i = 0; i < kpiColumnNames.length; i++) {
+	    		normalizedSubQuery +=  ", SUM(" + normalizedSubQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+	    	}
+	    	normalizedSubQuery += " \nFROM ( " + query + ") " + normalizedSubQueryAlias;
+	    	normalizedSubQuery += " \nGROUP BY " + normalizedSubQueryAlias + "." + datamartProviderConfiguration.getColumnId();
+	    	System.out.println("\nNormalized query:\n" + normalizedSubQuery);
+	    	
+	    	
+	    	aggragateQuery += " \nFROM ( \n" + normalizedSubQuery + "\n ) " + subQueryAlias;
+	    	String dimGeoQuery = getDimGeoQuery();
+	    	System.out.println("\nDimGeo query:\n" + dimGeoQuery);
+	    	aggragateQuery += ", (" + dimGeoQuery + ") " + dimGeoAlias;
+	    	aggragateQuery += " \nWHERE " + subQueryAlias + "." + datamartProviderConfiguration.getColumnId();
+	    	aggragateQuery += " = " + dimGeoAlias + "." + baseLevel.getColumnId();
+	    	aggragateQuery += " \nAND  " + dimGeoAlias + "." + level.getColumnId() + " = " + filterValue;
+    	}
+    	
+    	System.out.println("\nExecutable query:\n" + aggragateQuery);
+    	
+    	return aggragateQuery;
+    }
+    
+    
+    
     /**
      * Hierarchy AWARE !!!
      * Executes the query and obtains the data associated to the svg map
@@ -190,8 +243,10 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             	}
             	
             	values.put(id, attributes);
-            	String link = createLink(drillSB, resultSet);
-            	links.put(id, link);
+            	if(drillSB != null) {
+	            	String link = createLink(drillSB, resultSet);
+	            	links.put(id, link);
+            	}
             }
             datamart.setValues(values);
             datamart.setLinks(links);
@@ -199,13 +254,6 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             datamart.setSelectedKpi(0);
             datamart.setOrderedKpiValuesMap(orderedKpiValuesMap);
             
-            /*
-            Iterator it = ((Set)orderedKpiValuesMap.get(kpiColumnNames[0])).iterator();
-            while(it.hasNext()) {
-            	Double t = (Double)it.next();
-            	System.out.println(t.toString());
-            }
-            */
             
         } catch (Exception ex) {
         	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
@@ -217,6 +265,70 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         }
         return datamart;
     }
+    
+    public SourceBean getDataDetails(String filterValue) throws EMFUserError {
+    	SourceBean results = null;
+    	
+        SQLCommand cmdSelect = null;
+        DataResult dr = null;
+        ScrollableDataResult sdr = null;
+        DataConnection dataConnection = null;
+        String connectionName = datamartProviderConfiguration.getConnectionName();
+        String query = datamartProviderConfiguration.getExecutableQuery();
+        
+        DatamartProviderConfiguration.Hierarchy.Level level = datamartProviderConfiguration.getBaseLevel();        
+    	String columnid = level.getColumnId();
+    	
+    	String subQueryAlias = "t" + System.currentTimeMillis();
+        
+    	String filteredQuery = "SELECT *  FROM (" + query + ") subQueryAlias " +
+    			"WHERE subQueryAlias." + columnid + " = " + filterValue;
+    	
+    	filteredQuery = getFilteredQuery(filterValue);
+        
+        try{
+            dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
+            cmdSelect = dataConnection.createSelectCommand(filteredQuery);
+            dr = cmdSelect.execute();
+            sdr = (ScrollableDataResult) dr.getDataObject();
+            ResultSet resultSet = sdr.getResultSet();
+            
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+            int columnCount = resultSetMetaData.getColumnCount();
+
+            results = new SourceBean("ROWS");
+            SourceBean row;
+            resultSet.beforeFirst();
+            while(resultSet.next()) {
+            	String id = resultSet.getString(resultSet.findColumn(columnid));
+            	if((id==null) || (id.trim().equals(""))) {
+            		continue;
+            	}
+            	
+            	row = new SourceBean("ROW");
+            	
+            	for (int i=1; i<=columnCount; i++) {                   
+            		row.setAttribute(resultSetMetaData.getColumnLabel(i), resultSet.getString(i));
+                }
+            	results.setAttribute(row);         	
+            }
+            
+            	
+            
+            
+            
+        } catch (Exception ex) {
+        	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+        					    "DefaultDatamartProvider :: getDatamartObject : " +
+        					    "Cannot load the data from the datawarehouse", ex);
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
+        } finally {
+            Utils.releaseResources(dataConnection, cmdSelect, dr);
+        }
+        
+        return results;
+    }
+    
     
     
     
@@ -232,7 +344,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	try{
 	    	String docLbl = (String)drillSB.getAttribute("document");
 	    	link += "DOCUMENT_LABEL=" + docLbl + "&";
-	    	List paramSBs = (List)drillSB.getAttribute(PARAMETER);
+	    	List paramSBs = drillSB.getAttributeAsList(PARAMETER);
 	    	if (paramSBs != null){
 		    	Iterator iterPar = paramSBs.iterator();
 		    	while(iterPar.hasNext()) {

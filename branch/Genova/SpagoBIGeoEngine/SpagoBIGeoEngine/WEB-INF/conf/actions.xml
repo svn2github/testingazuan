@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ACTIONS>
-  <ACTION   class="it.eng.spagobi.geo.action.GeoAction"  name="GEO_ACTION"  scope="REQUEST">
+  <ACTION   name="GEO_ACTION" class="it.eng.spagobi.geo.action.GeoAction"    scope="REQUEST">
     <CONFIG/>
   </ACTION>
   
-  <ACTION   class="it.eng.spagobi.geo.action.MapDrawAction"  name="MAP_DRAW_ACTION"  scope="REQUEST">
+  <ACTION   name="MAP_DRAW_ACTION" class="it.eng.spagobi.geo.action.MapDrawAction"  scope="REQUEST">
     <CONFIG/>
   </ACTION>
+  
+  <ACTION name="SHOW_ANALYSIS_DETAILS_ACTION" class="it.eng.spagobi.geo.action.ShowAnalysisDetailsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+  
+  
+  <ACTION name="SAVE_ANALYSIS_ACTION" class="it.eng.spagobi.geo.action.SaveAnalysisAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	<ACTION name="SAVE_ANALYSIS_AND_EXIT_ACTION" class="it.eng.spagobi.geo.action.SaveAnalysisAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXIT_ANALYSIS_DETAILS_ACTION" class="it.eng.spagobi.geo.action.ExitAnalysisDetailsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+    
+    <ACTION name="SHOW_DATA_DETAILS_ACTION" class="it.eng.spagobi.geo.action.ShowDataDetailsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+    
     
 </ACTIONS>

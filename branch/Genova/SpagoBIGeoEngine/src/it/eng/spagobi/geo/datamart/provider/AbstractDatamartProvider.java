@@ -5,6 +5,8 @@
 **/
 package it.eng.spagobi.geo.datamart.provider;
 
+import java.sql.ResultSet;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.geo.configuration.DatamartProviderConfiguration;
@@ -44,6 +46,10 @@ public abstract class AbstractDatamartProvider implements IDatamartProvider {
 
 	public void setDatamartProviderConfiguration(DatamartProviderConfiguration datamartProviderConfiguration) {
 		this.datamartProviderConfiguration = datamartProviderConfiguration;
+	}
+	
+	public SourceBean getDataDetails(String filterValue) throws EMFUserError {
+		return null;
 	}
 
 }

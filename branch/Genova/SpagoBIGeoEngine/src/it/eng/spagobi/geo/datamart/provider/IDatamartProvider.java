@@ -5,6 +5,8 @@
 **/
 package it.eng.spagobi.geo.datamart.provider;
 
+import java.sql.ResultSet;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.geo.configuration.DatamartProviderConfiguration;
@@ -20,6 +22,8 @@ public interface IDatamartProvider {
      * for the data recovering (see template definition into GeoAction class)
      */
     public abstract Datamart getDatamartObject() throws EMFUserError;
+    
+    public SourceBean getDataDetails(String filterValue) throws EMFUserError;
     
     public DatamartProviderConfiguration getDatamartProviderConfiguration() ;
 

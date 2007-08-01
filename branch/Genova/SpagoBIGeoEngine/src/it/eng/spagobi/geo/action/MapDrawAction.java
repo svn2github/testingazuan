@@ -50,123 +50,37 @@ public class MapDrawAction extends AbstractHttpAction {
 	
 	public static final String MAP_CATALOGUE_MANAGER_URL = "mapCatalogueManagerUrl";
 
-	/**
-	 * Method called automatically by Spago framework when the action is invoked.
-	 * The method search into the request two parameters
-	 * <ul>
-	 * <li>Template:an xml message (encodend in base64) which contains the configuration of the request</li>
-	 * <li>OutputFormat: the format of the response (possible values are SVG,JPEG). Default is SVG</li>
-	 * </ul>
-	 * The template xml message must have the following structure
-	 * 
-	 * 	&lt;MAP name="logical name of the map"&gt;
-	 * 		&lt;DATAMART_PROVIDER connection_name=" name of one pool defined into data_access.xml " 
-	 * 	    	               query=" the query that obtains data "
-	 * 	        	           column_id=" the name of a column of the resultset which is related to the id attribute of the svg tags "
-	 * 	            	       column_value=" the name of a column of the resultset which contains the value related to the svg element "/&gt;
-	 * 		&lt;CONFIGURATION&gt;
-	 * 			&lt;!-- x,y: position of the first element of the legend  --&gt;
-	 * 			&lt;LEGEND x=" " y=" " width=" " height=" " style=" svg style properties "&gt;
-	 * 				&lt;TITLE description=" title " style=" svg style properties "/&gt;
-	 * 				&lt;!-- ordered by threshold --&gt;
-	 * 				&lt;LEVELS&gt;
-	 * 					&lt;LEVEL threshold="0" style="svg style properties"&gt;
-	 * 						&lt;TEXT description="Less then 1.000" style="svg style properties" /&gt;
-	 * 					&lt;/LEVEL&gt;
-	 * 					&lt;LEVEL threshold="1000" style="svg style properties"&gt;
-	 * 						&lt;TEXT description="Da 1.000 a 2.000" style="svg style properties" /&gt;
-	 * 					&lt;/LEVEL&gt;
-	 * 					......
-	 * 				&lt;/LEVELS&gt;
-	 * 			&lt;/LEGEND&gt;
-	 * 		&lt;/CONFIGURATION&gt;
-	 * 	&lt;/MAP&gt;
-	 * 
-	 * The query attribute can contain some parameters. 
-	 * Each parameter must be specified with the sintax ${parameter_name} 
-	 * During the execution the parameter sintax is substituted with the value ot the 
-	 * same-name parameter send into request. If the request doesn't contain any parameter 
-	 * with name equal to the one of the query the rendering is not performed
-	 * 
-	 * @param serviceRequest the Spago request SourceBean 
-	 * @param serviceResponse the Spago response SourceBean 
-	 */
-	
-	public Properties getParametersFromRequest(SourceBean servReq) {
-		Properties parameters = new Properties();
-		List list = servReq.getContainedAttributes();
-		for(int i = 0; i < list.size(); i++) {
-			SourceBeanAttribute attrSB = (SourceBeanAttribute)list.get(i);
-			if(attrSB.getKey().equals("template")) continue;
-			if(attrSB.getKey().equals("ACTION_NAME")) continue;
-			if(attrSB.getKey().equals("NEW_SESSION")) continue;
-			String className = attrSB.getClass().getName();
-			parameters.setProperty(attrSB.getKey(), attrSB.getValue().toString());
-		}
-		return parameters;
-	}
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		HttpServletRequest request = this.getHttpRequest(); 
+		HttpServletResponse response = this.getHttpResponse();
+		this.freezeHttpResponse();
 		
-		Properties properties = getParametersFromRequest(serviceRequest);
+		
+		GeoAction.SubObjectDetails subObjectDetails = (GeoAction.SubObjectDetails)getRequestContainer().getSessionContainer().getAttribute("SUBOBJECT");
+		if(subObjectDetails == null) {
+			subObjectDetails = new GeoAction.SubObjectDetails();
+		}
+		
+		
+		Properties parameters = getParametersFromRequest(serviceRequest);
 		
 		String map_catalogue_manager_url = (String) request.getAttribute(MAP_CATALOGUE_MANAGER_URL);
 		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
-		//String result = mapCatalogueAccessUtils.getStandardHierarchy();
 		
 		
-		// AUDIT UPDATE
+		
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		AuditAccessUtils auditAccessUtils = 
 			(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 				"EXECUTION_STARTED", null, null);
 		
-		// get the http response 
-		HttpServletResponse response = this.getHttpResponse();
-		this.freezeHttpResponse();
+				
+		//ServletOutputStream outputStream = getOutputStream();
+		String outputFormat = getOutputFormat(parameters);		
+		byte[] template = getTemplate(serviceRequest);
 		
-		ServletOutputStream outputStream = null;
-		try{
-			outputStream = response.getOutputStream();
-		} catch (Exception e) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-								"GeoAction :: service : " +
-								"Error while getting output stream", e);
-		}
-		
-		// get the output format parameter (SVG is the default)
-		String outputFormat = (String) serviceRequest.getAttribute(Constants.OUTPUT_FORMAT_PARAMETER);
-		if(!checkOutputFormat(outputFormat)) {
-			outputFormat = Constants.SVG;
-		}
-		
-		// get the bytes od the template xml file from the request (the template is encoded in byte64)
-		String templateBase64Coded ;
-		Object object = serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
-		if(object instanceof ArrayList) {
-			List list = (List)object;
-			templateBase64Coded = (String)list.get(0);
-		} else {
-			templateBase64Coded = (String)object;
-		}
-		
-		
-		BASE64Decoder bASE64Decoder = new BASE64Decoder();
-		byte[] template = null;
-		try{
-			template = bASE64Decoder.decodeBuffer(templateBase64Coded);
-		} catch (Exception e) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-        						"GeoAction :: service : " +
-        						"Error while decoding base64 template", e);
-			sendError(outputStream);
-			// AUDIT UPDATE
-			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
-					"EXECUTION_FAILED", "Error while decoding base64 template", null);
-			return;
-		}
 		
 		// read the map configuration
 		MapConfiguration mapConfiguration = null;
@@ -175,7 +89,7 @@ public class MapDrawAction extends AbstractHttpAction {
 			
 			
 			mapConfiguration = new MapConfiguration(baseUrl, template, serviceRequest);
-			mapConfiguration.getDatamartProviderConfiguration().setParameters(properties);
+			mapConfiguration.getDatamartProviderConfiguration().setParameters(parameters);
 			
 			String selectedHierarchyName = (String)serviceRequest.getAttribute("hierarchyName");
 			String selectedLevelName = (String)serviceRequest.getAttribute("level");
@@ -210,17 +124,12 @@ public class MapDrawAction extends AbstractHttpAction {
 					layer.setDefaultFillColor("white");
 					mapRendererConfiguration.addLayer(layer);
 				}
-			}
-			
-			
-
-			
-			
+			}			
 		} catch (Exception e) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
 					"GeoAction :: service : " +
 					"Error while reading map configuration", e);
-			sendError(outputStream);
+			sendError(getOutputStream());
 			// AUDIT UPDATE
 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 					"EXECUTION_FAILED", "Error while reading map configuration", null);
@@ -240,14 +149,12 @@ public class MapDrawAction extends AbstractHttpAction {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
 								"GeoAction :: service : " +
 								"Error while rendering the map", e);
-			sendError(outputStream);
+			sendError(getOutputStream());
 			// AUDIT UPDATE
 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 					"EXECUTION_FAILED", "Error while rendering the map", null);
 			return;
 		}
-		
-		
 		
 		
 		// set the content type 
@@ -259,12 +166,12 @@ public class MapDrawAction extends AbstractHttpAction {
 			InputStream inputStream = null;
 			try {
 				inputStream = new FileInputStream(maptmpfile);
-				SVGMapConverter.SVGToJPEGTransform(inputStream, outputStream);
+				SVGMapConverter.SVGToJPEGTransform(inputStream, getOutputStream());
 			} catch (Exception e) {
 				TracerSingleton.log(Constants.LOG_NAME, 
 			            			TracerSingleton.CRITICAL, 
 			            			"GeoAction :: service : error while transforming into jpeg", e);
-				sendError(outputStream);
+				sendError(getOutputStream());
 				// AUDIT UPDATE
 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "Error while transforming into jpeg", null);
@@ -281,12 +188,12 @@ public class MapDrawAction extends AbstractHttpAction {
 			InputStream inputStream = null;
 			try {
 				inputStream = new FileInputStream(maptmpfile);
-				flushFromInputStreamToOutputStream(inputStream, outputStream, false);
+				flushFromInputStreamToOutputStream(inputStream, getOutputStream(), false);
 			} catch (Exception e) {
 				TracerSingleton.log(Constants.LOG_NAME, 
             						TracerSingleton.CRITICAL, 
             						"GeoAction :: service : error while flushing svg", e);
-				sendError(outputStream);
+				sendError(getOutputStream());
 				// AUDIT UPDATE
 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "Error while flushing svg", null);
@@ -303,7 +210,7 @@ public class MapDrawAction extends AbstractHttpAction {
 			TracerSingleton.log(Constants.LOG_NAME, 
 					            TracerSingleton.CRITICAL, 
 					            "GeoAction :: service : Output Format not specified");
-			sendError(outputStream);
+			sendError(getOutputStream());
 			return;
 		}
 		
@@ -314,53 +221,35 @@ public class MapDrawAction extends AbstractHttpAction {
 		// delete tmp map file
 		maptmpfile.delete();
 	
+		getRequestContainer().getSessionContainer().setAttribute("CONFIGURATION", mapConfiguration);
 	}
 	
 	
-	/**
-	 * sends an error message to the client
-	 * @param out The servlet output stream
-	 */
-	private void sendError(ServletOutputStream out)  {
+	private Properties getParametersFromRequest(SourceBean servReq) {
+		Properties parameters = new Properties();
+		List list = servReq.getContainedAttributes();
+		for(int i = 0; i < list.size(); i++) {
+			SourceBeanAttribute attrSB = (SourceBeanAttribute)list.get(i);
+			//if(attrSB.getKey().equals("template")) continue;
+			if(attrSB.getKey().equals("ACTION_NAME")) continue;
+			if(attrSB.getKey().equals("NEW_SESSION")) continue;
+			String className = attrSB.getClass().getName();
+			parameters.setProperty(attrSB.getKey(), attrSB.getValue().toString());
+		}
+		return parameters;
+	}
+	
+	private ServletOutputStream getOutputStream() {
+		ServletOutputStream outputStream = null;
 		try{
-			out.write("<html>".getBytes());
-			out.write("<body>".getBytes());
-			out.write("<br/><br/><center><h2><span style=\"color:red;\">Unable to produce map</span></h2></center>".getBytes());
-			out.write("</body>".getBytes());
-			out.write("</html>".getBytes());
+			outputStream = getHttpResponse().getOutputStream();
 		} catch (Exception e) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-								"GeoAction :: sendError : " +
-								"Unable to write into output stream ", e);
+								"GeoAction :: service : " +
+								"Error while getting output stream", e);
 		}
+		return outputStream;
 	}
-	
-	
-	/**
-	 * Checks if the output format requested is allowed
-	 * @param outputFormat The code string of the output format
-	 * @return true if the output format is allowed, false otherwise
-	 */
-	private boolean checkOutputFormat(String outputFormat) {
-		if(outputFormat==null) {
-			return false;
-		}
-		if(outputFormat.trim().equals("")) {
-			return false;
-		}
-		/*
-		if( !outputFormat.equalsIgnoreCase(Constants.SVG) && 
-			!outputFormat.equalsIgnoreCase(Constants.JPEG) &&
-			!outputFormat.equalsIgnoreCase(Constants.PDF)  ) {
-			return false;
-		}*/
-		if( !outputFormat.equalsIgnoreCase(Constants.SVG) && 
-			!outputFormat.equalsIgnoreCase(Constants.JPEG) ) {
-				return false;
-			}
-		return true;
-	}
-	
 	
 	/**
 	 * Returns the right content type for the output format
@@ -386,6 +275,95 @@ public class MapDrawAction extends AbstractHttpAction {
 			return Constants.XML_MIME_TYPE;
 		else return Constants.TEXT_MIME_TYPE;
 	}
+	
+	private String getOutputFormat(Properties parameters) {
+		// get the output format parameter (SVG is the default)
+		String outputFormat = parameters.getProperty(Constants.OUTPUT_FORMAT_PARAMETER);
+		if(!checkOutputFormat(outputFormat)) {
+			outputFormat = Constants.SVG;
+		}
+		return outputFormat;
+	}
+	
+	/**
+	 * Checks if the output format requested is allowed
+	 * @param outputFormat The code string of the output format
+	 * @return true if the output format is allowed, false otherwise
+	 */
+	private boolean checkOutputFormat(String outputFormat) {
+		if(outputFormat==null) {
+			return false;
+		}
+		
+		if(outputFormat.trim().equals("")) {
+			return false;
+		}
+		
+		if( !outputFormat.equalsIgnoreCase(Constants.SVG) && 
+			!outputFormat.equalsIgnoreCase(Constants.JPEG) ) {
+				return false;
+		}
+		
+		return true;
+	}
+	
+	private byte[] getTemplate(SourceBean serviceRequest) {
+		byte[] template = null;
+		
+		// get the bytes of the template xml file from the request (the template is encoded in byte64)
+		String templateBase64Coded ;
+		//Object object = parameters.getProperty(Constants.TEMPLATE_PARAMETER);
+		Object object = serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
+		if(object instanceof ArrayList) {
+			List list = (List)object;
+			templateBase64Coded = (String)list.get(0);
+		} else {
+			templateBase64Coded = (String)object;
+		}
+		
+		
+		BASE64Decoder bASE64Decoder = new BASE64Decoder();
+		
+		try{
+			template = bASE64Decoder.decodeBuffer(templateBase64Coded);
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+        						"GeoAction :: service : " +
+        						"Error while decoding base64 template", e);
+			sendError(getOutputStream());
+			auditExecutionFailure("Error while decoding base64 template");
+			return null;
+		}
+		
+		return template;
+	}
+	
+	
+	private void auditExecutionFailure(String msg) {
+		String auditId = getHttpRequest().getParameter("SPAGOBI_AUDIT_ID");
+		AuditAccessUtils auditAccessUtils = 
+			(AuditAccessUtils) getHttpRequest().getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				"EXECUTION_FAILED", msg, null);
+	}
+	
+	/**
+	 * sends an error message to the client
+	 * @param out The servlet output stream
+	 */
+	private void sendError(ServletOutputStream out)  {
+		try{
+			out.write("<html>".getBytes());
+			out.write("<body>".getBytes());
+			out.write("<br/><br/><center><h2><span style=\"color:red;\">Unable to produce map</span></h2></center>".getBytes());
+			out.write("</body>".getBytes());
+			out.write("</html>".getBytes());
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+								"GeoAction :: sendError : " +
+								"Unable to write into output stream ", e);
+		}
+	}	
 	
 	
 	/**

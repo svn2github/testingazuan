@@ -39,6 +39,7 @@
 	String target_level = "0";
 	MapCatalogueAccessUtils mapCatalogueAccessUtils = null;
 	
+	String[] selectedLayers = null;
 	
 	List attributes = serviceResponse.getContainedAttributes();
 	for(int i = 0; i < attributes.size(); i++) {
@@ -48,19 +49,12 @@
 		if(name.equalsIgnoreCase("template")) template = value.toString();
 		if(name.equalsIgnoreCase("target_level")) target_level = value.toString();
 		if(name.equalsIgnoreCase("configuration")) mapConfiguration = (MapConfiguration)value;		
+		if(name.equalsIgnoreCase("selectedLayers")) selectedLayers = (String[])value;		
 		mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
 		
 	}	
 	
-	/*
-	Properties parameters = mapConfiguration.getDatamartProviderConfiguration().getParameters();
-	Enumeration enumer = parameters.keys();
-	while (enumer.hasMoreElements()) {
-		String parName = (String) enumer.nextElement();
-		String parValue = parameters.getProperty(parName);
-		actionUrl += "&" + parName + "=" + parValue;
-	}
-	*/
+	
 	
 	
 	String hierarchiesNameArray = "";
@@ -120,7 +114,20 @@
 	
 	
 	
-	String selectedLayer = "";
+	String selectedLayersValue = "null";
+	String initSelectedLayerMap = "";
+	if(selectedLayers != null) {
+		selectedLayersValue = "[";
+		initSelectedLayerMap += "selectedLayersMap = new Array;\n";
+		for(int i = 0; i < selectedLayers.length; i++) {
+			selectedLayersValue += (i==0?"":",") + "'"+ selectedLayers[i] + "'";
+			initSelectedLayerMap += "selectedLayersMap['" + selectedLayers[i] + "'] = true;\n";
+		}
+		selectedLayersValue += "]";
+	}
+	
+	
+	
 	String initLayersArrayScript = "";
 	for(int j = 0; j < mapsList.size(); j++){
 		String mapName = (String)mapsList.get(j);
@@ -136,7 +143,22 @@
 	
 %>
 
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="refresh();">
+<head>
+	<%-- Necessary for window Javascript library --%>
+	<script type="text/javascript" src='../js/ajax/prototype.js'></script>
+  	<script type="text/javascript" src='../js/ajax/effects.js'></script>
+  	<script type="text/javascript" src='../js/ajax/window.js'></script>
+  	<script type="text/javascript" src='../js/ajax/debug.js'></script>
+  	<script type="text/javascript" src='../js/ajax/application.js"'/></script>
+  	
+  	<link rel="stylesheet" href ="../themes/default.css" type="text/css"/>	 
+  	<link rel="stylesheet" href ="../themes/alert.css" type="text/css"/>	 
+  	<link rel="stylesheet" href ="../themes/alert_lite.css" type="text/css" />
+  	<link rel="stylesheet" href ="../themes/mac_os_x.css" type="text/css"/>	
+  	<link rel="stylesheet" href ="../themes/debug.css" type="text/css"/>
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="refresh();init();">
 
 
 <script>
@@ -154,9 +176,43 @@
 	<%=initMapsArrayScript%>
 	
 	<%=layersArray%> 
-	var selectedLayers = null;
+	var selectedLayers = <%=selectedLayersValue%>;
 	var selectedLayersMap = null;
+	<%=initSelectedLayerMap%>
+	
 	<%=initLayersArrayScript%> 
+	
+	function init() {
+		var alertOnClose = { onClose: function(eventName, win) { windowCloseHandler(eventName, win);} }
+		Windows.addObserver(alertOnClose);
+	}
+	
+	function windowCloseHandler(eventName, win){
+	  	if(win.getId() == 'analysisDetailsWin') {
+	  		var mapIFrame = document.getElementById("mapIFrame");
+			mapIFrame.style.display = 'inline';
+	  	}  	
+  }
+	
+	function saveAnalysis() {
+		var mapIFrame = document.getElementById("mapIFrame");
+		mapIFrame.style.display = 'none';
+	  	var url = "http://www.spagobi.org";
+	  	url = "../servlet/AdapterHTTP?ACTION_NAME=SHOW_ANALYSIS_DETAILS_ACTION";
+	  	url += "&selected_hierachy=" + selectedHiearchy;
+	  	url += "&selected_hierarchy_level=" + selectedHierarchyLevel;
+	  	url += "&selected_map=" + selectedMap;
+	  	url += "&selected_layers=" + selectedLayers;
+	  	
+	    var hierarchyWin = new Window("analysisDetailsWin", {className: "dialog", title: "Save Analysis", 
+	                                              top:70, left:100, width:850, height:400, 
+	                                              resizable: true, url: url })
+		hierarchyWin.setDestroyOnClose();
+		hierarchyWin.show(true); 						
+  	}
+	
+	
+	
 	
 	
 	function showTable(featureId) {
@@ -184,35 +240,6 @@
 			selectedMap = obj.value;
 			selectedLayersMap = null;
 		}
-		
-		/*
-		selectedValue = null;
-		var hierarchyLevelRadio = document.getElementById("hierarchyLevelRadio");     
-	    child = hierarchyLevelRadio.firstChild;    	      
-		while(child) {
-	        var nextChild = child.nextSibling;
-			if(child != null && child.name == "level" && child.checked) {
-				selectedValue = child.value;
-			}
-			
-			child = nextChild;
-		}    		
-		
-		
-		selectedValue = null;
-		var mapRadio = document.getElementById("mapRadio");   
-	    child = mapRadio.firstChild;    	      
-		while(child) {
-	        var nextChild = child.nextSibling;
-			if(child != null && child.name == "map" && child.checked) {
-				selectedValue = child.value;
-			}			
-			child = nextChild;
-		}    
-		
-		selectedMap = selectedValue;
-		selectedLayersMap = null;
-		*/
 	}
 	
 	function updateRadioCheckBoxSelections() {	
@@ -493,6 +520,10 @@
 					<center>	
 					<input type="submit" value="Refresh Map"/>	
 					</center>	
+					<p>
+					<center>	
+					<input type="button" value="Save" onClick="saveAnalysis()"/>	
+					</center>	
 								
 				</div>															
 					
@@ -500,6 +531,9 @@
 				
 			</table>
 			</form>
+			
+			
+			
 			
 			
 		</div>

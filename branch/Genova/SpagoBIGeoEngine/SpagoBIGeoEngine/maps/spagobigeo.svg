@@ -62,10 +62,12 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 		var myMapApp = new mapApp();
 		var myMainMap;
 		var radioGroup;
+		var linkRadioGroup;
 		var checkBoxes = new Array();
 		
 		//var myRadioButtons = radioButtonGroup(radiobutton,functionToCall);
 		var attribNS="http://www.carto.net/attrib";
+		var xlinkNS = "http://www.w3.org/1999/xlink";
 		var suspendProcess;
 		var windowPositions = new Array();
 			
@@ -131,6 +133,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			
 			myMapApp.Windows["basiclayer"] = new Window("basiclayer","Windows",210,200,436,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Map Layers","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["basiclayer"].appendContent("checkBoxes",true);
+			myMapApp.Windows["basiclayer"].appendContent("linkRadioGroup",true);			
 			myMapApp.Windows["basiclayer"].minimize(true);
 			
 			myMapApp.Windows["thematic"] = new Window("thematic","Windows",210,200,223,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Thematic Topics","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
@@ -193,22 +196,32 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			//labeltext styles
 			var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":14};
 			
-			
+			var offset;
 			
 			//create individual checkboxes
 			for(i = 0; i < layer_names.length; i++) {
-				var offset = 45 + (30*i);
+				offset = 45 + (30*i);
 				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",true,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
 			}
+			
+			//radio button group
+			linkRadioGroup= new radioButtonGroup("linkRadioGroup", setLinkAction);
+			myMapApp.checkBoxes['cross_nav'] = new checkBox("cross_nav","linkRadioGroup",30,offset+40,"radioBorder","radioPoint",false, "Cross Nav.",labeltextStyles,12,linkRadioGroup,undefined);
+			myMapApp.checkBoxes['drill_nav'] = new checkBox("drill_nav","linkRadioGroup",30,offset+60,"radioBorder","radioPoint",false, "Drill Nav.",labeltextStyles,12,linkRadioGroup,undefined);
+			
 			
 			
 			//radio button group
 			radioGroup= new radioButtonGroup("radioButtons",setKpi);
 			//the following two checkboxes are added to the radio button group stored in the object instance 'radioGroupQuality'
 			for(i = 0; i < kpi_names.length; i++) {
-				var offset = 50 + (30*i);
+				offset = 50 + (30*i);
 				myMapApp.checkBoxes[kpi_names[i]] = new checkBox(kpi_names[i],"radioButtons",30,offset,"radioBorder","radioPoint",false,kpi_descriptions[i],labeltextStyles,12,radioGroup,undefined);
 			}
+			
+			
+			
+			
 			
 			// create detail infopanels
 			myMapApp.infoPanel = new Array();
@@ -294,16 +307,23 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
            var maxValue = 0;
            var child = myMapApp.targetLayer.firstChild;
            while(child) {
-               if (child.nodeName == "path") {
-                                     for(i = 0; i < kpi_names.length; i++) {
-                       var t = parseFloat(child.getAttributeNS(attribNS, kpi_names[i]));
+           	   var targetNode = child;	
+               if(targetNode.nodeName == "a") {
+               		targetNode = targetNode.firstChild;
+               }
+               
+               if (targetNode.nodeName == "path") {
+                   for(i = 0; i < kpi_names.length; i++) {
+                       var t = parseFloat(targetNode.getAttributeNS(attribNS, kpi_names[i]));
                        if(t > maxValue) {
                            maxValue = t;
                        }
                    }
                }
                child = child.nextSibling;
-           }                                         
+           }     
+          					
+                                               
            var detailBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
            detailBarChartRenderer.maxGridLineValue = maxValue;
            var layerBarChartRenderer = new BarChartRenderer(50, 35,100,100,3);
@@ -312,25 +332,37 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
            layerBarChartRenderer.labelsVisible = false;
            child = myMapApp.targetLayer.firstChild;
            while(child) {
-               if (child.nodeName == "path") {
-                                     names = new Array();
+           
+               var targetNode = child;	
+               if(targetNode.nodeName == "a") {
+	               	var crossUrl = targetNode.getAttributeNS(xlinkNS, "href");
+					var drillUrl = "../servlet/AdapterHTTP?ACTION_NAME=SHOW_DATA_DETAILS_ACTION";
+					var featureValue = targetNode.firstChild.getAttribute("id");
+					drillUrl += "&featureValue=" + featureValue;
+					targetNode.setAttributeNS(attribNS, "crossUrl", crossUrl);
+					targetNode.setAttributeNS(attribNS, "drillUrl", drillUrl);
+	               	targetNode = targetNode.firstChild;
+               }
+			   
+               if (targetNode.nodeName == "path") {
+                   names = new Array();
                    values = new Array();
                                      for(i = 0; i < kpi_names.length; i++) {
                        names[i] = kpi_names[i];
-                       values[i] = child.getAttributeNS(attribNS, kpi_names[i]);
+                       values[i] = targetNode.getAttributeNS(attribNS, kpi_names[i]);
                    }
                                      detailBarChartRenderer.setDataset(names, values, kpi_colours);
-                   detailBarChartRenderer.render(document.getElementById("detailTabGroup__1_content"), child.getAttributeNS(null, "id") + "_chart", "none");
+                   detailBarChartRenderer.render(document.getElementById("detailTabGroup__1_content"), targetNode.getAttributeNS(null, "id") + "_chart", "none");
                    if(includeChartLayer == true) {
                        layerBarChartRenderer.setDataset(names, values, kpi_colours);
                        var chartW = 800;
                        var chartH = 1600;
-                       var centroide = document.getElementById("centroidi_" + child.getAttributeNS(null, "id"));
+                       var centroide = document.getElementById("centroidi_" + targetNode.getAttributeNS(null, "id"));
                        layerBarChartRenderer.chartX = centroide.getAttributeNS(null, "cx") - (chartW/2);
                        layerBarChartRenderer.chartY = centroide.getAttributeNS(null, "cy") - (chartH);
                        layerBarChartRenderer.chartW = chartW;
                        layerBarChartRenderer.chartH = chartH;
-                       layerBarChartRenderer.render(document.getElementById("grafici"), child.getAttributeNS(null, "id") + "_chartLayer", "inherit");
+                       layerBarChartRenderer.render(document.getElementById("grafici"), targetNode.getAttributeNS(null, "id") + "_chartLayer", "inherit");
                    }
                    
                    if(includeValuesLayer == true) {
@@ -348,10 +380,10 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                        
                        
                        var valueLabel = document.createElementNS(svgNS,"text");
-                       var centroide = document.getElementById("centroidi_" + child.getAttributeNS(null, "id"));
+                       var centroide = document.getElementById("centroidi_" + targetNode.getAttributeNS(null, "id"));
                        valueLabel.setAttribute("x",centroide.getAttributeNS(null, "cx"));
                        valueLabel.setAttribute("y",centroide.getAttributeNS(null, "cy"));
-                       valueLabel.setAttribute("id", "label_" + child.getAttributeNS(null, "id"));
+                       valueLabel.setAttribute("id", "label_" + targetNode.getAttributeNS(null, "id"));
                        valueLabel.setAttribute("text-anchor","middle");
                        valueLabel.setAttribute("font-family","Arial,Helvetica");
                        valueLabel.setAttribute("font-size","600px");
@@ -635,6 +667,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			
 			alert(evt.type);
 			
+			/*
 			if(isShowTableModalityActive) {
 				var parameters = new Array();
          		parameters[0] = targetElemet.getAttribute("id");
@@ -646,7 +679,28 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			} else {
 				alert("Sorry, drill modality is not fully sopported yet");
 			}
+			*/
 		}	
+		
+		function setLinkAction(cbId,radioId,label) {
+				
+			var child = myMapApp.targetLayer.firstChild;
+		 	
+			while(child) {
+			
+				var targetNode = child;					
+				if (targetNode.nodeName == "a") {
+					var url;
+					if(radioId == "drill_nav") {
+						url = targetNode.getAttributeNS(attribNS, "drillUrl");
+					} else {
+						url = targetNode.getAttributeNS(attribNS, "crossUrl");
+					}						
+					targetNode.setAttributeNS(xlinkNS, "href", url);
+				}
+				child = child.nextSibling;
+			}
+		}
 		
 		function round_decimals(original_number, decimals) {
 		   var result1 = original_number * Math.pow(10, decimals);
@@ -779,14 +833,20 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			var child = myMapApp.targetLayer.firstChild;
 			 
 			while(child) {
-				if (child.nodeName == "path") {
-					var kpiAttrib = parseInt(child.getAttributeNS(attribNS,myMapApp.curKpi));
+				
+				var targetNode = child;
+				if (child.nodeName == "a") {
+					targetNode = child.firstChild;
+				}
+				
+				if (targetNode.nodeName == "path") {
+					var kpiAttrib = parseInt(targetNode.getAttributeNS(attribNS,myMapApp.curKpi));
 			
 			
 					var targetColor = "#666666";
 					
 					
-					if(child.getAttributeNS(attribNS,myMapApp.curKpi) == "") {
+					if(targetNode.getAttributeNS(attribNS,myMapApp.curKpi) == "") {
 						//alert("FOUND " + null_values_color[myMapApp.curKpi]);
 						targetColor = null_values_color[myMapApp.curKpi];
 					} else if(kpiAttrib < lb[myMapApp.curKpi]) {
@@ -804,13 +864,12 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 						}
 					}
 					
-					//if(targetColor == "#666666") alert(child.getAttribute("id") + " - " + child.getAttributeNS(attribNS,myMapApp.curKpi));
 					
-					child.setAttributeNS(null,"fill",targetColor);
+					targetNode.setAttributeNS(null,"fill",targetColor);
 					
 					if(includeValuesLayer == true) {
 					   var text = "";
-					   var rounded_value = child.getAttributeNS(attribNS,myMapApp.curKpi);
+					   var rounded_value = targetNode.getAttributeNS(attribNS,myMapApp.curKpi);
                    	   var value_string = rounded_value.toString();
 		   			   var decimal_location = value_string.indexOf(".");		
 		   			   if (decimal_location != -1) {
@@ -818,12 +877,13 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                    	   		var value_float = round_decimals( parseFloat(value_string), 2 );
                    	   		text = value_float.toString();
                    	   } else {                       	
-                       		text = child.getAttributeNS(attribNS,myMapApp.curKpi);
+                       		text = targetNode.getAttributeNS(attribNS,myMapApp.curKpi);
                   	   }
-						var valueLabel = document.getElementById("label_" + child.getAttributeNS(null, "id"));					
+						var valueLabel = document.getElementById("label_" + targetNode.getAttributeNS(null, "id"));					
 						valueLabel.firstChild.nodeValue = text;
 					}
 				}
+				
 				child = child.nextSibling;
 			}
 			
@@ -978,7 +1038,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 				<rect id="mapBackgroundRect" x="0" y="0" width="0" height="0" fill="none" stroke="none" pointer-events="fill"/>
 			
 				<g id="eventCatcher" fill="white" stroke="gainsboro" stroke-width="2000" stroke-linecap="round" stroke-linejoin="round" 
-					 onmouseover="showData(evt)" onmouseout="showData(evt)" onclick="mouseClickHandler(evt)">
+					 onmouseover="showData(evt)" onmouseout="showData(evt)" >
 				
 				<g id="targetMap">
 				
@@ -1170,39 +1230,18 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
 					<g id="windowMainGroupbasiclayer" display="none">
-						<!--
-						<rect width="210" height="200" fill="#fffce6" stroke="dimgray" stroke-width="1"/>
-						-->
 						<g/>
 						
 						<g id="checkBoxes" display="inherit">
-							<!--
-							<use x="30" y="80" href="#checkBoxRect"/>
-							<use x="30" y="80" href="#checkBoxCross"/>
 							
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="84.5" startOffset="0">Streets</text>
-							
-							
-							<use x="30" y="110" href="#checkBoxRect"/>
-							<use x="30" y="110" href="#checkBoxCross"/>		
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="114.5" startOffset="0">Urban Areas</text>
-							
-							
-							<use x="30" y="140" href="#checkBoxRect"/>
-							<use x="30" y="140" href="#checkBoxCross" display="none"/>
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="144.5" startOffset="0">States</text>
-							-->
+						</g>
+						
+						<g id="linkRadioGroup" display="inherit">
+							<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
+						
 						</g>					
 					</g>
-					
-					<!--
-					<g>
-						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarbasiclayer" cursor="pointer"/>
-						<text x="3" y="14" font-family="Arial,Helvetica" font-size="14px" fill="white" pointer-events="none" startOffset="0">Map Layers</text>
-						<use x="198.5" y="8.5" cursor="pointer" id="maximizeButtonbasiclayer" href="#maximizeButton"/>
-						<use x="181.5" y="8.5" cursor="pointer" id="minimizeButtonbasiclayer" href="#minimizeButton"/>
-					</g>
-					-->					
+							
 				</g>
 				
 				<!-- Thematics Window -->
@@ -1210,33 +1249,9 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
 					<g id="windowMainGroupthematic">					
-						<!--
-						<rect width="210" height="200" fill="#fffce6" stroke="dimgray" stroke-width="1"/>
-						<g/>
-						-->
 						
 						<g id="radioButtons" display="inherit">
-							<!--
-							<use x="30" y="50" href="#radioBorder"/>
-							<use x="30" y="50" href="#radioPoint" display="none"/>
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="54.5" startOffset="0">Assault</text>
 							
-							<use x="30" y="80" href="#radioBorder"/>
-							<use x="30" y="80" href="#radioPoint" display="inherit"/>
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="84.5" startOffset="0">Murder</text>
-							
-							<use x="30" y="110" href="#radioBorder"/>
-							<use x="30" y="110" href="#radioPoint" display="none"/>
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="114.5" startOffset="0">Robbery &amp; Car Theft</text>
-							
-							<use x="30" y="140" href="#radioBorder"/>
-							<use x="30" y="140" href="#radioPoint" display="none"/>
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="144.5" startOffset="0">Burglary</text>
-							
-							<use x="30" y="170" href="#radioBorder"/>
-							<use x="30" y="170" href="#radioPoint" display="none"/>
-							<text font-family="Arial,Helvetica" fill="dimgray" font-size="15px" x="42" y="174.5" startOffset="0">Poverty Status</text>
-							-->
 						</g>					
 					</g>
 					

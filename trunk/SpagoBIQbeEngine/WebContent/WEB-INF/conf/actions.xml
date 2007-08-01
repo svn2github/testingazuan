@@ -2,8 +2,6 @@
 
 <ACTIONS>
 
-	
-	
 	<ACTION name="SPAGO_BI_START_ACTION" class="it.eng.qbe.action.SpagoBIStartAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

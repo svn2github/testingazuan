@@ -74,7 +74,8 @@
   	</servlet>
   	-->
   	
-	<filter>
+  	<!-- 
+  	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
@@ -83,6 +84,7 @@
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/servlet/AdapterHTTP</url-pattern>
 	</filter-mapping>
+	-->
   	
 	<servlet>
 		<servlet-name>ConfigServlet</servlet-name>

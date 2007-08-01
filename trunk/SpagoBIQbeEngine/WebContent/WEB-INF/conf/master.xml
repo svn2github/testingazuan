@@ -13,4 +13,11 @@
 	<CONFIGURATOR path="/WEB-INF/conf/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tracing.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/qbe.xml" />	
+	
+	<!-- start GEO_TEMPLATE_BUILDER module -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/geoTemplateBuilder/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/geoTemplateBuilder/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/geoTemplateBuilder/publishers.xml" />
+	<!-- end GEO_TEMPLATE_BUILDER module -->
+	
 </MASTER>

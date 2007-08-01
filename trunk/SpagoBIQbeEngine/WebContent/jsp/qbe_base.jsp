@@ -1,24 +1,3 @@
-<%-- 
-
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
---%>
 <%@ page import="it.eng.spago.base.*"%>
 <%@ page import="it.eng.qbe.utility.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
@@ -1041,12 +1020,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						return true;
 					}
 					
+					if (divTxt == 'DIV_GEO'){
+						inputNextActionAfterSaveCondition.value='GENERATE_GEO_TEMPLATE_ACTION';
+						formUpdCond.submit();
+						return true;
+					}
+					
 					if (divTxt == 'DIV_SAVE_SUBQUERY'){
 						inputNextActionAfterSaveCondition.value='PUBLISH_ACTION';
 						inputNextPublisherAfterSaveCondition.value='EXIT_FROM_SUBQUERY_PUBLISHER';
 						formUpdCond.submit();
 						return true;
 					}
+					
+					
 					
 			
 			}else if ((currentScreenTxt == 'DIV_RESUME_QUERY_SELECT_OK') && (formUpdCond != null)){
@@ -1120,6 +1107,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						return true;
 					}
 					
+					if (divTxt == 'DIV_GEO'){
+						inputNextActionAfterSaveCondition.value='GENERATE_GEO_TEMPLATE_ACTION';
+						formUpdCond.submit();
+						return true;
+					}
+					
 					if (divTxt == 'DIV_SAVE_SUBQUERY'){
 						
 						inputNextActionAfterSaveCondition.value='PUBLISH_ACTION';
@@ -1141,7 +1134,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				var frmExecuteQueryF = document.getElementById('frmExecuteQuery');
 				var frmExportResultF = document.getElementById('frmExportResult');
 				var frmSaveQueryF = document.getElementById('frmSaveQuery');
+				var frmGeo = document.getElementById('frmGeo');
 				var frmSaveSubQuery = document.getElementById('frmSaveSubQuery');
+				
 				
 			
 				if (divTxt == 'DIV_FIELD_SELECTION'){
@@ -1187,12 +1182,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					return true;
 				}	
 				
-				/*
-				if(divTxt == 'DIV_SAVE_SUBQUERY') {
-					parent.saveSubQuery = true;
-					parent.Windows.closeAll();					
+				if (divTxt == 'DIV_GEO'){
+					frmGeo.submit();
+					return true;
 				}
-				*/
 				
 				if (divTxt == 'DIV_SAVE_SUBQUERY'){
 						parent.saveSubQuery = true;
@@ -1260,6 +1253,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_FROM_SAVE_ACTION"/>
 		</form>
 		
+		<form id="frmGeo" name="frmGeo" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="GENERATE_GEO_TEMPLATE_ACTION"/>
+		</form>
+						
 		<form id="frmSaveSubQuery" name="frmSaveSubQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="PUBLISH_ACTION"/>
 			<input id="publisher" type="hidden" name="PUBLISHER_NAME" value="EXIT_FROM_SUBQUERY_PUBLISHER"/>

@@ -31,9 +31,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 */
 package it.eng.spagobi.drivers.geo;
 
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
+import it.eng.spagobi.bo.BIObject.SubObjectDetail;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
@@ -44,6 +48,7 @@ import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -90,7 +95,46 @@ public class GeoDriver implements IEngineDriver {
 	 * @return Map The map of the execution call parameters
   	 */
 	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
-		return getParameterMap(object, profile, roleName);
+		Map map = new Hashtable();
+		try{
+			BIObject biobj = (BIObject)object;
+			map = getMap(biobj);
+			
+			SubObjectDetail subObj = (SubObjectDetail)subObject;
+			String nameSub = subObj.getName();
+			map.put("nameSubObject", nameSub);
+			String descrSub = subObj.getDescription();
+			map.put("descriptionSubObject", descrSub);
+			String visStr = "Private";
+			boolean visBool = subObj.isPublicVisible();
+		    if(visBool) {
+		    	visStr = "Public";
+		    }
+			map.put("visibilitySubObject", visStr);
+			
+			// get subobject data from cms
+			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
+		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
+		 	// encode and set the subobject data as a parameter
+		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			map.put("subobjectdata", bASE64Encoder.encode(subObjDataBytes));
+			
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object, IEngUserProfile, String)",
+					"The second parameter is not a SubObjectDetail type",
+					cce);
+		} catch (EMFUserError emfue) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object, Object, IEngUserProfile, String)",
+					"Error while creating cmsDao for BiObject",
+					emfue);
+		} 
+		map = applySecurity(map);
+		return map;
 	}
 	
 	/**
@@ -116,6 +160,8 @@ public class GeoDriver implements IEngineDriver {
 		byte[] template = uploadedFile.getFileContent();
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
 		pars.put("template", bASE64Encoder.encode(template));
+		pars.put("templatePath",biobj.getPath() + "/template");
+		pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
 		pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
         pars = addBIParameters(biobj, pars);
         return pars;

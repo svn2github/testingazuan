@@ -14,7 +14,9 @@ import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
+
 import it.eng.spagobi.utilities.GeneralUtilities;
+
 import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
@@ -133,7 +135,11 @@ public class QbeDriver implements IEngineDriver {
 		pars.put("template", bASE64Encoder.encode(template));
 		pars.put("templatePath",biobj.getPath() + "/template");
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-        //pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
+        //String mapCatalogueManagerUrl;
+        //mapCatalogueManagerUrl = "http://localhost:8080/spagobi/MapCatalogueManagerServlet";
+        //pars.put("mapCatalogueManagerUrl", mapCatalogueManagerUrl);
+        pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
+        
         addLocale(pars);
         pars = addBIParameters(biobj, pars);
         

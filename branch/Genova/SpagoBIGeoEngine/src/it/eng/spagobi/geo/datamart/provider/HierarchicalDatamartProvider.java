@@ -360,7 +360,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
 		    		}
 		    	}
 	    	}
-	    	link = link.substring(0, link.length()-5);
+	    	link = link.substring(0, link.length()-1);	    		    	
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     		TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 

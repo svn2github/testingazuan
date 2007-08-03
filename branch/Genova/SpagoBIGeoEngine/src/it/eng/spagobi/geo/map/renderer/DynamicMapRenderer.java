@@ -135,7 +135,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 			Element linkElement = map.createElement("a");
 			String pippo = (String)tmpMap.get("link");
 			linkElement.setAttribute("xlink:href", (String)tmpMap.get("link"));
-			linkElement.setAttribute("target", "top");
+			//linkElement.setAttribute("xlink:show", "replace");			
 			linkElement.appendChild((Element)tmpMap.get("path"));
 	    	targetLayer.appendChild(linkElement);
 		    Node lf = map.createTextNode("\n");

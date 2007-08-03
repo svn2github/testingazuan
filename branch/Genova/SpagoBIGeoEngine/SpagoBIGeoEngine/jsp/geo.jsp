@@ -141,6 +141,8 @@
 	
 	//selectedLayer = "var selectedLayer = \"" + layers[0] + "\";";
 	
+	String isSubObject = (String)serviceResponse.getAttribute("isSubObject");
+	
 %>
 
 <head>
@@ -156,6 +158,7 @@
   	<link rel="stylesheet" href ="../themes/alert_lite.css" type="text/css" />
   	<link rel="stylesheet" href ="../themes/mac_os_x.css" type="text/css"/>	
   	<link rel="stylesheet" href ="../themes/debug.css" type="text/css"/>
+  	<link rel="stylesheet" href ="../css/jsr168.css" type="text/css"/>
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="refresh();init();">
@@ -283,12 +286,13 @@
       
       if(document.all && !window.opera && document.createElement) {
       		  if(selected) {
-              	radio = document.createElement("<input type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections(this);refresh();' checked>");
+              	radio = document.createElement("<input style='font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;	font-size: 8pt;' type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections(this);refresh();' checked>");
               } else {
-              	radio = document.createElement("<input type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections(this);refresh();' >");
+              	radio = document.createElement("<input style='font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;	font-size: 8pt;' type='radio' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioSelections(this);refresh();' >");
               }
       } else {
               radio = document.createElement("input");
+              radio.setAttribute("style", "	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;font-size: 8pt;");
               radio.setAttribute("type", "radio");
               radio.setAttribute("id", name);
               radio.setAttribute("name", name);
@@ -304,12 +308,13 @@
       
       if(document.all && !window.opera && document.createElement) {
       		  if(selected) {
-              	checkBox = document.createElement("<input type='checkbox' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioCheckBoxSelections();refresh();' checked>");
+              	checkBox = document.createElement("<input style='font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;font-size: 15pt;' type='checkbox' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioCheckBoxSelections();refresh();' checked>");
               } else {
-              	checkBox = document.createElement("<input type='checkbox' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioCheckBoxSelections();refresh();' >");
+              	checkBox = document.createElement("<input style='font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;font-size: 15pt;' type='checkbox' id='" + name + "' name='" + name + "' value='" + value + "' onClick='updateRadioCheckBoxSelections();refresh();' >");
               }
       } else {
-             checkBox = document.createElement("input");
+           checkBox = document.createElement("input");
+           checkBox.setAttribute("class", "portlet-form-label");
 	         checkBox.setAttribute("type", "checkbox");
 	         checkBox.setAttribute("name", name);
 	         checkBox.setAttribute("value",value);	 
@@ -420,6 +425,9 @@
 
 <table height="100%" border="2px" valign="top">
 
+
+	
+
 <tr valign="top">
 	<td width="85%" valign="top">
 	<div id="mapPanel" valign="top">
@@ -431,20 +439,43 @@
 		        frameborder="3">
 		</iframe>
 		
-		
 		<form id="executionForm"
 			  name="executionForm"
 		      method="post"
 		      action="<%=actionUrl%>"
 		      target="mapIFrame">
+		      <input type="hidden" name="type" value="object" />
 		      <input type="hidden" name="template" value="<%=template%>" />
 		      <input type="hidden" name="target_level" value="<%=target_level%>" />
 		</form>	
+		
+		<%if(isSubObject != null){ %>
+		
+		<form id="subObjectExecutionForm"
+			  name="subObjectExecutionForm"
+		      method="post"
+		      action="<%=actionUrl%>"
+		      target="mapIFrame">
+		      <input type="hidden" name="type" value="subobject" />
+		      <input type="hidden" name="template" value="<%=template%>" />
+		      <input type="hidden" name="target_level" value="<%=target_level%>" />
+		      <input type="hidden" name="soHierarchyName" value="<%=mapConfiguration.getDatamartProviderConfiguration().getSelectedHierarchy().getName()%>" />
+		      <input type="hidden" name="soLevel" value="<%=mapConfiguration.getDatamartProviderConfiguration().getSelectedLevel().getName()%>" />
+		      <input type="hidden" name="soMap" value="<%=mapConfiguration.getMapName()%>" />
+		      <%for(int i = 0; i < selectedLayers.length; i++) { %>
+		      	<input type="hidden" name="soLayer" value="<%=selectedLayers[i]%>" />
+		      <%} %>
+		</form>	
+		
+		<%} %>
+		
+		
+		
 	</div>
 	</td>
 
 	<td width="15%">
-		<div id="controlPanel">
+		<div style="background-color: rgb(228, 236, 242);" id="controlPanel">
 			
 			<form id="optionForm" 
 			  name="optionForm"
@@ -462,11 +493,11 @@
 				<div id="hierarchyNamePanel" 
 					 style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 					
-					<u>Hierarchies:</u>
+					<u class='portlet-form-label'>Hierarchies:</u>
 					
 					<p>
 						
-					<select id="hierarchyName" name="hierarchyName" onChange="updateHierarchySelection();refresh();">
+					<select  class='portlet-form-input-field' id="hierarchyName" name="hierarchyName" onChange="updateHierarchySelection();refresh();">
 						<option value="custom" selected>Custom</option>
 						<option value="default">Default</option>
 					</select>
@@ -478,7 +509,7 @@
 				<div id="hierarchyLevelPanel"
 				     style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
-					<u>Hierarchy Levels:</u>
+					<u  class='portlet-form-label'>Hierarchy Levels:</u>
 						
 					<p>
 					
@@ -491,7 +522,7 @@
 				<div id="mapPanel" width="100%"
 					 style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
-					<u>Maps</u>
+					<u  class='portlet-form-label'>Maps</u>
 						
 					<p>
 					
@@ -504,7 +535,7 @@
 				<div id="layerPanel" width="100%"
 				     style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
-					<u>Layers:</u>
+					<u  class='portlet-form-label'>Layers:</u>
 						
 					<p>					
 						
@@ -518,11 +549,11 @@
 				     style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
 					<center>	
-					<input type="submit" value="Refresh Map"/>	
+					<input style="height:19px;vertical-align: middle;font-size: 12px;" type="submit" value="Refresh Map"/>	
 					</center>	
 					<p>
 					<center>	
-					<input type="button" value="Save" onClick="saveAnalysis()"/>	
+					<input style="height:19px;vertical-align: middle;font-size: 12px;" type="button" value="Save Map" onClick="saveAnalysis()"/>	
 					</center>	
 								
 				</div>															
@@ -541,10 +572,21 @@
 	
 </tr>
 </table>
+
+	
       
 <script>
+		<%if(isSubObject != null){ %>
+		
+	
+			var subObjectExecutionForm = document.getElementById('subObjectExecutionForm');
+            subObjectExecutionForm.submit();
+		
+		
+		<%} else { %>
               var executionForm = document.getElementById('executionForm');
               executionForm.submit();
+        <%} %>
 </script>
 
 </body>

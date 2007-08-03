@@ -497,7 +497,7 @@
 					
 					<p>
 						
-					<select  class='portlet-form-input-field' id="hierarchyName" name="hierarchyName" onChange="updateHierarchySelection();refresh();">
+					<select id="hierarchyName" name="hierarchyName" onChange="updateHierarchySelection();refresh();">
 						<option value="custom" selected>Custom</option>
 						<option value="default">Default</option>
 					</select>
@@ -546,7 +546,7 @@
 				<p>
 				
 				<div id="buttonPanel" width="100%"
-				     style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
+				     style="border-width:0px; border-style:solid; padding: 10px 10px 10px 10px">
 						
 					<center>	
 					<input style="height:19px;vertical-align: middle;font-size: 12px;" type="submit" value="Refresh Map"/>	

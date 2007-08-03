@@ -45,6 +45,7 @@ import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
 
 
+import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -82,6 +83,7 @@ public class GeoDriver implements IEngineDriver {
 					"The parameter is not a BIObject type",
 					cce);
 		} 
+		map = applySecurity(map);
 		return map;
 	}
 	
@@ -94,7 +96,7 @@ public class GeoDriver implements IEngineDriver {
 	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
   	 */
-	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
+	public Map getParameterMap   (Object object, Object subObject, IEngUserProfile profile, String roleName) {
 		Map map = new Hashtable();
 		try{
 			BIObject biobj = (BIObject)object;
@@ -136,16 +138,7 @@ public class GeoDriver implements IEngineDriver {
 		map = applySecurity(map);
 		return map;
 	}
-	
-	/**
-	 * Applys changes for security reason if necessary
-	 * @param pars The map of parameters
-	 * @return the map of parameters to send to the engine 
-	 */
-	protected Map applySecurity(Map pars) {
-		return pars;
-	}
-	
+
 	    
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
@@ -182,13 +175,13 @@ public class GeoDriver implements IEngineDriver {
 								  "BIObject parameter null");
 			return pars;
 		}
+		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
 		if(biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
-			String value = null;
 			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
 				try {
 					biobjPar = (BIObjectParameter)it.next();
-					value = (String)biobjPar.getParameterValues().get(0);
+					String value = parValuesEncoder.encode(biobjPar);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",
@@ -228,5 +221,14 @@ public class GeoDriver implements IEngineDriver {
 				  "getNewDocumentTemplateBuildUrl",
 				  "Function not implemented");
 		throw new InvalidOperationRequest();
+	}
+	
+	/**
+	 * Applys changes for security reason if necessary
+	 * @param pars The map of parameters
+	 * @return the map of parameters to send to the engine 
+	 */
+	protected Map applySecurity(Map pars) {
+		return pars;
 	}
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/spago-core-2.1.1.jar" sourcepath="C:/progetti/spago/spago2.1.1/sorgenti"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="lib" path="lib/ldap.jar"/>
+	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/xalan-2.4.0.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/xml-apis-2.0.2.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/xercesImpl-2.6.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

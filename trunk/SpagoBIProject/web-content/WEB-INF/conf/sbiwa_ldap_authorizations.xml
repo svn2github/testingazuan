@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<LDAP_AUTHORIZATIONS default="FALSE">
+	<CONFIG>
+		<USER_DN>cn=*,ou=People,dc=spagobi,dc=com</USER_DN>
+		<ADMIN_USER>cn=root,dc=spagobi,dc=com</ADMIN_USER>
+		<ADMIN_PSW>86b32dae6c8c1b693dbe310c12297748</ADMIN_PSW>
+		<ATTRIBUTES_ID name="nome">description</ATTRIBUTES_ID>
+		<ATTRIBUTES_ID name="cognome">sn</ATTRIBUTES_ID>
+		<ATTRIBUTES_ID name="userId">cn</ATTRIBUTES_ID>				
+		<ATTRIBUTES_ID name="titolo">title</ATTRIBUTES_ID>				
+		<ATTRIBUTES_ID name="telefono">telephoneNumber</ATTRIBUTES_ID>								
+		<HOST>localhost</HOST>
+		<PORT>389</PORT>	
+		<OBJECTCLASS>person</OBJECTCLASS>
+		<SEARCH_ROOT>ou=People,dc=spagobi,dc=com</SEARCH_ROOT>
+		<OU_ATTRIBUTE>ou</OU_ATTRIBUTE>
+		
+		<SEARCH_ROOT_GROUP>ou=Group,dc=spagobi,dc=com</SEARCH_ROOT_GROUP>
+		<OBJECTCLASS_GROUP>organizationalUnit</OBJECTCLASS_GROUP>
+		
+		<ATTRIBUTES_ID_GROUP>description</ATTRIBUTES_ID_GROUP>
+		<ATTRIBUTES_ID_GROUP>OU</ATTRIBUTES_ID_GROUP>		
+
+	</CONFIG>
+	<ENTITIES>
+		<FUNCTIONALITIES>
+			<FUNCTIONALITY functionalityName="EnginesManagement" description="EnginesManagement" />
+			<FUNCTIONALITY functionalityName="FunctionalitiesManagement" description="FunctionalitiesManagement" />
+			<FUNCTIONALITY functionalityName="LovsManagement" description="LovsManagement" />
+			<FUNCTIONALITY functionalityName="ConstraintManagement" description="ConstraintManagement" />
+			<FUNCTIONALITY functionalityName="ParameterManagement" description="ParameterManagement" />
+			<FUNCTIONALITY functionalityName="DocumentManagement" description="DocumentManagement" />
+		</FUNCTIONALITIES>
+	</ENTITIES>
+	<RELATIONS>
+		<PRIVILEDGES>
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="EnginesManagement" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="FunctionalitiesManagement" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="LovsManagement" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="ConstraintManagement" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="ParameterManagement" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="DocumentManagement" />
+		</PRIVILEDGES>
+	</RELATIONS>
+</LDAP_AUTHORIZATIONS>

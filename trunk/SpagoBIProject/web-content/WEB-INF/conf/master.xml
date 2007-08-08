@@ -27,8 +27,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_security.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_authorizations.xml" />
+<!-- <CONFIGURATOR path="/WEB-INF/conf/sbiwa_authorizations.xml" /> -->
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_menu.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_ldap_authorizations.xml" />
+
 	<!-- END WEB APPLICATION -->
 	<!-- START DASHBOARD -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />

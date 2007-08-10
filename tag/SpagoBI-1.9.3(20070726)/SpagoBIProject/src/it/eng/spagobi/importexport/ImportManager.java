@@ -530,6 +530,15 @@ public class ImportManager implements IImportManager, Serializable {
 		    	if(functParent!=null) {
 		    		newFunct.setParentFunct(functParent);
 		    	}
+				// manages prog column that determines the folders order
+				if (functParent == null) newFunct.setProg(new Integer(1));
+				else {
+					// loads sub functionalities
+					Query query = sessionCurrDB.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = " + functParent.getFunctId());
+					Integer maxProg = (Integer) query.uniqueResult();
+					if (maxProg != null) newFunct.setProg(new Integer(maxProg.intValue() + 1));
+					else newFunct.setProg(new Integer(1));
+				}
 			    importer.insertObject(newFunct, sessionCurrDB);
 			    metaLog.log("Inserted new functionality " + newFunct.getName() + " with path " + newFunct.getPath());
 			    Integer newId = newFunct.getFunctId(); 

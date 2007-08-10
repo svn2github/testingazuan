@@ -212,11 +212,12 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 			while (foldersRs.next()) {
 				String updateProgQuery = null;
 				int folderId = foldersRs.getInt("FUNCT_ID");
-				String code = foldersRs.getString("CODE");
+				//String code = foldersRs.getString("CODE");
 				String path = foldersRs.getString("PATH");
-				String parentPath = path.substring(0, path.lastIndexOf("/" + code));
+				String parentPath = path.substring(0, path.lastIndexOf("/"));
 				String findCurrentMaxProg = "SELECT MAX(PROG) AS MAX_PROG FROM SBI_FUNCTIONS " +
-					"WHERE PROG IS NOT NULL AND PATH = '" + parentPath + "/' + CODE";
+					"WHERE PROG IS NOT NULL AND PATH LIKE '" + parentPath + "/%' AND PATH NOT LIKE '" + parentPath + "/%/%'";
+				
 				ResultSet progRs = stmt.executeQuery(findCurrentMaxProg);
 				if (progRs.next()) {
 					int currentMaxProg = progRs.getInt("MAX_PROG");

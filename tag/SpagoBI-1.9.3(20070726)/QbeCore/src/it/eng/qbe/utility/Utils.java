@@ -401,7 +401,7 @@ public class Utils {
 				NameClassPair item = (NameClassPair)list.next();
 				String cl = item.getClassName();
 				String name = item.getName();
-				System.out.println(cl+" - "+name);
+				//System.out.println(cl+" - "+name);
 				listResult.add("jdbc/"+name);
 			}
 		 }catch (Exception e) {

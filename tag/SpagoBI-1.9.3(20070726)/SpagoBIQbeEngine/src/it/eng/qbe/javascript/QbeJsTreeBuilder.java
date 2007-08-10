@@ -501,8 +501,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
 						
 							if(selected.equalsIgnoreCase("true"))
-								System.out.println("check[" + className + "," + completeFieldName + "]: " 
-										+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
+								//System.out.println("check[" + className + "," + completeFieldName + "]: " 
+								//		+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
 						
 						
 							addNode("" + nodeCounter, "" + idxClassNode, 
@@ -708,7 +708,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			 		associatedClassesArrayList.add(aRelationField);																   
 			 	}else {
 			 		if (aHibType instanceof CollectionType) {
-						System.out.println(" Collection type skip........");
+						//System.out.println(" Collection type skip........");
 					}else{
 						Logger.debug(this.getClass()," HibType Class" + aHibType.getClass());
 						nodeCounter++;
@@ -728,8 +728,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							if(selectedNodes.containsKey(new  QbeJsTreeNodeId(className, completeFieldName).getId())) selected = "true";
 						
 							if(selected.equalsIgnoreCase("true"))
-								System.out.println("check[" + className + "," + completeFieldName + "]: " 
-										+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
+								//System.out.println("check[" + className + "," + completeFieldName + "]: " 
+								//		+ (new  QbeJsTreeNodeId(className, completeFieldName).getId()) + " -> " + selected.toUpperCase());
 						
 						
 							addNode("" + nodeCounter, "" + idxClassNode, 

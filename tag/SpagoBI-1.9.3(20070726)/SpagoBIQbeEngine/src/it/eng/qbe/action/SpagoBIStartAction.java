@@ -94,8 +94,8 @@ public class SpagoBIStartAction extends AbstractAction {
 			parName = attribute.getKey();
 			parValue = (String)attribute.getValue();
 			addParToParMap(params, parName, parValue);
-			System.out.println(this.getClass().getName() +":service:Read " +
-					"parameter [" + parName + "] with value [" + parValue + "] from request");
+			//System.out.println(this.getClass().getName() +":service:Read " +
+			//		"parameter [" + parName + "] with value [" + parValue + "] from request");
 			Logger.debug(SpagoBIStartAction.class, this.getClass().getName() +":service:Read " +
 					"parameter [" + parName + "] with value [" + parValue + "] from request");
 		}
@@ -134,7 +134,7 @@ public class SpagoBIStartAction extends AbstractAction {
 			parameters.remove(TEMPLATE);
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			template = new String(bASE64Decoder.decodeBuffer(template));
-			System.out.println("Template: " + template);
+			//System.out.println("Template: " + template);
 			
 			SourceBean templateSB = SourceBean.fromXMLString(template);
 			SourceBean datamartSB = (SourceBean)templateSB.getAttribute("DATAMART");
@@ -149,24 +149,24 @@ public class SpagoBIStartAction extends AbstractAction {
 			if(functionalities != null) session.setAttribute("FUNCTIONALITIES", functionalities);
 						
 			String dmName = (String)datamartSB.getAttribute("name");
-			System.out.println("Path: " + dmName);
+			//System.out.println("Path: " + dmName);
 			
 			String dsName = (String)datasourceSB.getAttribute("name");
-			System.out.println("Data-Source: " + dsName);
+			//System.out.println("Data-Source: " + dsName);
 			String dsDialect = (String)datasourceSB.getAttribute("dialect");
-			System.out.println("Dialect: " + dsDialect);
+			//System.out.println("Dialect: " + dsDialect);
 						
 			String queryId = (String)parameters.get("query");
 			parameters.remove("query");
-			System.out.println("Query: " + queryId);
+			//System.out.println("Query: " + queryId);
 			
 			String country = (String)parameters.get("country");
 			parameters.remove("country");
-			System.out.println("country: " + country);
+			//System.out.println("country: " + country);
 			
 			String language = (String)parameters.get("language");
 			parameters.remove("language");
-			System.out.println("language: " + language);
+			//System.out.println("language: " + language);
 			
 			String props = "";
 			Iterator it = parameters.keySet().iterator();

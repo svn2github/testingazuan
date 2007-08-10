@@ -161,7 +161,7 @@ public class Scriptlet extends JRDefaultScriptlet
 	public String executeGroovyScript(String groovyScriptName,String entityName, String classNameInQuery, String fldCompleteNameInQuery,  String mappings){
 		try{
 			String result = "";
-			System.out.println("--> Called execute GroovyScript ["+groovyScriptName+"]["+mappings+"] ["+entityName+"]" );
+			//System.out.println("--> Called execute GroovyScript ["+groovyScriptName+"]["+mappings+"] ["+entityName+"]" );
 			String[] mappingArray = mappings.split(",");
 			
 			for ( int i =0; i < mappingArray.length; i++){

@@ -103,9 +103,9 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		sqlQuery = trans.getSQLString();
 		
 		Logger.debug(this.getClass(), "rewrite: generated SQL query: " + sqlQuery);		
-		System.out.println("generated SQL query: " + sqlQuery);
+		//System.out.println("generated SQL query: " + sqlQuery);
 		String decoratedQuery = rewriteWithAlias(query, sqlQuery);
-		System.out.println("decorated SQL query: " + decoratedQuery);
+		//System.out.println("decorated SQL query: " + decoratedQuery);
 		return decoratedQuery;
 		//return sqlQuery;
 	}

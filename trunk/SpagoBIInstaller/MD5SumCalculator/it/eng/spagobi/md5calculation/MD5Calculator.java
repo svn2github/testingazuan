@@ -39,7 +39,8 @@ public class MD5Calculator {
 				System.out.println(fileNames[i] + " dimension is " + file.length());
 			}
 			
-			basePath = "C:\\Progetti\\SpagoBI\\Rilasci\\2007-07-23 Correzioni\\";
+			System.out.println("************** 10 agosto *****************");
+			basePath = "C:\\Documents and Settings\\zerbetto\\Desktop\\nuovi pacchetti\\";
 			File folder = new File(basePath);
 			File[] files = folder.listFiles();
 			for (int i = 0; i < files.length; i++) {

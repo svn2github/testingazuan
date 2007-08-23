@@ -447,29 +447,6 @@ IMG {
 }
 
 
-.div_background {
-	border: 1px solid #cccccc;
-    background-image:url('/spagobi/img/spagobgimg.jpg');
-    background-position: bottom right;
-    background-repeat: no-repeat; 
-	padding-top:10px;
-	padding-bottom:10px;
-	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 10pt;
-	font-weight: normal;
-	color: black;
-}
-
-.div_background_no_img {
-	border: 1px solid #cccccc;
-	padding-top:10px;
-	padding-bottom:10px;
-	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 10pt;
-	font-weight: normal;
-	color: black;
-}
-
 .link_main_menu {
 	font-family: Arial,Helvetica,sans-serif;
 	font-size: 10pt;

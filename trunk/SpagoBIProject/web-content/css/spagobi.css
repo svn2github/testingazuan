@@ -429,6 +429,24 @@ IMG {
 }
 
 
+.box {
+	border: 1px solid #cccccc;
+}
+
+.gray_box {
+    border: 1px solid #cccccc;
+    background-color:#dddddd;
+}
+
+.margin5 {
+	margin: 5px;
+}
+
+.padding5 {
+	padding: 5px;
+}
+
+
 .div_background {
 	border: 1px solid #cccccc;
     background-image:url('/spagobi/img/spagobgimg.jpg');

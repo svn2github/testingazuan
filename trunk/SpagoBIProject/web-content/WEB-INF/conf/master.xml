@@ -19,25 +19,31 @@
 	<CONFIGURATOR path="/WEB-INF/conf/validation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/transcoder.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/upload.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/events.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/useragents.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/renderers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/mail.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/spagobi/spagobi_components.xml" />
+	
 	<!-- START WEB APPLICATION -->
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_security.xml" />
-<!-- <CONFIGURATOR path="/WEB-INF/conf/sbiwa_authorizations.xml" /> -->
+	<!-- <CONFIGURATOR path="/WEB-INF/conf/sbiwa_authorizations.xml" /> -->
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_menu.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/sbiwa_ldap_authorizations.xml" />
-
 	<!-- END WEB APPLICATION -->
+	
 	<!-- START DASHBOARD -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardIE/publishers.xml" />
 	<!-- END DASHBOARD -->
+	
 	<!-- START DASHBOARDSCOMPOSITION -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobidashboardsCompositionIE/publishers.xml" />
 	<!-- END DASHBOARDSCOMPOSITION -->
+	
 	<!-- start import export module -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/importexport.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/pages.xml" />
@@ -45,6 +51,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
 	<!-- end import export module -->
+	
 	<!-- start booklets module -->
 	<!-- 
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/booklets.xml" />
@@ -58,18 +65,21 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/forms.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/booklets/validation.xml" />
 	-->
-  <!-- end booklets module -->
+  	<!-- end booklets module -->
+  	
 	<!-- START OFFICE DOCUMENT -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/spagobiofficedocIE/publishers.xml" />
 	<!-- END OFFICE DOCUMENT -->
+	
 	<!-- start exo profile manager module -->
 	<!--
-  <CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/pages.xml" />
+  	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/publishers.xml" />
 	-->
-  <!-- end exo profile manager module -->
+  	<!-- end exo profile manager module -->
+  	
 	<!-- start scheduler module -->
 	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/modules.xml" />
@@ -77,4 +87,5 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/validation.xml" />
 	<!-- end scheduler module -->
+	
 </MASTER>

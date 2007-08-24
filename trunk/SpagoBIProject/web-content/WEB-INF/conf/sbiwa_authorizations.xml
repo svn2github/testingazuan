@@ -17,7 +17,12 @@
 			<FUNCTIONALITY functionalityName="LovsManagement" description="LovsManagement" />
 			<FUNCTIONALITY functionalityName="ConstraintManagement" description="ConstraintManagement" />
 			<FUNCTIONALITY functionalityName="ParameterManagement" description="ParameterManagement" />
-			<FUNCTIONALITY functionalityName="DocumentManagement" description="DocumentManagement" />
+			<FUNCTIONALITY functionalityName="DocumentAdministration" description="DocumentAdministration" />
+			<FUNCTIONALITY functionalityName="DocumentDevelopment" description="DocumentDevelopment" />
+			<FUNCTIONALITY functionalityName="DocumentTest" description="DocumentTest" />
+			<FUNCTIONALITY functionalityName="DocumentExecution" description="DocumentExecution" />
+			<FUNCTIONALITY functionalityName="ImportExport" description="ImportExport" />
+			<FUNCTIONALITY functionalityName="Scheduler" description="Scheduler" />
 		</FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
 		<APPLICATIONS></APPLICATIONS>
@@ -33,7 +38,9 @@
 			<PRIVILEDGE roleName="Administrator" functionalityName="LovsManagement" />
 			<PRIVILEDGE roleName="Administrator" functionalityName="ConstraintManagement" />
 			<PRIVILEDGE roleName="Administrator" functionalityName="ParameterManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="DocumentManagement" />
+			<PRIVILEDGE roleName="Administrator" functionalityName="DocumentAdministration" />
+			<PRIVILEDGE roleName="Administrator" functionalityName="ImportExport" />
+			<PRIVILEDGE roleName="Administrator" functionalityName="Scheduler" />
 		</PRIVILEDGES>
 	</RELATIONS>
 </AUTHORIZATIONS>

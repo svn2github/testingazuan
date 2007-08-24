@@ -887,10 +887,22 @@
       			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="CheckLinksPage" />
         	</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="CheckLinksPage" />
+        	</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>	
 
 	<PUBLISHER name="dependenciesLookup">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListObjParusePage" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+        	</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
       			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListObjParusePage" />
       			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
@@ -906,6 +918,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.CheckLinksDispatcherPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.presentation.publishers.CheckLinksDispatcherPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	
   	<!-- STANDARD publischer -->	
@@ -914,6 +931,11 @@
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/checklist.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/checklist.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -1137,6 +1159,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ListObjParusePublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.presentation.publishers.ListObjParusePublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	<PUBLISHER name="listObjParuses">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
@@ -1145,9 +1172,21 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/listObjParuse.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	<PUBLISHER name="listObjParusesLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="DetailBIObjectPage" />
+        		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="DetailBIObjectPage" />
         		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="DETAIL_SELECT" />
@@ -1183,6 +1222,14 @@
 
   	<PUBLISHER name="FunctionalitiesTreeRefresh">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
+        		<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+        		<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="FUNCTIONALITIES_OPERATION" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
         		<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />

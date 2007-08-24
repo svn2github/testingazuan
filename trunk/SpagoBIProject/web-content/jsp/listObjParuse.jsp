@@ -23,9 +23,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page import="java.util.List,
 		 		 java.util.Iterator,
+		 		 java.util.Map,
+				 java.util.HashMap,
 		 		 it.eng.spagobi.bo.ObjParuse,
 		 		 it.eng.spagobi.bo.ParameterUse,
-                 javax.portlet.PortletURL,
                  it.eng.spago.navigation.LightNavigationManager,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.constants.AdmintoolsConstants,
@@ -44,18 +45,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List biParamCorrelations = (List) moduleResponse.getAttribute("biParamCorrelation");
 	List otherBiParameters = (List) moduleResponse.getAttribute("otherBiParameters");
 	
-	PortletURL formUrl = renderResponse.createActionURL();
-   	formUrl.setParameter("PAGE", "ListObjParusePage");
-   	formUrl.setParameter("MESSAGEDET", AdmintoolsConstants.DETAIL_MOD);
-	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   
-   	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "ListObjParusePage");
-   	backUrl.setParameter("MESSAGEDET", "EXIT_FROM_MODULE");
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");   
-   	
+	Map formUrlPars = new HashMap();
+	formUrlPars.put("PAGE", "ListObjParusePage");
+	formUrlPars.put("MESSAGEDET", AdmintoolsConstants.DETAIL_MOD);
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");   
+	String formUrl = urlBuilder.getUrl(request, formUrlPars);
+	   
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("PAGE", "ListObjParusePage");
+	backUrlPars.put("MESSAGEDET", "EXIT_FROM_MODULE");
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");   
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
-
 
 <script>
     
@@ -128,13 +129,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='100px'>";
           var value = correl.preCond;
           html += "<a style='text-decoration:none;' href='javascript:addLeftBreak("+i+")'>";
-          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/plus10.gif")%>' ";
+          html += "<img src='<%= urlBuilder.getResourceLink(request, "/img/plus10.gif")%>' ";
           html += " title='<spagobi:message key = "SBIDev.listObjParuses.addLeftBreak" />' "; 
           html += " alt='<spagobi:message key = "SBIDev.listObjParuses.addLeftBreak" />' "; 
           html += "/></a>";
           html += "<a style='text-decoration:none;' href='javascript:removeLeftBreak("+i+")'>";
           html += "&nbsp;";
-          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/minus10.gif")%>' ";
+          html += "<img src='<%= urlBuilder.getResourceLink(request, "/img/minus10.gif")%>' ";
           html += " title='<spagobi:message key = "SBIDev.listObjParuses.removeLeftBreak" />' "; 
           html += " alt='<spagobi:message key = "SBIDev.listObjParuses.removeLeftBreak" />' "; 
           html += "/></a>";
@@ -152,13 +153,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='100px'>";
           value = correl.postCond;
           html += "<a style='text-decoration:none;' href='javascript:addRightBreak("+i+")'>";
-          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/plus10.gif")%>' ";
+          html += "<img src='<%= urlBuilder.getResourceLink(request, "/img/plus10.gif")%>' ";
           html += " title='<spagobi:message key = "SBIDev.listObjParuses.addRightBreak" />' "; 
           html += " alt='<spagobi:message key = "SBIDev.listObjParuses.addRightBreak" />' "; 
           html += "/></a>";
           html += "<a style='text-decoration:none;' href='javascript:removeRightBreak("+i+")'>";
           html += "&nbsp;";
-          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/minus10.gif")%>' ";
+          html += "<img src='<%= urlBuilder.getResourceLink(request, "/img/minus10.gif")%>' ";
           html += " title='<spagobi:message key = "SBIDev.listObjParuses.removeRightBreak" />' "; 
           html += " alt='<spagobi:message key = "SBIDev.listObjParuses.removeRightBreak" />' "; 
           html += "/></a>";
@@ -185,14 +186,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           html += "</td>";
           html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='30px'>";
           html += "<a href='javascript:viewCorrelation("+i+")'>";
-          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' ";
+          html += "<img src='<%= urlBuilder.getResourceLink(request, "/img/detail.gif")%>' ";
           html += " title='<spagobi:message key = "SBIDev.listObjParuses.viewCondition" />' "; 
           html += " alt='<spagobi:message key = "SBIDev.listObjParuses.viewCondition" />' "; 
           html += "/></a>";
           html += "</td>";
           html += "<td style='vertical-align:middle;border-bottom:1px solid #bbb;' width='30px'>";
           html += "<a href='javascript:deleteCorrelation("+i+")'>";
-          html += "<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/erase.gif")%>' ";
+          html += "<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>' ";
           html += " title='<spagobi:message key = "SBIDev.listObjParuses.deleteCondition" />' "; 
           html += " alt='<spagobi:message key = "SBIDev.listObjParuses.deleteCondition" />' "; 
           html += "/></a>";
@@ -457,14 +458,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     blockHtml += "<br/>";
     if(indexCorr==null) {
 		  blockHtml += "<center>";
-		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' onclick='closeWinCorr()' ";
+		  blockHtml += " 	<img src='<%= urlBuilder.getResourceLink(request, "/img/save.png")%>' onclick='closeWinCorr()' ";
 		  blockHtml += " 	     title='<spagobi:message key = "editConf.save" />' ";
 		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save" />' ";
 		  blockHtml += " 	/>";
 		  blockHtml += "</center>";
 	} else {
       	  blockHtml += "<center>";
-		  blockHtml += " 	<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' onclick='closeWinCorr("+indexCorr+")' ";
+		  blockHtml += " 	<img src='<%= urlBuilder.getResourceLink(request, "/img/save.png")%>' onclick='closeWinCorr("+indexCorr+")' ";
 		  blockHtml += " 	     title='<spagobi:message key = "editConf.save" />' ";
 		  blockHtml += " 	     alt='<spagobi:message key = "editConf.save" />' ";
 		  blockHtml += " 	/>";
@@ -479,14 +480,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
     function addCorrelation() {
-       winCorr = new Window('win_correlation', {className: "alphacube", title: "<spagobi:message key = "SBIDev.listObjParuses.condition" />", width:850, height:300});
+       winCorr = new Window('win_correlation', {className: "alphacube", title: "<spagobi:message key = "SBIDev.listObjParuses.condition" />", width:700, height:300});
   	   winCorr.setDestroyOnClose();
        winCorr.getContent().innerHTML=generateCorrBlockHtml();
        winCorr.showCenter(true);
     }
     
     function viewCorrelation(indexCorr) {
-       winCorr = new Window('win_correlation', {className: "alphacube", title: "<spagobi:message key = "SBIDev.listObjParuses.condition" />", width:850, height:300});
+       winCorr = new Window('win_correlation', {className: "alphacube", title: "<spagobi:message key = "SBIDev.listObjParuses.condition" />", width:700, height:300});
   	   winCorr.setDestroyOnClose();
        winCorr.getContent().innerHTML=generateCorrBlockHtml(indexCorr);
        winCorr.showCenter(true);
@@ -685,10 +686,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</td>
 				<td class='header-empty-column-portlet-section'>&nbsp;</td>
 				<td class='header-button-column-portlet-section'>
-					<a href='<%= backUrl.toString() %>'> 
+					<a href='<%=backUrl%>'> 
 		      			<img class='header-button-image-portlet-section' 
 		      			     title='<spagobi:message key = "SBIDev.listObjParuses.backButt" />' 
-		      			     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+		      			     src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
 		      			     alt='<spagobi:message key = "SBIDev.listObjParuses.backButt" />' />
 					</a>
 				</td>
@@ -718,7 +719,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<a href="javascript:saveCorrelations()"> 
 		      			<img class='header-button-image-portlet-section' 
 		      			     title='<spagobi:message key = "SBIDev.listObjParuses.saveButt" />' 
-		      			     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
+		      			     src='<%= urlBuilder.getResourceLink(request, "/img/save.png")%>' 
 		      			     alt='<spagobi:message key = "SBIDev.listObjParuses.saveButt" />' /> 
 					</a>
 				</td>
@@ -726,7 +727,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<a href='<%= backUrl.toString() %>'> 
 		      			<img class='header-button-image-portlet-section' 
 		      			     title='<spagobi:message key = "SBIDev.listObjParuses.backButt" />' 
-		      			     src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+		      			     src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
 		      			     alt='<spagobi:message key = "SBIDev.listObjParuses.backButt" />' />
 					</a>
 				</td>
@@ -745,7 +746,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<td class='titlebar_level_2_button_section'>
 						<a style='text-decoration:none;' href='javascript:addCorrelation();'>
 							<img width='20px' height='20px' 
-								 src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/attach.gif")%>'
+								 src='<%=urlBuilder.getResourceLink(request, "/img/attach.gif")%>'
 								 name='info' 
 								 alt='<spagobi:message key = "SBIDev.listObjParuses.addCondition" />'
 								 title='<spagobi:message key = "SBIDev.listObjParuses.addCondition" />'/>
@@ -762,7 +763,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  
 	  </div>
 	  
-	  <form method='POST' action='<%= formUrl.toString() %>' id='objParusesForm'>
+	  <form method='POST' action='<%=formUrl%>' id='objParusesForm'>
 	       <input type="hidden" name="obj_par_id" value="<%=biParam.getId()%>" />
 	       <input type="hidden" id="correlations_xml" name="correlations_xml" value="" />
     </form>

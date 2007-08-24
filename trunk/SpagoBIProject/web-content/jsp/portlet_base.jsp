@@ -37,9 +37,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
+
+<%-- %>
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
 <portlet:defineObjects/>
+--%>
 
 <!-- GET SPAGO OBJECTS  -->
 <%
@@ -110,13 +113,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if (sbiMode.equalsIgnoreCase("WEB")) {
 %>
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/wa/spagobi.css")%>' 
+      href='<%=urlBuilder.getResourceLink(request, "css/spagobi_wa.css")%>' 
       type='text/css' />
 <%  } else {  %>
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/spagobi.css")%>' 
+      href='<%=urlBuilder.getResourceLink(request, "css/spagobi_portlet.css")%>' 
       type='text/css' />
 <%	} %>
+
+<LINK rel='StyleSheet' 
+      href='<%=urlBuilder.getResourceLink(request, "css/spagobi_shared.css")%>' 
+      type='text/css' />
 
 <LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLink(request, "css/jsr168.css")%>' 

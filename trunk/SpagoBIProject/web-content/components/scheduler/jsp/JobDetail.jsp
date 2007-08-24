@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@page import="it.eng.spago.base.SourceBean"%>
-<%@page import="javax.portlet.PortletURL"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
 <%@page import="it.eng.spagobi.scheduler.to.JobInfo"%>
@@ -37,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.bo.dao.IBIObjectDAO"%>
 <%@page import="it.eng.spagobi.bo.dao.IParameterDAO"%>
 <%@page import="it.eng.spagobi.bo.Role"%>
-<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
+<%@page import="java.util.HashMap"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("JobManagementModule"); 
@@ -48,19 +47,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	JobInfo jobInfo = (JobInfo)aSessionContainer.getAttribute(SpagoBIConstants.JOB_INFO);   
 	List jobBiobjects = jobInfo.getBiobjects();
 	
-	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
-	   
-	PortletURL formUrl = renderResponse.createActionURL();
-	formUrl.setParameter("PAGE", "JobManagementPage");
-	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+	
+	Map formUrlPars = new HashMap();
+	formUrlPars.put("PAGE", "JobManagementPage");
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	String formUrl = urlBuilder.getUrl(request, formUrlPars);   
 	   
 	String splitter = ";";
-   
 %>
 
 
 <!-- ********************** SCRIPT FOR DOCUMENT SELECTION WINDOW **************************** -->
+
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 <script>
 	var docselwinopen = false;
 	var winDS = null;
@@ -74,7 +76,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	function openDocumentSelectionWin(){
 		if(winDS==null) {
-			winDS = new Window('winDSId', {className: "alphacube", title: "", width:550, height:450, destroyOnClose: true});
+			winDS = new Window('winDSId', {className: "alphacube", title: "", width:550, height:400, destroyOnClose: true});
 	      	winDS.setContent('selectiondocumentdiv', false, false);
 	      	winDS.showCenter(true);
 	    } else {
@@ -169,7 +171,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		if(role==null) {
 			role = rolefield.options[rolefield.selectedIndex].value;
 		}
-		url = "<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP";
+		url = "<%=ChannelUtilities.getSpagoBIContextName(request)%>/servlet/AdapterHTTP";
 	    pars = "NEW_SESSION=TRUE&PAGE=LovLookupAjaxPage";
 	    pars +="&roleName="+role;
 	    pars += "&parameterId="+idPar;
@@ -188,7 +190,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 		
 	function displayList(html) {
-		winLRL = new Window('winLRLId', {className: "alphacube", title: "", width:800, height:400, destroyOnClose: true});
+		winLRL = new Window('winLRLId', {className: "alphacube", title: "", width:650, height:400, destroyOnClose: true});
       	winLRL.setDestroyOnClose();
       	winLRL.setHTMLContent(html);
       	winLRL.showCenter(true);
@@ -327,7 +329,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "loading" />	
 		</span>
 		<br/><br/>
-		<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/wapp/loading.gif")%>' />
+		<img src='<%= urlBuilder.getResourceLink(request, "/img/wapp/loading.gif")%>' />
 	</center>
 </div>
 
@@ -345,10 +347,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/back.png")%>' 
       				 alt='<spagobi:message key = "scheduler.back"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>
@@ -357,7 +359,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='javascript:saveCall()'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/save.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/save.png")%>' 
       				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>
@@ -434,7 +436,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:opencloseDocumentSelectionWin()'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "scheduler.addremovedocument" bundle="component_scheduler_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/plusminus.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/plusminus.gif")%>' 
 	      				 alt='<spagobi:message key = "scheduler.addremovedocument"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -557,43 +559,46 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						  	       name="<%="par_"+biobj.getId()+"_"+biobjpar.getParameterUrlName()%>" 
 						  	       type="text" value="<%=concatenatedValue%>" />
 						  	&nbsp;&nbsp;&nbsp;
+						  	<%
+						  		List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
+						  		if(roles.size()>0) {
+						  	%>
 						  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=biobjpar.getParameterUrlName()%>')">
 						  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
-      				 				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
+      				 				src='<%= urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
       				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
 						  	</a>
-						  	
 						  	&nbsp;&nbsp;&nbsp;
-						  	<%
-								List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
-						  		if(roles.size()==1) {
-						    %>
+							  	<%
+							  		if(roles.size()==1) {
+							    %>
 						  		<input type='hidden' 
 						  			   id='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>' 
 						  			   name='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>'
 						  			   value='<%=roles.get(0)%>' />
-						  	<%
-						  		} else {
-							%>
+							  	<%
+							  		} else {
+								%>
 								<span class='portlet-form-field-label'>
 									<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
 								</span>
 								&nbsp;&nbsp;&nbsp;
 								<select name='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>'
 										id='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>' >
-								<% 
-									Iterator iterRoles = roles.iterator(); 
-									while(iterRoles.hasNext()) {
-										String role = (String)iterRoles.next();
-								%>
+									<% 
+										Iterator iterRoles = roles.iterator(); 
+										while(iterRoles.hasNext()) {
+											String role = (String)iterRoles.next();
+									%>
 									<option value='<%=role%>'><%=role%></option>
-								<%
-									}
-								%>
+									<%
+										}
+									%>
 								</select>
-							<%
-						  		}
-							%>
+								<%
+							  		}
+						  		} // if(roles.size()>0)
+								%>
 						</div>
 					</div>
 		
@@ -637,7 +642,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<a href='javascript:fillParamCall()'> 
 		      			<img class='header-button-image-portlet-section' 
 		      				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-		      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/save.png")%>' 
+		      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/save.png")%>' 
 		      				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 					</a>
 				</td>
@@ -652,3 +657,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 </form>
+
+<%
+ System.out.println("**************JSP");
+%>

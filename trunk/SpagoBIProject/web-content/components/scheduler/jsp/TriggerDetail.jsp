@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@page import="it.eng.spago.base.SourceBean"%>
-<%@page import="javax.portlet.PortletURL"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
 <%@page import="it.eng.spagobi.scheduler.to.JobInfo"%>
@@ -35,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Date"%>
 <%@page import="java.util.GregorianCalendar"%>
 <%@page import="java.util.Calendar"%>
+<%@page import="java.util.HashMap"%>
 
 <%  
    	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TriggerManagementModule"); 
@@ -43,13 +43,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List jobBiobjects = jobInfo.getBiobjects();
 	Map saveOptions = triggerInfo.getSaveOptions();
 	
-	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
-
-	PortletURL formUrl = renderResponse.createActionURL();
-	formUrl.setParameter("PAGE", "TriggerManagementPage");
-	formUrl.setParameter("MESSAGEDET", SpagoBIConstants.MESSAGE_SAVE_SCHEDULE);
-	formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+	
+	Map formUrlPars = new HashMap();
+	formUrlPars.put("PAGE", "TriggerManagementPage");
+	formUrlPars.put("MESSAGEDET", SpagoBIConstants.MESSAGE_SAVE_SCHEDULE);
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	String formUrl = urlBuilder.getUrl(request, formUrlPars);   
 
 %>
 
@@ -57,7 +59,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- ********************** SCRIPT FOR DOJO **************************** -->
 
-<script type="text/javascript" src="<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dojo/dojo.js" )%>"></script>
+
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "/js/dojo/dojo.js" )%>"></script>
 
 <script type="text/javascript">
        dojo.require("dojo.widget.DropdownDatePicker");
@@ -465,10 +468,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
-				<a href='<%= backUrl.toString() %>'> 
+				<a href='<%=backUrl%>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/back.png")%>' 
 	      				 alt='<spagobi:message key = "scheduler.back"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -477,7 +480,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:saveCall()'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/scheduler/img/save.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/save.png")%>' 
 	      				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -593,30 +596,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 			%>
 			<input type="hidden" value="<%=repInterv%>" name="repeatInterval" />
-			<%--
-
-			<div class="div_form_row" >
-				<div class='div_form_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key="scheduler.repeatinterval" bundle="component_scheduler_messages" />
-					</span>
-				</div>
-				<div class='div_form_field'>
-				    <%
-				    	String repInterv = triggerInfo.getRepeatInterval();
-				        if(repInterv!=null) {
-				        	if(repInterv.trim().equals("0")) {
-				        		repInterv = "";
-				        	}
-				        } else {
-				        	repInterv = "";
-				        }
-				    %>
-					<input type="text" value="<%=repInterv%>" name="repeatInterval" size="35"/>
-					&nbsp;<span style="font-size:9pt;">ms<span>
-				</div>
-			</div>
-			--%>
 			
 			
 			

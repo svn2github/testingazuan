@@ -21,54 +21,57 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.importexport.ImportExportConstants" %>
-
-<%  
-   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
-   String exportFilePath = (String)aServiceRequest.getAttribute(ImportExportConstants.EXPORT_FILE_PATH);
-   ImportResultInfo iri = (ImportResultInfo)aServiceRequest.getAttribute(ImportExportConstants.IMPORT_RESULT_INFO);
-
-   PortletURL backUrl = renderResponse.createActionURL();
-   backUrl.setParameter("ACTION_NAME", "START_ACTION");
-   backUrl.setParameter("PUBLISHER_NAME", "LoginSBISettingsPublisher");
-   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
-   
-   PortletURL formExportUrl = renderResponse.createActionURL();
-   formExportUrl.setParameter("PAGE", "ImportExportPage");
-   formExportUrl.setParameter("MESSAGEDET", "Export");
-   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-  
-   PortletURL formImportUrl = renderResponse.createActionURL();
-   formImportUrl.setParameter("PAGE", "ImportExportPage");
-
-   String downloadUrl = renderRequest.getContextPath() + "/ExportService";
-   if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
-	   downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
-   }
-   
-%>
-
-
 <%@page import="it.eng.spagobi.importexport.ImportResultInfo"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+
+<%  
+	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
+	String exportFilePath = (String)aServiceRequest.getAttribute(ImportExportConstants.EXPORT_FILE_PATH);
+	ImportResultInfo iri = (ImportResultInfo)aServiceRequest.getAttribute(ImportExportConstants.IMPORT_RESULT_INFO);
+
+   	Map backUrlPars = new HashMap();
+	backUrlPars.put("ACTION_NAME", "START_ACTION");
+	backUrlPars.put("PUBLISHER_NAME", "LoginSBISettingsPublisher");
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+   
+	Map formExportUrlPars = new HashMap();
+	formExportUrlPars.put("PAGE", "ImportExportPage");
+	formExportUrlPars.put("MESSAGEDET", "Export");
+	String formExportUrl = urlBuilder.getUrl(request, formExportUrlPars);
+   
+	Map formImportUrlPars = new HashMap();
+	String formImportUrl = urlBuilder.getUrl(request, formImportUrlPars);
+  
+	String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ExportService";
+	if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
+		downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
+	}
+   
+%>
+
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBISet.importexport" bundle="component_impexp_messages"/>
 		</td>
+		<%if(ChannelUtilities.isPortletRunning()) { %>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "Sbi.back" bundle="component_impexp_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/back.png")%>' 
+      				 src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/back.png")%>' 
       				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
+		<% } %>
 	</tr>
 </table>
 
@@ -97,7 +100,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background_no_img">
 
  
-  <form method='POST' action='<%=formExportUrl.toString()%>' id='exportForm' name='exportForm'> 
+  <form method='POST' action='<%=formExportUrl%>' id='exportForm' name='exportForm'> 
 	<div style="float:left;width:50%;" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">	
 				<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>
@@ -105,7 +108,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div style="float:left;width:10%;">
 		  <center>
 			 <a href="javascript:submitExportForm()">
-					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.gif") %>'
+					<img src= '<%=urlBuilder.getResourceLink(request, "/components/importexport/img/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
 				</a>
@@ -145,15 +148,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<form method='POST' action='<%=downloadUrl%>' id='downForm' name='downForm'>
 	</form>
 
-    <form method='POST' action='<%=formImportUrl.toString()%>' id='importForm' name='importForm' enctype="multipart/form-data">
-	<div style="float:left;width:45%" class="div_detail_area_forms">
+    <form method='POST' action='<%=formImportUrl%>' id='importForm' name='importForm' enctype="multipart/form-data">
+	<input type="hidden" name="PAGE" value="ImportExportPage" />
+ 	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">
 				<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>
 		</div>
 		<div style="float:left;width:10%;">
 		  <center>
 			<a href="javascript:document.getElementById('importForm').submit()">
-					<img src= '<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport32.gif") %>'
+					<img src= '<%= urlBuilder.getResourceLink(request, "/components/importexport/img/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' />
 				</a>
@@ -172,7 +176,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%
 				String pathLogFile = iri.getPathLogFile();
 				if( (pathLogFile!=null) && !pathLogFile.equals("") ) {	
-					 String downloadLogUrl = renderRequest.getContextPath() + "/ExportService";
+					 String downloadLogUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ExportService";
 					 downloadLogUrl += "?OPERATION=downloadLog&PATH=" + pathLogFile;	
 			%>
 			<spagobi:message key = "SBISet.importexport.opComplete" bundle="component_impexp_messages"/>
@@ -195,7 +199,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    	while(keysIter.hasNext()){
 			    		String key = (String)keysIter.next();
 			    		String path = (String)manualTasks.get(key);
-			    		String downloadManualTaskUrl = renderRequest.getContextPath() + "/ExportService";
+			    		String downloadManualTaskUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ExportService";
 			    		downloadManualTaskUrl += "?OPERATION=downloadManualTask&PATH=" + path;	
 		    %>
 		    	<li>

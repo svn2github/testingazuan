@@ -32,9 +32,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 <portlet:defineObjects/>
 
+<LINK rel='StyleSheet' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi_shared.css")%>' 
+      type='text/css' />
 
 <LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
+      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi_portlet.css")%>' 
       type='text/css' />
 
 <LINK rel='StyleSheet' 

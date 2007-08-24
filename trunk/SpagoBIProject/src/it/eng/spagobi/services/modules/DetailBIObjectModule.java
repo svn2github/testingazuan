@@ -113,6 +113,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		if(ChannelUtilities.isPortletRunning()){
 			if(PortletUtilities.isMultipartRequest()) {
 				request = ChannelUtilities.getSpagoRequestFromMultipart();
+				fillRequestContainer(request, errorHandler);
 			}
 		}
 		
@@ -251,7 +252,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	}	
 
 	private void startDependenciesLookupHandler(SourceBean request, String message, SourceBean response) throws Exception {
-		fillRequestContainer(request, errorHandler);
+		//fillRequestContainer(request, errorHandler);
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		BIObject obj = recoverBIObjectDetails(request, message);
 		BIObjectParameter biObjPar = recoverBIObjectParameterDetails(request, obj.getId());
@@ -419,7 +420,7 @@ public class DetailBIObjectModule extends AbstractModule {
 
 		try {
 			// as the request is a multipart request, the fillRequestContainer popolates correctly the service request
-			fillRequestContainer(request, errorHandler);
+			//fillRequestContainer(request, errorHandler);
 			BIObject obj = recoverBIObjectDetails(request, mod);
 			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			String selectedObjParIdStr = null;
@@ -1296,26 +1297,40 @@ public class DetailBIObjectModule extends AbstractModule {
 			}
 		}
 		SourceBean _serviceRequest = req.getServiceRequest();
-		_serviceRequest.setAttribute("label",label);
-		_serviceRequest.setAttribute("description",description);
-		_serviceRequest.setAttribute("name",name);
-		_serviceRequest.setAttribute("relName",relName);
+		if(_serviceRequest.getAttribute("label")==null)
+			_serviceRequest.setAttribute("label",label);
+		if(_serviceRequest.getAttribute("description")==null)
+			_serviceRequest.setAttribute("description",description);
+		if(_serviceRequest.getAttribute("name")==null)
+			_serviceRequest.setAttribute("name",name);
+		if(_serviceRequest.getAttribute("relName")==null)
+			_serviceRequest.setAttribute("relName",relName);
 		if (engine == null) {
 			List engines = DAOFactory.getEngineDAO().loadAllEngines();
 			if (engines.size() > 0) {
 				engine = ((Engine) engines.get(0)).getId().toString();
 			}
 		}
-		_serviceRequest.setAttribute("engine", engine);
-		_serviceRequest.setAttribute("state", state);
-		_serviceRequest.setAttribute("path", path);
-		_serviceRequest.setAttribute("objParLabel", objParLabel == null ? "" : objParLabel);
-		_serviceRequest.setAttribute("parurl_nm", parurl_nm == null ? "" : parurl_nm);
-		_serviceRequest.setAttribute("par_Id", par_Id == null ? "" : par_Id);
-		_serviceRequest.setAttribute("req_fl", req_fl == null ? "" : req_fl);
-		_serviceRequest.setAttribute("mod_fl", mod_fl == null ? "" : mod_fl);
-		_serviceRequest.setAttribute("view_fl", view_fl == null ? "" : view_fl);
-		_serviceRequest.setAttribute("mult_fl", mult_fl == null ? "" : mult_fl);
+		if(_serviceRequest.getAttribute("engine")==null)
+			_serviceRequest.setAttribute("engine", engine);
+		if(_serviceRequest.getAttribute("state")==null)
+			_serviceRequest.setAttribute("state", state);
+		if(_serviceRequest.getAttribute("path")==null)
+			_serviceRequest.setAttribute("path", path);
+		if(_serviceRequest.getAttribute("objParLabel")==null)
+			_serviceRequest.setAttribute("objParLabel", objParLabel == null ? "" : objParLabel);
+		if(_serviceRequest.getAttribute("parurl_nm")==null)
+			_serviceRequest.setAttribute("parurl_nm", parurl_nm == null ? "" : parurl_nm);
+		if(_serviceRequest.getAttribute("par_Id")==null)
+			_serviceRequest.setAttribute("par_Id", par_Id == null ? "" : par_Id);
+		if(_serviceRequest.getAttribute("req_fl")==null)
+			_serviceRequest.setAttribute("req_fl", req_fl == null ? "" : req_fl);
+		if(_serviceRequest.getAttribute("mod_fl")==null)
+			_serviceRequest.setAttribute("mod_fl", mod_fl == null ? "" : mod_fl);
+		if(_serviceRequest.getAttribute("view_fl")==null)
+			_serviceRequest.setAttribute("view_fl", view_fl == null ? "" : view_fl);
+		if(_serviceRequest.getAttribute("mult_fl")==null)
+			_serviceRequest.setAttribute("mult_fl", mult_fl == null ? "" : mult_fl);
 	}
 	
 	public void eraseVersion(SourceBean request, SourceBean response) throws EMFUserError {
@@ -1323,15 +1338,8 @@ public class DetailBIObjectModule extends AbstractModule {
 		String ver = (String)request.getAttribute(SpagoBIConstants.VERSION);
 		String idStr = (String)request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
 		Integer id = new Integer (idStr);
-		// get user profile for cms operation
-		//SessionContainer permSess = getRequestContainer().getSessionContainer().getPermanentContainer();
-		//IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(id);
-//			ConfigSingleton config = ConfigSingleton.getInstance();
-//			SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-//			String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-//			String pathVer = biobjectsPath + "/" + obj.getUuid() + "/template";
 			String pathVer = obj.getPath() + "/template";
 			// try to delete the version
 			CmsManager manager = new CmsManager();

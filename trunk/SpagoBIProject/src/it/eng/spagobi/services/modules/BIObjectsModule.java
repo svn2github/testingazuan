@@ -53,6 +53,7 @@ public class BIObjectsModule extends AbstractModule {
     public static final String MODALITY = "MODALITY";
     public static final String SINGLE_OBJECT = "SINGLE_OBJECT";
     public static final String FILTER_TREE = "FILTER_TREE";
+    public static final String ENTIRE_TREE = "ENTIRE_TREE";
     public static final String LABEL_SINGLE_OBJECT = "LABEL_SINGLE_OBJECT";
     public static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
     public static final String PATH_SUBTREE = "PATH_SUBTREE";

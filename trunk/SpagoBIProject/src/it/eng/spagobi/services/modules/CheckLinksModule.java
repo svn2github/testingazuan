@@ -38,15 +38,12 @@ import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.commons.AbstractHibernateConnectionCheckListModule;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.Iterator;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
 
 /**
  * @author Gioia
@@ -88,11 +85,10 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String actor = (String) sessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-        PortletRequest portReq = PortletUtilities.getPortletRequest();
-		PortletPreferences prefs = portReq.getPreferences();
-		String modality = (String)prefs.getValue(BIObjectsModule.MODALITY, "");
+        
+		String modality = ChannelUtilities.getPreferenceValue(requestContainer, BIObjectsModule.MODALITY, BIObjectsModule.ENTIRE_TREE);
 		if (modality != null && modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
-			initialPath = (String) prefs.getValue(TreeObjectsModule.PATH_SUBTREE, "");
+			initialPath = (String)ChannelUtilities.getPreferenceValue(requestContainer, TreeObjectsModule.PATH_SUBTREE, "");
 		}
         String objIdStr = (String) sessionContainer.getAttribute("SUBJECT_ID");
         Integer objId = null;

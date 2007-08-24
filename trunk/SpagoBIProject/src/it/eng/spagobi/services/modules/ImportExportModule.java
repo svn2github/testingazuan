@@ -42,6 +42,7 @@ import it.eng.spagobi.importexport.ImportExportConstants;
 import it.eng.spagobi.importexport.ImportResultInfo;
 import it.eng.spagobi.importexport.MetadataAssociations;
 import it.eng.spagobi.importexport.TransformManager;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
@@ -77,9 +78,10 @@ public class ImportExportModule extends AbstractModule {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
-		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		if (PortletFileUpload.isMultipartContent((ActionRequest)portletRequest)){
-			request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
+		if(ChannelUtilities.isPortletRunning()){
+			if(PortletUtilities.isMultipartRequest()) {
+				request = ChannelUtilities.getSpagoRequestFromMultipart();
+			}
 		}
 		
 		String message = (String) request.getAttribute("MESSAGEDET");

@@ -121,6 +121,7 @@ public class FisheyeMenuTag extends TagSupport {
 			}
 		}
 		
+		/*
 		// create menu links based on user roles
 		Collection userRoles = profile.getRoles();
 		Iterator userRolesIter = userRoles.iterator();
@@ -142,7 +143,7 @@ public class FisheyeMenuTag extends TagSupport {
 			// user can see the view
 			createViewMenuItem(htmlStream, jsStream, viewSB);
 		}
-		
+		*/
 		
 		// create shared final menu div part 
 		htmlStream.append("		</div>");
@@ -160,7 +161,7 @@ public class FisheyeMenuTag extends TagSupport {
 		createMenuItem(htmlStream, jsStream, appCode, iconUrl, appTitle, link, width, height, "true");
 	}
 	
-	
+	/*
 	public void createViewMenuItem(StringBuffer htmlStream, StringBuffer jsStream, SourceBean viewSB) {
 		String width = (String)viewSB.getAttribute("width");
 		String height = (String)viewSB.getAttribute("height");
@@ -170,7 +171,7 @@ public class FisheyeMenuTag extends TagSupport {
 		String link = "/spagobi/servlet/AdapterHTTP?PAGE=ViewBuilderPage&viewCode="+viewCode;
 		createMenuItem(htmlStream, jsStream, viewCode, iconUrl, viewTitle, link, width, height, "false");
 	}
-	
+	*/
 	
 	private void createMenuItem(StringBuffer htmlStream, StringBuffer jsStream, String code, 
 			                    String iconUrl, String title, String link, String width, 

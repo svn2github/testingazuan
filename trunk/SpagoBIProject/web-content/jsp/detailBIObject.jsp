@@ -163,7 +163,6 @@ function checkFormVisibility(docType) {
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<% 
 			if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){
-				if(ChannelUtilities.isPortletRunning()) {	
 		%>
 		<td class='header-button-column-portlet-section'>
 			<input type="hidden" name="" value="" id="loadLinksLookup">
@@ -175,7 +174,6 @@ function checkFormVisibility(docType) {
 			</a>
 		</td>
 		<% 		
-				}
 			}
 		%>
 		<td class='header-button-column-portlet-section'>
@@ -641,7 +639,7 @@ function checkFormVisibility(docType) {
 		      		        if (!isCurrentVer || subReports == null || subReports.size() == 0) {
 		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
 		      		        } else {
-		      		        	String downloadAlsoLinkedTemplateUrl = renderRequest.getContextPath() + "/ContentRepositoryServlet?operation=downloadAll&biobjectId=" + 
+		      		        	String downloadAlsoLinkedTemplateUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ContentRepositoryServlet?operation=downloadAll&biobjectId=" + 
 		      		        			obj.getId().toString() + "&fileName=template.zip";
 		      		        	String downloadAlsoLinkedTemplateMsg = msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages");
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:downloadAlsoLinkedTemplatesConfirm(\"" + downloadAlsoLinkedTemplateMsg + "\",\"" + downloadAlsoLinkedTemplateUrl + "\", \"" + downl + "\")' style='font-size:9px;' >" 
@@ -871,13 +869,14 @@ function verifyDependencies() {
 		document.getElementById('loadParametersLookup').name = 'loadParametersLookup';
 		document.getElementById('loadParametersLookup').value = 'loadParametersLookup';
 		document.getElementById('save').click();
+		
 		<%
 	}
 	%>
 }
 
 function saveBIParameterConfirm (message) {
-
+   
 	var biobjParFormModified = isBIParameterFormChanged();
 
 	if (biobjParFormModified == 'true') 
@@ -971,7 +970,6 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 		<% } %>
 		<% 
 			if(biObjParams != null && biObjParams.size() > 1) { 
-				if(ChannelUtilities.isPortletRunning()) {
 		%>
 			<td class='header-button-column-portlet-section'>
 				<a href='javascript:saveBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.saveBIParameterConfirm"/>")'>
@@ -982,7 +980,6 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 				</a>
 			</td>
 		<%
-				} 
 			}
 		%>
 		<td class='header-button-column-portlet-section'>

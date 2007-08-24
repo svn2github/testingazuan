@@ -46,16 +46,62 @@
 	             height="350"
 	             iconUrl="/spagobi/img/wapp/parameters64.png">
 	</APPLICATION>
-	<APPLICATION code="DocumentMan" 
-	             title="Business Documents Management"  
-	             functionality="DocumentManagement" 
+	<APPLICATION code="DocumentAdmin" 
+	             title="Business Documents Administration"  
+	             functionality="DocumentAdministration" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR" 
 	             width="800" 
-	             height="350"
+	             height="500"
 	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
 	</APPLICATION>
+	<APPLICATION code="DocumentDev" 
+	             title="Business Documents Development"  
+	             functionality="DocumentDevelopment" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=DEV_ACTOR" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	<APPLICATION code="DocumentTest" 
+	             title="Business Documents Test"  
+	             functionality="DocumentTest" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=TESTER_ACTOR" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	<APPLICATION code="DocumentExec" 
+	             title="Business Documents Execution"  
+	             functionality="DocumentExecution" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=USER_ACTOR" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	<APPLICATION code="ImpExp" 
+	             title="Import Export"  
+	             functionality="ImportExport" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;OPERATION=IMPORTEXPORT_OPERATION&amp;OBJECTS_VIEW=VIEW_OBJECTS_AS_TREE&amp;ACTOR=ADMIN_ACTOR" 
+	             width="800" 
+	             height="450"
+	             iconUrl="/spagobi/components/importexport/img/importexport64.png">
+	</APPLICATION>
+	<APPLICATION code="Sched" 
+	             title="Scheduler"  
+	             functionality="Scheduler" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=JobManagementPage&amp;MESSAGEDET=MESSAGE_GET_ALL_JOBS" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/scheduleIcon64.png">
+	</APPLICATION>
 	
+	<!-- 
 	<VIEW code="MonitorView" 
 	      title="Monitor"  
 	      role="Administrator" 
@@ -83,5 +129,6 @@
 		      </CONTAINER>
 		  </CONTAINERS>
 	</VIEW>
+	-->
 	
 </MENU>

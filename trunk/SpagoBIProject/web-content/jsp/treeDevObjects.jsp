@@ -26,25 +26,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.services.modules.DetailBIObjectModule,
                  it.eng.spago.navigation.LightNavigationManager" %>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.services.modules.BIObjectsModule"%>
 
 <% 
-   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
+   	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
   
-   PortletURL backUrl = renderResponse.createActionURL();
-   backUrl.setParameter("ACTION_NAME", "START_ACTION");
-   backUrl.setParameter("PUBLISHER_NAME", "LoginSBIDevelopmentContextPublisher");
-   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
-   
-   PortletURL addUrl = renderResponse.createActionURL();
-   addUrl.setParameter("PAGE", DetailBIObjectModule.MODULE_PAGE);
-   addUrl.setParameter(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_NEW);
-   addUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
-  
-   PortletURL viewListUrl = renderResponse.createActionURL();
-   viewListUrl.setParameter("PAGE", it.eng.spagobi.services.modules.BIObjectsModule.MODULE_PAGE);
-   viewListUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
-   viewListUrl.setParameter(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("ACTION_NAME", "START_ACTION");
+	backUrlPars.put("PUBLISHER_NAME", "LoginSBIDevelopmentContextPublisher");
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
+	Map addUrlPars = new HashMap();
+	addUrlPars.put("PAGE", DetailBIObjectModule.MODULE_PAGE);
+	addUrlPars.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_NEW);
+	addUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
+	String addUrl = urlBuilder.getUrl(request, addUrlPars);
+   
+	Map viewListUrlPars = new HashMap();
+	viewListUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
+	viewListUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
+	viewListUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
+	String viewListUrl = urlBuilder.getUrl(request, viewListUrlPars);
+  
 %>
 
 <table class='header-table-portlet-section'>
@@ -54,20 +61,37 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= addUrl.toString() %>'> 
-      			<img title='<spagobi:message key = "SBISet.devObjects.newObjButt" />' width='25px' height='25px' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/new.png")%>' alt='<spagobi:message key = "SBISet.devObjects.newObjButt" />' />
+			<a href='<%=addUrl%>'> 
+      			<img title='<spagobi:message key = "SBISet.devObjects.newObjButt" />' 
+      			     width='25px' height='25px' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/new.png")%>' 
+      			     alt='<spagobi:message key = "SBISet.devObjects.newObjButt" />' />
 			</a>
 		</td>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>			
-			<a href='<%= viewListUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.devObjects.listViewButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/listView.png")%>' alt='<spagobi:message key = "SBISet.devObjects.listViewButt" />' /> 
+			<a href='<%=viewListUrl%>'> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBISet.devObjects.listViewButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/listView.png")%>' 
+      			     alt='<spagobi:message key = "SBISet.devObjects.listViewButt" />' /> 
 			</a>
 		</td>
+		<%
+			if(ChannelUtilities.isPortletRunning()){
+		%>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.devObjects.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBISet.devObjects.backButt" />' />
+			<a href='<%=backUrl%>'> 
+      			<img class='header-button-image-portlet-section' 
+      			     title='<spagobi:message key = "SBISet.devObjects.backButt" />' 
+      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     alt='<spagobi:message key = "SBISet.devObjects.backButt" />' />
 			</a>
 		</td>
+		<%
+			}
+		%>
 	</tr>
 </table>
 

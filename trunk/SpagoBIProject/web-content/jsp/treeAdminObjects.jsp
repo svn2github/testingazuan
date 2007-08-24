@@ -45,6 +45,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	viewListUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 	viewListUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
 	String viewListUrl = urlBuilder.getUrl(request, viewListUrlPars);
+	
+	Map addUrlPars = new HashMap();
+	addUrlPars.put("PAGE", DetailBIObjectModule.MODULE_PAGE);
+	addUrlPars.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_NEW);
+	addUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+	String addUrl = urlBuilder.getUrl(request, addUrlPars);
 
 %>
 
@@ -62,14 +68,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       			     alt='<spagobi:message key = "SBISet.objects.listViewButt" />' /> 
 			</a>		
 		</td>
-		<%
-			if(ChannelUtilities.isWebRunning()){
-				Map addUrlPars = new HashMap();
-				addUrlPars.put("PAGE", DetailBIObjectModule.MODULE_PAGE);
-				addUrlPars.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_NEW);
-				addUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
-				String addUrl = urlBuilder.getUrl(request, addUrlPars);
-		%>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=addUrl%>'> 
@@ -78,9 +76,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       			     alt='<spagobi:message key = "SBISet.devObjects.newObjButt" />' />
 			</a>
 		</td>		
-		<%		
-			}
-		%>
 		<%
 			if(ChannelUtilities.isPortletRunning()){
 		%>

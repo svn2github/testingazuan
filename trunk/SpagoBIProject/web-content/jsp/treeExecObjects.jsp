@@ -21,13 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-                 it.eng.spagobi.constants.ObjectsTreeConstants,
+<%@ page import="it.eng.spagobi.constants.ObjectsTreeConstants,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.services.modules.DetailBIObjectModule,
                  it.eng.spago.navigation.LightNavigationManager" %>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
 <%@page import="org.safehaus.uuid.UUID"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 
 <%
@@ -35,10 +36,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	String pageName = (String) aServiceRequest.getAttribute("PAGE");
 	  
-	PortletURL viewListUrl = renderResponse.createActionURL();
-	viewListUrl.setParameter("PAGE", pageName);
-	viewListUrl.setParameter(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
-	viewListUrl.setParameter(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
+	Map viewListUrlPars = new HashMap();
+	viewListUrlPars.put("PAGE", pageName);
+	viewListUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+	viewListUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
+	String viewListUrl = urlBuilder.getUrl(request, viewListUrlPars);
 	
     // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -46,8 +48,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String requestIdentity = uuid.toString();
     requestIdentity = requestIdentity.replaceAll("-", "");
     String treeName = "treeExecObj" + requestIdentity;
-    
 %>
+
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -56,9 +58,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 				<td class='header-button-column-portlet-section'>
-			<a href='<%= viewListUrl.toString() %>'> 
+			<a href='<%=viewListUrl%>'> 
       			<img class='header-button-image-portlet-section' 
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/listView.png")%>' 
+				src='<%=urlBuilder.getResourceLink(request, "/img/listView.png")%>' 
 				title='<spagobi:message key = "SBISet.exeObjects.listViewButt" />' 
 				alt='<spagobi:message key = "SBISet.exeObjects.listViewButt" />' /> 
 			</a>		

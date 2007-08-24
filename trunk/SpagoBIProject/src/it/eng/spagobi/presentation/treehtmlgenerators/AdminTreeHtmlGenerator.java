@@ -223,11 +223,14 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
 					Integer idObj = obj.getId();					
 					String stateObj = obj.getStateCode();
+					htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+					/*
 					if (ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					} else {
 						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					}
+					*/
 				}
 			}
 		}

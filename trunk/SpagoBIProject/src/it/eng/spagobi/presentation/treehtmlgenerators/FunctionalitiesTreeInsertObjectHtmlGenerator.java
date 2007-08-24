@@ -115,8 +115,11 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		SourceBean serviceRequest = reqCont.getServiceRequest();
-		actor = (String) serviceRequest.getAttribute(SpagoBIConstants.ACTOR);
 		SessionContainer sessionContainer = reqCont.getSessionContainer();
+		actor = (String) serviceRequest.getAttribute(SpagoBIConstants.ACTOR);
+		if(actor==null){
+			actor = (String)sessionContainer.getAttribute(SpagoBIConstants.ACTOR);
+		}
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		ResponseContainer responseContainer = ChannelUtilities.getResponseContainer(httpRequest);

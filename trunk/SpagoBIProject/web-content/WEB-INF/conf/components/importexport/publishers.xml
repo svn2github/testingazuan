@@ -8,6 +8,11 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/importexport/jsp/importexportHome.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 	
   	<PUBLISHER name="ImportExportPubJ">
@@ -16,7 +21,13 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ImportExportPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.presentation.publishers.ImportExportPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
+  	
 	<PUBLISHER name="ImportExportLoopback">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -35,7 +46,25 @@
       					   value="IMPORTEXPORTMODULE.IMPORT_RESULT_INFO"/>
         	</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+      			<PARAMETER name="OBJECTS_VIEW" type="ABSOLUTE" scope="" value="VIEW_OBJECTS_AS_TREE" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
+      			<PARAMETER name="EXPORT_FILE_PATH" 
+      					   type="RELATIVE" 
+      					   scope="SERVICE_RESPONSE" 
+      					   value="IMPORTEXPORTMODULE.EXPORT_FILE_PATH"/>
+      			<PARAMETER name="IMPORT_RESULT_INFO" 
+      					   type="RELATIVE" 
+      					   scope="SERVICE_RESPONSE" 
+      					   value="IMPORTEXPORTMODULE.IMPORT_RESULT_INFO"/>
+        	</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="ImportExportLoopbackStopImport">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -46,7 +75,17 @@
       			<PARAMETER name="OBJECTS_VIEW" type="ABSOLUTE" scope="" value="VIEW_OBJECTS_AS_TREE" />
         	</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="ADMIN_ACTOR" />
+      			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="IMPORTEXPORT_OPERATION" />
+      			<PARAMETER name="OBJECTS_VIEW" type="ABSOLUTE" scope="" value="VIEW_OBJECTS_AS_TREE" />
+        	</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="ImportExportRoleAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -54,7 +93,13 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/importexport/jsp/importexportRoleAssociation.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="ImportExportEngineAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -62,7 +107,13 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/importexport/jsp/importexportEngineAssociation.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="ImportExportConnectionAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -70,12 +121,23 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/importexport/jsp/importexportConnectionAssociation.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="ImportExportExistingMetadataAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/components/importexport/jsp/importexportExistingMetadataAssociation.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp" />
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/importexport/jsp/importexportExistingMetadataAssociation.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>

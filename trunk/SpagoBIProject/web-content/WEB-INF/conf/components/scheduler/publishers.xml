@@ -23,12 +23,22 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.scheduler.publishers.TriggerManagementPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.scheduler.publishers.TriggerManagementPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
 	<PUBLISHER name="JobManagementPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="it.eng.spagobi.scheduler.publishers.JobManagementPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.scheduler.publishers.JobManagementPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -41,6 +51,11 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/scheduler/jsp/ListJobs.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
 
@@ -51,6 +66,11 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/scheduler/jsp/JobDetail.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
 
@@ -59,9 +79,12 @@
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="JobManagementPage" />
       			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="MESSAGE_GET_ALL_JOBS" />
-      			<!-- 
-      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
-      			-->
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="JobManagementPage" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="MESSAGE_GET_ALL_JOBS" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -74,6 +97,11 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/scheduler/jsp/ListTriggers.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
 
@@ -84,18 +112,21 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/components/scheduler/jsp/TriggerDetail.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
     <PUBLISHER name="ReturnToTriggerList">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-      		    <!-- 
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="TriggerManagementPage" />
-      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="MESSAGE_GET_JOB_SCHEDULES" />
-      			<PARAMETER name="jobName" type="RELATIVE" scope="SERVICE_RESPONSE" value="TriggerManagementModule.jobname" />
-      			<PARAMETER name="jobGroupName" type="RELATIVE" scope="SERVICE_RESPONSE" value="TriggerManagementModule.jobGroupName" />
-      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="TRUE" />
-      			-->
+      			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
       			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>

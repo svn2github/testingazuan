@@ -36,7 +36,6 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.workflow.api.WorkflowEngineException;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.SpagoBITracer;
 

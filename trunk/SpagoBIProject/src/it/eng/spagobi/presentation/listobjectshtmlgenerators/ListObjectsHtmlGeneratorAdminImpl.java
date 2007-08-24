@@ -28,8 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Generates the HTML code for the constraction of Business Objects Administration
  * jsp page <code>treeAdminObjects.jsp</code>. 
- * 
- * @author sulis
  */
 public class ListObjectsHtmlGeneratorAdminImpl implements IListObjectsHtmlGenerator {
 

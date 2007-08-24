@@ -40,8 +40,6 @@ import java.util.TreeMap;
 /**
  * Built to transform XML tree data into XML list data. When from tree we
  * ask to obtain the relative list, these transformation methods are called.
- * 
- * @author sulis
  */
 public class ListObjectsTransformerTreeImpl implements IListObjectsTransformer {
 

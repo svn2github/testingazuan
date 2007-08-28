@@ -377,11 +377,9 @@ public class ExecuteBIObjectModule extends AbstractModule
 	   		isSingleObjExec = true;
 		
 		// if the object can be directly executed (because it hasn't any parameter to be
-		// filled by the user) and if the object has no subobject / snapshots saved or it is a 
-	   	// single object execution modality then execute it directly without pass through parameters page 	
-		if (controller.directExecution() &&  
-				((subObjects.size() == 0 && snapshots.size() == 0) || isSingleObjExec)
-			) {
+		// filled by the user) and if the object has no subobject / snapshots saved 
+	   	// then execute it directly without pass through parameters page
+		if (controller.directExecution() &&  subObjects.size() == 0 && snapshots.size() == 0) {
 			debug("pageCreationHandler", "object hasn't any parameter to fill and no subObjects");
 	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
 			// if there are some errors into the errorHandler does not execute the BIObject

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+
+   <ACTION name="LOGIN_ACTION_SBI_MAP_CATALOGUE" class="it.eng.spagobi.services.actions.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+   </ACTION>  
+   
+</ACTIONS>

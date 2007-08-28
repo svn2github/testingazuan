@@ -108,4 +108,15 @@ COMMENT ON COLUMN SBI_PARUSE_DET.USE_ID IS 'Use mode identifier. It''s an auxili
 COMMENT ON COLUMN SBI_PARUSE_DET.EXT_ROLE_ID IS 'User role identifier';
 COMMENT ON COLUMN SBI_PARUSE_DET.PROG IS 'Progressive.';
 
-
+COMMENT ON TABLE SBI_GEO_MAPS IS 'The table contains all maps usable by GEO DWH';
+COMMENT ON COLUMN SBI_GEO_MAPS.NAME IS 'Name of a map (logic key)';
+COMMENT ON COLUMN SBI_GEO_MAPS.DESCR IS 'Description of a map ';
+COMMENT ON COLUMN SBI_GEO_MAPS.URL IS  'Relative url of a map ';
+COMMENT ON COLUMN SBI_GEO_MAPS.FORMAT IS  'Format of a map (ie. SVG)';
+COMMENT ON TABLE SBI_GEO_FEATURES IS 'The table contains all features usable by GEO DWH';
+COMMENT ON COLUMN SBI_GEO_FEATURES.NAME IS 'Name of a feature (logic key)';
+COMMENT ON COLUMN SBI_GEO_FEATURES.DESCR IS 'Description of a feature ';
+COMMENT ON COLUMN SBI_GEO_FEATURES.TYPE IS  'Relative url of a map ';
+COMMENT ON TABLE SBI_GEO_MAP_FEATURES IS  'The table contains all relations between maps and features';
+COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.MAP_ID IS 'Map identifier';
+COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.FEATURE_ID IS 'Feature identifier';

@@ -119,6 +119,13 @@
         <servlet-name>AuditManagerServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.AuditManagerServlet</servlet-class>
     </servlet>
+    
+    <!--  MAP CATALOGUE -->
+    <servlet>
+        <servlet-name>MapCatalogueManagerServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.services.MapCatalogueManagerServlet</servlet-class>
+    </servlet>
+    
     <!-- END SERVLET DEFINITIONS --> 
 
 
@@ -208,6 +215,11 @@
         <servlet-name>ExportServlet</servlet-name>
         <url-pattern>/ExportService</url-pattern>
     </servlet-mapping>
+    
+    <servlet-mapping>
+		<servlet-name>MapCatalogueManagerServlet</servlet-name>
+		<url-pattern>/MapCatalogueManagerServlet</url-pattern>
+	</servlet-mapping>
 	<!-- END SERVLET MAPPINGS --> 
 
 

@@ -108,6 +108,27 @@ NOCYCLE
 NOORDER
 ;
 
+CREATE SEQUENCE SBI_MAPS_SEQ 
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE 
+NOMINVALUE 
+NOCACHE  
+NOCYCLE
+NOORDER
+;
+
+CREATE SEQUENCE SBI_FEATURES_SEQ 
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE 
+NOMINVALUE 
+NOCACHE  
+NOCYCLE
+NOORDER
+;
+
+
 CREATE TABLE SBI_CHECKS (
        CHECK_ID             INTEGER NOT NULL,
        DESCR                VARCHAR2(160) NULL,
@@ -444,6 +465,34 @@ CREATE TABLE SBI_AUDIT (
               PRIMARY KEY (ID)
 );
 
+CREATE TABLE SBI_GEO_MAPS (
+       MAP_ID               INTEGER NOT NULL,        
+       NAME                 VARCHAR(40) NOT NULL,
+       DESCR                VARCHAR(160) NULL,
+       URL					VARCHAR(400) NOT NULL,
+       FORMAT 				VARCHAR(40) NULL,
+       CONSTRAINT XPKSBI_GEO_MAPS 
+              PRIMARY KEY (MAP_ID)
+);
+
+CREATE TABLE SBI_GEO_FEATURES (
+       FEATURE_ID           INTEGER NOT NULL,       
+       NAME                 VARCHAR(40) NOT NULL,
+       DESCR                VARCHAR(160) NULL,
+       TYPE					VARCHAR(40) NULL,
+       CONSTRAINT XPKSBI_GEO_FEATURES 
+              PRIMARY KEY (FEATURE_ID)
+);
+
+CREATE TABLE SBI_GEO_MAP_FEATURES (
+	   MAP_ID               INTEGER NOT NULL,
+       FEATURE_ID           INTEGER NOT NULL,       
+       SVG_GROUP          VARCHAR(40),
+       VISIBLE_FLAG		  VARCHAR(1),
+      CONSTRAINT XPKSBI_GEO_MAP_FEATURES 
+              PRIMARY KEY (MAP_ID, FEATURE_ID)
+);
+
 ALTER TABLE SBI_AUDIT
        ADD ( CONSTRAINT FK_sbi_audit_1 
               FOREIGN KEY (DOC_REF)
@@ -657,6 +706,26 @@ ALTER TABLE SBI_SUBREPORTS
        ADD  ( CONSTRAINT FK_sbi_subreports_2
               FOREIGN KEY (SUB_RPT_ID)
                              REFERENCES SBI_OBJECTS ) ;
+
+ALTER TABLE SBI_GEO_MAPS
+       ADD  ( CONSTRAINT FK_sbi_geo_maps
+              FOREIGN KEY (MAP_ID)
+                             REFERENCES SBI_GEO_MAP_FEATURES ) ; 
+                             
+ALTER TABLE SBI_GEO_FEATURES
+       ADD  ( CONSTRAINT FK_sbi_geo_features
+              FOREIGN KEY (FEATURE_ID)
+                             REFERENCES SBI_GEO_MAP_FEATURES ) ; 
+                             
+ALTER TABLE SBI_GEO_MAP_FEATURES
+       ADD  ( CONSTRAINT FK_sbi_geo_map_features1
+              FOREIGN KEY (MAP_ID)
+                             REFERENCES SBI_GEO_MAPS ) ;
+
+ALTER TABLE SBI_GEO_MAP_FEATURES
+       ADD  ( CONSTRAINT FK_sbi_geo_map_features2
+              FOREIGN KEY (FEATURE_ID)
+                             REFERENCES SBI_GEO_FEATURES ) ;
 
 create trigger TRG_SBI_CHECKS
   BEFORE INSERT

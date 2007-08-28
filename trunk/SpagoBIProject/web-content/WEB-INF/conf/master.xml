@@ -87,5 +87,15 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/scheduler/validation.xml" />
 	<!-- end scheduler module -->
+	<!-- start map catalogue module -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/statements.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/validation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/mapcatalogue/geoengine.xml" />
+	<!-- end map catalogue module -->
 	
 </MASTER>

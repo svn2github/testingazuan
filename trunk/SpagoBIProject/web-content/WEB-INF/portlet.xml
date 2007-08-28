@@ -268,13 +268,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	
         </portlet-preferences>
 	</portlet>
-	
-
-
-
-
-
-
 
 	<portlet>
         <description>Development Environment</description>		
@@ -383,6 +376,43 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	</preference>
         </portlet-preferences>
 	</portlet>
-
-
+ 
+	<portlet>
+        <description>Map Catalogue</description>		
+        <portlet-name>SBIMapCatalolgue</portlet-name>		
+        <display-name>Map Catalogue</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>ACTION</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>LOGIN_ACTION_SBI_MAP_CATALOGUE</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+        <supported-locale>en</supported-locale>       
+		<portlet-info>
+        	<title>Map Catalogue</title>
+        	<short-title>Map Catalogue</short-title>
+        	<keywords>Map Catalogue</keywords>
+        </portlet-info>
+        <portlet-preferences>
+        	<preference>
+        		<name>OBJECTS_VIEW</name>
+        		<!-- possible values for this preference are (VIEW_OBJECTS_AS_TREE/VIEW_OBJECTS_AS_LIST) -->
+        		<value>VIEW_OBJECTS_AS_LIST</value>
+        	</preference>        	
+        </portlet-preferences>
+	</portlet>
+	
 </portlet-app>

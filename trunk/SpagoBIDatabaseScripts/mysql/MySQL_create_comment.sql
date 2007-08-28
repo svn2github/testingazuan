@@ -13,3 +13,18 @@ ALTER TABLE SBI_PARAMETERS COMMENT = 'The table contains all parameters usable b
 ALTER TABLE SBI_PARUSE COMMENT = 'Parameters use mode. According to user''s role, every parameter can be work in a different way. It present itself and validate the particular input value according to user''s role. There are three different table to do that: 1) SBI_PARUSE lets you to choose how the parameter can present itsefl (only one mode for user''s role, but many for the same parameter) 2) SBI_PARUSE_DET binds presentation mode with user''s roles 3) SBI_PARUSE_CK contains all input value''s validation rules (many checks for one input value) With this structure, if you whant to bind checks with roles, you have to instantiate different SBI_PARUSE rows.';
 ALTER TABLE SBI_PARUSE_CK COMMENT = 'SBI_PARUSE_CK contains all input value''s validation rules (many checks for one input value)';
 ALTER TABLE SBI_PARUSE_DET COMMENT = 'SBI_PARUSE_DET binds presentation mode with user''s roles';
+
+ALTER TABLE SBI_GEO_MAPS COMMENT = 'The table contains all maps usable by GEO DWH';
+ALTER TABLE SBI_GEO_FEATURES COMMENT = 'The table contains all features usable by GEO DWH';
+ALTER TABLE SBI_GEO_MAP_FEATURES COMMENT = 'The table contains all relations between maps and features';
+ALTER TABLE SBI_GEO_MAPS MODIFY COLUMN NAME VARCHAR(40) NOT NULL COMMENT 'Name of a map (logic key)';
+ALTER TABLE SBI_GEO_MAPS MODIFY COLUMN DESCR VARCHAR(160) NULL COMMENT 'Description of a map ';
+ALTER TABLE SBI_GEO_MAPS MODIFY COLUMN URL VARCHAR(400) NOT NULL COMMENT 'Relative url of a map ';
+ALTER TABLE SBI_GEO_MAPS MODIFY COLUMN FORMAT VARCHAR(40) NULL COMMENT 'Format of a map (ie. SVG)';
+
+ALTER TABLE SBI_GEO_FEATURES MODIFY COLUMN NAME VARCHAR(40) NOT NULL COMMENT 'Name of a feature (logic key)';
+ALTER TABLE SBI_GEO_FEATURES MODIFY COLUMN DESCR VARCHAR(160) NULL COMMENT 'Description of a feature ';
+ALTER TABLE SBI_GEO_FEATURES MODIFY COLUMN TYPE	VARCHAR(40) NOT NULL COMMENT 'Type a map (ie. Positional, Territorial)';
+
+ALTER TABLE SBI_GEO_MAP_FEATURES MODIFY COLUMN MAP_ID INTEGER NOT NULL COMMENT 'Map identifier';
+ALTER TABLE SBI_GEO_MAP_FEATURES MODIFY COLUMN FEATURE_ID INTEGER NOT NULL COMMENT 'Feature identifier';

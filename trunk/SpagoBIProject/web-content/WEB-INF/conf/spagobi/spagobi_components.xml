@@ -3,5 +3,6 @@
 	
 	<SPAGOBI_COMPONENT name="importexport" installed="true" /> 
 	<SPAGOBI_COMPONENT name="booklets" installed="false" /> 
+	<SPAGOBI_COMPONENT name="mapcatalogue" installed="true" /> 
 	
 </SPAGOBI_COMPONENTS>

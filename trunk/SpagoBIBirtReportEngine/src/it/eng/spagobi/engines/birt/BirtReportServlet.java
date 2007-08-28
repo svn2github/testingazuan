@@ -277,17 +277,15 @@ public class BirtReportServlet extends HttpServlet {
 		if (paramaterValue == null) return null;
 		else {
 			String paramaterValueStr = paramaterValue.toString();
-			String toReturn;
+			String toReturn = "";
 			ParametersDecoder decoder = new ParametersDecoder();
 			if (decoder.isMultiValues(paramaterValueStr)) {			
 				List values = decoder.decode(paramaterValueStr);
-				toReturn = (String) values.get(0);
-				/*
+				//toReturn = (String) values.get(0);
 				for(int i = 0; i < values.size(); i++) {
-					newParValue += (i>0?",":"");
-					newParValue += values.get(i);
+					toReturn += (i > 0 ? "," : "");
+					toReturn += values.get(i);
 				}
-				*/
 			} else {
 				toReturn = paramaterValueStr;
 			}
@@ -381,6 +379,11 @@ public class BirtReportServlet extends HttpServlet {
 			}
 			
 			int paramType = param.getDataType();
+			/* 
+			 * The ParameterConverter converts a single value.
+			 * Multi-value parameters are assumed to contains values that are String type. 
+			 * If they are not Strings (list of dates, list of numbers, ...) the converter will not work.
+			 */
 			Object paramValue = ParameterConverter.convertParameter(paramType, paramValueString, dateformat);
 			if (paramValue == null) paramValue = paramValueString;
 			

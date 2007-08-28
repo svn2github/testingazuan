@@ -132,10 +132,10 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    //adds href links	    
 	    for (int j=0; j<lstLink.size(); j++){	
 	    	Map tmpMap = (Map)lstLink.get(j);
-			Element linkElement = map.createElement("a");
-			String pippo = (String)tmpMap.get("link");
-			linkElement.setAttribute("xlink:href", (String)tmpMap.get("link"));
-			//linkElement.setAttribute("xlink:show", "replace");			
+			Element linkElement = map.createElement("a");			
+			linkElement.setAttribute("xlink:href", (String)tmpMap.get("link"));			
+			linkElement.setAttribute("target", "_parent"); 			
+			//linkElement.setAttribute("xlink:show", "new");			
 			linkElement.appendChild((Element)tmpMap.get("path"));
 	    	targetLayer.appendChild(linkElement);
 		    Node lf = map.createTextNode("\n");

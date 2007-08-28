@@ -35,5 +35,10 @@
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEventRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingora/SbiAudit.hbm.xml" />
+        <!-- map catalogue -->
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoMapFeatures.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoFeatures.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoMaps.hbm.xml" />
+        
     </session-factory>
 </hibernate-configuration>

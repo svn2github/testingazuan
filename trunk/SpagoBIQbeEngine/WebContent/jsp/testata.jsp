@@ -100,10 +100,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 			<div class='tab' id='DIV_GEO'>
 				<a href="javascript:vediSchermo('Geo','DIV_GEO')" 
-				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.GeoTooltip", bundle)%> " 
+				   title="Geo" 
 				   style="color:black;"
 				   >
-					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.GeoSelection", bundle) %>
+					Geo
 				</a>
 			</div>
 			

@@ -109,6 +109,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		colorBaseInput.value = color;
 	}
 	
+	function updateObColor(color) {
+		var obColorBox = document.getElementById("obColorBox");
+		obColorBox.style.backgroundColor = color;
+		
+		var obColor = document.getElementById("obColor");
+		obColor.value = color;
+	}
+	
+	function updateNvColor(color) {
+		var nvColorBox = document.getElementById("nvColorBox");
+		nvColorBox.style.backgroundColor = color;
+		
+		var nvColor = document.getElementById("nvColor");
+		nvColor.value = color;
+	}
+	
+	
+	
 	function updateTrasholdCalculationType(obj) {
 		var calculationType = obj.options[obj.selectedIndex].value;
 		var staticTrasholdCalculationParams = document.getElementById("staticTrasholdCalculationParams");
@@ -221,6 +239,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
 							name="description" id="description" value="<%=measure.getDescription()%>" maxlength="20"/>
+				</div>
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						Agg. Func.
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					 <select id="aggFunc" name="aggFunc"/>
+					    <option value="sum" <%=(measure.getAggFunc()!= null && measure.getAggFunc().equalsIgnoreCase("sum")?"selected":"")%> />Somma
+					    <option value="avg" <%=(measure.getAggFunc()!= null && measure.getAggFunc().equalsIgnoreCase("avg")?"selected":"") %>/>Media
+					    <option value="max" <%=(measure.getAggFunc()!= null && measure.getAggFunc().equalsIgnoreCase("max")?"selected":"")%> />Massimo
+					    <option value="min" <%=(measure.getAggFunc()!= null && measure.getAggFunc().equalsIgnoreCase("min")?"selected":"")%> />Minimo
+					  </select>			
 				</div>
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
@@ -448,8 +479,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					<input class='portlet-form-input-field'  type="text" style='width:230px;' 
-						name="obColor" id="levelNameTxt" value="<%=measure.getColurOutboundCol() %>" maxlength="20"/>
+					<input class='portlet-form-input-field' type="hidden" style='width:190px;' 
+							name="obColor" id="obColor" value="<%=measure.getColurOutboundCol() %>" maxlength="17"/>
+							
+					<span class='portlet-form-input-field'
+					id="obColorBox"
+					style="disply:block;background-color:<%=measure.getColurOutboundCol()%>;margin-left:1px;margin-bottom:1px;border:1px solid #000;cursor:pointer;" 
+					onclick="showColorPicker(this,updateObColor)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>				
+					
 				</div>
 				
 				<div class='div_detail_label'>
@@ -458,8 +495,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					<input class='portlet-form-input-field'  type="text" style='width:230px;' 
-						name="nvColor" id="levelNameTxt" value="<%=measure.getColurNullCol()%>" maxlength="20"/>
+					<input class='portlet-form-input-field' type="hidden" style='width:190px;' 
+							name="nvColor" id="nvColor" value="<%=measure.getColurNullCol() %>" maxlength="17"/>
+							
+					<span class='portlet-form-input-field'
+					id="nvColorBox"
+					style="disply:block;background-color:<%=measure.getColurNullCol()%>;margin-left:1px;margin-bottom:1px;border:1px solid #000;cursor:pointer;" 
+					onclick="showColorPicker(this,updateNvColor)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 				</div>
 											
 			</div>
@@ -524,6 +566,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </div>
 
 </div>
+
+</form>
 
 
 <!-- ============================================================================================================== -->

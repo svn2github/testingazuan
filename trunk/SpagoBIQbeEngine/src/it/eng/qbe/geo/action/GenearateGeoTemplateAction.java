@@ -63,12 +63,17 @@ public class GenearateGeoTemplateAction extends GeoAbstractAction {
 		String selectClause = query.substring(query.toLowerCase().indexOf("select") + "select".length(), query.toLowerCase().indexOf("from"));
 		String[] selectBlocks = selectClause.split(",");
 		for(int i = 0; i < selectBlocks.length; i++) {
-			String field = selectBlocks[i].trim();
+			String field = " " + selectBlocks[i].trim();
+			if(field.toLowerCase().indexOf(" distinct ") >= 0) {
+				field = field.substring(0, field.toLowerCase().indexOf(" distinct ")) + field.substring(field.toLowerCase().indexOf(" distinct ") + " distinct ".length());
+			}
 			int index = -1;
 			if( (index = field.toLowerCase().indexOf(" as ")) > 0) {
 				field = field.substring(index + 4).trim();
 			}
-			fields.add(field);
+			
+			if(field.lastIndexOf('.') > 0) field = field.substring(field.lastIndexOf('.')+1);
+			fields.add(field.trim());
 		}
 		return fields;
 	}

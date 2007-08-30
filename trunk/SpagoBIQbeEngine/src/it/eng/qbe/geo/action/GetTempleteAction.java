@@ -69,7 +69,7 @@ public class GetTempleteAction extends GeoAbstractAction {
 		mapProviderConfiguration.setMapName(selectedMap);
 		
 		datamartProviderConfiguration.setClassName("it.eng.spagobi.geo.datamart.provider.HierarchicalDatamartProvider");
-		datamartProviderConfiguration.setConnectionName("genova");
+		//datamartProviderConfiguration.setConnectionName("genova");
 		datamartProviderConfiguration.setQuery(query);
 		datamartProviderConfiguration.setColumnId(geoIdColumn);
 		datamartProviderConfiguration.setHierarchyName(selectedHierarchy);

@@ -44,6 +44,8 @@ public class SaveMeasureAction extends GeoAbstractAction {
 		measure.setColumnId(measureName);
 		String description = (String)request.getAttribute("description");
 		measure.setDescription(description);
+		String aggFunc = (String)request.getAttribute("aggFunc");
+		measure.setAggFunc(aggFunc);
 		String color = (String)request.getAttribute("color");
 		measure.setColour(color);
 		String trasholdCalculationType = (String)request.getAttribute("trasholdCalculationType");

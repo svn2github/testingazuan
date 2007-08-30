@@ -100,6 +100,7 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 		IDataSource dataSource = (IDataSource) applicationContainer.getAttribute(dmPath + "_dataSource");
 		if (dataSource == null) {
 			dataSource = new HibernateDataSource(dmPath, jndiDataSourceName, dialect);
+			((HibernateDataSource)dataSource).setName(dataSourceName);
 			applicationContainer.setAttribute(dmPath + "_dataSource", dataSource);
 		}
 

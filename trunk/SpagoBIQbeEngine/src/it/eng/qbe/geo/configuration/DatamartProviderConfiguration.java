@@ -532,23 +532,37 @@ public class DatamartProviderConfiguration {
 		buffer.append("\nclass_name=\"" + this.getClassName()+ "\" ");
 		buffer.append("\nconnection_name=\"" + this.getConnectionName() + "\" ");
 		buffer.append("\nquery=\"" + this.getQuery() + "\" ");
+		buffer.append("\ncolumn_id=\"" + this.getColumnId() + "\" ");
 		buffer.append("\nhierarchy_name=\"" + this.getHierarchyName()+ "\" ");
 		buffer.append("\nhierarchy_base_level=\"" + this.getHierarchyBaseLevel() + "\" ");
 		buffer.append("\nhierarchy_level=\"" + this.getHierarchyLevel()+ "\" ");
 		
 		String[] columnValues = this.getKpiColumnNames();
 		String columnValuesStr = "";
-		for(int i = 0; i < columnValues.length; i++) columnValuesStr+= (i==0?"":",") + columnValues[i];
+		String columnAggFuncStr = "";
+		for(int i = 0; i < columnValues.length; i++) {
+			columnValuesStr+= (i==0?"":",") + columnValues[i];
+			MapRendererConfiguration.Measure measure =
+				this.getParentConfiguration().getMapRendererConfiguration().getMeasure(columnValues[i]);
+			if(measure == null) {
+				columnAggFuncStr+= (i==0?"":",") + "sum";
+			} else {
+				columnAggFuncStr+= (i==0?"":",") + measure.getAggFunc();
+			}
+		}
 		
 		buffer.append("\ncolumn_values=\"" + columnValuesStr + "\" ");
-		buffer.append("\nagg_type=\"" + "" + "\" ");
+		buffer.append("\nagg_type=\"" + columnAggFuncStr + "\" ");
 		buffer.append(">\n");
 		
+		
+		buffer.append("<HIERARCHIES>");
 		List hierarchies = getHierarchies();
 		for(int i = 0; i < hierarchies.size(); i++) {
 			Hierarchy hierarchy = (Hierarchy)hierarchies.get(i);
-			buffer.append("\n" + hierarchy.toXml());
+			buffer.append("\n\t" + hierarchy.toXml());
 		}
+		buffer.append("\n</HIERARCHIES>");
 		
 		buffer.append("\n</DATAMART_PROVIDER>");
 		

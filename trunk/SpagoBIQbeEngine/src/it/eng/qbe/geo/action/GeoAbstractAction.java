@@ -24,6 +24,7 @@ package it.eng.qbe.geo.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.qbe.datasource.HibernateDataSource;
 import it.eng.qbe.geo.configuration.ConfigurationException;
 import it.eng.qbe.geo.configuration.Constants;
 import it.eng.qbe.geo.configuration.DatamartProviderConfiguration;
@@ -54,6 +55,11 @@ public class GeoAbstractAction extends AbstractHttpAction {
 
 		RequestContainer requestContainer = getRequestContainer();
 		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		
+		queryWizard = Utils.getWizardObject(sessionContainer);
+		datamartModel = (DataMartModel) sessionContainer.getAttribute("dataMartModel");
+		
+		
 		mapConfiguration = (MapConfiguration) sessionContainer.getAttribute("MAP_CONFIGURATION");
 		if (mapConfiguration == null) {
 			mapConfiguration = new MapConfiguration();
@@ -72,12 +78,14 @@ public class GeoAbstractAction extends AbstractHttpAction {
 			
 			datamartProviderConfiguration.addHieararchy(hierarchy);
 			
+			String connectionName = datamartModel.getDataSource().getName();
+			datamartProviderConfiguration.setConnectionName(connectionName);
+			
 			
 			sessionContainer.setAttribute("MAP_CONFIGURATION", mapConfiguration);
 		}
 
-		queryWizard = Utils.getWizardObject(sessionContainer);
-		datamartModel = (DataMartModel) sessionContainer.getAttribute("dataMartModel");
+		
 	}
 	
 	private DatamartProviderConfiguration.Hierarchy getStandardHierarchy(MapCatalogueAccessUtils mapCatalogueClient) 

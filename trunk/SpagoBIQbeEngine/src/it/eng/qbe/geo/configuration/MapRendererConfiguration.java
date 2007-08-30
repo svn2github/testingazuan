@@ -50,6 +50,7 @@ public class MapRendererConfiguration {
 	public static class Measure {
 		String columnId;
 		String description;
+		String aggFunc;
 		String colour;
 		String tresholdLb;
 		String tresholdUb;
@@ -127,6 +128,12 @@ public class MapRendererConfiguration {
 		}
 		public void setTresholdUb(String tresholdUb) {
 			this.tresholdUb = tresholdUb;
+		}
+		public String getAggFunc() {
+			return aggFunc;
+		}
+		public void setAggFunc(String aggFunc) {
+			this.aggFunc = aggFunc;
 		} 
 	}
 	
@@ -423,6 +430,7 @@ public class MapRendererConfiguration {
 				buffer.append("\t<KPI ");
 				buffer.append("column_id=\"" + measure.getColumnId() + "\" ");
 				buffer.append("description=\"" + measure.getDescription() + "\" ");
+				buffer.append("agg_func=\"" + measure.getAggFunc() + "\" ");
 				buffer.append("colour=\"" + measure.getColour() + "\" ");
 				buffer.append(">\n");
 				

@@ -162,35 +162,8 @@
   	
   	<style type="text/css"> 
 	div.panel {
-		background: #fffce6;
-		
-		border-color:dimgray;
-		border-style:solid;
-		border-width:1px;
+		background: #FFFFCC;
 	}
-	
-	div.panelTitle {
-		background:steelblue;
-		color:white;
-		
-		border-color:dimgray;
-		border-style:solid;
-		border-width:1px;
-		
-		font-family:Arial,Helvetica;
-		font-size:14px;
-		font-style: bold;		
-			
-		padding: 1px 3px 1px 3px
-	}
-	
-	div.panelBody {
-		font-size:13px;
-		font-style: normal;	
-		
-		padding: 5px 5px 3px 5px
-	}
-	
 	</style>
   	
 </head>
@@ -556,7 +529,7 @@ var selectedLayers = "";
 
 
 
-<table height="100%" border="0px" valign="top" style="background-color:#e6e6e6;">
+<table height="100%" border="2px" valign="top">
 
 
 	
@@ -619,77 +592,75 @@ var selectedLayers = "";
 		      <input type="hidden" name="template" value="<%=template%>" />
 		      <input type="hidden" name="target_level" value="<%=target_level%>" />
 		      
-			<table width="250px" height="100%" valign="top" border="0px">
+			<table width="250px" height="100%" valign="top" border="1">
 				<tr valign="top"><td>
 					
 						
-				<div class="panel" id="hierarchyNamePanel">
+				<div class="panel" id="hierarchyNamePanel" 
+					 style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 					
-					<div class="panelTitle">Hierarchies</div>					
+					<u>Hierarchies:</u>
 					
-					<div class="panelBody">	
-						<center>
-						<select id="hierarchyName" name="hierarchyName" onChange="updateHierarchySelection();draw();">
-							<option value="custom" selected>Custom</option>
-							<option value="default">Default</option>
-						</select>
-						</center>
-					</div>
-					
+					<p>
+						
+					<select id="hierarchyName" name="hierarchyName" onChange="updateHierarchySelection();draw();">
+						<option value="custom" selected>Custom</option>
+						<option value="default">Default</option>
+					</select>
 				</div>
 						
 				<p>
 					
 				
-				<div class="panel" id="hierarchyLevelPanel">
+				<div id="hierarchyLevelPanel"
+				     style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
-					<div class="panelTitle">Hierarchy Levels</div>
+					<u>Hierarchy Levels:</u>
 						
-					<div class="panelBody">						
-						<div id="hierarchyLevelRadio"> </div>	
-					</div>
+					<p>
+					
+					<div id="hierarchyLevelRadio"> </div>	
 																						
 				</div>
 									
 				<p>
 					
-				<div class="panel" id="mapPanel">
+				<div id="mapPanel" width="100%"
+					 style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
-					<div class="panelTitle">Maps</div>
+					<u>Maps</u>
 						
-					<div class="panelBody">					
-						<div id="mapRadio"> </div>	
-					</div>
+					<p>
+					
+					<div id="mapRadio"> </div>	
 					
 				</div>																
 				
 				<p>
 				
-				<div class="panel" id="layerPanel">
+				<div id="layerPanel" width="100%"
+				     style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
-					<div class="panelTitle">Layers</div>
+					<u>Layers:</u>
 						
-					<div class="panelBody">							
-						<div id="layerCheckBox"> </div>	
-					</div>		
+					<p>					
+						
+					<div id="layerCheckBox"> </div>			
 								
 				</div>		
 				
 				<p>
 				
-				<div class="panel" id="buttonPanel">
+				<div id="buttonPanel" width="100%"
+				     style="border-width:1px; border-style:solid; padding: 10px 10px 10px 10px">
 						
-					<div class="panelTitle">Controls</div>	
-					
-					<div class="panelBody">		
-						<center>	
-						<input type="submit" value="Refresh Map"/>	
-						</center>	
-						<p>
-						<center>	
-						<input type="button" value="Save Map" onClick="saveAnalysis()"/>	
-						</center>	
-					</div>	
+					<center>	
+					<input type="submit" value="Refresh Map"/>	
+					</center>	
+					<p>
+					<center>	
+					<input type="button" value="Save Map" onClick="saveAnalysis()"/>	
+					</center>	
 								
 				</div>															
 					
@@ -717,12 +688,12 @@ var selectedLayers = "";
 		<%if(isSubObject != null){ %>		
 	
 			var subObjectExecutionForm = document.getElementById('subObjectExecutionForm');
-            subObjectExecutionForm.submit();
+            // subObjectExecutionForm.submit();
 		
 		
 		<%} else { %>
               var executionForm = document.getElementById('executionForm');
-             executionForm.submit();
+             // executionForm.submit();
         <%} %>
 </script>
 

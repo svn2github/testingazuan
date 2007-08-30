@@ -128,7 +128,8 @@ BarChartRenderer.prototype.chart = function(chartElement) {
 		//barline.setAttribute("d","M" + bar_offset + "," + this.chartH + "v-" + BarSize[i] + "");
 		barline.setAttribute("d","M" + bar_offset + "," + this.chartH + "v-" + BarSize[i] + "");
 		
-		barline.setAttribute("stroke","#" + this.colours[i]);
+		//barline.setAttribute("stroke","#" + this.colours[i]);
+		barline.setAttribute("stroke",this.colours[i]);
 		barline.setAttribute("stroke-width", this.bar_width - this.bar_padding);
 		chartElement.appendChild(barline);
 	}

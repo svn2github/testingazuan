@@ -49,6 +49,7 @@ public class MapRendererConfiguration {
 	public static class Measure {
 		String columnId;
 		String description;
+		String aggFunc;
 		String colour;
 		String tresholdLb;
 		String tresholdUb;
@@ -126,6 +127,12 @@ public class MapRendererConfiguration {
 		}
 		public void setTresholdUb(String tresholdUb) {
 			this.tresholdUb = tresholdUb;
+		}
+		public String getAggFunc() {
+			return aggFunc;
+		}
+		public void setAggFunc(String aggFunc) {
+			this.aggFunc = aggFunc;
 		} 
 	}
 	
@@ -221,7 +228,10 @@ public class MapRendererConfiguration {
 			attributeValue = (String)measureSB.getAttribute("column_id");
 			measure.setColumnId(attributeValue);			
 			attributeValue = (String)measureSB.getAttribute("description");
-			measure.setDescription(attributeValue);			
+			measure.setDescription(attributeValue);
+			attributeValue = (String)measureSB.getAttribute("agg_func");
+			if(attributeValue == null) attributeValue = "sum";
+			measure.setAggFunc(attributeValue);
 			attributeValue = (String)measureSB.getAttribute("colour");
 			measure.setColour(attributeValue);
 			
@@ -369,6 +379,7 @@ public class MapRendererConfiguration {
 			Properties params = (Properties)measure.getColurCalculatorParameters();
 			if(params == null) return null;
 			String pValue = params.getProperty("range");
+			if(pValue == null) return new String[0];
 			String[] colours = pValue.split(",");
 			return colours;
 		}

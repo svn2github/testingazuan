@@ -34,6 +34,4 @@ public class ShowDataDetailsAction extends AbstractHttpAction {
 		sessionContainer.setAttribute("RESULT_SET", result);
 		sessionContainer.setAttribute("FEATURE_DESC", featureDesc);
 	}
-	
-
 }

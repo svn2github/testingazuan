@@ -64,11 +64,7 @@ public class MapDrawAction extends AbstractHttpAction {
 		
 		
 		Properties parameters = getParametersFromRequest(serviceRequest);
-		
-		String map_catalogue_manager_url = (String) request.getAttribute(MAP_CATALOGUE_MANAGER_URL);
-		MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(map_catalogue_manager_url);
-		
-		
+				
 		
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		AuditAccessUtils auditAccessUtils = 
@@ -91,21 +87,50 @@ public class MapDrawAction extends AbstractHttpAction {
 			mapConfiguration = new MapConfiguration(baseUrl, template, serviceRequest);
 			mapConfiguration.getDatamartProviderConfiguration().setParameters(parameters);
 			
-			String selectedHierarchyName = (String)serviceRequest.getAttribute("hierarchyName");
-			String selectedLevelName = (String)serviceRequest.getAttribute("level");
-			String selectedMapName = (String)serviceRequest.getAttribute("map");
+			String selectedHierarchyName = null;
+			String selectedLevelName = null;
+			String selectedMapName = null;
 			List selectedLayers = null;
-			if(serviceRequest.getAttribute("layer") != null) {
-				if(serviceRequest.getAttribute("layer") instanceof ArrayList) {
-					selectedLayers = (List)serviceRequest.getAttribute("layer");
-				} else if (serviceRequest.getAttribute("layer") instanceof String) {
-					selectedLayers = new ArrayList();
-					selectedLayers.add(serviceRequest.getAttribute("layer"));
-				} else {
-					selectedLayers = new ArrayList();
-					selectedLayers.add(serviceRequest.getAttribute("layer").toString());
+			
+			String type = (String)serviceRequest.getAttribute("type");
+			if(type == null || type.equalsIgnoreCase("object")) {
+				selectedHierarchyName = (String)serviceRequest.getAttribute("hierarchyName");
+				
+				selectedLevelName = (String)serviceRequest.getAttribute("level");
+				selectedMapName = (String)serviceRequest.getAttribute("map");
+				selectedLayers = null;
+				if(serviceRequest.getAttribute("layer") != null) {
+					if(serviceRequest.getAttribute("layer") instanceof ArrayList) {
+						selectedLayers = (List)serviceRequest.getAttribute("layer");
+					} else if (serviceRequest.getAttribute("layer") instanceof String) {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("layer"));
+					} else {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("layer").toString());
+					}
+				}
+			} else {
+				selectedHierarchyName = (String)serviceRequest.getAttribute("soHierarchyName");
+				
+				selectedLevelName = (String)serviceRequest.getAttribute("soLevel");
+				selectedMapName = (String)serviceRequest.getAttribute("soMap");
+				selectedLayers = null;
+				Object o = serviceRequest.getAttribute("soLayer");
+				if(serviceRequest.getAttribute("soLayer") != null) {
+					if(serviceRequest.getAttribute("soLayer") instanceof ArrayList) {
+						selectedLayers = (List)serviceRequest.getAttribute("soLayer");
+					} else if (serviceRequest.getAttribute("soLayer") instanceof String) {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("soLayer"));
+					} else {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("soLayer").toString());
+					}
 				}
 			}
+			
+			
 			
 			DatamartProviderConfiguration datamartProviderConfiguration = mapConfiguration.getDatamartProviderConfiguration();
 			if(selectedHierarchyName != null) datamartProviderConfiguration.setHierarchyName(selectedHierarchyName);
@@ -220,8 +245,9 @@ public class MapDrawAction extends AbstractHttpAction {
 		
 		// delete tmp map file
 		maptmpfile.delete();
-	
+		
 		getRequestContainer().getSessionContainer().setAttribute("CONFIGURATION", mapConfiguration);
+		
 	}
 	
 	

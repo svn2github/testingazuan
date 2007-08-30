@@ -28,6 +28,14 @@
     <ACTION name="SHOW_DATA_DETAILS_ACTION" class="it.eng.spagobi.geo.action.ShowDataDetailsAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>	
+	
+	<ACTION name="GET_MAPS_ACTION" class="it.eng.spagobi.geo.action.GetMapsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_LAYERS_ACTION" class="it.eng.spagobi.geo.action.GetLayersAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
     
     
 </ACTIONS>

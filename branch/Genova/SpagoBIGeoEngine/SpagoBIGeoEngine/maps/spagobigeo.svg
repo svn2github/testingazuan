@@ -210,7 +210,6 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 			myMapApp.checkBoxes['drill_nav'] = new checkBox("drill_nav","linkRadioGroup",30,offset+60,"radioBorder","radioPoint",false, "Drill Nav.",labeltextStyles,12,linkRadioGroup,undefined);
 			
 			
-			
 			//radio button group
 			radioGroup= new radioButtonGroup("radioButtons",setKpi);
 			//the following two checkboxes are added to the radio button group stored in the object instance 'radioGroupQuality'
@@ -291,6 +290,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 
 			//load function specific to the current map project
 			radioGroup.selectById(kpi_names[selected_kpi_index],true);
+			linkRadioGroup.selectById("drill_nav");
 			
 			loadProjectSpecific();
 			
@@ -341,6 +341,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 					drillUrl += "&featureValue=" + featureValue;
 					targetNode.setAttributeNS(attribNS, "crossUrl", crossUrl);
 					targetNode.setAttributeNS(attribNS, "drillUrl", drillUrl);
+					targetNode.setAttributeNS(xlinkNS, "href", drillUrl);
 	               	targetNode = targetNode.firstChild;
                }
 			   
@@ -358,11 +359,15 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                        var chartW = 800;
                        var chartH = 1600;
                        var centroide = document.getElementById("centroidi_" + targetNode.getAttributeNS(null, "id"));
-                       layerBarChartRenderer.chartX = centroide.getAttributeNS(null, "cx") - (chartW/2);
-                       layerBarChartRenderer.chartY = centroide.getAttributeNS(null, "cy") - (chartH);
-                       layerBarChartRenderer.chartW = chartW;
-                       layerBarChartRenderer.chartH = chartH;
-                       layerBarChartRenderer.render(document.getElementById("grafici"), targetNode.getAttributeNS(null, "id") + "_chartLayer", "inherit");
+                       if(centroide != null) {
+                       	   layerBarChartRenderer.chartX = centroide.getAttributeNS(null, "cx") - (chartW/2);
+	                       layerBarChartRenderer.chartY = centroide.getAttributeNS(null, "cy") - (chartH);
+	                       layerBarChartRenderer.chartW = chartW;
+	                       layerBarChartRenderer.chartH = chartH;
+	                       layerBarChartRenderer.render(document.getElementById("grafici"), targetNode.getAttributeNS(null, "id") + "_chartLayer", "inherit");
+                   	   } else {
+                   	   	//alert("Nessun centroide per " + targetNode.getAttributeNS(null, "id") + "!!!");
+                   	   }
                    }
                    
                    if(includeValuesLayer == true) {
@@ -381,17 +386,21 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                        
                        var valueLabel = document.createElementNS(svgNS,"text");
                        var centroide = document.getElementById("centroidi_" + targetNode.getAttributeNS(null, "id"));
-                       valueLabel.setAttribute("x",centroide.getAttributeNS(null, "cx"));
-                       valueLabel.setAttribute("y",centroide.getAttributeNS(null, "cy"));
-                       valueLabel.setAttribute("id", "label_" + targetNode.getAttributeNS(null, "id"));
-                       valueLabel.setAttribute("text-anchor","middle");
-                       valueLabel.setAttribute("font-family","Arial,Helvetica");
-                       valueLabel.setAttribute("font-size","600px");
-                       valueLabel.setAttribute("fill","black");
-                       var textNode = document.createTextNode(text);
-                       valueLabel.appendChild(textNode);
-                       var valuesLayer = document.getElementById("valori");
-                       valuesLayer.appendChild(valueLabel);
+                       if(centroide != null) {
+	                       valueLabel.setAttribute("x",centroide.getAttributeNS(null, "cx"));
+	                       valueLabel.setAttribute("y",centroide.getAttributeNS(null, "cy"));
+	                       valueLabel.setAttribute("id", "label_" + targetNode.getAttributeNS(null, "id"));
+	                       valueLabel.setAttribute("text-anchor","middle");
+	                       valueLabel.setAttribute("font-family","Arial,Helvetica");
+	                       valueLabel.setAttribute("font-size","600px");
+	                       valueLabel.setAttribute("fill","black");
+	                       var textNode = document.createTextNode(text);
+	                       valueLabel.appendChild(textNode);
+	                       var valuesLayer = document.getElementById("valori");
+	                       valuesLayer.appendChild(valueLabel);
+	                    } else {
+	                    	//alert("Nessun centroide per " + targetNode.getAttributeNS(null, "id") + "!!!");
+	                    }
                    }
                }
                child = child.nextSibling;
@@ -873,14 +882,16 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
                    	   var value_string = rounded_value.toString();
 		   			   var decimal_location = value_string.indexOf(".");		
 		   			   if (decimal_location != -1) {
-		   			   		alert(value_string + " - " + parseFloat(value_string) + " - " + round_decimals(parseFloat(value_string), 2) );
+		   			   		//alert(value_string + " - " + parseFloat(value_string) + " - " + round_decimals(parseFloat(value_string), 2) );
                    	   		var value_float = round_decimals( parseFloat(value_string), 2 );
                    	   		text = value_float.toString();
                    	   } else {                       	
                        		text = targetNode.getAttributeNS(attribNS,myMapApp.curKpi);
                   	   }
 						var valueLabel = document.getElementById("label_" + targetNode.getAttributeNS(null, "id"));					
-						valueLabel.firstChild.nodeValue = text;
+						if(valueLabel != null) {
+							valueLabel.firstChild.nodeValue = text;
+						}
 					}
 				}
 				

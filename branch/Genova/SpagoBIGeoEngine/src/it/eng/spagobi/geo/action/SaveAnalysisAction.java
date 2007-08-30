@@ -29,9 +29,7 @@ public class SaveAnalysisAction extends AbstractHttpAction {
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		GeoAction.SubObjectDetails subObjectDetails = (GeoAction.SubObjectDetails)getRequestContainer().getSessionContainer().getAttribute("SUBOBJECT");
-		if(subObjectDetails == null) {
-			subObjectDetails = new GeoAction.SubObjectDetails();
-		}
+		
 			
 		String name = (String)serviceRequest.getAttribute("name");
 		String description = (String)serviceRequest.getAttribute("description");
@@ -40,6 +38,8 @@ public class SaveAnalysisAction extends AbstractHttpAction {
 		subObjectDetails.setName(name);
 		subObjectDetails.setDescription(description);
 		subObjectDetails.setScope(scope);
+		
+		System.out.println(new String(subObjectDetails.getData()));
 		
 		SpagoBIAccessUtils spagoBIProxy = new SpagoBIAccessUtils();
 		try {

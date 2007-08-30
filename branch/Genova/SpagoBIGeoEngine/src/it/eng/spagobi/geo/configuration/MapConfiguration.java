@@ -101,13 +101,7 @@ public class MapConfiguration {
 		}		
 		DatamartProviderConfiguration datamartProviderConfiguration = new DatamartProviderConfiguration(this, datamartProviderConfigurationSB);
 		datamartProviderConfiguration.setParameters(getParametersFromRequest(servReq));
-		/*
-		String targetLevelStr = (String)servReq.getAttribute("target_level");
-		if(targetLevelStr != null) {
-			int targetLevel = Integer.parseInt(targetLevelStr);
-			datamartProviderConfiguration.setAggregationLevel(targetLevel);
-		}
-		*/
+		
 		setDatamartProviderConfiguration(datamartProviderConfiguration);		
 	}
 
@@ -121,10 +115,6 @@ public class MapConfiguration {
 			if(attrSB.getKey().equals("ACTION_NAME")) continue;
 			if(attrSB.getKey().equals("NEW_SESSION")) continue;
 			String className = attrSB.getClass().getName();
-			TracerSingleton.log("", TracerSingleton.MAJOR, 
-					"GeoAction :: service : " +
-					attrSB.getKey() + "ooooo----------------> " + attrSB.getValue().toString());	
-			//if(!attrSB.getClass().getName().endsWith(".String")) continue;
 			parameters.setProperty(attrSB.getKey(), attrSB.getValue().toString());
 		}
 		return parameters;

@@ -70,7 +70,13 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    Node scriptText = scriptInit.getFirstChild();
 	    StringBuffer buffer = new StringBuffer();
 	    buffer.append(getMeasuresConfigurationScript(datamart));
-	    buffer.append(getLayersConfigurationScript(targetMap));    
+	    String targetLayer = datamartProvider.getDatamartProviderConfiguration().getHierarchyLevel();
+	    targetLayer = datamartProvider.getDatamartProviderConfiguration().getSelectedLevel().getFeatureName();
+	    buffer.append(getLayersConfigurationScript(targetMap, targetLayer));    
+	    
+	    
+	    
+	    
 	    scriptText.setNodeValue(buffer.toString());
 		
 		File tmpMap = getTempFile();				
@@ -132,10 +138,10 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    //adds href links	    
 	    for (int j=0; j<lstLink.size(); j++){	
 	    	Map tmpMap = (Map)lstLink.get(j);
-			Element linkElement = map.createElement("a");			
-			linkElement.setAttribute("xlink:href", (String)tmpMap.get("link"));			
-			linkElement.setAttribute("target", "_parent"); 			
-			//linkElement.setAttribute("xlink:show", "new");			
+			Element linkElement = map.createElement("a");
+			String pippo = (String)tmpMap.get("link");
+			linkElement.setAttribute("xlink:href", (String)tmpMap.get("link"));
+			linkElement.setAttribute("target", "_parent");
 			linkElement.appendChild((Element)tmpMap.get("path"));
 	    	targetLayer.appendChild(linkElement);
 		    Node lf = map.createTextNode("\n");
@@ -245,7 +251,8 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    buffer.append("kpi_colours = [");	    
 	    for(int i = 0; i < kpiNames.length; i++) {
 	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + mapRendererConfiguration.getKpiColour(kpiNames[i]));
+	    	String colour = "'" + mapRendererConfiguration.getKpiColour(kpiNames[i]) + "'";
+	    	buffer.append(separtor + colour);
 	    }
 	    buffer.append("];\n");
 	    
@@ -302,20 +309,25 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    	buffer.append("null_values_color['"+ kpiNames[i] +"'] = '" + measure.getColurNullCol() + "';\n");
 	    	buffer.append("trasholdCalculationType['"+ kpiNames[i] +"'] = '" + measure.getTresholdCalculatorType() + "';\n");
 	    	
-	    	String[] values = mapRendererConfiguration.getTresholdsArray(measure.getColumnId());
-	    	if(values != null && values.length < 0) {
-		    	buffer.append("trasholdCalculationPercParams['"+ kpiNames[i] +"'] = [");
-		    	
-		    	buffer.append(values[0]);
-		    	for(int j = 1; j < values.length; j++) {
-		    		buffer.append("," + values[j]);
-		    	}	    	
-		    	buffer.append("];\n");
+	    	if(measure.getTresholdCalculatorType().equalsIgnoreCase("static")) {
+		    	String[] values = mapRendererConfiguration.getTresholdsArray(measure.getColumnId());
+		    	if(values != null && values.length < 0) {
+			    	buffer.append("trasholdCalculationPercParams['"+ kpiNames[i] +"'] = [");
+			    	
+			    	buffer.append(values[0]);
+			    	for(int j = 1; j < values.length; j++) {
+			    		buffer.append("," + values[j]);
+			    	}	    	
+			    	buffer.append("];\n");
+		    	}
+	    	} else {
+	    		buffer.append("trasholdCalculationPercParams['"+ kpiNames[i] +"'] = " + "null" + ";\n");
 	    	}
 	    	
 	    	String value = measure.getTresholdCalculatorParameters().getProperty("GROUPS_NUMBER");
 	    	if(value != null) {
-	    		buffer.append("trasholdCalculationUniformParams['"+ kpiNames[i] +"'] = " + value + ";\n");	    	
+	    		buffer.append("trasholdCalculationUniformParams['"+ kpiNames[i] +"'] = " + value + ";\n");
+	    		buffer.append("num_group['"+ kpiNames[i] +"'] = " + value + ";\n");
 	    	}
 	    	
 	    	buffer.append("colorRangeCalculationType['"+ kpiNames[i] +"'] = '" + measure.getColurCalculatorType() + "';\n");
@@ -349,28 +361,36 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    
 	    
 	    for(int i = 0; i < kpiNames.length; i++) {
-	    	buffer.append("thresh_" + kpiNames[i] + " = new Array(");
-	    	String[] trasholdsArray = mapRendererConfiguration.getTresholdsArray(kpiNames[i]);
-	    	for(int j = 0; j < trasholdsArray.length; j++) {
-	    		String separtor = j>0? ",": "";
-		    	buffer.append(separtor + trasholdsArray[j]);
-		    }
-	    	 buffer.append(");\n");
+	    	Measure measure  = mapRendererConfiguration.getMeasure(kpiNames[i]);
+	    	if(measure.getTresholdCalculatorType().equalsIgnoreCase("static")) {
+		    	buffer.append("thresh_" + kpiNames[i] + " = new Array(");
+		    	String[] trasholdsArray = mapRendererConfiguration.getTresholdsArray(kpiNames[i]);
+		    	for(int j = 0; j < trasholdsArray.length; j++) {
+		    		String separtor = j>0? ",": "";
+			    	buffer.append(separtor + trasholdsArray[j]);
+			    }
+		    	 buffer.append(");\n");
+	    	} else {
+	    		buffer.append("thresh_" + kpiNames[i] + " = new Array();\n");
+	    	}
 	    }
 	    
 	    return buffer.toString();
 	}
 	
-	public String getLayersConfigurationScript(SVGDocument doc) {
+	public String getLayersConfigurationScript(SVGDocument doc, String targetLayer) {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("// LAYERS\n");
 	    String[] layerNames = mapRendererConfiguration.getLayerNames();
+	   
+	    int targetLayerIndex = 0;
 	    boolean includeChartLayer = false;
 	    boolean includeValuesLayer = false;
 	    buffer.append("var layer_names = [");	
 	    String separtor = "";
-	    for(int i = 0; i < layerNames.length; i++) {	    	
+	    for(int i = 0; i < layerNames.length; i++) {	
+	    	if(targetLayer.equalsIgnoreCase(layerNames[i])) targetLayerIndex = i;
 	    	if(doc.getElementById(layerNames[i]) != null) { 
 	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
 	    		separtor = ",";
@@ -406,7 +426,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    buffer.append("var includeChartLayer = " + includeChartLayer + ";\n");
 	    buffer.append("var includeValuesLayer = " + includeValuesLayer + ";\n");
 	    
-	    buffer.append("var target_layer_index = 0;\n");
+	    buffer.append("var target_layer_index = " + targetLayerIndex +";\n");
 	    
 	    return buffer.toString();
 	}

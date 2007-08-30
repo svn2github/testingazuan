@@ -29,7 +29,7 @@ import java.util.TreeSet;
 /**
  * Executes the query and obtains the data associated to the svg map
  */
-public class HierarchicalDatamartProvider extends AbstractDatamartProvider { 
+public class CopyOfHierarchicalDatamartProvider extends AbstractDatamartProvider { 
     private static final String DRILL = "DRILL";
 
     private static final String PARAMETER = "PARAM";
@@ -37,11 +37,11 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     /**
      * Constructor
      */
-    public HierarchicalDatamartProvider() {
+    public CopyOfHierarchicalDatamartProvider() {
         super();
     }
     
-    public HierarchicalDatamartProvider(DatamartProviderConfiguration datamartProviderConfiguration) {
+    public CopyOfHierarchicalDatamartProvider(DatamartProviderConfiguration datamartProviderConfiguration) {
         super(datamartProviderConfiguration);
     }
     
@@ -92,15 +92,8 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
 	    	String aggregationColumnName = level.getColumnId(); 
 	    	aggragateQuery = "SELECT " + subQueryAlias + "." + aggregationColumnName + " AS " + aggregationColumnName;
 	    	String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
-	    	String[] kpiAgregationFunctins = datamartProviderConfiguration.getKpiAgregationFunctins();
 	    	for(int i = 0; i < kpiColumnNames.length; i++) {
-	    		String aggFunc = "SUM";
-	    		if(kpiAgregationFunctins != null 
-	    				&& i < kpiAgregationFunctins.length 
-	    				&& !kpiAgregationFunctins[i].trim().equalsIgnoreCase("")) {
-	    			aggFunc = kpiAgregationFunctins[i].toUpperCase();
-	    		}
-	    		aggragateQuery +=  ", " + aggFunc + "(" + subQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+	    		aggragateQuery +=  ", SUM(" + subQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
 	    	}
 	    	aggragateQuery += " \nFROM ( " + query + ") " + subQueryAlias;
 	    	aggragateQuery += " \nGROUP BY " + subQueryAlias + "." + aggregationColumnName;
@@ -109,28 +102,15 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     		String aggregationColumnName = level.getColumnId(); 
 	    	aggragateQuery = "SELECT " + dimGeoAlias + "." + aggregationColumnName + " AS " + aggregationColumnName;
 	    	String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
-	    	String[] kpiAgregationFunctins = datamartProviderConfiguration.getKpiAgregationFunctins();
 	    	for(int i = 0; i < kpiColumnNames.length; i++) {
-	    		String aggFunc = "SUM";
-	    		if(kpiAgregationFunctins != null 
-	    				&& i < kpiAgregationFunctins.length 
-	    				&& !kpiAgregationFunctins[i].trim().equalsIgnoreCase("")) {
-	    			aggFunc = kpiAgregationFunctins[i].toUpperCase();
-	    		}
-	    		aggragateQuery +=  ", " + aggFunc + "(" + subQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+	    		aggragateQuery +=  ", SUM(" + subQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
 	    	}
 	    	
 	    	String normalizedSubQuery = query;
 	    
 	    	normalizedSubQuery ="SELECT " + normalizedSubQueryAlias + "." + datamartProviderConfiguration.getColumnId() +  " AS " + datamartProviderConfiguration.getColumnId();
 	    	for(int i = 0; i < kpiColumnNames.length; i++) {
-	    		String aggFunc = "SUM";
-	    		if(kpiAgregationFunctins != null 
-	    				&& i < kpiAgregationFunctins.length 
-	    				&& !kpiAgregationFunctins[i].trim().equalsIgnoreCase("")) {
-	    			aggFunc = kpiAgregationFunctins[i].toUpperCase();
-	    		}
-	    		normalizedSubQuery +=  ", " + aggFunc + "(" + normalizedSubQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
+	    		normalizedSubQuery +=  ", SUM(" + normalizedSubQueryAlias + "." + kpiColumnNames[i] + ") AS " + kpiColumnNames[i];
 	    	}
 	    	normalizedSubQuery += " \nFROM ( " + query + ") " + normalizedSubQueryAlias;
 	    	normalizedSubQuery += " \nGROUP BY " + normalizedSubQueryAlias + "." + datamartProviderConfiguration.getColumnId();
@@ -383,7 +363,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
 		    		}
 		    	}
 	    	}
-	    	link = link.substring(0, link.length()-1);
+	    	link = link.substring(0, link.length()-5);
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     		TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 

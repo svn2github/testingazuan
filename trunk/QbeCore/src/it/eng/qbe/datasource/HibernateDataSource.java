@@ -53,6 +53,7 @@ import org.hibernate.cfg.Configuration;
  */
 public class HibernateDataSource extends BasicDataSource  {
 	
+	private String name;
 	private String path = null;	
 	private String jndiDataSourceName = null;	
 	private String dialect = null;	
@@ -440,5 +441,13 @@ public class HibernateDataSource extends BasicDataSource  {
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

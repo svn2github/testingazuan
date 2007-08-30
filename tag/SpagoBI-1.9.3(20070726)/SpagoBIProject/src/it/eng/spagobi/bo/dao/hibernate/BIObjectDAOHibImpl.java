@@ -1020,22 +1020,26 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @return the corrispondent output <code>BIObject</code>
 	 */
 	public BIObject toBIObject(SbiObjects hibBIObject){
-		
+		    // create empty biobject
 			BIObject aBIObject = new BIObject();
-			
+			// set type (type code and id)
 			aBIObject.setBiObjectTypeCode(hibBIObject.getObjectTypeCode());
 			aBIObject.setBiObjectTypeID(hibBIObject.getObjectType().getValueId());
-			
-			aBIObject.setDescription(hibBIObject.getDescr());
+			// set description
+			String descr = hibBIObject.getDescr();
+			if(descr==null) descr = "";
+			aBIObject.setDescription(descr);
+			// set encrypt flag
 			aBIObject.setEncrypt(new Integer(hibBIObject.getEncrypt().intValue()));
+			// set visible flag
 			aBIObject.setVisible(new Integer(hibBIObject.getVisible().intValue()));
-									
+			// set engine						
 			aBIObject.setEngine(new EngineDAOHibImpl().toEngine(hibBIObject.getSbiEngines()));
-			
+			// set id
 			aBIObject.setId(hibBIObject.getBiobjId());
 			aBIObject.setLabel(hibBIObject.getLabel());
 			aBIObject.setName(hibBIObject.getName());
-			
+			// set path
 			aBIObject.setPath(hibBIObject.getPath());
 			aBIObject.setUuid(hibBIObject.getUuid());
 			aBIObject.setRelName(hibBIObject.getRelName());

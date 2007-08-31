@@ -164,8 +164,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<input type='image' 
 				src='<%=urlBuilder.getResourceLink(request, "/img/exec22.png")%>' 
 				name='exec' 
-				alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-				title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+				alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
+				title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' />
 		</td>
 </table>
 	
@@ -210,13 +210,13 @@ if (isSingleObjExec) {
 	if(noPars) { 
 	   %>
 	   <span class='portlet-font'>
-				<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition1", "messages")%>
+				<%=msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages", request)%>
 		 </span>
 	   <a href='<%=execUrl%>'
 				class='portlet-form-field-label'
 				onmouseover="this.style.color='#9297ac';"
 				onmouseout="this.style.color='#074B88';">
-				<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.newComposition2", "messages")%>
+				<%=msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages", request)%>
 		 </a>
 	
 	   <br/><br/>
@@ -235,7 +235,7 @@ if (isSingleObjExec) {
 				<div class="first-tab-level" style="background-color:#f8f8f8">
 					<div style="overflow: hidden; width:100%">
 						<div class='tab'>
-							<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.subBIObject.title","messages")%>
+							<%=msgBuilder.getMessage("SBIDev.docConf.subBIObject.title","messages", request)%>
 						</div>
 					</div>
 				</div>
@@ -363,21 +363,21 @@ if (isSingleObjExec) {
 		                        			<img width="20px" height="20px" 
 						  	   		src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif")%>' 
 						  	                name='execSub' 
-						  	                alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-						                        title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+						  	                alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
+						                        title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' />
 		                        		</a>
 		                        	</td>
 		                        	<%
 		                        	if(owner.equals(currentUser)) {
 		                        	%>
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-		                        		<% String eraseMsg = msgBuilder.getMessage(aRequestContainer, "ConfirmMessages.DeleteSubObject", "messages"); %>
+		                        		<% String eraseMsg = msgBuilder.getMessage("ConfirmMessages.DeleteSubObject", "messages", request); %>
 		                        		<a href="javascript:var conf = confirm('<%=eraseMsg%>'); if(conf) {document.location='<%=deleteSubObjUrl.toString()%>';}">
 		                        			<img width="20px" height="20px" 
 						  	   		src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>' 
 						  	                name='deleteSub' 
-						  	                alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
-						                        title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' />
+						  	                alt='<%=msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages", request)%>' 
+						                        title='<%=msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages", request)%>' />
 		                        		</a>
 		                        	</td>
 		                        	<%} else {%>
@@ -405,7 +405,7 @@ if (isSingleObjExec) {
 				<div class="first-tab-level" style="background-color:#f8f8f8">
 					<div style="overflow: hidden; width:100%">
 						<div class='tab'>
-							<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.snapshots.title","messages")%>
+							<%=msgBuilder.getMessage("SBIDev.docConf.snapshots.title", "messages", request)%>
 						</div>
 					</div>
 				</div>
@@ -484,12 +484,12 @@ if (isSingleObjExec) {
                     		&nbsp;
                     		<%
                     	} else {
-                    	String eraseSnapMsg = msgBuilder.getMessage(aRequestContainer, "ConfirmMessages.DeleteSnapshot", "messages"); %>
+                    	String eraseSnapMsg = msgBuilder.getMessage("ConfirmMessages.DeleteSnapshot", "messages", request); %>
                     	<a href="javascript:var conf = confirm('<%=eraseSnapMsg%>'); if(conf) {document.location='<%=deleteSnapUrl.toString()%>';}">
                     		<img width="20px" height="20px" 
                     			src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>' 
-  	                			name='deleteSnapshot' alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
-                        		title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.ListdocDetParam.deleteCaption", "messages")%>' 
+  	                			name='deleteSnapshot' alt='<%=msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages", request)%>' 
+                        		title='<%=msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages", request)%>' 
                         	/>
                     	</a>
                     	 <% } %>
@@ -499,8 +499,8 @@ if (isSingleObjExec) {
 		                       <img width="20px" height="20px" 
 						  	   		src='<%=urlBuilder.getResourceLink(request, "/img/exec.gif")%>' 
 						  	        name='execSnap' 
-						  	        alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' 
-						            title='<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObjectParams.execButt", "messages")%>' />
+						  	        alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
+						            title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' />
 		               	</a>
 		           	</td>
 		         </tr> 

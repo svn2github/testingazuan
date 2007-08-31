@@ -22,23 +22,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spagobi.bo.EventLog,
-                 javax.portlet.PortletURL,
                  it.eng.spagobi.bo.Domain,
                  it.eng.spagobi.utilities.GeneralUtilities,
                  it.eng.spago.navigation.LightNavigationManager" %>
+<%@page import="it.eng.spago.util.JavaScript"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 
 <%
 	SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailEventLogModule"); 
 	EventLog event = (EventLog) moduleResponse.getAttribute("firedEvent");
 	
-	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "EVENTS_MONITOR_PAGE");
-   	backUrl.setParameter("REFRESH", "TRUE");
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("PAGE", "EVENTS_MONITOR_PAGE");
+	backUrlPars.put("REFRESH", "TRUE");
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+	
 %>
 
-<%@page import="it.eng.spago.util.JavaScript"%>
+
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' 
@@ -47,8 +51,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "sbievents.detail.backButton" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "sbievents.detail.backButton" />' />
+			<a href='<%=backUrl%>'> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "sbievents.detail.backButton" />' 
+      			      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "sbievents.detail.backButton" />' />
 			</a>
 		</td>
 	</tr>

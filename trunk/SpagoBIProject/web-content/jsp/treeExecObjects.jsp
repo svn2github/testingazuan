@@ -40,6 +40,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	viewListUrlPars.put("PAGE", pageName);
 	viewListUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 	viewListUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
+	if(ChannelUtilities.isWebRunning()){
+		viewListUrlPars.put(SpagoBIConstants.WEBMODE, "TRUE");
+	}
 	String viewListUrl = urlBuilder.getUrl(request, viewListUrlPars);
 	
     // identity string for object of the page
@@ -51,6 +54,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>

@@ -485,7 +485,7 @@ function checkFormVisibility(docType) {
 								confUrlPars.put(SpagoBIConstants.ACTOR, actor);
 							    hrefConf = urlBuilder.getUrl(request, confUrlPars);
 							} else {
-								hrefConf = "javascript:alert('"+msgBuilder.getMessage(aRequestContainer, "sbi.detailbiobj.objectnotsaved", "messages")+"')";
+								hrefConf = "javascript:alert('"+msgBuilder.getMessage("sbi.detailbiobj.objectnotsaved", "messages", request)+"')";
 							}				
 					%>	
 							<a href="<%=hrefConf%>">
@@ -634,16 +634,16 @@ function checkFormVisibility(docType) {
 		      		        if(isCurrentVer) {
 		      		        	out.print("<td class='portlet-font' >&nbsp;</a></td>");
 		      		        } else {
-		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.deleteVersionConfirm", "messages")+"\", \""+eraseVerUrlStr+"\")' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.eraseLink", "messages") + "</a></td>");
+		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+msgBuilder.getMessage("SBIDev.docConf.docDet.deleteVersionConfirm", "messages", request)+"\", \""+eraseVerUrlStr+"\")' style='font-size:9px;' >" + msgBuilder.getMessage("SBIDev.docConf.execBIObject.eraseLink", "messages", request) + "</a></td>");
 		      		        }
 		      		        if (!isCurrentVer || subReports == null || subReports.size() == 0) {
-		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.downloadLink", "messages") + "</a></td>");
+		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + msgBuilder.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages", request) + "</a></td>");
 		      		        } else {
 		      		        	String downloadAlsoLinkedTemplateUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ContentRepositoryServlet?operation=downloadAll&biobjectId=" + 
 		      		        			obj.getId().toString() + "&fileName=template.zip";
-		      		        	String downloadAlsoLinkedTemplateMsg = msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages");
+		      		        	String downloadAlsoLinkedTemplateMsg = msgBuilder.getMessage("SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages", request);
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:downloadAlsoLinkedTemplatesConfirm(\"" + downloadAlsoLinkedTemplateMsg + "\",\"" + downloadAlsoLinkedTemplateUrl + "\", \"" + downl + "\")' style='font-size:9px;' >" 
-		      		        			+ msgBuilder.getMessage(aRequestContainer, "SBIDev.docConf.execBIObject.downloadLink", "messages") 
+		      		        			+ msgBuilder.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages", request) 
 		      		        			+ "</a></td>");
 		      		        }
 		      		        

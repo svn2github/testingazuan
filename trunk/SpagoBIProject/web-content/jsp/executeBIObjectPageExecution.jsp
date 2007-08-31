@@ -297,8 +297,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<img width="22px" height="22px"
 					src='<%= urlBuilder.getResourceLink(request, "/img/maximize32.jpg")%>'
 					name='maximize'
-					alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>'
-					title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>' />
+					alt='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>'
+					title='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>' />
 			</a>
 		</td>
 		<script>
@@ -356,8 +356,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<img width="22px" height="22px"
 					src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
 					name='refresh'
-					alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>'
-					title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.refresh", "messages")%>' />
+					alt='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'
+					title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>' />
 			</a>
 		</td>
 		
@@ -371,8 +371,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<img width="22px" height="22px"
 					src='<%= urlBuilder.getResourceLink(request, "/img/maximize32.jpg")%>'
 					name='maximize'
-					alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>'
-					title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>' />
+					alt='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>'
+					title='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>' />
 			</a>
 		</td>
 		<script>
@@ -445,8 +445,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<img width="22px" height="22px"
 						src='<%= urlBuilder.getResourceLink(request, "/img/erase32.png")%>'
 						name='close'
-						alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.close", "messages")%>'
-						title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.close", "messages")%>' />
+						alt='<%=msgBuilder.getMessage("SBIExecution.close", "messages", request)%>'
+						title='<%=msgBuilder.getMessage("SBIExecution.close", "messages", request)%>' />
 				</a>
 			</td>
 		</tr>
@@ -1056,6 +1056,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    	pars +="&spagobi_execution_id=<%=executionId%>";
 		    	pars += "&BIOBJECT_ID=<%=obj.getId()%>";
 		    	pars += "&spagobi_execution_role=<%=executionRole%>";
+		    	pars += "&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
 		    	<%
 		    	List parameters = obj.getBiObjectParameters();
 		    	Iterator parametersIt = parameters.iterator();

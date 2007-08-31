@@ -166,18 +166,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     <%
 	    // get the labels of all documents related to the lov
 		List docLabels = LovManager.getLabelsOfDocumentsWhichUseLov(modVal);
-		String confirmMessage = msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.saveWithoutTest", "messages");
+		String confirmMessage = msgBuilder.getMessage("SBIDev.predLov.saveWithoutTest", "messages", request);
 		confirmMessage += ". ";
 		if (docLabels.size() > 0) {
 			String documentsStr = docLabels.toString();
 			confirmMessage += "\\n\\n";
-			confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.savePreamble", "messages");
+			confirmMessage += msgBuilder.getMessage("SBIDev.predLov.savePreamble", "messages", request);
 			confirmMessage += " ";
 			confirmMessage += documentsStr;
 			confirmMessage += ". ";
 		}
 		confirmMessage += "\\n\\n";
-		confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.saveConfirm", "messages");
+		confirmMessage += msgBuilder.getMessage("SBIDev.predLov.saveConfirm", "messages", request);
 	%>
 	
 	function askForConfirmIfNecessary() {
@@ -219,7 +219,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	function openProfileAttributeWin(){
 		if(winPA==null) {
-			winPA = new Window('winPAId', {className: "alphacube", title: "<%=msgBuilder.getMessage(aRequestContainer, "SBIDev.lov.avaiableProfAttr", "messages")%>", width:400, height:300, destroyOnClose: true});
+			winPA = new Window('winPAId', {className: "alphacube", title: "<%=msgBuilder.getMessage("SBIDev.lov.avaiableProfAttr", "messages", request)%>", width:400, height:300, destroyOnClose: true});
 	      	winPA.setContent('profileattributeinfodiv', false, false);
 	      	winPA.showCenter(false);
 	    } else {

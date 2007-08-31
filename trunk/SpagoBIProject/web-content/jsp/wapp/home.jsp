@@ -27,13 +27,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          import="it.eng.spago.base.*"
 %>
 <%@ page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.utilities.messages.IMessageBuilder"%>
+<%@page import="it.eng.spagobi.utilities.messages.MessageBuilderFactory"%>
 
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
 
 <%      
+	IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();	
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
+	RequestContainer aRequestContainer = RequestContainerAccess.getRequestContainer(request); 
 %>
 
+
+
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <html>
   <head>
     <title>SpagoBI Home</title>
@@ -90,10 +97,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </div>
             <div id="menubar" style="width:100%;height:18px;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;"> 
             	<div style="position:absolute;right:15px;">
-                    <a href="<%=contextName%>/servlet/AdapterHTTP?PAGE=LogoutPage">
+                    <a href="<%=contextName%>/servlet/AdapterHTTP?PAGE=LogoutPage&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE">
                         <img src="<%=contextName%>/img/wapp/exit16.png" 
-                             title="Logout" 
-                             alt="logout" />
+                             title="<%=msgBuilder.getMessage("logout", request)%>" 
+                             alt="<%=msgBuilder.getMessage("logout", request)%>" />
                     </a>
                 </div>
             </div>

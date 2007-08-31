@@ -94,12 +94,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(docLabels.size() > 0) {
 		askConfirm = true;
 		String documentsStr = docLabels.toString();
-		confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.savePreamble", "messages");
+		confirmMessage += msgBuilder.getMessage("SBIDev.predLov.savePreamble", "messages", request);
 		confirmMessage += " ";
 		confirmMessage += documentsStr;
 		confirmMessage += ". ";
 		confirmMessage += "\\n\\n";
-		confirmMessage += msgBuilder.getMessage(aRequestContainer, "SBIDev.predLov.saveConfirm", "messages");
+		confirmMessage += msgBuilder.getMessage("SBIDev.predLov.saveConfirm", "messages", request);
 	}	
 	
 %>

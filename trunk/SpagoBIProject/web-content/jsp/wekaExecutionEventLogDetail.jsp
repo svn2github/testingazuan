@@ -26,14 +26,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          		it.eng.spagobi.bo.EventLog,
          		it.eng.spago.base.SourceBean,
          		java.util.List,
-         		javax.portlet.PortletURL,
          		it.eng.spago.navigation.LightNavigationManager,
          		it.eng.spagobi.bo.Subreport,
          		it.eng.spagobi.bo.BIObject,
-         		it.eng.spagobi.utilities.PortletUtilities,
          		it.eng.spagobi.utilities.GeneralUtilities,
-         		it.eng.spagobi.constants.ObjectsTreeConstants"
-%>
+         		it.eng.spagobi.constants.ObjectsTreeConstants"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 <%
 	SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailEventLogModule"); 
@@ -43,16 +42,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String startEventIdStr = (String) moduleResponse.getAttribute("startEventId");
 	String result = (String) moduleResponse.getAttribute("operation-result");
 	
-	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "EVENTS_MONITOR_PAGE");
-   	backUrl.setParameter("REFRESH", "TRUE");
-   	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("PAGE", "EVENTS_MONITOR_PAGE");
+	backUrlPars.put("REFRESH", "TRUE");
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+	
+	Map backToListUrlPars = new HashMap();
+	backToListUrlPars.put("PAGE", "EVENTS_MONITOR_PAGE");
+	backToListUrlPars.put("REFRESH", "TRUE");
+	backToListUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	String backToListUrl = urlBuilder.getUrl(request, backToListUrlPars);
    	
-	PortletURL backToListUrl = renderResponse.createActionURL();
-	backToListUrl.setParameter("PAGE", "EVENTS_MONITOR_PAGE");
-	backToListUrl.setParameter("REFRESH", "TRUE");
-	backToListUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
 %>
+
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -62,13 +65,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backToListUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "sbievents.detail.backToListButton" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/listView.png")%>' alt='<spagobi:message key = "sbievents.detail.backToListButton" />' />
+			<a href='<%= backToListUrl %>'> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "sbievents.detail.backToListButton" />' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/img/listView.png")%>' alt='<spagobi:message key = "sbievents.detail.backToListButton" />' />
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "sbievents.detail.backButton" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "sbievents.detail.backButton" />' />
+			<a href='<%= backUrl %>'> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "sbievents.detail.backButton" />' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "sbievents.detail.backButton" />' />
 			</a>
 		</td>
 	</tr>
@@ -113,12 +118,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<p style='margin:5px'><%=(description == null ? "" : description)%>
 					<%
 					if (startEventIdStr != null) {
-						PortletURL startEventDetailUrl = renderResponse.createActionURL();
-						startEventDetailUrl.setParameter("PAGE", "DetailEventLogPage");
-						startEventDetailUrl.setParameter("MESSAGEDET", "DETAIL_SELECT");
-						startEventDetailUrl.setParameter("ID", startEventIdStr);
+						
+						Map startEventDetailUrlPars = new HashMap();
+						startEventDetailUrlPars.put("PAGE", "DetailEventLogPage");
+						startEventDetailUrlPars.put("MESSAGEDET", "DETAIL_SELECT");
+						startEventDetailUrlPars.put("ID", startEventIdStr);
+						String startEventDetailUrl = urlBuilder.getUrl(request, startEventDetailUrlPars);
 						%>
-						<spagobi:message key = "weka.execution.startEventId" /> <a href='<%= startEventDetailUrl.toString() %>'><%=startEventIdStr%></a>.						
+						<spagobi:message key = "weka.execution.startEventId" /> <a href='<%= startEventDetailUrl %>'><%=startEventIdStr%></a>.						
 						<%
 					}
 					%>
@@ -140,13 +147,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							BIObject linkedObject = (BIObject) linkedBIObjects.get(i);
 							if (startEventIdStr != null && result != null && result.equalsIgnoreCase("success")) {
 								// if it is an end process event, shows the execution links to correlated documents
-								PortletURL linkedObjectExecutionUrl = renderResponse.createActionURL();
-								linkedObjectExecutionUrl.setParameter("PAGE", "ExecuteBIObjectPage"); 
-								linkedObjectExecutionUrl.setParameter("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");  
-								linkedObjectExecutionUrl.setParameter("OBJECT_ID", linkedObject.getId().toString());
-								linkedObjectExecutionUrl.setParameter("ACTOR", "USER_ACTOR");
+								
+								Map linkedObjectExecutionUrlPars = new HashMap();
+								linkedObjectExecutionUrlPars.put("PAGE", "ExecuteBIObjectPage");
+								linkedObjectExecutionUrlPars.put("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");  
+								linkedObjectExecutionUrlPars.put("OBJECT_ID", linkedObject.getId().toString());
+								linkedObjectExecutionUrlPars.put("ACTOR", "USER_ACTOR");
+								String linkedObjectExecutionUrl = urlBuilder.getUrl(request, linkedObjectExecutionUrlPars);
 				   				%>
-				   				<a href='<%=linkedObjectExecutionUrl.toString() %>'><%=linkedObject.getLabel() + ": " + linkedObject.getName() + " [" + linkedObject.getDescription() + "]"%></a>
+				   				<a href='<%=linkedObjectExecutionUrl %>'><%=linkedObject.getLabel() + ": " + linkedObject.getName() + " [" + linkedObject.getDescription() + "]"%></a>
 				   				<br/>
 				   				<%
 							} else {

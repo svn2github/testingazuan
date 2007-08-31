@@ -225,4 +225,6 @@ public class SpagoBIConstants {
 	public static final String JOB_NAME = "jobName";
 	public static final String JOB_GROUP_NAME = "jobGroupName";
 	
+	public static final String WEBMODE = "WEBMODE";
+	
 }

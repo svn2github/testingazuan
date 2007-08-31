@@ -31,6 +31,10 @@
 			<FUNCTIONALITY functionalityName="DocumentTest" description="DocumentTest" />
 			<FUNCTIONALITY functionalityName="DocumentExecution" description="DocumentExecution" />
 			<FUNCTIONALITY functionalityName="ImportExport" description="ImportExport" />
+			<FUNCTIONALITY functionalityName="Scheduler" description="Scheduler" />
+			<FUNCTIONALITY functionalityName="Events" description="Events" />
+			<FUNCTIONALITY functionalityName="Worklist" description="Worklist" />
+			<FUNCTIONALITY functionalityName="WorkspaceExec" description="WorkspaceExec" />
 		</FUNCTIONALITIES>
 	</ENTITIES>
 	<RELATIONS>
@@ -43,15 +47,27 @@
 			<PRIVILEDGE roleName="sbi_admin" functionalityName="DocumentAdministration" />
 			<PRIVILEDGE roleName="sbi_admin" functionalityName="ImportExport" />
 			<PRIVILEDGE roleName="sbi_admin" functionalityName="Scheduler" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="Events" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="Worklist" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="WorkspaceExec" />
 			
 			<PRIVILEDGE roleName="sbi_dev" functionalityName="LovsManagement" />
 			<PRIVILEDGE roleName="sbi_dev" functionalityName="ConstraintManagement" />
 			<PRIVILEDGE roleName="sbi_dev" functionalityName="ParameterManagement" />
 			<PRIVILEDGE roleName="sbi_dev" functionalityName="DocumentDevelopment" />
+			<PRIVILEDGE roleName="sbi_dev" functionalityName="Events" />
+			<PRIVILEDGE roleName="sbi_dev" functionalityName="Worklist" />
+			<PRIVILEDGE roleName="sbi_dev" functionalityName="WorkspaceExec" />
 			
 			<PRIVILEDGE roleName="sbi_test" functionalityName="DocumentTest" />
+			<PRIVILEDGE roleName="sbi_test" functionalityName="Events" />
+			<PRIVILEDGE roleName="sbi_test" functionalityName="Worklist" />
+			<PRIVILEDGE roleName="sbi_test" functionalityName="WorkspaceExec" />
 			
 			<PRIVILEDGE roleName="sbi_user" functionalityName="DocumentExecution" />
+			<PRIVILEDGE roleName="sbi_user" functionalityName="Events" />
+			<PRIVILEDGE roleName="sbi_user" functionalityName="Worklist" />
+			<PRIVILEDGE roleName="sbi_user" functionalityName="WorkspaceExec" />
 		</PRIVILEDGES>
 	</RELATIONS>
 </LDAP_AUTHORIZATIONS>

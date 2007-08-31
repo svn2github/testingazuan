@@ -2,7 +2,7 @@
 <MENU>
 	
 	<APPLICATION code="EngMan" 
-	             title="Engines Management"  
+	             title="#menu.EngMan"  
 	             functionality="EnginesManagement" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListEnginesPage" 
@@ -11,7 +11,7 @@
 	             iconUrl="/spagobi/img/wapp/engines64.png">
 	</APPLICATION>
 	<APPLICATION code="FunctMan" 
-	             title="Functionalities Management"  
+	             title="#menu.FunctMan"  
 	             functionality="FunctionalitiesManagement" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR&amp;OPERATION=FUNCTIONALITIES_OPERATION" 
@@ -20,7 +20,7 @@
 	             iconUrl="/spagobi/img/wapp/functionalities64.png">
 	</APPLICATION>
 	<APPLICATION code="LovMan" 
-	             title="List of Values Management"  
+	             title="#menu.LovMan"  
 	             functionality="LovsManagement" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListLovsPage" 
@@ -29,7 +29,7 @@
 	             iconUrl="/spagobi/img/wapp/lovs64.png">
 	</APPLICATION>
 	<APPLICATION code="ConstraintMan" 
-	             title="Parameter Constraints Management"  
+	             title="#menu.ConstraintMan"  
 	             functionality="ConstraintManagement" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=LISTMODALITIESCHECKSPAGE" 
@@ -38,7 +38,7 @@
 	             iconUrl="/spagobi/img/wapp/checks64.png">
 	</APPLICATION>
 	<APPLICATION code="ParameterMan" 
-	             title="Parameters Management"  
+	             title="#menu.ParameterMan"  
 	             functionality="ParameterManagement" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListParametersPage" 
@@ -47,7 +47,7 @@
 	             iconUrl="/spagobi/img/wapp/parameters64.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentAdmin" 
-	             title="Business Documents Administration"  
+	             title="#menu.DocumentAdmin"  
 	             functionality="DocumentAdministration" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR" 
@@ -56,7 +56,7 @@
 	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentDev" 
-	             title="Business Documents Development"  
+	             title="#menu.DocumentDev"  
 	             functionality="DocumentDevelopment" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=DEV_ACTOR" 
@@ -65,7 +65,7 @@
 	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentTest" 
-	             title="Business Documents Test"  
+	             title="#menu.DocumentTest"  
 	             functionality="DocumentTest" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=TESTER_ACTOR" 
@@ -74,16 +74,17 @@
 	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentExec" 
-	             title="Business Documents Execution"  
+	             title="#menu.DocumentExec"  
 	             functionality="DocumentExecution" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=USER_ACTOR" 
+	             modal="true" 
 	             width="800" 
 	             height="500"
 	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
 	</APPLICATION>
 	<APPLICATION code="ImpExp" 
-	             title="Import Export"  
+	             title="#menu.ImpExp"  
 	             functionality="ImportExport" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;OPERATION=IMPORTEXPORT_OPERATION&amp;OBJECTS_VIEW=VIEW_OBJECTS_AS_TREE&amp;ACTOR=ADMIN_ACTOR" 
@@ -92,13 +93,41 @@
 	             iconUrl="/spagobi/components/importexport/img/importexport64.png">
 	</APPLICATION>
 	<APPLICATION code="Sched" 
-	             title="Scheduler"  
+	             title="#menu.Scheduler"  
 	             functionality="Scheduler" 
 	             type="link" 
 	             link="/spagobi/servlet/AdapterHTTP?PAGE=JobManagementPage&amp;MESSAGEDET=MESSAGE_GET_ALL_JOBS" 
 	             width="800" 
 	             height="500"
 	             iconUrl="/spagobi/img/scheduleIcon64.png">
+	</APPLICATION>
+	<APPLICATION code="Events" 
+	             title="#menu.Events"  
+	             functionality="Events" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE" 
+	             width="700" 
+	             height="400"
+	             iconUrl="/spagobi/img/wapp/events64.png">
+	</APPLICATION>
+	<APPLICATION code="Worklist" 
+	             title="#menu.Worklist"  
+	             functionality="Worklist" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&amp;WEBMODE=TRUE" 
+	             width="700" 
+	             height="400"
+	             iconUrl="/spagobi/img/wapp/worklist64.png">
+	</APPLICATION>
+	<APPLICATION code="WorkExec" 
+	             title="#menu.WorkExec"  
+	             functionality="WorkspaceExec" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ExecutionWorkspacePage&amp;WEBMODE=TRUE" 
+	             modal="true" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/workspace64.png">
 	</APPLICATION>
 	
 	<!-- 

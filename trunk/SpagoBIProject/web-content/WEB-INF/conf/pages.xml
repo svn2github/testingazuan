@@ -37,10 +37,13 @@
     	</MODULES>
   	</PAGE>	
 	
+	
 	<PAGE name="WorkflowToDoListPage" scope="REQUEST" >
     	<DEPENDENCIES>
     		<DEPENDENCE source="WorkflowToDoListPage" target="PortletLoginModule">
-        		<CONDITIONS/>
+        		<CONDITIONS>
+        			<PARAMETER name="WEBMODE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+        		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
       		<DEPENDENCE source="WorkflowToDoListPage" target="WorkListModule">
@@ -103,6 +106,7 @@
     	    <DEPENDENCE source="EVENTS_MONITOR_PAGE" target="PortletLoginModule">
         		<CONDITIONS>
         			<PARAMETER name="REFRESH" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+        			<PARAMETER name="WEBMODE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
@@ -133,7 +137,9 @@
 	<PAGE name="LOGIN_PAGE_SBI_FUNCTIONALITY" scope="REQUEST" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="LOGIN_PAGE_SBI_FUNCTIONALITY" target="PortletLoginModule">
-        		<CONDITIONS/>
+        		<CONDITIONS>
+        			<PARAMETER name="WEBMODE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+        		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
       		<DEPENDENCE source="LOGIN_PAGE_SBI_FUNCTIONALITY" target="BIObjectsModule">
@@ -506,7 +512,9 @@
   	<PAGE name="ExecutionWorkspacePage" scope="REQUEST" title="Execution Workspace Page" >
     	<DEPENDENCIES>
     		<DEPENDENCE source="ExecutionWorkspacePage" target="PortletLoginModule">
-        		<CONDITIONS/>
+        		<CONDITIONS>
+        			<PARAMETER name="WEBMODE" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+        		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
       		<DEPENDENCE source="ExecutionWorkspacePage" target="ExecutionWorkspaceModule">

@@ -23,6 +23,9 @@
 			<FUNCTIONALITY functionalityName="DocumentExecution" description="DocumentExecution" />
 			<FUNCTIONALITY functionalityName="ImportExport" description="ImportExport" />
 			<FUNCTIONALITY functionalityName="Scheduler" description="Scheduler" />
+			<FUNCTIONALITY functionalityName="Events" description="Events" />
+			<FUNCTIONALITY functionalityName="Worklist" description="Worklist" />
+			<FUNCTIONALITY functionalityName="WorkspaceExec" description="WorkspaceExec" />
 		</FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
 		<APPLICATIONS></APPLICATIONS>
@@ -41,6 +44,9 @@
 			<PRIVILEDGE roleName="Administrator" functionalityName="DocumentAdministration" />
 			<PRIVILEDGE roleName="Administrator" functionalityName="ImportExport" />
 			<PRIVILEDGE roleName="Administrator" functionalityName="Scheduler" />
+			<PRIVILEDGE roleName="Administrator" functionalityName="Events" />
+			<PRIVILEDGE roleName="Administrator" functionalityName="Worklist" />
+			<PRIVILEDGE roleName="Administrator" functionalityName="WorkspaceExec" />
 		</PRIVILEDGES>
 	</RELATIONS>
 </AUTHORIZATIONS>

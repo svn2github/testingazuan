@@ -35,6 +35,7 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="listEngines">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -48,6 +49,7 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="DetailEnginePubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
@@ -60,6 +62,7 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="detailEngine">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
@@ -73,6 +76,7 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="detailEngineLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -804,7 +808,13 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DocumentTemplateBuildPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.presentation.publishers.DocumentTemplateBuildPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="DocumentTemplateErrorInformationPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -812,12 +822,23 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/documentTemplateErrorInfo.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
   	</PUBLISHER>
+  	
   	<PUBLISHER name="TemplateBuildPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/templateBuild.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/templateBuild.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -828,12 +849,23 @@
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="WorkflowToDoListPage" />
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="WorkflowToDoListPage" />
+        		<PARAMETER name="WEBMODE" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
 	<PUBLISHER name="AcceptActivityPublisher">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="it.eng.spagobi.workflow.publishers.AcceptActivityPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.workflow.publishers.AcceptActivityPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -843,6 +875,11 @@
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/workflowToDoList.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/workflowToDoList.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -955,6 +992,11 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/listLookupReports.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
   	</PUBLISHER>
   	
 	<PUBLISHER name="DYN_FORWARD_PUBLISHER">
@@ -1005,6 +1047,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.DetailEventLogPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.presentation.publishers.DetailEventLogPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	
   	<PUBLISHER name="defaultEventLogDetailPublisher">
@@ -1012,6 +1059,11 @@
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/defaultEventLogDetail.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/defaultEventLogDetail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -1052,6 +1104,11 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/eventsMonitor.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
     	
     <PUBLISHER name="WekaExecutionEventLogDetailPublisher">
@@ -1059,6 +1116,11 @@
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/wekaExecutionEventLogDetail.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/wekaExecutionEventLogDetail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -1070,10 +1132,22 @@
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/talendExecutionEventLogDetail.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	
   	<PUBLISHER name="deletedEventLogLoopPublisher">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="EVENTS_MONITOR_PAGE" /> 
+                <PARAMETER name="REFRESH" type="ABSOLUTE" scope="" value="TRUE"/>     		
+                <PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" type="ABSOLUTE" scope="" value="TRUE" /> 
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="EVENTS_MONITOR_PAGE" /> 
                 <PARAMETER name="REFRESH" type="ABSOLUTE" scope="" value="TRUE"/>     		
@@ -1140,11 +1214,27 @@
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
 			</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+				<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ROLE" /> 
+                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.OBJECT_ID" />
+                <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+			</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	
   	
   	<PUBLISHER name="loopbackSnapshotExecution">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_SNAPSHOT_MESSAGE" />
+                <PARAMETER name="SNAPSHOT_PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SNAPSHOT_PATH" />
+			</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_SNAPSHOT_MESSAGE" />
@@ -1201,12 +1291,22 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ViewSnapshotPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.presentation.publishers.ViewSnapshotPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	<PUBLISHER name="ViewSnapshot">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/viewSnapshot.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/viewSnapshot.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -1216,6 +1316,11 @@
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/executionWorkspace.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/executionWorkspace.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

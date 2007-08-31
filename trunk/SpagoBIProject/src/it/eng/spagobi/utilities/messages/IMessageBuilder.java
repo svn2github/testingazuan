@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.utilities.messages;
 
+import javax.servlet.http.HttpServletRequest;
+
 import it.eng.spago.base.RequestContainer;
 
 /**
@@ -34,7 +36,7 @@ public interface IMessageBuilder {
 	 * @param code: the message code
 	 * @return: the message associated with code in the default bundle
 	 */
-	public String getMessage(RequestContainer aRequestContainer, String code);
+	//public String getMessage(RequestContainer aRequestContainer, String code);
 	
 	/**
 	 * @param aRequestContainer: Spago Request Container
@@ -42,9 +44,41 @@ public interface IMessageBuilder {
 	 * @param bundle: the bundle to use
 	 * @return  the message associated with code in the given bundle
 	 */
-	public String getMessage(RequestContainer aRequestContainer, String code, String bundle);
+	//public String getMessage(RequestContainer aRequestContainer, String code, String bundle);
 
 
+	/**
+	 * Returns the message associated with code in the default bundle
+	 * @param code: the message code
+	 * @return: the message associated with code in the default bundle
+	 */
+	public String getMessage(String code);
+	
+	/**
+	 * Returns the message associated with code in the given bundle
+	 * @param code: the message code
+	 * @param bundle: the bundle to use
+	 * @return  the message associated with code in the given bundle
+	 */
+	public String getMessage(String code, String bundle);
+	
+	/**
+	 * Returns the message associated with code in the default bundle
+	 * @param code: the message code
+	 * @param request: the http request
+	 * @return: the message associated with code in the default bundle
+	 */
+	public String getMessage(String code, HttpServletRequest request);
+	
+	/**
+	 * Returns the message associated with code in the given bundle
+	 * @param code: the message code
+	 * @param bundle: the bundle to use
+	 * @param request: the http request
+	 * @return  the message associated with code in the given bundle
+	 */
+	public String getMessage(String code, String bundle, HttpServletRequest request);
+	
 	/**
 	 * Get the localized text contained into the resource
 	 * @param resourceName The complete name of the resource

@@ -33,18 +33,13 @@ import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.InputStream;
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 /**
  * The implementation of IMessageBuilder   
  */
 public class MessageBuilder implements IMessageBuilder {
 
-	public String getMessage(RequestContainer aRequestContainer, String code){
-		return getMessage(code, "messages");
-	}
-	
-	public String getMessage(RequestContainer aRequestContainer, String code, String bundle){
-		return getMessage(code, bundle);
-	}
 
 	 /**
 	 * Gets a localized information text given the resource name which contains the text 
@@ -62,7 +57,7 @@ public class MessageBuilder implements IMessageBuilder {
 			// based on mode get locale
 			Locale locale = null;
 			if (sbiMode.equalsIgnoreCase("WEB")) {
-				locale = getDefaultLocale();
+				locale = getBrowserLocaleFromSpago();
 			} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
 				locale = PortletUtilities.getPortalLocale();
 			}
@@ -85,17 +80,39 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 	
 	
+	public String getMessage(String code) {
+		return getMessageInternal(code, "messages", null);
+	}
+	
+	
+	public String getMessage(String code, String bundle) {
+		return getMessageInternal(code, bundle, null);
+	}
+	
+	public String getMessage(String code, HttpServletRequest request) {
+		return getMessageInternal(code, "messages", request);
+	}
+	
+	
+	public String getMessage(String code, String bundle, HttpServletRequest request) {
+		return getMessageInternal(code, bundle, request);
+	}
 	
 	
 	
-	private String getMessage(String code, String bundle) {
+	private String getMessageInternal(String code, String bundle, HttpServletRequest request) {
 		String message = "";
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
 		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
 		// based on mode get spago object and url builder
 		if (sbiMode.equalsIgnoreCase("WEB")) {
-			Locale locale = getDefaultLocale();
+			Locale locale = null;
+			if(request==null) {
+				locale = getBrowserLocaleFromSpago();
+			} else {
+				locale = getBrowserLocale(request);
+			}
 			message = MessageBundle.getMessage(code, bundle, locale);
 			if((message==null) || message.trim().equals("")) {
 				message = code;
@@ -105,6 +122,56 @@ public class MessageBuilder implements IMessageBuilder {
 		}
 		return message;
 	}
+	
+	
+	
+	private Locale getBrowserLocaleFromSpago() {
+		Locale browserLocale = null;
+		RequestContainer reqCont = RequestContainer.getRequestContainer();
+		if(reqCont!=null) {
+			Object obj = reqCont.getInternalRequest();
+			if(obj != null) {
+				if(obj instanceof HttpServletRequest) {
+					HttpServletRequest request = (HttpServletRequest)obj;
+					Locale reqLocale = request.getLocale();
+					String language = reqLocale.getLanguage();
+					SourceBean langSB = (SourceBean)ConfigSingleton.getInstance()
+                     					.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+                     		                           					"language", language);
+					if(langSB!=null) {
+						String country = (String)langSB.getAttribute("country");
+						browserLocale = new Locale(language, country);
+					}
+				}
+			}
+		}
+		if(browserLocale==null) {
+			browserLocale = getDefaultLocale();
+		}
+		return browserLocale;
+	}
+	
+	
+	
+	
+	private Locale getBrowserLocale(HttpServletRequest request) {
+		Locale browserLocale = null;
+		Locale reqLocale = request.getLocale();
+		String language = reqLocale.getLanguage();
+		SourceBean langSB = (SourceBean)ConfigSingleton.getInstance()
+                    					.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+                     		                           					"language", language);
+		if(langSB!=null) {
+			String country = (String)langSB.getAttribute("country");
+			browserLocale = new Locale(language, country);
+		}
+		if(browserLocale==null) {
+			browserLocale = getDefaultLocale();
+		}
+		return browserLocale;
+	}
+	
+	
 	
 	
 	private Locale getDefaultLocale() {

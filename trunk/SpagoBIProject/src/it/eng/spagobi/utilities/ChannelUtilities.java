@@ -124,6 +124,12 @@ public class ChannelUtilities {
 		return contextName;
 	}
 	
+	
+	public static String getSpagoBiContentRepositoryServlet(HttpServletRequest httpRequest){
+	    return getSpagoBIContextName(httpRequest) + "/ContentRepositoryServlet";
+	}
+	
+	
 	public static SourceBean getSpagoRequestFromMultipart() {
 		SourceBean request = null;
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();

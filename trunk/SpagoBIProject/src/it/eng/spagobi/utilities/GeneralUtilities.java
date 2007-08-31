@@ -46,6 +46,8 @@ import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.constants.UtilitiesConstants;
 import it.eng.spagobi.security.AnonymousCMSUserProfile;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -570,6 +572,7 @@ public class GeneralUtilities {
 	}
 	
 	private static String replaceInternationalizedMessages (String message, int startIndex) {
+		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		int endIndex = message.indexOf("}", startIndex);
 		if (endIndex == -1 || endIndex < startIndex) return message;
 		String toBeReplaced = message.substring(startIndex + 2, endIndex).trim();
@@ -579,14 +582,14 @@ public class GeneralUtilities {
 		if (splitted != null) {
 			key = splitted[0].trim();
 			if (splitted.length == 1) {
-				String replacement = PortletUtilities.getMessage(key, bundle);
+				String replacement = msgBuilder.getMessage(key, bundle);
 				//if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
 				if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
 			}
 			if (splitted.length == 2) {
 				if (splitted[1] != null && !splitted[1].trim().equals("")) 
 					bundle = splitted[1].trim();
-				String replacement = PortletUtilities.getMessage(key, bundle);
+				String replacement = msgBuilder.getMessage(key, bundle);
 				//if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("${" + toBeReplaced + "}", replacement);
 				if (!replacement.equalsIgnoreCase(key)) message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
 			}

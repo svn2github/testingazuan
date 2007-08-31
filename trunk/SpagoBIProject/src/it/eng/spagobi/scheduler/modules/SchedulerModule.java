@@ -559,31 +559,6 @@ public class SchedulerModule extends AbstractModule {
 					}
 					endDate = endCal.getTime();
 				}
-				/*
-				// get the repeat interval
-				long repeatInterval = -1;
-				String repeatIntervalStr = (String) request.getAttribute("repeatInterval");
-				if( (repeatIntervalStr!=null) && !repeatIntervalStr.trim().equals("") ) {
-					repeatInterval = Long.parseLong(repeatIntervalStr);
-				}
-				// get the repeat count 
-				int repeatCount = 0;
-				String repeatCountStr = (String) request.getAttribute("repeatCount");
-				if( (repeatCountStr!=null) && !repeatCountStr.trim().equals("") ) {
-					repeatCount = Integer.parseInt(repeatCountStr);
-				} else {
-					long startTimeL = startDate.getTime();
-					if(endDate!=null) {
-						long endTimeL = endDate.getTime();
-						if(repeatInterval!=-1) {
-							repeatCount = new Long((endTimeL - startTimeL) / repeatInterval).intValue();
-						}
-					}
-					
-				}
-				*/
-				
-				
 				// get the chron string
 				String chronStr = (String) request.getAttribute("chronString");
 				// add chron string to job parameters
@@ -605,14 +580,6 @@ public class SchedulerModule extends AbstractModule {
 				if(endDate!=null) {
 					trigger.setEndTime(endDate);
 				}
-				/*
-				if(repeatInterval!=-1) {
-					trigger.setRepeatInterval(repeatInterval);
-				}
-				if(repeatCount!=0) {
-					trigger.setRepeatCount(repeatCount);
-				}
-				*/
 				trigger.setJobName(jobName);
 			    trigger.setJobGroup(jobGroup);
 			    trigger.setJobDataMap(jdm);
@@ -642,12 +609,14 @@ public class SchedulerModule extends AbstractModule {
 					throw e;
 				}		
 			}	
-				
+			// all has been done	
+			servreponse.append("outcome=\"perform\"/>");
 				
 		} catch (Exception e) {
+			// somethig wrong
 			servreponse.append("outcome=\"fault\"/>");
 		}
-		servreponse.append("outcome=\"perform\"/>");
+		
 		// put into response the outcome of the service
 		try{
 			SourceBean outcomeSB = SourceBean.fromXMLString(servreponse.toString());

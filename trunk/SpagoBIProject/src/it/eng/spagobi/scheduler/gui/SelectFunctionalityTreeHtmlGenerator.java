@@ -133,7 +133,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
         StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage(reqCont, "tree.objectstree.name" ,"messages");
+		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");		
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
@@ -180,7 +180,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, 
 			boolean isRoot, boolean isInitialPath, String treename) {
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(reqCont, nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
 		Integer parentId = null;

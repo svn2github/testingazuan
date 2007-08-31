@@ -100,9 +100,9 @@ public class ExecuteBIDocumentJob implements Job {
 					IEngUserProfile profile = new FakeUserProfile("scheduler");
 					
 					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-					String startExecMsgIniPart = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.startexecsched", "component_scheduler_messages");
+					String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
 					String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
-					String endExecMsgIniPart = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.endexecsched", "component_scheduler_messages");
+					String endExecMsgIniPart = msgBuilder.getMessage("scheduler.endexecsched", "component_scheduler_messages");
 					String endExecMsg = endExecMsgIniPart + " " + biobj.getName();
 					
 					EventsManager eventManager = EventsManager.getInstance();
@@ -312,12 +312,12 @@ public class ExecuteBIDocumentJob implements Job {
 		    msg.setRecipients(Message.RecipientType.TO, addressTo);
 		    // Setting the Subject and Content Type
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-			String subjectfinalpart = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.mailsubject", "component_scheduler_messages");
+			String subjectfinalpart = msgBuilder.getMessage("scheduler.mailsubject", "component_scheduler_messages");
 			String subject = biobj.getName() + " " + subjectfinalpart;
 			msg.setSubject(subject);
 		    // create and fill the first message part
 		    MimeBodyPart mbp1 = new MimeBodyPart();
-		    String mailtext = msgBuilder.getMessage(RequestContainer.getRequestContainer(), "scheduler.mailtext", "component_scheduler_messages");
+		    String mailtext = msgBuilder.getMessage("scheduler.mailtext", "component_scheduler_messages");
 		    mbp1.setText(mailtext);
 		    // create the second message part
 		    MimeBodyPart mbp2 = new MimeBodyPart();

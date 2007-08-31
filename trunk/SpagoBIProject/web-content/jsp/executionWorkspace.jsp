@@ -30,6 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.managers.ExecutionManager"%>
 
 
+<%@page import="it.eng.spagobi.utilities.urls.UrlUtilities"%>
 <div class="div_no_background">
 	
 	<%
@@ -58,9 +59,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='workspaceRightBox' >
 		<%
 	    // get spagobi url
-	    String spagobiurl = GeneralUtilities.getSpagoBiContextAddress();
+	    String spagobiurl = ChannelUtilities.getSpagoBIContextName(request);
 	    if (!spagobiurl.endsWith("/")) spagobiurl += "/";
 	    spagobiurl += "servlet/AdapterHTTP";
+	    spagobiurl = UrlUtilities.addNavigatorDisabledParameter(spagobiurl);
 	    // get module response
 	    SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecutionWorkspaceModule");
 		  // get the BiObject label from the response
@@ -196,8 +198,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								<img class='documentMaximizeIconNavBarEW'
 									src='<%= urlBuilder.getResourceLink(request, "/img/maximize32.jpg")%>'
 									name='maximize'
-									alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>'
-									title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.maximize", "messages")%>' />
+									alt='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>'
+									title='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>' />
 							</a>
 						</div>
 					</div>
@@ -209,19 +211,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	        	}   
 			</script>
 			<div id='maximizebackground<%=requestIdentity%>' class='maximizeContainer'>
-				<table class='maximizeTitleTable'>
-					<tr>
-						<td>
+				<table width="100%" class='maximizeTitleTable'>
+					<tr width="100%">
+						<td width="95%">
 					        <div id='maximizeNavigationBarContainer<%=requestIdentity%>'>
 							</div>
 						</td>
-						<td align='center'>
+						<td width="5%" align='center'>
 							<a class='documentMaximizeLinkNavBarEW' href='javascript:minimize<%=requestIdentity%>()' >
 								<img class='closeMaximizeIcon'
 									src='<%= urlBuilder.getResourceLink(request, "/img/erase32.png")%>'
 									name='close'
-									alt='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.close", "messages")%>'
-									title='<%=msgBuilder.getMessage(aRequestContainer, "SBIExecution.close", "messages")%>' />
+									alt='<%=msgBuilder.getMessage("SBIExecution.close", "messages", request)%>'
+									title='<%=msgBuilder.getMessage("SBIExecution.close", "messages", request)%>' />
 							</a>
 						</td>
 					</tr>

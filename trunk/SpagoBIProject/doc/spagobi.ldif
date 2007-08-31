@@ -17,6 +17,7 @@ objectClass: top
 cn: biadmin
 description: biadmin
 ou: ou=sbi_admin,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=com
 sn: biadmin
 telephoneNumber: 00000000
 title: Dot.
@@ -29,6 +30,7 @@ objectClass: top
 cn: bidev
 description: bidev
 ou: ou=sbi_dev,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=com
 sn: bidev
 telephoneNumber: 00000000
 title: Dot.
@@ -41,6 +43,7 @@ objectClass: top
 cn: biuser
 description: biuser
 ou: ou=sbi_user,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/user,ou=Group,dc=spagobi,dc=com
 sn: biuser
 telephoneNumber: 00000000
 title: Dot.
@@ -53,6 +56,7 @@ objectClass: top
 cn: bitest
 description: bitest
 ou: ou=sbi_test,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/test,ou=Group,dc=spagobi,dc=com
 sn: bitest
 telephoneNumber: 00000000
 title: Dot.
@@ -86,4 +90,28 @@ objectClass: organizationalUnit
 objectClass: top
 description: sbi_admin
 ou: sbi_user
+
+dn: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: spagobi admin
+ou: /spagobi/admin
+
+dn: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: spagobi dev
+ou: /spagobi/dev
+
+dn: ou=/spagobi/test,ou=Group,dc=spagobi,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: spagobi test
+ou: /spagobi/test
+
+dn: ou=/spagobi/user,ou=Group,dc=spagobi,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: spagobi user
+ou: /spagobi/user
 

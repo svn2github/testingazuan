@@ -114,13 +114,13 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
 		
 		htmlStream.append("			divM.innerHTML = '';\n");
-		String capExec = msgBuilder.getMessage(reqCont, "SBISet.devObjects.treeCaptionExecute", "messages");
+		String capExec = msgBuilder.getMessage("SBISet.devObjects.treeCaptionExecute", "messages", httpRequest);
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
-		String capDetail = msgBuilder.getMessage(reqCont, "SBISet.devObjects.treeCaptionDetail", "messages");
+		String capDetail = msgBuilder.getMessage("SBISet.devObjects.treeCaptionDetail", "messages", httpRequest);
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
-		String capList = msgBuilder.getMessage(reqCont, "SBISet.devObjects.treeCaptionListPar", "messages");
+		String capList = msgBuilder.getMessage("SBISet.devObjects.treeCaptionListPar", "messages", httpRequest);
         htmlStream.append("         if(urlList!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlList+'\">"+capList+"</a></div>';\n");
-		String capErase = msgBuilder.getMessage(reqCont, "SBISet.devObjects.treeCaptionErase", "messages");
+		String capErase = msgBuilder.getMessage("SBISet.devObjects.treeCaptionErase", "messages", httpRequest);
         htmlStream.append("         if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
         htmlStream.append("				showMenu(event, divM);\n");
 		htmlStream.append("		}\n");
@@ -129,7 +129,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		}\n");
         
 		// js function for item action confirm
-        String confirmCaption = msgBuilder.getMessage(reqCont, "SBISet.devObjects.treeConfirmCaption", "messages");
+        String confirmCaption = msgBuilder.getMessage("SBISet.devObjects.treeConfirmCaption", "messages", httpRequest);
         htmlStream.append("     function actionConfirm(message, url){\n");
         htmlStream.append("         if (confirm('" + confirmCaption + " ' + message + '?')){\n");
         htmlStream.append("             location.href = url;\n");
@@ -157,7 +157,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage(reqCont, "tree.objectstree.name" ,"messages");
+		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
@@ -199,7 +199,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 		
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(reqCont, nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
 

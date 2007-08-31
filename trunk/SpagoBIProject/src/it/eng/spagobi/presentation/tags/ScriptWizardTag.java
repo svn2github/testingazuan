@@ -61,7 +61,7 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		output.append("<table width='100%' cellspacing='0' border='0'>\n");
 		output.append("	<tr>\n");
 		output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
-		output.append("			&nbsp;&nbsp;&nbsp;"+ msgBuilder.getMessage(requestContainer, "SBIDev.scriptWiz.wizardTitle", "messages") +"\n");
+		output.append("			&nbsp;&nbsp;&nbsp;"+ msgBuilder.getMessage("SBIDev.scriptWiz.wizardTitle", "messages", httpRequest) +"\n");
 		output.append("		</td>\n");
 		output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
 		output.append("		<td class='titlebar_level_2_button_section'>\n");
@@ -69,8 +69,8 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		output.append("				<img width='22px' height='22px'\n");
 		output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
 		output.append("					 name='info'\n");
-		output.append("					 alt='"+msgBuilder.getMessage(requestContainer, "SBIDev.scriptWiz.showSintax", "messages")+"'\n");
-		output.append("					 title='"+msgBuilder.getMessage(requestContainer, "SBIDev.scriptWiz.showSintax", "messages")+"'/>\n");
+		output.append("					 alt='"+msgBuilder.getMessage("SBIDev.scriptWiz.showSintax", "messages", httpRequest)+"'\n");
+		output.append("					 title='"+msgBuilder.getMessage("SBIDev.scriptWiz.showSintax", "messages", httpRequest)+"'/>\n");
 		output.append("			</a>\n");
 		output.append("		</td>\n");
 		String urlImgProfAttr = urlBuilder.getResourceLink(httpRequest, "/img/profileAttributes22.jpg");
@@ -83,7 +83,7 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		
 		output.append("<div class='div_detail_area_forms_lov'>\n");
 		output.append("	<div class='div_detail_label_lov'>\n");
-		String scriptLbl = msgBuilder.getMessage(requestContainer, "SBIDev.scriptWiz.scriptLbl", "messages");
+		String scriptLbl = msgBuilder.getMessage("SBIDev.scriptWiz.scriptLbl", "messages", httpRequest);
 		output.append("			<span class='portlet-form-field-label'>\n");
 		output.append(scriptLbl);
 		output.append("			</span>\n");
@@ -105,7 +105,7 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		output.append("		}\n");
 		output.append("		function openScriptWizardInfo(){\n");
 		output.append("			if(winSWT==null) {\n");
-		output.append("				winSWT = new Window('winSWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage(requestContainer, "SBIDev.scriptWiz.showSintax", "messages")+"\", minWidth:150, destroyOnClose: false});\n");
+		output.append("				winSWT = new Window('winSWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage("SBIDev.scriptWiz.showSintax", "messages", httpRequest)+"\", minWidth:150, destroyOnClose: false});\n");
 		output.append("         	winSWT.setContent('scriptwizardinfodiv', true, false);\n");
 		output.append("         	winSWT.showCenter(false);\n");
 		output.append("		    } else {\n");

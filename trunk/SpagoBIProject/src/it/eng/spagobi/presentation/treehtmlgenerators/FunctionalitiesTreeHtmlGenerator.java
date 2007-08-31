@@ -68,7 +68,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage(reqCont, "tree.functtree.name" ,"messages");
+		String nameTree = msgBuilder.getMessage("tree.functtree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
@@ -109,7 +109,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 		
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(reqCont, nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String path = folder.getPath();
 		String codeType = folder.getCodType();
 		Integer id = folder.getId();
@@ -179,15 +179,15 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		function menu(event, urlAdd, urlDetail, urlErase, urlMoveUp, urlMoveDown) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
-		String capInsert = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.insertCaption", "messages");
+		String capInsert = msgBuilder.getMessage("SBISet.TreeFunct.insertCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlAdd!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlAdd+'\">"+capInsert+"</a></div>';\n");
-		String capDetail = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.detailCaption", "messages");
+		String capDetail = msgBuilder.getMessage("SBISet.TreeFunct.detailCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
-		String capErase = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.eraseCaption", "messages");
+		String capErase = msgBuilder.getMessage("SBISet.TreeFunct.eraseCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
-		String capMoveUp = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.moveUpCaption", "messages");
+		String capMoveUp = msgBuilder.getMessage("SBISet.TreeFunct.moveUpCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlMoveUp!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlMoveUp+'\">"+capMoveUp+"</a></div>';\n");
-		String capMoveDown = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.moveDownCaption", "messages");
+		String capMoveDown = msgBuilder.getMessage("SBISet.TreeFunct.moveDownCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlMoveDown!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlMoveDown+'\">"+capMoveDown+"</a></div>';\n");
 		htmlStream.append("				showMenu(event, divM);\n");
 		htmlStream.append("		}\n");
@@ -196,7 +196,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		}\n");
 		
 		// js function for item action confirm
-		String confirmCaption = msgBuilder.getMessage(reqCont, "SBISet.TreeFunct.confirmCaption", "messages");
+		String confirmCaption = msgBuilder.getMessage("SBISet.TreeFunct.confirmCaption", "messages", httpRequest);
 		htmlStream.append("		function actionConfirm(message, url){\n");
 		htmlStream.append("			if (confirm('" + confirmCaption + " ' + message + '?')){\n");
 		htmlStream.append("				location.href = url;\n");

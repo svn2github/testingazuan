@@ -118,11 +118,11 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		function menu(event, urlExecution, urlDetail, urlErase) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
-		String capExec = msgBuilder.getMessage(reqCont, "SBISet.devObjects.captionExecute", "messages");
+		String capExec = msgBuilder.getMessage("SBISet.devObjects.captionExecute", "messages", httpRequest);
 		htmlStream.append("			if(urlExecution!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
-		String capDetail = msgBuilder.getMessage(reqCont, "SBISet.devObjects.captionDetail", "messages");
+		String capDetail = msgBuilder.getMessage("SBISet.devObjects.captionDetail", "messages", httpRequest);
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
-		String capErase = msgBuilder.getMessage(reqCont, "SBISet.devObjects.captionErase", "messages");
+		String capErase = msgBuilder.getMessage("SBISet.devObjects.captionErase", "messages", httpRequest);
         htmlStream.append("         if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
         htmlStream.append("				showMenu(event, divM);\n");
 		htmlStream.append("		}\n");
@@ -131,7 +131,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		}\n");
 		
 		// js function for item action confirm
-        String confirmCaption = msgBuilder.getMessage(reqCont, "SBISet.devObjects.confirmCaption", "messages");
+        String confirmCaption = msgBuilder.getMessage("SBISet.devObjects.confirmCaption", "messages", httpRequest);
         htmlStream.append("     function actionConfirm(message, url){\n");
         htmlStream.append("         if (confirm('" + confirmCaption + " ' + message + '?')){\n");
         htmlStream.append("             location.href = url;\n");
@@ -156,7 +156,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage(reqCont, "tree.objectstree.name" ,"messages");
+		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");		
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
@@ -198,7 +198,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 			boolean isRoot, boolean isInitialPath) {
 		
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(reqCont, nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
 		Integer parentId = null;

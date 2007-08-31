@@ -197,7 +197,7 @@ public class ListTag extends TagSupport
 		List buttons = buttonsSB.getContainedSourceBeanAttributes();
 		
 		if (titleCode != null && buttons.size() > 0) {
-			String title = msgBuilder.getMessage(_requestContainer, titleCode, "messages");
+			String title = msgBuilder.getMessage(titleCode, "messages", httpRequest);
 			_htmlStream.append(" <table class=\"header-table-portlet-section\">\n");
 			_htmlStream.append("	<tr class='header-row-portlet-section'>\n");
 			_htmlStream.append("			<td class=\"header-title-column-portlet-section\" style=\"vertical-align:middle;padding-left:5px;\" >" + title + "</td>\n");
@@ -245,7 +245,7 @@ public class ListTag extends TagSupport
 			String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 			String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 			String labelColumn = "";
-			if (labelColumnCode != null) labelColumn = msgBuilder.getMessage(_requestContainer, labelColumnCode, "messages");
+			if (labelColumnCode != null) labelColumn = msgBuilder.getMessage(labelColumnCode, "messages", httpRequest);
 			else labelColumn = nameColumn;
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
@@ -274,7 +274,7 @@ public class ListTag extends TagSupport
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 	    
 		// js function for item action confirm
-		String confirmCaption = msgBuilder.getMessage(_requestContainer, "ListTag.confirmCaption", "messages");
+		String confirmCaption = msgBuilder.getMessage("ListTag.confirmCaption", "messages", httpRequest);
 		//String confirmCaption = PortletUtilities.getMessage("ListTag.confirmCaption", "messages");
 		_htmlStream.append(" <script>\n");
 		_htmlStream.append("	function actionConfirm(message, url){\n");
@@ -331,7 +331,7 @@ public class ListTag extends TagSupport
 					String img = (String)captionSB.getAttribute("image");
 					String labelCode = (String)captionSB.getAttribute("label");
 					//String label = PortletUtilities.getMessage(labelCode, "messages");
-					String label = msgBuilder.getMessage(_requestContainer, labelCode, "messages");
+					String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
 					String buttonUrl = createUrl(paramsMap);
 					boolean confirm = false;
 					if (captionSB.getAttribute("confirm") != null &&
@@ -515,9 +515,9 @@ public class ListTag extends TagSupport
 		
         // visualize page numbers
 		//String pageLabel = PortletUtilities.getMessage("ListTag.pageLable", "messages");
-		String pageLabel = msgBuilder.getMessage(_requestContainer, "ListTag.pageLable", "messages");
+		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", "messages", httpRequest);
 		//String pageOfLabel = PortletUtilities.getMessage("ListTag.pageOfLable", "messages");
-		String pageOfLabel = msgBuilder.getMessage(_requestContainer, "ListTag.pageOfLable", "messages");
+		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", "messages", httpRequest);
 		_htmlStream.append("						<TD class='portlet-section-footer' align='center'>\n");
 		_htmlStream.append("							<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
 		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
@@ -528,21 +528,21 @@ public class ListTag extends TagSupport
 			String allUrl = createUrl(_providerUrlMap);
 			String filterURL = createUrl(_providerUrlMap);
 			
-			String label =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.labelFilter", "messages");
-			String labelTypeValueFilter =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.labelTypeValueFilter", "messages");
-			String labelNumber = msgBuilder.getMessage(_requestContainer, "SBIListLookPage.labelNumber", "messages");
-			String labelString =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.labelString", "messages");
-			String labelDate =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.labelDate", "messages");
-			String labelStart =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.startWith", "messages");
-			String labelEnd =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.endWith", "messages");
-			String labelContain =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.contains", "messages");
-			String labelEqual =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.isEquals", "messages");
-			String labelIsLessThan =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.isLessThan", "messages");
-			String labelIsLessOrEqualThan =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.isLessOrEqualThan", "messages");
-			String labelIsGreaterThan =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.isGreaterThan", "messages");
-			String labelIsGreaterOrEqualThan =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.isGreaterOrEqualThan", "messages");
-			String labelFilter =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.filter", "messages");
-			String labelAll =  msgBuilder.getMessage(_requestContainer, "SBIListLookPage.all", "messages");
+			String label =  msgBuilder.getMessage("SBIListLookPage.labelFilter", "messages", httpRequest);
+			String labelTypeValueFilter =  msgBuilder.getMessage("SBIListLookPage.labelTypeValueFilter", "messages", httpRequest);
+			String labelNumber = msgBuilder.getMessage("SBIListLookPage.labelNumber", "messages", httpRequest);
+			String labelString =  msgBuilder.getMessage("SBIListLookPage.labelString", "messages", httpRequest);
+			String labelDate =  msgBuilder.getMessage("SBIListLookPage.labelDate", "messages", httpRequest);
+			String labelStart =  msgBuilder.getMessage("SBIListLookPage.startWith", "messages", httpRequest);
+			String labelEnd =  msgBuilder.getMessage("SBIListLookPage.endWith", "messages", httpRequest);
+			String labelContain =  msgBuilder.getMessage("SBIListLookPage.contains", "messages", httpRequest);
+			String labelEqual =  msgBuilder.getMessage("SBIListLookPage.isEquals", "messages", httpRequest);
+			String labelIsLessThan =  msgBuilder.getMessage("SBIListLookPage.isLessThan", "messages", httpRequest);
+			String labelIsLessOrEqualThan =  msgBuilder.getMessage("SBIListLookPage.isLessOrEqualThan", "messages", httpRequest);
+			String labelIsGreaterThan =  msgBuilder.getMessage("SBIListLookPage.isGreaterThan", "messages", httpRequest);
+			String labelIsGreaterOrEqualThan =  msgBuilder.getMessage("SBIListLookPage.isGreaterOrEqualThan", "messages", httpRequest);
+			String labelFilter =  msgBuilder.getMessage("SBIListLookPage.filter", "messages", httpRequest);
+			String labelAll =  msgBuilder.getMessage("SBIListLookPage.all", "messages", httpRequest);
 			
 			_htmlStream.append("						    <br/><br/>\n");
 			_htmlStream.append("						    <form action='"+filterURL+"' id='" + formId +"' method='post'>\n");
@@ -553,7 +553,7 @@ public class ListTag extends TagSupport
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 				String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 				String labelColumn = new String(nameColumn);
-				if (labelColumnCode != null) labelColumn =  msgBuilder.getMessage(_requestContainer, labelColumnCode, "messages");
+				if (labelColumnCode != null) labelColumn =  msgBuilder.getMessage(labelColumnCode, "messages", httpRequest);
 				String selected = "";
 				if (nameColumn.equalsIgnoreCase(columnFilter))
 					selected = " selected='selected' "; 
@@ -685,7 +685,7 @@ public class ListTag extends TagSupport
 			String labelCode = (String) buttonSB.getAttribute("label");
 			
 			//String label = PortletUtilities.getMessage(labelCode, "messages");
-			String label = msgBuilder.getMessage(_requestContainer, labelCode, "messages");
+			String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
 			String buttonUrl = createUrl(paramsMap);
 			
 			htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");

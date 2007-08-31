@@ -113,17 +113,15 @@ public class SpagoBIMessageTag extends TagSupport {
         }
         // get http request    
         HttpServletRequest httpRequest = (HttpServletRequest)pageContext.getRequest();
-    	// get spago request container
-        RequestContainer reqCont = ChannelUtilities.getRequestContainer(httpRequest);
         // get message builder
         IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
         // get message 
         String message = null;        
         if (bundle != null) {
-        	message = msgBuilder.getMessage(reqCont, key, bundle);
+        	message = msgBuilder.getMessage(key, bundle, httpRequest);
         	//message = PortletUtilities.getMessage(key, bundle);
         } else {
-        	message = msgBuilder.getMessage(reqCont, key, DEFAULT_BUNDLE);
+        	message = msgBuilder.getMessage(key, DEFAULT_BUNDLE, httpRequest);
         	//message = getMessage(renderRequest, key); // Use the default spago bundle
         }
         // replace arguments into message

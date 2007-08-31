@@ -35,6 +35,8 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -48,12 +50,15 @@ public class FisheyeMenuTag extends TagSupport {
 
 	private ConfigSingleton configuration = null;
 	private HttpServletRequest httpRequest = null;
+	protected IMessageBuilder msgBuilder = null;
+	private RequestContainer requestContainer = null;
 	
 	public int doStartTag() throws JspException {
 		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 				           "doStartTag", " method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
-		RequestContainer requestContainer = RequestContainerAccess.getRequestContainer(httpRequest);
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		requestContainer = RequestContainerAccess.getRequestContainer(httpRequest);
 		SessionContainer spagoSession = requestContainer.getSessionContainer();
 		SessionContainer spagoPermSession = spagoSession.getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile)spagoPermSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -158,7 +163,15 @@ public class FisheyeMenuTag extends TagSupport {
 		String appCode = (String)appSB.getAttribute("code");
 		String appTitle = (String)appSB.getAttribute("title");
 		String link = (String)appSB.getAttribute("link");
-		createMenuItem(htmlStream, jsStream, appCode, iconUrl, appTitle, link, width, height, "true");
+		boolean isresizable = true;
+		boolean ismodal = false;
+		String modalStr = (String)appSB.getAttribute("modal");
+		if(modalStr!=null) {
+			if(modalStr.trim().equalsIgnoreCase("true")){
+				ismodal = true;
+			}
+		}
+		createMenuItem(htmlStream, jsStream, appCode, iconUrl, appTitle, link, width, height, isresizable, ismodal);
 	}
 	
 	/*
@@ -175,7 +188,23 @@ public class FisheyeMenuTag extends TagSupport {
 	
 	private void createMenuItem(StringBuffer htmlStream, StringBuffer jsStream, String code, 
 			                    String iconUrl, String title, String link, String width, 
-			                    String height, String resizable) {
+			                    String height, boolean isresizable, boolean ismodal) {
+		
+		title = title.trim();
+		if(title.startsWith("#")){
+			title = title.substring(1);
+			title = msgBuilder.getMessage(title, httpRequest);
+		}
+		
+		String resizable = "true";
+		if(!isresizable) {
+			resizable = "false";
+		}
+		
+		String modal = "false";
+		if(ismodal) {
+			modal = "true";
+		}
 		
 		String contexName = ChannelUtilities.getSpagoBIContextName(httpRequest);
 		String htmlFrame = "<div style='position:absolute;top:30px;left:30px;' id='loading"+code+"'>" +
@@ -209,7 +238,7 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append("		win"+code+" = new Window('win"+code+"', {className: \"alphacube\", title: \""+title+"\", resizable:"+resizable+", destroyOnClose:false, width:"+width+", height:"+height+"});\n");
 		//jsStream.append("		win"+code+".getContent().innerHTML=\"<iframe id='frame"+code+"' style='width:"+width+"px;height:"+height+"px;' frameborder='0' scrolling='auto' noresize src='"+link+"' />\";\n"); 
 		jsStream.append("		win"+code+".getContent().innerHTML=\""+htmlFrame+"\";\n");
-		jsStream.append("		win"+code+".showCenter(false);\n");
+		jsStream.append("		win"+code+".showCenter("+modal+");\n");
 		jsStream.append("		observerResize"+code+" = {\n");
 		jsStream.append("			onResize: function(eventName, win) {\n");
 		jsStream.append("				if(win == win"+code+") { \n");
@@ -226,9 +255,15 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append("				if(win == win"+code+") { \n");
 		jsStream.append("					var heightwin = win.getSize().height;\n");
 		jsStream.append("				 	var widthwin = win.getSize().width;\n");
-		jsStream.append("				 	var frameapp = document.getElementById('iframe"+code+"');\n");
+		jsStream.append("					if(win.isMaximized()) {\n");
+		jsStream.append("					    heightwin = heightwin-100;\n");
+		jsStream.append("				 	    widthwin = widthwin-20;\n");
+		jsStream.append("				    }\n");
+		jsStream.append("				 	win.setSize(widthwin, heightwin);\n");
+		jsStream.append("				 	var frameapp = document.getElementById('frame"+code+"');\n");
 		jsStream.append("				 	frameapp.style.height=heightwin + 'px';\n");
 		jsStream.append("				 	frameapp.style.width=widthwin + 'px'; \n");
+		jsStream.append("		            win.showCenter("+modal+");\n");
 		jsStream.append("				}\n");
 		jsStream.append("			}\n");  
 		jsStream.append("		}\n");
@@ -238,10 +273,10 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append("					var heightwin = win.getSize().height;\n");
 		jsStream.append("				 	var widthwin = win.getSize().width;\n");
 		jsStream.append("					if(win.isMinimized()) {\n");
-		jsStream.append("				 		var frameapp = document.getElementById('iframe"+code+"');\n");
+		jsStream.append("				 		var frameapp = document.getElementById('frame"+code+"');\n");
 		jsStream.append("				 		frameapp.style.display='none';\n");
 		jsStream.append("				 	} else {\n");
-		jsStream.append("				 		var frameapp = document.getElementById('iframe"+code+"');\n");
+		jsStream.append("				 		var frameapp = document.getElementById('frame"+code+"');\n");
 		jsStream.append("				 		frameapp.style.display='inline';\n");
 		jsStream.append("				 	}\n");
 		jsStream.append("				}\n");
@@ -260,7 +295,7 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append("		Windows.addObserver(observerMinimize"+code+");\n");
 		jsStream.append("		Windows.addObserver(observerClose"+code+");\n");
 		jsStream.append("	} else {\n");
-		jsStream.append("		win"+code+".show();\n");
+		jsStream.append("		win"+code+".show("+modal+");\n");
 		jsStream.append("	}\n");
 		jsStream.append("}\n");  
 		jsStream.append("</script>\n ");

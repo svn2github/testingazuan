@@ -238,7 +238,7 @@ public class CheckBoxTag extends TagSupport {
 		List buttons = buttonsSB.getContainedSourceBeanAttributes();
 		
 		if (titleCode != null && buttons.size() > 0) {
-			String title = msgBuilder.getMessage(_requestContainer, titleCode, "messages");
+			String title = msgBuilder.getMessage(titleCode, "messages", httpRequest);
 			_htmlStream.append(" <table class=\"header-table-portlet-section\">\n");
 			_htmlStream.append("	<tr class='header-row-portlet-section'>\n");
 			_htmlStream.append("			<td class=\"header-title-column-portlet-section\" style=\"vertical-align:middle;padding-left:5px;\" >" + title + "</td>\n");
@@ -287,7 +287,7 @@ public class CheckBoxTag extends TagSupport {
 			String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 			String labelColumn = "";
 			if (labelColumnCode != null) labelColumn = 
-				msgBuilder.getMessage(_requestContainer, labelColumnCode, "messages");
+				msgBuilder.getMessage(labelColumnCode, "messages", httpRequest);
 			else labelColumn = nameColumn;
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
@@ -317,7 +317,7 @@ public class CheckBoxTag extends TagSupport {
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 	    
 		// js function for item action confirm
-		String confirmCaption = msgBuilder.getMessage(_requestContainer, "ListTag.confirmCaption", "messages");
+		String confirmCaption = msgBuilder.getMessage("ListTag.confirmCaption", "messages", httpRequest);
 		_htmlStream.append(" <script>\n");
 		_htmlStream.append("	function actionConfirm(message, url){\n");
 		_htmlStream.append("		if (confirm('" + confirmCaption + " ' + message + '?')){\n");
@@ -360,7 +360,7 @@ public class CheckBoxTag extends TagSupport {
 				HashMap paramsMap = getParametersMap(parameters, row);
 				String img = (String)captionSB.getAttribute("image");
 				String labelCode = (String)captionSB.getAttribute("label");
-				String label = msgBuilder.getMessage(_requestContainer, labelCode, "messages");
+				String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
 				String buttonUrl = urlBuilder.getUrl(httpRequest, paramsMap);
 				boolean confirm = false;
 				if (captionSB.getAttribute("confirm") != null &&
@@ -456,7 +456,7 @@ public class CheckBoxTag extends TagSupport {
 			
 			_htmlStream.append("						    <br/><br/>\n");
 			//_htmlStream.append("	<form method='POST' action='" + formUrl.toString() + "' id ='objectForm' name='objectForm'>\n");
-			String label = msgBuilder.getMessage(_requestContainer, "CheckboxTag.showChecked", "messages");
+			String label = msgBuilder.getMessage("CheckboxTag.showChecked", "messages", httpRequest);
 			_htmlStream.append("						    "+label+"\n");
 			_htmlStream.append("<input type=\"checkbox\"" + checked + " \n");
 			_htmlStream.append("				onclick=\"submitForm()\" name=\"filterCheckbox\" id=\"filterCheckbox\" value=\"true\"/>\n");
@@ -524,7 +524,7 @@ public class CheckBoxTag extends TagSupport {
 			String name = (String) buttonSB.getAttribute("name");
 			String img = (String) buttonSB.getAttribute("image");
 			String labelCode = (String) buttonSB.getAttribute("label");			
-			String label = msgBuilder.getMessage(_requestContainer, labelCode, "messages");
+			String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
 			
 			htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 			htmlStream.append("<input type='image' " +

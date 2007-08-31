@@ -60,7 +60,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage(reqCont, "tree.objectstree.name" ,"component_impexp_messages");
+		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"component_impexp_messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
@@ -104,7 +104,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 		
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(reqCont, nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String path = folder.getPath();
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
@@ -141,9 +141,9 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("		function menu(event, pathFather) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
-		String capSelect = msgBuilder.getMessage(reqCont, "SBISet.importexport.selectall", "component_impexp_messages");
+		String capSelect = msgBuilder.getMessage("SBISet.importexport.selectall", "component_impexp_messages", httpRequest);
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:select(\\''+pathFather+'\\')\">"+capSelect+"</a></div>';\n");
-		String capDeselect = msgBuilder.getMessage(reqCont, "SBISet.importexport.deselectall", "component_impexp_messages");
+		String capDeselect = msgBuilder.getMessage("SBISet.importexport.deselectall", "component_impexp_messages", httpRequest);
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:deselect(\\''+pathFather+'\\')\">"+capDeselect+"</a></div>';\n");
 		htmlStream.append("			showMenu(event, divM);\n");
 		htmlStream.append("		}\n");

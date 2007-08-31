@@ -146,7 +146,7 @@ public class DynamicPageTag extends TagSupport {
 	        		String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
 	        		
 	        		if (objParFatherLabel != null) {
-	        			String correlation = msgBuilder.getMessage(requestContainer, "SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages");
+	        			String correlation = msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages", httpRequest);
 	        			correlation += " " + objParFatherLabel ;
 	        			htmlStream.append("		<img src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
 	        			htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
@@ -347,7 +347,7 @@ public class DynamicPageTag extends TagSupport {
 	}
 	
 	private void createClearFieldsButton(StringBuffer htmlStream) {
-		String resetFieldsLbl = msgBuilder.getMessage(requestContainer, "SBIDev.docConf.execBIObjectParams.resetFields", "messages");
+		String resetFieldsLbl = msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.resetFields", "messages", httpRequest);
 		
 		htmlStream.append("		<div class='div_detail_form'>\n");
 	    htmlStream.append("				<a href='javascript:void(0)' onclick='clearFields" + requestIdentity+ "()' class='portlet-form-field-label'>\n");

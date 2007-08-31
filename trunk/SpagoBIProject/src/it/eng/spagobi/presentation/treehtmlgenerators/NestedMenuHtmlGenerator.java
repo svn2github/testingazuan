@@ -140,7 +140,8 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 			for(int i=0; i<=level; i++){
 				cssclass = cssclass + "menucontainer"+i+" ";
 			}
-			htmlStream.append("<div id='ul_"+folder.getId()+"' style='display:none;'>		\n");
+			//htmlStream.append("<div id='ul_"+folder.getId()+"' style='display:none;'>		\n");
+			htmlStream.append("<div id='ul_"+folder.getId()+"' class='menuinvisiblebox' >		\n");
 			htmlStream.append("		<div class='"+cssclass+"'  >		\n");
 			addMenuItemHtmlCode(childs, htmlStream, level);
 			htmlStream.append("		</div>		\n");
@@ -180,7 +181,8 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 				BIObject biobj = (BIObject)obj;
 				String execUrl = getExecutionLink(biobj);
 				String biObjType = biobj.getBiObjectTypeCode();
-				htmlStream.append("	<div class='menuitem menuitem"+biObjType+"' >\n");
+				//htmlStream.append("	<div class='menuitem menuitem"+biObjType+"' >\n");
+				htmlStream.append("	<div class='menuitem' >\n");
 				htmlStream.append("		<div class='menuitemleft menuitemleft"+biObjType+"'></div>\n");
 				htmlStream.append("		<div class='menuitemcenter'><a class='menuitemlink' href=\""+execUrl+"\">"+biobj.getName()+"</a></div>\n");
 				htmlStream.append("		<div class='menuitemright'></div>\n");

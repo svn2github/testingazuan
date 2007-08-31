@@ -82,11 +82,11 @@ public class LovColumnsSelectorTag extends TagSupport {
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		
-		visColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.visColumnsField", "messages");
-		invisColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.invisColumnsField", "messages");
-		valueColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.valueColumnsField", "messages");
-		descriptionColumnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.descriptionColumnsField", "messages");		
-		columnsField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.columnsField", "messages");
+		visColumnsField = msgBuilder.getMessage("SBIDev.queryWiz.visColumnsField", "messages", httpRequest);
+		invisColumnsField = msgBuilder.getMessage("SBIDev.queryWiz.invisColumnsField", "messages", httpRequest);
+		valueColumnsField = msgBuilder.getMessage("SBIDev.queryWiz.valueColumnsField", "messages", httpRequest);
+		descriptionColumnsField = msgBuilder.getMessage("SBIDev.queryWiz.descriptionColumnsField", "messages", httpRequest);		
+		columnsField = msgBuilder.getMessage("SBIDev.queryWiz.columnsField", "messages", httpRequest);
 		
 		serviceRequest = requestContainer.getServiceRequest();
 		serviceResponse = responseContainer.getServiceResponse();

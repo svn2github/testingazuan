@@ -60,7 +60,7 @@ public class ListBIParametersTag extends ListTag
 			HashMap paramsMap = getParametersMap(parameters, null);
 			String img = (String)buttonSB.getAttribute("image");
 			String labelCode = (String)buttonSB.getAttribute("label");
-			String label = msgBuilder.getMessage(_requestContainer, labelCode, "messages");
+			String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
 			htmlStream.append("<form action='"+urlBuilder.getUrl(httpRequest, new HashMap())+"' id='form"+label+"'  method='POST' >\n");
 			htmlStream.append("	<td class=\"header-button-column-portlet-section\">\n");
 			Set paramsKeys = paramsMap.keySet();

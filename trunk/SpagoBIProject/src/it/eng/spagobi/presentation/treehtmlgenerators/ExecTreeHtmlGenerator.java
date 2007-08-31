@@ -149,7 +149,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage(reqCont, "tree.objectstree.name" ,"messages");
+		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenu' style='position:absolute;left:0;top:0;display:none;width:80px;height:120px;background-color:#FFFFCC;border-color:black;border-style:solid;border-weight:1;' onmouseout='hideMenu();' >");
 		htmlStream.append("		menu");
@@ -165,7 +165,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td>");
 		String checked = "";
 		String onlyTestObjectsView = httpRequest.getParameter("view_only_test_objects");
-		String onlyTestObjectsViewLbl = msgBuilder.getMessage(reqCont, "tree.objectstree.showOnlyTestObject", "messages");
+		String onlyTestObjectsViewLbl = msgBuilder.getMessage("tree.objectstree.showOnlyTestObject", "messages", httpRequest);
 		if ("true".equalsIgnoreCase(onlyTestObjectsView)) checked = "checked='checked'";
 		htmlStream.append("			<span class=\"dtree\">" + onlyTestObjectsViewLbl + "</span>\n");
 		htmlStream.append("			<input type=\"checkbox\" " + checked + " \n");
@@ -212,13 +212,16 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			formUrlPars.put("PAGE", "LOGIN_PAGE_SBI_FUNCTIONALITY");
 			formUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_TREE);
 			formUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+			if(ChannelUtilities.isWebRunning()) {
+				formUrlPars.put(SpagoBIConstants.WEBMODE, "TRUE");
+			}
 			String formUrl = urlBuilder.getUrl(httpRequest, formUrlPars);
 		
-    		String updateTree = msgBuilder.getMessage(reqCont, "tree.objectstree.update", "messages");
+    		String updateTree = msgBuilder.getMessage("tree.objectstree.update", "messages", httpRequest);
     		htmlStream.append("	<div style=\"display:none;\">\n");
     		htmlStream.append("	<form method='POST' action='" + formUrl + "' id ='objectForm' name='objectForm'>\n");
     		htmlStream.append("		<span>" + onlyTestObjectsViewLbl + "</span>\n");
-    		htmlStream.append("		<input type=\"checkbox\" name=\"view_only_test_objects\" id=\"view_only_test_objects" + requestIdentity + "" + requestIdentity + "\" value=\"true\" " + checked + " />\n");
+    		htmlStream.append("		<input type=\"checkbox\" name=\"view_only_test_objects\" id=\"view_only_test_objects" + requestIdentity + "\" value=\"true\" " + checked + " />\n");
     		htmlStream.append("		<input type=\"image\" style=\"width:25px;height:25px\" title=\"" + updateTree + "\" alt\"" + updateTree + "\" \n");
     		htmlStream.append("			src=\"" + urlBuilder.getResourceLink(httpRequest, "/img/updateState.png" ) + "\" />\n");
     		htmlStream.append("	</form>\n");
@@ -233,7 +236,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 		
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(reqCont, nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
 		

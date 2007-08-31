@@ -83,8 +83,8 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
-		String connNameField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.connNameField", "messages");
-		String queryDefField = msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.queryDefField", "messages");
+		String connNameField = msgBuilder.getMessage("SBIDev.queryWiz.connNameField", "messages", httpRequest);
+		String queryDefField = msgBuilder.getMessage("SBIDev.queryWiz.queryDefField", "messages", httpRequest);
 		ConfigSingleton config = ConfigSingleton.getInstance();
 		List dbConnection = config.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
 		Iterator itDbCon = dbConnection.iterator();
@@ -94,7 +94,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("<table width='100%' cellspacing='0' border='0'>\n");
 		output.append("	<tr>\n");
 		output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
-		output.append("			&nbsp;&nbsp;&nbsp;"+ msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.wizardTitle", "messages") +"\n");
+		output.append("			&nbsp;&nbsp;&nbsp;"+ msgBuilder.getMessage("SBIDev.queryWiz.wizardTitle", "messages", httpRequest) +"\n");
 		output.append("		</td>\n");
 		output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
 		output.append("		<td class='titlebar_level_2_button_section'>\n");
@@ -102,8 +102,8 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("				<img width='22px' height='22px'\n");
 		output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
 		output.append("					 name='info'\n");
-		output.append("					 alt='"+msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.showSintax", "messages")+"'\n");
-		output.append("					 title='"+msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.showSintax", "messages")+"'/>\n");
+		output.append("					 alt='"+msgBuilder.getMessage("SBIDev.queryWiz.showSintax", "messages", httpRequest)+"'\n");
+		output.append("					 title='"+msgBuilder.getMessage("SBIDev.queryWiz.showSintax", "messages", httpRequest)+"'/>\n");
 		output.append("			</a>\n");
 		output.append("		</td>\n");
 		String urlImgProfAttr = urlBuilder.getResourceLink(httpRequest, "/img/profileAttributes22.jpg");
@@ -157,7 +157,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("		}\n");
 		output.append("		function openQueryWizardInfo(){\n");
 		output.append("			if(winQWT==null) {\n");
-		output.append("				winQWT = new Window('winQWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage(requestContainer, "SBIDev.queryWiz.showSintax", "messages")+"\", width:680, height:150, destroyOnClose: false});\n");
+		output.append("				winQWT = new Window('winQWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage("SBIDev.queryWiz.showSintax", "messages", httpRequest)+"\", width:680, height:150, destroyOnClose: false});\n");
 		output.append("         	winQWT.setContent('querywizardinfodiv', false, false);\n");
 		output.append("         	winQWT.showCenter(false);\n");
 		output.append("		    } else {\n");

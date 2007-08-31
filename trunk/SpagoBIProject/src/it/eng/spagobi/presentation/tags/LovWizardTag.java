@@ -71,7 +71,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("<table width='100%' cellspacing='0' border='0'>\n");
 			output.append("	<tr>\n");
 			output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
-			output.append("			&nbsp;&nbsp;&nbsp;"+ msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.wizardTitle", "messages") +"\n");
+			output.append("			&nbsp;&nbsp;&nbsp;"+ msgBuilder.getMessage("SBIDev.lovWiz.wizardTitle", "messages", httpRequest) +"\n");
 			output.append("		</td>\n");
 			output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
 			output.append("		<td class='titlebar_level_2_button_section'>\n");
@@ -79,8 +79,8 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("				<img width='22px' height='22px'\n");
 			output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
 			output.append("					 name='info'\n");
-			output.append("					 alt='"+msgBuilder.getMessage(requestContainer, "SBIDev.fixlovWiz.rulesTitle", "messages")+"'\n");
-			output.append("					 title='"+msgBuilder.getMessage(requestContainer, "SBIDev.fixlovWiz.rulesTitle", "messages")+"'/>\n");
+			output.append("					 alt='"+msgBuilder.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages", httpRequest)+"'\n");
+			output.append("					 title='"+msgBuilder.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages", httpRequest)+"'/>\n");
 			output.append("			</a>\n");
 			output.append("		</td>\n");
 			String urlImgProfAttr = urlBuilder.getResourceLink(httpRequest, "/img/profileAttributes22.jpg");
@@ -90,8 +90,8 @@ public class LovWizardTag extends CommonWizardLovTag {
 			
 			output.append("<br/>\n");
 			
-			String newItemNameField = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.newItemNameField", "messages");
-			String newItemValueField = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.newItemValueField", "messages");
+			String newItemNameField = msgBuilder.getMessage("SBIDev.lovWiz.newItemNameField", "messages", httpRequest);
+			String newItemValueField = msgBuilder.getMessage("SBIDev.lovWiz.newItemValueField", "messages", httpRequest);
 			output.append("<input type='hidden' id='insertFixLovItem' name='' value=''/>\n");
 			output.append("<div class='div_detail_area_forms_lov'>\n");	
 			output.append("		<div class='div_detail_label_lov'>\n");
@@ -116,7 +116,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("		<div class='div_detail_form'>\n");
 			output.append("			<input onclick='setLovProviderModified(true);' type='image' name='insertFixLovItem' value='insertFixLovItem'\n");
 			output.append("				src='" + urlBuilder.getResourceLink(httpRequest, "/img/attach.gif") + "'\n");
-			String addButtMsg = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.addButt", "messages");
+			String addButtMsg = msgBuilder.getMessage("SBIDev.lovWiz.addButt", "messages", httpRequest);
 			output.append("				title='" + addButtMsg + "' alt='" + addButtMsg + "'\n");
 			output.append("			/>\n");
 			output.append("			<a href='javascript:setLovProviderModified(true);newFixLovItemFormSubmit();' class='portlet-form-field-label' style='text-decoration:none;'>\n");
@@ -133,11 +133,11 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("<table class=\"table_detail_fix_lov\">\n");
 		  	output.append("	<tr>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
-		  	String tableCol1 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol2", "messages");
+		  	String tableCol1 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol2", "messages", httpRequest);
 		  	output.append(			tableCol1 + "\n");
 		  	output.append("		</td>\n");
 		  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
-		  	String tableCol2 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol1", "messages");
+		  	String tableCol2 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol1", "messages", httpRequest);
 		  	output.append(			tableCol2 + "\n");
 		  	output.append("		</td>\n");
 		  	output.append("		<td colspan='1' width='20' class='portlet-section-header'>&nbsp;\n");
@@ -182,8 +182,8 @@ public class LovWizardTag extends CommonWizardLovTag {
 					output.append("     </td>\n");
 					
 					output.append("		<td class='" + rowClass + "'>\n");
-					String tooltipRowDetail = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol3", "messages");
-					String tooltipRowSave = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol3.1", "messages");
+					String tooltipRowDetail = msgBuilder.getMessage("SBIDev.lovWiz.tableCol3", "messages", httpRequest);
+					String tooltipRowSave = msgBuilder.getMessage("SBIDev.lovWiz.tableCol3.1", "messages", httpRequest);
 					output.append("			<div style='display:inline;' id='divBtnDetailRow"+i+"'>");
 					output.append("				<a href='javascript:changeRowValues(\""+ i +"\")'>");
 					output.append("				<img class ='portlet-menu-item' \n");
@@ -200,7 +200,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 					
 					
 					output.append("		<td class='" + rowClass + "'>\n");
-					String tableCol4 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol4", "messages");
+					String tableCol4 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol4", "messages", httpRequest);
 					output.append("			<input type='image' onclick='setLovProviderModified(true);setIndexOfFixedLovItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
 					output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
 					output.append("				title='" + tableCol4 + "' alt='" + tableCol4 + "' />\n");
@@ -208,7 +208,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 		  			
 		  			output.append("		<td class='" + rowClass + "'>\n");
 		  			if(i<(lovs.size()-1)) {
-						String tableCol5 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol5", "messages");
+						String tableCol5 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol5", "messages", httpRequest);
 						output.append("			<input type='image' onclick='setLovProviderModified(true);downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 						output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/down16.gif") + "' \n");
 						output.append("				title='" + tableCol5 + "' alt='" + tableCol5 + "' />\n");
@@ -219,7 +219,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 		  			
 		  			output.append("		<td class='" + rowClass + "'>\n");
 		  			if(i>0) {
-						String tableCol6 = msgBuilder.getMessage(requestContainer, "SBIDev.lovWiz.tableCol6", "messages");
+						String tableCol6 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol6", "messages", httpRequest);
 						output.append("			<input type='image' onclick='setLovProviderModified(true);upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 						output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/up16.gif") + "' \n");
 						output.append("				title='" + tableCol6 + "' alt='" + tableCol6 + "' />\n");
@@ -282,7 +282,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("		}\n");
 			output.append("		function openFixListWizardInfo(){\n");
 			output.append("			if(winFLWT==null) {\n");
-			output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage(requestContainer, "SBIDev.fixlovWiz.rulesTitle", "messages")+"\", width:650, height:110, destroyOnClose: false});\n");
+			output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages", httpRequest)+"\", width:650, height:110, destroyOnClose: false});\n");
 			output.append("         	winFLWT.setContent('fixlistwizardinfodiv', false, false);\n");
 			output.append("         	winFLWT.showCenter(false);\n");
 			output.append("		    } else {\n");

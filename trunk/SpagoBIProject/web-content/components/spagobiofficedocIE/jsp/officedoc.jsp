@@ -24,7 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.constants.ObjectsTreeConstants,
                  java.util.Iterator,
                  it.eng.spagobi.bo.Engine,
-                 javax.portlet.PortletURL,
                  it.eng.spagobi.bo.Domain,
                  it.eng.spagobi.bo.BIObjectParameter,
                  it.eng.spagobi.bo.dao.IDomainDAO,
@@ -32,13 +31,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.services.modules.BIObjectsModule,
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
-                 it.eng.spagobi.utilities.PortletUtilities,
                  it.eng.spago.navigation.LightNavigationManager,
                  org.apache.commons.httpclient.HttpClient,
                  org.apache.commons.httpclient.methods.PostMethod,
-                 it.eng.spago.base.PortletAccess,
-                 javax.portlet.PortletRequest, 
-                 javax.portlet.PortletSession,
                  it.eng.spago.base.ApplicationContainer,
                  java.util.Map,
                  org.safehaus.uuid.UUIDGenerator,
@@ -46,8 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.utilities.GeneralUtilities,
                  it.eng.spagobi.managers.BIObjectNotesManager,
                  it.eng.spago.base.SessionContainer,
-                 it.eng.spago.security.IEngUserProfile,
-                 javax.portlet.PortletPreferences" %>
+                 it.eng.spago.security.IEngUserProfile" %>
                  
 
 <%
@@ -80,19 +74,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    		heightSetted = true;
    	}
    	
-   	
    	// build the back link
-   	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "BIObjectsPage");
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+   	Map backUrlPars = new HashMap();
+	backUrlPars.put("PAGE", "BIObjectsPage");
+	backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+   	
 	
 	// build the refresh button
-	PortletURL refreshUrl = renderResponse.createActionURL();
-	refreshUrl.setParameter("PAGE", BIObjectsModule.MODULE_PAGE);
-	refreshUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	refreshUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	
+    Map refreshUrlPars = new HashMap();
+    refreshUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
+    refreshUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
 	
 	IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	List states = domaindao.loadListDomainsByType("STATE");
@@ -122,6 +117,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(!isSingleObjExec) {
 %>
 
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
@@ -129,24 +126,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        </td>
        <td class='header-empty-column-portlet-section'>&nbsp;</td>
        <td class='header-button-column-portlet-section'>
-           <a href='<%= backUrl.toString() %>'>
+           <a href='<%= backUrl %>'>
                  <img title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
                       class='header-button-image-portlet-section'
-                      src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
                       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
            </a>
        </td>
        <% if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
     		  (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR))) {
-    	   	PortletURL formUrl = renderResponse.createActionURL();
-  		    formUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-  		   	formUrl.setParameter(SpagoBIConstants.ACTOR,actor );
-		   	formUrl.setParameter(SpagoBIConstants.MESSAGEDET, 
-		   			ObjectsTreeConstants.EXEC_CHANGE_STATE);
-			formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    		  
-    		  %>
-       <form method='POST' action='<%= formUrl.toString() %>' id='changeStateForm'  name='changeStateForm'>
+    	   
+    	    Map formUrlPars = new HashMap();
+    	    formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    	    formUrlPars.put(SpagoBIConstants.ACTOR,actor );
+    	    formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
+    	    formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    		String formUrl = urlBuilder.getUrl(request, formUrlPars);
+    			  
+      %>
+       <form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
 	       <td class='header-select-column-portlet-section'>
       			<select class='portlet-form-field' name="newState">
       			<% 
@@ -160,7 +158,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       			<!--br/-->
       		</td>
       		<td class='header-select-column-portlet-section'>
-      			<input type='image' class='header-button-image-portlet-section' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
+      			<input type='image' class='header-button-image-portlet-section' src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
       		</td>
         </form>
        <% } %>
@@ -180,12 +178,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
-			<a style="text-decoration:none;" href='<%=refreshUrl.toString()%>'> 
+			<a style="text-decoration:none;" href='<%=refreshUrl%>'> 
 				<img width="20px" height="20px"
-					src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' 
+					src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
 					name='refresh' 
-					alt='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' 
-					title='<%=PortletUtilities.getMessage("SBIExecution.refresh", "messages")%>' /> 
+					alt='<spagobi:message key = "SBIExecution.refresh"/>' 
+					title='<spagobi:message key = "SBIExecution.refresh"/>' /> 
 			</a>
 		</td>
 </table>
@@ -245,7 +243,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          	</iframe>       
                                 
          	<form name="formexecution<%=requestIdentity%>" id='formexecution<%=requestIdentity%>' method="post" 
-         	      action="<%=GeneralUtilities.getSpagoBiContentRepositoryServlet()%>/<%=templateFileName%>" 
+         	      action="<%=ChannelUtilities.getSpagoBiContentRepositoryServlet(request)%>/<%=templateFileName%>" 
          	      target='iframeexec<%=requestIdentity%>'>
 
          		<input type="hidden" name="operation" value="getTemplateFile" />
@@ -262,16 +260,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
               button.click();               
             </script>
             
-           <%-- 
-           <iframe <%=onloadStr%> 
-				   style='display:inline;<%=heightStr%>' 
-				   id='iframeexec<%=requestIdentity%>' 
-                   name='iframeexec<%=requestIdentity%>'  
-				   src="<%=GeneralUtilities.getSpagoBiContentRepositoryServlet()%>/<%=templateFileName%>?operation=getTemplateFile&biobjectId=<%=biobjectId%>"
-                   frameborder=0  
-			       width='100%' >
-         	</iframe>       
-            --%>    
 </div>
        
 

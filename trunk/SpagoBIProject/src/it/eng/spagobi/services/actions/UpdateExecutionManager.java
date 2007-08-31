@@ -23,6 +23,7 @@ package it.eng.spagobi.services.actions;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.dao.DAOFactory;
@@ -88,6 +89,7 @@ public class UpdateExecutionManager extends AbstractHttpAction {
 			    html += "   <input type=\"hidden\" name=\"OPERATION\" value=\"RECOVER_EXECUTION_FROM_DRILL_FLOW\" />";
 			    html += "   <input type=\"hidden\" name=\"spagobi_flow_id\" value=\"" + flowId + "\" />";
 			    html += "   <input type=\"hidden\" name=\"spagobi_execution_id\" value=\"" + instance.getExecutionId() + "\" />";
+			    html += "   <input type=\"hidden\" name=\""+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"\" value=\"TRUE\" />";
 				html += "</form>";
 				html += "&nbsp;<a href=\"javascript:document.getElementById(\'navigationBarForm" + instance.getExecutionId() + "\').submit();\">" + aBIObject.getName() + "</a>";
 			}

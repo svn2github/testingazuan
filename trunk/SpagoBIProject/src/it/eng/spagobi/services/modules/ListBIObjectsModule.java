@@ -353,9 +353,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "	</COLUMNS>";
 		moduleConfigStr += "	<CAPTIONS>";
 		moduleConfigStr += "	<EXEC_CAPTION  confirm=\"FALSE\" image=\"/img/execObject.gif\" label=\"SBISet.objects.captionExecute\">" +
-						   "		<CONDITIONS>" +
-						   "			<PARAMETER name=\"canExec\" scope=\"LOCAL\"  value=\"true\"/> " +
-						   "		</CONDITIONS> " +
+		//				   "		<CONDITIONS>" +
+		//				   "			<PARAMETER name=\"canExec\" scope=\"LOCAL\"  value=\"true\"/> " +
+		//				   "		</CONDITIONS> " +
 		   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.PAGE + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ExecuteBIObjectModule.MODULE_PAGE + "\"/> " +
 		   				   "		<PARAMETER name=\"" + SpagoBIConstants.MESSAGEDET + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE + "\"/> " +
 		   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +

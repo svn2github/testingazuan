@@ -21,8 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.booklets.constants.BookletsConstants,
 				java.util.List,
 				java.util.Iterator,
@@ -30,10 +29,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.booklets.bo.ConfiguredBIDocument,
 				it.eng.spagobi.constants.SpagoBIConstants,
 				it.eng.spagobi.booklets.bo.WorkflowConfiguration" %>
-
-<%@page import="it.eng.spagobi.utilities.PortletUtilities"%>
 <%@page import="it.eng.spagobi.booklets.bo.PresentationVersion"%>
 <%@page import="it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl"%>
+<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
@@ -44,36 +45,40 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_REFRESH_MODULE); 
    }
    
-   
    List presVersions = (List)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS);
    String pathConfBook = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
    
-   PortletURL backUrl = renderResponse.createActionURL();
-   backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
+   Map backUrlPars = new HashMap();
+   backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
+   String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
-   PortletURL refreshUrl = renderResponse.createActionURL();
-   refreshUrl.setParameter("PAGE", BookletsConstants.BOOKLET_REFRESH_PAGE);
-   refreshUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+   Map refreshUrlPars = new HashMap();
+   refreshUrlPars.put("PAGE", BookletsConstants.BOOKLET_REFRESH_PAGE);
+   refreshUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+   String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
    
-   PortletURL runCollaborationUrl = renderResponse.createActionURL();
-   runCollaborationUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   runCollaborationUrl.setParameter("OPERATION", BookletsConstants.OPERATION_RUN_NEW_COLLABORATION);
-   runCollaborationUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
-   runCollaborationUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   Map runCollaborationUrlPars = new HashMap();
+   runCollaborationUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+   runCollaborationUrlPars.put("OPERATION", BookletsConstants.OPERATION_RUN_NEW_COLLABORATION);
+   runCollaborationUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+   runCollaborationUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String runCollaborationUrl = urlBuilder.getUrl(request, runCollaborationUrlPars);
    
-   PortletURL eraseVersionUrl = renderResponse.createActionURL();
-   eraseVersionUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   eraseVersionUrl.setParameter("OPERATION", BookletsConstants.OPERATION_DELETE_PRESENTATION_VERSION);
-   eraseVersionUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
-   eraseVersionUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   Map eraseVersionUrlPars = new HashMap();
+   eraseVersionUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+   eraseVersionUrlPars.put("OPERATION", BookletsConstants.OPERATION_DELETE_PRESENTATION_VERSION);
+   eraseVersionUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+   eraseVersionUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String eraseVersionUrl = urlBuilder.getUrl(request, eraseVersionUrlPars);
    
-   PortletURL publishUrl = renderResponse.createActionURL();
-   publishUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   publishUrl.setParameter("OPERATION", BookletsConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE);
-   publishUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+   Map publishUrlPars = new HashMap();
+   publishUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+   publishUrlPars.put("OPERATION", BookletsConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE);
+   publishUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+   String publishUrl = urlBuilder.getUrl(request, publishUrlPars);
    
-   String contextAddress = GeneralUtilities.getSpagoBiContextAddress();
-   String downloadVersionUrl = BookletServiceUtils.getBookletServiceUrl() + "?" +
+   String contextAddress = ChannelUtilities.getSpagoBIContextName(request);
+   String downloadVersionUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" +
    							   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
    							   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION + "&" +
 		                       BookletsConstants.PATH_BOOKLET_CONF+"="+pathConfBook;
@@ -85,10 +90,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<!-- ********************* TITOLO **************************  -->
 
-
-	
-	<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
-<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
 <table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -96,18 +97,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
-				<a href='<%= backUrl.toString() %>'> 
+				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
 			<td class='header-button-column-portlet-section'>
-				<a href='<%= refreshUrl.toString() %>'> 
+				<a href='<%= refreshUrl%>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.refresh" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/refresh.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/refresh.gif")%>' 
 	      				 alt='<spagobi:message key = "book.refresh"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
@@ -125,10 +126,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		&nbsp;&nbsp;&nbsp;<spagobi:message key = "book.StartBookletDiscussion"  bundle="component_booklets_messages"/> ...
 	</div>
 	<div style="float:left;padding-left:15px;">
-		<a href='<%= runCollaborationUrl.toString() %>'> 
+		<a href='<%= runCollaborationUrl %>'> 
 	    <img class='header-button-image-portlet-section' 
 	    	 title='<spagobi:message key = "book.StartBookletDiscussion" bundle="component_booklets_messages" />' 
-	    	 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/exec.jpg")%>' 
+	    	 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/exec.jpg")%>' 
 	    	 alt='<spagobi:message key = "book.StartBookletDiscussion"  bundle="component_booklets_messages"/>' />
 		</a>
 	</div>
@@ -197,25 +198,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
             	<% if(!presVer.isCurrentVersion()) { %>
-                <a href='<%=eraseVersionUrl.toString()+"&"+BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME+"="+presVer.getVersionName()%>'> 
+                <a href='<%=eraseVersionUrl+"&"+BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME+"="+presVer.getVersionName()%>'> 
 			    <img title='<spagobi:message key = "book.erase" bundle="component_booklets_messages" />' 
-			    	 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/erase.gif")%>' 
+			    	 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/erase.gif")%>' 
 			    	 alt='<spagobi:message key = "book.erase"  bundle="component_booklets_messages"/>' />
 				</a>
 				<% } else { out.print("&nbsp"); } %>        		
             </td>
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-                <a href='<%=downloadVersionUrl.toString() + "&" + BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME + "=" + presVer.getVersionName()%>'> 
+                <a href='<%=downloadVersionUrl + "&" + BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME + "=" + presVer.getVersionName()%>'> 
 			    <img title='<spagobi:message key = "book.download" bundle="component_booklets_messages" />' 
-			    	 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download16.gif")%>' 
+			    	 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/download16.gif")%>' 
 			    	 alt='<spagobi:message key = "book.download"  bundle="component_booklets_messages"/>' />
 				</a>              		
             </td>
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
             	<% if(presVer.isApproved()) { %>
-                <a href='<%=publishUrl.toString()+"&"+BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME+"="+presVer.getVersionName()%>'> 
+                <a href='<%=publishUrl+"&"+BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME+"="+presVer.getVersionName()%>'> 
 			    <img title='<spagobi:message key = "book.deploy" bundle="component_booklets_messages" />' 
-			    	 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/deploy16.png")%>' 
+			    	 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/deploy16.png")%>' 
 			    	 alt='<spagobi:message key = "book.deploy"  bundle="component_booklets_messages"/>' />
 				</a>
 				<% } else { out.print("&nbsp"); } %>        		

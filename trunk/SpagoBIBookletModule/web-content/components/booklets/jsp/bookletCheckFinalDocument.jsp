@@ -21,11 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.booklets.constants.BookletsConstants,
-				it.eng.spagobi.constants.SpagoBIConstants,
-				it.eng.spagobi.utilities.GeneralUtilities" %>
+				it.eng.spagobi.constants.SpagoBIConstants" %>
+<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 <%
 	// RETRIVE ACTIVITY KEY	
@@ -33,34 +34,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     if(activityKey==null)
     	activityKey = (String)aServiceRequest.getAttribute("ActivityKey");
 	// BUILT URL TO DOWNLOAD THE DOCUMENT
-	String recoverUrl = BookletServiceUtils.getBookletServiceUrl() + "?" +
+	String recoverUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" +
 						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
 						BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC + "&" +
 						SpagoBIConstants.ACTIVITYKEY + "=" + activityKey;
 	
 	// BUILT BACK URL 
-   	PortletURL backUrl = renderResponse.createActionURL();
-   	backUrl.setParameter("PAGE", "WorkflowToDoListPage");
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("PAGE", "WorkflowToDoListPage");
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
    	
 	// BUILT APPROVE URL 
-   	PortletURL checkedDocUrl = renderResponse.createActionURL();
-   	checkedDocUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   	checkedDocUrl.setParameter("OPERATION", BookletsConstants.OPERATION_APPROVE_PRESENTATION);
-   	checkedDocUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
-   	checkedDocUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	
-   	//checkedDocUrl.setParameter("PAGE", "CompleteOrRejectActivityPage");
-   	//checkedDocUrl.setParameter("CompleteActivity", "TRUE");
-   	//checkedDocUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
-   	//checkedDocUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	Map checkedDocUrlPars = new HashMap();
+	checkedDocUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+	checkedDocUrlPars.put("OPERATION", BookletsConstants.OPERATION_APPROVE_PRESENTATION);
+	checkedDocUrlPars.put(SpagoBIConstants.ACTIVITYKEY, activityKey);
+	checkedDocUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	String checkedDocUrl = urlBuilder.getUrl(request, checkedDocUrlPars);
 	
 %>
 
 
 
 
-<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
+
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -68,10 +66,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
       				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
@@ -80,7 +78,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <br/>
 
-<form id="approveForm" action="<%=checkedDocUrl.toString() %>" method="POST"/>
+<form id="approveForm" action="<%=checkedDocUrl %>" method="POST"/>
 <table style="width:100%">
 	<tr>
 		<td width="2%">&nbsp;</td>
@@ -92,7 +90,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="<%=recoverUrl %>">
 			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.download" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download32.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/download32.png")%>' 
 	      				 alt='<spagobi:message key = "book.download"  bundle="component_booklets_messages"/>' />
 	        </a>
 		</td>
@@ -113,7 +111,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<td class='portlet-form-field-label'>
 						<input type="image" 
 			       			   title='<spagobi:message key = "book.approvalBotton" bundle="component_booklets_messages" />' 
-      		 	   			   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.png")%>' 
+      		 	   			   src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.png")%>' 
       		 	  			   alt='<spagobi:message key = "book.approvalBotton"  bundle="component_booklets_messages"/>' />
 					</td>
 				</tr>

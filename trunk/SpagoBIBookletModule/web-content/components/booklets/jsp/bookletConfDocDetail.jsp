@@ -21,8 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.booklets.constants.BookletsConstants,
 				java.util.List,
 				java.util.Iterator,
@@ -30,6 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.booklets.bo.ConfiguredBIDocument,
 				java.util.Map,
 				java.util.Set" %>
+<%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
+<%@page import="java.util.HashMap"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_MANAGEMENT_MODULE); 
@@ -44,23 +45,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    if(logicalname==null)
 	   logicalname = "";
    
-   PortletURL backUrl = renderResponse.createActionURL();
-   backUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   backUrl.setParameter(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
-   backUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
-   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   Map backUrlPars = new HashMap();
+   backUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   backUrlPars.put(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
+   backUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+   backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
+   Map formSaveConfDocUrlPars = new HashMap();
+   formSaveConfDocUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   formSaveConfDocUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_CONFIGURED_DOCUMENT);
+   formSaveConfDocUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String formSaveConfDocUrl = urlBuilder.getUrl(request, formSaveConfDocUrlPars);
    
-   PortletURL formSaveConfDocUrl = renderResponse.createActionURL();
-   formSaveConfDocUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   formSaveConfDocUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_CONFIGURED_DOCUMENT);
-   formSaveConfDocUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 %>
 
 
-
-
-<%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -68,10 +68,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
       				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
@@ -80,7 +80,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="javascript:document.getElementById('saveForm').submit();"> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.png")%>' 
       				 alt='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' />
 			</a>
 		</td>
@@ -91,7 +91,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	
 	
-<form action="<%=formSaveConfDocUrl.toString()%>" method='POST' id='saveForm' name='saveForm'>	
+<form action="<%=formSaveConfDocUrl%>" method='POST' id='saveForm' name='saveForm'>	
 	
 	<div style='padding-top:10px;margin-right:5px;' class='portlet-section-header' style="width:100%;">	
 		<spagobi:message key="book.dataObject" bundle="component_booklets_messages" />
@@ -181,9 +181,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<td class='portlet-form-field-label' width="160px">Output:</td>
 				<td><input type="text" size="30" name="param_output_format" value="JPGBASE64" readonly /></td>
 			</tr>
-			<!-- 
-			<input type="hidden" size="30" name="param_output_format" value="JPGBASE64" />
-			-->
+
 		<%		
 			}
 		%>
@@ -195,60 +193,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <br/>
 </br>
-
-
-
-
-<%-- 
-
-SHOW ROLES ROLE ASSIGNMENT TO DOCUMENT HAVE BEEN REPLACED BY THE WORKFLOW
-
-<table width="100%" cellspacing="0" border="1" >
-  	<tr height='1'>
-  		<td>
-  	    	<table width="100%">
-  	    		<tr >
-  	    			<td colspan="3" align="left" class='portlet-section-header'>
-  	    				<spagobi:message key = "SBIDev.paramUse.valTab3" />
-  	    			</td>
-  	    		</tr>
-  	    		<%   	    		    
-  	    		   	int count = 1;
-  	    		    int prog = 0; 
-  	    		   	Iterator iterRole = roleList.iterator(); 
-  	    		  	int numRoles = roleList.size();
-  	    			while(iterRole.hasNext()) {     
-  	    				Role role = (Role)iterRole.next();
-                        if(count==1) {
-                          out.print("<tr class='portlet-font'>");
-                        }
-  	    		 		out.print("<td class='portlet-section-body'>");
-  	    		 		out.print("   <input type='checkbox' name='idExtRole' value='"+role.getId()+"'/>");
-  	    		 		out.print(    role.getName());
-  	    		 		out.print("</td>");
-  	    		 		if((count < 3) && (prog==numRoles-1)){
-  	    		 		  	int numcol = 3-count;
-  	    		 		  	int num;
-  	    		 		  	for (num = 0; num <numcol; num++){
-  	    		 		  		out.print("<td class='portlet-section-body'>");
-  	    		 		    	out.print("</td>");
-  	    		 		  	}
-  	    		 		  	out.print("</tr>");
-  	    		 		} 
-  	    		 		if( (count==3) || (prog==(numRoles-1)) ) {
-  	    		 		 	out.print("</tr>");
-  	    		 		 	count = 1;
-  	    		 		} 
-  	    		 		else {
-  	    		 		 	count ++;
-  	    		 		 }
-  	    		  }
-  	    		%>
-  	    	</table> 
-  		</td>
-  	</tr>
-</table>
---%>
 
 
 <br/>

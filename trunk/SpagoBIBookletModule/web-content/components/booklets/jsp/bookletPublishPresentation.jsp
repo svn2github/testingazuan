@@ -21,8 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.booklets.constants.BookletsConstants,
 				java.util.*,
 				it.eng.spagobi.bo.Domain" %>
@@ -43,21 +42,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(description==null) description="";
 	String publishMessage = (String)moduleResponse.getAttribute("PublishMessage");
 	
-	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
-	
-   	PortletURL saveUrl = renderResponse.createActionURL();
-   	saveUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   	saveUrl.setParameter("OPERATION", BookletsConstants.OPERATION_PUBLISH_PRESENTATION);
-   	saveUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   	saveUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
-   	saveUrl.setParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+
+	Map saveUrlPars = new HashMap();
+	saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+	saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_PUBLISH_PRESENTATION);
+	saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	saveUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+	saveUrlPars.put(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+   	String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
 	
 %>		
 		
 				
 
-<form method='POST' action='<%=saveUrl.toString()%>' id='publishForm' name='publishForm' >
+<form method='POST' action='<%=saveUrl%>' id='publishForm' name='publishForm' >
 
 
 <table class='header-table-portlet-section'>
@@ -70,15 +71,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<input type='image' class='header-button-image-portlet-section' 
       			   title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
-      			   src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.png")%>' 
+      			   src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.png")%>' 
       			   alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>

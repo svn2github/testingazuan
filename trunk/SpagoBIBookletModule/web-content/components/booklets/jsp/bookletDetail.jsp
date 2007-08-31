@@ -21,8 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.booklets.constants.BookletsConstants,
 				java.util.List,
 				java.util.Iterator,
@@ -30,6 +29,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.booklets.bo.ConfiguredBIDocument,
 				it.eng.spagobi.constants.SpagoBIConstants,
 				it.eng.spagobi.booklets.bo.WorkflowConfiguration" %>
+<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
+<%@page import="it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl"%>
+<%@page import="it.eng.spagobi.bo.dao.IBIObjectCMSDAO"%>
+<%@page import="it.eng.spagobi.booklets.dao.IBookletsCmsDao"%>
+<%@page import="it.eng.spagobi.bo.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.bo.BIObject"%>
+<%@page import="it.eng.spagobi.services.modules.DetailBIObjectModule"%>
+<%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_MANAGEMENT_MODULE); 
@@ -37,7 +46,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    String pathConfNode = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
    String templateOOFileName = (String)moduleResponse.getAttribute(BookletsConstants.OO_TEMPLATE_FILENAME);
    String wfProcDefFileName = (String)moduleResponse.getAttribute(BookletsConstants.WF_PROCESS_DEFINTIION_FILENAME);
-   //WorkflowConfiguration workConf = (WorkflowConfiguration)moduleResponse.getAttribute(BookletsConstants.WORKFLOW_CONFIGURATION);
    
     // load the biobject
    IBookletsCmsDao bookletsCmsDao = new BookletsCmsDaoImpl();
@@ -50,53 +58,47 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
    Iterator iterDoc = confDocList.iterator();
    
-   PortletURL backUrl = renderResponse.createActionURL();
-   //backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
-   backUrl.setParameter("PAGE", DetailBIObjectModule.MODULE_PAGE);
-   backUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
-   backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, idBiObjStr);
-   backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-   backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+   Map backUrlPars = new HashMap();
+   backUrlPars.put("PAGE", DetailBIObjectModule.MODULE_PAGE);
+   backUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
+   backUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idBiObjStr);
+   backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+   backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+   String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
+   Map formDetailUrlPars = new HashMap();
+   formDetailUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   formDetailUrlPars.put("OPERATION", BookletsConstants.OPERATION_DETAIL_CONFIGURED_DOCUMENT);
+   formDetailUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
+   formDetailUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String formDetailUrl = urlBuilder.getUrl(request, formDetailUrlPars);
    
-   PortletURL formDetailUrl = renderResponse.createActionURL();
-   formDetailUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   formDetailUrl.setParameter("OPERATION", BookletsConstants.OPERATION_DETAIL_CONFIGURED_DOCUMENT);
-   formDetailUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
-   formDetailUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   Map formEraseUrlPars = new HashMap();
+   formEraseUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   formEraseUrlPars.put("OPERATION", BookletsConstants.OPERATION_DELETE_CONFIGURED_DOCUMENT);
+   formEraseUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
+   formEraseUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String formEraseUrl = urlBuilder.getUrl(request, formEraseUrlPars);
    
-   PortletURL formEraseUrl = renderResponse.createActionURL();
-   formEraseUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   formEraseUrl.setParameter("OPERATION", BookletsConstants.OPERATION_DELETE_CONFIGURED_DOCUMENT);
-   formEraseUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
-   formEraseUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   Map saveUrlPars = new HashMap();
+   //saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   //saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
+   //saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
    
-   PortletURL saveUrl = renderResponse.createActionURL();
-   saveUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   saveUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
-   saveUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   Map saveVersionUrlPars = new HashMap();
+   saveVersionUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   saveVersionUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_NEW_VERSION_BOOKLET);
+   saveVersionUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
+   saveVersionUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String saveVersionUrl = urlBuilder.getUrl(request, saveVersionUrlPars);
    
-   PortletURL saveVersionUrl = renderResponse.createActionURL();
-   saveVersionUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   saveVersionUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_NEW_VERSION_BOOKLET);
-   saveVersionUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
-   saveVersionUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   Map formNewConfDocUrlPars = new HashMap();
+   formNewConfDocUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   formNewConfDocUrlPars.put("OPERATION", BookletsConstants.OPERATION_NEW_CONFIGURED_DOCUMENT);
+   formNewConfDocUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String formNewConfDocUrl = urlBuilder.getUrl(request, formNewConfDocUrlPars);
    
-   PortletURL formNewConfDocUrl = renderResponse.createActionURL();
-   formNewConfDocUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   formNewConfDocUrl.setParameter("OPERATION", BookletsConstants.OPERATION_NEW_CONFIGURED_DOCUMENT);
-   formNewConfDocUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   
-   //PortletURL loadTemplateUrl = renderResponse.createActionURL();
-   //loadTemplateUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   //loadTemplateUrl.setParameter("OPERATION", BookletsConstants.OPERATION_LOAD_OOTEMPLATE_BOOKLET);
-   //loadTemplateUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   
-   //PortletURL saveWorkflowDataUrl = renderResponse.createActionURL();
-   //saveWorkflowDataUrl.setParameter("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   //saveWorkflowDataUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_WORKFLOWDATA);
-   //saveWorkflowDataUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-  
    
 %>
 
@@ -105,14 +107,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<!-- ********************* TITOLO **************************  -->
 
-	<%@page import="it.eng.spagobi.booklets.utils.BookletServiceUtils"%>
-<%@page import="it.eng.spagobi.booklets.dao.BookletsCmsDaoImpl"%>
-<%@page import="it.eng.spagobi.bo.dao.IBIObjectCMSDAO"%>
-<%@page import="it.eng.spagobi.booklets.dao.IBookletsCmsDao"%>
-<%@page import="it.eng.spagobi.bo.dao.DAOFactory"%>
-<%@page import="it.eng.spagobi.bo.BIObject"%>
-<%@page import="it.eng.spagobi.services.modules.DetailBIObjectModule"%>
-<%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
+
 <table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -120,10 +115,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
-				<a href='<%= backUrl.toString() %>'> 
+				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
@@ -132,16 +127,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="javascript:document.getElementById('saveForm').submit()"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.jpg")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.jpg")%>' 
 	      				 alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
-				<a href="<%=saveVersionUrl.toString() %>"> 
+				<a href="<%=saveVersionUrl %>"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.saveVersion" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/saveVersion32.jpg")%>' 
+	      				 src='<%=urlBuilder.getResourceLink(request, "/components/booklets/img/saveVersion32.jpg")%>' 
 	      				 alt='<spagobi:message key = "book.saveVersion"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
@@ -191,16 +186,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<%=confDoc.getLogicalName()%>&nbsp;&nbsp;&nbsp;(<%=confDoc.getName()%>)
 					</td>
 					<td width="20">
-						<a href='<%=formDetailUrl.toString() + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' />
+						<a href='<%=formDetailUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' />
 						<img 	title='<spagobi:message key = "book.detail" bundle="component_booklets_messages" />' 
-      				 		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/detail.gif")%>' 
+      				 		src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/detail.gif")%>' 
       				 		alt='<spagobi:message key = "book.detail"  bundle="component_booklets_messages"/>' />
       				 	</a>
 					</td>
 					<td  width="20">
-					    <a href='<%=formEraseUrl.toString() + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' />
+					    <a href='<%=formEraseUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' />
 						<img 	title='<spagobi:message key = "book.erase" bundle="component_booklets_messages" />' 
-      				 		src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/erase.gif")%>' 
+      				 		src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/erase.gif")%>' 
       				 		alt='<spagobi:message key = "book.erase"  bundle="component_booklets_messages"/>' />
       				 	</a>
 					</td>
@@ -217,8 +212,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		<!-- ********************* TEMPLATE FORM **************************  -->
 
-		<form action="<%=saveUrl.toString()%>" method='POST' id='saveForm' name='saveForm' enctype="multipart/form-data">
+		<form action="<%=saveUrl%>" method='POST' id='saveForm' name='saveForm' enctype="multipart/form-data">
 			<input type="hidden" name="<%=BookletsConstants.PATH_BOOKLET_CONF %>"  value="<%=pathConfNode%>"/>
+			<input type="hidden" name="PAGE"  value="<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>"/>
+			<input type="hidden" name="OPERATION"  value="<%=BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET%>"/>
+			<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"  value="TRUE"/>
 		
 		<br/>
 				
@@ -233,20 +231,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% 
 			if( (templateOOFileName==null) || templateOOFileName.trim().equals("")) {	
 		%>
-		    <span style='font:11px;font-family:verdana;'>
+		    <span style='font-size:11px;font-family:verdana;'>
 			     <spagobi:message key="book.templatenotloaded" bundle="component_booklets_messages"/>  
 		    </span>
 		<% 	} else { 
-		    out.print("<span style='font:11px;font-family:verdana;'>"+templateOOFileName+"</span>");
-				String downOOTemplateUrl = BookletServiceUtils.getBookletServiceUrl() + "?" + 
+		    out.print("<span style='font-size:11px;font-family:verdana;'>"+templateOOFileName+"</span>");
+				String downOOTemplateUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE + "&" +
 										   BookletsConstants.PATH_BOOKLET_CONF + "=" + pathConfNode;				   
 		%>
 			&nbsp;&nbsp;&nbsp;
-			<a href='<%=downOOTemplateUrl%>' target="iframeForDownload">
+			<a style='text-decoration:none;' href='<%=downOOTemplateUrl%>' target="iframeForDownload">
 				<img title='<spagobi:message key="book.download" bundle="component_booklets_messages" />' 
-					 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download16.gif")%>' 
+					 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/download16.gif")%>' 
 					 alt='<spagobi:message key="book.download"  bundle="component_booklets_messages"/>' />
 			</a>
 		<%
@@ -279,21 +277,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% 
 			if( (wfProcDefFileName==null) || wfProcDefFileName.trim().equals("")) {	
 		%>
-		    <span style='font:11px;font-family:verdana;'>
+		    <span style='font-size:11px;font-family:verdana;'>
 			     <spagobi:message key="book.WFprocessDefFileNotloaded" bundle="component_booklets_messages"/> 
 		    </span>
     <% 	} else { 
-				out.print("<span style='font:11px;font-family:verdana;'>"+wfProcDefFileName+"</span>");
-				String downWorkDefUrl = BookletServiceUtils.getBookletServiceUrl() + "?" + 
+				out.print("<span style='font-size:11px;font-family:verdana;'>"+wfProcDefFileName+"</span>");
+				String downWorkDefUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION + "&" +
 			   							BookletsConstants.PATH_BOOKLET_CONF + "=" + pathConfNode;	
 		%>
 		
 			&nbsp;&nbsp;&nbsp;
-			<a href='<%=downWorkDefUrl%>' target="iframeForDownload">
+			<a style='text-decoration:none;' href='<%=downWorkDefUrl%>' target="iframeForDownload">
 				<img title='<spagobi:message key="book.download" bundle="component_booklets_messages" />' 
-					 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/download16.gif")%>' 
+					 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/download16.gif")%>' 
 				 	alt='<spagobi:message key="book.download"  bundle="component_booklets_messages"/>' />
 			</a>
 		
@@ -319,7 +317,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<!-- ********************* START RIGHT DIV **************************  -->
 
 	<div style="float:left;width:45%" class="div_detail_area_forms">
-		<form action="<%=formNewConfDocUrl.toString()%>" method='POST' id='newForm' name='newForm'>
+		<form action="<%=formNewConfDocUrl%>" method='POST' id='newForm' name='newForm'>
 		<input type="hidden" value="<%=pathConfNode%>" name="<%=BookletsConstants.PATH_BOOKLET_CONF%>" />
 		<div style='padding-top:10px;margin-right:5px;' class='portlet-section-header'>	
 				<div style='width:90%;float:left;'>
@@ -328,7 +326,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<div style="width:8%;float:left;">
 					<input style="margin-left:10px;" type="image" 
 								 title='<spagobi:message key="book.addDocument" bundle="component_booklets_messages" />' 
-								 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/add.gif")%>' 
+								 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/add.gif")%>' 
 								 alt='<spagobi:message key="book.addDocument"  bundle="component_booklets_messages"/>' />
 				</div>
 		</div>

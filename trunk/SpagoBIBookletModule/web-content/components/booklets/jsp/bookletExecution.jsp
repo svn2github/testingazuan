@@ -21,8 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.booklets.constants.BookletsConstants,
 				java.util.List,
 				java.util.Iterator,
@@ -30,14 +29,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.booklets.bo.ConfiguredBIDocument,
 				it.eng.spagobi.constants.SpagoBIConstants,
 				it.eng.spagobi.booklets.bo.WorkflowConfiguration" %>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
    String execMessage = (String)moduleResponse.getAttribute(BookletsConstants.EXECUTION_MESSAGE);
-   PortletURL backUrl = renderResponse.createActionURL();
-   backUrl.setParameter("LIGHT_NAVIGATOR_BACK_TO", "1");
    
-   
+   Map backUrlPars = new HashMap();
+   backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
+   String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 
 
@@ -45,17 +46,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<!-- ********************* TITOLO **************************  -->
 
-	<table class='header-table-portlet-section'>
+
+<table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
 				<spagobi:message key="book.Execution" bundle="component_booklets_messages" />
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
-				<a href='<%= backUrl.toString() %>'> 
+				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>

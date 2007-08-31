@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@ page import="javax.portlet.PortletURL,
-				it.eng.spago.navigation.LightNavigationManager,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.booklets.constants.BookletsConstants,
 				java.util.List,
 				java.util.Iterator,
 				java.util.Map,
+				java.util.HashMap,
 				java.util.Set,
 				it.eng.spago.base.SourceBean,
 				java.util.HashMap,
@@ -41,29 +41,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String notes = (String)moduleResponse.getAttribute("notes");
     Iterator iterImgs = null;
     
-	PortletURL backUrl = renderResponse.createActionURL();
-    PortletURL saveNoteUrl = renderResponse.createActionURL();
-    PortletURL closeNoteUrl = renderResponse.createActionURL();
-	
     // add parameters to back url
-	backUrl.setParameter("PAGE", "WorkflowToDoListPage");
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+    Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "WorkflowToDoListPage");
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 	
 	// add parameters to save url
-	saveNoteUrl.setParameter("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-	saveNoteUrl.setParameter("OPERATION", BookletsConstants.OPERATION_SAVE_NOTE);
-	saveNoteUrl.setParameter(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
-	saveNoteUrl.setParameter(BookletsConstants.BOOKLET_PART_INDEX, indexPart);
-	saveNoteUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
-	saveNoteUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
+	Map saveNoteUrlPars = new HashMap();
+	saveNoteUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
+	saveNoteUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_NOTE);
+	saveNoteUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+	saveNoteUrlPars.put(BookletsConstants.BOOKLET_PART_INDEX, indexPart);
+	saveNoteUrlPars.put(SpagoBIConstants.ACTIVITYKEY, activityKey);
+	saveNoteUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
+	String saveNoteUrl = urlBuilder.getUrl(request, saveNoteUrlPars);
 	      
 	// add parameter to close url
-	closeNoteUrl.setParameter("PAGE", "CompleteOrRejectActivityPage");
-	closeNoteUrl.setParameter("CompletedActivity", "TRUE");
-	closeNoteUrl.setParameter(SpagoBIConstants.ACTIVITYKEY, activityKey);
-	closeNoteUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
-	    
-	    
+	Map closeNoteUrlPars = new HashMap();
+	closeNoteUrlPars.put("PAGE", "CompleteOrRejectActivityPage");
+	closeNoteUrlPars.put("CompletedActivity", "TRUE");
+	closeNoteUrlPars.put(SpagoBIConstants.ACTIVITYKEY, activityKey);
+	closeNoteUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
+	String closeNoteUrl = urlBuilder.getUrl(request, closeNoteUrlPars);
+	      
 %>
 
 
@@ -76,10 +77,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl.toString() %>'> 
+			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
       				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
@@ -89,17 +90,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="javascript:document.getElementById('formNotes').submit();"> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/save32.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.png")%>' 
       				 alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
 
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href='<%=closeNoteUrl.toString()%>'> 
+			<a href='<%=closeNoteUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.closeDiscussion" bundle="component_booklets_messages" />' 
-      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/booklets/img/closeNotes32.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/closeNotes32.png")%>' 
       				 alt='<spagobi:message key = "book.closeDiscussion"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
@@ -237,7 +238,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 	    <div style="display:inline;" name="divNote" id="divNote" >
 			<div name="notesdiv" id="notesdiv" >
-				<form method="POST" id="formNotes" action="<%=saveNoteUrl.toString()%>" >
+				<form method="POST" id="formNotes" action="<%=saveNoteUrl%>" >
 				<center>
 					<b><spagobi:message key = "book.notes"  bundle="component_booklets_messages"/></b>
 					<br/>

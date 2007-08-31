@@ -440,10 +440,13 @@ public class BookletsCollaborationModule extends AbstractModule {
 			
 			// AUDIT UPDATE
 			if (contextInstance != null) {
-				Integer auditId = (Integer) contextInstance.getVariable(AuditManager.AUDIT_ID);
-				AuditManager auditManager = AuditManager.getInstance();
-				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_PERFORMED", null, null);
+				Object auditIdObj = contextInstance.getVariable(AuditManager.AUDIT_ID);
+				Integer auditId = convertIdType(auditIdObj);
+				if(auditId!=null) {
+					AuditManager auditManager = AuditManager.getInstance();
+					auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+							"EXECUTION_PERFORMED", null, null);
+				}
 			}
 			
 		} catch(Exception e){
@@ -451,17 +454,37 @@ public class BookletsCollaborationModule extends AbstractModule {
 		                        "approveHandler","Error while versioning presentation", e);
 			// AUDIT UPDATE
 			if (contextInstance != null) {
-				Integer auditId = (Integer) contextInstance.getVariable(AuditManager.AUDIT_ID);
-				AuditManager auditManager = AuditManager.getInstance();
-				auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", e.getMessage(), null);
+				Object auditIdObj = contextInstance.getVariable(AuditManager.AUDIT_ID);
+				Integer auditId = convertIdType(auditIdObj);
+				if(auditId!=null) {
+					AuditManager auditManager = AuditManager.getInstance();
+					auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+							"EXECUTION_FAILED", e.getMessage(), null);
+				}
 			}
 		}
 	    
 	}
 	
 	
-	
+	private Integer convertIdType(Object auditIdObj) {
+		Integer auditId = null;
+		if(auditIdObj instanceof Long) {
+			Long auditLong = (Long)auditIdObj;
+			auditId = new Integer(auditLong.intValue());
+		} else if (auditIdObj instanceof Integer) {
+			auditId = (Integer)auditIdObj;
+		} else {
+			try {
+				auditId = new Integer(auditIdObj.toString());
+			} catch (Exception e ) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+						            "convertIdType", "Error while converting audit id type, " +
+						            "the audit log row will not be recorded", e);
+			}
+		}
+		return auditId;
+	}
 	
 	
 	

@@ -117,16 +117,6 @@ public class BookletsManagementModule extends AbstractModule {
 		}
 	}
 
-	/*
-	private void newTemplateVersionHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
-		String pathConfBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
-		String pathBiObj = bookDao.getBiobjectPath(pathConfBook);
-		String bookTemplatePath = bookDao.createNewConfigurationNode(pathBiObj);
-		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-		response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
-	}
-	*/
 	
 	private void newTemplateHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
 		String pathBiObject = (String)request.getAttribute(SpagoBIConstants.PATH);

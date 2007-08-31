@@ -21,8 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.booklets.utils;
 
+import javax.servlet.http.HttpServletRequest;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
 
 
@@ -37,6 +40,12 @@ public class BookletServiceUtils {
 	
 	public static String getBookletServiceUrl() {
 		String sbiContAdd = GeneralUtilities.getSpagoBiContextAddress();
+		String bookletServName = getBookletServiceName();
+		return sbiContAdd + "/" + bookletServName;
+	}
+	
+	public static String getBookletServiceUrl(HttpServletRequest request) {
+		String sbiContAdd = ChannelUtilities.getSpagoBIContextName(request);
 		String bookletServName = getBookletServiceName();
 		return sbiContAdd + "/" + bookletServName;
 	}

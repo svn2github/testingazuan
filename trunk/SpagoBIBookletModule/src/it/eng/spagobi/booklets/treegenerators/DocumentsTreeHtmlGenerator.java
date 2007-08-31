@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.booklets.treegenerators;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -33,27 +32,27 @@ import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.booklets.constants.BookletsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.presentation.treehtmlgenerators.ITreeHtmlGenerator;
-import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.ChannelUtilities;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.util.Iterator;
 import java.util.List;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 
-	RenderResponse renderResponse = null;
-	RenderRequest renderRequest = null;
 	HttpServletRequest httpRequest = null;
+	RequestContainer reqCont = null;
+	protected IUrlBuilder urlBuilder = null;
+	protected IMessageBuilder msgBuilder = null;
 	int progrJSTree = 0;
 	IEngUserProfile profile = null;
-	PortletRequest portReq = null;
-	protected int dTreeRootId = -100;
-	protected int dTreeObjects = -1000;
-
+	private int dTreeRootId = -100;
+	private int dTreeObjects = -1000;
+	
 	/**
 	 * Creates the Dtree configuration, in oder to inser into jsp pages cookies,
 	 * images, etc.
@@ -75,20 +74,20 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("				inOrder			: false\n");
 		htmlStream.append("			}\n");
 		htmlStream.append("			this.icon = {\n");
-		htmlStream.append("				root		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treebase.gif")+"',\n");
-		htmlStream.append("				folder		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif")+"',\n");
-		htmlStream.append("				folderOpen	: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif")+"',\n");
-		htmlStream.append("				node		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treepage.gif")+"',\n");
-		htmlStream.append("				empty		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treeempty.gif")+"',\n");
-		htmlStream.append("				line		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treeline.gif")+"',\n");
-		htmlStream.append("				join		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treejoin.gif")+"',\n");
-		htmlStream.append("				joinBottom	: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treejoinbottom.gif")+"',\n");
-		htmlStream.append("				plus		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treeplus.gif")+"',\n");
-		htmlStream.append("				plusBottom	: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treeplusbottom.gif")+"',\n");
-		htmlStream.append("				minus		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treeminus.gif")+"',\n");
-		htmlStream.append("				minusBottom	: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treeminusbottom.gif")+"',\n");
-		htmlStream.append("				nlPlus		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treenolines_plus.gif")+"',\n");
-		htmlStream.append("				nlMinus		: '"+PortletUtilities.createPortletURLForResource(httpRequest, "/img/treenolines_minus.gif")+"'\n");
+		htmlStream.append("				root		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treebase.gif")+"',\n");
+		htmlStream.append("				folder		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif")+"',\n");
+		htmlStream.append("				folderOpen	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif")+"',\n");
+		htmlStream.append("				node		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treepage.gif")+"',\n");
+		htmlStream.append("				empty		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeempty.gif")+"',\n");
+		htmlStream.append("				line		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeline.gif")+"',\n");
+		htmlStream.append("				join		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treejoin.gif")+"',\n");
+		htmlStream.append("				joinBottom	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treejoinbottom.gif")+"',\n");
+		htmlStream.append("				plus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeplus.gif")+"',\n");
+		htmlStream.append("				plusBottom	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeplusbottom.gif")+"',\n");
+		htmlStream.append("				minus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeminus.gif")+"',\n");
+		htmlStream.append("				minusBottom	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeminusbottom.gif")+"',\n");
+		htmlStream.append("				nlPlus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treenolines_plus.gif")+"',\n");
+		htmlStream.append("				nlMinus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treenolines_minus.gif")+"'\n");
 		htmlStream.append("			};\n");
 		htmlStream.append("			this.obj = objName;\n");
 		htmlStream.append("			this.aNodes = [];\n");
@@ -113,19 +112,18 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		httpRequest = httpReq;
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		portReq = PortletUtilities.getPortletRequest();
-		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		SessionContainer sessionContainer = reqCont.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/contextMenu.js" )+"'></SCRIPT>");
+		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
@@ -163,7 +161,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 
 		String nameLabel = folder.getName();
-		String name = PortletUtilities.getMessage(nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
@@ -172,8 +170,8 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolderopen.gif");
+				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
+				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
 				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder+"', '" + imgFolderOp + "', '', '');\n");
 				
 				List objects = folder.getBiObjects();

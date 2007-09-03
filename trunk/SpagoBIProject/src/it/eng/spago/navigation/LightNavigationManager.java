@@ -38,7 +38,11 @@ public class LightNavigationManager {
     public static final String LIGHT_NAVIGATOR_REPLACE_LAST = "LIGHT_NAVIGATOR_REPLACE_LAST";
     public static final String LIGHT_NAVIGATOR_BACK_TO_MARK = "LIGHT_NAVIGATOR_BACK_TO_MARK";
     public static final String LIGHT_NAVIGATOR_MARK = "LIGHT_NAVIGATOR_MARK";
-    
+    //temporaneo  
+    public static SourceBean controlLightNavigation (PortletRequest request, SourceBean serviceRequest) throws Exception {
+    	Object o = (Object)request;    	
+    	return controlLightNavigation(o, serviceRequest);
+    }
 	
     /**
      * This method is responsible for the requests stack (the <code>LightNavigator</code>) modification. 
@@ -57,9 +61,8 @@ public class LightNavigationManager {
      * @throws Exception 
      */
 	public static SourceBean controlLightNavigation (Object request, SourceBean serviceRequest) throws Exception {
-		
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "Method controlNavigation in LightNavigationManager class invoked with service request:\n" + serviceRequest);
-        
+		
 		if (request == null) {
 			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "LightNavigationManager: " +
 					"controlLightNavigation: request object at input is null.");

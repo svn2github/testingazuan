@@ -24,16 +24,12 @@ import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
 import it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory;
 import it.eng.spagobi.utilities.ChannelUtilities;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.PortletUtilities;
-import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,8 +38,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Spago Module which executes the map producing request  
@@ -305,7 +299,8 @@ private void delDetailMap(SourceBean request, String mod, SourceBean response)
 		List lstMapFeatures =  DAOFactory.getSbiGeoMapFeaturesDAO().loadFeaturesByMapId(new Integer(id));
 		if (lstMapFeatures != null){
 			for (int i=0; i<lstMapFeatures.size();i++){
-				GeoMapFeature tmpMapFeature = DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(new Integer(id), ((GeoFeature)lstMapFeatures.get(i)).getFeatureId());				
+				int featureId = ((GeoFeature)lstMapFeatures.get(i)).getFeatureId();
+				GeoMapFeature tmpMapFeature = DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(new Integer(id), new Integer(featureId));				
 				DAOFactory.getSbiGeoMapFeaturesDAO().eraseMapFeatures(tmpMapFeature);
 			}
 		}
@@ -362,14 +357,14 @@ private void insRelMapFeature(SourceBean request, SourceBean response)
 		GeoMapFeature mapFeature = DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(new Integer(mapId), new Integer(featureId));
 		if (mapFeature == null){
 			mapFeature = new  GeoMapFeature();
-			mapFeature.setMapId(new Integer(mapId));
-			mapFeature.setFeatureId(new Integer(featureId));
+			mapFeature.setMapId(new Integer(mapId).intValue());
+			mapFeature.setFeatureId(new Integer(featureId).intValue());
 			mapFeature.setSvgGroup(null);
 			mapFeature.setVisibleFlag(null);		
 			DAOFactory.getSbiGeoMapFeaturesDAO().insertMapFeatures(mapFeature);
 		}
 		//create a List of features
-		List lstAllFeatures = DAOFactory.getSbiGeoMapFeaturesDAO().loadFeatureNamesByMapId(map.getMapId());
+		List lstAllFeatures = DAOFactory.getSbiGeoMapFeaturesDAO().loadFeatureNamesByMapId(new Integer(map.getMapId()));
 		List lstMapFeatures = new ArrayList();
 
 		for (int i=0; i < lstAllFeatures.size(); i ++){			
@@ -415,7 +410,7 @@ private void newDetailMap(SourceBean response) throws EMFUserError {
 		this.modalita = SpagoBIConstants.DETAIL_INS;
 		response.setAttribute("modality", modalita);
 		map = new GeoMap();
-		map.setMapId(new Integer(-1));
+		map.setMapId(-1);
 		map.setDescr("");
 		map.setName("");
 		map.setUrl("");
@@ -462,7 +457,7 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	else
 		url = (String)serviceRequest.getAttribute("sourceUrl");
 	
-	map.setMapId(id);
+	map.setMapId(id.intValue());
 	map.setName(name);
 	map.setDescr(description);
 	map.setFormat(format);
@@ -533,7 +528,7 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 				
 				featureId = feature.getFeatureId();
 				//gets relation
-				GeoMapFeature mapFeature = DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(mapId, featureId);
+				GeoMapFeature mapFeature = DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(new Integer(mapId), new Integer(featureId));
 				if (mapFeature == null){	
 					mapFeature = new GeoMapFeature();
 					mapFeature.setMapId(mapId);
@@ -607,7 +602,7 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 				String mapId = (String)request.getAttribute("id");
 				for (int i=0; i<lstOldFeatures.length; i++){
 					GeoFeature aFeature = DAOFactory.getSbiGeoFeaturesDAO().loadFeatureByName(((String)lstOldFeatures[i]).trim());
-					GeoMapFeature aMapFeature = (GeoMapFeature)DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(new Integer(mapId), aFeature.getFeatureId());								 
+					GeoMapFeature aMapFeature = (GeoMapFeature)DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(new Integer(mapId), new Integer(aFeature.getFeatureId()));								 
 					DAOFactory.getSbiGeoMapFeaturesDAO().eraseMapFeatures(aMapFeature);
 				}					
 			}  

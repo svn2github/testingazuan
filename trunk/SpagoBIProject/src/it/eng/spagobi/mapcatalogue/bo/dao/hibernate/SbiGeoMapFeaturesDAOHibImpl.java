@@ -60,7 +60,7 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			while (it.hasNext()) {			
 				tmpMapFeature = (SbiGeoMapFeatures) it.next();
 				SbiGeoMapFeaturesId tmpMapFeatureId = tmpMapFeature.getId();				
-				tmpFeature = featuresDAO.loadFeatureByID(tmpMapFeatureId.getFeatureId());
+				tmpFeature = featuresDAO.loadFeatureByID(new Integer(tmpMapFeatureId.getFeatureId()));
 		
 				if (tmpFeature != null)
 					realResult.add((String)tmpFeature.getName());
@@ -109,7 +109,7 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			while (it.hasNext()) {			
 				tmpMapFeature = (SbiGeoMapFeatures) it.next();
 				SbiGeoMapFeaturesId tmpMapFeatureId = tmpMapFeature.getId();				
-				tmpFeature = featuresDAO.loadFeatureByID(tmpMapFeatureId.getFeatureId());
+				tmpFeature = featuresDAO.loadFeatureByID(new Integer(tmpMapFeatureId.getFeatureId()));
 		
 				if (tmpFeature != null)
 					realResult.add((GeoFeature)tmpFeature);
@@ -158,7 +158,7 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			while (it.hasNext()) {				
 				tmpMapFeature = (SbiGeoMapFeatures) it.next();
 				SbiGeoMapFeaturesId tmpMapFeatureId = tmpMapFeature.getId();				
-				tmpMap = mapDAO.loadMapByID(tmpMapFeatureId.getMapId());
+				tmpMap = mapDAO.loadMapByID(new Integer(tmpMapFeatureId.getMapId()));
 				if (tmpMap != null)
 					realResult.add((String)tmpMap.getName());
 			}
@@ -206,7 +206,7 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			while (it.hasNext()) {				
 				tmpMapFeature = (SbiGeoMapFeatures) it.next();
 				SbiGeoMapFeaturesId tmpMapFeatureId = tmpMapFeature.getId();				
-				tmpMap = mapDAO.loadMapByID(tmpMapFeatureId.getMapId());
+				tmpMap = mapDAO.loadMapByID(new Integer(tmpMapFeatureId.getMapId()));
 				if (tmpMap != null)
 					realResult.add((GeoMap)tmpMap);
 			}

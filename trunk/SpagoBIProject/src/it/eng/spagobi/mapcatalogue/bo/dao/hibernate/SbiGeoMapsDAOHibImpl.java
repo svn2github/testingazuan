@@ -120,7 +120,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
-			SbiGeoMaps hibMap = (SbiGeoMaps) tmpSession.load(SbiGeoMaps.class, aMap.getMapId());
+			SbiGeoMaps hibMap = (SbiGeoMaps) tmpSession.load(SbiGeoMaps.class, new Integer(aMap.getMapId()));
 			hibMap.setName(aMap.getName());
 			hibMap.setDescr(aMap.getDescr());
 			hibMap.setUrl(aMap.getUrl());			
@@ -189,7 +189,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 			tx = tmpSession.beginTransaction();
 			
 			SbiGeoMaps hibMap = (SbiGeoMaps) tmpSession.load(SbiGeoMaps.class,
-					aMap.getMapId());
+					new Integer(aMap.getMapId()));
 
 			tmpSession.delete(hibMap);
 			tx.commit();

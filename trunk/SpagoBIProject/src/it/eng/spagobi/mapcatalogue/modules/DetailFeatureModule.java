@@ -20,7 +20,6 @@ import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
 import it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory;
-import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -213,7 +212,7 @@ private void delDetailFeature(SourceBean request, String mod, SourceBean respons
         //deletes relations between feature and maps
         for (int i=0; i < lstMapFeature.size(); i++){
         	GeoMap map = (GeoMap)lstMapFeature.get(i);
-        	GeoMapFeature mapFeature = DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(map.getMapId(), new Integer(id));
+        	GeoMapFeature mapFeature = DAOFactory.getSbiGeoMapFeaturesDAO().loadMapFeatures(new Integer(map.getMapId()), new Integer(id));
         	DAOFactory.getSbiGeoMapFeaturesDAO().eraseMapFeatures(mapFeature);
         }
         //deletes the feature
@@ -247,7 +246,7 @@ private void newDetailFeature(SourceBean response) throws EMFUserError {
 		this.modalita = SpagoBIConstants.DETAIL_INS;
 		response.setAttribute("modality", modalita);
 		GeoFeature feature = new GeoFeature();
-		feature.setFeatureId(new Integer(-1));
+		feature.setFeatureId(-1);
 		feature.setDescr("");
 		feature.setName("");
 		feature.setType("");
@@ -268,7 +267,7 @@ private GeoFeature recoverFeatureDetails (SourceBean request) throws EMFUserErro
 	String name = (String)request.getAttribute("NAME");
 	String type = (String)request.getAttribute("TYPE");
 
-	feature.setFeatureId(id);
+	feature.setFeatureId(id.intValue());
 	feature.setName(name);
 	feature.setDescr(description);
 	feature.setType(type);

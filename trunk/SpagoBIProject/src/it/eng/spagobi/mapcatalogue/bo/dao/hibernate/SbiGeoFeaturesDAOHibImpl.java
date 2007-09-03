@@ -6,16 +6,12 @@ package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
-import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
-import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
-import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -114,7 +110,7 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
-			SbiGeoFeatures hibFeature = (SbiGeoFeatures) tmpSession.load(SbiGeoFeatures.class, aFeature.getFeatureId());
+			SbiGeoFeatures hibFeature = (SbiGeoFeatures) tmpSession.load(SbiGeoFeatures.class, new Integer(aFeature.getFeatureId()));
 			hibFeature.setName(aFeature.getName());
 			hibFeature.setDescr(aFeature.getDescr());
 			hibFeature.setType(aFeature.getType());			
@@ -181,7 +177,7 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			SbiGeoFeatures hibFeature = (SbiGeoFeatures) tmpSession.load(SbiGeoFeatures.class,
-					aFeature.getFeatureId());
+					new Integer(aFeature.getFeatureId()));
 
 			tmpSession.delete(hibFeature);
 			tx.commit();

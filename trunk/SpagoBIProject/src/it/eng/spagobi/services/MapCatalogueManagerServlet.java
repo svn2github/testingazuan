@@ -185,7 +185,7 @@ public class MapCatalogueManagerServlet extends HttpServlet{
 			ISbiGeoFeaturesDAO featureDAO = DAOFactory.getSbiGeoFeaturesDAO();
 			GeoFeature tmpFeature = featureDAO.loadFeatureByName(featureName);
 			if (tmpFeature == null) return null;
-			List lstMaps =  mapFeaturesDAO.loadMapNamesByFeatureId(tmpFeature.getFeatureId());
+			List lstMaps =  mapFeaturesDAO.loadMapNamesByFeatureId(new Integer(tmpFeature.getFeatureId()));
 			if (lstMaps != null){
 				for (int i=0; i<lstMaps.size(); i++){
 					toReturn = ((toReturn==null)?"":toReturn) + (String)lstMaps.get(i)+((i==lstMaps.size()-1)?"":",");
@@ -206,7 +206,7 @@ public class MapCatalogueManagerServlet extends HttpServlet{
 			ISbiGeoMapsDAO mapDAO = DAOFactory.getSbiGeoMapsDAO();
 			GeoMap tmpMap = mapDAO.loadMapByName(mapName);
 			if (tmpMap == null) return null;
-			List lstFeatures =  mapFeaturesDAO.loadFeatureNamesByMapId(tmpMap.getMapId());
+			List lstFeatures =  mapFeaturesDAO.loadFeatureNamesByMapId(new Integer(tmpMap.getMapId()));
 			if (lstFeatures != null){
 				for (int i=0; i<lstFeatures.size(); i++){
 					toReturn = ((toReturn==null)?"":toReturn) + (String)lstFeatures.get(i) +((i==lstFeatures.size()-1)?"":",");

@@ -28,7 +28,10 @@ public class ShowDataDetailsAction extends AbstractHttpAction {
 				
 		String featureDesc = (String)serviceRequest.getAttribute("featureValue");
 		String targetLevel = mapConfiguration.getDatamartProviderConfiguration().getHierarchyLevel();
-		String featureValue = featureDesc.substring(targetLevel.length()+1);
+		String featureValue = featureDesc;
+		if(featureValue.trim().startsWith(featureDesc + "_")) {
+			featureValue = featureValue.substring(targetLevel.length()+1);
+		}
 		
 		SourceBean result = datamartProvider.getDataDetails(featureValue);
 		sessionContainer.setAttribute("RESULT_SET", result);

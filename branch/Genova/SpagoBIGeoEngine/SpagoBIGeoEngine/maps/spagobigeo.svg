@@ -3,7 +3,17 @@
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
 <svg width="100%" height="100%" viewBox="0 0 1100 768" onload="init(evt);" zoomAndPan="disable" 
-xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net/attrib" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+xmlns:batik="http://xml.apache.org/batik/ext" 
+xmlns:attrib="http://www.carto.net/attrib" 
+xmlns:xlink="http://www.w3.org/1999/xlink" 
+xmlns="http://www.w3.org/2000/svg"
+xmlns:svg="http://www.w3.org/2000/svg" contentStyleType="text/css"    
+xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+xmlns:cc="http://web.resource.org/cc/" sodipodi:version="0.32"
+preserveAspectRatio="xMidYMid meet">
 
 		<rect x="-3000" y="-500" width="10000" height="3000" stroke="none" fill="#e6e6e6"/>
 		
@@ -1048,8 +1058,9 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 		
 				<rect id="mapBackgroundRect" x="0" y="0" width="0" height="0" fill="none" stroke="none" pointer-events="fill"/>
 			
-				<g id="eventCatcher" fill="white" stroke="gainsboro" stroke-width="2000" stroke-linecap="round" stroke-linejoin="round" 
-					 onmouseover="showData(evt)" onmouseout="showData(evt)" >
+				
+				
+				<g id="eventCatcher" stroke-linecap="round" onmouseover="showData(evt)" onmouseout="showData(evt)" fill="white" stroke-linejoin="round"  stroke-width="2000">
 				
 				<g id="targetMap">
 				
@@ -1141,7 +1152,7 @@ xmlns:batik="http://xml.apache.org/batik/ext" xmlns:attrib="http://www.carto.net
 								 <rect fill="none" pointer-events="fill" x="-2471570.4" y="-1631093.7" width="4844781" height="3030131.8"/>
 								
 								<!-- here you can place any graphical elements for your reference/overview map -->
-								<use xlink:href="#mainMapGroup" fill="white" stroke="black" stroke-width="2419.9" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+								<use xlink:href="#mainMapGroup" fill="white" stroke-width="2419.9" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
 								<rect x="-2471570.4" y="-1631093.7" width="4844781" height="3030131.8" fill="dimgray" fill-opacity="0.3" pointer-events="none"/>
 								<use x="-2471570.4" y="-1631093.7" visibility="hidden" href="#myDragCrossSymbol"/>
 								

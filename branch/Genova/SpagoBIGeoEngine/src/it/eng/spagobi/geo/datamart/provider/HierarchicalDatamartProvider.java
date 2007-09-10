@@ -168,7 +168,8 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
 	    	String aggregationColumnName = level.getColumnId(); 
 	    	aggragateQuery = "SELECT * " ;
 	    	aggragateQuery += " \nFROM ( " + query + ") " + subQueryAlias;
-	    	aggragateQuery += " \nWHERE " + subQueryAlias + "." + baseLevel.getColumnId();
+	    	aggragateQuery += " \nWHERE " + subQueryAlias + "." + level.getColumnId();
+	    	aggragateQuery += " = '" + filterValue + "'";
     	} else {
     		System.out.println("\nDEFAULT HIERARCHY...\n");
     		String aggregationColumnName = level.getColumnId(); 
@@ -193,7 +194,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
 	    	aggragateQuery += ", (" + dimGeoQuery + ") " + dimGeoAlias;
 	    	aggragateQuery += " \nWHERE " + subQueryAlias + "." + datamartProviderConfiguration.getColumnId();
 	    	aggragateQuery += " = " + dimGeoAlias + "." + baseLevel.getColumnId();
-	    	aggragateQuery += " \nAND  " + dimGeoAlias + "." + level.getColumnId() + " = " + filterValue;
+	    	aggragateQuery += " \nAND  " + dimGeoAlias + "." + level.getColumnId() + " = '" + filterValue + "'";
     	}
     	
     	System.out.println("\nExecutable query:\n" + aggragateQuery);
@@ -244,6 +245,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             Map values = new HashMap();
             Map attributes = null;
             Map links = new HashMap();
+            resultSet.beforeFirst();
             while(resultSet.next()) {
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {
@@ -294,17 +296,15 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         ScrollableDataResult sdr = null;
         DataConnection dataConnection = null;
         String connectionName = datamartProviderConfiguration.getConnectionName();
-        String query = datamartProviderConfiguration.getExecutableQuery();
         
         DatamartProviderConfiguration.Hierarchy.Level level = datamartProviderConfiguration.getBaseLevel();        
     	String columnid = level.getColumnId();
     	
-    	String subQueryAlias = "t" + System.currentTimeMillis();
-        
-    	String filteredQuery = "SELECT *  FROM (" + query + ") subQueryAlias " +
-    			"WHERE subQueryAlias." + columnid + " = " + filterValue;
     	
+        
+    	String filteredQuery = "";    	
     	filteredQuery = getFilteredQuery(filterValue);
+    	int max_rows = 1000;
         
         try{
             dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
@@ -319,7 +319,10 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             results = new SourceBean("ROWS");
             SourceBean row;
             resultSet.beforeFirst();
+            int rowno = 0;
             while(resultSet.next()) {
+            	if(++rowno > 1000) break;
+            	
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {
             		continue;
@@ -328,7 +331,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             	row = new SourceBean("ROW");
             	
             	for (int i=1; i<=columnCount; i++) {                   
-            		row.setAttribute(resultSetMetaData.getColumnLabel(i), resultSet.getString(i));
+            		row.setAttribute(resultSetMetaData.getColumnLabel(i), (resultSet.getString(i)==null)?"":resultSet.getString(i));
                 }
             	results.setAttribute(row);         	
             }

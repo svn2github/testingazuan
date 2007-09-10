@@ -218,7 +218,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		String x = chunks[0];
 		String y = chunks[1];
 		String width = chunks[2];
-		String height = chunks[2];
+		String height = chunks[3];
 		Element mapBackgroundRect = masterMap.getElementById("mapBackgroundRect");
 		mapBackgroundRect.setAttribute("x", x);
 		mapBackgroundRect.setAttribute("y", y);

@@ -2,7 +2,9 @@
 <ACTIONS>
 
    <ACTION name="LOGIN_ACTION_SBI_MAP_CATALOGUE" class="it.eng.spagobi.services.actions.PortletLoginAction" scope="REQUEST">
- 	<CONFIG/>
+   </ACTION>  
+   
+   <ACTION name="START_SBI_MAP_CATALOGUE" class="it.eng.spagobi.mapcatalogue.actions.StartMapCatalogueAction" scope="REQUEST">
    </ACTION>  
    
 </ACTIONS>

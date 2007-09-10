@@ -10,9 +10,14 @@
 				<FIELD name="NAME" label="#SBIMapCatalogue.columnName">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
+				<FIELD name="UPLOADED_FILE" label="#SBIMapCatalogue.columnUrl">
+					<VALIDATOR validatorName="MANDATORY"/>					
+				</FIELD>
+				<!-- 
 				<FIELD name="URL" label="#SBIMapCatalogue.columnUrl">
 					<VALIDATOR validatorName="MANDATORY"/>					
 				</FIELD>
+				-->
 			</FIELDS>
 		</VALIDATION>
 		<VALIDATION blocking="false" validators="">
@@ -20,9 +25,14 @@
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
 			</CONDITIONS>
 			<FIELDS>
+			    <FIELD name="UPLOADED_FILE" label="#SBIMapCatalogue.columnUrl">
+					<VALIDATOR validatorName="MANDATORY"/>					
+				</FIELD>
+				<!-- 
 				<FIELD name="URL" label="#SBIMapCatalogue.columnUrl">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
+				-->
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>

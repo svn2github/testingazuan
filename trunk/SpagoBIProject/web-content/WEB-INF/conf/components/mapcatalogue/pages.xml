@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
+
 	<PAGE name="ListMapsPage" scope="REQUEST" title="Maps Management" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ListMapsPage" target="ListMapsModule">

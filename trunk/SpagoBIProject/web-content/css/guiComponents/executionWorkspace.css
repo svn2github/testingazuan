@@ -69,13 +69,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 .executionWorkspace .navBarTextContainerEW{
 	width:90%;
-	height:100%;
 	float:left;
 }
 			
 .executionWorkspace .navBarBottonContainerEW{
-	width:10%;
-  	height:100%;
+	width:9%;
   	float:left;
 }
 
@@ -89,7 +87,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	border-bottom: 1px solid #dddddd;
 	background:#fbf9d0;
 	width:100%;
-	height:100%;
 }
 			
 .executionWorkspace .documentMaximizeNavBarEW {
@@ -99,7 +96,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	text-align:center;
 	background:#fbf9d0;
 	width:100%;
-	height:100%;
 }
 			
 .executionWorkspace .documentMaximizeIconNavBarEW {
@@ -223,7 +219,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 }
 
 .executionWorkspace .menuitem {
-	height:23px;
+	/*height:23px;*/
 	clear:left;
 }
 
@@ -240,9 +236,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 .executionWorkspace .menuitemcenter{
 	float:left;
+    width:80%;
 }
 
 .executionWorkspace .menuitemright {
+}
+
+.executionWorkspace .menuinvisiblebox {
+	display: none;
 }
 
 .executionWorkspace .menuitemleftfolder {

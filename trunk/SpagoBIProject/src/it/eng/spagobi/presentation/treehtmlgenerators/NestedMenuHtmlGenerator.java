@@ -24,25 +24,30 @@ package it.eng.spagobi.presentation.treehtmlgenerators;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.ExecutionWorkspaceModule;
 import it.eng.spagobi.services.modules.TreeObjectsModule;
+import it.eng.spagobi.utilities.ChannelUtilities;
+import it.eng.spagobi.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 
-	RenderResponse renderResponse = null;
-	RenderRequest renderRequest = null;
 	HttpServletRequest httpRequest = null;
 	private String baseFolderPath = null;
 	List objectsList = new ArrayList();
+	protected IUrlBuilder urlBuilder = null;
+	protected IMessageBuilder msgBuilder = null;
 	
 	public StringBuffer makeAccessibleTree(List objectsList,
 			HttpServletRequest httpRequest, String initialPath) {
@@ -61,12 +66,12 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 		objectsList = objsList;
 		httpRequest = httpReq;
 		baseFolderPath = initialPath;
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
+		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		StringBuffer stream = new StringBuffer();
 		StringBuffer htmlStream = new StringBuffer();
 		StringBuffer jsStream = new StringBuffer();
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/menu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/menu.js" )+"'></SCRIPT>");
 		LowFunctionality root = findRoot(); 
 		List childs = findChilds(root);
 		if(!childs.isEmpty()) {
@@ -81,49 +86,6 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 	
     private void addJsCookiesFuncts(StringBuffer jsStream) {
     	String script = "<script>" +
-    						/* the following functions have been moved on menu.js */
-    						/*					
-    						"function openmenuNM(idmenu) {" +
-    						"  	try {" +
-    						"		status = $(idmenu).style.display;" +
-    						"	  	menuopened=getCookie('menuopened');" +
-    						"	  	if(status=='inline') {" +
-    						"	  		$(idmenu).style.display = 'none';" +
-    						"	  		if(menuopened!=null) {" +
-    						"				newmenuopened = '';" +
-    						"				idmenusop = menuopened.split(',');" +
-    						"				for(i=0; i<idmenusop.length; i++) {" +
-    						"					idmenuop = idmenusop[i];" +
-    						"					if( (idmenuop!=idmenu) && (idmenuop!='') ) {" +
-    						"						newmenuopened = newmenuopened + idmenuop + ',';" +
-    						"					}" +
-    						"				}" +
-    						"				setCookie('menuopened',newmenuopened,365)" +
-    						"			}" +
-    						"	  	} else {" +
-    						"	  		$(idmenu).style.display = 'inline';" +
-    						"			if (menuopened==null) {" +
-    						"				setCookie('menuopened',(idmenu+','),365)" +
-    						"			} else {" +
-    						"		   		menuopened = menuopened + idmenu + ',';" +
-    						"		   		setCookie('menuopened',menuopened,365)" +
-    						"			}" +
-    						"	  	}" +
-    						"	 } catch (e) {" +
-    						"		alert('Cannot open menu ...');" +
-    						"    }" +
-    						"}"	+
-    						"function openmenusNMFunct() {" +
-    						"	menuopened=getCookie('menuopened');" +
-    						"	if(menuopened!=null) {" +
-    						"		idmenus = menuopened.split(',');" +
-    						"		for(i=0; i<idmenus.length; i++) {" +
-    						"			idmenu = idmenus[i];" +
-    						"			$(idmenu).style.display = 'inline';" +
-    						"		}" +
-    						"	}" +
-    						"}" +
-    						*/
     						"try{" +
     						"  SbiJsInitializer.openmenusNM = openmenusNMFunct;" +
     						"} catch (err) {" +
@@ -194,11 +156,15 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 	
 	
 	private String getExecutionLink(BIObject biobj) {
-		PortletURL execUrl = renderResponse.createActionURL();
-		execUrl.setParameter(ObjectsTreeConstants.PAGE, ExecutionWorkspaceModule.MODULE_PAGE);
-		execUrl.setParameter(ObjectsTreeConstants.OBJECT_LABEL, biobj.getLabel());
-		execUrl.setParameter(TreeObjectsModule.PATH_SUBTREE, baseFolderPath);
-		return execUrl.toString();
+		Map execUrlPars = new HashMap();
+		execUrlPars.put(ObjectsTreeConstants.PAGE, ExecutionWorkspaceModule.MODULE_PAGE);
+		execUrlPars.put(ObjectsTreeConstants.OBJECT_LABEL, biobj.getLabel());
+		execUrlPars.put(TreeObjectsModule.PATH_SUBTREE, baseFolderPath);
+		if(ChannelUtilities.isWebRunning()) {
+			execUrlPars.put(SpagoBIConstants.WEBMODE, "TRUE");
+		}
+		String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
+		return execUrl;
 	}
 	
 	

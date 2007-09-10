@@ -23,21 +23,22 @@ package it.eng.spagobi.presentation.treehtmlgenerators;
 
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
+import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.ExecutionWorkspaceModule;
 import it.eng.spagobi.services.modules.TreeObjectsModule;
+import it.eng.spagobi.utilities.ChannelUtilities;
+import it.eng.spagobi.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 public class TitleBarHtmlGenerator implements ITreeHtmlGenerator {
 
-	protected RenderResponse renderResponse = null;
-	protected RenderRequest renderRequest = null;
 	protected HttpServletRequest httpRequest = null;	
 	
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
@@ -46,29 +47,30 @@ public class TitleBarHtmlGenerator implements ITreeHtmlGenerator {
 	}
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
-		httpRequest = httpReq;
-		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
-		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
+		httpRequest = httpReq;	
+		IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("				<div class='UITabs'>\n");
 		htmlStream.append("					<div class='first-tab-level' >\n");
-		//htmlStream.append("						<div style='overflow: hidden;'>\n");
 		Iterator it = objectsList.iterator();
 		while (it.hasNext()) {
 			LowFunctionality folder = (LowFunctionality) it.next();
 			String linkClass = "tab";
 			if (folder.getPath().equals(initialPath)) linkClass = "tab selected";
 			htmlStream.append("						<div class='" + linkClass + "'>\n");
-			PortletURL changeFolderUrl = renderResponse.createActionURL();
-			changeFolderUrl.setParameter(ObjectsTreeConstants.PAGE, ExecutionWorkspaceModule.MODULE_PAGE);
-			changeFolderUrl.setParameter(TreeObjectsModule.PATH_SUBTREE, folder.getPath());
-			htmlStream.append("							<a href='" + changeFolderUrl.toString() + "'>\n");
+			Map changeFolderUrlPars = new HashMap();
+			changeFolderUrlPars.put(ObjectsTreeConstants.PAGE, ExecutionWorkspaceModule.MODULE_PAGE);
+			changeFolderUrlPars.put(TreeObjectsModule.PATH_SUBTREE, folder.getPath());
+			if(ChannelUtilities.isWebRunning()) {
+				changeFolderUrlPars.put(SpagoBIConstants.WEBMODE, "TRUE");
+			}
+			String changeFolderUrl = urlBuilder.getUrl(httpRequest, changeFolderUrlPars);
+			htmlStream.append("							<a href='" + changeFolderUrl + "'>\n");
 			htmlStream.append("								" + folder.getName() + "\n");
 			htmlStream.append("							</a>\n");
 			htmlStream.append("						</div>\n");
 		}
 		htmlStream.append("");
-		//htmlStream.append("						</div>");
 		htmlStream.append("					</div>");
 		htmlStream.append("				</div>");
 		return htmlStream;

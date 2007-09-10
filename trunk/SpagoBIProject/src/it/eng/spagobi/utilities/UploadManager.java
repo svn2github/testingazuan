@@ -30,13 +30,17 @@ import org.apache.commons.fileupload.FileItem;
 public class UploadManager extends DefaultRequestContext implements IUploadHandler {
 
 	public void upload(FileItem item) throws Exception {
-		UploadedFile uploadedFile = new UploadedFile();
-		uploadedFile.setFileContent(item.get());
-		uploadedFile.setFieldNameInForm(item.getFieldName());
-		uploadedFile.setSizeInBytes(item.getSize());
-		uploadedFile.setFileName(GeneralUtilities.getRelativeFileNames(item.getName()));
-		SourceBean serviceRequest = getServiceRequest();
-		serviceRequest.setAttribute("UPLOADED_FILE", uploadedFile);
+		long size = item.getSize();
+		
+		if(size>0) {
+			UploadedFile uploadedFile = new UploadedFile();
+			uploadedFile.setFileContent(item.get());
+			uploadedFile.setFieldNameInForm(item.getFieldName());
+			uploadedFile.setSizeInBytes(item.getSize());
+			uploadedFile.setFileName(GeneralUtilities.getRelativeFileNames(item.getName()));
+			SourceBean serviceRequest = getServiceRequest();
+			serviceRequest.setAttribute("UPLOADED_FILE", uploadedFile);
+		}
 	}
 
 }

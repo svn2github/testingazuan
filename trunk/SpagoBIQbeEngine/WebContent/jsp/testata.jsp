@@ -20,6 +20,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
 
+<%
+	boolean jasperTemplateBuilderVisible = true;
+	boolean geoTemplateBuilderVisible = true;
+	Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
+	
+	if(functionalities != null) {
+		Properties props = null;
+		String pValue = null;
+		
+		props = (Properties)functionalities.get("jasperTemplateBuilder");
+		if(props != null) {
+			pValue = props.getProperty("visible");
+			if(pValue != null && pValue.equalsIgnoreCase("FALSE")) jasperTemplateBuilderVisible = false;
+		}
+		
+		props = (Properties)functionalities.get("geoTemplateBuilder");
+		if(props != null) {
+			pValue = props.getProperty("visible");
+			if(pValue != null && pValue.equalsIgnoreCase("FALSE")) geoTemplateBuilderVisible = false;
+		}
+	}
+	
+	
+
+%>
+
  <div style='visibility:visible;width:100%' class='UITabs'>
  
 	<div class="first-tab-level" style="background-color:#f8f8f8">
@@ -89,6 +115,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</a>
 			</div>
 			
+			<%
+			if(jasperTemplateBuilderVisible) {
+			%>
 			<div class='tab' id='DIV_EXPORT'>
 				<a href="javascript:vediSchermo('Export','DIV_EXPORT')"
 				   title="<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.ExportTooltip", bundle)%> " 
@@ -97,7 +126,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<%=qbeMsg.getMessage(requestContainer,"QBE.Tab.Export", bundle) %>
 				</a>
 			</div>	
+			<%} %>
 			
+			<%
+			if(geoTemplateBuilderVisible) {
+			%>
 			<div class='tab' id='DIV_GEO'>
 				<a href="javascript:vediSchermo('Geo','DIV_GEO')" 
 				   title="Geo" 
@@ -106,7 +139,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					Geo
 				</a>
 			</div>
-			
+			<%} %>
 			
 			<%
 			if(Utils.isSubQueryModeActive(sessionContainer)) {

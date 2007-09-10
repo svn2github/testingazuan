@@ -45,6 +45,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   <head>
     <title>SpagoBI Home</title>
     
+    <script type="text/javascript" src="<%=contextName%>/js/spagobi.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/prototype.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/window.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/effects.js"></script>

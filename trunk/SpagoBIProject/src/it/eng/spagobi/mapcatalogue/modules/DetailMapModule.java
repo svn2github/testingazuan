@@ -68,14 +68,17 @@ public class DetailMapModule extends AbstractHttpModule {
 	 * @param serviceResponse the Spago response SourceBean 
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {		
+		
+		EMFErrorHandler errorHandler = getErrorHandler();
+		
 		if(ChannelUtilities.isPortletRunning()){
 			if(PortletUtilities.isMultipartRequest()) {
 				serviceRequest = ChannelUtilities.getSpagoRequestFromMultipart();
+				fillRequestContainer(serviceRequest, errorHandler);		
 			}
 		}
 		String message = (String) serviceRequest.getAttribute("MESSAGEDET");
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG,  "begin of detail Map modify/visualization service with message =" + message);
-		EMFErrorHandler errorHandler = getErrorHandler();
 		
 		try {
 			if (message == null) {
@@ -84,8 +87,7 @@ public class DetailMapModule extends AbstractHttpModule {
 				throw userError;
 			}
 			if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_INS) || 
-				message.trim().equalsIgnoreCase( SpagoBIConstants.DETAIL_MOD)){
-				fillRequestContainer(serviceRequest, errorHandler);			
+				message.trim().equalsIgnoreCase( SpagoBIConstants.DETAIL_MOD)){	
 				ValidationCoordinator.validate("PAGE", "DetailMapPost", this);
 			}
 			if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
@@ -178,8 +180,9 @@ private void modDetailMap(SourceBean serviceRequest, String mod, SourceBean serv
 	throws EMFUserError, SourceBeanException {
 	
 	try {
+		
 		GeoMap mapNew = recoverMapDetails(serviceRequest);
-
+		
 		EMFErrorHandler errorHandler = getErrorHandler();
 		 
 		// if there are some validation errors into the errorHandler does not write into DB
@@ -435,10 +438,12 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	String url = null;
 	//gets the file eventually uploaded
 	UploadedFile uploaded = (UploadedFile) serviceRequest.getAttribute("UPLOADED_FILE");
-    String fileName = uploaded.getFileName();
+    String fileName = null;
+    if(uploaded!=null) {
+    	fileName = uploaded.getFileName();
+    }
 	
 	if (fileName != null && !fileName.equals("")){		
-		
 	    if (name == null || name.equals("") ||
 	    	fileName == null || fileName.equals("")) return map;
 	    
@@ -488,10 +493,14 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 			url = (String)request.getAttribute("sourceUrl");
 		
 		SourceBean _serviceRequest = req.getServiceRequest();
-		_serviceRequest.setAttribute("DESR",description == null ? "" : description);
-		_serviceRequest.setAttribute("NAME",name == null ? "": name);
-		_serviceRequest.setAttribute("URL", url == null ? "" : url);
-		_serviceRequest.setAttribute("FORMAT", format == null ? "" : format);
+		if(_serviceRequest.getAttribute("DESR")==null)
+			_serviceRequest.setAttribute("DESR",description == null ? "" : description);
+		if(_serviceRequest.getAttribute("NAME")==null)
+			_serviceRequest.setAttribute("NAME",name == null ? "": name);
+		if(_serviceRequest.getAttribute("URL")==null)
+			_serviceRequest.setAttribute("URL", url == null ? "" : url);
+		if(_serviceRequest.getAttribute("FORMAT")==null)
+			_serviceRequest.setAttribute("FORMAT", format == null ? "" : format);
 	}
 	
 	private List loadUpdateMapFeatures(GeoMap mapNew) throws EMFUserError, Exception {

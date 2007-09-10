@@ -1096,9 +1096,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             	navBarDiv = null;
 				if (winName != null && winName.match('iframeexec')) {
 					winName = winName.substring(10);
-					navBarDiv = top.document.getElementById("navigationBar"+ winName);
+					navBarDiv = parent.document.getElementById("navigationBar"+ winName);
 				} else {
-            		navBarDiv = top.document.getElementById("navigationBar<%=executionId%>");
+            		navBarDiv = parent.document.getElementById("navigationBar<%=executionId%>");
             	}
             	if (navBarDiv != null) {
             		navBarDiv.innerHTML = html;

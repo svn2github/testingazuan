@@ -38,12 +38,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
-
-<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
-
-<portlet:defineObjects/>
-
-
 <!-- GET SPAGO OBJECTS  -->
 <%
 	RequestContainer aRequestContainer = null;

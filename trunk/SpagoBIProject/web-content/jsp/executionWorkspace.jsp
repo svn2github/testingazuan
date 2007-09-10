@@ -21,20 +21,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
-<%@page import="it.eng.spagobi.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 <%@page import="java.io.File"%>
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
 <%@page import="it.eng.spagobi.managers.ExecutionManager"%>
-
-
 <%@page import="it.eng.spagobi.utilities.urls.UrlUtilities"%>
+<%@page import="it.eng.spago.base.SessionContainer"%>
+
+
 <div class="div_no_background">
 	
 	<%
-	String styleName = ChannelUtilities.getPreferenceValue(aRequestContainer, "STYLE_NAME", "");
+	String styleName = "";
+	if(ChannelUtilities.isWebRunning()) {
+		styleName = "executionWorkspace";
+	} else {
+		styleName = ChannelUtilities.getPreferenceValue(aRequestContainer, "STYLE_NAME", "");
+	}
 	styleName += ".css";
 	String styleFilePath = ConfigSingleton.getRootPath() + "/css/guiComponents/" + styleName;
 	File styleFile = new File(styleFilePath);
@@ -297,6 +302,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<!-- ***************************************************************** -->
 			<!-- ***************************************************************** -->
 			
+			&nbsp;
 			
 			<center>
 				<div id="divIframe<%=requestIdentity%>" style="width:100%;overflow=auto;">

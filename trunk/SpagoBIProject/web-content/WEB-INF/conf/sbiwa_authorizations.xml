@@ -26,6 +26,7 @@
 			<FUNCTIONALITY functionalityName="Events" description="Events" />
 			<FUNCTIONALITY functionalityName="Worklist" description="Worklist" />
 			<FUNCTIONALITY functionalityName="WorkspaceExec" description="WorkspaceExec" />
+			<FUNCTIONALITY functionalityName="MapCatalogue" description="MapCatalogue" />
 		</FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
 		<APPLICATIONS></APPLICATIONS>
@@ -47,6 +48,7 @@
 			<PRIVILEDGE roleName="Administrator" functionalityName="Events" />
 			<PRIVILEDGE roleName="Administrator" functionalityName="Worklist" />
 			<PRIVILEDGE roleName="Administrator" functionalityName="WorkspaceExec" />
+			<PRIVILEDGE roleName="Administrator" functionalityName="MapCatalogue" />
 		</PRIVILEDGES>
 	</RELATIONS>
 </AUTHORIZATIONS>

@@ -129,6 +129,16 @@
 	             height="500"
 	             iconUrl="/spagobi/img/wapp/workspace64.png">
 	</APPLICATION>
+	<APPLICATION code="MapCat" 
+	             title="#menu.MapCat"  
+	             functionality="MapCatalogue" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?ACTION_NAME=START_SBI_MAP_CATALOGUE" 
+	             modal="false" 
+	             width="750" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/map64.png">
+	</APPLICATION>
 	
 	<!-- 
 	<VIEW code="MonitorView" 

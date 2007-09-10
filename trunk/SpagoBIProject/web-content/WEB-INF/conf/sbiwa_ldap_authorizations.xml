@@ -35,6 +35,7 @@
 			<FUNCTIONALITY functionalityName="Events" description="Events" />
 			<FUNCTIONALITY functionalityName="Worklist" description="Worklist" />
 			<FUNCTIONALITY functionalityName="WorkspaceExec" description="WorkspaceExec" />
+			<FUNCTIONALITY functionalityName="MapCatalogue" description="MapCatalogue" />
 		</FUNCTIONALITIES>
 	</ENTITIES>
 	<RELATIONS>
@@ -50,6 +51,7 @@
 			<PRIVILEDGE roleName="sbi_admin" functionalityName="Events" />
 			<PRIVILEDGE roleName="sbi_admin" functionalityName="Worklist" />
 			<PRIVILEDGE roleName="sbi_admin" functionalityName="WorkspaceExec" />
+			<PRIVILEDGE roleName="sbi_admin" functionalityName="MapCatalogue" />
 			
 			<PRIVILEDGE roleName="sbi_dev" functionalityName="LovsManagement" />
 			<PRIVILEDGE roleName="sbi_dev" functionalityName="ConstraintManagement" />

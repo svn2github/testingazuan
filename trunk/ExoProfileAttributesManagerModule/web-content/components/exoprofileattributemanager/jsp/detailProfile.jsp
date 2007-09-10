@@ -28,6 +28,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
 
+<!-- IMPORT TAG LIBRARY  -->
+<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+
+<portlet:defineObjects/>
+
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExoProfileAttributeManagerModule"); 
 	Map attributes = (Map)moduleResponse.getAttribute("attributes");

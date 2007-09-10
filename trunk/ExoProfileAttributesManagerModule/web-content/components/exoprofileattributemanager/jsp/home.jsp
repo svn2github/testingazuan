@@ -25,6 +25,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 <%@ page import="javax.portlet.PortletURL,
 				 it.eng.spago.navigation.LightNavigationManager" %>
 
+<!-- IMPORT TAG LIBRARY  -->
+<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+
+<portlet:defineObjects/>
+
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExoProfileAttributeManagerModule"); 
 	

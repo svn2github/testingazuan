@@ -8,10 +8,11 @@
 				 it.eng.spago.security.IEngUserProfile,
 				 it.eng.spago.configuration.ConfigSingleton,
 				 it.eng.spagobi.utilities.PortletUtilities" %>
-
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+
+
 <div class='div_background_no_img' >
 <table width='100%' cellspacing='0' border='0'>		
 	<tr height='40'>

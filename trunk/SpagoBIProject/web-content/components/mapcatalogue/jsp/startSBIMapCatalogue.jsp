@@ -5,24 +5,36 @@
          session="false" 
          import="it.eng.spagobi.constants.SpagoBIConstants"
 %>
+<%@page import="it.eng.spagobi.utilities.urls.UrlBuilderFactory"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spago.base.RequestContainer"%>
+<%@page import="it.eng.spagobi.utilities.urls.IUrlBuilder"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
-<portlet:defineObjects/>
 
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi.css")%>' 
-      type='text/css' />
+<%
+	RequestContainer reqCont = ChannelUtilities.getRequestContainer(request);
+	String  sbiMode = null;
+	String channelType = reqCont.getChannelType();
+	if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
+	else sbiMode = "WEB";
+	// create url builder 
+	IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(sbiMode);
 
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/jsr168.css")%>' 
-      type='text/css' />
-<!-- 
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/external.css")%>' 
-      type='text/css' />
- -->      
+	Map listMapUrlPars = new HashMap();
+	listMapUrlPars.put("PAGE", "ListMapsPage");
+	String listMapUrl = urlBuilder.getUrl(request, listMapUrlPars);
+	
+	Map listFeatUrlPars = new HashMap();
+	listFeatUrlPars.put("PAGE", "ListFeaturesPage");
+	String listFeatUrl = urlBuilder.getUrl(request, listFeatUrlPars);
+%>
 
-
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/spagobi.css")%>' type='text/css' />
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/jsr168.css")%>' type='text/css' />
+ 
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -39,48 +51,32 @@
 	<table>
 		<tr class="portlet-font">
 			<td width="100" align="center">
-				<img height="80px" width="80x" src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/mapcatalogue/img/mapManagement.png")%>' />
+				<img height="80px" width="80x" src='<%=urlBuilder.getResourceLink(request, "/components/mapcatalogue/img/mapManagement.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListMapsPage"/></portlet:actionURL>' 
+				<a href='<%=listMapUrl%>' 
 					class="link_main_menu" >
-					<spagobi:message key = "SBIMapCatalogue.linkMaps" bundle="component_mapcatalogue_messages" /></a>
+					<spagobi:message key="SBIMapCatalogue.linkMaps" bundle="component_mapcatalogue_messages" /></a>
 			</td>
 		</tr>
 		<tr class="portlet-font">
 			<td width="100" align="center">
-				<img height="80px" width="80px" src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/mapcatalogue/img/featureManagement.png")%>' />
+				<img height="80px" width="80px" src='<%=urlBuilder.getResourceLink(request, "/components/mapcatalogue/img/featureManagement.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListFeaturesPage"/></portlet:actionURL>' 
+				<a href='<%=listFeatUrl%>' 
 					class="link_main_menu" >
-					<spagobi:message key = "SBIMapCatalogue.linkFeatures" bundle="component_mapcatalogue_messages" /></a>
+					<spagobi:message key="SBIMapCatalogue.linkFeatures" bundle="component_mapcatalogue_messages" /></a>
 			</td>
 		</tr>				
-		<!-- 
-		<tr class="portlet-font">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/modalityCheckAdministrationIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="LISTMODALITIESCHECKSPAGE"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBIMapCatalogue.linkDefHier" bundle="component_mapcatalogue_messages" /></a>
-			</td>
-		</tr>
-		 -->
 	</table>
 	<br/>
 </div>

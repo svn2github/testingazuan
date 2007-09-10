@@ -6,7 +6,6 @@
 	 				         it.eng.spagobi.mapcatalogue.bo.GeoFeature,
 	 				         it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory,
 	 				         it.eng.spago.navigation.LightNavigationManager,
-	 				         it.eng.spagobi.utilities.PortletUtilities,
 	 				         it.eng.spagobi.constants.SpagoBIConstants,
 	 				         java.util.Map,java.util.HashMap,java.util.List" %>
 	<%
@@ -17,15 +16,11 @@
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
 		System.out.println("subMessageDet: " + subMessageDet);
 		
-		
 		Map formUrlPars = new HashMap();
-		formUrlPars.put("PAGE", "detailMapPage");
-		formUrlPars.put("MESSAGEDET", modality);
-		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);
 		
 		Map backUrlPars = new HashMap();
-	//	backUrlPars.put("PAGE", "detailMapPage");
+		//backUrlPars.put("PAGE", "detailMapPage");
 		backUrlPars.put("PAGE", "ListMapsPage");
 		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);
@@ -33,12 +28,12 @@
 		Map lookupFeatureUrlPars = new HashMap();
 		lookupFeatureUrlPars.put("PAGE", "FeaturesLookupPage");
 		lookupFeatureUrlPars.put("MESSAGEDET", modality);
-		lookupFeatureUrlPars.put("MAP_ID", map.getMapId());
+		lookupFeatureUrlPars.put("MAP_ID", new Integer(map.getMapId()));
 		lookupFeatureUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		String lookupFeraturesUrl = urlBuilder.getUrl(request, lookupFeatureUrlPars);	
 		
 		//MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
-		String downloadUrl = renderRequest.getContextPath() + "/MapCatalogueManagerServlet";
+		String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/MapCatalogueManagerServlet";
 		String filePath = (map.getUrl()).replace('\\', '/');		
    	    downloadUrl += "?operation=DOWNLOAD&path="+  filePath;
     	//renderResponse.encodeURL("/" + downloadUrl).toString();
@@ -48,7 +43,7 @@
 		String msgDelete = "";
 		String msgDelFeatures = "false";
 		if (lstFeaturesOld != null && lstFeaturesOld.size() > 0){
-			msgDelete = PortletUtilities.getMessage("5025", "component_mapcatalogue_messages");
+			msgDelete = msgBuilder.getMessage("5025", "component_mapcatalogue_messages", request);
 			for (int i=0; i<lstFeaturesOld.size(); i++){
 				msgDelete = msgDelete + " " + ((String)lstFeaturesOld.get(i)).toUpperCase() + ((i < lstFeaturesOld.size()-1)? ", ":"");		        
 			}
@@ -58,14 +53,17 @@
 		//gets map's features list
 		List lstMapFeatures = (List)moduleResponse.getAttribute("lstMapFeatures");	
 		
-		String msgWarningSave = PortletUtilities.getMessage("5029", "component_mapcatalogue_messages");
+		String msgWarningSave = msgBuilder.getMessage("5029", "component_mapcatalogue_messages", request);
 	%>
 	
 	
-	<form method='POST' action='<%=formUrl%>' id='mapForm' name='mapForm' enctype='multipart/form-data' >
+	<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<form method='POST' action='<%=formUrl%>' id='mapForm' name='mapForm' enctype='multipart/form-data' >
+	<input type='hidden' value='detailMapPage' name='PAGE' />
+	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />
+	<input type='hidden' value='true' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' />
 	<input type='hidden' value='<%=map.getMapId()%>' name='id' />
 	<input type='hidden' value='<%=map.getUrl()%>' name='sourceUrl' />
-	<input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 	<input type='hidden' value='<%= lstFeaturesOld %>' name='lstFeaturesOld' />
  	<input type='hidden' value='<%=msgDelFeatures%>' name='msgDelFeatures' />
@@ -395,7 +393,7 @@
 	}
 	
 	function deleteMapFeature(){
-		var msg = "<%=PortletUtilities.getMessage("5026", "component_mapcatalogue_messages") %>";
+		var msg = "<%=msgBuilder.getMessage("5026", "component_mapcatalogue_messages", request) %>";
 		if (confirm (msg)){	 			 
 		  document.mapForm.lstFeaturesOld.value='';
 			document.mapForm.MESSAGEDET.value='DEL_MAP_FEATURE';

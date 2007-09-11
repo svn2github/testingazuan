@@ -95,7 +95,7 @@
 	      			/> 
 				</a>
 			</td>		 
-			<td class='header-button-column-portlet-section'>&nbsp;
+			<td class='header-button-column-portlet-section'>
 				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveMap('SAVEBACK')" value='true' class='header-button-image-portlet-section'
 				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
       				   title='<spagobi:message key = "SBIMapCatalogue.saveButtBack" bundle="component_mapcatalogue_messages" />'  
@@ -137,7 +137,7 @@
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" <%=sReadonly %>
-				   name="NAME" size="50" value="<%=name%>" maxlength="45">
+				   name="NAME" size="50" value="<%=name%>" maxlength="45" />
 			&nbsp;*
 		</div>
 		<div class='div_detail_label'>
@@ -153,7 +153,7 @@
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
-				   size="50" value="<%= desc %>" maxlength="130">
+				   size="50" value="<%= desc %>" maxlength="130" />
 		</div>
 	
 		<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
@@ -170,8 +170,8 @@
 	      		       name="URL_DOWNLOAD" value=""  onClick="downloadFile('<%=downloadUrl%>');" />      		      
 
 			</div>
-	   </div> 
-	   	<div class='div_detail_label'>
+		</div> 
+		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBIMapCatalogue.columnFormat" />
 			</span>
@@ -188,8 +188,6 @@
 				<option value="SVG" <% if (format.equalsIgnoreCase("SVG")) out.print(" selected='selected' ");  %>>SVG</option>
 			</select>
 	   </div>
-	</div>
-	
 	
 	
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
@@ -206,6 +204,7 @@
 	<%
 	if(modality.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {
 	%>
+	</div>
 	</form>
 	<%
 	} else if(modality.equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {
@@ -279,7 +278,7 @@
 			   } 
 			%>
 	    	<input class='portlet-form-input-field' type="text" name="NAME_FEATURE" 
-	    	 size="50" value="<%=nameFeature%>" readonly>
+	    	 size="50" value="<%=nameFeature%>" readonly />
 	    	&nbsp;
 	    	 <% 
     		if (selectedFeatureId.equals("NEW")){
@@ -309,7 +308,7 @@
 			   } 
 			%>
 	    	<input class='portlet-form-input-field' type="text" name="DESCR_FEATURE" 
-	    	 size="50" value="<%=descFeature%>"  readonly>
+	    	 size="50" value="<%=descFeature%>"  readonly />
 	    	&nbsp;
 	    	</div>			
 		
@@ -325,10 +324,13 @@
 			   } 
 			%>
 	    	<input class='portlet-form-input-field' type="text" name="TYPE_FEATURE" 
-	    	 size="50" value="<%=typeFeature%>" readonly>
+	    	 size="50" value="<%=typeFeature%>" readonly />
 	    	&nbsp;
 	    	</div>			
 		</div>
+	
+	  </div>
+	</form>
 		
 	  <% 
 	  }%>

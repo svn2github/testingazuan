@@ -6,7 +6,7 @@
 	        <SELECT_QUERY statement="SELECT_ALL_MAPS"/>
 	      </QUERIES>
 	      <COLUMNS>
-	        <COLUMN label="ID" name="ID" />       
+	        <COLUMN label="ID" name="ID" hidden="true"/>       
 	        <COLUMN label="SBIMapCatalogue.columnName" name="NAME"/>
 	        <COLUMN label="SBIMapCatalogue.columnDescr" name="DESCR"/>
 	        <COLUMN label="SBIMapCatalogue.columnUrl" name="URL"/>
@@ -45,7 +45,7 @@
 	        <SELECT_QUERY statement="SELECT_ALL_FEATURES"/>
 	      </QUERIES>
 	      <COLUMNS>
-	        <COLUMN label="ID" name="ID" />       
+	        <COLUMN label="ID" name="ID" hidden="true"/>       
 	        <COLUMN label="SBIMapCatalogue.columnName" name="NAME"/>
 	        <COLUMN label="SBIMapCatalogue.columnDescr" name="DESCR"/>
 	        <COLUMN label="SBIMapCatalogue.columnType" name="TYPE"/>

@@ -8,6 +8,9 @@
 	 				         it.eng.spago.navigation.LightNavigationManager,
 	 				         it.eng.spagobi.constants.SpagoBIConstants,
 	 				         java.util.Map,java.util.HashMap,java.util.List" %>
+	 				         
+	<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailMapModule"); 
 		GeoMap map = (GeoMap)moduleResponse.getAttribute("mapObj");
@@ -17,6 +20,9 @@
 		System.out.println("subMessageDet: " + subMessageDet);
 		
 		Map formUrlPars = new HashMap();
+		if(ChannelUtilities.isPortletRunning()) {
+			formUrlPars.put("PAGE", "DetailMapPage");
+		}
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);
 		
 		Map backUrlPars = new HashMap();
@@ -57,9 +63,13 @@
 	%>
 	
 	
-	<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+
 <form method='POST' action='<%=formUrl%>' id='mapForm' name='mapForm' enctype='multipart/form-data' >
-	<input type='hidden' value='detailMapPage' name='PAGE' />
+
+	<% if(ChannelUtilities.isWebRunning()) { %>
+		<input type='hidden' name='PAGE' value='DetailMapPage' />
+	<% } %>
+
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />
 	<input type='hidden' value='true' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' />
 	<input type='hidden' value='<%=map.getMapId()%>' name='id' />

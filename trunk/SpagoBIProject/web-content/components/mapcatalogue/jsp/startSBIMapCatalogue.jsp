@@ -32,7 +32,8 @@
 	String listFeatUrl = urlBuilder.getUrl(request, listFeatUrlPars);
 %>
 
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/spagobi.css")%>' type='text/css' />
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/spagobi_shared.css")%>' type='text/css' />
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/spagobi_portlet.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/jsr168.css")%>' type='text/css' />
  
 

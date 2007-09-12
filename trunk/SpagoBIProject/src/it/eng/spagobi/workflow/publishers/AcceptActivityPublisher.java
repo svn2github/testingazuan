@@ -33,15 +33,22 @@ import org.jbpm.taskmgmt.exe.TaskInstance;
 public class AcceptActivityPublisher implements PublisherDispatcherIFace {
 
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
-		SourceBean request = requestContainer.getServiceRequest();
-    	JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-    	JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-    	String activityKeyIdStr = (String) request.getAttribute("ActivityKey");
-		long activityKeyId = Long.valueOf(activityKeyIdStr).longValue();
-		TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
-		taskInstance.start();
-		String publisherName = taskInstance.getVariable("spago_handler").toString(); 
-		return publisherName;
+		JbpmContext jbpmContext = null;
+		try {
+			SourceBean request = requestContainer.getServiceRequest();
+	    	JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+	    	jbpmContext = jbpmConfiguration.createJbpmContext();
+	    	String activityKeyIdStr = (String) request.getAttribute("ActivityKey");
+			long activityKeyId = Long.valueOf(activityKeyIdStr).longValue();
+			TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
+			taskInstance.start();
+			String publisherName = taskInstance.getVariable("spago_handler").toString(); 
+			return publisherName;
+		} finally {
+	    	if (jbpmContext != null) {
+	    		jbpmContext.close();
+	    	}
+		}
 	}
 
 }

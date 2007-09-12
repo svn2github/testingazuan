@@ -53,8 +53,6 @@ import org.jbpm.taskmgmt.exe.TaskInstance;
 
 public class WorkListModule extends AbstractBasicListModule {
 
-	protected JbpmContext jbpmContext = null;
-	
 	/**
 	 * Get the list of the assignments for the user in current session and give the list of the assignment
 	 * as a sourceBean that will be used by a Spago List Tag
@@ -62,7 +60,7 @@ public class WorkListModule extends AbstractBasicListModule {
 	 * @throws Exception if some errors occurs
 	 */
 	private SourceBean getAssigments() throws Exception {
-		
+		JbpmContext jbpmContext = null;
 		// Empty task list definition
     	List taskList = new ArrayList();
     	try{
@@ -87,15 +85,18 @@ public class WorkListModule extends AbstractBasicListModule {
 	    			taskList.add(ti);
 	    		}
 	    	}
+	    	SourceBean workListAsSourceBean = tasksToSourceBean(taskList);
+	    	return workListAsSourceBean;
     	} catch (Exception e) {
     		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
     							"getAssigments", "Cannot recover assignment", e);
+    		throw e;
+    	} finally {
+	    	if (jbpmContext != null) {
+	    		jbpmContext.close();
+	    	}
     	}
-    	SourceBean workListAsSourceBean = tasksToSourceBean(taskList);
-    	jbpmContext.close();
-    	return workListAsSourceBean;
-    	
-    	
+
     	
 //    	GraphSession graphSession = jbpmContext.getGraphSession();
 //    	List processDefinitions = graphSession.findAllProcessDefinitions();

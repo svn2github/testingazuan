@@ -38,9 +38,10 @@ public class CompleteOrRejectActivityModule extends AbstractModule {
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
     	// This action handle both activity completion and activity reject 
+		JbpmContext jbpmContext = null;
 		try{
 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-	    	JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+	    	jbpmContext = jbpmConfiguration.createJbpmContext();
 	    	String activityKeyIdStr = (String) request.getAttribute("ActivityKey");
 			long activityKeyId = Long.valueOf(activityKeyIdStr).longValue();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
@@ -57,11 +58,14 @@ public class CompleteOrRejectActivityModule extends AbstractModule {
 	    		taskInstance.cancel();
 	    	}
 	    	jbpmContext.save(processInstance);
-	    	jbpmContext.close();
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 					            "service", "Error during the complete or reject workflow activity", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+	    	if (jbpmContext != null) {
+	    		jbpmContext.close();
+	    	}
 		}
 	}
 

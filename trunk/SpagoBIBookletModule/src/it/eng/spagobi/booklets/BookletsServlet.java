@@ -85,21 +85,31 @@ public class BookletsServlet extends HttpServlet{
 			 	} 
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC)){
 	 			String activityKey = request.getParameter(SpagoBIConstants.ACTIVITYKEY);
-	 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-	 	    	JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-	 			long activityKeyId = Long.valueOf(activityKey).longValue();
-	 			TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
-	 			ContextInstance contextInstance = taskInstance.getContextInstance();
-	 			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
-	 			jbpmContext.close();
-	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
-	 			String bookName = bookdao.getBookletName(pathConfBook);
-		 		//String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
-		 		byte[] finalDocBytes = bookdao.getCurrentPresentationContent(pathConfBook);
-			 	response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
-	 			response.setContentLength(finalDocBytes.length);
-	 			out.write(finalDocBytes);
-	 			out.flush();
+	 			JbpmContext jbpmContext = null;
+	 			String pathConfBook = null;
+	 			try {
+		 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+		 	    	jbpmContext = jbpmConfiguration.createJbpmContext();
+		 			long activityKeyId = Long.valueOf(activityKey).longValue();
+		 			TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
+		 			ContextInstance contextInstance = taskInstance.getContextInstance();
+		 			pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
+	 			} finally {
+	 				if (jbpmContext != null) jbpmContext.close();
+	 			}
+	 			if (pathConfBook != null) {
+		 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+		 			String bookName = bookdao.getBookletName(pathConfBook);
+			 		//String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
+			 		byte[] finalDocBytes = bookdao.getCurrentPresentationContent(pathConfBook);
+				 	response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
+		 			response.setContentLength(finalDocBytes.length);
+		 			out.write(finalDocBytes);
+		 			out.flush();
+	 			} else {
+	 				SpagoBITracer.major("SpagoBI",getClass().getName(),
+				               "service","Booklet configuration path not found!");
+	 			}
 	            return;
 		 		
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {

@@ -413,12 +413,13 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	private void approveHandler(SourceBean request, SourceBean response) {
 		ContextInstance contextInstance = null;
-		try{
+		JbpmContext jbpmContext = null;
+		try {
 			// recover task instance and variables
 			String activityKey = (String)request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
 			String approved = (String)request.getAttribute("approved");
 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-			JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+			jbpmContext = jbpmConfiguration.createJbpmContext();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
 			contextInstance = taskInstance.getContextInstance();
 			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
@@ -462,6 +463,10 @@ public class BookletsCollaborationModule extends AbstractModule {
 							"EXECUTION_FAILED", e.getMessage(), null);
 				}
 			}
+		} finally {
+	    	if (jbpmContext != null) {
+	    		jbpmContext.close();
+	    	}
 		}
 	    
 	}
@@ -489,11 +494,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	private void openNoteEditorHandler(SourceBean request, SourceBean response) {
-		try{
+		JbpmContext jbpmContext = null;
+		try {
 			// recover task instance and variables
 			String activityKey = (String)request.getAttribute("activityKey");
 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-			JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
+			jbpmContext = jbpmConfiguration.createJbpmContext();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
 			String index = (String)taskInstance.getVariable(BookletsConstants.BOOKLET_PART_INDEX);
 			ContextInstance contextInstance = taskInstance.getContextInstance();
@@ -511,10 +517,13 @@ public class BookletsCollaborationModule extends AbstractModule {
 			response.setAttribute("mapImageUrls", imageurl);
 			response.setAttribute("notes", notes);
 			
-			
 		} catch(Exception e){
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
 		                        "saveNoteHandler","Error while saving notes", e);
+		} finally {
+	    	if (jbpmContext != null) {
+	    		jbpmContext.close();
+	    	}
 		}
 	    
 	}

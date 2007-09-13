@@ -27,7 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
 <%@page import="it.eng.spago.base.SourceBean"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
-<%@page import="javax.portlet.PortletURL"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
 <%@page import="org.safehaus.uuid.UUID"%>
                  

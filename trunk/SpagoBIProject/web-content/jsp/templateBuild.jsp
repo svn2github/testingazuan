@@ -27,13 +27,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.bo.BIObject"%>
 <%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
-<%@page import="it.eng.spagobi.utilities.PortletUtilities"%>
-<%@page import="javax.portlet.PortletURL"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>               
 <%@page import="it.eng.spagobi.drivers.EngineURL"%>
-<%@page import="java.util.Map"%>
+<%@page import="java.util.Map" %>
+<%@page import="java.util.HashMap" %>
 
 <%
 	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -51,9 +50,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// build the string of the title
     String title = "";
 	if (operation != null && operation.equalsIgnoreCase("newDocumentTemplate")) {
-		title = PortletUtilities.getMessage("SBIDev.docConf.templateBuild.newTemplateTitle", "messages");
+		title = msgBuilder.getMessage("SBIDev.docConf.templateBuild.newTemplateTitle", "messages", request);
 	} else {
-		title = PortletUtilities.getMessage("SBIDev.docConf.templateBuild.editTemplateTitle", "messages");
+		title = msgBuilder.getMessage("SBIDev.docConf.templateBuild.editTemplateTitle", "messages", request);
 	}
     title += " : " + obj.getName();
 
@@ -67,12 +66,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	}
    	
    	// build the back link
-   	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter(SpagoBIConstants.PAGE, "DetailBIObjectPage");
-	backUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
-	backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+   	Map backUrlPars = new HashMap();
+   	backUrlPars.put(SpagoBIConstants.PAGE, "DetailBIObjectPage");
+   	backUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
+   	backUrlPars.put(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
+   	backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+   	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 %>
 <table class='header-table-portlet-section'>
@@ -82,10 +82,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        </td>
        <td class='header-empty-column-portlet-section'>&nbsp;</td>
        <td class='header-button-column-portlet-section'>
-           <a href='<%= backUrl.toString() %>'>
+           <a href='<%= backUrl %>'>
                  <img title='<spagobi:message key = "SBIDev.docConf.templateBuild.backButton" />' 
                       class='header-button-image-portlet-section'
-                      src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png") %>' 
                       alt='<spagobi:message key = "SBIDev.docConf.templateBuild.backButton" />' />
            </a>
        </td>

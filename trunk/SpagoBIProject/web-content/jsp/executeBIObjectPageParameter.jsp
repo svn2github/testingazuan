@@ -452,6 +452,7 @@ if (isSingleObjExec) {
 						execSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
             		    execSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
             		    execSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+            		    execSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
             		   	if (executionId != null && flowId != null) {
             		   		execSnapUrlPars.put("spagobi_execution_id", executionId);
             		   		execSnapUrlPars.put("spagobi_flow_id", flowId);

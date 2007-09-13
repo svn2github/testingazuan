@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/portlet_base.jsp"%>
 
 <%@page import="java.util.List" %>
+<%@page import="java.util.Map" %>
+<%@page import="java.util.HashMap" %>
 <%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
 <%@page import="it.eng.spago.base.SourceBean"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
@@ -40,9 +42,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String requestIdentity = "request" + uuid.toString();  
 	
 	// build the back link
-   	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-
+	Map backUrlPars = new HashMap();
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+	
 %>
 
 
@@ -55,10 +58,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        </td>
        <td class='header-empty-column-portlet-section'>&nbsp;</td>
        <td class='header-button-column-portlet-section'>
-           <a href='<%= backUrl.toString() %>'>
+           <a href='<%= backUrl %>'>
                  <img title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
                       class='header-button-image-portlet-section'
-                      src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
                       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
            </a>
        </td>

@@ -186,14 +186,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<%=confDoc.getLogicalName()%>&nbsp;&nbsp;&nbsp;(<%=confDoc.getName()%>)
 					</td>
 					<td width="20">
-						<a href='<%=formDetailUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' />
+						<a href='<%=formDetailUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' >
 						<img 	title='<spagobi:message key = "book.detail" bundle="component_booklets_messages" />' 
       				 		src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/detail.gif")%>' 
       				 		alt='<spagobi:message key = "book.detail"  bundle="component_booklets_messages"/>' />
       				 	</a>
 					</td>
 					<td  width="20">
-					    <a href='<%=formEraseUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' />
+					    <a href='<%=formEraseUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' >
 						<img 	title='<spagobi:message key = "book.erase" bundle="component_booklets_messages" />' 
       				 		src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/erase.gif")%>' 
       				 		alt='<spagobi:message key = "book.erase"  bundle="component_booklets_messages"/>' />
@@ -349,7 +349,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <br/>
 
 <div id="iframeForDownload" style="display:none;">
-	<iframe name="iframeForDownload" src="" style="width:0px;height:0px;" /> 
+	<iframe name="iframeForDownload" src="" style="width:0px;height:0px;" ></iframe> 
 </div>
 
 

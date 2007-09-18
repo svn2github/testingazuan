@@ -29,7 +29,7 @@ public class ShowDataDetailsAction extends AbstractHttpAction {
 		String featureDesc = (String)serviceRequest.getAttribute("featureValue");
 		String targetLevel = mapConfiguration.getDatamartProviderConfiguration().getHierarchyLevel();
 		String featureValue = featureDesc;
-		if(featureValue.trim().startsWith(featureDesc + "_")) {
+		if(featureValue.trim().startsWith(targetLevel + "_")) {
 			featureValue = featureValue.substring(targetLevel.length()+1);
 		}
 		

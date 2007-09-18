@@ -1,48 +1,3 @@
-/*
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-
-
-DESCRIPTION:
-"spagonigeo.svg" is part of the SpagoBIGeoEngine. 
-It is used to perform dynamic geo-analysis.
-
-
-CREDITS:
-* none so far
-
-
-
-CURRENT VERSION: 
-1.0.0
-
-VERSION HISTORY:
-* 1.0.0 (2007-09-17)
-initial version
-
-*/
-
-
-
-
-
-
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -75,7 +30,41 @@ preserveAspectRatio="xMidYMin meet">
 		
 		<script type="text/ecmascript"><![CDATA[
 		
+		/*
+	   var num_group = new Array();
+	   for(i = 0; i < kpi_names.length; i++) num_group[kpi_names[i]] = 5;
+	   
+	   var lb = new Array();
+	   for(i = 0; i < kpi_names.length; i++) lb[kpi_names[i]] = 0;
+	    
+	   var ub = new Array();	
+	   for(i = 0; i < kpi_names.length; i++) ub[kpi_names[i]] = null;
+	    
+	   var lb_color = new Array();
+	   for(i = 0; i < kpi_names.length; i++) lb_color[kpi_names[i]] = "#FFFFFF";
+	    
+	   var ub_color = new Array();
+	   for(i = 0; i < kpi_names.length; i++) ub_color[kpi_names[i]] = "#000000";
+	    
+	   var null_values_color = new Array();
+	   for(i = 0; i < kpi_names.length; i++) null_values_color[kpi_names[i]] = "#123456";
+	   
 		
+	   var trasholdCalculationType = new Array();
+	   for(i = 0; i < kpi_names.length; i++) trasholdCalculationType[kpi_names[i]] = "uniform";
+		
+		var trasholdCalculationPercParams = new Array();
+		for(i = 0; i < kpi_names.length; i++) trasholdCalculationPercParams[kpi_names[i]] = [10, 25, 15, 50];
+		
+		var trasholdCalculationUniformParams = new Array();
+		for(i = 0; i < kpi_names.length; i++) trasholdCalculationUniformParams[kpi_names[i]] = 5;
+		
+	   var colorRangeCalculationType = new Array();
+	   for(i = 0; i < kpi_names.length; i++) colorRangeCalculationType[kpi_names[i]] = "gradient";
+	   
+	   var colorRangeCalculationGradParams = new Array();
+	   for(i = 0; i < kpi_names.length; i++) colorRangeCalculationGradParams[kpi_names[i]] = "#000088";
+	   */
 	   
 	   
 	   
@@ -87,21 +76,45 @@ preserveAspectRatio="xMidYMin meet">
 		var linkRadioGroup;
 		var checkBoxes = new Array();
 		
+		//var myRadioButtons = radioButtonGroup(radiobutton,functionToCall);
 		var attribNS="http://www.carto.net/attrib";
 		var xlinkNS = "http://www.w3.org/1999/xlink";
 		var suspendProcess;
 		var windowPositions = new Array();
 			
-		//var detailTabGroup;	
+		var detailTabGroup;	
 		
 		var isShowTableModalityActive = true;
 			
 		function init() {
-			window.setTimeout("initApplication()", 500);
+			window.setTimeout("initApplication()",500);
 		}
 			
+			
+		function initApplication(evt) {			
+			if (document.documentElement.suspendRedraw) {
+				suspendProcess = document.documentElement.suspendRedraw(30000);
+			}
+			
+			setTresholds();
+			setColourRange();
+			
+			//dynamic layer array that allow loading from database
+			var dynamicLayers = new Array();
+			//initialize digiLayers (layers that allow digitizing)
+			var digiLayers = new Array();
+			//define some styles for the map object
+			var zoomRectStyles = {"fill":"none","stroke":"crimson","stroke-width":0.002,"stroke-dasharray":"0.012,0.002"};
+			var highlightStyles = {"stroke":"crimson","stroke-width":0.002};
+			var dragRectStyles = {"fill":"dimgray","fill-opacity":0.3};
+			//initialize myMainMap object, you need to adopt the parameters here
 		
-		function initWindows() {
+
+			myMainMap = new map("mainMap",35910,35,0.6,0,26911,"m",1,false,"","",dynamicLayers,digiLayers,"",zoomRectStyles,highlightStyles,dragRectStyles,"referenceMap","myDragCrossSymbol",4750);
+			
+			//create zoom slider	
+			myMapApp.zoomSlider = new slider(180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,myMainMap.maxWidth,"mapZoomSlider","dimgray",2,10,"sliderSymbol",myMapApp.refMapDragger,true);
+					
 			//create windows
 			myMapApp.Windows = new Array();
 			
@@ -116,7 +129,7 @@ preserveAspectRatio="xMidYMin meet">
 			var titlebarHeight = 17;
 			var statusbarHeight = 13;
 			
-			// window instances creation
+			//initialize windows
 			myMapApp.Windows["navWindow"] = new Window("navWindow","Windows",210,200,10,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Navigation","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["navWindow"].appendContent("referenceMap",true);
 			myMapApp.Windows["navWindow"].appendContent("zoomIn",true);
@@ -145,125 +158,36 @@ preserveAspectRatio="xMidYMin meet">
 			myMapApp.Windows["legend"] = new Window("legend","Windows",210,200,862,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Legend","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["legend"].appendContent("coulourboxes",true);
 			myMapApp.Windows["legend"].minimize(true);
-		}
-		
-		function initTabGroups() {
 			
-			//create tabGroups
-			myMapApp.TabGroups = new Array();
-			
-			//first a few styles
+		  //tab panel instance creation
 			var tabStyles = {"fill":"rgb(180,180,180)","stroke":"dimgray","stroke-width":1,"cursor":"pointer"};
-		    var tabwindowStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
-		    var tabtextStyles = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal"};
-		    var tabtextStylesCenter = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal","text-anchor":"middle"};
+		      var tabwindowStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
+		      var tabtextStyles = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal"};
+		      var tabtextStylesCenter = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal","text-anchor":"middle"};
 		                
-		    //setting tabTitles
-		    var tabTitles = new Array("Values","Chart");
+		      //setting tabTitles
+		      var tabTitles = new Array("Values","Chart");
 		     
-		    // tabGroup instances creation
-		    myMapApp.TabGroups["detailTabGroup"] = new tabgroup("detailTabGroup","detailTabGroup",5,21,200,175,20,"round","round",5,0,tabStyles,"lightgray",tabwindowStyles,tabtextStyles,tabTitles,0,false,undefined);
-		      		              
-		    //add new content
-		    myMapApp.TabGroups["detailTabGroup"].addContent("detailTabGroup__0_content",0,true);
-		    myMapApp.TabGroups["detailTabGroup"].addContent("detailTabGroup__1_content",1,true);
-		}
-		
-		function buttonClick(groupId,evt,buttonText) {
-			if(buttonText == "Applay") {
-				var colPicker = document.getElementById("colourPickerPanel_1");
-				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
-				var colour = getRGB16(values);
-				myMapApp.colArray[groupIndex-1] = colour;
-				var rect = document.getElementById("rect" + groupIndex);
-				rect.setAttribute("fill", colour);
-				colourMap();            		
-			} else if(buttonText == "Ok") {
-				var colPicker = document.getElementById("colourPickerPanel_1");
-				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
-				var colour = getRGB16(values);
-				myMapApp.colArray[groupIndex-1] = colour;
-				var rect = document.getElementById("rect" + groupIndex);
-				rect.setAttribute("fill", colour);
-				colPicker.setAttribute("display", "none");
-				colourMap();           		
-			} else if(buttonText == "Cancel") {
-				var colPicker = document.getElementById("colourPickerPanel_1");
-				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
-				var colour = getRGB16(values);
-				myMapApp.colArray[groupIndex-1] = groupColourBkp;
-				var rect = document.getElementById("rect" + groupIndex);
-				rect.setAttribute("fill", groupColourBkp);
-				colPicker.setAttribute("display", "none");
-				colourMap(); 
-			}
-		}
-		
-		function getRGB16(values) {
-			var red = values.fill.red.toString(16);
-			if(red.length == 1) red = "0" + red;
-			var green = values.fill.green.toString(16);
-			if(green.length == 1) green = "0" + green;
-			var blue = values.fill.blue.toString(16);
-			if(blue.length == 1) blue = "0" + blue;
-			var colour = "#" + red + green + blue;
-			return colour;
-		}
-		
-		var groupIndex = 0;
-		var groupColourBkp = 0;
-		
-		function openColourPiker(evt) {
-		   var el = evt.target;
-           var id = el.getAttribute("id");
-           var fill = el.getAttribute("fill");
-           
-           groupIndex = parseInt(id.substring(4));
-           groupColourBkp = myMapApp.colArray[groupIndex-1];
-           
-           var rgb16 = new Array();
-           var rgb10 = new Array();
-           
-           rgb16["red"] = fill.substring(1,3);
-           rgb16["green"] = fill.substring(3,5);
-           rgb16["blue"] = fill.substring(5);
-           
-           rgb10["red"] = parseInt(rgb16["red"],16);
-           rgb10["green"] = parseInt(rgb16["green"],16);
-           rgb10["blue"] = parseInt(rgb16["blue"],16);
-           
-           
-           
-           /*
-           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["red"] = rgb10["red"];
-           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["green"] = rgb10["green"];
-           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["blue"] = rgb10["blue"];
-           myMapApp.colourPickers["colourPicker_1"].rebuild();
-           */
-           
-           var colPicker = document.getElementById("colourPickerPanel_1");
-           colPicker.setAttribute("display", "inherit");
-           
-           myMapApp.colourPickers["colourPicker_1"].setRGBAColour("fill",rgb10["red"],rgb10["green"], rgb10["blue"],1, true);
-           /*
-           
-           myMapApp.colourPickers["colourPicker_1"].fillStartColors = [255,0,0,1];
-           myMapApp.colourPickers["colourPicker_1"].rebuild();
-           */
-           //myMapApp.colourPickers["colourPicker_1"].setRGBAColour("fill",10,120, 0,1, myMapApp.colourPickers["colourPicker_1"].fireFunction);           
-		}
-		
-		function initButtons() {
-			// create buttons
-			myMapApp.buttons = new Array();
+		      detailTabGroup = new tabgroup("detailTabGroup","detailTabGroup",5,21,200,175,20,"round","round",5,0,tabStyles,"lightgray",tabwindowStyles,tabtextStyles,tabTitles,0,false,undefined);
+		              
+		      //add new content
+		      detailTabGroup.addContent("detailTabGroup__0_content",0,true);
+		      detailTabGroup.addContent("detailTabGroup__1_content",1,true);
+		                      
+		      //activate tab
+		      //detailTabGroup.activateTabByIndex(0,false);
+		      //detailTabGroup.resize(400,100);   
 			
-			//first a few styles
+			//now initialize buttons
+			myMapApp.buttons = new Array();
+			//button styles, adopt the style settings to match your needs
 			var buttonTextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":10};
 			var buttonStyles = {"fill":"white"};
 			var shadeLightStyles = {"fill":"rgb(235,235,235)"};
 			var shadeDarkStyles = {"fill":"dimgray"};
 			
-			//button instances creation
+			//button instance creation
+			//groupId,functionToCall,buttonType,buttonText,buttonSymbolId,x,y,width,height,textStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,shadowOffset
 			myMapApp.buttons["zoomIn"] = new button("zoomIn",zoomImageButtons,"rect",undefined,"magnifyerZoomIn",7,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["zoomOut"] = new button("zoomOut",zoomImageButtons,"rect",undefined,"magnifyerZoomOut",32,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["infoButton"] = new switchbutton("infoButton",zoomImageSwitchButtons,"rect",undefined,"infoBut",132,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
@@ -275,40 +199,29 @@ preserveAspectRatio="xMidYMin meet">
 			myMapApp.buttons["recenterMap"] = new switchbutton("recenterMap",zoomImageSwitchButtons,"rect",undefined,"symbRecenter",132,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["backwardExtent"] = new button("backwardExtent",zoomImageButtons,"rect",undefined,"symbArrowLeft",157,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["forwardExtent"] = new button("forwardExtent",zoomImageButtons,"rect",undefined,"symbArrowRight",182,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			
-			myMapApp.buttons["okbutton"] = new button("colourPickerApplay",buttonClick,"rect","Applay", undefined, 380, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			myMapApp.buttons["okbutton"] = new button("colourPickerOk",buttonClick,"rect","Ok", undefined, 430, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			myMapApp.buttons["okbutton"] = new button("colourPickerCancel",buttonClick,"rect","Cancel", undefined, 480,425,40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			
-		
-		
 			//see if we need to disable buttons
 			myMainMap.checkButtons();
-		}
-		
-		function intCheckBoxes() {
-		
-			//create checkboxes array
+			
+			//create checkbox array
 			myMapApp.checkBoxes = new Array();
-			
-			//first a few styles
+			//labeltext styles
 			var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":14};
-						
-			//create  checkboxe instances
 			
-			// layers checkboxes
 			var offset;
+			
+			//create individual checkboxes
 			for(i = 0; i < layer_names.length; i++) {
 				offset = 45 + (30*i);
 				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",true,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
 			}
 			
-			// Navigation radio buttons
+			//radio button group
 			linkRadioGroup= new radioButtonGroup("linkRadioGroup", setLinkAction);
 			myMapApp.checkBoxes['cross_nav'] = new checkBox("cross_nav","linkRadioGroup",30,offset+40,"radioBorder","radioPoint",false, "Cross Nav.",labeltextStyles,12,linkRadioGroup,undefined);
 			myMapApp.checkBoxes['drill_nav'] = new checkBox("drill_nav","linkRadioGroup",30,offset+60,"radioBorder","radioPoint",false, "Drill Nav.",labeltextStyles,12,linkRadioGroup,undefined);
-		
-			// Thematic radio buttons
+			
+			
+			//radio button group
 			radioGroup= new radioButtonGroup("radioButtons",setKpi);
 			//the following two checkboxes are added to the radio button group stored in the object instance 'radioGroupQuality'
 			for(i = 0; i < kpi_names.length; i++) {
@@ -316,12 +229,10 @@ preserveAspectRatio="xMidYMin meet">
 				myMapApp.checkBoxes[kpi_names[i]] = new checkBox(kpi_names[i],"radioButtons",30,offset,"radioBorder","radioPoint",false,kpi_descriptions[i],labeltextStyles,12,radioGroup,undefined);
 			}
 			
-			//load function specific to the current map project
-			radioGroup.selectById(kpi_names[selected_kpi_index],true);
-			linkRadioGroup.selectById("drill_nav");
-		}
-		
-		function initDetailInfopanels() {
+			
+			
+			
+			
 			// create detail infopanels
 			myMapApp.infoPanel = new Array();
 			var dynamText = document.getElementById("dynamText");
@@ -343,9 +254,7 @@ preserveAspectRatio="xMidYMin meet">
 				
 				myMapApp.infoPanel[i] = panel;
 			}
-		}
-		
-		function initLegendEntries() {
+			
 			// create legendpanels & legendrect
 			myMapApp.legPanel = new Array();	
 			myMapApp.legRect = new Array();
@@ -377,79 +286,22 @@ preserveAspectRatio="xMidYMin meet">
 				rect.setAttribute("x","30");
 				rect.setAttribute("y",offset);
 				rect.setAttribute("width","30");
-				rect.setAttribute("height","50");
+				rect.setAttribute("height","20");
 				rect.setAttribute("fill","#500000");
-				rect.setAttribute("onclick","openColourPiker(evt)");
 				
 				coulourBoxes.appendChild(rect);
 				
 				myMapApp.legRect[i] = rect;
 			}	
-		}
-		
-		function initColourPikers() {
-			// Create colour pickers
-			myMapApp.colourPickers = new Array();
 			
-			// Colour picker styles
-			var cpBgStyles = {"fill":"gainsboro"};
-			var cpBgStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
-			var cpTextStyles = {"font-family":"Arial,Helvetica","font-size":12,"fill":"dimgray"};
-			
-			myMapApp.colourPickers["colourPicker_1"]  = 
-				new colourPicker("colourPicker_1", //the id of the colour picker
-								 "colourPickerBox_1", //the id or node reference of the parent group where the button can be appended
-								 300,300, //upper left corner of colour picker
-								 300,120, //width & height of colour picker
-								 cpBgStyles,
-								 cpTextStyles,
-								 "sliderSymbol", //id referencing the slider symbol to be used for the sliders
-								 true, // satSliderVisible
-								 true, // valSliderVisible
-								 false, // alphaSliderVisible
-								 true, // colValTextVisible
-								 true, // fillVisible
-								 false, // strokeVisible
-								 0, 360, // start & end hue in degree (0 to 360)
-								 7, //nr of stop vals in between, in addition to start and end
-								 "255,0,0,1", // fillStartColor: string, rgba.format, f.e. 255,0,0,1
-								 "0,0,0,0.7", // strokeStartColorstring, rgba.format, f.e. 255,0,0,1
-								 undefined);
-		}
-		
-		function initSliders() {
-			//create zoom slider	
-			//function slider(id,parentNode,x1,y1,value1,x2,y2,value2,startVal,sliderStyles,invisSliderWidth,sliderSymb,functionToCall,mouseMoveBool) {
-			//function slider(x1,y1,value1,x2,y2,value2,startVal,sliderGroupId,sliderColor,visSliderWidth,invisSliderWidth,sliderSymb,functionToCall,mouseMoveBool) {
-	
-			//myMapApp.zoomSlider = new slider(180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,myMainMap.maxWidth, "mapZoomSlider","dimgray",2,10,"sliderSymbol",myMapApp.refMapDragger,true);
-			
-			var sliderStyles = {"stroke":"none","fill":"none"};
-			myMapApp.zoomSlider = new slider("zoomSliderId", "mapZoomSlider", 180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,sliderStyles, 2,10,"sliderSymbol",myMapApp.refMapDragger,true);
-			
-		}
-			
-		function initApplication(evt) {			
-			if (document.documentElement.suspendRedraw) {
-				suspendProcess = document.documentElement.suspendRedraw(30000);
-			}
-			
-			setTresholds();
-			setColourRange();
-			
-			initMainMap();			
-			initWindows();
-			initTabGroups();
-			initButtons();
-			initSliders();		      			
-			intCheckBoxes();
-			initDetailInfopanels();
-			initLegendEntries();			
-			initColourPikers();
 			
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
 			myMapApp.targetLayer = document.getElementById(layer_names[target_layer_index]);
+
+			//load function specific to the current map project
+			radioGroup.selectById(kpi_names[selected_kpi_index],true);
+			linkRadioGroup.selectById("drill_nav");
 			
 			loadProjectSpecific();
 			
@@ -457,11 +309,6 @@ preserveAspectRatio="xMidYMin meet">
 				document.documentElement.unsuspendRedraw(suspendProcess);
 			}
 		}
-		
-		
-		
-		
-		
 		
 	   //this function is called after each pan or zoom or change of map extent
        //you can place project specific functions here that need to re.on the map extent, e.g. adopting line-widths, loading additional data, etc.
@@ -572,22 +419,6 @@ preserveAspectRatio="xMidYMin meet">
        } 
 		
 	  
-		function initMainMap() {
-			//dynamic layer array that allow loading from database
-			var dynamicLayers = new Array();
-			
-			//initialize digiLayers (layers that allow digitizing)
-			var digiLayers = new Array();
-			
-			//define some styles for the map object
-			var zoomRectStyles = {"fill":"none","stroke":"crimson","stroke-width":0.002,"stroke-dasharray":"0.012,0.002"};
-			var highlightStyles = {"stroke":"crimson","stroke-width":0.002};
-			var dragRectStyles = {"fill":"dimgray","fill-opacity":0.3};
-						
-			//initialize myMainMap object, you need to adopt the parameters here
-			myMainMap = new map("mainMap",35910,35,0.6,0,26911,"m",1,false,"","",dynamicLayers,digiLayers,"",zoomRectStyles,highlightStyles,dragRectStyles,"referenceMap","myDragCrossSymbol",4750);
-		}
-		
 		
 		
 		function setColourRange() {
@@ -600,7 +431,7 @@ preserveAspectRatio="xMidYMin meet">
 					setGradientColourRange(kpi_names[i]);
 				}
 			}
-		}
+		}	
 		
 		function setGradientColourRange(kpiName) { 
 			var A = new Array();
@@ -825,8 +656,6 @@ preserveAspectRatio="xMidYMin meet">
 				rect.setAttribute("width","30");
 				rect.setAttribute("height","20");
 				rect.setAttribute("fill",myMapApp.colArray[i]);
-				rect.setAttribute("onclick", "openColourPiker(evt)");
-				rect.setAttribute("cursor", "pointer");
 				
 				coulourBoxes.appendChild(rect);
 				
@@ -1394,8 +1223,13 @@ preserveAspectRatio="xMidYMin meet">
 							<rect x="131" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="none" cursor="default"/>
 						</g>
 						
-						
-						<g id="backwardExtent" cursor="pointer" display="inherit" />
+						<g id="backwardExtent" cursor="pointer" display="inherit">
+							<rect x="156" y="164" width="20" height="20" points="157,185 157,165 177,165" fill="rgb(235,235,235)"/>
+							<rect x="158" y="166" width="20" height="20" points="157,185 157,165 177,165" fill="dimgray"/>
+							<rect x="157" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="167" y="175" href="#symbArrowLeft" pointer-events="none"/>
+							<rect x="156" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
+						</g>
 						
 						<g id="forwardExtent" cursor="pointer" display="inherit">
 							<rect x="181" y="164" width="20" height="20" points="182,185 182,165 202,165" fill="rgb(235,235,235)"/>
@@ -1404,8 +1238,17 @@ preserveAspectRatio="xMidYMin meet">
 							<use x="192" y="175" href="#symbArrowRight" pointer-events="none"/>
 							<rect x="181" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
-						
 					</g>
+					<!--
+					<g>
+						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarnavWindow" cursor="pointer"/>
+						<text x="3" y="14" font-family="Arial,Helvetica" font-size="14px" fill="white" pointer-events="none" startOffset="0">
+						Navigation
+						</text>
+						<use x="198.5" y="8.5" cursor="pointer" id="maximizeButtonnavWindow" href="#maximizeButton"/>
+						<use x="181.5" y="8.5" cursor="pointer" id="minimizeButtonnavWindow" href="#minimizeButton"/>
+					</g>
+					-->
 				</g>
 					
 				<!-- Layers Window -->
@@ -1497,17 +1340,6 @@ preserveAspectRatio="xMidYMin meet">
 				</g>
 				
 				
-				<g id="colourPickerPanel_1" display="none">
-					<g id="colourPickerBox_1" />
-					
-					<g id="colourPickerButtons">
-						<rect x="300" y="420" width="300" height="35" fill="white" stroke="dimgray" stroke-width="1"/>
-						<g id="colourPickerApplay" />
-						<g id="colourPickerOk" />
-						<g id="colourPickerCancel" />
-					</g>
-				</g>
-						
 				<!-- Legend Window -->
 				<g id="legend" transform="translate(649,720)">
 					<rect width="441" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
@@ -1515,15 +1347,39 @@ preserveAspectRatio="xMidYMin meet">
 						
 					<g id="windowMainGrouplegend" display="none">
 						
-						
+						<!--
+						<rect width="441" height="200" fill="#fffce6" stroke="dimgray" stroke-width="1"/>
+						<g/>
+						-->
 							
 						<g id="coulourboxes" display="inherit">
 							
+							<!--
+							<text id="legpanel5" x="70" y="50" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 2.5 - 22</text>
+							<text id="legpanel4" x="70" y="75" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 1 - 2.5</text>
+							<text id="legpanel3" x="70" y="100" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.2 - 1</text>
+							<text id="legpanel2" x="70" y="125" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.02 - 0.2</text>
+							<text id="legpanel1" x="70" y="150" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0 - 0.02</text>
+							
+							
+							<rect id="rect5" fill="#500000" stroke="dimgray" x="30" y="35" width="30" height="20"/> 
+							<rect id="rect4" fill="#BD3618" stroke="dimgray" x="30" y="60" width="30" height="20" stroke-width="1"/> 
+							<rect id="rect3" fill="#F77B11" stroke="dimgray" x="30" y="85" width="30" height="20" stroke-width="1"/> 
+							<rect id="rect2" fill="#FECC55" stroke="dimgray" x="30" y="110" width="30" height="20" stroke-width="1"/> 
+							<rect id="rect1" fill="#F7F791" stroke="dimgray" x="30" y="135" width="30" height="20" stroke-width="1"/>		
+						-->
 						
 						</g>
 					</g>
 				
-					
+					<!--
+					<g>
+						<rect width="441" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarlegend" cursor="pointer"/>
+						<text x="3" y="14" font-family="Arial,Helvetica" font-size="14px" fill="white" pointer-events="none" startOffset="0">Legend and Values</text>
+						<use x="429.5" y="8.5" cursor="pointer" id="maximizeButtonlegend" href="#maximizeButton"/>
+						<use x="412.5" y="8.5" cursor="pointer" id="minimizeButtonlegend" href="#minimizeButton"/>
+					</g>
+					-->
 				</g>
 		
 		</g>

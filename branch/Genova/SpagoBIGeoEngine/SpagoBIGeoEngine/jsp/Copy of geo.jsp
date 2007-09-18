@@ -578,19 +578,21 @@ var selectedLayers = "";
 
 
 
-<table  height="100%" border="0px" valign="top" style="background-color:#e6e6e6;">
-
+<!--  
+<table height="100%" border="0px" valign="top" style="background-color:#e6e6e6;">
+-->
+<table height="100%" border="0px" valign="top" style="background-color:yellow;">
 
 	
 
 <tr valign="top">
-	<td width="85%" valign="top">
+	<td width="85%" valign="top"  style="background-color:green">
 	<div id="mapPanel" valign="top">
 		<iframe id="mapIFrame"
 		        name="mapIFrame"
 		        src=""
 		        width="100%"
-		        height="100%"
+		        height="760px"
 		        frameborder="3">
 		</iframe>
 		

@@ -442,7 +442,6 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			 		
 				}else{
 						if(!qbeProperties.isFieldVisible(metaPropertyNames[i])) continue;
-						//if(!qbeAccessModality.isFieldAccessible(newClassName, metaPropertyNames[i])) continue;
 						if(!dataMartModel.getDataMartModelAccessModality().isFieldAccessible(className, metaPropertyNames[i])) continue;
 						
 						

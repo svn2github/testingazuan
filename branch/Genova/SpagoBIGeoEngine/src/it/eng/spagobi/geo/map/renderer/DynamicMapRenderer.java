@@ -194,6 +194,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    importScipt(doc, "navigation.js");
 	    importScipt(doc, "tabgroup.js");
 	    importScipt(doc, "barchart.js");
+	    importScipt(doc, "colourPicker.js");
 	}
 	
 	private void importScipt(SVGDocument map, String scriptName) {

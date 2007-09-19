@@ -307,8 +307,8 @@ CREATE TABLE SBI_EVENTS_LOG (
        USER_EVENT           VARCHAR(40) NOT NULL,
        EVENT_DATE           TIMESTAMP DEFAULT current_timestamp NOT NULL,
        DESCR                VARCHAR(1000) NOT NULL,
-       PARAMS               VARCHAR(1000) NOT NULL,
-       HANDLER 	VARCHAR(1000) NOT NULL DEFAULT 'it.eng.spagobi.events.handlers.DefaultEventPresentationHandler',
+       PARAMS               VARCHAR(1000),
+       HANDLER 	VARCHAR(400) NOT NULL DEFAULT 'it.eng.spagobi.events.handlers.DefaultEventPresentationHandler',
        CONSTRAINT XPKSBI_EVENTS_LOG 
               PRIMARY KEY (ID)
 );

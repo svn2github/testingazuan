@@ -17,7 +17,7 @@
 		String modality = (String)moduleResponse.getAttribute("modality");
 		String selectedFeatureId = (moduleResponse.getAttribute("selectedFeatureId")==null)?"":(String)moduleResponse.getAttribute("selectedFeatureId");
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
-		System.out.println("subMessageDet: " + subMessageDet);
+		//System.out.println("subMessageDet: " + subMessageDet);
 		
 		Map formUrlPars = new HashMap();
 		if(ChannelUtilities.isPortletRunning()) {

@@ -14,10 +14,10 @@
             </generator>
         </id>
         <property name="userName" type="string">
-            <column name="username" length="20" not-null="true" />
+            <column name="username" length="40" not-null="true" />
         </property>
         <property name="userGroup" type="string">
-            <column name="usergroup" length="40" not-null="false" />
+            <column name="usergroup" length="100" not-null="false" />
         </property>
         <many-to-one name="sbiObject" class="it.eng.spagobi.metadata.SbiObjects">
             <column name="doc_ref" not-null="false" />

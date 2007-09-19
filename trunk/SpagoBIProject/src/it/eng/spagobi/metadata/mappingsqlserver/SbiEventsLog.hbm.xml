@@ -19,10 +19,10 @@
             <column name="descr" length="1000" not-null="true" />
         </property>
         <property name="params" type="string">
-            <column name="params" length="1000" not-null="true" />
+            <column name="params" length="1000" not-null="false" />
         </property>
         <property name="handler" type="string">
-            <column name="handler" length="1000" not-null="true" />
+            <column name="handler" length="400" not-null="true" />
         </property>
         <set name="roles" inverse="true">
             <key>

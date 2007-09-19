@@ -127,7 +127,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" 
                id="label" name="label" size="50" 
-               value="<%=parameter.getLabel()%>" maxlength="20">
+               value="<%=parameter.getLabel()%>" maxlength="20" />
         &nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -137,7 +137,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" 
-			   id="name" name="name" size="50" value="<%=parameter.getName()%>" maxlength="40">
+			   id="name" name="name" size="50" value="<%=parameter.getName()%>" maxlength="40" />
         &nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -149,7 +149,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input class='portlet-form-input-field' type="text" 
 			   id="description" name="description" size="50" 
  			   value="<%=(parameter.getDescription() != null ? parameter.getDescription() : "")%>" 
-               maxlength="160">
+               maxlength="160" />
 	</div>
     <% String curr_value = parameter.getTypeId().toString();%>  
 	<div class='div_detail_label'>
@@ -185,7 +185,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form' style='display:none;'>
 		<input class='portlet-form-input-field' type="text" 
-			   id="length" name="length" size="5" value="<%=parameter.getLength()%>" maxlength="2">
+			   id="length" name="length" size="5" value="<%=parameter.getLength()%>" maxlength="2" />
 	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
@@ -195,7 +195,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form' style='display:none;'>
 		<input class='portlet-form-input-field' type="text" 
 			   id="mask" name="mask" size="50" 
-			   value="<%=(parameter.getMask() != null ? parameter.getMask() : "")%>" maxlength="20">
+			   value="<%=(parameter.getMask() != null ? parameter.getMask() : "")%>" maxlength="20" />
 	</div>
 </div>
 
@@ -214,6 +214,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <% if (modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
+</div>
 </form>
 <% } else if (modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { 
 
@@ -846,7 +847,7 @@ function uncheckAllFreeRoles() {
 }
 </script>
 
-
+</div>
 </form>
 
 <% } %>

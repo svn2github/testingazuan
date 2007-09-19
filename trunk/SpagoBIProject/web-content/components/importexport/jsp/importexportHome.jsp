@@ -47,6 +47,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String formExportUrl = urlBuilder.getUrl(request, formExportUrlPars);
    
 	Map formImportUrlPars = new HashMap();
+	if (ChannelUtilities.isPortletRunning()) {
+		formImportUrlPars.put("PAGE", "ImportExportPage");
+	}
 	String formImportUrl = urlBuilder.getUrl(request, formImportUrlPars);
   
 	String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ExportService";
@@ -149,7 +152,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</form>
 
     <form method='POST' action='<%=formImportUrl%>' id='importForm' name='importForm' enctype="multipart/form-data">
-	<input type="hidden" name="PAGE" value="ImportExportPage" />
+	<% if(ChannelUtilities.isWebRunning()) { %>
+		<input type="hidden" name="PAGE" value="ImportExportPage" />
+	<% } %>
  	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">
 				<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>
@@ -240,12 +245,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 %>
 
-
-
-
-
-
-
-
-
-
+</div>

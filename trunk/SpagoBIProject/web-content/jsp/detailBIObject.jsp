@@ -106,7 +106,7 @@ function showEngField(docType) {
 		out.print("	engines[engines.length] = engine_" + i + ";\n");
 		if (obj.getEngine() != null) {
 			out.print("	if ('" + en.getId().toString() + "' == '" + obj.getEngine().getId().toString() + "') {\n");
-			out.print("		document.getElementById('engine').selectedIndex = engines.length -1;\n");
+			out.print("		document.getElementById('doc_engine').selectedIndex = engines.length -1;\n");
 			out.print("	}\n");
 		}
 		out.print("}\n");
@@ -228,7 +228,7 @@ function checkFormVisibility(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="label" id="label" value="<%=obj.getLabel()%>" maxlength="20">
+							name="label" id="doc_label" value="<%=obj.getLabel()%>" maxlength="20">
 					&nbsp;*
 				</div>
 				<div class='div_detail_label'>
@@ -238,7 +238,7 @@ function checkFormVisibility(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="name" id="name" value="<%=obj.getName()%>" maxlength="40">
+							name="name" id="doc_name" value="<%=obj.getName()%>" maxlength="40">
 					&nbsp;*
 				</div>
 				<div class='div_detail_label'>
@@ -254,7 +254,7 @@ function checkFormVisibility(docType) {
 		      		}
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
- 							name="description" id="description" value="<%=desc%>" maxlength="160">
+ 							name="description" id="doc_description" value="<%=desc%>" maxlength="160">
 				</div>
 				<div class='div_detail_label' style='display:none;'>
 					<span class='portlet-form-field-label'>
@@ -269,7 +269,7 @@ function checkFormVisibility(docType) {
 		      		}
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
-							name="relname" id="relname" value="<%=relName%>" maxlength="400">
+							name="relname" id="doc_relname" value="<%=relName%>" maxlength="400">
 				</div>
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
@@ -278,7 +278,7 @@ function checkFormVisibility(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<select class='portlet-form-input-field' style='width:230px;' 
-							name="type" id="type" 
+							name="type" id="doc_type" 
 							onchange = 'showEngField(this.value);checkFormVisibility(this.value);'>
 		      		<% 
 		      		    Iterator iterdom = listTypes.iterator();
@@ -311,7 +311,7 @@ function checkFormVisibility(docType) {
 			
 				<div class='div_detail_form'>
 		      		<select class='portlet-form-input-field' style='width:230px;' 
-							name="engine" id="engine" >
+							name="engine" id="doc_engine" >
 					<%
 						Iterator itereng = listEngines.iterator();
 		      			while(itereng.hasNext()) {
@@ -343,7 +343,7 @@ function checkFormVisibility(docType) {
 					</span>
 				</div>
 				<div class='div_detail_form' style='display:none;'>
-					<select class='portlet-form-input-field' style='width:230px;' name="state" id="state"> 
+					<select class='portlet-form-input-field' style='width:230px;' name="state" id="doc_state"> 
 		      			<%     
 		      		    	Iterator iterstates = listStates.iterator();
 		      		    	while(iterstates.hasNext()) {
@@ -367,7 +367,7 @@ function checkFormVisibility(docType) {
 					</span>
 				</div>  
  				<div class='div_detail_form'>
-					<select class='portlet-form-input-field' style='width:230px;' name="state" id="state">
+					<select class='portlet-form-input-field' style='width:230px;' name="state" id="doc_state">
 		      			<% 
 		      		    Iterator iterstates = listStates.iterator();
 		      		    while(iterstates.hasNext()) {
@@ -517,8 +517,8 @@ function checkFormVisibility(docType) {
 	        
 	        <!-- engine list and template buttons adjustment based on the document type -->
 	        <script>
-	        	var pos = document.getElementById('type').selectedIndex;
-	        	typeValue = document.getElementById('type').options[pos].value;
+	        	var pos = document.getElementById('doc_type').selectedIndex;
+	        	typeValue = document.getElementById('doc_type').options[pos].value;
 				showEngField(typeValue);
 	        	checkFormVisibility(typeValue);					
 			</script>
@@ -759,14 +759,14 @@ function isBIObjectFormChanged() {
 	
 	var biobjFormModified = 'false';
 	
-	var label = document.getElementById('label').value;
-	var name = document.getElementById('name').value;
-	var description = document.getElementById('description').value;
-	var relName = document.getElementById('relname').value;
-	var type = document.getElementById('type').value;
-	var engine = document.getElementById('engine').value;
-	var state = document.getElementById('state').value;
-
+	var label = document.getElementById('doc_label').value;
+	var name = document.getElementById('doc_name').value;
+	var description = document.getElementById('doc_description').value;
+	var relName = document.getElementById('doc_relname').value;
+	var type = document.getElementById('doc_type').value;
+	var engine = document.getElementById('doc_engine').value;
+	var state = document.getElementById('doc_state').value;
+  
 	if ((label != '<%=initialBIObject.getLabel()%>')
 		|| (name != '<%=initialBIObject.getName()%>')
 		|| (description != '<%=initialBIObject.getDescription()%>')
@@ -831,7 +831,6 @@ function saveAndGoBackConfirm(message, url){
 
 		var biobjFormModified = isBIObjectFormChanged();
 		var biobjParFormModified = isBIParameterFormChanged();
-
 		if (biobjFormModified == 'true' || biobjParFormModified == 'true') {
 			if (confirm(message)) {
 				document.getElementById('saveAndGoBack').click();

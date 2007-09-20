@@ -28,7 +28,7 @@
       }
       
        function getxmlconfig123456(logicalName) {
-        var xmlconf = '<CONFIGURATION><DIMENSIONCOLUMNS><COLUMN index="0" width="200"/></DIMENSIONCOLUMNS><LINKCOLUMNS><COLUMN  name="cluster" fixedquerystring="querystring&biobject=" columnvalue="cluster" prefixvalue="biobjectcluster_" /></LINKCOLUMNS><PARAMETERS><PARAMETER name="tablebackgroundcolor" value="#9cc6d0"/><PARAMETER name="heightfirstrow" value="100"/><PARAMETER name="refreshtime" value="60000"/><PARAMETER name="ray" value="15"/></PARAMETERS><LIGHTCOLUMNS><column name="task1" condition="contains" value1="o" value2="" conditioncolor="green" defaultcolor="red" /><column name="task2" condition="contains" value1="o" value2="" conditioncolor="green" defaultcolor="red"/></LIGHTCOLUMNS></CONFIGURATION>';
+        var xmlconf = '<CONFIGURATION><DIMENSIONCOLUMNS><COLUMN index="0" width="200"/></DIMENSIONCOLUMNS><LINKCOLUMNS><COLUMN  name="cluster" fixedquerystring="querystring&biobject=" columnvalue="cluster" prefixvalue="biobjectcluster_" /></LINKCOLUMNS><PARAMETERS><PARAMETER name="tablebackgroundcolor" value="#9cc6d0"/><PARAMETER name="heightfirstrow" value="100"/><PARAMETER name="refreshtime" value="60000"/><PARAMETER name="ray" value="15"/></PARAMETERS><LIGHTCOLUMNS><column index="1" condition="contains" value1="o" value2="" conditioncolor="green" defaultcolor="red" /><column index="2" condition="contains" value1="o" value2="" conditioncolor="green" defaultcolor="red"/></LIGHTCOLUMNS><NAMECOLUMNS><COLUMN index="0" name="cluster"/><COLUMN index="1" name="task1"/><COLUMN index="2" name="task2"/></NAMECOLUMNS></CONFIGURATION>';
         document.getElementById("lzapp").SetVariable("xmlconfig", xmlconf);
         //lzSetCanvasAttribute("xmlconfig", xmlconf, "false");
       }

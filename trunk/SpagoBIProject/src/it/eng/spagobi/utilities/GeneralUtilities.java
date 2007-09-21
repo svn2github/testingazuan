@@ -722,16 +722,26 @@ public class GeneralUtilities {
 	public static String getLovResult (String lovLabel) throws Exception {
  		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
  		ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(lovLabel);
- 		String toReturn = getLovResult(lov);
+ 		String toReturn = getLovResult(lov, null);
  		return toReturn;
 	}
 	
-	public static String getLovResult (ModalitiesValue lov) throws Exception {
-		IEngUserProfile profile = new AnonymousCMSUserProfile("anonymous");
+	public static String getLovResult (String lovLabel, IEngUserProfile profile) throws Exception {
+ 		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
+ 		ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(lovLabel);
+ 		String toReturn = getLovResult(lov, profile);
+ 		return toReturn;
+	}
+	
+	private static String getLovResult (ModalitiesValue lov, IEngUserProfile profile) throws Exception {
+		if(profile == null) {
+			profile = new AnonymousCMSUserProfile("anonymous");
+		}
 		String dataProv = lov.getLovProvider();
 		ILovDetail lovDetail = LovDetailFactory.getLovFromXML(dataProv);
 		return lovDetail.getLovResult(profile);		
 	}
+	
 	
 	
 	public static String fromListToString(List values, String separator) {

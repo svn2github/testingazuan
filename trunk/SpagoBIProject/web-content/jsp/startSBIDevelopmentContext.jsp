@@ -20,34 +20,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@ page language="java"
-         extends="it.eng.spago.dispatching.httpchannel.AbstractHttpJspPagePortlet"
-         contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1"
-         session="false" 
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"
          import="it.eng.spagobi.constants.SpagoBIConstants"
 %>
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
-<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+
+<%@ include file="/jsp/portlet_base.jsp"%>
+
+<%@ include file="/jsp/shareProfile.jsp"%>
+
 <portlet:defineObjects/>
-
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi_shared.css")%>' 
-      type='text/css' />
-
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi_portlet.css")%>' 
-      type='text/css' />
-
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/jsr168.css")%>' 
-      type='text/css' />
-      
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/external.css")%>' 
-      type='text/css' />
-
-
-
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>

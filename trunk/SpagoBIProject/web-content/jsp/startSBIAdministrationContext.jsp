@@ -18,48 +18,32 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
-
 <%@ page language="java"
-         extends="it.eng.spago.dispatching.httpchannel.AbstractHttpJspPagePortlet"
-         contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1"
-         session="false" 
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"
          import="it.eng.spagobi.constants.SpagoBIConstants,
          		 it.eng.spago.configuration.ConfigSingleton,
-                 it.eng.spago.base.SourceBean"
-%>
-<%@page import="javax.portlet.PortletURL"%>
-<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+                 it.eng.spago.base.SourceBean,
+                 javax.portlet.PortletURL,
+                 it.eng.spago.navigation.LightNavigationManager" %>
+<%@page import="it.eng.spago.base.RequestContainer"%>
+<%@page import="it.eng.spago.base.SessionContainer"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
+<%@ include file="/jsp/portlet_base.jsp"%>
+
+<%@ include file="/jsp/shareProfile.jsp"%>
 
 <portlet:defineObjects/>
-
 
 <%
 	PortletURL scheduleUrl = renderResponse.createActionURL();
 	scheduleUrl.setParameter("PAGE", "JobManagementPage");
 	scheduleUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_GET_ALL_JOBS);
 %>
-
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi_shared.css")%>' 
-      type='text/css' />
-
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/spagobi_portlet.css")%>' 
-      type='text/css' />
-      
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/jsr168.css")%>' 
-      type='text/css' />
-      
-<LINK rel='StyleSheet' 
-      href='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/css/external.css")%>' 
-      type='text/css' />
-
 
 	
 <table class='header-table-portlet-section'>

@@ -1,8 +1,6 @@
 <%@ page language="java"
-         extends="it.eng.spago.dispatching.httpchannel.AbstractHttpJspPagePortlet"
-         contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1"
-         session="false" 
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"
          import="it.eng.spagobi.constants.SpagoBIConstants"
 %>
 <%@page import="it.eng.spagobi.utilities.urls.UrlBuilderFactory"%>
@@ -12,17 +10,12 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
+<%@ include file="/jsp/portlet_base.jsp"%>
+
+<%@ include file="/jsp/shareProfile.jsp"%>
+
 
 <%
-	RequestContainer reqCont = ChannelUtilities.getRequestContainer(request);
-	String  sbiMode = null;
-	String channelType = reqCont.getChannelType();
-	if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
-	else sbiMode = "WEB";
-	// create url builder 
-	IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(sbiMode);
-
 	Map listMapUrlPars = new HashMap();
 	listMapUrlPars.put("PAGE", "ListMapsPage");
 	String listMapUrl = urlBuilder.getUrl(request, listMapUrlPars);
@@ -32,10 +25,6 @@
 	String listFeatUrl = urlBuilder.getUrl(request, listFeatUrlPars);
 %>
 
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/spagobi_shared.css")%>' type='text/css' />
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/spagobi_portlet.css")%>' type='text/css' />
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/jsr168.css")%>' type='text/css' />
- 
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>

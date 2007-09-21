@@ -62,6 +62,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 /**
  * Tests the query and produces the list as output. 
  */
@@ -114,15 +118,11 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 		String looProvider = modVal.getLovProvider();
 		// get from the request the type of lov
 		String typeLov = LovDetailFactory.getLovTypeCode(looProvider);
-		// get the usser profile 
+		// get the user profile 
 		IEngUserProfile profile = null;
-		profile = (IEngUserProfile)session.getAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
-		if(profile==null) {
-			SessionContainer permSess = session.getPermanentContainer();
-			profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		} else {
-			session.delAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
-		}
+		HttpServletRequest httpReq = (HttpServletRequest)requestContainer.getInternalRequest();
+		HttpSession httpSess = httpReq.getSession();
+		profile = (IEngUserProfile)httpSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		// based on lov type fill the spago list / paginator object / valColName
 		SourceBean rowsSourceBean = null;
 		if(typeLov.equalsIgnoreCase("QUERY")) {

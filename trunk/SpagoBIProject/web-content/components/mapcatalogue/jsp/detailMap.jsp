@@ -21,7 +21,8 @@
 		
 		Map formUrlPars = new HashMap();
 		if(ChannelUtilities.isPortletRunning()) {
-			formUrlPars.put("PAGE", "DetailMapPage");
+			formUrlPars.put("PAGE", "DetailMapPage");	
+  			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
 		}
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);
 		
@@ -68,10 +69,10 @@
 
 	<% if(ChannelUtilities.isWebRunning()) { %>
 		<input type='hidden' name='PAGE' value='DetailMapPage' />
+		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
 	<% } %>
 
-	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />
-	<input type='hidden' value='true' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' />
+	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=map.getMapId()%>' name='id' />
 	<input type='hidden' value='<%=map.getUrl()%>' name='sourceUrl' />
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />

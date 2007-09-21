@@ -29,6 +29,7 @@ package it.eng.spagobi.services;
 
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IModalitiesValueDAO;
@@ -44,6 +45,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 public class DashboardServlet extends HttpServlet{
@@ -85,7 +87,14 @@ public class DashboardServlet extends HttpServlet{
                 	out.write(createErrorMsg(12, "Dashboard  "+type+" lov not yet supported"));
                 	out.flush();
                 } else {
-                	String result = GeneralUtilities.getLovResult(dataName);
+                	HttpSession httpSession = request.getSession();
+                	IEngUserProfile profile = (IEngUserProfile)httpSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+                	String result = "";
+                	if(profile == null) {
+                		result = GeneralUtilities.getLovResult(dataName);
+                	} else {
+                		result = GeneralUtilities.getLovResult(dataName, profile);
+                	}
                 	result = result.replaceAll("&lt;", "<");
                 	result = result.replaceAll("&gt;", ">");
                 	

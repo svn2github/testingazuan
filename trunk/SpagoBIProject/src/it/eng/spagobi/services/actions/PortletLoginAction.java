@@ -37,6 +37,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.ProfileExchanger;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.InputStream;
@@ -67,6 +68,7 @@ public class PortletLoginAction extends AbstractAction{
 		String engUserProfileFactoryClass = (String) engUserProfileFactorySB.getAttribute("className");
 		engUserProfileFactoryClass = engUserProfileFactoryClass.trim(); 
 		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
+		// create user profile
 		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(principal);
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
 				            "userProfile created " + userProfile);
@@ -76,10 +78,14 @@ public class PortletLoginAction extends AbstractAction{
                 			"Functionalities of the user profile: " + userProfile.getFunctionalities());
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
                             "Roles of the user profile: " + userProfile.getRoles());
+		// put user profile into spago session container
 		RequestContainer reqCont = getRequestContainer();
 		SessionContainer sessionCont = reqCont.getSessionContainer();
 		SessionContainer permSession = sessionCont.getPermanentContainer();
 		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
+		// put user profile into the singleton profileExchanger
+		ProfileExchanger profExchanger = ProfileExchanger.getInstance();
+		profExchanger.insertProfile((String)userProfile.getUserUniqueIdentifier(), userProfile);
 	}
 
 }

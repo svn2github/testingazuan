@@ -35,6 +35,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.ProfileExchanger;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.io.InputStream;
@@ -74,6 +75,9 @@ public class PortletLoginModule extends AbstractModule {
 		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),"service()", 
                 "Roles of the user profile: " + userProfile.getRoles());
 		getRequestContainer().getSessionContainer().getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
+		// put user profile into the singleton profileExchanger
+		ProfileExchanger profExchanger = ProfileExchanger.getInstance();
+		profExchanger.insertProfile((String)userProfile.getUserUniqueIdentifier(), userProfile);
 	}
 
 }

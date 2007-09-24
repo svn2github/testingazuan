@@ -28,9 +28,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.constants.AdmintoolsConstants,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.utilities.GeneralUtilities,
+                 it.eng.spago.base.SourceBean,
+                 it.eng.spago.configuration.ConfigSingleton,
                  it.eng.spagobi.bo.BIObject,
+                 it.eng.spagobi.bo.Viewpoint,
+                 it.eng.spagobi.utilities.PortletUtilities,
+                 it.eng.spago.util.StringUtils,
                  it.eng.spago.security.IEngUserProfile,
-                 it.eng.spago.base.SessionContainer,
+                 it.eng.spago.base.SessionContainer,                 
                  it.eng.spago.navigation.LightNavigationManager" %>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Map"%>
@@ -46,7 +51,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String requestIdentity = "request" + uuid.toString();
 	requestIdentity = requestIdentity.replaceAll("-", "");
     // get object from the session 
-    BIObject obj = (BIObject)aSessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);  
+    BIObject obj = (BIObject)aSessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);      
 	//substitute profile attributes for FIX LOV parameters
 	GeneralUtilities.subsituteBIObjectParametersLovProfileAttributes(obj,aSessionContainer);
     // get profile of the user
@@ -61,7 +66,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List subObjs = (List)moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT_LIST);
 	// get snapshot List
 	List snapshots = (List)moduleResponse.getAttribute(SpagoBIConstants.SNAPSHOT_LIST);
-	
+	// get viewpoint List
+	List viewpoints = (List)moduleResponse.getAttribute(SpagoBIConstants.VIEWPOINT_LIST);
 	String typeObj = (String)moduleResponse.getAttribute(SpagoBIConstants.BIOBJECT_TYPE_CODE);
 	
 	// try to get the the "NO_PARAMETERS", if it is present the object has only subobjects but not
@@ -87,9 +93,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
     String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id");
     
+   	// build the url for the save-parameters form as view-point   	
+   	Map saveVPUrlPars = new HashMap();
+   	saveVPUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
+   	saveVPUrlPars.put(SpagoBIConstants.ACTOR, actor);
+   	saveVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_SAVE);
+   	saveVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");   	
+   	saveVPUrlPars.put("parameters", obj.getBiObjectParameters());    	
+   	if (executionId != null && flowId != null) {
+   		saveVPUrlPars.put("spagobi_execution_id", executionId);
+   		saveVPUrlPars.put("spagobi_flow_id", flowId);
+   	}
+    String saveVPUrl = urlBuilder.getUrl(request, saveVPUrlPars);
+
+    
    	// build the url for the parameters form
    	Map execUrlPars = new HashMap();
    	execUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
+//   	execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);  
    	execUrlPars.put(SpagoBIConstants.ACTOR, actor);
    	execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
    	execUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
@@ -111,10 +132,66 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
    		
 %>
-	
+
+<!-- script for viewpoints management -->
+<script type="text/javascript">		
+		var viewpointopen = false;
+		var winVP = null;
+		function opencloseViewPoint() {
+			if(!viewpointopen){
+				viewpointopen = true;
+				openViewPoint();
+			}
+		}
+		function openViewPoint(){
+			if(winVP==null) {
+				winVP = new Window('viewPoint', {className: "alphacube", 
+									title:"Save Viewpoints",  resizable: true, width:550, 
+									height:150, top:70, left:100, destroyOnClose: false});
+         	winVP.setContent('viewpointdiv', false, false);
+         	winVP.showCenter(true);         	
+		    } else {
+         	winVP.showCenter(true);
+         	
+		    }
+		}
+		
+		observerVP = { onClose: function(eventName, win) {
+			if (win == winVP) {
+				viewpointopen = false;
+			}
+		  }
+		}
+		Windows.addObserver(observerVP);
+		
+		function saveViewpoint(nameVP, descVP, scopeVP){			
+		
+			if (nameVP == null || nameVP.value == ""){
+				alert('<%=PortletUtilities.getMessage("6000", "messages")%>');
+				return;
+			}
+			if (scopeVP == null || scopeVP.value == ""){
+				alert('<%=PortletUtilities.getMessage("6001", "messages")%>');
+				return;
+			}
+		
+			var mainForm = document.getElementById('paramsValueForm<%=requestIdentity%>');			
+			mainForm.SUBMESSAGEDET.value = '<%=SpagoBIConstants.VIEWPOINT_SAVE%>';		
+			mainForm.tmp_nameVP.value = nameVP.value;		
+			mainForm.tmp_descVP.value = descVP.value;		
+			mainForm.tmp_scopeVP.value = scopeVP.value;								
+			mainForm.submit();
+		}
+						
+</script>
+
+		
 
 <form method='POST' action='<%=execUrl%>' id='paramsValueForm<%=requestIdentity%>' name='paramsValueForm'>	
-
+<input type='hidden' name='SUBMESSAGEDET' value=''>
+<input type='hidden' name='tmp_nameVP' value=''>
+<input type='hidden' name='tmp_descVP' value=''>
+<input type='hidden' name='tmp_scopeVP' value=''>
 
 <% 
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
@@ -127,7 +204,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%=title%>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<% if ( !noPars ) { %>
+		<% if ( !noPars ) { %>		 
+		   <td class='header-button-column-portlet-section'>
+				<a href='javascript:opencloseViewPoint()'> 
+      				<img class='header-button-image-portlet-section' 
+					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.saveButt" />' /> 
+				</a>	        	
+			</td>		
 			<td class='header-button-column-portlet-section'>
 				<a href="javascript:document.getElementById('paramsValueForm<%=requestIdentity%>').submit()"> 
       					<img class='header-button-image-portlet-section' 
@@ -136,6 +221,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.execButt" />' /> 
 				</a>
 			</td>
+			
 		<% } %>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl %>'> 
@@ -160,6 +246,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%=title%>
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+				<a href='javascript:opencloseViewPoint()'> 
+      				<img class='header-button-image-portlet-section' 
+					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.saveButt" />' /> 
+				</a>	        	
+		</td>		
 		<td class='header-button-column-single-object-execution-portlet-section'>
 			<input type='image' 
 				src='<%=urlBuilder.getResourceLink(request, "/img/exec22.png")%>' 
@@ -179,13 +273,75 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" />
 <%-- } --%>
 
+<!-- VIEWPOINT DIV  -->
+<div id='viewpointdiv' style='width:100%;display:none;'>
+<table class='header-table-portlet-section'>
+	<tr class='header-row-portlet-section'>
+		<td class='header-title-column-portlet-section' 
+		    style='vertical-align:middle;padding-left:5px;'>
+			Analysis Details
+		</td>		
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<a href="javascript:saveViewpoint(document.getElementById('nameVP'),document.getElementById('descVP'),document.getElementById('scopeVP'))">
+                    <img width="20px" height="20px" 
+	  	   		src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+	  	        name='saveViewPoint' 
+	  	        alt='<%=msgBuilder.getMessage("SBIDev.docConf.viewPoint.saveButt", "messages", request)%>' 
+	            title='<%=msgBuilder.getMessage("SBIDev.docConf.viewPoint.saveButt", "messages", request)%>' />
+		     </a>
+			
+		</td>
+		
+	</tr>
+</table>
+<table width="100%" cellspacing="0" border="0" id = "viewpoint_detail" >
+	<tr>
+		<td>
+			<div class="div_detail_area_forms">
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "SBIDev.docConf.viewPoint.name" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<input class='portlet-form-input-field' type="text" style='width:230px;' 
+							name="nameVP" id="nameVP" value="" maxlength="20"/>
+				</div>
+				
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "SBIDev.docConf.viewPoint.description" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<input class='portlet-form-input-field' type="text" style='width:230px;' 
+							name="descVP" id="descVP" value="" maxlength="20"/>
+				</div>
+				
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "SBIDev.docConf.viewPoint.scope" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					 <select id="scopeVP" name="scopeVP"/>
+					    <option value=""/>
+					    <option value="Public"  /><spagobi:message key = "SBIDev.docConf.viewPoint.scopePublic" />
+					    <option value="Private" /><spagobi:message key = "SBIDev.docConf.viewPoint.scopePrivate" />
+					  </select>
+				</div>
+			</div>
+		</td>
+	</tr>
+</table>
+
+</div>
+
 
 <div class='errors-object-details-div'>
 	<spagobi:error/>
 </div>	
- 
-
-
 
 <!--  ************************* CLOSE FORM ********************************** -->
 </form>
@@ -201,7 +357,8 @@ if (isSingleObjExec) {
 }
 --%>
 
-<% if( ((subObjs!=null)&&(subObjs.size()!=0))  ||  ((snapshots!=null)&&(snapshots.size()!=0))  ) { %>
+<% if( ((subObjs!=null)&&(subObjs.size()!=0))  ||  ((snapshots!=null)&&(snapshots.size()!=0)) ||
+		(viewpoints!=null) && viewpoints.size()!=0) { %>
 
 
 
@@ -356,17 +513,8 @@ if (isSingleObjExec) {
 		                        	
 		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
 		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%=visib %></td>
-		                        	
-		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
-		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-		                        		<a href="<%=execSubObjUrl%>">
-		                        			<img width="20px" height="20px" 
-						  	   		src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif")%>' 
-						  	                name='execSub' 
-						  	                alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
-						                        title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' />
-		                        		</a>
-		                        	</td>
+		                        			                        	
+		                        	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 		                        	
 		                        	<%
 		                        	if(owner.equals(currentUser)) {
 		                        	%>
@@ -385,6 +533,16 @@ if (isSingleObjExec) {
 		                        		&nbsp;
 		                        	</td>
 		                        	<%} %>
+		                        	<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+		                        		<a href="<%=execSubObjUrl%>">
+		                        			<img width="20px" height="20px" 
+						  	   		src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif")%>' 
+						  	                name='execSub' 
+						  	                alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
+						                        title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' />
+		                        		</a>
+		                        	</td>
+		                        	
 		                        </tr> 
 		                  <% } %>           
 			  </table> 
@@ -470,7 +628,7 @@ if (isSingleObjExec) {
             		   	}
             		    deleteSnapUrl = urlBuilder.getUrl(request, deleteSnapUrlPars);
 		                
-		         %>
+		         %>		         
 		         <tr class='portlet-font'>
 		           	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameSnap %></td>
 		           	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
@@ -510,15 +668,180 @@ if (isSingleObjExec) {
 			 <br/>				  
 	  <% } %>	  
 	  
+	  	<% if( (viewpoints!=null)&&(viewpoints.size()!=0) ) { %>
+	
+			<div style='width:100%;visibility:visible;' 
+					 class='UITabs' 
+					 id='tabPanelWithJavascript' 
+					 name='tabPanelWithJavascript'>
+				<div class="first-tab-level" style="background-color:#f8f8f8">
+					<div style="overflow: hidden; width:100%">
+						<div class='tab'>
+							<%=msgBuilder.getMessage("SBIDev.docConf.viewPoint.title", "messages", request)%>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		
+		    <table style='width:100%;'>    		         
+			     <tr>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.viewPoint.name' />
+			       </td>
+   			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.viewPoint.owner' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.viewPoint.description' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.viewPoint.scope' />
+			       </td>
+			       <!--  
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.viewPoint.content' />
+			       </td>
+			       -->
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
+			           <spagobi:message key='SBIDev.docConf.viewPoint.dateCreation' />
+			       </td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			       <td align="left" class="portlet-section-header">&nbsp;</td>
+			     <tr> 
+				              
+				 <% Iterator iterVP =  viewpoints.iterator();
+				    Viewpoint vp = null;
+				    String ownerVP = "";				    
+				    String nameVP = "";
+				    String descrVP = "";
+				    String scopeVP = "";
+				    String contentVP = "";
+				    Date creationDateVP = null;
+				    String execVPUrl = null;
+				    String deleteVPUrl = null;
+				    String viewVPUrl = null;				    				   
+					boolean alternate = false;
+					String rowClass = "";
+					   
+		            while(iterVP.hasNext()) {
+		            	vp = (Viewpoint)iterVP.next();
+						rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
+						alternate = !alternate;
+						nameVP = vp.getVpName();
+						ownerVP = vp.getVpOwner();						
+						descrVP = vp.getVpDesc();
+						scopeVP = vp.getVpScope();
+						contentVP = vp.getVpValueParams();
+						creationDateVP = vp.getVpCreationDate();
+						
+						Map execVPUrlPars = new HashMap();
+						execVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+						execVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_EXEC);	
+						execVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");						
+						execVPUrlPars.put("content", vp.getVpValueParams());
+						execVPUrlPars.put("vpId",vp.getVpId());
+            		   	if (executionId != null && flowId != null) {
+            		   		execVPUrlPars.put("spagobi_execution_id", executionId);
+            		   		execVPUrlPars.put("spagobi_flow_id", flowId);
+            		   	}
+            		    execVPUrl = urlBuilder.getUrl(request, execVPUrlPars);
+						
+            		    Map deleteVPUrlPars = new HashMap();
+            		    deleteVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+            		    deleteVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_ERASE);
+            		    deleteVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+            		    deleteVPUrlPars.put("vpId",vp.getVpId());
+            		   	if (executionId != null && flowId != null) {
+            		   		deleteVPUrlPars.put("spagobi_execution_id", executionId);
+            		   		deleteVPUrlPars.put("spagobi_flow_id", flowId);
+            		   	}
+            		    deleteVPUrl = urlBuilder.getUrl(request, deleteVPUrlPars);
+
+            		    Map viewVPUrlPars = new HashMap();
+            		    viewVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+            		    viewVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_VIEW);
+            		    viewVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+            		    viewVPUrlPars.put("vpId",vp.getVpId());
+            		   	if (executionId != null && flowId != null) {
+            		   		viewVPUrlPars.put("spagobi_execution_id", executionId);
+            		   		viewVPUrlPars.put("spagobi_flow_id", flowId);
+            		   	}
+            		    viewVPUrl = urlBuilder.getUrl(request, viewVPUrlPars);
+
+            		    String tmpContent = (contentVP==null)?"":contentVP.replace("&amp;"," - ");            		    
+            	        ConfigSingleton conf = ConfigSingleton.getInstance();
+            		    SourceBean formatSB = (SourceBean) conf.getAttribute("DATA-ACCESS.DATE-FORMAT");
+            		    String format = (String) formatSB.getAttribute("format");
+            		    format = format.replaceAll("D", "d");
+            		    format = format.replaceAll("m", "M");
+            		    format = format.replaceAll("Y", "y");
+            		    String date = StringUtils.dateToString(creationDateVP, format);
+		                
+		         %>
+		         <tr class='portlet-font'>
+		           	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameVP %></td>
+		           	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		           	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= ownerVP %></td>
+		           	<td class='<%= rowClass %>' width="20px">&nbsp;</td> 		           	
+		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=descrVP %></td>
+		            <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
+		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=scopeVP %></td>
+		            <td class='<%= rowClass %>' width="20px">&nbsp;</td> 		            
+		            <td style='vertical-align:middle;' class='<%= rowClass %>' ><%=date %></td>
+					<td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+                    	<a href="javascript:document.location='<%=viewVPUrl.toString()%>';">
+                    		<img width="20px" height="20px" 
+                    			src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>' 
+  	                			name='getViewpoint' alt='<%=msgBuilder.getMessage("SBIDev.docConf.viewPoint.viewButt", "messages", request)%>' 
+                        		title='<%=msgBuilder.getMessage("SBIDev.docConf.viewPoint.viewButt", "messages", request)%>' 
+                        	/>
+                    	</a>
+                    </td>		            
+                   <%if(ownerVP.equals(currentUser)) { %>                     
+                    <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+                    	<% 
+                    	String eraseVPMsg = msgBuilder.getMessage("ConfirmMessages.DeleteViewpoint", "messages", request); %>
+                    	<a href="javascript:var conf = confirm('<%=eraseVPMsg%>'); if(conf) {document.location='<%=deleteVPUrl.toString()%>';}">
+                    		<img width="20px" height="20px" 
+                    			src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>' 
+  	                			name='deleteViewpoint' alt='<%=msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages", request)%>' 
+                        		title='<%=msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages", request)%>' 
+                        	/>
+                    	</a>
+                    </td>
+                    <% }%>
+		            <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
+		                <a href="<%=execVPUrl%>">
+		                       <img width="20px" height="20px" 
+						  	   		src='<%=urlBuilder.getResourceLink(request, "/img/exec.gif")%>' 
+						  	        name='execSnap' 
+						  	        alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
+						            title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
+						       />
+		               	</a>
+		           	</td>
+		         </tr> 
+		         <% } %>           
+			 </table> 
+			 <br/>				  
+	  <% } %>	  
 	  
-	  
-	  
-	  
-	  
+
  <% } %>
 
 </div>
 
 
+</body>
+
+
+ 		   
 
  		   

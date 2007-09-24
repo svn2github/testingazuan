@@ -35,6 +35,8 @@
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiEventRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiAudit.hbm.xml" />
+        <!--viewpoints-->
+        <mapping resource="it/eng/spagobi/metadata/mappingpostgres/SbiViewpoints.hbm.xml" />                
         <!-- map catalogue -->
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingpostgres/SbiGeoMapFeatures.hbm.xml" />
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingpostgres/SbiGeoFeatures.hbm.xml" />

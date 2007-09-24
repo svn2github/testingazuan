@@ -63,6 +63,7 @@ public class LovColumnsSelectorTag extends TagSupport {
 	private StringBuffer htmlStream = null;
     private HttpServletRequest httpRequest = null;
     private SourceBean moduleResponse = null;
+    private SourceBean moduleConfig = null;
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
     
@@ -105,7 +106,8 @@ public class LovColumnsSelectorTag extends TagSupport {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 					              "doStartTag", "Module response null");
 			return SKIP_BODY;
-		} 
+		}
+		moduleConfig = (SourceBean) moduleResponse.getAttribute("CONFIG");
 		htmlStream = new StringBuffer();
 		makeTable();
 		try {
@@ -122,6 +124,19 @@ public class LovColumnsSelectorTag extends TagSupport {
 	
 	
 	protected void makeTable() throws JspException {
+		// get the column names from the module response config
+		List columnNames = new ArrayList();
+		List columnNamesSB = moduleConfig.getAttributeAsList("COLUMNS.COLUMN");
+		if (columnNamesSB != null && columnNamesSB.size() > 0) {
+			Iterator it = columnNamesSB.iterator();
+			while (it.hasNext()) {
+				SourceBean columnSB = (SourceBean) it.next();
+				String columnName = (String) columnSB.getAttribute("name");
+				if (columnName != null) columnNames.add(columnName);
+			}
+		}
+		
+		/*
 		// get the column names from the first row of the list
 		// TODO check if all the rows have the same columns
 		List columnNames = new ArrayList();
@@ -140,6 +155,9 @@ public class LovColumnsSelectorTag extends TagSupport {
 				}
 			}
 		}
+		*/
+		
+		
 		// create the columns table selector
 		htmlStream.append("<table class=\"object-details-table\" style=\"width:100%;\">\n");
 		htmlStream.append("	<tr >\n");

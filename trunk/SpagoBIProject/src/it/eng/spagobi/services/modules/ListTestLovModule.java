@@ -53,6 +53,7 @@ import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 		}
 		// based on lov type fill the spago list and paginator object
 		SourceBean rowsSourceBean = null;
+		List colNames = new ArrayList();
 		if(typeLov.equalsIgnoreCase("QUERY")) {
 			QueryDetail qd = QueryDetail.fromXML(looProvider);
 			String pool = qd.getConnectionName();
@@ -100,7 +102,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 			// execute query
 			try {
 				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
-				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement);
+				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement, colNames);
 			} catch (Exception e) {
 				String stacktrace = e.toString();
 				response.setAttribute("stacktrace", stacktrace);
@@ -116,6 +118,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 			try{
 				String result = fixlistDet.getLovResult(profile);
 				rowsSourceBean = SourceBean.fromXMLString(result);
+				colNames = findFirstRowAttributes(rowsSourceBean);
 				if(!rowsSourceBean.getName().equalsIgnoreCase("ROWS")) {
 					throw new Exception("The fix list is empty");
 				} else if (rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG).size()==0) {
@@ -135,6 +138,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 			try{
 				String result = scriptDetail.getLovResult(profile);
 				rowsSourceBean = SourceBean.fromXMLString(result);
+				colNames = findFirstRowAttributes(rowsSourceBean);
 			} catch (Exception e) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 						            "getList", "Error while executing the script lov", e);
@@ -151,6 +155,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 				IJavaClassLov javaClassLov = (IJavaClassLov) Class.forName(javaClassName).newInstance();
 	    		String result = javaClassLov.getValues(profile);
         		rowsSourceBean = SourceBean.fromXMLString(result);
+        		colNames = findFirstRowAttributes(rowsSourceBean);
 			} catch (Exception e) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 			                        "getList", "Error while executing the java class lov", e);
@@ -168,23 +173,6 @@ public class ListTestLovModule extends AbstractBasicListModule {
 				paginator.addRow(rows.get(i));
 		}
 		list.setPaginator(paginator);
-		
-		// get all the columns name
-	    rowsSourceBean = list.getPaginator().getAll();
-		List colNames = new ArrayList();
-		List rows = null;
-		if(rowsSourceBean != null) {
-			rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
-			if((rows!=null) && (rows.size()!=0)) {
-				SourceBean row = (SourceBean)rows.get(0);
-				List rowAttrs = row.getContainedAttributes();
-				Iterator rowAttrsIter = rowAttrs.iterator();
-				while(rowAttrsIter.hasNext()) {
-					SourceBeanAttribute rowAttr = (SourceBeanAttribute)rowAttrsIter.next();
-					colNames.add(rowAttr.getKey());
-				}
-			}
-		}
 		
 		// build module configuration for the list
 		String moduleConfigStr = "";
@@ -225,7 +213,33 @@ public class ListTestLovModule extends AbstractBasicListModule {
 
 	
 	
-	
+	/**
+	 * Find the attributes of the first row of the xml passed at input: this xml is assumed to be:
+	 * &lt;ROWS&gt;
+	 * 	&lt;ROW attribute_1="value_of_attribute_1" ... /&gt;
+	 * 	....
+	 * &lt;ROWS&gt; 
+	 * 
+	 * @param rowsSourceBean The sourcebean to be parsed
+	 * @return the list of the attributes of the first row
+	 */
+	private List findFirstRowAttributes(SourceBean rowsSourceBean) {
+		List columnsNames = new ArrayList();
+		if (rowsSourceBean != null) {
+			List rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
+			if (rows != null && rows.size() != 0) {
+				SourceBean row = (SourceBean) rows.get(0);
+				List rowAttrs = row.getContainedAttributes();
+				Iterator rowAttrsIter = rowAttrs.iterator();
+				while (rowAttrsIter.hasNext()) {
+					SourceBeanAttribute rowAttr = (SourceBeanAttribute) rowAttrsIter.next();
+					columnsNames.add(rowAttr.getKey());
+				}
+			}
+		}
+		return columnsNames;
+	}
+
 	/**
 	 * Executes a select statement.
 	 * 
@@ -233,11 +247,12 @@ public class ListTestLovModule extends AbstractBasicListModule {
 	 * @param responseContainer The response container object
 	 * @param pool The pool definition string
 	 * @param statement	The statement definition string
+	 * @param columNames 
 	 * @return A generic object containing the Execution results
 	 * @throws EMFInternalError 
 	 */
 	 public static Object executeSelect(RequestContainer requestContainer,
-			ResponseContainer responseContainer, String pool, String statement) throws EMFInternalError {
+			ResponseContainer responseContainer, String pool, String statement, List columnsNames) throws EMFInternalError {
 		Object result = null;
 		DataConnectionManager dataConnectionManager = null;
 		DataConnection dataConnection = null;
@@ -250,6 +265,8 @@ public class ListTestLovModule extends AbstractBasicListModule {
 			dataResult = sqlCommand.execute();
 			ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult
 					.getDataObject();
+			List temp = Arrays.asList(scrollableDataResult.getColumnNames());
+			columnsNames.addAll(temp);
 			result = scrollableDataResult.getSourceBean();
 		} finally {
 			Utils.releaseResources(dataConnection, sqlCommand, dataResult);

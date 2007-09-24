@@ -132,6 +132,14 @@ public class SpagoBIConstants {
 	public static final String ERASE_SNAPSHOT_MESSAGE = "ERASE_SNAPSHOT_MESSAGE";
 	public static final String SNAPSHOT_PATH = "SNAPSHOT_PATH";
 	
+	public static final String VIEWPOINT_SAVE = "VIEWPOINT_SAVE";
+	public static final String VIEWPOINT_LIST = "VIEWPOINT_LIST";
+	public static final String VIEWPOINT_EXEC = "VIEWPOINT_EXEC";
+	public static final String VIEWPOINT_ERASE = "VIEWPOINT_ERASE";
+	public static final String VIEWPOINT_VIEW = "VIEWPOINT_VIEW";
+
+	
+	
 	public static final String ROLE = "ROLE";
 	
 	public static final String SINGLE_OBJECT_EXECUTION_MODALITY = "SINGLE_OBJECT_EXECUTION_MODALITY";
@@ -143,6 +151,7 @@ public class SpagoBIConstants {
 	public static final String PUBLISHER_NAME = "PUBLISHER_NAME";
 	public static final String PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT = "loopbackAfterSubObjectDeletion";
 	public static final String PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC = "loopbackSingleObjectExecution";
+	public static final String PUBLISHER_LOOPBACK_VIEWPOINT_EXEC = "loopbackViewPointExecution";
 	
 	public final static String CMS_BIOBJECTS_PATH = "SPAGOBI.CMS_PATHS.BIOBJECTSPATH";
 

@@ -360,13 +360,27 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 			if ("FIX_LOV".equalsIgnoreCase(inputTypeCd)) {
 				SourceBean oldSB = SourceBean.fromXMLString(oldLovProvider);
 				toReturn = "<" + LovDetailFactory.FIXEDLISTLOV + "><ROWS>";
-				List elements = oldSB.getAttributeAsList("LOV-ELEMENT");
-				Iterator elementsIt = elements.iterator();
-				while (elementsIt.hasNext()) {
-					SourceBean element = (SourceBean) elementsIt.next();
-					String description = (String) element.getAttribute("DESC");
-					String value = (String) element.getAttribute("VALUE");
-					toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
+				String oldSBName = oldSB.getName();
+				if (oldSBName != null && oldSBName.equalsIgnoreCase("LOV")) {
+					List elements = oldSB.getAttributeAsList("LOV-ELEMENT");
+					Iterator elementsIt = elements.iterator();
+					while (elementsIt.hasNext()) {
+						SourceBean element = (SourceBean) elementsIt.next();
+						String description = (String) element.getAttribute("DESC");
+						String value = (String) element.getAttribute("VALUE");
+						toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
+					}
+				} else if (oldSBName != null && oldSBName.equalsIgnoreCase("ROWS")) {
+					List elements = oldSB.getAttributeAsList("ROW");
+					Iterator elementsIt = elements.iterator();
+					while (elementsIt.hasNext()) {
+						SourceBean element = (SourceBean) elementsIt.next();
+						String description = (String) element.getAttribute("NAME");
+						String value = (String) element.getAttribute("DESCRIPTION");
+						toReturn += "<ROW DESCRIPTION=\"" + description +  "\" VALUE=\"" + value +  "\" />";
+					}
+				} else {
+					throw new Exception("The root tag of the lov provider [" + oldSBName + "] is not valid!!!");
 				}
 				toReturn += "</ROWS><VALUE-COLUMN>VALUE</VALUE-COLUMN>" +
 						"<DESCRIPTION-COLUMN>DESCRIPTION</DESCRIPTION-COLUMN>" +

@@ -3,7 +3,7 @@
 
     <!-- ********************* START MODE CONFIGURATION ************************ -->
 
-	 <!-- SPAGOBI-MODE mode="WEB" /-->
+	 <!-- SPAGOBI-MODE mode="WEB" -->
 	 <SPAGOBI-MODE mode="PORTLET" />
 
     <!-- ********************* END MODE CONFIGURATION ************************** -->
@@ -15,7 +15,7 @@
     <!-- ********************* START SECURITY CONFIGURATION ************************ -->
      
      <!-- Xml (Spago framework) security Provider  -->
-     <!-- 
+     <!--
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityProviderImpl">
@@ -24,8 +24,20 @@
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlUserProfileFactoryImpl" />
     	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
 	 </SECURITY>
+	 -->
+   <!-- Web security Provider  (LDAP) -->
+   <!--
+	<SECURITY>
+  		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.LdapSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
+			<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.LdapSecurityProviderImpl">
+				<CONFIG />
+			</PORTAL-SECURITY-CLASS>
+		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.LdapUserProfileFactoryImpl" />
+		<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
+	</SECURITY>
 	  -->
      <!-- Exo security Provider  -->
+    
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoGroupAsRoleSecurityProviderImpl">
@@ -147,6 +159,9 @@
 		<!-- CMS DAO IMPLEMENTATION -->
  		<DAO name="BIObjectCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.BIObjectCMSDAOImpl"/>		
 		<DAO name="FunctionalityCMSDAO" implementation="it.eng.spagobi.bo.dao.cms.FunctionalityCMSDAOImpl"/>		
+		<!-- VIEWPOINT DAO IMPLEMENTATION -->
+ 		<DAO name="ViewpointDAO" implementation="it.eng.spagobi.bo.dao.hibernate.ViewpointDAOHimpl"/>		
+		
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

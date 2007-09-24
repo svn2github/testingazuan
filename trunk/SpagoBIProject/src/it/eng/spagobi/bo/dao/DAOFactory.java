@@ -193,4 +193,14 @@ public class DAOFactory {
 	public static IObjParuseDAO getObjParuseDAO() throws EMFUserError{
 		return (IObjParuseDAO)createDAOInstance("ObjParuseDAO");
 	}
+	
+	/**
+	 * Creates a DAO instance for a viewpoint
+	 * 
+	 * @return a DAO instance for the viewpoint
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IViewpointDAO getViewpointDAO() throws EMFUserError{
+		return (IViewpointDAO)createDAOInstance("ViewpointDAO");
+	}	
 }

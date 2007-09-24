@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 package it.eng.spagobi.services.modules;
-
+     	
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -30,7 +30,6 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.Domain;
@@ -38,11 +37,13 @@ import it.eng.spagobi.bo.Engine;
 import it.eng.spagobi.bo.ExecutionController;
 import it.eng.spagobi.bo.ModalitiesValue;
 import it.eng.spagobi.bo.Subreport;
+import it.eng.spagobi.bo.Viewpoint;
 import it.eng.spagobi.bo.BIObject.SubObjectDetail;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
+import it.eng.spagobi.bo.dao.IViewpointDAO;
 import it.eng.spagobi.bo.lov.ILovDetail;
 import it.eng.spagobi.bo.lov.LovDetailFactory;
 import it.eng.spagobi.bo.lov.LovResultHandler;
@@ -53,8 +54,10 @@ import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,6 +93,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	
 	public static final String MODULE_PAGE = "ExecuteBIObjectPage";	
 	public static final String MESSAGE_EXECUTION = "MESSAGEEXEC";	
+	public static final String SUBMESSAGEDET = "SUBMESSAGEDET";
 	
 	
 	public void init(SourceBean config) {}
@@ -106,6 +110,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 		debug("service", "start service method");
 		String messageExec = (String)request.getAttribute(SpagoBIConstants.MESSAGEDET);
 		debug("service", "using message" + messageExec);
+		String subMessageExec = (String)request.getAttribute(SUBMESSAGEDET);
+		debug("service", "using sub-message" + subMessageExec);
+		//if submessage is valorized it gives the value to message 
+		if (subMessageExec != null && !subMessageExec.equals("")) messageExec = subMessageExec;
 		errorHandler = getErrorHandler();
 		requestContainer = this.getRequestContainer();
 		session = requestContainer.getSessionContainer();
@@ -139,6 +147,14 @@ public class ExecuteBIObjectModule extends AbstractModule
 				execSnapshotHandler(request, response);
 			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE)) {
 				eraseSnapshotHandler(request, response);
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.VIEWPOINT_SAVE)) {
+				saveViewPoint(request, response);
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.VIEWPOINT_ERASE)) {
+				eraseViewpoint(request, response);
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.VIEWPOINT_EXEC)) {				
+				execViewpoint(request, response);
+			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.VIEWPOINT_VIEW)) {				
+				viewViewpoint(request, response);				
 			} else {	
 		   	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
 		   	    		            "ExecuteBIObjectMOdule", 
@@ -146,7 +162,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		   	    		            "Illegal request of service");
 		   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 102)); 
 		   	}
-	      } 
+	      }  
 	    catch (EMFUserError e) { 
 	    	errorHandler.addError(e); 
 	    }
@@ -163,8 +179,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
         // set data in response
         response.setAttribute(ObjectsTreeConstants.OBJECT_ID , obj.getId().toString());
-        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
-        		 			  SpagoBIConstants.PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT);
+        //response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,SpagoBIConstants.PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT);
         response.setAttribute(SpagoBIConstants.ROLE, role);
 	}
 
@@ -365,6 +380,11 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// put in response the list of snapshot 
 		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
 		
+		// get the list of viewpoints
+		List viewpoints = getViewpointList(obj);
+		debug("pageCreationHandler", "List viewpoint loaded: " + viewpoints);
+		// put in response the list of viewpoint 
+		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 					
 		// load the object into the Execution controller				
 		ExecutionController controller = new ExecutionController();
@@ -377,9 +397,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 	   		isSingleObjExec = true;
 		
 		// if the object can be directly executed (because it hasn't any parameter to be
-		// filled by the user) and if the object has no subobject / snapshots saved 
+		// filled by the user) and if the object has no subobject / snapshots / viewpoints saved 
 	   	// then execute it directly without pass through parameters page
-		if (controller.directExecution() &&  subObjects.size() == 0 && snapshots.size() == 0) {
+		if (controller.directExecution() &&  subObjects.size() == 0 && 
+			snapshots.size() == 0 && viewpoints.size() == 0) {
 			debug("pageCreationHandler", "object hasn't any parameter to fill and no subObjects");
 	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
 			// if there are some errors into the errorHandler does not execute the BIObject
@@ -387,7 +408,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 				return;
 			}
-            execute(obj, null, response);
+            execute(obj, null, null, response);
 		}
 		if(controller.directExecution()) {
 			debug("pageCreationHandler", "object has only subobjects but not parameter to fill");
@@ -519,10 +540,14 @@ public class ExecuteBIObjectModule extends AbstractModule
 		List subObjects = getSubObjectsList(obj, profile);
 		// get the list of biobject snapshot
 		List snapshots = getSnapshotList(obj);
+		// get the list of viewpoints
+		List viewpoints = getViewpointList(obj);		
 		// put in response the list of subobject names
 		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
 		// put in response the list of snapshot 
 		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+		// put in response the list of viewpoints 
+		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);		
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "ExecuteBIObjectPageParameter");
 	}
 	
@@ -555,6 +580,11 @@ public class ExecuteBIObjectModule extends AbstractModule
 		List snapshots = getSnapshotList(obj);
 		// put in response the list of snapshot 
 		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+		// get the list of viewpoint
+		List viewpoints = getViewpointList(obj);
+		// put in response the list of viewpoint 
+		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
+		
 		// set into the execution controlle the object
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
@@ -581,7 +611,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 				return;
 			}
 			obj.loadTemplate();
-            execute(obj, null, response);
+            execute(obj, null, null, response);
 		}
 		if(controller.directExecution()) {
 			response.setAttribute("NO_PARAMETERS", "TRUE");
@@ -658,8 +688,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		}
 		return snapshots;
 	}
-	
-	
+		
 	/**
 	 * Based on the object type launches the right execution mechanism. For objects executed 
 	 * by an external engine instantiates the driver for execution, gets the execution call parameters map,
@@ -669,7 +698,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param subObj The SubObjectDetail subObject to be executed (in case it is not null)
 	 * @param response The response Source Bean
 	 */
-	private void execute(BIObject obj, SubObjectDetail subObj, SourceBean response) {
+	private void execute(BIObject obj, SubObjectDetail subObj, String[] vpParameters, SourceBean response) {
 		debug("execute", "start execute");
 		
 	    // identity string for object execution
@@ -744,7 +773,21 @@ public class ExecuteBIObjectModule extends AbstractModule
 				// adding parameters for document-to-document drill
 				mapPars.put("username", profile.getUserUniqueIdentifier().toString());
 				mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
-
+				// adding or sobstituting parameters for viewpoint
+				if (vpParameters != null){
+					for (int i=0; i< vpParameters.length; i++){
+						String param = (String)vpParameters[i];
+						String name = param.substring(0, param.indexOf("="));
+						String value = param.substring(param.indexOf("=")+1);
+						if (mapPars.get(name) != null){
+							mapPars.remove(name);
+							mapPars.put(name, value);
+						}
+						else
+							mapPars.put(name, value);
+					}
+				}
+				
 				// set into the reponse the parameters map	
 				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
 				
@@ -949,7 +992,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         	}
         }
         
-        execute(obj, subObj, response);        
+        execute(obj, subObj, null, response);        
   
 	}
 	
@@ -1146,6 +1189,11 @@ public class ExecuteBIObjectModule extends AbstractModule
 			List snapshots = getSnapshotList(obj);
 			// put in response the list of snapshot 
 			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+			// get the list of viewpoint
+			List viewpoints = getViewpointList(obj);
+			// put in response the list of viewpoint 
+			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
+			
 			return;
         }
         
@@ -1162,12 +1210,17 @@ public class ExecuteBIObjectModule extends AbstractModule
 			List snapshots = getSnapshotList(obj);
 			// put in response the list of snapshot 
 			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+			// get the list of viewpoint
+			List viewpoints = getViewpointList(obj);
+			// put in response the list of viewpoints 
+			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
+			
 			return;
 		}
         // load the template of the object
         obj.loadTemplate();
         // call the execution method        
-        execute(obj, null, response);
+        execute(obj, null, null, response);
 	}
 	
 
@@ -1212,4 +1265,228 @@ public class ExecuteBIObjectModule extends AbstractModule
         }
 	}
 	
+	/**
+	 * Get the list ofviewpoints 
+	 * @param obj BIObject container of the viewpoint
+	 * @return the List of the viewpoints 
+	 */
+	private List getViewpointList(BIObject obj) {
+		List viewpoints = new ArrayList();
+		try {
+			IViewpointDAO biVPDAO = DAOFactory.getViewpointDAO();
+			viewpoints =  biVPDAO.loadAllViewpointsByObjID(obj.getId());
+			//if scope is 'public' or scope is 'private' and user is the owner, then the viewpoint is visualized
+			//get the current user profile
+			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			for (int i=0; i<viewpoints.size(); i++){
+				Viewpoint vp =(Viewpoint)viewpoints.get(i);
+				if (vp.getVpScope().equals(PortletUtilities.getMessage("SBIDev.docConf.viewPoint.scopePrivate", "messages")) &&
+				   !vp.getVpOwner().equals((String)profile.getUserUniqueIdentifier()))
+				viewpoints.remove(i);
+			}
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+                    			"getViewpointList", "Error retriving the viewpoint list", e);
+		}
+		return viewpoints;
+	}
+
+	
+	/**
+	 * Save a viewpoint.
+	 * @param request The request SourceBean
+	 * @param response The response SourceBean
+	 */	
+	public void saveViewPoint(SourceBean request, SourceBean response)  throws Exception  {		
+
+ 		BIObject obj = getBIObject();
+ 		//get from the session the execution role
+        String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+		//get the current user profile
+		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		// get the list of the subObjects
+		List subObjects = getSubObjectsList(obj, profile);
+		// get the list of biobject snapshot
+		List snapshots = getSnapshotList(obj);
+		String nameVP = (String)request.getAttribute("tmp_nameVP");
+		String descVP = (String)request.getAttribute("tmp_descVP");
+		String scopeVP = (String)request.getAttribute("tmp_scopeVP");
+		String ownerVP = (String)profile.getUserUniqueIdentifier();
+		String contentVP = "";
+		
+		//gets parameter's values and creates a string of values
+		List parameters = obj.getBiObjectParameters(); 		 		            
+        //Map paramsDescriptionMap = new HashMap();
+        Iterator iterParams = parameters.iterator();
+        while(iterParams.hasNext()) {	        	        	
+        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();	        	        	
+        	String labelUrl = biparam.getParameterUrlName();
+        	String value = (request.getAttribute(labelUrl)==null)?"":(String)request.getAttribute(labelUrl);
+        	//defines the string of parameters to save into db
+        	contentVP = contentVP + labelUrl + "=" + value + "&amp;";        	 
+        	List paramValues = getAsList(value);    		
+        	biparam.setParameterValues(paramValues);
+        }
+        
+        IViewpointDAO biViewpointDAO = DAOFactory.getViewpointDAO();
+		//check if a viewpoint with the same name yet exists
+		Viewpoint tmpVP = biViewpointDAO.loadViewpointByName(nameVP);
+		if (tmpVP != null){
+			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,6002, null));
+	        // put in session the new object
+	        session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+        	// set into the response the right information for loopback	        
+	        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter"); 
+	        response.setAttribute(SpagoBIConstants.ROLE, role);
+	        // put in response the list of subobject names
+			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+			// put in response the list of snapshot 
+			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+			// get the list of viewpoint
+			List viewpoints = getViewpointList(obj);
+			// put in response the list of viewpoint 
+			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
+			return;			
+		}   
+ 		Viewpoint aViewpoint = new Viewpoint();
+ 		aViewpoint.setBiobjId(obj.getId());
+ 		aViewpoint.setVpName(nameVP);
+ 		aViewpoint.setVpOwner(ownerVP); 		
+ 		aViewpoint.setVpDesc(descVP);
+ 		aViewpoint.setVpScope(scopeVP);
+ 		aViewpoint.setVpValueParams(contentVP.substring(0, contentVP.length()-5));
+ 		aViewpoint.setVpCreationDate(new Timestamp(System.currentTimeMillis()));
+ 		biViewpointDAO.insertViewpoint(aViewpoint);
+ 	
+ 	    // set data in response
+        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter"); 
+        response.setAttribute(SpagoBIConstants.ROLE, role);
+        // put in session the new object
+        session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+
+        // put in response the list of subobject names
+		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+		// put in response the list of snapshot 
+		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+		// get the list of viewpoint
+		List viewpoints = getViewpointList(obj);
+		// put in response the list of viewpoint 
+		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);		
+ 		return;	 		
+	}
+	
+	/**
+	 * Delete a viewpoint.
+	 * @param request The request SourceBean
+	 * @param response The response SourceBean
+	 */	
+	private void eraseViewpoint(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
+		String id = (String) request.getAttribute("vpId");
+		
+		IViewpointDAO VPDAO = DAOFactory.getViewpointDAO();				
+		VPDAO.eraseViewpoint(new Integer(id));
+        // get object from session
+        BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+        // get from the session the execution role
+        String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+        // set data in response
+        response.setAttribute(ObjectsTreeConstants.OBJECT_ID , obj.getId().toString());
+        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
+        		 			  SpagoBIConstants.PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT);
+        response.setAttribute(SpagoBIConstants.ROLE, role);
+	}
+	/**
+	 * Exec a viewpoint.
+	 * @param request The request SourceBean
+	 * @param response The response SourceBean
+	 */
+	private void execViewpoint(SourceBean request, SourceBean response) throws Exception {
+		//get object from session
+        BIObject obj = getBIObject();
+        String role = (String) session.getAttribute(SpagoBIConstants.ROLE);        
+		// built the url for the content recovering
+		String content = (request.getAttribute("content")==null)?"":(String)request.getAttribute("content");		
+		obj = execContr.prepareBIObjectInSession(session, obj.getId(), role, content.replace("&amp;", "&"));
+		// load the object into the Execution controller				
+		ExecutionController controller = new ExecutionController();
+		controller.setBiObject(obj);
+		
+		// if the object can be directly executed (because it hasn't any parameter to be
+		// filled by the user) then execute it directly without pass through parameters page
+		if (controller.directExecution()) {
+			//get the current user profile
+			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);			
+	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
+			// if there are some errors into the errorHandler does not execute the BIObject
+			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
+				return;
+			}
+//			 load the template of the object
+	        obj.loadTemplate();			
+            execute(obj, null, null, response);
+            response.setAttribute("NO_PARAMETERS", "TRUE");
+		}
+	}
+	/**
+	 * Gets viewpoint's parameters and view theme.
+	 * @param request The request SourceBean
+	 * @param response The response SourceBean
+	 */
+	private void viewViewpoint(SourceBean request, SourceBean response) throws Exception {
+		String id = (String) request.getAttribute("vpId");
+		
+		IViewpointDAO VPDAO = DAOFactory.getViewpointDAO();				
+		Viewpoint vp =  VPDAO.loadViewpointByID(new Integer(id));
+
+		BIObject obj = getBIObject();
+ 		//get from the session the execution role
+        String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+		//get the current user profile
+		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		
+		//gets parameter's values and creates a string of values
+		List parameters = obj.getBiObjectParameters(); 		 		            
+        Iterator iterParams = parameters.iterator();
+
+        String[] vpParameters = vp.getVpValueParams().split("&amp;");
+        while(iterParams.hasNext()) {	        	        	
+        	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();	        	        	
+        	String labelUrl = biparam.getParameterUrlName();
+        	String value = "";
+        	for (int i=0; i<vpParameters.length; i++){
+        		if ((vpParameters[i]).substring(0,vpParameters[i].indexOf("=")).equalsIgnoreCase(labelUrl)){
+        			value = vpParameters[i].substring(vpParameters[i].indexOf("=")+1);
+        			List paramValues = getAsList(value);  		
+        			biparam.setParameterValues(paramValues);
+	        		// refresh also the description
+	        		HashMap paramsDescriptionMap = (HashMap)session.getAttribute("PARAMS_DESCRIPTION_MAP");	        		
+	        		paramsDescriptionMap.put(labelUrl, value);
+	        		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
+
+        			break;
+        		}
+        	}
+        }
+        // put in session the new object		
+        session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+
+		// get the list of the subObjects
+		List subObjects = getSubObjectsList(obj, profile);
+        // put in response the list of subobject names
+		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);		
+		// get the list of biobject snapshot
+		List snapshots = getSnapshotList(obj);
+		// put in response the list of snapshot 
+		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+		// get the list of viewpoint
+		List viewpoints = getViewpointList(obj);
+		// put in response the list of viewpoint
+		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
+    	// set into the response the right information for loopback	        
+        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter"); 
+        response.setAttribute(SpagoBIConstants.ROLE, role);
+		return;			
+   
+	}
 }

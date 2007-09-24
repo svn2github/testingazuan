@@ -152,7 +152,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
 		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
-		rowSBStr += "		DESCRIPTION=\"" + obj.getDescription() + "\"";
+		rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
 		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
 		rowSBStr += "		ACTOR=\"" + actor + "\"";
@@ -167,7 +167,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
 		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
-		rowSBStr += "		DESCRIPTION=\"" + obj.getDescription() + "\"";
+		rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
 		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
 		
@@ -204,7 +204,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
 		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
-		rowSBStr += "		DESCRIPTION=\"" + obj.getDescription() + "\"";
+		rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
 		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
 		

@@ -1343,5 +1343,28 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-
+	<PUBLISHER name="loopbackViewPointExecution">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ACTOR" />
+                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.OBJECT_ID" />
+<!--                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.PARAMETERS" />-->
+     			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ROLE" />
+                <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+			</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ACTOR" />
+                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.OBJECT_ID" />
+<!--                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.PARAMETERS" />-->
+     			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ROLE" />
+                <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+			</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
 </PUBLISHERS>

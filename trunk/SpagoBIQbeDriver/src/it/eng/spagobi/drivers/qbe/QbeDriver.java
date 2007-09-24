@@ -38,18 +38,38 @@ public class QbeDriver implements IEngineDriver {
 
 	private void addLocale(Map map) {
 		ConfigSingleton config = ConfigSingleton.getInstance();
-		Locale portalLocale =  PortletUtilities.getPortalLocale();
+		Locale portalLocale = null;
+		try {
+			portalLocale =  PortletUtilities.getPortalLocale();
+		} catch (Exception e) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"addLocale(Map)",
+					"Error while getting portal locale.");
+			portalLocale = new Locale("en", "US");
+		}
+		SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+				"Portal locale: " + portalLocale);
+		
+		
 		SourceBean languageSB = null;
 		if(portalLocale != null && portalLocale.getLanguage() != null) {
 			languageSB = (SourceBean)config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
 					"language", portalLocale.getLanguage());
+			SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+					"Found language configuration for portal locale [" + portalLocale + "]: " + languageSB);
 		}
 		if(languageSB != null) {
 			map.put("country", (String)languageSB.getAttribute("country"));
 			map.put("language", (String)languageSB.getAttribute("language"));
+			SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+					"Adding [" + languageSB.getAttribute("country") + "," +
+							languageSB.getAttribute("language") + "] locale.");
 		} else {
 			map.put("country", "US");
 			map.put("language", "en");
+			SpagoBITracer.debug("ENGINES", this.getClass().getName(), "addLocale(Map)", 
+					"Adding [en,US] locale as default.");
 		}			
 	}
 	

@@ -315,7 +315,12 @@ public class HibernateDataSource extends BasicDataSource  {
 		
 		
 		try {
-			
+			/*
+			 * TEMPORARY: the next instruction forcing the loading of all classes in the path...
+			 * (ie. for some qbe that have in common any classes but not all and that at the moment they aren't loaded corretly)
+			 */
+			wasAlreadyLoaded = false;
+
 			if (!wasAlreadyLoaded) {
 				
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();

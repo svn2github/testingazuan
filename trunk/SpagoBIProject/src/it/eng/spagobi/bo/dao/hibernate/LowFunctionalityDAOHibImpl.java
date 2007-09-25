@@ -54,6 +54,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.MatchMode;
 
 /**
  * Defines the Hibernate implementations for all DAO methods,
@@ -201,7 +202,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// set new roles into sbiFunctions
 			hibFunct.setSbiFuncRoles(functRoleToSave);
 			// set new data
-			hibFunct.setCode(aLowFunctionality.getCode());
 			hibFunct.setDescr(aLowFunctionality.getDescription());
 			Criterion domainCdCriterrion = Expression.eq("valueCd",
 					aLowFunctionality.getCodType());
@@ -219,7 +219,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			hibFunct.setFunctType(functTypeDomain);
 			hibFunct.setFunctTypeCd(aLowFunctionality.getCodType());
 			hibFunct.setName(aLowFunctionality.getName());
-			hibFunct.setPath(aLowFunctionality.getPath());
 			
 			Integer parentId = aLowFunctionality.getParentId();
 			Criteria parentCriteria = aSession.createCriteria(SbiFunctions.class);
@@ -234,6 +233,33 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1037);
 			}
 			hibFunct.setParentFunct(hibParentFunct);
+			
+			// manages code and path
+			String previousCode = hibFunct.getCode();
+			String previousPath = hibFunct.getPath();
+			String newCode = aLowFunctionality.getCode();
+			String newPath = aLowFunctionality.getPath();
+			if (!previousCode.equals(newCode) || !previousPath.equals(newPath)) {
+				// the code was changed, so the path of the current folder and of its child folders 
+				// must be changed
+				
+				// changes the code and path of the current folder
+				hibFunct.setCode(newCode);
+				hibFunct.setPath(newPath);
+				
+				// loads sub folders and changes their path
+				Criteria subFoldersCriteria = aSession.createCriteria(SbiFunctions.class);
+				Criterion subFoldersCriterion = Expression.like("path", previousPath + "/", MatchMode.START);
+				subFoldersCriteria.add(subFoldersCriterion);
+				List hibList = subFoldersCriteria.list();
+				Iterator it = hibList.iterator();
+				while (it.hasNext()) {
+					SbiFunctions aSbiFunctions = (SbiFunctions) it.next();
+					String oldPath = aSbiFunctions.getPath();
+					String unchanged = oldPath.substring(previousPath.length());
+					aSbiFunctions.setPath(newPath + unchanged);
+				}
+			}
 			
 			// commit all changes
 			tx.commit();

@@ -357,6 +357,13 @@ public class DetailFunctionalityModule extends AbstractModule {
 				getErrorHandler().addError(error);
 			}
 			lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(new Integer(idFunct), false);
+			
+			// finds the new path
+			String oldPath = lowFunct.getPath();
+			String parentPath = oldPath.substring(0, oldPath.lastIndexOf("/"));
+			String newPath = parentPath + "/" + code;
+			
+			lowFunct.setPath(newPath);
 			lowFunct.setCode(code);
 			lowFunct.setDescription(description);
 			lowFunct.setName(name);

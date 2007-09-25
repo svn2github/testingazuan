@@ -40,6 +40,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.ParameterUse;

@@ -76,6 +76,8 @@ public class GeoAction extends AbstractHttpAction {
 		if(isSaveSubObjFuncActive == null) isSaveSubObjFuncActive = "TRUE";
 		
 		template = getTemplate(serviceRequest);
+		String templateStr = new String(template);
+		System.out.println("----------------------\n" + templateStr);
 		subObjectDetails = getSubObjectDetails(serviceRequest, true);
 		
 		

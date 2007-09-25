@@ -72,25 +72,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <body>
 
-<%
-	if(spagoBiInfo == null) {
-%>
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%= dm.getName() %> : <%=dm.getDescription() %> - <%= qbeMsg.getMessage(requestContainer,"QBE.Title.Conditions", bundle) %>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<%@include file="/../../../jsp/qbe_headers.jsp"%>
-	</tr>
-</table>
-<%
-	}
-%>
-
-<%@include file="../../../jsp/testata.jsp" %>
 
 
 <table  height="100%" border="0px" valign="top" style="background-color:#e6e6e6;">
@@ -116,7 +97,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		      <input type="hidden" name="target_level" value="<%=target_level%>" />
 		      <input type="hidden" name="mapCatalogueManagerUrl" value="<%=mapCatalogueManagerUrl%>" />
 		      <input type="hidden" name="isSaveSubObjFuncActive" value="FALSE" />
-		       <input type="hidden" name="NEW_SESSION" value="TRUE" />
+		      <input type="hidden" name="NEW_SESSION" value="TRUE" />
 		      
 		      
 		</form>			
@@ -133,15 +114,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
      
 </script>
 
-
-	
-
-<div id="divSpanCurrent">
-	<span id="currentScreen">DIV_GEO_VIEWER</span>
-</div>
-
-
-<%@include file="../../../jsp/qbefooter.jsp" %>
 
 </body>
 

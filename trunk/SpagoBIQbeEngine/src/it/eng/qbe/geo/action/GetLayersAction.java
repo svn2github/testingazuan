@@ -62,8 +62,8 @@ public class GetLayersAction extends GeoAbstractAction {
 			String layerName = (String)layers.get(i);
 			buffer.append("<LAYER>" + layerName + "</LAYER>");
 		}
-		buffer.append("<LAYER>" + "Grafici" + "</LAYER>");
-		buffer.append("<LAYER>" + "Valori" + "</LAYER>");
+		buffer.append("<LAYER>" + "grafici" + "</LAYER>");
+		buffer.append("<LAYER>" + "valori" + "</LAYER>");
 		buffer.append("</LAYERS>");
 		
 		SourceBean result = new SourceBean("RESPONSE");

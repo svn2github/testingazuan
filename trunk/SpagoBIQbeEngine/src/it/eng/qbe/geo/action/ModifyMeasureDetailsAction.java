@@ -48,23 +48,7 @@ public class ModifyMeasureDetailsAction extends GeoAbstractAction {
 		mapRendererConfiguration = mapConfiguration.getMapRendererConfiguration();
 		measure = mapRendererConfiguration.getMeasure(measureName);
 		if(measure == null) {
-			measure = new MapRendererConfiguration.Measure();
-			measure.setColumnId(measureName);
-			measure.setDescription(measureName);
-			measure.setColour("#F55FFF");
-			measure.setTresholdCalculatorType("quantile");
-			measure.setTresholdLb("0");
-			measure.setTresholdUb("none");
-			measure.setTresholdCalculatorParameters(new Properties());
-			//measure.getTresholdCalculatorParameters().setProperty("range", "");
-			measure.getTresholdCalculatorParameters().setProperty("GROUPS_NUMBER", "5");
-			measure.setColurCalculatorType("grad");
-			measure.setColurOutboundCol("#000000");
-			measure.setColurNullCol("#000000");
-			measure.setColurCalculatorParameters(new Properties());
-			//measure.getColurCalculatorParameters().setProperty("range", "");
-			measure.getColurCalculatorParameters().setProperty("BASE_COLOR", "#F0F027");
-			
+			measure = new MapRendererConfiguration.Measure(measureName);			
 			mapRendererConfiguration.addMeasure(measure);
 		}
 		

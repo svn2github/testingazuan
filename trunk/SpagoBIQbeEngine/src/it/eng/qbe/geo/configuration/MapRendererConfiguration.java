@@ -62,6 +62,41 @@ public class MapRendererConfiguration {
 		String colurCalculatorType;
 		Properties colurCalculatorParameters;
 		
+		private static final String[] measureBaseColours = new String[]{
+			"#FF0000", "#FFFF00", "#FF00FF", "#00FFFF", 
+			"#FF6600", "#FF0066", "#00FF66", "#0066FF", "#6600FF", "#66FF00",
+			"#9900CC"
+		};
+		
+		private static int counter = 0;
+		
+		public Measure() {
+			this("");
+		}
+		
+		public Measure(String measureName) {
+			super();
+			this.setColumnId(measureName);
+			this.setDescription(measureName);
+			this.setColour("#CCCC66");
+			this.setTresholdCalculatorType("quantile");
+			this.setTresholdLb("0");
+			this.setTresholdUb("none");
+			this.setAggFunc("sum");
+			this.setTresholdCalculatorParameters(new Properties());
+			this.getTresholdCalculatorParameters().setProperty("range", "");
+			this.getTresholdCalculatorParameters().setProperty("GROUPS_NUMBER", "5");
+			this.setColurCalculatorType("grad");
+			this.setColurOutboundCol("#CCCCCC");
+			this.setColurNullCol("#FFFFFF");
+			this.setColurCalculatorParameters(new Properties());
+			this.getColurCalculatorParameters().setProperty("range", "");
+			this.getColurCalculatorParameters().setProperty("BASE_COLOR", measureBaseColours[counter]);
+			
+			counter++;
+			if(counter == measureBaseColours.length) counter = 0;
+		}
+		
 		public String getColour() {
 			return colour;
 		}

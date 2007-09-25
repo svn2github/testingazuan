@@ -73,6 +73,10 @@
 		<CONFIG></CONFIG>
 	</ACTION>	
 	
+	<ACTION name="PREVIEW_ON_MAP" class="it.eng.qbe.geo.action.PreviewOnMapAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
 	
 	
 </ACTIONS>

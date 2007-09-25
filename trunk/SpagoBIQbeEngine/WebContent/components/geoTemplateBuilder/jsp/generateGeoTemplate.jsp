@@ -170,15 +170,70 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <div id='submitDiv' style="display:none;width:98%;margin:10px 0px 0px 0px;border:solid; border-width:0px">
-	<center>
-	  <input type="submit" name="refresh" value="Get templete" onClick="getTempalte()"/>
-	</center>
+	
+
+	<table  width="100%" height="100%" border="0" valign="top" style="background-color:white">
+		
+		<tr valign="top" height="50px">
+			<td width="50%" align="right" valign="top">
+	  			<input type="submit" name="refresh" value="Get templete" onClick="getTempalte()"/>
+			</td>
+			<td width="50%" align="left" valign="top">
+				<input type="submit" name="preview" value="See preview" onClick="showPreview()"/>
+			</td>
+		</tr>
+		
+		<tr valign="top" height="80%">
+			<td width="100%" valign="top" colspan="2">
+			
+			<div width="100%" id="previewPanel" valign="top" style="display:none">
+				<center>
+				<iframe id="previewIFrame"
+				        name="previewIFrame"
+				        src=""
+				        width="100%"
+				        height="300px"
+				        frameborder="3">
+				</iframe>	
+				</center>				
+			</div>
+			
+			</td>
+		</tr>
+		
+	</table>	
 </div>
 
 </center>
 
+<script type="text/javascript">
+
+function initIframeDimensions() {
+ var winW = "100%";
+ var winH = "300px";
+ 
+ if (navigator.appName=="Netscape") {
+  winW = window.innerWidth;
+  winH = window.innerHeight;
+ }
+ 
+ if (navigator.appName.indexOf("Microsoft")!=-1) {
+  winW = document.body.offsetWidth;
+  winH = document.body.offsetHeight;
+ }
+ 
+ var previewIFrame = document.getElementById('previewIFrame');
+ previewIFrame.width = Math.round(winW*0.8);
+ previewIFrame.height = Math.round(winH*0.8);
+ }
+ 
+ initIframeDimensions();
+
+</script>
+
 <form method='POST' action='../servlet/AdapterHTTP?ACTION_NAME=GET_TEMPLETE_ACTION' 
-	  id='mainForm' name='mainForm'>
+	  id='mainForm' name='mainForm'
+	  target="self">
 	  
 	  <input type="hidden" id="par_query" name="query" value=""/>
 	  <input type="hidden" id="par_geoIdColumn" name="geoIdColumn" value=""/>
@@ -293,12 +348,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     stepDivs[6].style.display = 'none';
     stepDivs[7].style.display = 'none';
     
+    if(step == 7) {
+    	var previewPanel = document.getElementById('previewPanel');
+    	previewPanel.style.display = 'none';
+    	//alert("hide");
+    }
+    
     stepDivs[step].style.display = 'inline';
     confStepTitle.innerHTML = stepDescr[step];
+    
+    
   }
   
-  function getTempalte() {
   
+  function setUpInputParams() {
   	var queryPar = document.getElementById('par_query');
   	if(queryPar !=null) {
 	  	if(isQbeQuerySelected) {
@@ -343,11 +406,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		selectedLayersStr += selectedLayers[i] + ";";
 	}
 	selectedLayersPar.value = selectedLayersStr;
-	  
-	
+  }
+  
+  
+  function getTempalte() {
+  
+  	setUpInputParams();
 	
   	var mainForm = document.getElementById('mainForm');
+  	mainForm.action = "../servlet/AdapterHTTP?ACTION_NAME=GET_TEMPLETE_ACTION";
+  	mainForm.target = "_self";
   	mainForm.submit();
+  }
+  
+  function showPreview() {
+  	setUpInputParams();
+  	
+  	var mainForm = document.getElementById('mainForm');
+  	mainForm.action = "../servlet/AdapterHTTP?ACTION_NAME=PREVIEW_ON_MAP";
+  	mainForm.target = "previewIFrame";
+  	mainForm.submit();
+  	
+  	var previewPanel = document.getElementById('previewPanel');
+    previewPanel.style.display = 'inline';
   }
   
   

@@ -171,7 +171,8 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		
 		mapRendererConfiguration.resetMeasures();
 		for(int i = 0; i < measureColumnAliases.length; i++) {
-			mapRendererConfiguration.addMeasure(createMeasure(measureColumnAliases[i]));
+			//mapRendererConfiguration.addMeasure(createMeasure(measureColumnAliases[i]));
+			mapRendererConfiguration.addMeasure(new MapRendererConfiguration.Measure(measureColumnAliases[i]));	
 		}
 		
 		

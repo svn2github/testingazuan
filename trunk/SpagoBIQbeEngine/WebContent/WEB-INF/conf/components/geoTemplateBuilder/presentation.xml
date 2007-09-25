@@ -14,6 +14,7 @@
 	<MAPPING business_type="ACTION" business_name="EXIT_MEASURE_DETAILS_ACTION" publisher_name="EXIT_MEASURE_DETAILS_PUBLISHER"/>
 
 	<MAPPING business_type="ACTION" business_name="VIEW_ON_MAP" publisher_name="VIEW_ON_MAP_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="PREVIEW_ON_MAP" publisher_name="PREVIEW_ON_MAP_PUBLISHER"/>
 	
 
 

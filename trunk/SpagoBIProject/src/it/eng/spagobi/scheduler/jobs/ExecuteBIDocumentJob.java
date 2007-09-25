@@ -100,10 +100,12 @@ public class ExecuteBIDocumentJob implements Job {
 					IEngUserProfile profile = new FakeUserProfile("scheduler");
 					
 					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-					String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
-					String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
-					String endExecMsgIniPart = msgBuilder.getMessage("scheduler.endexecsched", "component_scheduler_messages");
-					String endExecMsg = endExecMsgIniPart + " " + biobj.getName();
+					//String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
+					//String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
+					String startExecMsg = "${scheduler.startexecsched} " + biobj.getName();
+					//String endExecMsgIniPart = msgBuilder.getMessage("scheduler.endexecsched", "component_scheduler_messages");
+					//String endExecMsg = endExecMsgIniPart + " " + biobj.getName();
+					String endExecMsg = "${scheduler.endexecsched} " + biobj.getName();
 					
 					EventsManager eventManager = EventsManager.getInstance();
 					List roles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(biobj.getId());

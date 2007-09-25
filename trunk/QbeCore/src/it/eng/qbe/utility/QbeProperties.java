@@ -42,8 +42,10 @@ public class QbeProperties {
 	public static final int CLASS_TYPE_RELATION = 2;
 	public static final int CLASS_TYPE_VIEW = 3;
 	
+	public static final int FIELD_TYPE_UNDEFINED = 0;
 	public static final int FIELD_TYPE_MEASURE = 1;
 	public static final int FIELD_TYPE_DIMENSION = 2;
+	public static final int FIELD_TYPE_GEOREF = 3;
 	
 	private Properties qbeProperties = null;
 	
@@ -89,12 +91,28 @@ public class QbeProperties {
 	
 	
 	public int getFieldType(String className) {
-		if(qbeProperties == null) return FIELD_TYPE_DIMENSION;
+		if(qbeProperties == null) return -1;
 		String type = qbeProperties.getProperty(className + ".type");
-		if(type == null || type.trim().equalsIgnoreCase("dimension")) {
+		if(type != null && type.trim().equalsIgnoreCase("dimension")) {
 			return FIELD_TYPE_DIMENSION;
-		} else {
+		} else if (type != null && type.trim().equalsIgnoreCase("measure")) {
 			return FIELD_TYPE_MEASURE;
+		} else if (type != null && type.trim().equalsIgnoreCase("georef")) {
+			return FIELD_TYPE_GEOREF;
+		} else {
+			return FIELD_TYPE_UNDEFINED;
+		}
+	}
+	
+	public void setFieldType(String className, int type) {		
+		if(type == FIELD_TYPE_DIMENSION) {
+			qbeProperties.setProperty(className + ".type", "dimension");
+		} else if(type == FIELD_TYPE_MEASURE) {
+			qbeProperties.setProperty(className + ".type", "measure");
+		} else if(type == FIELD_TYPE_GEOREF) {
+			qbeProperties.setProperty(className + ".type", "georef");
+		} else {
+	
 		}
 	}
 

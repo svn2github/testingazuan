@@ -101,7 +101,6 @@ public class HibernateDataSource extends BasicDataSource  {
 			}
 		}
 		*/
-		
 		sf = cfg.buildSessionFactory();
 				
 		return sf;
@@ -312,6 +311,8 @@ public class HibernateDataSource extends BasicDataSource  {
 		} catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}
+		
+		
 		
 		try {
 			

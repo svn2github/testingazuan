@@ -39,8 +39,10 @@ public interface IDataMartModel extends Serializable {
 	
 	public DataMartModelStructure getDataMartModelStructure();
 	public HibernateDataSource getDataSource();
+	
 	public DataMartModelAccessModality getDataMartModelAccessModality();
 	public void setDataMartModelAccessModality(DataMartModelAccessModality dataMartModelAccessModality);	
+	
 	public Properties getDataMartProperties();
 	public void setDataMartProperties(Properties dataMartProperties);
 }

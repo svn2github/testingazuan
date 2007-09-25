@@ -27,6 +27,7 @@ import it.eng.spagobi.utilities.callbacks.events.EventsAccessUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -116,14 +117,16 @@ public class JobRunnerThread extends Thread {
 		endEventParams.put(EventsAccessUtils.EVENT_TYPE, EventsAccessUtils.DOCUMENT_EXECUTION_END);
 		//endEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
 		endEventParams.put(EventsAccessUtils.BIOBJECT_ID, _parameters.get(EventsAccessUtils.BIOBJECT_ID));
-		endEventParams.put(EventsAccessUtils.START_EVENT_ID, startEventId.toString());
+		if (startEventId != null) {
+			endEventParams.put(EventsAccessUtils.START_EVENT_ID, startEventId.toString());
+		}
 		
 		String endExecutionEventDescription = null;
-		
+		BufferedReader input = null;
     	try { 
 			String line;
 			Process p = Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
-			BufferedReader input = new BufferedReader (new InputStreamReader(p.getInputStream()));
+			input = new BufferedReader (new InputStreamReader(p.getInputStream()));
 			while ((line = input.readLine()) != null) {
 				logger.debug(line);
 				//System.out.println(line);
@@ -134,7 +137,6 @@ public class JobRunnerThread extends Thread {
 			endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
 			endEventParams.put("operation-result", "success");
 			
-			input.close();
 		} catch (Exception e){
 			logger.error("Error while executing command " + _command, e);
 			endExecutionEventDescription = "${talend.execution.executionKo}<br/>";
@@ -148,6 +150,13 @@ public class JobRunnerThread extends Thread {
 				while (it.hasNext()) {
 					File aFile = (File) it.next();
 					if (aFile != null && aFile.exists()) FileUtils.deleteDirectory(aFile);
+				}
+			}
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}

@@ -258,6 +258,9 @@ public class GeneralUtilities {
 		try{
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "method invoked");
+			ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+			path = (String)spagoconfig.getAttribute(SpagoBIConstants.SBICONTEXTURL);
+			/*
 			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "Portlet request obtained: " + portletRequest);
@@ -287,6 +290,7 @@ public class GeneralUtilities {
 					}
 				}
 			}
+			*/
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "using context path: " + path);
 		} catch(Exception e) {
@@ -294,7 +298,6 @@ public class GeneralUtilities {
 					            "getSpagoBiContextAddress", "Error while recovering SpagoBI context address", e);
 		}
 		return path;
-		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	}
 	
 	/**

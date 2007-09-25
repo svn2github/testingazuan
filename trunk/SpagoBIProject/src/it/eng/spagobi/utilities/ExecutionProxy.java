@@ -68,6 +68,14 @@ public class ExecutionProxy {
 			// get the map of parameter to send to the engine
 			Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
 			
+			// set spagobi context url
+			if(!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
+				String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+				if(sbiconturl!=null) {
+					mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
+				}
+			}
+			
 		    // AUDIT
 			AuditManager auditManager = AuditManager.getInstance();
 			Integer executionId = auditManager.insertAudit(biObject, profile, "", "SCHEDULATION");

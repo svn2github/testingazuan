@@ -240,8 +240,12 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			String newCode = aLowFunctionality.getCode();
 			String newPath = aLowFunctionality.getPath();
 			if (!previousCode.equals(newCode) || !previousPath.equals(newPath)) {
-				// the code was changed, so the path of the current folder and of its child folders 
+				// the code or the path was changed, so the path of the current folder and of its child folders 
 				// must be changed
+				
+				// the condition !previousPath.equals(newPath) was added for the following reason:
+				// till SpagoBI 1.9.3 a folder may have a path different from parentPath + "/" + code,
+				// with this condition those cases are considered and corrected.
 				
 				// changes the code and path of the current folder
 				hibFunct.setCode(newCode);

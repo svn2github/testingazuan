@@ -225,7 +225,7 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + objParId;	
+			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + objParId + " order by s.prog";	
 			Query hqlQuery = aSession.createQuery(hql);
 			List sbiObjParuses = hqlQuery.list();
 			Iterator it = sbiObjParuses.iterator();

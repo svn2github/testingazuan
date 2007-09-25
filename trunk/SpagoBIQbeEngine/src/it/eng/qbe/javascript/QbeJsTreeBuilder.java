@@ -203,7 +203,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 		nodeCounter++;
 		
-		PersistentClass pc = dataMartModel.getDataSource().getHibCfg().getClassMapping(className);
+		PersistentClass pc = dataMartModel.getDataSource().getHibernateConfiguration().getClassMapping(className);
+		
+		
 		String classLabel = Utils.getLabelForClass(Utils.getRequestContainer(httpRequest), dataMartModel, className);
 		
 		if (relationOnColumnName != null){
@@ -361,7 +363,26 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 					fieldAction = fieldUrlGenerator.generateURL(completeFieldName, fldLabel,  keyPropertiesType[j]);
 				}
 				
+				String fieldImage;
+				int type = qbeProperties.getFieldType(completeFieldRef);
+				if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
+					type = qbeProperties.getFieldType((String)keyProperties.get(j));
+					if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
+						type = QbeProperties.FIELD_TYPE_DIMENSION;
+					} else {
+						qbeProperties.setFieldType(completeFieldRef, type);
+					}
+				}
 				
+				if(type == QbeProperties.FIELD_TYPE_DIMENSION) {
+					fieldImage = "../img/key.gif";
+				} else if(type == QbeProperties.FIELD_TYPE_DIMENSION) {
+					fieldImage = "../img/key.gif";
+				} else if(type == QbeProperties.FIELD_TYPE_GEOREF) {
+					fieldImage = "../img/world.gif";
+				} else {
+					fieldImage = "../img/key.gif";
+				}
 				
 				if(checkable) {
 					String selected = "";
@@ -385,8 +406,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							fieldAction,  
 							fldLabel, 
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
+							qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
 							"", "", "", "", "");	
 				}
 			}
@@ -479,10 +500,24 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 						}
 						
 						String fieldImage;
-						if(qbeProperties.getFieldType(metaPropertyNames[i]) == QbeProperties.FIELD_TYPE_DIMENSION) {
+						int type = qbeProperties.getFieldType(completeFieldRef);
+						if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
+							type = qbeProperties.getFieldType(metaPropertyNames[i]);
+							if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
+								type = QbeProperties.FIELD_TYPE_DIMENSION;
+							} else {
+								qbeProperties.setFieldType(completeFieldRef, type);
+							}
+						}
+						
+						if(type == QbeProperties.FIELD_TYPE_DIMENSION) {
 							fieldImage = "../img/redbox.gif"; //"../img/Method.gif";
-						} else {
+						} else if(type == QbeProperties.FIELD_TYPE_MEASURE) {
 							fieldImage = "../img/Method.gif"; //"../img/dot.png";
+						} else if(type == QbeProperties.FIELD_TYPE_GEOREF) {
+							fieldImage = "../img/world.gif"; //"../img/dot.png";
+						} else {
+							fieldImage = "../img/undef.gif"; //"../img/Method.gif";
 						}
 						
 						

@@ -1026,6 +1026,12 @@
 						return true;
 					}
 					
+					if (divTxt == 'DIV_GEO_VIEWER'){
+						inputNextActionAfterSaveCondition.value='GENERATE_GEO_TEMPLATE_ACTION';
+						formUpdCond.submit();
+						return true;
+					}
+					
 					if (divTxt == 'DIV_SAVE_SUBQUERY'){
 						inputNextActionAfterSaveCondition.value='PUBLISH_ACTION';
 						inputNextPublisherAfterSaveCondition.value='EXIT_FROM_SUBQUERY_PUBLISHER';
@@ -1113,6 +1119,12 @@
 						return true;
 					}
 					
+					if (divTxt == 'DIV_GEO_VIEWER'){
+						inputNextActionAfterSaveCondition.value='GENERATE_GEO_TEMPLATE_ACTION';
+						formUpdCond.submit();
+						return true;
+					}
+					
 					if (divTxt == 'DIV_SAVE_SUBQUERY'){
 						
 						inputNextActionAfterSaveCondition.value='PUBLISH_ACTION';
@@ -1135,6 +1147,7 @@
 				var frmExportResultF = document.getElementById('frmExportResult');
 				var frmSaveQueryF = document.getElementById('frmSaveQuery');
 				var frmGeo = document.getElementById('frmGeo');
+				var frmGeoViewer = document.getElementById('frmGeoViewer');				
 				var frmSaveSubQuery = document.getElementById('frmSaveSubQuery');
 				
 				
@@ -1184,6 +1197,11 @@
 				
 				if (divTxt == 'DIV_GEO'){
 					frmGeo.submit();
+					return true;
+				}
+				
+				if (divTxt == 'DIV_GEO_VIEWER'){
+					frmGeoViewer.submit();
 					return true;
 				}
 				
@@ -1255,6 +1273,10 @@
 		
 		<form id="frmGeo" name="frmGeo" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
 			<input class='qbe' type="hidden" name="ACTION_NAME" value="GENERATE_GEO_TEMPLATE_ACTION"/>
+		</form>
+		
+		<form id="frmGeoViewer" name="frmGeoViewer" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+			<input class='qbe' type="hidden" name="ACTION_NAME" value="VIEW_ON_MAP"/>
 		</form>
 						
 		<form id="frmSaveSubQuery" name="frmSaveSubQuery" action="<%=qbeUrl.getUrl(request,null) %>" method="post">

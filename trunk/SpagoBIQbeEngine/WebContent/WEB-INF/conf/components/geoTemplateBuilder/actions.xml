@@ -63,12 +63,13 @@
 	
 	<ACTION name="GET_TEMPLETE_ACTION" class="it.eng.qbe.geo.action.GetTempleteAction" scope="REQUEST">
 		<CONFIG></CONFIG>
-	</ACTION>
-	
-	
-	
+	</ACTION>	
 	
 	<ACTION name="DELETE_HIERACHIES_ACTION" class="it.eng.qbe.geo.action.DeleteHierarchyAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	<ACTION name="VIEW_ON_MAP" class="it.eng.qbe.geo.action.ViewOnMapAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>	
 	

@@ -80,7 +80,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 	String editableStr = null;
-	Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
+	//Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
 	
 	if(functionalities != null) {
 		Properties props = (Properties)functionalities.get("expertQuery");

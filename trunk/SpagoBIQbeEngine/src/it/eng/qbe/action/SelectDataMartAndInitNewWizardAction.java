@@ -74,6 +74,7 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 			session.setAttribute("spagobi", spagoBIInfo);
 			MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(mapCatalogueManagerUrl);
 			session.setAttribute("MAP_CATALOGUE_CLIENT", mapCatalogueAccessUtils);
+			session.setAttribute("MAP_CATALOGUE_CLIENT_URL", mapCatalogueManagerUrl);
 		}
 		
 		

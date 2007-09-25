@@ -12,4 +12,9 @@
 	<MAPPING business_type="ACTION" business_name="SAVE_MEASURE_ACTION" publisher_name="MEASURE_DETAILS_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="SAVE_MEASURE_AND_EXIT_ACTION" publisher_name="EXIT_MEASURE_DETAILS_PUBLISHER"/>
 	<MAPPING business_type="ACTION" business_name="EXIT_MEASURE_DETAILS_ACTION" publisher_name="EXIT_MEASURE_DETAILS_PUBLISHER"/>
+
+	<MAPPING business_type="ACTION" business_name="VIEW_ON_MAP" publisher_name="VIEW_ON_MAP_PUBLISHER"/>
+	
+
+
 </PRESENTATION>

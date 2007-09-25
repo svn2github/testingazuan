@@ -177,7 +177,7 @@ function askConfirmation (message) {
 				<table> 																																							
 					<% 
 					String editableStr = null;
-					Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
+					//Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
 					
 					if(functionalities != null) {
 						Properties props = (Properties)functionalities.get("expertQuery");

@@ -40,6 +40,14 @@
 		</RENDERING>
 	</PUBLISHER>
 	
+	<PUBLISHER name="VIEW_ON_MAP_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/executeGeoAnalysis.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
 	
 	
 	

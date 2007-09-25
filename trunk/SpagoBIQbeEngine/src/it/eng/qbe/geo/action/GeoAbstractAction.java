@@ -67,7 +67,6 @@ public class GeoAbstractAction extends AbstractHttpAction {
 			
 			MapCatalogueAccessUtils mapCatalogueClient = null;
 			mapCatalogueClient = (MapCatalogueAccessUtils)getRequestContainer().getSessionContainer().getAttribute("MAP_CATALOGUE_CLIENT");
-			List maps = new ArrayList();
 			
 			DatamartProviderConfiguration.Hierarchy hierarchy;
 			if(mapCatalogueClient == null) {

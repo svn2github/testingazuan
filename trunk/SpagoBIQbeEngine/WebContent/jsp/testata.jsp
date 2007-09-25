@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 	boolean jasperTemplateBuilderVisible = true;
 	boolean geoTemplateBuilderVisible = true;
+	boolean geoViewerVisible = true;
 	Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
 	
 	if(functionalities != null) {
@@ -40,6 +41,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			pValue = props.getProperty("visible");
 			if(pValue != null && pValue.equalsIgnoreCase("FALSE")) geoTemplateBuilderVisible = false;
 		}
+		
+		props = (Properties)functionalities.get("geoViewer");
+		if(props != null) {
+			pValue = props.getProperty("visible");
+			if(pValue != null && pValue.equalsIgnoreCase("FALSE")) geoViewerVisible = false;
+		}
+		
+		
 	}
 	
 	
@@ -133,10 +142,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			%>
 			<div class='tab' id='DIV_GEO'>
 				<a href="javascript:vediSchermo('Geo','DIV_GEO')" 
-				   title="Geo" 
+				   title="GeoDesigner" 
 				   style="color:black;"
 				   >
-					Geo
+					Geo Designer
+				</a>
+			</div>
+			<%} %>
+			
+			<%
+			if(geoViewerVisible) {
+			%>
+			<div class='tab' id='DIV_GEO_VIEWER'>
+				<a href="javascript:vediSchermo('GeoViewer','DIV_GEO_VIEWER')" 
+				   title="GeoViewer" 
+				   style="color:black;"
+				   >
+					Geo Viewer
 				</a>
 			</div>
 			<%} %>

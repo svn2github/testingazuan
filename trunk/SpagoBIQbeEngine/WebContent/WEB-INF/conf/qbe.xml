@@ -28,6 +28,8 @@
 	
 	<QBE-SQL-RESULT-LIMIT value="10000"/>
 	
+	<GEO-ENGINE-URL value="http://localhost:8080/SpagoBIGeoEngine"/>
+	
 	<TEMPLATE-BUILDER>
 		
 		<!--  

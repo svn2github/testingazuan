@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          		 it.eng.spago.configuration.ConfigSingleton,
                  it.eng.spago.base.SourceBean" %>
 
-<%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
+<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 

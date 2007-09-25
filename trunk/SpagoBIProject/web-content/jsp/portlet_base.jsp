@@ -47,6 +47,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	// get configuration
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+	
+	// check if the sbi path is already setted into configuration otherwise add it
+	if(spagoconfig.getAttribute(SpagoBIConstants.SBICONTEXTURL)==null) {
+		// calculate spagobi context address
+		String  sbipath = request.getScheme() + "://"+request.getServerName()+ ":"+request.getServerPort() + request.getContextPath();
+		spagoconfig.setAttribute(SpagoBIConstants.SBICONTEXTURL, sbipath); 
+	}
+	
+	
 	// get mode of execution
 	//String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
 	String sbiMode = null;
@@ -95,6 +104,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
+<%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
 <html>
 <body>
 <%} %>

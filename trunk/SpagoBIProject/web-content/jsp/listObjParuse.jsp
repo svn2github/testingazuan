@@ -214,13 +214,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  function addLeftBreak(index) {
 	      var hidPreCond = document.getElementById("hiddenPrecondition"+index);
 	      var visPreCond = document.getElementById("visiblePrecondition"+index);
-	      var precond = hidPreCond.text;
+	      var precond = hidPreCond.value;
 	      if(precond==null) {
 	        precond = "(";
 	      } else {
 	        precond = precond + "(";
 	      }
-	      hidPreCond.text = precond;
+	      hidPreCond.value = precond;
 	      visPreCond.innerHTML = precond;
 	      correlationManager.setPreCondition(index, precond);
 	  }	  
@@ -228,7 +228,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  function removeLeftBreak(index) {
 	      var hidPreCond = document.getElementById("hiddenPrecondition"+index);
 	      var visPreCond = document.getElementById("visiblePrecondition"+index);
-	      var precond = hidPreCond.text;
+	      var precond = hidPreCond.value;
 	      if(precond==null) {
 	        return;
 	      }
@@ -237,7 +237,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      } else {
 	        return;
 	      }
-	      hidPreCond.text = precond;
+	      hidPreCond.value = precond;
 	      visPreCond.innerHTML = precond;
 	      correlationManager.setPreCondition(index, precond);
 	  }	  
@@ -245,13 +245,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	function addRightBreak(index) {
 	      var hidPostCond = document.getElementById("hiddenPostcondition"+index);
 	      var visPostCond = document.getElementById("visiblePostcondition"+index);
-	      var postcond = hidPostCond.text;
+	      var postcond = hidPostCond.value;
 	      if(postcond==null) {
 	        postcond = ")";
 	      } else {
 	        postcond = postcond + ")";
 	      }
-	      hidPostCond.text = postcond;
+	      hidPostCond.value = postcond;
 	      visPostCond.innerHTML = postcond;
 	      correlationManager.setPostCondition(index, postcond);
 	  }	  
@@ -259,7 +259,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  function removeRightBreak(index) {
 	      var hidPostCond = document.getElementById("hiddenPostcondition"+index);
 	      var visPostCond = document.getElementById("visiblePostcondition"+index);
-	      var postcond = hidPostCond.text;
+	      var postcond = hidPostCond.value;
 	      if(postcond==null) {
 	        return;
 	      }
@@ -268,7 +268,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      } else {
 	        return;
 	      }
-	      hidPostCond.text = postcond;
+	      hidPostCond.value = postcond;
 	      visPostCond.innerHTML = postcond;
 	      correlationManager.setPostCondition(index, postcond);
 	  }	  	  

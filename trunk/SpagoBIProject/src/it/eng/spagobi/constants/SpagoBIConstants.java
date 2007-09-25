@@ -94,10 +94,14 @@ public class SpagoBIConstants {
 	public static final String END_FILTER = "end";
 	public static final String EQUAL_FILTER = "equal";
 	public static final String CONTAIN_FILTER= "contain";
-	public static final String LESS_FILTER= "<";
-	public static final String LESS_OR_EQUAL_FILTER= "<=";
-	public static final String GREATER_FILTER= ">";
-	public static final String GREATER_OR_EQUAL_FILTER= ">=";
+	public static final String LESS_FILTER = "less";
+	public static final String LESS_OR_EQUAL_FILTER = "lessequal";
+	public static final String GREATER_FILTER = "greater";
+	public static final String GREATER_OR_EQUAL_FILTER = "greaterequal";
+	//public static final String LESS_FILTER_TEXT = "less";
+	//public static final String LESS_OR_EQUAL_FILTER_TEXT = "lessequal";
+	//public static final String GREATER_FILTER_TEXT = "greater";
+	//public static final String GREATER_OR_EQUAL_FILTER_TEXT = "greaterequal";
 	public static final String NUMBER_TYPE_FILTER= "NUM";
 	public static final String STRING_TYPE_FILTER= "STRING";
 	public static final String DATE_TYPE_FILTER= "DATE";
@@ -235,5 +239,12 @@ public class SpagoBIConstants {
 	public static final String JOB_GROUP_NAME = "jobGroupName";
 	
 	public static final String WEBMODE = "WEBMODE";
+	
+	public static final String SBICONTEXTURL = "spagobicontext";
+	
+	public static final String COUNTRY = "country";
+	
+	public static final String LANGUAGE = "language";
+	
 	
 }

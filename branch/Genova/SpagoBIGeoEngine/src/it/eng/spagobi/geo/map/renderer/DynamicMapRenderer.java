@@ -272,8 +272,8 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    }
 	    
 	    buffer.append("var num_group = new Array();\n");
-	    buffer.append("var lb = new Array();\n");
-	    buffer.append("var ub = new Array();\n");
+	    buffer.append("var lb_values = new Array();\n");
+	    buffer.append("var ub_values = new Array();\n");
 	    buffer.append("var lb_color = new Array();\n");
 	    buffer.append("var ub_color = new Array();\n");
 	    buffer.append("var null_values_color = new Array();\n");
@@ -291,17 +291,17 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    	if( measure.getTresholdLb() == null 
 	    			|| measure.getTresholdLb().trim().equalsIgnoreCase("")
 	    			|| measure.getTresholdLb().equalsIgnoreCase("none") ) {
-	    		buffer.append("lb['"+ kpiNames[i] +"'] = null;\n");
+	    		buffer.append("lb_values['"+ kpiNames[i] +"'] = null;\n");
 	    	} else {
-	    		buffer.append("lb['"+ kpiNames[i] +"'] = " + measure.getTresholdLb() + ";\n");
+	    		buffer.append("lb_values['"+ kpiNames[i] +"'] = " + measure.getTresholdLb() + ";\n");
 	    	}
 	    	
 	    	if( measure.getTresholdUb() == null 
 	    			|| measure.getTresholdUb().trim().equalsIgnoreCase("")
 	    			|| measure.getTresholdUb().equalsIgnoreCase("none") ) {
-	    		buffer.append("ub['"+ kpiNames[i] +"'] = null;\n");
+	    		buffer.append("ub_values['"+ kpiNames[i] +"'] = null;\n");
 	    	} else {
-	    		buffer.append("ub['"+ kpiNames[i] +"'] = " + measure.getTresholdUb() + ";\n");
+	    		buffer.append("ub_values['"+ kpiNames[i] +"'] = " + measure.getTresholdUb() + ";\n");
 	    	}
 	    	
 	    	

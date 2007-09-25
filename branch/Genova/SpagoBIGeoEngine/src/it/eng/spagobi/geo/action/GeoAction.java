@@ -38,16 +38,19 @@ public class GeoAction extends AbstractHttpAction {
 	public static final String INPUT_PAR_TEMPLATE = "Template";	
 	public static final String INPUT_PAR_TEMPLATE_PATH = "templatePath";
 	
+	public static final String INPUT_PAR_SO_FUNC_ACTIVE = "isSaveSubObjFuncActive";	
 	public static final String INPUT_PAR_SO_NAME = "nameSubObject";
 	public static final String INPUT_PAR_SO_DESC = "descriptionSubObject";
 	public static final String INPUT_PAR_SO_SCOPE = "visibilitySubObject";
 	public static final String INPUT_PAR_SO_DATA = "subobjectdata";
 	
 	
+	
 	public static final String OUTPUT_PAR_SO_FLAG = "isSubObject";
 	public static final String OUTPUT_PAR_SELECTED_LAYERS = "selectedLayers";
 	public static final String OUTPUT_PAR_MAP_CONFIGURATION = "configuration";
 	public static final String OUTPUT_PAR_BASE_URL = "baseUrl";
+	public static final String OUTPUT_PAR_SO_FUNC_ACTIVE = INPUT_PAR_SO_FUNC_ACTIVE;	
 	
 	
 	
@@ -61,13 +64,17 @@ public class GeoAction extends AbstractHttpAction {
 		String user = null;
 		String spagobiurl = null;
 		String templatePath = null;
+		String isSaveSubObjFuncActive = null;
 		
 		
 		
 		mapCatalogueManagerUrl = (String) serviceRequest.getAttribute(INPUT_PAR_MAP_CATALOGUE_MANAGER_URL);
 		user = (String)serviceRequest.getAttribute(INPUT_PAR_USER);
 		spagobiurl = (String)serviceRequest.getAttribute(INPUT_PAR_SPAGOBI_URL);
-		templatePath = (String)serviceRequest.getAttribute(INPUT_PAR_TEMPLATE_PATH);	
+		templatePath = (String)serviceRequest.getAttribute(INPUT_PAR_TEMPLATE_PATH);
+		isSaveSubObjFuncActive = (String)serviceRequest.getAttribute(INPUT_PAR_SO_FUNC_ACTIVE);
+		if(isSaveSubObjFuncActive == null) isSaveSubObjFuncActive = "TRUE";
+		
 		template = getTemplate(serviceRequest);
 		subObjectDetails = getSubObjectDetails(serviceRequest, true);
 		
@@ -153,7 +160,7 @@ public class GeoAction extends AbstractHttpAction {
 		serviceResponse.setAttribute("configuration", mapConfiguration);
 		serviceResponse.setAttribute("baseUrl", baseUrl);
 		
-		
+		//serviceResponse.setAttribute(OUTPUT_PAR_SO_FUNC_ACTIVE, isSaveSubObjFuncActive);
 		
 		getRequestContainer().getSessionContainer().setAttribute("SUBOBJECT", subObjectDetails);		
 		getRequestContainer().getSessionContainer().setAttribute("CONFIGURATION", mapConfiguration);

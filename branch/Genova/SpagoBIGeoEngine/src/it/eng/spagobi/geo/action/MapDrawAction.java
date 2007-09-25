@@ -57,6 +57,13 @@ public class MapDrawAction extends AbstractHttpAction {
 		this.freezeHttpResponse();
 		
 		
+		String mapCatalogueManagerUrl = (String) serviceRequest.getAttribute(MAP_CATALOGUE_MANAGER_URL);
+		if(mapCatalogueManagerUrl != null) {
+			MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(mapCatalogueManagerUrl);
+			MapConfiguration.setMapCatalogueAccessUtils(mapCatalogueAccessUtils);
+		}
+		
+		
 		GeoAction.SubObjectDetails subObjectDetails = (GeoAction.SubObjectDetails)getRequestContainer().getSessionContainer().getAttribute("SUBOBJECT");
 		if(subObjectDetails == null) {
 			subObjectDetails = new GeoAction.SubObjectDetails();

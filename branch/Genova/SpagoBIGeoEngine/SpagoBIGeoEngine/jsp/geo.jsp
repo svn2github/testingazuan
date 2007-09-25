@@ -36,6 +36,7 @@
 	String baseUrl = null;
 	String actionUrl = null;
 	String isSubObject = null;
+	String isSaveSubObjFuncActive = null;
 	
 	
 	
@@ -45,6 +46,7 @@
 	selectedLayers = (String[])serviceResponse.getAttribute(GeoAction.OUTPUT_PAR_SELECTED_LAYERS);
 	baseUrl = (String)serviceResponse.getAttribute(GeoAction.OUTPUT_PAR_BASE_URL);
 	isSubObject = (String)serviceResponse.getAttribute(GeoAction.OUTPUT_PAR_SO_FLAG);
+	isSaveSubObjFuncActive = (String)serviceResponse.getAttribute(GeoAction.OUTPUT_PAR_SO_FUNC_ACTIVE);
 	mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();	
 	actionUrl = baseUrl + "/servlet/AdapterHTTP?ACTION_NAME=MAP_DRAW_ACTION";
 	
@@ -707,10 +709,14 @@ var selectedLayers = "";
 						<center>	
 						<input type="submit" value="Refresh Map"/>	
 						</center>	
+						<%
+						if(isSaveSubObjFuncActive == null || !isSaveSubObjFuncActive.equalsIgnoreCase("FALSE")) {
+						%>
 						<p>
 						<center>	
 						<input type="button" value="Save Map" onClick="saveAnalysis()"/>	
 						</center>	
+						<%} %>
 					</div>	
 								
 				</div>															

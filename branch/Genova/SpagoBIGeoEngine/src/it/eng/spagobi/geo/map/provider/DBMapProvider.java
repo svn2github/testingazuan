@@ -67,8 +67,15 @@ public class DBMapProvider extends AbstractMapProvider {
 		
 		try {
 			String targetFeatureName = datamart.getTargetFeatureName();
-			List maps = MapConfiguration.getMapCatalogueAccessUtils().getMapNamesByFeature(targetFeatureName);
-			mapUrl = getMapUrl((String)maps.get(0));
+			
+			mapName = mapProviderConfiguration.getParentConfiguration().getMapName();
+			if(mapName == null) {
+				List maps = MapConfiguration.getMapCatalogueAccessUtils().getMapNamesByFeature(targetFeatureName);
+				mapName = (String)maps.get(0);
+			}
+			
+			
+			mapUrl = getMapUrl(mapName);
 			//File file = new File(mapUrl);
 			svgDocument = SVGMapLoader.loadMapAsDocument(mapUrl);
 		} catch (Exception e) {

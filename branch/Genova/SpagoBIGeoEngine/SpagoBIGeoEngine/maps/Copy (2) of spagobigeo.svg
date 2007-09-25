@@ -39,8 +39,7 @@ VERSION HISTORY:
 initial version
 
 * 1.0.1 (2007-09-24)
-changed the name of ub variable to ub_values in order to avoid naming conflict with slider.js
-changed the name of lb variable to lb_values in order to avoid naming conflict with slider.js
+fixed a bug in colourMap function
 
 -->
 
@@ -426,28 +425,15 @@ preserveAspectRatio="xMidYMin meet">
 	
 			//myMapApp.zoomSlider = new slider(180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,myMainMap.maxWidth, "mapZoomSlider","dimgray",2,10,"sliderSymbol",myMapApp.refMapDragger,true);
 			
-			var sliderStyles = {"stroke":"dimgray","stroke-width":"2","fill":"dimgray"};
-					
+			var sliderStyles = {"stroke":"none","fill":"none"};
+			myMapApp.zoomSlider = new slider("zoomSliderId", "mapZoomSlider", 180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,sliderStyles, 2,10,"sliderSymbol",myMapApp.refMapDragger,true);
 			
-			myMapApp.zoomSlider = new slider("zoomSliderId", 
-											 "mapZoomSlider", 
-											 180,153,
-											 myMainMap.minWidth,
-											 20,153,
-											 myMainMap.maxWidth,
-											 myMainMap.maxWidth,
-											 sliderStyles, 
-											 15,
-											 "sliderSymbol",
-											 myMapApp.refMapDragger,			
-										     true);
 		}
 			
 		function initApplication(evt) {			
 			if (document.documentElement.suspendRedraw) {
 				suspendProcess = document.documentElement.suspendRedraw(30000);
 			}
-		
 			
 			setTresholds();
 			setColourRange();
@@ -663,22 +649,22 @@ preserveAspectRatio="xMidYMin meet">
 	   		//alert('setTresholds');
 			for(i = 0; i < kpi_names.length; i++) {					
 				
-				if(lb_values[kpi_names[i]] == null) {
-		   			lb_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
+				if(lb[kpi_names[i]] == null) {
+		   			lb[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
 		   		}
-		   		if(ub_values[kpi_names[i]] == null) {
-		   			ub_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
-		   		}
-		   		
-		   		if(lb_values[kpi_names[i]] > ub_values[kpi_names[i]]) {
-		   			var t = lb_values[kpi_names[i]];
-		   			ub_values[kpi_names[i]] = lb_values[kpi_names[i]];
-		   			lb_values[kpi_names[i]] = t;
+		   		if(ub[kpi_names[i]] == null) {
+		   			ub[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
 		   		}
 		   		
-		   		if(ub_values[kpi_names[i]] < kpi_ordered_values[kpi_names[i]][0] || lb_values[kpi_names[i]] >  kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1]) {
-		   			lb_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
-		   			ub_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
+		   		if(lb[kpi_names[i]] > ub[kpi_names[i]]) {
+		   			var t = lb[kpi_names[i]];
+		   			ub[kpi_names[i]] = lb[kpi_names[i]];
+		   			lb[kpi_names[i]] = t;
+		   		}
+		   		
+		   		if(ub[kpi_names[i]] < kpi_ordered_values[kpi_names[i]][0] || lb[kpi_names[i]] >  kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1]) {
+		   			lb[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
+		   			ub[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
 		   		}
 				
 				
@@ -701,18 +687,18 @@ preserveAspectRatio="xMidYMin meet">
 		}
 		
 		function setPercTrasholds(kpiName) { 
-			var range = ub_values[kpiName] - lb_values[kpiName];
+			var range = ub[kpiName] - lb[kpiName];
 			
 			eval("thresh_"+kpiName+"=new Array()");
 		    var trasholds = eval("thresh_"+kpiName);
-		    trasholds[0] = lb_values[kpiName];
+		    trasholds[0] = lb[kpiName];
 		   
 			for(var j = 0; j < trasholdCalculationPercParams[kpiName].length-1; j++) {
 				var groupSize = (range / 100.0) * trasholdCalculationPercParams[kpiName][j];
 				trasholds[j+1] = trasholds[j] + groupSize;
 			}
 			
-			trasholds[trasholdCalculationPercParams[kpiName].length] = ub_values[kpiName];	
+			trasholds[trasholdCalculationPercParams[kpiName].length] = ub[kpiName];	
 			
 			num_group[kpiName] = trasholdCalculationPercParams[kpiName].length;
 		}
@@ -729,22 +715,22 @@ preserveAspectRatio="xMidYMin meet">
 		function setQuantileTrasholds(kpiName) {
 				
 				/*
-				if(lb_values[kpiName] == null) {
-		   			lb_values[kpiName] = kpi_ordered_values[kpiName][0];
+				if(lb[kpiName] == null) {
+		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
 		   		}
-		   		if(ub_values[kpiName] == null) {
-		   			ub_values[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpi_name].length-1];
-		   		}
-		   		
-		   		if(lb_values[kpiName] > ub_values[kpiName]) {
-		   			var t = lb_values[kpiName];
-		   			ub_values[kpiName] = lb_values[kpiName];
-		   			lb_values[kpiName] = t;
+		   		if(ub[kpiName] == null) {
+		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpi_name].length-1];
 		   		}
 		   		
-		   		if(ub_values[kpiName] < kpi_ordered_values[kpiName][0] || lb_values[kpiName] >  kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1]) {
-		   			lb_values[kpiName] = kpi_ordered_values[kpiName][0];
-		   			ub_values[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1];
+		   		if(lb[kpiName] > ub[kpiName]) {
+		   			var t = lb[kpiName];
+		   			ub[kpiName] = lb[kpiName];
+		   			lb[kpiName] = t;
+		   		}
+		   		
+		   		if(ub[kpiName] < kpi_ordered_values[kpiName][0] || lb[kpiName] >  kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1]) {
+		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
+		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1];
 		   		}
 		   		*/
 				
@@ -753,12 +739,12 @@ preserveAspectRatio="xMidYMin meet">
 				
 				var diff_value_num = 0;	
 				var start_index = -1;	
-				if(kpi_ordered_values[kpiName][0] >= lb_values[kpiName] && kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1] <= ub_values[kpiName]) {
+				if(kpi_ordered_values[kpiName][0] >= lb[kpiName] && kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1] <= ub[kpiName]) {
 					diff_value_num = kpi_ordered_values[kpiName].length;
 					start_index = 0;
 				} else {
 					for(j = 0; j < kpi_ordered_values[kpiName].length; j++) {						
-			   			if(kpi_ordered_values[kpiName][j] >= lb_values[kpiName] && kpi_ordered_values[kpiName][j] <= ub_values[kpiName]) {
+			   			if(kpi_ordered_values[kpiName][j] >= lb[kpiName] && kpi_ordered_values[kpiName][j] <= ub[kpiName]) {
 			   				start_index = (start_index == -1?j:start_index);
 			   				diff_value_num++;
 			   			}
@@ -769,11 +755,11 @@ preserveAspectRatio="xMidYMin meet">
 				if(diff_value_num < num_group[kpiName]) num_group[kpiName] = diff_value_num;
 				var blockSize = Math.floor( diff_value_num / num_group[kpiName] );
 			
-				trasholds[0] = lb_values[kpiName];
+				trasholds[0] = lb[kpiName];
 				for(j = 1; j < num_group[kpiName] ; j++){
 					trasholds[j] = kpi_ordered_values[kpiName][start_index + (j*blockSize)];
 				}
-				trasholds[num_group[kpiName]] = ub_values[kpiName];
+				trasholds[num_group[kpiName]] = ub[kpiName];
 		}
 		
 			
@@ -848,6 +834,16 @@ preserveAspectRatio="xMidYMin meet">
 				myMapApp.legRect[i] = rect;
 			}	
 			
+			
+			/*
+			for (var i = 0;i<num_group[myMapApp.curKpi];i++) {
+				//color rectangle
+				eval("myMapApp.legRect["+i+"]").setAttributeNS(null,"fill",myMapApp.colArray[i]);
+				var closingChar = (i!=myMapApp.colArray.length-1?")":"]");
+				var textString = "-   ["+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1] + closingChar;
+				eval("myMapApp.legPanel["+i+"]").firstChild.nodeValue = textString;
+			}
+			*/
 			
 			myMapApp.loadStatus.setAttributeNS(null,"display","inline");		
 			
@@ -1021,7 +1017,6 @@ preserveAspectRatio="xMidYMin meet">
              }
         } 
 			
-	
 		function colourMap() {
 			if (document.documentElement.suspendRedraw) {
 				suspendProcess = document.documentElement.suspendRedraw(20000);
@@ -1046,22 +1041,33 @@ preserveAspectRatio="xMidYMin meet">
 					if(targetNode.getAttributeNS(attribNS,myMapApp.curKpi) == "") {
 						//alert("FOUND " + targetNode.getAttribute("id"));
 						targetColor = null_values_color[myMapApp.curKpi];
-					} else if(kpiAttrib < lb_values[myMapApp.curKpi]) {
+					} else if(kpiAttrib < lb[myMapApp.curKpi]) {
 						targetColor = lb_color[myMapApp.curKpi];
-					} else if(kpiAttrib > ub_values[myMapApp.curKpi]) {
+					} else if(kpiAttrib > ub[myMapApp.curKpi]) {
 						targetColor = ub_color[myMapApp.curKpi];
-					} else if(kpiAttrib == ub_values[myMapApp.curKpi]) {
+					} else if(kpiAttrib == ub[myMapApp.curKpi]) {
 						targetColor = myMapApp.colArray[myMapApp.threshArray.length-2];
+						alert("XXX " + targetNode.getAttribute("id"));
 					} else  {
 						for (var i = 0;i<myMapApp.threshArray.length-1;i++) {
 							if (kpiAttrib >= myMapApp.threshArray[i] && kpiAttrib <  myMapApp.threshArray[i+1]) {
 								targetColor = myMapApp.colArray[i];
 								break;
 							} 
+							/*
+							else if (i == myMapApp.threshArray.length-1 && kpiAttrib >= myMapApp.threshArray[i] && kpiAttrib <=  myMapApp.threshArray[i+1]) {
+								alert("FOUND " + targetNode.getAttribute("id"));
+								targetColor = myMapApp.colArray[i];
+								break;
+							}
+							*/
 						}
 					}
 					
-
+					
+					if(targetNode.getAttribute("id") == "unita_urbanistiche_44") {
+						alert(myMapApp.curKpi + " : " + kpiAttrib + " : " + ub[myMapApp.curKpi]);
+					}
 					
 					targetNode.setAttributeNS(null,"fill",targetColor);
 					

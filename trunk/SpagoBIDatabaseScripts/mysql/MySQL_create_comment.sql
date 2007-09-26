@@ -17,3 +17,4 @@ ALTER TABLE SBI_PARUSE_DET COMMENT = 'SBI_PARUSE_DET binds presentation mode wit
 ALTER TABLE SBI_GEO_MAPS COMMENT = 'The table contains all maps usable by GEO DWH';
 ALTER TABLE SBI_GEO_FEATURES COMMENT = 'The table contains all features usable by GEO DWH';
 ALTER TABLE SBI_GEO_MAP_FEATURES COMMENT = 'The table contains all relations between maps and features';
+ALTER TABLE SBI_VIEWPOINTS COMMENT = 'The table contains all viewpoints';

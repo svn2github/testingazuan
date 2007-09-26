@@ -32,6 +32,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.bo.Viewpoint;
 import it.eng.spagobi.bo.dao.IViewpointDAO;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
+import it.eng.spagobi.metadata.SbiObjects;
 import it.eng.spagobi.metadata.SbiViewpoints;
 
 import java.util.ArrayList;
@@ -107,11 +108,11 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			Criterion labelCriterrion = Expression.eq("biobjId", objId);
-			Criteria criteria = aSession.createCriteria(SbiViewpoints.class);
-			criteria.add(labelCriterrion);				
-			List hibList = criteria.list();
+			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId;
 
+			Query hqlQuery = aSession.createQuery(hql);
+			List hibList = hqlQuery.list();
+			
 			tx.commit();
 			
 			Iterator it = hibList.iterator();
@@ -249,8 +250,9 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 			tx = aSession.beginTransaction();
 			SbiViewpoints hibViewpoint = new SbiViewpoints();
 
-			//hibViewpoint.setVpId(vpId);					
-			hibViewpoint.setBiobjId(viewpoint.getBiobjId());
+			//hibViewpoint.setVpId(vpId);
+			SbiObjects aSbiObject = (SbiObjects) aSession.load(SbiObjects.class, viewpoint.getBiobjId());
+			hibViewpoint.setSbiObject(aSbiObject);
 			hibViewpoint.setVpDesc(viewpoint.getVpDesc());
 			hibViewpoint.setVpOwner(viewpoint.getVpOwner());
 			hibViewpoint.setVpName(viewpoint.getVpName());
@@ -294,7 +296,8 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 					viewpoint.getVpId());
 			 
 //			hibViewpoint.setVpId(vpId);					
-			hibViewpoint.setBiobjId(viewpoint.getBiobjId());
+			SbiObjects aSbiObject = (SbiObjects) aSession.load(SbiObjects.class, viewpoint.getBiobjId());
+			hibViewpoint.setSbiObject(aSbiObject);
 			hibViewpoint.setVpDesc(viewpoint.getVpDesc());
 			hibViewpoint.setVpName(viewpoint.getVpName());
 			hibViewpoint.setVpScope(viewpoint.getVpScope());
@@ -330,7 +333,7 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	public Viewpoint toViewpoint(SbiViewpoints hibViewpoint){
 		Viewpoint aViewpoint = new Viewpoint();
 		aViewpoint.setVpId(hibViewpoint.getVpId());
-		aViewpoint.setBiobjId(hibViewpoint.getBiobjId());
+		aViewpoint.setBiobjId(hibViewpoint.getSbiObject().getBiobjId());
 		aViewpoint.setVpOwner(hibViewpoint.getVpOwner());
 		aViewpoint.setVpName(hibViewpoint.getVpName());
 		aViewpoint.setVpDesc(hibViewpoint.getVpDesc());

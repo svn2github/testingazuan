@@ -50,12 +50,14 @@ import it.eng.spagobi.bo.ObjParuse;
 import it.eng.spagobi.bo.Parameter;
 import it.eng.spagobi.bo.Role;
 import it.eng.spagobi.bo.TemplateVersion;
+import it.eng.spagobi.bo.Viewpoint;
 import it.eng.spagobi.bo.dao.DAOFactory;
 import it.eng.spagobi.bo.dao.IBIObjectDAO;
 import it.eng.spagobi.bo.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.bo.dao.IObjParuseDAO;
 import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
+import it.eng.spagobi.bo.dao.IViewpointDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.metadata.SbiDomains;
@@ -764,6 +766,15 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE,
 						"BIObjectDAOImpl", "eraseBIObject",
 						"The object [" + obj.getName() + "] is no more referenced by any functionality. It will be completely deleted from db and from CMS.");
+
+				//delete viewpoints eventually associated
+				List viewpoints = new ArrayList();
+				IViewpointDAO biVPDAO = DAOFactory.getViewpointDAO();
+				viewpoints =  biVPDAO.loadAllViewpointsByObjID(obj.getId());
+				for (int i=0; i<viewpoints.size(); i++){
+					Viewpoint vp =(Viewpoint)viewpoints.get(i);
+					biVPDAO.eraseViewpoint(vp.getVpId());
+				}
 				
 				Set objPars = hibBIObject.getSbiObjPars();
 				Iterator itObjPar = objPars.iterator();

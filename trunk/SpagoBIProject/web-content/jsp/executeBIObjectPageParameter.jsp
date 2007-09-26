@@ -246,7 +246,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%=title%>
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
-		<td class='header-button-column-portlet-section'>
+		<td class='header-button-column-single-object-execution-portlet-section'>
 				<a href='javascript:opencloseViewPoint()'> 
       				<img class='header-button-image-portlet-section' 
 					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 

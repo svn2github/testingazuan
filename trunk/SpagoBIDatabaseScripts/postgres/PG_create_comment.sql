@@ -120,3 +120,5 @@ COMMENT ON COLUMN SBI_GEO_FEATURES.TYPE IS  'Relative url of a map ';
 COMMENT ON TABLE SBI_GEO_MAP_FEATURES IS  'The table contains all relations between maps and features';
 COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.MAP_ID IS 'Map identifier';
 COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.FEATURE_ID IS 'Feature identifier';
+
+COMMENT ON TABLE SBI_VIEWPOINTS IS 'The table contains all viewpoints';

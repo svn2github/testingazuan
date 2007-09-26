@@ -121,5 +121,7 @@ COMMENT ON TABLE SBI_GEO_MAP_FEATURES IS  'The table contains all relations betw
 COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.MAP_ID IS 'Map identifier';
 COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.FEATURE_ID IS 'Feature identifier';
 
+COMMENT ON TABLE SBI_VIEWPOINTS IS 'The table contains all viewpoints';
+
 
 

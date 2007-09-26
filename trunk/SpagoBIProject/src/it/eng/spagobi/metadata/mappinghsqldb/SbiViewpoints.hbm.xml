@@ -10,9 +10,14 @@
 	            <param name="sequence">sbi_viewpoints_seq</param>
             </generator>
         </id>
+        <many-to-one name="sbiObject" class="it.eng.spagobi.metadata.SbiObjects">
+            <column name="BIOBJ_ID" not-null="true" />
+        </many-to-one>
+        <!-- 
         <property name="biobjId" type="integer">
             <column name="BIOBJ_ID" not-null="true" />
         </property>
+         -->
         <property name="vpName" type="string">
             <column name="VP_NAME" not-null="true" />
         </property>

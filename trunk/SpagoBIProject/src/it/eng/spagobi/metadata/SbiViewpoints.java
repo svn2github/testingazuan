@@ -35,7 +35,8 @@ public class SbiViewpoints  implements java.io.Serializable {
     // Fields    
 
      private Integer vpId;
-     private Integer biobjId;
+     //private Integer biobjId;
+     private SbiObjects sbiObject;
      private String vpOwner;
      private String vpName;
      private String vpDesc;
@@ -53,7 +54,7 @@ public class SbiViewpoints  implements java.io.Serializable {
 	/** minimal constructor */
     public SbiViewpoints(Integer vpId, Integer biobjId, String vpOwner, String vpName, String vpScope, Date vpCreationDate) {
         this.vpId = vpId;
-        this.biobjId = biobjId;
+        //this.biobjId = biobjId;
         this.vpOwner = vpOwner;
         this.vpName = vpName;
         this.vpScope = vpScope;
@@ -63,7 +64,7 @@ public class SbiViewpoints  implements java.io.Serializable {
     /** full constructor */
     public SbiViewpoints(Integer vpId, Integer biobjId, String vpOwner, String vpName, String vpDesc, String vpScope, String vpValueParams, Date vpCreationDate) {
         this.vpId = vpId;
-        this.biobjId = biobjId;
+        //this.biobjId = biobjId;
         this.vpOwner = vpOwner;
         this.vpName = vpName;
         this.vpDesc = vpDesc;
@@ -83,7 +84,7 @@ public class SbiViewpoints  implements java.io.Serializable {
     public void setVpId(Integer vpId) {
         this.vpId = vpId;
     }
-
+/*
     public Integer getBiobjId() {
         return this.biobjId;
     }
@@ -91,7 +92,7 @@ public class SbiViewpoints  implements java.io.Serializable {
     public void setBiobjId(Integer biobjId) {
         this.biobjId = biobjId;
     }
-
+*/
     public String getVpName() {
         return this.vpName;
     }
@@ -143,6 +144,14 @@ public class SbiViewpoints  implements java.io.Serializable {
 	 */
 	public void setVpOwner(String vpOwner) {
 		this.vpOwner = vpOwner;
+	}
+
+	public SbiObjects getSbiObject() {
+		return sbiObject;
+	}
+
+	public void setSbiObject(SbiObjects sbiObject) {
+		this.sbiObject = sbiObject;
 	}
 
 }

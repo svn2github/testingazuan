@@ -1327,9 +1327,12 @@ public class ExecuteBIObjectModule extends AbstractModule
         	String labelUrl = biparam.getParameterUrlName();
         	String value = (request.getAttribute(labelUrl)==null)?"":(String)request.getAttribute(labelUrl);
         	//defines the string of parameters to save into db
-        	contentVP = contentVP + labelUrl + "=" + value + "&amp;";        	 
+        	contentVP = contentVP + labelUrl + "%3D" + value + "%26";        	 
         	List paramValues = getAsList(value);    		
         	biparam.setParameterValues(paramValues);
+        }
+        if (contentVP != null && contentVP.endsWith("%26")) {
+        	contentVP = contentVP.substring(0, contentVP.length() - 3);
         }
         
         IViewpointDAO biViewpointDAO = DAOFactory.getViewpointDAO();
@@ -1358,7 +1361,7 @@ public class ExecuteBIObjectModule extends AbstractModule
  		aViewpoint.setVpOwner(ownerVP); 		
  		aViewpoint.setVpDesc(descVP);
  		aViewpoint.setVpScope(scopeVP);
- 		aViewpoint.setVpValueParams(contentVP.substring(0, contentVP.length()-5));
+ 		aViewpoint.setVpValueParams(contentVP);
  		aViewpoint.setVpCreationDate(new Timestamp(System.currentTimeMillis()));
  		biViewpointDAO.insertViewpoint(aViewpoint);
  	
@@ -1409,8 +1412,10 @@ public class ExecuteBIObjectModule extends AbstractModule
         BIObject obj = getBIObject();
         String role = (String) session.getAttribute(SpagoBIConstants.ROLE);        
 		// built the url for the content recovering
-		String content = (request.getAttribute("content")==null)?"":(String)request.getAttribute("content");		
-		obj = execContr.prepareBIObjectInSession(session, obj.getId(), role, content.replace("&amp;", "&"));
+		String content = (request.getAttribute("content")==null)?"":(String)request.getAttribute("content");
+		content = content.replace("%26", "&");
+		content = content.replace("%3D", "=");
+		obj = execContr.prepareBIObjectInSession(session, obj.getId(), role, content);
 		// load the object into the Execution controller				
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
@@ -1453,14 +1458,14 @@ public class ExecuteBIObjectModule extends AbstractModule
 		List parameters = obj.getBiObjectParameters(); 		 		            
         Iterator iterParams = parameters.iterator();
 
-        String[] vpParameters = vp.getVpValueParams().split("&amp;");
+        String[] vpParameters = vp.getVpValueParams().split("%26");
         while(iterParams.hasNext()) {	        	        	
         	BIObjectParameter biparam = (BIObjectParameter)iterParams.next();	        	        	
         	String labelUrl = biparam.getParameterUrlName();
         	String value = "";
         	for (int i=0; i<vpParameters.length; i++){
-        		if ((vpParameters[i]).substring(0,vpParameters[i].indexOf("=")).equalsIgnoreCase(labelUrl)){
-        			value = vpParameters[i].substring(vpParameters[i].indexOf("=")+1);
+        		if ((vpParameters[i]).substring(0,vpParameters[i].indexOf("%3D")).equalsIgnoreCase(labelUrl)){
+        			value = vpParameters[i].substring(vpParameters[i].indexOf("%3D")+3);
         			List paramValues = getAsList(value);  		
         			biparam.setParameterValues(paramValues);
 	        		// refresh also the description

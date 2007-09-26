@@ -804,8 +804,8 @@ if (isSingleObjExec) {
                         	/>
                     	</a>
                     </td>		            
+                   <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                    <%if(ownerVP.equals(currentUser)) { %>                     
-                    <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                     	<% 
                     	String eraseVPMsg = msgBuilder.getMessage("ConfirmMessages.DeleteViewpoint", "messages", request); %>
                     	<a href="javascript:var conf = confirm('<%=eraseVPMsg%>'); if(conf) {document.location='<%=deleteVPUrl.toString()%>';}">
@@ -815,8 +815,8 @@ if (isSingleObjExec) {
                         		title='<%=msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", "messages", request)%>' 
                         	/>
                     	</a>
-                    </td>
                     <% }%>
+                    </td>
 		            <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
 		                <a href="<%=execVPUrl%>">
 		                       <img width="20px" height="20px" 

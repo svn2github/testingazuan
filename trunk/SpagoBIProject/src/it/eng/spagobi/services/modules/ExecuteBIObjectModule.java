@@ -390,17 +390,21 @@ public class ExecuteBIObjectModule extends AbstractModule
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
 		
-	    // try to get the modality
-		boolean isSingleObjExec = false;
-		String modality = (String) session.getAttribute(SpagoBIConstants.MODALITY);
-	   	if (modality != null && modality.equals(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) 
-	   		isSingleObjExec = true;
+		// finds if it is requested to ignore sub-nodes (subobjects/snapshots/viewpoints)
+		String ignoreSubNodesStr = (String) request.getAttribute(SpagoBIConstants.IGNORE_SUB_NODES);
+		boolean ignoreSubNodes = false;
+		if (ignoreSubNodesStr != null && ignoreSubNodesStr.trim().equalsIgnoreCase("true")) {
+			ignoreSubNodes = true;
+		}
 		
 		// if the object can be directly executed (because it hasn't any parameter to be
 		// filled by the user) and if the object has no subobject / snapshots / viewpoints saved 
+		// or the request esplicitely asks to ignore subnodes
 	   	// then execute it directly without pass through parameters page
-		if (controller.directExecution() &&  subObjects.size() == 0 && 
-			snapshots.size() == 0 && viewpoints.size() == 0) {
+		if (controller.directExecution() && 
+				((subObjects.size() == 0 && snapshots.size() == 0 && viewpoints.size() == 0)
+					|| ignoreSubNodes)
+		) {
 			debug("pageCreationHandler", "object hasn't any parameter to fill and no subObjects");
 	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
 			// if there are some errors into the errorHandler does not execute the BIObject

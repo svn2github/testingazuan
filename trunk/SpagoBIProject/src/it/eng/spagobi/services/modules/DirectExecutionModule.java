@@ -73,6 +73,7 @@ public class DirectExecutionModule extends AbstractModule {
 			if (executionId != null && flowId != null) {
 				response.setAttribute("spagobi_execution_id", executionId);
 				response.setAttribute("spagobi_flow_id", flowId);
+				response.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
 				ExecutionManager executionManager = ExecutionManager.getInstance();
 				ExecutionInstance instance = executionManager.recoverExecution(flowId, executionId);
 				obj = instance.getBIObject();

@@ -36,6 +36,9 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 
 	RenderResponse renderResponse = null;
@@ -45,6 +48,7 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	int progrJSTree = 0;
 	private int dTreeRootId = -100;
 	private int dTreeObjects = -1000;
+	protected String requestIdentity = null;
 	
 	public StringBuffer makeAccessibleTree(List objectsList,
 			HttpServletRequest httpRequest, String initialPath) {
@@ -58,7 +62,7 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	}
 
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");
@@ -100,6 +104,11 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		baseFolderPath = initialPath;
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
@@ -119,7 +128,7 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeMenuObjTd" + requestIdentity + "' name='treeMenuObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeExecObj';\n");
 	   	htmlStream.append("				treeExecObj = new dTree('treeExecObj');\n");
@@ -135,10 +144,10 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeExecObj);\n");
+    	//htmlStream.append("				document.write(treeExecObj);\n");
+	   	htmlStream.append("				document.getElementById('treeMenuObjTd" + requestIdentity + "').innerHTML = treeExecObj;\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		htmlStream.append("<br/>");

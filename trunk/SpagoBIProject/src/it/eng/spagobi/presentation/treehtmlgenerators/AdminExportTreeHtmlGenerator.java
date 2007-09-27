@@ -36,6 +36,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * Implements method to build the tree of objects to export
  */
@@ -49,7 +52,12 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	 * @param httpReq The http Servlet Request 
 	 * @param initialPath The tree initial path
 	 */
-	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {	
+	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
@@ -70,7 +78,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeExportObjTd" + requestIdentity + "' name='treeExportObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
 	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
@@ -86,10 +94,10 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeCMS);\n");
+    	//htmlStream.append("				document.write(treeCMS);\n");
+    	htmlStream.append("				document.getElementById('treeExportObjTd" + requestIdentity + "').innerHTML = treeCMS;\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");

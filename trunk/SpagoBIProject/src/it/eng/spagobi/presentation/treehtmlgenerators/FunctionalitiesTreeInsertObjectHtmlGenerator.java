@@ -41,6 +41,9 @@ import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 /**
  * Contains all methods needed to generate and modify a tree object for Functionalities
  * and an object insertion.
@@ -56,13 +59,14 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	private IEngUserProfile profile = null;
 	private int dTreeRootId = -100;
 	private String actor = null;
+	protected String requestIdentity = null;
 
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeConfigurationDtree(java.lang.StringBuffer)
 	 */
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");
@@ -110,6 +114,11 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
@@ -137,7 +146,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr >");
 		htmlStream.append("		<td width='40px'>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeInsertObjTd" + requestIdentity + "' name='treeInsertObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeFunctIns';\n");
 	   	htmlStream.append("				treeFunctIns = new dTree('treeFunctIns');\n");
@@ -153,9 +162,9 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	   			else addItemForJSTree(htmlStream, folder, obj, false, false);
 	   		}
 	   	}
-	   	htmlStream.append("				document.write(treeFunctIns);\n");
+	   	//htmlStream.append("				document.write(treeFunctIns);\n");
+	   	htmlStream.append("				document.getElementById('treeInsertObjTd" + requestIdentity + "').innerHTML = treeFunctIns;\n");
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		return htmlStream;

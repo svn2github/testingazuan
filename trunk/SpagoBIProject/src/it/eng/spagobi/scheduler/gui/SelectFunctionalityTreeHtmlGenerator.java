@@ -42,6 +42,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * Contains all methods needed to generate and modify a tree object for scheduling.
  * There are methods to generate tree, configure, insert and modify elements.
@@ -57,6 +60,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	protected int dTreeRootId = -100;
 	protected int dTreeObjects = -1000;
     List functIdsChecked = new ArrayList();
+    protected String requestIdentity = null;
 
 
 	/**
@@ -67,7 +71,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	 */
 	protected void makeConfigurationDtree(StringBuffer htmlStream) {
 		
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");
@@ -109,6 +113,11 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	}
 		
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath, String treename) {
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
@@ -143,7 +152,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeSchedulerFoldersTd" + requestIdentity + "' name='treeSchedulerFoldersTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = '"+treename+"';\n");
 	   	htmlStream.append("				"+treename+" = new dTree('"+treename+"');\n");
@@ -159,9 +168,9 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	   			else addItemForJSTree(htmlStream, folder, false, false, treename);
 	   		}
 	   	}
-    	htmlStream.append("				document.write("+treename+");\n");
+    	//htmlStream.append("				document.write("+treename+");\n");
+	   	htmlStream.append("				document.getElementById('treeSchedulerFoldersTd" + requestIdentity + "').innerHTML = " + treename + ";\n");
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		return htmlStream;

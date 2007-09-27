@@ -67,7 +67,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private int dTreeObjects = -1000;
 	// the name of the dtree variable, default value is treeExecObj
 	private String treeName = "treeExecObj";
-	private String requestIdentity = null;
+	protected String requestIdentity = null;
 
 
 	/**
@@ -75,7 +75,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 */
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");
@@ -181,7 +181,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeExecObjTd" + requestIdentity + "' name='treeExecObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	//htmlStream.append("				var nameTree = 'treeExecObj';\n");
 	   	htmlStream.append("				" + treeName + " = new dTree('" + treeName + "');\n");
@@ -197,10 +197,9 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(" + treeName + ");\n");
+    	htmlStream.append("				document.getElementById('treeExecObjTd" + requestIdentity + "').innerHTML = " + treeName + ";\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		htmlStream.append("<br/>");

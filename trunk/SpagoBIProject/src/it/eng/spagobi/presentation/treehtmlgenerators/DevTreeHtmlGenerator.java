@@ -44,6 +44,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * Contains all methods needed to generate and modify a tree object for Developing.
  * There are methods to generate tree, configure, insert and modify elements.
@@ -58,6 +61,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	IEngUserProfile profile = null;
 	private int dTreeRootId = -100;
 	private int dTreeObjects = -1000;
+	protected String requestIdentity = null;
 	
 
 	/**
@@ -65,7 +69,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 */
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");
@@ -147,6 +151,11 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
@@ -167,7 +176,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeDevObjTd" + requestIdentity + "' name='treeDevObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeDevObjects';\n");
 	   	htmlStream.append("				treeDevObjects = new dTree('treeDevObjects');\n");
@@ -183,10 +192,9 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeDevObjects);\n");
+    	htmlStream.append("				document.getElementById('treeDevObjTd" + requestIdentity + "').innerHTML = treeDevObjects;\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");

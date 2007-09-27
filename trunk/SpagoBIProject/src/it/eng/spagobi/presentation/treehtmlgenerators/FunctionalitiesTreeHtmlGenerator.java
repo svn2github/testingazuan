@@ -41,6 +41,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 /**
  * Contains all methods needed to generate and modify a tree object for Functionalities.
  * There are methods to generate tree, configure, insert and modify elements.
@@ -54,12 +57,19 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private IUrlBuilder urlBuilder = null;
 	private IMessageBuilder msgBuilder = null;
 	private List _objectsList = null;
+	protected String requestIdentity = null;
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
 		return makeTree(objectsList, httpRequest, initialPath);
 	}
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		_objectsList = objectsList;
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
@@ -81,7 +91,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeFoldersTd" + requestIdentity + "' name='treeFoldersTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeFunct';\n");
 	   	htmlStream.append("				treeFunct = new dTree('treeFunct');\n");
@@ -97,10 +107,10 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeFunct);\n");
+    	//htmlStream.append("				document.write(treeFunct);\n");
+	   	htmlStream.append("				document.getElementById('treeFoldersTd" + requestIdentity + "').innerHTML = treeFunct;\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		return htmlStream;
@@ -131,7 +141,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 */
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");

@@ -43,6 +43,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * Contains all methods needed to generate and modify a tree object for Administration.
  * There are methods to generate tree, configure, insert and modify elements.
@@ -57,6 +60,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	IEngUserProfile profile = null;
 	protected int dTreeRootId = -100;
 	protected int dTreeObjects = -1000;
+	protected String requestIdentity = null;
 	
 
 
@@ -68,7 +72,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 */
 	protected void makeConfigurationDtree(StringBuffer htmlStream) {
 		
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");
@@ -146,6 +150,12 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
@@ -166,7 +176,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeAdminObjTd" + requestIdentity + "' name='treeAdminObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
 	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
@@ -182,10 +192,9 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeCMS);\n");
+    	htmlStream.append("				document.getElementById('treeAdminObjTd" + requestIdentity + "').innerHTML = treeCMS;\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");

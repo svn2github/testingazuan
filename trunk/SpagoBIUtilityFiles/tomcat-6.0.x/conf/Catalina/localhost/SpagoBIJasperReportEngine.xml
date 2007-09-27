@@ -1,0 +1,5 @@
+  <Context path="/SpagoBIJasperReportEngine" docBase="SpagoBIJasperReportEngine" debug="0" privileged="true">
+  	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
+  	<ResourceLink name="jdbc/sbifoodmart" type="javax.sql.DataSource" global="jdbc/sbifoodmart"/>
+  	<ResourceLink name="jdbc/spagobi" type="javax.sql.DataSource" global="jdbc/spagobi" />
+  </Context>

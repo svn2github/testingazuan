@@ -42,6 +42,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 
 	HttpServletRequest httpRequest = null;
@@ -52,6 +55,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	IEngUserProfile profile = null;
 	private int dTreeRootId = -100;
 	private int dTreeObjects = -1000;
+	protected String requestIdentity = null;
 	
 	/**
 	 * Creates the Dtree configuration, in oder to inser into jsp pages cookies,
@@ -60,7 +64,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 */
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
-		htmlStream.append("<SCRIPT language=JavaScript>\n");
+		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
 		htmlStream.append("				target			: null,\n");
@@ -111,6 +115,11 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	}
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
@@ -134,7 +143,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("	</tr>");
 		htmlStream.append("	<tr>");
 		htmlStream.append("		<td>&nbsp;</td>");
-		htmlStream.append("		<td>");
+		htmlStream.append("		<td id='treeBookletObjTd" + requestIdentity + "' name='treeBookletObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
 	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
@@ -150,9 +159,9 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.write(treeCMS);\n");
+    	//htmlStream.append("				document.write(treeCMS);\n");
+    	htmlStream.append("				document.getElementById('treeBookletObjTd" + requestIdentity + "').innerHTML = treeCMS;\n");
 		htmlStream.append("			</script>\n");
-		htmlStream.append("		</td>");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		return htmlStream;

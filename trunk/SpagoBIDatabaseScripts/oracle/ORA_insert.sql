@@ -87,3 +87,5 @@ INSERT INTO SBI_LOV (LABEL, NAME, DESCR, LOV_PROVIDER, INPUT_TYPE_ID, INPUT_TYPE
 ('CURRENT_DATE', 'Current date', 'Current date format dd/mm/yyyy', 
 '<SCRIPTLOV><SCRIPT>Date now = new Date();int day = now.getDate();String dayStr = day.toString();if (day < 10) dayStr = ''0'' + dayStr;int month = now.getMonth() + 1;String monthStr = month.toString();if (month < 10) monthStr = ''0'' + monthStr;int year = now.getYear() + 1900;String toReturn = dayStr + ''/'' + monthStr + ''/'' + year.toString();returnValue(toReturn);</SCRIPT><VALUE-COLUMN>VALUE</VALUE-COLUMN><DESCRIPTION-COLUMN>VALUE</DESCRIPTION-COLUMN><VISIBLE-COLUMNS>VALUE</VISIBLE-COLUMNS><INVISIBLE-COLUMNS></INVISIBLE-COLUMNS></SCRIPTLOV>', 
 (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='INPUT_TYPE' and VALUE_CD='SCRIPT'), 'SCRIPT');
+
+COMMIT;

@@ -26,7 +26,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.utilities;
 
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -59,10 +58,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
-
-import javax.portlet.PortletRequest;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * Contains some SpagoBI's general utilities.
@@ -76,6 +72,29 @@ public class GeneralUtilities {
 	public static void main(String[] args) {
 	}
 
+	
+	
+	public static Locale getDefaultLocale() {
+		String country = null;
+		String language = null;
+		Locale locale = null;
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		String attName = "SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE";
+		SourceBean languageSB = (SourceBean)config.getFilteredSourceBeanAttribute(attName, "default", "true");
+		if(languageSB != null) {
+			country = (String)languageSB.getAttribute("country");
+			language = (String)languageSB.getAttribute("language");
+			if( (country==null) || country.trim().equals("") || (language==null) || language.trim().equals("")  ) {
+				country ="US";
+				language = "en";
+			}
+		} else {
+			country ="US";
+			language = "en";
+		}	
+		locale = new Locale(language, country);
+		return locale;
+	}
 	
 	/**
 	 * Cleans a string from spaces and tabulation characters.

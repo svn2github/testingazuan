@@ -29,6 +29,7 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.drivers.IEngineDriver;
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.httpclient.Header;
@@ -75,6 +76,18 @@ public class ExecutionProxy {
 					mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
 				}
 			}
+			
+			// set country and language (locale)
+			Locale locale = GeneralUtilities.getDefaultLocale();
+			if(!mapPars.containsKey(SpagoBIConstants.COUNTRY)) {
+				String country = locale.getCountry();
+				mapPars.put(SpagoBIConstants.COUNTRY, country);
+			}
+			if(!mapPars.containsKey(SpagoBIConstants.LANGUAGE)) {
+				String language = locale.getLanguage();
+				mapPars.put(SpagoBIConstants.LANGUAGE, language);
+			}
+			
 			
 		    // AUDIT
 			AuditManager auditManager = AuditManager.getInstance();

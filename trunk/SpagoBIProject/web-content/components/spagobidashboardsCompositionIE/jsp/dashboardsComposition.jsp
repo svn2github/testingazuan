@@ -34,6 +34,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  java.util.List,
                  org.safehaus.uuid.UUID,
                  org.safehaus.uuid.UUIDGenerator" %>
+                 
+<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+
+<portlet:defineObjects/>
+                 
 
 <%
 String linkVEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "/dashboards/lps/includes/vbembed.js");

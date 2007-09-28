@@ -7,7 +7,7 @@
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
 			</CONDITIONS>
 			<FIELDS>
-				<FIELD name="NAME" label="#SBIMapCatalogue.columnName">
+			    <FIELD name="NAME" label="#SBIMapCatalogue.columnName">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 				<FIELD name="UPLOADED_FILE" label="#SBIMapCatalogue.columnUrl">

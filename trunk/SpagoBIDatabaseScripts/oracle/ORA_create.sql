@@ -211,12 +211,6 @@ CREATE TABLE SBI_EXT_ROLES (
               PRIMARY KEY (EXT_ROLE_ID)
 );
 
-CREATE UNIQUE INDEX XAK1SBI_EXT_ROLES ON SBI_EXT_ROLES
-(
-       CODE                           ASC
-);
-
-
 CREATE TABLE SBI_FUNC_ROLE (
        ROLE_ID              INTEGER NOT NULL,
        FUNCT_ID             INTEGER NOT NULL,
@@ -728,16 +722,6 @@ ALTER TABLE SBI_SUBREPORTS
        ADD  ( CONSTRAINT FK_sbi_subreports_2
               FOREIGN KEY (SUB_RPT_ID)
                              REFERENCES SBI_OBJECTS ) ;
-
-ALTER TABLE SBI_GEO_MAPS
-       ADD  ( CONSTRAINT FK_sbi_geo_maps
-              FOREIGN KEY (MAP_ID)
-                             REFERENCES SBI_GEO_MAP_FEATURES ) ; 
-                             
-ALTER TABLE SBI_GEO_FEATURES
-       ADD  ( CONSTRAINT FK_sbi_geo_features
-              FOREIGN KEY (FEATURE_ID)
-                             REFERENCES SBI_GEO_MAP_FEATURES ) ; 
                              
 ALTER TABLE SBI_GEO_MAP_FEATURES
        ADD  ( CONSTRAINT FK_sbi_geo_map_features1

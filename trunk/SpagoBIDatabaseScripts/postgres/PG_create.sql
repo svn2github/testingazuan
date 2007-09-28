@@ -87,12 +87,6 @@ CREATE TABLE SBI_EXT_ROLES (
               PRIMARY KEY (EXT_ROLE_ID)
 );
 
-CREATE UNIQUE INDEX XAK1SBI_EXT_ROLES ON SBI_EXT_ROLES
-(
-       CODE                       
-);
-
-
 CREATE TABLE SBI_FUNC_ROLE (
        ROLE_ID              INTEGER NOT NULL,
        FUNCT_ID             INTEGER NOT NULL,

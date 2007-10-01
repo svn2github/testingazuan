@@ -30,6 +30,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 <%@ page import="it.eng.spagobi.services.modules.DetailBIObjectModule"%>
 <%@ page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
+<%@page import="org.safehaus.uuid.UUID"%>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
@@ -51,6 +53,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	addUrlPars.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_NEW);
 	addUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 	String addUrl = urlBuilder.getUrl(request, addUrlPars);
+	
+    // identity string for object of the page
+    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+    UUID uuid = uuidGen.generateTimeBasedUUID();
+    String requestIdentity = uuid.toString();
+    requestIdentity = requestIdentity.replaceAll("-", "");
+    //String treeName = "treeAdminObj" + requestIdentity;
+    String treeName = "treeExecObj" + requestIdentity;
 
 %>
 
@@ -97,7 +107,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <div class="div_background">
-	<spagobi:treeObjects moduleName="TreeObjectsModule"  
+	<spagobi:treeObjects moduleName="TreeObjectsModule" treeName="<%=treeName%>"
 	                     htmlGeneratorClass="it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator" />
 	<br/>
 	<br/>

@@ -31,7 +31,6 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.services.modules.DetailBIObjectModule;
 import it.eng.spagobi.services.modules.ExecuteBIObjectModule;
 import it.eng.spagobi.utilities.ChannelUtilities;
-import it.eng.spagobi.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.utilities.urls.IUrlBuilder;
@@ -61,7 +60,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	protected int dTreeRootId = -100;
 	protected int dTreeObjects = -1000;
 	protected String requestIdentity = null;
-	
+	private String treeName = "treeAdminObj";
 
 
 	/**
@@ -145,6 +144,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	}
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
+		this.treeName = treename;
 		return makeTree(objectsList, httpRequest, initialPath);
 	}
 	
@@ -178,9 +178,10 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td>&nbsp;</td>");
 		htmlStream.append("		<td id='treeAdminObjTd" + requestIdentity + "' name='treeAdminObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
-	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
-	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
-	   	htmlStream.append("	        	treeCMS.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
+	   	//htmlStream.append("				var nameTree = 'treeCMS';\n");
+	   	//htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
+		htmlStream.append("				" + treeName + " = new dTree('" + treeName + "');\n");
+	   	htmlStream.append("	        	" + treeName + ".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
@@ -192,7 +193,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   			else addItemForJSTree(htmlStream, folder, false, false);
 	   		}
 	   	}
-    	htmlStream.append("				document.getElementById('treeAdminObjTd" + requestIdentity + "').innerHTML = treeCMS;\n");
+    	htmlStream.append("				document.getElementById('treeAdminObjTd" + requestIdentity + "').innerHTML = " + treeName + ";\n");
     	makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
@@ -215,12 +216,12 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		else parentId = folder.getParentId();
 
 		if (isRoot) {
-			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
+			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
+				htmlStream.append(treeName + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
@@ -231,13 +232,13 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
 					String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
 					Integer idObj = obj.getId();					
-					String stateObj = obj.getStateCode();
-					htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+					//String stateObj = obj.getStateCode();
+					htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					/*
 					if (ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					} else {
-						htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					}
 					*/
 				}

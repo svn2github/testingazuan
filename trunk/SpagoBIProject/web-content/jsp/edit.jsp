@@ -18,9 +18,6 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
-
-<%@ include file="/jsp/portlet_base.jsp"%>
-
 <%@ page import="javax.portlet.PortletURL,
 				 java.util.Collection,
 				 java.util.List,
@@ -29,10 +26,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spago.security.IEngUserProfile,
 				 it.eng.spago.configuration.ConfigSingleton,
 				 it.eng.spagobi.utilities.PortletUtilities" %>
-
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+
+<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+
+<%@ include file="/jsp/portlet_base.jsp"%>
+
+<portlet:defineObjects/>
+
 <div class='div_background_no_img' >
 <table width='100%' cellspacing='0' border='0'>		
 	<tr height='40'>

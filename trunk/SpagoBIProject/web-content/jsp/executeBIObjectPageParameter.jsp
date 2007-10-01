@@ -32,7 +32,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spago.configuration.ConfigSingleton,
                  it.eng.spagobi.bo.BIObject,
                  it.eng.spagobi.bo.Viewpoint,
-                 it.eng.spagobi.utilities.PortletUtilities,
                  it.eng.spago.util.StringUtils,
                  it.eng.spago.security.IEngUserProfile,
                  it.eng.spago.base.SessionContainer,                 
@@ -135,43 +134,43 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- script for viewpoints management -->
 <script type="text/javascript">		
-		var viewpointopen = false;
-		var winVP = null;
-		function opencloseViewPoint() {
-			if(!viewpointopen){
-				viewpointopen = true;
-				openViewPoint();
+		var viewpointopen<%=requestIdentity%> = false;
+		var winVP<%=requestIdentity%> = null;
+		function opencloseViewPoint<%=requestIdentity%>() {
+			if(!viewpointopen<%=requestIdentity%>){
+				viewpointopen<%=requestIdentity%> = true;
+				openViewPoint<%=requestIdentity%>();
 			}
 		}
-		function openViewPoint(){
-			if(winVP==null) {
-				winVP = new Window('viewPoint', {className: "alphacube", 
+		function openViewPoint<%=requestIdentity%>(){
+			if(winVP<%=requestIdentity%>==null) {
+				winVP<%=requestIdentity%> = new Window('viewPoint<%=requestIdentity%>', {className: "alphacube", 
 									title:"Save Viewpoints",  resizable: true, width:550, 
 									height:150, top:70, left:100, destroyOnClose: false});
-         	winVP.setContent('viewpointdiv', false, false);
-         	winVP.showCenter(true);         	
+         	winVP<%=requestIdentity%>.setContent('viewpointdiv<%=requestIdentity%>', false, false);
+         	winVP<%=requestIdentity%>.showCenter(true);         	
 		    } else {
-         	winVP.showCenter(true);
+         	winVP<%=requestIdentity%>.showCenter(true);
          	
 		    }
 		}
 		
-		observerVP = { onClose: function(eventName, win) {
-			if (win == winVP) {
-				viewpointopen = false;
+		observerVP<%=requestIdentity%> = { onClose: function(eventName, win) {
+			if (win == winVP<%=requestIdentity%>) {
+				viewpointopen<%=requestIdentity%> = false;
 			}
 		  }
 		}
-		Windows.addObserver(observerVP);
+		Windows.addObserver(observerVP<%=requestIdentity%>);
 		
-		function saveViewpoint(nameVP, descVP, scopeVP){			
+		function saveViewpoint<%=requestIdentity%>(nameVP, descVP, scopeVP){			
 		
 			if (nameVP == null || nameVP.value == ""){
-				alert('<%=PortletUtilities.getMessage("6000", "messages")%>');
+				alert('<%=msgBuilder.getMessage("6000", "messages", request)%>');
 				return;
 			}
 			if (scopeVP == null || scopeVP.value == ""){
-				alert('<%=PortletUtilities.getMessage("6001", "messages")%>');
+				alert('<%=msgBuilder.getMessage("6001", "messages", request)%>');
 				return;
 			}
 		
@@ -206,7 +205,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<% if ( !noPars ) { %>		 
 		   <td class='header-button-column-portlet-section'>
-				<a href='javascript:opencloseViewPoint()'> 
+				<a href='javascript:opencloseViewPoint<%=requestIdentity%>()'> 
       				<img class='header-button-image-portlet-section' 
 					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
 					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
@@ -247,7 +246,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-single-object-execution-portlet-section'>
-				<a href='javascript:opencloseViewPoint()'> 
+				<a href='javascript:opencloseViewPoint<%=requestIdentity%>()'> 
       				<img class='header-button-image-portlet-section' 
 					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
 					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
@@ -274,7 +273,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%-- } --%>
 
 <!-- VIEWPOINT DIV  -->
-<div id='viewpointdiv' style='width:100%;display:none;'>
+<div id='viewpointdiv<%=requestIdentity%>' style='width:100%;display:none;'>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' 
@@ -283,7 +282,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>		
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
-			<a href="javascript:saveViewpoint(document.getElementById('nameVP'),document.getElementById('descVP'),document.getElementById('scopeVP'))">
+			<a href="javascript:saveViewpoint<%=requestIdentity%>(document.getElementById('nameVP<%=requestIdentity%>'),document.getElementById('descVP<%=requestIdentity%>'),document.getElementById('scopeVP<%=requestIdentity%>'))">
                     <img width="20px" height="20px" 
 	  	   		src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
 	  	        name='saveViewPoint' 
@@ -306,7 +305,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="nameVP" id="nameVP" value="" maxlength="20"/>
+							name="nameVP" id="nameVP<%=requestIdentity%>" value="" maxlength="20"/>
 				</div>
 				
 				<div class='div_detail_label'>
@@ -316,7 +315,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="descVP" id="descVP" value="" maxlength="20"/>
+							name="descVP" id="descVP<%=requestIdentity%>" value="" maxlength="20"/>
 				</div>
 				
 				<div class='div_detail_label'>
@@ -325,7 +324,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					 <select id="scopeVP" name="scopeVP"/>
+					 <select id="scopeVP<%=requestIdentity%>" name="scopeVP"/>
 					    <option value=""/>
 					    <option value="Public"  /><spagobi:message key = "SBIDev.docConf.viewPoint.scopePublic" />
 					    <option value="Private" /><spagobi:message key = "SBIDev.docConf.viewPoint.scopePrivate" />

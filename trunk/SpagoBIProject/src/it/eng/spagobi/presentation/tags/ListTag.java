@@ -52,6 +52,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * Builds and presents all objects list for all admin 
  * SpagoBI's list modules. Once a list module has been executed, 
@@ -471,7 +474,12 @@ public class ListTag extends TagSupport
 		nextParamsMap.put("LIST_PAGE", String.valueOf(nextPage));
 		String nextUrl = createUrl(nextParamsMap);
 		
-		String formId = "formFilter";
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    String requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
+		String formId = "formFilter" + requestIdentity;
 		
 		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);

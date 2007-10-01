@@ -224,6 +224,7 @@ public class AdapterPortlet extends GenericPortlet {
             requestContainer.setServiceRequest(serviceRequest);
             boolean isRequestedSessionIdValid = true;
             PortletSession session = request.getPortletSession(true);
+            /*
             if (session.isNew()) {
                 String newSessionString =
                     (String) (serviceRequest.getAttribute(NEW_SESSION));
@@ -231,6 +232,7 @@ public class AdapterPortlet extends GenericPortlet {
                     ((newSessionString != null)
                         && (newSessionString.equalsIgnoreCase("TRUE")));
             } // if (session.isNew())
+            */
             synchronized (session) {
                 
             	// try to get the previous request container. Download from the session the previous 

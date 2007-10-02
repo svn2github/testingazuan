@@ -1,0 +1,11 @@
+<LIFERAY_PORTAL_SECURITY>
+	<PROFILE_ATTRIBUTES>
+		
+		<ATTRIBUTE name="NAME" default="" source="NAME" />
+		<ATTRIBUTE name="SURNAME" default="" source="SURNAME" />
+		<ATTRIBUTE name="USER_ID" default="" source="USER_ID" />
+		<ATTRIBUTE name="E_MAIL" default="" source="E_MAIL" />
+				
+
+	</PROFILE_ATTRIBUTES>
+</LIFERAY_PORTAL_SECURITY>

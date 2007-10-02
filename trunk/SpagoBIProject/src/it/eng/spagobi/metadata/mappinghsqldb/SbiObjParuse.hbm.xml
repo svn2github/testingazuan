@@ -18,7 +18,7 @@
             	<column name="obj_par_father_id" not-null="true" />
         	</key-many-to-one>
         	 <key-property name="filterOperation" type="string">
-            	<column name="filter_operation" length="10" not-null="true" />
+            	<column name="filter_operation" length="20" not-null="true" />
         	</key-property>
         </composite-id>
  		<property name="prog" type="integer">

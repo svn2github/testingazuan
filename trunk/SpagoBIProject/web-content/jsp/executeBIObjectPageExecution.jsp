@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/portlet_base.jsp"%>
 
+<%@ include file="/jsp/shareProfile.jsp"%>
+
 <%@ page import="it.eng.spagobi.bo.BIObject,
                  java.util.List,
                  it.eng.spagobi.constants.ObjectsTreeConstants,

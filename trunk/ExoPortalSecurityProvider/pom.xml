@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9.3</version>
+    <version>1.9.4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>sbi.security.exo</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.3</version>
+  <version>1.9.4</version>
   <name>ExoPortalSecurityProvider</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -85,14 +85,14 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>system</scope>
       <systemPath>${spagobi.compiled.dir}</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.securityprovider.api</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

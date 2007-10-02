@@ -23,7 +23,7 @@
   <groupId>spagobi</groupId>
   <artifactId>sbi.drivers.bo</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.3alpha</version>
+  <version>1.9.4alpha</version>
   <name>SpagoBIBODriver</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -43,23 +43,23 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.drivers.api</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/sbi.drivers.api-1.9.3.jar</systemPath>
+      <systemPath>${lib.dir}/sbi.drivers.api-1.9.4.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi-bo</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/sbi.core-1.9.3.jar</systemPath>
+      <systemPath>${lib.dir}/sbi.core-1.9.4.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi-utilities</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}/sbi.utils-1.9.3.jar</systemPath>
+      <systemPath>${lib.dir}/sbi.utils-1.9.4.jar</systemPath>
     </dependency>
   </dependencies>
 </project>

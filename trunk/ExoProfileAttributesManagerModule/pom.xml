@@ -23,7 +23,7 @@
   <groupId>spagobi</groupId>
   <artifactId>ExoProfileAttributesManagerModule</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.3</version>
+  <version>1.9.4</version>
   <name>ExoProfileAttributesManagerModule</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -129,14 +129,14 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>system</scope>
       <systemPath>${spagobi.compiled.dir}</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi.securityapi</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>system</scope>
       <systemPath>${spagobi.securityapi.compiled.dir}</systemPath>
     </dependency>

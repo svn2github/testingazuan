@@ -45,6 +45,7 @@
   </build>
   <properties>
     <lib.dir>${basedir}/lib</lib.dir>
+    <liferay.lib.dir>${basedir}/../SpagoBIUtilityFiles/liferay-libraries</liferay.lib.dir>
     <spagobi.compiled.dir>${basedir}/../SpagoBIProject/target/classes</spagobi.compiled.dir>
   </properties>
   <dependencies>
@@ -60,8 +61,15 @@
       <artifactId>liferay.portal-service</artifactId>
       <version>4.2.2</version>
       <scope>system</scope>
-      <systemPath>${lib.dir}\portal-service.jar</systemPath>
+      <systemPath>${liferay.lib.dir}/portal-service.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>liferay</groupId>
+      <artifactId>liferay.portal-kernel</artifactId>
+      <version>4.2.2</version>
+      <scope>system</scope>
+      <systemPath>${liferay.lib.dir}/portal-kernel.jar</systemPath>
+    </dependency>    
     <dependency>
       <groupId>portlet-api</groupId>
       <artifactId>portlet-api</artifactId>

@@ -20,7 +20,7 @@ public class ConfigTest extends TestCase {
 	public void testConfig() throws Exception{
 		ConfigSingleton.setRootPath("C:\\progetti\\spagobi\\workspace\\SpagoBIProject\\web-content");
 		ConfigSingleton.setConfigFileName("/WEB-INF/conf/master.xml");
-		FileCreatorConfiguration fc=new FileCreatorConfiguration();
+		FileCreatorConfiguration fc=new FileCreatorConfiguration("C:\\progetti\\spagobi\\workspace\\SpagoBIProject\\web-content");
 		ConfigSingleton.setConfigurationCreation(fc);
 		SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
 		

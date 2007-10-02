@@ -114,8 +114,8 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
-		htmlStream.append("		function menu(event, urlExecution, urlDetail, urlList, urlErase) {\n");
-		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
+		htmlStream.append("		function menu" + requestIdentity + "(event, urlExecution, urlDetail, urlList, urlErase) {\n");
+		htmlStream.append("			divM = document.getElementById('divmenuFunct" + requestIdentity + "');\n");
 		
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capExec = msgBuilder.getMessage("SBISet.devObjects.treeCaptionExecute", "messages", httpRequest);
@@ -197,7 +197,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
-		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
 		return htmlStream;
@@ -230,9 +230,9 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 					Integer idObj = obj.getId();
 					String stateObj = obj.getStateCode();
 					if (ObjectsAccessVerifier.canDev(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'"+createDetailObjectLink(idObj)+"\\', \\'\\', \\'"+createEraseObjectLink(idObj, idFolder)+"\\')' );\n");
+						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'"+createDetailObjectLink(idObj)+"\\', \\'\\', \\'"+createEraseObjectLink(idObj, idFolder)+"\\')' );\n");
 					} else if(ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'\\', \\'\\', \\'\\')' );\n");
+						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'\\', \\'\\', \\'\\')' );\n");
 					}
 				}
 			}

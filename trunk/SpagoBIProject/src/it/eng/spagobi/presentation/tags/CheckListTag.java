@@ -54,6 +54,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 /**
  * @author Andrea Gioia
  */
@@ -463,7 +466,12 @@ public class CheckListTag extends TagSupport
 		nextParamsMap.put("LIST_PAGE", String.valueOf(nextPage));
 		PortletURL nextUrl = createUrl(nextParamsMap);
 		
-		String formId = "formFilter";
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    String requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
+		String formId = "formFilter" + requestIdentity;
 		
 		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);

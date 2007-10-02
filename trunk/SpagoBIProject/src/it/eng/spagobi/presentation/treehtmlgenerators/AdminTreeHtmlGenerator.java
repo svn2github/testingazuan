@@ -118,8 +118,8 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @param htmlStream The input String Buffer
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
-		htmlStream.append("		function menu(event, urlExecution, urlDetail, urlErase) {\n");
-		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
+		htmlStream.append("		function menu" + requestIdentity + "(event, urlExecution, urlDetail, urlErase) {\n");
+		htmlStream.append("			divM = document.getElementById('divmenuFunct" + requestIdentity + "');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capExec = msgBuilder.getMessage("SBISet.devObjects.captionExecute", "messages", httpRequest);
 		htmlStream.append("			if(urlExecution!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
@@ -198,7 +198,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
-		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
 		return htmlStream;
@@ -233,7 +233,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
 					Integer idObj = obj.getId();					
 					//String stateObj = obj.getStateCode();
-					htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+					htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
 					/*
 					if (ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");

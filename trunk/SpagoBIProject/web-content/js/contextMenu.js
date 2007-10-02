@@ -19,8 +19,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
-function hideMenu(event) {
-	divM = document.getElementById('divmenuFunct');
+function hideMenu(event, divId) {
+	//divM = document.getElementById('divmenuFunct');
+	divM = document.getElementById(divId);
   var theTop;
 	if (document.documentElement && document.documentElement.scrollTop) {
 		theTop = document.documentElement.scrollTop;

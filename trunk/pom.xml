@@ -49,6 +49,7 @@
     <module>SpagoBIQbeEngine</module>
     <module>SpagoBITalendEngine</module>
     <module>SpagoBIUtilityFiles</module>
+    <module>SpagoBILdapSecurityProvider</module>    
   </modules>
   
   <!--

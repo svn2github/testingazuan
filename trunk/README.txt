@@ -5,9 +5,10 @@ PRE-REQUIREMENTS:	Maven 2
 			
 Launch the Maven 2 command at command line from the folder containing "SpagoBIProject", "SpagoBIDriversAPI" .... folders:
 
-		'mvn -Pspagobi-tomcat package'      for Tomcat server or
-		'mvn -Pspagobi-jboss package'       for JBoss server or
-		'mvn -Pspagobi-jonas package'       for JOnAS server
+		'mvn -Pspagobi-tomcat package'        for Tomcat server or
+		'mvn -Pspagobi-jboss package'         for JBoss server or
+		'mvn -Pspagobi-jonas package'         for JOnAS server
+    'mvn -Pspagobi-liferay package'       for Tomcat 5.5 - Liferay 4.2.2 server		
 
 A folder "build" will be created; inside it you will find a folder called "<server-name>-server". 
 Please read the relevant installation file and follow its instructions.

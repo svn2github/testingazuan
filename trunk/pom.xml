@@ -39,6 +39,7 @@
     <module>SpagoBIQbeDriver</module>
     <module>SpagoBITalendDriver</module>
     <module>ExoPortalSecurityProvider</module>
+    <module>LiferayPortalSecurityProvider</module>
     <module>SpagoBIBirtReportEngine</module>
     <module>SpagoBIJasperReportEngine</module>
     <module>SpagoBIJPivotEngine</module>

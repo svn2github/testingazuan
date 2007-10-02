@@ -22,13 +22,13 @@
   <parent>
     <groupId>spagobi</groupId>
     <artifactId>app</artifactId>
-    <version>1.9.3</version>
+    <version>1.9.4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>spagobi</groupId>
   <artifactId>sbi.security.liferay</artifactId>
   <packaging>jar</packaging>
-  <version>1.9.3</version>
+  <version>1.9.4</version>
   <name>LiferayPortalSecurityProvider</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -71,14 +71,14 @@
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>spagobi</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>system</scope>
       <systemPath>${spagobi.compiled.dir}</systemPath>
     </dependency>
     <dependency>
       <groupId>spagobi</groupId>
       <artifactId>sbi.securityprovider.api</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

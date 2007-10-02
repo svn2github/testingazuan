@@ -377,5 +377,112 @@
         </plugins>
       </build>
     </profile>
+    
+    <profile>
+      <id>spagobi-liferay</id>
+      <build>
+        <plugins>
+      	  <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+
+		    <!-- copy the required files in the correct server folders structure -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/"/>
+		    <copy todir="${basedir}/../build/tomcat-server/">
+  		      <fileset dir="${basedir}/tomcat-5.5-liferay/"/>
+ 		    </copy>
+
+		    <!-- copy the instructions file -->
+		    <copy file="${basedir}/installation-instructions-files/tomcat_liferay_installation_instructions.txt"
+			  todir="${basedir}/../build" />
+
+		    <!-- unzip spagobi -->
+		    <unzip src="${basedir}/../SpagoBIProject/target/spagobi.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/spagobi"/>
+
+		    
+		    <!-- put external spagobi packages into SpagoBI -->
+		    <copy file="${basedir}/../LiferayPortalSecurityProvider/target/sbi.security.liferay-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJasperReportDriver/target/sbi.drivers.jasperreport-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIJPivotDriver/target/sbi.drivers.jpivot-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIBirtReportDriver/target/sbi.drivers.birt-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIGeoDriver/target/sbi.drivers.geo-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIWekaDriver/target/sbi.drivers.weka-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+		    <copy file="${basedir}/../SpagoBIQbeDriver/target/sbi.drivers.qbe-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+				<copy file="${basedir}/../SpagoBITalendDriver/target/sbi.drivers.talend-1.9.4.jar"
+			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
+				
+		    <!-- delete hibernate configuration file for JOnAS -->
+				<!--
+		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>
+				-->
+				
+		    <!-- delete CMS configuration file for JOnAS and JBoss -->
+				<!--
+		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms-jboss-jonas.xml"/>
+				-->
+				
+		    <!-- unzip SpagoBIJasperReportEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine"/>
+                    <unzip src="${basedir}/../SpagoBIJasperReportEngine/target/SpagoBIJasperReportEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJasperReportEngine"/>
+
+		    <!-- unzip SpagoBIJPivotEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine"/>
+                    <unzip src="${basedir}/../SpagoBIJPivotEngine/target/SpagoBIJPivotEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJPivotEngine"/>
+			   
+		    <!-- unzip SpagoBIJPXMLAEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIJPXMLAEngine"/>
+                    <unzip src="${basedir}/../SpagoBIJPXMLAEngine/target/SpagoBIJPXMLAEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIJPXMLAEngine"/>
+
+		    <!-- unzip SpagoBIBirtReportEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIBirtReportEngine"/>
+                    <unzip src="${basedir}/../SpagoBIBirtReportEngine/target/SpagoBIBirtReportEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIBirtReportEngine"/>
+
+		    <!-- unzip SpagoBIGeoEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine"/>
+                    <unzip src="${basedir}/../SpagoBIGeoEngine/target/SpagoBIGeoEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIGeoEngine"/>
+
+		    <!-- unzip SpagoBIWekaEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIWekaEngine"/>
+                    <unzip src="${basedir}/../SpagoBIWekaEngine/target/SpagoBIWekaEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIWekaEngine"/>
+
+		    <!-- unzip SpagoBIQbeEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBIQbeEngine"/>
+                    <unzip src="${basedir}/../SpagoBIQbeEngine/target/SpagoBIQbeEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBIQbeEngine"/>
+
+		    <!-- unzip SpagoBITalendEngine -->
+		    <mkdir dir="${basedir}/../build/tomcat-server/webapps/SpagoBITalendEngine"/>
+                    <unzip src="${basedir}/../SpagoBITalendEngine/target/SpagoBITalendEngine.war" 
+			   dest="${basedir}/../build/tomcat-server/webapps/SpagoBITalendEngine"/>
+				 
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>

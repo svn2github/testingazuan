@@ -40,6 +40,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script type="text/javascript">
 
+	var ajaxRequestCanBeDone;
+
     function shareProfile() {
        url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/ShareProfileService?";
        pars = "username=<%=usernameprofile%>";
@@ -51,7 +53,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                             response = transport.responseText || "";
                             checkResponse(response);
                         },
-            onFailure: somethingWentWrong
+            onFailure: aJSErrorOccured
           }
         );
 	  }
@@ -65,9 +67,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  		somethingWentWrong();
 	  	}
 	  }
-	   
-	  shareProfile(); 
-	   
+	  
+	  function aJSErrorOccured () {
+	  	alert('Error during Ajax call!!')
+	  } 
+	  
+	  /*
+	  * The Ajax call is mode once in the page: if more than one portlet have this code, 
+	  * only one Ajax call will be executed
+	  */
+	  function canMakeAjaxRequest() {
+		if (ajaxRequestCanBeDone == undefined) {
+			ajaxRequestCanBeDone = false; 
+			return true;
+		} else {
+			return false;
+		}
+	  }
+	  
+	  if (canMakeAjaxRequest()) shareProfile();
+	  
 </script>
 
 <%

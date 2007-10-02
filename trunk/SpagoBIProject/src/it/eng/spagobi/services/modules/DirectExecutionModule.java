@@ -51,6 +51,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 public class DirectExecutionModule extends AbstractModule {
 
 	/**
@@ -103,6 +106,8 @@ public class DirectExecutionModule extends AbstractModule {
 		} else {
 			clearSession(sessionContainer);
 			// get the user name from request if available
+			
+			/*
 			IEngUserProfile profile = null;
 			String username = (String) request.getAttribute("USERNAME");
 			if (username != null && !username.trim().equals("")) {
@@ -126,6 +131,31 @@ public class DirectExecutionModule extends AbstractModule {
 					throw new Exception("User profile is null!!");
 				}
 			}
+			*/
+			
+			IEngUserProfile profile = (IEngUserProfile) sessionContainer.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			if (profile == null) {
+				SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+						"DirectExecutionModule", "service", "User profile retrieved from PermanentContainer is null!!");
+				Object internalRequest = this.getRequestContainer().getInternalRequest();
+				if (internalRequest != null && internalRequest instanceof HttpServletRequest) {
+					HttpServletRequest servletRequest = (HttpServletRequest) internalRequest;
+					HttpSession httpSession = servletRequest.getSession();
+					profile = (IEngUserProfile) httpSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				}
+				
+				if (profile == null) {
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+							"DirectExecutionModule", "service", "User profile is null!!");
+					throw new Exception("User profile is null!!");
+				} else {
+					sessionContainer.getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+							"DirectExecutionModule", "service", 
+							"User profile was retrieved from HttpSession and put on PermanentContainer.");
+				}
+			}
+			
 			// get attribute from request
 			String documentLabel = (String)request.getAttribute("DOCUMENT_LABEL");
 			documentParameters = (String)request.getAttribute("DOCUMENT_PARAMETERS");

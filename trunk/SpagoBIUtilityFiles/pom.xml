@@ -435,7 +435,20 @@
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>
 <copy file="${basedir}/../SpagoBIUtilityFiles/liferay-libraries/commons-lang-2.1.jar"
 			  todir="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/lib"/>	
-        			
+
+<delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/web.xml"/>
+<move file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/liferay-web.xml"
+			  tofile="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/web.xml"
+			  overwrite="true"/>
+<delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/spagobi/spagobi.xml"/>
+<move file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/spagobi/spagobi-liferay.xml"
+			  tofile="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/spagobi/spagobi.xml"
+			  overwrite="true"/>
+<delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms.xml"/>
+<move file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms-liferay.xml"
+			  tofile="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/conf/cms.xml"
+			  overwrite="true"/>
+
 		    <!-- delete hibernate configuration file for JOnAS -->
 				<!--
 		    <delete file="${basedir}/../build/tomcat-server/webapps/spagobi/WEB-INF/classes/hibernate_jonas.cfg.hsql.xml"/>

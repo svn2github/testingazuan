@@ -619,16 +619,6 @@ ALTER TABLE SBI_SUBREPORTS
        ADD  CONSTRAINT FK_sbi_subreports_2
               FOREIGN KEY (SUB_RPT_ID)
                              REFERENCES SBI_OBJECTS ;
-
-ALTER TABLE SBI_GEO_MAPS
-       ADD CONSTRAINT FK_geo_maps
-              FOREIGN KEY (MAP_ID)
-                             REFERENCES SBI_GEO_MAP_FEATURES;                             
-                             
-ALTER TABLE SBI_GEO_FEATURES
-       ADD CONSTRAINT FK_geo_features
-              FOREIGN KEY (FEATURE_ID)
-                             REFERENCES SBI_GEO_MAP_FEATURES;     
                              
 ALTER TABLE SBI_GEO_MAP_FEATURES
        ADD CONSTRAINT FK_geo_map_features1

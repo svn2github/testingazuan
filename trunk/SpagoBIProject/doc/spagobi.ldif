@@ -1,117 +1,113 @@
 version: 1
-dn: dc=spagobi,dc=com
-objectClass: dcObject
-objectClass: organization
-dc: spagobi
-o: SpagoBI
 
-dn: ou=People,dc=spagobi,dc=com
+dn: ou=People,dc=spagobi,dc=org
 objectClass: top
 objectClass: organizationalUnit
 ou: People
 
-dn: cn=biadmin,ou=People,dc=spagobi,dc=com
-objectClass: organizationalPerson
-objectClass: person
-objectClass: top
-cn: biadmin
-description: biadmin
-ou: ou=sbi_admin,ou=Group,dc=spagobi,dc=com
-ou: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=com
-sn: biadmin
-telephoneNumber: 00000000
-title: Dot.
-userPassword: {SSHA}m947EKBpEVX+EjXLwGubIKa+5qSIz9y0
-
-dn: cn=bidev,ou=People,dc=spagobi,dc=com
-objectClass: organizationalPerson
-objectClass: person
-objectClass: top
-cn: bidev
-description: bidev
-ou: ou=sbi_dev,ou=Group,dc=spagobi,dc=com
-ou: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=com
-sn: bidev
-telephoneNumber: 00000000
-title: Dot.
-userPassword: {SSHA}zhjEAtVg3flug564Xtgtkut6u1Tizdfw
-
-dn: cn=biuser,ou=People,dc=spagobi,dc=com
-objectClass: organizationalPerson
-objectClass: person
-objectClass: top
-cn: biuser
-description: biuser
-ou: ou=sbi_user,ou=Group,dc=spagobi,dc=com
-ou: ou=/spagobi/user,ou=Group,dc=spagobi,dc=com
-sn: biuser
-telephoneNumber: 00000000
-title: Dot.
-userPassword: {SSHA}J76YS+Tj5pABP0lpDUKvRcQyWgoj4JmP
-
-dn: cn=bitest,ou=People,dc=spagobi,dc=com
-objectClass: organizationalPerson
-objectClass: person
-objectClass: top
-cn: bitest
-description: bitest
-ou: ou=sbi_test,ou=Group,dc=spagobi,dc=com
-ou: ou=/spagobi/test,ou=Group,dc=spagobi,dc=com
-sn: bitest
-telephoneNumber: 00000000
-title: Dot.
-userPassword: {SSHA}Y4H2bGn5rfO8oGKcM4Gi2n0jW7BkciNU
-
-dn: ou=Group,dc=spagobi,dc=com
+dn: ou=Group,dc=spagobi,dc=org
 objectClass: top
 objectClass: organizationalUnit
 ou: Group
 
-dn: ou=sbi_admin,ou=Group,dc=spagobi,dc=com
+dn: ou=sbi_admin,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: sbi_admin
 ou: sbi_admin
 
-dn: ou=sbi_dev,ou=Group,dc=spagobi,dc=com
+dn: ou=sbi_dev,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: sbi_admin
 ou: sbi_dev
 
-dn: ou=sbi_test,ou=Group,dc=spagobi,dc=com
+dn: ou=sbi_test,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: sbi_admin
 ou: sbi_test
 
-dn: ou=sbi_user,ou=Group,dc=spagobi,dc=com
+dn: ou=sbi_user,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: sbi_admin
 ou: sbi_user
 
-dn: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: spagobi admin
 ou: /spagobi/admin
 
-dn: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: spagobi dev
 ou: /spagobi/dev
 
-dn: ou=/spagobi/test,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/test,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: spagobi test
 ou: /spagobi/test
 
-dn: ou=/spagobi/user,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/user,ou=Group,dc=spagobi,dc=org
 objectClass: organizationalUnit
 objectClass: top
 description: spagobi user
 ou: /spagobi/user
+
+dn: cn=biadmin,ou=People,dc=spagobi,dc=org
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: biadmin
+description: biadmin
+ou: ou=sbi_admin,ou=Group,dc=spagobi,dc=org
+ou: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=org
+sn: biadmin
+telephoneNumber: 00000000
+title: Dot.
+userPassword: {SSHA}m947EKBpEVX+EjXLwGubIKa+5qSIz9y0
+
+dn: cn=bidev,ou=People,dc=spagobi,dc=org
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: bidev
+description: bidev
+ou: ou=sbi_dev,ou=Group,dc=spagobi,dc=org
+ou: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=org
+sn: bidev
+telephoneNumber: 00000000
+title: Dot.
+userPassword: {SSHA}zhjEAtVg3flug564Xtgtkut6u1Tizdfw
+
+dn: cn=biuser,ou=People,dc=spagobi,dc=org
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: biuser
+description: biuser
+ou: ou=sbi_user,ou=Group,dc=spagobi,dc=org
+ou: ou=/spagobi/user,ou=Group,dc=spagobi,dc=org
+sn: biuser
+telephoneNumber: 00000000
+title: Dot.
+userPassword: {SSHA}J76YS+Tj5pABP0lpDUKvRcQyWgoj4JmP
+
+dn: cn=bitest,ou=People,dc=spagobi,dc=org
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: bitest
+description: bitest
+ou: ou=sbi_test,ou=Group,dc=spagobi,dc=org
+ou: ou=/spagobi/test,ou=Group,dc=spagobi,dc=org
+sn: bitest
+telephoneNumber: 00000000
+title: Dot.
+userPassword: {SSHA}Y4H2bGn5rfO8oGKcM4Gi2n0jW7BkciNU
+
 

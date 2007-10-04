@@ -62,6 +62,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * images, etc.
 	 * @param htmlStream	The input String Buffer
 	 */
+	/*
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
 		htmlStream.append("<SCRIPT>\n");
@@ -104,6 +105,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("</SCRIPT>\n");
 		
 	}
+	*/
 
 	public StringBuffer makeAccessibleTree(SourceBean dataTree, HttpServletRequest httpRequest) {
 		StringBuffer htmlStream = new StringBuffer();
@@ -129,7 +131,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
-		makeConfigurationDtree(htmlStream);
+		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");

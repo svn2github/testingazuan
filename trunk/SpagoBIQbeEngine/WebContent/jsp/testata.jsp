@@ -22,8 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 	boolean jasperTemplateBuilderVisible = true;
-	boolean geoTemplateBuilderVisible = true;
-	boolean geoViewerVisible = true;
+	boolean geoTemplateBuilderVisible = false;
+	boolean geoViewerVisible = false;
 	Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
 	
 	if(functionalities != null) {
@@ -39,13 +39,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		props = (Properties)functionalities.get("geoTemplateBuilder");
 		if(props != null) {
 			pValue = props.getProperty("visible");
-			if(pValue != null && pValue.equalsIgnoreCase("FALSE")) geoTemplateBuilderVisible = false;
+			if(pValue != null && pValue.equalsIgnoreCase("TRUE")) geoTemplateBuilderVisible = true;
 		}
 		
 		props = (Properties)functionalities.get("geoViewer");
 		if(props != null) {
 			pValue = props.getProperty("visible");
-			if(pValue != null && pValue.equalsIgnoreCase("FALSE")) geoViewerVisible = false;
+			if(pValue != null && pValue.equalsIgnoreCase("TRUE")) geoViewerVisible = true;
 		}
 		
 		

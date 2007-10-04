@@ -208,27 +208,26 @@ public class ExecutionController {
 				Parameter par = aBIObjectParameter.getParameter();
 				if(par != null) {
 					ModalitiesValue paruse = par.getModalityValue();
-					if(paruse.getITypeCd().equals("MAN_IN")) {
-						continue;
+					if (!paruse.getITypeCd().equals("MAN_IN")) {					
+						try {
+				        	String lovResult = aBIObjectParameter.getLovResult();
+				        	if(lovResult == null) {
+				        		String lovprov = paruse.getLovProvider();
+				            	ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovprov);
+				    			lovResult = lovDetail.getLovResult(profile);
+				    			LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
+				    			aBIObjectParameter.setLovResult(lovResult);
+				    			// if the lov is single value and the parameter value is not set, the parameter value 
+				    			// is the lov result
+				    			if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null)
+				    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues(lovDetail.getValueColumnName()));
+				        	}        	       
+			        	} catch (Exception e1) {
+			        		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+			        				            "prepareBIObjectInSession", "Error while loading lov values", e1);
+							continue;
+						}
 					}
-					try {
-			        	String lovResult = aBIObjectParameter.getLovResult();
-			        	if(lovResult == null) {
-			        		String lovprov = paruse.getLovProvider();
-			            	ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovprov);
-			    			lovResult = lovDetail.getLovResult(profile);
-			    			LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
-			    			aBIObjectParameter.setLovResult(lovResult);
-			    			// if the lov is single value and the parameter value is not set, the parameter value 
-			    			// is the lov result
-			    			if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null)
-			    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues(lovDetail.getValueColumnName()));
-			        	}        	       
-		        	} catch (Exception e1) {
-		        		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-		        				            "prepareBIObjectInSession", "Error while loading lov values", e1);
-						continue;
-					}   
 				}
 				fieldSourceBean = createValidableFieldSourceBean(aBIObjectParameter);
 				if (fieldSourceBean == null){
@@ -262,7 +261,7 @@ public class ExecutionController {
 	 */
 	public SourceBean createValidableFieldSourceBean(BIObjectParameter aBIObjectParameter) throws SourceBeanException {
 		
-		if(aBIObjectParameter.isTransientParmeters()) return null;
+		//if(aBIObjectParameter.isTransientParmeters()) return null;
 		List checks = aBIObjectParameter.getParameter().getChecks();
 		if (checks == null || checks.size() == 0){
 			return null;

@@ -123,7 +123,7 @@
           
         
         <method name="clear">
-            <![CDATA[     
+            <![CDATA[ 
             drawarea.clear();
             for(var i=0; i < columns.length; i++) {
                 var sbicol = columns[i];

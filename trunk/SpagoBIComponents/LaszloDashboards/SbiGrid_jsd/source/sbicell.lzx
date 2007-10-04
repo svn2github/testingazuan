@@ -27,6 +27,9 @@
         <attribute name="textcolor" type="string" value="#000000" />
         <attribute name="backgroundColor" type="string" value="0" />
         <attribute name="colorLinkOver" value="yellow" />
+        <attribute name="tooltiptext" type="expression" value="${null}" />
+        <attribute name="backgroundColorTooltip" value="0xf8e496" />
+        
 
         
          <method name="draw">
@@ -161,6 +164,8 @@
                 circle.setAttribute("y", ycenterposition);
                 circle.setAttribute("circlecolor", this.lightcolor);
                 circle.setAttribute("r", parseInt(this.lightray));
+                circle.setAttribute("tooltiptext", tooltiptext);
+                circle.setAttribute("backgroundColorTooltip", backgroundColorTooltip);
                 circle.draw(drawarea);
             } 
             ]]>

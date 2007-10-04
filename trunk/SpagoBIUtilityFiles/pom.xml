@@ -592,7 +592,7 @@
  		    </copy>
 
 		    <!-- copy the instructions file -->
-		    <copy file="${basedir}/installation-instructions-files/webos_installation_instructions.txt"
+		    <copy file="${basedir}/installation-instructions-files/tomcat_webos_installation_instructions.txt"
 			  todir="${basedir}/../build" />
 
 		    <!-- unzip spagobi -->

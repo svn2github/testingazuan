@@ -1,0 +1,16 @@
+THIS DOCUMENT FOLLOWS THE FILE README.TXT IN THE SPAGOBI ROOT DIRECTORY.
+
+Requirements
+eXo Enterprise WebOS Tomcat
+
+If you want to install SpagoBI on your eXo Enterprise WebOS Tomcat server, after having launched Maven 2 command, please proceed as follows:
+- copy the content of the folder "tomcat-6.0.x" (NOT the directory itself but only its content) inside your Tomcat base directory (we will refer to it as TOMCAT_HOME): overwrite the existing files.
+
+For CMS:
+- open the file server.xml in TOMCAT_HOME/conf and substitute ${SERVER_HOME} with the actual path of TOMCAT_HOME in the "cms/spagobicms" resource definition.
+Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example).
+
+For SpagoBITalendEngine:
+- open the file talend.perl.properties in TOMCAT_HOME/webapps/SpagoBITalendEngine/WEB-INF/classes and adjust your Perl installation directory (if you want to executed Perl based jobs);
+- open the file talend.properties in TOMCAT_HOME/webapps/SpagoBITalendEngine/WEB-INF/classes and substitute ${SPAGOBI_TALEND_ENGINE_HOME} with the actual path of TOMCAT_HOME/webapps/SpagoBITalendEngine.
+Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);

@@ -803,6 +803,7 @@
 			</FIELD>
 			<FIELD name="code" label="#SBISet.Funct.codefield">
 				<VALIDATOR validatorName="MANDATORY"/>
+				<VALIDATOR validatorName="ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="30"/>
 			</FIELD>	
 		</FIELDS>
@@ -823,6 +824,7 @@
 			</FIELD>
 			<FIELD name="code" label="#SBISet.Funct.codefield">
 				<VALIDATOR validatorName="MANDATORY"/>
+				<VALIDATOR validatorName="ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="30"/>
 			</FIELD>	
 		</FIELDS>

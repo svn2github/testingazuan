@@ -181,10 +181,16 @@ public class DetailFunctionalityModule extends AbstractModule {
 				while (iterator.hasNext()) {
 					Object error = iterator.next();
 					if (error instanceof EMFValidationError) {
-						String path = lowFunct.getPath();
-						int index = path.lastIndexOf("/");
-						String parentPath = path.substring(0,index);
-						response.setAttribute(AdmintoolsConstants.PATH_PARENT, parentPath);
+						Integer parentFolderId = lowFunct.getParentId();
+						LowFunctionality parentFolder = null;
+						if (parentFolderId != null) {
+							parentFolder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(parentFolderId, false);
+						}
+						if (parentFolder == null) {
+							throw new Exception("Parent folder not available.");
+						} else {
+							response.setAttribute(AdmintoolsConstants.PATH_PARENT, parentFolder.getPath());
+						}
 						return;
 					}
 				}

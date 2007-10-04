@@ -67,7 +67,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
-		makeConfigurationDtree(htmlStream);
+		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"component_impexp_messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
@@ -100,7 +100,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
-		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
 		return htmlStream;
@@ -119,12 +119,12 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		Integer parentId = folder.getParentId();
 
 		if (isRoot) {
-			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu(event, \\'"+path+"\\')');\n");
+			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+path+"\\')');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+path+"\\')');\n");
+				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+path+"\\')');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
@@ -146,8 +146,8 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	 * particular branch
 	 */
 	protected void makeJSFunctionForMenu(StringBuffer htmlStream) {
-		htmlStream.append("		function menu(event, pathFather) {\n");
-		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
+		htmlStream.append("		function menu" + requestIdentity + "(event, pathFather) {\n");
+		htmlStream.append("			divM = document.getElementById('divmenuFunct" + requestIdentity + "');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capSelect = msgBuilder.getMessage("SBISet.importexport.selectall", "component_impexp_messages", httpRequest);
 		htmlStream.append("			divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:select(\\''+pathFather+'\\')\">"+capSelect+"</a></div>';\n");

@@ -69,6 +69,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	 * 
 	 * @param htmlStream	The input String Buffer
 	 */
+    /*
 	protected void makeConfigurationDtree(StringBuffer htmlStream) {
 		
 		htmlStream.append("<SCRIPT>\n");
@@ -111,7 +112,8 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		htmlStream.append("</SCRIPT>\n");
 		
 	}
-		
+	*/
+    
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath, String treename) {
 		// identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -141,7 +143,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
-		makeConfigurationDtree(htmlStream);
+		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");		
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");

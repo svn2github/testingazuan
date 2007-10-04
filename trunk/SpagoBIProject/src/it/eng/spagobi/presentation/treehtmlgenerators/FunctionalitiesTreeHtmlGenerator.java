@@ -77,11 +77,11 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
-		makeConfigurationDtree(htmlStream);
+		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.functtree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
-		htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
+		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
 		htmlStream.append("<table width='100%'>");
@@ -126,12 +126,12 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		Integer parentId = folder.getParentId();
 
 		if (isRoot) {
-			htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
+			htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
 		} else {
 			if (codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'"+createDetailFunctionalityLink(path)+"\\', \\'"+createRemoveFunctionalityLink(path)+"\\', \\'"+createMoveUpFunctionalityLink(folder)+"\\', \\'"+createMoveDownFunctionalityLink(folder)+"\\')');\n");
+				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'"+createDetailFunctionalityLink(path)+"\\', \\'"+createRemoveFunctionalityLink(path)+"\\', \\'"+createMoveUpFunctionalityLink(folder)+"\\', \\'"+createMoveDownFunctionalityLink(folder)+"\\')');\n");
 			} 
 		}
 	}
@@ -139,6 +139,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeConfigurationDtree(java.lang.StringBuffer)
 	 */
+	/*
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
 		htmlStream.append("<SCRIPT>\n");
@@ -181,13 +182,14 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("</SCRIPT>\n");
 		
 	}
+	*/
 	
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
-		htmlStream.append("		function menu(event, urlAdd, urlDetail, urlErase, urlMoveUp, urlMoveDown) {\n");
-		htmlStream.append("			divM = document.getElementById('divmenuFunct');\n");
+		htmlStream.append("		function menu" + requestIdentity + "(event, urlAdd, urlDetail, urlErase, urlMoveUp, urlMoveDown) {\n");
+		htmlStream.append("			divM = document.getElementById('divmenuFunct" + requestIdentity + "');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capInsert = msgBuilder.getMessage("SBISet.TreeFunct.insertCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlAdd!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlAdd+'\">"+capInsert+"</a></div>';\n");

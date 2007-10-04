@@ -73,6 +73,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeConfigurationDtree(java.lang.StringBuffer)
 	 */
+	/*
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
 		
 		htmlStream.append("<SCRIPT>\n");
@@ -114,6 +115,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		};\n");		
 		htmlStream.append("</SCRIPT>\n");
 	}
+	*/
 	
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
@@ -148,7 +150,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
-		makeConfigurationDtree(htmlStream);
+		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenu' style='position:absolute;left:0;top:0;display:none;width:80px;height:120px;background-color:#FFFFCC;border-color:black;border-style:solid;border-weight:1;' onmouseout='hideMenu();' >");

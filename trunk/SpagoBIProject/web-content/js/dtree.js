@@ -31,7 +31,7 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, 
 	this._ai = 0;
 	this._p;
 };
-/*
+
 // Tree object
 function dTree(objName) {
 	this.config = {
@@ -41,25 +41,25 @@ function dTree(objName) {
 		useCookies		: true,
 		useLines		: true,
 		useIcons		: true,
-		useStatusText	: false,
+		useStatusText	: true,
 		closeSameLevel	: false,
 		inOrder			: false
-	}
+	};
 	this.icon = {
-		root		: '../img/base.gif',
-		folder		: '../img/folder.gif',
-		folderOpen	: '../img/folderopen.gif',
-		node		: '../img/page.gif',
-		empty		: '../img/empty.gif',
-		line		: '../img/line.gif',
-		join		: '../img/join.gif',
-		joinBottom	: '../img/joinbottom.gif',
-		plus		: '../img/plus.gif',
-		plusBottom	: '../img/plusbottom.gif',
-		minus		: '../img/minus.gif',
-		minusBottom	: '../img/minusbottom.gif',
-		nlPlus		: '../img/nolines_plus.gif',
-		nlMinus		: '../img/nolines_minus.gif'
+		root		: '/spagobi/img/treebase.gif',
+		folder		: '/spagobi/img/treefolder.gif',
+		folderOpen	: '/spagobi/img/treefolderopen.gif',
+		node		: '/spagobi/img/treepage.gif',
+		empty		: '/spagobi/img/treeempty.gif',
+		line		: '/spagobi/img/treeline.gif',
+		join		: '/spagobi/img/treejoin.gif',
+		joinBottom	: '/spagobi/img/treejoinbottom.gif',
+		plus		: '/spagobi/img/treeplus.gif',
+		plusBottom	: '/spagobi/img/treeplusbottom.gif',
+		minus		: '/spagobi/img/treeminus.gif',
+		minusBottom	: '/spagobi/img/treeminusbottom.gif',
+		nlPlus		: '/spagobi/img/treenolines_plus.gif',
+		nlMinus		: '/spagobi/img/treenolines_minus.gif'
 	};
 	this.obj = objName;
 	this.aNodes = [];
@@ -69,7 +69,7 @@ function dTree(objName) {
 	this.selectedFound = false;
 	this.completed = false;
 };
-*/
+
 // Adds a new node to the node array
 dTree.prototype.add = function(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue, checked) {
 	this.aNodes[this.aNodes.length] = new Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, checkName, checkValue, checked);

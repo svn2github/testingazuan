@@ -186,7 +186,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeExecObjTd" + requestIdentity + "' name='treeExecObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	//htmlStream.append("				var nameTree = 'treeExecObj';\n");
-	   	htmlStream.append("				" + treeName + " = new dTree('" + treeName + "');\n");
+	   	htmlStream.append("				" + treeName + " = new dTree('" + treeName + "', '" + httpRequest.getContextPath() + "');\n");
 	   	htmlStream.append("	        	" + treeName + ".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {

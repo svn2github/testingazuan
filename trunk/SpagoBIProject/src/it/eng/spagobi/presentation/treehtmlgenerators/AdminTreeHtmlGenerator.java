@@ -182,7 +182,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	//htmlStream.append("				var nameTree = 'treeCMS';\n");
 	   	//htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
-		htmlStream.append("				" + treeName + " = new dTree('" + treeName + "');\n");
+		htmlStream.append("				" + treeName + " = new dTree('" + treeName + "', '" + httpRequest.getContextPath() + "');\n");
 	   	htmlStream.append("	        	" + treeName + ".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {

@@ -157,7 +157,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		htmlStream.append("		<td id='treeSchedulerFoldersTd" + requestIdentity + "' name='treeSchedulerFoldersTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = '"+treename+"';\n");
-	   	htmlStream.append("				"+treename+" = new dTree('"+treename+"');\n");
+	   	htmlStream.append("				"+treename+" = new dTree('"+treename+"', '" + httpRequest.getContextPath() + "');\n");
 	   	htmlStream.append("	        	"+treename+".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {

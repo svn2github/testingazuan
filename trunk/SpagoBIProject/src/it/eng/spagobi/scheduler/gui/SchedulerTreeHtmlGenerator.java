@@ -152,7 +152,7 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeSchedulerObjTd" + requestIdentity + "' name='treeSchedulerObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
-	   	htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
+	   	htmlStream.append("				treeCMS = new dTree('treeCMS', '" + httpRequest.getContextPath() + "');\n");
 	   	htmlStream.append("	        	treeCMS.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {

@@ -181,7 +181,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeDevObjTd" + requestIdentity + "' name='treeDevObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeDevObjects';\n");
-	   	htmlStream.append("				treeDevObjects = new dTree('treeDevObjects');\n");
+	   	htmlStream.append("				treeDevObjects = new dTree('treeDevObjects', '" + httpRequest.getContextPath() + "');\n");
 	   	htmlStream.append("	        	treeDevObjects.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {

@@ -94,7 +94,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeFoldersTd" + requestIdentity + "' name='treeFoldersTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeFunct';\n");
-	   	htmlStream.append("				treeFunct = new dTree('treeFunct');\n");
+	   	htmlStream.append("				treeFunct = new dTree('treeFunct', '" + httpRequest.getContextPath() + "');\n");
 	   	htmlStream.append("	        	treeFunct.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {

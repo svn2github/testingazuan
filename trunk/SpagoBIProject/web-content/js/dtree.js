@@ -33,7 +33,10 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open, onclick, 
 };
 
 // Tree object
-function dTree(objName) {
+function dTree(objName, context) {
+	if (!(context.charAt(context.length - 1) == '/')) {
+		context += '/';
+	}
 	this.config = {
 		target			: null,
 		folderLinks		: true,
@@ -46,20 +49,20 @@ function dTree(objName) {
 		inOrder			: false
 	};
 	this.icon = {
-		root		: '/spagobi/img/treebase.gif',
-		folder		: '/spagobi/img/treefolder.gif',
-		folderOpen	: '/spagobi/img/treefolderopen.gif',
-		node		: '/spagobi/img/treepage.gif',
-		empty		: '/spagobi/img/treeempty.gif',
-		line		: '/spagobi/img/treeline.gif',
-		join		: '/spagobi/img/treejoin.gif',
-		joinBottom	: '/spagobi/img/treejoinbottom.gif',
-		plus		: '/spagobi/img/treeplus.gif',
-		plusBottom	: '/spagobi/img/treeplusbottom.gif',
-		minus		: '/spagobi/img/treeminus.gif',
-		minusBottom	: '/spagobi/img/treeminusbottom.gif',
-		nlPlus		: '/spagobi/img/treenolines_plus.gif',
-		nlMinus		: '/spagobi/img/treenolines_minus.gif'
+		root		: context + 'img/treebase.gif',
+		folder		: context + 'img/treefolder.gif',
+		folderOpen	: context + 'img/treefolderopen.gif',
+		node		: context + 'img/treepage.gif',
+		empty		: context + 'img/treeempty.gif',
+		line		: context + 'img/treeline.gif',
+		join		: context + 'img/treejoin.gif',
+		joinBottom	: context + 'img/treejoinbottom.gif',
+		plus		: context + 'img/treeplus.gif',
+		plusBottom	: context + 'img/treeplusbottom.gif',
+		minus		: context + 'img/treeminus.gif',
+		minusBottom	: context + 'img/treeminusbottom.gif',
+		nlPlus		: context + 'img/treenolines_plus.gif',
+		nlMinus		: context + 'img/treenolines_minus.gif'
 	};
 	this.obj = objName;
 	this.aNodes = [];

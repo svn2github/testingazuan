@@ -514,7 +514,7 @@ public class ListTag extends TagSupport
 		if(pageNumber != 1) {	
 			_htmlStream.append("		<A href=\""+prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
 		} else {
-			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif")+"' ALIGN=RIGHT border=0 />\n");
 		}		
 		_htmlStream.append("		</TD>\n");
 				
@@ -651,7 +651,7 @@ public class ListTag extends TagSupport
 		// create link for next page
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
 		if(pageNumber != pagesNumber) {	
-			_htmlStream.append("		<A href=\""+nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+			_htmlStream.append("		<A href=\""+nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0 /></a>\n"); 
 		} else {
 			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0>\n");
 		}		

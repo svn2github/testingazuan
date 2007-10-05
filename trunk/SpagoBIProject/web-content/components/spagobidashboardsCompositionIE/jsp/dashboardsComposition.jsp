@@ -23,9 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 java.util.Map,
                  java.util.Set,
                  java.util.Iterator,
-                 javax.portlet.PortletURL,
                  it.eng.spago.navigation.LightNavigationManager,
-                 it.eng.spago.util.JavaScript,
                  it.eng.spagobi.constants.SpagoBIConstants,
                  it.eng.spagobi.engines.dashboardscomposition.SpagoBIDashboardsCompositionInternalEngine,
                  it.eng.spagobi.bo.Domain,
@@ -33,20 +31,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.utilities.GeneralUtilities,
                  java.util.List,
                  org.safehaus.uuid.UUID,
-                 org.safehaus.uuid.UUIDGenerator" %>
-                 
-<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+                 org.safehaus.uuid.UUIDGenerator,
+                 java.util.ArrayList,
+                 java.util.HashMap" %>
 
-<portlet:defineObjects/>
-                 
-
-<%
-String linkVEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "/dashboards/lps/includes/vbembed.js");
-String linkEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "/dashboards/lps/includes/embed.js");
-%>
-
-<script src="<%=linkVEmbedJs%>" language="JavaScript1.1" type="text/javascript"></script>
-<script src="<%=linkEmbedJs%>" type="text/javascript"></script>
+<%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<script src="<%=urlBuilder.getResourceLink(request, "/dashboards/lps/includes/vbembed.js")%>" language="JavaScript1.1" type="text/javascript"></script>
+<script src="<%=urlBuilder.getResourceLink(request, "/dashboards/lps/includes/embed.js")%>" type="text/javascript"></script>
 
 <%
 	// control if the portlet act with single object modality.
@@ -68,12 +59,13 @@ String linkEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "
     UUID uuid = generator.generateRandomBasedUUID();
     String uuidStr = uuid.toString().replaceAll("-", "");
 
-	// build the back link
-   	PortletURL backUrl = renderResponse.createActionURL();
-	backUrl.setParameter("PAGE", "BIObjectsPage");
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
-	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-
+	//  build the back link
+	Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "BIObjectsPage");
+    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+    
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR WITH BACK BUTTON
 	if(!isSingleObjExec) {
 %>
@@ -85,21 +77,22 @@ String linkEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "
        			</td>
        			<td class='header-empty-column-portlet-section'>&nbsp;</td>
        			<td class='header-button-column-portlet-section'>
-           			<a href='<%= backUrl.toString() %>'>
+           			<a href='<%=backUrl%>'>
                  		<img title='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' 
                       		 class='header-button-image-portlet-section'
-                      		 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' 
+                      		 src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
                       		 alt='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' />
            			</a>
        			</td>
-		   		<% if (!possibleStateChanges.isEmpty()) {
-    	   				PortletURL formUrl = renderResponse.createActionURL();
-  		    			formUrl.setParameter("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-  		   				formUrl.setParameter(SpagoBIConstants.ACTOR,actor );
-		   				formUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
-						formUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+		   		<% if (!possibleStateChanges.isEmpty()) {   			
+		   				Map formUrlPars = new HashMap();
+		   				formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		   				formUrlPars.put(SpagoBIConstants.ACTOR, actor);
+		   				formUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
+		   				formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+		   		    	String formUrl = urlBuilder.getUrl(request, formUrlPars);
     			%>
-       			<form method='POST' action='<%= formUrl.toString() %>' id='changeStateForm'  name='changeStateForm'>
+       			<form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
 	       		<td class='header-select-column-portlet-section'>
       				<select class='portlet-form-field' name="newState">
       				<% 
@@ -112,7 +105,10 @@ String linkEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "
       				</select>
       			</td>
       			<td class='header-select-column-portlet-section'>
-      				<input type='image' class='header-button-image-portlet-section' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />'/> 
+      				<input type='image' class='header-button-image-portlet-section' 
+      				       src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
+      				       title='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />' 
+      				       alt='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />'/> 
       			</td>
         		</form>
        			<% } %>
@@ -136,16 +132,46 @@ String linkEmbedJs = renderResponse.encodeURL(renderRequest.getContextPath() + "
 		<% } %>
 <%  } %>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <%
-SourceBean data = (SourceBean) content.getAttribute(SpagoBIDashboardsCompositionInternalEngine.DATA);
-String lovLabel = (String) data.getAttribute(SpagoBIDashboardsCompositionInternalEngine.LOV_LABEL);
-String refreshRate = (String) data.getAttribute(SpagoBIDashboardsCompositionInternalEngine.REFRESH_RATE);
-String xmldataStr = GeneralUtilities.getLovResult(lovLabel);
-xmldataStr = xmldataStr.replaceAll("\\\\", "\\\\\\\\");
-xmldataStr = xmldataStr.replaceAll("'", "\\\\'");
-xmldataStr = xmldataStr.replaceAll("\n", "");
-xmldataStr = xmldataStr.replaceAll("\t", "");
-xmldataStr = xmldataStr.replaceAll("\r", "");
+ 	// get refresh rate
+	String refreshRate = (String) content.getAttribute(SpagoBIDashboardsCompositionInternalEngine.REFRESH_RATE);
+	// get the map of couple name dashboard / lov label
+	Map lovLabels_Of_dashs = new HashMap();
+	String queryStr = "";
+	List dashConfs = content.getAttributeAsList("DASHBOARDS_CONFIGURATION.DASHBOARD");
+	Iterator iterDashConfs = dashConfs.iterator();
+	while(iterDashConfs.hasNext()) {
+		SourceBean dashConf = (SourceBean)iterDashConfs.next();
+		String lovLabel = (String) dashConf.getAttribute(SpagoBIDashboardsCompositionInternalEngine.LOV_LABEL);
+		String dashName = (String) dashConf.getAttribute("name");
+		queryStr = queryStr + "LovResLogName_" + dashName + "=" + lovLabel + "&";
+		lovLabels_Of_dashs.put(dashName, lovLabel);
+	}
+	if(queryStr.endsWith("&")) {
+		queryStr = queryStr.substring(0, queryStr.length() - 1);
+	}
+	// get the entire result (all the lov execution combined)
+	String xmldataStr = GeneralUtilities.getLovMapResult(lovLabels_Of_dashs);
+	// replace all special characters into the combined lov result
+	xmldataStr = xmldataStr.replaceAll("\\\\", "\\\\\\\\");
+	xmldataStr = xmldataStr.replaceAll("'", "\\\\'");
+	xmldataStr = xmldataStr.replaceAll("\n", "");
+	xmldataStr = xmldataStr.replaceAll("\t", "");
+	xmldataStr = xmldataStr.replaceAll("\r", "");	
 %>
 
 
@@ -162,43 +188,47 @@ xmldataStr = xmldataStr.replaceAll("\r", "");
 	}
 	
 	function refreshData<%=uuidStr%>() {
-		xmlHttp = GetXmlHttpObject<%=uuidStr%>();
-    	if (xmlHttp==null) {
-  			alert ("Browser does not support HTTP Request");
-  			return;
-  		}
-   		var url="<%=GeneralUtilities.getSpagoBiDashboardServlet()%>";
-    	url=url+"?dataname=<%=lovLabel%>";
-	    xmlHttp.onreadystatechange=saveResponseIntoJSVariable<%=uuidStr%>; 
-	    xmlHttp.open("GET",url,true);
-	    xmlHttp.send(null); 
+		url="<%=GeneralUtilities.getSpagoBiDashboardServlet()%>";
+       	pars = "mode=list&<%=queryStr%>";
+		new Ajax.Request(url,
+          {
+            method: 'post',
+            parameters: pars,
+            onSuccess: function(transport){
+                            response = transport.responseText || "";
+                            if(response!="") {
+                            	xmldata<%=uuidStr%>=response;
+                            }
+                        },
+            onFailure: somethingWentWrong<%=uuidStr%>
+          }
+        );
 	}
 	
-    function GetXmlHttpObject<%=uuidStr%>(){ 
-  		var objXMLHttp=null
-  		if(window.XMLHttpRequest)	{
-  			objXMLHttp=new XMLHttpRequest()
-  		} else if (window.ActiveXObject) {
-  			objXMLHttp=new ActiveXObject("Microsoft.XMLHTTP")
-  		}
-  		return objXMLHttp
-  	}
-  	
-	function saveResponseIntoJSVariable<%=uuidStr%>(){ 
-      	if( xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
-  			xmldata<%=uuidStr%>=xmlHttp.responseText;
-  		}
+   
+	function somethingWentWrong<%=uuidStr%>(){ 
+      	alert('Cannot refresh data, please contact your system administrator');
   	}
   	
 </script>
+
+
+
+
+
+
+
+
+
 
 <%
 SourceBean layout = (SourceBean) content.getAttribute(SpagoBIDashboardsCompositionInternalEngine.LAYOUT);
 if (layout == null) {
 	out.write("NO LAYOUT!!!");
 } else {
-	PortletURL linkbaseurl = renderResponse.createActionURL();
-	String linkbaseurlStr = linkbaseurl.toString();
+	
+	Map linkbaseurlPars = new HashMap();
+    String linkbaseurlStr = urlBuilder.getUrl(request, linkbaseurlPars);
 	linkbaseurlStr = linkbaseurlStr.replaceAll("&amp;", "&");
 	linkbaseurlStr = URLEncoder.encode(linkbaseurlStr);
 	String layoutStr = layout.getCharacters();
@@ -239,7 +269,7 @@ if (layout == null) {
 			out.write("Dashboard with name '" + dashboardName + "' has more than one configuration!!");
 			return;
 		}
-		String contextPath = renderRequest.getContextPath();
+		String contextPath = ChannelUtilities.getSpagoBIContextName(request);
 		String moviePath = contextPath + "/dashboards";
 		String relMovie = (String) dashboardConfSb.getAttribute("movie");
 	    if (relMovie.startsWith("/"))
@@ -251,7 +281,6 @@ if (layout == null) {
 		// get all the parameters for dashboard configuration
 		SourceBean confSB = (SourceBean) dashboardConfSb.getAttribute("CONFIGURATION");
 		String confStr = confSB.toXML(false);
-		//confStr = JavaScript.escape(confStr);
 		confStr = confStr.replaceAll("'", "\\'");
 		confStr = confStr.replaceAll("\n", "");
 		confStr = confStr.replaceAll("\t", "");
@@ -281,6 +310,14 @@ if (layout == null) {
 	}
 	if (endDashboard < layoutStr.length()) out.write("\n" + layoutStr.substring(endDashboard + 1) + "\n");
 	%>
+	
+	
+	
+	
+	
+	
+	
+	
 	<script type="text/javascript">
 	
 	function getxmldata<%=uuidStr%>(logicalName) {

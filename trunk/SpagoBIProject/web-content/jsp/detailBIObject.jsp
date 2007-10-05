@@ -898,7 +898,7 @@ function saveBIParameterConfirm (message) {
 }
 
 function checkDocumentType(message) {
-	var type = document.getElementById('type').value;
+	var type = document.getElementById('doc_type').value;
 	if (type.match('REPORT') != null || type.match('DATA_MINING') != null) {
 		var biobjFormModified = isBIObjectFormChanged();
 		var biobjParFormModified = isBIParameterFormChanged();

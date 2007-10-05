@@ -189,31 +189,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 
 <form method='POST' action='<%=execUrl%>' id='paramsValueForm<%=requestIdentity%>' name='paramsValueForm'>	
-<input type='hidden' name='SUBMESSAGEDET' value=''>
-<input type='hidden' name='tmp_nameVP' value=''>
-<input type='hidden' name='tmp_descVP' value=''>
-<input type='hidden' name='tmp_scopeVP' value=''>
+	<input type='hidden' name='SUBMESSAGEDET' value='' />
+	<input type='hidden' name='tmp_nameVP' value='' />
+	<input type='hidden' name='tmp_descVP' value='' />
+	<input type='hidden' name='tmp_scopeVP' value='' />
 
-<% 
+	<% 
 	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
 	if(!isSingleObjExec) {
-%>
-
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<%=title%>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<% if ( !noPars ) { %>		 
-		   <td class='header-button-column-portlet-section'>
-				<a href='javascript:opencloseViewPoint<%=requestIdentity%>()'> 
-      				<img class='header-button-image-portlet-section' 
-					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
-					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
-					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.saveButt" />' /> 
-				</a>	        	
-			</td>		
+	%>
+	
+	<table class='header-table-portlet-section'>		
+		<tr class='header-row-portlet-section'>
+			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
+				<%=title%>
+			</td>
+			<td class='header-empty-column-portlet-section'>&nbsp;</td>
+			<% if ( !noPars ) { %>		 
+			   <td class='header-button-column-portlet-section'>
+					<a href='javascript:opencloseViewPoint<%=requestIdentity%>()'> 
+	      				<img class='header-button-image-portlet-section' 
+						title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
+						src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+						alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.saveButt" />' /> 
+					</a>	        	
+				</td>
+			<% } %>	
 			<td class='header-button-column-portlet-section'>
 				<a href="javascript:document.getElementById('paramsValueForm<%=requestIdentity%>').submit()"> 
       					<img class='header-button-image-portlet-section' 
@@ -222,57 +223,83 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.execButt" />' /> 
 				</a>
 			</td>
-			
-		<% } %>
-		<td class='header-button-column-portlet-section'>
-			<a href='<%= backUrl %>'> 
-      				<img class='header-button-image-portlet-section' 
-				title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
-				src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
-				alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
-			</a>
-		</td>
-	</tr>
-</table>
-
-
-<% 
+			<td class='header-button-column-portlet-section'>
+				<a href='<%= backUrl %>'> 
+	      				<img class='header-button-image-portlet-section' 
+					title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
+				</a>
+			</td>
+		</tr>
+	</table>
+	
+	
+	<% 
 	// IF SINGLE OBJECT MODALITY SHOW THE PROPER TITLE BAR
 	} else {
-%>	
-<table width='100%' cellspacing='0' border='0'>
-	<tr>
-		<td class='header-title-column-single-object-execution-portlet-section' 
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%=title%>
-		</td>
-		<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
-		<td class='header-button-column-single-object-execution-portlet-section'>
-				<a href='javascript:opencloseViewPoint<%=requestIdentity%>()'> 
-      				<img class='header-button-image-portlet-section' 
-					title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
-					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
-					alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.saveButt" />' /> 
-				</a>	        	
-		</td>		
-		<td class='header-button-column-single-object-execution-portlet-section'>
-			<input type='image' 
-				src='<%=urlBuilder.getResourceLink(request, "/img/exec22.png")%>' 
-				name='exec' 
-				alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
-				title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' />
-		</td>
-</table>
+	%>	
+	<table width='100%' cellspacing='0' border='0'>
+		<tr>
+			<td class='header-title-column-single-object-execution-portlet-section' 
+			    style='vertical-align:middle;padding-left:5px;'>
+				<%=title%>
+			</td>
+			<td class='header-empty-column-single-object-execution-portlet-section'>&nbsp;</td>
+			<% if ( !noPars ) { %>
+				<td class='header-button-column-single-object-execution-portlet-section'>
+						<a href='javascript:opencloseViewPoint<%=requestIdentity%>()'> 
+		      				<img class='header-button-image-portlet-section' 
+							title='<spagobi:message key ="SBIDev.docConf.execBIObjectParams.saveButt" />' 
+							src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+							alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.saveButt" />' /> 
+						</a>	        	
+				</td>
+			<% } %>	
+			<td class='header-button-column-single-object-execution-portlet-section'>
+				<input type='image' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/exec22.png")%>' 
+					name='exec' 
+					alt='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' 
+					title='<%=msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", "messages", request)%>' />
+			</td>
+	</table>
 	
 
-<% } %>
+	<% } %>
 
-<div class='div_background_no_img' >
+	<div class='div_background_no_img' >
+		
+		<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" requestIdentity="<%=requestIdentity%>"/>
 	
-<!-- if there aren't parameters dont't show the parameter form  -->
-<%-- if(!noPars) { --%>
-	<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" />
-<%-- } --%>
+		<%--
+		<!-- if there aren't parameters show the link for the new composition -->
+		<% 
+		if(noPars) { 
+			%>
+			<span class='portlet-font'>
+					<%=msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages", request)%>
+			</span>
+			<a href="javascript:document.getElementById('paramsValueForm<%=requestIdentity%>').submit()"
+				class='portlet-form-field-label'
+				onmouseover="this.style.color='#9297ac';"
+				onmouseout="this.style.color='#074B88';">
+					<%=msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages", request)%>
+			</a>	
+			<br/>
+			<br/>
+		<% } %>
+		--%>
+	
+		<div class='errors-object-details-div'>
+			<spagobi:error/>
+		</div>
+	
+	<!--  ************************* CLOSE div_background_no_img ********************************** -->
+	</div>
+	
+<!--  ************************* CLOSE FORM ********************************** -->
+</form>
 
 <!-- VIEWPOINT DIV  -->
 <div id='viewpointdiv<%=requestIdentity%>' style='width:100%;display:none;'>
@@ -326,7 +353,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_detail_form'>
-					 <select id="scopeVP<%=requestIdentity%>" name="scopeVP"/>
+					 <select id="scopeVP<%=requestIdentity%>" name="scopeVP" >
 					    <option value=""/>
 					    <option value="Public"  /><spagobi:message key = "SBIDev.docConf.viewPoint.scopePublic" />
 					    <option value="Private" /><spagobi:message key = "SBIDev.docConf.viewPoint.scopePrivate" />
@@ -338,14 +365,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </table>
 
 </div>
-
-
-<div class='errors-object-details-div'>
-	<spagobi:error/>
-</div>	
-
-<!--  ************************* CLOSE FORM ********************************** -->
-</form>
 
 
 <%--
@@ -363,26 +382,9 @@ if (isSingleObjExec) {
 
 
 
-	<!-- if there aren't parameters show the link for the new composition -->
-	<% 
-	if(noPars) { 
-	   %>
-	   <span class='portlet-font'>
-				<%=msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages", request)%>
-		 </span>
-	   <a href='<%=execUrl%>'
-				class='portlet-form-field-label'
-				onmouseover="this.style.color='#9297ac';"
-				onmouseout="this.style.color='#074B88';">
-				<%=msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages", request)%>
-		 </a>
-	
-	   <br/><br/>
-	   <%
-	} 
-	%>
 
-	
+
+
 	
 	<% if( (subObjs!=null)&&(subObjs.size()!=0) ) { %>
 	
@@ -430,7 +432,7 @@ if (isSingleObjExec) {
 			           <spagobi:message key='SBIDev.docConf.subBIObject.visibility' />
 			       </td>
 			       <td align="left" class="portlet-section-header" colspan='3' >&nbsp;</td>
-			     <tr> 
+			     </tr> 
 				              
 				    	<% Iterator iterSubs =  subObjs.iterator();
 				    	   BIObject.SubObjectDetail subObj = null;
@@ -587,7 +589,7 @@ if (isSingleObjExec) {
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
-			     <tr> 
+			     </tr> 
 				              
 				 <% Iterator iterSnap =  snapshots.iterator();
 				    BIObject.BIObjectSnapshot snap = null;
@@ -715,7 +717,7 @@ if (isSingleObjExec) {
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
 			       <td align="left" class="portlet-section-header">&nbsp;</td>
-			     <tr> 
+			     </tr> 
 				              
 				 <% Iterator iterVP =  viewpoints.iterator();
 				    Viewpoint vp = null;
@@ -835,14 +837,4 @@ if (isSingleObjExec) {
 	  <% } %>	  
 	  
 
- <% } %>
-
-</div>
-
-
-</body>
-
-
- 		   
-
- 		   
+ <% } %>		   

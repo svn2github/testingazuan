@@ -54,17 +54,16 @@ import it.eng.spagobi.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * Defines a tag to create a dinamic JSP page
@@ -80,7 +79,8 @@ public class DynamicPageTag extends TagSupport {
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
 	public static final int PIXEL_PER_CHAR = 9;
-	protected String requestIdentity = null;
+	// identity string for object of the page
+	protected String requestIdentity;
 	
 	private SessionContainer getSession() {
 		return requestContainer.getSessionContainer();
@@ -111,17 +111,11 @@ public class DynamicPageTag extends TagSupport {
 		request = requestContainer.getServiceRequest();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
-
-		// identity string for object of the page
-		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-		UUID uuid = uuidGen.generateTimeBasedUUID();
-		requestIdentity = uuid.toString();
-		requestIdentity = requestIdentity.replaceAll("-", "");
-		
 		BIObject obj = getBIObject();
 		List parameters = obj.getBiObjectParameters();
+		boolean hasParametersToBeShown = false;
+		StringBuffer htmlStream = new StringBuffer();
 		if (parameters != null && parameters.size() > 0) {
-			StringBuffer htmlStream = new StringBuffer();
 			createSetLookupFieldJSFunction(htmlStream);
 			createSetDeleteFlagJSFunction(htmlStream);
 			createClearFieldsJSFunction(htmlStream);
@@ -130,7 +124,6 @@ public class DynamicPageTag extends TagSupport {
 			createSetChangedFlagJSFunction(htmlStream);
 			createSelectAllTextJSFunction(htmlStream);
 			createSetRefreshCorrelationJSFunction(htmlStream);
-			htmlStream.append("<div class='div_detail_area_forms' style='width:" + (getParamLabelDivWidth() + 300) + "px;'>\n");
 	        Iterator iter = parameters.iterator();
 	        while(iter.hasNext()) {
 	        	BIObjectParameter biparam = (BIObjectParameter)iter.next();
@@ -141,6 +134,11 @@ public class DynamicPageTag extends TagSupport {
 	        	// 2. the biparameter has a single value and has valid value
 	        	if ((!biparam.isTransientParmeters() && !isSingleValue(biparam)) 
 	        			|| !biparam.hasValidValues()) {  
+	        		hasParametersToBeShown = true;
+	        		// opens the div tag for the parameters form only the first time
+	        		if (htmlStream.length() == 0) {
+	        			htmlStream.append("<div class='div_detail_area_forms' style='width:" + (getParamLabelDivWidth() + 300) + "px;'>\n");
+	        		}
 	        		
 	        		createParameterLabelDiv(htmlStream, biparam);        		
 	        		String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
@@ -155,20 +153,27 @@ public class DynamicPageTag extends TagSupport {
 	        	}
 	        }
 	        
-	        htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
-	        htmlStream.append("			&nbsp;\n");
-	        htmlStream.append("		</div>\n");
-	        
-	        createClearFieldsButton(htmlStream);
-			
-	        htmlStream.append("</div>\n");		
-	       
-			try {
-				pageContext.getOut().print(htmlStream);
-			} catch(IOException ioe) {
-				SpagoBITracer.major("", "DynamicPageTag", "doStartTag", "cannot start tag: IO exception occurred",ioe);
-			}
+	        if (hasParametersToBeShown) {
+	        	htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
+	        	htmlStream.append("			&nbsp;\n");
+	        	htmlStream.append("		</div>\n");
+	        	createClearFieldsButton(htmlStream);
+	        	// closes the div tag of the parameters form
+	        	htmlStream.append("</div>\n");
+	        } else {
+	        	createNoParametersMessage(htmlStream);
+	        }
+
+		} else {
+			createNoParametersMessage(htmlStream);
 		}
+		
+		try {
+			pageContext.getOut().print(htmlStream);
+		} catch(IOException ioe) {
+			SpagoBITracer.major("", "DynamicPageTag", "doStartTag", "cannot start tag: IO exception occurred",ioe);
+		}
+		
 		return SKIP_BODY;
 	}
 		
@@ -442,7 +447,7 @@ public class DynamicPageTag extends TagSupport {
     		htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
     		htmlStream.append("this.form.submit();");
     	}
-    	htmlStream.append("\" >\n");		
+    	htmlStream.append("\" />\n");		
 	}
 	
 	
@@ -621,6 +626,19 @@ public class DynamicPageTag extends TagSupport {
 	    }
     }
 	
+	private void createNoParametersMessage(StringBuffer htmlStream) {
+		htmlStream.append("		<span class='portlet-font' >\n");
+    	htmlStream.append("			" + msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages", httpRequest) + "\n");
+    	htmlStream.append("			<a href=\"javascript:document.getElementById('paramsValueForm" + requestIdentity + "').submit();\"\n");
+    	htmlStream.append("				class='portlet-form-field-label'\n");
+    	htmlStream.append("				onmouseover=\"this.style.color='#9297ac';\"\n");
+    	htmlStream.append("				onmouseout=\"this.style.color='#074B88';\">\n");
+    	htmlStream.append("				" + msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages", httpRequest) + "\n");
+    	htmlStream.append("			</a>\n");
+    	htmlStream.append("		</span>\n");
+    	htmlStream.append("		<br/>\n");
+    	htmlStream.append("		<br/>\n");
+	}
 	
 	/**
 	 * @return en extimation of the parameter label div in px
@@ -756,6 +774,14 @@ public class DynamicPageTag extends TagSupport {
 
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
+	}
+
+	public String getRequestIdentity() {
+		return requestIdentity;
+	}
+
+	public void setRequestIdentity(String requestIdentity) {
+		this.requestIdentity = requestIdentity;
 	}
 }	
 	

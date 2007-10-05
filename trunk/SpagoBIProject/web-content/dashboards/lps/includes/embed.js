@@ -231,7 +231,12 @@ Query.prototype.parse = function(s) {
     var p = s.split('&');
     this.d = {};
     for (i in p) {
-        var nv = p[i].split('=');
+        var nv = null;
+        try {
+          nv = p[i].split('=');
+        } catch (err) {
+          continue;
+        }
         var n = nv[0];
         var v = nv[1];
         this.d[n] = v;

@@ -111,6 +111,7 @@ public class DynamicPageTag extends TagSupport {
 		request = requestContainer.getServiceRequest();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		if (requestIdentity == null) requestIdentity = "";
 		BIObject obj = getBIObject();
 		List parameters = obj.getBiObjectParameters();
 		boolean hasParametersToBeShown = false;
@@ -133,11 +134,12 @@ public class DynamicPageTag extends TagSupport {
 	        	// 1. the biparameter is transient and has valid values
 	        	// 2. the biparameter has a single value and has valid value
 	        	if ((!biparam.isTransientParmeters() && !isSingleValue(biparam)) 
-	        			|| !biparam.hasValidValues()) {  
-	        		hasParametersToBeShown = true;
+	        			|| !biparam.hasValidValues()) {
+	        		
 	        		// opens the div tag for the parameters form only the first time
-	        		if (htmlStream.length() == 0) {
+	        		if (!hasParametersToBeShown) {
 	        			htmlStream.append("<div class='div_detail_area_forms' style='width:" + (getParamLabelDivWidth() + 300) + "px;'>\n");
+	        			hasParametersToBeShown = true;
 	        		}
 	        		
 	        		createParameterLabelDiv(htmlStream, biparam);        		

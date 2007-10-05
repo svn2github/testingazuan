@@ -59,6 +59,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Contains some SpagoBI's general utilities.
@@ -739,6 +741,30 @@ public class GeneralUtilities {
 		value = value.replaceAll(doubleQuoteString,doubleQuotesReplaceString);
 		return value;
 		
+	}
+	
+	public static String getLovMapResult(Map lovs) {
+		String toReturn = "<DATA>";
+		Set keys = lovs.keySet();
+		Iterator keyIter = keys.iterator();
+		while(keyIter.hasNext()) {
+			String key = (String) keyIter.next();
+			String lovname = (String) lovs.get(key);
+			String lovResult = "";
+			try {
+				lovResult = getLovResult(lovname);
+			} catch (Exception e) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, GeneralUtilities.class.getName(), 
+						            "getLovMapResult", "Error while getting result of the lov " + lovname +
+						            ", the result of the won't be inserted into the response");
+				continue;
+			}
+			toReturn = toReturn + "<" + key + ">";
+			toReturn = toReturn + lovResult;
+			toReturn = toReturn + "</" + key + ">";
+		}
+		toReturn = toReturn + "</DATA>";
+		return toReturn;
 	}
 	
 	public static String getLovResult (String lovLabel) throws Exception {

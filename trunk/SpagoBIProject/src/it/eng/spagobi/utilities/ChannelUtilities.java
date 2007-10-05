@@ -119,7 +119,9 @@ public class ChannelUtilities {
 		if (sbiMode.equalsIgnoreCase("WEB")) {
 			contextName = httpRequest.getContextPath();
 		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-			contextName = GeneralUtilities.getSpagoBiContextAddress();
+			//contextName = GeneralUtilities.getSpagoBiContextAddress();
+			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
+			contextName = portletRequest.getContextPath();
 		}
 		return contextName;
 	}

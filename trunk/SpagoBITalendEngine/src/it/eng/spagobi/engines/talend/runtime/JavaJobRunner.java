@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.talend.runtime;
 
+import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
+import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
@@ -28,7 +30,9 @@ import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,6 +55,9 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	private RuntimeRepository runtimeRepository;
 	
 	public static final String DEFAULT_CONTEXT = "Default";
+	
+	public static final String DEFAULT_XMS_VALUE = "256";
+	public static final String DEFAULT_XMX_VALUE = "1024";
 	
 	
 	
@@ -97,6 +104,7 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    		job.setContext(DEFAULT_CONTEXT);
 	    	} 
 	    		
+	    	/*
 	    	File executableJobFile = runtimeRepository.getExecutableJobFile(job);
 	    	JarFile jarFile = new JarFile(executableJobFile);
 	    	StringBuffer buffer = new StringBuffer();
@@ -108,15 +116,21 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    	if (ze == null) {
 		    	throw new ContextNotFoundException("Script context file " + contextFile + " does not exist.");
 			}
+	    	*/
 	    		
-	    		
+	    	Properties context = getContext(job);
+	    	if(context == null) {
+	    		throw new ContextNotFoundException("Impossible to load context " + job.getContext());
+	    	}
+	    	/*
 	    	Properties props = new Properties();
 	    	props.load( jarFile.getInputStream(ze) );
+	    	*/
 	    	Iterator it = parameters.keySet().iterator();
 	    	while(it.hasNext()) {
 	    		String pname = (String)it.next();
-	    		String pvalue = (parameters.get(pname) != null)? (String)parameters.get(pname): (String)props.getProperty(pname);
-	    		props.setProperty(pname, pvalue);
+	    		String pvalue = (parameters.get(pname) != null)? (String)parameters.get(pname): (String)context.getProperty(pname);
+	    		context.setProperty(pname, pvalue);
 	    	}
 	    		
 	    	UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
@@ -130,12 +144,24 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    	contextFileDir.mkdirs();
 	    	contextFile = new File(contextFileDir, job.getContext() + ".properties");
 	    	OutputStream out = new FileOutputStream(contextFile);
-	    	props.store(out, "Talend Context");
+	    	context.store(out, "Talend Context");
 	    	
 	
 	    	
 	    	String classpath = "." + File.separatorChar + tmpDirName + File.pathSeparator + getClassPath(job);
-	    	String cmd = "java -Xms256M -Xmx1024M -cp " + classpath  + " " + TalendScriptAccessUtils.getExecutableClass(job);
+	    	SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+	    	String cmd = "java";
+	    	
+	    	String javaInstallDir = config.getJavaInstallDir();
+	    	if(config.getJavaInstallDir() != null) {
+	    		String javaBinDir = (config.getJavaBinDir() != null? config.getJavaBinDir(): "bin");
+	    		String javaCommand = (config.getJavaCommand() != null? config.getJavaCommand(): "java");
+	    		cmd = javaInstallDir + File.separatorChar + javaBinDir + File.separatorChar + javaCommand;
+	    	}
+	    	
+	    	String xmsValue = (config.getJavaCommandOption("Xms")!= null? config.getJavaCommandOption("Xms"): DEFAULT_XMS_VALUE);
+	    	String xmxValue = (config.getJavaCommandOption("Xmx")!= null? config.getJavaCommandOption("Xmx"): DEFAULT_XMX_VALUE);
+	    	cmd += " -Xms" + xmsValue +"M -Xmx" + xmxValue + "M -cp " + classpath  + " " + TalendScriptAccessUtils.getExecutableClass(job);
 	        
 	    	cmd = cmd + " --context=" + job.getContext();
 	    		    		    	
@@ -153,7 +179,43 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
     }
     
     
-
+    public Properties getContext(Job job){
+    	Properties context = null;
+    	StringBuffer buffer = null;
+    	
+    	try {
+	    	buffer = new StringBuffer();
+	    	buffer.append( runtimeRepository.getExecutableJobDir(job).getAbsolutePath() );
+	    	buffer.append("/" +job.getProject().toLowerCase());
+	    	buffer.append("/" + job.getName().toLowerCase());
+	    	buffer.append("/contexts");
+	    	buffer.append("/" + job.getContext() + ".properties");
+	    	File contextFile = new File(buffer.toString());
+	    	if(contextFile.exists()) {
+	    		context = new Properties();
+	        	context.load( new FileInputStream(contextFile) );				
+	    	} else {
+			   	File executableJobFile = runtimeRepository.getExecutableJobFile(job);
+			   	JarFile jarFile = new JarFile(executableJobFile);
+			   	buffer = new StringBuffer();
+			   	buffer.append(job.getProject().toLowerCase());
+			   	buffer.append("/" + job.getName().toLowerCase());
+			   	buffer.append("/contexts");
+			   	buffer.append("/" + job.getContext() + ".properties");
+			   	ZipEntry ze = jarFile.getEntry(buffer.toString());
+			   	if (ze != null) {
+			   		context = new Properties();
+			       	context.load( jarFile.getInputStream(ze) );					
+				}
+	    	}
+    	} catch (IOException e) {
+			context = null;
+			e.printStackTrace();
+		}
+    	
+    	
+    	return context;    		
+    }
 
 	public String getClassPath(Job job) {
     	StringBuffer classpath = new StringBuffer();

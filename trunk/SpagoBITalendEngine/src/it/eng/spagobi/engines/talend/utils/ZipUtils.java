@@ -27,7 +27,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -86,11 +90,16 @@ public class ZipUtils {
 	
 	public static void unzipSkipFirstLevel(ZipFile zipFile, File destDir) {
 		
-		Enumeration entries;
+		Enumeration entries = null;;
 		
 		try {
+		entries = zipFile.entries();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+	
 			
-			entries = zipFile.entries();
 			
 			while (entries.hasMoreElements()) {
 				ZipEntry entry = (ZipEntry) entries.nextElement();
@@ -123,6 +132,44 @@ public class ZipUtils {
 			return;
 		}
 	}
+	
+	public static String[] getDirectoryNameByLevel(ZipFile zipFile, int levelNo) {
+		
+		Set names = new HashSet();
+		Enumeration entries;
+		
+		try {
+			
+			entries = zipFile.entries();
+			
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry) entries.nextElement();
+
+				if (!entry.isDirectory()) {
+					String fileName = entry.getName();
+					String[] components = fileName.split("/");
+					
+					if(components.length == (levelNo+1)) {
+						String dirNam = components[components.length-2];
+						names.add(dirNam);
+					}
+					
+					System.out.println(entry.getName());
+				}				
+			}
+
+			zipFile.close();
+		} catch (IOException ioe) {
+			System.err.println("Unhandled exception:");
+			ioe.printStackTrace();
+			return null;
+		}
+		
+		return (String[])names.toArray(new String[0]);
+	}
+	
+	
+	
 	
 	
 

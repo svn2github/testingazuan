@@ -45,8 +45,6 @@ public class SpagoBITalendEngine implements Version {
 	
 	private SpagoBITalendEngine() { 
 		config = new SpagoBITalendEngineConfig();
-		File rrRootDir = config.getRuntimeRepositoryRootDir();
-		runtimeRepository = new RuntimeRepository(rrRootDir);
 	}
 	
 	public static String getVersion() {
@@ -62,6 +60,10 @@ public class SpagoBITalendEngine implements Version {
 	}
 
 	public RuntimeRepository getRuntimeRepository() {
+		if(runtimeRepository == null) {
+			File rrRootDir = config.getRuntimeRepositoryRootDir();
+			runtimeRepository = new RuntimeRepository(rrRootDir);
+		}
 		return runtimeRepository;
 	}
 

@@ -31,6 +31,7 @@ import it.eng.spagobi.engines.talend.utils.EngineMessageBundle;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -96,6 +97,10 @@ public class JobRunService extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		logger.debug("Starting service method...");
+		
+		String engineRootDir = getServletContext().getRealPath("WEB-INF");
+		SpagoBITalendEngine.getInstance().getConfig().setEngineRootDir(new File(engineRootDir));
+		
 		
 		Enumeration paramsEnum = request.getParameterNames();
 		Map parameters = new HashMap();

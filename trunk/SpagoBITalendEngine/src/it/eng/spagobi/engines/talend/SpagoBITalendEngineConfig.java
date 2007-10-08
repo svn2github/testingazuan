@@ -38,6 +38,8 @@ public class SpagoBITalendEngineConfig {
 	Properties perlProps = new Properties();
 	Properties javaProps = new Properties();
 	
+	File engineRootDir = new File("");
+	
 	private static transient Logger logger = Logger.getLogger(SpagoBITalendEngineConfig.class);
 	
 	
@@ -63,13 +65,61 @@ public class SpagoBITalendEngineConfig {
 
 	// rr properties
 	
+	
+	public static boolean isAbsolutePath(String path) {
+		if(path == null) return false;
+		return (path.startsWith("/") || path.startsWith("\\") || path.charAt(1) == ':');
+	}
+	
+	
 	public File getRuntimeRepositoryRootDir() {
 		File dir = null;
 		String dirName = rrProps.getProperty("runtimeRepository.rootDir");
+		if( !isAbsolutePath(dirName) )  {
+			dirName = engineRootDir.toString() + System.getProperty("file.separator") + dirName;
+		}		
+		
 		if(dirName != null) dir = new File(dirName);
 		return dir;
 	}
 	
+	public String getSpagobiTargetFunctionalityLabel() {
+		String label = null;
+		label = rrProps.getProperty("spagobi.functionality.label");
+		return label;
+	}
+	
+	public String getSpagobiUrl() {
+		String url = null;
+		url = rrProps.getProperty("spagobi.url");
+		return url;
+	}
+	
+	public boolean isAutoPublishActive() {
+		String autoPublishProp = null;
+		autoPublishProp = rrProps.getProperty("spagobi.autopublish");
+		if(autoPublishProp == null || autoPublishProp.equalsIgnoreCase("true")) return true;
+		
+		return false;
+	}
+	
+	
+	// java properties
+	public String getJavaInstallDir() {
+		return javaProps.getProperty("java.install.dir");
+	}
+	
+	public String getJavaBinDir() {
+		return javaProps.getProperty("java.bin.dir");
+	}
+	
+	public String getJavaCommand() {
+		return javaProps.getProperty("java.command");
+	}
+	
+	public String getJavaCommandOption(String optionName) {
+		return javaProps.getProperty("java.command.option." + optionName);
+	}
 	
 	// perl properties
 	public String getJobSeparator() {
@@ -94,5 +144,13 @@ public class SpagoBITalendEngineConfig {
 
 	public String getWordSeparator() {
 		return perlProps.getProperty("wordSeparator");
+	}
+
+	public File getEngineRootDir() {
+		return engineRootDir;
+	}
+
+	public void setEngineRootDir(File engineRootDir) {
+		this.engineRootDir = engineRootDir;
 	}
 }

@@ -775,8 +775,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 				else mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
 				
 				// adding parameters for document-to-document drill
+				/*
 				mapPars.put("username", profile.getUserUniqueIdentifier().toString());
 				mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
+				*/
 				// adding or sobstituting parameters for viewpoint
 				if (vpParameters != null){
 					for (int i=0; i< vpParameters.length; i++){

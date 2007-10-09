@@ -188,7 +188,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	
 	function refreshData<%=uuidStr%>() {
-		url="<%=GeneralUtilities.getSpagoBiDashboardServlet()%>";
+		<%--url="<%=GeneralUtilities.getSpagoBiDashboardServlet()%>";--%>
+		url= "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%>/<%=ChannelUtilities.getSpagoBIContextName(request)%>/DashboardService";
        	pars = "mode=list&<%=queryStr%>";
 		new Ajax.Request(url,
           {

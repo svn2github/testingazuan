@@ -783,7 +783,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script>
 
   var oFCKeditor<%=executionId%> = new FCKeditor('editorfckarea<%=executionId%>');
-  oFCKeditor<%=executionId%>.BasePath = "<%=GeneralUtilities.getSpagoBiContextAddress() + "/js/FCKeditor/"%>";
+  oFCKeditor<%=executionId%>.BasePath = "<%=ChannelUtilities.getSpagoBIContextName(request) + "/js/FCKeditor/"%>";
   oFCKeditor<%=executionId%>.ToolbarSet = 'SbiObjectNotes';
   oFCKeditor<%=executionId%>.Height = <%=heightNotes%> - 35;
   oFCKeditor<%=executionId%>.Width = <%=widthNotes%> - 5;
@@ -801,28 +801,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   }
 
   function openNotes<%=executionId%>(automatic) {
-
     frameFcke<%=executionId%> = document.getElementById('editorfckarea<%=executionId%>___Frame');
     if(frameFcke<%=executionId%>!=null) {
         frameFcke<%=executionId%>.height= <%=heightNotes%> - 35;
         frameFcke<%=executionId%>.width= <%=widthNotes%> - 5;
     }
-
     diviframeobj = document.getElementById('divIframe<%=executionId%>');
     pos = findPos(diviframeobj);
     win<%=executionId%> = null;
+  
+    
     if(automatic) {
-       win<%=executionId%> = new Window('win_notes_<%=executionId%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
+       win<%=executionId%> = new Window('win_notes_<%=executionId%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
   	   win<%=executionId%>.setDestroyOnClose();
        win<%=executionId%>.setContent('divNotes<%=executionId%>', false, false);
        win<%=executionId%>.show(false);
        win<%=executionId%>.minimize();
     } else {
-       win<%=executionId%> = new Window('win_notes_<%=executionId%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>});
+       win<%=executionId%> = new Window('win_notes_<%=executionId%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
   	   win<%=executionId%>.setDestroyOnClose();
        win<%=executionId%>.setContent('divNotes<%=executionId%>', false, false);
-       win<%=executionId%>.show(false);
-
+       win<%=executionId%>.show();
     }
 
 

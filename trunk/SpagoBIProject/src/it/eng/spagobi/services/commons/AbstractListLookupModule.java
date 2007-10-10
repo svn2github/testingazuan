@@ -211,34 +211,34 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 				String exprPart = expr.substring(indLR, indRR+1);
 				if(exprPart.indexOf("AND")!=-1) {
 					int indexOper = exprPart.indexOf("AND");
-					String firstListName = exprPart.substring(1, indexOper);
-					String secondListName = exprPart.substring(indexOper+3, exprPart.length()-1);
+					String firstListName = (exprPart.substring(1, indexOper)).replace("null", " ");
+					String secondListName = (exprPart.substring(indexOper+3, exprPart.length()-1)).replace("null", " ");
 					ListIFace firstList = null;
-					if(!firstListName.equals("previousList")) {
-						firstList = (ListIFace)calculatedLists.get(firstListName);
+					if(!firstListName.trim().equals("previousList")) {
+						firstList = (ListIFace)calculatedLists.get(firstListName.trim());
 					} else {
 						firstList = previusCalculated;
 					}
 					ListIFace secondList = null;
-					if(!secondListName.equals("previousList")) {
-						secondList = (ListIFace)calculatedLists.get(secondListName);
+					if(!secondListName.trim().equals("previousList")) {
+						secondList = (ListIFace)calculatedLists.get(secondListName.trim());
 					} else {
 						secondList = previusCalculated;
 					}
 					previusCalculated = intersectLists(firstList, secondList);
 				} else if( exprPart.indexOf("OR")!=-1 ) {
 					int indexOper = exprPart.indexOf("OR");
-					String firstListName = exprPart.substring(1, indexOper);
-					String secondListName = exprPart.substring(indexOper+2, exprPart.length()-1);
+					String firstListName = (exprPart.substring(1, indexOper)).replace("null", " ");
+					String secondListName = (exprPart.substring(indexOper+2, exprPart.length()-1)).replace("null", " ");
 					ListIFace firstList = null;
-					if(!firstListName.equals("previousList")) {
-						firstList = (ListIFace)calculatedLists.get(firstListName);
+					if(!firstListName.trim().equals("previousList")) {
+						firstList = (ListIFace)calculatedLists.get(firstListName.trim());
 					} else {
 						firstList = previusCalculated;
 					}
 					ListIFace secondList = null;
-					if(!secondListName.equals("previousList")) {
-						secondList = (ListIFace)calculatedLists.get(secondListName);
+					if(!secondListName.trim().equals("previousList")) {
+						secondList = (ListIFace)calculatedLists.get(secondListName.trim());
 					} else {
 						secondList = previusCalculated;
 					}

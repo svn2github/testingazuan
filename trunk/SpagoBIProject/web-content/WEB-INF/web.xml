@@ -123,6 +123,16 @@
         <servlet-name>ShareProfileServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.ShareProfileServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ExecuteAndSendServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.services.ExecuteAndSendServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SaveToPersonalFolderServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.services.SaveToPersonalFolderServlet</servlet-class>
+    </servlet>
+    
+    
     
 
     <!-- END SERVLET DEFINITIONS -->
@@ -202,7 +212,15 @@
 	  <servlet-mapping>
         <servlet-name>ShareProfileServlet</servlet-name>
         <url-pattern>/ShareProfileService</url-pattern>
-    </servlet-mapping>  
+    </servlet-mapping> 
+    <servlet-mapping>
+        <servlet-name>ExecuteAndSendServlet</servlet-name>
+        <url-pattern>/ExecuteAndSendService</url-pattern>
+    </servlet-mapping> 
+    <servlet-mapping>
+        <servlet-name>SaveToPersonalFolderServlet</servlet-name>
+        <url-pattern>/SaveToPersonalFolderService</url-pattern>
+    </servlet-mapping> 
 	<!-- END SERVLET MAPPINGS --> 
 
 

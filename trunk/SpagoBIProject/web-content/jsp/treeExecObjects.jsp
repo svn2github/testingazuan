@@ -47,6 +47,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	String viewListUrl = urlBuilder.getUrl(request, viewListUrlPars);
 	
+	/* ************ start luca changes ******************* */
+	Map refreshUrlPars = new HashMap();
+	refreshUrlPars.put("PAGE", "MYFOLDERMANAGEMENTPAGE");
+	String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+	/* ************ end luca changes ******************* */
+	
     // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -63,7 +69,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "SBISet.exeObjects.titleTree" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-				<td class='header-button-column-portlet-section'>
+		<td class='header-button-column-portlet-section'>
 			<a href='<%=viewListUrl%>'> 
       			<img class='header-button-image-portlet-section' 
 				src='<%=urlBuilder.getResourceLink(request, "/img/listView.png")%>' 
@@ -71,6 +77,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				alt='<spagobi:message key = "SBISet.exeObjects.listViewButt" />' /> 
 			</a>		
 		</td>
+		<!-- ************ start luca changes *******************  --> 
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<a style="text-decoration:none;" href='<%=refreshUrl%>'> 
+				<img width="26px" height="26px"
+					src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
+					name='refresh' 
+					alt='<spagobi:message key = "SBIExecution.refresh"/>' 
+					title='<spagobi:message key = "SBIExecution.refresh"/>' /> 
+			</a>	
+		</td>
+		<!-- ************ end luca changes *******************  --> 
 	</tr>
 </table>
 

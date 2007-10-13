@@ -25,6 +25,7 @@ package it.eng.spagobi.presentation.treehtmlgenerators;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
@@ -70,59 +71,46 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	protected String requestIdentity = null;
 
 
-	/**
-	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeConfigurationDtree(java.lang.StringBuffer)
-	 */
-	/*
-	private void makeConfigurationDtree(StringBuffer htmlStream) {
-		
-		htmlStream.append("<SCRIPT>\n");
-		htmlStream.append("		function dTree(objName) {\n");
-		htmlStream.append("			this.config = {\n");
-		htmlStream.append("				target			: null,\n");
-		htmlStream.append("				folderLinks		: true,\n");
-		htmlStream.append("				useSelection	: true,\n");
-		htmlStream.append("				useCookies		: true,\n");
-		htmlStream.append("				useLines		: true,\n");
-		htmlStream.append("				useIcons		: true,\n");
-		htmlStream.append("				useStatusText	: true,\n");
-		htmlStream.append("				closeSameLevel	: false,\n");
-		htmlStream.append("				inOrder			: false\n");
-		htmlStream.append("			}\n");
-		htmlStream.append("			this.icon = {\n");
-		htmlStream.append("				root		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treebase.gif")+"',\n");
-		htmlStream.append("				folder		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif")+"',\n");
-		htmlStream.append("				folderOpen	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif")+"',\n");
-		htmlStream.append("				node		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treepage.gif")+"',\n");
-		htmlStream.append("				empty		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeempty.gif")+"',\n");
-		htmlStream.append("				line		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeline.gif")+"',\n");
-		htmlStream.append("				join		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treejoin.gif")+"',\n");
-		htmlStream.append("				joinBottom	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treejoinbottom.gif")+"',\n");
-		htmlStream.append("				plus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeplus.gif")+"',\n");
-		htmlStream.append("				plusBottom	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeplusbottom.gif")+"',\n");
-		htmlStream.append("				minus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeminus.gif")+"',\n");
-		htmlStream.append("				minusBottom	: '"+urlBuilder.getResourceLink(httpRequest, "/img/treeminusbottom.gif")+"',\n");
-		htmlStream.append("				nlPlus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treenolines_plus.gif")+"',\n");
-		htmlStream.append("				nlMinus		: '"+urlBuilder.getResourceLink(httpRequest, "/img/treenolines_minus.gif")+"'\n");
-		htmlStream.append("			};\n");
-		htmlStream.append("			this.obj = objName;\n");
-		htmlStream.append("			this.aNodes = [];\n");
-		htmlStream.append("			this.aIndent = [];\n");
-		htmlStream.append("			this.root = new Node(-1);\n");
-		htmlStream.append("			this.selectedNode = null;\n");
-		htmlStream.append("			this.selectedFound = false;\n");
-		htmlStream.append("			this.completed = false;\n");
-		htmlStream.append("		};\n");		
-		htmlStream.append("</SCRIPT>\n");
-	}
-	*/
 	
 	/**
 	 * @see it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
+		/* ********* start luca changes *************** */
+		htmlStream.append("		function menu" + requestIdentity + "(event, urlExecution, urlEraseDoc, urlEraseFolder, urlAddFolder) {\n");
+		htmlStream.append("			divM = document.getElementById('divmenu" + requestIdentity + "');\n");
+		htmlStream.append("			divM.innerHTML = '';\n");
+		String capExec = msgBuilder.getMessage("SBISet.devObjects.captionExecute", "messages", httpRequest);
+		htmlStream.append("			if(urlExecution!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
+		String capErase = msgBuilder.getMessage("SBISet.devObjects.captionErase", "messages", httpRequest);
+        htmlStream.append("         if(urlEraseDoc!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlEraseDoc+'\\');\">"+capErase+"</a></div>';\n");
+        htmlStream.append("         if(urlEraseFolder!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlEraseFolder+'\\');\">"+capErase+"</a></div>';\n");
+        htmlStream.append("				showMenu(event, divM);\n");
+        String capAddSub = "Add folder";
+        htmlStream.append("			if(urlAddFolder!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlAddFolder+'\">"+capAddSub+"</a></div>';\n");
+        
+        
+		htmlStream.append("		}\n");
+		
 		htmlStream.append("		function linkEmpty() {\n");
 		htmlStream.append("		}\n");
+		
+        String confirmCaption = msgBuilder.getMessage("SBISet.devObjects.confirmCaption", "messages", httpRequest);
+        htmlStream.append("     function actionConfirm(message, url){\n");
+        htmlStream.append("         if (confirm('" + confirmCaption + " ' + message + '?')){\n");
+        htmlStream.append("             location.href = url;\n");
+        htmlStream.append("         }\n");
+        htmlStream.append("     }\n");
+        
+        htmlStream.append("     function addSubFolder(idFP){\n");
+        htmlStream.append("         alert('Not Implemented');");
+        htmlStream.append("     }\n");
+        
+        htmlStream.append("     function eraseFolder(idF){\n");
+        htmlStream.append("         alert('Not Implemented');");
+        htmlStream.append("     }\n");
+        
+        /* ********* end luca changes *************** */
 	}
 		
 	
@@ -153,9 +141,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
-		htmlStream.append("<div id='divmenu' style='position:absolute;left:0;top:0;display:none;width:80px;height:120px;background-color:#FFFFCC;border-color:black;border-style:solid;border-weight:1;' onmouseout='hideMenu();' >");
+		/* ********* start luca changes *************** */
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<div id='divmenu" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenu" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
+		/* ********* end luca changes *************** */
 		htmlStream.append("<div id='viewOnlyTestDocument" + requestIdentity + "' style='display:none;'>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
@@ -191,13 +182,20 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
-	   		if (initialPath != null) {
-	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);
-	   			else addItemForJSTree(htmlStream, folder, false);
-	   		} else {
-	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true);
-	   			else addItemForJSTree(htmlStream, folder, false);
+	   		/* ********* start luca changes *************** */
+	   		boolean isRoot = false;
+	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		if(!isUserFunct) {
+	   			if (initialPath != null) {
+		   			if (initialPath.equalsIgnoreCase(folder.getPath())) 
+		   				isRoot = true;
+		   		} else {
+		   			if (folder.getParentId() == null) 
+		   				isRoot = true;
+		   		}
 	   		}
+	   		addItemForJSTree(htmlStream, folder, isRoot, isUserFunct);
+	   		/* ********* end luca changes ***************** */
 	   	}
     	htmlStream.append("				document.getElementById('treeExecObjTd" + requestIdentity + "').innerHTML = " + treeName + ";\n");
     	makeJSFunctionForMenu(htmlStream);	
@@ -234,19 +232,54 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return htmlStream;
 	}
 
-	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
+	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot, boolean isUserFunct) {
 		
 		String nameLabel = folder.getName();
 		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
 		
+		String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
+		String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+				
 		if (isRoot) {
-			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
-		} else {
+			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'true');\n");
+		} 
+		/* ********* start luca changes *************** */
+		else if (isUserFunct) {
+			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
+			imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");
+			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'false', 'menu" + requestIdentity + "(event, \\'\\', \\'\\', \\'javascript:eraseFolder("+idFolder+")\\', \\'javascript:addSubFolder("+idFolder+")\\')');\n");
+			List objects = folder.getBiObjects();
+			for (Iterator it = objects.iterator(); it.hasNext(); ) {
+				BIObject obj = (BIObject) it.next();
+				Integer idObj = obj.getId();
+				String stateObj = obj.getStateCode();
+				Integer visibleObj = obj.getVisible();
+				if( !stateObj.equalsIgnoreCase("REL") || visibleObj.intValue() != 0) {
+					continue;
+				}
+				//insert the correct image for each BI Object type
+				String biObjType = obj.getBiObjectTypeCode();
+				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
+				String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+				String biObjState = obj.getStateCode();
+				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
+				String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+				// create execution link
+				Map execUrlPars = new HashMap();
+				execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
+				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+				execUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+				String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
+				//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+execUrl+"\\', \\'"+createEraseDocumentLink(idObj)+"\\', \\'\\', \\'\\')' );\n");
+			}
+		} 
+		/* ********* end luca changes ***************** */
+		else {
 			if (ObjectsAccessVerifier.canTest(idFolder, profile) || ObjectsAccessVerifier.canExec(idFolder, profile)) {
-				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
 				htmlStream.append("	" + treeName + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
@@ -298,6 +331,15 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private String createEraseDocumentLink(Integer iddoc) {
+		HashMap execUrlParMap = new HashMap();
+		execUrlParMap.put(ObjectsTreeConstants.PAGE, "MYFOLDERMANAGEMENTPAGE");
+		execUrlParMap.put("TASK", "ERASE_DOCUMENT");
+		execUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, iddoc.toString());
+		String execUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
+		return execUrl;
 	}
 	
 }

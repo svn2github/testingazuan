@@ -156,6 +156,12 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
+	   		/* ********* start luca changes *************** */
+	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		if(isUserFunct) {
+	   			continue;
+	   		}
+	   		/* ********* end luca changes ***************** */
 	   		if (initialPath != null) {
 	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, obj, false, true);
 	   			else addItemForJSTree(htmlStream, folder, obj, false, false);

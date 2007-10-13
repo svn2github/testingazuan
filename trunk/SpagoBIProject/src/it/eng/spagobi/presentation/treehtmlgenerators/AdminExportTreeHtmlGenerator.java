@@ -86,6 +86,12 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
+	   		/* ********* start luca changes *************** */
+	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		if(isUserFunct) {
+	   			continue;
+	   		}
+	   		/* ********* end luca changes ***************** */
 	   		if (initialPath != null) {
 	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);
 	   			else addItemForJSTree(htmlStream, folder, false);

@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.presentation.treehtmlgenerators;
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
@@ -99,6 +101,16 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
+	   		/* ********* start luca changes *************** */
+	   		RequestContainer reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+			SessionContainer sessionContainer = reqCont.getSessionContainer();
+			SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+	        IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		if(isUserFunct) {
+	   			continue;
+	   		}
+	   		/* ********* end luca changes ***************** */
 	   		if (initialPath != null) {
 	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);
 	   			else addItemForJSTree(htmlStream, folder, false);

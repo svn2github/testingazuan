@@ -21,12 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.bo.dao.hibernate;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.bo.Role;
+import it.eng.spagobi.bo.UserFunctionality;
 import it.eng.spagobi.bo.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.constants.AdmintoolsConstants;
 import it.eng.spagobi.constants.SpagoBIConstants;
@@ -59,15 +62,145 @@ import org.hibernate.criterion.MatchMode;
 /**
  * Defines the Hibernate implementations for all DAO methods,
  * for a functionality. 
- * 
- * @author sulis
  */
 public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements ILowFunctionalityDAO{
 
 	
+	
+	/* ********* start luca changes ************************************************** */
+	
+	public boolean checkUserRootExists(String username) throws EMFUserError {
+		boolean exists = false;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion userfunctANDnullparent = Expression.and(
+									Expression.isNull("parentFunct"),
+									Expression.eq("functTypeCd", "USER_FUNCT"));
+			Criterion filters = Expression.and(userfunctANDnullparent, 
+									Expression.like("path", "/"+username+"%"));
+			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
+			criteria.add(filters);
+			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
+			if (hibFunct != null) 
+				exists = true;
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return exists;
+	}
+	
+	
+	public void insertUserFunctionality(UserFunctionality userfunct) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiFunctions hibFunct = new SbiFunctions();
+			
+			// recover sbidomain of the user functionality 
+			Criterion vcdEQusfunct = Expression.eq("valueCd", "USER_FUNCT");
+			Criteria criteria = aSession.createCriteria(SbiDomains.class);
+			criteria.add(vcdEQusfunct);
+			SbiDomains functTypeDomain = (SbiDomains) criteria.uniqueResult();
+			
+			hibFunct.setFunctType(functTypeDomain);
+			hibFunct.setCode(userfunct.getCode());
+			hibFunct.setFunctTypeCd(functTypeDomain.getValueCd());
+			hibFunct.setDescr(userfunct.getDescription());
+			hibFunct.setName(userfunct.getName());
+			hibFunct.setPath(userfunct.getPath());
+			
+			Integer parentId = userfunct.getParentId();
+			SbiFunctions hibParentFunct = null;
+			if (parentId != null) {
+				// if it is not the root controls if the parent functionality exists
+				Criteria parentCriteria = aSession.createCriteria(SbiFunctions.class);
+				Criterion parentCriterion = Expression.eq("functId", parentId);
+				parentCriteria.add(parentCriterion);
+				hibParentFunct = (SbiFunctions) parentCriteria.uniqueResult();
+				if (hibParentFunct == null){
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+						    "insertUserFunctionality", "The parent Functionality with id = " + parentId + " does not exist.");
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 1038);
+				}
+			}
+			// if it is the root the parent functionality is null
+			hibFunct.setParentFunct(hibParentFunct);
+
+			// manages prog column that determines the folders order
+			if (hibParentFunct == null) hibFunct.setProg(new Integer(1));
+			else {
+				// loads sub functionalities
+				Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = " + parentId);
+				Integer maxProg = (Integer) hibQuery.uniqueResult();
+				if (maxProg != null) hibFunct.setProg(new Integer(maxProg.intValue() + 1));
+				else hibFunct.setProg(new Integer(1));
+			}
+
+			aSession.save(hibFunct);
+			
+			
+			// save functionality roles
+			
+			Set functRoleToSave = new HashSet();
+			criteria = aSession.createCriteria(SbiDomains.class);
+			Criterion relstatecriterion = Expression.eq("valueCd", "REL");
+			criteria.add(relstatecriterion);
+			SbiDomains relStateDomain = (SbiDomains)criteria.uniqueResult();
+			Criterion nameEqrolenameCri = null;
+			Role[] roles = userfunct.getExecRoles();
+			for(int i=0; i<roles.length; i++) {
+				Role role = roles[i];
+				nameEqrolenameCri = Expression.eq("name", role.getName());
+				criteria = aSession.createCriteria(SbiExtRoles.class);
+				criteria.add(nameEqrolenameCri);
+				SbiExtRoles hibRole = (SbiExtRoles)criteria.uniqueResult();
+				SbiFuncRoleId sbifuncroleid = new SbiFuncRoleId();
+				sbifuncroleid.setFunction(hibFunct);
+				sbifuncroleid.setState(relStateDomain);
+				sbifuncroleid.setRole(hibRole);
+				SbiFuncRole sbifuncrole = new SbiFuncRole();
+				sbifuncrole.setId(sbifuncroleid);
+				sbifuncrole.setStateCd(relStateDomain.getValueCd());
+				aSession.save(sbifuncrole);
+				functRoleToSave.add(sbifuncrole);
+			}
+			hibFunct.setSbiFuncRoles(functRoleToSave);
+			
+			
+			
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+
+	}
+	
+	/* ********* end luca changes ************************************************** */
+	
+	
 	/**
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadLowFunctionalityByID(java.lang.Integer)
-	 * 
 	 */
 	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError {
 		LowFunctionality funct = null;
@@ -81,12 +214,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
-
 			if (tx != null)
 				tx.rollback();
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
@@ -97,33 +227,32 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	
 	/**
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadRootLowFunctionality(boolean)
-	 * 
 	 */
-	public LowFunctionality loadRootLowFunctionality(boolean recoverBIObjects)
-			throws EMFUserError {
-		
+	public LowFunctionality loadRootLowFunctionality(boolean recoverBIObjects)	throws EMFUserError {
 		LowFunctionality lowFunctionaliy = null;
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Criterion domainCdCriterrion = Expression.isNull("parentFunct");
+			/* ********* start luca changes *************** */
+			//Criterion filters = Expression.isNull("parentFunct");
+			Criterion filters = Expression.and(
+									Expression.isNull("parentFunct"),
+									Expression.eq("functTypeCd", "LOW_FUNCT"));
+			/* ************ end luca changes ************** */
 			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
-			criteria.add(domainCdCriterrion);
+			criteria.add(filters);
 			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
-			if (hibFunct == null) return null;
-			
+			if (hibFunct == null) 
+				return null;
 			lowFunctionaliy = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
-
 			if (tx != null)
 				tx.rollback();
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
@@ -134,34 +263,27 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	
 	/**
 	 * @see it.eng.spagobi.bo.dao.ILowFunctionalityDAO#loadLowFunctionalityByPath(java.lang.String)
-	 * 
 	 */
-	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath, boolean recoverBIObjects)
-			throws EMFUserError {
-		
+	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath, boolean recoverBIObjects) throws EMFUserError {	
 		LowFunctionality lowFunctionaliy = null;
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Criterion domainCdCriterrion = Expression.eq("path",
-					functionalityPath);
+			Criterion domainCdCriterrion = Expression.eq("path", functionalityPath);
 			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
 			criteria.add(domainCdCriterrion);
 			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
-			if (hibFunct == null) return null;
-			
+			if (hibFunct == null) 
+				return null;
 			lowFunctionaliy = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
-
 			if (tx != null)
 				tx.rollback();
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
@@ -616,8 +738,28 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-
-			Query hibQuery = aSession.createQuery(" from SbiFunctions s order by s.parentFunct.functId, s.prog");
+            
+			/* ********* start luca changes *************** */
+			//Query hibQuery = aSession.createQuery(" from SbiFunctions s order by s.parentFunct.functId, s.prog");
+			String username = null;
+			try {
+				RequestContainer reqCont = RequestContainer.getRequestContainer();
+				SessionContainer sessCont = reqCont.getSessionContainer();
+				SessionContainer permCont = sessCont.getPermanentContainer();
+				IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				username = (String)profile.getUserUniqueIdentifier();
+			} catch (Exception e) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+						            "loadAllLowFunctionalities", "Error while recovering user profile", e);
+			}
+			Query hibQuery = null;
+			if(username==null) {
+				hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' order by s.parentFunct.functId, s.prog");
+			} else {
+				hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.path like '/"+username+"%' order by s.parentFunct.functId, s.prog");
+			}
+			/* ********* end luca changes ***************** */
+			
 			List hibList = hibQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -655,8 +797,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			tx = aSession.beginTransaction();
 
 			// loads folder corresponding to initial path
-			Criterion domainCdCriterrion = Expression.eq("path",
-					initialPath);
+			Criterion domainCdCriterrion = Expression.eq("path",initialPath);
 			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
 			criteria.add(domainCdCriterrion);
 			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
@@ -664,7 +805,12 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			realResult.add(toLowFunctionality(hibFunct, recoverBIObjects));
 					
 			// loads sub functionalities
+			
+			/* ********* start luca changes *************** */
 			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.path like '" + initialPath + "/%' order by s.parentFunct.functId, s.prog");
+			//Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' and s.path like '" + initialPath + "/%' order by s.parentFunct.functId, s.prog");
+			/* ********* end luca changes ***************** */
+			
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {

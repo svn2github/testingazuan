@@ -30,6 +30,7 @@ package it.eng.spagobi.bo.dao;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.bo.LowFunctionality;
+import it.eng.spagobi.bo.UserFunctionality;
 
 import java.util.List;
 import java.util.Set;
@@ -37,12 +38,17 @@ import java.util.Set;
 
 /**
  * Defines  the interfaces for all methods needed to insert, modify and deleting a low functionality.
- * 
- * @author Zoppello
  */
 
 
 public interface ILowFunctionalityDAO {
+	
+	
+	/* ********* start luca changes *************** */
+	public boolean checkUserRootExists(String username) throws EMFUserError;
+	public void insertUserFunctionality(UserFunctionality userfunct) throws EMFUserError;
+	/* ********* end luca changes ***************** */
+	
 	
 	/**
 	 * Loads all information for a low functionality identified by its 

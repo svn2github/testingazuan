@@ -31,6 +31,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.bo.UserFunctionality;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 /**
@@ -203,4 +204,5 @@ public class DAOFactory {
 	public static IViewpointDAO getViewpointDAO() throws EMFUserError{
 		return (IViewpointDAO)createDAOInstance("ViewpointDAO");
 	}	
+		
 }

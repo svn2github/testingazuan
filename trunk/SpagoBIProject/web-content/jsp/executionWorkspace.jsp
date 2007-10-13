@@ -303,8 +303,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<!-- ***************************************************************** -->
 			<!-- ***************************************************************** -->
 			
-			&nbsp;
-			
+			<div style="clear:left;"></div>
+
 			<center>
 				<div id="divIframe<%=requestIdentity%>" style="width:100%;overflow=auto;">
 					<iframe id="iframeexec<%=requestIdentity%>"

@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
 	
+	<!--  ************* start luca changes ******************* -->
+	<PAGE name="MYFOLDERMANAGEMENTPAGE" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="MYFOLDERMANAGEMENTPAGE" target="EraseDocumentModule">
+        		<CONDITIONS>
+        			<PARAMETER name="TASK" scope="SERVICE_REQUEST" value="ERASE_DOCUMENT" />
+        		</CONDITIONS>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+      		<DEPENDENCE source="MYFOLDERMANAGEMENTPAGE" target="BIObjectsModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES>
+        			<PARAMETER name="ACTOR" type="ABSOLUTE" scope="" value="USER_ACTOR"/>
+  				</CONSEQUENCES> 
+      		</DEPENDENCE>
+      		<DEPENDENCE source="BIObjectsModule" target="TreeObjectsModule">
+        		<CONDITIONS>
+        			<PARAMETER name="BIObjectsModule.OBJECTS_VIEW" scope="SERVICE_RESPONSE" value="VIEW_OBJECTS_AS_TREE" />
+        		</CONDITIONS>
+        		<CONSEQUENCES>
+        			<PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ACTOR"/>
+        			<PARAMETER name="PATH_SUBTREE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.PATH_SUBTREE"/>
+  				</CONSEQUENCES>        		
+      		</DEPENDENCE>	
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="EraseDocumentModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="BIObjectsModule"/>
+      		<MODULE keep_instance="false" keep_response="false" name="TreeObjectsModule"/> 
+    	</MODULES>
+  	</PAGE>
+  	<!--  ************* end luca changes ******************* -->
+	
+	
 	<PAGE name="DocumentTemplateBuildPage" scope="REQUEST" title="Document template build page" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="DocumentTemplateBuildPage" target="DocumentTemplateBuildModule">

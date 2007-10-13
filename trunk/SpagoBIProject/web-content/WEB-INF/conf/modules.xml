@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MODULES>
 	
+	<!--  ************* start luca changes ******************* -->
+	<MODULE class="it.eng.spagobi.services.modules.EraseDocumentModule" name="EraseDocumentModule">
+     	<CONFIG/>
+    </MODULE>
+    <!--  ************* end luca changes ******************* -->
+	
 	<MODULE class="it.eng.spagobi.services.modules.DocumentTemplateBuildModule" name="DocumentTemplateBuildModule">
      	<CONFIG/>
     </MODULE>

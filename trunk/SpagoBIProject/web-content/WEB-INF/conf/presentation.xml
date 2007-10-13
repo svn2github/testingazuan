@@ -37,6 +37,9 @@
     <MAPPING business_name="ExecutionWorkspacePage" business_type="PAGE" publisher_name="ExecutionWorkspacePublisher"/>
     <MAPPING business_type="ACTION" business_name="MOVE_UP_LOWFUNCTIONALITY" publisher_name="FunctionalitiesTreeRefresh"/>
     <MAPPING business_type="ACTION" business_name="MOVE_DOWN_LOWFUNCTIONALITY" publisher_name="FunctionalitiesTreeRefresh"/>
+    <!--  ************* start luca changes ******************* -->
+    <MAPPING business_name="MyFolderManagementPage" business_type="PAGE" publisher_name="BIObjectsPubJ"/>
+    <!--  ************* end luca changes ******************* -->
 	
 </PRESENTATION>
 

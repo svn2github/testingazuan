@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MENU>
+	
+	<APPLICATION code="EngMan" 
+	             title="#menu.EngMan"  
+	             functionality="EnginesManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListEnginesPage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/engines64.png">
+	</APPLICATION>
+	<APPLICATION code="FunctMan" 
+	             title="#menu.FunctMan"  
+	             functionality="FunctionalitiesManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR&amp;OPERATION=FUNCTIONALITIES_OPERATION" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/functionalities64.png">
+	</APPLICATION>
+	<APPLICATION code="LovMan" 
+	             title="#menu.LovMan"  
+	             functionality="LovsManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListLovsPage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/lovs64.png">
+	</APPLICATION>
+	<APPLICATION code="ConstraintMan" 
+	             title="#menu.ConstraintMan"  
+	             functionality="ConstraintManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=LISTMODALITIESCHECKSPAGE" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/checks64.png">
+	</APPLICATION>
+	<APPLICATION code="ParameterMan" 
+	             title="#menu.ParameterMan"  
+	             functionality="ParameterManagement" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ListParametersPage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/spagobi/img/wapp/parameters64.png">
+	</APPLICATION>
+	<APPLICATION code="DocumentAdmin" 
+	             title="#menu.DocumentAdmin"  
+	             functionality="DocumentAdministration" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=ADMIN_ACTOR" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	<APPLICATION code="DocumentDev" 
+	             title="#menu.DocumentDev"  
+	             functionality="DocumentDevelopment" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=DEV_ACTOR" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	<APPLICATION code="DocumentTest" 
+	             title="#menu.DocumentTest"  
+	             functionality="DocumentTest" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=TESTER_ACTOR" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	<APPLICATION code="DocumentExec" 
+	             title="#menu.DocumentExec"  
+	             functionality="DocumentExecution" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;ACTOR=USER_ACTOR" 
+	             modal="true" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/bidocuments64.png">
+	</APPLICATION>
+	<APPLICATION code="ImpExp" 
+	             title="#menu.ImpExp"  
+	             functionality="ImportExport" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;OPERATION=IMPORTEXPORT_OPERATION&amp;OBJECTS_VIEW=VIEW_OBJECTS_AS_TREE&amp;ACTOR=ADMIN_ACTOR" 
+	             width="800" 
+	             height="450"
+	             iconUrl="/spagobi/components/importexport/img/importexport64.png">
+	</APPLICATION>
+	<APPLICATION code="Sched" 
+	             title="#menu.Scheduler"  
+	             functionality="Scheduler" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=JobManagementPage&amp;MESSAGEDET=MESSAGE_GET_ALL_JOBS" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/scheduleIcon64.png">
+	</APPLICATION>
+	<APPLICATION code="Events" 
+	             title="#menu.Events"  
+	             functionality="Events" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE" 
+	             width="700" 
+	             height="400"
+	             iconUrl="/spagobi/img/wapp/events64.png">
+	</APPLICATION>
+	<APPLICATION code="Worklist" 
+	             title="#menu.Worklist"  
+	             functionality="Worklist" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&amp;WEBMODE=TRUE" 
+	             width="700" 
+	             height="400"
+	             iconUrl="/spagobi/img/wapp/worklist64.png">
+	</APPLICATION>
+	<APPLICATION code="WorkExec" 
+	             title="#menu.WorkExec"  
+	             functionality="WorkspaceExec" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?PAGE=ExecutionWorkspacePage&amp;WEBMODE=TRUE" 
+	             modal="true" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/workspace64.png">
+	</APPLICATION>
+	<APPLICATION code="MapCat" 
+	             title="#menu.MapCat"  
+	             functionality="MapCatalogue" 
+	             type="link" 
+	             link="/spagobi/servlet/AdapterHTTP?ACTION_NAME=START_SBI_MAP_CATALOGUE" 
+	             modal="false" 
+	             width="750" 
+	             height="500"
+	             iconUrl="/spagobi/img/wapp/map64.png">
+	</APPLICATION>
+	
+	<!-- 
+	<VIEW code="MonitorView" 
+	      title="Monitor"  
+	      role="Administrator" 
+	      width="800" 
+	      height="450"
+	      iconUrl="/spagobi/img/wapp/monitorView64.png">
+	      <CONTAINERS>
+		      <CONTAINER id="cont1" width="44%" height="44%" top="3%" left="3%" style="float:left;">
+		      	<TAB title="first tab" id="tab1">
+		      		<SBIDOCUMENT documentLabel="DASH_STORE_EFF" parameters=""/>
+		      	</TAB>
+		      	<TAB title="second tab" id="tab2" >
+		      		<SBIDOCUMENT documentLabel="TOP_PRODUCTS" parameters=""/>
+		      	</TAB>
+		      </CONTAINER>
+		      <CONTAINER id="cont2" width="44%" height="44%" top="3%" left="53%" style="float:left;">
+		      	<TAB title="Questo e un titolo lungo" id="tab1" >
+		      		<SBIDOCUMENT documentLabel="DASH_EFFORT" parameters=""/>
+		      	</TAB>	
+		      </CONTAINER>
+		      <CONTAINER id="cont3" width="94%" height="44%" top="53%" left="3%" style="clear:left;">
+		      	<TAB title="Anche Questo e un titolo lungo" id="tab1" >
+		      		<SBIDOCUMENT documentLabel="DASH_HEALTH" parameters=""/> 
+		      	</TAB>	
+		      </CONTAINER>
+		  </CONTAINERS>
+	</VIEW>
+	-->
+	
+</MENU>

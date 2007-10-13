@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="HibernateSessionFactoryOracle">
+    	<property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
+    	<!--
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:1521:spagobi</property>
+        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.password">spagobi</property>
+        <property name="hibernate.connection.username">spagobi</property>
+        <property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>
+        -->
+        <property name="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</property>
+        <property name="hibernate.show_sql">false</property>
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiFuncRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiObjFunc.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiFunctions.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiChecks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiObjState.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiObjParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiSubreports.hbm.xml"/>
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEvents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEventsLog.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiEventRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiAudit.hbm.xml" />
+        <!--viewpoints-->
+        <mapping resource="it/eng/spagobi/metadata/mappingora/SbiViewpoints.hbm.xml" />        
+        <!-- map catalogue -->
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoMapFeatures.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoFeatures.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoMaps.hbm.xml" />
+        
+    </session-factory>
+</hibernate-configuration>

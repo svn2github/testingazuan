@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PUBLISHERS>	
+	<PUBLISHER name="GENERATE_GEO_TEMPLATE_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/generateGeoTemplate.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="HIERARCHY_DETAILS_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/hierarchyDetails.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>	
+	
+	<PUBLISHER name="EXIT_HIERARCHY_DETAILS_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/exitHierarchyDetails.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="MEASURE_DETAILS_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/measureDetails.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="EXIT_MEASURE_DETAILS_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/exitMeasureDetails.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="VIEW_ON_MAP_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/executeGeoAnalysis.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="PREVIEW_ON_MAP_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/components/geoTemplateBuilder/jsp/previewGeoAnalysis.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	
+	
+	
+</PUBLISHERS>

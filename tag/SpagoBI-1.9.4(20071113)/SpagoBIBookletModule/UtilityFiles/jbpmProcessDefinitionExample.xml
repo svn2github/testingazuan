@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition
+  xmlns="http://jbpm.org/3/jpdl"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jbpm.org/3/jpdl http://jbpm.org/xsd/jpdl-3.0.xsd"
+  name="BookletWorkflowProcess">
+   <swimlane name="/spagobi/admin">
+      <assignment class="it.eng.spagobi.booklets.assignmenthandlers.SpagoBISwimlaneAssignment"></assignment>
+   </swimlane>
+   <swimlane name="/spagobi/dev">
+      <assignment class="it.eng.spagobi.booklets.assignmenthandlers.SpagoBISwimlaneAssignment"></assignment>
+   </swimlane>
+   <swimlane name="/spagobi/test">
+      <assignment class="it.eng.spagobi.booklets.assignmenthandlers.SpagoBISwimlaneAssignment"></assignment>
+   </swimlane>
+   <start-state name="start">
+      <transition name="" to="ProcessOOTemplate"></transition>
+   </start-state>
+   <node name="ProcessOOTemplate">
+   	  <transition name="" to="fork1"></transition>
+      <event type="node-enter"> 
+         <action name="process_ootemplate_action" class="it.eng.spagobi.booklets.automatictasks.ProcessOOTemplateAction"></action>
+      </event>
+   </node>
+   <fork name="fork1">
+      <transition name="toaddnote1" to="AddNote1"></transition>
+      <transition name="toaddnote2" to="AddNote2"></transition>
+   </fork>
+   <task-node name="AddNote1">
+      <task name="add_note_task1" swimlane="/spagobi/dev">
+         <event type="task-create">
+         <script>
+      		<expression>
+      			taskInstance.setVariableLocally("spago_handler", "AddNoteHandler");
+      			taskInstance.setVariableLocally("spagobi_booklet_pageindex", "1");
+      		</expression>
+    	</script>
+         </event>
+      </task>
+      <transition name="" to="join1"></transition>
+   </task-node>
+   <task-node name="AddNote2">
+      <task name="add_note_task2" swimlane="/spagobi/test">
+      	<event type="task-create">
+         <script>
+      		<expression>
+      			taskInstance.setVariableLocally("spago_handler", "AddNoteHandler");
+      			taskInstance.setVariableLocally("spagobi_booklet_pageindex", "2");
+      		</expression>
+    	</script>
+         </event>
+      </task>
+      <transition name="" to="join1"></transition>
+   </task-node>
+   <join name="join1">
+      <transition name="" to="GenerateFinalDocument"></transition>
+   </join>
+   <node name="GenerateFinalDocument">
+   	  <transition name="" to="ValidateFinalDocument"></transition>
+      <event type="node-enter">
+         <action name="generate_final_document_action" class="it.eng.spagobi.booklets.automatictasks.GenerateFinalDocumentAction"></action>
+      </event>
+   </node>
+   <end-state name="end1"></end-state>
+   <task-node name="ValidateFinalDocument">
+      <task name="validate_document_task" swimlane="/spagobi/admin">
+      	<event type="task-create">
+         <script>
+      		<expression>
+      			taskInstance.setVariableLocally("spago_handler", "ValidateFinalDocumentHandler");
+      		</expression>
+    	 </script>
+        </event>
+      </task>
+      <transition name="" to="end1"></transition>
+   </task-node>
+</process-definition>

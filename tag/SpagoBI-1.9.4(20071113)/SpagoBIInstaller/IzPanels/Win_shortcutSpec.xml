@@ -1,0 +1,96 @@
+<shortcuts>
+	<skipIfNotSupported/>
+	<programGroup defaultName="SpagoBI Platform" location="applications"/>
+	<shortcut
+			name="Start SpagoBI Platform"
+			target="$INSTALL_PATH\StartSpagoBI.bat"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="Start SpagoBI Platform"
+			iconFile="$INSTALL_PATH\StartSpagoBI.ico"
+			iconIndex="0"
+			initialState="noShow"
+			programGroup="yes"
+			desktop="yes"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="SpagoBI-1.9.3"/>
+	</shortcut>
+	<shortcut
+			name="Connect to SpagoBI"
+			target="$INSTALL_PATH\ConnectToSpagoBI.URL"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="Connect to SpagoBI"
+			iconIndex="0"
+			initialState="noShow"
+			programGroup="yes"
+			desktop="yes"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="SpagoBI-1.9.3"/>
+	</shortcut>
+	<shortcut
+			name="Stop SpagoBI Platform"
+			target="$INSTALL_PATH\StopSpagoBI.bat"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="Stop SpagoBI Platform"
+			iconFile="$INSTALL_PATH\StopSpagoBI.ico"
+			iconIndex="0"
+			initialState="normal"
+			programGroup="yes"
+			desktop="yes"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="SpagoBI-1.9.3"/>
+	</shortcut>
+	<shortcut
+			name="Installation Manual"
+			target="$INSTALL_PATH\spagobi-docs\SpagoBI-Installation-Manual.pdf"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="Installation Manual document"
+			iconIndex="0"
+			initialState="normal"
+			programGroup="yes"
+			desktop="no"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="Documentation"/>
+	</shortcut>
+	<shortcut
+			name="How To"
+			target="$INSTALL_PATH\spagobi-docs\SpagoBI_How_To-v1.7.pdf"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="How To document"
+			iconIndex="0"
+			initialState="normal"
+			programGroup="yes"
+			desktop="no"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="Documentation"/>
+	</shortcut>
+	<shortcut
+			name="Quick Start"
+			target="$INSTALL_PATH\spagobi-docs\QuickStart-0.9.3.pdf"
+			commandLine=""
+			workingDirectory="$INSTALL_PATH"
+			description="Quick Start document"
+			iconIndex="0"
+			initialState="normal"
+			programGroup="yes"
+			desktop="no"
+			applications="no"
+			startMenu="no"
+			startup="no">
+		<createForPack name="Documentation"/>
+	</shortcut>
+</shortcuts>

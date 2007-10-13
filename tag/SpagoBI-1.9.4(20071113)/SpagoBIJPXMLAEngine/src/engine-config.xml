@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ENGINE-CONFIGURATION>
+	<CONNECTIONS-CONFIGURATION defaultConnectionName="FoodmartXMLA">
+					
+		<CONNECTION name="FoodmartXMLA" 
+					type="xmla"
+					xmlaServerUrl="http://localhost:8080/mondrian/xmla"/>
+
+	</CONNECTIONS-CONFIGURATION>
+	
+	<SCHEMAS>
+		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="FoodMart" />
+	</SCHEMAS>
+	
+</ENGINE-CONFIGURATION>

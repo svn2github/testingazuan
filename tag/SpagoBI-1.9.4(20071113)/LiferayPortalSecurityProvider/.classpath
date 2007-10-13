@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/spago-core-2.1.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBISecurityProviderAPI"/>
+	<classpathentry kind="lib" path="lib/portal-service.jar"/>
+	<classpathentry kind="lib" path="lib/portal-kernel.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

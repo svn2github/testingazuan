@@ -1,0 +1,120 @@
+<shortcuts>
+  <programGroup defaultName="SpagoBI Platform" location="applications"/>
+  <shortcut
+     name="Start SpagoBI Platform"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/StartSpagoBI.sh"
+     commandLine=""
+     initialState="normal"
+     iconFile="$INSTALL_PATH/StartSpagoBI.png"
+     iconIndex="0" 
+     workingDirectory="$INSTALL_PATH"
+     type="Application"
+     encoding="UTF-8"
+     terminal="true"
+     description="Start SpagoBI Platform">
+     <createForPack name="SpagoBI-1.9.3" />
+  </shortcut>
+  <shortcut
+     name="Connect to SpagoBI Platform"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="konqueror"
+     workingDirectory=""
+     commandLine=""
+     initialState="noShow"
+     iconIndex="0"
+     url="http://localhost:$PORT/$PORTAL"
+     type="Link"
+     encoding="UTF-8"
+     description="Connect to SpagoBI Platform">
+     <createForPack name="SpagoBI-1.9.3"/>
+  </shortcut>
+  <shortcut
+     name="Stop SpagoBI Platform"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/StopSpagoBI.sh"
+     commandLine=""
+     initialState="normal"
+     iconFile="$INSTALL_PATH/StopSpagoBI.png"
+     iconIndex="0" 
+     workingDirectory="$INSTALL_PATH"
+     type="Application"
+     encoding="UTF-8"
+     terminal="true"
+     description="Stop SpagoBI Platform">
+     <createForPack name="SpagoBI-1.9.3" />
+  </shortcut>
+  
+  <shortcut
+     name="Installation Manual"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/spagobi-docs/SpagoBI-Installation-Manual.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"
+     url="$INSTALL_PATH/spagobi-docs/SpagoBI-Installation-Manual.pdf"
+     type="Application"
+     encoding="UTF-8"
+     description="Installation Manual document">
+     <createForPack name="Documentation"/>
+   </shortcut>
+
+  <shortcut
+     name="How To"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/spagobi-docs/SpagoBI_How_To-v1.7.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"
+     url="$INSTALL_PATH/spagobi-docs/SpagoBI_How_To-v1.7.pdf"
+     type="Application"
+     encoding="UTF-8"
+     description="How To document">
+     <createForPack name="Documentation"/>
+   </shortcut>
+
+  <shortcut
+     name="Quick Start"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/spagobi-docs/QuickStart-0.9.3.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"
+     url="$INSTALL_PATH/spagobi-docs/QuickStart-0.9.3.pdf"
+     type="Application"
+     encoding="UTF-8"
+     description="Quick Start document">
+     <createForPack name="Documentation"/>
+   </shortcut>
+
+</shortcuts>

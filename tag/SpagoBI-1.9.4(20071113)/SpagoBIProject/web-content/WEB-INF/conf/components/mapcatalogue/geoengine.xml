@@ -1,0 +1,13 @@
+<GEOENGINE>
+     <!-- ********************* START DAO CONFIGURATION ************************ -->
+     
+     <DAO-CONF>
+		<!--  HIBERNATE DAO (DEFAULT) IMPLEMENTATION -->
+		<DAO name="GeoFeatureDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoFeaturesDAOHibImpl"/>  
+		<DAO name="GeoMapDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoMapsDAOHibImpl"/>  
+		<DAO name="GeoMapFeatureDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoMapFeaturesDAOHibImpl"/>  				
+	</DAO-CONF>     
+     
+     <!-- ********************* END DAO CONFIGURATION ************************ -->
+	<DEFAULT_HIERARCHY path="/WEB-INF/conf/components/mapcatalogue" />
+</GEOENGINE>

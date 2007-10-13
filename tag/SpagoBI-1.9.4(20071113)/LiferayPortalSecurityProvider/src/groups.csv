@@ -1,0 +1,10 @@
+/spagobi/admin;/spagobi/admin
+/spagobi/dev;/spagobi/dev
+/spagobi/test;/spagobi/test
+/spagobi/user;/spagobi/user
+/spagobi/share;/spagobi/share
+/spagobi/user/general_manager;/spagobi/user/general_manager
+/spagobi/user/product_manager;/spagobi/user/product_manager
+/spagobi/user/product_manager/product_family_director;/spagobi/user/product_manager/product_family_director
+/spagobi/user/sales_manager;/spagobi/user/sales_manager
+/spagobi/user/sales_manager/region_director;/spagobi/user/sales_manager/region_director

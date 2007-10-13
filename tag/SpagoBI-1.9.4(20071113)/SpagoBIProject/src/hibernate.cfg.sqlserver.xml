@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="HibernateSessionFactorySQLServerdb">
+        <property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
+        <!-- 
+        <property name="hibernate.connection.url">jdbc:hsqldb:hsql://localhost/spagobi</property>
+        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.username">sa</property>
+        <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
+        -->
+<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
+        <property name="hibernate.show_sql">false</property>
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiFuncRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiObjFunc.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiFunctions.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiChecks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiObjState.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiObjParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiSubreports.hbm.xml"/>
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiEvents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiEventsLog.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiEventRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiAudit.hbm.xml" />
+        <!--viewpoints-->
+        <mapping resource="it/eng/spagobi/metadata/mappingsqlserver/SbiViewpoints.hbm.xml" />                        
+        <!-- map catalogue -->
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingsqlserver/SbiGeoMapFeatures.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingsqlserver/SbiGeoFeatures.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingsqlserver/SbiGeoMaps.hbm.xml" />
+        
+    </session-factory>
+</hibernate-configuration>

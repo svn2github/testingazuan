@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MODULES>
+	
+	<MODULE class="it.eng.spagobi.services.modules.LoginModule" name="LoginModule">
+     	<CONFIG/>
+    </MODULE>
+    
+    <MODULE class="it.eng.spagobi.services.modules.LogoutModule" name="LogoutModule">
+     	<CONFIG/>
+    </MODULE>
+    
+    <MODULE class="it.eng.spagobi.services.modules.ViewBuilderModule" name="ViewBuilderModule">
+     	<CONFIG/>
+    </MODULE>
+    
+    <MODULE class="it.eng.spagobi.services.modules.DirectExecutionModule" name="DirectExecutionModule">
+     	<CONFIG/>
+    </MODULE>
+	
+</MODULES>

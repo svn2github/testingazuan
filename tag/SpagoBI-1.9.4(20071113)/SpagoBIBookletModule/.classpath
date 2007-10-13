@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_juh.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_jurt.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_ridl.jar"/>
+	<classpathentry kind="lib" path="web-content/WEB-INF/lib/openoffice_unoil.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIProject"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spago-core-2.1.2.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/servlet-api.jar"/>
+	<classpathentry kind="var" path="EXO_HOME/common/lib/portlet-api-1.0.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/jbpm-3.1.2.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/jbpm-identity-3.1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIDriversAPI"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/commons-fileupload-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spago-portlet-spagobi.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/SpagoBIProject/web-content/WEB-INF/lib/spagocms-core-2.1.2.jar"/>
+	<classpathentry kind="output" path="web-content/WEB-INF/classes"/>
+</classpath>

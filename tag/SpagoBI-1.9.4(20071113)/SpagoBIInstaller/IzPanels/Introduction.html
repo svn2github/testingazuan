@@ -1,0 +1,56 @@
+<html>
+<body bgcolor="white">
+<font style="font-family: verdana, arial, helvetica, sans-serif; font-size: 10px;">
+<h3>Introduction to SpagoBI Platform 1.9.3 installation procedure</h3>
+<p>
+This installation file will guide you during the SpagoBI Platform installation steps. The procedure will ask you the SpagoBI external engines to be installed: you can choose those engines you need. You will be able also to choose if you want the SpagoBI example documents (that are the SpagoBIDemo example documents) to be installed or not.
+</p>
+<!--
+<p>
+<strong>Avaliable installation types</strong><br>
+Two types of installation are available:
+<ul style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;" type="circle">
+   <li>a demo installation (with examples): in this case the data warehouse is a demo Hsql db that will be installed on your pc;</li>
+   <li>a clean installation (without examples): is this case the procedure will ask you the connection parameter to your data warehouse.</li>
+</ul>
+You will be able to choose also the SpagoBI external engines to be installed.
+</p>
+-->
+<p>
+<strong>Remote repository and local repository</strong><br>
+SpagoBI core and external engines binary packs are not included into this installation file but don't worry, they will be automatically downloaded from a remote repository into a local folder of your choice (that will be referred to as 'local repository'). For later installation procedures you will be able to avoid downloads by selecting the local repository folder when required.
+</p>
+<p>
+<strong>System requirements</strong><br>
+Before proceeding please check the following system requirements:
+<ul style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;" type="circle">
+   <li>JDK version 1.5.x</li>
+   <li>OpenOffice 2.0.x (for booklets creation): an environment variable named <font face="courier">OPENOFFICE_HOME</font> must point to OpenOffice installation directory or the <font face="courier">PATH</font> environment variable must contain the OpenOffice installation <font face="courier">program</font> folder.</li>
+   <li>512 MB memory (suggested).</li>
+</ul>
+</p>
+<p>
+<strong>Server requirements</strong><br>
+SpagoBI Platform must be installed on an existing server installed on your pc. The server can be Tomcat, JBoss or JOnAS (you can choose) and must have eXo-Portal installed. Possible servers for SpagoBI Platform 1.9.3 are:
+<ol style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;">
+<li><b>Tomcat 5.0.28 with eXo-Portal 1.1.4</b><br>
+   download eXoPortal-tomcat-1.1.4.zip from:<br>
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=151&file_id=8171</font><br>
+   unzip it into a local folder and the job is done.</li>
+<li><b>JBoss 4.0.3SP1 with eXo-Portal 1.1.2</b><br>
+   download jboss-4.0.3SP1.zip from:<br>
+   <font face="courier">http://sourceforge.net/project/showfiles.php?group_id=22866&package_id=16942&release_id=365509</font><br>
+   download eXoPortal-jboss-1.1.2.zip from:<br>
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=151&file_id=6228</font><br>
+   then follow the installation instructions.</li>
+<li><b>JOnAS 4.7.4 with eXo-Portal 1.1.3</b><br>
+   download jonas4.7.4-tomcat5.5.15.tgz from:<br>
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=5&file_id=6132</font><br>
+   download eXoPortal-JOnAS-1.1.3.zip from:<br>
+   <font face="courier">http://forge.objectweb.org/project/download.php?group_id=151&file_id=6838</font><br>
+   then follow the installation instructions.</li>
+</ol>
+SpagoBI installation requires overwriting some existing files on server, therefore it is suggested to install SpagoBI on a clean server.
+</font>
+</body>
+</html>

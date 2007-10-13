@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.services.modules.ExecuteBIObjectModule,
                  it.eng.spago.navigation.LightNavigationManager,
                  java.util.Map,
+                 java.util.Set,
                  java.util.HashMap,
                  it.eng.spagobi.utilities.GeneralUtilities,
                  it.eng.spagobi.managers.BIObjectNotesManager,
@@ -338,6 +339,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          </td>
 
        <% } %>
+       
+       
+       <!-- *************** start luca changes *************   -->
+       
+        <td class='header-empty-column-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-portlet-section'>
+           <a href='javascript:openSendToForm<%=executionId%>()'>
+               <img width="22px" height="22px" 
+                    title='<spagobi:message key = "sbi.execution.sendTo" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/sendTo22.png")%>'
+                    alt='<spagobi:message key = "sbi.execution.sendTo" />' />
+           </a>
+         </td>
+       
+        <td class='header-empty-column-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-portlet-section'>
+           <a href='javascript:openSavePersonalFolderForm<%=executionId%>()'>
+               <img width="22px" height="22px" 
+                    title='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/saveIntoPersonalFolder22.png")%>'
+                    alt='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />' />
+           </a>
+         </td>
+       
+       <!-- *************** end luca changes ***************   -->
 
    </tr>
 </table>
@@ -411,6 +437,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
            </a>
         </td>
        <% } %>
+       
+       <!-- *************** start luca changes *************   -->
+       
+        <td class='header-empty-column-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-portlet-section'>
+           <a href='javascript:openSendToForm<%=executionId%>()'>
+               <img width="22px" height="22px" 
+                    title='<spagobi:message key = "sbi.execution.sendTo" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/sendTo22.png")%>'
+                    alt='<spagobi:message key = "sbi.execution.sendTo" />' />
+           </a>
+         </td>
+         
+        <td class='header-empty-column-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-portlet-section'>
+           <a href='javascript:openSavePersonalFolderForm<%=executionId%>()'>
+               <img width="22px" height="22px" 
+                    title='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/saveIntoPersonalFolder22.png")%>'
+                    alt='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />' />
+           </a>
+         </td>
+       
+       <!-- *************** end luca changes ***************   -->
+       
     </tr>
 </table>
 
@@ -510,10 +561,364 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<!-- ************* start luca changes ************************ -->
+
+<STYLE>
+	
+	.div_form_container {
+    	border: 1px solid #cccccc;
+    	background-color:#fafafa;
+    	float: left;
+	}
+	
+	.div_form_margin {
+		margin: 5px;
+		float: left;
+	}
+	
+	.div_form_row {
+		clear: both;
+		padding-bottom:5px;
+	}
+	
+	.div_form_label {	
+		float: left;
+		width:150px;
+		margin-right:20px;
+	}
+	
+	.div_form_field {
+	}
+
+    .div_form_message {	
+		float: left;
+		margin:20px;
+	}
+	
+    .nowraptext {
+    	white-space:nowrap;
+    }
+    
+    .div_loading {
+        width:20%;
+    	position:absolute;
+    	left:20%;
+    	top:40%;
+    	border:1px solid #bbbbbb;
+    	background:#eeeeee;
+    	padding-left:100px;padding-right:100px;
+    	display:none;
+    }
+    
+</STYLE>
+
+<div id="formSaveToPFDiv<%=executionId%>" style="display:none">
+
+	<table cellspacing='0' border='0'> 
+		<tr>
+			<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
+			     &nbsp;&nbsp;&nbsp;<spagobi:message key = "sbi.execution.saveToPersonalFolder" />
+			</td>
+	    </tr>
+	</table>	
+	
+	<br/>
+	
+	<div class="div_form_container" style="margin-right:10px;">
+		<div class="div_form_margin" >
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "sbi.execution.stpf.label" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="stpflabel" class='portlet-form-input-field' type="text" name="newdoclabel" size="50" value=""  >
+				    &nbsp;*
+				</div>
+			</div>
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "sbi.execution.stpf.name" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="stpfname" class='portlet-form-input-field' type="text" name="newdocname" size="50" value=""  >
+				    &nbsp;*
+				</div>
+			</div>
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "sbi.execution.stpf.description" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="stpfdescription" class='portlet-form-input-field' type="text" name="newdocdescription" size="50" value="" >
+				</div>
+			</div>
+		</div>
+	</div>	
+	
+	<div>
+        </div>
+	    	<a style="text-decoration:none;" href='javascript:saveToPF<%=executionId%>()' >
+				<img width="32px" height="32px"
+					src='<%= urlBuilder.getResourceLink(request, "/img/save.png")%>'
+					alt='<%=msgBuilder.getMessage("sbi.execution.save", "messages", request)%>'
+					title='<%=msgBuilder.getMessage("sbi.execution.save", "messages", request)%>' />
+			</a>
+			<div id="messageSaveToPFDiv" style="font-size:11px;font-family:arial;color:#074B88;"></div>
+    	</div>
+    </div>
+
+	<div style='clear:left;'></div>
+	
+
+</div>
 
 
 
 
+<div id="formSendToDiv<%=executionId%>" style="display:none">
+
+	<table cellspacing='0' border='0'> 
+		<tr>
+			<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
+			     &nbsp;&nbsp;&nbsp;<spagobi:message key = "sbi.execution.sendTo" />
+			</td>
+	    </tr>
+	</table>	
+	
+   <br/> 
+
+	<div class="div_form_container" style="margin-right:10px;">
+		<div class="div_form_margin" >
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "sbi.execution.sendTo.a" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="sendtoto" class='portlet-form-input-field' type="text" name="a" size="50" value=""  >
+				    &nbsp;*
+				</div>
+			</div>
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "sbi.execution.sendTo.cc" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="sendtocc" class='portlet-form-input-field' type="text" name="cc" size="50" value="" >
+				</div>
+			</div>
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "sbi.execution.sendTo.object" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="sendtoobject" class='portlet-form-input-field' type="text" name="object" size="50" value=""  >
+				</div>
+			</div>
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "sbi.execution.sendTo.message" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+				    <textarea id="sendtomessage" class='portlet-form-input-field' name='message' cols='40' rows='10'></textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div>
+        <div>
+	    	<a style="text-decoration:none;" href='javascript:sendTo<%=executionId%>()' >
+				<img width="32px" height="32px"
+					src='<%= urlBuilder.getResourceLink(request, "/components/importexport/img/next.png")%>'
+					alt='<%=msgBuilder.getMessage("sbi.execution.send", "messages", request)%>'
+					title='<%=msgBuilder.getMessage("sbi.execution.send", "messages", request)%>' />
+			</a>
+			<br/>
+			<div id="messageSendToDiv" style="font-size:11px;font-family:arial;color:#074B88;"></div>
+    	</div>
+    </div>
+
+	<div style='clear:left;'></div>
+	
+</div>
+
+<script>
+     
+    winsendto<%=executionId%> = null;  
+    winsavepf<%=executionId%> = null;
+
+	function openSendToForm<%=executionId%>() {
+	   winsendto<%=executionId%> = new Window('win_send_to<%=executionId%>', {className: "alphacube", title: "", width:700, height:300, hideEffect:Element.hide, showEffect:Element.show});
+  	   winsendto<%=executionId%>.setDestroyOnClose();
+       winsendto<%=executionId%>.setContent('formSendToDiv<%=executionId%>', false, false);
+       winsendto<%=executionId%>.showCenter();
+       document.getElementById('sendtoto').value = '';
+       document.getElementById('sendtocc').value = '';
+       document.getElementById('sendtoobject').value = '';
+       document.getElementById('sendtomessage').value = '';
+       mstd = document.getElementById('messageSendToDiv');
+       mstd.innerHTML = "";
+	}
+	
+	function sendTo<%=executionId%>() {
+       
+       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/ExecuteAndSendService?";
+       pars = "objlabel=<%=obj.getLabel()%>";
+       <%
+			Set parKeys = mapPars.keySet();
+			Iterator parKeysIter = parKeys.iterator();
+			while(parKeysIter.hasNext()) {
+         	   	String parkey = parKeysIter.next().toString();
+         	   	String parvalue = mapPars.get(parkey).toString();
+         	   	if(parkey.equalsIgnoreCase("template")) {
+         	   		continue;
+         	   	}
+	   %>
+	  			pars += "&<%=parkey%>=<%=parvalue%>";
+       <%
+			}
+       %>
+       pars += "&to=" + document.getElementById('sendtoto').value;
+       pars += "&cc=" + document.getElementById('sendtocc').value;
+       pars += "&object=" + document.getElementById('sendtoobject').value;
+       pars += "&message=" + document.getElementById('sendtomessage').value;
+       mstd = document.getElementById('messageSendToDiv');
+       mstd.innerHTML = "<spagobi:message key="sbi.execution.waiting" />";
+       new Ajax.Request(url,
+          {
+            method: 'post',
+            parameters: pars,
+            onSuccess: function(transport){
+                            response = transport.responseText || "";
+                            showSendToResult<%=executionId%>(response);
+                        },
+            onFailure: somethingWentWrongSendTo<%=executionId%>
+          }
+        );
+	 }
+	 
+	 function somethingWentWrongSendTo<%=executionId%>() {
+        mstd = document.getElementById('messageSendToDiv');
+        mess = getMessageFromCode("50");
+        mstd.innerHTML = mess;
+     }
+     
+     function showSendToResult<%=executionId%>(response) {
+		mstd = document.getElementById('messageSendToDiv');
+   		mess = getMessageFromCode(response);
+   		mstd.innerHTML = mess;
+     }
+	 
+	 
+	 function openSavePersonalFolderForm<%=executionId%>() {
+	 	winsavepf<%=executionId%> = new Window('win_save_to_pf<%=executionId%>', {className: "alphacube", title: "", width:700, height:300, hideEffect:Element.hide, showEffect:Element.show});
+  	    winsavepf<%=executionId%>.setDestroyOnClose();
+        winsavepf<%=executionId%>.setContent('formSaveToPFDiv<%=executionId%>', false, false);
+        winsavepf<%=executionId%>.showCenter();
+        document.getElementById('stpfname').value='';
+        document.getElementById('stpfdescription').value='';
+        document.getElementById('stpflabel').value='';
+        mstpfd = document.getElementById('messageSaveToPFDiv');
+        mstpfd.innerHTML = "";
+	 }
+	 
+	 function saveToPF<%=executionId%>() {
+       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/SaveToPersonalFolderService?";
+       pars = "objlabel=<%=obj.getLabel()%>";
+       <%
+			parKeysIter = parKeys.iterator();
+			while(parKeysIter.hasNext()) {
+         	   	String parkey = parKeysIter.next().toString();
+         	   	String parvalue = mapPars.get(parkey).toString();
+         	   	if(parkey.equalsIgnoreCase("template")) {
+         	   		continue;
+         	   	}
+	   %>
+	  			pars += "&<%=parkey%>=<%=parvalue%>";
+       <%
+			}
+       %>
+       pars += "&namenewdoc=" + document.getElementById('stpfname').value;
+       pars += "&descrnewdoc=" + document.getElementById('stpfdescription').value;
+       pars += "&labelnewdoc=" + document.getElementById('stpflabel').value;
+       mstpfd = document.getElementById('messageSaveToPFDiv');
+       mstpfd.innerHTML = "<spagobi:message key="sbi.execution.waiting" />";
+       new Ajax.Request(url,
+          {
+            method: 'post',
+            parameters: pars,
+            onSuccess: function(transport){
+                            response = transport.responseText || "";
+                            showSaveToPFResult<%=executionId%>(response);
+                        },
+            onFailure: somethingWentWrongSaveToPF<%=executionId%>
+          }
+        );
+	 }
+	 
+	 function somethingWentWrongSaveToPF<%=executionId%>() {
+	 	mstpfd = document.getElementById('messageSaveToPFDiv');
+        mess = getMessageFromCode("60");
+        mstpfd.innerHTML = mess;
+     }
+     
+     function showSaveToPFResult<%=executionId%>(response) {
+   		mstpfd = document.getElementById('messageSaveToPFDiv');
+        mess = getMessageFromCode(response);
+        mstpfd.innerHTML = mess;
+     }
+     
+     
+     function getMessageFromCode(messcode) {
+     	if(messcode=="10")
+     		return "<spagobi:message key="sbi.execution.send.ok" />";
+     	if(messcode=="20")
+     		return "<spagobi:message key="sbi.execution.send.error" />";
+     	if(messcode=="30")
+     		return "<spagobi:message key="sbi.execution.stpf.ok" />";
+     	if(messcode=="40")
+     		return "<spagobi:message key="sbi.execution.stpf.error" />";
+     	if(messcode=="50")
+     		return "<spagobi:message key="sbi.execution.send.error" />";
+     	if(messcode=="60")
+     		return "<spagobi:message key="sbi.execution.stpf.error" />";
+     	if(messcode=="70")
+     		return "<spagobi:message key="sbi.execution.stpf.labelnotfound" />";
+     	if(messcode=="80")
+     		return "<spagobi:message key="sbi.execution.stpf.namenotfound" />";
+     	if(messcode=="90")
+     		return "<spagobi:message key="sbi.execution.stpf.tonotfound" />";
+     }
+     
+     observerClose<%=executionId%> = {
+      onClose: function(eventName, win) {
+        if(win == winsendto<%=executionId%>) {
+          document.getElementById('formSendToDiv<%=executionId%>').style.display='none';
+        }
+        if(win == winsavepf<%=executionId%>) {
+          document.getElementById('formSaveToPFDiv<%=executionId%>').style.display='none';
+        }
+      }
+     }
+     Windows.addObserver(observerClose<%=executionId%>);
+	 
+</script>
+
+<!-- ************* end luca changes ************************** -->
 
 
 

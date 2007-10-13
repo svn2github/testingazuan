@@ -37,6 +37,7 @@ import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.ProfileExchanger;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UserUtilities;
 
 import java.io.InputStream;
 import java.security.Principal;
@@ -78,6 +79,14 @@ public class PortletLoginModule extends AbstractModule {
 		// put user profile into the singleton profileExchanger
 		ProfileExchanger profExchanger = ProfileExchanger.getInstance();
 		profExchanger.insertProfile((String)userProfile.getUserUniqueIdentifier(), userProfile);
+		
+		/* ********* start luca changes *************** */
+		String username = (String)userProfile.getUserUniqueIdentifier();
+		if(!UserUtilities.userFunctionalityRootExists(username)) {
+			UserUtilities.createUserFunctionalityRoot(userProfile);
+		}
+		/* ********* end luca changes ***************** */
+		
 	}
 
 }

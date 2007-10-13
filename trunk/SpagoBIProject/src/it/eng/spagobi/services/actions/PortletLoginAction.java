@@ -33,12 +33,15 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.bo.UserFunctionality;
 import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.security.IUserProfileFactory;
 import it.eng.spagobi.utilities.PortletUtilities;
 import it.eng.spagobi.utilities.ProfileExchanger;
 import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UserUtilities;
 
 import java.io.InputStream;
 import java.security.Principal;
@@ -86,6 +89,14 @@ public class PortletLoginAction extends AbstractAction{
 		// put user profile into the singleton profileExchanger
 		ProfileExchanger profExchanger = ProfileExchanger.getInstance();
 		profExchanger.insertProfile((String)userProfile.getUserUniqueIdentifier(), userProfile);
+		
+		/* ********* start luca changes *************** */
+		String username = (String)userProfile.getUserUniqueIdentifier();
+		if(!UserUtilities.userFunctionalityRootExists(username)) {
+			UserUtilities.createUserFunctionalityRoot(userProfile);
+		}
+		/* ********* end luca changes ***************** */
+		
 	}
 
 }

@@ -277,11 +277,21 @@ public class GeneralUtilities {
 	public static String getSpagoBiContextAddress(){
 		String path = "";
 		try{
+			
+			/* *********** start luca changes ****************** */
+			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(),
+	                   "getSpagoBiContextAddress", "Trying to recover spagobi context path from ConfigSingleton");
+	        ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+	        SourceBean spagobiContextPathSB = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_CONTEXT_PATH");
+	        path = spagobiContextPathSB.getCharacters(); 
+	        /* *********** end luca changes ****************** */
+
+			/*
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
-					"getSpagoBiContextAddress", "method invoked");
+								"getSpagoBiContextAddress", "method invoked");
 			ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 			path = (String)spagoconfig.getAttribute(SpagoBIConstants.SBICONTEXTURL);
-			/*
+			 
 			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 			SpagoBITracer.debug("SpagoBIUtilities", GeneralUtilities.class.getName(), 
 					"getSpagoBiContextAddress", "Portlet request obtained: " + portletRequest);

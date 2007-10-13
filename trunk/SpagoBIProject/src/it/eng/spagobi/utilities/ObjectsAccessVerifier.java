@@ -383,6 +383,7 @@ public class ObjectsAccessVerifier {
 	 * @return A boolean control value
 	 */
 	private static boolean canExecInternal (LowFunctionality folder, IEngUserProfile profile){
+			
 		Collection roles = null;
 		try {
 			roles = profile.getRoles();

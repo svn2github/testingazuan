@@ -98,6 +98,12 @@ public class JasperReportDriver implements IEngineDriver {
 		pars.put("template", bASE64Encoder.encode(template));
 		pars.put("templatePath",biobj.getPath() + "/template");
         pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+        UploadedFile tmpFile = biobj.getTemplate();
+        String flgTemplateStandard = "true";
+        if (tmpFile.getFileName().indexOf(".zip") > -1){        	
+        		flgTemplateStandard = "false";
+        }
+        pars.put("flgTemplateStandard", flgTemplateStandard);
         
         pars = addBISubreports(biobj, pars);
         pars = addBIParameters(biobj, pars);
@@ -117,9 +123,18 @@ public class JasperReportDriver implements IEngineDriver {
 			for(int i = 0; i < subreportList.size(); i++) {
 				Subreport subreport = (Subreport)subreportList.get(i);
 				BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
-								
 				
-				String path = subrptbiobj.getPath();
+				subrptbiobj.loadTemplate();
+				UploadedFile tmpFileSubRpt = subrptbiobj.getTemplate();				
+		        String flgTemplateStandard = "true";
+		        if (tmpFileSubRpt.getFileName().indexOf(".zip") > -1){        	
+		        		flgTemplateStandard = "false";
+		        }
+		        
+		        SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " flgTemplateStandard: " + flgTemplateStandard);
+		        pars.put("subrpt." + (i+1) + ".flgTempStd", flgTemplateStandard);
+		        
+				String path = subrptbiobj.getPath();				
 				SpagoBITracer.debug("JasperReportDriver", "JasperReportDriver","addBISubreports", " PATH: " + path);
 				
 				pars.put("subrpt." + (i+1) + ".path", path);

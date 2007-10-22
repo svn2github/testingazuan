@@ -1,24 +1,6 @@
 /**
-
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * 
+ */
 package it.eng.qbe.export;
 
 import it.eng.qbe.utility.CalculatedField;
@@ -81,6 +63,8 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	
 	public static final String PN_HEADER_FONT = "columnHeaderFont";	
 	public static final String PN_HEADER_FONT_SIZE = "columnHeaderFontSize";
+	public static final String PN_HEADER_FONT_BOLD = "columnHeaderFontBold";
+	public static final String PN_HEADER_FONT_ITALIC = "columnHeaderFontItalic";
 	public static final String PN_HEADER_FORECOLOR = "columnHeaderForegroundColor";
 	public static final String PN_HEADER_BACKCOLOR = "columnHeaderBackgroundColor";
 	public static final String PN_ROW_FONT = "rowFont";	
@@ -99,6 +83,8 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	
 	public static final String DEFAULT_HEADER_FONT = "Helvetica-Bold";
 	public static final String DEFAULT_HEADER_FONT_SIZE = "12";
+	public static final String DEFAULT_HEADER_FONT_BOLD = "true";
+	public static final String DEFAULT_HEADER_FONT_ITALIC = "false";
 	public static final String DEFAULT_HEADER_FORECOLOR = "FFFFFF";
 	public static final String DEFAULT_HEADER_BACKCOLOR = "#006666";
 	public static final String DEFAULT_ROW_FONT = "Times-Roman";	
@@ -194,7 +180,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		StringBuffer buffer = new StringBuffer();
 		
 		int totalWidth = Integer.parseInt(getParamValue(PN_BAND_WIDTH, DEFAULT_BAND_WIDTH ));
-		int detailHeight = getRowHeight(Integer.parseInt(DEFAULT_BAND_WIDTH));
+		int detailHeight = getRowHeight(Integer.parseInt(DEFAULT_HEADER_HEIGHT));
 		
 		buffer.append("<detail>\n");
 		buffer.append("<band " + 
@@ -379,7 +365,9 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 					"textAlignment=\"" + (field.getClassType().equalsIgnoreCase("java.lang.String")? "Left": "Right") + "\" " +
 					"verticalAlignment=\"Middle\"> " +
 						"<font pdfFontName=\"" + getParamValue(PN_HEADER_FONT, DEFAULT_HEADER_FONT) + "\" " +
-							  "size=\"" + getParamValue(PN_HEADER_FONT_SIZE, DEFAULT_HEADER_FONT_SIZE) + "\" isBold=\"true\"/> " +
+							  "size=\"" + getParamValue(PN_HEADER_FONT_SIZE, DEFAULT_HEADER_FONT_SIZE) + "\" " +
+							  "isBold=\""+getParamValue(PN_HEADER_FONT_BOLD, DEFAULT_HEADER_FONT_BOLD)+"\" "+
+							  "isItalic=\""+getParamValue(PN_HEADER_FONT_ITALIC, DEFAULT_HEADER_FONT_ITALIC)+"\"/> " +
 			  "</textElement>\n");
 
 			buffer.append("<text><![CDATA[" + 
@@ -412,7 +400,9 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 					"textAlignment=\"Left\" " +
 					"verticalAlignment=\"Middle\"> " +
 						"<font pdfFontName=\"" + getParamValue(PN_HEADER_FONT, DEFAULT_HEADER_FONT) + "\" " +
-							  "size=\"" + getParamValue(PN_HEADER_FONT_SIZE, DEFAULT_HEADER_FONT_SIZE) + "\" isBold=\"true\"/> " +
+							  "size=\"" + getParamValue(PN_HEADER_FONT_SIZE, DEFAULT_HEADER_FONT_SIZE) + "\" " +
+							  "isBold=\""+getParamValue(PN_HEADER_FONT_BOLD, DEFAULT_HEADER_FONT_BOLD)+"\" "+
+							  "isItalic=\""+getParamValue(PN_HEADER_FONT_ITALIC, DEFAULT_HEADER_FONT_ITALIC)+"\"/> " +							  
 			  "</textElement>\n");
 			buffer.append("<text><![CDATA["+cField.getFldLabel()+"]]></text>\n");
 			buffer.append("</staticText>\n\n");

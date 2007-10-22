@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 import java.awt.Graphics2D;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,12 +26,14 @@ import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,6 +82,9 @@ public class JasperReportRunner {
 	private String templatePath = null;
 	private String spagobibaseurl = null;
 	private static transient Logger logger = Logger.getLogger(JasperReportRunner.class);
+	public static final String JS_FILE_ZIP = "JS_File";
+	public static final String JS_EXT_ZIP = ".zip";
+	
 	
 	/**
 	 * Class Constructor
@@ -108,26 +115,73 @@ public class JasperReportRunner {
 		 * HttpServletRequest and ServletContext objects shuold be pushed back to JasperReportServlet that is 
 		 * the front-end (control) part of the engine */		
 		File[] compiledSubreports = null;
+		SpagoBIAccessUtils util = new SpagoBIAccessUtils();
+		  // identity string for object execution
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid_local = uuidGen.generateTimeBasedUUID();
+	    String executionId = uuid_local.toString();
+	    executionId = executionId.replaceAll("-", "");
+	    String flgTemplateStandard = "";
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
-						
-			// all jar needed by JR to succesfully compile a report should be on this path
+			
+//			 all jar needed by JR to succesfully compile a report should be on this path
 			// (by default is WEB_INF/lib)
 			setJRClasspath(getJRLibDir(servletContext));
+
+			InputStream is = getTemplateContent(servletRequest);
+			
+			/* Dynamic template management: if the template is a zip file it is opened and every class are added to 
+			 * the classpath
+			 */			
+			flgTemplateStandard = (String) servletRequest.getParameter("flgTemplateStandard");			
+			if (flgTemplateStandard.equalsIgnoreCase("false")){				
+				File fileZip = new File (getJRTempDir(servletContext, executionId), JS_FILE_ZIP + JS_EXT_ZIP);				
+				FileOutputStream foZip = new FileOutputStream(fileZip);
+				String templateBase64Coded = (String) servletRequest.getParameter("template");				
+				BASE64Decoder bASE64Decoder = new BASE64Decoder();
+				byte[] templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
+				foZip.write(templateContent);
+				foZip.close();						
+				util.unzip(fileZip, getJRTempDir(servletContext, executionId));				
+				
+				JarFile zipFile = new JarFile(fileZip);				
+			    Enumeration totalZipEntries = zipFile.entries();
+			    File jarFile = null;
+		        while (totalZipEntries.hasMoreElements()) {
+		    	   ZipEntry entry = (ZipEntry)totalZipEntries.nextElement();
+		    	   if (entry.getName().endsWith(".jar")) {						
+		    		   jarFile = new File(getJRTempDirName(servletContext,executionId)+entry.getName());
+		    		   //set classloader with jar		    		   
+		    		   ClassLoader previous = Thread.currentThread().getContextClassLoader();
+		    		   DynamicClassLoader dcl = new DynamicClassLoader(jarFile, previous);
+					   Thread.currentThread().setContextClassLoader(dcl);
+					   					   			  
+		    	   }
+		    	   if (entry.getName().endsWith(".jrxml")) {
+						// set InputStream with jrxml	    		   
+		    		   File jrxmlFile = new File(getJRTempDirName(servletContext, executionId)+entry.getName());
+		    		   InputStream isJrxml = new FileInputStream(jrxmlFile);		    		   
+		    		   byte[] templateJrxml=new byte[0];
+		    		   templateJrxml = util.getByteArrayFromInputStream(isJrxml);
+		    		   is = new java.io.ByteArrayInputStream(templateJrxml);
+		    	   }		    	   
+		        }
+			}
+			
 			
 			// compile subreports
-			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext));
+			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId));
 						
 			// set classloader
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
-			ClassLoader current = URLClassLoader.newInstance(new URL[]{getJRCompilationDir(servletContext).toURL()}, previous);
-			Thread.currentThread().setContextClassLoader(current); 
+ 		    ClassLoader current = URLClassLoader.newInstance(new URL[]{getJRCompilationDir(servletContext, executionId).toURL()}, previous);
+		    Thread.currentThread().setContextClassLoader(current);
 						
 			// Set the temporary location for the files generated on-the-fly by JR 
 			// (by default is the current user tmp-dir)
 			setJRTempDir(tmpDirectory);
-			
-			InputStream is = getTemplateContent(servletRequest);					
+								
 			logger.debug("Compiling template file ...");
 			JasperReport report  = JasperCompileManager.compileReport(is);
 			logger.debug("Template file compiled  succesfully");
@@ -171,11 +225,10 @@ public class JasperReportRunner {
 		    	exporter.setParameter(JRHtmlExporterParameter.BETWEEN_PAGES_HTML, "");
 		    	// define the map structure for report images
 		    	HashMap m_imagesMap = new HashMap();
-		    	UUIDGenerator generator = UUIDGenerator.getInstance();
-		    	UUID uuid = generator.generateTimeBasedUUID();
-		    	String mapName = uuid.toString();
+		    	String mapName = uuid_local.toString();
+		    			    	
 		    	servletRequest.getSession().setAttribute(mapName, m_imagesMap);
-		    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP,m_imagesMap);
+		    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP ,m_imagesMap);		    	
 		    	//exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image.jsp?mapname="+mapName+"&image=");
 		    	exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "JRImageServlet?mapname="+mapName+"&image=");
 		    } else if (outputType.equalsIgnoreCase("xls")) {
@@ -227,24 +280,29 @@ public class JasperReportRunner {
 		}catch(Exception e){
 			logger.error("An exception has occured", e);
 			throw e;
-		}finally{			
+		}finally{	
+			// delete tmp dir for dynamic template management
+			File tmpDir = getJRTempDir(servletContext, executionId).getParentFile();			
+			util.deleteDirectory(tmpDir);
+			logger.debug("Delating temporary directory: " + tmpDir);
+		
 			// delate compiled subreport if any
+			/*
 	        if(compiledSubreports != null){
 				for(int i = 0; i < compiledSubreports.length ; i++){
 					File subreport = compiledSubreports[i];
 					if(subreport != null) subreport.delete();
-					logger.debug("Delating subreport file: " + subreport.getName());
-				}
-				
-			}
-	        
-			try{			
-				if ((conn != null) && (!conn.isClosed())) conn.close();
-			}catch(SQLException sqle){}
-			
+					logger.debug("Delating subreport file: " + subreport.getName());								
+	        }
+	        */
 		}
-	}	
-	
+	        
+		try{			
+			if ((conn != null) && (!conn.isClosed())) conn.close();
+		}catch(SQLException sqle){}			
+	}
+//}	
+
 	
 	/////////////////////////////////////////
 	// UTILITY METHODS
@@ -261,12 +319,10 @@ public class JasperReportRunner {
 		return jrLibDir;		
 	}
 	
-	private File getJRCompilationDir(ServletContext servletContext) {
+	private File getJRCompilationDir(ServletContext servletContext, String executionId) {
 		File jrCompilationDir = null;		
-
-		String jrCompilationDirStr = servletContext.getRealPath("WEB-INF") + System.getProperty("file.separator") + "subrpttemp" + System.getProperty("file.separator");
-		jrCompilationDir = new File(jrCompilationDirStr);
-		jrCompilationDir.mkdirs();
+		
+		jrCompilationDir = getJRTempDir(servletContext, executionId);
 		
 		return jrCompilationDir;		
 	}
@@ -282,6 +338,7 @@ public class JasperReportRunner {
 		System.setProperty("jasper.reports.compile.temp", jrTmpDir);
 		logger.debug("Set [jasper.reports.compile.temp] to value [" + System.getProperty("jasper.reports.compile.temp")+"]");
 	}
+	
 	
 	/**
 	 * Build a classpath variable appending all the jar files founded into the specified directory.
@@ -319,6 +376,7 @@ public class JasperReportRunner {
 		InputStream is = null;		
 		
 		String templateBase64Coded = (String) servletRequest.getParameter("template");
+		
 		BASE64Decoder bASE64Decoder = new BASE64Decoder();
 		byte[] templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
 				
@@ -483,36 +541,78 @@ public class JasperReportRunner {
 	
 	
 	
-	private File[] compileSubreports(Map params, File destDir) throws JRException {
+	private File[] compileSubreports(Map params, File destDir) throws JRException, Exception {
 		
-		String subrptnumStr = (String)params.get("srptnum");
+ 		String subrptnumStr = (String)params.get("srptnum");
 		int subrptnum = Integer.parseInt(subrptnumStr);
 		String[] subreports = new String[subrptnum];
+		String[] subreportsType = new String[subrptnum];
 		File[] files = new File[subrptnum];
 		
 		Iterator it = params.keySet().iterator();
 		while(it.hasNext()){
 			String parName = (String)it.next();
-			if(parName.startsWith("subrpt")) {
+			if(parName.startsWith("subrpt") && parName.endsWith("path")) {
 				int start = parName.indexOf('.') + 1;
 				int end = parName.indexOf('.', start);				
 				String numberStr = parName.substring(start, end);
 				int number = Integer.parseInt(numberStr) - 1;
 				subreports[number] = (String)params.get(parName);
-				//logger.debug("JasperReports parse subreport number [" + start + " - " + end + "] : " +  numberStr);
 				logger.debug("JasperReports subreport PATH : " +  params.get(parName));				
+			}
+			else if(parName.startsWith("subrpt") && parName.endsWith("flgTempStd")) {
+				int start = parName.indexOf('.') + 1;
+				int end = parName.indexOf('.', start);
+				String numberStr = parName.substring(start, end);
+				int number = Integer.parseInt(numberStr) - 1;
+				subreportsType[number] = (String)params.get(parName);
 			}
 		}
 				
 		for(int i = 0; i < subreports.length; i++) {
 			InputStream is = null;
-			
 			byte[] jcrContent = new SpagoBIAccessUtils().getContent(this.spagobibaseurl, subreports[i]);
-						
 			is = new ByteArrayInputStream(jcrContent);
-			JasperDesign  jasperDesign = JRXmlLoader.load(is);
+			SpagoBIAccessUtils util = new SpagoBIAccessUtils();
 			
-			is = new java.io.ByteArrayInputStream(jcrContent);						
+			/* Dynamic template management: if the template is a zip file it is opened and every class are added to 
+			 * the classpath
+			 */			
+			String flgTemplateStandard = subreportsType[i];
+			if (flgTemplateStandard.equalsIgnoreCase("false")){							
+				File fileZip = new File (destDir, this.JS_FILE_ZIP+i+ JS_EXT_ZIP);
+				FileOutputStream foZip = new FileOutputStream(fileZip);
+				foZip.write(jcrContent);
+				foZip.close();				
+				util.unzip(fileZip,destDir);
+				
+				JarFile zipFile = new JarFile(fileZip);				
+			    Enumeration totalZipEntries = zipFile.entries();
+			    File jarFile = null;
+		        while (totalZipEntries.hasMoreElements()) {
+		    	   ZipEntry entry = (ZipEntry)totalZipEntries.nextElement();
+		    	   if (entry.getName().endsWith(".jar")) {
+						// set classloader with jar
+		    		   jarFile = new File(destDir+entry.getName());
+		    		   
+		    		   ClassLoader previous = Thread.currentThread().getContextClassLoader();
+		    		   DynamicClassLoader dcl = new DynamicClassLoader(jarFile, previous);
+					   //ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
+					   Thread.currentThread().setContextClassLoader(dcl);					   
+		    	   }
+		    	   if (entry.getName().endsWith(".jrxml")) {
+						// set InputStream with jrxml	    		   
+		    		   File jrxmlFile = new File(destDir+System.getProperty("file.separator")+entry.getName());
+		    		   InputStream isJrxml = new FileInputStream(jrxmlFile);		    		   
+		    		   jcrContent = util.getByteArrayFromInputStream(isJrxml);
+		    		   is = new java.io.ByteArrayInputStream(jcrContent);		    		   
+		    	   }
+		        }
+			}
+			JasperDesign  jasperDesign = JRXmlLoader.load(is);
+			//the following instruction is necessary because the above istruction cleans variable 'is'
+			is = new java.io.ByteArrayInputStream(jcrContent);
+			
 			files[i] = new File(destDir, jasperDesign.getName()+ ".jasper");
 			logger.debug("Compiling template file: " + files[i]);
 			FileOutputStream fos =  null;
@@ -527,4 +627,22 @@ public class JasperReportRunner {
 		
 		return files;
 	}
+	
+	private String getJRTempDirName(ServletContext servletContext, String executionId) {	  
+		String jrTempDir = servletContext.getRealPath("tmpdir") + System.getProperty("file.separator") +
+							"reports" +  System.getProperty("file.separator") +
+							"JS_dir_" + executionId + System.getProperty("file.separator");
+		return jrTempDir;		
+	}
+	
+	private File getJRTempDir(ServletContext servletContext, String executionId) {
+		File jrTempDir = null;		
+
+		String jrTempDirStr = getJRTempDirName(servletContext, executionId);
+		jrTempDir = new File(jrTempDirStr.substring(0, jrTempDirStr.length()-1));
+		jrTempDir.mkdirs();
+		
+		return jrTempDir;		
+	}
 }
+

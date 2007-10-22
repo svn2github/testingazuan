@@ -54,13 +54,25 @@ import org.dom4j.Node;
 import sun.misc.BASE64Decoder;
 
 import com.bo.rebean.wi.BinaryView;
+import com.bo.rebean.wi.ConditionContainer;
+import com.bo.rebean.wi.ConditionObject;
+import com.bo.rebean.wi.DataProvider;
+import com.bo.rebean.wi.DataSource;
+import com.bo.rebean.wi.DataSourceObject;
+import com.bo.rebean.wi.DataSourceObjects;
 import com.bo.rebean.wi.DocumentInstance;
+import com.bo.rebean.wi.FilterCondition;
 import com.bo.rebean.wi.HTMLView;
 import com.bo.rebean.wi.ImageOption;
+import com.bo.rebean.wi.LogicalOperator;
+import com.bo.rebean.wi.Operator;
 import com.bo.rebean.wi.OutputFormatType;
+import com.bo.rebean.wi.Query;
+import com.bo.rebean.wi.Recordset;
 import com.bo.rebean.wi.Report;
 import com.bo.rebean.wi.ReportEngine;
 import com.bo.rebean.wi.Reports;
+import com.bo.rebean.wi.TreeNode;
 import com.bo.wibean.WIServer;
 import com.bo.wibean.WISession;
 
@@ -204,6 +216,78 @@ public class ViewDocumentHandler {
 			document = repEngine.openDocument(reportName, reportID, repository, reportType);
 			// fills document parameters values
 			Utils.fillPrompts(document, request);
+			
+			
+			
+			
+
+			/*
+			// get data provider
+			DataProvider dp = document.getDataProviders().getItem(0);
+			// get data provider name  
+			String dpn = dp.getName();
+			// get data provider data source (Example: universe)
+			DataSource dpds = dp.getDataSource();
+			// get data provider data source name
+			String dpdsn = dpds.getName();
+            
+			// get the classes of the data source (universe)
+			// and then get a particular field of the class
+			DataSourceObjects dsobjs = dpds.getClasses();
+			int dsobjscount = dsobjs.getChildCount();
+			DataSourceObject dsogeoid = null; 
+			for(int i=0; i<dsobjscount; i++) {
+				DataSourceObject dso = dsobjs.getChildAt(i);
+				if(dso.getName().equals("Ambiente")) {
+					int countdsochild = dso.getChildCount();
+					for(int j=0; j<countdsochild; j++) {
+						TreeNode tn = dso.getChildAt(j);
+						if (tn instanceof DataSourceObject) {
+							DataSourceObject tndso = (DataSourceObject)tn;
+							if(tndso.getName().equalsIgnoreCase("Id Ambiente")) {
+								dsogeoid = tndso;
+							}
+						}
+					}
+				}
+			}
+			
+			
+			// get the query of the data provider
+			Query dpq = dp.getQuery();
+			// get the sql of the query
+			String dpqsql = dpq.getSQL();
+			System.out.println("***** dp query sql : " + dpqsql);
+			
+			// get the condition container of the query
+			ConditionContainer oldcc = dpq.getCondition();
+			// create a new condition container and replace the old one
+			ConditionContainer newcc = dpq.createCondition(LogicalOperator.AND);
+			try{
+				// add the filed to the condition container
+				ConditionObject newco = newcc.createConditionObject(dsogeoid);
+				// add the operator
+				FilterCondition newfc = newco.createFilterCondition(Operator.EQUAL);
+				// add the value
+				newfc.createFilterConditionConstant("1");
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+			
+			// add the old condition container as a child
+			newcc.copyConditionContainer(oldcc);
+			// run the query
+			dp.runQuery();
+			
+			// get the sql now, after changes
+			String dpqsql1 = dpq.getSQL();
+			System.out.println("***** dp query sql1 : " + dpqsql1);
+
+            */ 
+			
+			
+			
+			
 			// recover storage token
 			String storageToken = document.getStorageToken();
 			// Set image parameters

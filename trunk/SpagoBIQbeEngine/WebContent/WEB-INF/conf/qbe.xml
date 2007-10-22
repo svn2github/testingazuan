@@ -48,6 +48,8 @@
 			
 			<PARAMETER name="columnHeaderFont" value="Helvetica-Bold"/>
 			<PARAMETER name="columnHeaderFontSize" value="12"/>
+   		    <PARAMETER name="columnHeaderFontBold" value="true"/>			
+			<PARAMETER name="columnHeaderFontItalic" value="false"/>						
 			<PARAMETER name="columnHeaderForegroundColor" value="#074B88"/>
 			<PARAMETER name="columnHeaderBackgroundColor" value="#E4ECF2"/>
 			

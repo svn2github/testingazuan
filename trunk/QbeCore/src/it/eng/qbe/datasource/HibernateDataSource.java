@@ -31,6 +31,7 @@ import it.eng.qbe.utility.JarUtils;
 import it.eng.qbe.utility.Logger;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.utilities.DynamicClassLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -324,10 +325,11 @@ public class HibernateDataSource extends BasicDataSource  {
 			if (!wasAlreadyLoaded) {
 				
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();
-				
-				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
-				
-				Thread.currentThread().setContextClassLoader(current);
+    		    DynamicClassLoader current = new DynamicClassLoader(jarFile, previous);
+			    Thread.currentThread().setContextClassLoader(current);
+
+				//ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);				
+				//Thread.currentThread().setContextClassLoader(current);
 				
 				if (container != null) container.setAttribute("DATAMART_CLASS_LOADER", current);
 
@@ -350,10 +352,10 @@ public class HibernateDataSource extends BasicDataSource  {
 				IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
 				File jarFile = dataMartModelRetriever.getJarFile(path,dialect);
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();
-				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
-				Thread.currentThread().setContextClassLoader(current);
-				
-				
+//				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);				
+    		    DynamicClassLoader current = new DynamicClassLoader(jarFile, previous);    		    
+			    Thread.currentThread().setContextClassLoader(current);
+
 				classLoaderExtended = true;
 			
 			}

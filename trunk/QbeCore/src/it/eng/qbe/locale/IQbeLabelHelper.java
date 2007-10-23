@@ -19,30 +19,28 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.utility;
-
-import it.eng.spago.base.RequestContainer;
+package it.eng.qbe.locale;
 
 /**
  * @author Andrea Zoppello
  * 
  * This is the interface for classes that implements logic
- * to retrieve localized messages to be used in JSP pages 
+ * to retrieve labels for the entities(classes) and the fields
+ * of the datamart model
+ * 
  */
-public interface IQbeMessageHelper {
+public interface IQbeLabelHelper{
 
 	/**
-	 * @param aRequestContainer: Spago Request Container
-	 * @param code: the message code
-	 * @return: the message associated with code in the default bundle
+	 * @param completeClassName, the entity(class) to retrieve label
+	 * @return the label for entity(class) identified by completeClassName
 	 */
-	public String getMessage(RequestContainer aRequestContainer, String code);
+	public String getLabelForClass(String completeClassName);
 	
 	/**
-	 * @param aRequestContainer: Spago Request Container
-	 * @param code: the message code
-	 * @param bundle: the bundle to use
-	 * @return  the message associated with code in the given bundle
+	 * @param completeFieldName the fieldName to retrieve label
+	 * @return the label for field identified by completeFieldName
 	 */
-	public String getMessage(RequestContainer aRequestContainer, String code, String bundle);
+	public String getLabelForField(String completeFieldName);
+
 }

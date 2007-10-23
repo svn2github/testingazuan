@@ -22,8 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.model.accessmodality;
 
 
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.Filter;
-import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;

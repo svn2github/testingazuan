@@ -19,30 +19,30 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.utility;
-
+package it.eng.qbe.locale;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.message.MessageBundle;
+
 /**
  * @author Andrea Zoppello
  * 
- * The implementation of IQbeMessageHelper used when QBE is used as a STANDALONE Web Application
+ * This is the interface for classes that implements logic
+ * to retrieve localized messages to be used in JSP pages 
  */
-public class QbeWebMessageHelper implements
-		IQbeMessageHelper {
+public interface IQbeMessageHelper {
 
-	public String getMessage(RequestContainer aRequestContainer, String code){
-		return MessageBundle.getMessage(code);
-	}
+	/**
+	 * @param aRequestContainer: Spago Request Container
+	 * @param code: the message code
+	 * @return: the message associated with code in the default bundle
+	 */
+	public String getMessage(RequestContainer aRequestContainer, String code);
 	
-	public String getMessage(RequestContainer aRequestContainer, String code, String bundle){
-		SessionContainer session = aRequestContainer.getSessionContainer();
-		SpagoBIInfo spagoBIInfo = (SpagoBIInfo)session.getAttribute("spagobi");
-		if(spagoBIInfo != null && spagoBIInfo.getLoacale() != null) 
-			return MessageBundle.getMessage(code, bundle, spagoBIInfo.getLoacale());
-		return MessageBundle.getMessage(code, bundle);
-	}
-
+	/**
+	 * @param aRequestContainer: Spago Request Container
+	 * @param code: the message code
+	 * @param bundle: the bundle to use
+	 * @return  the message associated with code in the given bundle
+	 */
+	public String getMessage(RequestContainer aRequestContainer, String code, String bundle);
 }

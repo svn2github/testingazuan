@@ -19,9 +19,12 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.utility;
+package it.eng.qbe.model.io;
 
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.FileUtils;
+import it.eng.qbe.utility.SpagoBIInfo;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;

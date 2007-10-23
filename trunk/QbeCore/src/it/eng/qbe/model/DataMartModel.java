@@ -23,12 +23,12 @@ package it.eng.qbe.model;
 
 import it.eng.qbe.datasource.HibernateDataSource;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
+import it.eng.qbe.model.io.IDataMartModelRetriever;
+import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
-import it.eng.qbe.utility.IDataMartModelRetriever;
-import it.eng.qbe.utility.IQueryPersister;
-import it.eng.qbe.utility.Logger;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.configuration.ConfigSingleton;
 
@@ -58,11 +58,7 @@ public class DataMartModel implements IDataMartModel {
 		if(hibernateDataSource.getPath() != null && hibernateDataSource.getJndiDataSourceName() != null && hibernateDataSource.getDialect() != null)
 			this.dataMartModelStructure = BasicDataMartStructureBuilder.buildDataMartStructure(dataSource);
 		
-		/*
-		String fileName = "C:\\Prototipi\\SpagoBI-1.9.2-QbE\\webapps\\SpagoBIQbeEngine\\tmp\\datamarts\\foodmart2\\modalities.xml";
-		File file = new File(fileName);		
-		this.dataMartModelAccessModality = new DataMartModelAccessModality(file, "ProductManagerAnalysis");
-		*/
+	
 		this.dataMartModelAccessModality = new DataMartModelAccessModality();
 		
 		this.dataMartProperties = new Properties();

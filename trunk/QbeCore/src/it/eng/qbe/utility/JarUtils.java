@@ -23,6 +23,8 @@ package it.eng.qbe.utility;
 
 
 
+import it.eng.qbe.log.Logger;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

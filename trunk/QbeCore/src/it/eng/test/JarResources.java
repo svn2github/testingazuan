@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.test;
 
-import it.eng.qbe.utility.Logger;
+import it.eng.qbe.log.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

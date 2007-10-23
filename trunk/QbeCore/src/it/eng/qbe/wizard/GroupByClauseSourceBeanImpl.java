@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.wizard;
 
-import it.eng.qbe.utility.Logger;
+import it.eng.qbe.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

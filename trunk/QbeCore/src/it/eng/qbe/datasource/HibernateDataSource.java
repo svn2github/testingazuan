@@ -21,17 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.datasource;
 
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IQuery;
 import it.eng.qbe.model.IStatement;
-import it.eng.qbe.utility.IDataMartModelRetriever;
-import it.eng.qbe.utility.IQueryPersister;
+import it.eng.qbe.model.io.IDataMartModelRetriever;
+import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.utility.JarUtils;
-import it.eng.qbe.utility.Logger;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.utilities.DynamicClassLoader;
+
 
 import java.io.File;
 import java.io.IOException;

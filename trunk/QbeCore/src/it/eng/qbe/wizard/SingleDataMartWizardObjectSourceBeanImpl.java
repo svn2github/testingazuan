@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.wizard;
 
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.IQuery;
 import it.eng.qbe.model.IStatement;
-import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;

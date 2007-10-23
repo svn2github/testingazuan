@@ -21,7 +21,7 @@
  **/
 package it.eng.qbe.export;
 
-import it.eng.qbe.utility.Logger;
+import it.eng.qbe.log.Logger;
 
 import java.lang.reflect.Method;
 import java.util.Collections;

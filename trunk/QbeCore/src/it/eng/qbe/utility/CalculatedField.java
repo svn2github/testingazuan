@@ -23,6 +23,7 @@ package it.eng.qbe.utility;
 
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 
 import java.util.HashMap;

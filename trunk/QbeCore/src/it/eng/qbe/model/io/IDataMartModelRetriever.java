@@ -19,39 +19,32 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.utility;
+package it.eng.qbe.model.io;
 
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-
+import java.io.File;
 import java.util.List;
 
 /**
  * @author Andrea Zoppello
  * 
  * This is the interface for classes that implements 
- * logig to load and persist query on a persistent store than can be, JSR 170 repository, Database,
- * File System and so on
+ * logig to retrieve the datamart model file given a path
  * 
  */
-public interface IQueryPersister {
+public interface IDataMartModelRetriever {
 
 	/**
-	 * @param dm: The datamart model
-	 * @param wizObject: The Query object to persist
+	 * @param dataMartPath
+	 * @return the default datamart file
 	 */
-	public void persist(DataMartModel dm, ISingleDataMartWizardObject wizObject);
+	public File getJarFile(String dataMartPath);
 	
 	/**
-	 * @param dm: The datamart model
-	 * @return: all the query for datamart dm
+	 * @param dataMartPath
+	 * @param dialect
+	 * @return the specific file of datamart given Hibernate Dialect
 	 */
-	public List loadAllQueries(DataMartModel dm);
+	public File getJarFile(String dataMartPath, String dialect);
 	
-	/**
-	 * @param dm: The datamart model
-	 * @param key: The identifier of the query to retrieve
-	 * @return: the query of the datamart identified by key
-	 */
-	public ISingleDataMartWizardObject load(DataMartModel dm, String key);
+	public List getViewJarFiles(String dataMartPath, String dialect);
 }

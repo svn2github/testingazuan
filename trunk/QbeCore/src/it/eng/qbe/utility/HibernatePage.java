@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.utility;
 
+import it.eng.qbe.log.Logger;
+
 import java.util.List;
 
 import org.hibernate.HibernateException;

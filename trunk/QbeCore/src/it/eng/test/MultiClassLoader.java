@@ -11,7 +11,7 @@
 
 package it.eng.test;
 
-import it.eng.qbe.utility.Logger;
+import it.eng.qbe.log.Logger;
 
 import java.util.Hashtable;
 

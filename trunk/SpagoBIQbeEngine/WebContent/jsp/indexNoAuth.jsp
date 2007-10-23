@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="it.eng.qbe.utility.LocalFileSystemDataMartModelRetriever"%>
+<%@page import="it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever"%>
 <%@page import="java.util.List"%>
 <%@page import="java.io.File"%>
 <%@ page import="it.eng.spago.base.*"%>

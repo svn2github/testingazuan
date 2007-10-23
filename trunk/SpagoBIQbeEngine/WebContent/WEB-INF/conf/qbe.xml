@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <QBE>
 	
-    <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.utility.LocalFileSystemDataMartModelRetriever"/>
-    <QUERY-PERSISTER className="it.eng.qbe.utility.LocalFileSystemQueryPersister"/>
+    <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever"/>
+    <QUERY-PERSISTER className="it.eng.qbe.model.io.LocalFileSystemQueryPersister"/>
     
 
     <!--  <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.utility.SpagoBICmsDataMartModelRetriever"/> 
@@ -19,7 +19,7 @@
 	<!--   <QBE-ENABLE-SCRIPT enablescript="true" calculateFieldPosition="AFTER_COLUMNS" /> -->
 	<!--   <QBE-MSG-HELPER className="it.eng.qbe.utility.QbeSpagoBIMessageHelper"/> -->
 	
-	<QBE-MSG-HELPER className="it.eng.qbe.utility.QbeWebMessageHelper"/>
+	<QBE-MSG-HELPER className="it.eng.qbe.locale.QbeWebMessageHelper"/>
 	
 	<QBE-CHECK-SPACE-BEFORE-CREATEVIEW 
 		check="false" 

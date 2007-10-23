@@ -22,9 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.action;
 
 import it.eng.qbe.conf.QbeConf;
+import it.eng.qbe.locale.IQbeMessageHelper;
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.IQbeMessageHelper;
-import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;

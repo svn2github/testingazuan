@@ -27,9 +27,9 @@ import it.eng.qbe.export.IQueryRewriter;
 import it.eng.qbe.export.ITemplateBuilder;
 import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLTemplateBuilder;
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.JarUtils;
-import it.eng.qbe.utility.Logger;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 

@@ -1,5 +1,8 @@
 <%@ page import="it.eng.spago.base.*"%>
 <%@ page import="it.eng.qbe.utility.*"%>
+<%@ page import="it.eng.qbe.locale.*"%>
+<%@ page import="it.eng.qbe.log.*"%>
+<%@ page import="it.eng.qbe.model.io.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@page import="it.eng.qbe.conf.*"%>
 
@@ -25,7 +28,7 @@
 		qbeUrl = new PortletQbeUrlGenerator();
 	}
 	
-	qbeMsg = QbeConf.getInstance().getQbeMessageHelper();
+	qbeMsg =  QbeConf.getInstance().getQbeMessageHelper();
 	
 	SourceBean aServiceRequest = requestContainer.getServiceRequest();
 	SourceBean aServiceResponse = responseContainer.getServiceResponse();

@@ -23,10 +23,10 @@ package it.eng.qbe.action;
 
 import it.eng.qbe.export.Field;
 import it.eng.qbe.export.SQLFieldsReader;
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.views.ViewBuilder;
 import it.eng.qbe.utility.IDBSpaceChecker;
-import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;

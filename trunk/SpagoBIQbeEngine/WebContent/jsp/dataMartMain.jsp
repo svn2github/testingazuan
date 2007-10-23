@@ -53,8 +53,8 @@ if (queryPersister instanceof LocalFileSystemQueryPersister){
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.qbe.wizard.ISingleDataMartWizardObject"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
-<%@page import="it.eng.qbe.utility.IQueryPersister"%>
-<%@page import="it.eng.qbe.utility.LocalFileSystemQueryPersister"%>
+<%@page import="it.eng.qbe.model.io.IQueryPersister"%>
+<%@page import="it.eng.qbe.model.io.LocalFileSystemQueryPersister"%>
 <body>
 <%}%>
 <script type="text/javascript">

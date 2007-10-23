@@ -116,7 +116,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		      <input type="hidden" name="target_level" value="<%=target_level%>" />
 		      <input type="hidden" name="mapCatalogueManagerUrl" value="<%=mapCatalogueManagerUrl%>" />
 		      <input type="hidden" name="isSaveSubObjFuncActive" value="FALSE" />
-		       <input type="hidden" name="NEW_SESSION" value="TRUE" />
+		      <input type="hidden" name="NEW_SESSION" value="TRUE" />
 		      
 		      
 		</form>			

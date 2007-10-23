@@ -236,6 +236,7 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		for(int i = 0; i < fields.size(); i++) {
 			field = (ISelectField)fields.get(i);
 			fieldCompleteName = field.getFieldCompleteName();
+			String fieldName = field.getFieldName();
 			entityClassName = field.getFieldEntityClass().getClassName();
 			columnName = fieldCompleteName.substring(entityClassName.length()+1);			
 			
@@ -243,6 +244,11 @@ public class ViewOnMapAction extends GeoAbstractAction {
 			
 			if(columnType == targetType) {
 				columnAlias = field.getFieldAlias().replaceAll(" ","_");
+				if(fieldName.startsWith("sum(")) columnAlias = columnAlias + "Sum";
+				if(fieldName.startsWith("avg(")) columnAlias = columnAlias + "Avg";
+				if(fieldName.startsWith("min(")) columnAlias = columnAlias + "Min";
+				if(fieldName.startsWith("max(")) columnAlias = columnAlias + "Max";
+				if(fieldName.startsWith("count(")) columnAlias = columnAlias + "Count";
 				columnAliases.add(columnAlias);
 			} 
 		}
@@ -292,7 +298,7 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		String geoColumnName = null;
 		
 		String baseQuery = query.trim().toUpperCase();
-		String selectClause = query.trim().substring("SELECT".length(), baseQuery.indexOf(" FROM ") + " FROM ".length());
+		String selectClause = query.trim().substring("SELECT".length(), baseQuery.indexOf(" FROM "));
 		if(selectClause.trim().toUpperCase().startsWith("DISTINCT")) {
 			selectClause = selectClause.trim().substring("DISTINCT".length());
 			selectClause = selectClause.trim();

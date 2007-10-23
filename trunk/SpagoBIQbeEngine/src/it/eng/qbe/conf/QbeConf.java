@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.conf;
 
-import it.eng.qbe.utility.IDataMartModelRetriever;
-import it.eng.qbe.utility.IQbeMessageHelper;
-import it.eng.qbe.utility.IQueryPersister;
+import it.eng.qbe.locale.IQbeMessageHelper;
+import it.eng.qbe.model.io.IDataMartModelRetriever;
+import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 

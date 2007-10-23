@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.javascript;
 
+import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.IURLGenerator;
@@ -28,7 +29,6 @@ import it.eng.qbe.urlgenerator.PortletQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.SelectFieldForSelectionURLGenerator;
 import it.eng.qbe.urlgenerator.WebQbeUrlGenerator;
 import it.eng.qbe.utility.CalculatedField;
-import it.eng.qbe.utility.Logger;
 import it.eng.qbe.utility.QbeProperties;
 import it.eng.qbe.utility.RelationField;
 import it.eng.qbe.utility.Utils;
@@ -110,14 +110,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	public abstract Map getSelectdNodes();
 	
 	
-	public String build() {		
-		buffer = new StringBuffer();
-		
-		addHeader();
-		addTree();				
-		addRootNode();
-		addNodes();				
-		addFooter();
+	public String build() {	
+		long start = System.currentTimeMillis();
+		buffer = new StringBuffer();		
+		long end = System.currentTimeMillis();
+		System.out.println("Elapsed: " + ((end - start)/1000));
 		
 		return buffer.toString();
 	}
@@ -615,7 +612,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				RelationField aRelationField = (RelationField)associatedClassIterator.next();
 				//if(true) {
 				if (aRelationField.getClassName().equalsIgnoreCase(className) ||
-						recursionLevel > 3){
+						recursionLevel > 2){
 					nodeCounter = addFieldNodesNoRecursion(aRelationField.getClassName(), aRelationField.getRelationOnColumnName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator, recursionLevel+1);
 				}else{
 					nodeCounter = addFieldNodes(aRelationField.getClassName(),aRelationField.getRelationOnColumnName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator, recursionLevel+1);

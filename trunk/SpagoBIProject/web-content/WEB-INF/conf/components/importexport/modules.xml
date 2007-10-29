@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MODULES>
     
-    <MODULE class="it.eng.spagobi.services.modules.ImportExportModule" name="ImportExportModule">
+    <MODULE class="it.eng.spagobi.importexport.modules.ImportExportModule" name="ImportExportModule">
      	<CONFIG/>
     </MODULE>
     

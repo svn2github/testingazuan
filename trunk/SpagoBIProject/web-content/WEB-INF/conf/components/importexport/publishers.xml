@@ -18,12 +18,12 @@
   	<PUBLISHER name="ImportExportPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.presentation.publishers.ImportExportPublisher"/>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.importexport.publishers.ImportExportPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JAVA">
       		<RESOURCES>
-        		<ITEM prog="0" resource="it.eng.spagobi.presentation.publishers.ImportExportPublisher"/>
+        		<ITEM prog="0" resource="it.eng.spagobi.importexport.publishers.ImportExportPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

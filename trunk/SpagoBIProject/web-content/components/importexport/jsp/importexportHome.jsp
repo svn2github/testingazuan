@@ -52,9 +52,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	String formImportUrl = urlBuilder.getUrl(request, formImportUrlPars);
   
-	String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ExportService";
+	String downloadUrl = ChannelUtilities.getSpagoBIContextName(request);
+	downloadUrl += "/servlet/AdapterHTTP?ACTION_NAME=DOWNLOAD_FILE_ACTION";
 	if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
-		downloadUrl += "?OPERATION=download&PATH="+  exportFilePath;
+		downloadUrl += "&OPERATION=download&PATH="+  exportFilePath;
 	}
    
 %>
@@ -78,7 +79,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</tr>
 </table>
 
-
 <script>
 	function submitExportForm() {
 		var divprog = document.getElementById('divProgress');
@@ -101,6 +101,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <div class="div_background_no_img">
+
+
+	<spagobi:error/>
 
  
   <form method='POST' action='<%=formExportUrl%>' id='exportForm' name='exportForm'> 
@@ -169,11 +172,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</center>
 		</div>
 		<div style="clear:left;margin-bottom:10px;padding-top:10px;">
-			<spagobi:message key = "SBISet.importexport.fileArchive" bundle="component_impexp_messages"/>
-			: 
-			<input type="file"  name="exportedArchive" />
+			<table>
+				<tr>
+					<td>
+						<spagobi:message key = "SBISet.importexport.fileArchive" bundle="component_impexp_messages"/>
+						:
+					</td>
+					<td> 
+						<input type="file"  name="exportedArchive" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<spagobi:message key = "SBISet.importexport.fileAssociation" bundle="component_impexp_messages"/>
+						:
+					</td>
+					<td> 
+						<input type="file"  name="associationsFile" />
+					</td>
+				</tr>
+			</table>
 			<input type='hidden' name='MESSAGEDET' value='Import' />
+			
 		</div>
+		
 		<%
 		if(iri!=null) {
 		%>	
@@ -181,14 +203,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%
 				String pathLogFile = iri.getPathLogFile();
 				if( (pathLogFile!=null) && !pathLogFile.equals("") ) {	
-					 String downloadLogUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ExportService";
-					 downloadLogUrl += "?OPERATION=downloadLog&PATH=" + pathLogFile;	
+					 String downloadLogUrl = ChannelUtilities.getSpagoBIContextName(request);
+					 downloadLogUrl += "/servlet/AdapterHTTP?ACTION_NAME=DOWNLOAD_FILE_ACTION";
+					 downloadLogUrl += "&OPERATION=downloadLog&PATH=" + pathLogFile;	
 			%>
 			<spagobi:message key = "SBISet.importexport.opComplete" bundle="component_impexp_messages"/>
-			<a style='text-decoration:none;color:#CC0000;' href='<%=downloadLogUrl%>'>
-				<spagobi:message key = "Sbi.downloadLog" bundle="component_impexp_messages"/>
-			</a>
+			<ul>
+				<li>
+					<a style='text-decoration:none;color:#CC0000;' href='<%=downloadLogUrl%>'>
+						<spagobi:message key = "Sbi.downloadLog" bundle="component_impexp_messages"/>
+					</a>
+				</li>
 			<% 	}
+				String pathAssFile = iri.getPathAssociationsFile();
+				if( (pathAssFile!=null) && !pathAssFile.equals("") ) {	
+					 String downloadAssUrl = ChannelUtilities.getSpagoBIContextName(request);
+					 downloadAssUrl += "/servlet/AdapterHTTP?ACTION_NAME=DOWNLOAD_FILE_ACTION";
+					 downloadAssUrl += "&OPERATION=downloadLog&PATH=" + pathAssFile;
+		    %>
+				<li>
+					<a style='text-decoration:none;color:#CC0000;' href='<%=downloadAssUrl%>'>
+						<spagobi:message key = "Sbi.downloadAss" bundle="component_impexp_messages"/>
+					</a>
+				</li>
+			</ul>
+			<%	
+				}
 				Map manualTasks = iri.getManualTasks();
 				if(!manualTasks.isEmpty()) {
 			%>
@@ -204,8 +244,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    	while(keysIter.hasNext()){
 			    		String key = (String)keysIter.next();
 			    		String path = (String)manualTasks.get(key);
-			    		String downloadManualTaskUrl = ChannelUtilities.getSpagoBIContextName(request) + "/ExportService";
-			    		downloadManualTaskUrl += "?OPERATION=downloadManualTask&PATH=" + path;	
+			    		String downloadManualTaskUrl = ChannelUtilities.getSpagoBIContextName(request);
+			    		downloadManualTaskUrl += "/servlet/AdapterHTTP?ACTION_NAME=DOWNLOAD_FILE_ACTION";
+			    		downloadManualTaskUrl += "&OPERATION=downloadManualTask&PATH=" + path;	
 		    %>
 		    	<li>
 		    		<a style='text-decoration:none;color:#074B88;font-size:9px;' href='<%=downloadManualTaskUrl%>'>

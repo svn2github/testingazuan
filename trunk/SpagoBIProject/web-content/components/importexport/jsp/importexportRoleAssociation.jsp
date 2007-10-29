@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.bo.Role" %>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.importexport.IImportManager"%>
+<%@page import="it.eng.spagobi.importexport.UserAssociationsKeeper"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
@@ -45,7 +47,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	formUrlPars.put("MESSAGEDET", ImportExportConstants.IMPEXP_ROLE_ASSOCIATION);
 	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
-   
+	
+	IImportManager impManager = (IImportManager)aSessionContainer.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+	UserAssociationsKeeper usrAssKeep = impManager.getUserAssociation();
 %>
 
 
@@ -178,6 +182,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							}
 						%>
 						<%
+							String associatedMsg = "";
 							if(disabled) {
 						%>
 						<input type="hidden" name="roleAssociated<%=role.getId()%>" value="<%=idAssRole%>"> 
@@ -195,15 +200,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<% 
 								iterCurRoles = curRoles.iterator();
 								String selected = null;
+								String associated = "";
 								while(iterCurRoles.hasNext()) {
 									selected = "";
 									Role roleCur = (Role)iterCurRoles.next();
-									if(roleCur.getName().equalsIgnoreCase(role.getName()))
-										selected=" selected ";
+									if(disabled) {
+										if(roleCur.getName().equalsIgnoreCase(role.getName())) {
+											selected=" selected ";
+										}
+									} else {
+										String roleAss = usrAssKeep.getAssociatedRole(role.getName());
+										if( (roleAss!=null) &&  roleCur.getName().equals(roleAss)) {
+											selected=" selected ";
+											associatedMsg = "ass";
+										}
+									}
 							%>
 							<option value='<%=roleCur.getId()%>' <%=selected%>><%=roleCur.getName()%></option>
 							<% } %>
-						</select>
+						</select> <%=associatedMsg%>
 					</td>
 				</tr>
 				<% } %>

@@ -45,20 +45,16 @@ import it.eng.spagobi.bo.dao.IParameterDAO;
 import it.eng.spagobi.bo.dao.IParameterUseDAO;
 import it.eng.spagobi.bo.dao.ISubreportDAO;
 import it.eng.spagobi.bo.lov.QueryDetail;
-import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -353,6 +349,8 @@ public class ExportManager implements IExportManager {
 				exporter.insertSubReportAssociation(subRep, session);
 				exportSingleObj(subRep.getSub_rpt_id().toString());
 			}
+		} catch (EMFUserError emfue) {
+			throw emfue;
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportSingleObj",
                                    "Error while exporting document with id " + idObj + " :" + e);
@@ -550,10 +548,10 @@ public class ExportManager implements IExportManager {
 				if(conSB == null){
 					 SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "checkConnection",
 							  				"Connection pool name " +nameConnection+ " not found");
-					 Vector paramsErr = new Vector();
+					 List paramsErr = new ArrayList();
 					 paramsErr.add(lov.getLabel());
 					 paramsErr.add(nameConnection);
-					 throw new EMFUserError(EMFErrorSeverity.ERROR, 8008, paramsErr, "component_impexp_messages");
+					 throw new EMFUserError(EMFErrorSeverity.ERROR, "8008", paramsErr, "component_impexp_messages");
 				} else {
 					SourceBean existSB = (SourceBean)conns.getFilteredSourceBeanAttribute("CONNECTION-POOL", 
 										  "connectionPoolName", nameConnection);

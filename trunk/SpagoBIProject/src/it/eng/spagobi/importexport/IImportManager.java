@@ -24,6 +24,7 @@ package it.eng.spagobi.importexport;
 import it.eng.spago.error.EMFUserError;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IImportManager {
 
@@ -94,5 +95,49 @@ public interface IImportManager {
      * between exported metadata and the current system metadata
      */
 	public MetadataAssociations getMetadataAssociation();
+	
+	
+	/**
+     * Gets the object which contains only the association set by user between exported metadata 
+     * and the current system metadata
+     * @return MetadataAssociation the object which contains the association, set by user, 
+     * between exported metadata and the current system metadata
+     */
+	public UserAssociationsKeeper getUserAssociation();
+	
+	
+	/**
+	 * checks if two or more exported roles are associate to the same current role
+	 * @param roleAssociations Map of association between exported roles and 
+	 * roles of the portal in use
+	 * @throws EMFUserError if two ore more exported roles are associate
+	 * to the same current role
+	 */
+	public void checkRoleReferences(Map roleAssociations) throws EMFUserError;
+	
+	
+	
+	/**
+	 * Get an existing object identified by the id and the class
+	 * @param id The Object id
+	 * @param objClass The class of the object
+	 * @param tx Hibernate transaction for the current database
+	 * @param session Hibernate session for the current database
+	 * @return The existing hibernate object
+	 */		
+	public Object getExistingObject(Integer id, Class objClass);
+	
+	
+	
+	/**
+	 * Get an exported object identified by the id and the class
+	 * @param id The Object id
+	 * @param objClass The class of the object
+	 * @param tx Hibernate transaction for the exported database
+	 * @param session Hibernate session for the exported database
+	 * @return The existing hibernate object
+	 */		
+	public Object getExportedObject(Integer id, Class objClass);
+	
 
 }

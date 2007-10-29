@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -159,26 +158,26 @@ public class ImporterMetadata {
 			return hibList;
 		}
 		
+		
 		/**
-		 * Get the exported hibernate object identified by the id
-		 * @param id The BIObject id
-		 * @param tx Hibernate transaction for the exported database
-		 * @param session Hibernate session for the exported database
-		 * @return The exported hibernate object
-		 * @throws EMFUserError
+		 * Get an existing object identified by the id and the class
+		 * @param id The Object id
+		 * @param objClass The class of the object
+		 * @param tx Hibernate transaction for a database
+		 * @param session Hibernate session for a database
+		 * @return The existing hibernate object
 		 */		
-		public SbiObjects getExportedSbiObject(Integer id, Transaction tx, Session session) throws EMFUserError {
-			SbiObjects hibBIObject = null;
+		public Object getObject(Integer id, Class objClass, Transaction tx, Session session) {
+			Object hibObject = null;
 			try {
-//				Query hibQuery = session.createQuery(" from SbiObjects objs where objs.biobjId = " + id);
-//				hibBIObject = (SbiObjects) hibQuery.uniqueResult();
-				hibBIObject = (SbiObjects) session.load(SbiObjects.class, id);
+				hibObject = session.load(objClass, id);
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getExportedSbiObject",
-						               "Error while getting exported sbi objects " + he);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+				SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+						           "getExistingObject",
+						           "Error while getting the existing object with class "+objClass.getName()+" " +
+						           "and id " +id+ " \n " + he);
 			} 
-			return hibBIObject;
+			return hibObject;
 		}
 		
 			
@@ -192,8 +191,8 @@ public class ImporterMetadata {
 		 * @param session Hibernate session for the exported database
 		 * @throws EMFUserError
 		 */
-		public void updateConnRefs(Map associations, Transaction tx, 
-				                   Session session, MetadataLogger log) throws EMFUserError {
+		public void updateConnRefs(Map associations, Transaction tx, Session session, 
+				                   MetadataLogger log) throws EMFUserError {
 			try {
 				List lovs = getAllExportedSbiObjects(tx, session, "SbiLov");
 				Iterator iterLovs = lovs.iterator();
@@ -204,13 +203,20 @@ public class ImporterMetadata {
 						QueryDetail qDet = QueryDetail.fromXML(lovProv);
 						String oldConnName = qDet.getConnectionName();
 						String assConnName = (String) associations.get(oldConnName);
-						if (assConnName == null || assConnName.trim().equals("")) continue;
-						qDet.setConnectionName(assConnName);
-						lovProv = qDet.toXML();
-						lov.setLovProvider(lovProv);
-						session.save(lov);
-						log.log("Changed the connection name from "+oldConnName+" to " +
-								assConnName + " for the lov " + lov.getName());
+						
+						// register user association 
+						if( (assConnName != null) && 
+							!assConnName.trim().equals("") &&
+							(oldConnName != null) && 
+							!oldConnName.trim().equals("") ) {
+							
+							qDet.setConnectionName(assConnName);
+							lovProv = qDet.toXML();
+							lov.setLovProvider(lovProv);
+							session.save(lov);
+							log.log("Changed the connection name from "+oldConnName+" to " +
+									assConnName + " for the lov " + lov.getName());
+						} 			
 					}
 				}
 			} catch (SourceBeanException sbe) {
@@ -244,49 +250,6 @@ public class ImporterMetadata {
 		
 		
 		/**
-		 * Insert a functionality into the database and current cms repository 
-		 * @param curBaseFold The import temporary base folder 
-		 * @param relExpPath The path of the functionality to insert
-		 * @throws EMFUserError
-		 */
-		/*
-		public void insertCmsFunctionality(String curBaseFold, String relExpPath) throws EMFUserError {
-			if(relExpPath.startsWith("/"))
-				relExpPath = relExpPath.substring(1);
-			if(relExpPath.endsWith("/"))
-				relExpPath = relExpPath.substring(0, relExpPath.length()-1);
-			String[] parts = relExpPath.split("/");
-			for(int i=0; i<parts.length; i++){
-				String functPath = curBaseFold;
-				for(int j=0; j<=i; j++){
-					functPath = functPath + "/" + parts[j];	
-				}
-				CmsNode cmsnode = null;
-				CmsManager manager = new CmsManager();
-				try {
-					GetOperation getOp = new GetOperation(functPath, false, false, false, false);
-					cmsnode = manager.execGetOperation(getOp);
-					if(cmsnode==null){
-						SetOperation setOp = new SetOperation(functPath, SetOperation.TYPE_CONTAINER, false); 
-						List properties = new ArrayList();
-						String[] typePropValues = new String[] { AdmintoolsConstants.LOW_FUNCTIONALITY_TYPE };
-						CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
-				        properties.add(proptype);
-				        setOp.setProperties(properties);
-						manager.execSetOperation(setOp);
-					}
-				} catch (Exception e) {
-					SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertCmsFunctionality",
-             			   				   "Error while inserting functionality into cms " + e);
-					throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-				}
-			}
-			
-		}
-		/*
-		
-		
-		/**
 		 * Insert a BIObject into the database and cms repository
 		 * @param obj The Hiberante BIObject to insert
 		 * @param pathContent The path of the temporary contents directory
@@ -295,68 +258,9 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
-			//CmsManager manager = new CmsManager();
 			IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 			SbiObjects objToReturn = null;
-			//SetOperation setOp = null;
 			try {
-				/*
-				// get the inpust stream of the template
-				String pathTempFolder = pathContent + obj.getPath();
-				File tempFolder = new File(pathTempFolder);
-				File[] files = tempFolder.listFiles();
-				//File template = files[0];
-				File template = null;
-				for (int i = 0; i < files.length; i++) {
-					File aContainedFile = files[i];
-					if (aContainedFile.isFile()) {
-						template = aContainedFile;
-						break;
-					}
-				}
-				// generate an uuid and set it into the object
-				UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
-				UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
-				String uuid = uuidObj.toString();
-				obj.setUuid(uuid);
-				// generate the cms path and set it into the object
-				ConfigSingleton config = ConfigSingleton.getInstance();
-				SourceBean biobjectsPathSB = (SourceBean) config.getAttribute(SpagoBIConstants.CMS_BIOBJECTS_PATH);
-				String biobjectsPath = (String) biobjectsPathSB.getAttribute("path");
-				String path = biobjectsPath + "/" + uuid;
-				obj.setPath(path);
-				// insert node object into the cms
-				setOp = new SetOperation();
-				setOp.setPath(path);
-				setOp.setType(SetOperation.TYPE_CONTAINER);
-				setOp.setEraseOldProperties(true);
-				List properties = new ArrayList();
-				String[] typePropValues = new String[] { obj.getObjectTypeCode() };
-				CmsProperty proptype = new CmsProperty(AdmintoolsConstants.NODE_CMS_TYPE, typePropValues);
-				properties.add(proptype);
-				setOp.setProperties(properties);
-				manager.execSetOperation(setOp);
-				// insert the template node into the cms
-				if (template != null) {
-					String fileTempName = template.getName();
-					FileInputStream fis = new FileInputStream(template);
-					setOp = new SetOperation();
-					setOp.setContent(fis);
-					setOp.setType(SetOperation.TYPE_CONTENT);
-					setOp.setPath(path + "/template");
-					properties =  new ArrayList();
-					String[] nameFilePropValues = new String[] { fileTempName };
-					String today = new Date().toString();
-					String[] datePropValues = new String[] { today };
-					CmsProperty propFileName = new CmsProperty("fileName", nameFilePropValues);
-					CmsProperty propDateLoad = new CmsProperty("dateLoad", datePropValues);
-					properties.add(propFileName);
-					properties.add(propDateLoad);
-					setOp.setProperties(properties);
-					manager.execSetOperation(setOp);
-					fis.close();
-				}
-				*/
 				String pathTempFolder = pathContent + obj.getPath();
 				// normalize path
 				File temp = new File(pathTempFolder);
@@ -373,66 +277,6 @@ public class ImporterMetadata {
 			return objToReturn;
 		}
 		
-		
-		
-		/**
-		 * Inserts subobjects of one biobject into the cms 
-		 * @param oldPath the old path of the biobject
-		 * @param pathContent the path of the exported content folder
-		 * @param newObj the new BiObject inserted
-		 * @throws EMFUserError
-		 */
-		/*
-		public void insertSubObjects(String oldPath, String pathContent, SbiObjects newObj) throws EMFUserError {
-			try{	
-				IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
-				String folderSubObjPath = pathContent + oldPath + "/subobjects";
-				File folderSubObjFile = new File(folderSubObjPath);
-				File[] subobjFiles = folderSubObjFile.listFiles();
-				if(subobjFiles==null){
-					return;
-				}
-				for(int i=0; i<subobjFiles.length; i++){
-					File subobjFile = subobjFiles[i];
-					String completeFileName = subobjFile.getName();
-					String extension = completeFileName.substring(completeFileName.lastIndexOf('.') + 1);
-					String fileName = completeFileName.substring(0, completeFileName.lastIndexOf('.'));
-					if(extension.equals("content")){
-						continue;
-					}
-					FileInputStream fis = new FileInputStream(subobjFile);
-					Properties prop = new Properties();
-					prop.load(fis);
-					String name = prop.getProperty("name");
-					String description = prop.getProperty("description") ;
-					String owner = prop.getProperty("owner");
-					IEngUserProfile profile = new AnonymousCMSUserProfile(owner);
-					String pubvisStr =  prop.getProperty("pubvis");
-					boolean pubvis = false;
-					if(pubvisStr.equalsIgnoreCase("true")){
-						pubvis = true;
-					}
-					fis.close();
-					byte[] content = null;
-					for(int j=0; j<subobjFiles.length; j++){
-						subobjFile = subobjFiles[j];
-						completeFileName = subobjFile.getName();
-						if(!completeFileName.equals(fileName+ ".content")) {
-							continue;
-						}
-						fis = new FileInputStream(subobjFile);
-						content = GeneralUtilities.getByteArrayFromInputStream(fis);
-						fis.close();
-					}
-					cmsdao.saveSubObject(content, newObj.getPath(), name, description, pubvis, profile);
-				}
-			} catch (Exception e) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertSubObjects",
-		   				   			   "Error while inserting subobjects " + e);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			}
-		}
-		*/
 		
 		
 		
@@ -583,22 +427,4 @@ public class ImporterMetadata {
 		}
 		
 }
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

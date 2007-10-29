@@ -92,6 +92,7 @@ public class ImportManager implements IImportManager, Serializable {
 	private Transaction txCurrDB = null;
 	private MetadataAssociations metaAss = null;
 	private MetadataLogger metaLog = null;
+	private UserAssociationsKeeper usrAss = null;
 	private String exportedFileName = "";
 	
 	
@@ -149,6 +150,7 @@ public class ImportManager implements IImportManager, Serializable {
 		txCurrDB = sessionCurrDB.beginTransaction();
 		metaAss = new MetadataAssociations();
 		metaLog = new MetadataLogger();
+		usrAss = new UserAssociationsKeeper();
 	}
 	
 	
@@ -359,12 +361,28 @@ public class ImportManager implements IImportManager, Serializable {
 		    fos.flush();
 		    fos.close();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "commitAllChanges",
+			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "commitAllChanges",
 		                           "Error while writing log file " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		}
+		// generate the association file
+		File assFile = new File(pathFolderImportOutcome + "/" + "associations.xml");
+	    if(assFile.exists())
+	    	assFile.delete();
+		try{
+		    FileOutputStream fos = new FileOutputStream(assFile);
+		    fos.write(usrAss.toXml().getBytes());
+		    fos.flush();
+		    fos.close();
+		} catch (Exception e) {
+			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
+								   "commitAllChanges",
+		                           "Error while writing the associations file " + e);
+		}
+		
 		// set into the result bean the log file path
 		iri.setPathLogFile(logFile.getPath());
+		// set into the result bean the associations file path
+		iri.setPathAssociationsFile(assFile.getPath());
 		// return the result info bean
 	    return iri;
 	}
@@ -374,7 +392,7 @@ public class ImportManager implements IImportManager, Serializable {
 	 * Imports the exported objects
 	 */
 	public void importObjects() throws EMFUserError {
-		checkRoleReferences(metaAss.getRoleIDAssociation());
+		//checkRoleReferences(metaAss.getRoleIDAssociation());
 		updateConnectionReferences(metaAss.getConnectionAssociation());
 		importRoles();
 		importEngines();
@@ -1485,6 +1503,24 @@ public class ImportManager implements IImportManager, Serializable {
      */
 	public MetadataAssociations getMetadataAssociation() {
 		return metaAss;
+	}
+
+
+
+	public Object getExistingObject(Integer id, Class objClass) {
+		return importer.getObject(id, objClass, txCurrDB, sessionCurrDB);
+	}
+
+
+
+	public Object getExportedObject(Integer id, Class objClass) {
+		return importer.getObject(id, objClass, txExpDB, sessionExpDB);
+	}
+
+
+
+	public UserAssociationsKeeper getUserAssociation() {
+		return usrAss;
 	}
 	
 	

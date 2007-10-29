@@ -27,6 +27,7 @@ import java.util.Map;
 public class ImportResultInfo {
 
 	String pathLogFile = "";
+	String pathAssociationsFile = "";
 	Map manualTasks = new HashMap();
 	
 	public Map getManualTasks() {
@@ -40,6 +41,12 @@ public class ImportResultInfo {
 	}
 	public void setPathLogFile(String pathLogFile) {
 		this.pathLogFile = pathLogFile;
+	}
+	public String getPathAssociationsFile() {
+		return pathAssociationsFile;
+	}
+	public void setPathAssociationsFile(String pathAssFile) {
+		this.pathAssociationsFile = pathAssFile;
 	}
 	
 }

@@ -50,6 +50,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/importexport/messages.xml" />
 	<!-- end import export module -->
 	
 	<!-- start booklets module -->

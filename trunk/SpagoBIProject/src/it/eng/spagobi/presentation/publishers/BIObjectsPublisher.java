@@ -29,6 +29,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 /**
  * Publishes the results of a list information request for parameter use modes
@@ -58,8 +59,10 @@ public class BIObjectsPublisher implements PublisherDispatcherIFace {
 		SourceBean serviceRequest = requestContainer.getServiceRequest();
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		// if there are some errors into the errorHandler  return the name for the errors publisher
-		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			return "error";
+		if(!GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+				return "error";
+			}
 		}
 		SourceBean moduleResponse = (SourceBean) responseContainer.getServiceResponse().getAttribute("BIObjectsModule");
 		// if the module response is null throws an error and return the name of the errors publisher

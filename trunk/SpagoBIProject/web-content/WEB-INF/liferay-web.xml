@@ -163,11 +163,6 @@
         <servlet-name>DashboardServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.DashboardServlet</servlet-class>
     </servlet>
-  
-  	<servlet>
-        <servlet-name>ExportServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.ExportServlet</servlet-class>
-    </servlet>
 
     <servlet>
         <servlet-name>ReportServlet</servlet-name>
@@ -332,11 +327,6 @@
     <servlet-mapping>
         <servlet-name>DashboardServlet</servlet-name>
         <url-pattern>/DashboardService</url-pattern>
-    </servlet-mapping>
-    
-    <servlet-mapping>
-        <servlet-name>ExportServlet</servlet-name>
-        <url-pattern>/ExportService</url-pattern>
     </servlet-mapping>
     
     <servlet-mapping>

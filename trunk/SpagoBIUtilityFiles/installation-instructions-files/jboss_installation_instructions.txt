@@ -14,5 +14,5 @@ Pay attention at the path form, also for Windows system it must contain only / s
 
 For SpagoBITalendEngine:
 - open the file talend.perl.properties in JBOSS_HOME/server/default/deploy/SpagoBITalendEngine.war/WEB-INF/classes and adjust your Perl installation directory (if you want to executed Perl based jobs);
-- open the file talend.properties in JBOSS_HOME/server/default/deploy/SpagoBITalendEngine.war/WEB-INF/classes and substitute ${SPAGOBI_TALEND_ENGINE_HOME} with the actual path of JBOSS_HOME/server/default/deploy/SpagoBITalendEngine.war.
+- open the file talend.java.properties in JBOSS_HOME/server/default/deploy/SpagoBITalendEngine.war/WEB-INF/classes and adjust your Java installation directory (if you want to executed Java based jobs).
 Pay attention at the path form, also for Windows system it must contain only / separator and it must start with / (no c:\ for example);

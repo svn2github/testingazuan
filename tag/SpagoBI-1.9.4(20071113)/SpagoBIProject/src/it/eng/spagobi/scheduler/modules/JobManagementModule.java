@@ -376,6 +376,8 @@ public class JobManagementModule extends AbstractModule {
 				doclabels = doclabels.substring(0, doclabels.length()-1);
 			}
 			message.append("   	   <PARAMETER name=\"documentLabels\" value=\""+doclabels+"\" />");
+			message.append("   	   <PARAMETER name=\"" + SpagoBIConstants.SBICONTEXTURL + "\" " +
+					" value=\""+GeneralUtilities.getSpagoBiContextAddress()+"\" />");
 			message.append("   </PARAMETERS>");
 			message.append("</SERVICE_REQUEST>");
 			// call the web service

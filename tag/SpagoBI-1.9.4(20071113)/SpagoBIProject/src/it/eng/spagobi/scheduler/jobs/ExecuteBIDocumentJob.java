@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.scheduler.jobs;
 
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
@@ -50,7 +49,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -78,6 +76,7 @@ public class ExecuteBIDocumentJob implements Job {
 		try{
 			JobDataMap jdm = jex.getMergedJobDataMap();
 			String doclabelsConcat = jdm.getString("documentLabels");
+			String spagobiContextUrl = jdm.getString(SpagoBIConstants.SBICONTEXTURL);
 			String[] docLabels = doclabelsConcat.split(",");
 			for(int ind=0; ind<docLabels.length; ind++) {
 				String docLabel = docLabels[ind];
@@ -97,6 +96,7 @@ public class ExecuteBIDocumentJob implements Job {
 				if(execCtrl.directExecution()) {
 					ExecutionProxy proxy = new ExecutionProxy();
 					proxy.setBiObject(biobj);
+					proxy.setSpagobiContextUrl(spagobiContextUrl);
 					IEngUserProfile profile = new FakeUserProfile("scheduler");
 					
 					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();

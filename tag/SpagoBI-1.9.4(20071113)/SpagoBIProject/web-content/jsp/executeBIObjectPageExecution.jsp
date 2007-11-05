@@ -58,7 +58,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if (executionId == null) executionId = (String) moduleResponse.getAttribute("spagobi_execution_id");
 	String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id");
 	if (flowId == null) flowId = "";
-
+	
 	ExecutionManager executionManager = ExecutionManager.getInstance();
 	ExecutionManager.ExecutionInstance instance = executionManager.getExecution(executionId);
 	boolean isDrillRequest = false;
@@ -1043,12 +1043,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	         	    <input id="button<%=executionId%>" type="submit" value="View Output"  style='display:inline;'/>
 				  </center>
 			</form>
-
+            
+            <%-- This script updates the execution manager and the navigation bar --%>
             <script>
 
             updateExecutioManager<%=executionId%>();
 
-            
 			function updateExecutioManager<%=executionId%>() {
 				winName = window.name;
 				if (window.name != null && window.name.match('iframeexec')) {
@@ -1090,7 +1090,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                             			response = transport.responseText || "";
                             			refreshNavigationBar<%=executionId%>(response);
                         			},
-           				onFailure: proceedWithExecution<%=executionId%>
+           				onFailure: doNothing<%=executionId%>,
+           				asynchronous: false
          			}
        			);
 			}
@@ -1107,14 +1108,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             	if (navBarDiv != null) {
             		navBarDiv.innerHTML = html;
             	}
-            	proceedWithExecution<%=executionId%>()
             }
             
-            function proceedWithExecution<%=executionId%>() {
-				button = document.getElementById('button<%=executionId%>');
-				button.style.display='none';
-				button.click();
-            }
+            function doNothing<%=executionId%>() {}
             
 			function GetXmlHttpObject<%=executionId%>(){ 
 				var objXMLHttp=null
@@ -1126,6 +1122,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				return objXMLHttp
 			}
 
+            </script>
+            
+            <%-- This script submits the document execution form --%>
+            <script>
+			    button = document.getElementById('button<%=executionId%>');
+				button.style.display='none';
+				button.click();
             </script>
 
 </div>

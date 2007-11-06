@@ -104,6 +104,33 @@ public class ExecutionManager {
     	return null;
     }
     
+    public ExecutionInstance recoverExecution(String executionId) {
+    	Set keys = _flows.keySet();
+    	Iterator it = keys.iterator();
+    	while (it.hasNext()) {
+    		ExecutionInstance toReturn = null;
+    		String key = (String) it.next();
+    		List instances = (List) _flows.get(key);
+    		int i = 0;
+    		for (; i < instances.size(); i++) {
+    			ExecutionInstance instance = (ExecutionInstance) instances.get(i);
+    			if (instance.executionId.equals(executionId)) {
+    				toReturn = instance;
+    				break;
+    			}
+    		}
+    		if (toReturn != null) {
+    			// removes execution instances starting from the requested one (excluded)
+    			int initialLength = instances.size();
+    			for (int k = 0; k < initialLength - i - 1; k++) {
+    				instances.remove(i + 1);
+    			}
+    			return toReturn;
+    		}
+    	}
+    	return null;
+    }
+    
     public ExecutionInstance recoverExecution(String flowId, String executionId) {
     	if (_flows.containsKey(flowId)) {
     		ExecutionInstance toReturn = null;

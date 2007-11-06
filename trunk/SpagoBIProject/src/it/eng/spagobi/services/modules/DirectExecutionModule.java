@@ -74,11 +74,40 @@ public class DirectExecutionModule extends AbstractModule {
 			String executionId = (String) request.getAttribute("spagobi_execution_id");
 			String flowId = (String) request.getAttribute("spagobi_flow_id");
 			if (executionId != null && flowId != null) {
+				
+				IEngUserProfile profile = (IEngUserProfile) sessionContainer.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				if (profile == null) {
+					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+							"DirectExecutionModule", "service", "User profile retrieved from PermanentContainer is null!!");
+					Object internalRequest = this.getRequestContainer().getInternalRequest();
+					if (internalRequest != null && internalRequest instanceof HttpServletRequest) {
+						HttpServletRequest servletRequest = (HttpServletRequest) internalRequest;
+						HttpSession httpSession = servletRequest.getSession();
+						profile = (IEngUserProfile) httpSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+					}
+					
+					if (profile == null) {
+						SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+								"DirectExecutionModule", "service", "User profile is null!!");
+						throw new Exception("User profile is null!!");
+					} else {
+						sessionContainer.getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+						SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
+								"DirectExecutionModule", "service", 
+								"User profile was retrieved from HttpSession and put on PermanentContainer.");
+					}
+				}
+				
+				
 				response.setAttribute("spagobi_execution_id", executionId);
 				response.setAttribute("spagobi_flow_id", flowId);
 				response.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
 				ExecutionManager executionManager = ExecutionManager.getInstance();
-				ExecutionInstance instance = executionManager.recoverExecution(flowId, executionId);
+				ExecutionInstance instance = null;
+				if (flowId.trim().equals("")) 
+					instance = executionManager.recoverExecution(executionId);
+				else 
+					instance = executionManager.recoverExecution(flowId, executionId);
 				obj = instance.getBIObject();
 				List parameters = obj.getBiObjectParameters();
 				Iterator parametersIt = parameters.iterator();

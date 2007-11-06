@@ -42,6 +42,8 @@ public class ExecutionProxy {
 	
 	private String returnedContentType = null;
 	
+	private String spagobiContextUrl = null;
+	
 	public BIObject getBiObject() {
 		return biObject;
 	}
@@ -71,9 +73,17 @@ public class ExecutionProxy {
 			
 			// set spagobi context url
 			if(!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
+				/*
 				String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
 				if(sbiconturl!=null) {
 					mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
+				}
+				*/
+				if (spagobiContextUrl == null || spagobiContextUrl.trim().equals("")) {
+					spagobiContextUrl = GeneralUtilities.getSpagoBiContextAddress();
+				}
+				if(spagobiContextUrl!=null) {
+					mapPars.put(SpagoBIConstants.SBICONTEXTURL, spagobiContextUrl);
 				}
 			}
 			
@@ -167,6 +177,14 @@ public class ExecutionProxy {
 		
 		// TODO complete list
 		return extension;
+	}
+
+	public String getSpagobiContextUrl() {
+		return spagobiContextUrl;
+	}
+
+	public void setSpagobiContextUrl(String spagobiContextUrl) {
+		this.spagobiContextUrl = spagobiContextUrl;
 	}
 	
 }

@@ -49,11 +49,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 	
 	// check if the sbi path is already setted into configuration otherwise add it
-	if(spagoconfig.getAttribute(SpagoBIConstants.SBICONTEXTURL)==null) {
-		// calculate spagobi context address
-		String  sbipath = request.getScheme() + "://"+request.getServerName()+ ":"+request.getServerPort() + request.getContextPath();
-		spagoconfig.setAttribute(SpagoBIConstants.SBICONTEXTURL, sbipath); 
-	}
+	//if(spagoconfig.getAttribute(SpagoBIConstants.SBICONTEXTURL)==null) {
+	//	// calculate spagobi context address
+	//	String  sbipath = request.getScheme() + "://"+request.getServerName()+ ":"+request.getServerPort() + request.getContextPath();
+	//	spagoconfig.setAttribute(SpagoBIConstants.SBICONTEXTURL, sbipath); 
+	//}
 	
 	
 	// get mode of execution

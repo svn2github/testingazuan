@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+
+	<SERVICE name="DetailMapPost" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
+			</CONDITIONS>
+			<FIELDS>
+			    <FIELD name="NAME" label="#SBIMapCatalogue.columnName">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="UPLOADED_FILE" label="#SBIMapCatalogue.columnUrl">
+					<VALIDATOR validatorName="MANDATORY"/>					
+				</FIELD>
+				<!-- 
+				<FIELD name="URL" label="#SBIMapCatalogue.columnUrl">
+					<VALIDATOR validatorName="MANDATORY"/>					
+				</FIELD>
+				-->
+			</FIELDS>
+		</VALIDATION>
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
+			</CONDITIONS>
+			<FIELDS>
+			    <FIELD name="UPLOADED_FILE" label="#SBIMapCatalogue.columnUrl">
+					<VALIDATOR validatorName="MANDATORY"/>					
+				</FIELD>
+				<!-- 
+				<FIELD name="URL" label="#SBIMapCatalogue.columnUrl">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				-->
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	
+	<SERVICE name="DetailFeaturePage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="NAME" label="#SBIMapCatalogue.columnName">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="TYPE" label="#SBIMapCatalogue.columnType">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				
+			</FIELDS>
+		</VALIDATION>	
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="TYPE" label="#SBIMapCatalogue.columnType">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+			
+	</SERVICE>
+</VALIDATIONS>

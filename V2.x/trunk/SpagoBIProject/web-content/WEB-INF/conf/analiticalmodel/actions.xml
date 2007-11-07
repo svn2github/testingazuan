@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+
+ <ACTION name="MOVE_UP_LOWFUNCTIONALITY" class="it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveUpLowFunctionality" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="MOVE_DOWN_LOWFUNCTIONALITY" class="it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveDownLowFunctionality" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+</ACTIONS>
+

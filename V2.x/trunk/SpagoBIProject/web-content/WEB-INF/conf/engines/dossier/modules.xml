@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MODULES>
+     
+	<MODULE class="it.eng.spagobi.engines.dossier.modules.BookletsManagementModule" name="BookletsManagementModule">
+	</MODULE>
+	
+	<MODULE class="it.eng.spagobi.engines.dossier.modules.BookletsCollaborationModule" name="BookletsCollaborationModule">
+	</MODULE>
+	
+	<MODULE class="it.eng.spagobi.engines.dossier.modules.BookletRefreshModule" name="BookletRefreshModule">
+	</MODULE>
+   
+</MODULES>

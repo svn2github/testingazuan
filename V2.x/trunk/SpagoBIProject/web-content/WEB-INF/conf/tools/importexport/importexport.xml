@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<IMPORTEXPORT>
+    <CURRENTVERSION version="1.9.4"/>
+	<EXPORTER class="it.eng.spagobi.tools.importexport.ExportManager"
+	          exportFolder="exports" />
+	<IMPORTER class="it.eng.spagobi.tools.importexport.ImportManager" 
+			  tmpFolder="import"/>
+	<TRANSFORMERS>
+		<TRANSFORM from="1.8" to="1.9" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom1_8To1_9" />
+		<TRANSFORM from="1.9" to="1.9.1" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom1_9To1_9_1" />
+		<TRANSFORM from="1.9.1" to="1.9.2" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom1_9_1To1_9_2" />
+		<TRANSFORM from="1.9.2" to="1.9.3" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom1_9_2To1_9_3" />
+		<TRANSFORM from="1.9.3" to="1.9.4" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom1_9_3To1_9_4" />
+	</TRANSFORMERS>
+</IMPORTEXPORT>
+
+<!--
+	The export feature read only the class to use for export and then produce the archive
+	the import feature:
+	- unzip the archive
+	- read the version from properties file 
+	- if archive version = current version read the importer class and exec it giving it the archive
+	- if archive version != current version
+		- search the transformer with from = archive version and exec it
+		- after trans execution look if to attribute =  current version read the importer class and exec it giving it the new archive
+		- if to attribute != current version search the transformer with from = to and exec it
+		- repeat the last steps util to = current version
+-->

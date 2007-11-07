@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PRESENTATION>
+<MAPPING business_name="ReportsLookupPage" business_type="PAGE" publisher_name="ReportsLookupPublisher"/>	
+<MAPPING business_name="MyFolderManagementPage" business_type="PAGE" publisher_name="BIObjectsPubJ"/> 
+<MAPPING business_name="DetailFunctionalityPage" business_type="PAGE" publisher_name="DetailFunctionalityPubJ"/>
+<MAPPING business_name="BIObjectsPage" business_type="PAGE" publisher_name="BIObjectsPubJ"/>
+<MAPPING business_name="ExecutionWorkspacePage" business_type="PAGE" publisher_name="ExecutionWorkspacePublisher"/>
+<MAPPING business_name="LOGIN_PAGE_SBI_FUNCTIONALITY" business_type="PAGE" publisher_name="BIObjectsPubJ"/>
+<MAPPING business_name="DetailBIObjectPage" business_type="PAGE" publisher_name="DetailBIObjectPubJ"/>
+<MAPPING business_name="DocumentTemplateBuildPage" business_type="PAGE" publisher_name="DocumentTemplateBuildPublisher"/>
+<MAPPING business_name="ExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
+<MAPPING business_type="ACTION" business_name="MOVE_UP_LOWFUNCTIONALITY" publisher_name="FunctionalitiesTreeRefresh"/>
+<MAPPING business_type="ACTION" business_name="MOVE_DOWN_LOWFUNCTIONALITY" publisher_name="FunctionalitiesTreeRefresh"/>
+<MAPPING business_name="ValidateExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
+
+</PRESENTATION>
+

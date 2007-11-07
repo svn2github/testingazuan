@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<STATEMENTS>
+		
+	<STATEMENT name="SELECT_CHECKED_OBJECT_LIST" 
+  				   query="SELECT SUB_RPT_ID AS OBJ_ID  					 					
+				            FROM SBI_SUBREPORTS
+				            WHERE MASTER_RPT_ID = ?"/>
+	
+ 	<STATEMENT name="DELETE_CHECK" 
+             query="DELETE FROM SBI_CHECKS WHERE CHECK_ID = ?"/>
+    
+  <STATEMENT name="SELECT_LIST_ENGINE" 
+             query="SELECT 	E.ENGINE_ID AS ID, 
+                       			E.DESCR AS DESCRIPTION,
+                       			E.NAME AS NAME,
+                       			E.LABEL AS LABEL  
+                       FROM SBI_ENGINES E
+                       ORDER BY LABEL,NAME,DESCRIPTION"/>
+                       
+  <STATEMENT name="SELECT_LIST_PARAMETERS" 
+             query="SELECT P.PAR_ID AS ID, 
+       						P.DESCR AS DESCRIPTION, 
+       						P.LENGTH AS LENGTH,
+       						P.LABEL AS LABEL,
+       						P.NAME AS NAME,
+						      P.PAR_TYPE_CD AS TYPE,
+       						P.MASK AS MASK,	
+       						P.PAR_TYPE_ID AS TYPE_ID,
+						(SELECT COUNT(*) FROM SBI_PARUSE U WHERE P.PAR_ID = U.PAR_ID) AS NUM_USES,
+						(SELECT COUNT(DISTINCT(BIOBJ_ID)) FROM SBI_OBJ_PAR O WHERE P.PAR_ID = O.PAR_ID) AS NUM_BIOBJECTS
+						FROM SBI_PARAMETERS P
+                       ORDER BY LABEL, NAME, DESCRIPTION"/>
+  
+  <STATEMENT name="SELECT_LIST_MODALITIES_VALUE" 
+  	         query="SELECT T.LOV_ID AS ID,
+                  T.LABEL AS LABEL,
+  	              T.NAME AS NAME,
+  	              T.DESCR AS DESCRIPTION,
+  	              T.INPUT_TYPE_CD AS TYPE,
+  	              (SELECT COUNT(DISTINCT(P.PAR_ID)) FROM SBI_PARUSE P WHERE P.LOV_ID = T.LOV_ID) AS N_OF_PARAMETERS
+  	       FROM SBI_LOV T 
+		   ORDER BY LABEL,NAME,DESCRIPTION"/>
+		   
+	<STATEMENT name="SELECT_PARAMETERS_LIST" 
+  	         query="SELECT PAR_ID AS PAR_ID,
+                  LABEL AS LABEL,
+  	              NAME AS NAME,
+  	              DESCR AS DESCRIPTION,
+  	              PAR_TYPE_CD AS TYPE
+  	       FROM SBI_PARAMETERS
+		   ORDER BY LABEL,NAME,DESCRIPTION "/>
+		   
+	<STATEMENT name="SELECT_REPORTS_LIST" 
+  	         query="	SELECT 	BIOBJ_ID AS OBJ_ID,
+  					DESCR AS DESCRIPTION,
+  					LABEL AS LABEL,
+  					NAME AS NAME   					
+			FROM SBI_OBJECTS
+			ORDER BY LABEL,NAME,DESCRIPTION "/>
+ 
+  <STATEMENT name="SELECT_PREDEFINED_CHECKS" 
+  	          query="SELECT T.CHECK_ID AS ID,
+       		T.LABEL AS LABEL,
+       		T.NAME AS NAME,
+       		T.DESCR AS DESCRIPTION,
+       		T.VALUE_TYPE_CD AS CONTROLTYPE
+			FROM SBI_CHECKS T,
+     		SBI_DOMAINS D
+				WHERE D.DOMAIN_CD='PRED_CHECK'
+				AND T.VALUE_TYPE_CD = D.VALUE_CD
+				ORDER BY LABEL,NAME,DESCRIPTION"/>
+				
+				
+ 	<STATEMENT name="SELECT_LIST_MODALITIES_CHECKS" 
+  	query="SELECT T.CHECK_ID AS ID,
+       		T.LABEL AS LABEL,
+       		T.NAME AS NAME,
+       		T.DESCR AS DESCRIPTION,
+       		T.VALUE_TYPE_CD AS CONTROLTYPE
+			FROM SBI_CHECKS T,
+     		SBI_DOMAINS D
+				WHERE D.DOMAIN_CD='CHECK'
+				AND T.VALUE_TYPE_CD = D.VALUE_CD
+				ORDER BY LABEL"/>
+					
+	<STATEMENT name="SELECT_ALL_ROLES" 
+               query="SELECT EXT_ROLE_ID,  
+       						NAME,
+       						DESCR,
+       						CODE,
+       						ROLE_TYPE_ID,
+       						ROLE_TYPE_CD
+					FROM SBI_EXT_ROLES"/>
+  
+</STATEMENTS>

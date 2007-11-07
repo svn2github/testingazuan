@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGES>
+
+
+  	<PAGE name="ListRolesPage" scope="REQUEST" title="Roles Management" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ListRolesPage" target="ListRolesModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListRolesModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
+  	
+  	<PAGE name="DetailRolesPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DetailRolesPage" target="DetailRolesModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailRolesModule"/>
+    	</MODULES>
+  	</PAGE>  	
+</PAGES>

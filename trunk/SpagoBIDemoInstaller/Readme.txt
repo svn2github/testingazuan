@@ -1,2 +1,0 @@
-- The file sbi_inst_support_classes contains the classes used by the Izpack installer. When any changes occurs to the source code of the sbi_demo_installer it is necessary to export the new jar.
-- The folder spagobi_demo_contents contains all the contents to include into the intaller. The internal strucuture of the folder must remain the same. Any changes have to reflect to the source code. 

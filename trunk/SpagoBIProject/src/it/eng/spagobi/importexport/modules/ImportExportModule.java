@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-package it.eng.spagobi.importexport.modules;
+package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
@@ -32,23 +32,23 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
-import it.eng.spagobi.bo.dao.DAOFactory;
-import it.eng.spagobi.bo.dao.IEngineDAO;
-import it.eng.spagobi.bo.dao.IRoleDAO;
-import it.eng.spagobi.constants.SpagoBIConstants;
-import it.eng.spagobi.importexport.IExportManager;
-import it.eng.spagobi.importexport.IImportManager;
-import it.eng.spagobi.importexport.ImportExportConstants;
-import it.eng.spagobi.importexport.ImportResultInfo;
-import it.eng.spagobi.importexport.MetadataAssociations;
-import it.eng.spagobi.importexport.TransformManager;
-import it.eng.spagobi.importexport.UserAssociationsKeeper;
-import it.eng.spagobi.metadata.SbiEngines;
-import it.eng.spagobi.metadata.SbiExtRoles;
-import it.eng.spagobi.utilities.ChannelUtilities;
-import it.eng.spagobi.utilities.PortletUtilities;
-import it.eng.spagobi.utilities.SpagoBITracer;
-import it.eng.spagobi.utilities.UploadedFile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IRoleDAO;
+import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.commons.utilities.ChannelUtilities;
+import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.UploadedFile;
+import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.importexport.IExportManager;
+import it.eng.spagobi.tools.importexport.IImportManager;
+import it.eng.spagobi.tools.importexport.ImportExportConstants;
+import it.eng.spagobi.tools.importexport.ImportResultInfo;
+import it.eng.spagobi.tools.importexport.MetadataAssociations;
+import it.eng.spagobi.tools.importexport.TransformManager;
+import it.eng.spagobi.tools.importexport.UserAssociationsKeeper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

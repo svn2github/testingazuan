@@ -6,7 +6,7 @@
 	you must provide a value for the display name tag and it should 
 	match the context root of this web application
 	-->
-    <display-name>spagobi</display-name>
+    <display-name>SpagoBI</display-name>
     <description>
         This application is a portlet. It can not be used outside a portal.
 	</description>

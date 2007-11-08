@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PAGES>
 
-  	
-
-  	
-  	
   	<PAGE name="DetailEnginePage" scope="REQUEST" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="DetailEnginePage" target="DetailEngineModule">
@@ -16,7 +12,6 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailEngineModule"/>
     	</MODULES>
   	</PAGE>                                    	
-</PAGES>
 
 
   	
@@ -28,6 +23,9 @@
       		</DEPENDENCE>
     	</DEPENDENCIES>
     	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="ListEnginesModule"/>
+      		<MODULE keep_instance="false" keep_response="false" 
+                  name="istEnginesModule"/>
     	</MODULES>
   	</PAGE>
+  	
+</PAGES>

@@ -28,6 +28,9 @@ import java.util.Map;
 
 public interface IImportManager {
 
+	public static final String IMPORT_ASS_PREDEFINED_MODE = "IMPORT_ASS_PREDEFINED_MODE"; 
+	public static final String IMPORT_ASS_DEFAULT_MODE = "IMPORT_ASS_DEFAULT_MODE"; 
+	
 	/**
 	 * Prepare the environment for the import procedure
 	 * @param pathImpTmpFold The path of the temporary import folder
@@ -140,4 +143,16 @@ public interface IImportManager {
 	public Object getExportedObject(Integer id, Class objClass);
 	
 
+	/**
+	 * Gets the import association mode 
+ 	 * @return the association mode 
+	 */
+	public String getImpAssMode();
+
+	/**
+	 * Sets the import association mode  
+	 * @param impAssMode The import association mode 
+	 */
+	public void setImpAssMode(String impAssMode);
+	
 }

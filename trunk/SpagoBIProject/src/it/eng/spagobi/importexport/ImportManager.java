@@ -78,7 +78,7 @@ import org.hibernate.Transaction;
  * Implements the interface which defines methods for managing the import requests
  */
 public class ImportManager implements IImportManager, Serializable {
-
+	
 	private String pathImportTmpFolder = "";
     private String pathBaseFolder = "";
     private String pathDBFolder = "";  
@@ -94,6 +94,7 @@ public class ImportManager implements IImportManager, Serializable {
 	private MetadataLogger metaLog = null;
 	private UserAssociationsKeeper usrAss = null;
 	private String exportedFileName = "";
+	private String impAssMode = IMPORT_ASS_DEFAULT_MODE;
 	
 	
 	/**
@@ -1521,6 +1522,18 @@ public class ImportManager implements IImportManager, Serializable {
 
 	public UserAssociationsKeeper getUserAssociation() {
 		return usrAss;
+	}
+
+
+
+	public String getImpAssMode() {
+		return impAssMode;
+	}
+
+
+
+	public void setImpAssMode(String impAssMode) {
+		this.impAssMode = impAssMode;
 	}
 	
 	

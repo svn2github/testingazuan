@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-package it.eng.spagobi.tools.importexport.presentation;
+package it.eng.spagobi.importexport.publishers;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
@@ -29,9 +29,10 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.tools.importexport.ImportExportConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
+
 /**
  * A publisher used to lead execution flow after a import / export service.
  */

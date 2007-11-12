@@ -19,18 +19,19 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.tools.importexport.presentation;
+package it.eng.spagobi.importexport.publishers;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-import it.eng.spagobi.analiticalmodel.functionalitytree.presentation.AdminTreeHtmlGenerator;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
-import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
-import it.eng.spagobi.tools.importexport.ImportExportConstants;
+import it.eng.spagobi.bo.BIObject;
+import it.eng.spagobi.bo.LowFunctionality;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.presentation.treehtmlgenerators.AdminTreeHtmlGenerator;
+import it.eng.spagobi.utilities.ChannelUtilities;
+import it.eng.spagobi.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.urls.UrlBuilderFactory;
+
 
 import java.util.Iterator;
 import java.util.List;

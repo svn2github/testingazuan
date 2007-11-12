@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-package it.eng.spagobi.tools.importexport.services;
+package it.eng.spagobi.importexport.modules;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
@@ -32,34 +32,32 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IRoleDAO;
-import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
-import it.eng.spagobi.engines.config.dao.IEngineDAO;
-import it.eng.spagobi.engines.config.metadata.SbiEngines;
-import it.eng.spagobi.tools.importexport.IExportManager;
-import it.eng.spagobi.tools.importexport.IImportManager;
-import it.eng.spagobi.tools.importexport.ImportExportConstants;
-import it.eng.spagobi.tools.importexport.ImportResultInfo;
-import it.eng.spagobi.tools.importexport.MetadataAssociations;
-import it.eng.spagobi.tools.importexport.TransformManager;
-import it.eng.spagobi.tools.importexport.UserAssociationsKeeper;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IEngineDAO;
+import it.eng.spagobi.bo.dao.IRoleDAO;
+import it.eng.spagobi.constants.SpagoBIConstants;
+import it.eng.spagobi.importexport.IExportManager;
+import it.eng.spagobi.importexport.IImportManager;
+import it.eng.spagobi.importexport.ImportExportConstants;
+import it.eng.spagobi.importexport.ImportResultInfo;
+import it.eng.spagobi.importexport.MetadataAssociations;
+import it.eng.spagobi.importexport.TransformManager;
+import it.eng.spagobi.importexport.UserAssociationsKeeper;
+import it.eng.spagobi.importexport.to.AssociationFile;
+import it.eng.spagobi.importexport.to.dao.AssociationFileDAO;
+import it.eng.spagobi.importexport.to.dao.IAssociationFileDAO;
+import it.eng.spagobi.metadata.SbiEngines;
+import it.eng.spagobi.metadata.SbiExtRoles;
+import it.eng.spagobi.utilities.ChannelUtilities;
+import it.eng.spagobi.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.UploadedFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.PortletRequest;
-
-import org.apache.commons.fileupload.portlet.PortletFileUpload;
 
 /**
  * This class implements a module which  handles the import / export operations
@@ -237,6 +235,28 @@ public class ImportExportModule extends AbstractModule {
 		if(associationsFileName.trim().equals("")){
 			associationsFile = null;
 		}
+		// if the association file is empty then check if there is an association id
+		// rebuild the uploaded file and assign it to associationsFile
+		if(associationsFile==null) {
+			String assId =  (String)request.getAttribute("hidAssId");
+			if( (assId!=null) && !assId.trim().equals("") ) {
+				IAssociationFileDAO assfiledao = new AssociationFileDAO();
+				AssociationFile assFile = assfiledao.loadFromID(assId);
+				byte[] content = assfiledao.getContent(assFile);
+				UploadedFile uplFile = new UploadedFile();
+				uplFile.setSizeInBytes(content.length);
+				uplFile.setFileContent(content);
+				uplFile.setFileName("association.xml");
+				uplFile.setFieldNameInForm("");
+				associationsFile = uplFile;
+			}
+ 		}
+		// get the association mode 
+		String assMode = IImportManager.IMPORT_ASS_DEFAULT_MODE;
+		String assKindFromReq =  (String)request.getAttribute("importAssociationKind");
+		if(assKindFromReq.equalsIgnoreCase("predefinedassociations")) {
+			assMode = IImportManager.IMPORT_ASS_PREDEFINED_MODE;
+		}
 		// get bytes of the archive
 		byte[] archiveBytes = archive.getFileContent();
 		try{
@@ -265,6 +285,9 @@ public class ImportExportModule extends AbstractModule {
 				String assFileStr = new String(assFilebys);
 				impManager.getUserAssociation().fillFromXml(assFileStr);
 			}
+			
+			// set into import manager the association import mode 
+			impManager.setImpAssMode(assMode);
 			
 			// start import operations
 			String exportVersion = impManager.getExportVersion();

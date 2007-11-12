@@ -32,17 +32,36 @@ import java.util.Map;
  *
  */
 public class DataMartEntity implements IDataMartItem {
+	
+	long id;
 	String name;
+	String path;
+	String role;
+	DataMartEntity parent;
+	DataMartModelStructure structure;
+		
 	Map fields;
 	Map subEntities;
 	
-	public DataMartEntity(String name) {
+	public DataMartEntity(String name, DataMartModelStructure structure) {
 		this.name = name;
-		fields = new HashMap();
-		subEntities = new HashMap();
+		this.structure = structure;
+		this.id = structure.getNextId();
+		this.path = "";
+		this.role = null;
+		this.parent = null;
+		this.fields = new HashMap();
+		this.subEntities = new HashMap();
 	}
 	
-	public void addField(DataMartField field) {
+	public DataMartField addField(String fieldName) {
+		
+		DataMartField field = new DataMartField(fieldName, this);
+		addField(field);
+		return field;
+	}
+	
+	private void addField(DataMartField field) {
 		fields.put(field.getName(), field);
 	}
 	
@@ -60,7 +79,13 @@ public class DataMartEntity implements IDataMartItem {
 		return list;
 	}
 	
-	public void addSubEntity(DataMartEntity entity) {
+	public DataMartEntity addSubEntity(String subentityName) {
+		DataMartEntity subEntity = new DataMartEntity(subentityName, structure);
+		addSubEntity(subEntity);
+		return subEntity;
+	}
+	
+	private void addSubEntity(DataMartEntity entity) {
 		subEntities.put(entity.getName(), entity);
 	}
 	
@@ -128,19 +153,43 @@ public class DataMartEntity implements IDataMartItem {
 	
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(name.toUpperCase() + "\n");
+		
+		String line = name.toUpperCase() + "(id="+id
+			+";path="+path
+			+";parent:" + (parent==null?"NULL": parent.getName())
+			+";role="+role;
+		
+		
+		buffer.append(line + "\n");
 		String key = null;
 		for(Iterator it = fields.keySet().iterator(); it.hasNext(); ) {
 			key = (String)it.next();
 			Object o = fields.get(key);
 			buffer.append(" - " + (o==null? "NULL": o.toString()) + "\n");
 		}
+		
 		for(Iterator it = subEntities.keySet().iterator(); it.hasNext();) {
 			key = (String)it.next();
 			Object o = subEntities.get(key);
 			buffer.append(" + " + (o==null? "NULL": o.toString()));
 		}
 		return buffer.toString();
+	}
+
+	public DataMartModelStructure getStructure() {
+		return structure;
+	}
+
+	protected void setStructure(DataMartModelStructure structure) {
+		this.structure = structure;
+	}
+
+	protected String getRole() {
+		return role;
+	}
+
+	protected void setRole(String role) {
+		this.role = role;
 	}
 	
 }

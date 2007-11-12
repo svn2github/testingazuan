@@ -27,6 +27,7 @@ package it.eng.qbe.datasource;
  */
 public interface IDataSource {
 	public static int HIBERNATE_DS_TYPE = 1;
+	public static int COMPOSITE_HIBERNATE_DS_TYPE = 2;
 	
 	public int getType();
 	

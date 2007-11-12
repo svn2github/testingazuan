@@ -47,7 +47,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	
 	String orderedFieldList;
 	String extractedEntitiesList;
-	String formulaFilePath;
+	File formulaFile;
 	String manualCalculatedFields;
 		
 	private List calculatedFields = null;
@@ -109,7 +109,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 								Map params, 
 								String orderedFieldList, 
 								String extractedEntitiesList, 
-								String formulaFilePath) {
+								File formulaFile) {
 		
 		this.query = query;
 		this.queryLanguage = queryLanguage;
@@ -118,7 +118,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		
 		this.orderedFieldList = orderedFieldList;
 		this.extractedEntitiesList = extractedEntitiesList;
-		this.formulaFilePath = formulaFilePath;
+		this.formulaFile = formulaFile;
 	}
 	
 	public String buildTemplate() {
@@ -570,7 +570,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 				if (cField.getInExport().equalsIgnoreCase("true"))
 					this.calculatedFields.add(cField);
 			}
-			List queryAutoFields = Utils.getCalculatedFields(this.extractedEntitiesList,this.formulaFilePath);
+			List queryAutoFields = Utils.getCalculatedFields(this.extractedEntitiesList,this.formulaFile);
 			cField = null;
 			for (Iterator it = queryAutoFields.iterator(); it.hasNext();){
 				cField = (CalculatedField)it.next();
@@ -585,7 +585,7 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	private ISingleDataMartWizardObject deserializeQueryObject(String savedQueryObjectID){
 		
         
-        String fileName = formulaFilePath + System.getProperty("file.separator") + savedQueryObjectID+ ".qbe";
+        String fileName = formulaFile.getParent() + System.getProperty("file.separator") + savedQueryObjectID+ ".qbe";
         File f = null;
         FileInputStream fis = null; 
         

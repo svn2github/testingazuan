@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model.io;
 
+import it.eng.qbe.conf.QbeConfiguration;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.FileUtils;
@@ -52,8 +53,7 @@ import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
  * queries using the File System
  *
  */
-public class LocalFileSystemQueryPersister implements
-		IQueryPersister {
+public class LocalFileSystemQueryPersister implements IQueryPersister {
 
 	
 
@@ -87,7 +87,7 @@ public class LocalFileSystemQueryPersister implements
 		String key = wizObject.getQueryId();
 		String fileName = null;
 		
-		String publicDmDir = qbeDataMartDir +System.getProperty("file.separator")+  dm.getPath();
+		String publicDmDir = qbeDataMartDir +System.getProperty("file.separator")+  dm.getName();
 		String privateDmDir = publicDmDir + System.getProperty("file.separator") + wizObject.getOwner();
 		if (wizObject.getVisibility() == false){
 			File f = new File(privateDmDir);
@@ -96,7 +96,11 @@ public class LocalFileSystemQueryPersister implements
 			}
 			fileName =  privateDmDir + System.getProperty("file.separator") + key+ ".qbe";
 		}else{
-			fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
+			File f = new File(publicDmDir);
+			if (!f.exists()){
+				f.mkdirs();
+			}
+			fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getName() + System.getProperty("file.separator") + key+ ".qbe";
 		}
 		
 		
@@ -117,22 +121,22 @@ public class LocalFileSystemQueryPersister implements
         String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
 		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
 		
-        String fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + key+ ".qbe";
+        String fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getName() + System.getProperty("file.separator") + key+ ".qbe";
         
-        ISingleDataMartWizardObject wiz = loadFromFile(dm, new File(fileName));
+        ISingleDataMartWizardObject wiz = loadFromFile(new File(fileName));
         if (wiz == null && userProfile != null){
-        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + userProfile.getUserUniqueIdentifier() + System.getProperty("file.separator") + key+ ".qbe";
-        	wiz = loadFromFile(dm, new File(fileName));
+        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getName() + System.getProperty("file.separator") + userProfile.getUserUniqueIdentifier() + System.getProperty("file.separator") + key+ ".qbe";
+        	wiz = loadFromFile(new File(fileName));
         }
         
         if (wiz == null && spagoBIInfo != null){
-        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getPath() + System.getProperty("file.separator") + spagoBIInfo.getUser() + System.getProperty("file.separator") + key+ ".qbe";
-        	wiz = loadFromFile(dm, new File(fileName));
+        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getName() + System.getProperty("file.separator") + spagoBIInfo.getUser() + System.getProperty("file.separator") + key+ ".qbe";
+        	wiz = loadFromFile(new File(fileName));
         }
         return wiz;
 	}
     
-    protected ISingleDataMartWizardObject loadFromFile(DataMartModel dm, File f) {
+    protected ISingleDataMartWizardObject loadFromFile(File f) {
         try {
             XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
                 new FileInputStream(f)));
@@ -147,7 +151,7 @@ public class LocalFileSystemQueryPersister implements
         }
     }
     
-    private List loadFirstLevelQuery(DataMartModel dm, String directory){
+    private List loadFirstLevelQuery(String directory){
     	
     	File dir = new File(directory);
 //   	 It is also possible to filter the list of returned files.
@@ -174,7 +178,7 @@ public class LocalFileSystemQueryPersister implements
                    String filename = children[i];
                    f = new File(dir, filename);
                    if (!f.isDirectory()){
-                   	   query = loadFromFile(dm,f);
+                   	   query = loadFromFile(f);
                        queries.add(query);
                    }
                    
@@ -185,17 +189,21 @@ public class LocalFileSystemQueryPersister implements
        return queries;
     }
     public List loadAllQueries(DataMartModel dm) {
-    	String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
-    	String theDir = qbeDataMartDir +System.getProperty("file.separator")+ dm.getPath();
-    	return loadFirstLevelQuery(dm, theDir);
+    	String dmName = dm.getName();
+    	File qbeDataMartDir = QbeConfiguration.getInstance().getQbeDataMartDir();
+    	File publicTargetDir = new File(qbeDataMartDir, dmName);
+    	return loadFirstLevelQuery(publicTargetDir.getAbsolutePath());
     }
     
     public List getPrivateQueriesFor(DataMartModel dm, String userID) {
-    	String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
-    	String privateDir = qbeDataMartDir + System.getProperty("file.separator")+ dm.getPath() + System.getProperty("file.separator") + userID; 
-    	
-    	return loadFirstLevelQuery(dm, privateDir);
+    	String dmName = dm.getName();
+    	File qbeDataMartDir = QbeConfiguration.getInstance().getQbeDataMartDir();
+    	File publicTargetDir = new File(qbeDataMartDir, dmName);
+    	File privateTargetDir = new File(publicTargetDir, userID);
+    
+    	return loadFirstLevelQuery(privateTargetDir.getAbsolutePath());
     }
+	
 
 	
 

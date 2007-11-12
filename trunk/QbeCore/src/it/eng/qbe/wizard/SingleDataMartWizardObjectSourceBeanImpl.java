@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.wizard;
 
+
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
+import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
@@ -30,6 +32,7 @@ import it.eng.qbe.model.IStatement;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 
 import java.sql.Connection;
@@ -117,7 +120,24 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	
+	public String[] getDuplicatedAliases() {
+		List fields = selectClause.getSelectFields();
+		Map duplicatedFieldMap = new HashMap();
+	  	Map map = new HashMap();
+		for(int i = 0; i < fields.size(); i++) {
+			ISelectField selectField = (ISelectField)fields.get(i);
+			String fieldAlias = selectField.getFieldAlias();
+	  		if(map.get(fieldAlias) != null) duplicatedFieldMap.put(fieldAlias,fieldAlias);
+	  		else map.put(fieldAlias,fieldAlias);
+		}
+		String[] duplicatedFieldAliasArray = (String[])duplicatedFieldMap.keySet().toArray(new String[0]);
+		
+		return duplicatedFieldAliasArray;
+	}
 	
+	public boolean containsDuplicatedAliases() {
+		return (getDuplicatedAliases().length > 0);
+	}
 	
 	public boolean isEmpty(){
 		return (selectClause == null 
@@ -191,7 +211,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		try {
 			String finalHQLQuery = getFinalQuery();
 			if (finalHQLQuery != null){
-				aSession = Utils.getSessionFactory(dm, ApplicationContainer.getInstance()).openSession();
+				aSession = dm.getDataSource().getSessionFactory().openSession();
 				HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(aSession);
 				finalSqlQuery = queryRewriter.rewrite( getFinalQuery() );
 			}
@@ -541,7 +561,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 		
 		try{
-			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
+			aSession = dataMartModel.getDataSource().getSessionFactory().openSession();
 			
 			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
 
@@ -615,7 +635,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	private SourceBean executeHqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 		Session aSession = null;
 		try{		
-			aSession = Utils.getSessionFactory(dataMartModel, ApplicationContainer.getInstance()).openSession();
+			aSession = dataMartModel.getDataSource().getSessionFactory().openSession();
 			//dataMartModel.getDataSource().getSessionFactory();
 		
 			String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
@@ -763,6 +783,53 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public void addSubQueryOnField(String fieldId, ISingleDataMartWizardObject subquery) {		
 		this.subqueryMap.put(fieldId, subquery);
+	}
+	
+	public boolean areAllEntitiesJoined() {
+		
+		boolean entitiesJoined = true;
+		
+		if (getEntityClasses().size() == 1) return true;
+		
+		
+		for (int i =0; i < getEntityClasses().size() && entitiesJoined; i++ ) {
+			
+			EntityClass entty = (EntityClass)getEntityClasses().get(i);
+			entitiesJoined = areEntitiyJoined(entty);
+			
+		}
+		
+		return entitiesJoined;
+	}
+	
+	public boolean areEntitiyJoined(EntityClass targetEntity) {
+		boolean joinFound = false;
+		
+		for (int j = 0; j < getEntityClasses().size(); j++ ){
+			EntityClass e2 = (EntityClass)getEntityClasses().get(j);
+				
+			if (targetEntity.getClassName() != e2.getClassName()) {
+				
+				if (getWhereClause() != null) {
+					
+					for (int k=0; ((k < getWhereClause().getWhereFields().size()) && !joinFound); k++){
+						
+						IWhereField wf = (IWhereField)getWhereClause().getWhereFields().get(k);
+						
+						if (wf.getFieldOperator().equalsIgnoreCase("=")) {
+							
+							joinFound = (
+								(wf.getFieldName().startsWith(targetEntity.getClassAlias()) &&  wf.getFieldValue().startsWith(e2.getClassAlias()))
+								||
+								(wf.getFieldName().startsWith(e2.getClassAlias())&&  wf.getFieldValue().startsWith(targetEntity.getClassAlias()))
+							);
+						}
+					}
+				}
+			}
+		}
+		
+		return joinFound;
 	}
 	
 	/**

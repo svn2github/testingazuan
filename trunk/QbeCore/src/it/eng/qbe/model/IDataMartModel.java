@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model;
 
-import it.eng.qbe.datasource.HibernateDataSource;
+import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 
@@ -38,7 +38,7 @@ public interface IDataMartModel extends Serializable {
 	public IStatement createStatement(IQuery query);
 	
 	public DataMartModelStructure getDataMartModelStructure();
-	public HibernateDataSource getDataSource();
+	public IHibernateDataSource getDataSource();
 	
 	public DataMartModelAccessModality getDataMartModelAccessModality();
 	public void setDataMartModelAccessModality(DataMartModelAccessModality dataMartModelAccessModality);	

@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.utility;
 
-import it.eng.qbe.datasource.HibernateDataSource;
+import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.locale.LocaleUtils;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
@@ -71,29 +71,7 @@ import sun.misc.BASE64Encoder;
 
 public class Utils {
 
-	/**
-	 * This method is responsible to get Session Factories associated with datamart models, session factories
-	 * are cached in Application Container
-	 * @param dm: The datamart model
-	 * @param application: Spago Application Container
-	 * @return: the session Factory associated with a given datamart
-	 */
-	public static SessionFactory getSessionFactory(DataMartModel dm, ApplicationContainer application){
-		Logger.debug(Utils.class, "getSessionFactory: start method getSessionFactory");
-		if (application.getAttribute(dm.getPath()) != null){
-			Logger.debug(Utils.class, "getSessionFactory: return session factory contained into application container");
-			return (SessionFactory)application.getAttribute(dm.getPath());
-		}else{
-			Logger.debug(Utils.class, "getSessionFactory: session factory not contained into application container," +
-					"it's necessary to create a new session factory");
-			SessionFactory sf = dm.createSessionFactory();
-			Logger.debug(Utils.class, "getSessionFactory: session factory created: " + sf);
-			application.setAttribute(dm.getPath(), sf);
-			Logger.debug(Utils.class, "getSessionFactory: session factory stored into application context: " + sf);
-			return sf;
-		}
-		
-	}
+	
 	
 	public static IDataMartModelRetriever getDataMartModelRetriever() throws Exception {		
 		String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
@@ -101,10 +79,10 @@ public class Utils {
 		return dataMartModelRetriever;
 	}
 	
-	public static List getViewJarFiles(HibernateDataSource dataSource){
+	public static List getViewJarFiles(IHibernateDataSource dataSource){
 		try{
 			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
-			return dataMartModelRetriever.getViewJarFiles(dataSource.getPath(), dataSource.getDialect());
+			return dataMartModelRetriever.getViewJarFiles(dataSource.getName());
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 			return null;
@@ -120,82 +98,15 @@ public class Utils {
 	 */
 	public static Properties getLabelProperties(DataMartModel dm, ApplicationContainer application) {
 		
-		Properties props = new Properties();
-		
-		HibernateDataSource dataSource = dm.getDataSource();
-		try{
-			String propEntryInApplicationContext = dataSource.getPath()+"_labels";
-			if (application.getAttribute(propEntryInApplicationContext) != null){
-				props =  (Properties)application.getAttribute(propEntryInApplicationContext);
-			}else{
-				File dmJarFile = dataSource.getJarFile();
-				JarFile jf = new JarFile(dmJarFile);
-			
-				props = LocaleUtils.getLabelProperties(jf);
-				
-				List views = getViewJarFiles(dataSource);
-				Iterator it = views.iterator();
-				while(it.hasNext()) {
-					File viewJarFile = (File)it.next();
-					jf = new JarFile(viewJarFile);
-					Properties tmpProps = LocaleUtils.getLabelProperties(jf);
-					props.putAll(tmpProps);
-				}
-				
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			Logger.error(Utils.class, e);
-		}
-		return props;
+		return dm.getLabelProperties();
 	
 	}
 	
-	/**
-	 * This method is responsible to get Propertis  associated with datamart models for the given locale, Properties objects
-	 * are cached in Application Container
-	 * @param dm: The datamart model
-	 * @param application: Spago Application Container
-	 * @param loc: locale
-	 * @return the Properties object associated with datamart
-	 */ 
 	public static Properties getLabelProperties(DataMartModel dm, ApplicationContainer application, Locale loc) {
 		
-		Properties props = new Properties();
-		
-		HibernateDataSource dataSource = dm.getDataSource();
-		try{
-			String propEntryInApplicationContext = dataSource.getPath()+"_labels_"+loc.getLanguage();
-			if (application.getAttribute(propEntryInApplicationContext) != null){
-				props =  (Properties)application.getAttribute(dataSource.getPath()+"_labels_"+loc.getLanguage());
-			}else{
-				File dmJarFile = dataSource.getJarFile();
-				JarFile jf = new JarFile(dmJarFile);
-			
-				props = LocaleUtils.getLabelProperties(jf, loc);
-				
-				if (props.isEmpty()) {
-					return getLabelProperties(dm, application);
-				} else {
-					List views = getViewJarFiles(dataSource);
-					Iterator it = views.iterator();
-					while(it.hasNext()) {
-						File viewJarFile = (File)it.next();
-						jf = new JarFile(viewJarFile);
-						Properties tmpProps = LocaleUtils.getLabelProperties(jf, loc);
-						if(tmpProps.isEmpty()) tmpProps = LocaleUtils.getLabelProperties(jf);
-						props.putAll(tmpProps);
-					}
-				}
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			Logger.error(Utils.class, e);
-		}
-		return props;
+		return dm.getLabelProperties(loc);
 	
 	}
-
 	/**
 	 * @param requestContainer
 	 * @param dmModel
@@ -374,25 +285,7 @@ public class Utils {
 		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 	}
 	
-	public static String[] getJndiDsDialectFromModel(DataMartModel dm){
-		
-		String[] result = new String[2];
-		
-		//ALTRIMENTI CERCO I PARAMETRI DI CONFIGURAZIONE SUL FILE hibconn.properies
-		URL hibConnPropertiesUrl = JarUtils.getResourceFromJarFile(dm.getJarFile(), "hibconn.properties") ;
-		if (hibConnPropertiesUrl != null){
-			Properties prop = new Properties();
-			try{
-				prop.load(hibConnPropertiesUrl.openStream());
-			}catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-			result[0] = prop.getProperty("hibernate.connection.datasource");
-			result[1] = prop.getProperty("hibernate.dialect");		
-		}
-		
-		return result;
-	}
+	
 	
 	public static List getAllJndiDS(){				
 		List listResult = new ArrayList();
@@ -496,8 +389,7 @@ public class Utils {
 		
 		List calcuatedFields = new ArrayList();
 		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
-			String formulaFile = dmModel.getJarFile().getParent() + "/formula.xml";
-			f = new File(formulaFile);
+			f = dmModel.getFormulaFile();
 			if (!f.exists()){
 				return new ArrayList();
 			}
@@ -546,19 +438,16 @@ public class Utils {
 		
 	}
 	
-	public static CalculatedField getCalculatedField(String cFieldId, String formulaFileParentPath) throws Exception{
+	public static CalculatedField getCalculatedField(String cFieldId, File formulaFile) throws Exception{
 		File f = null;
 		SAXReader saxReader = null;
 		Document formulaFileDocument = null;
 		try{
-			String formulaFile = formulaFileParentPath + "/formula.xml";
-			
-			f = new File(formulaFile);
-			if (!f.exists()){
+			if (!formulaFile.exists()){
 				return null;
 			}
 			saxReader = new SAXReader();
-			formulaFileDocument = saxReader.read(f);
+			formulaFileDocument = saxReader.read(formulaFile);
 			String xPath = "/FORMULAS/FORMULA[@id = '"+cFieldId+"']";
 			
 			Node cFieldNode =  formulaFileDocument.selectSingleNode(xPath);
@@ -574,14 +463,14 @@ public class Utils {
 			e.printStackTrace();
 			return null;
 		}finally{
-			f = null;
+			formulaFile = null;
 			saxReader = null;
 			formulaFileDocument = null;
 		}
 	}
 	
 	
-	public static List getCalculatedFields(String entitiesList, String formulaFileParentPath) throws Exception{
+	public static List getCalculatedFields(String entitiesList, File formulaFile) throws Exception{
 		SAXReader saxReader = null;
 		Document formulaFileDocument = null;
 		File f = null;
@@ -590,8 +479,7 @@ public class Utils {
 		
 		List calcuatedFields = new ArrayList();
 		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
-			String formulaFile = formulaFileParentPath + "/formula.xml";
-			f = new File(formulaFile);
+			f = formulaFile;
 			if (!f.exists()){
 				return new ArrayList();
 			}
@@ -640,7 +528,7 @@ public class Utils {
 	}
 	
 	
-	public static List getManualCalculatedFieldsForEntity(String ecName, String formulaFileParentPath) throws Exception{
+	public static List getManualCalculatedFieldsForEntity(String ecName, DataMartModel datamartModel) throws Exception{
 		SAXReader saxReader = null;
 		Document formulaFileDocument = null;
 		File f = null;
@@ -649,9 +537,8 @@ public class Utils {
 		
 		List calcuatedFields = new ArrayList();
 		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
-			String formulaFile = formulaFileParentPath + "/formula.xml";
 			
-			f = new File(formulaFile);
+			f = datamartModel.getFormulaFile();
 			if (!f.exists()){
 				return new ArrayList();
 			}

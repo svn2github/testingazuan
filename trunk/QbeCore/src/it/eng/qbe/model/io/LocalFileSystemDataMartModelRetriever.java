@@ -31,50 +31,109 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Andrea Zoppello
- * 
- * An implementation of IDataMartModelRetriever that retrieve datamart files
- * from File System
- *
- */
-public class LocalFileSystemDataMartModelRetriever implements
-		IDataMartModelRetriever {
 
+public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetriever {
 
 	
-	public File getJarFile(File contextDir, String dataMartPath) {
-		
-		String qbeDataMartDir = FileUtils.getQbeDataMartDir(null);
-		
-		String completeFileName = qbeDataMartDir + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator") + "datamart.jar";
-		File f = new File(completeFileName);
-		if (f.exists())
-			return f;
-		else
-			return null;
+	private File datamartsDir = null;
+	
+	public LocalFileSystemDataMartModelRetriever() {
+
 	}
 	
-	public File getJarFile(String dataMartPath) {		
-		return getJarFile((File)null, dataMartPath);
+	public LocalFileSystemDataMartModelRetriever(File contextDir) {
+		setContextDir(contextDir);
+	}
+	
+	public File getContextDir() {
+		return datamartsDir;
+	}
+
+	public void setContextDir(File contextDir) {
+		this.datamartsDir = contextDir;
+	}
+	
+	
+	
+		
+	
+	public File getDatamartJarFile(String datamartName) {
+		
+		File targetDatamartDir = null;
+		File datamartJarFile = null;
+		
+		targetDatamartDir = new File(datamartsDir, datamartName);
+		datamartJarFile = new File(targetDatamartDir, "datamart.jar");
+		
+		if (!datamartJarFile.exists()) datamartJarFile = null;
+
+		return datamartJarFile;
+	}
+		
+
+	public List getViewJarFiles(String datamartName) {
+		List viewJarFiles = new ArrayList();
+		List viewNames = getViewNames(datamartName);
+		
+		if(viewNames.size() > 0) {
+			for(int i = 0; i < viewNames.size(); i++) {
+				String viewName = (String)viewNames.get(i);
+				File viewJarFile = getViewJarFile(datamartName, viewName);
+				if(viewJarFile != null) {
+					viewJarFiles.add(viewJarFile);
+				} else {
+					// if happens it's a BUG :-(
+				}
+			}
+		}
+		
+		return viewJarFiles;
+	}
+	
+	
+	public File getViewJarFile(String datamartName, String viewName) {
+
+		File targetDatamartDir = null;
+		File viewJarFile = null;
+
+		
+		targetDatamartDir = new File(datamartsDir, datamartName);
+		viewJarFile = new File(targetDatamartDir, viewName + "View.jar");
+	    
+		if(!viewJarFile.exists()) viewJarFile = null;
+		
+		return viewJarFile;
 	}
 
 	
-	public File getJarFile(File contextDir, String dataMartPath, String dialect) {
-		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
+	
+	public List getViewNames(String datamartName) {
+		List viewNames = new ArrayList();
+
 		
-		String completeFileName = qbeDataMartDir  + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator") + "datamart-"+dialect+".jar";
-		
-		File f = new File(completeFileName);
-		if (f.exists())
-			return f;
-		else
-			return getJarFile(dataMartPath);
+		String directory = datamartsDir.getAbsolutePath() + System.getProperty("file.separator") + datamartName + System.getProperty("file.separator");
+		File dir = new File(directory);
+		FilenameFilter filter = new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".jar") && !name.equalsIgnoreCase("datamart.jar");
+			}
+		};
+	    
+        String[] children = dir.list(filter);
+        if (children == null) {
+              // Either dir does not exist or is not a directory
+        } else {
+            for (int i=0; i<children.length; i++) {
+                // Get filename of file or directory
+                String filename = children[i];
+                String viewName = filename.substring(0, filename.indexOf("View.jar"));
+                viewNames.add(viewName);
+            }
+        }
+          
+        return viewNames;
 	}
 	
-	public File getJarFile(String dataMartPath, String dialect) {
-		return getJarFile((File)null, dataMartPath, dialect);
-	}
 	
 	
 	public static List getAllDataMartPath(File contextDir) {
@@ -93,49 +152,7 @@ public class LocalFileSystemDataMartModelRetriever implements
 					dataMartPaths.add(childrens[i]);
 			}
 		}
-	
 		
-		/*
-		if (childrens != null)
-			dataMartPaths = Arrays.asList(childrens);
-		*/
 		return dataMartPaths;
 	}
-
-	public List getViewJarFiles(File contextDir, String dataMartPath, String dialect) {
-		List files = new ArrayList();
-
-		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
-		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
-		
-		
-		String directory = qbeDataMartDir + System.getProperty("file.separator") + dataMartPath + System.getProperty("file.separator");
-		File dir = new File(directory);
-//	   	 It is also possible to filter the list of returned files.
-	       // This example does not return any files that start with `.'.
-	       FilenameFilter filter = new FilenameFilter() {
-	           public boolean accept(File dir, String name) {
-	               return name.endsWith(".jar") && !name.equalsIgnoreCase("datamart.jar");
-	           }
-	       };
-	    
-	       String[] children = dir.list(filter);
-           if (children == null) {
-               // Either dir does not exist or is not a directory
-           } else {
-               for (int i=0; i<children.length; i++) {
-                   // Get filename of file or directory
-                   String filename = children[i];
-                   files.add(new File(dir, filename));
-               }
-           }
-          return files;
-	}
-	
-	public List getViewJarFiles(String dataMartPath, String dialect) {
-		return getViewJarFiles((File)null, dataMartPath, dialect);
-	}
-
-	
-
 }

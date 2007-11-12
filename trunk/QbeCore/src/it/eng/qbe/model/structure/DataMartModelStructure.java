@@ -30,21 +30,33 @@ import java.util.Map;
  *
  */
 public class DataMartModelStructure {
+	
+	long id = 0;
 	Map entities;
 	
 	public DataMartModelStructure() {
 		entities = new HashMap();
 	}
 	
-	public void addEntity(DataMartEntity entity) {
+	public DataMartEntity addEntity(String name) {
+		DataMartEntity entity = new DataMartEntity(name, this);
+		addEntity(entity);
+		return entity;
+	}
+	
+	private void addEntity(DataMartEntity entity) {
 		entities.put(entity.getName(), entity);
 	}
+	
 	
 	public DataMartEntity getEntity(String entityName) {
 		return (DataMartEntity)entities.get(entityName);
 	}
+		
 	
-	
+	public long getNextId() {
+		return ++id;
+	}
 	
 	
 	public String toString() {
@@ -54,11 +66,13 @@ public class DataMartModelStructure {
 			key = (String)it.next();
 			DataMartEntity o = (DataMartEntity)entities.get(key);
 			buffer.append("\n------------------------------------\n");
-			if(o==null)
+			if(o == null)
 				buffer.append(key + " --> NULL\n");
 			else
 				buffer.append(o.toString() + "\n");
 		}
 		return buffer.toString();
 	}
+	
+	 
 }

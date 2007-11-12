@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.datasource;
 
+import it.eng.qbe.conf.QbeConfiguration;
+import it.eng.qbe.locale.LocaleUtils;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.HQLStatement;
@@ -29,6 +31,7 @@ import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.utility.JarUtils;
+import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.utilities.DynamicClassLoader;
@@ -40,11 +43,15 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -53,10 +60,12 @@ import org.hibernate.cfg.Configuration;
  * @author Andrea Gioia
  *
  */
-public class HibernateDataSource extends BasicDataSource  {
+public class HibernateDataSource extends BasicDataSource implements IHibernateDataSource  {
 	
 	private String name;
-	private String path = null;	
+	private List datamartNames = null;
+	
+	
 	private String jndiDataSourceName = null;	
 	private String dialect = null;	
 	private boolean classLoaderExtended = false;	
@@ -64,59 +73,192 @@ public class HibernateDataSource extends BasicDataSource  {
 	private Configuration configuration = null;
 	private SessionFactory sessionFactory = null;
 	
+	private File formulaFile = null;
 	
-	public HibernateDataSource(String path, String jndiDataSourceName, String dialect) {
-		this.path = path;
+	private Properties qbeProperties = null;
+	
+	private Properties labelProperties = null;
+	private Map localizedLabelMap = new HashMap();
+	
+	
+	public HibernateDataSource(String datamartName, String jndiDataSourceName, String dialect) {
+		this.name = buildDatasourceName(datamartName);
+		
+		this.datamartNames = new ArrayList();
+		this.datamartNames.add(datamartName);
+		
 		this.jndiDataSourceName = jndiDataSourceName;
 		this.dialect = dialect;
 		this.alreadyAddedView = new ArrayList();
-		type = IDataSource.HIBERNATE_DS_TYPE;
+		this.type = IDataSource.HIBERNATE_DS_TYPE;
 	}
-	
+		
 	public SessionFactory getSessionFactory() {
 		if(sessionFactory == null) sessionFactory = createSessionFactory();
 		return sessionFactory;
 	}
 	
-	/**
-	 * This methos is responsible to create the Hibernate Session Factory Object related to the
-	 * datamart model
-	 * @return the hibernate Configuration
-	 */
+	public Configuration getConfiguration() {
+		return getConfiguration(getJarFile());
+	}
+	
+		
+	
+	
+	public Properties getLabelProperties() {
+		if(labelProperties == null) labelProperties = loadLabelProperties();
+		return labelProperties;
+	}
+	
+	public Properties getLabelProperties(Locale locale) {
+		Properties props = (Properties)localizedLabelMap.get(locale.getLanguage());
+		if(props == null) {
+			props = loadLabelProperties(locale);
+			localizedLabelMap.put(locale.getLanguage(), props);
+		}
+		return props;
+	}
+	
+	private Properties loadLabelProperties() {
+		
+		Properties labelProperties = new Properties();
+			
+		File dmJarFile = getJarFile();
+		JarFile jf;
+		try {
+			jf = new JarFile(dmJarFile);		
+			
+			labelProperties = LocaleUtils.getLabelProperties(jf);
+					
+			List views = getViewJarFiles();
+			Iterator it = views.iterator();
+			while(it.hasNext()) {
+				File viewJarFile = (File)it.next();
+				jf = new JarFile(viewJarFile);
+				Properties tmpProps = LocaleUtils.getLabelProperties(jf);
+				labelProperties.putAll(tmpProps);
+			}		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		return labelProperties;	
+	}
+	
+	private Properties loadLabelProperties(Locale locale) {
+		
+		Properties props = new Properties();
+		
+		try{
+			File dmJarFile = getJarFile();
+			JarFile jf = new JarFile(dmJarFile);
+			
+			props = LocaleUtils.getLabelProperties(jf, locale);
+				
+			if (props.isEmpty()) {
+				return loadLabelProperties();
+			} else {
+				List views = getViewJarFiles();
+				Iterator it = views.iterator();
+				while(it.hasNext()) {
+					File viewJarFile = (File)it.next();
+					jf = new JarFile(viewJarFile);
+					Properties tmpProps = LocaleUtils.getLabelProperties(jf, locale);
+					if(tmpProps.isEmpty()) tmpProps = LocaleUtils.getLabelProperties(jf);
+					props.putAll(tmpProps);
+				}
+			}			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return props;
+	
+	}
+	
+		
+	public File getFormulaFile() {
+		if(formulaFile == null) formulaFile = loadFormulaFile();
+		return formulaFile;
+	}
+	
+	private File loadFormulaFile() {
+		String formulaFile = getJarFile().getParent() + "/formula.xml";
+		return new File(formulaFile);
+	}
+	
+	
+	
+	
+	public Properties getQbeProperties() {
+		if(qbeProperties == null) qbeProperties = loadQbeProperties();
+		return qbeProperties;
+	}
+	
+	private Properties loadQbeProperties() {
+		
+		Properties qbeProperties = null;
+		
+		File dmJarFile = getJarFile();
+		JarFile jf = null;
+		try {
+			jf = new JarFile(dmJarFile);
+			qbeProperties = getQbeProperties(jf);
+			
+			List views = getViewJarFiles();
+			Iterator it = views.iterator();
+			while(it.hasNext()) {
+				File viewJarFile = (File)it.next();
+				jf = new JarFile(viewJarFile);
+				Properties tmpProps = getQbeProperties(jf);
+				qbeProperties.putAll(tmpProps);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		
+		return qbeProperties;	
+	}
+	
+	private Properties getQbeProperties(JarFile jf){
+		Properties prop = new Properties();
+		
+		try{
+			ZipEntry ze = jf.getEntry("qbe.properties");
+			if (ze != null){
+				prop = new Properties();
+				prop.load(jf.getInputStream(ze));
+			}
+		} catch(IOException ioe){
+			ioe.printStackTrace();
+		}
+		return prop;
+	}
+	
+	
 	private SessionFactory createSessionFactory(){
 		Logger.debug(this.getClass(), "createSessionFactory: start method createSessionFactory");
 		
 		SessionFactory sf = null;
 		Configuration cfg = null;
 		
-		cfg = getHibernateConfiguration(getJarFile());
+		cfg = getConfiguration(getJarFile());
 		
-		/*
-		List viewsJarFile = getViewJarFiles();
 		
-		File f = null;
-		for (Iterator it = viewsJarFile.iterator(); it.hasNext(); ){
-			f = ((File)it.next());
-			if (!(alreadyAddedView.contains(f.getAbsolutePath()))){
-				cfg.addJar(f);
-				alreadyAddedView.add(f.getAbsolutePath());
-			}
-		}
-		*/
 		sf = cfg.buildSessionFactory();
 				
 		return sf;
 	}
 	
-	public Configuration getHibernateConfiguration(File jarFile) {
+	
+	public Configuration getConfiguration(File jarFile) {
 		if (this.configuration == null)
 			this.configuration = initHibernateConfiguration(jarFile);
 		return configuration;
 	}
 	
-	public Configuration getHibernateConfiguration() {
-		return getHibernateConfiguration(getJarFile());
-	}
 	
 	public Configuration initHibernateConfiguration(File jarFile) {
 		Configuration cfg = null;
@@ -238,14 +380,13 @@ public class HibernateDataSource extends BasicDataSource  {
 		return cfg;
 	}
 	
-	/**
-	 * This methos is responsible to retrieve the phisical jar file wich contains the datamart
-	 * @return the hibernate Configuration
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getJarFile()
 	 */
 	public File getJarFile(){
 		try{
-			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
-			File jarFile = dataMartModelRetriever.getJarFile(path,dialect);
+			IDataMartModelRetriever dataMartModelRetriever = QbeConfiguration.getInstance().getDataMartModelRetriever();
+			File jarFile = dataMartModelRetriever.getDatamartJarFile(getDatamartName());
 			return jarFile;
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
@@ -253,22 +394,7 @@ public class HibernateDataSource extends BasicDataSource  {
 		}
 	}		
 	
-	public IDataMartModelRetriever getDataMartModelRetriever() throws Exception {		
-		String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
-		IDataMartModelRetriever dataMartModelRetriever = (IDataMartModelRetriever)Class.forName(dataMartModelRetrieverClassName).newInstance();
-		return dataMartModelRetriever;
-	}
 	
-	/**
-	 * @return the IQueryPersister object reading concrete implementation class from the property 
-	 * QBE.QUERY-PERSISTER.className in qbe.xml file
-	 * 
-	 */
-	public IQueryPersister getQueryPersister() throws Exception{
-		String queryPersisterClass = (String)ConfigSingleton.getInstance().getAttribute("QBE.QUERY-PERSISTER.className");
-		IQueryPersister queryPersister = (IQueryPersister)Class.forName(queryPersisterClass).newInstance();
-		return queryPersister;
-	}
 	
 	
 	/**
@@ -341,17 +467,16 @@ public class HibernateDataSource extends BasicDataSource  {
 		}
 	}
 	
-	/**
-	 * This method retrieve the jarFile of the datamart and update the Thread Context ClassLoader adding this jar 
-	 * @param jarFile
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#updateCurrentClassLoader()
 	 */
 	public void updateCurrentClassLoader(){
 		try{
 			
 			if (!classLoaderExtended){
 				
-				IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
-				File jarFile = dataMartModelRetriever.getJarFile(path,dialect);
+				IDataMartModelRetriever dataMartModelRetriever = QbeConfiguration.getInstance().getDataMartModelRetriever();;
+				File jarFile = dataMartModelRetriever.getDatamartJarFile(getDatamartName());
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();
 //				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);				
     		    DynamicClassLoader current = new DynamicClassLoader(jarFile, previous);    		    
@@ -368,95 +493,184 @@ public class HibernateDataSource extends BasicDataSource  {
 		}
 	}	
 	
-	public List getViewJarFiles(){
+	
+	
+	private List getViewNames(String datamartName) {
+		List viewNames = null;
+		IDataMartModelRetriever dataMartModelRetriever;
+		try {
+			dataMartModelRetriever = QbeConfiguration.getInstance().getDataMartModelRetriever();
+			viewNames = dataMartModelRetriever.getViewNames(datamartName);
+		} catch (Exception e) {
+			Logger.error(DataMartModel.class, e);
+		}
+		
+		
+		return viewNames;
+	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	private List getViewJarFiles() {
+		List viewsJarFiles = new ArrayList();
+		
+		for(int i = 0; i < datamartNames.size(); i++) {
+			String datamartName = (String)datamartNames.get(i);
+			List viewNames = getViewNames(datamartName);
+			for(int j = 0; j < viewNames.size(); j++) {
+				String viewName = (String)viewNames.get(j);
+				viewsJarFiles.add( getViewJarFile(datamartName, viewName) );
+			}
+		}	
+		
+		return viewsJarFiles;
+	}
+	
+	private File getViewJarFile(String datamartName, String viewName){
+		File viewJarFile = null;
+		
 		try{
-			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
-			return dataMartModelRetriever.getViewJarFiles(path,dialect);
+			IDataMartModelRetriever dataMartModelRetriever = QbeConfiguration.getInstance().getDataMartModelRetriever();
+			viewJarFile =  dataMartModelRetriever.getViewJarFile(datamartName, viewName);
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
-			return null;
 		}
+		
+		return viewJarFile;
 	}
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getDialect()
+	 */
 	public String getDialect() {
 		return dialect;
 	}
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#setDialect(java.lang.String)
+	 */
 	public void setDialect(String dialect) {
 		this.dialect = dialect;
 	}
 	
-	/**
-	 * @return jndiDataSourceName
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getJndiDataSourceName()
 	 */
 	public String getJndiDataSourceName() {
 		return jndiDataSourceName;
 	}
 
-	/**
-	 * @param jndiDataSourceName
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#setJndiDataSourceName(java.lang.String)
 	 */
 	public void setJndiDataSourceName(String jndiDataSourceName) {
 		this.jndiDataSourceName = jndiDataSourceName;
 	}
 
-	/**
-	 * @return path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @param path
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
 	
-	/**
-	 * @deprecated use getHibernateConfiguration()
+	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getHibCfg()
 	 */
 	public Configuration getHibCfg() {
-		return getHibernateConfiguration();
+		return getConfiguration();
 	}
 
-	/**
-	 * @deprecated external bbject cannot set the configuration
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#setHibCfg(org.hibernate.cfg.Configuration)
 	 */
 	public void setHibCfg(Configuration hibCfg) {
 		this.configuration = hibCfg;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#isClassLoaderExtended()
+	 */
 	public boolean isClassLoaderExtended() {
 		return classLoaderExtended;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#setClassLoaderExtended(boolean)
+	 */
 	public void setClassLoaderExtended(boolean classLoaderExtended) {
 		this.classLoaderExtended = classLoaderExtended;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getAlreadyAddedView()
+	 */
 	public List getAlreadyAddedView() {
 		return alreadyAddedView;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#setAlreadyAddedView(java.util.List)
+	 */
 	public void setAlreadyAddedView(List alreadyAddedView) {
 		this.alreadyAddedView = alreadyAddedView;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#setSessionFactory(org.hibernate.SessionFactory)
+	 */
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getName()
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#setName(java.lang.String)
+	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void refresh() {
+		configuration = null;
+		sessionFactory = null;
+		setClassLoaderExtended(false);
+		setAlreadyAddedView(new ArrayList());		
+	}
+
+
+
+	public List getDatamartNames() {
+		return datamartNames;
+	}	
+	
+	private String getDatamartName() {
+		return (String)datamartNames.get(0);
+	}
+
+	public String getCompositeDatamartName() {
+		return getDatamartName();
+	}
+	
+	public String getCompositeDatamartDescription() {
+		return getDatamartName();
+	}
+
+	public void refreshDatamartViews() {
+		refresh();
+	}
+
+	public void refreshSharedView(String sharedViewName) {
+		refreshDatamartViews();
+	}
+
+	public void refreshSharedViews() {
+		refreshDatamartViews();
 	}
 }

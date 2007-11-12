@@ -24,7 +24,7 @@ package it.eng.qbe.wizard;
 import java.io.Serializable;
 
 
-public class EntityClass implements Serializable{
+public class EntityClass implements Serializable {
 
 	private String className = null;
 	
@@ -38,9 +38,8 @@ public class EntityClass implements Serializable{
 		return new EntityClass(className, classAlias);
 	}
 	
-	public EntityClass( String name,String alias) {
+	public EntityClass(String name,String alias) {
 		super();
-		// TODO Auto-generated constructor stub
 		classAlias = alias;
 		className = name;
 	}

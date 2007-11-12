@@ -51,7 +51,7 @@ public class QbeProperties {
 	
 	
 	public QbeProperties(DataMartModel dm) {
-		qbeProperties = getQbeProperties(dm);
+		qbeProperties = dm.getDataMartProperties();
 	}
 	
 	public boolean isTableVisible(String className) {
@@ -116,45 +116,7 @@ public class QbeProperties {
 		}
 	}
 
-	public static Properties getQbeProperties(DataMartModel dm) {
-		
-		Properties qbeProperties = null;
-		
-		File dmJarFile = dm.getJarFile();
-		JarFile jf = null;
-		try {
-			jf = new JarFile(dmJarFile);
-			qbeProperties = getQbeProperties(jf);
-			
-			List views = Utils.getViewJarFiles(dm.getDataSource());
-			Iterator it = views.iterator();
-			while(it.hasNext()) {
-				File viewJarFile = (File)it.next();
-				jf = new JarFile(viewJarFile);
-				Properties tmpProps = getQbeProperties(jf);
-				qbeProperties.putAll(tmpProps);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		
-		
-		return qbeProperties;	
-	}
 	
-	public static Properties getQbeProperties(JarFile jf){
-		Properties prop = new Properties();
-		
-		try{
-			ZipEntry ze = jf.getEntry("qbe.properties");
-			if (ze != null){
-				prop = new Properties();
-				prop.load(jf.getInputStream(ze));
-			}
-		} catch(IOException ioe){
-			ioe.printStackTrace();
-		}
-		return prop;
-	}
+	
+	
 }

@@ -38,6 +38,9 @@ import java.util.Map;
  */
 public interface ISingleDataMartWizardObject extends Serializable {
 	
+	public String[] getDuplicatedAliases();
+	
+	public boolean containsDuplicatedAliases();
 	
 	public boolean containEntityClass(EntityClass ec);
 	
@@ -152,5 +155,7 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	public boolean isSubqueryValid(String fieldId);
 	
 	public boolean isSubqueryValid(ISingleDataMartWizardObject subquery);
+	
+	public boolean areAllEntitiesJoined();
 	
 }

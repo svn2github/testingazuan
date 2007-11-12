@@ -23,7 +23,7 @@ package it.eng.qbe.model.structure.builder;
 
 
 
-import it.eng.qbe.datasource.HibernateDataSource;
+import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
@@ -40,6 +40,7 @@ import java.util.Map;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
+import org.hibernate.mapping.Property;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -52,167 +53,186 @@ import org.hibernate.type.Type;
  */
 public class HibernateDataMartStructureBuilder {
 	
-	Configuration configuration;
-	HibernateDataSource dataSource;	
+IHibernateDataSource dataSource;	
 	
 	
-	public HibernateDataMartStructureBuilder(HibernateDataSource dataSource) {
+	public HibernateDataMartStructureBuilder(IHibernateDataSource dataSource) {
 		this.dataSource = dataSource;
-		File file =  dataSource.getJarFile();
-		this.configuration = dataSource.getHibernateConfiguration(file);
 	}
 	
-	
-	public static void updateCurrentClassLoader(File jarFile){
-		try {
-				ClassLoader previous = Thread.currentThread().getContextClassLoader();
-				
-				ClassLoader current = URLClassLoader.newInstance(new URL[]{jarFile.toURL()}, previous);
-				
-				Thread.currentThread().setContextClassLoader(current);
-				
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}	
-	
+			
 	public DataMartModelStructure build() {
 		
 		DataMartModelStructure dataMartStructure = new DataMartModelStructure();
 		
 		Map classMetadata = dataSource.getSessionFactory().getAllClassMetadata();
 		for(Iterator it = classMetadata.keySet().iterator(); it.hasNext(); ) {
-			String className = (String)it.next();
-			
-			DataMartEntity dataMartEntity = new DataMartEntity(className);
-			buildEntity(dataMartEntity, null, null, 0);
-			dataMartStructure.addEntity(dataMartEntity);
-		}
-		
+			String className = (String)it.next();			
+			addEntity(dataMartStructure, className, null, null, 0);			
+		}		
 		
 		return dataMartStructure;
 	}
 	
-	public void buildEntity (DataMartEntity dataMartEntity, String relationOnColumnName, 
-			String prefix,  int recursionLevel){
+	private void addEntity (DataMartModelStructure dataMartStructure,
+							String entityName, 
+							String relationOnColumnName, 
+							String prefix,  
+							int recursionLevel){
 
-		PersistentClass pc = configuration.getClassMapping(dataMartEntity.getName());
-		
-		
-		
-		if (relationOnColumnName != null){
-			
-				// buffer.append(entityName+"("+relationOnColumnName+")." +  pname + "=" + pvalue + "\n");		
-		} 
-		
-		try {
-			
-			ClassMetadata aClassMetadata = dataSource.getSessionFactory().getClassMetadata(dataMartEntity.getName());
-			
-			String[] metaPropertyNames = aClassMetadata.getPropertyNames();
-			
-			List associatedClassesArrayList = new ArrayList();
-			
-			Type aHibType = null;
-			 	
-
-			Type aType = aClassMetadata.getIdentifierType();
-			
-			String fieldName = "";
-			
-			String[] keyProperties = null;
-			
+		DataMartEntity dataMartEntity = dataMartStructure.addEntity(entityName);				
+		addKeyFields(dataMartEntity, prefix);			
+		List associatedClassesList = addNormalFields(dataMartEntity, prefix);			
+		addSubEntities(dataMartEntity, associatedClassesList, recursionLevel);
+	}
 	
-			if (aType.isComponentType()){			
-					
-					String idPropertyName = aClassMetadata.getIdentifierPropertyName();
-					String[] tmpKeyProperties = ((ComponentType)aType).getPropertyNames();
-					
-					
-					keyProperties = new String[tmpKeyProperties.length];
-					
-					for (int j=0; j < tmpKeyProperties.length; j++){
-						keyProperties[j] = idPropertyName + "." + tmpKeyProperties[j];						
-					}					
-			}else{
-					keyProperties = new String[1];
-					keyProperties[0] = aClassMetadata.getIdentifierPropertyName();			
-			}
-			Iterator pkColumnIerator = pc.getIdentifierProperty().getColumnIterator();
-			
-			    	
-			for (int j = 0; j < keyProperties.length; j++) {
+	private void addSubEntity (DataMartEntity parentEntity,
+			String entityName, 
+			String relationOnColumnName, 
+			String prefix,  
+			int recursionLevel){
 
-				fieldName = keyProperties[j];
-				
-				if (prefix != null) {
-					fieldName = prefix + "." + keyProperties[j];
-				}
-								
-				dataMartEntity.addField(new DataMartField(fieldName));				
-			}
-			
-			
-			
-			List associatedCollectionClassesArrayList = new ArrayList();
-				
-			
-			for(int i=0; i < metaPropertyNames.length; i++){
-			 	aHibType = (Type)aClassMetadata.getPropertyType(metaPropertyNames[i]);
-			 	org.hibernate.mapping.Property property = pc.getProperty(metaPropertyNames[i]);
-			 	
-			 	if (aHibType instanceof ManyToOneType){
-			 		
-				 	Iterator it = property.getColumnIterator();
-				 	String columnName = null;
-				 	if (it.hasNext()){
-				 		columnName = ((Column)it.next()).getName();
-				 	}
-			 		fieldName = metaPropertyNames[i];
-			 		
-			 		if (prefix != null){
-			 			 fieldName = prefix +"." + metaPropertyNames[i];
-			 		}
-			 		
-			 		RelationField aRelationField = new RelationField( fieldName, ((ManyToOneType)aHibType).getAssociatedEntityName(), columnName ); 
-			 		
-			 		associatedClassesArrayList.add(aRelationField);																   
-			 	}else if (aHibType instanceof CollectionType) {
-					
-			 		
-				}else{
-						fieldName = metaPropertyNames[i];
-						
-			 		
-						if (prefix != null){
-							fieldName = prefix +"." + metaPropertyNames[i];
-						}
-						
-						dataMartEntity.addField(new DataMartField(fieldName));		
-						
-			 		
-					}
-			 	}
-			
-			
-			
-			Iterator associatedClassIterator = associatedClassesArrayList.iterator();
-			
-			while (associatedClassIterator.hasNext()){
-				RelationField aRelationField = (RelationField)associatedClassIterator.next();
-				//if(true) {
-				if (aRelationField.getClassName().equalsIgnoreCase(dataMartEntity.getName())){
-					//addFieldNodesNoRecursion(aRelationField.getClassName(), aRelationField.getRelationOnColumnName(), idxClassNode, nodeCounter, aRelationField.getFieldName(), fieldUrlGenerator, recursionLevel+1);
-				}else{
-					DataMartEntity subEntity = new DataMartEntity(aRelationField.getClassName());
-					buildEntity(subEntity, aRelationField.getRelationOnColumnName(), aRelationField.getFieldName(), recursionLevel+1);
-					dataMartEntity.addSubEntity(subEntity);
-				}
-			}
+		DataMartEntity dataMartEntity = parentEntity.addSubEntity(entityName);				
+		addKeyFields(dataMartEntity, prefix);			
+		List associatedClassesList = addNormalFields(dataMartEntity, prefix);			
+		addSubEntities(dataMartEntity, associatedClassesList, recursionLevel);
+	}
+	
+	private void addKeyFields(DataMartEntity dataMartEntity, String prefix) {
 		
+		ClassMetadata classMetadata = dataSource.getSessionFactory().getClassMetadata(dataMartEntity.getName());
+		PersistentClass persistentClass = dataSource.getConfiguration().getClassMapping(dataMartEntity.getName());
+		
+		Type identifierType = classMetadata.getIdentifierType();
+		Property identifierproperty = persistentClass.getIdentifierProperty();		
+		
+		String fieldName = "";
+		
+		String[] keyProperties = null;
+		String[] keyPropertiesType = null;
+		String[] hibTypes  = null;
+		int[] hibScale  = null;
+		int[] hibPrecision = null;
+		
+
+		if (identifierType.isComponentType()) {
 			
-		}catch(Exception e){
-			e.printStackTrace();
+				String idPropertyName = classMetadata.getIdentifierPropertyName();
+				String[] tmpKeyProperties = ((ComponentType)identifierType).getPropertyNames();				
+				Type[] subtypes = ((ComponentType)identifierType).getSubtypes();
+				
+				keyProperties = new String[tmpKeyProperties.length];
+				keyPropertiesType = new String[tmpKeyProperties.length];
+				hibTypes  = new String[tmpKeyProperties.length];
+				hibScale  = new int[tmpKeyProperties.length];
+				hibPrecision = new int[tmpKeyProperties.length];
+								
+				
+				for (int j=0; j < tmpKeyProperties.length; j++){
+					keyProperties[j] = idPropertyName + "." + tmpKeyProperties[j];
+					keyPropertiesType[j] = subtypes[j].getClass().getName();
+					hibTypes[j] = subtypes[j].getName();
+				}	
+				
+		} else {
+			
+				keyProperties = new String[1];
+				keyProperties[0] = classMetadata.getIdentifierPropertyName();
+								
+				keyPropertiesType = new String[1];
+				keyPropertiesType[0] = identifierType.getClass().getName();
+				
+				hibTypes = new String[1];
+				hibTypes[0] = identifierType.getName();
+				
+				hibScale = new int[1];
+				hibPrecision = new int[1];
+		}		
+		    	
+		
+		
+		int k = 0;
+		for (Iterator it = identifierproperty.getColumnIterator(); it.hasNext(); k++){
+			Column column = (Column)it.next();
+			hibScale[k] = column.getScale();
+			hibPrecision[k] = column.getPrecision();
+		}
+		
+		
+		for (int j = 0; j < keyProperties.length; j++) {
+			fieldName = keyProperties[j];			
+			if (prefix != null) {
+				fieldName = prefix + "." + keyProperties[j];
+			}							
+			
+			DataMartField dataMartField = dataMartEntity.addField(fieldName);
+			dataMartField.setType(hibTypes[j]);
+			dataMartField.setPrecision(hibPrecision[j]);
+			dataMartField.setLength(hibScale[j]);
+		}
+	}
+	
+	public List addNormalFields(DataMartEntity dataMartEntity, String prefix) {
+		ClassMetadata classMetadata = dataSource.getSessionFactory().getClassMetadata(dataMartEntity.getName());
+		PersistentClass persistentClass = dataSource.getConfiguration().getClassMapping(dataMartEntity.getName());
+		
+		String[] metaPropertyNames = classMetadata.getPropertyNames();		
+		Type hibType = null;
+		
+		
+		List associatedClassesArrayList = new ArrayList();
+		
+		String fieldName = null;
+		
+		for(int i=0; i < metaPropertyNames.length; i++) { // chiave esterna
+		 	hibType = (Type)classMetadata.getPropertyType(metaPropertyNames[i]);
+		 	Property property = persistentClass.getProperty(metaPropertyNames[i]);
+		 	
+		 	if (hibType instanceof ManyToOneType){
+		 		
+			 	Iterator it = property.getColumnIterator();
+			 	String columnName = null;
+			 	if (it.hasNext()){
+			 		columnName = ((Column)it.next()).getName();
+			 	}
+		 		fieldName = metaPropertyNames[i];
+		 		
+		 		if (prefix != null){
+		 			 fieldName = prefix +"." + metaPropertyNames[i];
+		 		}
+		 		
+		 		RelationField aRelationField = new RelationField( fieldName, ((ManyToOneType)hibType).getAssociatedEntityName(), columnName ); 
+		 		
+		 		associatedClassesArrayList.add(aRelationField);	
+		 		
+		 	} else if (hibType instanceof CollectionType) { // chiave interna
+				
+		 		
+			} else { // normal field
+					fieldName = metaPropertyNames[i];
+					
+		 		
+					if (prefix != null){
+						fieldName = prefix +"." + metaPropertyNames[i];
+					}
+					
+					dataMartEntity.addField(fieldName);						
+		 		
+				}
+		 	}
+		
+			return associatedClassesArrayList;
+	}
+	
+	private void addSubEntities(DataMartEntity dataMartEntity, List associatedClassesList, int recursionLevel) {
+		Iterator it = associatedClassesList.iterator();
+		while (it.hasNext()) {
+			RelationField relationField = (RelationField)it.next();
+			if (relationField.getClassName().equalsIgnoreCase(dataMartEntity.getName())){
+				// ciclo di periodo 0!
+			} else {
+				addSubEntity(dataMartEntity, relationField.getClassName(), relationField.getRelationOnColumnName(), relationField.getFieldName(), recursionLevel+1);
+			}
 		}
 	}
 	

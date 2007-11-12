@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model.structure.builder;
 
-import it.eng.qbe.datasource.HibernateDataSource;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 
 /**
@@ -33,7 +33,11 @@ public class BasicDataMartStructureBuilder implements IDataMartStructureBuilder{
 	public static DataMartModelStructure buildDataMartStructure(IDataSource dataSource) {
 		if(dataSource.getType() == IDataSource.HIBERNATE_DS_TYPE) {
 			HibernateDataMartStructureBuilder builder = 
-				new HibernateDataMartStructureBuilder((HibernateDataSource)dataSource);
+				new HibernateDataMartStructureBuilder((IHibernateDataSource)dataSource);
+			return builder.build();
+		} else if (dataSource.getType() == IDataSource.COMPOSITE_HIBERNATE_DS_TYPE) {
+			CompositeHibernateDataMartStructureBuilder builder = 
+				new CompositeHibernateDataMartStructureBuilder((IHibernateDataSource)dataSource);
 			return builder.build();
 		} else {
 			// log somethings here

@@ -21,30 +21,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model.io;
 
+import it.eng.qbe.utility.FileUtils;
+
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Andrea Zoppello
- * 
- * This is the interface for classes that implements 
- * logig to retrieve the datamart model file given a path
- * 
- */
+
 public interface IDataMartModelRetriever {
 
-	/**
-	 * @param dataMartPath
-	 * @return the default datamart file
-	 */
-	public File getJarFile(String dataMartPath);
+	public abstract File getDatamartJarFile(String datamartName);
 	
-	/**
-	 * @param dataMartPath
-	 * @param dialect
-	 * @return the specific file of datamart given Hibernate Dialect
-	 */
-	public File getJarFile(String dataMartPath, String dialect);
+	public abstract File getViewJarFile(String datamartName, String viewName);		
+
+	public abstract List getViewJarFiles(String datamartName);	
 	
-	public List getViewJarFiles(String dataMartPath, String dialect);
+	public abstract List getViewNames(String datamartName);
+	
 }

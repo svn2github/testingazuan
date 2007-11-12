@@ -69,5 +69,11 @@ public interface IQuery {
 	public ISingleDataMartWizardObject getSubQueryOnField(String fieldId);	
 	public String getSubQueryIdForSubQueryOnField(String fieldId);
 	
+	public String[] getDuplicatedAliases();
+	
+	public boolean containsDuplicatedAliases();
+	
 	public boolean isEmpty();
+	
+	public boolean areAllEntitiesJoined();
 }

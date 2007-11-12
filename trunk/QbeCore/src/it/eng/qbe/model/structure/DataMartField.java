@@ -26,10 +26,19 @@ package it.eng.qbe.model.structure;
  *
  */
 public class DataMartField {
-	String name;
 	
-	public DataMartField(String name) {
+	long id;
+	String name;
+	String path;
+	DataMartEntity parent;
+	String type;
+	int length;
+	int precision;
+	
+	public DataMartField(String name, DataMartEntity parent) {
 		this.name = name;
+		this.parent = parent;
+		this.id = parent.getStructure().getNextId();
 	}
 
 	public String getName() {
@@ -37,7 +46,61 @@ public class DataMartField {
 	}
 	
 	public String toString() {
-		return name;
+		return name + "(id="+id
+		+"; path="+path
+		+"; parent:" + (parent==null?"NULL": parent.getName())
+		+"; type="+type
+		+"; length="+length
+		+"; precision="+precision
+		+")";
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public DataMartEntity getParent() {
+		return parent;
+	}
+
+	public void setParent(DataMartEntity parent) {
+		this.parent = parent;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public int getPrecision() {
+		return precision;
+	}
+
+	public void setPrecision(int precision) {
+		this.precision = precision;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

@@ -488,4 +488,70 @@ IMG {
 	border-bottom: 1px solid #bbb;
 }
 
+.link_without_dec{
+	text-decoration:none;
+}
+
+.fieldset{
+	border: 2px solid #dddddd;
+	margin-right:5px;
+}
+
+.form_legend{
+	color: #074B88;
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+}
+
+.linkAction {
+	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
+	font-size: 12px;
+	color: #074B88;
+	text-decoration:none;
+}
+
+.linkAction:hover {
+	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
+	font-size: 12px;
+	color: white;
+	text-decoration:none;
+}
+
+
+
+.div_form_container {
+   	border: 1px solid #cccccc;
+   	background-color:#fafafa;
+   	float: left;
+}
+	
+.div_form_margin {
+	margin: 5px;
+	float: left;
+}
+	
+.div_form_row {
+	clear: both;
+	padding-bottom:5px;
+}
+	
+.div_form_label {	
+	float: left;
+	width:150px;
+	margin-right:20px;
+}
+	
+.div_form_field {
+}
+
+.div_form_message {	
+	float: left;
+	margin:20px;
+}
+	
+.nowraptext {
+   	white-space:nowrap;
+}
+    
+
 

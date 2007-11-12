@@ -127,8 +127,7 @@
         <servlet-name>SaveToPersonalFolderServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.SaveToPersonalFolderServlet</servlet-class>
     </servlet>
-    
-    
+   
     
 
     <!-- END SERVLET DEFINITIONS -->

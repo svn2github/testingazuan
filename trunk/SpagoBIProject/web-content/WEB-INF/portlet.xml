@@ -370,12 +370,52 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<keywords>Execution Workspace</keywords>
         </portlet-info>
         <portlet-preferences>
+        	<!--name of the css file to apply   -->
             <preference>
         		<name>STYLE_NAME</name>
         		<value>executionWorkspace</value>
         	</preference>
+        	<!-- if true the first level folders are shown as tabs   -->
+        	<preference>
+        		<name>FIRST_LEVEL_FOLDERS_AS_TABS</name>
+        		<value>TRUE</value>
+        	</preference>
         </portlet-preferences>
 	</portlet>
+
+
+   <portlet>
+        <description>Exo Profile Attributes Manager</description>		
+        <portlet-name>ExoProfileAttributesManager</portlet-name>		
+        <display-name>Exo Profile Attributes Manager</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>ExoProfileAttributeManagerPage</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<portlet-info>
+        	<title>Exo Profile Attributes Manager</title>
+        	<short-title>Exo Profile Attributes Manager</short-title>
+        	<keywords>Exo Profile Attributes Manager</keywords>
+        </portlet-info>
+	</portlet>
+
+
  
 	<portlet>
         <description>Map Catalogue</description>		
@@ -415,4 +455,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-preferences>
 	</portlet>
 	
+
+
 </portlet-app>

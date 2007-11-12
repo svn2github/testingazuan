@@ -141,12 +141,6 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
-		/* ********* start luca changes *************** */
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
-		htmlStream.append("<div id='divmenu" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenu" + requestIdentity + "\");' >");
-		htmlStream.append("		menu");
-		htmlStream.append("</div>");
-		/* ********* end luca changes *************** */
 		htmlStream.append("<div id='viewOnlyTestDocument" + requestIdentity + "' style='display:none;'>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
@@ -202,6 +196,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
+		/* ********* start luca changes *************** */
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<div id='divmenu" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenu" + requestIdentity + "\");' >");
+		htmlStream.append("		menu");
+		htmlStream.append("</div>");
+		/* ********* end luca changes *************** */
 		htmlStream.append("<br/>");
 		
 		// if there is one or more document in test state diplay the div with id='viewOnlyTestDocument'

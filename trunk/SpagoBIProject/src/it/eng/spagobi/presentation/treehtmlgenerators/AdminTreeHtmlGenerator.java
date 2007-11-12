@@ -51,12 +51,12 @@ import org.safehaus.uuid.UUIDGenerator;
  */
 public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 
-	HttpServletRequest httpRequest = null;
-	RequestContainer reqCont = null;
+	protected HttpServletRequest httpRequest = null;
+	protected RequestContainer reqCont = null;
 	protected IUrlBuilder urlBuilder = null;
 	protected IMessageBuilder msgBuilder = null;
 	int progrJSTree = 0;
-	IEngUserProfile profile = null;
+	protected IEngUserProfile profile = null;
 	protected int dTreeRootId = -100;
 	protected int dTreeObjects = -1000;
 	protected String requestIdentity = null;

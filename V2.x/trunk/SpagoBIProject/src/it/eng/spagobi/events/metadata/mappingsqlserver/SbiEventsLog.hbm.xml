@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="it.eng.spagobi.metadata.SbiEventsLog" table="SBI_EVENTS_LOG">
+    <class name="it.eng.spagobi.events.metadata.SbiEventsLog" table="SBI_EVENTS_LOG">
         <id name="id" type="integer">
             <column name="id" />
             <generator class="identity">
@@ -28,7 +28,7 @@
             <key>
                 <column name="event_id" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.metadata.SbiEventRole" />
+            <one-to-many class="it.eng.spagobi.commons.metadata.SbiEventRole" />
         </set> 
     </class>
     

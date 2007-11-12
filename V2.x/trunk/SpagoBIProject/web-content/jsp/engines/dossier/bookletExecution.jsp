@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
 
-<%@ include file="/jsp/portlet_base.jsp"%>
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.dossiernts.BookletsConstants,
 				java.util.List,

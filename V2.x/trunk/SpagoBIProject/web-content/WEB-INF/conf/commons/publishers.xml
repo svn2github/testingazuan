@@ -4,21 +4,21 @@
   	<PUBLISHER name="CheckLinksDefaultPublischer">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/checklist.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/checklist.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/checklist.jsp"/>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/document/checklist.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
 	<PUBLISHER name="saveConfiguration">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/edit.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>  	
@@ -35,13 +35,13 @@
   	<PUBLISHER name="error">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/error.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/commons/error.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/error.jsp"/>
+        		<ITEM prog="0" resource="/jsp/commons/error.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -69,8 +69,8 @@
   	<PUBLISHER name="LoginSBISettingsPublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/startSBISettings.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBISettings.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -81,8 +81,8 @@
   	<PUBLISHER name="LoginSBIDevelopmentContextPublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/startSBIDevelopmentContext.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBIDevelopmentContext.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -92,8 +92,8 @@
   	<PUBLISHER name="LoginSBIAdministrationContextPublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/startSBIAdministrationContext.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBIAdministrationContext.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

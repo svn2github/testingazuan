@@ -3,5 +3,8 @@
   	<ACTION name="DOWNLOAD_FILE_ACTION" class="it.eng.spagobi.importexport.actions.DownloadFileAction" scope="REQUEST">
  		<CONFIG/>
  	</ACTION>
+ 	<ACTION name="MANAGE_IMPEXP_ASS_ACTION" class="it.eng.spagobi.importexport.actions.ManageImpExpAssAction" scope="REQUEST">
+ 		<CONFIG/>
+ 	</ACTION>
 </ACTIONS>
 

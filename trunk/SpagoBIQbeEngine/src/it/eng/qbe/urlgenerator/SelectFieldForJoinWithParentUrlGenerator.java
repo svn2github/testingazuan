@@ -85,7 +85,7 @@ public class SelectFieldForJoinWithParentUrlGenerator implements IURLGenerator{
 		}
 		
 		if (classCompleteName.indexOf(".") > 0){
-			aliasedClassName = this.classPrefix + classCompleteName.substring(classCompleteName.lastIndexOf(".")+1);
+			aliasedClassName = this.classPrefix + classCompleteName.replace(".", "_");
 		}else{
 			aliasedClassName = this.classPrefix + classCompleteName;
 		}

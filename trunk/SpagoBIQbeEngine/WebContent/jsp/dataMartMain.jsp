@@ -21,30 +21,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 <%@ page contentType="text/html; charset=ISO-8859-1"
 	language="java"  %>
+	
+<%@ page import="java.util.*"%>
 
  
 
 <%@include file="../jsp/qbe_base.jsp"%>  
 <%
-it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
- 
-String[] dialectJndiDs = Utils.getJndiDsDialectFromModel(dm);
 
-String dialect = dialectJndiDs[0];
-String jndiDs = dialectJndiDs[1];
-
-//List allJndiDs = Utils.getAllJndiDS();
 List allJndiDs = QbeConf.getInstance().getConnectionNames();
 
+String dmName = (String)aServiceResponse.getAttribute("DM_NAME");
 
+List queries = new ArrayList();
+
+/*
 IEngUserProfile userProfile = (IEngUserProfile)sessionContainer.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 java.util.List queries = dm.getQueries();
+java.util.List privateQueries = dm.getPrivateQueriesFor( userProfile.getUserUniqueIdentifier().toString() );
 
-IQueryPersister queryPersister = dm.getQueryPersister();
-if (queryPersister instanceof LocalFileSystemQueryPersister){
-	queries.addAll(((LocalFileSystemQueryPersister)queryPersister).getPrivateQueriesFor(dm,userProfile.getUserUniqueIdentifier().toString()));
-}
-
+queries.addAll(privateQueries);
+*/
 
 %>
 
@@ -71,7 +68,7 @@ if (queryPersister instanceof LocalFileSystemQueryPersister){
 		<td class='header-title-column-portlet-section' 
 
 		    style='vertical-align:middle;padding-left:5px;'>
-			<%=qbeMsg.getMessage(requestContainer, "QBE.Title.DatamartDetail", bundle) %> - <%=dm.getPath()%>
+			<%=qbeMsg.getMessage(requestContainer, "QBE.Title.DatamartDetail", bundle) %> - <%=dmName%>
 		</td>
 		<td class='header-button-column-portlet-section'>
 					<a href="../servlet/AdapterHTTP?ACTION_NAME=NO_ACTION"> 
@@ -83,7 +80,7 @@ if (queryPersister instanceof LocalFileSystemQueryPersister){
 </table>
 <form id="form1" name="form1" action="<%=qbeUrl.getUrl(request, null) %>" method="post">
 	<input type="hidden" name="ACTION_NAME" value="SELECT_DATAMART_AND_INIT_NEW_WIZARD_ACTION"/>
-	<input type="hidden" name="PATH" value="<%=dm.getPath() %>"/>
+	<input type="hidden" name="PATH" value="<%=dmName %>"/>
 	<input type="hidden" id="queryId" name="queryId" value="#"/>
 	<table width="100%" class="qbe-font">
 		<tr>

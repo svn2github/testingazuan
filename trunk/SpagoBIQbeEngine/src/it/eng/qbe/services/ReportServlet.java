@@ -22,6 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.services;
 
 import it.eng.qbe.action.ExecuteSaveQueryAction;
+import it.eng.qbe.datasource.BasicDataSource;
+import it.eng.qbe.datasource.CompositeHibernateDataSource;
+import it.eng.qbe.datasource.DataSourceFactory;
+import it.eng.qbe.datasource.HibernateDataSource;
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.export.IQueryRewriter;
 import it.eng.qbe.export.ITemplateBuilder;
@@ -30,6 +36,7 @@ import it.eng.qbe.export.SQLTemplateBuilder;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.JarUtils;
+import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 
@@ -42,6 +49,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,10 +112,10 @@ public class ReportServlet extends HttpServlet{
 			return;
 		}
 		
-		String jarFileStr = (String)request.getParameter("jarfilepath");
+		String datamartNamesStr = (String)request.getParameter("datamartNamesStr");
+		String[] datamartNamesArray = datamartNamesStr.split(",");
+		List datamartNames = Arrays.asList(datamartNamesArray);
 		
-		
-		File jarFile = new File(jarFileStr);
 		
 		String jndiDataSourceName = (String)request.getParameter("jndiDataSourceName");
 		String dialect = (String)request.getParameter("dialect");
@@ -127,17 +135,24 @@ public class ReportServlet extends HttpServlet{
 		}
 		if(format == null) format = "application/pdf";
 		
-		
-		Session aSession = null;
-		
+		Session session = null;
+			
 		File templateFile = null; 
 		File reportFile = null; 
 		File resultFile = null;
 		try{
-			aSession = getSession(jarFile,jndiDataSourceName, dialect );
-			Connection connection = aSession.connection();		
+			IHibernateDataSource dataSource = null;
+			ApplicationContainer applicationContainer = ApplicationContainer.getInstance();
+			dataSource = (IHibernateDataSource) applicationContainer.getAttribute(BasicDataSource.buildDatasourceName(datamartNames));
+			if (dataSource == null) {
+				dataSource = (IHibernateDataSource)DataSourceFactory.buildDataSource(datamartNames, new HashMap(), jndiDataSourceName, dialect);
+				applicationContainer.setAttribute(BasicDataSource.buildDatasourceName(datamartNames), dataSource);
+			}
 			
-			setJasperClasspath(jarFile);
+			session = dataSource.getSessionFactory().openSession();
+			Connection connection = session.connection();		
+			
+			setJasperClasspath();
 			
 			templateFile = File.createTempFile("report", ".jrxml"); 
 			reportFile = File.createTempFile("report", ".rpt"); 
@@ -152,9 +167,9 @@ public class ReportServlet extends HttpServlet{
 			}
 			
 			if(lang.equalsIgnoreCase("SQL"))
-				buildTemplateFromSQLQuery(templateFile,query, pagination, connection, orderedfldList, extractedEntitiesList, jarFile.getParent(), savedQueryObjectId);
+				buildTemplateFromSQLQuery(templateFile,query, pagination, connection, orderedfldList, extractedEntitiesList, dataSource.getFormulaFile(), savedQueryObjectId);
 			else if(lang.equalsIgnoreCase("HQL"))
-				buildTemplateFromHQLQuery(templateFile,query, pagination, aSession, connection, orderedfldList, extractedEntitiesList, jarFile.getParent(), savedQueryObjectId);
+				buildTemplateFromHQLQuery(templateFile,query, pagination, session, connection, orderedfldList, extractedEntitiesList, dataSource.getFormulaFile(), savedQueryObjectId);
 			else
 				throw new ServletException("Query language not supported: " + lang);
 		
@@ -184,18 +199,18 @@ public class ReportServlet extends HttpServlet{
 				templateFile.delete();
 			if (reportFile != null && reportFile.exists())
 				reportFile.delete();
-			if ((aSession != null) && (aSession.isOpen())) 
-				aSession.close();
+			if ((session != null) && (session.isOpen())) 
+				session.close();
 		}
 		
 	}
-	private void buildTemplateFromHQLQuery(File templateFile, String query, boolean pagination, Session session, Connection connection, String orderedFieldList,  String extractedEntitiesList, String formulaFilePath, String savedQueryObjectID) throws Exception {
+	private void buildTemplateFromHQLQuery(File templateFile, String query, boolean pagination, Session session, Connection connection, String orderedFieldList,  String extractedEntitiesList, File formulaFile, String savedQueryObjectID) throws Exception {
 		Map params = getParams();
 		params.put("pagination", pagination?"true":"false");
 		
 		IQueryRewriter queryRevriter = new HqlToSqlQueryRewriter(session);	
 		String sqlQuery = queryRevriter.rewrite(query);
-		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, params, orderedFieldList, extractedEntitiesList, formulaFilePath);
+		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, params, orderedFieldList, extractedEntitiesList, formulaFile);
 		if (savedQueryObjectID != null){
 			((SQLTemplateBuilder)templateBuilder).fillCalculatedFields(savedQueryObjectID);
 		}
@@ -248,13 +263,13 @@ public class ReportServlet extends HttpServlet{
 	
 	
 	private void buildTemplateFromSQLQuery(File templateFile, String sqlQuery, boolean pagination, Connection connection, 
-			String orderedFieldList, String extractedEntitiesList, String formulaFilePath, String savedQueryObjectID) throws Exception {
+			String orderedFieldList, String extractedEntitiesList, File formulaFile, String savedQueryObjectID) throws Exception {
 		
 		Map params = getParams();
 		params.put("pagination", pagination?"true":"false");
 		
 		ITemplateBuilder templateBuilder = new SQLTemplateBuilder(sqlQuery, connection, params,  
-				orderedFieldList, extractedEntitiesList, formulaFilePath);
+				orderedFieldList, extractedEntitiesList, formulaFile);
 		if (savedQueryObjectID != null){
 			((SQLTemplateBuilder)templateBuilder).fillCalculatedFields(savedQueryObjectID);
 		}
@@ -345,7 +360,7 @@ public class ReportServlet extends HttpServlet{
 	}
 	
 	
-	private void setJasperClasspath(File jarFile){
+	private void setJasperClasspath(){
 		// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 		String webinflibPath = this.getServletContext().getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
 		//logger.debug("JasperReports lib-dir is [" + this.getClass().getName()+ "]");
@@ -380,7 +395,7 @@ public class ReportServlet extends HttpServlet{
 		if(jasperReportClassPath != null && !jasperReportClassPath.equalsIgnoreCase("")) 
 			jasperReportClassPath += System.getProperty("path.separator");
 		
-		jasperReportClassPath += jarFile.toString();		
+		//jasperReportClassPath += jarFile.toString();		
 		System.setProperty("jasper.reports.compile.class.path", jasperReportClassPath);
 	
 	}

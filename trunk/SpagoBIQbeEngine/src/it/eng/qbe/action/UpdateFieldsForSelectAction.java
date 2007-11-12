@@ -87,6 +87,7 @@ public class UpdateFieldsForSelectAction extends AbstractAction {
 		}else{
 			aWizardObject.setDistinct(false);
 		}
+		
 		Utils.updateLastUpdateTimeStamp(getRequestContainer());
 		
 	}

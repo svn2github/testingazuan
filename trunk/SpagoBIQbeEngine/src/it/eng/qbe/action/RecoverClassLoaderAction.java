@@ -56,7 +56,7 @@ public class RecoverClassLoaderAction extends AbstractAction {
 				response.setAttribute("ACTOR", actor);
 			}else{
 				response.setAttribute("ACTION", "DETAIL_DATA_MART_ACTION");
-				response.setAttribute("PATH", dm.getPath());
+				response.setAttribute("PATH", dm.getName());
 			}
 		}catch (SourceBeanException sbe){
 			sbe.printStackTrace();

@@ -22,8 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.action;
 
 import it.eng.qbe.conf.QbeConf;
+import it.eng.qbe.datasource.BasicDataSource;
+import it.eng.qbe.datasource.CompositeHibernateDataSource;
+import it.eng.qbe.datasource.DataSourceFactory;
 import it.eng.qbe.datasource.HibernateDataSource;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
@@ -41,7 +45,11 @@ import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -77,56 +85,66 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractAction {
 			session.setAttribute("MAP_CATALOGUE_CLIENT_URL", mapCatalogueManagerUrl);
 		}
 		
-		
+		ApplicationContainer applicationContainer = ApplicationContainer.getInstance();
 		String dataSourceName = (String)request.getAttribute("JNDI_DS");
 		String jndiDataSourceName  = QbeConf.getInstance().getJndiConnectionName(dataSourceName);		
 		String dialect = (String)request.getAttribute("DIALECT");		
-		String dmPath = (String)request.getAttribute("PATH");
-		String propertiesStr = (String)request.getAttribute("DATAMART_PROPERTIES");
+		Object path = request.getAttribute("PATH");
+		Map dblinkMap = (Map)request.getAttribute("DBLINK_MAP");	
+		if(dblinkMap == null) dblinkMap = new HashMap();
+		IDataSource dataSource = null;
+		
+		
+		
+		
+		dataSource = (IDataSource) applicationContainer.getAttribute(BasicDataSource.buildDatasourceName(path));
+		//dataSource = null;
+		if (dataSource == null) {
+			dataSource = DataSourceFactory.buildDataSource(path, dblinkMap,  jndiDataSourceName, dialect);
+			applicationContainer.setAttribute(BasicDataSource.buildDatasourceName(path), dataSource);
+		} else if(dataSource instanceof CompositeHibernateDataSource) {
+			CompositeHibernateDataSource compositeHibernateDataSource = (CompositeHibernateDataSource)dataSource;
+			compositeHibernateDataSource.refreshDatamartViews();
+		}
+		
+		
+		
+		 String propertiesStr = (String)request.getAttribute("DATAMART_PROPERTIES");
 		Properties properties = null;
 		if(propertiesStr != null) {
 			properties = new Properties();
 			properties.load(new ByteArrayInputStream(propertiesStr.getBytes()));
 		}
 		
-		String modalityStr = (String)request.getAttribute("MODALITY");
-		SourceBean modalitySB = null;
-		if(modalityStr != null) modalitySB = SourceBean.fromXMLString(modalityStr);
-		
-		
-		ApplicationContainer applicationContainer = ApplicationContainer.getInstance();
-		
-		//IDataSource dataSource = new HibernateDataSource(dmPath, jndiDataSourceName, dialect);
-		
-		IDataSource dataSource = (IDataSource) applicationContainer.getAttribute(dmPath + "_dataSource");
-		if (dataSource == null) {
-			dataSource = new HibernateDataSource(dmPath, jndiDataSourceName, dialect);
-			((HibernateDataSource)dataSource).setName(dataSourceName);
-			applicationContainer.setAttribute(dmPath + "_dataSource", dataSource);
+		List modalities = (List)request.getAttribute("MODALITY");
+		SourceBean compositeModalitySB = new SourceBean("MODALITY");
+		if(modalities != null) {
+			for(int i = 0; i < modalities.size(); i++) {
+				SourceBean modalitySB = (SourceBean)modalities.get(i);
+				if(modalitySB != null) {				
+					List tables = modalitySB.getAttributeAsList("TABLE");
+					for(int j = 0; j < tables.size(); j++) {
+						SourceBean tableSB = (SourceBean)tables.get(j);
+						compositeModalitySB.setAttribute(tableSB);
+					}
+				}
+				
+			}
 		}
-
-		
+			
 		
 		
 		DataMartModel dmModel = new DataMartModel(dataSource);
 		if(properties != null) dmModel.setDataMartProperties(properties); 
-		if(modalitySB != null) dmModel.setDataMartModelAccessModality(new DataMartModelAccessModality(modalitySB));
+		if(compositeModalitySB != null && compositeModalitySB.getAttribute("TABLE") != null) dmModel.setDataMartModelAccessModality(new DataMartModelAccessModality(compositeModalitySB));
 		
 		
 		
 		
 		ApplicationContainer.getInstance().setAttribute("CURRENT_THREAD_CONTEXT_LOADER", Thread.currentThread().getContextClassLoader());
 		
-		dmModel.setName(dmPath);
-		dmModel.setDescription(dmPath);
-		
-		
-		
-		
-		SessionFactory sf = dmModel.createSessionFactory();
-		Logger.debug(Utils.class, "getSessionFactory: session factory created: " + sf);
-	    ApplicationContainer.getInstance().setAttribute(dmModel.getPath(), sf);
-		Logger.debug(Utils.class, "getSessionFactory: session factory stored into application context: " + sf);
+		dmModel.setName(dmModel.getDataSource().getCompositeDatamartName());
+		dmModel.setDescription(dmModel.getDataSource().getCompositeDatamartName());
 		
 		
 		if (getRequestContainer().getSessionContainer().getAttribute("dataMartModel") != null){

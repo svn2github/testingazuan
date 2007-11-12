@@ -43,12 +43,15 @@ public class DetailDataMartAction extends AbstractAction {
 	 * all the data are in place
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		String path = (String)request.getAttribute("PATH");
+			
+		/*
+		String path = (String)request.getAttribute("PATH");		
 		IDataSource dataSource = new HibernateDataSource(path, null, null);
 		DataMartModel dataMartModel = new DataMartModel(dataSource);
-				
-		//DataMartModel dataMartModel = new DataMartModel(, null, null);
 		getRequestContainer().getSessionContainer().setAttribute("dataMartModel", dataMartModel);
-       
+		*/
+		
+		String dmName = (String)request.getAttribute("PATH");
+		response.setAttribute("DM_NAME", dmName);
 	}
 }

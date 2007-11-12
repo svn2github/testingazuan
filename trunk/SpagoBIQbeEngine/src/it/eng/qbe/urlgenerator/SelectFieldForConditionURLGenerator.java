@@ -73,7 +73,7 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 			classPrefix = "a";
 		}
 		if (classCompleteName.indexOf(".") > 0){
-			aliasedClassName = classPrefix + classCompleteName.substring(classCompleteName.lastIndexOf(".")+1);
+			aliasedClassName = classPrefix + classCompleteName.replace(".", "_");
 		}else{
 			aliasedClassName = classPrefix + classCompleteName;
 		}
@@ -88,7 +88,7 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 		Map params = new HashMap();
 		
 		params.put("ACTION_NAME","SELECT_FIELD_FOR_WHERE_ACTION");
-		params.put("COMPLETE_FIELD_NAME", aliasedClassName + "."+source.toString());
+		params.put("COMPLETE_FIELD_NAME", aliasedClassName + "."+ source.toString());
 		params.put("CLASS_NAME", this.className);
 		params.put("ALIAS_CLASS_NAME",this.aliasedClassName);
 	

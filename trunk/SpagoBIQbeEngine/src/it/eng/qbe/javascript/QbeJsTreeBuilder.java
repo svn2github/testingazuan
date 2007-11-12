@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.javascript;
 
+import it.eng.qbe.datasource.CompositeHibernateDataSource;
+import it.eng.qbe.datasource.HibernateDataSource;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
@@ -67,6 +69,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 
 	DataMartModel dataMartModel = null;
 	ISingleDataMartWizardObject dataMartWizard = null;
+	String targetDatamartName = null;
 	Map selectedNodes = null;
 	
 	HttpServletRequest httpRequest = null; 
@@ -110,32 +113,125 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	public abstract Map getSelectdNodes();
 	
 	
+
+	
 	public String build() {	
+		StringBuffer treeScriptBuffer = new StringBuffer();
+		
+		List jsTreeList = getJsTreeList();
+		if(jsTreeList != null) {
+			for(int i = 0; i < jsTreeList.size(); i++) {
+				String treeScript = (String)jsTreeList.get(i);
+				treeScriptBuffer.append(treeScript + "\n\n\n");
+			}
+		}
+		
+		return treeScriptBuffer.toString();
+	}
+	
+	public List getJsTreeList() {
+		List jsTreeList = null;
+		
+		Map jsTreeMap = getJsTreeMap();
+		if(jsTreeMap != null) {
+			jsTreeList = new ArrayList();
+			Iterator it = jsTreeMap.keySet().iterator();
+			while(it.hasNext()) {
+				String dmName = (String)it.next();
+				String treeScript = (String)jsTreeMap.get(dmName);
+				jsTreeList.add(treeScript);
+			}
+		}
+		
+		return jsTreeList;
+	}
+	
+	public Map getJsTreeMap() {
+		Map jsTreeMap = null;
+		
 		long start = System.currentTimeMillis();
-		buffer = new StringBuffer();		
+		
+		if(dataMartModel.getDataSource() instanceof HibernateDataSource) {
+			String treeScript = buildSingleTree();
+			jsTreeMap = new HashMap();
+			jsTreeMap.put(dataMartModel.getName(), treeScript);
+		} else if (dataMartModel.getDataSource() instanceof CompositeHibernateDataSource) {
+			jsTreeMap = buildCompositeTree();
+		} else {
+			// fail fast behaviour
+			throw new RuntimeException("Impossible to build a jsTree using a datasource of type " + dataMartModel.getDataSource().getClass().getName());
+		}
+		
 		long end = System.currentTimeMillis();
 		System.out.println("Elapsed: " + ((end - start)/1000));
 		
-		return buffer.toString();
+		return jsTreeMap;
 	}
 	
+	private String buildSingleTree() {	
+		
+		buffer = new StringBuffer();
+		addHeader();
+		addTree();
+		addRootNode();
+		addNodes();
+		addFooter();
+		
+		return buffer.toString();
+	}
+
+	private Map buildCompositeTree() {	
+		Map treeScripts = new HashMap();
+		CompositeHibernateDataSource dataSource = (CompositeHibernateDataSource)dataMartModel.getDataSource();
+		List dmNames = dataSource.getDatamartNames();
+		String baseName = name;
+		for(int i = 0; i < dmNames.size(); i++) {
+			targetDatamartName = (String)dmNames.get(i);
+			name = baseName + "_" + i;
+			
+			if(getClassNames().size() > 0) {
+				String treeScript = buildSingleTree();
+				treeScripts.put(targetDatamartName, treeScript);
+			}
+		}	
+		
+		targetDatamartName = "Views";
+		name = baseName + "_" + dmNames.size();
+		if(getHibernateSession() != null && getClassNames().size() > 0) {
+			String treeScript = buildSingleTree();
+			treeScripts.put(targetDatamartName, treeScript);
+		}
+		
+		name = baseName;
+		
+		return treeScripts;
+	}
+	
+	
+	
 	public void addRootNode() {
-		addNode("0", "-1", dataMartModel.getName(), "", "", dataMartModel.getName(), 
+		String rootNodeName = targetDatamartName;
+		if(rootNodeName == null) rootNodeName = dataMartModel.getName();
+		
+		addNode("0", "-1", rootNodeName, "", "", rootNodeName, 
 				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
 				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
 				"", "", "", "", "");
 	}
+	
 	
 	public abstract void addNodes();
 	
 		
 	private SessionFactory getHibernateSession() {
 		SessionFactory sf = null;
-		Logger.debug(this.getClass(), "writeSelectionTree: start method writeSelectionTree");
-		ApplicationContainer application = ApplicationContainer.getInstance();
-		Logger.debug(this.getClass(), "writeSelectionTree: application container retrived: " + application);
-		sf = Utils.getSessionFactory(dataMartModel,application);
-		Logger.debug(this.getClass(), "writeSelectionTree: session factory retrived: " + sf);
+		if(dataMartModel.getDataSource() instanceof CompositeHibernateDataSource && targetDatamartName != null) {
+			sf = ((CompositeHibernateDataSource)dataMartModel.getDataSource()).getSessionFactory(targetDatamartName);
+		} else {
+			sf = dataMartModel.getDataSource().getSessionFactory();
+		}
+			
+	
 		if(sf == null){
 			Logger.critical(this.getClass(), "writeSelectionTree: session factory NULL");
 		}
@@ -153,11 +249,6 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		fields.addAllFields(namesSet);
 		List namesList = fields.getFieldsOrderedByLabel();
 		return namesList;
-		
-//		Object[] namesArr = namesSet.toArray();
-//		Arrays.sort(namesArr);
-//		List namesList = Arrays.asList(namesArr);
-//		return namesList;
 	}
 	
 	protected Collection getSelectedClassNames() {
@@ -167,12 +258,18 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		if(list.size() > 0) {
 			selectedClassNames = new HashSet();
 			EntityClass ec = null;	
-					
+			Collection allClassNames = getClassNames();		
 			for (Iterator it = list.iterator(); it.hasNext(); ){
-				ec  = (EntityClass)it.next();			
-				selectedClassNames.add(ec.getClassName());
+				ec  = (EntityClass)it.next();	
+				if(allClassNames.contains(ec.getClassName())) {
+					selectedClassNames.add(ec.getClassName());
+				}
 			}		
 		}
+		
+		
+		
+		
 		return selectedClassNames;	 
 	}
 		
@@ -200,7 +297,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 		nodeCounter++;
 		
-		PersistentClass pc = dataMartModel.getDataSource().getHibernateConfiguration().getClassMapping(className);
+		PersistentClass pc = dataMartModel.getDataSource().getConfiguration().getClassMapping(className);
 		
 		
 		String classLabel = Utils.getLabelForClass(Utils.getRequestContainer(httpRequest), dataMartModel, className);
@@ -241,7 +338,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		// Genero i field
 		try{
 			ApplicationContainer application = ApplicationContainer.getInstance();
-			SessionFactory sf = Utils.getSessionFactory(dataMartModel,application);
+			SessionFactory sf = dataMartModel.getDataSource().getSessionFactory();
 			
 			ClassMetadata aClassMetadata = sf.getClassMetadata(className);
 			
@@ -574,7 +671,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			// Control recursion level because calculate field are applied only at etity level not in dimension level
 			//
 			if (/*(recursionLevel == 1) &&*/ (fieldUrlGenerator instanceof SelectFieldForSelectionURLGenerator)){
-				List manualCalcultatedFieldForEntity = Utils.getManualCalculatedFieldsForEntity(className, dataMartModel.getJarFile().getParent());
+				List manualCalcultatedFieldForEntity = Utils.getManualCalculatedFieldsForEntity(className, dataMartModel);
 				
 				CalculatedField cField = null;
 				String cFieldAction = null;
@@ -680,7 +777,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		// Genero i field
 		try{
 			ApplicationContainer application = ApplicationContainer.getInstance();
-			SessionFactory sf = Utils.getSessionFactory(dataMartModel,application);
+			SessionFactory sf = dataMartModel.getDataSource().getSessionFactory();
 			
 			ClassMetadata aClassMetadata = sf.getClassMetadata(className);
 			
@@ -838,7 +935,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			// Aggiungo i campi Calcolati per la classe
 			//
 			if (fieldUrlGenerator instanceof SelectFieldForSelectionURLGenerator){
-				List manualCalcultatedFieldForEntity = Utils.getManualCalculatedFieldsForEntity(className, dataMartModel.getJarFile().getParent());
+				List manualCalcultatedFieldForEntity = Utils.getManualCalculatedFieldsForEntity(className, dataMartModel);
 				
 				CalculatedField cField = null;
 				String cFieldAction = null;

@@ -61,11 +61,13 @@ public class QbeJoinWithFatherQueryJsTreeBuilder extends QbeJsTreeBuilder {
 		}		
 	}
 	
+	/*
 	public void addRootNode() {
 		addNode("0", "-1", "Join with Parent Query Entities", "", "", dataMartModel.getName(), 
 				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
 				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
 				"", "", "", "", "");
 	}
+	*/
 
 }

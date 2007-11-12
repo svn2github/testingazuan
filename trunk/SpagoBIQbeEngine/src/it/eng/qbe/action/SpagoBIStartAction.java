@@ -33,6 +33,7 @@ import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +56,7 @@ public class SpagoBIStartAction extends AbstractAction {
 	public static final String DATA_SOURCE_DIALECT = "DIALECT";
 	public static final String DATA_SOURCE_NAME = "JNDI_DS";
 	public static final String DATAMART_PATH = "PATH";	
+	public static final String DBLINK_MAP = "DBLINK_MAP";	
 	public static final String QUERI_ID =  "queryId";
 	public static final String SPAGOBI_USER =  "SPAGOBI_USER";
 	public static final String SPAGOBI_URL =  "SPAGOBI_URL";
@@ -141,10 +143,44 @@ public class SpagoBIStartAction extends AbstractAction {
 			template = new String(bASE64Decoder.decodeBuffer(template));
 			System.out.println("Template: " + template);
 			
+			
+			
+			
 			SourceBean templateSB = SourceBean.fromXMLString(template);
-			SourceBean datamartSB = (SourceBean)templateSB.getAttribute("DATAMART");
+			
+			Object path = null;
+			
+			Map dblinkMap = new HashMap();
+			List dmModalities = new ArrayList();
+			
+			if(templateSB.getName().equalsIgnoreCase("COMPOSITE-QBE")) {
+				List dmNames = new ArrayList();
+				List qbeList = templateSB.getAttributeAsList("QBE");
+				for(int i = 0; i < qbeList.size(); i++) {
+					SourceBean qbeSB = (SourceBean)qbeList.get(i);
+										
+					SourceBean datamartSB = (SourceBean)qbeSB.getAttribute("DATAMART");
+					String dmName = (String)datamartSB.getAttribute("name");
+					dmNames.add(dmName);
+					String dblink = (String)datamartSB.getAttribute("dblink");
+					if(dblink != null) dblinkMap.put(dmName, dblink);
+					
+					SourceBean modalitySB = (SourceBean)qbeSB.getAttribute("MODALITY");
+					dmModalities.add(modalitySB);					
+				}
+				
+				path = dmNames;
+			} else {
+				SourceBean datamartSB = (SourceBean)templateSB.getAttribute("DATAMART");
+				String dmName = (String)datamartSB.getAttribute("name");
+				path = dmName;
+				SourceBean modalitySB = (SourceBean)templateSB.getAttribute("MODALITY");
+				dmModalities.add(modalitySB);
+			}
+			
+			
 			SourceBean datasourceSB = (SourceBean)templateSB.getAttribute("DATASOURCE");
-			SourceBean modalitySB = (SourceBean)templateSB.getAttribute("MODALITY");
+			
 			
 			session.delAttribute("FUNCTIONALITIES");
 			SourceBean functionalitiesSB = (SourceBean)templateSB.getAttribute("FUNCTIONALITIES");
@@ -153,8 +189,8 @@ public class SpagoBIStartAction extends AbstractAction {
 				functionalities = QbeConf.getInstance().getFunctianalityProperties(functionalitiesSB);
 			if(functionalities != null) session.setAttribute("FUNCTIONALITIES", functionalities);
 						
-			String dmName = (String)datamartSB.getAttribute("name");
-			System.out.println("Path: " + dmName);
+			
+
 			
 			String dsName = (String)datasourceSB.getAttribute("name");
 			System.out.println("Data-Source: " + dsName);
@@ -189,12 +225,13 @@ public class SpagoBIStartAction extends AbstractAction {
 			response.setAttribute(SPAGOBI_PATH, templatePath);
 			response.setAttribute(DATA_SOURCE_DIALECT, dsDialect);
 			response.setAttribute(DATA_SOURCE_NAME, dsName);
-			response.setAttribute(DATAMART_PATH, dmName);
+			response.setAttribute(DATAMART_PATH, path);
+			response.setAttribute(DBLINK_MAP, dblinkMap);			
 			response.setAttribute(QUERI_ID, queryId);
 			response.setAttribute(SPAGOBI_COUNTRY, country);
 			response.setAttribute(SPAGOBI_LANGUAGE, language);
 			response.setAttribute("DATAMART_PROPERTIES", props.toString());
-			if(modalitySB != null) response.setAttribute("MODALITY", modalitySB.toString());
+			response.setAttribute("MODALITY", dmModalities);
 		} catch (SourceBeanException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

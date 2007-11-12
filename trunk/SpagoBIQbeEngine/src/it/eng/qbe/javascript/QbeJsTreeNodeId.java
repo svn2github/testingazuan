@@ -44,13 +44,7 @@ public class QbeJsTreeNodeId implements IJsTreeNodeId {
 		this.fieldName = fieldName;
 		this.classPrefix = classPrefix;
 	}
-	/*
-	public QbeJsTreeNodeId(ISelectField field) {
-		this.className = field.getFieldEntityClass().getClassName();
-		this.fieldName = field.getFieldNameWithoutOperators();
-		fieldName = fieldName.substring(getClassAlias().length() + 1, fieldName.length());
-	}
-	*/
+	
 	public QbeJsTreeNodeId(ISelectField field, String classPrefix) {
 		
 			this.className = field.getFieldEntityClass().getClassName();
@@ -72,13 +66,16 @@ public class QbeJsTreeNodeId implements IJsTreeNodeId {
 	}
 	
 	public String getClassAlias() {
+		/*
 		String classAlias = null;
 		if (className.indexOf(".") > 0){
 			classAlias = classPrefix + className.substring(className.lastIndexOf(".")+1);
 		}else{
 			classAlias = classPrefix + className;
 		}
-		return classAlias;
+		classAlias;
+		*/
+		return classPrefix + className.replace(".", "_");
 	}
 	
 	public String getFieldAlias() {

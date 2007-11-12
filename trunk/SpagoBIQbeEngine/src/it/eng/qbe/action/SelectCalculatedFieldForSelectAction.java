@@ -68,7 +68,7 @@ public class SelectCalculatedFieldForSelectAction extends SelectFieldForSelectAc
 		}
 		
 		try {
-			CalculatedField cField = Utils.getCalculatedField(cFieldId, dmModel.getJarFile().getParent());
+			CalculatedField cField = Utils.getCalculatedField(cFieldId, dmModel.getFormulaFile());
 			
 			cField.setFldCompleteNameInQuery(cFieldNameInQuery);
 			String mappings = cField.getMappings();
@@ -94,7 +94,7 @@ public class SelectCalculatedFieldForSelectAction extends SelectFieldForSelectAc
 				cField.setClassNameInQuery(className);
 				positionInteger = Utils.findPositionOf(getDataMartWizard(), className + "." + completeRequiredFieldName);
 				
-				SessionFactory sf = Utils.getSessionFactory(dmModel,ApplicationContainer.getInstance());
+				SessionFactory sf = dmModel.getDataSource().getSessionFactory();
 				
 				ClassMetadata cmd = sf.getClassMetadata(cField.getEntityName());
 				Type aHibType = cmd.getPropertyType(requiredField);

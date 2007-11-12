@@ -63,11 +63,16 @@ public class QbeJoinJsTreeBuilder extends QbeJsTreeBuilder {
 		}		
 	}
 	
+	
 	public void addRootNode() {
-		addNode("0", "-1", "Join with Other Entities", "", "", dataMartModel.getName(), 
+		String rootNodeName = targetDatamartName;
+		if(rootNodeName == null) rootNodeName = dataMartModel.getName();
+		
+		addNode("0", "-1", rootNodeName, "", "", rootNodeName, 
 				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
 				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
 				"", "", "", "", "");
 	}
+	
 
 }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <DATA-ACCESS>
 		<CONNECTION name="hsqlFoodmart" jndiResourceName="jdbc/sbifoodmart" jndiContext="java:comp/env" />
+		<CONNECTION name="genova" jndiResourceName="jdbc/genova" jndiContext="java:comp/env" />
+		<CONNECTION name="QBE1" jndiResourceName="jdbc/qbe1" jndiContext="java:comp/env" />
+		<CONNECTION name="QBE2" jndiResourceName="jdbc/qbe2" jndiContext="java:comp/env" />
 </DATA-ACCESS>

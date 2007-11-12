@@ -67,7 +67,7 @@ public class PersistQueryTemporaryAction extends AbstractHttpAction {
 	
 			String qbeDataMartDir = getQbeDataMartDir(new File(it.eng.spago.configuration.ConfigSingleton.getInstance().getRootPath()));
 		
-			String publicDmDir = qbeDataMartDir +System.getProperty("file.separator") +  dmModel.getPath();
+			String publicDmDir = qbeDataMartDir +System.getProperty("file.separator") +  dmModel.getName();
 		
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();

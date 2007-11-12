@@ -66,7 +66,7 @@ public class SelectDataMartAction extends AbstractAction {
 		
 		
 		
-		SessionFactory sf = Utils.getSessionFactory(dmModel, application);
+		SessionFactory sf = dmModel.getDataSource().getSessionFactory();
 		
         getRequestContainer().getSessionContainer().setAttribute("dataMartModel", dmModel);
         

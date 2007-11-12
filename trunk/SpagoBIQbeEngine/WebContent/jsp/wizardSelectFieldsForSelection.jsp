@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    QbeJsTreeBuilder qbeJsBuilder = new QbeSelectJsTreeBuilder(dm,aWizardObject, request);
    
    
+   
    if (Utils.isSubQueryModeActive(sessionContainer)){
 			String subQueryFieldId = (String)sessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
 			String subQueryPrefix = Utils.getMainWizardObject(sessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);

@@ -56,7 +56,7 @@ public class AlignExpertAction extends AbstractAction {
 		    ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 			
 		    aWizardObject.composeQuery(dm);
-			SessionFactory sf = Utils.getSessionFactory(dm, ApplicationContainer.getInstance());
+			SessionFactory sf = dm.getDataSource().getSessionFactory();
 			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(sf.openSession());
 			String sqlQuery = queryRewriter.rewrite( aWizardObject.getFinalQuery() );
 			aWizardObject.setExpertQueryDisplayed(sqlQuery);

@@ -171,7 +171,11 @@ public class SelectFieldForSelectAction extends AbstractAction {
 		return aSelectClause;
 	}
 	
-	protected void addSelectClause(String className, String classAlias, String fieldAlias, String fieldLabel, String selectFieldCompleteName) {
+	protected void addSelectClause(String className, 
+								   String classAlias, 
+								   String fieldAlias, 
+								   String fieldLabel, 
+								   String selectFieldCompleteName) {
 		ISelectClause aSelectClause = getSelectClause();		
 		ISelectField aSelectField = new SelectFieldSourceBeanImpl();
 		aSelectField.setFieldName(fieldAlias);

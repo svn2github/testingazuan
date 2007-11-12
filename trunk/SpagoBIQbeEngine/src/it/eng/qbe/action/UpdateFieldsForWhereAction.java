@@ -71,13 +71,16 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 			}
 		}
 		String classAlias = null;
-			
+		/*
 			if (className.indexOf(".") > 0){
 				classAlias = classPrefix + className.substring(className.lastIndexOf(".")+1);
 			}else{
 				classAlias = classPrefix  + className;
 			}
+		*/
 		
+		classAlias = classPrefix  + className.replace(".", "_");
+			
 		String aliasedFieldName = (String)request.getAttribute("S_COMPLETE_FIELD_NAME");
 		String alias = (String)request.getAttribute("S_ALIAS_COMPLETE_FIELD_NAME");
 		

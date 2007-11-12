@@ -45,6 +45,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(sessionContainer);
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
      
+   String datamartNamesStr = "";
+   List datamartNames = dm.getDataSource().getDatamartNames();
+   for(int i = 0; i < datamartNames.size(); i++) datamartNamesStr += (i==0?"":",") + (String)datamartNames.get(i);
 
      
    String msg =  (String)aServiceResponse.getAttribute("ERROR_MSG");
@@ -93,7 +96,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		queryLang = "hql";
 	} 
 	
-  	String jarFilePath = dm.getJarFile().toString();
   	String exportFormUrl = Utils.getReportServletContextAddress() + "/ReportServlet";
   	
   
@@ -117,6 +119,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	
   	String enableScript = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.enablescript");
   	String calculateFieldPosition = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.calculateFieldPosition");
+  	
 %>
 
 <% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
@@ -260,11 +263,11 @@ function askConfirmation (message) {
 						action="<%=exportFormUrl%>" 
 						method="post">	
 				<input type="hidden" id="_savedObjectId" name="_savedObjectId" value=""/>
-				<input type="hidden" id="jarfilepath" name="jarfilepath" value="<%=jarFilePath%>"/>
+				<input type="hidden" id="datamartNamesStr" name="datamartNamesStr" value="<%=datamartNamesStr%>"/>
   				<input type="hidden" id="query" name="query" value="<%=finalQueryString%>"/>
  				<input type="hidden" id="lang" name="lang" value="<%=queryLang%>"/>
-  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=dm.getJndiDataSourceName()%>"/>
-  				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDialect()%>"/>
+  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=dm.getDataSource().getJndiDataSourceName()%>"/>
+  				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDataSource().getDialect()%>"/>
   				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(aWizardObject)%>"/>
   				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(aWizardObject)%>"/>
   				
@@ -293,7 +296,8 @@ function askConfirmation (message) {
 				
 						<td width="20%">					
 							
-							<% if (overflow){ %>
+							<% if(!aWizardObject.containsDuplicatedAliases()) {
+							 	if (overflow){ %>
 								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
 									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
 									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
@@ -303,6 +307,12 @@ function askConfirmation (message) {
 									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
 									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
 									onclick='ajxPersistTemporaryQueryAction();'/>
+							<% }
+							  } else { %>
+								  <img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
+									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
+									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
+									onclick='alert("Impossible to export result set. Query contains duplicated column alises");'/>
 							<% }%>
 								
 									
@@ -314,11 +324,18 @@ function askConfirmation (message) {
 						</td>
 						<td width="60%" align="left">
 							
-							
+							<% if(!aWizardObject.containsDuplicatedAliases()) {%>
 								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/mview2.gif")%>"
 									 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 									 title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 									 onclick="ajxCreateViewFromCurrentQuery();"/>
+							<%
+							} else { %>
+								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/mview2.gif")%>"
+								 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
+								 title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
+								 onclick='alert("Impossible to create view. Query contains duplicated column alises");'/>
+							<%}	%>
 									 
 							
 						</td>

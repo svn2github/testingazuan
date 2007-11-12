@@ -25,6 +25,7 @@ import it.eng.qbe.conf.QbeConf;
 import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IQuery;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
@@ -56,7 +57,7 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 			if (!getDataMartWizard().isUseExpertedVersion()){
 				// If I'm not using expert
 				// Check for join controls
-				return doCheckJoins(getDataMartWizard(), response);				
+				return doCheckJoins((IQuery)getDataMartWizard(), response);				
 			}
 		}
 		return true;
@@ -64,77 +65,28 @@ public class ExecuteSaveQueryAction extends AbstractAction {
 	
 	/**
 	 * 
-	 * @param wizObj
+	 * @param query
 	 * @param serviceResponse
 	 * @return
 	 * @throws SourceBeanException
 	 */
-	public boolean doCheckJoins(ISingleDataMartWizardObject wizObj, SourceBean serviceResponse) throws SourceBeanException{
+	public boolean doCheckJoins(IQuery query, SourceBean serviceResponse) throws SourceBeanException{
 		String bundle = "component_spagobiqbeIE_messages";
 		
 		IQbeMessageHelper msgHelper = null;
 		StringBuffer warning = new StringBuffer();
 		
-		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");   
+		msgHelper = QbeConf.getInstance().getQbeMessageHelper();
 		
-		String msgHelperClass = null;
-		if (qbeMode.equalsIgnoreCase("WEB")){
-			
-			msgHelperClass = "it.eng.qbe.utility.QbeWebMessageHelper";
-		}else{
-			msgHelperClass = "it.eng.qbe.utility.QbeSpagoBIMessageHelper";
-		}
 		
-		try{
-			msgHelper = (IQbeMessageHelper)Class.forName(msgHelperClass).newInstance();
-		}catch (Exception e) {
-			Logger.error(ExecuteSaveQueryAction.class, e);
-		}
-		
-		wizObj.getEntityClasses();
-		
-		boolean warnings = false;
-		if (wizObj.getEntityClasses().size() == 1){
-			return true;
-		}else{
-			for (int i =0; i < wizObj.getEntityClasses().size(); i++ ){
-				EntityClass e1 = (EntityClass)wizObj.getEntityClasses().get(i);
-				
-				for (int j = i+1; j < wizObj.getEntityClasses().size(); j++ ){
-					EntityClass e2 = (EntityClass)wizObj.getEntityClasses().get(j);
-					Logger.debug(ExecuteSaveQueryAction.class, "Check if Join Exist between ["+e1+"] and ["+e2+"]");
-					
-					if (e1.getClassName() != e2.getClassName()){
-						boolean joinFound = false;
-						if (wizObj.getWhereClause() != null){
-							for (int k=0; ((k < wizObj.getWhereClause().getWhereFields().size()) && !joinFound); k++){
-								IWhereField wf = (IWhereField)wizObj.getWhereClause().getWhereFields().get(k);
-								
-								if (wf.getFieldOperator().equalsIgnoreCase("=")){
-									joinFound = (
-										(wf.getFieldName().startsWith(e1.getClassAlias()) &&  wf.getFieldValue().startsWith(e2.getClassAlias()))
-										||
-										(wf.getFieldName().startsWith(e2.getClassAlias())&&  wf.getFieldValue().startsWith(e1.getClassAlias()))
-									);
-								}
-							}
-						}//if (wizObj.getWhereClause() != null){
-						if (!joinFound){
-							warnings = true;
-							String locMsg = msgHelper.getMessage(getRequestContainer(), "QBE.Warning.Nojoin", bundle);
-							warning.append( locMsg + e1.getClassName() +"," + e2.getClassName() + "\n");
-						}
-					}//if (e1.getClassName() != e2.getClassName()){
-				}//for (int j =0; j < wizObj.getEntityClasses().size(); j++ )
-			}//for (int i =0; i < wizObj.getEntityClasses().size(); i++ )
-		}//else{
-		
-		if (warnings){
-			serviceResponse.setAttribute("JOIN_WARNINGS", warning.toString());
+		if (!query.areAllEntitiesJoined()){
+			String locMsg = msgHelper.getMessage(getRequestContainer(), "QBE.Warning.Nojoin", bundle);			
+			serviceResponse.setAttribute("JOIN_WARNINGS", locMsg);
 			return false;
-		}else {
-			return true;
-		}
+		}		
+		
+		return true;
+		
 	}
 	
 	private SessionContainer getSessionContainer() {

@@ -746,10 +746,12 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			String username = null;
 			try {
 				RequestContainer reqCont = RequestContainer.getRequestContainer();
-				SessionContainer sessCont = reqCont.getSessionContainer();
-				SessionContainer permCont = sessCont.getPermanentContainer();
-				IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-				username = (String)profile.getUserUniqueIdentifier();
+				if(reqCont!=null){
+					SessionContainer sessCont = reqCont.getSessionContainer();
+					SessionContainer permCont = sessCont.getPermanentContainer();
+					IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+					username = (String)profile.getUserUniqueIdentifier();
+				}
 			} catch (Exception e) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 						            "loadAllLowFunctionalities", "Error while recovering user profile", e);

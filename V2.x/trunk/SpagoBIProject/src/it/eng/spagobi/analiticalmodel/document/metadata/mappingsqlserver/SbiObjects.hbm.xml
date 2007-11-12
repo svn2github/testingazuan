@@ -13,7 +13,7 @@
            
             </generator>
         </id>
-        <many-to-one name="sbiEngines" class="it.eng.spagobi.engineconfig.metadata.SbiEngines">
+        <many-to-one name="sbiEngines" class="it.eng.spagobi.engines.config.metadata.SbiEngines">
             <column name="engine_id" not-null="true" />
         </many-to-one>
         <many-to-one name="stateConsideration" class="it.eng.spagobi.commons.metadata.SbiDomains">

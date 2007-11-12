@@ -18,7 +18,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
-<%@ include file="/jsp/portlet_base.jsp"%>
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.tools.importexport.ImportExportConstants,java.util.List,java.util.Map,java.util.Set,java.util.Iterator,it.eng.spagobi.engineconfig.bo.Engine,it.eng.spagobi.tools.importexport.Jnit.eng.spagobi.tools.importexport.tools.importexport.Jdit.eng.spagobi.tools.importexportmport="java.util.HashMap"%>
 

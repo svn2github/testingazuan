@@ -15,7 +15,7 @@
   <!-- START LIST TAGS  -->
   <tag>
   	<name>FisheyeMenu</name>
-    <tag-class>it.eng.spagobi.presentation.tags.FisheyeMenuTag</tag-class>
+    <tag-class>it.eng.spagobi.commons.presentation.tags.FisheyeMenuTag</tag-class>
     <body-content>EMPTY</body-content>
     <description>Rendering of the fisheye menu associated to the user</description>
   </tag>

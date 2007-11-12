@@ -18,7 +18,7 @@
     <!-- START LIST TAGS  -->
    <tag>
         <name>list</name>
-        <tag-class>it.eng.spagobi.presentation.tags.ListTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.ListTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of a list</description>
         <attribute>
@@ -36,7 +36,7 @@
     <!-- display the list of biobject links  -->
 	<tag>
         <name>checklist</name>
-        <tag-class>it.eng.spagobi.presentation.tags.CheckListTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.CheckListTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of a check list</description>
         <attribute>
@@ -55,7 +55,7 @@
     <!-- display the list of checkboxs  -->
 	<tag>
         <name>checkbox</name>
-        <tag-class>it.eng.spagobi.presentation.tags.CheckBoxTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.CheckBoxTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of a check list</description>
         <attribute>
@@ -73,7 +73,7 @@
     
     <tag>
         <name>listBiParameters</name>
-        <tag-class>it.eng.spagobi.presentation.tags.ListBIParametersTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.ListBIParametersTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of a list</description>
         <attribute>
@@ -93,7 +93,7 @@
     
     <tag>
         <name>treeObjects</name>
-        <tag-class>it.eng.spagobi.presentation.tags.TreeObjectsTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.TreeObjectsTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the objects tree</description>
         <attribute>
@@ -127,7 +127,7 @@
     
     <tag>
         <name>error</name>
-        <tag-class>it.eng.spagobi.presentation.tags.ErrorTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.ErrorTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Esegue il rendering degli errori, versione HTML</description>
     </tag>
@@ -141,7 +141,7 @@
     
     <tag>
         <name>dynamicPage</name>
-        <tag-class>it.eng.spagobi.presentation.tags.DynamicPageTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.DynamicPageTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the parameters form</description>
         <attribute>
@@ -175,7 +175,7 @@
     
 	<tag>
         <name>message</name>
-        <tag-class>it.eng.spagobi.presentation.tags.SpagoBIMessageTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.SpagoBIMessageTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Esegue il rendering dei messagi prevedendo 5 parametri opzionali</description>
         <attribute>
@@ -208,7 +208,7 @@
     
     <tag>
         <name>queryWizard</name>
-        <tag-class>it.eng.spagobi.presentation.tags.QueryWizardTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.QueryWizardTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the query wizard form</description>
         <attribute>
@@ -225,7 +225,7 @@
     
     <tag>
         <name>scriptWizard</name>
-        <tag-class>it.eng.spagobi.presentation.tags.ScriptWizardTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.ScriptWizardTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the script wizard form</description>
         <attribute>
@@ -238,7 +238,7 @@
     
     <tag>
         <name>javaClassWizard</name>
-        <tag-class>it.eng.spagobi.presentation.tags.JavaClassWizardTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.JavaClassWizardTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the java class wizard form</description>
         <attribute>
@@ -251,7 +251,7 @@
     
     <tag>
         <name>lovWizard</name>
-        <tag-class>it.eng.spagobi.presentation.tags.LovWizardTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.LovWizardTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the fixed lov wizard form</description>
         <attribute>
@@ -264,7 +264,7 @@
     
     <tag>
         <name>LovColumnsSelector</name>
-        <tag-class>it.eng.spagobi.presentation.tags.LovColumnsSelectorTag</tag-class>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.LovColumnsSelectorTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the lov column selector</description>
         <attribute>

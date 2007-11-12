@@ -37,7 +37,7 @@
         <mapping resource="it/eng/spagobi/analiticalmodel/functionalitytree/metadata/mappinghsqldb/SbiFunctions.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/functionalitytree/metadata/mappinghsqldb/SbiFuncRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/monitoring/metadata/mappinghsqldb/SbiAudit.hbm.xml" />
-        <mapping resource="it/eng/spagobi/engineconfig/metadata/mappinghsqldb/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/config/metadata/mappinghsqldb/SbiEngines.hbm.xml" />
         
         <!-- map catalogue -->
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappinghsqldb/SbiGeoMapFeatures.hbm.xml" />

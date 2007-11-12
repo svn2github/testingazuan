@@ -1,4 +1,4 @@
-	<%@ include file="/jsp/portlet_base.jsp"%>
+	<%@ include file="/jsp/commons/portlet_base.jsp"%>
 	
 	<%@ page         import="it.eng.spago.base.*,
 	 				         it.eng.spago.configuration.ConfigSingleton,

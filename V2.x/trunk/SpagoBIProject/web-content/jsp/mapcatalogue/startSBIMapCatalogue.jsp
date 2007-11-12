@@ -10,9 +10,9 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 
-<%@ include file="/jsp/portlet_base.jsp"%>
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ include file="/jsp/shareProfile.jsp"%>
+<%@ include file="/jsp/commons/shareProfile.jsp"%>
 
 
 <%

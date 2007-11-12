@@ -1,3 +1,3 @@
-<%@ include file="/jsp/portlet_base.jsp"%>
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <spagobi:list moduleName="ListLookupFeaturesModule" />

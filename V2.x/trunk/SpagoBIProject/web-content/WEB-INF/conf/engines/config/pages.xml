@@ -24,7 +24,7 @@
     	</DEPENDENCIES>
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" 
-                  name="istEnginesModule"/>
+                  name="ListEnginesModule"/>
     	</MODULES>
   	</PAGE>
   	

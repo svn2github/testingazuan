@@ -3,24 +3,24 @@
    	<PUBLISHER name="DetailEnginePubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.engineconfig.presentation.DetailEnginePublisher"/>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.engines.config.presentation.DetailEnginePublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JAVA">
       		<RESOURCES>
-        		<ITEM prog="0" resource="it.eng.spagobi.engineconfig.presentation.DetailEnginePublisher"/>
+        		<ITEM prog="0" resource="it.eng.spagobi.engines.config.presentation.DetailEnginePublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>   
   	<PUBLISHER name="ListEnginesPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="it.eng.spagobi.engineconfig.presentation.ListEnginesPublisher"/>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.engines.config.presentation.ListEnginesPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JAVA">
       		<RESOURCES>
-        		<ITEM prog="0" resource="it.eng.spagobi.engineconfig.presentation.ListEnginesPublisher"/>
+        		<ITEM prog="0" resource="it.eng.spagobi.engines.config.presentation.ListEnginesPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

@@ -36,7 +36,7 @@
         <mapping resource="it/eng/spagobi/analiticalmodel/functionalitytree/metadata/mappingmysql/SbiFunctions.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/functionalitytree/metadata/mappingmysql/SbiFuncRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/monitoring/metadata/mappingmysql/SbiAudit.hbm.xml" />
-        <mapping resource="it/eng/spagobi/engineconfig/metadata/mappingmysql/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/config/metadata/mappingmysql/SbiEngines.hbm.xml" />
         
 
 

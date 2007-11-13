@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 .div_background {
 	border: 1px solid #cccccc;
-    background-image:url('/spagobi/img/spagobgimg.jpg');
+    background-image:url('/SpagoBI/img/spagobgimg.jpg');
     background-position: bottom right;
     background-repeat: no-repeat; 
 	padding-top:10px;

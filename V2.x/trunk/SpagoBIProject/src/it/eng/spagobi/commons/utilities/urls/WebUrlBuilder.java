@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class WebUrlBuilder implements IUrlBuilder{
 
-	private String baseURL="/spagobi/servlet/AdapterHTTP";
-	private String baseResourceURL="/spagobi/";
+	private String baseURL="/SpagoBI/servlet/AdapterHTTP";
+	private String baseResourceURL="/SpagoBI/";
 
 	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
 		StringBuffer sb = new StringBuffer();

@@ -117,7 +117,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:document.getElementById("engineAssForm").submit()'> 
 		    		<img class='header-button-image-portlet-section' 
 		    			 title='<spagobi:message key="Sbi.next"  bundle="component_impexp_messages"/>' 
-		    			 src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/next.gif")%>' 
+		    			 src='<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/next.gif")%>' 
 		    			 alt='<spagobi:message key="Sbi.next"  bundle="component_impexp_messages"/>' />
 				</a>
 			</td>
@@ -126,7 +126,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%=backUrl%>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/back.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/back.png")%>' 
 	      				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
 				</a>
 			</td>
@@ -135,7 +135,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%=exitUrl%>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/stop.gif")%>' 
+	      				 src='<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/stop.gif")%>' 
 	      				 alt='<spagobi:message key = "Sbi.exit"  bundle="component_impexp_messages"/>' />
 				</a>
 			</td>

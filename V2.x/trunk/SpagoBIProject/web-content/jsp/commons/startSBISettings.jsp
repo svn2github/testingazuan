@@ -92,7 +92,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/components/importexport/img/importexport64.png")%>' />
+				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/importexport/importexport64.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;

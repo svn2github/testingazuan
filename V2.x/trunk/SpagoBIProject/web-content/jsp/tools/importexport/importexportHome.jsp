@@ -21,8 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.tools.importexport.ImportExportConstants" %>
-<%@page import="it.eng.spagobi.tools.importexportexport.ImportResultInfo%@page import="java.util.Map"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spagobi.tools.importexport.ImportExportConstants" %>
+<%@page import="it.eng.spagobi.tools.importexport.ImportResultInfo"%>
+<%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.HashMap"%>
@@ -69,7 +71,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "Sbi.back" bundle="component_impexp_messages" />' 
-      				 src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/back.png")%>' 
+      				 src='<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/back.png")%>' 
       				 alt='<spagobi:message key = "Sbi.back"  bundle="component_impexp_messages"/>' />
 			</a>
 		</td>
@@ -112,7 +114,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div style="float:left;width:10%;">
 		  <center>
 			 <a href="javascript:submitExportForm()">
-					<img src= '<%=urlBuilder.getResourceLink(request, "/components/importexport/img/importexport32.gif") %>'
+					<img src= '<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
 				</a>
@@ -163,7 +165,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div style="float:left;width:10%;">
 		  <center>
 			<a href="javascript:document.getElementById('importForm').submit()">
-					<img src= '<%= urlBuilder.getResourceLink(request, "/components/importexport/img/importexport32.gif") %>'
+					<img src= '<%= urlBuilder.getResourceLink(request, "/img/tools/importexport/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' />
 				</a>

@@ -21,20 +21,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 **/
 package it.eng.spagobi.security;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 
@@ -42,7 +40,7 @@ import org.exoplatform.services.organization.OrganizationService;
  * Implements the IPortalSecurityProvider interface defining method to get the 
  * system and user roles.
  */
-public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvider {
+public class ExoGroupAsRoleSecurityProviderImpl implements ISecurityInfoProvider {
 	
 	
 	/** 
@@ -100,48 +98,6 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
     	}
 	}
 
-	/**
-	 * Get the list of the user roles. If the user doesn't exist the roles list is empty
-	 * @param user Username
-	 * @param config The SourceBean configuration
-	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
-	 */
-	public List getUserRoles(String user, SourceBean config) {
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Start method");
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Config SourceBean in input: " + config);
-		List roles = new ArrayList();
-		String paramCont = "NAME_PORTAL_APPLICATION";
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Use param " + paramCont);
-		SourceBean paramContSB = (SourceBean)config.getAttribute(paramCont);
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Param context name Source Bean " +
-							"retrived: " + paramContSB);
-		String nameCont = (String)paramContSB.getCharacters();
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Use context name " + nameCont);
-		RootContainer rootCont = RootContainer.getInstance();
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Root container retrived: " + rootCont);
-		PortalContainer container = rootCont.getPortalContainer(nameCont);
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Portal container retrived: " + container);
-		OrganizationService service = 
-			(OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " Organization service retrived: " + service);
-		try {
-			Collection groups = service.getGroupHandler().findGroupsOfUser(user);
-			Iterator iterGroups = groups.iterator();
-			while(iterGroups.hasNext()) {
-				Group group = (Group)iterGroups.next();
-				add(group, service, roles);
-				//String groupid = group.getId();
-				//roles.add(groupid);
-			}
-		} catch (Exception e) {
-			SpagoBITracer.critical("SPAGOBI(ExoSecurityProvider)",
-					this.getClass().getName(),
-					"getUserRoles()",
-					"Error retrieving groups of user "+user, e);
-		}
-		SecurityProviderUtilities.debug(this.getClass(), "getUserRoles", " End method return roles: " + roles);
-		return roles;
-	}
 
 	/**
 	 * Get the names of all the profile attributes defined
@@ -160,15 +116,4 @@ public class ExoGroupAsRoleSecurityProviderImpl implements IPortalSecurityProvid
 		return toReturn;
 	}
 
-	/**
-	 * Authenticate a user
-	 * @param userName the username
-	 * @param password bytes of the password, certificate, ... 
-	 * @return true if the user is autheticated false otherwise
-	 */
-	public boolean authenticateUser(String userName, byte[] password) {
-		// NEVER CALLED BECAUSE AUTHENTICATION IS DONE BY THE PORTAL
-		return false;
-	}
-	
 }

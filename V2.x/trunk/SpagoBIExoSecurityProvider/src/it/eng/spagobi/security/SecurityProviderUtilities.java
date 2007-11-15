@@ -28,7 +28,6 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

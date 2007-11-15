@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  java.util.List,
                  it.eng.spagobi.commons.constants.ObjectsTreeConstants,
                  java.util.Iterator,
-                 it.eng.spagobi.engineconfig.bo.Engine,
+                 it.eng.spagobi.engines.config.bo.Engine,
                  it.eng.spagobi.commons.bo.Domain,
                  it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter,
                  it.eng.spagobi.commons.dao.IDomainDAO,

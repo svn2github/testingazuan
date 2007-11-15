@@ -50,12 +50,12 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.security.FakeUserProfile;
-import it.eng.spagobi.security.IPortalSecurityProvider;
+import it.eng.spagobi.security.ISecurityInfoProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -190,10 +190,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			List profAttrToFill = getProfileAttributesToFill(lovDet);
 			if(profAttrToFill.size()!=0) {
 				//	create a fake user profile
-				FakeUserProfile fakeUserProf = new FakeUserProfile((String)profile.getUserUniqueIdentifier());
+			    UserProfile userProfile=new UserProfile((String)profile.getUserUniqueIdentifier());
 				// copy all the roles, functionalities of the original profile
-				fakeUserProf.setFunctionalities(profile.getFunctionalities());
-				fakeUserProf.setRoles(profile.getRoles());
+			    userProfile.setFunctionalities(profile.getFunctionalities());
+			    userProfile.setRoles(profile.getRoles());
 				// copy attributes and add the missing ones
 				Map attributes = new HashMap();
 				Collection origAttrNames = profile.getUserAttributeNames();
@@ -211,8 +211,8 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			    		attributes.put(profileAttrName, profileAttrValue);
 			    	}
 			    }
-			    fakeUserProf.setAttributes(attributes);
-			    session.setAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST, fakeUserProf);
+			    userProfile.setAttributes(attributes);
+			    session.setAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST, userProfile);
 			}
 			response.setAttribute("testLov", "true");
 			return;
@@ -655,9 +655,9 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			return;
 		}
 		portalSecurityClassName = portalSecurityClassName.trim();
-		IPortalSecurityProvider portalSecurityProvider = null;
+		ISecurityInfoProvider portalSecurityProvider = null;
 		try {
-			portalSecurityProvider = (IPortalSecurityProvider)Class.forName(portalSecurityClassName).newInstance();
+			portalSecurityProvider = (ISecurityInfoProvider)Class.forName(portalSecurityClassName).newInstance();
 		} catch (Exception e) {
 			SpagoBITracer.critical("SPAGOBI", this.getClass().getName(), "prepareDetailModalitiesValuePage", 
 					" Error while istantiating portal security class '" + portalSecurityClassName + "'.", e);

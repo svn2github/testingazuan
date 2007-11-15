@@ -28,28 +28,31 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
-
- */
-
-/*
- * Created on 21-apr-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package it.eng.spagobi.security;
 
-import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.base.SourceBean;
 
-import java.security.Principal;
+import java.util.List;
+
 /**
- * The interface for the User Profile Factory, in order to manage user information.
+ * This is interface for gethering security information from portal server.
+ * A Specific subclass exists for each portal server.
  */
-public interface IUserProfileFactory {
+public interface ISecurityInfoProvider {
+	
 	/**
-	 * Abstract class to create a user profile.
-	 * @param principal The java principal security input object
-	 * @return The User Profile Interface implementation object
+	 * @return The Role list. (list of it.eng.spagobi.bo.Role)
 	 */
-	public abstract IEngUserProfile createUserProfile(Principal principal);	
+	public List getRoles();
+	
+
+	/**
+	 * Gets the list of names of all attributes of all profiles defined in the portal server.
+	 *  
+	 * @return the list of names of all attributes of all profiles defined in the portal server
+	 */
+	public List getAllProfileAttributesNames ();
+	
+
 }

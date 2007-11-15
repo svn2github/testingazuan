@@ -31,12 +31,12 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.commons.bo.Subreport;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.JCRUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
-import it.eng.spagobi.security.AnonymousCMSUserProfile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -154,7 +154,7 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		 		String nameSubObj = request.getParameter("nameSubObject");
 	 		 		String user = request.getParameter("user");
 	 		 		IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
-	 		 		IEngUserProfile profile = new AnonymousCMSUserProfile(user);
+	 		 		IEngUserProfile profile = new UserProfile(user);
 	 		 		InputStream jcrContentStream = biObjCMSDAO.getSubObject(jcrPath, nameSubObj);
 	 		 		byte[] jcrContent = GeneralUtilities.getByteArrayFromInputStream(jcrContentStream);
 		 			response.setContentLength(jcrContent.length);
@@ -201,7 +201,7 @@ public class ContentRepositoryServlet extends HttpServlet{
 						 	return;
 		 		 		}
 	 		 		}
-	 		 		IEngUserProfile profile = new AnonymousCMSUserProfile(user);
+	 		 		IEngUserProfile profile = new UserProfile(user);
 	 		 		biObjCMSDAO.saveSubObject(content.getBytes(), jcrPath, nameSubObj, 
 	 		 				                  descr, visibility, profile);
  		 			String message = "OK - Analysis successfully saved";

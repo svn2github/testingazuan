@@ -41,12 +41,12 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.constants.UtilitiesConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
-import it.eng.spagobi.security.AnonymousCMSUserProfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -793,7 +793,7 @@ public class GeneralUtilities {
 	
 	private static String getLovResult (ModalitiesValue lov, IEngUserProfile profile) throws Exception {
 		if(profile == null) {
-			profile = new AnonymousCMSUserProfile("anonymous");
+			profile = new UserProfile("anonymous");
 		}
 		String dataProv = lov.getLovProvider();
 		ILovDetail lovDetail = LovDetailFactory.getLovFromXML(dataProv);

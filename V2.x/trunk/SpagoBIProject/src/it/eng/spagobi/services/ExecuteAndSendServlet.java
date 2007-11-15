@@ -36,12 +36,14 @@ import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
+import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -126,8 +128,9 @@ public class ExecuteAndSendServlet extends HttpServlet{
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-				HttpSession httpSession = request.getSession();
-	            IEngUserProfile profile = (IEngUserProfile)httpSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);   	
+		 	        Principal principal = request.getUserPrincipal();
+				SecurityServiceProxy secProxy=new SecurityServiceProxy();
+				IEngUserProfile profile = secProxy.getUserProfile(principal);  	
 				documentBytes = proxy.exec(profile);
 				returnedContentType = proxy.getReturnedContentType();
 				fileextension = proxy.getFileExtensionFromContType(returnedContentType);

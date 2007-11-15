@@ -31,16 +31,21 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.security.IPortalSecurityProvider;
-import it.eng.spagobi.security.IUserProfileFactory;
+import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
+import it.eng.spagobi.security.ISecurityInfoProvider;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+
 
 import java.security.Principal;
 
-public class LoginModule extends AbstractModule {
+import edu.yale.its.tp.cas.client.filter.CASFilter;
+
+public class LoginModule extends AbstractHttpModule {
 
 	/**
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
@@ -49,39 +54,19 @@ public class LoginModule extends AbstractModule {
 		
 		// get config
 		SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
+		// INTEGRAZIONE con il CAS
+		String userId=(String)this.getHttpRequest().getSession().getAttribute(CASFilter.CAS_FILTER_USER);
 		
-		// create instance of the user profile factory interface
-		SourceBean engUserProfileFactorySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS");
-		String engUserProfileFactoryClass = (String) engUserProfileFactorySB.getAttribute("className");
-		engUserProfileFactoryClass = engUserProfileFactoryClass.trim(); 
-		IUserProfileFactory engUserProfileFactory = (IUserProfileFactory)Class.forName(engUserProfileFactoryClass).newInstance();
-		
-		// create instance of the portal security interface
-		SourceBean engPortalSecuritySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
-		String engPortalSecurityClass = (String) engPortalSecuritySB.getAttribute("className");
-		engPortalSecurityClass = engPortalSecurityClass.trim(); 
-		IPortalSecurityProvider engPortalSecurity = (IPortalSecurityProvider)Class.forName(engPortalSecurityClass).newInstance();
-		
-		// authenticate user 
-		String userId = (String)request.getAttribute("userID");
-		String password = (String)request.getAttribute("password");
-		boolean authenticated = engPortalSecurity.authenticateUser(userId, password.getBytes());
-		if(!authenticated) {
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.CRITICAL, "User not authenticated");
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "authenticationFailed");
-			response.setAttribute(SpagoBIConstants.AUTHENTICATION_FAILED_MESSAGE, "Authentication Failed");
-			return;
-		}
-		
-		// user is authenticated so get user profile 
-		Principal principal = new SpagoBIPrincipal(userId);
-		IEngUserProfile userProfile = engUserProfileFactory.createUserProfile(principal);
+		SpagoBIPrincipal principal=new SpagoBIPrincipal(userId);
+		SecurityServiceProxy proxy=new SecurityServiceProxy();
+		IEngUserProfile profile = proxy.getUserProfile(principal);
+
 		
 		// put user profile into session
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
-		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
+		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 		
 		// fill response attributes
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");

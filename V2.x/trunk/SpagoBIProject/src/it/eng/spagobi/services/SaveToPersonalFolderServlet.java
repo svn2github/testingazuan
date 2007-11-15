@@ -38,11 +38,13 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
+import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -120,7 +122,8 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
 				HttpSession httpSession = request.getSession();
-	            IEngUserProfile profile = (IEngUserProfile)httpSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);   	
+				SecurityServiceProxy securityProxy=new SecurityServiceProxy();
+				IEngUserProfile profile = securityProxy.getUserProfile();    	
 				documentBytes = proxy.exec(profile);
 				returnedContentType = proxy.getReturnedContentType();
 				fileextension = proxy.getFileExtensionFromContType(returnedContentType);
@@ -149,8 +152,9 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			
 			
 			// load user root functionality 
-			HttpSession httpSession = request.getSession();
-            IEngUserProfile profile = (IEngUserProfile)httpSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);  
+	 	        Principal principal = request.getUserPrincipal();
+			SecurityServiceProxy secProxy=new SecurityServiceProxy();
+			IEngUserProfile profile = secProxy.getUserProfile(principal);    
 			String username = (String)profile.getUserUniqueIdentifier();
 			ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 			LowFunctionality funct = functdao.loadLowFunctionalityByPath("/"+username, false);

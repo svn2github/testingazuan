@@ -36,11 +36,11 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
  * @author sulis
  *
  */
-public class PortalSecurityProviderFactory {
+public class SecurityInfoProviderFactory {
 	
 	
 		
-		private static IPortalSecurityProvider aPortalSecurityProvider = null;
+		private static ISecurityInfoProvider aPortalSecurityProvider = null;
 		private static final String DEFAULT_SECURITY_PROVIDER_CLASS = "it.eng.spagobi.security.ExoPortalSecurityProviderImpl";
 		
 		/**
@@ -49,7 +49,7 @@ public class PortalSecurityProviderFactory {
 		 * 
 		 * @return the singleton instance of IPortalSecurityProvider
 		 */
-		public static synchronized IPortalSecurityProvider getPortalSecurityProvider(){
+		public static synchronized ISecurityInfoProvider getPortalSecurityProvider(){
 			
 			// Read the securityProviderClass from configuration file spagobi.xml
 			String securityProviderClass = (String)ConfigSingleton.getInstance().getAttribute("SPAGOBI.PORTAL_SECURITY_PROVIDER_CLASS");
@@ -67,7 +67,7 @@ public class PortalSecurityProviderFactory {
 			
 			if (aPortalSecurityProvider == null){
 				try{
-					aPortalSecurityProvider = (IPortalSecurityProvider)Class.forName(securityProviderClass).newInstance();
+					aPortalSecurityProvider = (ISecurityInfoProvider)Class.forName(securityProviderClass).newInstance();
 				}catch (Exception e) {
 					SpagoBITracer.critical("UTILITIES", "PortalSecurityProviderFactory", "getPortalSecurityProvider()","Error istantiatin security provider [" + securityProviderClass + "]", e); 
 				}//catch

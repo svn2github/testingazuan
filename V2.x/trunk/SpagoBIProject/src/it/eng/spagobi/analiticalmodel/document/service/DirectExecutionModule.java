@@ -44,7 +44,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.security.IUserProfileFactory;
+
 
 import java.security.Principal;
 import java.util.Iterator;

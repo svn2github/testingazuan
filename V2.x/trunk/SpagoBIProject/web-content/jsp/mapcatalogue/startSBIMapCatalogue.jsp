@@ -12,7 +12,6 @@
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ include file="/jsp/commons/shareProfile.jsp"%>
 
 
 <%

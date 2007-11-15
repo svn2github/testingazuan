@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.commons.constants.AdmintoolsConstants,
 				 it.eng.spagobi.commons.bo.Domain,
 				 java.util.Iterator,
-				 it.eng.spagobi.engineconfig.bo.Engine,
+				 it.eng.spagobi.engines.config.bo.Engine,
 				 it.eng.spagobi.commons.bo.TemplateVersion,
 				 it.eng.spagobi.commons.constants.SpagoBIConstants,
 				 it.eng.spagobi.commons.utilities.SpagoBITracer,

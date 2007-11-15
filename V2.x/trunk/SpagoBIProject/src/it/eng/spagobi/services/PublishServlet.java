@@ -22,39 +22,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.services;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.cms.CmsManager;
-import it.eng.spago.cms.CmsNode;
-import it.eng.spago.cms.CmsProperty;
-import it.eng.spago.cms.operations.GetOperation;
-import it.eng.spago.cms.operations.SetOperation;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.TemplateVersion;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.security.IPortalSecurityProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import javax.servlet.ServletConfig;

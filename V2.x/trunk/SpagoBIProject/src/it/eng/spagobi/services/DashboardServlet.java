@@ -33,10 +33,12 @@ import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,10 +79,11 @@ public class DashboardServlet extends HttpServlet{
 		
 	 	try{
 	 		
-	 		// get the user profile
- 			HttpSession httpSession = request.getSession();
-            IEngUserProfile profile = (IEngUserProfile)httpSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);   	
-	 		
+	 	        Principal principal = request.getUserPrincipal();
+			SecurityServiceProxy proxy=new SecurityServiceProxy();
+			IEngUserProfile profile = proxy.getUserProfile(principal);
+
+			
 	 		// get the mode (mode=single --> only one lov to execute, mode=list --> more than one lov to execute)
 	 		// if the parameter mode is not present the single mode is the dafult
 	 		String mode = (String)request.getParameter("mode");

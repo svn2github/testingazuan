@@ -29,6 +29,7 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
@@ -40,7 +41,6 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.events.EventsManager;
-import it.eng.spagobi.security.FakeUserProfile;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
@@ -95,7 +95,7 @@ public class ExecuteBIDocumentJob implements Job {
 				if(execCtrl.directExecution()) {
 					ExecutionProxy proxy = new ExecutionProxy();
 					proxy.setBiObject(biobj);
-					IEngUserProfile profile = new FakeUserProfile("scheduler");
+					IEngUserProfile profile = new UserProfile("scheduler");
 					
 					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 					//String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");

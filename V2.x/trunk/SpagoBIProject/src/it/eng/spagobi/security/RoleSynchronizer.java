@@ -85,7 +85,7 @@ public class RoleSynchronizer {
             	Class secProvClass = Class.forName(portalSecurityProviderClass);
             	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
             			"RoleSynchronizer::synchronize: security class found " + secProvClass);
-            	IPortalSecurityProvider portalSecurityProvider = (IPortalSecurityProvider)secProvClass.newInstance();
+            	ISecurityInfoProvider portalSecurityProvider = (ISecurityInfoProvider)secProvClass.newInstance();
             	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
             			"RoleSynchronizer::synchronize: security class instance created " + portalSecurityProvider);
             	SourceBean secFilterSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.ROLE-NAME-PATTERN-FILTER");

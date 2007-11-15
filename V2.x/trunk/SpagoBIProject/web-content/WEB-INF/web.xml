@@ -66,20 +66,7 @@
     </servlet>
     
     
-    <servlet>
-        <servlet-name>IReportServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.IReportPluginServlet</servlet-class>
-        <!-- the drivers parameter contains all the drivers complete class name that an object 
-             must have in order to be returned to the client
-             Each driver name must be separated from other with a ; character 
-             Example: driver1;driver2;driver3;
-        -->
-        <init-param>
-            <param-name>DRIVERS</param-name>
-            <param-value>it.eng.spagobi.engines.drivers.jasperreport.JasperReportDriver</param-value>
-        </init-param>
-    </servlet>
-    <servlet>
+     <servlet>
         <servlet-name>DashboardServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.DashboardServlet</servlet-class>
     </servlet>
@@ -115,10 +102,7 @@
         <servlet-name>MapCatalogueManagerServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.MapCatalogueManagerServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>ShareProfileServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.ShareProfileServlet</servlet-class>
-    </servlet>
+
     <servlet>
         <servlet-name>ExecuteAndSendServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.ExecuteAndSendServlet</servlet-class>
@@ -185,10 +169,6 @@
         <servlet-name>EventsManagerServlet</servlet-name>
         <url-pattern>/EventsManagerServlet</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>IReportServlet</servlet-name>
-        <url-pattern>/IReportService</url-pattern>
-    </servlet-mapping>
      <servlet-mapping>
         <servlet-name>PublishServlet</servlet-name>
         <url-pattern>/PublishService</url-pattern>
@@ -201,10 +181,6 @@
     		<servlet-name>MapCatalogueManagerServlet</servlet-name>
     		<url-pattern>/MapCatalogueManagerServlet</url-pattern>
 	  </servlet-mapping>
-	  <servlet-mapping>
-        <servlet-name>ShareProfileServlet</servlet-name>
-        <url-pattern>/ShareProfileService</url-pattern>
-    </servlet-mapping> 
     <servlet-mapping>
         <servlet-name>ExecuteAndSendServlet</servlet-name>
         <url-pattern>/ExecuteAndSendService</url-pattern>

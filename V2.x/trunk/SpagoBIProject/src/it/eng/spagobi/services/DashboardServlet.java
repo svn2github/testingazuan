@@ -33,9 +33,9 @@ import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.monitoring.dao.AuditManager;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 
 import java.io.IOException;
 import java.security.Principal;

@@ -117,7 +117,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
 
 	
-  <CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />	
+  <CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
+  <CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />	  	
   <CONFIGURATOR path="/WEB-INF/conf/config/spagobi_components.xml" />	
   
   <!--  Spago Config.    -->

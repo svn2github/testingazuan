@@ -36,8 +36,8 @@ import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
 import it.eng.spagobi.security.ISecurityInfoProvider;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 
 

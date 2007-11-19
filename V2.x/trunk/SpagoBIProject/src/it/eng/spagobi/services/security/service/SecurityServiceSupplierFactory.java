@@ -3,6 +3,11 @@ package it.eng.spagobi.services.security.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 
+/**
+ * Factory class for the security supplier 
+ * @author Bernabei Angelo
+ *
+ */
 public class SecurityServiceSupplierFactory {
 
     public static ISecurityServiceSupplier createISecurityServiceSupplier(){

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SPAGOBI_SSO>
+	<ACTIVE>false</ACTIVE>
+	 <VALIDATE-USER>
+	 	<URL>https://localhost:8443/exo-cas-2/proxyValidate</URL>
+	 	<SERVICE>https://localhost:8443/SpagoBI/proxyReceptor</SERVICE>
+	 </VALIDATE-USER> 
+</SPAGOBI_SSO>

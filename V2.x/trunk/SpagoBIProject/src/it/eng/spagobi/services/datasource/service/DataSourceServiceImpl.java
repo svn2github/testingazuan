@@ -7,8 +7,10 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     public SpagoBiDataSource getDataSource(String token, String documentLabel,
 	    String engineLabel) {
-	// TODO Auto-generated method stub
-	return null;
+	SpagoBiDataSource tmp=new SpagoBiDataSource();
+	tmp.setDriver("org.driver");
+	tmp.setJndiName("jndi/pippo");
+	return tmp;
     }
 
 }

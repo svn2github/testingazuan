@@ -38,11 +38,11 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
-import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -121,9 +121,9 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-				HttpSession httpSession = request.getSession();
+				
 				SecurityServiceProxy securityProxy=new SecurityServiceProxy();
-				IEngUserProfile profile = securityProxy.getUserProfile();    	
+				IEngUserProfile profile = securityProxy.getUserProfile(request.getUserPrincipal());    	
 				documentBytes = proxy.exec(profile);
 				returnedContentType = proxy.getReturnedContentType();
 				fileextension = proxy.getFileExtensionFromContType(returnedContentType);

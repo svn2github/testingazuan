@@ -1,4 +1,4 @@
-package it.eng.spagobi.commons.utilities;
+package it.eng.spagobi.services.proxy;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -37,13 +37,13 @@ public class SecurityServiceProxy {
     }    
     
     
-    public IEngUserProfile getUserProfile() throws SecurityException{
+    public IEngUserProfile getUserProfile(String userId) throws SecurityException{
 	try {
             //String ticket=readTicket();
 	    String ticket="";
             SecurityServiceServiceLocator locator=new SecurityServiceServiceLocator();
             it.eng.spagobi.services.security.stub.SecurityService servizio= locator.getSecurityService();
-            SpagoBIUserProfile user= servizio.getUserProfile(ticket);
+            SpagoBIUserProfile user= servizio.getUserProfile(ticket,userId);
             return new UserProfile(user);
         } catch (Exception e) {
             System.err.println(e.toString());
@@ -62,13 +62,18 @@ public class SecurityServiceProxy {
         }
     }    
     
-    public boolean isAuthorized(String function,String mode) {
+    /**
+     * Check if the user is authorized to access the folder
+     * @param function
+     * @return
+     */    
+    public boolean isAuthorized(String userId,String folderId,String mode) {
         try {
             //String ticket=readTicket();
 	    String ticket="";
             SecurityServiceServiceLocator locator=new SecurityServiceServiceLocator();
             it.eng.spagobi.services.security.stub.SecurityService servizio= locator.getSecurityService();
-            return servizio.isAuthorized(ticket,function, mode);
+            return servizio.isAuthorized(ticket,userId,folderId, mode);
         } catch (Exception e) {
             System.err.println(e.toString());
         }
@@ -76,11 +81,21 @@ public class SecurityServiceProxy {
     } 
     
 
-    
+    /**
+     * Check if the user can execute the function ( user function )
+     * @param function
+     * @return
+     */
     public boolean checkAuthorization(String function){
 	
 	return true;
     }
+    
+    /**
+     * Check if the user can execute the function ( user function )
+     * @param function
+     * @return
+     */    
     public boolean checkAuthorization(Principal principal,String function){
 	
 	return true;

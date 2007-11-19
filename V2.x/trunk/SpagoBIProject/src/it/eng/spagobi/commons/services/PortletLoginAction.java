@@ -38,9 +38,11 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.commons.utilities.SecurityServiceProxy;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UserUtilities;
+import it.eng.spagobi.engines.drivers.jasperreport.JasperReportDriver;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceImpl;
@@ -51,6 +53,7 @@ import java.security.Principal;
 
 import javax.portlet.PortletRequest;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
 /**
@@ -62,38 +65,25 @@ import org.xml.sax.InputSource;
  */
 public class PortletLoginAction extends AbstractAction {
 
+    static Logger logger = Logger.getLogger(PortletLoginAction.class);
     /**
      * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean,
      *      it.eng.spago.base.SourceBean)
      */
     public void service(SourceBean request, SourceBean response)
 	    throws Exception {
-
+	logger.debug("IN");
 	PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 	Principal principal = portletRequest.getUserPrincipal();
 
-	/*
-	 * 
-	 * SecurityServiceProxy proxy=new SecurityServiceProxy();
-	 * IEngUserProfile profile = proxy.getUserProfile();
-	 */
-
 	SecurityServiceProxy proxy = new SecurityServiceProxy();
 	IEngUserProfile profile = proxy.getUserProfile(principal);
+	
+	logger.debug("userProfile created " + profile);
+	logger.debug("Attributes name of the user profile: "+ profile.getUserAttributeNames());
+	logger.debug("Functionalities of the user profile: "+ profile.getFunctionalities());
+	logger.debug("Roles of the user profile: "+ profile.getRoles());	
 
-	SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass()
-		.getName(), "service()", "userProfile created " + profile);
-	SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass()
-		.getName(), "service()",
-		"Attributes name of the user profile: "
-			+ profile.getUserAttributeNames());
-	SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass()
-		.getName(), "service()",
-		"Functionalities of the user profile: "
-			+ profile.getFunctionalities());
-	SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass()
-		.getName(), "service()", "Roles of the user profile: "
-		+ profile.getRoles());
 
 	// put user profile into spago session container
 	RequestContainer reqCont = getRequestContainer();
@@ -105,7 +95,8 @@ public class PortletLoginAction extends AbstractAction {
 	if (!UserUtilities.userFunctionalityRootExists(username)) {
 	    UserUtilities.createUserFunctionalityRoot(profile);
 	}
-
+	logger.debug("OUT");
     }
 
 }
+

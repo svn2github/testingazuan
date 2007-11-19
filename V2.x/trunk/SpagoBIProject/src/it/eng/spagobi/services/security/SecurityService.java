@@ -16,7 +16,7 @@ public interface SecurityService {
     	 * @param token
     	 * @return
     	 */
-        SpagoBIUserProfile getUserProfile(String token);
+        SpagoBIUserProfile getUserProfile(String token,String userId);
 	
 	/**
 	 * Check if the user can access to the path
@@ -25,7 +25,7 @@ public interface SecurityService {
 	 * @param mode
 	 * @return
 	 */
-	boolean isAuthorized(String token,String idFolder,String mode);
+	boolean isAuthorized(String token,String userId,String idFolder,String mode);
 	
 	/**
 	 * check if the user can access to this function 
@@ -33,5 +33,5 @@ public interface SecurityService {
 	 * @param function
 	 * @return
 	 */
-	boolean checkAuthorization(String token,String function);	
+	boolean checkAuthorization(String token,String userId,String function);	
 }

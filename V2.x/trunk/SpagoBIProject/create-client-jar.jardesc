@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<jardesc>
+<jar path="C:/progetti/spagobi2.0/workspace/SpagoBIJasperReportEngine/WebContent/WEB-INF/lib/spagobi-service-client.jar"/>
+<options buildIfNeeded="true" compress="true" descriptionLocation="/SpagoBIProject/create-client-jar.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+<storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+<selectedProjects/>
+<manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+<sealing sealJar="false">
+<packagesToSeal/>
+<packagesToUnSeal/>
+</sealing>
+</manifest>
+<selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.commons.bo{UserProfile.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security.stub{SecurityServiceSoapBindingStub.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security.stub{SecurityServiceServiceLocator.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.datasource"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security.exceptions"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.content.stub{ContentServiceSoapBindingSkeleton.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.datasource.stub{DataSourceService.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.content.stub{ContentServiceSoapBindingStub.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.content.bo{Content.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.content.stub{ContentServiceService.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.datasource.stub{DataSourceServiceService.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security.stub{SecurityService.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.datasource.stub{DataSourceServiceSoapBindingStub.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.content.stub{ContentService.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.content"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.proxy"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.datasource.stub{DataSourceServiceSoapBindingSkeleton.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.content.stub{ContentServiceServiceLocator.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.datasource.bo"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security.stub{SecurityServiceSoapBindingSkeleton.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.datasource.stub{DataSourceServiceServiceLocator.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security.stub{SecurityServiceService.java"/>
+<javaElement handleIdentifier="=SpagoBIProject/src&lt;it.eng.spagobi.services.security.bo"/>
+</selectedElements>
+</jardesc>

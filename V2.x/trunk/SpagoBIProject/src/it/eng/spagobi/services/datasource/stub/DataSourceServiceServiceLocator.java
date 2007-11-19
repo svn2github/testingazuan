@@ -2,7 +2,7 @@
  * DataSourceServiceServiceLocator.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
 package it.eng.spagobi.services.datasource.stub;
@@ -22,7 +22,7 @@ public class DataSourceServiceServiceLocator extends org.apache.axis.client.Serv
     }
 
     // Use to get a proxy class for DataSourceService
-    private java.lang.String DataSourceService_address = "http://localhost:8080/SpagoBIService/services/DataSourceService";
+    private java.lang.String DataSourceService_address = "http://localhost:8080/SpagoBI/services/DataSourceService";
 
     public java.lang.String getDataSourceServiceAddress() {
         return DataSourceService_address;

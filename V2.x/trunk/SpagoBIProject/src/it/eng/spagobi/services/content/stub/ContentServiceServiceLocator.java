@@ -1,59 +1,59 @@
 /**
- * SecurityServiceServiceLocator.java
+ * ContentServiceServiceLocator.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package it.eng.spagobi.services.security.stub;
+package it.eng.spagobi.services.content.stub;
 
-public class SecurityServiceServiceLocator extends org.apache.axis.client.Service implements it.eng.spagobi.services.security.stub.SecurityServiceService {
+public class ContentServiceServiceLocator extends org.apache.axis.client.Service implements it.eng.spagobi.services.content.stub.ContentServiceService {
 
-    public SecurityServiceServiceLocator() {
+    public ContentServiceServiceLocator() {
     }
 
 
-    public SecurityServiceServiceLocator(org.apache.axis.EngineConfiguration config) {
+    public ContentServiceServiceLocator(org.apache.axis.EngineConfiguration config) {
         super(config);
     }
 
-    public SecurityServiceServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
+    public ContentServiceServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
         super(wsdlLoc, sName);
     }
 
-    // Use to get a proxy class for SecurityService
-    private java.lang.String SecurityService_address = "http://localhost:8080/SpagoBI/services/SecurityService";
+    // Use to get a proxy class for ContentService
+    private java.lang.String ContentService_address = "http://localhost:8080/SpagoBI/services/ContentService";
 
-    public java.lang.String getSecurityServiceAddress() {
-        return SecurityService_address;
+    public java.lang.String getContentServiceAddress() {
+        return ContentService_address;
     }
 
     // The WSDD service name defaults to the port name.
-    private java.lang.String SecurityServiceWSDDServiceName = "SecurityService";
+    private java.lang.String ContentServiceWSDDServiceName = "ContentService";
 
-    public java.lang.String getSecurityServiceWSDDServiceName() {
-        return SecurityServiceWSDDServiceName;
+    public java.lang.String getContentServiceWSDDServiceName() {
+        return ContentServiceWSDDServiceName;
     }
 
-    public void setSecurityServiceWSDDServiceName(java.lang.String name) {
-        SecurityServiceWSDDServiceName = name;
+    public void setContentServiceWSDDServiceName(java.lang.String name) {
+        ContentServiceWSDDServiceName = name;
     }
 
-    public it.eng.spagobi.services.security.stub.SecurityService getSecurityService() throws javax.xml.rpc.ServiceException {
+    public it.eng.spagobi.services.content.stub.ContentService getContentService() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
-            endpoint = new java.net.URL(SecurityService_address);
+            endpoint = new java.net.URL(ContentService_address);
         }
         catch (java.net.MalformedURLException e) {
             throw new javax.xml.rpc.ServiceException(e);
         }
-        return getSecurityService(endpoint);
+        return getContentService(endpoint);
     }
 
-    public it.eng.spagobi.services.security.stub.SecurityService getSecurityService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public it.eng.spagobi.services.content.stub.ContentService getContentService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            it.eng.spagobi.services.security.stub.SecurityServiceSoapBindingStub _stub = new it.eng.spagobi.services.security.stub.SecurityServiceSoapBindingStub(portAddress, this);
-            _stub.setPortName(getSecurityServiceWSDDServiceName());
+            it.eng.spagobi.services.content.stub.ContentServiceSoapBindingStub _stub = new it.eng.spagobi.services.content.stub.ContentServiceSoapBindingStub(portAddress, this);
+            _stub.setPortName(getContentServiceWSDDServiceName());
             return _stub;
         }
         catch (org.apache.axis.AxisFault e) {
@@ -61,8 +61,8 @@ public class SecurityServiceServiceLocator extends org.apache.axis.client.Servic
         }
     }
 
-    public void setSecurityServiceEndpointAddress(java.lang.String address) {
-        SecurityService_address = address;
+    public void setContentServiceEndpointAddress(java.lang.String address) {
+        ContentService_address = address;
     }
 
     /**
@@ -72,9 +72,9 @@ public class SecurityServiceServiceLocator extends org.apache.axis.client.Servic
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (it.eng.spagobi.services.security.stub.SecurityService.class.isAssignableFrom(serviceEndpointInterface)) {
-                it.eng.spagobi.services.security.stub.SecurityServiceSoapBindingStub _stub = new it.eng.spagobi.services.security.stub.SecurityServiceSoapBindingStub(new java.net.URL(SecurityService_address), this);
-                _stub.setPortName(getSecurityServiceWSDDServiceName());
+            if (it.eng.spagobi.services.content.stub.ContentService.class.isAssignableFrom(serviceEndpointInterface)) {
+                it.eng.spagobi.services.content.stub.ContentServiceSoapBindingStub _stub = new it.eng.spagobi.services.content.stub.ContentServiceSoapBindingStub(new java.net.URL(ContentService_address), this);
+                _stub.setPortName(getContentServiceWSDDServiceName());
                 return _stub;
             }
         }
@@ -94,8 +94,8 @@ public class SecurityServiceServiceLocator extends org.apache.axis.client.Servic
             return getPort(serviceEndpointInterface);
         }
         java.lang.String inputPortName = portName.getLocalPart();
-        if ("SecurityService".equals(inputPortName)) {
-            return getSecurityService();
+        if ("ContentService".equals(inputPortName)) {
+            return getContentService();
         }
         else  {
             java.rmi.Remote _stub = getPort(serviceEndpointInterface);
@@ -105,7 +105,7 @@ public class SecurityServiceServiceLocator extends org.apache.axis.client.Servic
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("urn:spagobisecurity", "SecurityServiceService");
+        return new javax.xml.namespace.QName("urn:spagobicontent", "ContentServiceService");
     }
 
     private java.util.HashSet ports = null;
@@ -113,7 +113,7 @@ public class SecurityServiceServiceLocator extends org.apache.axis.client.Servic
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("urn:spagobisecurity", "SecurityService"));
+            ports.add(new javax.xml.namespace.QName("urn:spagobicontent", "ContentService"));
         }
         return ports.iterator();
     }
@@ -123,8 +123,8 @@ public class SecurityServiceServiceLocator extends org.apache.axis.client.Servic
     */
     public void setEndpointAddress(java.lang.String portName, java.lang.String address) throws javax.xml.rpc.ServiceException {
         
-if ("SecurityService".equals(portName)) {
-            setSecurityServiceEndpointAddress(address);
+if ("ContentService".equals(portName)) {
+            setContentServiceEndpointAddress(address);
         }
         else 
 { // Unknown Port Name

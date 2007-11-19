@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+	
+	<SERVICE name="DetailDataSourcePage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="LABEL" label="#SBISet.ListDS.columnLabel">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>				
+			</FIELDS>
+		</VALIDATION>	
+	</SERVICE>
+</VALIDATIONS>

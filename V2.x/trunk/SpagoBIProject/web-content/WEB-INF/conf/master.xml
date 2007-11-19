@@ -30,7 +30,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/presentation.xml" />
-  <CONFIGURATOR path="/WEB-INF/conf/engines/config/publishers.xml" />   
+  <CONFIGURATOR path="/WEB-INF/conf/engines/config/publishers.xml" />     
   
 <!-- engines.dossier -->
 	 
@@ -87,12 +87,11 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/messages.xml" />
 	  
   
-<!-- tools.role -->
-	
+	<!-- tools.role -->	
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/presentation.xml" />
-  <CONFIGURATOR path="/WEB-INF/conf/tools/role/publishers.xml" />     
+    <CONFIGURATOR path="/WEB-INF/conf/tools/role/publishers.xml" />     
   
   
 	<!-- tools.scheduler -->
@@ -103,7 +102,12 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/scheduler/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/scheduler/validation.xml" />
 	
-	
+	<!-- tools.datasource -->	
+	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/presentation.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/tools/datasource/publishers.xml" /> 
+	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/validation.xml" />
 	
 	<!-- webapp -->
 	

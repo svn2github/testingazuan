@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.spagobi.engines.config.bo.Engine,
                  it.eng.spagobi.commons.dao.DAOFactory,
                  it.eng.spagobi.commons.bo.Domain,
+                 it.eng.spagobi.tools.datasource.bo.DataSource,
                  it.eng.spago.navigation.LightNavigationManager,
                  java.util.Map,
                  java.util.HashMap" %>
@@ -170,6 +171,34 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			%>
 		</select>
 	</div>
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.eng.dataSource" />
+		</span>
+	</div>	
+	<div class='div_detail_form'>
+		<select class='portlet-form-field' name="engineDefaultDS" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType">			
+			<%
+			java.util.List engineDS = DAOFactory.getDataSourceDAO().loadAllDataSources();
+			java.util.Iterator engineDSIt = engineDS.iterator();
+			while (engineDSIt.hasNext()) {
+				DataSource ds = (DataSource) engineDSIt.next();
+				String dsId = String.valueOf(ds.getDsId());
+				String actualDsId = (engine.getDataSourceId()==null)?"":engine.getDataSourceId().toString();
+				String selected = "";
+				if (dsId.equalsIgnoreCase(actualDsId)) {
+					selected = "selected='selected'";										
+				}				
+			 	%>    			 		
+    				<option value="<%= dsId  %>" label="<%= ds.getLabel() %>" <%= selected %>>
+    					<%= ds.getLabel() %>	
+    				</option>
+    				<%				
+			}
+			%>
+		</select>
+	</div>
+	
 	<div id="className" style='display:<%= ("INT".equalsIgnoreCase(engineType)) ? "inline;" : "none;" %>'>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>

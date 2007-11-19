@@ -91,5 +91,16 @@
        						ROLE_TYPE_ID,
        						ROLE_TYPE_CD
 					FROM SBI_EXT_ROLES"/>
+
+	<STATEMENT name="SELECT_ALL_DS" 
+               query="SELECT DS_ID as ID,         						 
+       						 DESCR,
+       						 LABEL,
+       						 JNDI,
+       						 URL_CONNECTION,
+                             USERNAME,
+                             PWD,
+                             DRIVER
+					  FROM SBI_DATA_SOURCE"/>
   
 </STATEMENTS>

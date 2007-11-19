@@ -112,7 +112,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%
 			}
 		%>
-	
+		<tr class="portlet-font">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/datasource/datasource_2.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListDataSourcePage"/></portlet:actionURL>' 
+						class="link_main_menu" >
+					 	<spagobi:message key="SBISet.linkDsConf" />
+					</a>
+				</td>
+		</tr>
 	</table>
 	<br/>
 </div>

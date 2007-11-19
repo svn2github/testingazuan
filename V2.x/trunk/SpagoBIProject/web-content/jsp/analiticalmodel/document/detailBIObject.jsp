@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.commons.constants.ObjectsTreeConstants,
 				 it.eng.spagobi.commons.constants.AdmintoolsConstants,
 				 it.eng.spagobi.commons.bo.Domain,
+				 it.eng.spagobi.tools.datasource.bo.DataSource,
 				 java.util.Iterator,
 				 it.eng.spagobi.engines.config.bo.Engine,
 				 it.eng.spagobi.commons.bo.TemplateVersion,
@@ -57,6 +58,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List listEngines = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_ENGINES);
 	List listTypes = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_OBJ_TYPES);
 	List listStates = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_STATES);
+	List listDataSource = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DS);
+	if (listDataSource == null) listDataSource = new ArrayList();
 	String modality = (String) moduleResponse.getAttribute(ObjectsTreeConstants.MODALITY);
 	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
 	
@@ -327,6 +330,35 @@ function checkFormVisibility(docType) {
 							}
 		      		%>
 		      			<option value="<%=engine.getId().toString() %>"<%if (isEngine) out.print(" selected='selected' ");  %>><%=engine.getName()%></option>
+		      		<% 	
+		      			}
+		      		%>
+		      		</select>
+				</div> 
+
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "SBISet.eng.dataSource" />
+					</span>
+				</div>
+				
+			
+				<div class='div_detail_form'>
+		      		<select class='portlet-form-input-field' style='width:230px;' 
+							name="datasource" id="doc_datasource" >
+							<option></option>
+					<%
+						Iterator iterds = listDataSource.iterator();
+		      			while(iterds.hasNext()) {
+		      		    	DataSource ds = (DataSource)iterds.next();
+		      		    	Integer objDsId = obj.getDataSourceId();
+		      		    	Integer currDsId = new Integer(ds.getDsId());
+		      		    	boolean isDs = false;
+		      		    	if(objDsId != null && objDsId.equals(currDsId)){
+		      		    		isDs = true; 
+							}
+		      		%>
+		      			<option value="<%=String.valueOf(ds.getDsId()) %>"<%if (isDs) out.print(" selected='selected' ");  %>><%=ds.getLabel()%></option>
 		      		<% 	
 		      			}
 		      		%>
@@ -765,6 +797,7 @@ function isBIObjectFormChanged() {
 	var relName = document.getElementById('doc_relname').value;
 	var type = document.getElementById('doc_type').value;
 	var engine = document.getElementById('doc_engine').value;
+	var datasource = document.getElementById('doc_datasource').value;
 	var state = document.getElementById('doc_state').value;
   
 	if ((label != '<%=initialBIObject.getLabel()%>')
@@ -773,6 +806,7 @@ function isBIObjectFormChanged() {
 		|| (relName != '<%=initialBIObject.getRelName()%>')
 		|| (type != '<%=initialBIObject.getBiObjectTypeID()+","+initialBIObject.getBiObjectTypeCode()%>')
 		|| (engine != '<%=initialBIObject.getEngine().getId()%>')
+		|| (datasource != '<%=initialBIObject.getDataSourceId()%>')
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true')) {

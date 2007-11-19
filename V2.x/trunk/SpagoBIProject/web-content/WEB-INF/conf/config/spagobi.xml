@@ -155,13 +155,13 @@
 		<DAO name="ParameterUseDAO" implementation="it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.ParameterUseDAOHibImpl"/>
 		<DAO name="LowFunctionalityDAO" implementation="it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl"/>
 		<DAO name="ObjParuseDAO" implementation="it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.ObjParuseDAOHibImpl"/>
-		<DAO name="SubreportDAO" implementation="it.eng.spagobi.analiticalmodel.document.dao.SubreportDAOHibImpl"/>
+		<DAO name="SubreportDAO" implementation="it.eng.spagobi.analiticalmodel.document.dao.SubreportDAOHibImpl"/>		
 		<!-- CMS DAO IMPLEMENTATION -->
  		<DAO name="BIObjectCMSDAO" implementation="it.eng.spagobi.analiticalmodel.document.dao.BIObjectCMSDAOImpl"/>		
 		<DAO name="FunctionalityCMSDAO" implementation="it.eng.spagobi.analiticalmodel.functionalitytree.dao.FunctionalityCMSDAOImpl"/>		
 		<!-- VIEWPOINT DAO IMPLEMENTATION -->
  		<DAO name="ViewpointDAO" implementation="it.eng.spagobi.analiticalmodel.document.dao.ViewpointDAOHimpl"/>		
-		
+		<DAO name="DataSourceDAO" implementation="it.eng.spagobi.tools.datasource.dao.DataSourceDAOHibImpl"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

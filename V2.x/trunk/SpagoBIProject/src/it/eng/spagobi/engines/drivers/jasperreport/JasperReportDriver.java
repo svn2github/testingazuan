@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 public class JasperReportDriver implements IEngineDriver {
 
-    static Logger logger = Logger.getLogger(JasperReportDriver.class);
+    static private Logger logger = Logger.getLogger(JasperReportDriver.class);
     
     /**
      * Returns a map of parameters which will be send in the request to the

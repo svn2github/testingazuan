@@ -18,3 +18,4 @@ ALTER TABLE SBI_GEO_MAPS COMMENT = 'The table contains all maps usable by GEO DW
 ALTER TABLE SBI_GEO_FEATURES COMMENT = 'The table contains all features usable by GEO DWH';
 ALTER TABLE SBI_GEO_MAP_FEATURES COMMENT = 'The table contains all relations between maps and features';
 ALTER TABLE SBI_VIEWPOINTS COMMENT = 'The table contains all viewpoints';
+ALTER TABLE SBI_DATA_SOURCE COMMENT = 'The table contains all data sources';

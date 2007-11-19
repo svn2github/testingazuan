@@ -122,6 +122,8 @@ COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.MAP_ID IS 'Map identifier';
 COMMENT ON COLUMN SBI_GEO_MAP_FEATURES.FEATURE_ID IS 'Feature identifier';
 
 COMMENT ON TABLE SBI_VIEWPOINTS IS 'The table contains all viewpoints';
+COMMENT ON TABLE SBI_DATA_SOURCE IS 'The table contains all data sources';
+
 
 
 

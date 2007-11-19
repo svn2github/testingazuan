@@ -133,11 +133,10 @@ public class JasperReportServlet extends HttpServlet {
 		    
 		    SecurityServiceProxy proxy=new SecurityServiceProxy();
 		    IEngUserProfile profile = proxy.getUserProfile(userId);
-		    
+		    logger.debug("Utente:"+(String)profile.getUserUniqueIdentifier());
 		    
 		} catch (SecurityException e1) {
-		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
+		    logger.error("SecurityException",e1);
 		}
 		
 		

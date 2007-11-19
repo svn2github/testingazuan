@@ -1,40 +1,42 @@
 package it.eng.spagobi.services.datasource.service;
 
-import org.apache.log4j.Logger;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.engines.drivers.jasperreport.JasperReportDriver;
+import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.datasource.DataSourceService;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
-import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 
-public class DataSourceServiceImpl implements DataSourceService {
+import org.apache.log4j.Logger;
+
+public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSourceService {
     static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
     private DataSourceSupplier supplier=new DataSourceSupplier();
-    private String userId="";
-    private String validateUrl =null;
-    private String validateService =null;
-    private boolean activeSso=false;
+
     
+
     public DataSourceServiceImpl(){
-	logger.debug("IN");
-	ConfigSingleton config = ConfigSingleton.getInstance();
-	        SourceBean validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.URL");
-	validateUrl = (String)validateSB.getCharacters();
-	logger.debug("Read validateUrl="+validateUrl);
-	        validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.SERVICE");
-	validateService = (String)validateSB.getCharacters();
-	logger.debug("Read validateService="+validateService);
-        validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.ACTIVE");
-	String active = (String)validateSB.getCharacters();
-	if (active!=null && active.equals("true")) activeSso=true;
-	logger.debug("Read activeSso="+activeSso);
+	super();
     }
     public SpagoBiDataSource getDataSource(String token, String documentLabel,
 	    String engineLabel) {
+	logger.debug("IN");
+	if (activeSso){
+		try {
+		    if (validateTicket(token)){
+			return supplier.getDataSource(documentLabel, engineLabel);
+		    }else{
+			logger.error("Token NOT VALID");
+			return null;
+		    }
+		} catch (SecurityException e) {
+		    e.printStackTrace();
+		    return null;
+		}finally{
+		    logger.debug("OUT");
+		}
+	}else {
+	logger.debug("OUT");
 	return supplier.getDataSource(documentLabel, engineLabel);
+	}
     }
 
 }

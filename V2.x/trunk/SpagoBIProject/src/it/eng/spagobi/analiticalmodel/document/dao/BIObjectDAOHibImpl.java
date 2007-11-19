@@ -1054,7 +1054,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			// set engine						
 			aBIObject.setEngine(new EngineDAOHibImpl().toEngine(hibBIObject.getSbiEngines()));
 			// set data source
-			aBIObject.setDataSourceId(new Integer(hibBIObject.getDataSource().getDsId()));			
+			if (hibBIObject.getDataSource()!=null){
+			aBIObject.setDataSourceId(new Integer(hibBIObject.getDataSource().getDsId()));
+			}
 			// set id
 			aBIObject.setId(hibBIObject.getBiobjId());
 			aBIObject.setLabel(hibBIObject.getLabel());

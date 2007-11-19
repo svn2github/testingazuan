@@ -4,5 +4,6 @@
 	 <VALIDATE-USER>
 	 	<URL>https://localhost:8443/exo-cas-2/proxyValidate</URL>
 	 	<SERVICE>https://localhost:8443/SpagoBI/proxyReceptor</SERVICE>
-	 </VALIDATE-USER> 
+	 </VALIDATE-USER>
+	 <FILTER_RECEIPT>https://localhost:8443/SpagoBI/proxyReceptor</FILTER_RECEIPT> 
 </SPAGOBI_SSO>

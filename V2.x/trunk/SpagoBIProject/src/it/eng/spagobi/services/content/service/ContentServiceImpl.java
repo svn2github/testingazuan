@@ -4,13 +4,51 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.UploadedFile;
-import sun.misc.BASE64Encoder;
+import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.content.bo.Content;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 
-public class ContentServiceImpl {
+import org.apache.log4j.Logger;
 
+import sun.misc.BASE64Encoder;
+
+public class ContentServiceImpl extends AbstractServiceImpl{
+
+    static private Logger logger = Logger.getLogger(ContentServiceImpl.class);
+    
+
+    public ContentServiceImpl(){
+	super();
+    }
+    
     public Content readTemplate(String token, String user, String document) {
-// IMPLEMENTARE I CONTROLLI
+// TODO IMPLEMENTARE I CONTROLLI
+	
+        logger.debug("IN");
+	userId=user;
+	if (activeSso){
+		try {
+		    if (validateTicket(token)){
+			return readTemplate(user,document);
+		    }else{
+			logger.error("Token NOT VALID");
+			return null;
+		    }
+		} catch (SecurityException e) {
+		    logger.error("SecurityException",e);
+		    return null;
+		}finally{
+		    logger.debug("OUT");
+		}
+	}else{
+	        logger.debug("OUT");
+		// operazione locale
+	        return readTemplate(user,document);
+	}
+    }
+    
+    private Content readTemplate( String user, String document) {
+	logger.debug("IN");
 	BIObject biobj = null;
 	Content content=new Content();
 	try {
@@ -24,10 +62,11 @@ public class ContentServiceImpl {
 	    content.setFileName(uploadedFile.getFileName());
 	    return content;
 	} catch (NumberFormatException e) {
-	    e.printStackTrace();
+	    logger.error("NumberFormatException",e);
 	} catch (EMFUserError e) {
-	    e.printStackTrace();
+	    logger.error("EMFUserError",e);
 	}
-	return null;
-    }
+	logger.debug("OUT");
+	return null;	
+    } 
 }

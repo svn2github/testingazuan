@@ -26,14 +26,18 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -75,7 +79,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
         return super.doEndTag();
     }
 	
-	public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException{
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
 				            "QueryWizardTag::doStartTag:: invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
@@ -85,8 +89,14 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		String connNameField = msgBuilder.getMessage("SBIDev.queryWiz.connNameField", "messages", httpRequest);
 		String queryDefField = msgBuilder.getMessage("SBIDev.queryWiz.queryDefField", "messages", httpRequest);
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		List dbConnection = config.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
+		//ConfigSingleton config = ConfigSingleton.getInstance();
+		//List dbConnection = config.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
+		List dbConnection = new ArrayList();
+		try{			
+			dbConnection =  DAOFactory.getDataSourceDAO().loadAllDataSources();			
+		}catch (EMFUserError emf) {
+			emf.printStackTrace();
+		}
 		Iterator itDbCon = dbConnection.iterator();
 		
 		StringBuffer output = new StringBuffer();
@@ -122,10 +132,16 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("		<div class='div_detail_form'>\n");
 		output.append("			<select onchange='setLovProviderModified(true);' style='width:180px;' class='portlet-form-input-field' name='connName' id='connName' >\n");
 		while (itDbCon.hasNext()) {
+			/*
 			SourceBean connectionPool = (SourceBean) itDbCon.next();
 			String connectionPoolName = (String) connectionPool.getAttribute("connectionPoolName");
 			String connectionDescription = (String) connectionPool.getAttribute("connectionDescription");
 			if (connectionDescription == null || connectionDescription.trim().equals("")) connectionDescription = connectionPoolName;
+			*/
+			DataSource ds = (DataSource)itDbCon.next();
+			String connectionPoolName = String.valueOf(ds.getDsId());
+			String connectionDescription = ds.getDescr();
+			
 			String connNameSelected = "";
 			if (connectionPoolName.equals(connectionName)) connNameSelected = "selected=\"selected\"";
 			output.append("			<option value='" + connectionPoolName + "' " + connNameSelected + ">" + connectionDescription + "</option>\n");

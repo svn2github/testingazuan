@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.config.bo;
 
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+
 import java.io.Serializable;
 
 
@@ -47,6 +49,7 @@ public class Engine implements Serializable {
 	private String className = "";
 	private Integer biobjTypeId;
 	private Integer engineTypeId;
+	private Integer dataSourceId = null;
 
 	/**
 	 * @return Returns the criptable.
@@ -180,4 +183,19 @@ public class Engine implements Serializable {
 	public void setBiobjTypeId(Integer biobjTypeId) {
 		this.biobjTypeId = biobjTypeId;
 	}
+	
+	/**
+	 * @return Returns the data source.
+	 */
+	public Integer getDataSourceId() {
+		return dataSourceId;
+	}
+
+	/**
+	 * @param datasource -  The data source to set.
+	 */
+	public void setDataSourceId(Integer dataSourceId) {
+		this.dataSourceId = dataSourceId;
+	}
+
 }

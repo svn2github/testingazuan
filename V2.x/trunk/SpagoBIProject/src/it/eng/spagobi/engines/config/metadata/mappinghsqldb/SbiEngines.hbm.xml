@@ -13,6 +13,9 @@
             	<param name="sequence">sbi_engines_seq</param>
             </generator>
         </id>
+        <many-to-one name="dataSource" class="it.eng.spagobi.tools.datasource.metadata.SbiDataSource">
+            <column name="default_ds_id" not-null="true" />
+        </many-to-one>   
         <property name="encrypt" type="short">
             <column name="encrypt" />
         </property>
@@ -51,6 +54,6 @@
         </property>
         <many-to-one name="biobjType" class="it.eng.spagobi.commons.metadata.SbiDomains">
             <column name="biobj_type" not-null="true" />
-        </many-to-one>                 
+        </many-to-one>		                          
     </class>
 </hibernate-mapping>

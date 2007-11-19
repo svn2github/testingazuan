@@ -68,6 +68,8 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.dao.EngineDAOHibImpl;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.datasource.dao.DataSourceDAOHibImpl;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
@@ -458,8 +460,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			SbiObjects hibBIObject = (SbiObjects) aSession.load(
 					SbiObjects.class, biObject.getId());
 			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,
-					biObject.getEngine().getId());
+					biObject.getEngine().getId());			
 			hibBIObject.setSbiEngines(hibEngine); // TO REVIEW
+			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class,
+					biObject.getDataSourceId());			
+			hibBIObject.setDataSource(hibDataSource); // TO REVIEW			
 			hibBIObject.setDescr(biObject.getDescription());
 			hibBIObject.setLabel(biObject.getLabel());
 			hibBIObject.setName(biObject.getName());
@@ -621,7 +626,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			SbiObjects hibBIObject = new SbiObjects();
 			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,	biObject.getEngine().getId());
-			hibBIObject.setSbiEngines(hibEngine); 
+			hibBIObject.setSbiEngines(hibEngine);
+			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, biObject.getDataSourceId());			
+			hibBIObject.setDataSource(hibDataSource);
 			hibBIObject.setDescr(biObject.getDescription());
 			hibBIObject.setLabel(biObject.getLabel());
 			hibBIObject.setName(biObject.getName());
@@ -1046,6 +1053,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aBIObject.setVisible(new Integer(hibBIObject.getVisible().intValue()));
 			// set engine						
 			aBIObject.setEngine(new EngineDAOHibImpl().toEngine(hibBIObject.getSbiEngines()));
+			// set data source
+			aBIObject.setDataSourceId(new Integer(hibBIObject.getDataSource().getDsId()));			
 			// set id
 			aBIObject.setId(hibBIObject.getBiobjId());
 			aBIObject.setLabel(hibBIObject.getLabel());

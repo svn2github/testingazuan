@@ -23,8 +23,9 @@ package it.eng.spagobi.analiticalmodel.document.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
-import java.util.*;
+import java.util.Set;
 
 
 
@@ -37,11 +38,12 @@ public class SbiObjects  implements java.io.Serializable {
     // Fields    
 
      private Integer biobjId;
-     private SbiEngines sbiEngines;
+     private SbiEngines sbiEngines;     
      private SbiDomains stateConsideration;
      private SbiDomains state;
      private SbiDomains execMode;
      private SbiDomains objectType;
+     private SbiDataSource dataSource;
      private String objectTypeCode;
      private Short encrypt;
      private Short visible;
@@ -56,7 +58,7 @@ public class SbiObjects  implements java.io.Serializable {
      private String relName;
      private Set sbiObjPars;
      private Set sbiObjFuncs;
-     private Set sbiObjStates;
+     private Set sbiObjStates;     
      private String uuid;
 
     // Constructors
@@ -83,9 +85,6 @@ public class SbiObjects  implements java.io.Serializable {
 			this.uuid = uuid;
 		}
 	
-    /**
-     * 
-     */
     public Integer getBiobjId() {
         return this.biobjId;
     }
@@ -94,9 +93,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.biobjId = biobjId;
     }
 
-    /**
-     * 
-     */
     public SbiEngines getSbiEngines() {
         return this.sbiEngines;
     }
@@ -105,9 +101,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.sbiEngines = sbiEngines;
     }
 
-    /**
-     * 
-     */
     public SbiDomains getStateConsideration() {
         return this.stateConsideration;
     }
@@ -116,9 +109,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.stateConsideration = sbiDomains;
     }
 
-    /**
-     * 
-     */
     public SbiDomains getState() {
         return this.state;
     }
@@ -127,9 +117,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.state = sbiDomains_1;
     }
 
-    /**
-     * 
-     */
     public SbiDomains getExecMode() {
         return this.execMode;
     }
@@ -138,9 +125,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.execMode = sbiDomains_2;
     }
 
-    /**
-     * 
-     */
     public SbiDomains getObjectType() {
         return this.objectType;
     }
@@ -149,9 +133,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.objectType = sbiDomains_3;
     }
 
-    /**
-     * 
-     */
     public String getObjectTypeCode() {
         return this.objectTypeCode;
     }
@@ -160,9 +141,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.objectTypeCode = biobjTypeCd;
     }
 
-    /**
-     * 
-     */
     public Short getEncrypt() {
         return this.encrypt;
     }
@@ -171,9 +149,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.encrypt = encrypt;
     }
     
-    /**
-     * 
-     */
     public Short getVisible() {
         return this.visible;
     }
@@ -183,9 +158,6 @@ public class SbiObjects  implements java.io.Serializable {
     }
     
     
-    /**
-     * 
-     */
     public String getStateCode() {
         return this.stateCode;
     }
@@ -194,9 +166,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.stateCode = stateCd;
     }
 
-    /**
-     * 
-     */
     public Short getSchedFl() {
         return this.schedFl;
     }
@@ -205,9 +174,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.schedFl = schedFl;
     }
 
-    /**
-     * 
-     */
     public String getExecModeCode() {
         return this.execModeCode;
     }
@@ -216,9 +182,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.execModeCode = execModeCd;
     }
 
-    /**
-     * 
-     */
     public String getStateConsiderationCode() {
         return this.stateConsiderationCode;
     }
@@ -227,9 +190,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.stateConsiderationCode = stateConsCd;
     }
 
-    /**
-     * 
-     */
     public String getLabel() {
         return this.label;
     }
@@ -238,9 +198,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.label = label;
     }
 
-    /**
-     * 
-     */
     public String getDescr() {
         return this.descr;
     }
@@ -249,9 +206,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.descr = descr;
     }
 
-    /**
-     * 
-     */
     public String getPath() {
         return this.path;
     }
@@ -260,9 +214,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.path = path;
     }
 
-    /**
-     * 
-     */
     public String getRelName() {
         return this.relName;
     }
@@ -271,9 +222,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.relName = relName;
     }
 
-    /**
-     * 
-     */
     public Set getSbiObjPars() {
         return this.sbiObjPars;
     }
@@ -281,10 +229,7 @@ public class SbiObjects  implements java.io.Serializable {
     public void setSbiObjPars(Set sbiObjPars) {
         this.sbiObjPars = sbiObjPars;
     }
-
-    /**
-     * 
-     */
+    
     public Set getSbiObjFuncs() {
         return this.sbiObjFuncs;
     }
@@ -293,9 +238,6 @@ public class SbiObjects  implements java.io.Serializable {
         this.sbiObjFuncs = sbiObjFuncs;
     }
 
-    /**
-     * 
-     */
     public Set getSbiObjStates() {
         return this.sbiObjStates;
     }
@@ -304,7 +246,13 @@ public class SbiObjects  implements java.io.Serializable {
         this.sbiObjStates = sbiObjStates;
     }
 
-
+    public SbiDataSource getDataSource() {
+        return this.dataSource;
+    }
+    
+    public void setDataSource(SbiDataSource sbiDataSource) {
+        this.dataSource = sbiDataSource;
+    }
 
 	public String getName() {
 		return name;

@@ -17,7 +17,7 @@
         
         <mapping resource="it/eng/spagobi/events/metadata/mappingpostgres/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappingpostgres/SbiEventsLog.hbm.xml" />
-        <mapping resource="it/eng/spagobi/commons/commons/metadata/mappingpostgres/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiDomains.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiEventRole.hbm.xml" />  
         <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiExtRoles.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingpostgres/SbiParameters.hbm.xml" />
@@ -37,7 +37,7 @@
         <mapping resource="it/eng/spagobi/analiticalmodel/functionalitytree/metadata/mappingpostgres/SbiFuncRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/monitoring/metadata/mappingpostgres/SbiAudit.hbm.xml" />
         <mapping resource="it/eng/spagobi/engines/config/metadata/mappingpostgres/SbiEngines.hbm.xml" />
-        
+        <mapping resource="it/eng/spagobi/tools/datasource/metadata/mappingpostgres/SbiDataSource.hbm.xml" />
         
                         
         <!-- map catalogue -->

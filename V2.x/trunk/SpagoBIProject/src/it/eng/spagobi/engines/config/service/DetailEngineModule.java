@@ -36,6 +36,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -142,8 +143,8 @@ public class DetailEngineModule extends AbstractModule {
 			
 			String engineTypeIdStr = (String) request.getAttribute("engineTypeId");
 			Integer engineTypeId = new Integer(engineTypeIdStr);
-			Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engineTypeId);
-			
+			Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engineTypeId);						
+
 			if ("EXT".equalsIgnoreCase(engineType.getValueCd())) ValidationCoordinator.validate("PAGE", "ExternalEngineDetailPage", this);
 			else ValidationCoordinator.validate("PAGE", "InternalEngineDetailPage", this);
 			
@@ -271,7 +272,10 @@ public class DetailEngineModule extends AbstractModule {
 		Integer engineTypeId = new Integer(engineTypeIdStr);
 		Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engineTypeId);
 		
-		String url = "";
+		String engineDefaultDS = (String) request.getAttribute("engineDefaultDS");		
+		Integer engineDSId = new Integer(engineDefaultDS);		
+		
+			String url = "";
 		String driverName = "";
 		String className = "";
 		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
@@ -304,6 +308,8 @@ public class DetailEngineModule extends AbstractModule {
 		engine.setEngineTypeId(engineTypeId);
 		engine.setClassName(className);
 		engine.setBiobjTypeId(biobjTypeId);
+		engine.setDataSourceId(engineDSId);
+		
 		
         List enginesList = DAOFactory.getEngineDAO().loadAllEngines();
 		Iterator i = enginesList.listIterator();

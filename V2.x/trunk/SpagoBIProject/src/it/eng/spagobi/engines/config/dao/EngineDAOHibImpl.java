@@ -33,6 +33,7 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -172,6 +173,8 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 					aEngine.getBiobjTypeId());
 			SbiDomains hibDomainEngineType = (SbiDomains) aSession.load(SbiDomains.class,
 					aEngine.getEngineTypeId());
+			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, aEngine.getDataSourceId());						
+
 			hibEngine.setName(aEngine.getName());
 			hibEngine.setLabel(aEngine.getLabel());
 			hibEngine.setDescr(aEngine.getDescription());
@@ -185,6 +188,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			hibEngine.setEngineType(hibDomainEngineType);
 			hibEngine.setClassNm(aEngine.getClassName());
 			hibEngine.setBiobjType(hibDomainBiobjType);
+			hibEngine.setDataSource(hibDataSource);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -215,6 +219,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 					aEngine.getBiobjTypeId());
 			SbiDomains hibDomainEngineType = (SbiDomains) aSession.load(SbiDomains.class,
 					aEngine.getEngineTypeId());
+			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, aEngine.getDataSourceId());
 			SbiEngines hibEngine = new SbiEngines();
 			hibEngine.setName(aEngine.getName());
 			hibEngine.setLabel(aEngine.getLabel());
@@ -229,6 +234,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			hibEngine.setEngineType(hibDomainEngineType);
 			hibEngine.setClassNm(aEngine.getClassName());
 			hibEngine.setBiobjType(hibDomainBiobjType);
+			hibEngine.setDataSource(hibDataSource);
 			aSession.save(hibEngine);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -299,6 +305,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		eng.setEngineTypeId(hibEngine.getEngineType().getValueId());
 		eng.setClassName(hibEngine.getClassNm());
 		eng.setBiobjTypeId(hibEngine.getBiobjType().getValueId());
+		eng.setDataSourceId(new Integer((hibEngine.getDataSource()==null)?-1:hibEngine.getDataSource().getDsId()));
 		return eng;
 	}
 	/**

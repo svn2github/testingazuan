@@ -35,7 +35,6 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
@@ -45,6 +44,7 @@ import it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 
 /**
  * Contains all the data access object for all the BO objects defined into
@@ -207,6 +207,16 @@ public class DAOFactory {
 	 */
 	public static IViewpointDAO getViewpointDAO() throws EMFUserError{
 		return (IViewpointDAO)createDAOInstance("ViewpointDAO");
+	}
+	
+	/**
+	 * Creates a DAO instance for a data source
+	 * 
+	 * @return a DAO instance for the data source
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IDataSourceDAO getDataSourceDAO() throws EMFUserError{
+		return (IDataSourceDAO)createDAOInstance("DataSourceDAO");
 	}	
 		
 }

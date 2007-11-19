@@ -60,6 +60,7 @@ import it.eng.spagobi.commons.utilities.SessionMonitor;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,6 +88,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_LIST_ENGINES = "engines";
 	public final static String NAME_ATTR_LIST_STATES = "states";		
 	public final static String NAME_ATTR_OBJECT_PAR = "OBJECT_PAR";
+	public final static String NAME_ATTR_LIST_DS = "datasource";
 	private String actor = null;
 	private EMFErrorHandler errorHandler = null;
 	protected IEngUserProfile profile;
@@ -555,7 +557,14 @@ public class DetailBIObjectModule extends AbstractModule {
 						}
 					}
 					
-					// it is requested to modify the main values of the BIObject
+					//if data source value is not specified, it gets the default data source associated at the engine
+					if (obj.getDataSourceId() == null){
+						Engine engine = obj.getEngine();
+						Integer dsId = engine.getDataSourceId();
+						obj.setDataSourceId(dsId);
+					}
+					
+					// it is requested to modify the main values of the BIObject					
 					DAOFactory.getBIObjectDAO().modifyBIObject(obj);
 	    			// reloads the BIObject with the updated CMS information
 	    			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getId());
@@ -597,7 +606,12 @@ public class DetailBIObjectModule extends AbstractModule {
 						}
 					}
 				}
-    			
+				//if data source value is not specified, it gets the default data source associated at the engine
+				if (obj.getDataSourceId() == null){
+					Engine engine = obj.getEngine();
+					Integer dsId = engine.getDataSourceId();
+					obj.setDataSourceId(dsId);
+				}
     			// inserts into DB the new BIObject
     			DAOFactory.getBIObjectDAO().insertBIObject(obj);
     			// reloads the BIObject with the correct Id and empty CMS information
@@ -877,6 +891,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		objClone.setEncrypt(obj.getEncrypt());
 		objClone.setVisible(obj.getVisible());
 		objClone.setEngine(obj.getEngine());
+		objClone.setDataSourceId(obj.getDataSourceId());
 		objClone.setId(obj.getId());
 		objClone.setLabel(obj.getLabel());
 		objClone.setName(obj.getName());
@@ -996,7 +1011,23 @@ public class DetailBIObjectModule extends AbstractModule {
 			Integer engineIdInt = new Integer(engineIdStr);
 			engine = DAOFactory.getEngineDAO().loadEngineByID(engineIdInt);
 		}
-
+		String dsIdStr = (String) request.getAttribute("datasource");
+		DataSource ds = null;
+		if (dsIdStr == null || dsIdStr.equals("")) {
+			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
+			if (lstDataSource.size() == 0) { //TODO: adattare msg errore
+				HashMap errorParams = new HashMap();
+				errorParams.put(AdmintoolsConstants.PAGE, MODULE_PAGE);
+				Domain domain = DAOFactory.getDomainDAO().loadDomainById(typeIdInt);
+				Vector vector = new Vector();
+				vector.add(domain.getValueName());
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1064, vector, errorParams);
+			}
+			//ds = (DataSource) lstDataSource.get(0);
+		} else {
+			Integer dsIdInt = new Integer(dsIdStr);
+			ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsIdInt);
+		}
 		String stateAttr = (String) request.getAttribute("state");
 		StringTokenizer tokenState = new StringTokenizer(stateAttr, ",");
 		String stateIdStr = tokenState.nextToken();
@@ -1079,6 +1110,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		obj.setEncrypt(encrypt);
 		obj.setVisible(visible);
 		obj.setEngine(engine);
+		obj.setDataSourceId((ds==null)?null:new Integer(ds.getDsId()));
 		obj.setId(id);
 		obj.setName(name);
 		obj.setLabel(label);
@@ -1189,6 +1221,7 @@ public class DetailBIObjectModule extends AbstractModule {
             BIObject obj = new BIObject();
             obj.setId(new Integer(0));
             obj.setEngine(null);
+            obj.setDataSourceId(null);
             obj.setDescription("");
             obj.setLabel("");
             obj.setName("");
@@ -1236,10 +1269,12 @@ public class DetailBIObjectModule extends AbstractModule {
 	  		    	}
 	  		    }
 	        }
-	        // load list of states and engines
+	        // load list of states, engines and data source
 	        List states = domaindao.loadListDomainsByType("STATE");
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();
+	        List datasource =  DAOFactory.getDataSourceDAO().loadAllDataSources();
 		    response.setAttribute(NAME_ATTR_LIST_ENGINES, engines);
+		    response.setAttribute(NAME_ATTR_LIST_DS, datasource);
 		    response.setAttribute(NAME_ATTR_LIST_OBJ_TYPES, types);
 		    response.setAttribute(NAME_ATTR_LIST_STATES, states);
 			List functionalities = new ArrayList();
@@ -1279,6 +1314,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		String description = (String)request.getAttribute("description");
 		String relName = (String)request.getAttribute("relName");
 		String engine = (String)request.getAttribute("engine");
+		String datasource = (String)request.getAttribute("datasource");
 		String state = (String)request.getAttribute("state");
 		String path = "";
 		String objParLabel = (String)request.getAttribute("objParLabel");
@@ -1312,8 +1348,16 @@ public class DetailBIObjectModule extends AbstractModule {
 				engine = ((Engine) engines.get(0)).getId().toString();
 			}
 		}
+		if (datasource == null) {
+			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
+			if (lstDataSource.size() > 0) {
+				datasource = new Integer(((DataSource) lstDataSource.get(0)).getDsId()).toString();
+			}
+		}		
 		if(_serviceRequest.getAttribute("engine")==null)
 			_serviceRequest.setAttribute("engine", engine);
+		if(_serviceRequest.getAttribute("datasource")==null)
+			_serviceRequest.setAttribute("datasource", datasource);		
 		if(_serviceRequest.getAttribute("state")==null)
 			_serviceRequest.setAttribute("state", state);
 		if(_serviceRequest.getAttribute("path")==null)

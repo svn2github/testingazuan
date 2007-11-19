@@ -27,6 +27,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -46,13 +47,16 @@ public class BIObject implements Serializable {
 	// ENGINE_ID NUMBER N Engine idenitifier (FK)
 	private Engine engine = null;
 
+	// DATA_SOURCE_ID NUMBER N DataSource idenitifier (FK)
+	private Integer dataSourceId = null;
+
 	// DESCR VARCHAR2(128) Y BI Object description
 	private String name = null;
 	
 	// DESCR VARCHAR2(128) Y BI Object description
 	private String description = null;
 
-	// LABEL VARCHAR2(36) Y Engine label (short textual identifier)
+	// LABEL VARCHAR2(36) Y BI Object label (short textual identifier)
 	private String label = null;
 
 	// ENCRYPT NUMBER Y Parameter encryption request.
@@ -180,6 +184,19 @@ public class BIObject implements Serializable {
 		this.engine = engine;
 	}
 
+	/**
+	 * @return Returns the datasource.
+	 */
+	public Integer getDataSourceId() {
+		return dataSourceId;
+	}
+
+	/**
+	 * @param datasource  The data source to set.
+	 */
+	public void setDataSourceId(Integer dataSourceId) {
+		this.dataSourceId = dataSourceId;
+	}
 	/**
 	 * @return Returns the label.
 	 */

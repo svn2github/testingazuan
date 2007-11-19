@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.config.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 
 
@@ -43,10 +44,11 @@ public class SbiEngines  implements java.io.Serializable {
      private String objUplDir;
      private String objUseDir;
      private String driverNm;
-     private String label;
+     private String label;     
      private SbiDomains engineType;
      private String classNm;
      private SbiDomains biobjType; 
+     private SbiDataSource dataSource;
 
 
     // Constructors
@@ -194,4 +196,14 @@ public class SbiEngines  implements java.io.Serializable {
 	public void setEngineType(SbiDomains engineType) {
 		this.engineType = engineType;
 	}
+
+	public SbiDataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(SbiDataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+
 }

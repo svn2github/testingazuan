@@ -16,25 +16,10 @@
 
 
 	<!-- ====================================================================================== -->
-	<!--  Connection settings 																	--> 
+	<!--  SSO settings 																	--> 
 	<!-- ====================================================================================== -->
-	<!--  
-		name 	= 	name of the connection
-		isJNDI 	= 	true if the connection is defined in the jndi namespace of the server 
-	-->
-	<!-- ====================================================================================== -->
-
-	<!-- Decomment and define your own connections here, specify also a default connection -->
-	
-	<CONNECTIONS default="hsqlfoodmart">
-		<CONNECTION name="hsqlfoodmart" 
-					isJNDI="true"
-					initialContext="java:comp/env"
-					resourceName="jdbc/foodmart"/> 
-
-	</CONNECTIONS>
-	
-	
+	<ACTIVE_SSO>false</ACTIVE_SSO>
+	<FILTER_RECEIPT>https://localhost:8443/SpagoBI/proxyReceptor</FILTER_RECEIPT>
 	
 	<!-- ====================================================================================== -->
 	<!--  Exporter settings 																	--> 

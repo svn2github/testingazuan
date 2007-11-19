@@ -13,7 +13,7 @@ import edu.yale.its.tp.cas.proxy.ProxyTicketReceptor;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 
-public class AbstractServiceProxy {
+public abstract class AbstractServiceProxy {
 
     static private Logger logger = Logger.getLogger(AbstractServiceProxy.class);
     

@@ -25,28 +25,15 @@
 	<!-- ====================================================================================== -->
 
 	<!-- Decomment and define your own connections here, specify also a default connection -->
-	<!--
+	
 	<CONNECTIONS default="hsqlfoodmart">
-    	<CONNECTION name="hsqlfoodmartjdbc" 
-					isJNDI="false"
-					driver="org.hsqldb.jdbcDriver"
-					user="sa"
-					password=""
-					jdbcUrl="jdbc:hsqldb:hsql://localhost/foodmart"/>			
 		<CONNECTION name="hsqlfoodmart" 
 					isJNDI="true"
 					initialContext="java:comp/env"
-					resourceName="jdbc/sbifoodmart"/> 
-		<CONNECTION name="mysqlfoodmart" 
-					isJNDI="true"
-					initialContext="java:comp/env"
-					resourceName="jdbc/mysqlfoodmart"/>
-		<CONNECTION name="oraclesh" 
-					isJNDI="true"
-					initialContext="java:comp/env"
-					resourceName="jdbc/oracleSH"/>
+					resourceName="jdbc/foodmart"/> 
+
 	</CONNECTIONS>
-	-->
+	
 	
 	
 	<!-- ====================================================================================== -->

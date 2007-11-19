@@ -6,6 +6,11 @@
 package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.security.IEngUserProfile;
+
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -21,6 +26,7 @@ import java.io.PrintWriter;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -118,6 +124,23 @@ public class JasperReportServlet extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		logger.debug(this.getClass().getName() +":service:Start processing a new request...");
+		
+		// USER PROFILE 
+		
+		String documentId=(String)request.getParameter("document");
+		String userId=(String)request.getParameter("userId");
+		try {
+		    
+		    SecurityServiceProxy proxy=new SecurityServiceProxy();
+		    IEngUserProfile profile = proxy.getUserProfile(userId);
+		    
+		    
+		} catch (SecurityException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		}
+		
+		
 		Map params = new HashMap();
 		Enumeration enumer = request.getParameterNames();
 		String parName = null;
@@ -150,9 +173,9 @@ public class JasperReportServlet extends HttpServlet {
 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 					"EXECUTION_STARTED", null, null);
 			
-			String template = (String) params.get("templatePath");
+			
 			String spagobibase = (String) params.get("spagobiurl");
-			JasperReportRunner jasperReportRunner = new JasperReportRunner(spagobibase, template);
+			JasperReportRunner jasperReportRunner = new JasperReportRunner(spagobibase);
 			Connection con = getConnection(request.getParameter("connectionName"));
 			if (con == null) {
 				logger.error(this.getClass().getName() +":service:Cannot obtain"

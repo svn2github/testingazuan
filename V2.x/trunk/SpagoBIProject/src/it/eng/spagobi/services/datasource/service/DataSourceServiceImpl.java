@@ -38,5 +38,25 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
 	return supplier.getDataSource(documentLabel, engineLabel);
 	}
     }
-
+    public SpagoBiDataSource[] getAllDataSource(String token){
+	logger.debug("IN");
+	if (activeSso){
+		try {
+		    if (validateTicket(token)){
+			return supplier.getAllDataSource();
+		    }else{
+			logger.error("Token NOT VALID");
+			return null;
+		    }
+		} catch (SecurityException e) {
+		    e.printStackTrace();
+		    return null;
+		}finally{
+		    logger.debug("OUT");
+		}
+	}else {
+	logger.debug("OUT");
+	return supplier.getAllDataSource();
+	}
+    }
 }

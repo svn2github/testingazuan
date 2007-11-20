@@ -4,6 +4,7 @@
 Built on Oct 05, 2005 (05:23:37 EDT)-->
  <wsdl:types>
   <schema targetNamespace="http://bo.datasource.services.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="urn:spagobidatasource"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="SpagoBiDataSource">
     <sequence>
@@ -12,10 +13,28 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
      <element name="password" nillable="true" type="soapenc:string"/>
      <element name="url" nillable="true" type="soapenc:string"/>
      <element name="user" nillable="true" type="soapenc:string"/>
+     <element name="label" nillable="true" type="soapenc:string"/>
     </sequence>
    </complexType>
   </schema>
+  <schema targetNamespace="urn:spagobidatasource" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://bo.datasource.services.spagobi.eng.it"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns2_SpagoBiDataSource">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:SpagoBiDataSource[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
  </wsdl:types>
+
+   <wsdl:message name="getAllDataSourceRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
 
    <wsdl:message name="getDataSourceResponse">
 
@@ -33,6 +52,12 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getAllDataSourceResponse">
+
+      <wsdl:part name="getAllDataSourceReturn" type="impl:ArrayOf_tns2_SpagoBiDataSource"/>
+
+   </wsdl:message>
+
    <wsdl:portType name="DataSourceService">
 
       <wsdl:operation name="getDataSource" parameterOrder="in0 in1 in2">
@@ -40,6 +65,14 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
          <wsdl:input message="impl:getDataSourceRequest" name="getDataSourceRequest"/>
 
          <wsdl:output message="impl:getDataSourceResponse" name="getDataSourceResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllDataSource" parameterOrder="in0">
+
+         <wsdl:input message="impl:getAllDataSourceRequest" name="getAllDataSourceRequest"/>
+
+         <wsdl:output message="impl:getAllDataSourceResponse" name="getAllDataSourceResponse"/>
 
       </wsdl:operation>
 
@@ -60,6 +93,24 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
          </wsdl:input>
 
          <wsdl:output name="getDataSourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidatasource" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllDataSource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllDataSourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidatasource" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllDataSourceResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidatasource" use="encoded"/>
 

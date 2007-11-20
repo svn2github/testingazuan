@@ -124,34 +124,4 @@ public interface IDataSourceDAO {
 	 */
 	public boolean hasBIObjAssociated (String dsId) throws EMFUserError;
 
-	/**
-	 * Implements the query to load a data source joined with a document id. 
-	 * All these information,  are stored 
-	 * into a <code>datasource</code> object, which is returned.
-	 * 
-	 * @param docId The identifier of document
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public DataSource loadDataSourceByDocumentId(Integer docId) throws EMFUserError;
-	
-	/**
-	 * Implements the query to load a data source joined with an engine id. 
-	 * All these information,  are stored 
-	 * into a <code>datasource</code> object, which is returned.
-	 * 
-	 * @param docId The identifier of document
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public DataSource loadDataSourceByEngineId(Integer engineId) throws EMFUserError;
-	
-	/**
-	 * Implements the query to load a data source joined with an engine's label. 
-	 * All these information,  are stored 
-	 * into a <code>datasource</code> object, which is returned.
-	 * 
-	 * @param docId The identifier of document
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public DataSource loadDataSourceByEngineLabel(String engineLabel) throws EMFUserError;
-
 }

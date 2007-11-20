@@ -44,6 +44,18 @@ public class DataSourceServiceSoapBindingSkeleton implements it.eng.spagobi.serv
             _myOperations.put("getDataSource", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getDataSource")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getAllDataSource", _params, new javax.xml.namespace.QName("", "getAllDataSourceReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobidatasource", "ArrayOf_tns2_SpagoBiDataSource"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobidatasource", "getAllDataSource"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getAllDataSource") == null) {
+            _myOperations.put("getAllDataSource", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getAllDataSource")).add(_oper);
     }
 
     public DataSourceServiceSoapBindingSkeleton() {
@@ -56,6 +68,12 @@ public class DataSourceServiceSoapBindingSkeleton implements it.eng.spagobi.serv
     public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource getDataSource(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
     {
         it.eng.spagobi.services.datasource.bo.SpagoBiDataSource ret = impl.getDataSource(in0, in1, in2);
+        return ret;
+    }
+
+    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[] getAllDataSource(java.lang.String in0) throws java.rmi.RemoteException
+    {
+        it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[] ret = impl.getAllDataSource(in0);
         return ret;
     }
 

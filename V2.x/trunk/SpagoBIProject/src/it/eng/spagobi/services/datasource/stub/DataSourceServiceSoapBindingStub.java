@@ -16,7 +16,7 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[1];
+        _operations = new org.apache.axis.description.OperationDesc[2];
         _initOperationDesc1();
     }
 
@@ -37,6 +37,17 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         _operations[0] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getAllDataSource");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobidatasource", "ArrayOf_tns2_SpagoBiDataSource"));
+        oper.setReturnClass(it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[].class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getAllDataSourceReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        _operations[1] = oper;
 
     }
 
@@ -75,6 +86,15 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:spagobidatasource", "ArrayOf_tns2_SpagoBiDataSource");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("http://bo.datasource.services.spagobi.eng.it", "SpagoBiDataSource");
+            qName2 = null;
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
     }
 
@@ -167,6 +187,37 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
                 return (it.eng.spagobi.services.datasource.bo.SpagoBiDataSource) _resp;
             } catch (java.lang.Exception _exception) {
                 return (it.eng.spagobi.services.datasource.bo.SpagoBiDataSource) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.services.datasource.bo.SpagoBiDataSource.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[] getAllDataSource(java.lang.String in0) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[1]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobidatasource", "getAllDataSource"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[]) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[].class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {

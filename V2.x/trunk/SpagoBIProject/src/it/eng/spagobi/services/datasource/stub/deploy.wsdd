@@ -15,7 +15,7 @@
   <service name="DataSourceService" provider="java:RPC" style="rpc" use="encoded">
       <parameter name="wsdlTargetNamespace" value="urn:spagobidatasource"/>
       <parameter name="wsdlServiceElement" value="DataSourceServiceService"/>
-      <parameter name="schemaUnqualified" value="http://bo.datasource.services.spagobi.eng.it"/>
+      <parameter name="schemaUnqualified" value="urn:spagobidatasource,http://bo.datasource.services.spagobi.eng.it"/>
       <parameter name="wsdlServicePort" value="DataSourceService"/>
       <parameter name="className" value="it.eng.spagobi.services.datasource.stub.DataSourceServiceSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="DataSourceService"/>
@@ -23,6 +23,13 @@
       <parameter name="allowedMethods" value="*"/>
       <parameter name="scope" value="Session"/>
 
+      <arrayMapping
+        xmlns:ns="urn:spagobidatasource"
+        qname="ns:ArrayOf_tns2_SpagoBiDataSource"
+        type="java:it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[]"
+        innerType="cmp-ns:SpagoBiDataSource" xmlns:cmp-ns="http://bo.datasource.services.spagobi.eng.it"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
       <typeMapping
         xmlns:ns="http://bo.datasource.services.spagobi.eng.it"
         qname="ns:SpagoBiDataSource"

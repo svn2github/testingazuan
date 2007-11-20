@@ -37,4 +37,8 @@ public class DataSourceSupplier {
     	return sbds;
     }
     
+    public SpagoBiDataSource[] getAllDataSource(){
+
+    	return null;
+    }    
 }

@@ -7,8 +7,8 @@ package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
-
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.ParametersDecoder;
@@ -26,7 +26,6 @@ import java.io.PrintWriter;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -43,9 +42,9 @@ import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -63,8 +62,7 @@ import sun.misc.BASE64Decoder;
 /**
  * Process jasper report execution requests and returns bytes of the filled reports 
  */
-public class JasperReportServlet extends HttpServlet {
-
+public class JasperReportServlet extends HttpServlet {    
 	
 	static Map extensions;
 	static {
@@ -95,7 +93,7 @@ public class JasperReportServlet extends HttpServlet {
 
 	
 	
-	
+	   
 	
 	/**
 	 * Initialize the engine 
@@ -133,10 +131,11 @@ public class JasperReportServlet extends HttpServlet {
 		    
 		    SecurityServiceProxy proxy=new SecurityServiceProxy();
 		    IEngUserProfile profile = proxy.getUserProfile(userId);
-		    logger.debug("Utente:"+(String)profile.getUserUniqueIdentifier());
+		    
 		    
 		} catch (SecurityException e1) {
-		    logger.error("SecurityException",e1);
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
 		}
 		
 		
@@ -175,7 +174,8 @@ public class JasperReportServlet extends HttpServlet {
 			
 			String spagobibase = (String) params.get("spagobiurl");
 			JasperReportRunner jasperReportRunner = new JasperReportRunner(spagobibase);
-			Connection con = getConnection(request.getParameter("connectionName"));
+			//Connection con = getConnection(request.getParameter("connectionName"));
+			Connection con = getConnection(documentId, new String(""));
 			if (con == null) {
 				logger.error(this.getClass().getName() +":service:Cannot obtain"
 						+ " connection for engine ["
@@ -273,6 +273,7 @@ public class JasperReportServlet extends HttpServlet {
 	 * database connection and return it 
 	 * @param connectionName Logical name of the connection configuration (defined into engine-config.xml)
 	 * @return the database connection
+	 * @deprecated
 	 */
 	public Connection getConnection(String connectionName) {
 		String engineClassName = this.getClass().getName();
@@ -320,6 +321,23 @@ public class JasperReportServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * This method, based on the data sources table, gets a 
+	 * database connection and return it  
+	 * @return the database connection
+	 */
+	public Connection getConnection(String documentId, String engineLabel) {
+		//calls service for gets data source object
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
+		SpagoBiDataSource ds = proxyDS.getDataSource(documentId, engineLabel);
+		//  get connection
+		String jndi = ds.getJndiName();
+		if (jndi != null && !jndi.equals("")) {
+			return getConnectionFromJndiDS(ds);
+		} else {
+			return getDirectConnection(ds);
+		}
+	}
 	
 	
 	
@@ -327,6 +345,7 @@ public class JasperReportServlet extends HttpServlet {
 	 * Get the connection from JNDI
 	 * @param connectionConfig SourceBean describing data connection
 	 * @return Connection to database
+	 * @deprecated
 	 */
 	private Connection getConnectionFromJndiDS(SourceBean connectionConfig) {
 		Connection connection = null;
@@ -345,6 +364,28 @@ public class JasperReportServlet extends HttpServlet {
 		}
 		return connection;
 	}
+	
+	/**
+	 * Get the connection from JNDI
+	 * @param connectionConfig SourceBean describing data connection
+	 * @return Connection to database
+	 */
+	private Connection getConnectionFromJndiDS(SpagoBiDataSource connectionConfig) {
+		Connection connection = null;
+		Context ctx ;		
+		String resName = connectionConfig.getJndiName();		
+		try {
+			ctx = new InitialContext();					
+			String xxx = ctx.getNameInNamespace();
+			DataSource ds = (DataSource) ctx.lookup(resName);		
+			connection = ds.getConnection();
+		} catch (NamingException ne) {
+			logger.error("JNDI error", ne);
+		} catch (SQLException sqle) {
+			logger.error("Cannot retrive connection", sqle);
+		}
+		return connection;
+	}
 
 	
 	
@@ -354,6 +395,7 @@ public class JasperReportServlet extends HttpServlet {
 	 * Get the connection using jdbc 
 	 * @param connectionConfig SourceBean describing data connection
 	 * @return Connection to database
+	 * @deprecated
 	 */
 	private Connection getDirectConnection(SourceBean connectionConfig) {
 		Connection connection = null;
@@ -374,6 +416,27 @@ public class JasperReportServlet extends HttpServlet {
 	}
 
 	
+	/**
+	 * Get the connection using jdbc 
+	 * @param connectionConfig SpagoBiDataSource describing data connection
+	 * @return Connection to database
+	 */
+	private Connection getDirectConnection(SpagoBiDataSource connectionConfig) {
+		Connection connection = null;
+		try {
+			String driverName = connectionConfig.getDriver();
+			Class.forName(driverName);
+			String url = connectionConfig.getUrl();
+			String username = connectionConfig.getUser();
+			String password = connectionConfig.getPassword();
+			connection = DriverManager.getConnection(url, username, password);
+		} catch (ClassNotFoundException e) {
+			logger.error("Driver not found", e);
+		} catch (SQLException e) {
+			logger.error("Cannot retrive connection", e);
+		}
+		return connection;
+	}	
 	
 	
 	/**

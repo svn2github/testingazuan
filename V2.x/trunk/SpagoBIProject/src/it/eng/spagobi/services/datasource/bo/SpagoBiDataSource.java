@@ -2,7 +2,7 @@
  * SpagoBiDataSource.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
 package it.eng.spagobi.services.datasource.bo;
@@ -18,6 +18,8 @@ public class SpagoBiDataSource  implements java.io.Serializable {
 
     private java.lang.String user;
 
+    private java.lang.String label;
+
     public SpagoBiDataSource() {
     }
 
@@ -26,12 +28,14 @@ public class SpagoBiDataSource  implements java.io.Serializable {
            java.lang.String jndiName,
            java.lang.String password,
            java.lang.String url,
-           java.lang.String user) {
+           java.lang.String user,
+           java.lang.String label) {
            this.driver = driver;
            this.jndiName = jndiName;
            this.password = password;
            this.url = url;
            this.user = user;
+           this.label = label;
     }
 
 
@@ -134,6 +138,26 @@ public class SpagoBiDataSource  implements java.io.Serializable {
         this.user = user;
     }
 
+
+    /**
+     * Gets the label value for this SpagoBiDataSource.
+     * 
+     * @return label
+     */
+    public java.lang.String getLabel() {
+        return label;
+    }
+
+
+    /**
+     * Sets the label value for this SpagoBiDataSource.
+     * 
+     * @param label
+     */
+    public void setLabel(java.lang.String label) {
+        this.label = label;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBiDataSource)) return false;
@@ -160,7 +184,10 @@ public class SpagoBiDataSource  implements java.io.Serializable {
               this.url.equals(other.getUrl()))) &&
             ((this.user==null && other.getUser()==null) || 
              (this.user!=null &&
-              this.user.equals(other.getUser())));
+              this.user.equals(other.getUser()))) &&
+            ((this.label==null && other.getLabel()==null) || 
+             (this.label!=null &&
+              this.label.equals(other.getLabel())));
         __equalsCalc = null;
         return _equals;
     }
@@ -186,6 +213,9 @@ public class SpagoBiDataSource  implements java.io.Serializable {
         }
         if (getUser() != null) {
             _hashCode += getUser().hashCode();
+        }
+        if (getLabel() != null) {
+            _hashCode += getLabel().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -224,6 +254,12 @@ public class SpagoBiDataSource  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("user");
         elemField.setXmlName(new javax.xml.namespace.QName("", "user"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("label");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "label"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

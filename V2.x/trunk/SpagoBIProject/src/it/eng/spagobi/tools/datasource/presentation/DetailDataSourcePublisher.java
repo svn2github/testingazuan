@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.datasource.presentation;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
@@ -31,6 +33,7 @@ import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
 
 /**
  * Publishes the results of a detail request for a datasource into the correct 
@@ -43,7 +46,7 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
  * @author giachino
  */
 public class DetailDataSourcePublisher implements PublisherDispatcherIFace {
-
+	static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
@@ -62,10 +65,7 @@ public class DetailDataSourcePublisher implements PublisherDispatcherIFace {
 		
 		// if the module response is null throws an error and return the name of the errors publisher
 		if(moduleResponse==null) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-		            "DetailDataSourcePublisher", 
-		            "getPublisherName", 
-		            "Module response null");
+			logger.error("Module response null");
 			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
 			errorHandler.addError(error);
 			return "error";

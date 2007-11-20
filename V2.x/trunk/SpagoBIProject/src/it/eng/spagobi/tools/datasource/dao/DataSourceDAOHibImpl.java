@@ -30,6 +30,7 @@ package it.eng.spagobi.tools.datasource.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -52,7 +54,7 @@ import org.hibernate.criterion.Expression;
  * @author giachino
  */
 public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataSourceDAO{
-
+	static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
 	/**
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadDataSourceByID(java.lang.Integer)
 	 */
@@ -69,7 +71,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			tx.commit();
 			
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while loading the data source with id " + dsID.toString(), he);			
 
 			if (tx != null)
 				tx.rollback();
@@ -104,7 +106,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while loading the data source with label " + label, he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -137,7 +139,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while loading all data sources ", he);
 
 			if (tx != null)
 				tx.rollback();
@@ -173,7 +175,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			hibDataSource.setDriver(aDataSource.getDriver());
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while modifing the data source with id " + ((aDataSource == null)?"":String.valueOf(aDataSource.getDsId())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -209,7 +211,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			aSession.save(hibDataSource);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while inserting the data source with id " + ((aDataSource == null)?"":String.valueOf(aDataSource.getDsId())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -238,7 +240,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			aSession.delete(hibDataSource);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while erasing the data source with id " + ((aDataSource == null)?"":String.valueOf(aDataSource.getDsId())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -303,7 +305,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 				bool = false;
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while getting the objects associated with the data source with id " + dsId, he);
 
 			if (tx != null)
 				tx.rollback();
@@ -346,7 +348,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 				bool = false;
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("Error while getting the engines associated with the data source with id " + dsId, he);
 
 			if (tx != null)
 				tx.rollback();

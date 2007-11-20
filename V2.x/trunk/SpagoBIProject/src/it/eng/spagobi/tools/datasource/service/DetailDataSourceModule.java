@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.IOException;
@@ -42,10 +43,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 /**
  * This class implements a module which  handles data source management. 
  */
 public class DetailDataSourceModule extends AbstractModule {
+	static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
 	public static final String MOD_SAVE = "SAVE";
 	public static final String MOD_SAVEBACK = "SAVEBACK";
 
@@ -68,8 +72,7 @@ public class DetailDataSourceModule extends AbstractModule {
 		try {
 			if (message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-				SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE, "DetailRolesModule", 
-						"service", "The message parameter is null");
+				logger.debug("The message parameter is null");
 				throw userError;
 			}
 			if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
@@ -174,17 +177,6 @@ public class DetailDataSourceModule extends AbstractModule {
 				DataSource tmpDS = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(dsNew.getLabel());
 				dsNew.setDsId(tmpDS.getDsId());
 				mod = SpagoBIConstants.DETAIL_MOD; 
-				/*serviceResponse.setAttribute("dsObj", dsNew);
-				serviceResponse.setAttribute("modality", SpagoBIConstants.DETAIL_MOD);
-				
-				if (((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK))
-				{
-					serviceResponse.setAttribute("loopback", "true");
-					return;
-				}
-				
-				return;
-				 */
 			} else {				
 				//update ds
 				DAOFactory.getDataSourceDAO().modifyDataSource(dsNew);			
@@ -208,7 +200,7 @@ public class DetailDataSourceModule extends AbstractModule {
 		}
 		
 		catch (Exception ex) {		
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, "Cannot fill response container" + ex.getLocalizedMessage());		
+			logger.error("Cannot fill response container" , ex);		
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}			
 	}
@@ -249,7 +241,7 @@ public class DetailDataSourceModule extends AbstractModule {
 			}
 		    catch (Exception ex) {		
 		    ex.printStackTrace();
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, "Cannot fill response container" + ex.getLocalizedMessage());
+			logger.error("Cannot fill response container" ,ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 		response.setAttribute("loopback", "true");
@@ -284,7 +276,7 @@ public class DetailDataSourceModule extends AbstractModule {
 			ds.setDriver("");
 			response.setAttribute("dsObj", ds);
 		} catch (Exception ex) {
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, "Cannot prepare page for the insertion" + ex.getLocalizedMessage());		
+			logger.error("Cannot prepare page for the insertion" , ex);		
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 		

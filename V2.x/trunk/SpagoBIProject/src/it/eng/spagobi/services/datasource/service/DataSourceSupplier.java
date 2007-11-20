@@ -16,14 +16,14 @@ public class DataSourceSupplier {
     		
     	//gets data source data from database
 		try{
-			it.eng.spagobi.analiticalmodel.document.bo.BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(Integer.valueOf(documentLabel));
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(Integer.valueOf(documentLabel));
 			if (obj == null){
 				logger.warn("The object with id " + documentLabel + " is not found on the database.");
 				return null;
 			}
 			DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(obj.getDataSourceId());
 			if (ds == null){
-				logger.warn("The data source with id " + documentLabel + " is not found on the database.");
+				logger.warn("The data source with id " + obj.getDataSourceId() + " is not found on the database.");
 				return null;
 			}
 			sbds.setJndiName(ds.getJndi());

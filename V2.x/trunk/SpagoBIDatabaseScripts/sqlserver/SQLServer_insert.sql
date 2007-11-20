@@ -22,6 +22,7 @@ INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SEL
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'STATE', 'Object state', 'SUSP', 'Suspended', 'Document temporanlly not in use' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ROLE_TYPE', 'User role type', 'PORTAL', 'External portal roles', 'Predefined roles in BI portal' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'FUNCT_TYPE', 'Functionality', 'LOW_FUNCT', 'Low level functionality', 'BI Functionality joined to cate ries tree' 
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'FUNCT_TYPE', 'Functionality', 'USER_FUNCT', 'User functionality', 'BI Functionality joined to cate ries tree'
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'STATE', 'Object state', 'DEV', 'Development', 'Document in development phase' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'STATE', 'Object state', 'TEST', 'Test', 'Document in testing phase' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'STATE', 'Object state', 'REL', 'Released', 'Document released for end users use' 

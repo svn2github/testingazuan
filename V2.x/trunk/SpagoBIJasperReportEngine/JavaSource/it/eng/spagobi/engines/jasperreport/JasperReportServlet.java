@@ -174,7 +174,6 @@ public class JasperReportServlet extends HttpServlet {
 			
 			String spagobibase = (String) params.get("spagobiurl");
 			JasperReportRunner jasperReportRunner = new JasperReportRunner(spagobibase);
-			//Connection con = getConnection(request.getParameter("connectionName"));
 			Connection con = getConnection(documentId, new String(""));
 			if (con == null) {
 				logger.error(this.getClass().getName() +":service:Cannot obtain"
@@ -265,62 +264,6 @@ public class JasperReportServlet extends HttpServlet {
 		params.put(parName, newParValue);
 	}
 
-
-
-
-	/**
-	 * This method, based on the engine-config.xml configuration, gets a 
-	 * database connection and return it 
-	 * @param connectionName Logical name of the connection configuration (defined into engine-config.xml)
-	 * @return the database connection
-	 * @deprecated
-	 */
-	public Connection getConnection(String connectionName) {
-		String engineClassName = this.getClass().getName();
-		logger.debug("Try to retrieve configuration settings for engine ["
-						+ engineClassName + "]");
-		SourceBean config = JasperReportConf.getInstance().getConfig();					
-		String defaultConnectionName = (String)config.getAttribute("CONNECTIONS.default");
-		if(defaultConnectionName == null)
-			logger.warn("'default' attribute not specified in tag connections");
-		else
-			logger.debug("default connection name is [" + defaultConnectionName + "]");
-		SourceBean defaultConnectionConfig = (SourceBean)config.getFilteredSourceBeanAttribute ("CONNECTIONS.CONNECTION", "name", defaultConnectionName);
-		SourceBean connectionConfig = null;
-		if(connectionName == null) {
-			logger.debug("Connection name not specified for engine ["
-					+ engineClassName
-					+ "] look for a default connection");
-			if(defaultConnectionConfig != null)
-				connectionConfig = defaultConnectionConfig;
-			else 
-				return null;
-		}
-		else {
-			logger.debug("Searching for Connection name ["
-					+ connectionName + "] for engine [" + engineClassName
-					+ "] ");
-			connectionConfig = (SourceBean) config.getFilteredSourceBeanAttribute ("CONNECTIONS.CONNECTION", "name", connectionName);
-			if(connectionConfig == null) {
-				logger.debug("Connection ["
-						+ connectionName + "] not defined for engine ["
-						+ engineClassName
-						+ "] use default connection");
-				if(defaultConnectionConfig != null)
-					connectionConfig = defaultConnectionConfig;
-				else 
-					return null;
-			}
-		}
-		// if configuration is jndi get datasource from jndi context
-		String jndi = (String)connectionConfig.getAttribute("isJNDI");
-		if (jndi.equalsIgnoreCase("true")) {
-			return getConnectionFromJndiDS(connectionConfig);
-		} else {
-			return getDirectConnection(connectionConfig);
-		}
-	}
-
 	/**
 	 * This method, based on the data sources table, gets a 
 	 * database connection and return it  
@@ -339,32 +282,6 @@ public class JasperReportServlet extends HttpServlet {
 		}
 	}
 	
-	
-	
-	/**
-	 * Get the connection from JNDI
-	 * @param connectionConfig SourceBean describing data connection
-	 * @return Connection to database
-	 * @deprecated
-	 */
-	private Connection getConnectionFromJndiDS(SourceBean connectionConfig) {
-		Connection connection = null;
-		String iniCont = (String)connectionConfig.getAttribute("initialContext");
-		String resName = (String)connectionConfig.getAttribute("resourceName");
-		Context initCtx;
-		try {
-			initCtx = new InitialContext();
-			Context envCtx = (Context) initCtx.lookup(iniCont);
-			DataSource ds = (DataSource) envCtx.lookup(resName);
-			connection = ds.getConnection();
-		} catch (NamingException ne) {
-			logger.error("JNDI error", ne);
-		} catch (SQLException sqle) {
-			logger.error("Cannot retrive connection", sqle);
-		}
-		return connection;
-	}
-	
 	/**
 	 * Get the connection from JNDI
 	 * @param connectionConfig SourceBean describing data connection
@@ -375,8 +292,7 @@ public class JasperReportServlet extends HttpServlet {
 		Context ctx ;		
 		String resName = connectionConfig.getJndiName();		
 		try {
-			ctx = new InitialContext();					
-			String xxx = ctx.getNameInNamespace();
+			ctx = new InitialContext();								
 			DataSource ds = (DataSource) ctx.lookup(resName);		
 			connection = ds.getConnection();
 		} catch (NamingException ne) {
@@ -386,35 +302,6 @@ public class JasperReportServlet extends HttpServlet {
 		}
 		return connection;
 	}
-
-	
-	
-	
-	
-	/**
-	 * Get the connection using jdbc 
-	 * @param connectionConfig SourceBean describing data connection
-	 * @return Connection to database
-	 * @deprecated
-	 */
-	private Connection getDirectConnection(SourceBean connectionConfig) {
-		Connection connection = null;
-		try {
-			String driverName = (String)connectionConfig.getAttribute("driver");
-			Class.forName(driverName);
-			String url = (String)connectionConfig.getAttribute("jdbcUrl");
-			String username = (String)connectionConfig.getAttribute("user");
-			String password = (String)connectionConfig.getAttribute("password");
-			connection = DriverManager.getConnection(url, username, password);
-		} catch (ClassNotFoundException e) {
-			logger.error("Driver not found", e);
-		} catch (SQLException e) {
-			logger
-					.error("Cannot retrive connection", e);
-		}
-		return connection;
-	}
-
 	
 	/**
 	 * Get the connection using jdbc 

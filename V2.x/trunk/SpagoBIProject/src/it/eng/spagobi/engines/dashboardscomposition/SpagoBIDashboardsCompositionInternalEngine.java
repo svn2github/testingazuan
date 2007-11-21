@@ -28,12 +28,12 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -86,124 +86,28 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 		
 		
 		
-		try {	
-
-			// get the template of the object
-			obj.loadTemplate();
-			UploadedFile template = obj.getTemplate();
-			if (template==null) { 
-				SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine",
-						            this.getClass().getName(),
-						            "execute",
-						            "Template biobject null");
+		try {
+			byte[] contentBytes = null;
+			try{
+				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+	            if(template==null) throw new Exception("Active Template null");
+	            contentBytes = DAOFactory.getBinContentDAO().getBinContent(template.getBinId());
+	            if(contentBytes==null) throw new Exception("Content of the Active template null");
+			} catch (Exception e) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+			            			"execute", "Error while recovering template content: \n" + e);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1002", messageBundle);
 			}
 			// get bytes of template and transform them into a SourceBean
 			SourceBean content = null;
 			try {
-				byte[] contentBytes = template.getFileContent();
 				String contentStr = new String(contentBytes);
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
-				SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine",
-			            			this.getClass().getName(),
-			            			"execute",
-			            			"Error while converting the Template bytes into a SourceBean object");
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+			            			"execute", "Error while converting the Template bytes into a SourceBean object");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
 			}
-			
-			/*
-			SourceBean layout = (SourceBean) content.getAttribute(LAYOUT);
-			if (layout == null) {
-				// TODO
-			}
-			
-			String layoutStr = layout.getCharacters();
-			int startDashboard = layoutStr.indexOf("${");
-			int count = 0;
-			while (startDashboard != -1) {
-				int endDashboard = layoutStr.indexOf("}", startDashboard);
-				String dashboardName = layoutStr.substring(startDashboard + 2, endDashboard);
-				SourceBean dashboardConfSb = null;
-				Object dashboardObj = content.getFilteredSourceBeanAttribute(DASHBOARDS_CONFIGURATION + "." + DASHBOARD, "name", dashboardName);
-				if (dashboardObj instanceof SourceBean)
-					dashboardConfSb = (SourceBean) dashboardObj;
-				else {
-					SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine",
-	            			this.getClass().getName(),
-	            			"execute",
-	            			"Dashboard with name '" + dashboardName + "' has more than one configuration!!");
-					Vector v = new Vector();
-					v.add(dashboardName);
-					throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", v, messageBundle);
-				}
-//				String movie = GeneralUtilities.getSpagoBiContextAddress();
-				String relMovie = (String) dashboardConfSb.getAttribute("movie");
-//			    if(relMovie.startsWith("/"))
-//			    	movie = movie + relMovie;
-//			    else movie = movie + "/" + relMovie;
-				String width = (String) dashboardConfSb.getAttribute("DIMENSION.width");
-				String height = (String) dashboardConfSb.getAttribute("DIMENSION.height");
-//				movie += "?paramHeight="+height+"&paramWidth="+width;
-				
-				String dataurl = GeneralUtilities.getSpagoBiContextAddress();
-				String dataurlRel = (String) dashboardConfSb.getAttribute("DATA.url");
-				if(dataurlRel.startsWith("/"))
-					dataurl = dataurl + dataurlRel;
-				else dataurl = dataurl + "/" + dataurlRel;
-				dataurl += "?";
-				// get all the parameters for data url
-				SourceBean dataSB = (SourceBean) dashboardConfSb.getAttribute("DATA");
-				List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
-				Iterator dataAttrsIter = dataAttrsList.iterator();
-				while(dataAttrsIter.hasNext()) {
-					SourceBeanAttribute paramSBA = (SourceBeanAttribute)dataAttrsIter.next();
-					SourceBean param = (SourceBean)paramSBA.getValue();
-					String nameParam = (String)param.getAttribute("name");
-					String valueParam = (String)param.getAttribute("value");
-					dataurl += nameParam + "=" + valueParam + "&";
-				}
-				
-				// get all the parameters for dash configuration
-				SourceBean confSB = (SourceBean) dashboardConfSb.getAttribute("CONF");
-				List confAttrsList = confSB.getContainedSourceBeanAttributes();
-				Iterator confAttrsIter = confAttrsList.iterator();
-				while(confAttrsIter.hasNext()) {
-					SourceBeanAttribute paramSBA = (SourceBeanAttribute)confAttrsIter.next();
-					SourceBean param = (SourceBean)paramSBA.getValue();
-					String nameParam = (String)param.getAttribute("name");
-					String valueParam = (String)param.getAttribute("value");
-					dataurl += nameParam + "=" + valueParam + "&";
-				}
-			    // append to the calling url the dataurl	
-//				movie += "&dataurl=" + dataurl;
-				String replacement = "\n<script type=\"text/javascript\">\n";
-				String contextPath = PortletUtilities.getPortletRequest().getContextPath();
-				if (!contextPath.startsWith("/")) contextPath = "/" + contextPath;
-//				if (contextPath.endsWith("/")) contextPath += "dashboards";
-//				else contextPath += "/dashboards";
-				replacement += "lzLPSRoot = '" + contextPath + "';\n";
-				replacement += "lzCanvasRuntimeVersion = 7 * 1;\n";
-				//replacement += "if (lzCanvasRuntimeVersion == 6) {\n";
-				//replacement += "	lzCanvasRuntimeVersion = 6.65;\n";
-				//replacement += "}\n";
-				//replacement += "if (isIE && isWin || detectFlash() >= lzCanvasRuntimeVersion) {\n";
-				replacement += "	lzEmbed({url: '" + relMovie + "?&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '600', height: '600', id: 'lzapp', accessible: 'false'}, lzCanvasRuntimeVersion);\n";
-				//replacement += "	lzEmbed({url: '" + relMovie + "?&lzproxied=false&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('lps/includes/h.html?h='), bgcolor: '#eaeaea', width: '75%', height: '75%', id: 'lzapp" + count + "', accessible: 'false'}, lzCanvasRuntimeVersion);\n";
-				replacement += "	lzHistEmbed(lzLPSRoot);\n";
-				//replacement += "} else {\n";
-				//replacement += "	document.write('This application requires Flash player ' + lzCanvasRuntimeVersion + '. <a href=\"http://www.macromedia.com/go/getflashplayer\" target=\"fpupgrade\">Click here</a> to upgrade.');\n";
-				//replacement += "}\n";
-				replacement += "</script>\n";
-				layoutStr = layoutStr.replace("${" + dashboardName + "}", replacement);
-				startDashboard = layoutStr.indexOf("${", endDashboard);
-				count++;
-			}
-			layoutStr = layoutStr.replaceAll("<", "&lt;");
-			layoutStr = layoutStr.replaceAll(">", "&gt;");
-			layoutStr = layoutStr.replaceAll("\"", "&quot;");
-			*/
-			
 			
 			// create the title
 			String title = "";

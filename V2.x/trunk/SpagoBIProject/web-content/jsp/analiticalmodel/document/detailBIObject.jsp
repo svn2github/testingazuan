@@ -31,24 +31,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.commons.constants.ObjectsTreeConstants,
 				 it.eng.spagobi.commons.constants.AdmintoolsConstants,
 				 it.eng.spagobi.commons.bo.Domain,
-				 it.eng.spagobi.tools.datasource.bo.DataSource,
 				 java.util.Iterator,
 				 it.eng.spagobi.engines.config.bo.Engine,
-				 it.eng.spagobi.commons.bo.TemplateVersion,
-				 it.eng.spagobi.commons.constants.SpagoBIConstants,
 				 it.eng.spagobi.commons.utilities.SpagoBITracer,
 				 it.eng.spago.navigation.LightNavigationManager,
 				 it.eng.spago.base.SourceBean,
-				 it.eng.spago.configuration.ConfigSingleton,
 				 java.util.TreeMap,
 				 java.util.Collection,
 				 java.util.ArrayList,
-				 java.util.Date" %>
-<%@ page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
-<%@ page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.util.HashMap"%>
-<%@ page import="it.eng.spagobi.commons.bo.Subreport"%>
+				 java.util.Date,
+				 it.eng.spagobi.commons.utilities.GeneralUtilities,
+				 it.eng.spagobi.commons.utilities.ChannelUtilities,
+				 java.util.Map,
+				 java.util.HashMap,
+				 it.eng.spagobi.commons.bo.Subreport" %>
 
 
 <%
@@ -63,6 +59,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String modality = (String) moduleResponse.getAttribute(ObjectsTreeConstants.MODALITY);
 	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
 	
+	IObjTemplateDAO objtempdao = DAOFactory.getObjTemplateDAO();
 	
 	// CREATE PAGE URLs
 	Map formUrlPars = new HashMap();
@@ -93,6 +90,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<%@page import="it.eng.spagobi.engines.config.bo.Engine"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate"%>
+<%@page import="java.util.GregorianCalendar"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 <script>
 function showEngField(docType) {
 	var ind = docType.indexOf(",");
@@ -335,7 +338,8 @@ function checkFormVisibility(docType) {
 		      		%>
 		      		</select>
 				</div> 
-
+				
+				
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBISet.eng.dataSource" />
@@ -503,8 +507,8 @@ function checkFormVisibility(docType) {
 					<div class='div_detail_form'>
 					<% 
 						boolean hasTemplates = false;
-						Map objTemps = obj.getTemplateVersions();
-		 				if( (objTemps!=null) && !objTemps.isEmpty() ) {
+					    List templates = objtempdao.getBIObjectTemplateList(obj.getId());
+		 				if( (templates!=null) && !templates.isEmpty() ) {
 		 					hasTemplates = true;
 		 				}
 						if(!hasTemplates) {
@@ -615,54 +619,57 @@ function checkFormVisibility(docType) {
 			
 			<table> 
 				<% 
-					TreeMap templates = obj.getTemplateVersions();
-		 			if(templates==null)
-		 				templates = new TreeMap();
-					String curVer = "";
-					if(obj.getCurrentTemplateVersion() != null) 
-						curVer = obj.getCurrentTemplateVersion().getVersionName();
+					templates = objtempdao.getBIObjectTemplateList(obj.getId());
+		 			ObjTemplate currTemplate = objtempdao.getBIObjectActiveTemplate(obj.getId());	
+					if(templates==null)
+		 				templates = new ArrayList();
+					Integer curVer = null;
+					if(currTemplate != null) 
+						curVer = currTemplate.getProg();
 					int numTemp = templates.size();  
 					if(numTemp == 0) {
 						out.print("<tr class='portlet-section-body'>");
 		      			out.print("<td class='portlet-font'>No Version Found</td></tr>");
 		      		}
-					Collection versions = templates.values();
-					Iterator iterVers = versions.iterator();
-					ArrayList reverseVersions = new ArrayList();
-					while(iterVers.hasNext()) {
-						Object objVer = iterVers.next();
-						reverseVersions.add(0, objVer);
-					}
 					// loads subReports id, if any
 					List subReports = DAOFactory.getSubreportDAO().loadSubreportsByMasterRptId(obj.getId());
 					
-					Iterator iterTemp = reverseVersions.iterator();
+					Iterator iterTemp = templates.iterator();
 		      		while(iterTemp.hasNext()) {
-		      			TemplateVersion tempVer = (TemplateVersion)iterTemp.next();
+		      			ObjTemplate tempVer = (ObjTemplate)iterTemp.next();
 		      		 	String checkStr = " ";
 		      		    boolean isCurrentVer = false;
-		      		    if(curVer.equalsIgnoreCase(tempVer.getVersionName())) {
+		      		    if(curVer.equals(tempVer.getProg())) {
 		      		       	checkStr = " checked='checked' ";
 		      		      	isCurrentVer = true;
 		      		    }
 		      		    out.print("<tr class='portlet-section-body'>");
-		      		    out.print("<td class='portlet-font' width='40px'>"+tempVer.getVersionName()+"</td>");
-		      		    String dateStr = tempVer.getDataLoad();
-		      		    out.print("<td class='portlet-font' width='220px'>"+tempVer.getDataLoad()+"</td>");
-		      		    out.print("<td class='portlet-font' width='150px'>"+tempVer.getNameFileTemplate()+"</td>");
+		      		    out.print("<td class='portlet-font'>Version "+tempVer.getProg()+"</td>");
+		      		    Date creDate = tempVer.getCreationDate();
+		      		    Calendar creCal = new GregorianCalendar();
+		      		    creCal.setTime(creDate);
+		      		    String creDateStr = creCal.get(Calendar.DAY_OF_MONTH) + "/" +
+		      		  						creCal.get(Calendar.MONTH) + "/" +
+		      		  					    creCal.get(Calendar.YEAR) + "  " + 
+		      		  						creCal.get(Calendar.HOUR_OF_DAY) + ":" + 
+		      		  						creCal.get(Calendar.MINUTE);
+		      		    out.print("<td class='portlet-font'>"+creDateStr+"</td>");
+		      		    out.print("<td class='portlet-font'>"+tempVer.getName()+"</td>");
 		      		        
 		      			Map eraseVerUrlPars = new HashMap();
 		      			eraseVerUrlPars.put("PAGE", "detailBIObjectPage");
 		      			eraseVerUrlPars.put("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
-		      			eraseVerUrlPars.put(SpagoBIConstants.VERSION, tempVer.getVersionName());
+		      			eraseVerUrlPars.put(SpagoBIConstants.TEMPLATE_ID, tempVer.getId());
 		      			eraseVerUrlPars.put(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
 		      			eraseVerUrlPars.put(SpagoBIConstants.ACTOR, actor);
 		      			eraseVerUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 						String eraseVerUrlStr = urlBuilder.getUrl(request, eraseVerUrlPars);
 						
 						String pathTemp = obj.getPath() + "/template";
-   						String downl = ChannelUtilities.getSpagoBIContextName(request) + "/ContentRepositoryServlet?jcrPath="+pathTemp+"&version="+tempVer.getVersionName()+"&fileName="+tempVer.getNameFileTemplate();
-		      		       
+   						String downl = ChannelUtilities.getSpagoBIContextName(request) + 
+   									   GeneralUtilities.getSpagoAdapterHttpUrl() + 
+   									   "?ACTION_NAME=DOWNLOAD_BIOBJ_TEMPLATE&TEMP_ID="+tempVer.getId();
+   						
 		      		        if(isCurrentVer) {
 		      		        	out.print("<td class='portlet-font' >&nbsp;</a></td>");
 		      		        } else {
@@ -680,7 +687,7 @@ function checkFormVisibility(docType) {
 		      		        }
 		      		        
 		      		        if(numTemp > 1) {
-		      		        	out.print("<td class='portlet-font'><input type='radio' value='"+tempVer.getVersionName()+" 'name='versionTemplate' onchange='versionTemplateSelected()' "+checkStr+" /></td></tr>");
+		      		        	out.print("<td class='portlet-font'><input type='radio' value='"+tempVer.getId()+" 'name='versionTemplate' onchange='versionTemplateSelected()' "+checkStr+" /></td></tr>");
 		      		        } else {
 		      		        	out.print("<td class='portlet-font'>&nbsp;</td></tr>");
 		      		        }

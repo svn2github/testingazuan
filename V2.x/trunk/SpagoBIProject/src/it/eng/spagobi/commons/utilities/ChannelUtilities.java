@@ -45,19 +45,6 @@ public class ChannelUtilities {
 		// try to find the RequestContainer
 		reqCont = RequestContainerPortletAccess.getRequestContainer(httpRequest);
 		if (reqCont == null) reqCont = RequestContainerAccess.getRequestContainer(httpRequest);
-		
-		/*
-		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-		// get mode of execution
-		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-		// based on mode get spago object and url builder
-		if (sbiMode.equalsIgnoreCase("WEB")) {
-			reqCont = RequestContainerAccess.getRequestContainer(httpRequest);
-		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-			reqCont = RequestContainerPortletAccess.getRequestContainer(httpRequest);
-		}
-		*/
-		
 		return reqCont;
 	}
 	
@@ -66,19 +53,6 @@ public class ChannelUtilities {
 		// try to find the ResponseContainer
 		respCont = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
 		if (respCont == null) respCont = ResponseContainerAccess.getResponseContainer(httpRequest);
-		
-		/*
-		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-		// get mode of execution
-		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-		// based on mode get spago object and url builder
-		if (sbiMode.equalsIgnoreCase("WEB")) {
-			respCont = ResponseContainerAccess.getResponseContainer(httpRequest);
-		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-			respCont = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
-		}
-		*/
-		
 		return respCont;
 	}
 	
@@ -111,7 +85,7 @@ public class ChannelUtilities {
 	
 	
 	public static String getSpagoBIContextName(HttpServletRequest httpRequest) {
-		String contextName = "spagobi";
+		String contextName = "Spagobi";
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
 		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
@@ -119,7 +93,6 @@ public class ChannelUtilities {
 		if (sbiMode.equalsIgnoreCase("WEB")) {
 			contextName = httpRequest.getContextPath();
 		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-			//contextName = GeneralUtilities.getSpagoBiContextAddress();
 			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 			contextName = portletRequest.getContextPath();
 		}

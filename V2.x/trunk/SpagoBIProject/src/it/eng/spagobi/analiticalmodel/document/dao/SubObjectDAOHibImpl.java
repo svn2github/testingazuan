@@ -4,6 +4,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubObjectDAOHibImpl implements ISubObjectDAO {
@@ -15,18 +16,17 @@ public class SubObjectDAOHibImpl implements ISubObjectDAO {
 	}
 
 	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile) {
-		// TODO Auto-generated method stub
-		return null;
+		List subs = new ArrayList();
+		return subs;
 	}
 
 	public InputStream getSubObject(Integer idBIObj, String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List getSubObjects(Integer idBIObj) {
-		// TODO Auto-generated method stub
-		return null;
+		List subs = new ArrayList();
+		return subs;
 	}
 
 	public void saveSubObject(byte[] content, Integer idBIObj, String name,

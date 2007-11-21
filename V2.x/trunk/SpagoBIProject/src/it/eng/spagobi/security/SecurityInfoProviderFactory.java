@@ -47,7 +47,7 @@ public class SecurityInfoProviderFactory {
 		 * Reads the security provider class from the spagobi.xml file; if no class is
 		 * found, the default provider class is selected.
 		 * 
-		 * @return the singleton instance of IPortalSecurityProvider
+		 * @return the singleton instance of ISecurityInfoProvider
 		 */
 		public static synchronized ISecurityInfoProvider getPortalSecurityProvider(){
 			

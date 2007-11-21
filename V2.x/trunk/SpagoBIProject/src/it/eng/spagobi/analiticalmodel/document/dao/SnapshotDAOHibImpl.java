@@ -2,6 +2,7 @@ package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFUserError;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SnapshotDAOHibImpl implements ISnapshotDAO {
@@ -12,8 +13,8 @@ public class SnapshotDAOHibImpl implements ISnapshotDAO {
 	}
 
 	public List getSnapshots(Integer idBIObj) {
-		// TODO Auto-generated method stub
-		return null;
+		List snaps = new ArrayList();
+		return snaps;
 	}
 
 	public void saveSnapshot(byte[] content, Integer idBIObj, String name,

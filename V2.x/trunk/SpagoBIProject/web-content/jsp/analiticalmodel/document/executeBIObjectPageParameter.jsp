@@ -134,6 +134,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 <!-- script for viewpoints management -->
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.Snapshot"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.SubObject"%>
 <script type="text/javascript">		
 		var viewpointopen<%=requestIdentity%> = false;
 		var winVP<%=requestIdentity%> = null;
@@ -434,7 +436,7 @@ if (isSingleObjExec) {
 			     </tr> 
 				              
 				    	<% Iterator iterSubs =  subObjs.iterator();
-				    	   BIObject.SubObjectDetail subObj = null;
+				    	   SubObject subObj = null;
 				    	   String nameSub = "";
 				    	   String descr = "";
 				    	   String visib = null;
@@ -449,7 +451,7 @@ if (isSingleObjExec) {
 					   String rowClass = "";
 					   
 		                   while(iterSubs.hasNext()) {
-		    	                subObj = (BIObject.SubObjectDetail)iterSubs.next();
+		    	                subObj = (SubObject)iterSubs.next();
 					
 					rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
 					alternate = !alternate;
@@ -457,11 +459,11 @@ if (isSingleObjExec) {
 		                        nameSub = subObj.getName();
 		                        descr = subObj.getDescription();
 		                        owner = subObj.getOwner();
-		                        creationDate = subObj.getCreationDate();
-		                        lastModificationDate = subObj.getLastModifcationDate();
+		                        creationDate = subObj.getCreationDate().toString();
+		                        lastModificationDate = subObj.getLastChangeDate().toString();
 		                        
 		                        visib = "Private";
-		                        if(subObj.isPublicVisible()) {
+		                        if(subObj.getIsPublic().booleanValue()) {
 		                        	visib = "Public";
 		                        } 
 		                        if(owner.equals(currentUser)) {
@@ -591,7 +593,7 @@ if (isSingleObjExec) {
 			     </tr> 
 				              
 				 <% Iterator iterSnap =  snapshots.iterator();
-				    BIObject.BIObjectSnapshot snap = null;
+				    Snapshot snap = null;
 				    String nameSnap = "";
 				    String descrSnap = "";
 				    Date creationDate = null;
@@ -601,7 +603,7 @@ if (isSingleObjExec) {
 					String rowClass = "";
 					   
 		            while(iterSnap.hasNext()) {
-		            	snap = (BIObject.BIObjectSnapshot)iterSnap.next();
+		            	snap = (Snapshot)iterSnap.next();
 						rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
 						alternate = !alternate;
 						nameSnap = snap.getName();
@@ -611,7 +613,7 @@ if (isSingleObjExec) {
 						Map execSnapUrlPars = new HashMap();
 						execSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
             		    execSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
-            		    execSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+            		    execSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_ID, snap.getId());
             		    execSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
             		   	if (executionId != null && flowId != null) {
             		   		execSnapUrlPars.put("spagobi_execution_id", executionId);
@@ -622,7 +624,7 @@ if (isSingleObjExec) {
             		    Map deleteSnapUrlPars = new HashMap();
             		    deleteSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
             		    deleteSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
-            		    deleteSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+            		    deleteSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_ID, snap.getId());
             		    deleteSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
             		   	if (executionId != null && flowId != null) {
             		   		deleteSnapUrlPars.put("spagobi_execution_id", executionId);

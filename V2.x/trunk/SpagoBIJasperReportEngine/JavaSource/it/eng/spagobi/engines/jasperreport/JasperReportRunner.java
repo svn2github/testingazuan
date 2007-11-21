@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.DynamicClassLoader;
@@ -38,6 +39,7 @@ import java.util.zip.ZipEntry;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
@@ -114,7 +116,11 @@ public class JasperReportRunner {
 			                HttpServletResponse servletResponse, HttpServletRequest servletRequest) throws Exception {
 	    	logger.debug("IN");
 		documentId=(String)servletRequest.getParameter("document");
-		userId=(String)servletRequest.getParameter("userId");	
+		
+		HttpSession session=servletRequest.getSession();
+		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		userId=(String)profile.getUserUniqueIdentifier();
+		
 		logger.debug("Read user data from the request. userId="+userId+". DocumentId="+documentId);
 		
 		

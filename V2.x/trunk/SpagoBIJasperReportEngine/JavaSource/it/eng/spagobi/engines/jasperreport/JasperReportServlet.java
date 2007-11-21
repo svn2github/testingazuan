@@ -49,6 +49,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -123,19 +124,20 @@ public class JasperReportServlet extends HttpServlet {
 			throws IOException, ServletException {
 		logger.debug(this.getClass().getName() +":service:Start processing a new request...");
 		
-		// USER PROFILE 
-		
+		// USER PROFILE
 		String documentId=(String)request.getParameter("document");
 		String userId=(String)request.getParameter("userId");
 		try {
-		    
-		    SecurityServiceProxy proxy=new SecurityServiceProxy();
-		    IEngUserProfile profile = proxy.getUserProfile(userId);
-		    
-		    
+		    HttpSession session=request.getSession();
+		    IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		    if (profile==null){
+			SecurityServiceProxy proxy=new SecurityServiceProxy();
+			profile = proxy.getUserProfile(userId);
+			session.setAttribute(IEngUserProfile.ENG_USER_PROFILE,profile);
+		    }
 		} catch (SecurityException e1) {
-		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
+		    logger.error("SecurityException",e1);
+		    throw new ServletException();
 		}
 		
 		

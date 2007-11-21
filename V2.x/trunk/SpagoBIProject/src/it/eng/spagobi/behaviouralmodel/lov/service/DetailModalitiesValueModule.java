@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.behaviouralmodel.lov.service;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -63,7 +62,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -190,7 +188,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			List profAttrToFill = getProfileAttributesToFill(lovDet);
 			if(profAttrToFill.size()!=0) {
 				//	create a fake user profile
-			    UserProfile userProfile=new UserProfile((String)profile.getUserUniqueIdentifier());
+			    UserProfile userProfile = new UserProfile((String)profile.getUserUniqueIdentifier());
 				// copy all the roles, functionalities of the original profile
 			    userProfile.setFunctionalities(profile.getFunctionalities());
 			    userProfile.setRoles(profile.getRoles());

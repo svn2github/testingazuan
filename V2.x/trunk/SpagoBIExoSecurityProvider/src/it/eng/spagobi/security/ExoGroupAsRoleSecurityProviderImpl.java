@@ -37,7 +37,7 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 
 /**
- * Implements the IPortalSecurityProvider interface defining method to get the 
+ * Implements the ISecurityInfoProvider interface defining method to get the 
  * system and user roles.
  */
 public class ExoGroupAsRoleSecurityProviderImpl implements ISecurityInfoProvider {

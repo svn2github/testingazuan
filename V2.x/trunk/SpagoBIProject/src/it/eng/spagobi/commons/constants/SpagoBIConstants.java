@@ -136,7 +136,7 @@ public class SpagoBIConstants {
 	public static final String SNAPSHOT_LIST = "SNAPSHOT_LIST";
 	public static final String EXEC_SNAPSHOT_MESSAGE = "EXEC_SNAPSHOT_MESSAGE";
 	public static final String ERASE_SNAPSHOT_MESSAGE = "ERASE_SNAPSHOT_MESSAGE";
-	public static final String SNAPSHOT_PATH = "SNAPSHOT_PATH";
+	public static final String SNAPSHOT_ID = "SNAPSHOT_ID";
 	
 	public static final String VIEWPOINT_SAVE = "VIEWPOINT_SAVE";
 	public static final String VIEWPOINT_LIST = "VIEWPOINT_LIST";
@@ -247,6 +247,8 @@ public class SpagoBIConstants {
 	public static final String COUNTRY = "country";
 	
 	public static final String LANGUAGE = "language";
+	
+	public static final String TEMPLATE_ID = "TEMPLATE_ID";
 	
 	
 }

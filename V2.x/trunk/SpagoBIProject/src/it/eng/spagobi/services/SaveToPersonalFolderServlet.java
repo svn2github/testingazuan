@@ -29,6 +29,7 @@ package it.eng.spagobi.services;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -39,7 +40,6 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
@@ -73,12 +73,11 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 		String retCode = "";
 		try{
 			
-			// GET PARAMETER
+			// GET PARAMETERS
 			String objLabel = "";
 			String namenewdoc = "";
 			String descrnewdoc = "";
 			String labelnewdoc = "";
-
 			String queryStr = "";
 			Enumeration parNames = request.getParameterNames();
 			while(parNames.hasMoreElements()) {
@@ -96,7 +95,7 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 					queryStr += parName + "=" + value + "&";
 				}
 			}
-			
+			// CHECK PARAMETERS
 			if(namenewdoc.equals("")) {
 				retCode = NAMENOTFOUND;
 				throw new Exception("Document Name not found");
@@ -105,8 +104,7 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 				retCode = LABELNOTFOUND;
 				throw new Exception("Document Label not found");
 			}
-			
-			
+			// EXECUTE BIOBJECT
 			String returnedContentType = "";
 			String fileextension = "";
 			byte[] documentBytes = null;
@@ -121,15 +119,12 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-				
 				SecurityServiceProxy securityProxy=new SecurityServiceProxy();
 				IEngUserProfile profile = securityProxy.getUserProfile(request.getUserPrincipal());    	
-				documentBytes = proxy.exec(profile);
+	            documentBytes = proxy.exec(profile);
 				returnedContentType = proxy.getReturnedContentType();
 				fileextension = proxy.getFileExtensionFromContType(returnedContentType);
 			}
-
-		  
 			// SAVE NEW DOCUMENT
 			// recover office document sbidomains
 			IDomainDAO domainDAO = DAOFactory.getDomainDAO();
@@ -143,19 +138,16 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 				throw new Exception("No suitable engines for the new document");
 			}
 			Engine engine = (Engine)engines.get(0);
-			// load the template
-			UploadedFile uploadedFile = new UploadedFile();
-			uploadedFile.setFieldNameInForm("document");
-			uploadedFile.setFileName("document" + fileextension);
-			uploadedFile.setSizeInBytes(documentBytes.length);
-			uploadedFile.setFileContent(documentBytes);
-			
-			
+			// create the object template
+			ObjTemplate objTemp = new ObjTemplate();
+			objTemp.setActive(new Boolean(true));
+			objTemp.setContent(documentBytes);
+			objTemp.setName("document" + fileextension);
 			// load user root functionality 
-	 	        Principal principal = request.getUserPrincipal();
+ 	        Principal principal = request.getUserPrincipal();
 			SecurityServiceProxy secProxy=new SecurityServiceProxy();
 			IEngUserProfile profile = secProxy.getUserProfile(principal);    
-			String username = (String)profile.getUserUniqueIdentifier();
+            String username = (String)profile.getUserUniqueIdentifier();
 			ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 			LowFunctionality funct = functdao.loadLowFunctionalityByPath("/"+username, false);
 			Integer functId = funct.getId();
@@ -174,16 +166,15 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			newbiobj.setStateCode(relDom.getValueCd());
 			newbiobj.setStateID(relDom.getValueId());
 			newbiobj.setVisible(new Integer(0));
-			newbiobj.setTemplate(uploadedFile);
 			newbiobj.setFunctionalities(storeInFunctionalities);
 			IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 			// check if the object already exists and then insert it
 			BIObject biobjexist = objectDAO.loadBIObjectByLabel(labelnewdoc);
 			if(biobjexist==null){
-				objectDAO.insertBIObject(newbiobj);
+				objectDAO.insertBIObject(newbiobj, objTemp);
 			} else {
 				newbiobj.setId(biobjexist.getId());
-				objectDAO.modifyBIObject(newbiobj);
+				objectDAO.modifyBIObject(newbiobj, objTemp);
 			}
 			retCode = OK;
 		} catch (Exception e) {
@@ -200,7 +191,7 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 						            "service", "Error while sending response to client", ex);
 			}
-		}
+		}		
 	}
 		
 	

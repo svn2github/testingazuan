@@ -44,10 +44,7 @@
         <servlet-name>ContentRepositoryServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.ContentRepositoryServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>EventsManagerServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.EventsManagerServlet</servlet-class>
-    </servlet>
+
     
     
     
@@ -164,10 +161,6 @@
     <servlet-mapping>
         <servlet-name>ContentRepositoryServlet</servlet-name>
         <url-pattern>/ContentRepositoryServlet/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EventsManagerServlet</servlet-name>
-        <url-pattern>/EventsManagerServlet</url-pattern>
     </servlet-mapping>
      <servlet-mapping>
         <servlet-name>PublishServlet</servlet-name>

@@ -38,7 +38,7 @@ public class AuditServiceImpl extends AbstractServiceImpl{
 		// getting audit record id
 		if (id == null) {
 		    logger.warn("No operations will be performed");
-		    return "";
+		    return "KO";
 		}
 		logger.debug("Audit id = [" + id + "]");
 		Integer auditId = new Integer(id);

@@ -30,14 +30,13 @@ package it.eng.spagobi.analiticalmodel.document.dao;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 
 import java.util.List;
 
 /**
  * Defines the interfaces for all methods needed to insert, modify and deleting 
  * a BI object.
- * 
- * @author Zoppello
  */
 public interface IBIObjectDAO {
 
@@ -128,14 +127,16 @@ public interface IBIObjectDAO {
 	
 	public void modifyBIObject(BIObject obj) throws EMFUserError;
 	
+	
 	/**
-	 * Implements the query to modify a BI Object, but without updating versioning. 
-	 * All information needed is stored into the input <code>BIObject</code> object.
-	 * 
+	 * Implements the query to modify a BI Object and its template. All information needed is stored 
+	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
 	 * @param  obj The BIobject containing all modify information
+	 * @param objTemp The template of the biobject
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void modifyBIObjectWithoutVersioning(BIObject obj) throws EMFUserError;
+	public void modifyBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError;
+	
 
 	/**
 	 * Implements the query to insert a BIObject. All information needed is stored 
@@ -145,6 +146,15 @@ public interface IBIObjectDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertBIObject(BIObject obj) throws EMFUserError;
+	
+	/**
+	 * Implements the query to insert a BIObject and its template. All information needed is stored 
+	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
+	 * @param obj The object containing all insert information
+	 * @param objTemp The template of the biobject
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public void insertBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError;
 
 	/**
 	 * Deletes a BIObject from a functionality. If the functionality is not specified 

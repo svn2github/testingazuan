@@ -27,7 +27,7 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
 			return null;
 		    }
 		} catch (SecurityException e) {
-		    e.printStackTrace();
+		    logger.error("SecurityException",e);
 		    return null;
 		}finally{
 		    logger.debug("OUT");

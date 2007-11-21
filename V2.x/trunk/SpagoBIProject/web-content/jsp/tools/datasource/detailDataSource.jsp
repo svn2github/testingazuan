@@ -165,7 +165,7 @@
 			   	   disabledParam="";
 		%>
 			<input class='portlet-form-input-field' type="text" name="JNDI" 
-				   size="50" value="<%= jndi %>" maxlength="20" <%= disabledJndi %>/>
+				   size="50" value="<%= jndi %>" maxlength="50" <%= disabledJndi %>/>
 	   </div>
 	   <div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	

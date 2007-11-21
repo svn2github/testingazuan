@@ -75,6 +75,15 @@ public class GeneralUtilities {
 	}
 
 	
+	public static String getSpagoAdapterHttpUrl() {
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		String attName = "SPAGOBI.SPAGO_ADAPTERHTTP_URL";
+	    SourceBean adapUrlSB = (SourceBean)config.getAttribute(attName);
+	    String adapUrlStr = adapUrlSB.getCharacters();
+	    adapUrlStr = adapUrlStr.trim();
+	    return adapUrlStr;
+	}
+	
 	
 	public static Locale getDefaultLocale() {
 		String country = null;

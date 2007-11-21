@@ -84,7 +84,7 @@
                 <column name="biobj_id" not-null="true" />
             </key>
             <one-to-many class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjState" />
-        </set>            
+        </set>
         <property name="uuid" type="string">
             <column name="UUID" length="40" not-null="true"/>
         </property>

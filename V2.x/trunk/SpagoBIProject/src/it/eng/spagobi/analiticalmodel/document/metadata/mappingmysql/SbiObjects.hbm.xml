@@ -87,7 +87,6 @@
                 <column name="biobj_id" not-null="true" />
             </key>
             <one-to-many class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjState" />
-        </set>         
-        
+        </set>
     </class>
 </hibernate-mapping>

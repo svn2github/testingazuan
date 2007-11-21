@@ -31,8 +31,11 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
@@ -49,8 +52,6 @@ import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 /**
  * Contains all the data access object for all the BO objects defined into
  * it.eng.spagobi.bo package.
- * 
- * @author Zoppello
  */
 public class DAOFactory {
 
@@ -102,15 +103,6 @@ public class DAOFactory {
 		return (ISubreportDAO)createDAOInstance("SubreportDAO");
 	}
 	
-	/**
-	 * Creates BI object DAO instance for cms access
-	 * 
-	 * @return a CMS DAO instance for the BIObject
-	 * @throws EMFUserError If an Exception occurred
-	 */
-	public static IBIObjectCMSDAO getBIObjectCMSDAO() throws EMFUserError {
-		return (IBIObjectCMSDAO)createDAOInstance("BIObjectCMSDAO");
-	}
 	
 	/**
 	 * Creates a DAO instance for a BI object parameter
@@ -207,16 +199,30 @@ public class DAOFactory {
 	 */
 	public static IViewpointDAO getViewpointDAO() throws EMFUserError{
 		return (IViewpointDAO)createDAOInstance("ViewpointDAO");
-	}
+	}	
 	 
-	/**
-	 * Creates a DAO instance for a data source
-	 * 
-	 * @return a DAO instance for the data source
-	 * @throws EMFUserError If an Exception occurred
-	 */
 	public static IDataSourceDAO getDataSourceDAO() throws EMFUserError{
 		return (IDataSourceDAO)createDAOInstance("DataSourceDAO");
+	}
+	
+	public static IBinContentDAO getBinContentDAO() throws EMFUserError{
+		return (IBinContentDAO)createDAOInstance("BinContentDAO");
+	}	
+	
+	public static IObjTemplateDAO getObjTemplateDAO() throws EMFUserError{
+		return (IObjTemplateDAO)createDAOInstance("ObjTemplateDAO");
+	}	
+	
+	public static IObjNoteDAO getObjNoteDAO() throws EMFUserError{
+		return (IObjNoteDAO)createDAOInstance("ObjNoteDAO");
+	}	
+	
+	public static ISubObjectDAO getSubObjectDAO() throws EMFUserError{
+		return (ISubObjectDAO)createDAOInstance("SubObjectDAO");
+	}	
+	
+	public static ISnapshotDAO getSnapshotDAO() throws EMFUserError{
+		return (ISnapshotDAO)createDAOInstance("SnapshotDAO");
 	}	
 		
 }

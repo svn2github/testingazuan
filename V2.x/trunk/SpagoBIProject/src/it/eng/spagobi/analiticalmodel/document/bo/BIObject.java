@@ -21,23 +21,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.bo;
 
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
-import it.eng.spagobi.commons.bo.TemplateVersion;
+import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Defines a Business Intelligence object.
- * 
- * @author Zoppello This class map the SBI_OBJECT table
+
  */
 public class BIObject implements Serializable {
 
@@ -46,7 +43,7 @@ public class BIObject implements Serializable {
 
 	// ENGINE_ID NUMBER N Engine idenitifier (FK)
 	private Engine engine = null;
-
+	
 	// DATA_SOURCE_ID NUMBER N DataSource idenitifier (FK)
 	private Integer dataSourceId = null;
 
@@ -56,7 +53,7 @@ public class BIObject implements Serializable {
 	// DESCR VARCHAR2(128) Y BI Object description
 	private String description = null;
 
-	// LABEL VARCHAR2(36) Y BI Object label (short textual identifier)
+	// LABEL VARCHAR2(36) Y Engine label (short textual identifier)
 	private String label = null;
 
 	// ENCRYPT NUMBER Y Parameter encryption request.
@@ -84,15 +81,6 @@ public class BIObject implements Serializable {
 	private String biObjectTypeCode = null;
 
 	private List biObjectParameters = null;
-	
-	//private List templateVersions = null;
-	private TreeMap templateVersions = null;
-	
-	private TemplateVersion currentTemplateVersion = null;
-	
-	private String nameCurrentTemplateVersion = null;
-	
-	private UploadedFile template = null;
 
 	private String path = null;
 	
@@ -183,7 +171,7 @@ public class BIObject implements Serializable {
 	public void setEngine(Engine engine) {
 		this.engine = engine;
 	}
-
+	
 	/**
 	 * @return Returns the datasource.
 	 */
@@ -197,6 +185,8 @@ public class BIObject implements Serializable {
 	public void setDataSourceId(Integer dataSourceId) {
 		this.dataSourceId = dataSourceId;
 	}
+
+	
 	/**
 	 * @return Returns the label.
 	 */
@@ -298,83 +288,6 @@ public class BIObject implements Serializable {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	/**
-	 * @return Returns the template.
-	 */
-	public UploadedFile getTemplate() {
-		return template;
-	}
-	/**
-	 * @param template The template to set.
-	 */
-	public void setTemplate(UploadedFile template) {
-		this.template = template;
-	}
-	
-	/**
-	 * Loads a Template.
-	 **/
-	public void loadTemplate() {
-		try{
-			IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
-			cmsdao.fillBIObjectTemplate(this);
-		} catch(Exception e) {
-			SpagoBITracer.major("BiObject", this.getClass().getName(),
-								"loadTemplate", "cannot load template", e);
-		}
-	}
-	/**
-	 * Gets the template version 
-	 * 
-	 * @return The template version to get
-	 */
-	public TemplateVersion getCurrentTemplateVersion() {
-		return currentTemplateVersion;
-	}
-	/**
-	 * Sets the current template version
-	 * 
-	 * @param currentTemplateVersion	the template version to set
-	 */
-	public void setCurrentTemplateVersion(TemplateVersion currentTemplateVersion) {
-		this.currentTemplateVersion = currentTemplateVersion;
-	}
-	/**
-	 * Gets the template versions list.
-	 * 
-	 * @return The template versions List
-	 */
-	
-	//public List getTemplateVersions() {
-	public TreeMap getTemplateVersions() {
-		return templateVersions;
-	}
-	/**
-	 * Sets the template versions list.
-	 * 
-	 * @param templateVersions The list to set.
-	 */
-	//public void setTemplateVersions(List templateVersions) {
-	public void setTemplateVersions(TreeMap templateVersions) {
-		this.templateVersions = templateVersions;
-	}
-	/**
-	 * Gets the nameCurrentTeplate version.
-	 * 
-	 * @return the nameCurrentTeplate version.
-	 */
-	public String getNameCurrentTemplateVersion() {
-		return nameCurrentTemplateVersion;
-	}
-	/**
-	 * Sets the nameCurrentTeplate version.
-	 * 
-	 * @param nameCurrentTemplateVersion the nameCurrentTeplate version to set.
-	 */
-	public void setNameCurrentTemplateVersion(String nameCurrentTemplateVersion) {
-		this.nameCurrentTemplateVersion = nameCurrentTemplateVersion;
-	}
-	
 	
 	public String getName() {
 		return name;
@@ -399,95 +312,31 @@ public class BIObject implements Serializable {
 		this.functionalities = functionalities;
 	}
 
-	public class SubObjectDetail implements Serializable {
-		private String path = null;
-		private String name = null;
-		private boolean publicVisible = false;
-		private String owner = null;
-		private String description = null;
-		private String lastModifcationDate;
-		private String creationDate;
-		
-		public SubObjectDetail(String name, String path, String owner, String descr, 
-				String lastModifcationDate, String creationDate, boolean vis) {
-			this.path = path;
-			this.name = name;
-			this.owner = owner;
-			this.publicVisible = vis;
-			this.description = descr;
-			this.lastModifcationDate = lastModifcationDate;
-			this.creationDate = creationDate;
-		}
 	
-		public String getName() {
-			return name;
+	public ObjTemplate getActiveTemplate() {
+		ObjTemplate template = null;
+		try{
+			IObjTemplateDAO objtempdao = DAOFactory.getObjTemplateDAO();
+			template = objtempdao.getBIObjectActiveTemplate(this.getId());
+		} catch(Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+								"getActiveTemplate", "Error while recovering current template \n", e);
 		}
-	
-		public String getOwner() {
-			return owner;
-		}
-	
-		public String getPath() {
-			return path;
-		}
-	
-		public boolean isPublicVisible() {
-			return publicVisible;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public String getCreationDate() {
-			return creationDate;
-		}
-
-		public void setCreationDate(String creationDate) {
-			this.creationDate = creationDate;
-		}
-
-		public String getLastModifcationDate() {
-			return lastModifcationDate;
-		}
-
-		public void setLastModifcationDate(String lastModifcationDate) {
-			this.lastModifcationDate = lastModifcationDate;
-		}
+		return template;
 	}
 	
 	
-	
-	
-	
-	public class BIObjectSnapshot implements Serializable {
-		private String path = null;
-		private String name = null;
-		private String description = null;
-		private Date dateCreation = null;
-		
-		public BIObjectSnapshot(String path, String name, String descr, Date dateCrea) {
-			this.path = path;
-			this.name = name;
-			this.description = descr;
-			this.dateCreation = dateCrea;
+	public List getTemplateList() {
+		List templates = new ArrayList();
+		try{
+			IObjTemplateDAO objtempdao = DAOFactory.getObjTemplateDAO();
+			templates = objtempdao.getBIObjectTemplateList(this.getId());
+		} catch(Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+								"getTemplateList", "Error while recovering template list\n", e);
 		}
-	
-		public String getName() {
-			return name;
-		}
-	
-		public String getPath() {
-			return path;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-		
-		public Date getDateCreation() {
-			return dateCreation;
-		}
+		return templates;
 	}
+	
 
 }

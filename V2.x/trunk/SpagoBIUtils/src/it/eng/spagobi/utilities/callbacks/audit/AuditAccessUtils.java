@@ -37,7 +37,6 @@ import it.eng.spagobi.services.proxy.AuditServiceProxy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.log4j.Logger;
 
 public class AuditAccessUtils {

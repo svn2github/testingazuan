@@ -19,6 +19,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -31,11 +32,14 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.exceptions.NoEngineSuitableException;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class DetBIObjModHelper {
 
@@ -101,6 +105,24 @@ public class DetBIObjModHelper {
 			Integer engineIdInt = new Integer(engineIdStr);
 			engine = DAOFactory.getEngineDAO().loadEngineByID(engineIdInt);
 		}
+		
+		String dsIdStr = (String) request.getAttribute("datasource");
+		DataSource ds = null;
+		if (dsIdStr == null || dsIdStr.equals("")) {
+			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
+			if (lstDataSource.size() == 0) { //TODO: adattare msg errore
+				HashMap errorParams = new HashMap();
+				errorParams.put(AdmintoolsConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
+				Domain domain = DAOFactory.getDomainDAO().loadDomainById(typeIdInt);
+				Vector vector = new Vector();
+				vector.add(domain.getValueName());
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1064, vector, errorParams);
+			}
+			//ds = (DataSource) lstDataSource.get(0);
+		} else {
+			Integer dsIdInt = new Integer(dsIdStr);
+			ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsIdInt);
+		}
 		// TRY TO LOAD ALL THE FUNCTIONALITIES ASSOCIATED (into request) TO THE BIOBEJCT
 		List functionalities = new ArrayList();
 		List functionalitiesStr = request.getAttributeAsList(ObjectsTreeConstants.FUNCT_ID);
@@ -160,6 +182,7 @@ public class DetBIObjModHelper {
 		obj.setEncrypt(encrypt);
 		obj.setVisible(visible);
 		obj.setEngine(engine);
+		obj.setDataSourceId((ds==null)?null:new Integer(ds.getDsId()));
 		obj.setId(id);
 		obj.setName(name);
 		obj.setLabel(label);
@@ -253,7 +276,9 @@ public class DetBIObjModHelper {
 	        // load list of states and engines
 	        List states = domaindao.loadListDomainsByType("STATE");
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();
+	        List datasource =  DAOFactory.getDataSourceDAO().loadAllDataSources();
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_ENGINES, engines);
+		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DS, datasource);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_OBJ_TYPES, types);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_STATES, states);
 			List functionalities = new ArrayList();
@@ -318,6 +343,7 @@ public class DetBIObjModHelper {
 		objClone.setEncrypt(obj.getEncrypt());
 		objClone.setVisible(obj.getVisible());
 		objClone.setEngine(obj.getEngine());
+		objClone.setDataSourceId(obj.getDataSourceId());
 		objClone.setId(obj.getId());
 		objClone.setLabel(obj.getLabel());
 		objClone.setName(obj.getName());
@@ -384,6 +410,7 @@ public class DetBIObjModHelper {
 		String description = (String)request.getAttribute("description");
 		String relName = (String)request.getAttribute("relName");
 		String engine = (String)request.getAttribute("engine");
+		String datasource = (String)request.getAttribute("datasource");
 		String state = (String)request.getAttribute("state");
 		String path = "";
 		String objParLabel = (String)request.getAttribute("objParLabel");
@@ -417,8 +444,16 @@ public class DetBIObjModHelper {
 				engine = ((Engine) engines.get(0)).getId().toString();
 			}
 		}
+		if (datasource == null) {
+			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
+			if (lstDataSource.size() > 0) {
+				datasource = new Integer(((DataSource) lstDataSource.get(0)).getDsId()).toString();
+			}
+		}		
 		if(_serviceRequest.getAttribute("engine")==null)
 			_serviceRequest.setAttribute("engine", engine);
+		if(_serviceRequest.getAttribute("datasource")==null)
+			_serviceRequest.setAttribute("datasource", datasource);		
 		if(_serviceRequest.getAttribute("state")==null)
 			_serviceRequest.setAttribute("state", state);
 		if(_serviceRequest.getAttribute("path")==null)

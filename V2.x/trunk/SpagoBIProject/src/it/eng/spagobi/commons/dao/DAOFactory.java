@@ -208,7 +208,7 @@ public class DAOFactory {
 	public static IViewpointDAO getViewpointDAO() throws EMFUserError{
 		return (IViewpointDAO)createDAOInstance("ViewpointDAO");
 	}
-	
+	 
 	/**
 	 * Creates a DAO instance for a data source
 	 * 

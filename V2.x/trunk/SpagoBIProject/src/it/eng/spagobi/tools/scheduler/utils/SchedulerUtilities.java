@@ -23,6 +23,7 @@ package it.eng.spagobi.tools.scheduler.utils;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
@@ -44,13 +45,12 @@ import java.util.Map;
 
 public class SchedulerUtilities {
 
-	public static BIObject.BIObjectSnapshot getNamedHistorySnapshot(List allsnapshots, String namesnap, int hist) 
-	       throws Exception {
+	public static Snapshot getNamedHistorySnapshot(List allsnapshots, String namesnap, int hist) throws Exception {
 		Map snapshots = new HashMap();
 		List snapDates = new ArrayList();
 		Iterator iterAllSnap = allsnapshots.iterator();
 		while(iterAllSnap.hasNext()) {
-			BIObject.BIObjectSnapshot snap =  (BIObject.BIObjectSnapshot)iterAllSnap.next();
+			Snapshot snap =  (Snapshot)iterAllSnap.next();
 			if(snap.getName().equals(namesnap)){
 				Date creationDate = snap.getDateCreation();
 				Long creationLong = new Long(creationDate.getTime());
@@ -68,7 +68,7 @@ public class SchedulerUtilities {
 		Collections.sort(snapDates);
 		Collections.reverse(snapDates);
 		Object key = snapDates.get(hist);
-		BIObject.BIObjectSnapshot snap = (BIObject.BIObjectSnapshot)snapshots.get(key);
+		Snapshot snap = (Snapshot)snapshots.get(key);
 		return snap;
 	}
 	
@@ -78,7 +78,7 @@ public class SchedulerUtilities {
 		List snaps = new ArrayList();
 		Iterator iterAllSnap = allsnapshots.iterator();
 		while(iterAllSnap.hasNext()) {
-			BIObject.BIObjectSnapshot snap =  (BIObject.BIObjectSnapshot)iterAllSnap.next();
+			Snapshot snap =  (Snapshot)iterAllSnap.next();
 			if(snap.getName().equals(namesnap)){
 				snaps.add(snap);
 			}

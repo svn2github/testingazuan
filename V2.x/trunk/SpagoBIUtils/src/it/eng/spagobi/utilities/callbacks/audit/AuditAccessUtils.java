@@ -4,14 +4,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, this list of 
+ * Redistributions of source code must retain the above copyright notice, this list of 
       conditions and the following disclaimer.
       
-    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of 
       conditions and the following disclaimer in the documentation and/or other materials 
       provided with the distribution.
       
-    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+ * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
       be used to endorse or promote products derived from this software without specific
       prior written permission.
 
@@ -32,108 +32,93 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.utilities.callbacks.audit;
 
+import it.eng.spagobi.services.proxy.AuditServiceProxy;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.DefaultMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.log4j.Logger;
 
 public class AuditAccessUtils {
 
-	private List _auditIds;
-	//private String _auditId;
-	private String _auditServlet;
-	//private boolean _isNewExecution = true;
-	
-	public AuditAccessUtils (String auditId, String auditServlet) {
-		_auditIds = new ArrayList();
-		_auditIds.add(auditId);
-		//_auditId = auditId;
-		_auditServlet = auditServlet;
-	}
-	
-	public List getAuditIds() {
-		return _auditIds;
-	}
+    static private Logger logger = Logger.getLogger(AuditAccessUtils.class);
+    private List _auditIds;
+    // private String _auditId;
+    private String _auditServlet;
 
-	public void addAuditId(String auditId) {
-		_auditIds.add(auditId);
-	}
+    // private boolean _isNewExecution = true;
 
-	public String getAuditServlet() {
-		return _auditServlet;
-	}
+    public AuditAccessUtils(String auditId, String auditServlet) {
+	_auditIds = new ArrayList();
+	_auditIds.add(auditId);
+	// _auditId = auditId;
+	_auditServlet = auditServlet;
+    }
 
-	public void setAuditServlet(String servlet) {
-		_auditServlet = servlet;
-	}
+    public List getAuditIds() {
+	return _auditIds;
+    }
 
-//	public boolean isNewExecution() {
-//		return _isNewExecution;
-//	}
-//
-//	public void setIsNewExecution(boolean isNewExecution) {
-//		_isNewExecution = isNewExecution;
-//	}
-	
-	/**
-	 * Updates the audit record with the id specified using the constructor or by the setAuditId method.
-	 * It makes an http call to the servlet specified using the constructor or by the setAuditServlet method.
-	 * If the current execution is not a new one (examples: page refresh, portlet rendering) nothing is updated.
-	 * 
-	 * @param auditId The id of the audit record to be modified
-	 * @param startTime The start time
-	 * @param endTime The end time
-	 * @param executionState The execution state
-	 * @param errorMessage The error message
-	 * @param errorCode The error code
-	 */
-	public void updateAudit(String auditId, Long startTime, Long endTime, String executionState, 
-			String errorMessage, String errorCode) {
-		PostMethod httppost = null;
-		try {
-			if (auditId == null || !_auditIds.contains(auditId)) return;
-			// limits errorMessage length
-			if (errorMessage != null && errorMessage.length() > 390) {
-				errorMessage = errorMessage.substring(0, 390);
-			}
-			HttpClient client = new HttpClient();
-		    httppost = new PostMethod(_auditServlet);
-		    NameValuePair[] parameters = {
-		    		new NameValuePair("SPAGOBI_AUDIT_ID", auditId), 
-		    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_START", startTime != null ? startTime.toString() : ""), 
-		    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_END", endTime != null ? endTime.toString() : ""),				
-		    		new NameValuePair("SPAGOBI_AUDIT_EXECUTION_STATE", executionState != null ? executionState : ""),
-		    		new NameValuePair("SPAGOBI_AUDIT_ERROR_MESSAGE", errorMessage != null ? errorMessage : ""),
-		    		new NameValuePair("SPAGOBI_AUDIT_ERROR_CODE", errorCode != null ? errorCode : "")
-		    };
-		    
-		    // Provide custom retry handler is necessary
-		    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
-		    retryhandler.setRequestSentRetryEnabled(false);
-		    retryhandler.setRetryCount(3);
-		    httppost.setMethodRetryHandler(retryhandler);
-		    httppost.setRequestBody(parameters);
-        
-            // Execute the method.        	
-            int statusCode = client.executeMethod(httppost);
-            if (statusCode != HttpStatus.SC_OK) {
-              System.err.println("Method failed: " + httppost.getStatusLine());
-            }
-        } catch (Exception e) {
-            System.err.println("Audit callback failed.");
-            e.printStackTrace();
-        } finally {
-            // Release the connection.
-        	try {
-        		if (httppost != null) httppost.releaseConnection();
-        	} catch (Exception e) {
-        		e.printStackTrace();
-        	}
-        }
+    public void addAuditId(String auditId) {
+	_auditIds.add(auditId);
+    }
+
+    public String getAuditServlet() {
+	return _auditServlet;
+    }
+
+    public void setAuditServlet(String servlet) {
+	_auditServlet = servlet;
+    }
+
+    /**
+     * Updates the audit record with the id specified using the constructor or
+     * by the setAuditId method. It makes an http call to the servlet specified
+     * using the constructor or by the setAuditServlet method. If the current
+     * execution is not a new one (examples: page refresh, portlet rendering)
+     * nothing is updated.
+     * 
+     * @param auditId
+     *                The id of the audit record to be modified
+     * @param startTime
+     *                The start time
+     * @param endTime
+     *                The end time
+     * @param executionState
+     *                The execution state
+     * @param errorMessage
+     *                The error message
+     * @param errorCode
+     *                The error code
+     */
+    public void updateAudit(String userId,String auditId, Long startTime, Long endTime,
+	    String executionState, String errorMessage, String errorCode) {
+	logger.debug("IN");
+	try {
+	    if (auditId == null || !_auditIds.contains(auditId))
+		return;
+	    // limits errorMessage length
+	    if (errorMessage != null && errorMessage.length() > 390) {
+		errorMessage = errorMessage.substring(0, 390);
+	    }
+
+	    AuditServiceProxy proxy = new AuditServiceProxy();
+	    String ris = proxy.log(userId, auditId, startTime != null ? startTime
+		    .toString() : "",
+		    endTime != null ? endTime.toString() : "",
+		    executionState != null ? executionState : "",
+		    errorMessage != null ? errorMessage : "",
+		    errorCode != null ? errorCode : "");
+
+	    if (ris != null && ris.equals("KO")) {
+		logger.warn("Audit service don't work correctly!!!");
+	    }
+	} catch (Exception e) {
+	    logger.error("Audit service don't work!!!",e);
+	} finally {
+	    logger.debug("OUT");
 	}
-	
+    }
+
 }

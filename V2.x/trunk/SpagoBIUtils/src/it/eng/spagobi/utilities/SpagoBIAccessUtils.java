@@ -65,14 +65,10 @@ import org.apache.commons.httpclient.methods.PostMethod;
  */
 public class SpagoBIAccessUtils {
 	
-	/**
-	 * Starting from the base url and the path as input, gets content
-	 * information (response body).
-	 * 
-	 * @param spagoBIBaseUrl The SpagoBI input base URL
-	 * @param path The input path
-	 * @return The output response body
-	 */
+/*
+  
+  SOSTITUITO DAL SERVIZIO...
+  
 	public byte[] getContent(String spagoBIBaseUrl, String path){
 		HttpClient client = new HttpClient();
 	    PostMethod httppost = new PostMethod(spagoBIBaseUrl);
@@ -103,15 +99,12 @@ public class SpagoBIAccessUtils {
           return responseBody;	    
 	}
 	
-	
-	/**
-	 * Gets the content of a subObject of the principal object
-	 * 
-	 * @param spagoBIBaseUrl The SpagoBI service URL
-	 * @param path The cms path
-	 * @param nameSubObject the name of the subObject
-	 * @return The output response body
-	 */
+*/	
+
+    /*
+      
+      DA CAPIRE SE SERVE ANCORA !!!!!!!!!!!!!!!!!!
+     
 	public byte[] getSubObjectContent(String spagoBIBaseUrl, String path, String nameSubObj, String user) {
 		HttpClient client = new HttpClient();
 	    PostMethod httppost = new PostMethod(spagoBIBaseUrl);
@@ -144,7 +137,7 @@ public class SpagoBIAccessUtils {
           return responseBody;	    
 	}
 	
-	
+	*/
 	
 	
 	/**

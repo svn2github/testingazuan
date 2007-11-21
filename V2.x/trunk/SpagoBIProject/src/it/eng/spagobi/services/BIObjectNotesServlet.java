@@ -28,8 +28,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -132,8 +133,9 @@ public class BIObjectNotesServlet extends HttpServlet{
 			execIdent = request.getParameter("execidentifier");
 			IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 			BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
-			IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
-			String notes = objectCMSDAO.getExecutionNotes(biobject.getPath(), execIdent);
+			IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
+			ObjNote objnotes = objNoteDAO.getExecutionNotes(new Integer(biobjIdStr), execIdent);
+			String notes = new String(objnotes.getContent());
 			respStr = notes;
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
@@ -177,8 +179,18 @@ public class BIObjectNotesServlet extends HttpServlet{
 			if(hasLock){
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 				BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
-				IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
-				objectCMSDAO.saveExecutionNotes(biobject.getPath(), execIdent, notes);
+				IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
+				ObjNote objNote = objNoteDAO.getExecutionNotes(new Integer(biobjId), execIdent);
+				if(objNote!=null) {
+					objNote.setContent(notes.getBytes());
+					objNote.setExecReq(execIdent);
+					objNoteDAO.modifyExecutionNotes(objNote);
+				} else {
+					objNote = new ObjNote();
+					objNote.setContent(notes.getBytes());
+					objNote.setExecReq(execIdent);
+					objNoteDAO.saveExecutionNotes(biobject.getId(), objNote);
+				}
 			} else {
 				respStr = "SpagoBIError:Editor locked by another user";
 			}
@@ -237,8 +249,9 @@ public class BIObjectNotesServlet extends HttpServlet{
 				int biobjId = new Integer(biobjIdStr).intValue();
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 				BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
-				IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
-				String notes = objectCMSDAO.getExecutionNotes(biobject.getPath(), execIdentifier);
+				IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
+				ObjNote objnotes = objNoteDAO.getExecutionNotes(new Integer(biobjIdStr), execIdentifier);
+				String notes = new String(objnotes.getContent());
 				respStr = notes;
 			}
 			response.getOutputStream().write(respStr.getBytes());

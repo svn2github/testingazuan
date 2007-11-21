@@ -4,14 +4,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, this list of 
+ * Redistributions of source code must retain the above copyright notice, this list of 
       conditions and the following disclaimer.
       
-    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of 
       conditions and the following disclaimer in the documentation and/or other materials 
       provided with the distribution.
       
-    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+ * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
       be used to endorse or promote products derived from this software without specific
       prior written permission.
 
@@ -32,6 +32,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.utilities.callbacks.drill;
 
+import it.eng.spago.security.IEngUserProfile;
+
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -40,68 +42,48 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 public class SpagoBIDrillServlet extends HttpServlet {
 
-	public void service(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession();
-		String username = (String) session.getAttribute("username");
-		String spagobiContextUrl = (String) session.getAttribute("spagobicontext");
-		//String spagobiExecutionId = (String) session.getAttribute("spagobi_flow_id");
-		String url = spagobiContextUrl + "/servlet/AdapterHTTP?";
-		//url += "spagobi_flow_id=" + spagobiExecutionId;
-		//url += "&USERNAME=" + username;
-		url += "USERNAME=" + username;
-		url += "&NEW_SESSION=TRUE";
-		url += "&PAGE=DirectExecutionPage";
-		url += "&DOCUMENT_LABEL=" + request.getParameter("DOCUMENT_LABEL");
+    private static transient Logger logger = Logger
+	    .getLogger(SpagoBIDrillServlet.class);
+
+    public void service(HttpServletRequest request, HttpServletResponse response) {
+	HttpSession session = request.getSession();
+
+	IEngUserProfile profile = (IEngUserProfile) session
+		.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	if (profile == null) {
+	    logger.error("IEngUserProfile is not in session!!!");
+	} else {
+	    String username = (String) profile.getUserUniqueIdentifier();
+
+	    String spagobiContextUrl = (String) session
+		    .getAttribute("spagobicontext");
+	    String url = spagobiContextUrl + "/servlet/AdapterHTTP?";
+	    url += "USERNAME=" + username;
+	    url += "&NEW_SESSION=TRUE";
+	    url += "&PAGE=DirectExecutionPage";
+	    url += "&DOCUMENT_LABEL=" + request.getParameter("DOCUMENT_LABEL");
 	    String documentParameters = "";
 	    Enumeration parameterNames = request.getParameterNames();
 	    while (parameterNames.hasMoreElements()) {
-	    	String parurlname = (String) parameterNames.nextElement();
-	    	if (parurlname.equalsIgnoreCase("DOCUMENT_LABEL")) 
-	    		continue;
-	    	String parvalue = request.getParameter(parurlname);
-	    	documentParameters += "%26" + parurlname + "%3D" + parvalue;
+		String parurlname = (String) parameterNames.nextElement();
+		if (parurlname.equalsIgnoreCase("DOCUMENT_LABEL"))
+		    continue;
+		String parvalue = request.getParameter(parurlname);
+		documentParameters += "%26" + parurlname + "%3D" + parvalue;
 	    }
 	    url += "&DOCUMENT_PARAMETERS=" + documentParameters;
-		
-		try {
-			response.sendRedirect(url);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		/*
-		HttpClient client = new HttpClient();
-	    PostMethod httppost = new PostMethod(spagobiContextUrl + "/servlet/AdapterHTTP");
-	    httppost.addParameter("USERNAME", username);
-	    httppost.addParameter("NEW_SESSION", "TRUE");
-	    httppost.addParameter("PAGE", "DirectExecutionPage");
-	    httppost.addParameter("DOCUMENT_LABEL", request.getParameter("DOCUMENT_LABEL"));
-	    String documentParameters = "";
-	    Enumeration parameterNames = request.getParameterNames();
-	    while (parameterNames.hasMoreElements()) {
-	    	String parurlname = (String) parameterNames.nextElement();
-	    	if (parurlname.equalsIgnoreCase("DOCUMENT_LABEL")) 
-	    		continue;
-	    	String parvalue = request.getParameter(parurlname);
-	    	documentParameters += "&" + parurlname + "=" + parvalue;
-	    }
-	    httppost.addParameter("DOCUMENT_PARAMETERS", documentParameters);
-	    // sends request to SpagoBI
+
 	    try {
-			int statusCode = client.executeMethod(httppost);
-			byte[] responseBytes = httppost.getResponseBody();
-		    httppost.releaseConnection();
-			response.getOutputStream().write(responseBytes);
-			response.getOutputStream().flush();	
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		*/
-		
+		response.sendRedirect(url);
+	    } catch (IOException e1) {
+		logger.error("IOException during sendRedirect",e1);
+	    }
 	}
-	
+
+    }
+
 }

@@ -53,29 +53,22 @@ public class SpagoBIAccessFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// parameters required for document-to-document drill
-		String username = request.getParameter("username");
+
 		String spagobiContextUrl = request.getParameter("spagobicontext");
-		//String spagobiFlowId = request.getParameter("spagobi_flow_id");
 		// parameters required for auditing
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		String auditServlet = request.getParameter("SPAGOBI_AUDIT_SERVLET");
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpSession session = httpRequest.getSession();
-			if (username != null) session.setAttribute("username", username);
 			if (spagobiContextUrl != null) session.setAttribute("spagobicontext", spagobiContextUrl);
-			//if (spagobiFlowId != null) session.setAttribute("spagobi_flow_id", spagobiFlowId);
 			if (auditId != null && auditServlet != null) {
 				AuditAccessUtils auditAccessUtils = (AuditAccessUtils) session.getAttribute("SPAGOBI_AUDIT_UTILS");
 				if (auditAccessUtils == null) {
 					auditAccessUtils = new AuditAccessUtils(auditId, auditServlet);
 					session.setAttribute("SPAGOBI_AUDIT_UTILS", auditAccessUtils);
 				} else {
-					//if (auditAccessUtils.getAuditId().equals(auditId)) auditAccessUtils.setIsNewExecution(false);
-					//else {
 						auditAccessUtils.addAuditId(auditId);
-						//auditAccessUtils.setIsNewExecution(true);
-					//}
 				}
 			}
 		}

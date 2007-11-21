@@ -38,8 +38,9 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject.SubObjectDetail;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -47,7 +48,6 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
@@ -143,20 +143,20 @@ public class JPivotDriver implements IEngineDriver {
 		try{
 			BIObject biobj = (BIObject)object;
 			map = getMap(biobj, profile, roleName);
-			SubObjectDetail subObj = (SubObjectDetail)subObject;
+			SubObject subObj = (SubObject)subObject;
 			map = getParameterMap(object, profile, roleName);
 			String nameSub = subObj.getName();
 			map.put("nameSubObject", nameSub);
 			String descrSub = subObj.getDescription();
 			map.put("descriptionSubObject", descrSub);
 			String visStr = "Private";
-			boolean visBool = subObj.isPublicVisible();
+			boolean visBool = subObj.getIsPublic().booleanValue();
 		    if(visBool) 
 		    	visStr = "Public";
 			map.put("visibilitySubObject", visStr);
 			// get subobject data from cms
-			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
-		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+			ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
+			InputStream subObjDataIs = subobjdao.getSubObject(biobj.getId(), subObj.getName());
 		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
 		 	// encode and set the subobject data as a parameter
 		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
@@ -244,20 +244,20 @@ public class JPivotDriver implements IEngineDriver {
 		try{
 			BIObject biobj = (BIObject)object;
 			map = getMap(biobj, null, "");
-			SubObjectDetail subObj = (SubObjectDetail)subObject;
+			SubObject subObj = (SubObject)subObject;
 			map = getParameterMap(object, null, "");
 			String nameSub = subObj.getName();
 			map.put("nameSubObject", nameSub);
 			String descrSub = subObj.getDescription();
 			map.put("descriptionSubObject", descrSub);
 			String visStr = "Private";
-			boolean visBool = subObj.isPublicVisible();
+			boolean visBool = subObj.getIsPublic().booleanValue();
 		    if(visBool) 
 		    	visStr = "Public";
 			map.put("visibilitySubObject", visStr);
 			// get subobject data from cms
-			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
-		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+			ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
+		 	InputStream subObjDataIs = subobjdao.getSubObject(biobj.getId(), subObj.getName());
 		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
 		 	// encode and set the subobject data as a parameter
 		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
@@ -293,20 +293,19 @@ public class JPivotDriver implements IEngineDriver {
 		try{
 			BIObject biobj = (BIObject)object;
 			map = getMap(biobj, profile, "");
-			SubObjectDetail subObj = (SubObjectDetail)subObject;
+			SubObject subObj = (SubObject)subObject;
 			map = getParameterMap(object, profile, "");
 			String nameSub = subObj.getName();
 			map.put("nameSubObject", nameSub);
 			String descrSub = subObj.getDescription();
 			map.put("descriptionSubObject", descrSub);
 			String visStr = "Private";
-			boolean visBool = subObj.isPublicVisible();
+			boolean visBool = subObj.getIsPublic().booleanValue();
 		    if(visBool) 
 		    	visStr = "Public";
 			map.put("visibilitySubObject", visStr);
-			// get subobject data from cms
-			IBIObjectCMSDAO biObjCMSDAO = DAOFactory.getBIObjectCMSDAO();
-		 	InputStream subObjDataIs = biObjCMSDAO.getSubObject(biobj.getPath(), subObj.getName());
+			ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
+		 	InputStream subObjDataIs = subobjdao.getSubObject(biobj.getId(), subObj.getName());
 		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
 		 	// encode and set the subobject data as a parameter
 		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
@@ -344,22 +343,28 @@ public class JPivotDriver implements IEngineDriver {
      */    
 	protected Map getMap(BIObject biobj, IEngUserProfile profile, String roleName) {
    		Map pars = new Hashtable();
-		biobj.loadTemplate();
-		UploadedFile uploadedFile =  biobj.getTemplate();
-		byte[] template = uploadedFile.getFileContent();
-		BASE64Encoder bASE64Encoder = new BASE64Encoder();
-		pars.put("template", bASE64Encoder.encode(template));
-		pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-		pars.put("templatePath",biobj.getPath() + "/template");
-		pars.put("query", "dynamicOlap");
-		String username = "";
-		if(profile!=null)
-			username = (String)profile.getUserUniqueIdentifier();
-		pars.put("user", username);
-		pars.put("role", roleName);
-		pars = addDataAccessParameter(profile, roleName, pars, template);
-        pars = addBIParameters(biobj, pars);
-        addLocale(pars);
+   		try{
+	   		ObjTemplate objtemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biobj.getId());
+			if(objtemplate==null) throw new Exception("Active Template null");
+			byte[] template = DAOFactory.getBinContentDAO().getBinContent(objtemplate.getBinId());
+			if(template==null) throw new Exception("Content of the Active template null");
+			BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			pars.put("template", bASE64Encoder.encode(template));
+			pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+			pars.put("templatePath",biobj.getPath() + "/template");
+			pars.put("query", "dynamicOlap");
+			String username = "";
+			if(profile!=null)
+				username = (String)profile.getUserUniqueIdentifier();
+			pars.put("user", username);
+			pars.put("role", roleName);
+			pars = addDataAccessParameter(profile, roleName, pars, template);
+	        pars = addBIParameters(biobj, pars);
+	        addLocale(pars);
+   		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					            "getMap", "Error while recovering execution parameter map: \n" + e);
+		}
         return pars;
 	} 
  
@@ -657,20 +662,27 @@ public class JPivotDriver implements IEngineDriver {
 		try {
 			obj = (BIObject) biobject;
 		} catch (ClassCastException cce) {
-			SpagoBITracer.major("ENGINES",
-					this.getClass().getName(), "getEditDocumentTemplateBuildUrl",
-					"The input object is not a BIObject type", cce);
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					"getEditDocumentTemplateBuildUrl", "The input object is not a BIObject type", cce);
 			return null;
 		}
 		Engine engine = obj.getEngine();
 		String url = engine.getUrl();
-		//url = url.substring(0, url.lastIndexOf("/"));
-		//url += "/editQuery.jsp";
-		obj.loadTemplate();
-		UploadedFile uploadedFile =  obj.getTemplate();
-		byte[] template = uploadedFile.getFileContent();
+        // get object template
+		String templateName = null;
+		byte[] template = null;
+		try{
+			ObjTemplate objtemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+			if(objtemplate==null) throw new Exception("Active Template null");
+			template = DAOFactory.getBinContentDAO().getBinContent(objtemplate.getBinId());
+			if(template==null) throw new Exception("Content of the Active template null");
+			templateName = objtemplate.getName();
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					"getEditDocumentTemplateBuildUrl", "Error while recovering template", e);
+			return null;
+		}
 		BASE64Encoder bASE64Encoder = new BASE64Encoder();
-		String templateName = obj.getCurrentTemplateVersion().getNameFileTemplate();
 		// sometimes template name contains complete path
 		// TODO to review (this control should not be performed)
 		int index = templateName.lastIndexOf("/");
@@ -682,7 +694,6 @@ public class JPivotDriver implements IEngineDriver {
 		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
 		parameters.put("templateName", templateName);
 		parameters.put("template", bASE64Encoder.encode(template));
-		//parameters.put("new_session", "true");
 		parameters.put("forward", "editQuery.jsp");
 		addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);

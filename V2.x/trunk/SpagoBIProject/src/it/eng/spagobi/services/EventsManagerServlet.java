@@ -94,23 +94,6 @@ public class EventsManagerServlet extends HttpServlet{
 				 	response.getOutputStream().write(returnValue);
 				 	response.getOutputStream().flush();
 	 			}
-//	 			else if(operation.equalsIgnoreCase(GET_FIRED_EVENTS)) {
-//	 				// read input parameters	 				
-//	 				String user = request.getParameter("user");
-//	 				if(user != null) {
-//	 					//List firedEventsList = EventsManager.getInstance().getFiredEvents(user);
-//	 					List firedEventsList = EventsManager.getInstance().getRegisteredEvents(user);
-//		 				returnValue = getFiredEventsCsvStr(firedEventsList);
-//		 				SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "operation " + GET_FIRED_EVENTS + " executed succesfully");					
-//	 				}
-//	 				else {
-//	 					SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "Impossible to execute operation " + GET_FIRED_EVENTS + " because there are some errors in input parameters");
-//	 				}
-//	 				
-//	 				response.setContentLength(returnValue.length());
-//				 	response.getWriter().print(returnValue);
-//				 	response.getWriter().flush();	 				
-//	 			}
 	 		}	
 	 	
 	 	} catch(Exception e) {

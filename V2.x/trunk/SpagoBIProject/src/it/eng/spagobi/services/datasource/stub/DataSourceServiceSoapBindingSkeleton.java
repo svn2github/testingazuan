@@ -33,7 +33,6 @@ public class DataSourceServiceSoapBindingSkeleton implements it.eng.spagobi.serv
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getDataSource", _params, new javax.xml.namespace.QName("", "getDataSourceReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://bo.datasource.services.spagobi.eng.it", "SpagoBiDataSource"));
@@ -65,9 +64,9 @@ public class DataSourceServiceSoapBindingSkeleton implements it.eng.spagobi.serv
     public DataSourceServiceSoapBindingSkeleton(it.eng.spagobi.services.datasource.stub.DataSourceService impl) {
         this.impl = impl;
     }
-    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource getDataSource(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource getDataSource(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
     {
-        it.eng.spagobi.services.datasource.bo.SpagoBiDataSource ret = impl.getDataSource(in0, in1, in2);
+        it.eng.spagobi.services.datasource.bo.SpagoBiDataSource ret = impl.getDataSource(in0, in1);
         return ret;
     }
 

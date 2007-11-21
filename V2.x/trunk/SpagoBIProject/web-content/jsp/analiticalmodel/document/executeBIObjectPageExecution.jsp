@@ -101,14 +101,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	String driverClassName = obj.getEngine().getDriverName();
 		IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
 		mapPars = aEngineDriver.getParameterMap(obj, userProfile, executionRole);
-		//mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
-		//mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
-    	//mapPars = executionManager.getLastExecutionParametersMap(flowId);
     } else {
     	mapPars = (Map)moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
     }
 	
-    mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
+    //mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
+    // Angelo: use the profile in session
     mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
     
 	// try to get the modality

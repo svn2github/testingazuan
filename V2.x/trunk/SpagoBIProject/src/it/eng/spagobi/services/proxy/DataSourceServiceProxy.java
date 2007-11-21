@@ -30,7 +30,7 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
     public DataSourceServiceProxy() {
 	super();
     }   
-    public SpagoBiDataSource getDataSource(String documentLabel,String engineLabel) {
+    public SpagoBiDataSource getDataSource(String documentId) {
 	logger.debug("IN");
 	try {
 	    String ticket = "";
@@ -39,7 +39,7 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
 	    }
 	    DataSourceServiceServiceLocator locator = new DataSourceServiceServiceLocator();
 	    it.eng.spagobi.services.datasource.stub.DataSourceService service = locator.getDataSourceService();
-	    return service.getDataSource(ticket, documentLabel,engineLabel);
+	    return service.getDataSource(ticket, documentId);
 	} catch (Exception e) {
 	    logger.error("Error during Service LookUp",e);
 	}finally{

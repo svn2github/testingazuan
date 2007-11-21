@@ -31,10 +31,11 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject.SubObjectDetail;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
@@ -170,9 +171,10 @@ public class ExecuteBIObjectModule extends AbstractModule
 
 
 	private void eraseSnapshotHandler(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
-		String snapshotPath = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_PATH);
-		IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
-		objectCMSDAO.deleteSnapshot(snapshotPath);
+		ISnapshotDAO snapdao = DAOFactory.getSnapshotDAO();
+		String snapshotIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
+		Integer snapId = new Integer(snapshotIdStr);
+		snapdao.deleteSnapshot(snapId);
         // get object from session
         BIObject obj = (BIObject) session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
         // get from the session the execution role
@@ -443,7 +445,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		obj.setStateCode(stateCode);
 		obj.setStateID(stateId);
 		// call the dao in order to modify the object without versioning the content
-		DAOFactory.getBIObjectDAO().modifyBIObjectWithoutVersioning(obj); 
+		DAOFactory.getBIObjectDAO().modifyBIObject(obj); 
 		// set data for correct loopback to the navigation tree
 		response.setAttribute("isLoop", "true");
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
@@ -614,7 +616,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 				return;
 			}
-			obj.loadTemplate();
             execute(obj, null, null, response);
 		}
 		if(controller.directExecution()) {
@@ -636,12 +637,10 @@ public class ExecuteBIObjectModule extends AbstractModule
         BIObject obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
         // get name of the subobject
         String subObjName = (String)request.getAttribute("NAME_SUB_OBJECT");
-        // get path of the parent object 
-        String path = obj.getPath();
-        // get cms dao for biobject
-        IBIObjectCMSDAO cmsDao = DAOFactory.getBIObjectCMSDAO();
+        // get dao for suboject
+        ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
         // delete subobject
-        cmsDao.deleteSubObject(path, subObjName);
+        subobjdao.deleteSubObject(obj.getId(), subObjName);
         // get from the session the execution role
         String role = (String)session.getAttribute(SpagoBIConstants.ROLE);
         // set data in response
@@ -661,9 +660,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 	private List getSubObjectsList(BIObject obj, IEngUserProfile profile) {
 		List subObjects = new ArrayList();
 		try {
-			IBIObjectCMSDAO biObjCmsDAO = DAOFactory.getBIObjectCMSDAO();
-			String objectPath =  obj.getPath();
-			subObjects =  biObjCmsDAO.getAccessibleSubObjects(objectPath, profile);
+			ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
+			subObjects =  subobjdao.getAccessibleSubObjects(obj.getId(), profile);
 		} catch (Exception e) {
 			SpagoBITracer.major("SPAGOBI", 
                     			this.getClass().getName(), 
@@ -683,9 +681,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 	private List getSnapshotList(BIObject obj) {
 		List snapshots = new ArrayList();
 		try {
-			IBIObjectCMSDAO biObjCmsDAO = DAOFactory.getBIObjectCMSDAO();
-			String objectPath =  obj.getPath();
-			snapshots =  biObjCmsDAO.getSnapshots(objectPath);
+			ISnapshotDAO snapdao = DAOFactory.getSnapshotDAO();
+			snapshots =  snapdao.getSnapshots(obj.getId());
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
                     			"getSnapshotList", "Error retriving the snapshot list", e);
@@ -702,7 +699,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param subObj The SubObjectDetail subObject to be executed (in case it is not null)
 	 * @param response The response Source Bean
 	 */
-	private void execute(BIObject obj, SubObjectDetail subObj, String[] vpParameters, SourceBean response) {
+	private void execute(BIObject obj, SubObject subObj, String[] vpParameters, SourceBean response) {
 		debug("execute", "start execute");
 		
 	    // identity string for object execution
@@ -947,7 +944,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void execSnapshotHandler(SourceBean request, SourceBean response) throws Exception {
-		String snapshotPath = (String)request.getAttribute(SpagoBIConstants.SNAPSHOT_PATH);
+		String snapshotPath = (String)request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
 		// built the url for the content recovering
 		String url = GeneralUtilities.getSpagoBiContentRepositoryServlet() + 
 		             "?operation=getJcrNodeContent&jcrPath=" + snapshotPath ;
@@ -983,8 +980,15 @@ public class ExecuteBIObjectModule extends AbstractModule
 		String lastModifcationDate = DateFormat.getDateInstance().format(now);
 	    String creationDate = DateFormat.getDateInstance().format(now);
         
-        SubObjectDetail subObj = obj.new SubObjectDetail(subObjName, "", "", subObjDesc, 
-        		lastModifcationDate, creationDate, publicVis);
+	    SubObject subObj = new SubObject();
+	    subObj.setBiobjId(obj.getId());
+	    subObj.setCreationDate(now);
+	    subObj.setDescription(subObjDesc);
+	    subObj.setIsPublic(new Boolean(publicVis));
+	    subObj.setLastChangeDate(now);
+	    subObj.setName(subObjName);
+	    subObj.setOwner("");
+	    
         // load all the parameter value with an empty value 
         List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();
@@ -1223,8 +1227,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 			
 			return;
 		}
-        // load the template of the object
-        obj.loadTemplate();
         // call the execution method        
         execute(obj, null, null, response);
 	}
@@ -1433,8 +1435,6 @@ public class ExecuteBIObjectModule extends AbstractModule
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 				return;
 			}
-//			 load the template of the object
-	        obj.loadTemplate();			
             execute(obj, null, null, response);
             response.setAttribute("NO_PARAMETERS", "TRUE");
 		}

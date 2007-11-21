@@ -200,7 +200,6 @@ public class BookletsCollaborationModule extends AbstractModule {
 				biobj.setStateCode(devDom.getValueCd());
 				biobj.setStateID(devDom.getValueId());
 				biobj.setVisible(new Integer(0));
-				biobj.setTemplate(uploadedFile);
 				biobj.setFunctionalities(storeInFunctionalities);
 				biobj.setStateCode(stateCode);
 				biobj.setStateID(stateId);

@@ -90,10 +90,7 @@
         <load-on-startup>100</load-on-startup>
     </servlet>
     <!-- end axis servlet -->
-    <servlet>
-        <servlet-name>AuditManagerServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.AuditManagerServlet</servlet-class>
-    </servlet> 
+
     <!--  MAP CATALOGUE -->
     <servlet>
         <servlet-name>MapCatalogueManagerServlet</servlet-name>
@@ -117,10 +114,7 @@
 
 
     <!-- START SERVLET MAPPINGS -->
-    <servlet-mapping>
-        <servlet-name>AuditManagerServlet</servlet-name>
-        <url-pattern>/AuditManagerServlet</url-pattern>
-    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>AdapterHTTP</servlet-name>
         <url-pattern>/servlet/AdapterHTTP</url-pattern>

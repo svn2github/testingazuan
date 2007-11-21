@@ -7,5 +7,8 @@
  <ACTION name="MOVE_DOWN_LOWFUNCTIONALITY" class="it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveDownLowFunctionality" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ <ACTION name="DOWNLOAD_BIOBJ_TEMPLATE" class="it.eng.spagobi.analiticalmodel.document.service.DownloadBIObjectTemplateAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 </ACTIONS>
 

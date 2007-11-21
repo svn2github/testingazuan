@@ -29,13 +29,13 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -82,74 +82,25 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		
 		
 		try{	
-			
-			
-			/*
-			// extract from the parameters of the dashboard the parameter with url_name = listofvalue 
-			// which is the datasource parameter for the dashboard
-			BIObjectParameter biParameterDataSource = null;
-			List bipars = obj.getBiObjectParameters();
-			if(bipars.size()==1){
-				biParameterDataSource = (BIObjectParameter)bipars.get(0);
-			} else if(bipars.size()>1) {
-				Iterator iterBipars = bipars.iterator();
-				while(iterBipars.hasNext()) {
-					BIObjectParameter biobjpar = (BIObjectParameter)iterBipars.next();
-					String urlName = biobjpar.getParameterUrlName();
-					if(urlName.equalsIgnoreCase("listofvalues")) {
-						biParameterDataSource = biobjpar;
-						break;
-					}
-				}
-			}
-			
-			// if the parameter with url__name  = 'listofvalues' doesn't exist throw an exception
-			if(biParameterDataSource==null) {
-				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-									this.getClass().getName(),
-									"execute",
-			            			"Dashboards need a parameter with a url name = 'listofvalues', which is the datasource");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1004, messageBundle);
-			}
-			
-			// extract from the parameter with url__name  = 'listofvalues' the label of the LOV loaded (loaded based on the user role)
-			Parameter par = biParameterDataSource.getParameter();
-			ModalitiesValue lov = par.getModalityValue();
-			if(lov==null) {
-				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-						this.getClass().getName(),
-						"execute",
-            			"Parameter with url name = 'listofvalues' not associated to a lov (probably is a manual input)");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1005, messageBundle);
-			}
-			String lovlabel = lov.getLabel();
-			String dataurl = "DashboardService";
-			Map dataParameters = new HashMap();
-			dataParameters.put("dataname", lovlabel);
-			*/
-			
-			
-			// get the template of the object
-			obj.loadTemplate();
-			UploadedFile template = obj.getTemplate();
-			if (template==null) { 
-				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-						            this.getClass().getName(),
-						            "execute",
-						            "Template biobject null");
+			byte[] contentBytes = null;
+			try{
+				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+	            if(template==null) throw new Exception("Active Template null");
+	            contentBytes = DAOFactory.getBinContentDAO().getBinContent(template.getBinId());
+	            if(contentBytes==null) throw new Exception("Content of the Active template null");
+			} catch (Exception e) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+			            			"execute", "Error while recovering template content: \n" + e);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1002", messageBundle);
 			}
 			// get bytes of template and transform them into a SourceBean
 			SourceBean content = null;
 			try {
-				byte[] contentBytes = template.getFileContent();
 				String contentStr = new String(contentBytes);
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
-				SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-			            			this.getClass().getName(),
-			            			"execute",
-			            			"Error while converting the Template bytes into a SourceBean object");
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+			            			"execute", "Error while converting the Template bytes into a SourceBean object");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
 			}
 			// get information from the conf SourceBean and pass them into the response

@@ -30,7 +30,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -43,9 +43,6 @@ import java.util.List;
 
 /**
  * Presentation page for the BIObjects.
- * 
- * @author zerbetto
- *
  */
 
 public class BIObjectsModule extends AbstractModule {
@@ -207,18 +204,9 @@ public class BIObjectsModule extends AbstractModule {
         	}
         	// get the all the snapshots of the objects
         	List allsnapshots = null;
-        	try {
-    			IBIObjectCMSDAO biObjCmsDAO = DAOFactory.getBIObjectCMSDAO();
-    			String objectPath = obj.getPath();
-    			allsnapshots =  biObjCmsDAO.getSnapshots(objectPath);
-    		} catch (Exception e) {
-    			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-                        			"singleObjectModalityHandler", "Error while retriving the snapshot list", e);
-    			throw new Exception("Error while retriving the snapshot list", e);
-    		}
     		// recover only the snapshot with the name requested
-    		BIObject.BIObjectSnapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots,snapName,snapHist);
-    		response.setAttribute(SpagoBIConstants.SNAPSHOT_PATH, snap.getPath());
+    		Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots,snapName,snapHist);
+    		response.setAttribute(SpagoBIConstants.SNAPSHOT_ID, snap.getId());
     		// set into the reponse the publisher name for object execution
             response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "loopbackSnapshotExecution");
         } else {

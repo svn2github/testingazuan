@@ -274,7 +274,7 @@ public class JasperReportServlet extends HttpServlet {
 	public Connection getConnection(String documentId, String engineLabel) {
 		//calls service for gets data source object
 		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
-		SpagoBiDataSource ds = proxyDS.getDataSource(documentId, engineLabel);
+		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 		//  get connection
 		String jndi = ds.getJndiName();
 		if (jndi != null && !jndi.equals("")) {

@@ -27,10 +27,10 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.commons.bo.TemplateVersion;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -71,22 +71,8 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		
 		try {
 			response.setAttribute("biobjectId", obj.getId());
-			TemplateVersion templateVersion = obj.getCurrentTemplateVersion();
-			String templateFileName = null;
-			if (templateVersion == null) {
-				obj.loadTemplate();
-				UploadedFile templateFile = obj.getTemplate();
-				if (templateFile == null) {
-					SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
-						this.getClass().getName(),
-					    "execute", 
-					    "The document template is null!!!");
-					throw new EMFUserError(EMFErrorSeverity.ERROR, "1004", messageBundle);
-				}
-				templateFileName = templateFile.getFileName();
-			} else {
-				templateFileName = templateVersion.getNameFileTemplate();
-			}
+			ObjTemplate objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+			String templateFileName = objTemp.getName();
 			response.setAttribute("templateFileName", templateFileName);
 			// create the title
 			String title = "";
@@ -96,10 +82,8 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 				title += ": " + objDescr;
 			}
 			response.setAttribute("title", title);
-			
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "OFFICE_DOC");
-			
 		} catch (Exception e) {
 			SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
 						this.getClass().getName(),

@@ -25,8 +25,9 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -152,9 +153,9 @@ public class ExecuteBIDocumentJob implements Job {
 			String snapDesc = sInfo.getSnapshotDescription();
 			String historylengthStr = sInfo.getSnapshotHistoryLength();
 			// store document as snapshot
-			IBIObjectCMSDAO objectCMSDAO = DAOFactory.getBIObjectCMSDAO();
+			ISnapshotDAO snapDao = DAOFactory.getSnapshotDAO();
 			// get the list of snapshots
-			List allsnapshots = objectCMSDAO.getSnapshots(biobj.getPath());
+			List allsnapshots = snapDao.getSnapshots(biobj.getId());
 			// get the list of the snapshot with the store name
 			List snapshots = SchedulerUtilities.getSnapshotsByName(allsnapshots, snapName);
 			// get the number of previous snapshot saved
@@ -168,9 +169,9 @@ public class ExecuteBIDocumentJob implements Job {
 					if(numSnap>=histLen){
 						int delta = numSnap - histLen;
 						for(int i=0; i<=delta; i++) {
-							BIObject.BIObjectSnapshot snap = SchedulerUtilities.getNamedHistorySnapshot(snapshots, snapName, histLen-1);
-							String pathSnap = snap.getPath();
-							objectCMSDAO.deleteSnapshot(pathSnap);
+							Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(snapshots, snapName, histLen-1);
+							Integer snapId = snap.getId();
+							snapDao.deleteSnapshot(snapId);
 						}
 					}
 				} catch(Exception e) {
@@ -178,7 +179,7 @@ public class ExecuteBIDocumentJob implements Job {
 	    			           			"execute", "Error while deleting object snapshots", e );
 				}
 			}
-			objectCMSDAO.saveSnapshot(response, biobj.getPath(), snapName, snapDesc);	
+			snapDao.saveSnapshot(response, biobj.getId(), snapName, snapDesc);	
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
 								"saveAsSnap", "Error while saving schedule result as new snapshot", e);
@@ -248,7 +249,6 @@ public class ExecuteBIDocumentJob implements Job {
 			newbiobj.setStateCode(relDom.getValueCd());
 			newbiobj.setStateID(relDom.getValueId());
 			newbiobj.setVisible(new Integer(0));
-			newbiobj.setTemplate(uploadedFile);
 			newbiobj.setFunctionalities(storeInFunctionalities);
 			IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 			

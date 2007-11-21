@@ -24,7 +24,6 @@ package it.eng.spagobi.tools.importexport;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
@@ -258,14 +257,15 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
-			IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
+			//IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 			SbiObjects objToReturn = null;
 			try {
 				String pathTempFolder = pathContent + obj.getPath();
 				// normalize path
 				File temp = new File(pathTempFolder);
 				pathTempFolder = temp.getAbsolutePath();
-				String newPath = cmsdao.importDocument(pathTempFolder);
+				//String newPath = cmsdao.importDocument(pathTempFolder);
+				String newPath = "";
 				obj.setPath(newPath);
 				insertObject(obj, session);
 				objToReturn = obj;

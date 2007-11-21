@@ -127,9 +127,10 @@ public class JasperReportServlet extends HttpServlet {
 		// USER PROFILE
 		String documentId=(String)request.getParameter("document");
 		String userId=(String)request.getParameter("userId");
+		IEngUserProfile profile=null;
 		try {
 		    HttpSession session=request.getSession();
-		    IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		    profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		    if (profile==null){
 			SecurityServiceProxy proxy=new SecurityServiceProxy();
 			profile = proxy.getUserProfile(userId);
@@ -170,7 +171,7 @@ public class JasperReportServlet extends HttpServlet {
 			String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 			AuditAccessUtils auditAccessUtils = 
 				(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
-			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit((String)profile.getUserUniqueIdentifier(),auditId, new Long(System.currentTimeMillis()), null, 
 					"EXECUTION_STARTED", null, null);
 			
 			
@@ -183,7 +184,7 @@ public class JasperReportServlet extends HttpServlet {
 						+ this.getClass().getName() + "] control"
 						+ " configuration in engine-config.xml config file");
 				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit((String)profile.getUserUniqueIdentifier(),auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "No connection available", null);
 				return;
 			}
@@ -224,13 +225,13 @@ public class JasperReportServlet extends HttpServlet {
 				tmpFile.delete();
 				
 				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit((String)profile.getUserUniqueIdentifier(),auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_PERFORMED", null, null);
 			} catch (Exception e) {
 				logger.error(this.getClass().getName() +":service:error " +
 			      			"during report production \n\n " + e);
 				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit((String)profile.getUserUniqueIdentifier(),auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", e.getMessage(), null);
 			    return;
 			}

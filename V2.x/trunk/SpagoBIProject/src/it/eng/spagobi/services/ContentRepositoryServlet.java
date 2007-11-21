@@ -27,29 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.services;
 
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
-import it.eng.spagobi.commons.bo.Subreport;
-import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.JCRUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -76,7 +54,7 @@ public class ContentRepositoryServlet extends HttpServlet{
      * @throws IOException If any exception occurred
      */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-	 	
+	 	/*
 	 	try {
 	 		String operation = request.getParameter("operation");
 	 		if(operation != null) {
@@ -285,7 +263,8 @@ public class ContentRepositoryServlet extends HttpServlet{
 	 		SpagoBITracer.critical("SpagoBI",getClass().getName(),"service","Exception", e);
 	 	}
 	 }
-	
+	*/
+	}
 	
 	
 

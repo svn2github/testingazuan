@@ -1,8 +1,12 @@
 package it.eng.spagobi.services.content.service;
 
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.content.bo.Content;
@@ -54,17 +58,22 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	try {
 	    Integer id = new Integer(document);
 	    biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
-	    biobj.loadTemplate();
-	    UploadedFile uploadedFile = biobj.getTemplate();
-	    byte[] template = uploadedFile.getFileContent();
+	    
+	    IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
+	    IBinContentDAO contdao = DAOFactory.getBinContentDAO();
+	    ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
+	    byte[] template = contdao.getBinContent(temp.getBinId());
+	
 	    BASE64Encoder bASE64Encoder = new BASE64Encoder();
 	    content.setContent(bASE64Encoder.encode(template));
-	    content.setFileName(uploadedFile.getFileName());
+	    content.setFileName(temp.getName());
 	    return content;
 	} catch (NumberFormatException e) {
 	    logger.error("NumberFormatException",e);
 	} catch (EMFUserError e) {
 	    logger.error("EMFUserError",e);
+	} catch (EMFInternalError e) {
+		 logger.error("EMFUserError",e);
 	}
 	logger.debug("OUT");
 	return null;	

@@ -24,12 +24,11 @@ package it.eng.spagobi.services;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.bo.TemplateVersion;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 
 import java.io.IOException;
@@ -41,7 +40,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -56,11 +54,7 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import sun.misc.BASE64Decoder;
 
-/**
- * A servlet used to manage the requests of the spagobi ireport plugin
- * 
- * @author Luca Fiscato
- */
+
 public class PublishServlet extends HttpServlet{
 	
 	
@@ -81,11 +75,8 @@ public class PublishServlet extends HttpServlet{
      * @param response The http servlet response
      * @throws IOException If any exception occurred
      */
-     //	name = (String)mapPar.get("name");
-     //path = (String)mapPar.get("path");
 	public void service(HttpServletRequest request, HttpServletResponse response) 
 						throws IOException, ServletException {
-	 	
 		OutputStream out = response.getOutputStream();
         // get parameters map		
         Map mapPar = getParameter(request);
@@ -97,7 +88,6 @@ public class PublishServlet extends HttpServlet{
 			flushOut(msgErr, out);
 		 	return;
 		}
-   	    
    	    // switch operation type
    	    if(operation.equalsIgnoreCase("PUBLISH")) {
    	    	publishManager(mapPar, out, response);
@@ -105,7 +95,7 @@ public class PublishServlet extends HttpServlet{
    	    }    	
 	 }
 	
-	
+
 	private void publishManager(Map mapPar, OutputStream out, HttpServletResponse response) {
 		BASE64Decoder decoder = new BASE64Decoder();
 		String encodedTemplate = (String)mapPar.get("TEMPLATE");
@@ -115,29 +105,32 @@ public class PublishServlet extends HttpServlet{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		String template = new String(buffer);
-		mapPar.put("TEMPLATE", template);
-		
-		
-		
-		
 		try {
 			String label = (String)mapPar.get("LABEL");
+			ObjTemplate objTemp = createObjTemplate(buffer);
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
 			if(obj == null) {
 				obj = createBIObject();
 				initBIObject(mapPar, obj);
-				DAOFactory.getBIObjectDAO().insertBIObject(obj);
+				DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp);
 			} else {
 				updateBIObject(mapPar, obj);
-				DAOFactory.getBIObjectDAO().modifyBIObject(obj);
+				DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);
 			}
-			
-			
 		} catch (EMFUserError e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	private ObjTemplate createObjTemplate(byte[] content) {
+		ObjTemplate objTemp = new ObjTemplate();
+		objTemp.setActive(new Boolean(true));
+		objTemp.setName("etlTemplate.xml");
+		objTemp.setContent(content);
+		return objTemp;
+	}
+	
 	
 	private void updateBIObject(Map mapPar, BIObject obj) {	
 		String name = (String)mapPar.get("NAME");
@@ -147,7 +140,6 @@ public class PublishServlet extends HttpServlet{
 		String visibleStr = (String)mapPar.get("VISIBLE");
 		Integer visible = (visibleStr.equalsIgnoreCase("" + false)?new Integer(0):new Integer(1));
 		String type = (String)mapPar.get("TYPE");
-		
 		int t = -1;
 		try {
 			List biobjTypes = DAOFactory.getDomainDAO().loadListDomainsByType("BIOBJ_TYPE");
@@ -159,9 +151,7 @@ public class PublishServlet extends HttpServlet{
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		
 		Integer typeIdInt = new Integer(t);
-		
 		Engine engine = null;
 		List engines = null;
 		try {
@@ -174,22 +164,11 @@ public class PublishServlet extends HttpServlet{
 			engine = (Engine)engines.get(i);
 			if(engine.getBiobjTypeId().intValue() == typeIdInt.intValue()) break;			
 		}
-		
 		obj.setName(name);
 		obj.setDescription(description);
-		
 		obj.setEncrypt(encrypt);
 		obj.setVisible(visible);
-		
 		obj.setEngine(engine);		
-		
-		UploadedFile file = new UploadedFile();
-		String template = (String)mapPar.get("TEMPLATE");
-		file.setFileContent(template.getBytes());
-		file.setFileName("etlTemplate.xml");
-		file.setSizeInBytes(template.getBytes().length);
-		obj.setTemplate(file);
-		
 		Domain domain = null;
 		try {
 			domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
@@ -197,20 +176,13 @@ public class PublishServlet extends HttpServlet{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		obj.setBiObjectTypeCode(domain.getValueCd());
-		
-		/*
-		TemplateVersion curVer = new TemplateVersion();
-		curVer.setVersionName("x");
-        curVer.setDataLoad("x");
-        obj.setCurrentTemplateVersion(curVer);
-        */
-		
+		obj.setBiObjectTypeCode(domain.getValueCd());		
 		obj.setBiObjectTypeID(typeIdInt);		
 	}
 	
+	
+	
 	private void initBIObject(Map mapPar, BIObject obj) {	
-		
 		// input ...
 		String label = (String)mapPar.get("LABEL");
 		String name = (String)mapPar.get("NAME");
@@ -222,8 +194,6 @@ public class PublishServlet extends HttpServlet{
 		String functionalitiyCode = (String)mapPar.get("FUNCTIONALITYCODE");	
 		String state = (String)mapPar.get("STATE");
 		String type = (String)mapPar.get("TYPE");
-		
-		
 		int t = -1;
 		try {
 			List biobjTypes = DAOFactory.getDomainDAO().loadListDomainsByType("BIOBJ_TYPE");
@@ -235,9 +205,7 @@ public class PublishServlet extends HttpServlet{
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		
 		Integer typeIdInt = new Integer(t);
-		
 		Engine engine = null;
 		List engines = null;
 		try {
@@ -249,26 +217,13 @@ public class PublishServlet extends HttpServlet{
 		for(int i = 0; i < engines.size(); i++) {
 			engine = (Engine)engines.get(i);
 			if(engine.getBiobjTypeId().intValue() == typeIdInt.intValue()) break;			
-		}
-		
-		System.out.println(engine.getName());		
-		
+		}	
 		obj.setLabel(label);
 		obj.setName(name);
 		obj.setDescription(description);
-		
 		obj.setEncrypt(encrypt);
 		obj.setVisible(visible);
-		
 		obj.setEngine(engine);		
-		
-		UploadedFile file = new UploadedFile();
-		String template = (String)mapPar.get("TEMPLATE");
-		file.setFileContent(template.getBytes());
-		file.setFileName("etlTemplate.xml");
-		file.setSizeInBytes(template.getBytes().length);
-		obj.setTemplate(file);
-		
 		Domain domain = null;
 		try {
 			domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
@@ -277,17 +232,9 @@ public class PublishServlet extends HttpServlet{
 			e1.printStackTrace();
 		}
 		obj.setBiObjectTypeCode(domain.getValueCd());
-		
-		TemplateVersion curVer = new TemplateVersion();
-		curVer.setVersionName("x");
-        curVer.setDataLoad("x");
-        obj.setCurrentTemplateVersion(curVer);
-        
 		obj.setBiObjectTypeID(typeIdInt);		
-		
 		obj.setStateCode(state);
 		obj.setStateID(new Integer(55));
-		
 		List functionalities = new ArrayList();
 		try {
 			//functionalities = DAOFactory.getLowFunctionalityDAO().loadSubLowFunctionalities(path, false);
@@ -296,7 +243,6 @@ public class PublishServlet extends HttpServlet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		List funcs = new ArrayList();
 		for(int i = 0; i < functionalities.size(); i++) {
 			LowFunctionality functionality = (LowFunctionality)functionalities.get(i);
@@ -307,19 +253,15 @@ public class PublishServlet extends HttpServlet{
 				break;
 			}
 		}
-		
-		
 		obj.setFunctionalities(funcs);
 	}
 	
+	
+	
+	
 	private BIObject createBIObject() {
 		BIObject obj = new BIObject();
-       
 		List functionalitites = new ArrayList();
-		TemplateVersion curVer = new TemplateVersion();
-		curVer.setVersionName("");
-        curVer.setDataLoad("");
-		
 		obj.setId(new Integer(0));
         obj.setEngine(null);
         obj.setDescription("");
@@ -333,9 +275,6 @@ public class PublishServlet extends HttpServlet{
         obj.setBiObjectTypeID(null);
         obj.setBiObjectTypeCode("");        
         obj.setFunctionalities(functionalitites);        
-        obj.setCurrentTemplateVersion(curVer);
-        obj.setTemplateVersions(new TreeMap());
-        
         return obj;
 	}	
 	
@@ -387,7 +326,6 @@ public class PublishServlet extends HttpServlet{
     
     /**
      * Create the xml evelope for the response message when an error occur
-     * 
      * @param code numeric code of the error
      * @param error message of the error
      * @return The String format of the xml envelope response
@@ -406,7 +344,8 @@ public class PublishServlet extends HttpServlet{
 	 * 
 	 * @param message message that will be sent to the client
 	 * @param out OutputStream to flush out
-	 */
+	 *
+	 **/
 	
 	private void flushOut(String message, OutputStream out) {
 		try {
@@ -418,4 +357,5 @@ public class PublishServlet extends HttpServlet{
 			
 		}
 	}
+
 }

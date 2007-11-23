@@ -27,6 +27,8 @@ LICENSE: see LICENSE.txt file
 <%@page import="com.tonbeller.wcf.controller.RequestContext"%>
 <%@page import="java.util.Locale"%>
 <%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
+<%@page import="it.eng.spagobi.services.proxy.DataSourceServiceProxy"%>
+<%@page import="it.eng.spagobi.services.datasource.bo.SpagoBiDataSource"%>
 
 <html>
 <head>
@@ -58,17 +60,6 @@ if (spagobiurl != null) session.setAttribute("spagobiurl", spagobiurl);
 
 String action = request.getParameter("action");
 if (action != null && !action.equals("")) {
-	if (action.equalsIgnoreCase("selectConnection")) {
-		session.removeAttribute("MondrianCubes");
-		session.removeAttribute("MondrianVirtualCubes");
-		session.removeAttribute("query01");
-		session.removeAttribute("navi01");
-		session.removeAttribute("table01");
-		session.removeAttribute("selectedSchema");
-		session.removeAttribute("selectedCube");
-		String connectionSelected = request.getParameter("connection");
-		session.setAttribute("selectedConnection", connectionSelected);
-	}
 	if (action.equalsIgnoreCase("selectSchema")) {
 		session.removeAttribute("MondrianCubes");
 		session.removeAttribute("MondrianVirtualCubes");
@@ -89,13 +80,6 @@ if (action != null && !action.equals("")) {
 }
 
 List schemas = (List) session.getAttribute("schemas");
-List connections = (List) session.getAttribute("connections");
-if (connections == null) {
-	SAXReader readerConfigFile = new SAXReader();
-	Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
-	connections = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/CONNECTIONS-CONFIGURATION/CONNECTION");
-	session.setAttribute("connections", connections);
-}
 if (schemas == null) {
 	SAXReader readerConfigFile = new SAXReader();
 	Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
@@ -106,48 +90,8 @@ if (schemas == null || schemas.size() == 0) {
 	out.write("No schemas defined in engine-config.xml file.");
 	return;
 }
-if (connections == null || connections.size() == 0) {
-	out.write("No connections defined in engine-config.xml file.");
-	return;
-}
 %>
 <p>
-<div style="margin: 0 0 5 5;">
-	<div style="float:left;clear:left;width:150px;height:25px;">
-		<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-			<%=EngineMessageBundle.getMessage("query.creation.select.connection", locale)%>
-		</span>
-	</div>
-	<div style="height:25px;">
-		<select name="connection" id="connection" style="width:200px" 
-			onchange="document.getElementById('action').value='selectConnection';document.getElementById('initialQueryForm').submit()">
-			<%
-				String selectedConnection = (String) session.getAttribute("selectedConnection");
-				Iterator connectionsIt = connections.iterator();
-				Node selectedConnectionNode = null;
-				while (connectionsIt.hasNext()) {
-					Node aConnection = (Node) connectionsIt.next();
-					String aConnectionName = aConnection.valueOf("@name");
-					String isConnectionSelected = "";
-					if (selectedConnection == null) {
-						if (aConnection.valueOf("@isDefault").trim().equalsIgnoreCase("true")) {
-					selectedConnectionNode = aConnection;
-					isConnectionSelected = "selected='selected'";
-						}
-					} else {
-						if (aConnectionName.equalsIgnoreCase(selectedConnection)) {
-					selectedConnectionNode = aConnection;
-					isConnectionSelected = "selected='selected'";
-						}
-					}
-			%>
-				<option value="<%=aConnectionName%>" <%=isConnectionSelected%>><%=aConnectionName%></option>
-				<%
-				}
-				%>
-		</select>
-	</div>
-</div>
 <%
 
 %>
@@ -242,8 +186,8 @@ if (selectedSchema != null) {
 								MondrianDef.VirtualCube aVirtualCube = virtualcubes[i];
 								String isVirtualCubeSelected = "";
 								if (cubeWasSelected && aVirtualCube.name.equalsIgnoreCase(selectedCubeName)) {
-							selectedVirtualCube = aVirtualCube;
-							isVirtualCubeSelected = "selected='selected'";
+									selectedVirtualCube = aVirtualCube;
+									isVirtualCubeSelected = "selected='selected'";
 								}
 					%>
 					<option value="<%=aVirtualCube.name%>" <%=isVirtualCubeSelected%>><%=aVirtualCube.name%></option>
@@ -259,58 +203,71 @@ if (selectedSchema != null) {
 			// creates initial mdx query
 			String mdxQuery = null;
 			if (selectedCube != null) {
-		MondrianDef.CubeDimension dimension = selectedCube.dimensions[0];
-		MondrianDef.Measure measure = selectedCube.measures[0];
-		mdxQuery = "select {[Measures].[" + measure.name + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedCube.name + "]";
+				MondrianDef.CubeDimension dimension = selectedCube.dimensions[0];
+				MondrianDef.Measure measure = selectedCube.measures[0];
+				mdxQuery = "select {[Measures].[" + measure.name + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedCube.name + "]";
 			} else {
-		MondrianDef.VirtualCubeDimension dimension = selectedVirtualCube.dimensions[0];
-		MondrianDef.VirtualCubeMeasure measure = selectedVirtualCube.measures[0];
-		String virtualCubeMeasureName = measure.name;
-		String temp = virtualCubeMeasureName.toLowerCase();
-		if (temp.startsWith("[measures].[")) {
-			virtualCubeMeasureName = virtualCubeMeasureName.substring(12, virtualCubeMeasureName.length() - 1);
-		}
-		mdxQuery = "select {[Measures].[" + virtualCubeMeasureName + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedVirtualCube.name + "]";
+				MondrianDef.VirtualCubeDimension dimension = selectedVirtualCube.dimensions[0];
+				MondrianDef.VirtualCubeMeasure measure = selectedVirtualCube.measures[0];
+				String virtualCubeMeasureName = measure.name;
+				String temp = virtualCubeMeasureName.toLowerCase();
+				if (temp.startsWith("[measures].[")) {
+					virtualCubeMeasureName = virtualCubeMeasureName.substring(12, virtualCubeMeasureName.length() - 1);
+				}
+				mdxQuery = "select {[Measures].[" + virtualCubeMeasureName + "]} on columns, {([" + dimension.name + "])} on rows from [" + selectedVirtualCube.name + "]";
 			}
 			
 			// puts the catalogUri in session for TemplateBean.saveTemplate() method
-			session.setAttribute("catalogUri", catalogUri);
+			session.setAttribute("catalogUri", catalogUri);			
 			
-			// execute initial query
-			String jndi = selectedConnectionNode.valueOf("@isJNDI");
-			if (jndi.equalsIgnoreCase("true")) {
-			    String iniCont = selectedConnectionNode.valueOf("@initialContext");
-			    String resName = selectedConnectionNode.valueOf("@resourceName");
-			    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+catalogUri+";";
-	%>
-			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">
-				<%=mdxQuery%>
-			</jp:mondrianQuery>
-			<%
-				} else {
-				String driver = selectedConnectionNode.valueOf("@driver");
-				String url = selectedConnectionNode.valueOf("@jdbcUrl");
-				String usr = selectedConnectionNode.valueOf("@user");
-				String pwd = selectedConnectionNode.valueOf("@password");
-					    String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
+			//calls service for gets data source object
+			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
+			String documentId = (String)session.getAttribute("document");
+			SpagoBiDataSource ds = proxyDS.getDataSource(documentId, "");
+			if (ds == null || (ds.getJndiName()==null && (ds.getDriver()==null || 
+				ds.getUrl() == null || ds.getUser()==null || ds.getPassword()==null))){
 			%>
-		    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >
-				<%=mdxQuery%>
-			</jp:mondrianQuery>	
+			<p>
+  				<strong style="color:red">Data Source is not correctly defined</strong>
+  			<p>
 			<%
-					}
-					}
+			}
+			else {
+					// execute initial query
+					String resName =(ds.getJndiName()==null)?"":ds.getJndiName();
+					if (!resName.equals("")) {
+					    resName = resName.replace("java:comp/env/","");
+					    String connectionStr = "Provider=mondrian;DataSource="+resName+";Catalog="+catalogUri+";";
+			%>
+					<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">
+						<%=mdxQuery%>
+					</jp:mondrianQuery>
+					<%
+						} else {
+							String driver = (ds.getDriver()==null)?"":ds.getDriver();
+							String url = (ds.getUrl()==null)?"":ds.getUrl();
+							String usr = (ds.getUser()==null)?"":ds.getUser();
+							String pwd = (ds.getPassword()==null)?"":ds.getPassword();
+							String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
+					%>
+				    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >
+						<%=mdxQuery%>
+					</jp:mondrianQuery>	
+			<%
+				}
+			}
+		}
 					om = (OlapModel) session.getAttribute("query01");
 					if (om != null) {
 						TemplateBean templateBean = (TemplateBean) session.getAttribute("saveTemplate01");
 						if (templateBean == null) {
-					templateBean = new TemplateBean();
-					session.setAttribute("saveTemplate01", templateBean);
+							templateBean = new TemplateBean();
+							session.setAttribute("saveTemplate01", templateBean);
 						}
 						Object formObj = session.getAttribute("saveTemplateForm01");
 						if (formObj != null) {
-					FormComponent form = (FormComponent) formObj;
-					form.setBean(templateBean);
+							FormComponent form = (FormComponent) formObj;
+							form.setBean(templateBean);
 						}
 				%>
 		<div style="clear:left">

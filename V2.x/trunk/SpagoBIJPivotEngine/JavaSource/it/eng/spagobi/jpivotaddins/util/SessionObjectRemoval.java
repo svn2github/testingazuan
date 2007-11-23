@@ -71,11 +71,11 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("schemas") != null) {
 			session.removeAttribute("schemas");
 		}
-		
+		/*
 		if (session.getAttribute("connections") != null) {
 			session.removeAttribute("connections");
 		}
-		
+		*/
 		if (session.getAttribute("MondrianCubes") != null) {
 			session.removeAttribute("MondrianCubes");
 		}
@@ -103,11 +103,15 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("catalogUri") != null) {
 			session.removeAttribute("catalogUri");
 		}
-		
+/*		
 		if (session.getAttribute("connection") != null) {
 			session.removeAttribute("connection");
 		}
-		
+	*/
+		if (session.getAttribute("schema") != null) {
+			session.removeAttribute("schema");
+		}
+
 		if (session.getAttribute("parameters") != null) {
 			session.removeAttribute("parameters");
 		}

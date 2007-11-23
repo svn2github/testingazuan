@@ -5,8 +5,12 @@
  */
 package it.eng.spagobi.jpivotaddins.engines;
 
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.jpivotaddins.util.SecurityUtilities;
 import it.eng.spagobi.jpivotaddins.util.SessionObjectRemoval;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+
 import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
 import java.io.IOException;
@@ -33,6 +37,7 @@ public class JPivotServlet extends HttpServlet {
     private transient SecurityUtilities secUt = null;
     private transient boolean securityAble = true;
     
+    
     public void init(ServletConfig config) throws ServletException {
     	super.init(config);
     	ServletContext context = this.getServletContext();
@@ -46,9 +51,27 @@ public class JPivotServlet extends HttpServlet {
 		} 
 	}
     
-	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void service(HttpServletRequest request, HttpServletResponse response) 
+			throws IOException, ServletException {
 		
 		logger.debug("Starting service method...");
+		// USER PROFILE
+		String documentId=(String)request.getParameter("document");
+		String userId=(String)request.getParameter("userId");
+		
+		try {
+		    HttpSession session=request.getSession();
+		    IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		    if (profile==null){
+			SecurityServiceProxy proxy=new SecurityServiceProxy();
+			profile = proxy.getUserProfile(userId);
+			session.setAttribute(IEngUserProfile.ENG_USER_PROFILE,profile);
+		    }
+		} catch (SecurityException e1) {
+		    logger.error("SecurityException",e1);
+		    throw new ServletException();
+		}
+			
 		String language = request.getParameter("language");
 		String country = request.getParameter("country");
 		logger.debug("Locale parameters received: language = [" + language + "] ; country = [" + country + "]");
@@ -106,12 +129,13 @@ public class JPivotServlet extends HttpServlet {
 		
 		// if is the first request the following parameters have a request value
 	    // and they are put in session, otherwise their values are taken from the session
-	    String jcrPath = request.getParameter("templatePath");
+	    //String jcrPath = request.getParameter("templatePath");				
 		String spagoBIBaseUrl = request.getParameter("spagobiurl");
 		String user = request.getParameter("user");
 		String role = request.getParameter("role");
 		
-		if (jcrPath != null) session.setAttribute("templatePath", jcrPath);
+		//if (jcrPath != null) session.setAttribute("templatePath", jcrPath);
+		session.setAttribute("document", documentId);
 	    //else jcrPath = (String)session.getAttribute("templatePath");
 	    if (spagoBIBaseUrl != null) session.setAttribute("spagobiurl", spagoBIBaseUrl);
 	    //else spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
@@ -133,7 +157,7 @@ public class JPivotServlet extends HttpServlet {
 		} catch (ServletException e) {
 			logger.error("Error while forwarding to " + forward, e);
 		}
-		
-	}
-	
+		logger.debug("End service method");	
+	}	
 }
+

@@ -10,6 +10,11 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+/**
+ * 
+ * @deprecated
+ *
+ */
 public class DbConnection {
 
 	private transient Logger logger = Logger.getLogger(this.getClass());

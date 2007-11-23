@@ -5,7 +5,10 @@
  */
 package it.eng.spagobi.jpivotaddins.bean.adapter;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spagobi.jpivotaddins.bean.AnalysisBean;
+import it.eng.spagobi.services.content.service.ContentServiceImpl;
 
 import com.tonbeller.jpivot.chart.ChartComponent;
 import com.tonbeller.jpivot.mondrian.MondrianMemento;
@@ -15,7 +18,7 @@ import com.tonbeller.jpivot.table.navi.AxisStyleUI;
 import com.tonbeller.wcf.component.ComponentSupport;
 
 public class AnalysisAdapterUtil {
-	
+	static private Logger logger = Logger.getLogger(ContentServiceImpl.class);
 	/**
      * Constructs an analysis out of jpivot components
      *
@@ -28,6 +31,7 @@ public class AnalysisAdapterUtil {
      */
     public static AnalysisBean createAnalysisBean(String connectionName,String catalogUri, ChartComponent chart,
                                           TableComponent table, OlapModel olapModel) {
+    	logger.debug("IN");
         AnalysisBean analysis = new AnalysisBean();
         analysis.setConnectionName(connectionName);
         analysis.setCatalogUri(catalogUri);
@@ -81,7 +85,7 @@ public class AnalysisAdapterUtil {
             //analysis.setXmlaUri(olapMem.getUri());
             //analysis.setCatalog(olapMem.getCatalog());
         }
-
+        logger.debug("OUT");
         return analysis;
     }
 

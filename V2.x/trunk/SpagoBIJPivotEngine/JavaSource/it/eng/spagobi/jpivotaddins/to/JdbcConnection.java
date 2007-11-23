@@ -4,7 +4,11 @@
  * 
  */
 package it.eng.spagobi.jpivotaddins.to;
-
+/**
+ * 
+ * @deprecated
+ *
+ */
 public class JdbcConnection {
 
 	private String driver = "";

@@ -14,6 +14,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="org.dom4j.Node"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="sun.misc.BASE64Decoder"%>
 <%@page import="java.io.ByteArrayInputStream"%>
 <%@page import="it.eng.spagobi.jpivotaddins.bean.TemplateBean"%>
@@ -23,6 +24,12 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
 <%@page import="com.tonbeller.wcf.controller.RequestContext"%>
 <%@page import="java.util.Locale"%>
+<%@page import="it.eng.spagobi.services.proxy.DataSourceServiceProxy"%>
+<%@page import="it.eng.spagobi.services.datasource.bo.SpagoBiDataSource"%>
+<%@page import="javax.naming.InitialContext"%>
+<%@page import="it.eng.spagobi.services.proxy.ContentServiceProxy"%>
+<%@page import="it.eng.spagobi.services.content.bo.Content"%>
+
 
 <html>
 <head>
@@ -50,34 +57,39 @@ String biobjectPath = request.getParameter("biobject_path");
 if (biobjectPath != null) session.setAttribute("biobject_path", biobjectPath);
 String spagobiurl = request.getParameter("spagobiurl");
 if (spagobiurl != null) session.setAttribute("spagobiurl", spagobiurl);
-String templateName = request.getParameter("templateName");
+String documentId = request.getParameter("document");
+if (documentId != null) session.setAttribute("document", documentId);
+if (documentId == null) documentId = (String) session.getAttribute("document");
+
+
+/*String templateName = request.getParameter("templateName");
 if (templateName != null) session.setAttribute("templateName", templateName);
 String template = request.getParameter("template");
 if (template != null) session.setAttribute("template", template);
-
+*/
 SAXReader readerConfigFile = new SAXReader();
 Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
+ContentServiceProxy contentProxy = new ContentServiceProxy();
 
-String connection = request.getParameter("connection");
-if (connection == null) connection = (String) session.getAttribute("connection");
+String schema = request.getParameter("schema");
+if (schema == null) schema = (String) session.getAttribute("schema");
 
-if (connection != null && !connection.trim().equals("")) {
-	session.setAttribute("connection", connection);
+if (schema != null && !schema.trim().equals("")) {
+	session.setAttribute("schema", schema);
+
 %>
 	<form action="editQuery.jsp" method="post">
 	<%
 		OlapModel om = (OlapModel) session.getAttribute("query01");
-		if (om == null) {
-			Node connectionDef = documentConfigFile.selectSingleNode("//ENGINE-CONFIGURATION/CONNECTIONS-CONFIGURATION/CONNECTION[@name='"+connection+"'");
-			if (connectionDef == null) {
-		out.write("Connection '" + connection + "' not defined in engine-config.xml file.");
-		return;
-			}
-			// the connection is specified so proceed with query execution
+		if (om == null) {			
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			String templateBase64Coded = (String) session.getAttribute("template");
-			byte[] templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
-			ByteArrayInputStream is = new ByteArrayInputStream(templateContent);
+			//String templateBase64Coded = (String) session.getAttribute("template");
+			//byte[] templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
+			//ByteArrayInputStream is = new ByteArrayInputStream(templateContent);			
+			Content template = contentProxy.readTemplate("", documentId);
+			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
+			ByteArrayInputStream is = new java.io.ByteArrayInputStream(templateContent);
+
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(is);
 			String mdxQuery = null;
@@ -87,83 +99,90 @@ if (connection != null && !connection.trim().equals("")) {
 			List parametersNodes = document.selectNodes("//olap/MDXquery/parameter");
 			Iterator parametersNodesIt = parametersNodes.iterator();
 			while (parametersNodesIt.hasNext()) {
-		Node parameterNode = (Node) parametersNodesIt.next();
-		String aParameterName = parameterNode.valueOf("@as");
-		String aParameterUrlName = parameterNode.valueOf("@name");
-		parameters.put(aParameterName, aParameterUrlName);
+				Node parameterNode = (Node) parametersNodesIt.next();
+				String aParameterName = parameterNode.valueOf("@as");
+				String aParameterUrlName = parameterNode.valueOf("@name");
+				parameters.put(aParameterName, aParameterUrlName);
 			}
 			session.setAttribute("parameters", parameters);
 			Node mdxMondrianQueryNode = document.selectSingleNode("//olap/MDXMondrianQuery");
 			if (queryWithParameters.indexOf("${") != -1) {
-		// Parameters with SpagoBI sintax were inserted so the query with parameters cannot be executed
-	%>
-			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;font-weight: bold;">
-			<%=EngineMessageBundle.getMessage("edit.query.parameters.warning", locale)%>
-			<br>
-			</span>
-			<%
-			if (mdxMondrianQueryNode == null) {
+				// Parameters with SpagoBI sintax were inserted so the query with parameters cannot be executed
 			%>
-				<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;font-weight: bold;">
-				<%=EngineMessageBundle.getMessage("edit.query.parameters.no.mondrian.query", locale)%>
-				</span>
-				<%
-					return;
+					<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;font-weight: bold;">
+					<%=EngineMessageBundle.getMessage("edit.query.parameters.warning", locale)%>
+					<br>
+					</span>
+					<%
+					if (mdxMondrianQueryNode == null) {
+					%>
+						<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;font-weight: bold;">
+						<%=EngineMessageBundle.getMessage("edit.query.parameters.no.mondrian.query", locale)%>
+						</span>
+						<%
+							return;
 					} else {
-						session.setAttribute("initialQueryWithParameters", queryWithParameters.trim());
-						String mondrianQuery = mdxMondrianQueryNode.getStringValue();
-						session.setAttribute("initialMondrianQuery", mondrianQuery.trim());
-						mdxQuery = mondrianQuery;
-						queryWithParameters = mondrianQuery;
+								session.setAttribute("initialQueryWithParameters", queryWithParameters.trim());
+								String mondrianQuery = mdxMondrianQueryNode.getStringValue();
+								session.setAttribute("initialMondrianQuery", mondrianQuery.trim());
+								mdxQuery = mondrianQuery;
+								queryWithParameters = mondrianQuery;
 					}
-						} else {
-					// Parameters with SpagoBI sintax were not inserted so the query can be executed
-					mdxQuery = queryWithParameters;
-						}
-						Node cube = document.selectSingleNode("//olap/cube");
-						String catalogUri = cube.valueOf("@reference");
-						
-						// puts the catalogUri in session for TemplateBean.saveTemplate() method
-						session.setAttribute("catalogUri", catalogUri);
-						
-						TemplateBean templateBean = new TemplateBean();
-						templateName = (String) session.getAttribute("templateName");
-						templateBean.setTemplateName(templateName);
-						session.setAttribute("saveTemplate01", templateBean);
-						String jndi = connectionDef.valueOf("@isJNDI");
-						if (jndi.equalsIgnoreCase("true")) {
-						    String iniCont = connectionDef.valueOf("@initialContext");
-						    String resName = connectionDef.valueOf("@resourceName");
-						    String connectionStr = "Provider=mondrian;DataSource="+iniCont+"/"+resName+";Catalog="+catalogUri+";";
-				%>
+			} else {
+				// Parameters with SpagoBI sintax were not inserted so the query can be executed
+				mdxQuery = queryWithParameters;
+			}
+			Node cube = document.selectSingleNode("//olap/cube");
+			String catalogUri = cube.valueOf("@reference");
+			
+			// puts the catalogUri in session for TemplateBean.saveTemplate() method
+			session.setAttribute("catalogUri", catalogUri);
+			/*
+			TemplateBean templateBean = new TemplateBean();
+			templateName = (String) session.getAttribute("templateName");
+			templateBean.setTemplateName(templateName);
+			session.setAttribute("saveTemplate01", templateBean);
+			*/
+			//gets datasource
+			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
+			SpagoBiDataSource datasource = proxyDS.getDataSource(documentId, "");		
+			if (datasource == null) {
+				out.write("Connection not defined as data source in table SBI_DATA_SOURCE .");
+				return;
+			}
+			String resName = datasource.getJndiName();
+			if (resName != null && !resName.equals("")) {
+				resName = resName.replace("java:comp/env/","");
+			    String connectionStr = "Provider=mondrian;"+resName+";Catalog="+catalogUri+";";
+			%>
 			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">
 				<%=mdxQuery%>
 			</jp:mondrianQuery>
 			<%
-				} else {
-				String driver = connectionDef.valueOf("@driver");
-				String url = connectionDef.valueOf("@jdbcUrl");
-				String usr = connectionDef.valueOf("@user");
-				String pwd = connectionDef.valueOf("@password");
-				String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
-			%>
-		    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >
-				<%=mdxQuery%>
-			</jp:mondrianQuery>	
-			<%
-					}
-					}
-					TemplateBean templateBean = (TemplateBean) session.getAttribute("saveTemplate01");
-					if (templateBean == null) {
-						templateBean = new TemplateBean();
-						session.setAttribute("saveTemplate01", templateBean);
-					}
-					Object formObj = session.getAttribute("saveTemplateForm01");
-					if (formObj != null) {
-						FormComponent form = (FormComponent) formObj;
-						form.setBean(templateBean);
-					}
+			} else {
+				String driver = datasource.getDriver();
+				String url = datasource.getUrl();
+				String usr = datasource.getUser();
+				String pwd = datasource.getPassword();
+				String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";				
 				%>
+			    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >
+					<%=mdxQuery%>
+				</jp:mondrianQuery>	
+				<%
+			}
+		}
+		TemplateBean templateBean = (TemplateBean) session.getAttribute("saveTemplate01");
+		if (templateBean == null) {
+			templateBean = new TemplateBean();
+			session.setAttribute("saveTemplate01", templateBean);
+		}
+		Object formObj = session.getAttribute("saveTemplateForm01");
+		if (formObj != null) {
+			FormComponent form = (FormComponent) formObj;
+			form.setBean(templateBean);
+		}
+	%>
 	
 	<jp:table id="table01" query="#{query01}"/>
 	<jp:navigator id="navi01" query="#{query01}" visible="true"/>
@@ -196,34 +215,35 @@ if (connection != null && !connection.trim().equals("")) {
 	<%
 } else {
 	%>
-	<form action="editQuery.jsp" method="post" name="chooseConnectionForm" id="chooseConnectionForm">
+	<form action="editQuery.jsp" method="post" name="chooseSchemaForm" id="chooseSchemaForm">
 		<%
-		List connections = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/CONNECTIONS-CONFIGURATION/CONNECTION");
-		if (connections == null || connections.size() == 0) {
-			out.write("No connections defined in engine-config.xml file.");
+		String selectedSchema = (String) session.getAttribute("selectedSchema");
+		List schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
+		if (schemas == null || schemas.size() == 0) {
+			out.write("No schemas defined in engine-config.xml file.");
 			return;
-		}
+		}		
 		%>
 		<div style="float:left;clear:left;width:150px;height:25px;margin:5px;">
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-				<%=EngineMessageBundle.getMessage("edit.query.select.connection", locale)%>
+				<%=EngineMessageBundle.getMessage("edit.query.select.schema", locale)%>
 			</span>
 		</div>
 		<div style="height:25px;margin:5px;">
-			<select name="connection" id="connection">
-				<%
-				Iterator connectionsIt = connections.iterator();
-				Node selectedConnectionNode = null;
-				while (connectionsIt.hasNext()) {
-					Node aConnection = (Node) connectionsIt.next();
-					String aConnectionName = aConnection.valueOf("@name");
-					String isConnectionSelected = "";
-					if (aConnection.valueOf("@isDefault").trim().equalsIgnoreCase("true")) {
-						selectedConnectionNode = aConnection;
-						isConnectionSelected = "selected='selected'";
-					}
+			<select name="schema" id="schema">
+				<%				
+				Iterator schemasIt = schemas.iterator();
+				Node selectedSchemaNode = null;
+				while (schemasIt.hasNext()) {
+					Node aSchema = (Node) schemasIt.next();
+					String aSchemaName = aSchema.valueOf("@name");
+					String isSchemaSelected = "";
+					if (aSchemaName.equalsIgnoreCase(selectedSchema)) {
+						selectedSchemaNode = aSchema;
+						isSchemaSelected = "selected='selected'";
+					}					
 					%>
-					<option value="<%=aConnectionName%>" <%=isConnectionSelected%>><%=aConnectionName%></option>
+					<option value="<%=aSchemaName%>" <%=isSchemaSelected%>><%=aSchemaName%></option>
 					<%
 				}
 				%>

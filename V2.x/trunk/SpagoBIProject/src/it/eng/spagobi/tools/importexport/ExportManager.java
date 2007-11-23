@@ -25,7 +25,6 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -45,7 +44,6 @@ import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 
 import java.io.File;
@@ -365,42 +363,7 @@ public class ExportManager implements IExportManager {
 	 * @throws EMFUserError
 	 */
 	private void exportCmsNodes(BIObject biobj, Session session) throws EMFUserError {
-//		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
-//		cmsdao.fillBIObjectTemplate(biobj);
-//		UploadedFile tempFile = biobj.getTemplate();
-//		byte[] tempFileCont = tempFile.getFileContent();
-//		
-//		try{
-//			if(biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
-//				String tempFileStr = new String(tempFileCont);
-//				SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
-//				SourceBean datanameSB = (SourceBean)tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
-//				String lovLabel = (String)datanameSB.getAttribute("value");
-//			    IModalitiesValueDAO lovdao = DAOFactory.getModalitiesValueDAO();
-//			    ModalitiesValue lov = lovdao.loadModalitiesValueByLabel(lovLabel);
-//			    exporter.insertLov(lov, session);
-//			}
-//		} catch(Exception e) {
-//			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
-//                                "Error while exporting lov referenced by template of biobj "+ biobj.getName() +" :" + e);
-//		}
-//		
-//		
-//		String tempFileName = tempFile.getFileName();
-//		String folderTempFilePath = pathContentFolder + biobj.getPath();
-//		File folderTempFile = new File(folderTempFilePath);
-//		folderTempFile.mkdirs();
-//		try{
-//			FileOutputStream fos = new FileOutputStream(folderTempFilePath + "/" + tempFileName);
-//			fos.write(tempFileCont);
-//			fos.flush();
-//			fos.close();
-//		} catch (Exception e) {
-//			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
-//		                           "Error while exporting template file " + e);
-//            throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-//		}
-		
+		/*		
 		IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 		cmsdao.exportDocument(biobj, pathContentFolder + biobj.getPath(), exportSubObjects, exportSnapshots);
 		
@@ -408,9 +371,11 @@ public class ExportManager implements IExportManager {
 		try{
 			if(biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
 				cmsdao.fillBIObjectTemplate(biobj);
-				UploadedFile tempFile = biobj.getTemplate();
-				byte[] tempFileCont = tempFile.getFileContent();
-				String tempFileStr = new String(tempFileCont);
+				ObjTemplate objtemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biobj.getId());
+				if(objtemplate==null) throw new Exception("Active Template null");
+				byte[] template = DAOFactory.getBinContentDAO().getBinContent(objtemplate.getBinId());
+				if(template==null) throw new Exception("Content of the Active template null");
+				String tempFileStr = new String(template);
 				SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
 				SourceBean datanameSB = (SourceBean)tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
 				String lovLabel = (String)datanameSB.getAttribute("value");
@@ -422,6 +387,7 @@ public class ExportManager implements IExportManager {
 			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportTemplate",
                                 "Error while exporting lov referenced by template of biobj "+ biobj.getName() +" :" + e);
 		}
+	*/
 	}
 	
 	
@@ -545,7 +511,7 @@ public class ExportManager implements IExportManager {
 				ConfigSingleton config = ConfigSingleton.getInstance();
 				SourceBean conSB = null;
 				/*conSB = (SourceBean)config.getFilteredSourceBeanAttribute("DATA-ACCESS.CONNECTION-POOL", 
-						"connectionPoolName", nameConnection);*/
+				"connectionPoolName", nameConnection);*/
 				/**
 				 *@TODO DA PROVARE--> TOGLIERE RIFERIMETI AL DATA-ACCESS.xml
 				 */
@@ -559,11 +525,12 @@ public class ExportManager implements IExportManager {
 				  				"Connection pool name " +datasource+ " not found");					 
 					 List paramsErr = new ArrayList();
 					 paramsErr.add(lov.getLabel());
+					 //paramsErr.add(nameConnection);
 					 paramsErr.add(datasource);
 					 throw new EMFUserError(EMFErrorSeverity.ERROR, "8008", paramsErr, "component_impexp_messages");
 				} else {
 					//SourceBean existSB = (SourceBean)conns.getFilteredSourceBeanAttribute("CONNECTION-POOL", 
-						//				  "connectionPoolName", nameConnection);
+					//				  "connectionPoolName", nameConnection);
 					SourceBean existSB = (SourceBean)conns.getFilteredSourceBeanAttribute("CONNECTION-POOL", 
 							  "datasource", datasource);					
 					if(existSB==null)

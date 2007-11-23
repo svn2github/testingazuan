@@ -110,15 +110,14 @@ public class DetBIObjModHelper {
 		DataSource ds = null;
 		if (dsIdStr == null || dsIdStr.equals("")) {
 			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
-			if (lstDataSource.size() == 0) { //TODO: adattare msg errore
+			if (lstDataSource.size() == 0) { 
 				HashMap errorParams = new HashMap();
 				errorParams.put(AdmintoolsConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
 				Domain domain = DAOFactory.getDomainDAO().loadDomainById(typeIdInt);
 				Vector vector = new Vector();
 				vector.add(domain.getValueName());
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1064, vector, errorParams);
-			}
-			//ds = (DataSource) lstDataSource.get(0);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8008, vector, errorParams);
+			}			
 		} else {
 			Integer dsIdInt = new Integer(dsIdStr);
 			ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsIdInt);

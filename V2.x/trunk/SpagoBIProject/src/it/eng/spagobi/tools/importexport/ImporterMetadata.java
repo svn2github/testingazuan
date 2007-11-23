@@ -24,7 +24,6 @@ package it.eng.spagobi.tools.importexport;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
@@ -190,53 +189,6 @@ public class ImporterMetadata {
 		 * @param tx Hibernate transaction for the exported database
 		 * @param session Hibernate session for the exported database
 		 * @throws EMFUserError
-		 * @deprecated
-		 */
-		/*
-		public void updateConnRefs(Map associations, Transaction tx, Session session, 
-				                   MetadataLogger log) throws EMFUserError {
-			try {
-				List lovs = getAllExportedSbiObjects(tx, session, "SbiLov");
-				Iterator iterLovs = lovs.iterator();
-				while(iterLovs.hasNext()) {
-					SbiLov lov = (SbiLov)iterLovs.next();
-					if(lov.getInputTypeCd().equalsIgnoreCase("QUERY")) {
-						String lovProv = lov.getLovProvider();
-						QueryDetail qDet = QueryDetail.fromXML(lovProv);
-						String oldConnName = qDet.getConnectionName();
-						String assConnName = (String) associations.get(oldConnName);
-						
-						// register user association 
-						if( (assConnName != null) && 
-							!assConnName.trim().equals("") &&
-							(oldConnName != null) && 
-							!oldConnName.trim().equals("") ) {
-							
-							qDet.setConnectionName(assConnName);
-							lovProv = qDet.toXML();
-							lov.setLovProvider(lovProv);
-							session.save(lov);
-							log.log("Changed the connection name from "+oldConnName+" to " +
-									assConnName + " for the lov " + lov.getName());
-						} 			
-					}
-				}
-			} catch (SourceBeanException sbe) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "updateConnRefs",
-									   "Error while updating connection references " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			}	 
-		}
-		*/
-		/**
-		 * Upadates the connection name into the query lov objects based on the 
-		 * assocaition defined by the user between exported and current SpagoBI connection
-		 * @param associations Map of associations between exported connections 
-		 * and connections of the current SpagoBI platform
-		 * @param tx Hibernate transaction for the exported database
-		 * @param session Hibernate session for the exported database
-		 * @throws EMFUserError
-		 * 
 		 */
 		public void updateConnRefs(Map associations, Transaction tx, Session session, 
 				                   MetadataLogger log) throws EMFUserError {
@@ -305,14 +257,15 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
-			IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
+			//IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 			SbiObjects objToReturn = null;
 			try {
 				String pathTempFolder = pathContent + obj.getPath();
 				// normalize path
 				File temp = new File(pathTempFolder);
 				pathTempFolder = temp.getAbsolutePath();
-				String newPath = cmsdao.importDocument(pathTempFolder);
+				//String newPath = cmsdao.importDocument(pathTempFolder);
+				String newPath = "";
 				obj.setPath(newPath);
 				insertObject(obj, session);
 				objToReturn = obj;

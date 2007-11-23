@@ -15,15 +15,15 @@ import org.apache.log4j.Logger;
 public class DataSourceSupplier {
 	static private Logger logger = Logger.getLogger(DataSourceSupplier.class);
 	
-    public SpagoBiDataSource getDataSource( String documentLabel,String engineLabel) {
+    public SpagoBiDataSource getDataSource(String documentId) {
         
 		SpagoBiDataSource sbds = new SpagoBiDataSource();  
     		
     	//gets data source data from database
 		try{
-			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(Integer.valueOf(documentLabel));
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(Integer.valueOf(documentId));
 			if (obj == null){
-				logger.warn("The object with id " + documentLabel + " is not found on the database.");
+				logger.warn("The object with id " + documentId + " is not found on the database.");
 				return null;
 			}			
 			DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(obj.getDataSourceId());

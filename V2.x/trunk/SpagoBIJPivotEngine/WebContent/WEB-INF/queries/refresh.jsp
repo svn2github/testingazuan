@@ -16,7 +16,10 @@ LICENSE: see LICENSE.txt file
 				 sun.misc.BASE64Decoder,
 				 java.util.*,
 				 org.apache.log4j.Logger,
-				 com.tonbeller.jpivot.olap.model.OlapModel" %>
+				 com.tonbeller.jpivot.olap.model.OlapModel,
+				 it.eng.spagobi.services.proxy.DataSourceServiceProxy,
+				 it.eng.spagobi.services.datasource.bo.SpagoBiDataSource" %>
+				
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
@@ -26,28 +29,26 @@ LICENSE: see LICENSE.txt file
 Logger logger = Logger.getLogger(this.getClass());
 try {
 	AnalysisBean analysis = (AnalysisBean) session.getAttribute("analysisBean");;
-	String query = analysis.getMdxQuery();
-	String nameConnection = analysis.getConnectionName();
+	String query = analysis.getMdxQuery();	
 	String reference = analysis.getCatalogUri();
+	String documentId = (String)session.getAttribute("document");
 	// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG
-	DbConnection dbConnection = null;
-	if(nameConnection!=null) {
-		dbConnection = new DbConnection(nameConnection);	
-	} else {
-		dbConnection = new DbConnection();		
-	}
-	if(dbConnection.isJndi()) {
-		JndiConnection jndiCon = dbConnection.getJndiConnection();
+	//calls service for gets data source object
+	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
+	SpagoBiDataSource ds = proxyDS.getDataSource(documentId, "");
+	
+	if(ds != null  && !ds.getJndiName().equals("")) {
+		String resName = ds.getJndiName();
+		resName = resName.replace("java:comp/env/","");
 		%>
-		<jp:mondrianQuery id="query01" dataSource="<%=jndiCon.getResName()%>"  catalogUri="<%=reference%>">
+		<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 			<%=query%>
 		</jp:mondrianQuery>
 	<%	
-	} else {
-		JdbcConnection jdbcCon = dbConnection.getJdbcConnection();
+	} else {		
 		%>
-		<jp:mondrianQuery id="query01" jdbcDriver="<%=jdbcCon.getDriver()%>" jdbcUrl="<%=jdbcCon.getUrl()%>" 
-		                   jdbcUser="<%=jdbcCon.getUsr()%>" jdbcPassword="<%=jdbcCon.getPwd()%>" catalogUri="<%=reference%>" >
+		<jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrl()%>" 
+		                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPassword()%>" catalogUri="<%=reference%>" >
 			<%=query%>	
 		</jp:mondrianQuery>	
 		<%	

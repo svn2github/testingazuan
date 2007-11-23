@@ -21,12 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.presentation.tags;
 
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
@@ -42,26 +39,28 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Logger;
+
 /**
  * Presentation tag for Query Wizard details. 
  */
 public class QueryWizardTag extends CommonWizardLovTag {
-
+	static private Logger logger = Logger.getLogger(QueryWizardTag.class);
 	private HttpServletRequest httpRequest = null;
     protected RequestContainer requestContainer = null;
 	protected ResponseContainer responseContainer = null;
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
-    private String connectionName;
+    private String dataSourceLabel;
     private String queryDef;
 	
 	
-	public String getConnectionName() {
-		return connectionName;
+	public String getDataSourceLabel() {
+		return dataSourceLabel;
 	}
 	
-	public void setConnectionName(String connectionName) {
-		this.connectionName = connectionName;
+	public void setDataSourceLabel(String dataSourceLabel) {
+		this.dataSourceLabel = dataSourceLabel;
 	}
 	
 	public String getQueryDef() {
@@ -73,28 +72,29 @@ public class QueryWizardTag extends CommonWizardLovTag {
 	}
 	
 	public int doEndTag() throws JspException {
-        TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "QueryWizardTag::doEndTag:: invocato");
+        logger.debug("");
         return super.doEndTag();
     }
 	
-	public int doStartTag() throws JspException {
-		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
-				            "QueryWizardTag::doStartTag:: invoked");
+	public int doStartTag() throws JspException{
+		logger.debug("QueryWizardTag::doStartTag:: invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
-		String connNameField = msgBuilder.getMessage("SBIDev.queryWiz.connNameField", "messages", httpRequest);
+		String dsLabelField = msgBuilder.getMessage("SBIDev.queryWiz.dsLabelField", "messages", httpRequest);
 		String queryDefField = msgBuilder.getMessage("SBIDev.queryWiz.queryDefField", "messages", httpRequest);
-		List dbConnection = new ArrayList();
+		List lstDs = new ArrayList();
 		try{			
-			dbConnection =  DAOFactory.getDataSourceDAO().loadAllDataSources();			
+			lstDs =  DAOFactory.getDataSourceDAO().loadAllDataSources();			
 		}catch (EMFUserError emf) {
 			emf.printStackTrace();
-		}		
-		Iterator itDbCon = dbConnection.iterator();
+		}
+		Iterator itDs = lstDs.iterator();
+		
 		StringBuffer output = new StringBuffer();
+		
 		output.append("<table width='100%' cellspacing='0' border='0'>\n");
 		output.append("	<tr>\n");
 		output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
@@ -120,18 +120,19 @@ public class QueryWizardTag extends CommonWizardLovTag {
 	    output.append("<div class='div_detail_area_forms_lov'>\n");	
 	    output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			<span class='portlet-form-field-label'>\n");
-		output.append(connNameField);
+		output.append(dsLabelField);
 		output.append("			</span>\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_form'>\n");
-		output.append("			<select onchange='setLovProviderModified(true);' style='width:180px;' class='portlet-form-input-field' name='connName' id='connName' >\n");
-		while (itDbCon.hasNext()) {
-			DataSource ds = (DataSource)itDbCon.next();
-			String connectionPoolName = String.valueOf(ds.getDsId());
-			String connectionDescription = ds.getDescr();
-			String connNameSelected = "";
-			if (connectionPoolName.equals(connectionName)) connNameSelected = "selected=\"selected\"";
-			output.append("			<option value='" + connectionPoolName + "' " + connNameSelected + ">" + connectionDescription + "</option>\n");
+		output.append("			<select onchange='setLovProviderModified(true);' style='width:180px;' class='portlet-form-input-field' name='datasource' id='datasource' >\n");
+		while (itDs.hasNext()) {
+			DataSource ds = (DataSource)itDs.next();
+			String dataSource = String.valueOf(ds.getLabel());
+			String dataSourceDescription = ds.getDescr();
+			
+			String dsLabeleSelected = "";
+			if (dataSourceLabel.equals(dataSource)) dsLabeleSelected = "selected=\"selected\"";
+			output.append("			<option value='" + dataSource + "' " + dsLabeleSelected + ">" + dataSourceDescription + "</option>\n");
 		}
 		output.append("			</select>\n");
 		output.append("		</div>\n");
@@ -184,7 +185,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
             pageContext.getOut().print(output.toString());
         }
         catch (Exception ex) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "QueryWizardTag::doStartTag::", ex);
+            logger.error(ex);
             throw new JspException(ex.getMessage());
         }
 		return SKIP_BODY;

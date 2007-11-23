@@ -401,7 +401,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          <!-- START DIV QUERY WIZARD --> 
         <div id="queryWizard" style='width:100%;display:<%=queryDisplay%>'>
 			<spagobi:queryWizard 
-				connectionName='<%= query.getConnectionName()!= null ? query.getConnectionName().toString() : "" %>' 			 
+				dataSourceLabel='<%= query.getDataSource()!= null ? query.getDataSource().toString() : "" %>' 			 
 				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' />
 		</div>	
 		<!-- DIV QUERY WIZARD CLOSED -->

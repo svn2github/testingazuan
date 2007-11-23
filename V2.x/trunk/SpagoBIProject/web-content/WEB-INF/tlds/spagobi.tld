@@ -212,7 +212,7 @@
         <body-content>EMPTY</body-content>
         <description>Rendering of the query wizard form</description>
         <attribute>
-            <name>connectionName</name>
+            <name>dataSourceLabel</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

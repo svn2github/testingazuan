@@ -5,19 +5,16 @@
  */
 package it.eng.spagobi.engines.drivers.jasperreport;
 
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
+import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -79,6 +76,7 @@ public class JasperReportDriver implements IEngineDriver {
      * 
      * @param pars  The map of parameters
      * @return      The map of parameters to send to the engine
+     * 
      */
     protected Map applySecurity(Map pars, IEngUserProfile profile) {
 	logger.debug("IN");
@@ -128,13 +126,11 @@ public class JasperReportDriver implements IEngineDriver {
 	    for (int i = 0; i < subreportList.size(); i++) {
 		Subreport subreport = (Subreport) subreportList.get(i);
 		BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
-        
-		IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
-		IBinContentDAO contdao = DAOFactory.getBinContentDAO();
-		ObjTemplate objtemp =  tempdao.getBIObjectActiveTemplate(subrptbiobj.getId());
-		
+
+		subrptbiobj.loadTemplate();
+		UploadedFile tmpFileSubRpt = subrptbiobj.getTemplate();
 		String flgTemplateStandard = "true";
-		if (objtemp.getName().indexOf(".zip") > -1) {
+		if (tmpFileSubRpt.getFileName().indexOf(".zip") > -1) {
 		    flgTemplateStandard = "false";
 		}
                 logger.debug(" flgTemplateStandard: "+ flgTemplateStandard);
@@ -149,8 +145,6 @@ public class JasperReportDriver implements IEngineDriver {
 
 	} catch (EMFUserError e) {
 	    logger.error("Error while reading subreports:",e);
-	} catch (EMFInternalError ex) {
-		logger.error("Error while reading subreports:",ex);
 	}
 
 	return pars;

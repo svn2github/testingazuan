@@ -23,20 +23,21 @@ package it.eng.spagobi.behaviouralmodel.lov.bo;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -44,8 +45,9 @@ import java.util.List;
  * Query Wizard detail information.
  */
 public class QueryDetail  implements ILovDetail  {
+	private static transient Logger logger = Logger.getLogger(QueryDetail.class);
 	
-	private String connectionName= "" ;
+	private String dataSource= "" ;
 	private String queryDefinition = "";
 	
 	private List visibleColumnNames = null;
@@ -85,8 +87,8 @@ public class QueryDetail  implements ILovDetail  {
 		}
 		
 		SourceBean source = SourceBean.fromXMLString(dataDefinition);
-		SourceBean connection = (SourceBean)source.getAttribute("CONNECTION");
-		String connectionName = connection.getCharacters(); 
+		SourceBean connection = (SourceBean)source.getAttribute("CONNECTION"); 
+		String dataSource =  connection.getCharacters(); 
 		SourceBean statement = (SourceBean)source.getAttribute("STMT");
 		String queryDefinition = statement.getCharacters();
 		SourceBean valCol = (SourceBean)source.getAttribute("VALUE-COLUMN");
@@ -112,7 +114,7 @@ public class QueryDetail  implements ILovDetail  {
 			}
 		}
 		else descriptionColumn = valueColumn;
-		setConnectionName(connectionName);
+		setDataSource(dataSource);
 		setQueryDefinition(queryDefinition);
 		setValueColumnName(valueColumn);
 		setDescriptionColumnName(descriptionColumn);
@@ -136,7 +138,7 @@ public class QueryDetail  implements ILovDetail  {
 	 */
 	public String toXML () { 
 		String XML = "<QUERY>" +
-				     "<CONNECTION>"+this.getConnectionName()+"</CONNECTION>" +
+				     "<CONNECTION>"+this.getDataSource()+"</CONNECTION>" +
 			         "<STMT>"+this.getQueryDefinition() + "</STMT>" +
 				     "<VALUE-COLUMN>"+this.getValueColumnName()+"</VALUE-COLUMN>" +
 				     "<DESCRIPTION-COLUMN>"+this.getDescriptionColumnName()+"</DESCRIPTION-COLUMN>" +
@@ -160,18 +162,19 @@ public class QueryDetail  implements ILovDetail  {
 		return result;
 	}
 	
-
 	/**
 	 * Gets the values and return them as an xml structure
 	 * @param statement the query statement to execute
 	 * @return the xml string containing values
-	 * @throws Exception
+	 * @throws Exception	
 	 */
+	
 	private String getLovResult(String statement) throws Exception {
 		String resStr = null;
-		String pool = getConnectionName();
-		DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
-		DataConnection dataConnection   = dataConnectionManager.getConnection(pool);
+		//gets connection
+		DataSourceUtilities dsUtil = new DataSourceUtilities();
+		Connection conn = dsUtil.getConnection(dataSource); 
+		DataConnection dataConnection = dsUtil.getDataConnection(conn);
 		SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
 		DataResult dataResult = sqlCommand.execute();
         ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
@@ -186,6 +189,7 @@ public class QueryDetail  implements ILovDetail  {
 		Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		return resStr;
 	}
+   
 	
 	/**
 	 * Gets the list of names of the profile attributes required
@@ -250,15 +254,13 @@ public class QueryDetail  implements ILovDetail  {
 	public static QueryDetail fromXML (String dataDefinition) throws SourceBeanException {
 		return new QueryDetail(dataDefinition);
 	}
-
-	public String getConnectionName() {
-		return connectionName;
+	public String getDataSource() {
+		return dataSource;
 	}
 
-	public void setConnectionName(String connectionName) {
-		this.connectionName = connectionName;
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
 	}
-
 	public String getQueryDefinition() {
 		return queryDefinition;
 	}
@@ -299,12 +301,4 @@ public class QueryDetail  implements ILovDetail  {
 		this.visibleColumnNames = visibleColumnNames;
 	}
 
-
-
-	
-
-
-	
-	
-	
 }

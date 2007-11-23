@@ -380,7 +380,7 @@
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS/>
 			<FIELDS>
-				<FIELD name="connName" label="#SBIDev.queryWiz.connNameField">
+				<FIELD name="datasource" label="#SBIDev.queryWiz.dsLabelField">
 				    <VALIDATOR validatorName="MANDATORY"/>
 				 	<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>

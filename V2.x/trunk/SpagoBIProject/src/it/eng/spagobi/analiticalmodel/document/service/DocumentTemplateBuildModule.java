@@ -30,11 +30,9 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.EngineURL;
@@ -43,11 +41,13 @@ import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 /**
  * Permits the dynamic creation or modification of a document template.
  */
 public class DocumentTemplateBuildModule extends AbstractModule {
-	
+	private static transient Logger logger = Logger.getLogger(DocumentTemplateBuildModule.class);
 	protected EMFErrorHandler errorHandler = null;
 	protected RequestContainer requestContainer = null;
 	protected SessionContainer session = null;
@@ -77,8 +77,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 		try {
 			if(messageExec == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-				SpagoBITracer.critical(AdmintoolsConstants.NAME_MODULE, this.getClass().getName(), 
-									  "service", "The execution-message parameter is null");
+				logger.fatal("The execution-message parameter is null");
 				throw userError;
 			}
 			
@@ -87,10 +86,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 			} else if(messageExec.equalsIgnoreCase(SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE)) {
 				editDocumentTemplateHandler(request, response);
 			} else {	
-		   	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-		   	    					this.getClass().getName(), 
-		   	    		            "service", 
-		   	    		            "Illegal request of service");
+		   	    logger.error("Illegal request of service");
 		   		errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 102)); 
 		   	}
 	    } catch (EMFUserError e) { 
@@ -117,12 +113,9 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 		// CHECK IF THE BIOBJECT IS COMPATIBLE WITH THE TYPES SUITABLE FOR THE ENGINE
 		if (!compatibleBiobjTypeCd.equalsIgnoreCase(biobjTypeCd)) {
 			// the engine document type and the biobject type are not compatible
-			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"execute", 
-		 				"Engine cannot execute input document type: " +
-		 				"the engine " + engine.getName() + " can execute '" + compatibleBiobjTypeCd + "' type documents " +
-		 						"while the input document is a '" + biobjTypeCd + "'.");
+			 logger.fatal("Engine cannot execute input document type: " +
+		 				  "the engine " + engine.getName() + " can execute '" + compatibleBiobjTypeCd + "' type documents " +
+		 				  "while the input document is a '" + biobjTypeCd + "'.");
 			Vector params = new Vector();
 			params.add(engine.getName());
 			params.add(compatibleBiobjTypeCd);
@@ -141,10 +134,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				try {
 					templateBuildUrl = aEngineDriver.getNewDocumentTemplateBuildUrl(obj);
 				} catch (InvalidOperationRequest ior) {
-					SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, 
-			 				this.getClass().getName(), 
-			 				"newDocumentTemplateHandler", 
-			 				"Engine " + engine.getName() + " cannot build document template");
+					logger.info("Engine " + engine.getName() + " cannot build document template");
 					Vector params = new Vector();
 					params.add(engine.getName());
 					errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
@@ -157,14 +147,11 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				response.setAttribute(ObjectsTreeConstants.CALL_URL, templateBuildUrl);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TemplateBuildPublisher");
 				response.setAttribute(SpagoBIConstants.ACTOR, actor);
-				response.setAttribute("biobject", obj);
+				response.setAttribute("biobject", obj);				
 				response.setAttribute("operation", "newDocumentTemplate");
 				
 			} catch (Exception e) {
-				 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-						 				this.getClass().getName(), 
-						 				"newDocumentTemplateHandler", 
-						 				"Error retrieving template build url", e);
+				 logger.fatal("Error retrieving template build url", e);
 			   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
 			}	
 			
@@ -179,20 +166,14 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				if (className == null && className.trim().equals("")) throw new ClassNotFoundException();
 				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
 			} catch (ClassNotFoundException cnfe) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-			 				this.getClass().getName(), 
-			 				"execute", 
-			 				"The class ['" + className + "'] for internal engine " + engine.getName() + " was not found.", cnfe);
+				logger.fatal("The class ['" + className + "'] for internal engine " + engine.getName() + " was not found.", cnfe);
 				Vector params = new Vector();
 				params.add(className);
 				params.add(engine.getName());
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params));
 				return;
 			} catch (Exception e) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"newDocumentTemplateHandler", 
-		 				"Error while instantiating class " + className, e);
+				logger.fatal("Error while instantiating class " + className, e);
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
 				return;
 			}
@@ -203,10 +184,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 			try {
 				internalEngine.handleNewDocumentTemplateCreation(requestContainer, obj, response);
 			} catch (InvalidOperationRequest ior) {
-				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"newDocumentTemplateHandler", 
-		 				"Engine " + engine.getName() + " cannot build document template");
+				logger.info("Engine " + engine.getName() + " cannot build document template");
 				Vector params = new Vector();
 				params.add(engine.getName());
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
@@ -214,10 +192,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				response.setAttribute(ObjectsTreeConstants.OBJECT_ID, idStr);
 				return;
 			} catch (Exception e) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"execute", 
-		 				"Error while engine execution", e);
+				logger.fatal("Error while engine execution", e);
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
 			}
 		}
@@ -243,12 +218,9 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 		// CHECK IF THE BIOBJECT IS COMPATIBLE WITH THE TYPES SUITABLE FOR THE ENGINE
 		if (!compatibleBiobjTypeCd.equalsIgnoreCase(biobjTypeCd)) {
 			// the engine document type and the biobject type are not compatible
-			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"execute", 
-		 				"Engine cannot execute input document type: " +
-		 				"the engine " + engine.getName() + " can execute '" + compatibleBiobjTypeCd + "' type documents " +
-		 						"while the input document is a '" + biobjTypeCd + "'.");
+			 logger.fatal("Engine cannot execute input document type: " +
+		 				  "the engine " + engine.getName() + " can execute '" + compatibleBiobjTypeCd + "' type documents " +
+		 				  "while the input document is a '" + biobjTypeCd + "'.");
 			Vector params = new Vector();
 			params.add(engine.getName());
 			params.add(compatibleBiobjTypeCd);
@@ -267,10 +239,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				try {
 					templateBuildUrl = aEngineDriver.getEditDocumentTemplateBuildUrl(obj);
 				} catch (InvalidOperationRequest ior) {
-					SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, 
-			 				this.getClass().getName(), 
-			 				"newDocumentTemplateHandler", 
-			 				"Engine " + engine.getName() + " cannot build document template");
+					logger.info("Engine " + engine.getName() + " cannot build document template");
 					Vector params = new Vector();
 					params.add(engine.getName());
 					errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
@@ -286,10 +255,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				response.setAttribute("operation", "newDocumentTemplate");
 				
 			} catch (Exception e) {
-				 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-						 				this.getClass().getName(), 
-						 				"newDocumentTemplateHandler", 
-						 				"Error retrieving template build url", e);
+				 logger.fatal("Error retrieving template build url", e);
 			   	 errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100)); 
 			}	
 			
@@ -304,20 +270,14 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				if (className == null && className.trim().equals("")) throw new ClassNotFoundException();
 				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
 			} catch (ClassNotFoundException cnfe) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-			 				this.getClass().getName(), 
-			 				"execute", 
-			 				"The class ['" + className + "'] for internal engine " + engine.getName() + " was not found.", cnfe);
+				logger.fatal("The class ['" + className + "'] for internal engine " + engine.getName() + " was not found.", cnfe);
 				Vector params = new Vector();
 				params.add(className);
 				params.add(engine.getName());
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params));
 				return;
 			} catch (Exception e) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"newDocumentTemplateHandler", 
-		 				"Error while instantiating class " + className, e);
+				logger.fatal("Error while instantiating class " + className, e);
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
 				return;
 			}
@@ -328,10 +288,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 			try {
 				internalEngine.handleDocumentTemplateEdit(requestContainer, obj, response);
 			} catch (InvalidOperationRequest ior) {
-				SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"newDocumentTemplateHandler", 
-		 				"Engine " + engine.getName() + " cannot build document template");
+				logger.info("Engine " + engine.getName() + " cannot build document template");
 				Vector params = new Vector();
 				params.add(engine.getName());
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
@@ -339,10 +296,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				response.setAttribute(ObjectsTreeConstants.OBJECT_ID, idStr);
 				return;
 			} catch (Exception e) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-		 				this.getClass().getName(), 
-		 				"execute", 
-		 				"Error while engine execution", e);
+				logger.fatal("Error while engine execution", e);
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
 			}
 		}
@@ -355,10 +309,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 	 * @param message Message to store into the log
 	 */
 	private void debug(String method, String message) {
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-							this.getClass().getName(), 
-							method, 
-        					message);
+		logger.debug(message);
 	}
 	
 }

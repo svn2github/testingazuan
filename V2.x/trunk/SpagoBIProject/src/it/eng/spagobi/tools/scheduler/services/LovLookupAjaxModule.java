@@ -54,10 +54,12 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
+import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -132,13 +134,15 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
 				return list;
 			}
-			valColName = qd.getValueColumnName();
-			String pool = qd.getConnectionName();
+			valColName = qd.getValueColumnName();			
+			//String pool = qd.getConnectionName();
+			String datasource = qd.getDataSource();
 			String statement = qd.getQueryDefinition();
 			// execute query
 			try {
 				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
-				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement);
+				//rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement);
+				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), datasource, statement);
 			} catch (Exception e) {
 				String stacktrace = e.toString();
 				response.setAttribute("stacktrace", stacktrace);
@@ -296,7 +300,9 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 	 * @param statement	The statement definition string
 	 * @return A generic object containing the Execution results
 	 * @throws EMFInternalError 
+	 * @deprecated
 	 */
+	/*
 	 public static Object executeSelect(RequestContainer requestContainer,
 			ResponseContainer responseContainer, String pool, String statement) throws EMFInternalError {
 		Object result = null;
@@ -317,5 +323,41 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 		}
 		return result;
 	}
+	 */
+	 /**
+		 * Executes a select statement.
+		 * 
+		 * @param requestContainer The request container object
+		 * @param responseContainer The response container object
+		 * @param pool The pool definition string
+		 * @param statement	The statement definition string
+		 * @return A generic object containing the Execution results
+		 * @throws EMFInternalError 
+		 * @deprecated
+		 */
+		 public static Object executeSelect(RequestContainer requestContainer,
+				ResponseContainer responseContainer, String datasource, String statement) throws EMFInternalError {
+			Object result = null;
+			DataConnectionManager dataConnectionManager = null;
+			DataConnection dataConnection = null;
+			SQLCommand sqlCommand = null;
+			DataResult dataResult = null;
+			try {
+				//dataConnectionManager = DataConnectionManager.getInstance();
+				//dataConnection = dataConnectionManager.getConnection(pool);
+				DataSourceUtilities dsUtil = new DataSourceUtilities();
+				Connection conn = dsUtil.getConnection(datasource); 
+				dataConnection = dsUtil.getDataConnection(conn);
+
+				sqlCommand = dataConnection.createSelectCommand(statement);
+				dataResult = sqlCommand.execute();
+				ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult
+						.getDataObject();
+				result = scrollableDataResult.getSourceBean();
+			} finally {
+				Utils.releaseResources(dataConnection, sqlCommand, dataResult);
+			}
+			return result;
+		}
 
 }

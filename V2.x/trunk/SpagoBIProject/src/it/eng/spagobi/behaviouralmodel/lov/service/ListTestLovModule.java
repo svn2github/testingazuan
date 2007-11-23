@@ -49,9 +49,11 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
+import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -97,12 +99,14 @@ public class ListTestLovModule extends AbstractBasicListModule {
 		List colNames = new ArrayList();
 		if(typeLov.equalsIgnoreCase("QUERY")) {
 			QueryDetail qd = QueryDetail.fromXML(looProvider);
-			String pool = qd.getConnectionName();
+			//String pool = qd.getConnectionName();
+			String datasource = qd.getDataSource();
 			String statement = qd.getQueryDefinition();
 			// execute query
 			try {
 				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
-				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement, colNames);
+				//rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement, colNames);
+				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), datasource, statement, colNames);
 			} catch (Exception e) {
 				String stacktrace = e.toString();
 				response.setAttribute("stacktrace", stacktrace);
@@ -252,15 +256,22 @@ public class ListTestLovModule extends AbstractBasicListModule {
 	 * @throws EMFInternalError 
 	 */
 	 public static Object executeSelect(RequestContainer requestContainer,
-			ResponseContainer responseContainer, String pool, String statement, List columnsNames) throws EMFInternalError {
+			 ResponseContainer responseContainer, String datasource, String statement, List columnsNames) throws EMFInternalError {
+			//ResponseContainer responseContainer, String pool, String statement, List columnsNames) throws EMFInternalError {
 		Object result = null;
-		DataConnectionManager dataConnectionManager = null;
+		//DataConnectionManager dataConnectionManager = null;
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;
 		DataResult dataResult = null;
 		try {
-			dataConnectionManager = DataConnectionManager.getInstance();
+			/*dataConnectionManager = DataConnectionManager.getInstance();
 			dataConnection = dataConnectionManager.getConnection(pool);
+			*/
+			//gets connection
+			DataSourceUtilities dsUtil = new DataSourceUtilities();
+			Connection conn = dsUtil.getConnection(datasource); 
+			dataConnection = dsUtil.getDataConnection(conn);
+
 			sqlCommand = dataConnection.createSelectCommand(statement);
 			dataResult = sqlCommand.execute();
 			ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult

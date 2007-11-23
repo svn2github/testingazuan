@@ -16,7 +16,11 @@ LICENSE: see LICENSE.txt file
 				 sun.misc.BASE64Decoder,
 				 java.util.*,
 				 org.apache.log4j.Logger,
-				 com.tonbeller.jpivot.olap.model.OlapModel" %>
+				 com.tonbeller.jpivot.olap.model.OlapModel,
+				 it.eng.spagobi.services.proxy.ContentServiceProxy,
+				 it.eng.spagobi.services.content.bo.Content,
+				 it.eng.spagobi.services.proxy.DataSourceServiceProxy,
+				 it.eng.spagobi.services.datasource.bo.SpagoBiDataSource" %>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
@@ -32,78 +36,84 @@ LICENSE: see LICENSE.txt file
 	try {
 		SaveAnalysisBean analysisBean = (SaveAnalysisBean) session.getAttribute("save01");
 		String nameSubObject = request.getParameter("nameSubObject");
-	
+		String userId = (String)session.getAttribute("userId");
+		String documentId = (String)session.getAttribute("document");
+		ContentServiceProxy contentProxy = new ContentServiceProxy();
+				
+		//calls service for gets data source object
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
+		SpagoBiDataSource ds = proxyDS.getDataSource(documentId, "");
+
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {
-	String jcrPath = (String)session.getAttribute("templatePath");
-	String spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
-	String user = (String)session.getAttribute("user");
-	// if subObject execution in the request there are the description and visibility
-	String descrSO = request.getParameter("descriptionSubObject");
-	if(descrSO==null)
-		descrSO = "";
-	String visSO = request.getParameter("visibilitySubObject");
-	if(visSO==null)
-		visSO = "Private";
-	analysisBean.setAnalysisName(nameSubObject);
-	analysisBean.setAnalysisDescription(descrSO);
-	// the possible values of the visibility are (Private/Public)
-	analysisBean.setAnalysisVisibility(visSO);
-	// get content from cms
-	String subobjdata64Coded = request.getParameter("subobjectdata");
-	BASE64Decoder bASE64Decoder = new BASE64Decoder();
-	byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
-	is = new java.io.ByteArrayInputStream(subobjBytes);
-	InputStreamReader isr = new InputStreamReader(is);
-	XStream dataBinder = new XStream();
-	try {
-		analysis = (AnalysisBean) dataBinder.fromXML(isr, new AnalysisBean());
-		isr.close();
-		query = analysis.getMdxQuery();
-		nameConnection = analysis.getConnectionName();
-		reference = analysis.getCatalogUri();
-	} catch (Throwable t) {
-		t.printStackTrace();
-	}
-		
-		// normal execution (no subObject)	
+			//@TODO da gestire con SERVIZIO
+			String jcrPath = (String)session.getAttribute("templatePath");			
+			String spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
+			String user = (String)session.getAttribute("user");
+			// if subObject execution in the request there are the description and visibility
+			String descrSO = request.getParameter("descriptionSubObject");
+			if(descrSO==null)
+				descrSO = "";
+			String visSO = request.getParameter("visibilitySubObject");
+			if(visSO==null)
+				visSO = "Private";
+			analysisBean.setAnalysisName(nameSubObject);
+			analysisBean.setAnalysisDescription(descrSO);
+			// the possible values of the visibility are (Private/Public)
+			analysisBean.setAnalysisVisibility(visSO);			
+			// get content from cms
+			String subobjdata64Coded = request.getParameter("subobjectdata");
+			BASE64Decoder bASE64Decoder = new BASE64Decoder();
+			byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
+			is = new java.io.ByteArrayInputStream(subobjBytes);
+			InputStreamReader isr = new InputStreamReader(is);
+			XStream dataBinder = new XStream();
+			try {
+				analysis = (AnalysisBean) dataBinder.fromXML(isr, new AnalysisBean());
+				isr.close();
+				query = analysis.getMdxQuery();
+				//sets the datasource of document
+				if (ds != null)	nameConnection = ds.getLabel();
+				//nameConnection = analysis.getConnectionName();
+				reference = analysis.getCatalogUri();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+				
+				// normal execution (no subObject)	
 		} else {
-	String templateBase64Coded = request.getParameter("template");
-	BASE64Decoder bASE64Decoder = new BASE64Decoder();
-	byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
-	is = new java.io.ByteArrayInputStream(template);
-	org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
-		    document = reader.read(is);
-		    nameConnection = request.getParameter("connectionName");
-	query = document.selectSingleNode("//olap/MDXquery").getStringValue();
-	Node cube = document.selectSingleNode("//olap/cube");
-	reference = cube.valueOf("@reference");
-	parameters = document.selectNodes("//olap/MDXquery/parameter");
-	analysis = new AnalysisBean();
-	analysis.setConnectionName(nameConnection);
-	analysis.setCatalogUri(reference);
-	session.setAttribute("analysisBean",analysis);
+			//String templateBase64Coded = request.getParameter("template");
+			BASE64Decoder bASE64Decoder = new BASE64Decoder();
+			Content template = contentProxy.readTemplate(userId, documentId);
+			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
+			is = new java.io.ByteArrayInputStream(templateContent);
+
+//			byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
+			//is = new java.io.ByteArrayInputStream(template);
+			org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
+		    document = reader.read(is);		    
+		    //nameConnection = request.getParameter("connectionName");
+		    if (ds != null)	nameConnection = ds.getLabel();
+			query = document.selectSingleNode("//olap/MDXquery").getStringValue();
+			Node cube = document.selectSingleNode("//olap/cube");
+			reference = cube.valueOf("@reference");
+			parameters = document.selectNodes("//olap/MDXquery/parameter");
+			analysis = new AnalysisBean();
+			analysis.setConnectionName(nameConnection);
+			analysis.setCatalogUri(reference);
+			session.setAttribute("analysisBean",analysis);
+			
 		}
 
-
-		
-		
 		// SUBSTITUTE QUERY PARAMETERS
 		query = ParameterUtilities.substituteQueryParameters(query, parameters, request);
-		
-		
-		
-		// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG
-		DbConnection dbConnection = null;
-		if(nameConnection!=null) {
-	dbConnection = new DbConnection(nameConnection);	
-		} else {
-	dbConnection = new DbConnection();		
-		}
-		if(dbConnection.isJndi()) {
-	JndiConnection jndiCon = dbConnection.getJndiConnection();
+				
+		// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG		
+		if(ds != null  && ds.getJndiName() != null && !ds.getJndiName().equals("")) {
+			String resName = ds.getJndiName();
+			resName = resName.replace("java:comp/env/","");
 %>
-			<jp:mondrianQuery id="query01" dataSource="<%=jndiCon.getResName()%>"  catalogUri="<%=reference%>">
+			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 				<%=query%>
 				
 				<%
@@ -135,10 +145,9 @@ LICENSE: see LICENSE.txt file
 			</jp:mondrianQuery>
 		<%	
 		} else {
-			JdbcConnection jdbcCon = dbConnection.getJdbcConnection();
 		%>
-			 <jp:mondrianQuery id="query01" jdbcDriver="<%=jdbcCon.getDriver()%>" jdbcUrl="<%=jdbcCon.getUrl()%>" 
-			                   jdbcUser="<%=jdbcCon.getUsr()%>" jdbcPassword="<%=jdbcCon.getPwd()%>" catalogUri="<%=reference%>" >
+			 <jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrl()%>" 
+			                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPassword()%>" catalogUri="<%=reference%>" >
 				<%=query%>
 								
 				<%

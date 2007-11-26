@@ -8,6 +8,8 @@
 package it.eng.spagobi.services.content.stub;
 
 import it.eng.spagobi.services.content.service.ContentServiceImpl;
+import it.eng.spagobi.services.content.service.MapCatalogueImpl;
+import it.eng.spagobi.services.content.service.PublishImpl;
 
 public class ContentServiceSoapBindingImpl implements it.eng.spagobi.services.content.stub.ContentService{
     public it.eng.spagobi.services.content.bo.Content readTemplate(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
@@ -30,11 +32,13 @@ public class ContentServiceSoapBindingImpl implements it.eng.spagobi.services.co
         return null;
     }
 
-    public java.lang.String publishTemplate(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3, java.lang.String in4, java.lang.String in5, java.lang.String in6, java.lang.String in7, java.lang.String in8, java.lang.String in9) throws java.rmi.RemoteException {
-        return null;
+    public java.lang.String publishTemplate(java.lang.String in0, java.lang.String in1, java.util.HashMap in2) throws java.rmi.RemoteException {
+	PublishImpl service=new PublishImpl();
+	return service.publishTemplate(in0, in1, in2);
     }
 
-    public java.lang.String mapCatalogue(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
-        return null;
+    public java.lang.String mapCatalogue(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3, java.lang.String in4, java.lang.String in5) throws java.rmi.RemoteException {
+	MapCatalogueImpl service=new MapCatalogueImpl();
+	return service.mapCatalogue(in0, in1, in2, in3, in4, in5);
     }
 }

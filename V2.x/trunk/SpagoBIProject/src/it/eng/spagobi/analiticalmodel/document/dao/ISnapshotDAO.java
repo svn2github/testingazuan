@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 
 import java.util.List;
 
@@ -35,22 +36,28 @@ public interface ISnapshotDAO {
 	 * @param name the name of the new subobject
 	 * @param description the description of the new subobject
 	*/
-	public void saveSnapshot(byte[] content, Integer idBIObj, String name, 
-			                 String description) throws EMFUserError;
+	public void saveSnapshot(byte[] content, Integer idBIObj, String name, String description) throws EMFUserError;
 	
 	/**
 	 * Gets the list of the snapshot details that are children of a biobject  
 	 * @param idBIObj the id of the biobject parent
 	 * @return List of BIObject.BIObjectSnapshot objects 
 	 */
-	public List getSnapshots(Integer idBIObj);
+	public List getSnapshots(Integer idBIObj)  throws EMFUserError;
 	
 	/**
 	 * Delete a snapshot
-	 * @param idBIObj the id of the biobject parent
+	 * @param idSnap the id of the snapshot
 	 * @param name name of the snapshot
 	 */
-	public void deleteSnapshot(Integer idBIObj) throws EMFUserError;
+	public void deleteSnapshot(Integer idSnap) throws EMFUserError;
+	
+	/**
+	 * Load a snapshot
+	 * @param idSnap the id of the snapshot
+	 * @return Snapshot the snapshot loaded
+	 */
+	public Snapshot loadSnapshot(Integer idSnap) throws EMFUserError;
 	
 	
 }

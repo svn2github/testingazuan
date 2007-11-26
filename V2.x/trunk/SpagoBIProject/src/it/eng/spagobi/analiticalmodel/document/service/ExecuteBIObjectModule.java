@@ -50,6 +50,7 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
@@ -939,10 +940,9 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void execSnapshotHandler(SourceBean request, SourceBean response) throws Exception {
-		String snapshotPath = (String)request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
+		String snapshotId = (String)request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
 		// built the url for the content recovering
-		String url = GeneralUtilities.getSpagoBiContentRepositoryServlet() + 
-		             "?operation=getJcrNodeContent&jcrPath=" + snapshotPath ;
+		String url = "?ACTION_NAME=GET_SNAPSHOT_CONTENT&" + SpagoBIConstants.SNAPSHOT_ID + "=" + snapshotId;
 		// set recover url into response
 		response.setAttribute(SpagoBIConstants.URL, url);
 		// set information for the publisher

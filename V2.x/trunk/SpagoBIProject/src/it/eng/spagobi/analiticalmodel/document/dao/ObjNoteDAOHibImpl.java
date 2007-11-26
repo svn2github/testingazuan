@@ -51,10 +51,12 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId + 
-						 " and sot.execReq = '"+execIdentif+"'";
+						 " and son.execReq = '"+execIdentif+"'";
 			Query query = aSession.createQuery(hql);
 			SbiObjNotes hibObjNote = (SbiObjNotes)query.uniqueResult();
-			objNote = toObjNote(hibObjNote);
+			if(hibObjNote!=null) {
+				objNote = toObjNote(hibObjNote);
+			}
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -75,6 +77,8 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		Session aSession = null;
 		Transaction tx = null;
 		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
 			String execReq = objNote.getExecReq();
 			SbiObjects hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, biobjId);
 			SbiBinContents hibBinContent = new SbiBinContents();
@@ -88,6 +92,7 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 			hibObjNote.setSbiBinContents(hibBinContent);
 			hibObjNote.setSbiObject(hibBIObject);
 			aSession.save(hibObjNote);
+			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null)

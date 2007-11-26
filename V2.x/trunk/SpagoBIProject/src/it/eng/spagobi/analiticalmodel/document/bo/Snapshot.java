@@ -10,6 +10,7 @@ public class Snapshot implements Serializable {
 	private String name = null;
 	private String description = null;
 	private Date dateCreation = null;
+	private Integer binId = null;
 	
 	public Integer getId() {
 		return id;
@@ -40,6 +41,12 @@ public class Snapshot implements Serializable {
 	}
 	public void setDateCreation(Date dateCreation) {
 		this.dateCreation = dateCreation;
+	}
+	public Integer getBinId() {
+		return binId;
+	}
+	public void setBinId(Integer binId) {
+		this.binId = binId;
 	}
 	
 	

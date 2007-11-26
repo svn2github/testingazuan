@@ -135,7 +135,10 @@ public class BIObjectNotesServlet extends HttpServlet{
 			BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
 			IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
 			ObjNote objnotes = objNoteDAO.getExecutionNotes(new Integer(biobjIdStr), execIdent);
-			String notes = new String(objnotes.getContent());
+			String notes = "";
+			if(objnotes!=null){
+				notes = new String(objnotes.getContent());
+			}
 			respStr = notes;
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 

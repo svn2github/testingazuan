@@ -1,5 +1,7 @@
 package it.eng.spagobi.services.content;
 
+import java.util.HashMap;
+
 import it.eng.spagobi.services.content.bo.Content;
 
 
@@ -40,7 +42,7 @@ public interface ContentService {
      * @param template
      * @return
      */
-    String publishTemplate(String token,String user,String name,String description,String encrypted,String visible,String type,String state,String functionalityCode,String template);
+    String publishTemplate(String token,String user,HashMap attributes);
     
     /**
      * Replaces MapCatalogueManagerServlet !!!!
@@ -49,6 +51,6 @@ public interface ContentService {
      * @param operation
      * @return
      */
-    String mapCatalogue(String token,String user,String operation);
+    String mapCatalogue(String token, String user, String operation,String path,String featureName,String mapName);
 	
 }

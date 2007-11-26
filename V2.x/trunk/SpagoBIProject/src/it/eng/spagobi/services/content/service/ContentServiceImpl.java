@@ -1,5 +1,8 @@
 package it.eng.spagobi.services.content.service;
 
+import java.util.HashMap;
+
+
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -50,6 +53,10 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	        return readTemplate(user,document);
 	}
     }
+
+    
+    // PRIVATE METHOD
+
     
     private Content readTemplate( String user, String document) {
 	logger.debug("IN");

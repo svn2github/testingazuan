@@ -2,11 +2,10 @@ package it.eng.spagobi.services.content.service;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.bo.TemplateVersion;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
@@ -130,15 +128,14 @@ public class PublishImpl extends AbstractServiceImpl{
 
 	obj.setEngine(engine);
 
-	UploadedFile file = new UploadedFile();
-	String template = (String) mapPar.get("TEMPLATE");
-	file.setFileContent(template.getBytes());
-	file.setFileName("etlTemplate.xml");
-	file.setSizeInBytes(template.getBytes().length);
-	obj.setTemplate(file);
+	String template = (String) mapPar.get("TEMPLATE");	
+	ObjTemplate objTemp = obj.getActiveTemplate();
+	objTemp.setName("etlTemplate.xml");
+	objTemp.setContent(template.getBytes());
 
 	Domain domain = null;
 	try {
+	    DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);	    
 	    domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 	} catch (EMFUserError e1) {
 	    logger.error("Error while retrive doomain",e1);
@@ -200,25 +197,21 @@ public class PublishImpl extends AbstractServiceImpl{
 
 	obj.setEngine(engine);
 
-	UploadedFile file = new UploadedFile();
-	String template = (String) mapPar.get("TEMPLATE");
-	file.setFileContent(template.getBytes());
-	file.setFileName("etlTemplate.xml");
-	file.setSizeInBytes(template.getBytes().length);
-	obj.setTemplate(file);
+	
+	String template = (String) mapPar.get("TEMPLATE");	
+	ObjTemplate objTemp = obj.getActiveTemplate();
+	objTemp.setName("etlTemplate.xml");
+	objTemp.setContent(template.getBytes());	
 
+	
 	Domain domain = null;
 	try {
+	    DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);	 
 	    domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 	} catch (EMFUserError e1) {
 	    logger.error("Error while reading domain by type");
 	}
 	obj.setBiObjectTypeCode(domain.getValueCd());
-
-	TemplateVersion curVer = new TemplateVersion();
-	curVer.setVersionName("x");
-	curVer.setDataLoad("x");
-	obj.setCurrentTemplateVersion(curVer);
 
 	obj.setBiObjectTypeID(typeIdInt);
 
@@ -252,9 +245,6 @@ public class PublishImpl extends AbstractServiceImpl{
 	BIObject obj = new BIObject();
 
 	List functionalitites = new ArrayList();
-	TemplateVersion curVer = new TemplateVersion();
-	curVer.setVersionName("");
-	curVer.setDataLoad("");
 
 	obj.setId(new Integer(0));
 	obj.setEngine(null);
@@ -269,8 +259,6 @@ public class PublishImpl extends AbstractServiceImpl{
 	obj.setBiObjectTypeID(null);
 	obj.setBiObjectTypeCode("");
 	obj.setFunctionalities(functionalitites);
-	obj.setCurrentTemplateVersion(curVer);
-	obj.setTemplateVersions(new TreeMap());
 	logger.debug("OUT");
 	return obj;
     }

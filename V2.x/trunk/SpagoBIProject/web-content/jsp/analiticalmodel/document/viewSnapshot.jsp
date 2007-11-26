@@ -29,11 +29,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
 <%@page import="org.safehaus.uuid.UUID"%>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
                  
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
 	// get the recover url
 	String url = (String) moduleResponse.getAttribute(SpagoBIConstants.URL);
+	url = ChannelUtilities.getSpagoBIContextName(request) + GeneralUtilities.getSpagoAdapterHttpUrl() + url;
 	
 	// generate an unique identity
 	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -44,12 +46,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Map backUrlPars = new HashMap();
 	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
-	
 %>
 
 
-
-
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>

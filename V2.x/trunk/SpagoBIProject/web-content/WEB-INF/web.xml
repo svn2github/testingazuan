@@ -91,12 +91,7 @@
     </servlet>
     <!-- end axis servlet -->
 
-    <!--  MAP CATALOGUE -->
-    <servlet>
-        <servlet-name>MapCatalogueManagerServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.MapCatalogueManagerServlet</servlet-class>
-    </servlet>
-
+    
     <servlet>
         <servlet-name>ExecuteAndSendServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.ExecuteAndSendServlet</servlet-class>
@@ -164,10 +159,6 @@
         <servlet-name>DashboardServlet</servlet-name>
         <url-pattern>/DashboardService</url-pattern>
     </servlet-mapping> 
-    <servlet-mapping>
-    		<servlet-name>MapCatalogueManagerServlet</servlet-name>
-    		<url-pattern>/MapCatalogueManagerServlet</url-pattern>
-	  </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ExecuteAndSendServlet</servlet-name>
         <url-pattern>/ExecuteAndSendService</url-pattern>

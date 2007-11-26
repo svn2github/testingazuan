@@ -88,6 +88,7 @@ public class SchedulerUtilities {
 
 	
 	public static SourceBean getSBFromWebServiceResponse(String response)  {
+		/*
 		SourceBean schedModRespSB = null;
 		try{
 			SourceBean respSB = SourceBean.fromXMLString(response);
@@ -102,12 +103,26 @@ public class SchedulerUtilities {
 					            "getSBFromWebServiceResponse", "Error while parsing service response", e);
 		}
 		return schedModRespSB;
+		*/
+		SourceBean schedModRespSB = null;
+		try{
+			schedModRespSB = SourceBean.fromXMLString(response);
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, SchedulerUtilities.class.getName(), 
+					            "getSBFromWebServiceResponse", "Error while parsing service response", e);
+		}
+		return schedModRespSB;
 	}
 	
 	
 	public static boolean checkResultOfWSCall(SourceBean resultSB)  {
 		boolean result = true;
-		SourceBean execOutSB = (SourceBean)resultSB.getAttribute("EXECUTION_OUTCOME");
+		SourceBean execOutSB = null;
+		if(!resultSB.getName().equals("EXECUTION_OUTCOME")) {
+			execOutSB = (SourceBean)resultSB.getAttribute("EXECUTION_OUTCOME");
+		} else {
+			execOutSB = resultSB;
+		}
 		if(execOutSB!=null) {
 			String outcome = (String)execOutSB.getAttribute("outcome");
 			if(outcome.equalsIgnoreCase("fault")) {

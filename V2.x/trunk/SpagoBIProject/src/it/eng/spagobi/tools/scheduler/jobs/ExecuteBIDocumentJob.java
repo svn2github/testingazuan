@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
@@ -73,6 +74,8 @@ import org.quartz.JobExecutionException;
 
 public class ExecuteBIDocumentJob implements Job {
 
+	
+	
 	public void execute(JobExecutionContext jex) throws JobExecutionException {
 		try{
 			JobDataMap jdm = jex.getMergedJobDataMap();
@@ -210,13 +213,12 @@ public class ExecuteBIDocumentJob implements Job {
 			if(engines.isEmpty()) {
 				throw new Exception("No suitable engines for the new document");
 			}
-			Engine engine = (Engine)engines.get(0);
+			Engine engine = (Engine)engines.get(0);		
 			// load the template
-			UploadedFile uploadedFile = new UploadedFile();
-			uploadedFile.setFieldNameInForm("template");
-			uploadedFile.setFileName(docName + fileExt);
-			uploadedFile.setSizeInBytes(response.length);
-			uploadedFile.setFileContent(response);
+			ObjTemplate objTemp = new ObjTemplate();
+			objTemp.setActive(new Boolean(true));
+			objTemp.setContent(response);
+			objTemp.setName(docName + fileExt);
 			// load all functionality
 			List storeInFunctionalities = new ArrayList();
 			String functIdsConcat = sInfo.getFunctionalityIds();
@@ -243,6 +245,7 @@ public class ExecuteBIDocumentJob implements Job {
 			newbiobj.setName(docName);
 			newbiobj.setEncrypt(new Integer(0));
 			newbiobj.setEngine(engine);
+			newbiobj.setDataSourceId(engine.getDataSourceId());
 			newbiobj.setRelName("");
 			newbiobj.setBiObjectTypeCode(officeDocDom.getValueCd());
 			newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
@@ -254,10 +257,10 @@ public class ExecuteBIDocumentJob implements Job {
 			
 			BIObject biobjexist = objectDAO.loadBIObjectByLabel(label);
 			if(biobjexist==null){
-				objectDAO.insertBIObject(newbiobj);
+				objectDAO.insertBIObject(newbiobj, objTemp);
 			} else {
 				newbiobj.setId(biobjexist.getId());
-				objectDAO.modifyBIObject(newbiobj);
+				objectDAO.modifyBIObject(newbiobj, objTemp);
 			}
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),

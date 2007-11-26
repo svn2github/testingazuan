@@ -35,7 +35,7 @@ try {
 	// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG
 	//calls service for gets data source object
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
-	SpagoBiDataSource ds = proxyDS.getDataSource(documentId, "");
+	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 	
 	if(ds != null  && !ds.getJndiName().equals("")) {
 		String resName = ds.getJndiName();

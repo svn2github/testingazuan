@@ -42,7 +42,7 @@ LICENSE: see LICENSE.txt file
 				
 		//calls service for gets data source object
 		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
-		SpagoBiDataSource ds = proxyDS.getDataSource(documentId, "");
+		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {

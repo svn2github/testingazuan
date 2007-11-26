@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.base.SourceBean"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
-<%@page import="it.eng.spagobi.tools.schedulereduler.to.JobInfo"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.List"%>
@@ -37,6 +36,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO"%>
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.tools.scheduler.to.JobInfo"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("JobManagementModule"); 
@@ -62,7 +63,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- ********************** SCRIPT FOR DOCUMENT SELECTION WINDOW **************************** -->
 
-<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <script>
 	var docselwinopen = false;
 	var winDS = null;
@@ -351,7 +351,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
-      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/back.png")%>' 
       				 alt='<spagobi:message key = "scheduler.back"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>
@@ -360,7 +360,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='javascript:saveCall()'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/save.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/save.png")%>' 
       				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>
@@ -437,11 +437,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:opencloseDocumentSelectionWin()'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "scheduler.addremovedocument" bundle="component_scheduler_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/plusminus.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/plusminus.gif")%>' 
 	      				 alt='<spagobi:message key = "scheduler.addremovedocument"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
-		</td>
+		</tr>
 	</table>
 	
 	
@@ -643,14 +643,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<a href='javascript:fillParamCall()'> 
 		      			<img class='header-button-image-portlet-section' 
 		      				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-		      				 src='<%= urlBuilder.getResourceLink(request, "/components/scheduler/img/save.png")%>' 
+		      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/save.png")%>' 
 		      				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 					</a>
 				</td>
-			</td>
+			</tr>
 		</table>
 		<spagobi:treeObjects moduleName="JobManagementModule"  
-				htmlGeneratorCit.eng.spagobi.tools.schedulereduler.gui.SchedulerTreeHtmlGenerator" />
+							 htmlGeneratorClass="it.eng.spagobi.tools.scheduler.gui.SchedulerTreeHtmlGenerator" />
 		<br/>
 	</div>
 </div>

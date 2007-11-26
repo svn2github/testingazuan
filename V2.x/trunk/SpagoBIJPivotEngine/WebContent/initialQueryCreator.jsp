@@ -221,9 +221,9 @@ if (selectedSchema != null) {
 			session.setAttribute("catalogUri", catalogUri);			
 			
 			//calls service for gets data source object
-			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
+			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();			
 			String documentId = (String)session.getAttribute("document");
-			SpagoBiDataSource ds = proxyDS.getDataSource(documentId, "");
+			SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 			if (ds == null || (ds.getJndiName()==null && (ds.getDriver()==null || 
 				ds.getUrl() == null || ds.getUser()==null || ds.getPassword()==null))){
 			%>

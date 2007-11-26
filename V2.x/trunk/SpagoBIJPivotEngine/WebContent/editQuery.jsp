@@ -145,7 +145,7 @@ if (schema != null && !schema.trim().equals("")) {
 			*/
 			//gets datasource
 			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
-			SpagoBiDataSource datasource = proxyDS.getDataSource(documentId, "");		
+			SpagoBiDataSource datasource = proxyDS.getDataSource(documentId);		
 			if (datasource == null) {
 				out.write("Connection not defined as data source in table SBI_DATA_SOURCE .");
 				return;

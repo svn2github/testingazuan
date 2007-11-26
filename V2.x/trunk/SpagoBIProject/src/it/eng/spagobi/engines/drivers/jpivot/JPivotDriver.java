@@ -621,10 +621,12 @@ public class JPivotDriver implements IEngineDriver {
 		index = templateName.lastIndexOf("\\");
 		if (index != -1) templateName = templateName.substring(index + 1);
 		HashMap parameters = new HashMap();
-		parameters.put("biobject_path", obj.getPath());
+		String documentId=obj.getId().toString();
+		parameters.put("document", documentId);
+		//parameters.put("biobject_path", obj.getPath());
 		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-		parameters.put("templateName", templateName);
-		parameters.put("template", bASE64Encoder.encode(template));
+		//parameters.put("templateName", templateName);
+		//parameters.put("template", bASE64Encoder.encode(template));
 		parameters.put("forward", "editQuery.jsp");
 		addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
@@ -650,7 +652,9 @@ public class JPivotDriver implements IEngineDriver {
 		//url = url.substring(0, url.lastIndexOf("/"));
 		//url += "/initialQueryCreator.jsp";
 		HashMap parameters = new HashMap();
-		parameters.put("biobject_path", obj.getPath());
+		String documentId = obj.getId().toString();
+		parameters.put("document", documentId);
+		//parameters.put("biobject_path", obj.getPath());
 		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
 		//parameters.put("new_session", "true");
 		parameters.put("forward", "initialQueryCreator.jsp");

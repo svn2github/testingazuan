@@ -26,7 +26,7 @@ import com.tonbeller.jpivot.olap.model.OlapModel;
 
 public class DataSecurityManager {
 
-	private static Logger logger = Logger.getLogger(FilteringUtilities.class);
+	private static Logger logger = Logger.getLogger(DataSecurityManager.class);
 	
 	private OlapModel olapModel = null;
 	private String dimAccRulStr = null;

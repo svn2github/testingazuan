@@ -30,31 +30,17 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractAction;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
-import it.eng.spagobi.engines.drivers.jasperreport.JasperReportDriver;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
-import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
-import it.eng.spagobi.services.security.service.SecurityServiceImpl;
-import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
-import java.io.InputStream;
 import java.security.Principal;
 
 import javax.portlet.PortletRequest;
 
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
 /**
  * This class reads user from portal and traces information for this connected

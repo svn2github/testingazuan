@@ -22,33 +22,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.engines.dossier.dao;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.cms.CmsManager;
-import it.eng.spago.cms.CmsNode;
-import it.eng.spago.cms.CmsProperty;
-import it.eng.spago.cms.CmsVersion;
-import it.eng.spago.cms.operations.DeleteOperation;
-import it.eng.spago.cms.operations.GetOperation;
-import it.eng.spago.cms.operations.SetOperation;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
-import it.eng.spagobi.engines.dossier.bo.PresentationVersion;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Implements all the methods for access the booklet cms contents
@@ -64,6 +44,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 	
 	
 	public String createNewConfigurationNode(String pathBiObj) {
+		/*
 		String pathToReturn = null;
 		try {
 			CmsManager manager = new CmsManager();
@@ -97,6 +78,8 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 					            "createNewConfigurationNode", "Cannot save the new booklet configuration node ");
 		} finally {	}
 		return pathToReturn;
+		*/
+		return null;
 	}
 	
 	
@@ -104,6 +87,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 	
 	
 	public void createStructureForTemplate(String pathBooklet, int numTempParts) {
+		/*
 		try {
 			CmsManager manager = new CmsManager();
 			String pathDocParts = pathBooklet + "/document_parts";
@@ -150,13 +134,15 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 					            "createStructureForTemplate", "Error while creating structure for " +
 					            "booklet " + pathBooklet, e);
 		} finally {	}
+		*/
 	}
 
 	
 	
 	
-	
+	/*
 	private CmsProperty getProperty(String name, List properties) {
+		
 		Iterator iterProps = properties.iterator();
 		while(iterProps.hasNext()) {
 			CmsProperty prop  = (CmsProperty)iterProps.next();
@@ -166,11 +152,12 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		}
 		return null;
 	}
-
+	 */
 
 
 
 	public List getConfiguredDocumentList(String pathBooklet) {
+		/*
 		List docs = new ArrayList();
 		try {
 			GetOperation getOp = new GetOperation(pathBooklet+ "/documentsConfigured", true, false, false, false);
@@ -210,12 +197,15 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 					            "getPumphletList", "Cannot recover pumplet list", e);
 		} finally {	}
 		return docs;
+		*/
+		return null;
 	}
 
 
 
 
 	public void addConfiguredDocument(String pathBooklet, ConfiguredBIDocument doc) {
+		/*
 		try {
 			// build path 
 			String newPath = pathBooklet + "/documentsConfigured/" + doc.getLogicalName();
@@ -264,12 +254,14 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "addConfiguredDocument", "Cannot save the configured document");
 		} finally {	}
+		*/
 	}
 
 
 
 
 	public void deleteConfiguredDocument(String pathBooklet, String conDocIdentifier) {
+		/*
 		try {
 			String path = pathBooklet + "/documentsConfigured/" + conDocIdentifier;
 			DeleteOperation delOp = new DeleteOperation(path);
@@ -279,12 +271,14 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 		             			"deleteConfiguredDocument", "Cannot delete the configured document " + conDocIdentifier, e);
 		} finally {	}
+		*/
 	}
 
 
 
 
 	public ConfiguredBIDocument getConfigureDocument(String pathBooklet, String conDocIdentifier) {
+		/*
 		ConfiguredBIDocument confDoc = null;
 		try {
 			String path = pathBooklet + "/documentsConfigured/" + conDocIdentifier;
@@ -331,12 +325,15 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
          			            "getConfigureDocument", "Cannot retrive configured document " + conDocIdentifier, e);
 		}
 		return confDoc;
+		*/
+		return null;
 	}
 
 
 
 
 	public void storeBookletTemplate(String pathBooklet, String templateFileName, byte[] templateContent) {
+		/*
 		try {
 			// build path 
 			String tempPath = pathBooklet + "/template";
@@ -357,13 +354,14 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "storeBookletTemplate", "Cannot save the template");
 		} finally {	}
-		
+		*/
 	}
 
 
 
 
 	public String getBookletTemplateFileName(String pathBooklet) {
+		/*
 		String name = "";
 		try{
 			String path = pathBooklet + "/template";
@@ -384,12 +382,15 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		            			"getBookletTemplateFileName", "Cannot recover template file name");
 		}
 		return name;
+		*/
+		return null;
 	}
 
 
 
 
 	public InputStream getBookletTemplateContent(String pathBooklet) {
+		/*
 		InputStream content = null;
 		try{
 			String path = pathBooklet + "/template";
@@ -407,12 +408,15 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		            			"getBookletTemplateContent", "Cannot recover template content");
 		}
 		return content;
+		*/
+		return null;
 	}
 
 
 
 	public InputStream getBookletProcessDefinitionContent(String pathBooklet) {
 		InputStream content = null;
+		/*
 		try{
 			String path = pathBooklet + "/processdefinition";
 			GetOperation getOp = new GetOperation(); 
@@ -428,6 +432,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 		            			"getBookletProcessDefinitionContent", "Cannot recover process definition content");
 		}
+		*/
 		return content;
 	}
 
@@ -437,6 +442,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 	public String getBookletProcessDefinitionFileName(String pathBooklet) {
 		String name = "";
+		/*
 		try{
 			String path = pathBooklet + "/processdefinition";
 			GetOperation getOp = new GetOperation(); 
@@ -455,6 +461,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 		            			"getBookletProcessDefinitionFileName", "Cannot recover process definition file name");
 		}
+		*/
 		return name;
 	}
 
@@ -463,6 +470,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 
 	public void storeBookletProcessDefinition(String pathBooklet, String pdFileName, byte[] pdFileContent) {
+		/*
 		try {
 			// build path 
 			String tempPath = pathBooklet + "/processdefinition";
@@ -483,12 +491,14 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "storeBookletProcessDefinition", "Cannot save the process definition");
 		} finally {	}
+		*/
 	}
 	
 
 
 
 	public void storeTemplateImage(String pathBooklet, byte[] image, String docLogicalName, int indexTempPart) {
+		/*
 		try {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + "/document_parts/part_" + indexTempPart + "/images/" + docLogicalName;
@@ -507,6 +517,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 					            "storeTemplateImage", "Error while storing image of " +
 					            "the document with logica name = " + docLogicalName, e);
 		} finally {	}
+		*/
 	}
 
 
@@ -514,6 +525,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 	public Map getImagesOfTemplatePart(String pathBooklet, String indPart) {
 		Map images = new HashMap();
+		/*
 		try{
 			CmsManager manager = new CmsManager();
 			String path = pathBooklet + "/document_parts/part_" + indPart + "/images";
@@ -546,6 +558,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		            			"getImagesOfTemplatePart", "Error while recovering images of the " +
 		            			"booklet " + pathBooklet + " part " + indPart, e);
 		}
+		*/
 		return images;
 	}
 
@@ -554,6 +567,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 	public byte[] getNotesTemplatePart(String pathBooklet, String indPart) {
 		byte[] notes = null;
+		/*
 		try{
 			CmsManager manager = new CmsManager();
 			String path = pathBooklet + "/document_parts/part_" + indPart + "/notes";
@@ -571,6 +585,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		            			"getNotesTemplatePart", "Error while recovering notes of the " +
 		            			"booklet " + pathBooklet + " part " + indPart, e);
 		}
+		*/
 		return notes;
 	}
 
@@ -578,6 +593,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 
 	public void storeNote(String pathBooklet, String indPart, byte[] noteContent) {
+		/*
 		try {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + "/document_parts/part_" + indPart + "/notes";
@@ -591,12 +607,14 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "storeNote", "Error while storing new note", e);
 		} finally {	}
+		*/
 	}
 	
 
 
 
 	public void storeCurrentPresentationContent(String pathBooklet, InputStream docContentIS) {
+		/*
 		try {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + CURRENT_PRESENTATION;
@@ -609,10 +627,12 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "storeCurrentDocumentContent", "Error while storing final document", e);
 		} finally {	}
+		*/
 	}
 	
 	
 	public void storeCurrentPresentationContent(String pathBooklet, byte[] docContent) {
+		/*
 		try {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + CURRENT_PRESENTATION;
@@ -626,12 +646,14 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "storeCurrentDocumentContent", "Error while storing final document", e);
 		} finally {	}
+		*/
 	}
 	
 	
 	
 	public byte[] getCurrentPresentationContent(String pathBooklet) {
 		byte[] doc = null;
+		/*
 		try{
 			CmsManager manager = new CmsManager();
 			String path = pathBooklet + CURRENT_PRESENTATION;
@@ -649,7 +671,9 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		            			"getCurrentDocumentContent", "Error while recovering final document of the " +
 		            			"booklet " + pathBooklet, e);
 		}
+		*/
 		return doc;
+		
 	}
 
 
@@ -657,6 +681,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 
 	public void deletePresentationVersion(String pathBooklet, String verName) {
+		/*
 		try {
 			String path = pathBooklet + APPROVED_PRESENTATION;
 			DeleteOperation delOp = new DeleteOperation(path, verName);
@@ -667,7 +692,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		             			"deletePresentationVersion", 
 		             			"Cannot delete the presentation version " + verName, e);
 		} finally {	}
-		
+		*/
 	}
 
 
@@ -676,6 +701,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 	public String getBookletName(String pathBooklet) {
 		String biobjname = "";
+		/*
 		if(!pathBooklet.endsWith("/template")) {
 			return "";
 		}
@@ -689,6 +715,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
          						"getBookletName", 
          						"Cannot recover booklet name", e);
 		}
+		*/
 		return biobjname;
 	}
 
@@ -698,6 +725,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 	public byte[] getPresentationVersionContent(String pathBooklet, String verName) {
 		byte[] presCont = null;
+		/*
 		try{
 			CmsManager manager = new CmsManager();
 			String path = pathBooklet + APPROVED_PRESENTATION;
@@ -716,6 +744,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		            			"getPresentationVersionContent", "Error while recovering " +
 		            			"booklet presentation " + pathBooklet, e);
 		}
+		*/
 		return presCont;
 	}
 
@@ -725,6 +754,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 	public List getPresentationVersions(String pathBooklet) {
 		List presversions = new ArrayList();
+		/*
 		try{
 			// recover approved presentation node (with versions information)
 			CmsManager manager = new CmsManager();
@@ -788,6 +818,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		            			"getPresentationVersions", "Error while recovering " +
 		            			"booklet presentation versions" + pathBooklet, e);
 		}
+		*/
 		return presversions;
 	}
 
@@ -796,6 +827,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 
 	public void versionPresentation(String pathBooklet, byte[] presContent, boolean approved) {
+		/*
 		try {
 			CmsManager manager = new CmsManager();
 			String pathImg = pathBooklet + APPROVED_PRESENTATION;
@@ -830,6 +862,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 					            "versionPresentation", "Error while storing approved booklet presentation", e);
 		} finally {	}
+		*/
 	}
 
 
@@ -841,60 +874,6 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 		return pathBiObj;
 	}
 
-
-    /*
-	public void saveWorkflowConfiguration(String pathBooklet, WorkflowConfiguration workConf) {
-		try {
-			CmsManager manager = new CmsManager();
-			String pathImg = pathBooklet + "/workflowConfiguration";
-			SetOperation setOp = new SetOperation(pathImg, SetOperation.TYPE_CONTAINER, true);
-			List properties = new ArrayList();
-			String[] namePackageValues = new String[] { workConf.getNameWorkflowPackage() };
-			CmsProperty propnamePackage = new CmsProperty("nameWorkflowPackage", namePackageValues);
-			properties.add(propnamePackage);
-			String[] nameProcessValues = new String[] { workConf.getNameWorkflowProcess() };
-			CmsProperty propnameProcess = new CmsProperty("nameWorkflowProcess", nameProcessValues);
-			properties.add(propnameProcess);
-			setOp.setProperties(properties);
-			manager.execSetOperation(setOp);
-		} catch (Exception e) {
-			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-					            "saveWorkflowConfiguration", "Error while storing workflow configuration", e);
-		} finally {	}
-	}
-
-
-
-
-	public WorkflowConfiguration getWorkflowConfiguration(String pathBooklet) {
-		WorkflowConfiguration workConf = new WorkflowConfiguration();
-		try{
-			CmsManager manager = new CmsManager();
-			String path = pathBooklet + "/workflowConfiguration";
-			GetOperation getOp = new GetOperation(); 
-			getOp.setPath(path);
-			getOp.setRetriveChildsInformation("false");
-			getOp.setRetrivePropertiesInformation("true");
-			getOp.setRetriveVersionsInformation("false");
-			getOp.setRetriveContentInformation("false");
-			CmsNode node = manager.execGetOperation(getOp);
-			List props = node.getProperties();
-			CmsProperty namePack = getProperty("nameWorkflowPackage", props);
-			CmsProperty nameProcess = getProperty("nameWorkflowProcess", props);
-			workConf.setNameWorkflowPackage(namePack.getStringValues()[0]);
-			workConf.setNameWorkflowProcess(nameProcess.getStringValues()[0]);
-		} catch(Exception e) {
-			SpagoBITracer.major("SpagoBI", this.getClass().getName(),
-		            			"getWorkflowConfiguration", "Error while recovering workflow configuration of the " +
-		            			"pamphlet " + pathBooklet, e);
-		}
-		return workConf;
-	}
-    */
-
-
-
-	
 
 
 	

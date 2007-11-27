@@ -131,7 +131,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/config/initializers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/statements.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/tracing.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/config/cms.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/portletinitializers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/validators.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/validation.xml" />

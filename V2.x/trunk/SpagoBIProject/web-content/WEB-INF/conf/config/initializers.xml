@@ -4,7 +4,6 @@
 	<INITIALIZER class="it.eng.spago.dispatching.coordinator.DispatcherInitializer" config="" />
 	<INITIALIZER class="it.eng.spago.dbaccess.DataAccessInitializer" config="" />
 	<INITIALIZER class="it.eng.spago.presentation.StylesheetInitializer" config="" /> 
-	<INITIALIZER class="it.eng.spago.cms.init.CMSInitializer" config="CONTENTCONFIGURATION" />
 	<INITIALIZER class="it.eng.spago.util.MonitorInitializer" config="" />
 	<INITIALIZER class="it.eng.spago.message.MessageBundleInitializer" config="" />
 	<INITIALIZER class="it.eng.spagobi.tools.scheduler.init.QuartzInitializer" config="" />

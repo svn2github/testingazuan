@@ -24,8 +24,6 @@ package it.eng.spagobi.analiticalmodel.functionalitytree.service;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.cms.exceptions.BuildOperationException;
-import it.eng.spago.cms.exceptions.OperationExecutionException;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -440,7 +438,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 	 * @throws BuildOperationException if any BuildOperationException exception occurs 
 	 * @throws OperationExecutionException if any OperationExecutionException exception occurs 
 	 */
-	public void loadRolesToErase(LowFunctionality lowFuncParent, Set rolesToErase) throws EMFUserError, BuildOperationException, OperationExecutionException{
+	public void loadRolesToErase(LowFunctionality lowFuncParent, Set rolesToErase) throws EMFUserError{
 		String parentPath = lowFuncParent.getPath();
 		//ArrayList childs = DAOFactory.getFunctionalityCMSDAO().recoverChilds(parentPath);
 		List childs = DAOFactory.getLowFunctionalityDAO().loadSubLowFunctionalities(parentPath, false);

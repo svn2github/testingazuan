@@ -29,7 +29,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.getJobList();
+    	    return service.getJobList(ticket);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -47,7 +47,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.getJobSchedulationList(jobName, jobGroup);
+    	    return service.getJobSchedulationList(ticket,jobName, jobGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -66,7 +66,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.deleteSchedulation(triggerName, triggerGroup);
+    	    return service.deleteSchedulation(ticket,triggerName, triggerGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -85,7 +85,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.deleteJob(jobName, jobGroupName);
+    	    return service.deleteJob(ticket,jobName, jobGroupName);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -104,7 +104,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.defineJob(xmlRequest);
+    	    return service.defineJob(ticket,xmlRequest);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -123,7 +123,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.getJobDefinition(jobName, jobGroup);
+    	    return service.getJobDefinition(ticket,jobName, jobGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -142,7 +142,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.scheduleJob(xmlRequest);
+    	    return service.scheduleJob(ticket,xmlRequest);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -161,7 +161,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.getJobSchedulationDefinition(triggerName, triggerGroup);
+    	    return service.getJobSchedulationDefinition(ticket,triggerName, triggerGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -180,7 +180,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	    }
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
     	    SchedulerService service = locator.getSchedulerService();
-    	    return service.existJobDefinition(jobName, jobGroup);
+    	    return service.existJobDefinition(ticket,jobName, jobGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{

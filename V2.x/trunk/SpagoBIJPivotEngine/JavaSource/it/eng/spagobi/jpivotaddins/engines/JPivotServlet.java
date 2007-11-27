@@ -6,21 +6,14 @@
 package it.eng.spagobi.jpivotaddins.engines;
 
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.jpivotaddins.util.SecurityUtilities;
 import it.eng.spagobi.jpivotaddins.util.SessionObjectRemoval;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
-
-import it.eng.spagobi.utilities.messages.EngineMessageBundle;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import java.io.IOException;
-import java.security.PublicKey;
 import java.util.Locale;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

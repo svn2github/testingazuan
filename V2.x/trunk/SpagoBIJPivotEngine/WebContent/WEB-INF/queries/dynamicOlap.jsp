@@ -10,7 +10,6 @@ LICENSE: see LICENSE.txt file
 				 java.util.List,
 				 com.thoughtworks.xstream.XStream,
 				 it.eng.spagobi.jpivotaddins.bean.*,
-				 it.eng.spagobi.jpivotaddins.to.*,
 				 it.eng.spagobi.jpivotaddins.util.*,
 				 java.io.InputStream,
 				 sun.misc.BASE64Decoder,

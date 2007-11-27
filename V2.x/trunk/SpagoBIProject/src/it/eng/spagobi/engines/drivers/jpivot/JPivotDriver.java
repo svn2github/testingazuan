@@ -60,7 +60,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import sun.misc.BASE64Encoder;
 
 
 /**
@@ -137,18 +136,15 @@ public class JPivotDriver implements IEngineDriver {
 			map.put("descriptionSubObject", descrSub);
 			String visStr = "Private";
 			boolean visBool = subObj.getIsPublic().booleanValue();
-		    if(visBool) 
-		    	visStr = "Public";
+		  if(visBool) visStr = "Public";
 			map.put("visibilitySubObject", visStr);
-			// get subobject data from cms
-			byte[] subObjDataBytes  = subObj.getContent();
-		 	// encode and set the subobject data as a parameter
-		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
-			map.put("subobjectdata", bASE64Encoder.encode(subObjDataBytes));
+			map.put("subobjectId", subObj.getId());
+
 			
 		} catch (ClassCastException cce) {
 			logger.error("The second parameter is not a SubObjectDetail type",cce);
-		} 
+
+		}
 		map = applySecurity(map,profile);
 		return map;
 	}

@@ -40,29 +40,6 @@
         <servlet-name>PortletWrapper</servlet-name>
         <servlet-class>org.exoplatform.services.portletcontainer.impl.servlet.ServletWrapper</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>ContentRepositoryServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.ContentRepositoryServlet</servlet-class>
-    </servlet>
-
-    
-    
-    
-    <servlet>
-        <servlet-name>PublishServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.PublishServlet</servlet-class>
-        <!-- the drivers parameter contains all the drivers complete class name that an object 
-             must have in order to be returned to the client
-             Each driver name must be separated from other with a ; character 
-             Example: driver1;driver2;driver3;
-        -->
-        <init-param>
-            <param-name>DRIVERS</param-name>
-            <param-value>it.eng.spagobi.engines.drivers.jasperreport.JasperReportDriver</param-value>
-        </init-param>
-    </servlet>
-    
-    
      <servlet>
         <servlet-name>DashboardServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.DashboardServlet</servlet-class>
@@ -146,14 +123,6 @@
     <servlet-mapping>
         <servlet-name>PortletWrapper</servlet-name>
         <url-pattern>/PortletWrapper</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ContentRepositoryServlet</servlet-name>
-        <url-pattern>/ContentRepositoryServlet/*</url-pattern>
-    </servlet-mapping>
-     <servlet-mapping>
-        <servlet-name>PublishServlet</servlet-name>
-        <url-pattern>/PublishService</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DashboardServlet</servlet-name>

@@ -959,30 +959,11 @@ public class ExecuteBIObjectModule extends AbstractModule
 	private void executionSubObjectHandler(SourceBean request, SourceBean response) throws Exception {
         // get object from session
         BIObject obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-        // get name of the subobject
-        String subObjName = (String)request.getAttribute("NAME_SUB_OBJECT");
-        // get description of the subobject
-        String subObjDesc = (String)request.getAttribute("DESCRIPTION_SUB_OBJECT");
-        // get visibility of the subobject
-        String subObjVis = (String)request.getAttribute("VISIBILITY_SUB_OBJECT");
-        // buld a new subObject object
-        boolean publicVis = false;
-        if(subObjVis.equals("Public"))
-        	publicVis = true;
-        
-        Date now = new Date();
-		String lastModifcationDate = DateFormat.getDateInstance().format(now);
-	    String creationDate = DateFormat.getDateInstance().format(now);
-        
-	    SubObject subObj = new SubObject();
-	    subObj.setBiobjId(obj.getId());
-	    subObj.setCreationDate(now);
-	    subObj.setDescription(subObjDesc);
-	    subObj.setIsPublic(new Boolean(publicVis));
-	    subObj.setLastChangeDate(now);
-	    subObj.setName(subObjName);
-	    subObj.setOwner("");
-	    
+        // get id of the subobject
+        String subObjIdStr = (String)request.getAttribute(SpagoBIConstants.SUBOBJECT_ID);
+        Integer subObjId = new Integer(subObjIdStr);
+        ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
+        SubObject subObj = subdao.getSubObject(subObjId);	    
         // load all the parameter value with an empty value 
         List biparams = obj.getBiObjectParameters(); 
         Iterator iterParams = biparams.iterator();
@@ -995,7 +976,7 @@ public class ExecuteBIObjectModule extends AbstractModule
         		biparam.setParameterValues(paramvalues);
         	}
         }
-        
+        // execution
         execute(obj, subObj, null, response);        
   
 	}
@@ -1006,10 +987,8 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param message Message to store into the log
 	 */
 	private void debug(String method, String message) {
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-							"ExecuteBIObjectModule", 
-							method, 
-        					message);
+		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "ExecuteBIObjectModule", 
+							method, message);
 	}
 	
 	

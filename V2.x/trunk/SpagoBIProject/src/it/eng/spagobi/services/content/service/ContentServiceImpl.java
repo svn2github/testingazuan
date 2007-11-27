@@ -133,8 +133,26 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     // PRIVATE METHOD
     
     private Content readSubObjectContent(String user,String subObjectId){
-	return null;
+    	logger.debug("IN");
+    	Content content=new Content();
+    	try {
+    	    Integer id = new Integer(subObjectId);
+    	    ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
+    	    SubObject subobj = subdao.getSubObject(id);
+    	    byte[] cont = subobj.getContent();
+    	    BASE64Encoder bASE64Encoder = new BASE64Encoder();
+    	    content.setContent(bASE64Encoder.encode(cont));
+    	    content.setFileName(subobj.getName());
+    	    return content;
+    	} catch (NumberFormatException e) {
+    	    logger.error("NumberFormatException",e);
+    	} catch (EMFUserError e) {
+    	    logger.error("EMFUserError",e);
+    	} 
+    	logger.debug("OUT");
+    	return null;	
     }
+    
     
     private String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN");
@@ -152,6 +170,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    }
 	    objSub.setOwner(user);
 	    objSub.setName(analysisName);
+	    objSub.setContent(content.getBytes());
 	    subdao.saveSubObject(docId, objSub);
 	} catch (NumberFormatException e) {
 	    logger.error("NumberFormatException",e);

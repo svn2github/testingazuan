@@ -475,9 +475,7 @@ if (isSingleObjExec) {
 		                        execSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
 		                        execSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
 		                        execSubObjUrlPars.put(SpagoBIConstants.ACTOR, actor);
-		                        execSubObjUrlPars.put("NAME_SUB_OBJECT", nameSub);
-		                        execSubObjUrlPars.put("DESCRIPTION_SUB_OBJECT", descr);
-		                        execSubObjUrlPars.put("VISIBILITY_SUB_OBJECT", visib);
+		                        execSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
 		                        execSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 		            		   	if (executionId != null && flowId != null) {
 		            		   		execSubObjUrlPars.put("spagobi_execution_id", executionId);

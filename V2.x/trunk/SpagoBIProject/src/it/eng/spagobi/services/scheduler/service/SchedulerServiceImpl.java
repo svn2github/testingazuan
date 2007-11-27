@@ -5,6 +5,8 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.services.common.AbstractServiceImpl;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,6 +15,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -25,9 +28,210 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.safehaus.uuid.UUIDGenerator;
 
 
-public class SchedulerServiceImpl {
+public class SchedulerServiceImpl extends AbstractServiceImpl{
 
-	public String getJobList() {
+    static private Logger logger = Logger.getLogger(SchedulerServiceImpl.class);
+    
+	public String getJobList(String token){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return getJobList();
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return getJobList( );
+		}	    
+	}
+	
+	public String getJobSchedulationList(String token,String jobName, String jobGroup){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return getJobSchedulationList(jobName,jobGroup);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return getJobSchedulationList(jobName,jobGroup );
+		}	    
+	}
+	
+	public String deleteSchedulation(String token,String triggerName, String triggerGroup){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return deleteSchedulation(triggerName,triggerGroup);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return deleteSchedulation(triggerName,triggerGroup);
+		}	    
+	}
+	
+	public String deleteJob(String token,String jobName, String jobGroupName){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return deleteJob(jobName,jobGroupName);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return deleteJob(jobName,jobGroupName);
+		}	    
+	}
+	
+	public String defineJob(String token,String xmlRequest){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return defineJob(xmlRequest);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return defineJob(xmlRequest);
+		}	    
+	}
+	
+	public String getJobDefinition(String token,String jobName, String jobGroup){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return getJobDefinition(jobName,jobGroup);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return getJobDefinition(jobName,jobGroup);
+		}	    
+	}
+	
+	public String scheduleJob(String token,String xmlRequest){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return scheduleJob(xmlRequest);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return scheduleJob(xmlRequest);
+		}	    
+	}
+	
+	public String getJobSchedulationDefinition(String token,String triggerName, String triggerGroup){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return getJobSchedulationDefinition(triggerName,triggerGroup);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return getJobSchedulationDefinition(triggerName,triggerGroup);
+		}	    
+	}
+	
+	public String existJobDefinition(String token,String jobName, String jobGroup){
+		logger.debug("IN");
+		if (activeSso) {
+		    try {
+			if (validateTicket(token)) {
+			    return existJobDefinition(jobName,jobGroup);
+			} else {
+			    logger.error("Token NOT VALID");
+			    return null;
+			}
+		    } catch (SecurityException e) {
+			logger.error("SecurityException", e);
+			return null;
+		    } finally {
+			logger.debug("OUT");
+		    }
+		} else {
+		    logger.debug("OUT");
+		    return existJobDefinition(jobName,jobGroup);
+		}    
+	}
+	
+	
+	private String getJobList() {
 		String xml = "";
 		try {
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler(); 
@@ -89,7 +293,7 @@ public class SchedulerServiceImpl {
 	}
 	
 	
-	public String getJobSchedulationList(String jobName, String jobGroup) {
+	private  String getJobSchedulationList(String jobName, String jobGroup) {
 		String xml = "";
 		try {
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler(); 
@@ -145,7 +349,7 @@ public class SchedulerServiceImpl {
 	}
 	
 	
-	public String deleteSchedulation(String triggerName, String triggerGroup) {
+	private  String deleteSchedulation(String triggerName, String triggerGroup) {
 		StringBuffer servreponse = new StringBuffer();
 		try{
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler(); 
@@ -166,7 +370,7 @@ public class SchedulerServiceImpl {
 	
 	
 	
-	public String deleteJob(String jobName, String jobGroupName) {
+	private  String deleteJob(String jobName, String jobGroupName) {
 		StringBuffer servreponse = new StringBuffer();
 		try {
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler(); 
@@ -183,7 +387,7 @@ public class SchedulerServiceImpl {
 	
 	
 	
-	public String defineJob(String xmlRequest) {
+	private  String defineJob(String xmlRequest) {
 		StringBuffer servreponse = new StringBuffer();
 		try{
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -262,7 +466,7 @@ public class SchedulerServiceImpl {
 	
 	
 	
-	public String getJobDefinition(String jobName, String jobGroup) {
+	private  String getJobDefinition(String jobName, String jobGroup) {
 		String jobStr = "";
 		try{
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -334,7 +538,7 @@ public class SchedulerServiceImpl {
 	
 	
 	
-	public String scheduleJob(String xmlRequest) {
+	private  String scheduleJob(String xmlRequest) {
 		StringBuffer servreponse = new StringBuffer();
 		try{
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -574,7 +778,7 @@ public class SchedulerServiceImpl {
 	
 	
 	
-	public String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
+	private  String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
 		String schedDef = "";
 		try {
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -696,7 +900,7 @@ public class SchedulerServiceImpl {
 	
 	
 	
-	public String existJobDefinition(String jobName, String jobGroup) {
+	private  String existJobDefinition(String jobName, String jobGroup) {
 		StringBuffer buffer = new StringBuffer("<JOB_EXISTANCE  ");
 		try{
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();

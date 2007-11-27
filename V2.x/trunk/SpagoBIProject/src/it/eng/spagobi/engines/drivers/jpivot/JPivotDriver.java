@@ -464,7 +464,7 @@ public class JPivotDriver implements IEngineDriver {
 	 * @param biobject The biobject
 	 * @return the url to be invoked for editing template document
 	 */
-	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject,  IEngUserProfile profile) throws InvalidOperationRequest {
 		BIObject obj = null;
 		try {
 			obj = (BIObject) biobject;
@@ -474,34 +474,11 @@ public class JPivotDriver implements IEngineDriver {
 		}
 		Engine engine = obj.getEngine();
 		String url = engine.getUrl();
-        // get object template
-		String templateName = null;
-		byte[] template = null;
-		try{
-			ObjTemplate objtemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
-			if(objtemplate==null) throw new Exception("Active Template null");
-			template = DAOFactory.getBinContentDAO().getBinContent(objtemplate.getBinId());
-			if(template==null) throw new Exception("Content of the Active template null");
-			templateName = objtemplate.getName();
-		} catch (Exception e) {
-			logger.error("Error while recovering template", e);
-			return null;
-		}
-		BASE64Encoder bASE64Encoder = new BASE64Encoder();
-		// sometimes template name contains complete path
-		// TODO to review (this control should not be performed)
-		int index = templateName.lastIndexOf("/");
-		if (index != -1) templateName = templateName.substring(index + 1);
-		index = templateName.lastIndexOf("\\");
-		if (index != -1) templateName = templateName.substring(index + 1);
 		HashMap parameters = new HashMap();
 		String documentId=obj.getId().toString();
 		parameters.put("document", documentId);
-		//parameters.put("biobject_path", obj.getPath());
-		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-		//parameters.put("templateName", templateName);
-		//parameters.put("template", bASE64Encoder.encode(template));
 		parameters.put("forward", "editQuery.jsp");
+		applySecurity(parameters, profile);
 		addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		return engineURL;
@@ -513,7 +490,7 @@ public class JPivotDriver implements IEngineDriver {
 	 * @param biobject The biobject
 	 * @return the url to be invoked for creating a new template document
 	 */
-	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest {
+	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile) throws InvalidOperationRequest {
 		BIObject obj = null;
 		try {
 			obj = (BIObject) biobject;
@@ -523,15 +500,11 @@ public class JPivotDriver implements IEngineDriver {
 		}
 		Engine engine = obj.getEngine();
 		String url = engine.getUrl();
-		//url = url.substring(0, url.lastIndexOf("/"));
-		//url += "/initialQueryCreator.jsp";
 		HashMap parameters = new HashMap();
 		String documentId = obj.getId().toString();
 		parameters.put("document", documentId);
-		//parameters.put("biobject_path", obj.getPath());
-		parameters.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-		//parameters.put("new_session", "true");
 		parameters.put("forward", "initialQueryCreator.jsp");
+		applySecurity(parameters, profile);
 		addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		return engineURL;

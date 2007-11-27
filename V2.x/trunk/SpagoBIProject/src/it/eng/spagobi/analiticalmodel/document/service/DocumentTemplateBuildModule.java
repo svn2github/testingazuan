@@ -28,6 +28,7 @@ import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
@@ -53,6 +54,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 	protected SessionContainer session = null;
 	protected SessionContainer permanentSession = null;
 	protected String actor = null;
+	private IEngUserProfile profile;
 	
 	public void init(SourceBean config) {}
 	
@@ -73,6 +75,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 		permanentSession = session.getPermanentContainer();
 		debug("service", "errorHanlder, requestContainer, session, permanentSession retrived ");
         actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
+        profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         
 		try {
 			if(messageExec == null) {
@@ -132,7 +135,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
 				EngineURL templateBuildUrl = null;
 				try {
-					templateBuildUrl = aEngineDriver.getNewDocumentTemplateBuildUrl(obj);
+					templateBuildUrl = aEngineDriver.getNewDocumentTemplateBuildUrl(obj, profile);
 				} catch (InvalidOperationRequest ior) {
 					logger.info("Engine " + engine.getName() + " cannot build document template");
 					Vector params = new Vector();
@@ -237,7 +240,7 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
 				EngineURL templateBuildUrl = null;
 				try {
-					templateBuildUrl = aEngineDriver.getEditDocumentTemplateBuildUrl(obj);
+					templateBuildUrl = aEngineDriver.getEditDocumentTemplateBuildUrl(obj, profile);
 				} catch (InvalidOperationRequest ior) {
 					logger.info("Engine " + engine.getName() + " cannot build document template");
 					Vector params = new Vector();

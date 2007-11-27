@@ -77,12 +77,12 @@ public interface IEngineDriver {
      * Returns the EngineURL for the creation of a new template for the document
      * @return the EngineURL for the creation of a new template for the document
      */
-    public EngineURL getNewDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest;
+    public EngineURL getNewDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile) throws InvalidOperationRequest;
     
     /**
      * Returns the EngineURL for the modification of the document template
      * @return the EngineURL for the modification of the document template
      */
-    public EngineURL getEditDocumentTemplateBuildUrl(Object biobject) throws InvalidOperationRequest;
+    public EngineURL getEditDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile) throws InvalidOperationRequest;
     
 }

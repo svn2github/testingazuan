@@ -152,8 +152,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    }
 	    objSub.setOwner(user);
 	    objSub.setName(analysisName);
-
-	    //subdao.saveSubObject(content, idBIObj, name, description, publicVisibility, profile);
+	    subdao.saveSubObject(docId, objSub);
 	} catch (NumberFormatException e) {
 	    logger.error("NumberFormatException",e);
 	    return "KO";

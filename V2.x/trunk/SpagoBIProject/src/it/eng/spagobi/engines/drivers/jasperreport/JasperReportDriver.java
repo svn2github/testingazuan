@@ -194,7 +194,7 @@ public class JasperReportDriver implements IEngineDriver {
      * @param biobject The BIOBject to edit
      * @throws InvalidOperationRequest
      */
-    public EngineURL getEditDocumentTemplateBuildUrl(Object biobject)
+    public EngineURL getEditDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
 	    throws InvalidOperationRequest {
 	logger.warn("Function not implemented");
 	throw new InvalidOperationRequest();
@@ -206,7 +206,7 @@ public class JasperReportDriver implements IEngineDriver {
      * @param biobject  The BIOBject to edit
      * @throws InvalidOperationRequest
      */
-    public EngineURL getNewDocumentTemplateBuildUrl(Object biobject)
+    public EngineURL getNewDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
 	    throws InvalidOperationRequest {
 	logger.warn("Function not implemented");
 	throw new InvalidOperationRequest();

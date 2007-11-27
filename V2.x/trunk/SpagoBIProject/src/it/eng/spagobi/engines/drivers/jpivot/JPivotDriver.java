@@ -35,12 +35,10 @@ package it.eng.spagobi.engines.drivers.jpivot;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
-import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
@@ -51,7 +49,6 @@ import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -144,17 +141,13 @@ public class JPivotDriver implements IEngineDriver {
 		    	visStr = "Public";
 			map.put("visibilitySubObject", visStr);
 			// get subobject data from cms
-			ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
-			InputStream subObjDataIs = subobjdao.getSubObject(biobj.getId(), subObj.getName());
-		 	byte[] subObjDataBytes  = GeneralUtilities.getByteArrayFromInputStream(subObjDataIs);
+			byte[] subObjDataBytes  = subObj.getContent();
 		 	// encode and set the subobject data as a parameter
 		 	BASE64Encoder bASE64Encoder = new BASE64Encoder();
 			map.put("subobjectdata", bASE64Encoder.encode(subObjDataBytes));
 			
 		} catch (ClassCastException cce) {
 			logger.error("The second parameter is not a SubObjectDetail type",cce);
-		} catch (EMFUserError emfue) {
-			logger.error("Error while creating cmsDao for BiObject",emfue);
 		} 
 		map = applySecurity(map,profile);
 		return map;

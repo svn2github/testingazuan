@@ -250,5 +250,7 @@ public class SpagoBIConstants {
 	
 	public static final String TEMPLATE_ID = "TEMPLATE_ID";
 	
+	public static final String SUBOBJECT_ID = "SUBOBJECT_ID";
+	
 	
 }

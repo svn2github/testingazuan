@@ -13,6 +13,7 @@ public class SubObject implements Serializable {
 	private String description = null;
 	private Date lastChangeDate;
 	private Date creationDate;
+	private byte[] content;
 	
 	public Integer getId() {
 		return id;
@@ -61,6 +62,12 @@ public class SubObject implements Serializable {
 	}
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+	public byte[] getContent() {
+		return content;
+	}
+	public void setContent(byte[] content) {
+		this.content = content;
 	}
 	
 }

@@ -23,24 +23,18 @@ package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 
-import java.io.InputStream;
 import java.util.List;
 
 public interface ISubObjectDAO {
 
 	/**
 	 * Save a subObject of the object
-	 * @param content byte array containing the content of the subobject
 	 * @param idBIObj the id of the biobject parent
-	 * @param name the name of the new subobject
-	 * @param description the description of the new subobject
-	 * @param publiicVisibility the public or private visibility of the subobject
-	 * @param profile the profile of the user
+	 * @param SubObject subObj the new subobject to save
 	 */
-	public void saveSubObject(byte[] content, Integer idBIObj, String name, 
-			                  String description, boolean publicVisibility,
-			                  IEngUserProfile profile) throws EMFUserError;
+	public void saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError;
 	
 	/**
 	 * Gets the detail of all the subobjects accessible to the user
@@ -48,30 +42,27 @@ public interface ISubObjectDAO {
 	 * @param profile Profile of the user
 	 * @return List of BIObject.SubObjectDetail objects 
 	 */
-	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile);
-	
+	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile) throws EMFUserError;
+		
 	/**
 	 * Gets the InputStream of the subobjects content
-	 * @param idBIObj the id of the biobject parent
-	 * @param name name of the subobject
-	 * @return InputStream of the subobject content
+	 * @param idSubObj the id of the subobject 
+	 * @return SubObject the subobject loaded
 	 */
-	public InputStream getSubObject(Integer idBIObj, String name);
-	
-	
+	public SubObject getSubObject(Integer idSubObj) throws EMFUserError;
+		
 	/**
 	 * Delete a subObject
-	 * @param idBIObj the id of the biobject parent
-	 * @param name name of the subObject
+	 * @param id the id of the subobject
 	 */
-	public void deleteSubObject(Integer idBIObj, String name) throws EMFUserError;
+	public void deleteSubObject(Integer idSub) throws EMFUserError;
 	
 	/**
 	 * Gets the detail of all the biobject subobjects 
 	 * @param idBIObj the id of the biobject parent
 	 * @return List of BIObject.SubObjectDetail objects 
 	 */
-	public List getSubObjects(Integer idBIObj);
+	public List getSubObjects(Integer idBIObj) throws EMFUserError;
 	
 	
 }

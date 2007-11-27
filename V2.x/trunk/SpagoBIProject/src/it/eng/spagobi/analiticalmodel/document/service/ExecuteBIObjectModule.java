@@ -50,8 +50,6 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -636,12 +634,13 @@ public class ExecuteBIObjectModule extends AbstractModule
 		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         // get object from session
         BIObject obj = (BIObject)session.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-        // get name of the subobject
-        String subObjName = (String)request.getAttribute("NAME_SUB_OBJECT");
+        // get id of the subobject
+        String subObjIdStr = (String)request.getAttribute(SpagoBIConstants.SUBOBJECT_ID);
+        Integer subObjId = new Integer(subObjIdStr);
         // get dao for suboject
         ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
         // delete subobject
-        subobjdao.deleteSubObject(obj.getId(), subObjName);
+        subobjdao.deleteSubObject(subObjId);
         // get from the session the execution role
         String role = (String)session.getAttribute(SpagoBIConstants.ROLE);
         // set data in response

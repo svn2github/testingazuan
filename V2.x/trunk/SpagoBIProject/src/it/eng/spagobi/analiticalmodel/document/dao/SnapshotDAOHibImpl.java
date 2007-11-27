@@ -21,7 +21,6 @@ import org.hibernate.Transaction;
 public class SnapshotDAOHibImpl extends AbstractHibernateDAO implements ISnapshotDAO {
 
 	public void deleteSnapshot(Integer idSnap) throws EMFUserError {
-		List snaps = new ArrayList();
 		Session aSession = null;
 		Transaction tx = null;
 		try {

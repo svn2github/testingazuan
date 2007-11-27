@@ -1,39 +1,182 @@
 package it.eng.spagobi.analiticalmodel.document.dao;
 
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
+import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.metadata.SbiBinContents;
 
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
-public class SubObjectDAOHibImpl implements ISubObjectDAO {
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
-	public void deleteSubObject(Integer idBIObj, String name)
-			throws EMFUserError {
-		// TODO Auto-generated method stub
-		
-	}
+public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObjectDAO {
 
-	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile) {
+	
+	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile) throws EMFUserError {
 		List subs = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
+						 "and owner = '"+profile.getUserUniqueIdentifier().toString()+"'";
+			Query query = aSession.createQuery(hql);
+			List result = query.list();
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				subs.add(toSubobject((SbiSubObjects)it.next()));
+			}
+			tx.commit();
+		}catch(HibernateException he){
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");  
+		}finally{
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		return subs;
 	}
 
-	public InputStream getSubObject(Integer idBIObj, String name) {
-		return null;
-	}
 
-	public List getSubObjects(Integer idBIObj) {
+	public List getSubObjects(Integer idBIObj) throws EMFUserError {
 		List subs = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj;
+			Query query = aSession.createQuery(hql);
+			List result = query.list();
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				subs.add(toSubobject((SbiSubObjects)it.next()));
+			}
+			tx.commit();
+		}catch(HibernateException he){
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");  
+		}finally{
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		return subs;
 	}
 
-	public void saveSubObject(byte[] content, Integer idBIObj, String name,
-			String description, boolean publicVisibility,
-			IEngUserProfile profile) throws EMFUserError {
-		// TODO Auto-generated method stub
-		
+	
+	
+	public void deleteSubObject(Integer idSub) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiSubObjects hibSubobject = (SbiSubObjects)aSession.load(SbiSubObjects.class, idSub);
+			SbiBinContents hibBinCont = hibSubobject.getSbiBinContents();
+			aSession.delete(hibBinCont);
+			aSession.delete(hibSubobject);
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}		
+	}
+
+	public SubObject getSubObject(Integer idSubObj) throws EMFUserError {
+		SubObject sub = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiSubObjects hibSub = (SbiSubObjects)aSession.load(SbiSubObjects.class, idSubObj);
+			sub = toSubobject(hibSub);
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return sub;
+	}
+
+	
+	public void saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiObjects hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, idBIObj);
+			SbiBinContents hibBinContent = new SbiBinContents();
+			hibBinContent.setContent(subObj.getContent());
+			Integer idBin = (Integer)aSession.save(hibBinContent);
+			// recover the saved binary hibernate object
+			hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
+			// store the subobject
+			Date now = new Date();
+			SbiSubObjects hibSub = new SbiSubObjects();
+			hibSub.setOwner(subObj.getOwner());
+			hibSub.setLastChangeDate(now);
+			hibSub.setIsPublic(subObj.getIsPublic());
+			hibSub.setCreationDate(now);
+			hibSub.setDescription(subObj.getDescription());
+			hibSub.setName(subObj.getName());
+			hibSub.setSbiBinContents(hibBinContent);
+			hibSub.setSbiObject(hibBIObject);
+			aSession.save(hibSub);
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+	}
+    
+	
+	private SubObject toSubobject(SbiSubObjects hibsub) {
+		SubObject subobj = new SubObject();
+		subobj.setBiobjId(hibsub.getSbiObject().getBiobjId());
+		subobj.setCreationDate(hibsub.getCreationDate());
+		subobj.setDescription(hibsub.getDescription());
+		subobj.setId(hibsub.getSubObjId());
+		subobj.setIsPublic(hibsub.getIsPublic());
+		subobj.setLastChangeDate(hibsub.getLastChangeDate());
+		subobj.setName(hibsub.getName());
+		subobj.setOwner(hibsub.getOwner());
+		subobj.setContent(hibsub.getSbiBinContents().getContent());
+		return subobj;
 	}
 
 	

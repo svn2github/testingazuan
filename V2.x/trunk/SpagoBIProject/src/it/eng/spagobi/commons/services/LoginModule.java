@@ -35,6 +35,7 @@ import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.commons.bo.SpagoBIPrincipal;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.security.ISecurityInfoProvider;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
@@ -70,23 +71,6 @@ public class LoginModule extends AbstractHttpModule {
 		
 		// fill response attributes
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
-	}
-
-	
-	
-	
-	public class SpagoBIPrincipal implements Principal {
-
-		String userName = "";
-		
-		public SpagoBIPrincipal(String userName) {
-			this.userName = userName;
-		}
-		
-		public String getName() {
-			return this.userName;
-		}
-		
 	}
 	
 }

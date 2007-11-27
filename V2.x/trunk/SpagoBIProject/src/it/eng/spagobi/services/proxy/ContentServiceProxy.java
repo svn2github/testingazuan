@@ -83,18 +83,82 @@ public class ContentServiceProxy extends AbstractServiceProxy{
     }
     
     public Content readSubObjectContent(String user,String nameSubObject){
+	logger.debug("IN");
+	try {
+	    String ticket = "";
+	    if (ssoIsActive){
+		ticket=readTicket();
+	    }
+	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
+	    it.eng.spagobi.services.content.stub.ContentService service = locator
+		    .getContentService();
+	    return service.readSubObjectContent(ticket, user, nameSubObject);
+	} catch (Exception e) {
+	    logger.error("Error during service execution",e);
+
+	}finally{
+	    logger.debug("IN");
+	}
 	return null;
     }
     
     public String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
+	logger.debug("IN");
+	try {
+	    String ticket = "";
+	    if (ssoIsActive){
+		ticket=readTicket();
+	    }
+	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
+	    it.eng.spagobi.services.content.stub.ContentService service = locator
+		    .getContentService();
+	    return service.saveSubObject(ticket, user, documentiId,analysisName, analysisDescription, visibilityBoolean, content);
+	} catch (Exception e) {
+	    logger.error("Error during service execution",e);
+
+	}finally{
+	    logger.debug("IN");
+	}
 	return null;
     }
     
     public String saveObjectTemplate(String user,String documentiId,String templateName,String content){
+	logger.debug("IN");
+	try {
+	    String ticket = "";
+	    if (ssoIsActive){
+		ticket=readTicket();
+	    }
+	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
+	    it.eng.spagobi.services.content.stub.ContentService service = locator
+		    .getContentService();
+	    return service.saveObjectTemplate(ticket, user, documentiId, templateName, content);
+	} catch (Exception e) {
+	    logger.error("Error during service execution",e);
+
+	}finally{
+	    logger.debug("IN");
+	}
 	return null;
     }
     
     public Content downloadAll(String user,String biobjectId,String fileName){
+	logger.debug("IN");
+	try {
+	    String ticket = "";
+	    if (ssoIsActive){
+		ticket=readTicket();
+	    }
+	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
+	    it.eng.spagobi.services.content.stub.ContentService service = locator
+		    .getContentService();
+	    return service.downloadAll(ticket, user, biobjectId, fileName);
+	} catch (Exception e) {
+	    logger.error("Error during service execution",e);
+
+	}finally{
+	    logger.debug("IN");
+	}
 	return null;
     }
     

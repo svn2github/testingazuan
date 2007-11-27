@@ -17,19 +17,23 @@ public class ContentServiceSoapBindingImpl implements it.eng.spagobi.services.co
 	return service.readTemplate(in0, in1, in2);
     }
     public it.eng.spagobi.services.content.bo.Content readSubObjectContent(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
-        return null;
+	ContentServiceImpl service=new ContentServiceImpl();
+	return service.readSubObjectContent(in0, in1, in2);
     }
 
     public java.lang.String saveSubObject(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3, java.lang.String in4, java.lang.String in5) throws java.rmi.RemoteException {
-        return null;
+	ContentServiceImpl service=new ContentServiceImpl();
+	return service.saveSubObject(in0, in1, in2,in3, in4, in5);
     }
 
     public java.lang.String saveObjectTemplate(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
-        return null;
+	ContentServiceImpl service=new ContentServiceImpl();
+	return service.saveObjectTemplate(in0, in1, in2, in3);
     }
 
     public it.eng.spagobi.services.content.bo.Content downloadAll(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
-        return null;
+	ContentServiceImpl service=new ContentServiceImpl();
+	return service.downloadAll(in0, in1, in2,in3);
     }
 
     public java.lang.String publishTemplate(java.lang.String in0, java.lang.String in1, java.util.HashMap in2) throws java.rmi.RemoteException {

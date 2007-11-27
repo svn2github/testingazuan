@@ -81,4 +81,21 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;	
     }
+    
+    public Content readSubObjectContent(String user,String nameSubObject){
+	return null;
+    }
+    
+    public String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
+	return null;
+    }
+    
+    public String saveObjectTemplate(String user,String documentiId,String templateName,String content){
+	return null;
+    }
+    
+    public Content downloadAll(String user,String biobjectId,String fileName){
+	return null;
+    }
+    
 }

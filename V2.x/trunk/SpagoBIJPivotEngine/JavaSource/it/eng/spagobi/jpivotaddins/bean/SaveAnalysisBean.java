@@ -5,14 +5,14 @@
  */
 package it.eng.spagobi.jpivotaddins.bean;
 
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.jpivotaddins.bean.adapter.AnalysisAdapterUtil;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.utilities.messages.EngineMessageBundle;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Locale;
-
-import it.eng.spagobi.jpivotaddins.bean.adapter.AnalysisAdapterUtil;
-import it.eng.spagobi.utilities.GenericSavingException;
-import it.eng.spagobi.utilities.SpagoBIAccessUtils;
-import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
 import javax.servlet.http.HttpSession;
 
@@ -110,9 +110,10 @@ public class SaveAnalysisBean extends ComponentSupport {
 	
 	public void saveSubObject(RequestContext reqContext){
 		HttpSession session = reqContext.getSession();
-		String spagoBIBaseUrl = (String) session.getAttribute("spagobiurl");
-		String jcrPath = (String) session.getAttribute("templatePath");
-		String user = (String) session.getAttribute("user");
+		String documentId=(String)session.getAttribute("document");
+		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+		String user = (String) profile.getUserUniqueIdentifier();
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		String query = null;
 		MdxQuery mdxQuery = (MdxQuery) olapModel.getExtension("mdxQuery");
@@ -127,18 +128,18 @@ public class SaveAnalysisBean extends ComponentSupport {
 				chart, table, olapModel);
 		    XStream dataBinder = new XStream();
 		    String xmlString = dataBinder.toXML(analysis);
-            boolean visibilityBoolean = false;
+		    String visibilityBoolean = "false";
 		    if (PUBLIC_VISIBLITY.equalsIgnoreCase(analysisVisibility)) 
-				visibilityBoolean = true;
-		    SpagoBIAccessUtils sbiutils = new SpagoBIAccessUtils();
+				visibilityBoolean = "true";
+		    
+		    ContentServiceProxy proxy=new ContentServiceProxy();
 		    try {
-		        byte[] response = sbiutils.saveSubObject(spagoBIBaseUrl, jcrPath, analysisName,
-		        		analysisDescription, user, visibilityBoolean, xmlString);
-		        String message = new String(response);
-		        session.setAttribute("saveSubObjectMessage", message);
+               	        String result=proxy.saveSubObject(user,documentId, analysisName,analysisDescription, 
+				    visibilityBoolean, xmlString);			
+		        session.setAttribute("saveSubObjectMessage", result);
 		        // if the saving operation has no success, the previous 
-		        if (message.toUpperCase().startsWith("KO")) this.analysisName = recoveryAnalysisName;
-		    } catch (GenericSavingException gse) {		
+		        if (result.toUpperCase().startsWith("KO")) this.analysisName = recoveryAnalysisName;
+		    } catch (Exception gse) {		
 		    	logger.error("Error while saving analysis.", gse);
 		    	session.setAttribute("saveSubObjectMessage", "KO - " + gse.getMessage());
 		    }   

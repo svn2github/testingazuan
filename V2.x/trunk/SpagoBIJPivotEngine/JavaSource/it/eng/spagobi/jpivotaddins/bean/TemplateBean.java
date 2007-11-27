@@ -5,8 +5,8 @@
  */
 package it.eng.spagobi.jpivotaddins.bean;
 
-import it.eng.spagobi.utilities.GenericSavingException;
-import it.eng.spagobi.utilities.SpagoBIAccessUtils;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
 import java.io.ByteArrayInputStream;
@@ -65,9 +65,10 @@ public class TemplateBean implements Serializable {
 	public void saveTemplate(RequestContext reqContext){
 		Logger logger = Logger.getLogger(this.getClass());
 		HttpSession session = reqContext.getSession();
+		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		String user = (String) profile.getUserUniqueIdentifier();		
+		String documentId=(String)session.getAttribute("document");
 		String catalogUri = (String) session.getAttribute("catalogUri"); 
-		String spagoBIBaseUrl = (String) session.getAttribute("spagobiurl");
-		String path = (String) session.getAttribute("biobject_path");
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		MdxQuery mdxQuery = (MdxQuery) olapModel.getExtension("mdxQuery");
 		String query = mdxQuery.getMdxQuery();
@@ -118,18 +119,14 @@ public class TemplateBean implements Serializable {
 				return;
 			}
 			xmlString = document.asXML();
-		    SpagoBIAccessUtils sbiutils = new SpagoBIAccessUtils();
 		    try {
-		    	byte[] response = sbiutils.saveObjectTemplate(spagoBIBaseUrl, path, templateName, xmlString);
-		        //String message = new String(response);
-		        //session.setAttribute("saveTemplateMessage", message);
-		    } catch (GenericSavingException gse) {		
+			ContentServiceProxy proxy=new ContentServiceProxy();
+			String result=proxy.saveObjectTemplate(user, documentId, templateName, xmlString);
+		    } catch (Exception gse) {		
 		    	logger.error("Error while saving template", gse);
-		    	//session.setAttribute("saveTemplateMessage", "KO - " + gse.getMessage());
 		    }   
 		} else {
 			logger.error("Could not retrieve MDX query");
-			//session.setAttribute("saveTemplateMessage", "KO - Could not retrieve MDX query");
 		}
 	}
 }

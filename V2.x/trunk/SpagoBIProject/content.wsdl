@@ -100,6 +100,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in3" type="soapenc:string"/>
 
+      <wsdl:part name="in4" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="downloadAllRequest">
@@ -156,6 +158,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in5" type="soapenc:string"/>
 
+      <wsdl:part name="in6" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:portType name="ContentService">
@@ -176,7 +180,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="saveSubObject" parameterOrder="in0 in1 in2 in3 in4 in5">
+      <wsdl:operation name="saveSubObject" parameterOrder="in0 in1 in2 in3 in4 in5 in6">
 
          <wsdl:input message="impl:saveSubObjectRequest" name="saveSubObjectRequest"/>
 
@@ -184,7 +188,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="saveObjectTemplate" parameterOrder="in0 in1 in2 in3">
+      <wsdl:operation name="saveObjectTemplate" parameterOrder="in0 in1 in2 in3 in4">
 
          <wsdl:input message="impl:saveObjectTemplateRequest" name="saveObjectTemplateRequest"/>
 

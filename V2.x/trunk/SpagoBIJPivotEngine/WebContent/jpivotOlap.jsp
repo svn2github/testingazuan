@@ -28,16 +28,18 @@ LICENSE: see LICENSE.txt file
 --%>
 
 <%@ page session="true" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
+<%@page import="com.tonbeller.wcf.controller.RequestContext"%>
+<%@page import="java.util.Locale"%>
+<%@page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
 <%@ taglib uri="http://spagobi.eng.it/" prefix="spagobi" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %> 
     
-<%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
-<%@page import="com.tonbeller.wcf.controller.RequestContext"%>
-<%@page import="java.util.Locale"%>
-<%@page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
+
 <html>
 <head>
   <title>JPivot Page</title>
@@ -52,12 +54,19 @@ LICENSE: see LICENSE.txt file
 <body bgcolor=white lang="en">
 
 <%
+
+IEngUserProfile profile = (IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+if(profile==null) {
+	throw new ServletException("User profile not found !");
+}
+String userId = profile.getUserUniqueIdentifier().toString();
+
 // AUDIT UPDATE
 String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 AuditAccessUtils auditAccessUtils = 
 	(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 if (auditId != null) {
-	if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
+	if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, new Long(System.currentTimeMillis()), null, 
 			"EXECUTION_STARTED", null, null);
 }
 
@@ -74,7 +83,7 @@ try {
   <%
 	// AUDIT UPDATE
 	if (auditId != null) {
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
 				"EXECUTION_FAILED", "Error executing query", null);
 	}
   %>
@@ -170,13 +179,13 @@ if (message != null && !message.trim().equals("")) {
   <%
 	// AUDIT UPDATE
 	if (auditId != null) {
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
 				"EXECUTION_FAILED", "Overflow occurred", null);
 	}
   %>
   <p>
   <strong style="color:red">Resultset overflow occured</strong>
-  <p>
+  </p>
 </c:if>
 
 <%-- render navigator --%>
@@ -198,21 +207,18 @@ if (message != null && !message.trim().equals("")) {
 <wcf:render ref="printform01" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 
 <!-- render the table -->
-<p>
+
 <wcf:render ref="table01" xslUri="/WEB-INF/jpivot/table/mdxtable.xsl" xslCache="true"/>
-<p>
+
 Slicer:
 <wcf:render ref="table01" xslUri="/WEB-INF/jpivot/table/mdxslicer.xsl" xslCache="true"/>
 
-<p>
 <!-- drill through table -->
 <wcf:render ref="query01.drillthroughtable" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 
-<p>
 <!-- render chart -->
 <wcf:render ref="chart01" xslUri="/WEB-INF/jpivot/chart/chart.xsl" xslCache="true"/>
 
-<p>
 <%-- 
 <a href="index.jsp">back to index</a>
 --%>
@@ -220,12 +226,12 @@ Slicer:
 <%
 	// AUDIT UPDATE
 	if (auditId != null && auditAccessUtils != null) 
-		auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
 			"EXECUTION_PERFORMED", null, null);
 } catch (Exception e) {
 	// AUDIT UPDATE
 	if (auditId != null && auditAccessUtils != null) 
-		auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
+		auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
 			"EXECUTION_FAILED", e.getMessage(), null);
 	throw e;
 }

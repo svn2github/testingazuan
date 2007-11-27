@@ -6,9 +6,7 @@
 package it.eng.spagobi.jpivotaddins.bean.adapter;
 
 import org.apache.log4j.Logger;
-
 import it.eng.spagobi.jpivotaddins.bean.AnalysisBean;
-
 import com.tonbeller.jpivot.chart.ChartComponent;
 import com.tonbeller.jpivot.mondrian.MondrianMemento;
 import com.tonbeller.jpivot.olap.model.OlapModel;

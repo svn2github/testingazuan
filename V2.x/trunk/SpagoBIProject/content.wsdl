@@ -4,11 +4,27 @@
 Built on Oct 05, 2005 (05:23:37 EDT)-->
  <wsdl:types>
   <schema targetNamespace="http://bo.content.services.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://xml.apache.org/xml-soap"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="Content">
     <sequence>
      <element name="content" nillable="true" type="soapenc:string"/>
      <element name="fileName" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://bo.content.services.spagobi.eng.it"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="mapItem">
+    <sequence>
+     <element name="key" nillable="true" type="xsd:anyType"/>
+     <element name="value" nillable="true" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+   <complexType name="Map">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="apachesoap:mapItem"/>
     </sequence>
    </complexType>
   </schema>
@@ -20,21 +36,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in1" type="soapenc:string"/>
 
-      <wsdl:part name="in2" type="soapenc:string"/>
-
-      <wsdl:part name="in3" type="soapenc:string"/>
-
-      <wsdl:part name="in4" type="soapenc:string"/>
-
-      <wsdl:part name="in5" type="soapenc:string"/>
-
-      <wsdl:part name="in6" type="soapenc:string"/>
-
-      <wsdl:part name="in7" type="soapenc:string"/>
-
-      <wsdl:part name="in8" type="soapenc:string"/>
-
-      <wsdl:part name="in9" type="soapenc:string"/>
+      <wsdl:part name="in2" type="apachesoap:Map"/>
 
    </wsdl:message>
 
@@ -57,6 +59,12 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in1" type="soapenc:string"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
+
+      <wsdl:part name="in4" type="soapenc:string"/>
+
+      <wsdl:part name="in5" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -192,7 +200,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="publishTemplate" parameterOrder="in0 in1 in2 in3 in4 in5 in6 in7 in8 in9">
+      <wsdl:operation name="publishTemplate" parameterOrder="in0 in1 in2">
 
          <wsdl:input message="impl:publishTemplateRequest" name="publishTemplateRequest"/>
 
@@ -200,7 +208,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="mapCatalogue" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="mapCatalogue" parameterOrder="in0 in1 in2 in3 in4 in5">
 
          <wsdl:input message="impl:mapCatalogueRequest" name="mapCatalogueRequest"/>
 

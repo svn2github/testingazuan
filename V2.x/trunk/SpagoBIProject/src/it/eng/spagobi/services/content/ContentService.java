@@ -18,13 +18,13 @@ public interface ContentService {
 	 * @param token
 	 * @return
 	 */
-    Content readTemplate(String token,String user,String document);
-  
+    Content readTemplate(String token,String user,String document);  
+    
     Content readSubObjectContent(String token,String user,String nameSubObject);
     
-    String saveSubObject(String token,String user,String nameSubObject,String publicVisibility,String content,String description);
+    String saveSubObject(String token,String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content);
     
-    String saveObjectTemplate(String token,String user,String templateName,String content);
+    String saveObjectTemplate(String token,String user,String documentiId,String templateName,String content);
     
     Content downloadAll(String token,String user,String biobjectId,String fileName);
     

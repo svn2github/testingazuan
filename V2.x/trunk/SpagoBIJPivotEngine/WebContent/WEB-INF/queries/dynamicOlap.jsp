@@ -62,7 +62,9 @@ LICENSE: see LICENSE.txt file
 			// the possible values of the visibility are (Private/Public)
 			analysisBean.setAnalysisVisibility(visSO);			
 			// get content from cms
-			String subobjdata64Coded = request.getParameter("subobjectdata");
+			String subObjectId = request.getParameter("subobjectId");
+			Content subObject=contentProxy.readSubObjectContent(userId,subObjectId);
+			String subobjdata64Coded = subObject.getContent();
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
 			is = new java.io.ByteArrayInputStream(subobjBytes);

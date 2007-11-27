@@ -19,25 +19,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject,
-                 java.util.List,
+<%@ page import="java.util.List,
                  it.eng.spagobi.commons.constants.ObjectsTreeConstants,
                  java.util.Iterator,
-                 it.eng.spagobi.engines.config.bo.Engine,
                  it.eng.spagobi.commons.bo.Domain,
-                 it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter,
                  it.eng.spagobi.commons.dao.IDomainDAO,
                  it.eng.spagobi.commons.dao.DAOFactory,
-                 it.eng.spagobi.commons.constants.SpagoBIConstants,
                  it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule,
                  it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule,
                  it.eng.spago.navigation.LightNavigationManager,
-                 org.apache.commons.httpclient.HttpClient,
-                 org.apache.commons.httpclient.methods.PostMethod,
-                 it.eng.spago.base.ApplicationContainer,
                  java.util.Map,
                  org.safehaus.uuid.UUIDGenerator,
-                 org.safehaus.uuid.UUID,it.eng.spagobi.commit.eng.spagobi.commons.utilitieslities,it.eng.spagobi.analiticalmodel.document.handlers.BIObjectNotesManager,it.eng.spago.base.SessionContainer,it.eng.spago.security.IEngUserProfile" %>
+                 org.safehaus.uuid.UUID" %>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
                  
 
 <%
@@ -113,8 +108,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(!isSingleObjExec) {
 %>
 
-<%@page import="java.util.HashMap"%>
-<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+
+
+<% 
+		boolean canChangeState = false;
+		if((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR))) {        
+			canChangeState = true;
+    	    Map formUrlPars = new HashMap();
+    	    formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    	    formUrlPars.put(SpagoBIConstants.ACTOR,actor );
+    	    formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
+    	    formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    		String formUrl = urlBuilder.getUrl(request, formUrlPars);		
+		} 			  
+%>
+
+<%
+		if(canChangeState) {
+%>
+		<form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
+<%
+		}
+%>
+
+
 <table class='it.eng.spagobi.commons.utilitiestion'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
@@ -128,38 +145,37 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                       src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' 
                       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
            </a>
-       </td>
-       <% if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
-    		  (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR))) {
-    	   
-    	    Map formUrlPars = new HashMap();
-    	    formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-    	    formUrlPars.put(SpagoBIConstants.ACTOR,actor );
-    	    formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
-    	    formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    		String formUrl = urlBuilder.getUrl(request, formUrlPars);
-    			  
-      %>
-       <form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
-	       <td class='header-select-column-portlet-section'>
-      			<select class='portlet-form-field' name="newState">
-      			<% 
-      		    Iterator iterstates = possibleStates.iterator();
-      		    while(iterstates.hasNext()) {
-      		    	Domain state = (Domain)iterstates.next();
-      			%>
-      				<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"><%=state.getValueName()%></option>
-      			<%  } %>
-      			</select>
-      			<!--br/-->
-      		</td>
-      		<td class='header-select-column-portlet-section'>
-      			<input type='image' class='header-button-image-portlet-section' src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
-      		</td>
-        </form>
-       <% } %>
+       </td>    
+<%
+		if(canChangeState) {
+%>
+       <td class='header-select-column-portlet-section'>
+      		<select class='portlet-form-field' name="newState">
+      		<% 
+      	    Iterator iterstates = possibleStates.iterator();
+      	    while(iterstates.hasNext()) {
+      	    	Domain state = (Domain)iterstates.next();
+      		%>
+      			<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"><%=state.getValueName()%></option>
+      		<%  } %>
+      		</select>
+   		</td>
+   		<td class='header-select-column-portlet-section'>
+   			<input type='image' class='header-button-image-portlet-section' src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />' alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.updateButt" />'/> 
+   		</td>
+<%
+		}
+%>
    </tr>
 </table>
+
+<%
+		if(canChangeState) {
+%>
+		</form>
+<%
+		}
+%>
 
 
 <% 

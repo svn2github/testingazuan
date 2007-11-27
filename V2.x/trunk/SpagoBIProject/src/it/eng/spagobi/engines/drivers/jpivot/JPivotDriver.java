@@ -115,7 +115,7 @@ public class JPivotDriver implements IEngineDriver {
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type",cce);
 		} 
-		map = applySecurity(map);
+		map = applySecurity(map,profile);
 		return map;
 	}
 	/**
@@ -156,7 +156,7 @@ public class JPivotDriver implements IEngineDriver {
 		} catch (EMFUserError emfue) {
 			logger.error("Error while creating cmsDao for BiObject",emfue);
 		} 
-		map = applySecurity(map);
+		map = applySecurity(map,profile);
 		return map;
 	}
 	
@@ -168,6 +168,7 @@ public class JPivotDriver implements IEngineDriver {
 	 * @return Map The map of the execution call parameters
 	 * @deprecated
   	*/
+	/*
 	public Map getParameterMap(Object biobject){
 		Map map = new Hashtable();
 		try{
@@ -176,9 +177,10 @@ public class JPivotDriver implements IEngineDriver {
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type",cce);
 		} 
-		map = applySecurity(map);
+		map = applySecurity(map,profile);
 		return map;
-	}			
+	}
+	*/			
 	/**
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
@@ -195,7 +197,7 @@ public class JPivotDriver implements IEngineDriver {
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type",cce);
 		} 
-		map = applySecurity(map);
+		map = applySecurity(map,profile);
 		return map;
 	}
 	/**
@@ -206,6 +208,7 @@ public class JPivotDriver implements IEngineDriver {
 	 * @return Map The map of the execution call parameters
 	 * @deprecated
   	 */
+	/*
 	public Map getParameterMap(Object object, Object subObject){
 		Map map = new Hashtable();
 		try{
@@ -235,9 +238,10 @@ public class JPivotDriver implements IEngineDriver {
 		} catch (EMFUserError emfue) {
 			logger.error("Error while creating cmsDao for BiObject",emfue);
 		} 
-		map = applySecurity(map);
+		map = applySecurity(map,profile);
 		return map;
 	}
+	*/
     /**
 	 * Return a map of parameters which will be sended in the request to the 
 	 * engine application.
@@ -247,6 +251,7 @@ public class JPivotDriver implements IEngineDriver {
 	 * @return Map The map of the execution call parameters
 	 * @deprecated
   	 */
+	/*
     public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
     	Map map = new Hashtable();
 		try{
@@ -275,10 +280,10 @@ public class JPivotDriver implements IEngineDriver {
 		} catch (EMFUserError emfue) {
 			logger.error("Error while creating cmsDao for BiObject",emfue);
 		} 
-		map = applySecurity(map);
+		map = applySecurity(map,profile);
 		return map;
 	}
-	
+	*/
 	
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
@@ -580,7 +585,11 @@ public class JPivotDriver implements IEngineDriver {
 	 * @param pars The map of parameters
 	 * @return the map of parameters to send to the engine 
 	 */
-	protected Map applySecurity(Map pars) {
+	protected Map applySecurity(Map pars, IEngUserProfile profile) {
+		logger.debug("IN");
+		pars.put("userId", profile.getUserUniqueIdentifier());
+		logger.debug("Add parameter: userId/"+profile.getUserUniqueIdentifier());
+		logger.debug("OUT");
 		return pars;
 	}
 	

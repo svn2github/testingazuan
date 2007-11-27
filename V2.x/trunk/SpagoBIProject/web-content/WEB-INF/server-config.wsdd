@@ -98,7 +98,7 @@
   <parameter name="wsdlTargetNamespace" value="urn:spagobicontent"/>
   <parameter name="wsdlPortType" value="ContentService"/>
   <parameter name="scope" value="Session"/>
-  <parameter name="schemaUnqualified" value="http://bo.content.services.spagobi.eng.it"/>
+  <parameter name="schemaUnqualified" value="http://bo.content.services.spagobi.eng.it,http://xml.apache.org/xml-soap"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns6:Content" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.content.bo.Content" xmlns:ns6="http://bo.content.services.spagobi.eng.it"/>
  </service>
  <transport name="http">

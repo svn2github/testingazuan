@@ -54,8 +54,82 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}
     }
 
+    public Content readSubObjectContent(String token,String user,String nameSubObject){
+        logger.debug("IN");
+	userId=user;
+	if (activeSso){
+		try {
+		    if (validateTicket(token)){
+			return readSubObjectContent(user,nameSubObject);
+		    }else{
+			logger.error("Token NOT VALID");
+			return null;
+		    }
+		} catch (SecurityException e) {
+		    logger.error("SecurityException",e);
+		    return null;
+		}finally{
+		    logger.debug("OUT");
+		}
+	}else{
+	        logger.debug("OUT");
+		// operazione locale
+	        return readSubObjectContent(user,nameSubObject);
+	}
+    }
+    
+    public String saveSubObject(String token,String user,String nameSubObject,String publicVisibility,String content,String description){
+        logger.debug("IN");
+	userId=user;
+	if (activeSso){
+		try {
+		    if (validateTicket(token)){
+			return saveSubObject(user,nameSubObject,publicVisibility,content,description);
+		    }else{
+			logger.error("Token NOT VALID");
+			return null;
+		    }
+		} catch (SecurityException e) {
+		    logger.error("SecurityException",e);
+		    return null;
+		}finally{
+		    logger.debug("OUT");
+		}
+	}else{
+	        logger.debug("OUT");
+		// operazione locale
+	        return saveSubObject(user,nameSubObject,publicVisibility,content,description);
+	}
+    }
+    
+    public String saveObjectTemplate(String token,String user,String templateName,String content){
+	return null;
+    }
+    
+    public Content downloadAll(String token,String user,String biobjectId,String fileName){
+	return null;
+    }
     
     // PRIVATE METHOD
+    
+    private Content readSubObjectContent(String user,String nameSubObject){
+	return null;
+    }
+    
+    private String saveSubObject(String user,String nameSubObject,String publicVisibility,String content,String description){
+	return null;
+    }
+    
+    private String saveObjectTemplate(String user,String templateName,String content){
+	return null;
+    }
+    
+    private Content downloadAll(String user,String biobjectId,String fileName){
+	return null;
+    }    
+    
+    
+
 
     
     private Content readTemplate( String user, String document) {

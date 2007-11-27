@@ -54,13 +54,13 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}
     }
 
-    public Content readSubObjectContent(String token,String user,String nameSubObject){
+    public Content readSubObjectContent(String token,String user,String subObjectId){
         logger.debug("IN");
 	userId=user;
 	if (activeSso){
 		try {
 		    if (validateTicket(token)){
-			return readSubObjectContent(user,nameSubObject);
+			return readSubObjectContent(user,subObjectId);
 		    }else{
 			logger.error("Token NOT VALID");
 			return null;
@@ -74,7 +74,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}else{
 	        logger.debug("OUT");
 		// operazione locale
-	        return readSubObjectContent(user,nameSubObject);
+	        return readSubObjectContent(user,subObjectId);
 	}
     }
     
@@ -132,7 +132,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     
     // PRIVATE METHOD
     
-    private Content readSubObjectContent(String user,String nameSubObject){
+    private Content readSubObjectContent(String user,String subObjectId){
 	return null;
     }
     

@@ -1,16 +1,16 @@
 package it.eng.spagobi.services.content.service;
 
-import java.util.HashMap;
-
 
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IBinContentDAO;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
@@ -78,13 +78,13 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}
     }
     
-    public String saveSubObject(String token,String user,String nameSubObject,String publicVisibility,String content,String description){
+    public String saveSubObject(String token,String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
         logger.debug("IN");
 	userId=user;
 	if (activeSso){
 		try {
 		    if (validateTicket(token)){
-			return saveSubObject(user,nameSubObject,publicVisibility,content,description);
+			return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
 		    }else{
 			logger.error("Token NOT VALID");
 			return null;
@@ -98,12 +98,32 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}else{
 	        logger.debug("OUT");
 		// operazione locale
-	        return saveSubObject(user,nameSubObject,publicVisibility,content,description);
+	        return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
 	}
     }
     
-    public String saveObjectTemplate(String token,String user,String templateName,String content){
-	return null;
+    public String saveObjectTemplate(String token,String user,String documentiId,String templateName,String content){
+        logger.debug("IN");
+	userId=user;
+	if (activeSso){
+		try {
+		    if (validateTicket(token)){
+			return saveObjectTemplate(user,documentiId,templateName,content);
+		    }else{
+			logger.error("Token NOT VALID");
+			return null;
+		    }
+		} catch (SecurityException e) {
+		    logger.error("SecurityException",e);
+		    return null;
+		}finally{
+		    logger.debug("OUT");
+		}
+	}else{
+	        logger.debug("OUT");
+		// operazione locale
+	        return saveObjectTemplate(user,documentiId,templateName,content);
+	}
     }
     
     public Content downloadAll(String token,String user,String biobjectId,String fileName){
@@ -116,12 +136,57 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	return null;
     }
     
-    private String saveSubObject(String user,String nameSubObject,String publicVisibility,String content,String description){
-	return null;
+    private String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
+	logger.debug("IN");
+	try {
+	    IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
+	    ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
+	    Integer docId = new Integer(documentiId);
+	    BIObject biobj = objdao.loadBIObjectById(docId);
+	    SubObject  objSub = new SubObject();
+	    objSub.setDescription(analysisDescription);
+	    if (visibilityBoolean!=null && visibilityBoolean.equals("true")){
+		objSub.setIsPublic(new Boolean(true));
+	    }else{
+		objSub.setIsPublic(new Boolean(false));
+	    }
+	    objSub.setOwner(user);
+	    objSub.setName(analysisName);
+
+	    //subdao.saveSubObject(content, idBIObj, name, description, publicVisibility, profile);
+	} catch (NumberFormatException e) {
+	    logger.error("NumberFormatException",e);
+	    return "KO";
+	} catch (EMFUserError e) {
+	    logger.error("EMFUserError",e);
+	    return "KO";
+	}finally{
+	    logger.debug("OUT");
+	}
+	return "OK";
     }
     
-    private String saveObjectTemplate(String user,String templateName,String content){
-	return null;
+    private String saveObjectTemplate(String user,String documentiId,String templateName,String content){
+	logger.debug("IN");
+	try {
+	    IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
+	    Integer docId = new Integer(documentiId);
+	    BIObject biobj = objdao.loadBIObjectById(docId);
+	    ObjTemplate objTemp = new ObjTemplate();
+	    objTemp.setActive(new Boolean(true));
+	    objTemp.setContent(content.getBytes());
+	    objTemp.setName(templateName);
+	    objdao.modifyBIObject(biobj, objTemp);
+	} catch (NumberFormatException e) {
+	    logger.error("NumberFormatException",e);
+	    return "KO";
+	} catch (EMFUserError e) {
+	    logger.error("EMFUserError",e);
+	    return "KO";
+	}finally{
+	    logger.debug("OUT");
+	}
+	return "OK";
     }
     
     private Content downloadAll(String user,String biobjectId,String fileName){

@@ -437,6 +437,7 @@ if (isSingleObjExec) {
 				              
 				    	<% Iterator iterSubs =  subObjs.iterator();
 				    	   SubObject subObj = null;
+				    	   Integer idSub = null;
 				    	   String nameSub = "";
 				    	   String descr = "";
 				    	   String visib = null;
@@ -456,7 +457,8 @@ if (isSingleObjExec) {
 					rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
 					alternate = !alternate;
 					
-		                        nameSub = subObj.getName();
+								idSub = subObj.getId();
+								nameSub = subObj.getName();
 		                        descr = subObj.getDescription();
 		                        owner = subObj.getOwner();
 		                        creationDate = subObj.getCreationDate().toString();
@@ -487,7 +489,7 @@ if (isSingleObjExec) {
 		            		    deleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 		            		    deleteSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
 		            		    deleteSubObjUrlPars.put(SpagoBIConstants.ACTOR, actor);
-		            		    deleteSubObjUrlPars.put("NAME_SUB_OBJECT", nameSub);
+		            		    deleteSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
 		            		    deleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 		            		   	if (executionId != null && flowId != null) {
 		            		   		deleteSubObjUrlPars.put("spagobi_execution_id", executionId);

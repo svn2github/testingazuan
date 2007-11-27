@@ -150,6 +150,7 @@ public class SpagoBIAccessUtils {
 	 * @param content byte array of the suobject content
 	 * @return The output response body
 	 */
+	/*
 	public byte[] saveSubObject(String spagoBIBaseUrl, String path, String nameSubObj, 
 			                    String description, String user, boolean visibility,
 			                    String content) throws GenericSavingException {
@@ -192,6 +193,7 @@ public class SpagoBIAccessUtils {
         }
         return responseBody;	  
 	}
+	*/
 	
 	/**
 	 * Save the object template into SpagoBI Repository
@@ -202,6 +204,7 @@ public class SpagoBIAccessUtils {
 	 * @param templateName: the template name
 	 * @return The output response body
 	 */
+	/*
 	public byte[] saveObjectTemplate(String spagoBIBaseUrl, String path, String templateName, String content) 
 								throws GenericSavingException {
 		HttpClient client = new HttpClient();
@@ -237,6 +240,7 @@ public class SpagoBIAccessUtils {
         }
         return responseBody;	  
 	}
+	*/
 	
 	
 	public void unzip(File repository_zip, File newDirectory) throws ZipException, IOException {

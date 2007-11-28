@@ -9,7 +9,7 @@
     <!-- ********************* END MODE CONFIGURATION ************************** -->
      
      
-     
+        
      
      
     <!-- ********************* START SECURITY CONFIGURATION ************************ -->
@@ -84,6 +84,8 @@
 
 
      <!-- ********************* START GENERAL CONFIGURATION ************************ -->
+     <DATE-FORMAT format="DD-MM-YYYY"/>
+  	 <TIMESTAMP-FORMAT format="DD-MM-YYYY hh:mm:ss"/>
      
      <LOOKUP numberRows = "20" />
     

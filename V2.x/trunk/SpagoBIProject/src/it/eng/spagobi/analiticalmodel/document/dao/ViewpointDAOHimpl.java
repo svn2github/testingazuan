@@ -33,7 +33,6 @@ import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiViewpoints;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
 
 import java.util.ArrayList;
 import java.util.Iterator;

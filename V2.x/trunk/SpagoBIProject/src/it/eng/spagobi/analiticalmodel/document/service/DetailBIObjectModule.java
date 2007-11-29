@@ -278,20 +278,11 @@ public class DetailBIObjectModule extends AbstractModule {
 			// that the BIObjectParameter url name is not already in use
 			urlNameControl(obj.getId(), biObjPar);
 			verifyForDependencies(biObjPar);
-			
-			// if there are some validation errors into the errorHandler does not write into DB
-			Collection errors = errorHandler.getErrors();
-			if (errors != null && errors.size() > 0) {
-				Iterator iterator = errors.iterator();
-				while (iterator.hasNext()) {
-					Object error = iterator.next();
-					if (error instanceof EMFValidationError) {
-						helper.fillResponse(initialPath);
-						prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), 
-								ObjectsTreeConstants.DETAIL_MOD, false, false);
-						return;
-					}
-				}
+			if(!errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+				helper.fillResponse(initialPath);
+				prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), 
+										  ObjectsTreeConstants.DETAIL_MOD, false, false);
+				return;
 			}
 			DAOFactory.getBIObjectParameterDAO().modifyBIObjectParameter(biObjPar);
 		} else {

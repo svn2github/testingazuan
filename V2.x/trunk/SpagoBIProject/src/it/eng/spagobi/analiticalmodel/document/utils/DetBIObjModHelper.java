@@ -26,7 +26,6 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.exceptions.DuplicateLabelException;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
@@ -260,18 +259,7 @@ public class DetBIObjModHelper {
 	public void fillResponse(String initialPath) {
 		try {
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
-	        List types = domaindao.loadListDomainsByType("BIOBJ_TYPE");
-	        // if booklet module is not installed remove from types the booklet type
-	        if(!GeneralUtilities.isModuleInstalled("booklets")){
-		        Iterator iterdom = types.iterator();
-	  		    while(iterdom.hasNext()) {
-	  		    	Domain type = (Domain)iterdom.next();
-	  		    	if(type.getValueCd().equalsIgnoreCase("BOOKLET")) {
-	  		    		types.remove(type);
-	  		    		break;
-	  		    	}
-	  		    }
-	        }
+	        List types = domaindao.loadListDomainsByType("BIOBJ_TYPE");	       
 	        // load list of states and engines
 	        List states = domaindao.loadListDomainsByType("STATE");
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();

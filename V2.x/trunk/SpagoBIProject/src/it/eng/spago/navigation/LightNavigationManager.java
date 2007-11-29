@@ -38,7 +38,7 @@ public class LightNavigationManager {
     public static final String LIGHT_NAVIGATOR_REPLACE_LAST = "LIGHT_NAVIGATOR_REPLACE_LAST";
     public static final String LIGHT_NAVIGATOR_BACK_TO_MARK = "LIGHT_NAVIGATOR_BACK_TO_MARK";
     public static final String LIGHT_NAVIGATOR_MARK = "LIGHT_NAVIGATOR_MARK";
-    //temporaneo  
+
     public static SourceBean controlLightNavigation (PortletRequest request, SourceBean serviceRequest) throws Exception {
     	Object o = (Object)request;    	
     	return controlLightNavigation(o, serviceRequest);

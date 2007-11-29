@@ -16,19 +16,19 @@ public class DataSourceSupplier {
 	static private Logger logger = Logger.getLogger(DataSourceSupplier.class);
 	
     public SpagoBiDataSource getDataSource(String documentId) {
-        
+    	logger.debug("IN");
 		SpagoBiDataSource sbds = new SpagoBiDataSource();  
     		
     	//gets data source data from database
 		try{
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(Integer.valueOf(documentId));
 			if (obj == null){
-				logger.warn("The object with id " + documentId + " is not found on the database.");
+				logger.error("The object with id " + documentId + " is not found on the database.");				
 				return null;
 			}			
 			DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(obj.getDataSourceId());
 			if (ds == null){
-				logger.warn("The data source with id " + obj.getDataSourceId() + " is not found on the database.");
+				logger.error("The data source with id " + obj.getDataSourceId() + " is not found on the database.");				
 				return null;
 			}
 			sbds.setLabel(ds.getLabel());
@@ -41,11 +41,12 @@ public class DataSourceSupplier {
 		}catch (Exception e){
 			logger.error("The data source is not correctly returned", e);
 		}
+		logger.debug("OUT");
     	return sbds;
     }
     
     public SpagoBiDataSource getDataSourceByLabel(String dsLabel) {
-        
+    	logger.debug("IN");
 		SpagoBiDataSource sbds = new SpagoBiDataSource();  
 		
     	//gets data source data from database
@@ -61,12 +62,14 @@ public class DataSourceSupplier {
 			sbds.setUser(ds.getUser());
 			sbds.setPassword(ds.getPwd());
 			sbds.setDriver(ds.getDriver());			
-		}catch (Exception e){
+		}catch (Exception e){			
 			logger.error("The data source is not correctly returned", e);
 		}
+		logger.debug("OUT");
     	return sbds;
     }
     public SpagoBiDataSource[] getAllDataSource(){
+    	logger.debug("IN");
     	ArrayList tmpList = new ArrayList();
     	
     	//gets all data source from database
@@ -96,6 +99,7 @@ public class DataSourceSupplier {
 		for (int i=0; i<tmpList.size(); i++){
 			arDS[i] = (SpagoBiDataSource)tmpList.get(i);			
 		}
+		logger.debug("OUT");
 		return arDS;
     }    
 }

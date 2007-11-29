@@ -46,7 +46,7 @@ import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
  * @author giachino
  */
 public class DetailDataSourcePublisher implements PublisherDispatcherIFace {
-	static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
+	static private Logger logger = Logger.getLogger(DetailDataSourcePublisher.class);
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
@@ -57,6 +57,7 @@ public class DetailDataSourcePublisher implements PublisherDispatcherIFace {
 	 * 		   call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+		logger.debug("IN");
 
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
@@ -67,13 +68,14 @@ public class DetailDataSourcePublisher implements PublisherDispatcherIFace {
 		if(moduleResponse==null) {
 			logger.error("Module response null");
 			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
-			errorHandler.addError(error);
+			errorHandler.addError(error);			
 			return "error";
 		}
 		
 		// if there are errors and they are only validation errors return the name for the detail publisher
 		if(!errorHandler.isOK()) {
 			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+				logger.info("Publish: detailDataSource"  );
 				return "detailDataSource";
 			}
 		}
@@ -85,12 +87,13 @@ public class DetailDataSourcePublisher implements PublisherDispatcherIFace {
 
         Object loop = moduleResponse.getAttribute("loopback");
         if (loop != null) {
+        	logger.info("Publish: detailDataSourceLoop"  );
+        	logger.debug("OUT");
         	return "detailDataSourceLoop";
 		} else {
+			logger.info("Publish: detailDataSource"  );
+			logger.debug("OUT");
 			return "detailDataSource";
 		}
-
-
 	}
-
 }

@@ -54,11 +54,12 @@ import org.hibernate.criterion.Expression;
  * @author giachino
  */
 public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataSourceDAO{
-	static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
+	static private Logger logger = Logger.getLogger(DataSourceDAOHibImpl.class);
 	/**
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadDataSourceByID(java.lang.Integer)
 	 */
 	public DataSource loadDataSourceByID(Integer dsID) throws EMFUserError {
+		logger.debug("IN");
 		DataSource toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -81,9 +82,10 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
 			}
 		}
-		
+		logger.debug("OUT");
 		return toReturn;
 	}
 
@@ -91,6 +93,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadDataSourceByLabel(string)
 	 */	
 	public DataSource loadDataSourceByLabel(String label) throws EMFUserError {
+		logger.debug("IN");
 		DataSource biDS = null;
 		Session tmpSession = null;
 		Transaction tx = null;
@@ -115,6 +118,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 				if (tmpSession.isOpen()) tmpSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return biDS;		
 	}
 
@@ -122,6 +126,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadAllDataSources()
 	 */
 	public List loadAllDataSources() throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -148,9 +153,10 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 
 		} finally {
 			if (aSession!=null){
-				if (aSession.isOpen()) aSession.close();
+				if (aSession.isOpen()) aSession.close();				
 			}
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 	
@@ -158,6 +164,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#modifyDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
 	public void modifyDataSource(DataSource aDataSource) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -185,6 +192,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
 			}
 		}
 
@@ -194,6 +202,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#insertDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
 	public void insertDataSource(DataSource aDataSource) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -221,6 +230,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
 			}
 		}
 	}
@@ -229,6 +239,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#eraseDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
 	public void eraseDataSource(DataSource aDataSource) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -250,6 +261,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
 			}
 		}
 
@@ -282,9 +294,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#hasBIObjAssociated(java.lang.String)
 	 */
 	public boolean hasBIObjAssociated (String dsId) throws EMFUserError{
-		/**
-		 * TODO Hibernate Implementation
-		 */
+		logger.debug("IN");		
 		boolean bool = false; 
 		
 		
@@ -317,6 +327,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return bool;
 		
 	}
@@ -325,9 +336,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#hasEngineAssociated(java.lang.String)
 	 */
 	public boolean hasBIEngineAssociated (String dsId) throws EMFUserError{
-		/**
-		 * TODO Hibernate Implementation
-		 */
+		logger.debug("IN");
 		boolean bool = false; 
 		
 		
@@ -360,6 +369,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return bool;
 		
 	}

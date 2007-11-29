@@ -28,13 +28,11 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.IOException;
@@ -49,7 +47,7 @@ import org.apache.log4j.Logger;
  * This class implements a module which  handles data source management. 
  */
 public class DetailDataSourceModule extends AbstractModule {
-	static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
+	static private Logger logger = Logger.getLogger(DetailDataSourceModule.class);
 	public static final String MOD_SAVE = "SAVE";
 	public static final String MOD_SAVEBACK = "SAVEBACK";
 
@@ -75,6 +73,7 @@ public class DetailDataSourceModule extends AbstractModule {
 				logger.debug("The message parameter is null");
 				throw userError;
 			}
+			logger.debug("The message parameter is: " + message.trim());
 			if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
 				getDataSource(request, response);
 			} else if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {
@@ -120,7 +119,7 @@ public class DetailDataSourceModule extends AbstractModule {
 			response.setAttribute("modality", modalita);
 			response.setAttribute("dsObj", ds);
 		} catch (Exception ex) {
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, "Cannot fill response container" + ex.getLocalizedMessage());	
+			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, ListDataSourceModule.MODULE_PAGE);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8003, new Vector(), params);
@@ -193,6 +192,7 @@ public class DetailDataSourceModule extends AbstractModule {
 				    return;
 			}					     
 		} catch (EMFUserError e){
+			logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, ListDataSourceModule.MODULE_PAGE);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, new Vector(), params);
@@ -233,19 +233,20 @@ public class DetailDataSourceModule extends AbstractModule {
 			//delete the ds
 			DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(new Integer(id));
 			DAOFactory.getDataSourceDAO().eraseDataSource(ds);
-		}   catch (EMFUserError e){
+		}
+		catch (EMFUserError e){
+			  logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			  HashMap params = new HashMap();		  
 			  params.put(AdmintoolsConstants.PAGE, ListDataSourceModule.MODULE_PAGE);
 			  throw new EMFUserError(EMFErrorSeverity.ERROR, 8006, new Vector(), params);
 				
-			}
-		    catch (Exception ex) {		
+		}
+	    catch (Exception ex) {		
 		    ex.printStackTrace();
 			logger.error("Cannot fill response container" ,ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}
-		response.setAttribute("loopback", "true");
-			
+	    }
+	    response.setAttribute("loopback", "true");			
 	}
 
 

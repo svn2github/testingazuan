@@ -19,14 +19,13 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
-import it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -16,10 +16,10 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
-import it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory;
 
 import java.util.Collection;
 import java.util.HashMap;

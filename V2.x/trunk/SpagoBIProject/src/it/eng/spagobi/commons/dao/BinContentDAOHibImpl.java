@@ -27,15 +27,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.dao;
 
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spagobi.commons.metadata.SbiBinContents;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
-import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
-import it.eng.spagobi.commons.metadata.SbiBinContents;
 
 
 public class BinContentDAOHibImpl extends AbstractHibernateDAO implements IBinContentDAO {

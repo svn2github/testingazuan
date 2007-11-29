@@ -2,10 +2,10 @@ package it.eng.spagobi.services.content.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
-import it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;

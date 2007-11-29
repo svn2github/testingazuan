@@ -60,6 +60,7 @@ public class DirectExecutionModule extends AbstractModule {
 		RequestContainer reqContainer = getRequestContainer();
 		SessionContainer sessionContainer = reqContainer.getSessionContainer();
 		String username = (String) request.getAttribute("USERNAME");
+		// TODO ... recuperare il profilo dalla sessione....
 		SpagoBIPrincipal principal=new SpagoBIPrincipal(username);
 		SecurityServiceProxy proxy=new SecurityServiceProxy();
 		IEngUserProfile profile = proxy.getUserProfile(principal);

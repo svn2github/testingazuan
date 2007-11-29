@@ -113,12 +113,12 @@ public class MessageBuilder implements IMessageBuilder {
 			} else {
 				locale = getBrowserLocale(request);
 			}
-			message = MessageBundle.getMessage(code, bundle, locale);
+			message = MessageBundle.getMessage(code,"resources/"+bundle, locale);
 			if((message==null) || message.trim().equals("")) {
 				message = code;
 			}
 		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-			message = PortletUtilities.getMessage(code, bundle);
+			message = PortletUtilities.getMessage(code, "resources/"+bundle);
 		}
 		return message;
 	}

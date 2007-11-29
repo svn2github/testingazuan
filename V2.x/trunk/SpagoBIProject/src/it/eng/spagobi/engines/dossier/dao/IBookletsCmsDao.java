@@ -43,8 +43,8 @@ public interface IBookletsCmsDao {
 	 * @param pathBiObject
 	 * @return the path of the booklet template node
 	 */
-	public String createNewConfigurationNode(String pathBiObject);
-	
+	public String createNewConfigurationNode(String pathBiObject);// via
+	//**
 	public List getConfiguredDocumentList(String pathBooklet);
 	
 	public void addConfiguredDocument(String pathBooklet, ConfiguredBIDocument doc);
@@ -61,11 +61,13 @@ public interface IBookletsCmsDao {
 	
 	public void storeBookletProcessDefinition(String pathBooklet, String pdFileName, byte[] pdFileContent);
 	
-	public String getBookletProcessDefinitionFileName(String pathBooklet);
+	public String getBookletProcessDefinitionFileName(String pathBooklet); 
+	
 	
 	public InputStream getBookletProcessDefinitionContent(String pathBooklet);
+	//**
 	
-	public void createStructureForTemplate(String pathBooklet, int numTempParts);
+	public void createStructureForTemplate(String pathBooklet, int numTempParts);// via
 	
 	public void storeTemplateImage(String pathBooklet, byte[] image, String docLogicalName, int indexTempPart);
 	
@@ -92,8 +94,5 @@ public interface IBookletsCmsDao {
 	public String getBookletName(String pathBooklet);
 	
 	public String getBiobjectPath(String pathBooklet);
-	
-	//public void saveWorkflowConfiguration(String pathBooklet, WorkflowConfiguration workConf);
-	
-	//public WorkflowConfiguration getWorkflowConfiguration(String pathBooklet);
+
 }

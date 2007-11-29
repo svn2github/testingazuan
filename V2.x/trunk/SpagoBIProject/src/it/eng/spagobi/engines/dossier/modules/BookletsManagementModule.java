@@ -120,7 +120,7 @@ public class BookletsManagementModule extends AbstractModule {
 	
 	private void newTemplateHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
 		String pathBiObject = (String)request.getAttribute(SpagoBIConstants.PATH);
-		// create the new template cms node
+
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
 		String bookTemplatePath = bookDao.createNewConfigurationNode(pathBiObject);
 		if(bookTemplatePath==null) {

@@ -28,7 +28,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.dossier;
 
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
@@ -89,7 +88,7 @@ public class BookletsServlet extends HttpServlet{
 	 			String pathConfBook = null;
 	 			try {
 		 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-		 	    	jbpmContext = jbpmConfiguration.createJbpmContext();
+		 	    	        jbpmContext = jbpmConfiguration.createJbpmContext();
 		 			long activityKeyId = Long.valueOf(activityKey).longValue();
 		 			TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
 		 			ContextInstance contextInstance = taskInstance.getContextInstance();
@@ -114,11 +113,10 @@ public class BookletsServlet extends HttpServlet{
 		 		
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {
 	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
-                String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+                                String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
 	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
 	 			byte[] finalDocBytes = bookdao.getPresentationVersionContent(pathBook, verName);
 	 			String bookName = bookdao.getBookletName(pathBook);
-	 			//String bookName = bookdao.getBookletTemplateFileName(pathBook);
 	 			response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
 	 			response.setContentLength(finalDocBytes.length);
 	 			out.write(finalDocBytes);

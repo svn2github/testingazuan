@@ -24,6 +24,11 @@ package it.eng.spagobi.engines.dossier.bo;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * Store the information about single document configuration
+ *
+ */
 public class ConfiguredBIDocument {
 
 	private Integer id = null;
@@ -32,6 +37,7 @@ public class ConfiguredBIDocument {
 	private String description = "";
 	private List roles = null;
 	private Map parameters = null;
+	// the placeholder 
 	private String logicalName= "";
 	
 	public String getDescription() {

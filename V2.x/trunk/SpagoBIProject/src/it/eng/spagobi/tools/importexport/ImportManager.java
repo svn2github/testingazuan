@@ -144,6 +144,8 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 		importer = new ImporterMetadata();
 		sessionFactoryExpDB = ImportUtilities.getHibSessionExportDB(pathDBFolder);
+		// queste sessioni sono sempre vive.. dovrebbe riattivarle ogni volta che l'utente fa
+		// qualcosa...
 		sessionExpDB = sessionFactoryExpDB.openSession();
 		txExpDB = sessionExpDB.beginTransaction();
 		sessionCurrDB = HibernateUtil.currentSession();

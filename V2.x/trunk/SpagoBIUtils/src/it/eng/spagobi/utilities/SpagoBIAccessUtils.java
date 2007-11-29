@@ -64,80 +64,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
  * @author zoppello
  */
 public class SpagoBIAccessUtils {
-	
-/*
-  
-  SOSTITUITO DAL SERVIZIO...
-  
-	public byte[] getContent(String spagoBIBaseUrl, String path){
-		HttpClient client = new HttpClient();
-	    PostMethod httppost = new PostMethod(spagoBIBaseUrl);
-	    NameValuePair[] parameters = { new NameValuePair("jcrPath", path),
-	    		                       new NameValuePair("operation", "getContent") };
-	    //	  Provide custom retry handler is necessary
-	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
-	    retryhandler.setRequestSentRetryEnabled(false);
-	    retryhandler.setRetryCount(3);
-	    httppost.setMethodRetryHandler(retryhandler);
-	    httppost.setRequestBody(parameters);
-        byte[] responseBody = null; 
-        try {
-            // Execute the method.
-            int statusCode = client.executeMethod(httppost);
-            if (statusCode != HttpStatus.SC_OK) {
-              System.err.println("Method failed: " + httppost.getStatusLine());
-            }
-            // Read the response body.
-             responseBody  = httppost.getResponseBody();
-          } catch (IOException e) {
-            System.err.println("Failed to download file.");
-            e.printStackTrace();
-          } finally {
-            // Release the connection.
-          	httppost.releaseConnection();
-          }
-          return responseBody;	    
-	}
-	
-*/	
 
-    /*
-      
-      DA CAPIRE SE SERVE ANCORA !!!!!!!!!!!!!!!!!!
-     
-	public byte[] getSubObjectContent(String spagoBIBaseUrl, String path, String nameSubObj, String user) {
-		HttpClient client = new HttpClient();
-	    PostMethod httppost = new PostMethod(spagoBIBaseUrl);
-	    NameValuePair[] data = { new NameValuePair("jcrPath", path),
-	    						 new NameValuePair("operation", "getSubObjectContent"),
-	    						 new NameValuePair("nameSubObject", nameSubObj),
-	    						 new NameValuePair("user", user)};
-	    //	  Provide custom retry handler is necessary
-	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
-	    retryhandler.setRequestSentRetryEnabled(false);
-	    retryhandler.setRetryCount(3);
-	    httppost.setMethodRetryHandler(retryhandler);
-	    httppost.setRequestBody(data);
-        byte[] responseBody = null; 
-        try {
-            // Execute the method.
-            int statusCode = client.executeMethod(httppost);
-            if (statusCode != HttpStatus.SC_OK) {
-              System.err.println("Method failed: " + httppost.getStatusLine());
-            }
-            // Read the response body.
-             responseBody  = httppost.getResponseBody();
-          } catch (IOException e) {
-            System.err.println("Failed to download file.");
-            e.printStackTrace();
-          } finally {
-            // Release the connection.
-          	httppost.releaseConnection();
-          }
-          return responseBody;	    
-	}
 	
-	*/
 	
 	
 	/**
@@ -241,7 +169,6 @@ public class SpagoBIAccessUtils {
         return responseBody;	  
 	}
 	*/
-	
 	
 	public void unzip(File repository_zip, File newDirectory) throws ZipException, IOException {
 		ZipFile zipFile = new ZipFile(repository_zip);

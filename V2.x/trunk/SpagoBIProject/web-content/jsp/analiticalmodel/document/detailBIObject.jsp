@@ -79,8 +79,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
    	
-   	// CHECK IF BOOKLET MODULE IS INSTALLED
-   	boolean isCompBookletsInst = GeneralUtilities.isModuleInstalled("booklets");
 %>
 
 
@@ -292,11 +290,6 @@ function checkFormVisibility(docType) {
 		      		    	Domain type = (Domain)iterdom.next();
 		      		    	String BIobjTypecode = obj.getBiObjectTypeCode();
 		      		    	String currTypecode = type.getValueCd();
-		      		    	if(currTypecode.equalsIgnoreCase("BOOKLET")) {
-		      		    		if(!isCompBookletsInst) {
-		      		    			continue;
-		      		    		}
-		      		    	}
 		      		    	boolean isType = false;
 		      		    	if(BIobjTypecode.equals(currTypecode)){
 		      		    		isType = true;   

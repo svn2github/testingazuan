@@ -123,7 +123,6 @@
 	
   <CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
   <CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />	  	
-  <CONFIGURATOR path="/WEB-INF/conf/config/spagobi_components.xml" />	
   
   <!--  Spago Config.    -->
     <CONFIGURATOR path="/WEB-INF/conf/config/common.xml" />

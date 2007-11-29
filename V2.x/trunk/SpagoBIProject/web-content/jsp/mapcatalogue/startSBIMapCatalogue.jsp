@@ -1,18 +1,14 @@
-<%@ page language="java"
-         contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"
-         import="it.eng.spagobi.commons.constants.SpagoBIConstants"
-%>
-<%@page import="it.eng.spagobi.commons.utilitiestilities.urls.UrlBuilderFactory"%>
-<%@page it.eng.spagobi.commons.utilitiestilities.ChannelUtilities"%>
+<%@page language="java"
+        contentType="text/html; charset=UTF-8"
+        pageEncoding="UTF-8" %>
+         
+<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
+<%@page import="it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory"%>
 <%@page import="it.eng.spago.base.RequestContainer"%>
-<%@page it.eng.spagobi.commons.utilitiesommons.utilities.urls.IUrlBuilder"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
-
-
 
 <%
 	Map listMapUrlPars = new HashMap();
@@ -40,7 +36,7 @@
 	<table>
 		<tr class="portlet-font">
 			<td width="100" align="center">
-				<img height="80px" width="80x" src='<%=urlBuilder.getResourceLink(request, "/components/mapcatalogue/img/mapManagement.png")%>' />
+				<img height="80px" width="80x" src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/mapManagement.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;
@@ -54,7 +50,7 @@
 		</tr>
 		<tr class="portlet-font">
 			<td width="100" align="center">
-				<img height="80px" width="80px" src='<%=urlBuilder.getResourceLink(request, "/components/mapcatalogue/img/featureManagement.png")%>' />
+				<img height="80px" width="80px" src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/featureManagement.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;

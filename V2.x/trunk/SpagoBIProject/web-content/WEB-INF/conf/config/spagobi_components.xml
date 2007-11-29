@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<SPAGOBI_COMPONENTS>
-	
-	<SPAGOBI_COMPONENT name="importexport" installed="true" /> 
-	<SPAGOBI_COMPONENT name="booklets" installed="false" /> 
-	<SPAGOBI_COMPONENT name="mapcatalogue" installed="false" /> 
-	
-</SPAGOBI_COMPONENTS>

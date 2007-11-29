@@ -77,18 +77,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</a>
 			</td>
 		</tr>
-		<%
-			boolean impexpInst = false;
-			ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-			SourceBean moduleSB = (SourceBean)spagoConfig.getFilteredSourceBeanAttribute("SPAGOBI_COMPONENTS.SPAGOBI_COMPONENT", "name", "importexport");
-			if(moduleSB!=null){
-				String inst = (String)moduleSB.getAttribute("installed");
-				if((inst!=null) && inst.equalsIgnoreCase("true")) {
-					impexpInst = true;
-				}
-			}
-			if(impexpInst) {
-		%>
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
 				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/importexport/importexport64.png")%>' />
@@ -109,9 +97,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</a>
 			</td>
 		</tr>
-		<%
-			}
-		%>
 		<tr class="portlet-font">
 				<td width="100" align="center">
 					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/datasource/datasource_2.png")%>' />

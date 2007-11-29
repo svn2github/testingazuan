@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class UserProfile implements IEngUserProfile {
-
+    
+        private static String WORKFLOW_USER_NAME = "[SYSTEM - WORKFLOW]";
     
 	private String userUniqueIdentifier = null;
 	private Map userAttributes = null;
@@ -35,7 +36,20 @@ public class UserProfile implements IEngUserProfile {
     
     public UserProfile(String user){
 	this.userUniqueIdentifier=user;
-    }    
+    }  
+    
+    /**
+     * Usato solo nel workflow
+     * @param user
+     * @param psw
+     */
+    public static final UserProfile createWorkFlowUserProfile(){
+	UserProfile profile=new UserProfile("[SYSTEM - WORKFLOW]");
+	profile.roles = new ArrayList();
+	profile.userAttributes = new HashMap();
+	profile.userAttributes.put("password", WORKFLOW_USER_NAME);
+	return profile;
+    }      
 	
     public Collection getFunctionalities() throws EMFInternalError {
 	return functionalities;

@@ -28,6 +28,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -37,7 +38,6 @@ import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
 import it.eng.spagobi.engines.dossier.exceptions.OpenOfficeConnectionException;
-import it.eng.spagobi.engines.dossier.profile.AnonymousWorkflowProfile;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
@@ -387,7 +387,7 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			Map mapPars = aEngineDriver.getParameterMap(biobj, null, "");
 			debug("storeDocImages", "parameter map returned by engine driver " );
 			
-			IEngUserProfile profile = new AnonymousWorkflowProfile();
+			IEngUserProfile profile = UserProfile.createWorkFlowUserProfile();
 		    // AUDIT
 			AuditManager auditManager = AuditManager.getInstance();
 			Integer executionId = auditManager.insertAudit(biobj, profile, "", "WORKFLOW");

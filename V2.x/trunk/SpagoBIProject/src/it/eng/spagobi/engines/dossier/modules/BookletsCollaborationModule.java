@@ -32,6 +32,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
@@ -45,7 +46,6 @@ import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
 import it.eng.spagobi.engines.dossier.exceptions.OpenOfficeConnectionException;
-import it.eng.spagobi.engines.dossier.profile.AnonymousWorkflowProfile;
 import it.eng.spagobi.engines.dossier.utils.BookletServiceUtils;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
@@ -316,7 +316,7 @@ public class BookletsCollaborationModule extends AbstractModule {
     			    "runCollaborationHandler", "Error while recovering BIObject", e);
 		}
 		
-		IEngUserProfile profile = new AnonymousWorkflowProfile();
+		IEngUserProfile profile = UserProfile.createWorkFlowUserProfile();
 	    // AUDIT
 		AuditManager auditManager = AuditManager.getInstance();
 		Integer auditId = null;

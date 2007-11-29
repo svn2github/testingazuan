@@ -252,24 +252,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		   		return;
 			}
 			id = obj.getId();
-			/*
-			 * in case the object is executed by its label (it means that it is called by a link 
-			 * in another document) we must verify that the user can see the document
-			*/
-//			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
-//			if (!canSee) {
-//				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-//			            "ExecuteBIObjectMOdule", 
-//			            "pageCreationHandler", 
-//			            "Object with label = '" + label + "' cannot be executed by the user!!");
-//				Vector v = new Vector();
-//				v.add(label);
-//				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
-//				return;
-//			}
-			/*
-			 * TODO the actor parameter must be updated
-			 */
+
 		} else if (idStr != null) {
 			debug("pageCreationHandler", "Loading biobject with id = '" + idStr + "' ...");
 			id = new Integer(idStr);

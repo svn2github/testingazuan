@@ -14,6 +14,7 @@ import edu.yale.its.tp.cas.proxy.ProxyTicketReceptor;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.services.common.EnginConf;
 
 public abstract class AbstractServiceProxy {
 
@@ -36,22 +37,23 @@ public abstract class AbstractServiceProxy {
 	init();
     }
     public AbstractServiceProxy() {
+	init();
     }    
     
     protected void init(){
 	String className=this.getClass().getSimpleName();
 	logger.debug("Read className="+className);
-	ConfigSingleton config = ConfigSingleton.getInstance();
-        SourceBean validateSB = (SourceBean)config.getAttribute("ENGINE-CONFIGURATION.ACTIVE_SSO");
-        if (validateSB!=null){
-            // sono sui motori...
+	SourceBean engineConfig = EnginConf.getInstance().getConfig();	
+	if (engineConfig!=null){
+	 // sono sui motori...
+            SourceBean validateSB = (SourceBean)engineConfig.getAttribute("ACTIVE_SSO");
             String active = (String)validateSB.getCharacters();
             if (active!=null && active.equals("true")) ssoIsActive=true;
             logger.debug("Read activeSso="+ssoIsActive);
-            validateSB = (SourceBean)config.getAttribute("ENGINE-CONFIGURATION.FILTER_RECEIPT");
+            validateSB = (SourceBean)engineConfig.getAttribute("FILTER_RECEIPT");
             filterReceipt = (String)validateSB.getCharacters();
             logger.debug("Read filterReceipt="+filterReceipt);
-            validateSB = (SourceBean)config.getAttribute("ENGINE-CONFIGURATION."+className+"_URL");
+            validateSB = (SourceBean)engineConfig.getAttribute(className+"_URL");
             String serviceUrlStr = (String)validateSB.getCharacters();
             logger.debug("Read sericeUrl="+serviceUrlStr);   
             try {
@@ -60,12 +62,13 @@ public abstract class AbstractServiceProxy {
 		logger.error("MalformedURLException:"+serviceUrlStr,e);   
 	    }
         }else {
+            ConfigSingleton serverConfig = ConfigSingleton.getInstance();            
             // sono all'interno del contesto SpagoBI
-            validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.ACTIVE");
+            SourceBean validateSB = (SourceBean)serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
             String active = (String)validateSB.getCharacters();
             if (active!=null && active.equals("true")) ssoIsActive=true;
             logger.debug("Read activeSso="+ssoIsActive); 
-            validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.FILTER_RECEIPT");
+            validateSB = (SourceBean)serverConfig.getAttribute("SPAGOBI_SSO.FILTER_RECEIPT");
             filterReceipt = (String)validateSB.getCharacters();          
             logger.debug("Read filterReceipt="+filterReceipt);
         }

@@ -3,8 +3,10 @@ package it.eng.spagobi.services.proxy;
 
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.datasource.stub.DataSourceServiceServiceLocator;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import javax.servlet.http.HttpSession;
+import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
@@ -30,6 +32,24 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
     public DataSourceServiceProxy() {
 	super();
     }   
+    
+    private it.eng.spagobi.services.datasource.stub.DataSourceService lookUp() throws SecurityException {
+	try {
+	    DataSourceServiceServiceLocator locator = new DataSourceServiceServiceLocator();
+	    it.eng.spagobi.services.datasource.stub.DataSourceService service=null;
+	    if (serviceUrl!=null ){
+		    service = locator.getDataSourceService(serviceUrl);		
+	    }else {
+		    service = locator.getDataSourceService();		
+	    }
+	    return service;
+	} catch (ServiceException e) {
+	    logger.error("Error during service execution", e);
+	    throw new SecurityException();
+	}
+    }
+    
+    
     public SpagoBiDataSource getDataSource(String documentId) {
 	logger.debug("IN");
 	try {
@@ -37,9 +57,8 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    DataSourceServiceServiceLocator locator = new DataSourceServiceServiceLocator();
-	    it.eng.spagobi.services.datasource.stub.DataSourceService service = locator.getDataSourceService();
-	    return service.getDataSource(ticket, documentId);
+
+	    return lookUp().getDataSource(ticket, documentId);
 	} catch (Exception e) {
 	    logger.error("Error during Service LookUp",e);
 	}finally{

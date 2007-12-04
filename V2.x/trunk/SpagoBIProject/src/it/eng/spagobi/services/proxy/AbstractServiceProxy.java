@@ -1,6 +1,8 @@
 package it.eng.spagobi.services.proxy;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,6 +22,7 @@ public abstract class AbstractServiceProxy {
     protected HttpSession session = null;
     protected boolean ssoIsActive=false;
     protected String filterReceipt=null;
+    protected URL serviceUrl=null;
     
     protected String readTicket() throws IOException {
 	CASReceipt cr = (CASReceipt) session
@@ -36,6 +39,8 @@ public abstract class AbstractServiceProxy {
     }    
     
     protected void init(){
+	String className=this.getClass().getSimpleName();
+	logger.debug("Read className="+className);
 	ConfigSingleton config = ConfigSingleton.getInstance();
         SourceBean validateSB = (SourceBean)config.getAttribute("ENGINE-CONFIGURATION.ACTIVE_SSO");
         if (validateSB!=null){
@@ -46,6 +51,14 @@ public abstract class AbstractServiceProxy {
             validateSB = (SourceBean)config.getAttribute("ENGINE-CONFIGURATION.FILTER_RECEIPT");
             filterReceipt = (String)validateSB.getCharacters();
             logger.debug("Read filterReceipt="+filterReceipt);
+            validateSB = (SourceBean)config.getAttribute("ENGINE-CONFIGURATION."+className+"_URL");
+            String serviceUrlStr = (String)validateSB.getCharacters();
+            logger.debug("Read sericeUrl="+serviceUrlStr);   
+            try {
+        	serviceUrl=new URL(serviceUrlStr);
+	    } catch (MalformedURLException e) {
+		logger.error("MalformedURLException:"+serviceUrlStr,e);   
+	    }
         }else {
             // sono all'interno del contesto SpagoBI
             validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.ACTIVE");
@@ -53,7 +66,7 @@ public abstract class AbstractServiceProxy {
             if (active!=null && active.equals("true")) ssoIsActive=true;
             logger.debug("Read activeSso="+ssoIsActive); 
             validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.FILTER_RECEIPT");
-            filterReceipt = (String)validateSB.getCharacters();   
+            filterReceipt = (String)validateSB.getCharacters();          
             logger.debug("Read filterReceipt="+filterReceipt);
         }
     }

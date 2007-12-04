@@ -4,8 +4,10 @@ import java.util.HashMap;
 
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.content.stub.ContentServiceServiceLocator;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import javax.servlet.http.HttpSession;
+import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +24,22 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	super();
     }    
 
+    private it.eng.spagobi.services.content.stub.ContentService lookUp() throws SecurityException {
+	try {
+	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();   
+	    it.eng.spagobi.services.content.stub.ContentService service=null;
+	    if (serviceUrl!=null ){
+		    service = locator.getContentService(serviceUrl);		
+	    }else {
+		    service = locator.getContentService();		
+	    }
+	    return service;
+	} catch (ServiceException e) {
+	    logger.error("Error during service execution", e);
+	    throw new SecurityException();
+	}
+    }
+    
     public Content readTemplate(String user, String document) {
 	logger.debug("IN");
 	try {
@@ -29,10 +47,8 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
-	    it.eng.spagobi.services.content.stub.ContentService service = locator
-		    .getContentService();
-	    return service.readTemplate(ticket, user, document);
+	    
+	    return lookUp().readTemplate(ticket, user, document);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -49,10 +65,7 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
-	    it.eng.spagobi.services.content.stub.ContentService service = locator
-		    .getContentService();
-	    return service.publishTemplate(ticket, user, attributes);
+	    return lookUp().publishTemplate(ticket, user, attributes);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -69,10 +82,7 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
-	    it.eng.spagobi.services.content.stub.ContentService service = locator
-		    .getContentService();
-	    return service.mapCatalogue(ticket, user, operation,path,featureName,mapName);
+	    return lookUp().mapCatalogue(ticket, user, operation,path,featureName,mapName);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -89,10 +99,7 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
-	    it.eng.spagobi.services.content.stub.ContentService service = locator
-		    .getContentService();
-	    return service.readSubObjectContent(ticket, user, nameSubObject);
+	    return lookUp().readSubObjectContent(ticket, user, nameSubObject);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -109,10 +116,7 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
-	    it.eng.spagobi.services.content.stub.ContentService service = locator
-		    .getContentService();
-	    return service.saveSubObject(ticket, user, documentiId,analysisName, analysisDescription, visibilityBoolean, content);
+	    return lookUp().saveSubObject(ticket, user, documentiId,analysisName, analysisDescription, visibilityBoolean, content);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -129,10 +133,7 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
-	    it.eng.spagobi.services.content.stub.ContentService service = locator
-		    .getContentService();
-	    return service.saveObjectTemplate(ticket, user, documentiId, templateName, content);
+	    return lookUp().saveObjectTemplate(ticket, user, documentiId, templateName, content);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -149,10 +150,7 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-	    ContentServiceServiceLocator locator = new ContentServiceServiceLocator();
-	    it.eng.spagobi.services.content.stub.ContentService service = locator
-		    .getContentService();
-	    return service.downloadAll(ticket, user, biobjectId, fileName);
+	    return lookUp().downloadAll(ticket, user, biobjectId, fileName);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 

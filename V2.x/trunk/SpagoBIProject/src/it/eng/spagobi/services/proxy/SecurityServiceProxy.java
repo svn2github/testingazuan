@@ -11,6 +11,7 @@ import it.eng.spagobi.services.security.stub.SecurityServiceServiceLocator;
 import java.security.Principal;
 
 import javax.servlet.http.HttpSession;
+import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
@@ -27,6 +28,22 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
 	super();
     }     
     
+    private it.eng.spagobi.services.security.stub.SecurityService lookUp() throws SecurityException {
+	try {
+	    SecurityServiceServiceLocator locator = new SecurityServiceServiceLocator();
+	    it.eng.spagobi.services.security.stub.SecurityService service = null;
+	    if (serviceUrl != null) {
+		service = locator.getSecurityService(serviceUrl);
+	    } else {
+		service = locator.getSecurityService();
+	    }
+	    return service;
+	} catch (ServiceException e) {
+	    logger.error("Error during service execution", e);
+	    throw new SecurityException();
+	}
+    }
+    
     public IEngUserProfile getUserProfile(String userId) throws SecurityException{
 	logger.debug("IN");
 	try {
@@ -34,9 +51,7 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-            SecurityServiceServiceLocator locator=new SecurityServiceServiceLocator();
-            it.eng.spagobi.services.security.stub.SecurityService servizio= locator.getSecurityService();
-            SpagoBIUserProfile user= servizio.getUserProfile(ticket,userId);
+            SpagoBIUserProfile user= lookUp().getUserProfile(ticket,userId);
             return new UserProfile(user);
         } catch (Exception e) {
             logger.error("Error during service execution",e);
@@ -72,9 +87,7 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
 	    if (ssoIsActive){
 		ticket=readTicket();
 	    }
-            SecurityServiceServiceLocator locator=new SecurityServiceServiceLocator();
-            it.eng.spagobi.services.security.stub.SecurityService servizio= locator.getSecurityService();
-            return servizio.isAuthorized(ticket,userId,folderId, mode);
+            return lookUp().isAuthorized(ticket,userId,folderId, mode);
         } catch (Exception e) {
             logger.error("Error during service execution",e);
         }finally{

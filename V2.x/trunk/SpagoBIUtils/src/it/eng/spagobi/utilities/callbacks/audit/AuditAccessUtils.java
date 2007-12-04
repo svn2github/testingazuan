@@ -43,16 +43,12 @@ public class AuditAccessUtils {
 
     static private Logger logger = Logger.getLogger(AuditAccessUtils.class);
     private List _auditIds;
-    // private String _auditId;
-    private String _auditServlet;
 
     // private boolean _isNewExecution = true;
 
-    public AuditAccessUtils(String auditId, String auditServlet) {
+    public AuditAccessUtils(String auditId) {
 	_auditIds = new ArrayList();
 	_auditIds.add(auditId);
-	// _auditId = auditId;
-	_auditServlet = auditServlet;
     }
 
     public List getAuditIds() {
@@ -61,14 +57,6 @@ public class AuditAccessUtils {
 
     public void addAuditId(String auditId) {
 	_auditIds.add(auditId);
-    }
-
-    public String getAuditServlet() {
-	return _auditServlet;
-    }
-
-    public void setAuditServlet(String servlet) {
-	_auditServlet = servlet;
     }
 
     /**

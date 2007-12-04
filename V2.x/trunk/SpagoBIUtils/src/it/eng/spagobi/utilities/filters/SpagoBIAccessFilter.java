@@ -32,6 +32,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.utilities.filters;
 
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.IOException;
@@ -45,8 +48,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 public class SpagoBIAccessFilter implements Filter {
 
+    private static transient Logger logger = Logger.getLogger(SpagoBIAccessFilter.class);
+    
 	public void destroy() {
 		// do nothing
 	}
@@ -57,15 +64,30 @@ public class SpagoBIAccessFilter implements Filter {
 		String spagobiContextUrl = request.getParameter("spagobicontext");
 		// parameters required for auditing
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
-		String auditServlet = request.getParameter("SPAGOBI_AUDIT_SERVLET");
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			HttpSession session = httpRequest.getSession();
+			HttpSession session = httpRequest.getSession();		    
+			// USER PROFILE
+			String userId = (String) request.getParameter("userId");
+			logger.info("Filter USER_ID:"+ userId);
+			IEngUserProfile profile = null;
+			try {
+			    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			    if (profile == null) {
+				SecurityServiceProxy proxy = new SecurityServiceProxy();
+				profile = proxy.getUserProfile(userId);
+				session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+			    }
+			} catch (SecurityException e1) {
+			    logger.error("SecurityException", e1);
+			    throw new ServletException();
+			}
+
 			if (spagobiContextUrl != null) session.setAttribute("spagobicontext", spagobiContextUrl);
-			if (auditId != null && auditServlet != null) {
+			if (auditId != null) {
 				AuditAccessUtils auditAccessUtils = (AuditAccessUtils) session.getAttribute("SPAGOBI_AUDIT_UTILS");
 				if (auditAccessUtils == null) {
-					auditAccessUtils = new AuditAccessUtils(auditId, auditServlet);
+					auditAccessUtils = new AuditAccessUtils(auditId);
 					session.setAttribute("SPAGOBI_AUDIT_UTILS", auditAccessUtils);
 				} else {
 						auditAccessUtils.addAuditId(auditId);

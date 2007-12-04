@@ -55,11 +55,11 @@
 		    	
 		    	   it/eng/spagobi/services/security/bo/SpagoBIUserProfile.class, 
 		    	   it/eng/spagobi/services/security/exceptions/SecurityException.class, 
-		    	   it/eng/spagobi/services/scheduler/stub/SecurityService.class,               
-	               it/eng/spagobi/services/scheduler/stub/SecurityServiceService.class,
-				   it/eng/spagobi/services/scheduler/stub/SecurityServiceServiceLocator.class,
-			       it/eng/spagobi/services/scheduler/stub/SecurityServiceSoapBindingStub.class,
-				   it/eng/spagobi/services/scheduler/stub/SecurityServiceSoapBindingSkeleton.class,
+		    	   it/eng/spagobi/services/security/stub/SecurityService.class,               
+	               it/eng/spagobi/services/security/stub/SecurityServiceService.class,
+				   it/eng/spagobi/services/security/stub/SecurityServiceServiceLocator.class,
+			       it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingStub.class,
+				   it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingSkeleton.class,
 		    	
 			    	it/eng/spagobi/services/proxy/AbstractServiceProxy.class,
 			    	it/eng/spagobi/services/proxy/ContentServiceProxy.class,
@@ -69,6 +69,7 @@
 			    	it/eng/spagobi/services/proxy/SecurityServiceProxy.class,
 				    it/eng/spagobi/services/proxy/AuditServiceProxy.class,
 			    	
+		    	    it/eng/spagobi/services/common/EnginConf.class,
 				    it/eng/spagobi/commons/bo/UserProfile.class"
 		    />
 		</jar>

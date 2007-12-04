@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.services.common.EnginConf;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ExporterFactory {
 	static public JRExporter getExporter(String format) {
 		JRExporter exporter = null;
 		
-		SourceBean config = JasperReportConf.getInstance().getConfig();
+		SourceBean config = EnginConf.getInstance().getConfig();
 		SourceBean exporterConfig = (SourceBean) config.getFilteredSourceBeanAttribute ("EXPORTERS.EXPORTER", "format", format);
 		if(exporterConfig == null) return null;
 		String exporterClassName = (String)exporterConfig.getAttribute("class");
@@ -34,7 +35,7 @@ public class ExporterFactory {
 	
 	static public String getMIMEType(String format) {
 		String mimeType = null;
-		SourceBean config = JasperReportConf.getInstance().getConfig();
+		SourceBean config = EnginConf.getInstance().getConfig();
 		SourceBean exporterConfig = (SourceBean) config.getFilteredSourceBeanAttribute ("EXPORTERS.EXPORTER", "format", format);
 		if(exporterConfig == null) return null;
 		mimeType = (String)exporterConfig.getAttribute("mime");
@@ -43,7 +44,7 @@ public class ExporterFactory {
 	
 	static public String getDefaultType(){
 		String defaultType = null;
-		SourceBean config = JasperReportConf.getInstance().getConfig();
+		SourceBean config = EnginConf.getInstance().getConfig();
 		defaultType = (String)config.getAttribute("EXPORTERS.default");
 		if(defaultType == null) defaultType = "html";
 		return defaultType;

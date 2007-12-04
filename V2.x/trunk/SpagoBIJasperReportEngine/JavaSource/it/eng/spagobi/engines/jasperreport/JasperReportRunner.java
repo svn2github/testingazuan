@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.DynamicClassLoader;
@@ -389,7 +390,7 @@ public class JasperReportRunner {
 	private boolean isVirtualizationActive() {
 	    	logger.debug("IN");
 		boolean isVirtualizationActive = false;
-		SourceBean config = JasperReportConf.getInstance().getConfig();
+		SourceBean config = EnginConf.getInstance().getConfig();
 		String active = (String)config.getAttribute("VIRTUALIZER.active");
 		if(active != null) isVirtualizationActive = active.equalsIgnoreCase("true");
 		logger.debug("OUT");
@@ -400,7 +401,7 @@ public class JasperReportRunner {
 	    	logger.debug("IN");
 		JRFileVirtualizer virtualizer = null; 
 		
-		SourceBean config = JasperReportConf.getInstance().getConfig();
+		SourceBean config = EnginConf.getInstance().getConfig();
 		String maxSizeStr = (String)config.getAttribute("VIRTUALIZER.maxSize");
 		int maxSize = 2; 
 		if(maxSizeStr!=null) maxSize = Integer.parseInt(maxSizeStr);

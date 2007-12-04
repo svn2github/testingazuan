@@ -6,6 +6,12 @@
 	<!-- ====================================================================================== -->
 	<ACTIVE_SSO>false</ACTIVE_SSO>
 	<FILTER_RECEIPT>https://localhost:8443/SpagoBI/proxyReceptor</FILTER_RECEIPT>
-	
+	<SECURITY_SERVICE_URL>http://localhost:8080/SpagoBI/services/SecurityService</SECURITY_SERVICE_URL>
+	<SCHEDULER_SERVICE_URL>http://localhost:8080/SpagoBI/services/SchedulerService</SCHEDULER_SERVICE_URL>
+	<EVENT_SERVICE_URL>http://localhost:8080/SpagoBI/services/EventService</EVENT_SERVICE_URL>
+	<CONTENT_SERVICE_URL>http://localhost:8080/SpagoBI/services/ContentService</CONTENT_SERVICE_URL>
+	<AUDIT_SERVICE_URL>http://localhost:8080/SpagoBI/services/AuditService</AUDIT_SERVICE_URL>
+	<DATA_SOURCE_SERVICE_URL>http://localhost:8080/SpagoBI/services/DataSourceService</DATA_SOURCE_SERVICE_URL>
+		
 
 </ENGINE-CONFIGURATION>

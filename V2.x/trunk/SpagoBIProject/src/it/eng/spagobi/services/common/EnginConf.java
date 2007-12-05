@@ -26,9 +26,10 @@ public class EnginConf {
 	private EnginConf() {
 		try {
 			logger.debug("Resource: " + getClass().getResource("/engine-config.xml"));
-			InputSource source=new InputSource(getClass().getResourceAsStream("/engine-config.xml"));
-			if (source!=null) config = SourceBean.fromXMLStream(source);
-			else logger.debug("Impossible to load configuration for report engine");
+			if (getClass().getResource("/engine-config.xml")!=null){
+				InputSource source=new InputSource(getClass().getResourceAsStream("/engine-config.xml"));
+				config = SourceBean.fromXMLStream(source);    
+			}else logger.debug("Impossible to load configuration for report engine");
 		} catch (SourceBeanException e) {
 			logger.error("Impossible to load configuration for report engine", e);
 		}

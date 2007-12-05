@@ -122,7 +122,7 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		output.append("</script>\n");
 		
 		output.append("<div id='scriptwizardinfodiv' style='display:none;'>\n");	
-		output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/scriptwizardinfo"));
+		output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/scriptwizardinfo"));
 		output.append("</div>\n");	
 		
         try {

@@ -178,7 +178,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("</script>\n");
 		
 		output.append("<div id='querywizardinfodiv' style='display:none;'>\n");	
-		output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/presentation/tags/info/querywizardinfo"));
+		output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/querywizardinfo"));
 		output.append("</div>\n");	
 		
         try {

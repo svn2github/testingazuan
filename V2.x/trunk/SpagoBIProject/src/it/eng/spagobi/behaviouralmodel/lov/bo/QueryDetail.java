@@ -177,7 +177,7 @@ public class QueryDetail  implements ILovDetail  {
 		DataConnection dataConnection = dsUtil.getDataConnection(conn);
 		SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
 		DataResult dataResult = sqlCommand.execute();
-        ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
+                ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
 		SourceBean result = scrollableDataResult.getSourceBean();
 		resStr = result.toXML(false);
 		resStr = resStr.trim();

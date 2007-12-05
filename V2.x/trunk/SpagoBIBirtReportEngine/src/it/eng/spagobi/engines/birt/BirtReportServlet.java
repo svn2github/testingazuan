@@ -13,8 +13,6 @@ import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -89,22 +87,13 @@ public class BirtReportServlet extends HttpServlet {
 		logger.info(this.getClass().getName() + ":service: Start processing a new request...");	
 
 		// USER PROFILE
+		HttpSession session = request.getSession();
+		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			
 		documentId=(String)request.getParameter("document");
-		userId=(String)request.getParameter("userId");
-		IEngUserProfile profile=null;
-		try {
-		    HttpSession session=request.getSession();
-		    profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    if (profile==null){
-				SecurityServiceProxy proxy=new SecurityServiceProxy();
-				profile = proxy.getUserProfile(userId);
-				session.setAttribute(IEngUserProfile.ENG_USER_PROFILE,profile);
-		    }
-		} catch (SecurityException e1) {
-		    logger.error("SecurityException",e1);
-		    throw new ServletException();
-		}
-		
+		userId=(String)profile.getUserUniqueIdentifier();
+
+	
 	 	
 			// AUDIT UPDATE
 			String auditId = request.getParameter("SPAGOBI_AUDIT_ID");

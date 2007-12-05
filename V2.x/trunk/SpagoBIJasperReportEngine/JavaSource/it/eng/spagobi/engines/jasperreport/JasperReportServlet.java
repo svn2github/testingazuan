@@ -5,35 +5,19 @@
  */
 package it.eng.spagobi.engines.jasperreport;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
-
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -44,7 +28,6 @@ import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -55,10 +38,6 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
 
 import sun.misc.BASE64Decoder;
 
@@ -104,22 +83,7 @@ public class JasperReportServlet extends HttpServlet {
 	String documentId = (String) request.getParameter("document");
 	HttpSession session = request.getSession();
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	/*
-	String userId = (String) request.getParameter("userId");
-	IEngUserProfile profile = null;
-	try {
-	    HttpSession session = request.getSession();
-	    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	    if (profile == null) {
-		SecurityServiceProxy proxy = new SecurityServiceProxy();
-		profile = proxy.getUserProfile(userId);
-		session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-	    }
-	} catch (SecurityException e1) {
-	    logger.error("SecurityException", e1);
-	    throw new ServletException();
-	}
-*/
+
 	Map params = new HashMap();
 	Enumeration enumer = request.getParameterNames();
 	String parName = null;

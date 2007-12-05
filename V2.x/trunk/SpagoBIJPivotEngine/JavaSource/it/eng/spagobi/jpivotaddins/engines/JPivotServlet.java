@@ -33,22 +33,11 @@ public class JPivotServlet extends HttpServlet {
 			throws IOException, ServletException {
 		
 		logger.debug("Starting service method...");
+
 		// USER PROFILE
-		String documentId=(String)request.getParameter("document");
-		String userId=(String)request.getParameter("userId");
-		
-		try {
-		    HttpSession session=request.getSession();
-		    IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    if (profile==null){
-			SecurityServiceProxy proxy=new SecurityServiceProxy();
-			profile = proxy.getUserProfile(userId);
-			session.setAttribute(IEngUserProfile.ENG_USER_PROFILE,profile);
-		    }
-		} catch (SecurityException e1) {
-		    logger.error("SecurityException",e1);
-		    throw new ServletException();
-		}
+		String documentId = (String) request.getParameter("document");
+		HttpSession session = request.getSession();
+
 			
 		String language = request.getParameter("language");
 		String country = request.getParameter("country");
@@ -64,7 +53,6 @@ public class JPivotServlet extends HttpServlet {
 			locale = new Locale("en", "US");
 		}
 		
-		HttpSession session = request.getSession();
 		SessionObjectRemoval.removeSessionObjects(session);
 		
 		RequestContext context = RequestContext.instance();

@@ -39,6 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.constants.ObjectsTreeConstants"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
+<%@ page import="it.eng.spagobi.utilities.ChannelUtilities"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_MANAGEMENT_MODULE); 
@@ -81,6 +82,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    String formEraseUrl = urlBuilder.getUrl(request, formEraseUrlPars);
    
    Map saveUrlPars = new HashMap();
+   if(ChannelUtilities.isPortletRunning()) {
+		saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+    saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
+    saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	}
    //saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    //saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
    //saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
@@ -214,9 +220,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		<form action="<%=saveUrl%>" method='POST' id='saveForm' name='saveForm' enctype="multipart/form-data">
 			<input type="hidden" name="<%=BookletsConstants.PATH_BOOKLET_CONF %>"  value="<%=pathConfNode%>"/>
-			<input type="hidden" name="PAGE"  value="<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>"/>
 			<input type="hidden" name="OPERATION"  value="<%=BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET%>"/>
-			<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"  value="TRUE"/>
+
+	<% if(ChannelUtilities.isWebRunning()) { %>
+		<input type='hidden' name='PAGE' value='<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>' />
+		<input type='hidden' name='OPERATION' value='<%=BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET%>' />
+		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
+	<% } %>
 		
 		<br/>
 				

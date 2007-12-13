@@ -100,14 +100,14 @@ public class BirtReportServlet extends HttpServlet {
 			AuditAccessUtils auditAccessUtils = 
 				(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 			if (auditId != null) {
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, new Long(System.currentTimeMillis()), null, 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,userId,auditId, new Long(System.currentTimeMillis()), null, 
 						"EXECUTION_STARTED", null, null);
 			}
 	 		try {
 	 			runReport(request, response);				
 	 			// 	AUDIT UPDATE
 	 			if (auditId != null) {
-	 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
+	 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,userId,auditId, null, new Long(System.currentTimeMillis()), 
 	 						"EXECUTION_PERFORMED", null, null);
 	 			}
 	 		} catch (ConnectionDefinitionException e){
@@ -120,7 +120,7 @@ public class BirtReportServlet extends HttpServlet {
 		 		writer.close();
 				// AUDIT UPDATE
 		 		if (auditId != null) {
-		 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
+		 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,userId,auditId, null, new Long(System.currentTimeMillis()), 
 		 					"EXECUTION_FAILED", e.getDescription(), null);
 		 		}		 						
 	 		} catch (Exception e){
@@ -128,7 +128,7 @@ public class BirtReportServlet extends HttpServlet {
 		      			"Error during report production \n\n ", e);
 				// AUDIT UPDATE
 	 			if (auditId != null) {
-		 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
+		 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,userId,auditId, null, new Long(System.currentTimeMillis()), 
 		 					"EXECUTION_FAILED", e.getMessage(), null);
 		 		}	
 	 		}
@@ -185,7 +185,7 @@ public class BirtReportServlet extends HttpServlet {
 	}
 	
 	private InputStream getTemplateContent(HttpServletRequest servletRequest) throws IOException {
-		ContentServiceProxy contentProxy = new ContentServiceProxy();;
+		ContentServiceProxy contentProxy = new ContentServiceProxy(servletRequest.getSession());;
 		Content template = contentProxy.readTemplate(userId, documentId);
 		logger.debug("Read the template."+template.getFileName());
 		InputStream is = null;		
@@ -242,15 +242,15 @@ public class BirtReportServlet extends HttpServlet {
 	 * @return jndi connection
 	 * @throws ConnectionDefinitionException
 	 */
-	private String findConnectionName(String documentId) throws ConnectionDefinitionException {
+	private String findConnectionName(HttpSession session,String userId,String documentId) throws ConnectionDefinitionException {
 		String connectionLabel = null;
 		if (documentId == null) {
 			logger.error("Document identifier NOT found. Returning null.");
 				throw new ConnectionParameterNotValidException("No default connection defined in " +
 						"engine-config.xml file.");
 		}
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
-		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);		
+		SpagoBiDataSource ds = proxyDS.getDataSource(userId,documentId);
 		//  get connection
 		String jndi = ds.getJndiName();
 		if (jndi != null && !jndi.equals("")) 
@@ -265,54 +265,16 @@ public class BirtReportServlet extends HttpServlet {
 	 * @return jndi connection
 	 * @throws ConnectionDefinitionException
 	 */
-	private SpagoBiDataSource findDataSource(String documentId) throws ConnectionDefinitionException {
+	private SpagoBiDataSource findDataSource(HttpSession session,String userId,String documentId) throws ConnectionDefinitionException {
 		if (documentId == null) {
 			logger.error("Document identifier NOT found. Returning null.");
 				throw new ConnectionParameterNotValidException("No default connection defined in " +
 						"engine-config.xml file.");
 		}
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
-		return  proxyDS.getDataSource(documentId);		
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);		
+		return  proxyDS.getDataSource(userId,documentId);		
 	}
 	
-	/**
-	 * This method, based on the data sources table, gets a 
-	 * database connection and return it  
-	 * @return the database connection
-	 */
-	public Connection getConnection(String documentId) {
-		//calls service for gets data source object
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
-		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
-		//  get connection
-		String jndi = ds.getJndiName();
-		if (jndi != null && !jndi.equals("")) {
-			return getConnectionFromJndiDS(ds);
-		} else {
-			return getDirectConnection(ds);
-		}
-	}
-	
-	/**
-	 * Get the connection from JNDI
-	 * @param connectionConfig SourceBean describing data connection
-	 * @return Connection to database
-	 */
-	private Connection getConnectionFromJndiDS(SpagoBiDataSource connectionConfig) {
-		Connection connection = null;
-		Context ctx ;		
-		String resName = connectionConfig.getJndiName();		
-		try {
-			ctx = new InitialContext();								
-			DataSource ds = (DataSource) ctx.lookup(resName);		
-			connection = ds.getConnection();
-		} catch (NamingException ne) {
-			logger.error("JNDI error", ne);
-		} catch (SQLException sqle) {
-			logger.error("Cannot retrive connection", sqle);
-		}
-		return connection;
-	}
 	
 	/**
 	 * Get the connection using jdbc 
@@ -338,6 +300,10 @@ public class BirtReportServlet extends HttpServlet {
 	
 	protected void runReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		HttpSession session = request.getSession();
+		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		userId=(String)profile.getUserUniqueIdentifier();
+		
 		ServletContext servletContext = getServletContext();
 		this.birtReportEngine = BirtEngine.getBirtEngine(request, servletContext);
 		IReportRunnable design = null;
@@ -353,7 +319,7 @@ public class BirtReportServlet extends HttpServlet {
 		Map reportParams = findReportParams(request, design);
 		//String connection = findConnectionName(documentId);
 		//if (connection != null) reportParams.put("connectionName", connection);
-		SpagoBiDataSource sbds = findDataSource(documentId);
+		SpagoBiDataSource sbds = findDataSource(request.getSession(),userId,documentId);
 		if (sbds != null){
 			logger.debug("DataSource founded.");
 			if(sbds.getJndiName() != null && sbds.getJndiName() != ""){

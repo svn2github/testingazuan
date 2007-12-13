@@ -6,6 +6,8 @@
 
 <web-app>
 
+
+ 
     <display-name>Eclipse BIRT Report Viewer</display-name>
 
 	<!-- Default locale setting -->
@@ -92,15 +94,45 @@
 		<param-value>true</param-value>
 	</context-param>
 
+	 <filter>
+ <filter-name>CAS_Filter</filter-name>
+ <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
+    <init-param>
+       <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
+       <param-value>https://localhost:8443/exo-cas-2/login</param-value>
+    </init-param>
+    <init-param>
+       <param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
+       <param-value>https://localhost:8443/exo-cas-2/serviceValidate</param-value>
+    </init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.serviceUrl
+			</param-name>
+			<param-value>https://localhost:8443/SpagoBIBirtReportEngine/BirtReportServlet</param-value>
+		</init-param>
+       <init-param>
+  			 <param-name>edu.yale.its.tp.cas.client.filter.proxyCallbackUrl</param-name> 
+             <param-value>https://localhost:8443/SpagoBIBirtReportEngine/proxyReceptor</param-value> 
+       </init-param>     
+ </filter>
+ 
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
 	
+  <filter-mapping>
+    <filter-name>CAS_Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+ </filter-mapping>
+ 	
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/BirtReportServlet/*</url-pattern>
 	</filter-mapping>
+	 
+
 		
 	<!-- Viewer Servlet Context Listener -->
 	<listener>
@@ -131,10 +163,6 @@
 	<servlet>
         <servlet-name>BirtReportServlet</servlet-name>
         <servlet-class>it.eng.spagobi.engines.birt.BirtReportServlet</servlet-class>
-    	<init-param>
-            <param-name>SECURITY_ABLE</param-name>
-            <param-value>FALSE</param-value>
-        </init-param>
     </servlet>
 
     <servlet>
@@ -147,6 +175,16 @@
         <servlet-class>it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>ReadTicketServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.utilities.callbacks.ticket.ReadTicketServlet</servlet-class>
+    </servlet>    
+    
+    <servlet-mapping>
+        <servlet-name>ReadTicketServlet</servlet-name>
+        <url-pattern>/servlet/ReadTicket</url-pattern>
+    </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>SpagoBIDrillServlet</servlet-name>
         <url-pattern>/SpagoBIDrillServlet</url-pattern>

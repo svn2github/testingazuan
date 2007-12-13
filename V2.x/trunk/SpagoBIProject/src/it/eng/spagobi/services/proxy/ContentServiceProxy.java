@@ -20,7 +20,7 @@ public class ContentServiceProxy extends AbstractServiceProxy{
     public ContentServiceProxy(HttpSession session) {
 	super( session);
     }
-    public ContentServiceProxy() {
+    private ContentServiceProxy() {
 	super();
     }    
 

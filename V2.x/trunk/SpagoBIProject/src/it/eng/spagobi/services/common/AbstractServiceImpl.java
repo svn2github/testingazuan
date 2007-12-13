@@ -12,7 +12,6 @@ public abstract class AbstractServiceImpl {
     
     static private Logger logger = Logger.getLogger(AbstractServiceImpl.class);
     
-    protected String userId="";
     protected String validateUrl =null;
     protected String validateService =null;
     protected boolean activeSso=false;
@@ -42,7 +41,7 @@ public abstract class AbstractServiceImpl {
      * @return
      * @throws SecurityException
      */    
-    protected boolean validateTicket(String ticket) throws SecurityException {
+    protected boolean validateTicket(String ticket,String userId) throws SecurityException {
 	logger.debug("IN");
 
         try {
@@ -56,7 +55,7 @@ public abstract class AbstractServiceImpl {
             if (pv.isAuthenticationSuccesful()) {
         	String tmpUserId = pv.getUser();
         	if ( userId!=null && !userId.equals(tmpUserId)){
-        	    logger.error("Proxy and application users are not the same !!!!!");
+        	    logger.error("Proxy and application users are not the same !!!!! "+userId+"-"+tmpUserId);
         	    return false;
         	}
                 return true;

@@ -35,6 +35,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.services.proxy.SchedulerServiceProxy;
+import it.eng.spagobi.services.scheduler.service.SchedulerServiceSupplier;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.to.TriggerInfo;
@@ -102,14 +103,14 @@ public class TriggerManagementModule extends AbstractModule {
 	
 	private void runSchedule(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			String jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
 			getSchedule(request, response);
 			TriggerInfo tInfo = (TriggerInfo)sessCont.getAttribute(SpagoBIConstants.TRIGGER_INFO);
 			StringBuffer message = createMessageSaveSchedulation(tInfo, true);
 			// call the web service to create the schedule
-			String resp = proxy.scheduleJob(message.toString());
+			String resp = schedulerService.scheduleJob(message.toString());
 			SourceBean schedModRespSB = SchedulerUtilities.getSBFromWebServiceResponse(resp);
 			if(schedModRespSB!=null) {
 				String outcome = (String)schedModRespSB.getAttribute("outcome");
@@ -135,8 +136,8 @@ public class TriggerManagementModule extends AbstractModule {
 		String triggerName = (String) request.getAttribute("triggerName");
 		String triggerGroup = (String) request.getAttribute("triggerGroup");
 		try {
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
-			String resp = proxy.deleteSchedulation(triggerName, triggerGroup);
+		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
+			String resp = schedulerService.deleteSchedulation(triggerName, triggerGroup);
 			SourceBean schedModRespSB = SchedulerUtilities.getSBFromWebServiceResponse(resp);
 			if(schedModRespSB!=null) {
 				String outcome = (String)schedModRespSB.getAttribute("outcome");
@@ -156,14 +157,14 @@ public class TriggerManagementModule extends AbstractModule {
 	
 	private void getSchedule(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			String jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
 			String triggerName = (String) request.getAttribute("triggerName");
 			String triggerGroup = (String) request.getAttribute("triggerGroup");
-			String respStr_gt = proxy.getJobSchedulationDefinition(triggerName, triggerGroup);
+			String respStr_gt = schedulerService.getJobSchedulationDefinition(triggerName, triggerGroup);
 	        SourceBean triggerDetailSB = SchedulerUtilities.getSBFromWebServiceResponse(respStr_gt);			
-			String respStr_gj = proxy.getJobDefinition(jobName, jobGroupName);
+			String respStr_gj = schedulerService.getJobDefinition(jobName, jobGroupName);
             SourceBean jobDetailSB = SchedulerUtilities.getSBFromWebServiceResponse(respStr_gj);						
 			if(triggerDetailSB!=null) {
 				if(jobDetailSB!=null){
@@ -189,7 +190,7 @@ public class TriggerManagementModule extends AbstractModule {
 	
 	private void saveScheduleForJob(SourceBean request, SourceBean response) throws EMFUserError {
 		try{
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			TriggerInfo triggerInfo = (TriggerInfo)sessCont.getAttribute(SpagoBIConstants.TRIGGER_INFO);
 			JobInfo jobInfo = triggerInfo.getJobInfo();
 			String jobName = jobInfo.getJobName();
@@ -264,7 +265,7 @@ public class TriggerManagementModule extends AbstractModule {
 			
 			StringBuffer message = createMessageSaveSchedulation(triggerInfo, false);
 			// call the web service to create the schedule
-			String servoutStr = proxy.scheduleJob(message.toString());
+			String servoutStr = schedulerService.scheduleJob(message.toString());
 			SourceBean execOutSB = SchedulerUtilities.getSBFromWebServiceResponse(servoutStr);
 			if(execOutSB!=null) {
 				String outcome = (String)execOutSB.getAttribute("outcome");
@@ -287,11 +288,11 @@ public class TriggerManagementModule extends AbstractModule {
 	private void newScheduleForJob(SourceBean request, SourceBean response) throws EMFUserError {
 		String jobName = "";
 		try{
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
 			TriggerInfo ti = new TriggerInfo();
-			String respStr = proxy.getJobDefinition(jobName, jobGroupName);
+			String respStr = schedulerService.getJobDefinition(jobName, jobGroupName);
             SourceBean jobDetailSB = SchedulerUtilities.getSBFromWebServiceResponse(respStr);			
 			if(jobDetailSB!=null) {
 				JobInfo jobInfo = SchedulerUtilities.getJobInfoFromJobSourceBean(jobDetailSB);
@@ -324,12 +325,12 @@ public class TriggerManagementModule extends AbstractModule {
 	private void getTriggersForJob(SourceBean request, SourceBean response) throws EMFUserError {
 		String jobName = "";
 		try{
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			// create the sourcebean of the list
 			SourceBean pageListSB  = new SourceBean("PAGED_LIST");
 			jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
-			String serviceResp = proxy.getJobSchedulationList(jobName, jobGroupName);
+			String serviceResp = schedulerService.getJobSchedulationList(jobName, jobGroupName);
 			SourceBean rowsSB = SourceBean.fromXMLString(serviceResp);
 			if(rowsSB==null) {
 				rowsSB = new SourceBean("ROWS");

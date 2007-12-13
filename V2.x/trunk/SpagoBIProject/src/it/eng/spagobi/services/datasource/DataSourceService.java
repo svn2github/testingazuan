@@ -8,7 +8,7 @@ import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
  */
 public interface DataSourceService {
 
-    SpagoBiDataSource getDataSource(String token,String documentId);
+    SpagoBiDataSource getDataSource(String token,String user,String documentId);
     
-    SpagoBiDataSource[] getAllDataSource(String token);
+    SpagoBiDataSource[] getAllDataSource(String token,String user);
 }

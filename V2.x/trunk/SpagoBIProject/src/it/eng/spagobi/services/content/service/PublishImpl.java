@@ -28,10 +28,10 @@ public class PublishImpl extends AbstractServiceImpl{
 	// TODO IMPLEMENTARE I CONTROLLI
 	PublishImpl helper=new PublishImpl();
 	        logger.debug("IN");
-		userId=user;
+		
 		if (activeSso){
 			try {
-			    if (validateTicket(token)){
+			    if (validateTicket(token,user)){
 				return helper.publishTemplate( user, attributes);
 			    }else{
 				logger.error("Token NOT VALID");

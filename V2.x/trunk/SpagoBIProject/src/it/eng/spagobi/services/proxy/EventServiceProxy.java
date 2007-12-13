@@ -17,7 +17,7 @@ public class EventServiceProxy extends AbstractServiceProxy{
     public EventServiceProxy(HttpSession session) {
 	super( session);
     }
-    public EventServiceProxy() {
+    private EventServiceProxy() {
 	super();
     }    
 

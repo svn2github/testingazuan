@@ -49,6 +49,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance,
                  it.eng.spagobi.engines.drivers.IEngineDriver" %>
 
+
+
+
 <%
 
     // get module response
@@ -84,6 +87,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// get the url of the engine
 	Engine engine = obj.getEngine();
     String engineurl = engine.getUrl();
+    String engineBaseUrl = "";
+    if (engineurl!=null && engineurl.lastIndexOf("/")>0){
+		int l=engineurl.lastIndexOf("/");
+		engineBaseUrl=engineurl.subSequence(0, l).toString();	
+    }
+
+    
     
    	// get the actor
     String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
@@ -226,14 +236,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-
-
-
-
-
-
-
-
  <!-- ************************************************************************* -->
  <!-- ******************** START TITLE PART  ********************************** -->
  <!-- ************************************************************************* -->
@@ -268,6 +270,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	   	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     	    String formUrl = urlBuilder.getUrl(request, formUrlPars);
     	%>
+    	
+ 
+
+ 	
        <form method='POST' action='<%=formUrl%>' id='changeStateForm'  name='changeStateForm'>
 	       <td class='header-select-column-portlet-section'>
       			<select class='portlet-form-field' name="newState">
@@ -1420,16 +1426,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                     src=""
                     style="width:100%;<%=heightStr%>;"
                     frameborder="0" >
+                    
 			</iframe>
 
 			<%
 			String target = "iframeexec" + executionId;
 			if (isDrillRequest && !isRefreshRequest) target = "_self";
 			%>
+			
+ 
+
+			
          	<form name="formexecution<%=executionId%>"
                 id='formexecution<%=executionId%>' method="post"
          	      action="<%=engineurl%>"
          	      target='<%=target%>'>
+         	      
+         	      
          	<%
 				java.util.Set keys = mapPars.keySet();
 				Iterator iterKeys = keys.iterator();

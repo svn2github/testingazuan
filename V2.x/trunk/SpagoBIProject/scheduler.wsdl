@@ -15,6 +15,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in1" type="soapenc:string"/>
 
+      <wsdl:part name="in2" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="defineJobRequest">
@@ -22,6 +24,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -51,6 +55,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in2" type="soapenc:string"/>
 
+      <wsdl:part name="in3" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="getJobSchedulationListRequest">
@@ -60,6 +66,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in1" type="soapenc:string"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -71,6 +79,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in2" type="soapenc:string"/>
 
+      <wsdl:part name="in3" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="getJobSchedulationDefinitionRequest">
@@ -81,6 +91,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in2" type="soapenc:string"/>
 
+      <wsdl:part name="in3" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="deleteSchedulationRequest">
@@ -90,6 +102,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in1" type="soapenc:string"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -121,6 +135,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
+      <wsdl:part name="in1" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="getJobDefinitionRequest">
@@ -130,6 +146,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in1" type="soapenc:string"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -141,7 +159,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    <wsdl:portType name="SchedulerService">
 
-      <wsdl:operation name="getJobList" parameterOrder="in0">
+      <wsdl:operation name="getJobList" parameterOrder="in0 in1">
 
          <wsdl:input message="impl:getJobListRequest" name="getJobListRequest"/>
 
@@ -149,7 +167,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getJobSchedulationList" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="getJobSchedulationList" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:getJobSchedulationListRequest" name="getJobSchedulationListRequest"/>
 
@@ -157,7 +175,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="deleteSchedulation" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="deleteSchedulation" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:deleteSchedulationRequest" name="deleteSchedulationRequest"/>
 
@@ -165,7 +183,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="deleteJob" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="deleteJob" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:deleteJobRequest" name="deleteJobRequest"/>
 
@@ -173,7 +191,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="defineJob" parameterOrder="in0 in1">
+      <wsdl:operation name="defineJob" parameterOrder="in0 in1 in2">
 
          <wsdl:input message="impl:defineJobRequest" name="defineJobRequest"/>
 
@@ -181,7 +199,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getJobDefinition" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="getJobDefinition" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:getJobDefinitionRequest" name="getJobDefinitionRequest"/>
 
@@ -189,7 +207,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="scheduleJob" parameterOrder="in0 in1">
+      <wsdl:operation name="scheduleJob" parameterOrder="in0 in1 in2">
 
          <wsdl:input message="impl:scheduleJobRequest" name="scheduleJobRequest"/>
 
@@ -197,7 +215,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getJobSchedulationDefinition" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="getJobSchedulationDefinition" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:getJobSchedulationDefinitionRequest" name="getJobSchedulationDefinitionRequest"/>
 
@@ -205,7 +223,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="existJobDefinition" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="existJobDefinition" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:existJobDefinitionRequest" name="existJobDefinitionRequest"/>
 

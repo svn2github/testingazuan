@@ -29,7 +29,7 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
     public DataSourceServiceProxy(HttpSession session) {
 	super(session);
     }
-    public DataSourceServiceProxy() {
+    private DataSourceServiceProxy() {
 	super();
     }   
     
@@ -50,7 +50,7 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
     }
     
     
-    public SpagoBiDataSource getDataSource(String documentId) {
+    public SpagoBiDataSource getDataSource(String user,String documentId) {
 	logger.debug("IN");
 	try {
 	    String ticket = "";
@@ -58,7 +58,7 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
 		ticket=readTicket();
 	    }
 
-	    return lookUp().getDataSource(ticket, documentId);
+	    return lookUp().getDataSource(ticket, user,documentId);
 	} catch (Exception e) {
 	    logger.error("Error during Service LookUp",e);
 	}finally{

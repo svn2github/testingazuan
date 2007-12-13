@@ -35,6 +35,7 @@ import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
@@ -42,7 +43,10 @@ import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -54,7 +58,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 
 public class SaveToPersonalFolderServlet extends HttpServlet{
@@ -119,8 +122,15 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-				SecurityServiceProxy securityProxy=new SecurityServiceProxy();
-				IEngUserProfile profile = securityProxy.getUserProfile(request.getUserPrincipal());    	
+		 	        Principal principal = request.getUserPrincipal();
+				IEngUserProfile profile = null;
+				ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+			        try {
+			            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+			            profile=new UserProfile(user);
+			        } catch (Exception e) {
+			            throw new SecurityException();
+			        }    	
 	            documentBytes = proxy.exec(profile);
 				returnedContentType = proxy.getReturnedContentType();
 				fileextension = proxy.getFileExtensionFromContType(returnedContentType);
@@ -144,10 +154,16 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			objTemp.setContent(documentBytes);
 			objTemp.setName("document" + fileextension);
 			// load user root functionality 
- 	        Principal principal = request.getUserPrincipal();
-			SecurityServiceProxy secProxy=new SecurityServiceProxy();
-			IEngUserProfile profile = secProxy.getUserProfile(principal);    
-            String username = (String)profile.getUserUniqueIdentifier();
+	 	        Principal principal = request.getUserPrincipal();
+			IEngUserProfile profile = null;
+			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+		        try {
+		            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+		            profile=new UserProfile(user);
+		        } catch (Exception e) {
+		            throw new SecurityException();
+		        }   
+		        String username = (String)profile.getUserUniqueIdentifier();
 			ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 			LowFunctionality funct = functdao.loadLowFunctionalityByPath("/"+username, false);
 			Integer functId = funct.getId();

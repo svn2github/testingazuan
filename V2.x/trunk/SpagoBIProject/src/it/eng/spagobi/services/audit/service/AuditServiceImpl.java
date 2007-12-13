@@ -14,7 +14,7 @@ public class AuditServiceImpl extends AbstractServiceImpl{
 	logger.debug("IN");
 	if (activeSso) {
 	    try {
-		if (validateTicket(token)) {
+		if (validateTicket(token,user)) {
 		    return log( user, id, start, end, state, message, errorCode);
 		} else {
 		    logger.error("Token NOT VALID");

@@ -17,7 +17,7 @@ public class AuditServiceProxy extends AbstractServiceProxy{
     public AuditServiceProxy(HttpSession session) {
 	super( session);
     }
-    public AuditServiceProxy() {
+    private AuditServiceProxy() {
 	super();
     }    
     

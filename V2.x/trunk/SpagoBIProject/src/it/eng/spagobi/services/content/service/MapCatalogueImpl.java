@@ -51,10 +51,10 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
     public String mapCatalogue(String token, String user, String operation,String path,String featureName,String mapName) {
 
 	logger.debug("IN");
-	userId = user;
+	
 	if (activeSso) {
 	    try {
-		if (validateTicket(token)) {
+		if (validateTicket(token,user)) {
 		    return mapCatalogue(user, operation, path, featureName, mapName);
 		} else {
 		    logger.error("Token NOT VALID");

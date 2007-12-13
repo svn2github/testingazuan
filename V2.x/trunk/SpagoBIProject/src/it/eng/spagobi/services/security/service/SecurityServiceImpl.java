@@ -34,10 +34,10 @@ public class SecurityServiceImpl extends AbstractServiceImpl implements Security
  */
 public SpagoBIUserProfile getUserProfile(String token,String userId) {
         logger.debug("IN");
-	this.userId=userId;
+	
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,userId)){
 			return supplier.createUserProfile(userId);
 		    }else{
 			logger.error("Token NOT VALID");
@@ -60,10 +60,10 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
  */
     public boolean isAuthorized(String token,String userId, String idFolder, String state) {
         logger.debug("IN");
-	this.userId=userId;	
+	
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,userId)){
 			SpagoBIUserProfile profile= supplier.createUserProfile(userId);
 			UserProfile userProfile=new UserProfile(profile);			
 			return ObjectsAccessVerifier.canExec(new Integer(idFolder), userProfile);
@@ -91,9 +91,9 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
      */
     public boolean checkAuthorization(String token,String userId,String function) {
         logger.debug("IN");
-	this.userId=userId;	
+	
 	try {
-	    if (validateTicket(token)){
+	    if (validateTicket(token,userId)){
 		return supplier.checkAuthorization(userId,function);
 	    }else{
 		logger.error("Token NOT VALID");

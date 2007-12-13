@@ -30,11 +30,16 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.security.Principal;
 
@@ -47,9 +52,8 @@ import org.apache.log4j.Logger;
  * user; after it gets the profile for the principal user and puts it into the
  * permanent container.
  * 
- * @author Zoppello
  */
-public class PortletLoginAction extends AbstractAction {
+public class PortletLoginAction extends AbstractHttpAction {
 
     static Logger logger = Logger.getLogger(PortletLoginAction.class);
     /**
@@ -60,12 +64,20 @@ public class PortletLoginAction extends AbstractAction {
 	    throws Exception {
 	logger.debug("IN");
 	PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-	Principal principal = portletRequest.getUserPrincipal();
 
-	SecurityServiceProxy proxy = new SecurityServiceProxy();
-	IEngUserProfile profile = proxy.getUserProfile(principal);
+	Principal principal = portletRequest.getUserPrincipal();
+	IEngUserProfile profile = null;
+	ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+        try {
+            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+            profile=new UserProfile(user);
+        } catch (Exception e) {
+            logger.error("Reading user information... ERROR",e);
+            throw new SecurityException();
+        }
+
 	
-	logger.debug("userProfile created " + profile);
+	logger.debug("userProfile created.UserID= " + (String)profile.getUserUniqueIdentifier());
 	logger.debug("Attributes name of the user profile: "+ profile.getUserAttributeNames());
 	logger.debug("Functionalities of the user profile: "+ profile.getFunctionalities());
 	logger.debug("Roles of the user profile: "+ profile.getRoles());	
@@ -83,6 +95,49 @@ public class PortletLoginAction extends AbstractAction {
 	}
 	logger.debug("OUT");
     }
+  /*  
+    private String readT() {
+	PostMethod httppost = null;
+	byte[] responseBody = null;
+	try {
 
+	    HttpClient client = new HttpClient();
+
+	    httppost = new PostMethod("https://localhost:8443/SpagoBI/ReadTicket");
+	    NameValuePair[] parameters = { new NameValuePair("TIKET", "TIKET") };
+
+	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
+	    retryhandler.setRequestSentRetryEnabled(false);
+	    retryhandler.setRetryCount(3);
+	    httppost.setMethodRetryHandler(retryhandler);
+	    httppost.setRequestBody(parameters);
+
+	    // Execute the method.
+	    int statusCode = client.executeMethod(httppost);
+	    if (statusCode != HttpStatus.SC_OK) {
+		logger.error("Method failed: " + httppost.getStatusLine());
+	    }
+
+	    responseBody = httppost.getResponseBody();
+	} catch (Exception e) {
+	    logger.error("Exception",e);
+	} finally {
+	    // Release the connection.
+	    try {
+		if (httppost != null)
+		    httppost.releaseConnection();
+	    } catch (Exception e) {
+		logger.error("Exception",e);
+	    }
+	}
+	if (responseBody == null){
+	    logger.error("responseBody == null");
+	    return "";
+	}
+	String idStr = new String(responseBody);
+
+	return idStr;
+    }
+*/
 }
 

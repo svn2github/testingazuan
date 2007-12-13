@@ -29,6 +29,8 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://bo.datasource.services.spagobi.eng.it", "SpagoBiDataSource"));
         oper.setReturnClass(it.eng.spagobi.services.datasource.bo.SpagoBiDataSource.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getDataSourceReturn"));
@@ -39,6 +41,8 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getAllDataSource");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("urn:spagobidatasource", "ArrayOf_tns2_SpagoBiDataSource"));
         oper.setReturnClass(it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[].class);
@@ -161,7 +165,7 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
         }
     }
 
-    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource getDataSource(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
+    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource getDataSource(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -174,7 +178,7 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -192,7 +196,7 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
 }
     }
 
-    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[] getAllDataSource(java.lang.String in0) throws java.rmi.RemoteException {
+    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[] getAllDataSource(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -205,7 +209,7 @@ public class DataSourceServiceSoapBindingStub extends org.apache.axis.client.Stu
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

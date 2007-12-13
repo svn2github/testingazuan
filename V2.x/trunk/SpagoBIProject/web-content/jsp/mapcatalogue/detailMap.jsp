@@ -39,7 +39,6 @@
 		lookupFeatureUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		String lookupFeraturesUrl = urlBuilder.getUrl(request, lookupFeatureUrlPars);	
 		
-		//MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
 		String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/MapCatalogueManagerServlet";
 		String filePath = (map.getUrl()).replace('\\', '/');		
    	    downloadUrl += "?operation=DOWNLOAD&path="+  filePath;

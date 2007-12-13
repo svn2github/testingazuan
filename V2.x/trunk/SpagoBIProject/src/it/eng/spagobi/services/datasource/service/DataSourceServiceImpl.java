@@ -16,11 +16,12 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
     public DataSourceServiceImpl(){
 	super();
     }
-    public SpagoBiDataSource getDataSource(String token, String documentId) {
+    public SpagoBiDataSource getDataSource(String token,String user, String documentId) {
 	logger.debug("IN");
+	
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,user)){
 			return supplier.getDataSource(documentId);
 		    }else{
 			logger.error("Token NOT VALID");
@@ -37,11 +38,12 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
 	return supplier.getDataSource(documentId);
 	}
     }
-    public SpagoBiDataSource[] getAllDataSource(String token){
+    public SpagoBiDataSource[] getAllDataSource(String token,String user){
 	logger.debug("IN");
+	
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,user)){
 			return supplier.getAllDataSource();
 		    }else{
 			logger.error("Token NOT VALID");

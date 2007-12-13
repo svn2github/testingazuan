@@ -38,13 +38,16 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.commons.bo.SpagoBIPrincipal;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,10 +63,15 @@ public class DirectExecutionModule extends AbstractModule {
 		RequestContainer reqContainer = getRequestContainer();
 		SessionContainer sessionContainer = reqContainer.getSessionContainer();
 		String username = (String) request.getAttribute("USERNAME");
-		// TODO ... recuperare il profilo dalla sessione....
-		SpagoBIPrincipal principal=new SpagoBIPrincipal(username);
-		SecurityServiceProxy proxy=new SecurityServiceProxy();
-		IEngUserProfile profile = proxy.getUserProfile(principal);
+
+		IEngUserProfile profile = null;
+		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+	        try {
+	            SpagoBIUserProfile user= supplier.createUserProfile(username);
+	            profile=new UserProfile(user);
+	        } catch (Exception e) {
+	            throw new SecurityException();
+	        }
 		
 		BIObject obj = null;
 		String documentParameters = "";

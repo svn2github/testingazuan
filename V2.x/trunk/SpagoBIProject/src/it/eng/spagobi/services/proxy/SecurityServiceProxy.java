@@ -24,7 +24,7 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
 	super(session);
     }    
  
-    public SecurityServiceProxy() {
+    private SecurityServiceProxy() {
 	super();
     }     
     
@@ -60,7 +60,7 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
             logger.debug("IN");
         }
     }
-    
+    /*
     public IEngUserProfile getUserProfile(Principal principal) throws SecurityException{
 	logger.debug("IN");
 	ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
@@ -74,7 +74,7 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
             logger.debug("IN");
         }
     }    
-    
+    */
     /**
      * Check if the user is authorized to access the folder
      * @param function

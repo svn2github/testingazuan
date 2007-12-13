@@ -27,18 +27,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.services;
 
-import java.security.Principal;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UserUtilities;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
+
+import java.security.Principal;
 
 import javax.portlet.PortletRequest;
 
@@ -59,8 +61,15 @@ public class PortletLoginModule extends AbstractModule {
 	        logger.debug("IN");
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
 		Principal principal = portletRequest.getUserPrincipal();		
-		SecurityServiceProxy proxy=new SecurityServiceProxy();
-		IEngUserProfile profile = proxy.getUserProfile(principal);
+		IEngUserProfile profile = null;
+		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+	        try {
+	            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+	            profile=new UserProfile(user);
+	        } catch (Exception e) {
+	            logger.error("Reading user information... ERROR",e);
+	            throw new SecurityException();
+	        }
 		
 		logger.debug("userProfile created " + profile);
 		logger.debug("Attributes name of the user profile: "+ profile.getUserAttributeNames());

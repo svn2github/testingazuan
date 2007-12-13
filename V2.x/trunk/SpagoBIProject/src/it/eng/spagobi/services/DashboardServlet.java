@@ -30,12 +30,17 @@ package it.eng.spagobi.services;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -80,8 +85,14 @@ public class DashboardServlet extends HttpServlet{
 	 	try{
 	 		
 	 	        Principal principal = request.getUserPrincipal();
-			SecurityServiceProxy proxy=new SecurityServiceProxy();
-			IEngUserProfile profile = proxy.getUserProfile(principal);
+			IEngUserProfile profile = null;
+			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+		        try {
+		            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+		            profile=new UserProfile(user);
+		        } catch (Exception e) {
+		            throw new SecurityException();
+		        }			
 
 			
 	 		// get the mode (mode=single --> only one lov to execute, mode=list --> more than one lov to execute)

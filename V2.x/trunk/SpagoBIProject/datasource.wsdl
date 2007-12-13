@@ -34,6 +34,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
+      <wsdl:part name="in1" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="getDataSourceResponse">
@@ -48,6 +50,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:part name="in1" type="soapenc:string"/>
 
+      <wsdl:part name="in2" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="getAllDataSourceResponse">
@@ -58,7 +62,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    <wsdl:portType name="DataSourceService">
 
-      <wsdl:operation name="getDataSource" parameterOrder="in0 in1">
+      <wsdl:operation name="getDataSource" parameterOrder="in0 in1 in2">
 
          <wsdl:input message="impl:getDataSourceRequest" name="getDataSourceRequest"/>
 
@@ -66,7 +70,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getAllDataSource" parameterOrder="in0">
+      <wsdl:operation name="getAllDataSource" parameterOrder="in0 in1">
 
          <wsdl:input message="impl:getAllDataSourceRequest" name="getAllDataSourceRequest"/>
 

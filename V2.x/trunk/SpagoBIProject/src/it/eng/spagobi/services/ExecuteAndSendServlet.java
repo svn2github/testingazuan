@@ -33,11 +33,15 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -64,7 +68,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 
 public class ExecuteAndSendServlet extends HttpServlet{
@@ -129,8 +132,14 @@ public class ExecuteAndSendServlet extends HttpServlet{
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
 		 	        Principal principal = request.getUserPrincipal();
-				SecurityServiceProxy secProxy=new SecurityServiceProxy();
-				IEngUserProfile profile = secProxy.getUserProfile(principal);  	
+				IEngUserProfile profile = null;
+				ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+			        try {
+			            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+			            profile=new UserProfile(user);
+			        } catch (Exception e) {
+			            throw new SecurityException();
+			        } 	
 				documentBytes = proxy.exec(profile);
 				returnedContentType = proxy.getReturnedContentType();
 				fileextension = proxy.getFileExtensionFromContType(returnedContentType);

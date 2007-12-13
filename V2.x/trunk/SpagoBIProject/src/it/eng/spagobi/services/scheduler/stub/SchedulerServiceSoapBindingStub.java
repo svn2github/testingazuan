@@ -27,6 +27,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.setName("getJobList");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getJobListReturn"));
@@ -41,6 +43,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
@@ -57,6 +61,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "deleteSchedulationReturn"));
@@ -72,6 +78,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "deleteJobReturn"));
@@ -84,6 +92,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
@@ -100,6 +110,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getJobDefinitionReturn"));
@@ -112,6 +124,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
@@ -128,6 +142,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getJobSchedulationDefinitionReturn"));
@@ -142,6 +158,8 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         oper.setReturnClass(java.lang.String.class);
@@ -203,7 +221,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
         }
     }
 
-    public java.lang.String getJobList(java.lang.String in0) throws java.rmi.RemoteException {
+    public java.lang.String getJobList(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -216,7 +234,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -234,7 +252,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String getJobSchedulationList(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    public java.lang.String getJobSchedulationList(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -247,7 +265,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2, in3});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -265,7 +283,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String deleteSchedulation(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    public java.lang.String deleteSchedulation(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -278,7 +296,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2, in3});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -296,7 +314,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String deleteJob(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    public java.lang.String deleteJob(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -309,7 +327,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2, in3});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -327,7 +345,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String defineJob(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
+    public java.lang.String defineJob(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -340,7 +358,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -358,7 +376,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String getJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    public java.lang.String getJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -371,7 +389,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2, in3});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -389,7 +407,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String scheduleJob(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
+    public java.lang.String scheduleJob(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -402,7 +420,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -420,7 +438,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String getJobSchedulationDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    public java.lang.String getJobSchedulationDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -433,7 +451,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2, in3});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -451,7 +469,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String existJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    public java.lang.String existJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -464,7 +482,7 @@ public class SchedulerServiceSoapBindingStub extends org.apache.axis.client.Stub
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2, in3});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

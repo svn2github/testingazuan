@@ -32,10 +32,9 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 // TODO IMPLEMENTARE I CONTROLLI
 	
         logger.debug("IN");
-	userId=user;
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,user)){
 			return readTemplate(user,document);
 		    }else{
 			logger.error("Token NOT VALID");
@@ -56,10 +55,10 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 
     public Content readSubObjectContent(String token,String user,String subObjectId){
         logger.debug("IN");
-	userId=user;
+	
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,user)){
 			return readSubObjectContent(user,subObjectId);
 		    }else{
 			logger.error("Token NOT VALID");
@@ -80,10 +79,10 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     
     public String saveSubObject(String token,String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
         logger.debug("IN");
-	userId=user;
+	
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,user)){
 			return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
 		    }else{
 			logger.error("Token NOT VALID");
@@ -104,10 +103,10 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     
     public String saveObjectTemplate(String token,String user,String documentiId,String templateName,String content){
         logger.debug("IN");
-	userId=user;
+
 	if (activeSso){
 		try {
-		    if (validateTicket(token)){
+		    if (validateTicket(token,user)){
 			return saveObjectTemplate(user,documentiId,templateName,content);
 		    }else{
 			logger.error("Token NOT VALID");

@@ -30,7 +30,6 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.soap.axis.client.AdapterAxisProxy;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
@@ -40,6 +39,8 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.services.proxy.SchedulerServiceProxy;
+import it.eng.spagobi.services.scheduler.service.SchedulerServiceImpl;
+import it.eng.spagobi.services.scheduler.service.SchedulerServiceSupplier;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
@@ -110,8 +111,8 @@ public class JobManagementModule extends AbstractModule {
 		try {
 			// create the sourcebean of the list
 			SourceBean pageListSB  = new SourceBean("PAGED_LIST");
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
-			String xmlList = proxy.getJobList();
+			SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
+			String xmlList = schedulerService.getJobList();
 			//SourceBean schedModRespSB = SchedulerUtilities.getSBFromWebServiceResponse(wsresp);
 			SourceBean rowsSB = SourceBean.fromXMLString(xmlList);
 			if(rowsSB==null){
@@ -124,7 +125,7 @@ public class JobManagementModule extends AbstractModule {
 				SourceBean jobSB = (SourceBean)jobSBiter.next();
 				String jobname = (String)jobSB.getAttribute("jobName");
 				String jobgroupname = (String)jobSB.getAttribute("jobGroupName");
-				String xmlSchedList = proxy.getJobSchedulationList(jobname, jobgroupname);
+				String xmlSchedList = schedulerService.getJobSchedulationList(jobname, jobgroupname);
 				int numSchedulation = 0;
 				SourceBean rowsSB_JSL = SourceBean.fromXMLString(xmlSchedList);
 				if(rowsSB_JSL!=null) {
@@ -166,10 +167,10 @@ public class JobManagementModule extends AbstractModule {
 	
 	private void deleteJob(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			String jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
-			String xmlSchedList = proxy.getJobSchedulationList(jobName, jobGroupName);
+			String xmlSchedList = schedulerService.getJobSchedulationList(jobName, jobGroupName);
 			SourceBean rowsSB_JSL = SourceBean.fromXMLString(xmlSchedList);
 			if(rowsSB_JSL==null) {
 				throw new Exception("List of job triggers not returned by Web service ");
@@ -181,7 +182,7 @@ public class JobManagementModule extends AbstractModule {
 			   	SourceBean scheduleSB = (SourceBean)iterSchedules.next();
 			   	String triggerName = (String)scheduleSB.getAttribute("triggerName");
 			   	String triggerGroup = (String)scheduleSB.getAttribute("triggerGroup");
-			   	String delResp = proxy.deleteSchedulation(triggerName, triggerGroup);
+			   	String delResp = schedulerService.deleteSchedulation(triggerName, triggerGroup);
 				SourceBean schedModRespSB_DS = SchedulerUtilities.getSBFromWebServiceResponse(delResp);
 				if(schedModRespSB_DS==null) {
 					throw new Exception("Imcomplete response returned by the Web service " +
@@ -192,7 +193,7 @@ public class JobManagementModule extends AbstractModule {
 				}
 			}			
 			// delete job	
-			String resp_DJ = proxy.deleteJob(jobName, jobGroupName);
+			String resp_DJ = schedulerService.deleteJob(jobName, jobGroupName);
 			SourceBean schedModRespSB_DJ = SchedulerUtilities.getSBFromWebServiceResponse(resp_DJ);
 			if(schedModRespSB_DJ==null) {
 				throw new Exception("Imcomplete response returned by the Web service " +
@@ -272,7 +273,7 @@ public class JobManagementModule extends AbstractModule {
 	
 	private void saveJob(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			// get job information from session
 			JobInfo jobInfo = (JobInfo)sessCont.getAttribute(SpagoBIConstants.JOB_INFO);
 			// recover generic data
@@ -335,7 +336,7 @@ public class JobManagementModule extends AbstractModule {
 			message.append("   </PARAMETERS>");
 			message.append("</SERVICE_REQUEST>");
 			// call the web service
-			String servoutStr = proxy.defineJob(message.toString());
+			String servoutStr = schedulerService.defineJob(message.toString());
 			SourceBean schedModRespSB = SchedulerUtilities.getSBFromWebServiceResponse(servoutStr);
 			if(schedModRespSB==null) {
 				throw new Exception("Imcomplete response returned by the Web service " +
@@ -358,12 +359,12 @@ public class JobManagementModule extends AbstractModule {
 	
 	private void getJobDetail(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-			SchedulerServiceProxy proxy = new SchedulerServiceProxy();
+		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
 			String jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
 	        // call we service
-			String respStr = proxy.getJobDefinition(jobName, jobGroupName);
+			String respStr = schedulerService.getJobDefinition(jobName, jobGroupName);
             SourceBean jobDetailSB = SchedulerUtilities.getSBFromWebServiceResponse(respStr);
 			if(jobDetailSB!=null) {
 				JobInfo jobInfo = SchedulerUtilities.getJobInfoFromJobSourceBean(jobDetailSB);

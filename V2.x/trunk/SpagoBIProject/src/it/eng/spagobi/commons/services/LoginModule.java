@@ -36,18 +36,25 @@ import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.bo.SpagoBIPrincipal;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.security.ISecurityInfoProvider;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 
 import java.security.Principal;
+
+import org.apache.log4j.Logger;
 
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 
 public class LoginModule extends AbstractHttpModule {
 
+    static Logger logger = Logger.getLogger(LoginModule.class);
 	/**
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
@@ -58,9 +65,15 @@ public class LoginModule extends AbstractHttpModule {
 		// INTEGRAZIONE con il CAS
 		String userId=(String)this.getHttpRequest().getSession().getAttribute(CASFilter.CAS_FILTER_USER);
 		
-		SpagoBIPrincipal principal=new SpagoBIPrincipal(userId);
-		SecurityServiceProxy proxy=new SecurityServiceProxy();
-		IEngUserProfile profile = proxy.getUserProfile(principal);
+		IEngUserProfile profile = null;
+		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+	        try {
+	            SpagoBIUserProfile user= supplier.createUserProfile(userId);
+	            profile=new UserProfile(user);
+	        } catch (Exception e) {
+	            logger.error("Reading user information... ERROR",e);
+	            throw new SecurityException();
+	        }
 
 		
 		// put user profile into session

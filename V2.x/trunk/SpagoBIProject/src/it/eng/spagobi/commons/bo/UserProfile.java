@@ -2,15 +2,12 @@ package it.eng.spagobi.commons.bo;
 
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile ;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class UserProfile implements IEngUserProfile {
     
@@ -20,7 +17,8 @@ public class UserProfile implements IEngUserProfile {
 	private Map userAttributes = null;
 	private Collection roles = null;
 	private Collection functionalities = null;
-	
+
+
     public UserProfile(SpagoBIUserProfile profile){
 	this.userUniqueIdentifier=profile.getUserId();
 	roles=new ArrayList();

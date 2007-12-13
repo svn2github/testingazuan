@@ -32,6 +32,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         org.apache.axis.description.ParameterDesc [] _params;
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getJobList", _params, new javax.xml.namespace.QName("", "getJobListReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -46,6 +47,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getJobSchedulationList", _params, new javax.xml.namespace.QName("", "getJobSchedulationListReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -60,6 +62,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("deleteSchedulation", _params, new javax.xml.namespace.QName("", "deleteSchedulationReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -74,6 +77,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("deleteJob", _params, new javax.xml.namespace.QName("", "deleteJobReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -87,6 +91,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("defineJob", _params, new javax.xml.namespace.QName("", "defineJobReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -101,6 +106,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getJobDefinition", _params, new javax.xml.namespace.QName("", "getJobDefinitionReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -114,6 +120,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("scheduleJob", _params, new javax.xml.namespace.QName("", "scheduleJobReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -128,6 +135,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getJobSchedulationDefinition", _params, new javax.xml.namespace.QName("", "getJobSchedulationDefinitionReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -142,6 +150,7 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("existJobDefinition", _params, new javax.xml.namespace.QName("", "existJobDefinitionReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -161,57 +170,57 @@ public class SchedulerServiceSoapBindingSkeleton implements it.eng.spagobi.servi
     public SchedulerServiceSoapBindingSkeleton(it.eng.spagobi.services.scheduler.stub.SchedulerService impl) {
         this.impl = impl;
     }
-    public java.lang.String getJobList(java.lang.String in0) throws java.rmi.RemoteException
+    public java.lang.String getJobList(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.getJobList(in0);
+        java.lang.String ret = impl.getJobList(in0, in1);
         return ret;
     }
 
-    public java.lang.String getJobSchedulationList(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public java.lang.String getJobSchedulationList(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.getJobSchedulationList(in0, in1, in2);
+        java.lang.String ret = impl.getJobSchedulationList(in0, in1, in2, in3);
         return ret;
     }
 
-    public java.lang.String deleteSchedulation(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public java.lang.String deleteSchedulation(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.deleteSchedulation(in0, in1, in2);
+        java.lang.String ret = impl.deleteSchedulation(in0, in1, in2, in3);
         return ret;
     }
 
-    public java.lang.String deleteJob(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public java.lang.String deleteJob(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.deleteJob(in0, in1, in2);
+        java.lang.String ret = impl.deleteJob(in0, in1, in2, in3);
         return ret;
     }
 
-    public java.lang.String defineJob(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
+    public java.lang.String defineJob(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.defineJob(in0, in1);
+        java.lang.String ret = impl.defineJob(in0, in1, in2);
         return ret;
     }
 
-    public java.lang.String getJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public java.lang.String getJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.getJobDefinition(in0, in1, in2);
+        java.lang.String ret = impl.getJobDefinition(in0, in1, in2, in3);
         return ret;
     }
 
-    public java.lang.String scheduleJob(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
+    public java.lang.String scheduleJob(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.scheduleJob(in0, in1);
+        java.lang.String ret = impl.scheduleJob(in0, in1, in2);
         return ret;
     }
 
-    public java.lang.String getJobSchedulationDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public java.lang.String getJobSchedulationDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.getJobSchedulationDefinition(in0, in1, in2);
+        java.lang.String ret = impl.getJobSchedulationDefinition(in0, in1, in2, in3);
         return ret;
     }
 
-    public java.lang.String existJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public java.lang.String existJobDefinition(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.existJobDefinition(in0, in1, in2);
+        java.lang.String ret = impl.existJobDefinition(in0, in1, in2, in3);
         return ret;
     }
 

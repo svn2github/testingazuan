@@ -17,7 +17,7 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	super( session);
     }
     
-    public SchedulerServiceProxy() {
+    private  SchedulerServiceProxy() {
     	super();
     }    
 
@@ -36,14 +36,14 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }   
-    public String getJobList() {
+    public String getJobList(String user) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().getJobList(ticket);
+    	    return lookUp().getJobList(ticket,user);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -52,31 +52,14 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-    public String getJobSchedulationList(String jobName, String jobGroup) {
+    public String getJobSchedulationList(String user,String jobName, String jobGroup) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().getJobSchedulationList(ticket,jobName, jobGroup);
-    	} catch (Exception e) {
-    	    logger.error("Error during service execution",e);
-    	}finally{
-    	    logger.debug("OUT");
-    	}
-    	return null;	
-    }
-    
-    
-    public String deleteSchedulation(String triggerName, String triggerGroup) {
-    	logger.debug("IN");
-    	try {
-    	    String ticket = "";
-    	    if (ssoIsActive){
-    	    	ticket=readTicket();
-    	    }
-    	    return lookUp().deleteSchedulation(ticket,triggerName, triggerGroup);
+    	    return lookUp().getJobSchedulationList(ticket,user,jobName, jobGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -86,14 +69,31 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     
-    public String deleteJob(String jobName, String jobGroupName) {
+    public String deleteSchedulation(String user,String triggerName, String triggerGroup) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().deleteJob(ticket,jobName, jobGroupName);
+    	    return lookUp().deleteSchedulation(ticket,user,triggerName, triggerGroup);
+    	} catch (Exception e) {
+    	    logger.error("Error during service execution",e);
+    	}finally{
+    	    logger.debug("OUT");
+    	}
+    	return null;	
+    }
+    
+    
+    public String deleteJob(String user,String jobName, String jobGroupName) {
+    	logger.debug("IN");
+    	try {
+    	    String ticket = "";
+    	    if (ssoIsActive){
+    	    	ticket=readTicket();
+    	    }
+    	    return lookUp().deleteJob(ticket,user,jobName, jobGroupName);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -103,14 +103,14 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
 
-    public String defineJob(String xmlRequest) {
+    public String defineJob(String user,String xmlRequest) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().defineJob(ticket,xmlRequest);
+    	    return lookUp().defineJob(ticket,user,xmlRequest);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -120,14 +120,14 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     
-    public String getJobDefinition(String jobName, String jobGroup) {
+    public String getJobDefinition(String user,String jobName, String jobGroup) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().getJobDefinition(ticket,jobName, jobGroup);
+    	    return lookUp().getJobDefinition(ticket,user,jobName, jobGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -137,14 +137,14 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     
-    public String scheduleJob(String xmlRequest) {
+    public String scheduleJob(String user,String xmlRequest) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().scheduleJob(ticket,xmlRequest);
+    	    return lookUp().scheduleJob(ticket,user,xmlRequest);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -154,14 +154,14 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     
-    public String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
+    public String getJobSchedulationDefinition(String user,String triggerName, String triggerGroup) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().getJobSchedulationDefinition(ticket,triggerName, triggerGroup);
+    	    return lookUp().getJobSchedulationDefinition(ticket,user,triggerName, triggerGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{
@@ -171,14 +171,14 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     
-    public String existJobDefinition(String jobName, String jobGroup) {
+    public String existJobDefinition(String user,String jobName, String jobGroup) {
     	logger.debug("IN");
     	try {
     	    String ticket = "";
     	    if (ssoIsActive){
     	    	ticket=readTicket();
     	    }
-    	    return lookUp().existJobDefinition(ticket,jobName, jobGroup);
+    	    return lookUp().existJobDefinition(ticket,user,jobName, jobGroup);
     	} catch (Exception e) {
     	    logger.error("Error during service execution",e);
     	}finally{

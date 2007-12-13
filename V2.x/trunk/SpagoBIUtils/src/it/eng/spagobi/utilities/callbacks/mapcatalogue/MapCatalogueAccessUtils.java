@@ -26,6 +26,8 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * A proxy class used by clients to remotly access the spagoBI EventHandler 
  * interface in a customized way.
@@ -47,12 +49,15 @@ public class MapCatalogueAccessUtils {
 	public static final String ERROR_FEATURE_NOT_FOUND = ERROR_PREFIX + "03";
 	public static final String ERROR_MAP_URL_NOT_FOUND = ERROR_PREFIX + "04";
 	
-	public MapCatalogueAccessUtils() {
+	private HttpSession session=null;
+	
+	public MapCatalogueAccessUtils(HttpSession session) {
+	    this.session=session;
 	}
 	
-	public String getStandardHierarchy(String userId) throws Exception {
+	public String getStandardHierarchy(HttpSession sessione,String userId) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy();
+	ContentServiceProxy proxy = new ContentServiceProxy(session);
 	String ris = proxy.mapCatalogue(userId, GET_STANDARD_HIERARCHY, null, null, null);
 	if (ris == null)
 	    throw new Exception("Error while getting default hierarchy");
@@ -64,7 +69,7 @@ public class MapCatalogueAccessUtils {
 	
 	public List getMapNamesByFeature(String userId,String featureName) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy();
+	ContentServiceProxy proxy = new ContentServiceProxy(session);
 	String ris = proxy.mapCatalogue(userId, GET_MAPS_BY_FEATURE, null, featureName, null);
 	if (ris == null)
 	    throw new Exception("Error while reading maps about feature " + featureName);
@@ -87,7 +92,7 @@ public class MapCatalogueAccessUtils {
 
 	public List getFeatureNamesInMap(String userId,String mapName) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy();
+	ContentServiceProxy proxy = new ContentServiceProxy(session);
 	String ris = proxy.mapCatalogue(userId, GET_FEATURES_IN_MAP, null, null, mapName);
 
 	if (ris == null)
@@ -108,7 +113,7 @@ public class MapCatalogueAccessUtils {
 	
 	public String getMapUrl(String userId,String mapName) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy();
+	ContentServiceProxy proxy = new ContentServiceProxy(session);
 	String ris = proxy.mapCatalogue(userId, GET_MAP_URL, null, null, mapName);
 
 	if (ris == null)
@@ -122,7 +127,7 @@ public class MapCatalogueAccessUtils {
 	
 	public List getAllMapNames(String userId) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy();
+	ContentServiceProxy proxy = new ContentServiceProxy(session);
 	String ris = proxy.mapCatalogue(userId, GET_ALL_MAP_NAMES, null, null, null);
 
 	if (ris == null)
@@ -141,7 +146,7 @@ public class MapCatalogueAccessUtils {
     }
 	
 	public List getAllFeatureNames(String userId) throws Exception {
-	ContentServiceProxy proxy = new ContentServiceProxy();
+	ContentServiceProxy proxy = new ContentServiceProxy(session);
 	String ris = proxy.mapCatalogue(userId, GET_ALL_FEATURE_NAMES, null, null, null);
 	if (ris == null)
 	    throw new Exception("Error while reading Features ");

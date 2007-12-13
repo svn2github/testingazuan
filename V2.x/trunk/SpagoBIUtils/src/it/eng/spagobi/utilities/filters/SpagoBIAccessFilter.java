@@ -60,23 +60,31 @@ public class SpagoBIAccessFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// parameters required for document-to-document drill
-
+	        logger.debug("IN");
 		String spagobiContextUrl = request.getParameter("spagobicontext");
+		logger.debug("spagobiContextUrl:"+spagobiContextUrl);
 		// parameters required for auditing
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+		logger.debug("auditId:"+auditId);
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			HttpSession session = httpRequest.getSession();		    
+			HttpSession session = httpRequest.getSession();	
 			// USER PROFILE
 			String userId = (String) request.getParameter("userId");
+			String document = (String) request.getParameter("document");
 			logger.info("Filter USER_ID:"+ userId);
+			logger.info("Filter document:"+ document);
+			session.setAttribute("userId", userId);
+			session.setAttribute("document", document);
 			IEngUserProfile profile = null;
 			try {
 			    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			    if (profile == null) {
-				SecurityServiceProxy proxy = new SecurityServiceProxy();
+				SecurityServiceProxy proxy = new SecurityServiceProxy(session);
 				profile = proxy.getUserProfile(userId);
 				session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+			    } else {
+				logger.debug("Found user profile in session");		
 			    }
 			} catch (SecurityException e1) {
 			    logger.error("SecurityException", e1);
@@ -90,11 +98,12 @@ public class SpagoBIAccessFilter implements Filter {
 					auditAccessUtils = new AuditAccessUtils(auditId);
 					session.setAttribute("SPAGOBI_AUDIT_UTILS", auditAccessUtils);
 				} else {
-						auditAccessUtils.addAuditId(auditId);
+					auditAccessUtils.addAuditId(auditId);
 				}
 			}
 		}
 		chain.doFilter(request, response);
+		logger.debug("OUT");
 	}
 
 	public void init(FilterConfig config) throws ServletException {

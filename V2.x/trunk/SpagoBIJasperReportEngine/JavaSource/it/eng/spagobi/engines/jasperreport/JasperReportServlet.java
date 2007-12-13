@@ -9,6 +9,8 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -39,7 +41,6 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
-import sun.misc.BASE64Decoder;
 
 /**
  * Process jasper report execution requests and returns bytes of the filled
@@ -70,50 +71,57 @@ public class JasperReportServlet extends HttpServlet {
      */
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
-	logger.debug(this.getClass().getName() + ":init:Initializing SpagoBI JasperReport Engine...");
+	logger.debug("Initializing SpagoBI JasperReport Engine...");
     }
 
     /**
      * process jasper report execution requests
      */
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-	logger.debug(this.getClass().getName() + ":service:Start processing a new request...");
+	logger.debug("Start processing a new request...");
 
+	HttpSession session = request.getSession();
+	logger.debug("documentId IN Session:"+(String)session.getAttribute("document"));
 	// USER PROFILE
 	String documentId = (String) request.getParameter("document");
-	HttpSession session = request.getSession();
+	if (documentId==null){
+	    documentId=(String)session.getAttribute("document");
+	    logger.debug("documentId From Session:"+documentId);
+	}
+	    
+	logger.debug("documentId:"+documentId);
+	
+	//  operazioni fatte dal filtro ...OUT
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
 	Map params = new HashMap();
 	Enumeration enumer = request.getParameterNames();
 	String parName = null;
 	String parValue = null;
-	logger.debug(this.getClass().getName() + ":service:Reading request parameters...");
+	logger.debug("Reading request parameters...");
 	while (enumer.hasMoreElements()) {
 	    parName = (String) enumer.nextElement();
 	    parValue = request.getParameter(parName);
 	    addParToParMap(params, parName, parValue);
-	    logger.debug(this.getClass().getName() + ":service:Read " + "parameter [" + parName + "] with value ["
-		    + parValue + "] from request");
+	    logger.debug("Read parameter [" + parName + "] with value ["+ parValue + "] from request");
 	}
-	logger.debug(this.getClass().getName() + ":service:Request parameters read sucesfully" + params);
+	logger.debug("Request parameters read sucesfully" + params);
 
 	// AUDIT UPDATE
 	String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 	AuditAccessUtils auditAccessUtils = (AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 	if (auditAccessUtils != null)
-	    auditAccessUtils.updateAudit((String) profile.getUserUniqueIdentifier(), auditId, new Long(System
+	    auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, new Long(System
 		    .currentTimeMillis()), null, "EXECUTION_STARTED", null, null);
 
-	String spagobibase = (String) params.get("spagobiurl");
-	JasperReportRunner jasperReportRunner = new JasperReportRunner(spagobibase);
-	Connection con = getConnection(documentId, new String(""));
+	JasperReportRunner jasperReportRunner = new JasperReportRunner(session);
+	Connection con = getConnection(session,(String)profile.getUserUniqueIdentifier(),documentId);
 	if (con == null) {
-	    logger.error(this.getClass().getName() + ":service:Cannot obtain" + " connection for engine ["
-		    + this.getClass().getName() + "] control" + " configuration in engine-config.xml config file");
+	    logger.error("Cannot obtain" + " connection for engine ["
+		    + this.getClass().getName() + "] control document configurations");
 	    // AUDIT UPDATE
 	    if (auditAccessUtils != null)
-		auditAccessUtils.updateAudit((String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System
+		auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System
 			.currentTimeMillis()), "EXECUTION_FAILED", "No connection available", null);
 	    return;
 	}
@@ -154,18 +162,18 @@ public class JasperReportServlet extends HttpServlet {
 
 	    // AUDIT UPDATE
 	    if (auditAccessUtils != null)
-		auditAccessUtils.updateAudit((String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System
+		auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System
 			.currentTimeMillis()), "EXECUTION_PERFORMED", null, null);
 	} catch (Exception e) {
-	    logger.error(this.getClass().getName() + ":service:error " + "during report production \n\n " + e);
+	    logger.error( "Error during report production \n\n " + e);
 	    // AUDIT UPDATE
 	    if (auditAccessUtils != null)
-		auditAccessUtils.updateAudit((String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System
+		auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System
 			.currentTimeMillis()), "EXECUTION_FAILED", e.getMessage(), null);
 	    return;
 	}
 
-	logger.info(this.getClass().getName() + ":service:Request processed");
+	logger.debug("Request processed");
     }
 
     /**
@@ -174,6 +182,7 @@ public class JasperReportServlet extends HttpServlet {
      * @param parValue
      */
     private void addParToParMap(Map params, String parName, String parValue) {
+	logger.debug("IN.parName:"+parName+" /parValue:"+parValue);
 	String newParValue;
 
 	ParametersDecoder decoder = new ParametersDecoder();
@@ -190,6 +199,7 @@ public class JasperReportServlet extends HttpServlet {
 	}
 
 	params.put(parName, newParValue);
+	logger.debug("OUT");
     }
 
     /**
@@ -198,15 +208,18 @@ public class JasperReportServlet extends HttpServlet {
      * 
      * @return the database connection
      */
-    public Connection getConnection(String documentId, String engineLabel) {
-	// calls service for gets data source object
-	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
-	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
+    private Connection getConnection(HttpSession session,String userId,String documentId) {
+	logger.debug("IN.documentId:"+documentId);
+	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);
+	SpagoBiDataSource ds = proxyDS.getDataSource(userId,documentId);
+	if (ds==null) return null;
 	// get connection
 	String jndi = ds.getJndiName();
 	if (jndi != null && !jndi.equals("")) {
+	    logger.debug("OUT");
 	    return getConnectionFromJndiDS(ds);
 	} else {
+	    logger.debug("OUT");
 	    return getDirectConnection(ds);
 	}
     }
@@ -219,9 +232,11 @@ public class JasperReportServlet extends HttpServlet {
      * @return Connection to database
      */
     private Connection getConnectionFromJndiDS(SpagoBiDataSource connectionConfig) {
+	logger.debug("IN");	
 	Connection connection = null;
 	Context ctx;
 	String resName = connectionConfig.getJndiName();
+	logger.debug("resName:"+resName);
 	try {
 	    ctx = new InitialContext();
 	    DataSource ds = (DataSource) ctx.lookup(resName);
@@ -230,6 +245,8 @@ public class JasperReportServlet extends HttpServlet {
 	    logger.error("JNDI error", ne);
 	} catch (SQLException sqle) {
 	    logger.error("Cannot retrive connection", sqle);
+	}finally{
+	    logger.debug("OUT");
 	}
 	return connection;
     }
@@ -242,6 +259,7 @@ public class JasperReportServlet extends HttpServlet {
      * @return Connection to database
      */
     private Connection getDirectConnection(SpagoBiDataSource connectionConfig) {
+	logger.debug("IN");
 	Connection connection = null;
 	try {
 	    String driverName = connectionConfig.getDriver();
@@ -254,28 +272,12 @@ public class JasperReportServlet extends HttpServlet {
 	    logger.error("Driver not found", e);
 	} catch (SQLException e) {
 	    logger.error("Cannot retrive connection", e);
+	}finally{
+		logger.debug("OUT");
 	}
 	return connection;
     }
 
-    /**
-     * Decode a Base64 String into a byte array
-     * 
-     * @param encoded
-     *                String encoded with Base64 algorithm
-     * @return byte array decoded
-     */
-    private byte[] decodeBase64(String encoded) {
-	byte[] clear = null;
-	try {
-	    BASE64Decoder decoder = new BASE64Decoder();
-	    clear = decoder.decodeBuffer(encoded);
-	    return clear;
-	} catch (IOException ioe) {
-	    logger.error("Error during base64 decoding", ioe);
-	}
-	return clear;
-    }
 
 
 

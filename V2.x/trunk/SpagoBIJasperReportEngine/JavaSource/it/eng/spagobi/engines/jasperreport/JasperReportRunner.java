@@ -16,7 +16,6 @@ import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,7 +82,6 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  */
 public class JasperReportRunner {
 	
-	private String spagobibaseurl = null;
 	private static transient Logger logger = Logger.getLogger(JasperReportRunner.class);
 	public static final String JS_FILE_ZIP = "JS_File";
 	public static final String JS_EXT_ZIP = ".zip";
@@ -97,10 +95,9 @@ public class JasperReportRunner {
 	 * @param spagobibaseurl The basic url for SpagoBI
 	 * @param templatePath The path for the report template
 	 */
-	public JasperReportRunner(String spagobibaseurl) {
+	public JasperReportRunner(HttpSession session) {
 		super();
-		this.spagobibaseurl = spagobibaseurl;
-		contentProxy=new ContentServiceProxy();
+		contentProxy=new ContentServiceProxy(session);
 	}
 	
 	/**

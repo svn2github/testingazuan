@@ -120,7 +120,7 @@ public class TemplateBean implements Serializable {
 			}
 			xmlString = document.asXML();
 		    try {
-			ContentServiceProxy proxy=new ContentServiceProxy();
+			ContentServiceProxy proxy=new ContentServiceProxy(session);
 			String result=proxy.saveObjectTemplate(user, documentId, templateName, xmlString);
 		    } catch (Exception gse) {		
 		    	logger.error("Error while saving template", gse);

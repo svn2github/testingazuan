@@ -69,7 +69,7 @@ if (template != null) session.setAttribute("template", template);
 */
 SAXReader readerConfigFile = new SAXReader();
 Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
-ContentServiceProxy contentProxy = new ContentServiceProxy();
+ContentServiceProxy contentProxy = new ContentServiceProxy(session);
 
 String schema = request.getParameter("schema");
 if (schema == null) schema = (String) session.getAttribute("schema");
@@ -144,8 +144,9 @@ if (schema != null && !schema.trim().equals("")) {
 			session.setAttribute("saveTemplate01", templateBean);
 			*/
 			//gets datasource
-			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();		
-			SpagoBiDataSource datasource = proxyDS.getDataSource(documentId);		
+			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);		
+			String userId=request.getParameter("user");
+			SpagoBiDataSource datasource = proxyDS.getDataSource(userId,documentId);		
 			if (datasource == null) {
 				out.write("Connection not defined as data source in table SBI_DATA_SOURCE .");
 				return;

@@ -33,6 +33,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="java.util.Locale"%>
 <%@page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@ page import="org.apache.log4j.Logger"%>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
@@ -54,22 +55,28 @@ LICENSE: see LICENSE.txt file
 <body bgcolor=white lang="en">
 
 <%
-
+Logger logger = Logger.getLogger(this.getClass());
+logger.debug("Reading a user profile...");
+String userId = null;
 IEngUserProfile profile = (IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-if(profile==null) {
+if (profile!=null){
+    userId = (String)profile.getUserUniqueIdentifier();
+}
+if(profile==null || userId==null) {
+    logger.debug("User profile is null");
 	throw new ServletException("User profile not found !");
 }
-String userId = profile.getUserUniqueIdentifier().toString();
 
 // AUDIT UPDATE
 String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+logger.debug("auditId="+auditId);
 AuditAccessUtils auditAccessUtils = 
 	(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 if (auditId != null) {
 	if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, new Long(System.currentTimeMillis()), null, 
 			"EXECUTION_STARTED", null, null);
 }
-
+logger.debug("Strated...");
 try {
 %>
 
@@ -141,6 +148,7 @@ try {
 
 <wcf:render ref="saveAnalysis01" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 <%
+
 //retrieves the locale
 RequestContext context = RequestContext.instance();
 Locale locale = context.getLocale();

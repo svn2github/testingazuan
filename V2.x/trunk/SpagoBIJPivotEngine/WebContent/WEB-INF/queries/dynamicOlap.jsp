@@ -37,11 +37,11 @@ LICENSE: see LICENSE.txt file
 		String nameSubObject = request.getParameter("nameSubObject");
 		String userId = (String)session.getAttribute("userId");
 		String documentId = (String)session.getAttribute("document");
-		ContentServiceProxy contentProxy = new ContentServiceProxy();
+		ContentServiceProxy contentProxy = new ContentServiceProxy(session);
 				
 		//calls service for gets data source object
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
-		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);
+		SpagoBiDataSource ds = proxyDS.getDataSource(userId,documentId);
 
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {

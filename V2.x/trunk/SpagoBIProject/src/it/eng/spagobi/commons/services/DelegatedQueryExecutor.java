@@ -1,6 +1,5 @@
 package it.eng.spagobi.commons.services;
 
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
@@ -17,7 +16,6 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.util.QueryExecutor;
 import it.eng.spago.util.StringUtils;
-import it.eng.spagobi.commons.presentation.tags.ListTag;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -221,7 +219,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     protected static Object executeQuery(DataConnection dataConnection, final String statement,
             final String type, final ArrayList inputParameters) throws Exception {
         
-    	logger.error("QueryExecutor::executeQuery: invocato");
+    	logger.debug("QueryExecutor::executeQuery: invocato");
         SQLCommand sqlCommand = null;
         DataResult dataResult = null;
         Object result = null;

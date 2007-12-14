@@ -7,6 +7,7 @@
 		portal. 
 	</description>
 
+<!-- 
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -43,7 +44,7 @@
 	
 	</filter>
 
-
+-->
 
 
 	<filter>
@@ -54,11 +55,12 @@
 	</filter>
 
 
-
+<!-- 
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+-->
 
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>

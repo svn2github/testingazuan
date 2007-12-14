@@ -6,11 +6,11 @@
 	 	<SERVICE>https://localhost:8443/SpagoBI/proxyReceptor</SERVICE>
 	 </VALIDATE-USER>
 	 <FILTER_RECEIPT>https://localhost:8443/SpagoBI/proxyReceptor</FILTER_RECEIPT> 
-	<SecurityServiceProxy_URL>http://localhost:8080/SpagoBI/services/SecurityService</SecurityServiceProxy_URL>
-	<SchedulerServiceProxy_URL>http://localhost:8080/SpagoBI/services/SchedulerService</SchedulerServiceProxy_URL>
-	<EventServiceProxy_URL>http://localhost:8080/SpagoBI/services/EventService</EventServiceProxy_URL>
-	<ContentServiceProxy_URL>http://localhost:8080/SpagoBI/services/ContentService</ContentServiceProxy_URL>
-	<AuditServiceProxy_URL>http://localhost:8080/SpagoBI/services/AuditService</AuditServiceProxy_URL>
-	<DataSourceServiceProxy_URL>http://localhost:8080/SpagoBI/services/DataSourceService</DataSourceServiceProxy_URL>
+	<SecurityServiceProxy_URL>https://localhost:8443/SpagoBI/services/SecurityService</SecurityServiceProxy_URL>
+	<SchedulerServiceProxy_URL>https://localhost:8443/SpagoBI/services/SchedulerService</SchedulerServiceProxy_URL>
+	<EventServiceProxy_URL>https://localhost:8443/SpagoBI/services/EventService</EventServiceProxy_URL>
+	<ContentServiceProxy_URL>https://localhost:8443/SpagoBI/services/ContentService</ContentServiceProxy_URL>
+	<AuditServiceProxy_URL>https://localhost:8443/SpagoBI/services/AuditService</AuditServiceProxy_URL>
+	<DataSourceServiceProxy_URL>https://localhost:8443/SpagoBI/services/DataSourceService</DataSourceServiceProxy_URL>
 	
 </SPAGOBI_SSO>

@@ -63,30 +63,13 @@ public class DelegatedHibernateConnectionListService extends DelegatedBasicListS
 			request.delAttribute("FIELD_ORDER");
 			request.setAttribute("FIELD_ORDER", currentFieldOrder);
 		}
-		request.delAttribute("PREC_FIELD_ORDER");
-		request.setAttribute("PREC_FIELD_ORDER", currentFieldOrder);
-
+		
 		String currentTypOrder = (request.getAttribute("TYPE_ORDER") == null || ((String)request.getAttribute("TYPE_ORDER")).equals(""))?"":(String)request.getAttribute("TYPE_ORDER");		
 		if (currentTypOrder.equals("")){
 			currentTypOrder = " ASC";
 			request.delAttribute("TYPE_ORDER");
 			request.setAttribute("TYPE_ORDER",currentTypOrder);			
 		}
-		request.delAttribute("PREC_TYPE_ORDER");		
-		request.setAttribute("PREC_TYPE_ORDER", currentTypOrder);
-
-		/*
-		else if (request.getAttribute("TYPE_ORDER") != null && ((String)request.getAttribute("TYPE_ORDER")).equals("ASC")){
-			request.delAttribute("TYPE_ORDER");
-			request.setAttribute("TYPE_ORDER", "DESC");
-		}
-		else if (request.getAttribute("TYPE_ORDER") != null && ((String)request.getAttribute("TYPE_ORDER")).equals("DESC")){
-			request.delAttribute("TYPE_ORDER");
-			request.setAttribute("TYPE_ORDER", "ASC");
-		}
-		*/
-		
-		
 
 		InitializerIFace serviceInitializer = (InitializerIFace) service;
 		RequestContextIFace serviceRequestContext = (RequestContextIFace) service;

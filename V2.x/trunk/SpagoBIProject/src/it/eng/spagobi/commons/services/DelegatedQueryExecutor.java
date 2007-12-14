@@ -196,7 +196,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
      */
     public static Object executeQuery(DataConnection dataConnection, String type, SourceBean query,
             ArrayList parameters) throws Exception {
-        logger.error("QueryExecutor::executeQuery: invocato");
+        logger.debug("DelagatedQueryExecutor::executeQuery: invocato");
         Object result = null;
         String statement = SQLStatements.getStatement((String) query.getAttribute("STATEMENT"));
         try {
@@ -219,7 +219,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     protected static Object executeQuery(DataConnection dataConnection, final String statement,
             final String type, final ArrayList inputParameters) throws Exception {
         
-    	logger.debug("QueryExecutor::executeQuery: invocato");
+    	logger.error("QueryExecutor::executeQuery: invocato");
         SQLCommand sqlCommand = null;
         DataResult dataResult = null;
         Object result = null;
@@ -374,13 +374,6 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     	 String parameterType = (String) parameter.getAttribute("TYPE");
          String parameterValue = (String) parameter.getAttribute("VALUE");
          String parameterScope = (String) parameter.getAttribute("SCOPE");
-         SourceBean serviceRequest = requestContainer.getServiceRequest();
-         responseContainer.delAttribute("PREC_TYPE_ORDER");
-         responseContainer.setAttribute("PREC_TYPE_ORDER", (serviceRequest.getAttribute("PREC_TYPE_ORDER")==null)?"":(String)serviceRequest.getAttribute("PREC_TYPE_ORDER"));
-         
-         responseContainer.delAttribute("PREC_FIELD_ORDER");
-         responseContainer.setAttribute("PREC_FIELD_ORDER", (serviceRequest.getAttribute("PREC_FIELD_ORDER")==null)?"":(String)serviceRequest.getAttribute("PREC_FIELD_ORDER"));
-
 
          //gets order by attribute (dynamically)
          String inParameterValue = null;

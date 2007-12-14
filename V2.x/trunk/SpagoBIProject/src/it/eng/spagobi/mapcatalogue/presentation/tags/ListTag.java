@@ -127,15 +127,6 @@ public class ListTag extends TagSupport {
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		ConfigSingleton configure = ConfigSingleton.getInstance();
-		
-		String  typeOrder = (String) _responseContainer.getAttribute("PREC_TYPE_ORDER");
-		SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " TYPE_ORDER: " + typeOrder);		
-		_providerUrlMap.put("PREC_TYPE_ORDER", typeOrder);
-		
-		String  precFieldOrder = (String) _responseContainer.getAttribute("PREC_FIELD_ORDER");
-		SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " TYPE_ORDER: " + precFieldOrder);		
-		_providerUrlMap.put("PREC_FIELD_ORDER", precFieldOrder);
-		
 		if (_actionName != null) {
 			_serviceName = _actionName;
 			_content = _serviceResponse;
@@ -292,25 +283,26 @@ public class ListTag extends TagSupport {
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
 			if (align == null || align.trim().equals("")) align = "left";
-			//_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" + labelColumn + "</TD>\n");
 			//defines order url for dynamic ordering
 			HashMap orderParamsMap = new HashMap();
-			orderParamsMap.putAll(_providerUrlMap);			
-			//defines order type (ASC or DESC)
-			String precFieldOrder = (String)orderParamsMap.get("PREC_FIELD_ORDER");
-			String precTypeOrder = (String)orderParamsMap.get("PREC_TYPE_ORDER");
-			if (nameColumn.equalsIgnoreCase(precFieldOrder))
-					orderParamsMap.put("TYPE_ORDER",(precTypeOrder.trim()).equalsIgnoreCase("ASC")?" DESC":" ASC");
-			else
-				orderParamsMap.put("TYPE_ORDER"," ASC");
-			orderParamsMap.put("FIELD_ORDER", nameColumn);			
-			
-			String orderUrl = createUrl(orderParamsMap);				
-			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );
-			 if (!nameColumn.equalsIgnoreCase("INSTANCES"))
-				_htmlStream.append("	<A href=\""+orderUrl+"\">"+labelColumn+"</a>");
-			 else
-				 _htmlStream.append(labelColumn);
+			orderParamsMap.putAll(_providerUrlMap);						
+			orderParamsMap.put("FIELD_ORDER", nameColumn);
+			orderParamsMap.put("TYPE_ORDER"," ASC");			
+			String orderUrlAsc = createUrl(orderParamsMap);
+			orderParamsMap.remove("TYPE_ORDER");
+			orderParamsMap.put("TYPE_ORDER"," DESC");
+			String orderUrlDesc = createUrl(orderParamsMap);
+			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );			
+		    _htmlStream.append(   labelColumn);						
+			 if (!nameColumn.equalsIgnoreCase("INSTANCES")){
+				_htmlStream.append("	<A href=\""+orderUrlAsc+"\">\n");
+				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowUp.gif")+"'/>\n");
+				_htmlStream.append("	</A>\n");
+				_htmlStream.append("	<A href=\""+orderUrlDesc+"\">\n");
+				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowDown.gif")+"'/>\n");
+				_htmlStream.append("	</A>\n");
+			 }
+			 _htmlStream.append("</TD>\n");
 
 		} 
 		for(int i=0; i<numCaps; i++) {
@@ -607,17 +599,17 @@ public class ListTag extends TagSupport {
 		
 		if(pageNumber != 1) {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
 			_htmlStream.append("		</TD>\n");
 		} else {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
 			_htmlStream.append("		</TD>\n");			
 		}		
 		//_htmlStream.append("		</TD>\n");
@@ -1004,17 +996,17 @@ public class ListTag extends TagSupport {
 		// visualize navigation's icons
 		if(pageNumber != 1) {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
 			_htmlStream.append("	</TD>\n");
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
 			_htmlStream.append("	</TD>\n");
 		} else {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
 			_htmlStream.append("	</TD>\n");
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
 			_htmlStream.append("	</TD>\n");			
 		}		
 		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='15%'>\n");
@@ -1045,17 +1037,17 @@ public class ListTag extends TagSupport {
 		_htmlStream.append("	</TD>\n");
 		if(pageNumber != pagesNumber) {	
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
 			_htmlStream.append("	</TD>\n");
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
 			_htmlStream.append("	</TD>\n");
 		} else {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("	</TD>\n");
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("	</TD>\n");
 		}		
 		_htmlStream.append("		<TD class='portlet-section-footer' width='38%'>\n");

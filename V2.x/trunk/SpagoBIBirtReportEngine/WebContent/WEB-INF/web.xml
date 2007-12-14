@@ -94,6 +94,7 @@
 		<param-value>true</param-value>
 	</context-param>
 
+<!-- 
 	 <filter>
  <filter-name>CAS_Filter</filter-name>
  <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
@@ -116,16 +117,18 @@
              <param-value>https://localhost:8443/SpagoBIBirtReportEngine/proxyReceptor</param-value> 
        </init-param>     
  </filter>
- 
+ -->
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
 	
+<!-- 	
   <filter-mapping>
     <filter-name>CAS_Filter</filter-name>
     <url-pattern>/*</url-pattern>
  </filter-mapping>
+ 	-->
  	
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>

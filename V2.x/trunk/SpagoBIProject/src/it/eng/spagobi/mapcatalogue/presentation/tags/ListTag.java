@@ -745,13 +745,23 @@ public class ListTag extends TagSupport {
 		}
 		_htmlStream.append("		</TD>\n");	
 		// create link for next page
-		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
+		//_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
 		if(pageNumber != pagesNumber) {	
-			_htmlStream.append("		<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("		</TD>\n");
 		} else {
-			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0>\n");
-		}		
-		_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		</TD>\n");
+		}			
+		//_htmlStream.append("		</TD>\n");
 		_htmlStream.append("	</TR>\n");
 		_htmlStream.append("</TABLE>\n");
 	} 

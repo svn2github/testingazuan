@@ -18,7 +18,7 @@
 	<!-- ====================================================================================== -->
 	<!--  SSO settings 																	--> 
 	<!-- ====================================================================================== -->
-	<ACTIVE_SSO>true</ACTIVE_SSO>
+	<ACTIVE_SSO>false</ACTIVE_SSO>
 	<FILTER_RECEIPT>https://localhost:8443/SpagoBI/proxyReceptor</FILTER_RECEIPT>
 	<SecurityServiceProxy_URL>https://localhost:8443/SpagoBI/services/SecurityService</SecurityServiceProxy_URL>
 	<SchedulerServiceProxy_URL>https://localhost:8443/SpagoBI/services/SchedulerService</SchedulerServiceProxy_URL>

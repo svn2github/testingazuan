@@ -8,7 +8,10 @@
  <MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListLookupParametersModule" name="ListLookupParametersModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListParam.ListLookupParameters.title" >
 	      <QUERIES>
-	        <SELECT_QUERY statement="SELECT_PARAMETERS_LIST"/>
+	        <SELECT_QUERY statement="SELECT_PARAMETERS_LIST">
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+	        </SELECT_QUERY>
 				<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="par_id"/>
 	      </QUERIES>
 	      <CAPTIONS>
@@ -48,7 +51,10 @@
 <MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListParametersModule" name="ListParametersModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListParam.title" >
 	      <QUERIES>
-	        <SELECT_QUERY statement="SELECT_LIST_PARAMETERS"/>
+	        <SELECT_QUERY statement="SELECT_LIST_PARAMETERS">
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+	        </SELECT_QUERY>
 	      </QUERIES>
 	      <COLUMNS>
 	        <COLUMN label="ID" name="ID" hidden="true" />
@@ -135,7 +141,10 @@
 <MODULE class="it.eng.spagobi.behaviouralmodel.check.service.ListChecksModule" name="ListModalitiesChecksModule" >
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListConfConst.title">
       <QUERIES>
-        <SELECT_QUERY statement="SELECT_LIST_MODALITIES_CHECKS"/>
+        <SELECT_QUERY statement="SELECT_LIST_MODALITIES_CHECKS">
+         	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+         	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+        </SELECT_QUERY>
         <DELETE_QUERY statement="DELETE_CHECKS">
           <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="id"/>
         </DELETE_QUERY>
@@ -175,7 +184,10 @@
 <MODULE class="it.eng.spagobi.behaviouralmodel.check.service.ListPredefinedChecksModule" name="ListPredefinedChecksModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListPredConst.title">
       <QUERIES>
-        <SELECT_QUERY statement="SELECT_PREDEFINED_CHECKS"/>
+        <SELECT_QUERY statement="SELECT_PREDEFINED_CHECKS">
+        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+        </SELECT_QUERY>
       </QUERIES>
       <COLUMNS>
         <COLUMN label="ID" name="ID" hidden="true" />
@@ -205,6 +217,8 @@
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_LIST_MODALITIES_VALUE"/>
 				<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="id"/>
+				<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+				<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
 	      </QUERIES>
 	      <CAPTIONS>
 	        <SELECT_CAPTION confirm="FALSE" image="/img/button_ok.png" label="SBIDev.ListParamUse.ListLookupLov.selectCaption">
@@ -232,13 +246,16 @@
   	</MODULE>
 	<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLookupModalityValuesModule" name="ListLookupModalityValuesModule">
 	</MODULE>    
-<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLovsModule" name="ListLovsModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBIDev.predLovList.title">
+<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLovsModule" name="ListLovsModule">	    
+	    <CONFIG pool="spagobi" rows="3" title="SBIDev.predLovList.title">
       <QUERIES>
-        <SELECT_QUERY statement="SELECT_LIST_MODALITIES_VALUE"/>
+        	<SELECT_QUERY statement="SELECT_LIST_MODALITIES_VALUE">
+        		<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+        		<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+        	</SELECT_QUERY>
       </QUERIES>
       <COLUMNS>
-        <COLUMN label="ID" name="ID" hidden="true" />
+        <COLUMN label="ID" name="ID" hidden="true" />        
         <COLUMN label="SBIDev.predLovList.columnLabel" name="LABEL"/>
         <COLUMN label="SBIDev.predLovList.columnName" name="NAME"/>
         <COLUMN label="SBIDev.predLovList.columnDesc" name="DESCRIPTION"/>

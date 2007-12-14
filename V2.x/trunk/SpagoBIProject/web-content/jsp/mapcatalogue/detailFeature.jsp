@@ -3,8 +3,8 @@
 <%@ page         import="it.eng.spago.base.*,
  				 it.eng.spago.configuration.ConfigSingleton,
  				 it.eng.spagobi.mapcatalogue.bo.GeoFeature,
- 				 it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory,
- 				 it.eng.spago.navigation.LightNavigationManager,it.eng.sit.eng.spagobi.commons.utilities.PortletUtilities,
+ 				 it.eng.spagobi.commons.dao.DAOFactory,
+ 				 it.eng.spago.navigation.LightNavigationManager,it.eng.spagobi.commons.utilities.PortletUtilities,
  				 java.util.Map,java.util.HashMap" %>
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailFeatureModule"); 
@@ -158,4 +158,4 @@
 
 </script>
 
-<%@ include file="/jsp/footer.jsp"%>
+<%@ include file="/jsp/commons/footer.jsp"%>

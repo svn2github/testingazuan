@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -64,6 +65,8 @@ import org.safehaus.uuid.UUIDGenerator;
 
 public class ListTag extends TagSupport
 {
+	static private Logger logger = Logger.getLogger(ListTag.class);
+	
 	protected String _actionName = null;
 	protected String _moduleName = null;
 	protected String _serviceName = null;
@@ -79,6 +82,12 @@ public class ListTag extends TagSupport
 	protected Vector _columns = null;
     protected String labelLinkSaltoPagina;
     protected String _filter = null;
+    //the navigation's variables
+    protected String _prevUrl = null;
+    protected String _nextUrl = null;
+    protected String _firstUrl = null;
+    protected String _lastUrl = null;
+    
     protected HttpServletRequest httpRequest = null;
     protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
@@ -88,11 +97,13 @@ public class ListTag extends TagSupport
     private HashMap _providerUrlMap = new HashMap();
     // the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
     protected HashMap _paramsMap = new HashMap();
+    
+    final static int END_RANGE_PAGES = 6;
 
     
     
     /**
-     *Consructor
+     *Constructor
      */
     public ListTag()
     {
@@ -101,7 +112,7 @@ public class ListTag extends TagSupport
 
        
 	public int doStartTag() throws JspException {
-		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "doStartTag", " method invoked");
+		logger.info(" method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		_requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		_responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
@@ -111,6 +122,39 @@ public class ListTag extends TagSupport
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		ConfigSingleton configure = ConfigSingleton.getInstance();
+
+		String  typeOrder = (String) _responseContainer.getAttribute("PREC_TYPE_ORDER");
+		SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " TYPE_ORDER: " + typeOrder);
+		if (typeOrder == null){
+			//if precedents values aren't found, checks informations into source bean LISTBIOBJECTSMODULE
+			List tmpList = _serviceResponse.getContainedAttributes("LISTBIOBJECTSMODULE");
+			for (int i=0; i< tmpList.size(); i++){
+				SourceBeanAttribute tmpSB = (SourceBeanAttribute)tmpList.get(i);
+				if (tmpSB.getKey()!= null && tmpSB.getKey().equalsIgnoreCase("PREC_TYPE_ORDER")){
+					typeOrder = (String)tmpSB.getValue();
+					break;
+				}
+			}			
+		}
+		if (typeOrder != null)
+			_providerUrlMap.put("PREC_TYPE_ORDER", typeOrder);
+		
+		String  precFieldOrder = (String) _responseContainer.getAttribute("PREC_FIELD_ORDER");
+		SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " TYPE_ORDER: " + precFieldOrder);	
+		if (precFieldOrder == null){
+			//if precedents values aren't found, checks informations into source bean LISTBIOBJECTSMODULE
+				List tmpList = _serviceResponse.getContainedAttributes("LISTBIOBJECTSMODULE");
+				for (int i=0; i< tmpList.size(); i++){
+					SourceBeanAttribute tmpSB = (SourceBeanAttribute)tmpList.get(i);
+					if (tmpSB.getKey()!= null && tmpSB.getKey().equalsIgnoreCase("PREC_FIELD_ORDER")){						
+						precFieldOrder = (String)tmpSB.getValue();
+						break;
+					}
+				}				
+		}
+		if (precFieldOrder != null)
+			_providerUrlMap.put("PREC_FIELD_ORDER", precFieldOrder);
+		
 		if (_actionName != null) {
 			_serviceName = _actionName;
 			_content = _serviceResponse;
@@ -130,17 +174,17 @@ public class ListTag extends TagSupport
 		} // if (_actionName != null)
 		else if (_moduleName != null) {
 			_serviceName = _moduleName;
-			SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " Module Name: " + _moduleName);
+			logger.debug(" Module Name: " + _moduleName);
 			_content = (SourceBean) _serviceResponse.getAttribute(_moduleName);
 			SourceBean moduleBean = (SourceBean) configure.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME", _moduleName);
-			if(moduleBean!=null) SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", _moduleName + " configuration loaded");
+			if(moduleBean!=null) logger.debug(" configuration loaded");
 			_layout = (SourceBean) moduleBean.getAttribute("CONFIG");
 			if (_layout == null) {
 				// if the layout is dinamically created it is an attribute of the response
 				_layout = (SourceBean) _serviceResponse.getAttribute(_moduleName + ".CONFIG");
 			}
 			String pageName = (String) _serviceRequest.getAttribute("PAGE");
-			SpagoBITracer.debug("Admintools", "ListTag", "doStartTag", " PAGE: " + pageName);
+			logger.debug(" PAGE: " + pageName);
 			_providerURL = "PAGE=" + pageName + "&MODULE=" + _moduleName + "&";
 			_providerUrlMap.put("PAGE", pageName);
 			_providerUrlMap.put("MODULE", _moduleName);
@@ -151,15 +195,15 @@ public class ListTag extends TagSupport
 			}
 		} // if (_moduleName != null)
 		else {
-			SpagoBITracer.critical("Admintools", "ListTag", "doStartTag", "service name not specified");
+			logger.error("service name not specified");
 			throw new JspException("Business name not specified !");
 		} // if (_content == null)
 		if (_content == null) {
-			SpagoBITracer.warning("Admintools", "ListTag", "doStartTag", "list content null");
+			logger.warn("list content null");
 			return SKIP_BODY;
 		} // if (_content == null)
 		if (_layout == null) {
-			SpagoBITracer.warning("Admintools", "ListTag", "doStartTag", "list module configuration null");
+			logger.warn("list module configuration null");
 			return SKIP_BODY;
 		} // if (_layout == null)
 		// if the LightNavigator is disabled entering the list, it is kept disabled untill exiting the list
@@ -177,7 +221,7 @@ public class ListTag extends TagSupport
 			pageContext.getOut().print(_htmlStream);
 		} // try
 		catch (Exception ex) {
-			SpagoBITracer.critical("Admintools", "ListTag", "doStartTag", "Impossible to send the stream");
+			logger.error("Impossible to send the stream");
 			throw new JspException("Impossible to send the stream");
 		} // catch (Exception ex)
 		return SKIP_BODY;
@@ -209,13 +253,28 @@ public class ListTag extends TagSupport
 			_htmlStream.append("	</tr>\n");
 			_htmlStream.append(" </table>\n");
 		}
-
+		defineColumns();
+		makeNavigationButton();
 		makeColumns();
 		makeRows();
-		makeNavigationButton();
+		makeFooterList();
+		//makeNavigationButton();
 		
 	} // public void makeForm()
 
+	protected void defineColumns() throws JspException{
+		_columns = new Vector();
+		List columnsVector = _layout.getAttributeAsList("COLUMNS.COLUMN");
+		for (int i = 0; i < columnsVector.size(); i++) {
+			String hidden = (String)((SourceBean) columnsVector.get(i)).getAttribute("HIDDEN");
+			if (hidden == null || hidden.trim().equalsIgnoreCase("FALSE"))
+				_columns.add((SourceBean) columnsVector.get(i));
+		}
+		if ((_columns == null) || (_columns.size() == 0)) {
+			logger.error("Columns names not defined");
+			throw new JspException("Columns names not defined");
+		} 
+	}
 	
 	/**
 	 * Builds Table list columns, reading all request information.
@@ -229,18 +288,6 @@ public class ListTag extends TagSupport
 		List captions = captionSB.getContainedSourceBeanAttributes();
 		int numCaps = captions.size();
 		
-		_columns = new Vector();
-		List columnsVector = _layout.getAttributeAsList("COLUMNS.COLUMN");
-		for (int i = 0; i < columnsVector.size(); i++) {
-			String hidden = (String)((SourceBean) columnsVector.get(i)).getAttribute("HIDDEN");
-			if (hidden == null || hidden.trim().equalsIgnoreCase("FALSE"))
-				_columns.add((SourceBean) columnsVector.get(i));
-		}
-		if ((_columns == null) || (_columns.size() == 0)) {
-			SpagoBITracer.critical("Admintools", "ListTag", "doStartTag", "Columns names not defined");
-			throw new JspException("Columns names not defined");
-		} 
-		
 		_htmlStream.append("<TABLE style='width:100%;margin-top:1px'>\n");
 		_htmlStream.append("	<TR>\n");
 
@@ -253,7 +300,26 @@ public class ListTag extends TagSupport
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
 			if (align == null || align.trim().equals("")) align = "left";
-			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" + labelColumn + "</TD>\n");
+			//defines order url for dynamic ordering
+			HashMap orderParamsMap = new HashMap();
+			orderParamsMap.putAll(_providerUrlMap);			
+				
+			//defines order type (ASC or DESC)
+			String precFieldOrder = (String)orderParamsMap.get("PREC_FIELD_ORDER");
+			String precTypeOrder = (String)orderParamsMap.get("PREC_TYPE_ORDER");
+			if (nameColumn.equalsIgnoreCase(precFieldOrder))
+					orderParamsMap.put("TYPE_ORDER",(precTypeOrder.trim()).equalsIgnoreCase("ASC")?" DESC":" ASC");
+			else
+				orderParamsMap.put("TYPE_ORDER"," ASC");
+			orderParamsMap.put("FIELD_ORDER", nameColumn);
+			String orderUrl = createUrl(orderParamsMap);				
+			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );
+			 if (!nameColumn.equalsIgnoreCase("INSTANCES"))
+				_htmlStream.append("	<A href=\""+orderUrl+"\">"+labelColumn+"</a>");
+			 else
+				 _htmlStream.append(labelColumn);
+			_htmlStream.append("</TD>\n");								
+								
 		} 
 		for(int i=0; i<numCaps; i++) {
 			_htmlStream.append("<TD class='portlet-section-header' style='text-align:center'>&nbsp;</TD>\n");
@@ -372,7 +438,7 @@ public class ListTag extends TagSupport
 					Object parameterValueObject = null;
 					if (parameterScope != null && parameterScope.equalsIgnoreCase("LOCAL")) {
 						if (row == null) {
-							SpagoBITracer.critical("adminTools", "ListTag", "verifyConditions", "Impossible to associate LOCAL scope: the row is null");
+							logger.error("Impossible to associate LOCAL scope: the row is null");
 							throw new JspException("Impossible to associate LOCAL scope: the row is null");
 						} // if (row == null)
 						parameterValueObject = row.getAttribute(parameterName);
@@ -417,8 +483,6 @@ public class ListTag extends TagSupport
 	 * 
 	 * @throws JspException If any Exception occurs
 	 */
-	
-
 	protected void makeNavigationButton() throws JspException {
 		
 		String pageNumberString = (String) _content.getAttribute("PAGED_LIST.PAGE_NUMBER");
@@ -451,29 +515,38 @@ public class ListTag extends TagSupport
 		if (nextPage > pagesNumber)
 			nextPage = pagesNumber;
 		
-		
-		// get the right parameters of the request
-		//HashMap paramsMap  = getQueryStringParameter();
-		// add the parameter for the provider
-		//paramsMap.putAll(_providerUrlMap);
-				
 		_htmlStream.append(" <TABLE CELLPADDING=0 CELLSPACING=0  WIDTH='100%' BORDER=0>\n");
 		_htmlStream.append("	<TR>\n");
-		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='14'>\n");
+		//_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='14'>\n");
 		
-        // create link for previous page
+        // create link for previous page		
 		HashMap prevParamsMap = new HashMap();
 		prevParamsMap.putAll(_providerUrlMap);
 		prevParamsMap.put("MESSAGE", "LIST_PAGE");
-		prevParamsMap.put("LIST_PAGE", String.valueOf(prevPage));
-		String prevUrl = createUrl(prevParamsMap);	
+		prevParamsMap.put("LIST_PAGE", String.valueOf(prevPage));		
+		_prevUrl = createUrl(prevParamsMap);	
 		
+		// create link for next page
 		HashMap nextParamsMap = new HashMap();
 		nextParamsMap.putAll(_providerUrlMap);
 		nextParamsMap.put("MESSAGE", "LIST_PAGE");
 		nextParamsMap.put("LIST_PAGE", String.valueOf(nextPage));
-		String nextUrl = createUrl(nextParamsMap);
-		
+		_nextUrl = createUrl(nextParamsMap);
+
+		// create link for first page
+		HashMap firstParamsMap = new HashMap();
+		firstParamsMap.putAll(_providerUrlMap);
+		firstParamsMap.put("MESSAGE", "LIST_PAGE");
+		firstParamsMap.put("LIST_PAGE","1");
+		_firstUrl = createUrl(firstParamsMap);
+
+		// create link for last page
+		HashMap lastParamsMap = new HashMap();
+		lastParamsMap.putAll(_providerUrlMap);
+		lastParamsMap.put("MESSAGE", "LIST_PAGE");
+		lastParamsMap.put("LIST_PAGE", String.valueOf(pagesNumber));
+		_lastUrl = createUrl(lastParamsMap);
+
 		// identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	    UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -490,20 +563,25 @@ public class ListTag extends TagSupport
 			prevParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			prevParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			prevParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
-			prevUrl = createUrl(prevParamsMap);
-			//prevUrl.setParameter(SpagoBIConstants.VALUE_FILTER, valueFilter);
-			//prevUrl.setParameter(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
-			//prevUrl.setParameter(SpagoBIConstants.COLUMN_FILTER, columnFilter);
-			//prevUrl.setParameter(SpagoBIConstants.TYPE_FILTER, typeFilter);
+			_prevUrl = createUrl(prevParamsMap);
+			
 			nextParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			nextParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			nextParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			nextParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
-			nextUrl = createUrl(nextParamsMap);
-			//nextUrl.setParameter(SpagoBIConstants.VALUE_FILTER, valueFilter);
-			//nextUrl.setParameter(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
-			//nextUrl.setParameter(SpagoBIConstants.COLUMN_FILTER, columnFilter);
-			//nextUrl.setParameter(SpagoBIConstants.TYPE_FILTER , typeFilter);
+			_nextUrl = createUrl(nextParamsMap);
+			
+			firstParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
+			firstParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
+			firstParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
+			firstParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
+			_firstUrl = createUrl(firstParamsMap);
+			
+			lastParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
+			lastParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
+			lastParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
+			lastParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
+			_lastUrl = createUrl(lastParamsMap);
 		} else {
 			valueFilter = "";
 			typeValueFilter = "";
@@ -511,26 +589,26 @@ public class ListTag extends TagSupport
 			typeFilter = "";
 		}
 		
-		if(pageNumber != 1) {	
-			_htmlStream.append("		<A href=\""+prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+		if(pageNumber != 1) {
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("		</TD>\n");
 		} else {
-			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("		</TD>\n");			
 		}		
-		_htmlStream.append("		</TD>\n");
+		//_htmlStream.append("		</TD>\n");
 				
-		// create center blank cell
-		//_htmlStream.append("		<TD class='portlet-section-footer'>&nbsp;</TD>\n");
-		
-        // visualize page numbers
-		//String pageLabel = PortletUtilities.getMessage("ListTag.pageLable", "messages");
-		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", "messages", httpRequest);
-		//String pageOfLabel = PortletUtilities.getMessage("ListTag.pageOfLable", "messages");
-		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", "messages", httpRequest);
-		_htmlStream.append("						<TD class='portlet-section-footer' align='center'>\n");
-		_htmlStream.append("							<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
-		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
 		
 		// Form for list filtering; if not specified, the filter is enabled
+		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='middle' width='80%'>\n");
 		if (_filter == null || _filter.equalsIgnoreCase("enabled")) {
 			
 			String allUrl = createUrl(_providerUrlMap);
@@ -552,7 +630,7 @@ public class ListTag extends TagSupport
 			String labelFilter =  msgBuilder.getMessage("SBIListLookPage.filter", "messages", httpRequest);
 			String labelAll =  msgBuilder.getMessage("SBIListLookPage.all", "messages", httpRequest);
 			
-			_htmlStream.append("						    <br/><br/>\n");
+			//_htmlStream.append("						    <br/><br/>\n");
 			_htmlStream.append("						    <form action='"+filterURL+"' id='" + formId +"' method='post'>\n");
 			_htmlStream.append("						    "+label+"\n");
 			_htmlStream.append("						    <select name='" + SpagoBIConstants.COLUMN_FILTER + "'>\n");
@@ -649,18 +727,163 @@ public class ListTag extends TagSupport
 		}
 		_htmlStream.append("		</TD>\n");	
 		// create link for next page
-		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
+		//_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
 		if(pageNumber != pagesNumber) {	
-			_htmlStream.append("		<A href=\""+nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0 /></a>\n"); 
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("		</TD>\n");
 		} else {
-			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		</TD>\n");
 		}		
-		_htmlStream.append("		</TD>\n");
+//		_htmlStream.append("		</TD>\n");
 		_htmlStream.append("	</TR>\n");
 		_htmlStream.append("</TABLE>\n");
 	} 
 
-	
+	/**
+	 * Builds Table list footer, reading all request information.
+	 * 
+	 * @throws JspException If any Exception occurs.
+	 */
+	protected void makeFooterList() throws JspException {
+		String pageNumberString = (String) _content.getAttribute("PAGED_LIST.PAGE_NUMBER");
+		int pageNumber = 1;
+		try {
+			pageNumber = Integer.parseInt(pageNumberString);
+		} 
+		catch (NumberFormatException ex) {
+			TracerSingleton.log(
+				Constants.NOME_MODULO,
+				TracerSingleton.WARNING,
+				"ListTag::makeNavigationButton:: PAGE_NUMBER nullo");
+		} 
+		String pagesNumberString = (String) _content.getAttribute("PAGED_LIST.PAGES_NUMBER");
+		int pagesNumber = 1;
+		try {
+			pagesNumber = Integer.parseInt(pagesNumberString);
+		} 
+		catch (NumberFormatException ex) {
+			TracerSingleton.log(
+				Constants.NOME_MODULO,
+				TracerSingleton.WARNING,
+				"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
+		} 
+				
+		int prevPage = pageNumber - 1;
+		if (prevPage < 1)
+			prevPage = 1;
+		int nextPage = pageNumber + 1;
+		if (nextPage > pagesNumber)
+			nextPage = pagesNumber;
+		
+		int startRangePages = 1;
+		int endRangePages = END_RANGE_PAGES;
+		int deltaPages = pagesNumber - endRangePages;
+		String dotsStart = "";
+		String dotsEnd = "";
+		if (deltaPages > 0){
+			startRangePages = (pageNumber - 3 > 0)?pageNumber - 3:1;
+			endRangePages = ((pageNumber + 3 <= pagesNumber) && (pageNumber + 3 >  END_RANGE_PAGES))?pageNumber + 3: END_RANGE_PAGES;
+			if (pageNumber + 3 <= pagesNumber){ 
+				if (pageNumber + 3 >  END_RANGE_PAGES) endRangePages = pageNumber + 3;				
+				else endRangePages = END_RANGE_PAGES;
+			}
+			else {
+				startRangePages = startRangePages - (pageNumber + 3 - pagesNumber);
+				endRangePages = pagesNumber;
+			}
+			if (endRangePages < pagesNumber) dotsEnd = "... ";
+			if (startRangePages > 1) dotsStart = "... ";			
+		}
+		else {
+			startRangePages = 1;
+			endRangePages = pagesNumber;
+		}
+					
+		_htmlStream.append(" <TABLE CELLPADDING=0 CELLSPACING=0  WIDTH='100%' BORDER=0>\n");
+		_htmlStream.append("	<TR>\n");		
+        // visualize page numbers
+		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", "messages", httpRequest);
+		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", "messages", httpRequest);
+		_htmlStream.append("		<TD class='portlet-section-footer' align='left' width='10%'>\n");
+		_htmlStream.append("				<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
+		//_htmlStream.append("			    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
+		_htmlStream.append("		</TD>\n");
+		_htmlStream.append("		<TD  class='portlet-section-footer' width='28%'>\n");
+		_htmlStream.append("			    &nbsp;\n");
+		_htmlStream.append("		</TD>\n");		
+		// visualize navigation's icons
+		if(pageNumber != 1) {
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("	</TD>\n");
+		} else {
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("	</TD>\n");			
+		}		
+		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='15%'>\n");
+		_htmlStream.append(dotsStart+"\n");
+		for (int i=startRangePages; i <= endRangePages; i++){
+			// create link for last page
+			HashMap tmpParamsMap = new HashMap();
+			tmpParamsMap.putAll(_providerUrlMap);
+			tmpParamsMap.put("MESSAGE", "LIST_PAGE");
+			tmpParamsMap.put("LIST_PAGE", String.valueOf(i));
+			String tmpUrl = createUrl(tmpParamsMap);
+			
+			String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
+			String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+			String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+			String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
+			if (valueFilter != null && columnFilter != null && typeFilter != null) {
+				tmpParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
+				tmpParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
+				tmpParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
+				tmpParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
+				tmpUrl = createUrl(tmpParamsMap);
+			}				 				
+			_htmlStream.append("	<A href=\""+tmpUrl+"\">"+String.valueOf(i)+ "</a>\n");
+			_htmlStream.append("&nbsp;&nbsp;\n");			
+		}
+		_htmlStream.append(dotsEnd+"\n");
+		_htmlStream.append("	</TD>\n");
+		if(pageNumber != pagesNumber) {	
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("	</TD>\n");
+		} else {
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("	</TD>\n");
+		}		
+		_htmlStream.append("		<TD class='portlet-section-footer' width='38%'>\n");
+		_htmlStream.append("			    &nbsp;\n");
+		_htmlStream.append("		</TD>\n");		
+
+		_htmlStream.append("	</TR>\n");
+		_htmlStream.append("</TABLE>\n");
+	}
 	
 	/**
 	 * Starting from the module <code>buttonsSB</code> object, 
@@ -731,7 +954,7 @@ public class ListTag extends TagSupport
 				if ((type != null) && type.equalsIgnoreCase("RELATIVE")) {
 					if ((scope != null) && scope.equalsIgnoreCase("LOCAL")) {
 						if (row == null) {
-							SpagoBITracer.critical("adminTools", "ListTag", "getParametersMap", "Impossible to associate local scope to the button");
+							logger.error("Impossible to associate local scope to the button");
 							throw new JspException("Impossible to associate local scope to the button");
 						} // if (row == null)
 						Object valueObject = row.getAttribute(value);

@@ -24,7 +24,9 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.DataRow;
+import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.mappers.SQLMapper;
+import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dispatching.service.RequestContextIFace;
 import it.eng.spago.dispatching.service.ServiceIFace;
 import it.eng.spago.error.EMFErrorHandler;
@@ -55,20 +57,54 @@ public class DelegatedHibernateConnectionListService extends DelegatedBasicListS
 		Session aSession = null;
 		Transaction tx = null;
 		PaginatorIFace paginator = new GenericPaginator();
+		String currentFieldOrder = (request.getAttribute("FIELD_ORDER") == null || ((String)request.getAttribute("FIELD_ORDER")).equals(""))?"":(String)request.getAttribute("FIELD_ORDER");
+		if (currentFieldOrder.equals("")){
+			currentFieldOrder = "DESCR";
+			request.delAttribute("FIELD_ORDER");
+			request.setAttribute("FIELD_ORDER", currentFieldOrder);
+		}
+		request.delAttribute("PREC_FIELD_ORDER");
+		request.setAttribute("PREC_FIELD_ORDER", currentFieldOrder);
+
+		String currentTypOrder = (request.getAttribute("TYPE_ORDER") == null || ((String)request.getAttribute("TYPE_ORDER")).equals(""))?"":(String)request.getAttribute("TYPE_ORDER");		
+		if (currentTypOrder.equals("")){
+			currentTypOrder = " ASC";
+			request.delAttribute("TYPE_ORDER");
+			request.setAttribute("TYPE_ORDER",currentTypOrder);			
+		}
+		request.delAttribute("PREC_TYPE_ORDER");		
+		request.setAttribute("PREC_TYPE_ORDER", currentTypOrder);
+
+		/*
+		else if (request.getAttribute("TYPE_ORDER") != null && ((String)request.getAttribute("TYPE_ORDER")).equals("ASC")){
+			request.delAttribute("TYPE_ORDER");
+			request.setAttribute("TYPE_ORDER", "DESC");
+		}
+		else if (request.getAttribute("TYPE_ORDER") != null && ((String)request.getAttribute("TYPE_ORDER")).equals("DESC")){
+			request.delAttribute("TYPE_ORDER");
+			request.setAttribute("TYPE_ORDER", "ASC");
+		}
+		*/
+		
+		
+
 		InitializerIFace serviceInitializer = (InitializerIFace) service;
 		RequestContextIFace serviceRequestContext = (RequestContextIFace) service;
 		int pagedRows = 10;
 		SourceBean rowsSourceBean = null;
 		pagedRows = Integer.parseInt((String) serviceInitializer.getConfig().getAttribute("ROWS"));
 		paginator.setPageSize(pagedRows);
-		SourceBean statement = (SourceBean) serviceInitializer.getConfig().getAttribute("QUERIES.SELECT_QUERY");
-		try {
+		SourceBean statement = (SourceBean) serviceInitializer.getConfig().getAttribute("QUERIES.SELECT_QUERY");		
+		
+		try {			
+			
 			aSession = HibernateUtil.currentSession();
 			tx = aSession.beginTransaction();
 			Connection jdbcConnection = aSession.connection();
 			DataConnection dataConnection = getDataConnection(jdbcConnection);
+			
 			rowsSourceBean =
-				(SourceBean) QueryExecutor.executeQuery(
+				(SourceBean) DelegatedQueryExecutor.executeQuery(
 					serviceRequestContext.getRequestContainer(),
 					serviceRequestContext.getResponseContainer(),
 					dataConnection,

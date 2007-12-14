@@ -96,6 +96,7 @@ public class DAOFactory {
 		return (IBIObjectDAO)createDAOInstance("BIObjectDAO");
 	}
 	
+	
 	/**
 	 * Creates a DAO instance for a Subreport
 	 * 

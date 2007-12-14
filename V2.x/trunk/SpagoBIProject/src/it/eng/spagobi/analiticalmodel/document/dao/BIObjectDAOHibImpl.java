@@ -837,6 +837,33 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		}
 		return realResult;
 	}
+	
+	public List loadAllBIObjects(String filterOrder) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Query hibQuery = aSession.createQuery(" from SbiObjects s order by s." + filterOrder);
+			List hibList = hibQuery.list();
+			Iterator it = hibList.iterator();
+			while (it.hasNext()) {
+				realResult.add(toBIObject((SbiObjects) it.next()));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
+	}
 
 
 
@@ -896,6 +923,47 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		return realResult;
 	}
 
+	public List loadAllBIObjectsFromInitialPath(String initialPath, String filterOrder) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Query hibQuery = aSession.createQuery(
+			"select " +
+			"	distinct(objects) " +
+			"from " +
+			"	SbiObjects as objects, SbiObjFunc as objFuncs, SbiFunctions as functions " +
+			"where " +
+			"	objects.biobjId = objFuncs.id.sbiObjects.biobjId " +
+			"	and objFuncs.id.sbiFunctions.functId = functions.functId " +
+			"	and " +
+			"		(functions.path = '" + initialPath + "' " +
+			"		 or functions.path like '" + initialPath + "/%' ) " + 
+			"order by " +
+			"	objects." + filterOrder);
+			List hibList = hibQuery.list();
+			Iterator it = hibList.iterator();
+			while (it.hasNext()) {
+				realResult.add(toBIObject((SbiObjects) it.next()));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
+	}
 
 
 

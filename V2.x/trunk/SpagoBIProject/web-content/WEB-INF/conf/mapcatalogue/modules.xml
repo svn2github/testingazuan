@@ -3,7 +3,10 @@
 	<MODULE class="it.eng.spagobi.mapcatalogue.modules.ListMapsModule"  name="listMapsModule">
 	      <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listMaps">
 	      <QUERIES>
-	        <SELECT_QUERY statement="SELECT_ALL_MAPS"/>
+	        <SELECT_QUERY statement="SELECT_ALL_MAPS">
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER" />
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+	        </SELECT_QUERY>
 	      </QUERIES>
 	      <COLUMNS>
 	        <COLUMN label="ID" name="ID" hidden="true"/>       
@@ -42,7 +45,10 @@
   	<MODULE class="it.eng.spagobi.mapcatalogue.modules.ListFeaturesModule"  name="listFeaturesModule">
 	      <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listFeatures">
 	      <QUERIES>
-	        <SELECT_QUERY statement="SELECT_ALL_FEATURES"/>
+	        <SELECT_QUERY statement="SELECT_ALL_FEATURES">
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+	        </SELECT_QUERY>
 	      </QUERIES>
 	      <COLUMNS>
 	        <COLUMN label="ID" name="ID" hidden="true"/>       

@@ -40,7 +40,10 @@
 	     <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="SUBREPORTS"/>
 	      
 	      <QUERIES>
-	        <SELECT_QUERY statement="SELECT_REPORTS_LIST"/>
+	        <SELECT_QUERY statement="SELECT_REPORTS_LIST">
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+	        </SELECT_QUERY>
 			<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="obj_id"/>
 	      </QUERIES>
 	      <CAPTIONS></CAPTIONS>

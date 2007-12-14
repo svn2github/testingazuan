@@ -42,6 +42,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.engines.config.dao.IEngineDAO;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,7 +61,31 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
         initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
-		
+        
+		String currentFieldOrder = (request.getAttribute("FIELD_ORDER") == null || ((String)request.getAttribute("FIELD_ORDER")).equals(""))?"":(String)request.getAttribute("FIELD_ORDER");
+		if (currentFieldOrder.equals("")){
+			currentFieldOrder = "DESCR";
+			response.delAttribute("FIELD_ORDER");
+			response.setAttribute("FIELD_ORDER", currentFieldOrder);
+		}
+		response.delAttribute("PREC_FIELD_ORDER");
+		response.setAttribute("PREC_FIELD_ORDER", currentFieldOrder);
+
+		String currentTypOrder = (request.getAttribute("TYPE_ORDER") == null || ((String)request.getAttribute("TYPE_ORDER")).equals(""))?"":(String)request.getAttribute("TYPE_ORDER");		
+		if (currentTypOrder.equals("")){
+			currentTypOrder = " ASC";
+			response.delAttribute("TYPE_ORDER");
+			response.setAttribute("TYPE_ORDER",currentTypOrder);			
+		}
+		response.delAttribute("PREC_TYPE_ORDER");		
+		response.setAttribute("PREC_TYPE_ORDER", currentTypOrder);
+
+		//special cases for relations to others objects
+        if (currentFieldOrder.equalsIgnoreCase("ENGINE")) 
+        	currentFieldOrder = "sbiEngines.label " + currentTypOrder.toLowerCase();
+        else  
+        	currentFieldOrder = currentFieldOrder.toLowerCase() + currentTypOrder.toLowerCase();
+
 		SourceBean moduleConfig = null;
 		if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor)) {
 			moduleConfig = makeAdminListConfiguration();
@@ -75,9 +100,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 		List objectsList = null;
 		if (initialPath != null && !initialPath.trim().equals("")) {
-			objectsList = objDAO.loadAllBIObjectsFromInitialPath(initialPath);
+			objectsList = objDAO.loadAllBIObjectsFromInitialPath(initialPath, currentFieldOrder);
 		} else {
-			objectsList = objDAO.loadAllBIObjects();
+			objectsList = objDAO.loadAllBIObjects(currentFieldOrder);
 		}
 		
 		for (Iterator it = objectsList.iterator(); it.hasNext(); ) {
@@ -153,8 +178,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
 		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
-		rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
-		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
+		//rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
+		rowSBStr += "		DESCR=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
+		rowSBStr += "		ENGINE=\"" + obj.getEngine().getName() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
 		rowSBStr += "		ACTOR=\"" + actor + "\"";
 		rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
@@ -168,8 +194,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
 		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
-		rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
-		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
+		//rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
+		rowSBStr += "		DESCR=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
+		rowSBStr += "		ENGINE=\"" + obj.getEngine().getName() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
 		
 		int visibleInstances = 0;
@@ -205,8 +232,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
 		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
-		rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
-		rowSBStr += "		TYPE=\"" + obj.getBiObjectTypeCode() + "\"";
+		//rowSBStr += "		DESCRIPTION=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
+		rowSBStr += "		DESCR=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
+		rowSBStr += "		ENGINE=\"" + obj.getEngine().getName() + "\"";
 		rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
 		
 		List functionalities = obj.getFunctionalities();
@@ -251,8 +279,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "		<COLUMN label=\"ACTOR\" name=\"ACTOR\" hidden=\"true\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnLabel\" name=\"LABEL\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnName\" name=\"NAME\" />";
-		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
-		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnType\" name=\"TYPE\" />";
+		//moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCR\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnEngine\" name=\"ENGINE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnState\" name=\"STATE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.instancesNumber\" name=\"INSTANCES\" horizontal-align=\"center\"/>";
 		moduleConfigStr += "	</COLUMNS>";
@@ -285,8 +314,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "		<COLUMN label=\"canDev\" name=\"canDev\" hidden=\"true\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnLabel\" name=\"LABEL\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnName\" name=\"NAME\" />";
-		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
-		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnType\" name=\"TYPE\" />";
+		//moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCR\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnEngine\" name=\"ENGINE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnState\" name=\"STATE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.instancesNumber\" name=\"INSTANCES\" horizontal-align=\"center\"/>";
 		moduleConfigStr += "	</COLUMNS>";
@@ -347,8 +377,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		moduleConfigStr += "		<COLUMN label=\"canExec\" name=\"canExec\" hidden=\"true\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnLabel\" name=\"LABEL\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnName\" name=\"NAME\" />";
-		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
-		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnType\" name=\"TYPE\" />";
+		//moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCRIPTION\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCR\" />";
+		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnEngine\" name=\"ENGINE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnState\" name=\"STATE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.instancesNumber\" name=\"INSTANCES\" horizontal-align=\"center\"/>";
 		moduleConfigStr += "	</COLUMNS>";

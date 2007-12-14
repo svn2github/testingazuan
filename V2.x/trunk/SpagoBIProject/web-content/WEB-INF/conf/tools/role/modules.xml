@@ -4,7 +4,10 @@
 	<MODULE class="it.eng.spagobi.tools.role.services.ListRolesModule" name="ListRolesModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListRoles.title" >
 	      <QUERIES>
-	        <SELECT_QUERY statement="SELECT_ALL_ROLES"/>
+	        <SELECT_QUERY statement="SELECT_ALL_ROLES">
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+	        </SELECT_QUERY>
 	      </QUERIES>
 	      <COLUMNS>
 	        <COLUMN label="ID" name="EXT_ROLE_ID" hidden="true" />

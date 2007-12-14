@@ -87,7 +87,8 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String actor = (String) sessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-        
+		String filterOrder = (request.getAttribute("FIELD_ORDER") == null || ((String)request.getAttribute("FIELD_ORDER")).equals(""))?
+        		"label":(String)request.getAttribute("FIELD_ORDER");
 		String modality = ChannelUtilities.getPreferenceValue(requestContainer, BIObjectsModule.MODALITY, BIObjectsModule.ENTIRE_TREE);
 		if (modality != null && modality.equalsIgnoreCase(BIObjectsModule.FILTER_TREE)) {
 			initialPath = (String)ChannelUtilities.getPreferenceValue(requestContainer, TreeObjectsModule.PATH_SUBTREE, "");
@@ -100,9 +101,9 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 		List objectsList = null;
 		if (initialPath != null && !initialPath.trim().equals("")) {
-			objectsList = objDAO.loadAllBIObjectsFromInitialPath(initialPath);
+			objectsList = objDAO.loadAllBIObjectsFromInitialPath(initialPath, filterOrder);
 		} else {
-			objectsList = objDAO.loadAllBIObjects();
+			objectsList = objDAO.loadAllBIObjects(filterOrder);
 		}
 		
 		String checked = (String)request.getAttribute("checked");

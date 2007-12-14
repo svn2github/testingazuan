@@ -205,10 +205,25 @@ public interface IBIObjectDAO {
 	public List loadAllBIObjects() throws EMFUserError;
 	
 	/**
+	 * Loads all the BIObjects rdered by parameter column
+	 * @return the list of BIObjects
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadAllBIObjects(String filterOrder) throws EMFUserError;
+	
+	/**
 	 * Loads all the BIObjects that belong to sub functionalities of the given functionality path 
 	 * @return the list of BIObjects
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public List loadAllBIObjectsFromInitialPath(String initialPath) throws EMFUserError;
+	
+	/**
+	 * Loads all the BIObjects that belong to sub functionalities of the given functionality path 
+	 * and ordered by parameter column
+	 * @return the list of BIObjects
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadAllBIObjectsFromInitialPath(String initialPath, String filterOrder) throws EMFUserError;
 	
 }

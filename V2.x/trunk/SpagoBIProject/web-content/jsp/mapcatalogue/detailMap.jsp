@@ -4,12 +4,12 @@
 	 				         it.eng.spago.configuration.ConfigSingleton,
 	 				         it.eng.spagobi.mapcatalogue.bo.GeoMap,
 	 				         it.eng.spagobi.mapcatalogue.bo.GeoFeature,
-	 				         it.eng.spagobi.mapcatalogue.bo.dao.DAOFactory,
+	 				         it.eng.spagobi.commons.dao.DAOFactory,
 	 				         it.eng.spago.navigation.LightNavigationManager,
 	 				         it.eng.spagobi.commons.constants.SpagoBIConstants,
 	 				         java.util.Map,java.util.HashMap,java.util.List" %>
 	 				         
-	<%@page import="it.eng.spagobi.commons.utilitiestilities.ChannelUtilities"%>
+	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailMapModule"); 
@@ -39,6 +39,7 @@
 		lookupFeatureUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		String lookupFeraturesUrl = urlBuilder.getUrl(request, lookupFeatureUrlPars);	
 		
+		//MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
 		String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/MapCatalogueManagerServlet";
 		String filePath = (map.getUrl()).replace('\\', '/');		
    	    downloadUrl += "?operation=DOWNLOAD&path="+  filePath;
@@ -421,4 +422,4 @@
 	
 	</script>
 	
-	<%@ include file="/jsp/footer.jsp"%>
+	<%@ include file="/jsp/commons/footer.jsp"%>

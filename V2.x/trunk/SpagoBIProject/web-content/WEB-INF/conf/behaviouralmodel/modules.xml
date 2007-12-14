@@ -247,7 +247,7 @@
 	<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLookupModalityValuesModule" name="ListLookupModalityValuesModule">
 	</MODULE>    
 <MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLovsModule" name="ListLovsModule">	    
-	    <CONFIG pool="spagobi" rows="3" title="SBIDev.predLovList.title">
+	    <CONFIG pool="spagobi" rows="10" title="SBIDev.predLovList.title">
       <QUERIES>
         	<SELECT_QUERY statement="SELECT_LIST_MODALITIES_VALUE">
         		<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>

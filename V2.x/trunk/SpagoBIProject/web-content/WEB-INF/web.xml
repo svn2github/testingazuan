@@ -11,7 +11,8 @@
         This application is a portlet. It can not be used outside a portal.
 	</description>
 
-
+<!-- 
+    
  <filter>
  <filter-name>CAS_Filter</filter-name>
  <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
@@ -41,7 +42,7 @@
     <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>  
 
-
+-->
  
     <!-- START LISTENERS -->
     <listener>
@@ -116,12 +117,6 @@
         <servlet-name>SaveToPersonalFolderServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.SaveToPersonalFolderServlet</servlet-class>
     </servlet>
- <!-- 
-    <servlet>
-        <servlet-name>ReadTicketServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.services.ReadTicketServlet</servlet-class>
-    </servlet>    
- -->
     
     
 

@@ -41,7 +41,7 @@
 		<param-value>/path/to/chartServlet</param-value>
 		</context-param>
 	-->
-
+<!-- 
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -80,6 +80,7 @@
 
 	</filter>
 
+-->
 
 	<filter>
 		<filter-name>JPivotController</filter-name>
@@ -119,11 +120,12 @@
 			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
 		</filter-class>
 	</filter>
-
+<!-- 
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+-->
 
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>

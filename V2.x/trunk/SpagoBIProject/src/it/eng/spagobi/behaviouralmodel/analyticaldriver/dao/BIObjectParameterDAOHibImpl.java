@@ -199,7 +199,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			hibObjectParameterNew.setParurlNm(aBIObjectParameter.getParameterUrlName());
 			
 			String hqlUpdateShiftRight = "update SbiObjPar s set s.priority = (s.priority + 1) where s.priority >= " 
-				+ aBIObjectParameter.getPriority() + "and s.sbiObject.biobjId = " + aSbiObject.getBiobjId();
+				+ aBIObjectParameter.getPriority() + " and s.sbiObject.biobjId = " + aSbiObject.getBiobjId();
 			Query query = aSession.createQuery(hqlUpdateShiftRight);
 			query.executeUpdate();
 			

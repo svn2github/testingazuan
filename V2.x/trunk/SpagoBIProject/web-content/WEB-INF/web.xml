@@ -11,8 +11,8 @@
         This application is a portlet. It can not be used outside a portal.
 	</description>
 
-<!-- 
-    
+
+<!--     
  <filter>
  <filter-name>CAS_Filter</filter-name>
  <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
@@ -41,8 +41,8 @@
     <filter-name>CAS_Filter</filter-name>
     <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>  
+ -->
 
--->
  
     <!-- START LISTENERS -->
     <listener>

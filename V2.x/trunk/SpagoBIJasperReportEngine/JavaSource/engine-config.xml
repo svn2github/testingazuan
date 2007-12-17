@@ -19,13 +19,13 @@
 	<!--  SSO settings 																	--> 
 	<!-- ====================================================================================== -->
 	<ACTIVE_SSO>false</ACTIVE_SSO>
-	<FILTER_RECEIPT>https://localhost:8443/SpagoBI/proxyReceptor</FILTER_RECEIPT>
-	<SecurityServiceProxy_URL>https://localhost:8443/SpagoBI/services/SecurityService</SecurityServiceProxy_URL>
-	<SchedulerServiceProxy_URL>https://localhost:8443/SpagoBI/services/SchedulerService</SchedulerServiceProxy_URL>
-	<EventServiceProxy_URL>https://localhost:8443/SpagoBI/services/EventService</EventServiceProxy_URL>
-	<ContentServiceProxy_URL>https://localhost:8443/SpagoBI/services/ContentService</ContentServiceProxy_URL>
-	<AuditServiceProxy_URL>https://localhost:8443/SpagoBI/services/AuditService</AuditServiceProxy_URL>
-	<DataSourceServiceProxy_URL>https://localhost:8443/SpagoBI/services/DataSourceService</DataSourceServiceProxy_URL>
+	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
+	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
+	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
+	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>
+	<ContentServiceProxy_URL>/services/ContentService</ContentServiceProxy_URL>
+	<AuditServiceProxy_URL>/services/AuditService</AuditServiceProxy_URL>
+	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
 	
 		
 	<!-- ====================================================================================== -->

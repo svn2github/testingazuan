@@ -73,8 +73,9 @@ logger.debug("auditId="+auditId);
 AuditAccessUtils auditAccessUtils = 
 	(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
 if (auditId != null) {
-	if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, new Long(System.currentTimeMillis()), null, 
+	if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,userId,auditId, new Long(System.currentTimeMillis()), null, 
 			"EXECUTION_STARTED", null, null);
+
 }
 logger.debug("Strated...");
 try {
@@ -90,7 +91,7 @@ try {
   <%
 	// AUDIT UPDATE
 	if (auditId != null) {
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,userId,auditId, null, new Long(System.currentTimeMillis()), 
 				"EXECUTION_FAILED", "Error executing query", null);
 	}
   %>
@@ -187,7 +188,7 @@ if (message != null && !message.trim().equals("")) {
   <%
 	// AUDIT UPDATE
 	if (auditId != null) {
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,userId,auditId, null, new Long(System.currentTimeMillis()), 
 				"EXECUTION_FAILED", "Overflow occurred", null);
 	}
   %>
@@ -234,12 +235,12 @@ Slicer:
 <%
 	// AUDIT UPDATE
 	if (auditId != null && auditAccessUtils != null) 
-		auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
+		auditAccessUtils.updateAudit(session,userId,auditId, null, new Long(System.currentTimeMillis()), 
 			"EXECUTION_PERFORMED", null, null);
 } catch (Exception e) {
 	// AUDIT UPDATE
 	if (auditId != null && auditAccessUtils != null) 
-		auditAccessUtils.updateAudit(userId,auditId, null, new Long(System.currentTimeMillis()), 
+		auditAccessUtils.updateAudit(session,userId,auditId, null, new Long(System.currentTimeMillis()), 
 			"EXECUTION_FAILED", e.getMessage(), null);
 	throw e;
 }

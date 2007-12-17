@@ -22,12 +22,13 @@ public abstract class AbstractServiceImpl {
     
     private void init(){
 		logger.debug("IN");
+		String SpagoBiUrl=it.eng.spagobi.commons.utilities.GeneralUtilities.getSpagoBiContextAddress();
 		ConfigSingleton config = ConfigSingleton.getInstance();
 		        SourceBean validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.URL");
 		validateUrl = (String)validateSB.getCharacters();
 		logger.debug("Read validateUrl="+validateUrl);
 		        validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.SERVICE");
-		validateService = (String)validateSB.getCharacters();
+		validateService = SpagoBiUrl+(String)validateSB.getCharacters();
 		logger.debug("Read validateService="+validateService);
 	        validateSB = (SourceBean)config.getAttribute("SPAGOBI_SSO.ACTIVE");
 		String active = (String)validateSB.getCharacters();

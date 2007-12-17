@@ -46,7 +46,6 @@ public class AuditManager {
 	public static final String MODULE_NAME 		= "AuditService";
 	
 	public static final String AUDIT_ID 		= "SPAGOBI_AUDIT_ID";
-	public static final String AUDIT_SERVLET 	= "SPAGOBI_AUDIT_SERVLET";
 	public static final String EXECUTION_START 	= "SPAGOBI_AUDIT_EXECUTION_START";
 	public static final String EXECUTION_END 	= "SPAGOBI_AUDIT_EXECUTION_END";
 	public static final String EXECUTION_STATE 	= "SPAGOBI_AUDIT_EXECUTION_STATE";

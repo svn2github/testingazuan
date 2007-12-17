@@ -138,8 +138,7 @@ public class BirtReportDriver implements IEngineDriver {
    		pars.put("document", documentId);
    		logger.debug("Add document parameter:"+documentId);
    	  
-        pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-		// retrieving the date format        
+	// retrieving the date format        
         ConfigSingleton config = ConfigSingleton.getInstance();
 	    SourceBean formatSB = (SourceBean) config.getAttribute("SPAGOBI.DATE_FORMAT");
 	    String format = (formatSB==null)?"":(String) formatSB.getAttribute("format");

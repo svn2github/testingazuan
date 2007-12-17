@@ -95,7 +95,6 @@ public class ExecutionProxy {
 			// adding parameters for AUDIT updating
 			if (executionId != null) {
 				mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
-				mapPars.put(AuditManager.AUDIT_SERVLET, GeneralUtilities.getSpagoBiAuditManagerServlet());
 			}
 			
 			// built the request to sent to the engine

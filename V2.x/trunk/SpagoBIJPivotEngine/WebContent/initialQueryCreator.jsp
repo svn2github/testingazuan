@@ -55,8 +55,8 @@ Locale locale = context.getLocale();
 //and the document path for TemplateBean.saveTemplate method
 String biobjectPath = request.getParameter("biobject_path");
 if (biobjectPath != null) session.setAttribute("biobject_path", biobjectPath);
-String spagobiurl = request.getParameter("spagobiurl");
-if (spagobiurl != null) session.setAttribute("spagobiurl", spagobiurl);
+//String spagobiurl = request.getParameter("spagobiurl");
+//if (spagobiurl != null) session.setAttribute("spagobiurl", spagobiurl);
 
 String action = request.getParameter("action");
 if (action != null && !action.equals("")) {

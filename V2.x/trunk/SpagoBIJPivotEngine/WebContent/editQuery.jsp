@@ -55,8 +55,8 @@ Locale locale = context.getLocale();
 // and other objects avoiding unuseful http reuqest parameters
 String biobjectPath = request.getParameter("biobject_path");
 if (biobjectPath != null) session.setAttribute("biobject_path", biobjectPath);
-String spagobiurl = request.getParameter("spagobiurl");
-if (spagobiurl != null) session.setAttribute("spagobiurl", spagobiurl);
+//String spagobiurl = request.getParameter("spagobiurl");
+//if (spagobiurl != null) session.setAttribute("spagobiurl", spagobiurl);
 String documentId = request.getParameter("document");
 if (documentId != null) session.setAttribute("document", documentId);
 if (documentId == null) documentId = (String) session.getAttribute("document");

@@ -79,8 +79,8 @@
 		</init-param>
 
 	</filter>
+ -->
 
--->
 
 	<filter>
 		<filter-name>JPivotController</filter-name>
@@ -125,7 +125,7 @@
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
--->
+ -->
 
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>

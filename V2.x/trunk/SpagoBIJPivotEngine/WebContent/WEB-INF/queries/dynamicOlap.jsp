@@ -45,10 +45,6 @@ LICENSE: see LICENSE.txt file
 
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {
-			//@TODO da gestire con SERVIZIO
-			String jcrPath = (String)session.getAttribute("templatePath");			
-			String spagoBIBaseUrl = (String)session.getAttribute("spagobiurl");
-			String user = (String)session.getAttribute("user");
 			// if subObject execution in the request there are the description and visibility
 			String descrSO = request.getParameter("descriptionSubObject");
 			if(descrSO==null)

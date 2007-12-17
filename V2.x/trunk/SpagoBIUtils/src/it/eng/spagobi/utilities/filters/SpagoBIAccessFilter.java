@@ -33,6 +33,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.utilities.filters;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
@@ -61,8 +62,7 @@ public class SpagoBIAccessFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// parameters required for document-to-document drill
 	        logger.debug("IN");
-		String spagobiContextUrl = request.getParameter("spagobicontext");
-		logger.debug("spagobiContextUrl:"+spagobiContextUrl);
+	
 		// parameters required for auditing
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 		logger.debug("auditId:"+auditId);
@@ -75,23 +75,28 @@ public class SpagoBIAccessFilter implements Filter {
 			logger.info("Filter USER_ID:"+ userId);
 			logger.info("Filter document:"+ document);
 			session.setAttribute("userId", userId);
-			session.setAttribute("document", document);
-			IEngUserProfile profile = null;
-			try {
-			    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			    if (profile == null) {
-				SecurityServiceProxy proxy = new SecurityServiceProxy(session);
-				profile = proxy.getUserProfile(userId);
-				session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-			    } else {
-				logger.debug("Found user profile in session");		
-			    }
-			} catch (SecurityException e1) {
-			    logger.error("SecurityException", e1);
-			    throw new ServletException();
+			session.setAttribute("document", document);			
+			String spagobiContextUrl = request.getParameter(SpagoBIConstants.SBICONTEXTURL);
+			logger.debug("spagobiContextUrl:"+spagobiContextUrl);
+			if (spagobiContextUrl != null) {
+			    session.setAttribute(SpagoBIConstants.SBICONTEXTURL, spagobiContextUrl);
+				IEngUserProfile profile = null;
+				try {
+				    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				    if (profile == null) {
+					SecurityServiceProxy proxy = new SecurityServiceProxy(session);
+					profile = proxy.getUserProfile(userId);
+					session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+				    } else {
+					logger.debug("Found user profile in session");		
+				    }
+				} catch (SecurityException e1) {
+				    logger.error("SecurityException", e1);
+				    throw new ServletException();
+				}			    
 			}
+			else 	logger.warn("spagobiContextUrl is null!!!!!!");			
 
-			if (spagobiContextUrl != null) session.setAttribute("spagobicontext", spagobiContextUrl);
 			if (auditId != null) {
 				AuditAccessUtils auditAccessUtils = (AuditAccessUtils) session.getAttribute("SPAGOBI_AUDIT_UTILS");
 				if (auditAccessUtils == null) {

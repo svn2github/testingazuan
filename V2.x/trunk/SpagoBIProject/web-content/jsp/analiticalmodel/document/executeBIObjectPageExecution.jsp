@@ -117,7 +117,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
     //mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
     // Angelo: use the profile in session
-    mapPars.put("spagobicontext", GeneralUtilities.getSpagoBiContextAddress());
+    mapPars.put(SpagoBIConstants.SBICONTEXTURL, GeneralUtilities.getSpagoBiContextAddress());
     
 	// try to get the modality
 	boolean isSingleObjExec = false;
@@ -131,7 +131,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// adding parameters for AUDIT updating
 	if (executionAuditId != null) {
 		mapPars.put(AuditManager.AUDIT_ID, executionAuditId.toString());
-		mapPars.put(AuditManager.AUDIT_SERVLET, GeneralUtilities.getSpagoBiAuditManagerServlet());
 	}
 	
 	// build the string of the title

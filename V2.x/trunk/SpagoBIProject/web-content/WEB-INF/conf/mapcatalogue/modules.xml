@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MODULES>
-	<MODULE class="it.eng.spagobi.mapcatalogue.modules.ListMapsModule"  name="listMapsModule">
+	<MODULE class="it.eng.spagobi.mapcatalogue.service.ListMapsModule"  name="listMapsModule">
 	      <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listMaps">
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_MAPS">
@@ -42,7 +42,7 @@
 	    </CONFIG>
   	</MODULE>
   	
-  	<MODULE class="it.eng.spagobi.mapcatalogue.modules.ListFeaturesModule"  name="listFeaturesModule">
+  	<MODULE class="it.eng.spagobi.mapcatalogue.service.ListFeaturesModule"  name="listFeaturesModule">
 	      <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listFeatures">
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_FEATURES">
@@ -85,15 +85,15 @@
 	    </CONFIG>
   	</MODULE>
   	
-  	<MODULE class="it.eng.spagobi.mapcatalogue.modules.DetailMapModule" name="DetailMapModule">
+  	<MODULE class="it.eng.spagobi.mapcatalogue.service.DetailMapModule" name="DetailMapModule">
      	<CONFIG/>
     </MODULE>
     
-    <MODULE class="it.eng.spagobi.mapcatalogue.modules.DetailFeatureModule" name="DetailFeatureModule">
+    <MODULE class="it.eng.spagobi.mapcatalogue.service.DetailFeatureModule" name="DetailFeatureModule">
      	<CONFIG/>
     </MODULE>
     
-   <MODULE class="it.eng.spagobi.mapcatalogue.modules.ListLookupFeaturesModule" name="ListLookupFeaturesModule">
+   <MODULE class="it.eng.spagobi.mapcatalogue.service.ListLookupFeaturesModule" name="ListLookupFeaturesModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listFeatures" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_LOOKUP_FEATURES"/>		       

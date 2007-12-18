@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%  
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("ACTION_NAME", "START_ACTION");
-	backUrlPars.put("PUBLISHER_NAME", "LoginSBIAdministrationContextPublisher");
+	backUrlPars.put("PUBLISHER_NAME", "LoginSBIAnaliticalModelPublisher");
 	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>

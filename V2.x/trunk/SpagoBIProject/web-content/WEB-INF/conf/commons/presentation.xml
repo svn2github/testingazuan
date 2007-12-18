@@ -7,8 +7,13 @@
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_ADMINISTRATION_CONTEXT" publisher_name="LoginSBIAdministrationContextPublisher"/>
 	<MAPPING business_name="SaveConfigurationPage" business_type="PAGE" publisher_name="SaveConfigurationPubJ"/>
     <MAPPING business_name="SERVICE_CALLER_PAGE" business_type="PAGE" publisher_name="ServiceCallerPublisher"/>
-
-
-      	 
+	
+	<!-- new organization portlet for SpagoBI 2.0 -->
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_ANALITICAL_MODELS" publisher_name="LoginSBIAnaliticalModelPublisher"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_BEHAVIORAL_MODELS" publisher_name="LoginSBIBehavioralModelPublisher"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_EVENTS" publisher_name="LoginSBIEventsPublisher"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_CATALOGUES" publisher_name="LoginSBICataloguePublisher"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_TOOLS" publisher_name="LoginSBIToolsPublisher"/>	
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_RESOURCES" publisher_name="LoginSBIResourcesPublisher"/>
 </PRESENTATION>
 

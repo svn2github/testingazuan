@@ -30,7 +30,7 @@
 	        </INSERT_BUTTON>
 	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBISet.ListRoles.backButton">
 	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
-	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBISettingsPublisher"/>
+	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIToolsPublisher"/>
 	          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
 	        </BACK_BUTTON>
 	      </BUTTONS>

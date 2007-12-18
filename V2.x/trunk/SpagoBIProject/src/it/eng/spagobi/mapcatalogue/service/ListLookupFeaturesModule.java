@@ -1,4 +1,4 @@
-package it.eng.spagobi.mapcatalogue.modules;
+package it.eng.spagobi.mapcatalogue.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;

@@ -4,7 +4,7 @@
    <ACTION name="LOGIN_ACTION_SBI_MAP_CATALOGUE" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
    </ACTION>  
    
-   <ACTION name="START_SBI_MAP_CATALOGUE" class="it.eng.spagobi.mapcatalogue.actions.StartMapCatalogueAction" scope="REQUEST">
+   <ACTION name="START_SBI_MAP_CATALOGUE" class="it.eng.spagobi.mapcatalogue.service.StartMapCatalogueAction" scope="REQUEST">
    </ACTION>  
    
 </ACTIONS>

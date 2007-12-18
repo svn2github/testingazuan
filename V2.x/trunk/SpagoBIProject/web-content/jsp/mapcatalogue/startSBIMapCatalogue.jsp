@@ -7,10 +7,17 @@
 <%@page import="it.eng.spago.base.RequestContainer"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%
+	Map backUrlPars = new HashMap();
+	backUrlPars.put("ACTION_NAME", "START_ACTION");
+	backUrlPars.put("PUBLISHER_NAME", "LoginSBICataloguePublisher");
+	//backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
+	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+
 	Map listMapUrlPars = new HashMap();
 	listMapUrlPars.put("PAGE", "ListMapsPage");
 	String listMapUrl = urlBuilder.getUrl(request, listMapUrlPars);
@@ -19,14 +26,23 @@
 	listFeatUrlPars.put("PAGE", "ListFeaturesPage");
 	String listFeatUrl = urlBuilder.getUrl(request, listFeatUrlPars);
 %>
-
-
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section-no-buttons' 
+		<td class='header-title-column-portlet-section' 
 		    style='vertical-align:middle;padding-left:5px;'>			
 			<spagobi:message key="SBIMapCatalogue.titleMenu" bundle="component_mapcatalogue_messages" />
 		</td>
+		<%if(ChannelUtilities.isPortletRunning()) { %>
+		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<a href='<%=backUrl%>'> 
+      			<img class='header-button-image-portlet-section' 
+      				 title='<spagobi:message key = "SBIMapCatalogue.backButton" bundle="component_mapcatalogue_messages" />' 
+      				 src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/back.png")%>' 
+      				 alt='<spagobi:message key = "SBIMapCatalogue.backButton"  bundle="component_mapcatalogue_messages"/>' />
+			</a>
+		</td>
+		<% } %>
 	</tr>
 </table>
 

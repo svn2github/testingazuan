@@ -73,7 +73,7 @@
      <!--  SqlServer: Uncomment the row below and edit the file to provide connection info -->
      <!--   hibernate.cfg.sqlserver.xml -->
      
-	 <HIBERNATE-CFGFILE>hibernate.cfg.mysql.xml</HIBERNATE-CFGFILE>
+	 <HIBERNATE-CFGFILE>hibernate.cfg.hsql.xml</HIBERNATE-CFGFILE>
 	
      <!-- ********************* END DATABASE CONFIGURATION ************************ -->
      
@@ -89,11 +89,11 @@
      
      <LOOKUP numberRows = "20" />
     
- 	 <SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</SPAGOBI_CONTEXT_PATH>
+ 	 <SPAGOBI_CONTEXT_PATH>https://localhost:8080/SpagoBI</SPAGOBI_CONTEXT_PATH>
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	
 	 <PORTLET_EDIT_MODE_ROLES>
-		<ROLE name="/spagobi/admin" />
+		<ROLE name="/admin" />
 	 </PORTLET_EDIT_MODE_ROLES>
 	
 	 <!-- root paths of SpagoBI data into the cms system -->

@@ -18,5 +18,26 @@
  <ACTION name="UPDATE_EXECUTION_MANAGER" class="it.eng.spagobi.commons.services.UpdateExecutionManager" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+  
+ <!-- new organization portlet for SpagoBI 2.0 -->
+ <ACTION name="LOGIN_ACTION_SBI_ANALITICAL_MODELS" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_BEHAVIORAL_MODELS" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_EVENTS" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_CATALOGUES" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_TOOLS" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ <ACTION name="LOGIN_ACTION_SBI_RESOURCES" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION> 
+ 
 </ACTIONS>
 

@@ -109,6 +109,14 @@
     <CONFIGURATOR path="/WEB-INF/conf/tools/datasource/publishers.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/validation.xml" />
 	
+	
+	<!-- workflow -->	
+	<CONFIGURATOR path="/WEB-INF/conf/workflow/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/workflow/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/workflow/presentation.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/workflow/publishers.xml" /> 
+	
+	
 	<!-- webapp -->
 	
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/modules.xml" />
@@ -121,12 +129,14 @@
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
 
 	
-  <CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
-  <CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />	  	
-  
-  <!--  Spago Config.    -->
-    <CONFIGURATOR path="/WEB-INF/conf/config/common.xml" />
-    <CONFIGURATOR path="/WEB-INF/conf/config/data_access.xml" />    
+	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />	 
+	
+	 	
+	
+	<!--  Spago Config.    -->
+	<CONFIGURATOR path="/WEB-INF/conf/config/common.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/config/data_access.xml" />    
 	<CONFIGURATOR path="/WEB-INF/conf/config/dispatchers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/initializers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/statements.xml" />

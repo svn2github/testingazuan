@@ -105,5 +105,58 @@
    	 	</RENDERING>
   	</PUBLISHER>    
   	
-                                  	
+  	<!-- new organization portlet for SpagoBI 2.0 -->
+  	<PUBLISHER name="LoginSBIAnaliticalModelPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBIAnaliticalModel.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>      
+  	
+  	<PUBLISHER name="LoginSBIBehavioralModelPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBIBehavioralModel.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+    <PUBLISHER name="LoginSBIEventsPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBIEvents.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="LoginSBICataloguePublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBICatalogue.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>  
+  	
+  	<PUBLISHER name="LoginSBIToolsPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBITools.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>   
+  	
+  	<PUBLISHER name="LoginSBIResourcesPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBIResources.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>                                    	
 </PUBLISHERS>

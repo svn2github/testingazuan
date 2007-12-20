@@ -36,7 +36,6 @@ import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -98,7 +97,9 @@ public class ListTag extends TagSupport
     // the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
     protected HashMap _paramsMap = new HashMap();
     
-    final static int END_RANGE_PAGES = 6;
+    final static int END_RANGE_PAGES = 6;    
+    final static String[] EXCEPTION_MODULES ={"JobManagementPage", "TriggerManagementPage"};
+    final static String[] EXCEPTION_ATTRIBUTES ={"JOBNAME","JOBGROUPNAME"};
 
     
     
@@ -156,11 +157,20 @@ public class ListTag extends TagSupport
 			_providerURL = "PAGE=" + pageName + "&MODULE=" + _moduleName + "&";
 			_providerUrlMap.put("PAGE", pageName);
 			_providerUrlMap.put("MODULE", _moduleName);
+			
+			//checks for exception module (ie. for job and trigger must added the parameter MESSAGEDET into url
+			for (int i = 0; i < EXCEPTION_MODULES.length; i++){
+				if (pageName.equalsIgnoreCase(EXCEPTION_MODULES[i])){
+					_providerUrlMap = updateUrlForExceptions(_providerUrlMap, _serviceRequest);														
+					break;
+				}
+			}
 			HashMap params = (HashMap) _serviceResponse.getAttribute(_moduleName + ".PARAMETERS_MAP");
 			if (params != null) {
 				_paramsMap = params;
 				_providerUrlMap.putAll(_paramsMap);
 			}
+			
 		} // if (_moduleName != null)
 		else {
 			logger.error("service name not specified");
@@ -276,6 +286,10 @@ public class ListTag extends TagSupport
 			String orderUrlAsc = createUrl(orderParamsMap);
 			orderParamsMap.remove("TYPE_ORDER");
 			orderParamsMap.put("TYPE_ORDER"," DESC");
+
+
+				//orderParamsMap.put("MESSAGEDET",SpagoBIConstants.MESSAGE_ORDER_JOB_LIST);
+			
 			String orderUrlDesc = createUrl(orderParamsMap);
 			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );			
 		    _htmlStream.append(   labelColumn);						
@@ -1014,6 +1028,24 @@ public class ListTag extends TagSupport
 				TracerSingleton.INFORMATION,
 				"ListTag::setFilter:: filter " + filter);
 		_filter = filter;
+	}
+	
+	/**
+	 * For exception cases adds into parameters list the attributes necessary for the correct management of list. 
+	 * 
+	 * @param providerUrlMap The map whit parameters. 
+	 * @param serviceRequest The serviceRequest sourcebean.
+	 */
+	private HashMap updateUrlForExceptions(HashMap providerUrlMap, SourceBean serviceRequest) { 
+		
+		providerUrlMap.put("MESSAGEDET",SpagoBIConstants.MESSAGE_ORDER_LIST);
+		for (int i=0; i<EXCEPTION_ATTRIBUTES.length; i++){
+			if (serviceRequest.getAttribute(EXCEPTION_ATTRIBUTES[i]) != null ){
+				String value =(String)serviceRequest.getAttribute(EXCEPTION_ATTRIBUTES[i]);
+				providerUrlMap.put(EXCEPTION_ATTRIBUTES[i], value);
+			}				
+		}
+		return providerUrlMap;
 	}
 } // public class ListTag extends TagSupport
 

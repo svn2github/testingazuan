@@ -33,22 +33,24 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.services.proxy.SchedulerServiceProxy;
 import it.eng.spagobi.services.scheduler.service.SchedulerServiceSupplier;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.to.TriggerInfo;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public class TriggerManagementModule extends AbstractModule {
-    	
+	static private Logger logger = Logger.getLogger(TriggerManagementModule.class);
 	private RequestContainer reqCont = null;
 	private SessionContainer sessCont = null;
 	private String sbiconturl = null; 
@@ -59,8 +61,7 @@ public class TriggerManagementModule extends AbstractModule {
 	
 	public void service(SourceBean request, SourceBean response) throws Exception { 
 		String message = (String) request.getAttribute("MESSAGEDET");
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-				           "service","begin of trigger management service =" +message);
+		logger.debug("begin of trigger management service =" +message);
 		reqCont = getRequestContainer();
 		sessCont = reqCont.getSessionContainer();
 		sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
@@ -68,11 +69,11 @@ public class TriggerManagementModule extends AbstractModule {
 		try {
 			if(message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-						           "service", "The message is null");
+				logger.error("The message is null");
 				throw userError;
 			}
-			if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_GET_JOB_SCHEDULES)) {
+			if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_GET_JOB_SCHEDULES) ||
+			   message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_ORDER_LIST)) {
 				getTriggersForJob(request, response);
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_NEW_SCHEDULE)) {
 				newScheduleForJob(request, response);
@@ -89,14 +90,12 @@ public class TriggerManagementModule extends AbstractModule {
 			errorHandler.addError(eex);
 			return;
 		} catch (Exception ex) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-			           			"service", "Error while executing trigger management service", ex);
+			logger.error("Error while executing trigger management service", ex);
 			EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
 			errorHandler.addError(internalError);
 			return;
 		}
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		           			"service", "end of trigger management service =" +message);
+		logger.debug("end of trigger management service =" +message);
 	}
 	
 	
@@ -122,8 +121,7 @@ public class TriggerManagementModule extends AbstractModule {
 			response.setAttribute(SpagoBIConstants.JOB_GROUP_NAME, jobGroupName);
 			response.setAttribute(SpagoBIConstants.JOB_NAME, jobName);
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-                    			"runSchedule","Error while create immediate trigger ", e);
+			logger.error("Error while create immediate trigger ", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -149,8 +147,7 @@ public class TriggerManagementModule extends AbstractModule {
 			response.setAttribute(SpagoBIConstants.JOB_GROUP_NAME, jobGroupName);
 			response.setAttribute(SpagoBIConstants.JOB_NAME, jobName);
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-                                "deleteSchedule","Error while deleting schedule (trigger) ", e);
+			logger.error("Error while deleting schedule (trigger) ", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -181,8 +178,7 @@ public class TriggerManagementModule extends AbstractModule {
 			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
 		} catch (Exception ex) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "getSchedule","Error while getting detail of the schedule(trigger)", ex);
+			logger.error("Error while getting detail of the schedule(trigger)", ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	} 
@@ -276,8 +272,7 @@ public class TriggerManagementModule extends AbstractModule {
 			response.setAttribute(SpagoBIConstants.JOB_GROUP_NAME, jobGroupName);
 			response.setAttribute(SpagoBIConstants.JOB_NAME, jobName);
 		} catch (Exception ex) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "saveScheduleForJob", "Error while saving schedule for job", ex);
+			logger.error("Error while saving schedule for job", ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -315,8 +310,7 @@ public class TriggerManagementModule extends AbstractModule {
 			sessCont.setAttribute(SpagoBIConstants.TRIGGER_INFO, ti);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
 		} catch (Exception ex) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "newScheduleForJob", "Error while creating a new schedule for job " + jobName, ex);
+			logger.error("Error while creating a new schedule for job " + jobName, ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -335,14 +329,19 @@ public class TriggerManagementModule extends AbstractModule {
 			if(rowsSB==null) {
 				rowsSB = new SourceBean("ROWS");
 			}
-			// fill the list sourcebean
+			// fill the list sourcebean			
 			pageListSB.setAttribute(rowsSB);
+			
+			//ordering of list
+			String typeOrder = (request.getAttribute("TYPE_ORDER")==null)?" ASC":(String)request.getAttribute("TYPE_ORDER");
+			String fieldOrder = (request.getAttribute("FIELD_ORDER")==null)?" jobDescription":(String)request.getAttribute("FIELD_ORDER");
+			pageListSB = orderJobList(pageListSB, typeOrder, fieldOrder);
+
 			// populate response with the right values
 			response.setAttribute(pageListSB);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ListTriggers");	
 		} catch (Exception ex) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "getTriggersForJob","Error while recovering triggers of the job " + jobName, ex);
+			logger.error("Error while recovering triggers of the job " + jobName, ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -433,7 +432,45 @@ public class TriggerManagementModule extends AbstractModule {
 	}
 	
 	
-	
+	private SourceBean orderJobList(SourceBean pageListSB, String typeOrder, String fieldOrder) throws EMFUserError {
+		try {
+			List tmpAllList = pageListSB.getAttributeAsList("ROWS.ROW");
+			List tmpFieldList = new ArrayList();
+			
+			if (tmpAllList != null){
+				for (int i=0; i < tmpAllList.size(); i++){
+					SourceBean tmpSB = (SourceBean)tmpAllList.get(i);
+					tmpFieldList.add(tmpSB.getAttribute(fieldOrder.trim()));
+				}
+			}
+			Object[] orderList = tmpFieldList.toArray();
+			Arrays.sort(orderList);
+			//create a source bean with the list ordered
+			SourceBean orderedPageListSB  = new SourceBean("PAGED_LIST");
+			SourceBean rows = new SourceBean("ROWS");
+			int i = 0;
+			if (typeOrder.trim().equals("DESC"))				 
+					i = tmpFieldList.size()-1;
+			
+			while (tmpFieldList != null && tmpFieldList.size() > 0){	
+					SourceBean newSB = (SourceBean)tmpAllList.get(tmpFieldList.indexOf(orderList[i]));					
+					rows.setAttribute(newSB);
+					//remove elements from temporary lists
+					tmpAllList.remove(tmpFieldList.indexOf(orderList[i]));
+					tmpFieldList.remove(tmpFieldList.indexOf(orderList[i]));
+					if (typeOrder.trim().equals("DESC"))
+						i--;
+					else
+						i++;
+			}
+			orderedPageListSB.setAttribute(rows);
+			return orderedPageListSB;
+		} catch (Exception ex) {
+			logger.error("Error while recovering all job definition", ex);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "errors.1000", "component_scheduler_messages");
+		}
+	}
+
 	
 	
 }	

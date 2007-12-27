@@ -85,7 +85,7 @@ public class ExecuteBIDocumentJob implements Job {
 				String docLabel = docLabels[ind];
 				String docParQueryString = jdm.getString(docLabel);
 				// load bidocument
-			    IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
+			        IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
 				BIObject biobj = biobjdao.loadBIObjectByLabel(docLabel);
 				// get the save options
 				String saveOptString = jdm.getString("biobject_id_" + biobj.getId());
@@ -124,7 +124,7 @@ public class ExecuteBIDocumentJob implements Job {
 					}
 					
 					if(sInfo.isSaveAsDocument()) {
-						saveAsDocument(sInfo, jex, response, fileextension);
+						saveAsDocument(sInfo, biobj,jex, response, fileextension);
 					}
 
 					if(sInfo.isSendMail()) {
@@ -193,11 +193,11 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	
-	private void saveAsDocument(SaveInfo sInfo, JobExecutionContext jex, byte[] response, String fileExt) {
+	private void saveAsDocument(SaveInfo sInfo,BIObject biobj, JobExecutionContext jex, byte[] response, String fileExt) {
 		try{
 			String docName = sInfo.getDocumentName();
 			if( (docName==null) || docName.trim().equals("")) {
-				throw new Exception("Document name not specified");
+				throw new Exception(" Document name not specified");
 			}
 			String docDesc = sInfo.getDocumentDescription();
 			String docHistorylengthStr = sInfo.getDocumentHistoryLength();
@@ -211,7 +211,7 @@ public class ExecuteBIDocumentJob implements Job {
 			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 			List engines = engineDAO.loadAllEnginesForBIObjectType(officeDocDom.getValueCd());
 			if(engines.isEmpty()) {
-				throw new Exception("No suitable engines for the new document");
+				throw new Exception(" No suitable engines for the new document");
 			}
 			Engine engine = (Engine)engines.get(0);		
 			// load the template
@@ -231,7 +231,7 @@ public class ExecuteBIDocumentJob implements Job {
 				storeInFunctionalities.add(functId);
 			}
 			if(storeInFunctionalities.isEmpty()) {
-				throw new Exception("No functionality specified where store the new document");
+				throw new Exception(" No functionality specified where store the new document");
 			}
 			// create biobject
 			
@@ -245,7 +245,7 @@ public class ExecuteBIDocumentJob implements Job {
 			newbiobj.setName(docName);
 			newbiobj.setEncrypt(new Integer(0));
 			newbiobj.setEngine(engine);
-			newbiobj.setDataSourceId(engine.getDataSourceId());
+			newbiobj.setDataSourceId(biobj.getDataSourceId());
 			newbiobj.setRelName("");
 			newbiobj.setBiObjectTypeCode(officeDocDom.getValueCd());
 			newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
@@ -264,7 +264,7 @@ public class ExecuteBIDocumentJob implements Job {
 			}
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		            "saveAsDocument", "Error while saving schedule result as new document", e);
+		            " saveAsDocument ", " Error while saving schedule result as new document", e);
 		}
 	}
 	

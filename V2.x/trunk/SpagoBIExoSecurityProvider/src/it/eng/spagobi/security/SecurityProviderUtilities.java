@@ -189,27 +189,27 @@ public class SecurityProviderUtilities {
 		
 		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
 				"getUserProfileAttributes",
-				"Trying to load user attributes for user with unique identifer '" + userUniqueIdentifier +"'.");
+				" Trying to load user attributes for user with unique identifer '" + userUniqueIdentifier +"'.");
 		// load the exo user profile attributes into a tenmporary hashmap
 		HashMap exoProfileAttrs = new HashMap();
 		HashMap userAttributes = new HashMap();
 		UserProfileHandler userProfileHandler = service.getUserProfileHandler();
 		if (userProfileHandler==null) {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
-					              "getUserProfileAttributes", "UserProfileHandler null");
+					              "getUserProfileAttributes", " UserProfileHandler null");
 		} else {
 			UserProfile exoUserProfile = null;
 			try {
 				exoUserProfile = userProfileHandler.findUserProfileByName(userUniqueIdentifier);
 			} catch (Exception e) {
 				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
-                        "getUserProfileAttributes", "Error while recovering user profile by name '" 
+                        "getUserProfileAttributes", " Error while recovering user profile by name '" 
                         + userUniqueIdentifier + "'", e);
 				return userAttributes;
 			}
 			if (exoUserProfile == null){
 				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, SecurityProviderUtilities.class.getName(), 
-			                          "getUserProfileAttributes", "exoUserProfile not found for user " 
+			                          "getUserProfileAttributes", " exoUserProfile not found for user " 
 			                          + userUniqueIdentifier);
 				return userAttributes;
 			} else {

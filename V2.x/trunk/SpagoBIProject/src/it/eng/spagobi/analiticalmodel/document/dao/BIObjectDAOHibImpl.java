@@ -54,7 +54,6 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.dao.EngineDAOHibImpl;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
@@ -67,6 +66,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -83,6 +83,8 @@ import org.safehaus.uuid.UUIDGenerator;
  */
 public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		IBIObjectDAO {
+    
+    static private Logger logger = Logger.getLogger(BIObjectDAOHibImpl.class);
 
 	/** 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForExecutionByIdAndRole(java.lang.Integer, java.lang.String)
@@ -115,10 +117,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				//*****************************************************************
 				Integer priority = tmpBIObjectParameter.getPriority();
 				if (priority == null || priority.intValue() != count) {
-					SpagoBITracer.minor(SpagoBIConstants.NAME_MODULE, 
-						    "BIObjectDAOHibImpl", 
-						    "loadBIObjectForExecutionByPathAndRole", 
-						    "The priorities of the biparameters for the document with id = " + biObject.getId() + " are not sorted. Priority recalculation starts.");
+				        logger.warn("The priorities of the biparameters for the document with id = " + biObject.getId() + " are not sorted. Priority recalculation starts.");
 					aBIObjectParameterDAOHibImpl.recalculateBiParametersPriority(biObject.getId(), aSession);
 					tmpBIObjectParameter.setPriority(new Integer(count));
 				}
@@ -136,7 +135,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			biObject.setBiObjectParameters(biObjectParameters);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -166,7 +165,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			toReturn = toBIObject(hibBIObject);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -199,7 +198,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			biObject = toBIObject(hibObject);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -231,7 +230,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			biObject = toBIObject(hibObject);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -256,45 +255,38 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForTree(java.lang.Integer)
 	 */
 	public BIObject loadBIObjectForTree(Integer id) throws EMFUserError {
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
-							"loadBIObjectForTree", "start method with input id:" + id);
+	        logger.debug("IN. start method with input id:" + id);
 		BIObject biObject = null;
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
-			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
-					"loadBIObjectForTree", "hibernate session obtained:" + aSession);
+			logger.debug("hibernate session obtained:" + aSession);
 			tx = aSession.beginTransaction();
-			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
-					"loadBIObjectForTree", "hibernate transaction started");
+			logger.debug("hibernate transaction started");
 			Criterion domainCdCriterrion = Expression.eq("biobjId", id);
 			Criteria criteria = aSession.createCriteria(SbiObjects.class);
 			criteria.add(domainCdCriterrion);
-			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
-					"loadBIObjectForTree", "hibernate criteria filled:" + criteria);
+			logger.debug( "hibernate criteria filled:" + criteria);
 			SbiObjects hibObject = (SbiObjects) criteria.uniqueResult();
-			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
-					"loadBIObjectForTree", "hibernate object retrived:" + hibObject);
+			logger.debug( "hibernate object retrived:" + hibObject);
 			if (hibObject == null) {
 				return null;
 			}
 			biObject = toBIObject(hibObject);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
-					"loadBIObjectForTree", "hibernate exception:" + he);
+			logger.error("hibernate exception",he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
+			logger.debug("OUT.end method with input id:" + id);
 		}
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "BIObjectDAOImpl",
-				"loadBIObjectForTree", "end method with input id:" + id);
 		return biObject;	
 	}
 
@@ -372,7 +364,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			tx.commit();		
 		}  catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -393,20 +385,20 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
 		// set to not active the current active template
 		String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId="+hibBIObject.getBiobjId();
-        Query query = aSession.createQuery(hql);
-        try{
-        	int rowCount = query.executeUpdate();
-        } catch (Exception e) {
-        	// TODO trace exception
-        	System.out.println(e);
-        }
-		// get the next prog for the new template
-        Integer nextProg = null;
-        try {
-        	nextProg = DAOFactory.getObjTemplateDAO().getNextProgForTemplate(hibBIObject.getBiobjId());
-        } catch (Exception e) {
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-        }
+                Query query = aSession.createQuery(hql);
+                try{
+                	int rowCount = query.executeUpdate();
+                } catch (Exception e) {
+                	// TODO trace exception
+                	System.out.println(e);
+                }
+        	// get the next prog for the new template
+                Integer nextProg = null;
+                try {
+                	nextProg = DAOFactory.getObjTemplateDAO().getNextProgForTemplate(hibBIObject.getBiobjId());
+                } catch (Exception e) {
+                	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+                }
 		// store the object template
 		SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
 		hibObjTemplate.setActive(new Boolean(true));
@@ -441,29 +433,29 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	}
 	
 	private void internalInsertBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError {
-		BIObject biObject = obj;
+	    logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiObjects hibBIObject = new SbiObjects();
-			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,	biObject.getEngine().getId());
+			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,	obj.getEngine().getId());
 			hibBIObject.setSbiEngines(hibEngine); 
-			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, biObject.getDataSourceId());			
-			hibBIObject.setDataSource(hibDataSource);
-			hibBIObject.setDescr(biObject.getDescription());
-			hibBIObject.setLabel(biObject.getLabel());
-			hibBIObject.setName(biObject.getName());
-			hibBIObject.setEncrypt(new Short(biObject.getEncrypt().shortValue()));
-			hibBIObject.setVisible(new Short(biObject.getVisible().shortValue()));
-			hibBIObject.setRelName(biObject.getRelName());
-			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class, biObject.getStateID());
+			hibBIObject.setDescr(obj.getDescription());
+			hibBIObject.setLabel(obj.getLabel());
+			hibBIObject.setName(obj.getName());
+			hibBIObject.setEncrypt(new Short(obj.getEncrypt().shortValue()));
+			hibBIObject.setVisible(new Short(obj.getVisible().shortValue()));
+			hibBIObject.setRelName(obj.getRelName());
+			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class, obj.getStateID());
 			hibBIObject.setState(hibState);
-			hibBIObject.setStateCode(biObject.getStateCode());
-			SbiDomains hibObjectType = (SbiDomains) aSession.load(SbiDomains.class, biObject.getBiObjectTypeID());
+			hibBIObject.setStateCode(obj.getStateCode());
+			SbiDomains hibObjectType = (SbiDomains) aSession.load(SbiDomains.class, obj.getBiObjectTypeID());
 			hibBIObject.setObjectType(hibObjectType);
-			hibBIObject.setObjectTypeCode(biObject.getBiObjectTypeCode());
+			hibBIObject.setObjectTypeCode(obj.getBiObjectTypeCode());
+			SbiDataSource dSource=(SbiDataSource) aSession.load(SbiDataSource.class, obj.getDataSourceId());
+			hibBIObject.setDataSource(dSource);
 			// uuid generation
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
@@ -475,7 +467,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, id);
 			// functionalities storing
 			Set hibObjFunc = new HashSet();
-			List functionalities = biObject.getFunctionalities();
+			List functionalities = obj.getFunctionalities();
 			for (Iterator it = functionalities.iterator(); it.hasNext(); ) {
 				Integer functId = (Integer) it.next();
 				SbiFunctions aSbiFunctions = (SbiFunctions) aSession.load(SbiFunctions.class, functId);
@@ -495,7 +487,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			tx.commit();
 			obj.setId(id);
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error("HibernateException",he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -503,6 +495,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
+			logger.debug("OUT");
 		}
 	}
 
@@ -528,24 +521,20 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			while (itObjFunc.hasNext()) {
 				SbiObjFunc aSbiObjFunc = (SbiObjFunc) itObjFunc.next();
 				if (idFunct == null || aSbiObjFunc.getId().getSbiFunctions().getFunctId().intValue() == idFunct.intValue()) {
-					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-							"eraseBIObject", "Deleting object [" + obj.getName() + "] from folder [" + aSbiObjFunc.getId().getSbiFunctions().getPath() + "]");
+					logger.debug("Deleting object [" + obj.getName() + "] from folder [" + aSbiObjFunc.getId().getSbiFunctions().getPath() + "]");
 					aSession.delete(aSbiObjFunc);
 				}
 			}
-			//tx.commit();
-			//aSession.refresh(hibBIObject);
+
 			aSession.flush();
 			// reload object
 			aSession.refresh(hibBIObject);
-			//hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, obj.getId());
+
 			// if the object is no more referenced in any folder, erases it from sbi_obejcts table 
-			//hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, obj.getId());
 			hibObjFuncs = hibBIObject.getSbiObjFuncs();
 			if (hibObjFuncs == null || hibObjFuncs.size() == 0) {
 				
-				SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE, this.getClass().getName(),
-						"eraseBIObject", "The object [" + obj.getName() + "] is no more referenced by any functionality. It will be completely deleted from db.");
+				logger.debug("The object [" + obj.getName() + "] is no more referenced by any functionality. It will be completely deleted from db.");
 				
 				// delete templates
 				String hql = "from SbiObjTemplates sot where sot.sbiObject.biobjId="+obj.getId();
@@ -555,8 +544,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				while(iterTempls.hasNext()) {
 					SbiObjTemplates hibObjTemp = (SbiObjTemplates)iterTempls.next();
 					SbiBinContents hibBinCont = hibObjTemp.getSbiBinContents();
-					aSession.delete(hibBinCont);
 					aSession.delete(hibObjTemp);
+					aSession.delete(hibBinCont);
+					
 				}
 				
 				//delete viewpoints eventually associated
@@ -592,17 +582,16 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
 				subrptdao.eraseSubreportByMasterRptId(obj.getId());
 				subrptdao.eraseSubreportBySubRptId(obj.getId());
-				
-				// commit all changes
-				tx.commit();			
 			}
+			// commit all changes
+			tx.commit();				
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null && tx.isActive())
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} catch (Exception ex) {
-			logException(ex);
+			logger.error(ex);
 			if (tx != null && tx.isActive())
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
@@ -622,10 +611,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try  {
 			correctRoles = getCorrectRoles(id, profile.getRoles());
 		} catch (EMFInternalError emfie) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-								"BIObjectDAOHibImpl", 
-								"getCorrectRolesForExecution", 
-								"error getting role from the user profile", emfie);
+		    logger.error("error getting role from the user profile",emfie);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 		return correctRoles;
@@ -746,7 +732,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -826,7 +812,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -853,7 +839,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -908,7 +894,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 
 			if (tx != null)
 				tx.rollback();
@@ -950,7 +936,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 
 			if (tx != null)
 				tx.rollback();
@@ -982,7 +968,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			biObject = toBIObject(hibObject);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);

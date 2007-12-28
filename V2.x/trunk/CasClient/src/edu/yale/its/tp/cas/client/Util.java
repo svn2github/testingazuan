@@ -1,6 +1,7 @@
 
 package edu.yale.its.tp.cas.client;
 
+
 import java.net.URLEncoder;
 import java.util.Enumeration;
 
@@ -15,18 +16,19 @@ import edu.yale.its.tp.cas.client.filter.CASFilter;
 public class Util
 {
 
+    static private Logger logger= Logger.getLogger(Util.class);
+    
     public Util()
     {
     }
 
     private static  String addParameters(HttpServletRequest request){
-	log.debug("IN");
-	
+	logger.debug("IN");
 	String param="?";
 	Enumeration enumer = request.getParameterNames();
 	String parName = null;
 	String parValue = null;
-	log.debug("Reading request parameters...");
+	logger.debug("Reading request parameters...");
 	while (enumer.hasMoreElements()) {
 	    parName = (String) enumer.nextElement();
 	    parValue = request.getParameter(parName);
@@ -36,18 +38,20 @@ public class Util
 	    }
 	    
 	}
-	log.debug("OUT.param= "+param);
+	logger.debug("OUT.param= "+param);
 	return param;
     }
     
     public static String getService(HttpServletRequest request, String server)
         throws ServletException
     {
-
-            log.debug("entering getService(" + request + ", " + server + ")");
+	String methodRequest=request.getMethod();
+	System.out.println("methodRequest="+methodRequest);
+	System.out.println("request.getRequestURI()="+request.getRequestURL());
+            logger.debug("entering getService(" + request + ", " + server + ")");
         if(server == null)
         {
-            log.error("getService() argument \"server\" was illegally null.");
+            logger.error("getService() argument \"server\" was illegally null.");
             throw new IllegalArgumentException("name of server is required");
         }
         StringBuffer sb = new StringBuffer();
@@ -57,7 +61,7 @@ public class Util
             sb.append("http://");
         sb.append(server);
         sb.append(request.getRequestURI());
-        sb.append(addParameters(request));
+        if (methodRequest.equals("POST")) sb.append(addParameters(request));
         if(request.getQueryString() != null)
         {
             int ticketLoc = request.getQueryString().indexOf("ticket=");
@@ -75,9 +79,9 @@ public class Util
             }
         }
         String encodedService = URLEncoder.encode(sb.toString());
-            log.debug("returning from getService() with encoded service [" + encodedService + "]");
+            logger.debug("returning from getService() with encoded service [" + encodedService + "]");
         return encodedService;
     }
 
-    private static Logger log = Logger.getLogger(Util.class);
+
 }

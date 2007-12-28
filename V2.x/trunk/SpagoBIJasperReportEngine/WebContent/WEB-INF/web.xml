@@ -7,7 +7,7 @@
 		portal. 
 	</description>
 
-<!-- 
+ <!-- 
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -44,7 +44,7 @@
 	
 	</filter>
 
- -->
+-->
 
 
 	<filter>
@@ -55,16 +55,16 @@
 	</filter>
 
 
- <!-- 
+ <!--
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/JasperReportServlet/*</url-pattern>
 	</filter-mapping>
- -->
+-->
 
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
-		<url-pattern>/JasperReportServlet/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	
@@ -99,17 +99,7 @@
 			it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet
 		</servlet-class>
 	</servlet>
-	<!-- 
-    <servlet>
-        <servlet-name>ReadTicketServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.utilities.callbacks.ticket.ReadTicketServlet</servlet-class>
-    </servlet>    
-    
-    <servlet-mapping>
-        <servlet-name>ReadTicketServlet</servlet-name>
-        <url-pattern>/ReadTicket</url-pattern>
-    </servlet-mapping>
-     -->
+
  	<servlet-mapping>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
   		<url-pattern>/proxyReceptor</url-pattern> 
@@ -120,6 +110,11 @@
 		<servlet-name>JasperReportServlet</servlet-name>
 		<url-pattern>/JasperReportServlet</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>JasperReportServlet</servlet-name>
+		<url-pattern>/JasperReportServletScheduler</url-pattern>
+	</servlet-mapping>	
 
 	<servlet-mapping>
 		<servlet-name>JRImageServlet</servlet-name>

@@ -36,13 +36,12 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.events.EventsManager;
+
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
@@ -67,6 +66,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -74,9 +74,10 @@ import org.quartz.JobExecutionException;
 
 public class ExecuteBIDocumentJob implements Job {
 
-	
+    static private Logger logger = Logger.getLogger(ExecuteBIDocumentJob.class);	
 	
 	public void execute(JobExecutionContext jex) throws JobExecutionException {
+	    logger.debug("IN");
 		try{
 			JobDataMap jdm = jex.getMergedJobDataMap();
 			String doclabelsConcat = jdm.getString("documentLabels");
@@ -99,7 +100,7 @@ public class ExecuteBIDocumentJob implements Job {
 				if(execCtrl.directExecution()) {
 					ExecutionProxy proxy = new ExecutionProxy();
 					proxy.setBiObject(biobj);
-					IEngUserProfile profile = new UserProfile("scheduler");
+					IEngUserProfile profile = UserProfile.createSchedulerUserProfile();
 					
 					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 					//String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
@@ -132,13 +133,16 @@ public class ExecuteBIDocumentJob implements Job {
 					}
 	
 				} else {
+				    logger.warn("The document with label "+docLabel+" cannot be executed directly, " +
+				            "maybe some prameters are not filled ");
 					throw new Exception("The document with label "+docLabel+" cannot be executed directly, " +
 							            "maybe some prameters are not filled ");
 				}
 			}
 		} catch (Exception e) {
-	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-	    			           "execute", "Error while executiong job ", e );
+		    logger.error("Error while executiong job ", e);
+	    }finally{
+		logger.debug("OUT");
 	    }
 		
 		
@@ -148,6 +152,7 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	private void saveAsSnap(SaveInfo sInfo,BIObject biobj, byte[] response) {
+	    logger.debug("IN");
 		try {
 			String snapName = sInfo.getSnapshotName();
 			if( (snapName==null) || snapName.trim().equals("")) {
@@ -178,14 +183,14 @@ public class ExecuteBIDocumentJob implements Job {
 						}
 					}
 				} catch(Exception e) {
-					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-	    			           			"execute", "Error while deleting object snapshots", e );
+				    logger.error("Error while deleting object snapshots", e);
 				}
 			}
 			snapDao.saveSnapshot(response, biobj.getId(), snapName, snapDesc);	
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-								"saveAsSnap", "Error while saving schedule result as new snapshot", e);
+		    logger.error("Error while saving schedule result as new snapshot", e);
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -194,7 +199,8 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	private void saveAsDocument(SaveInfo sInfo,BIObject biobj, JobExecutionContext jex, byte[] response, String fileExt) {
-		try{
+	    logger.debug("IN");
+	    try{
 			String docName = sInfo.getDocumentName();
 			if( (docName==null) || docName.trim().equals("")) {
 				throw new Exception(" Document name not specified");
@@ -263,8 +269,9 @@ public class ExecuteBIDocumentJob implements Job {
 				objectDAO.modifyBIObject(newbiobj, objTemp);
 			}
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		            " saveAsDocument ", " Error while saving schedule result as new document", e);
+		    logger.error("Error while saving schedule result as new document",e);
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -272,6 +279,7 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt) {
+	    logger.debug("IN");
 		try{
 			ConfigSingleton config = ConfigSingleton.getInstance();
 			SourceBean mailProfSB = (SourceBean)config.getFilteredSourceBeanAttribute("MAIL.PROFILES.PROFILE", "name", "scheduler");
@@ -337,8 +345,9 @@ public class ExecuteBIDocumentJob implements Job {
 		    // send message
 		    Transport.send(msg);
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "sendMail", "Error while sending schedule result mail", e);
+		    logger.error("Error while sending schedule result mail",e);
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	

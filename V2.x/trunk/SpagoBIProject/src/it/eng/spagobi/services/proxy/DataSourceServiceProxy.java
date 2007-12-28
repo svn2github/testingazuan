@@ -26,8 +26,8 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
     static private Logger logger = Logger.getLogger(DataSourceServiceProxy.class);
     
 
-    public DataSourceServiceProxy(HttpSession session) {
-	super(session);
+    public DataSourceServiceProxy(String user,HttpSession session) {
+	super(user,session);
     }
     private DataSourceServiceProxy() {
 	super();
@@ -50,15 +50,10 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
     }
     
     
-    public SpagoBiDataSource getDataSource(String user,String documentId) {
+    public SpagoBiDataSource getDataSource(String documentId) {
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-
-	    return lookUp().getDataSource(ticket, user,documentId);
+	    return lookUp().getDataSource(readTicket(), userId,documentId);
 	} catch (Exception e) {
 	    logger.error("Error during Service LookUp",e);
 	}finally{

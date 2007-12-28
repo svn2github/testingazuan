@@ -12,24 +12,15 @@ public class AuditServiceImpl extends AbstractServiceImpl{
     
     public String log(String token,String user,String id,String start,String end,String state,String message,String errorCode){
 	logger.debug("IN");
-	if (activeSso) {
-	    try {
-		if (validateTicket(token,user)) {
-		    return log( user, id, start, end, state, message, errorCode);
-		} else {
-		    logger.error("Token NOT VALID");
-		    return null;
-		}
-	    } catch (SecurityException e) {
-		logger.error("SecurityException", e);
-		return null;
-	    } finally {
-		logger.debug("OUT");
-	    }
-	} else {
-	    logger.debug("OUT");
+	try {
+	    validateTicket(token, user);
 	    return log( user, id, start, end, state, message, errorCode);
-	}
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
+	    logger.debug("OUT");
+	}	
 
     }
 	

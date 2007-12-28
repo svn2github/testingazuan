@@ -32,97 +32,57 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 // TODO IMPLEMENTARE I CONTROLLI
 	
         logger.debug("IN");
-	if (activeSso){
-		try {
-		    if (validateTicket(token,user)){
-			return readTemplate(user,document);
-		    }else{
-			logger.error("Token NOT VALID");
-			return null;
-		    }
-		} catch (SecurityException e) {
-		    logger.error("SecurityException",e);
-		    return null;
-		}finally{
-		    logger.debug("OUT");
-		}
-	}else{
-	        logger.debug("OUT");
-		// operazione locale
-	        return readTemplate(user,document);
-	}
+        try {
+            validateTicket(token,user);
+            return readTemplate(user,document);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException",e);
+	    return null;
+	}finally{
+	    logger.debug("OUT");
+	}        
     }
 
     public Content readSubObjectContent(String token,String user,String subObjectId){
         logger.debug("IN");
-	
-	if (activeSso){
-		try {
-		    if (validateTicket(token,user)){
-			return readSubObjectContent(user,subObjectId);
-		    }else{
-			logger.error("Token NOT VALID");
-			return null;
-		    }
-		} catch (SecurityException e) {
-		    logger.error("SecurityException",e);
-		    return null;
-		}finally{
-		    logger.debug("OUT");
-		}
-	}else{
-	        logger.debug("OUT");
-		// operazione locale
-	        return readSubObjectContent(user,subObjectId);
-	}
+        try {
+            validateTicket(token,user);
+            return readSubObjectContent(user,subObjectId);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException",e);
+	    return null;
+	}finally{
+	    logger.debug("OUT");
+	} 
+
     }
     
     public String saveSubObject(String token,String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
         logger.debug("IN");
-	
-	if (activeSso){
-		try {
-		    if (validateTicket(token,user)){
-			return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
-		    }else{
-			logger.error("Token NOT VALID");
-			return null;
-		    }
-		} catch (SecurityException e) {
-		    logger.error("SecurityException",e);
-		    return null;
-		}finally{
-		    logger.debug("OUT");
-		}
-	}else{
-	        logger.debug("OUT");
-		// operazione locale
-	        return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
-	}
+        try {
+            validateTicket(token,user);
+            return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException",e);
+	    return null;
+	}finally{
+	    logger.debug("OUT");
+	}	
+
     }
     
     public String saveObjectTemplate(String token,String user,String documentiId,String templateName,String content){
         logger.debug("IN");
-
-	if (activeSso){
-		try {
-		    if (validateTicket(token,user)){
-			return saveObjectTemplate(user,documentiId,templateName,content);
-		    }else{
-			logger.error("Token NOT VALID");
-			return null;
-		    }
-		} catch (SecurityException e) {
-		    logger.error("SecurityException",e);
-		    return null;
-		}finally{
-		    logger.debug("OUT");
-		}
-	}else{
-	        logger.debug("OUT");
-		// operazione locale
-	        return saveObjectTemplate(user,documentiId,templateName,content);
+        try {
+            validateTicket(token,user);
+            return saveObjectTemplate(user,documentiId,templateName,content);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException",e);
+	    return null;
+	}finally{
+	    logger.debug("OUT");
 	}
+
     }
     
     public Content downloadAll(String token,String user,String biobjectId,String fileName){

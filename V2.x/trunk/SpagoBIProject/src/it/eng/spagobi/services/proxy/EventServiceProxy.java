@@ -14,8 +14,8 @@ public class EventServiceProxy extends AbstractServiceProxy{
     static private Logger logger = Logger.getLogger(EventServiceProxy.class);
 
 
-    public EventServiceProxy(HttpSession session) {
-	super( session);
+    public EventServiceProxy(String user,HttpSession session) {
+	super( user,session);
     }
     private EventServiceProxy() {
 	super();
@@ -37,14 +37,10 @@ public class EventServiceProxy extends AbstractServiceProxy{
 	}
     }
     
-    public String fireEvent(String user,String description,String parameters,String rolesHandler,String presentationHandler){
+    public String fireEvent(String description,String parameters,String rolesHandler,String presentationHandler){
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().fireEvent( ticket, user, description, parameters, rolesHandler, presentationHandler);
+	    return lookUp().fireEvent( readTicket(), userId, description, parameters, rolesHandler, presentationHandler);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 

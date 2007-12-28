@@ -14,8 +14,8 @@ public class AuditServiceProxy extends AbstractServiceProxy{
     static private Logger logger = Logger.getLogger(AuditServiceProxy.class);
 
 
-    public AuditServiceProxy(HttpSession session) {
-	super( session);
+    public AuditServiceProxy(String user,HttpSession session) {
+	super(user, session);
     }
     private AuditServiceProxy() {
 	super();
@@ -37,14 +37,10 @@ public class AuditServiceProxy extends AbstractServiceProxy{
 	}
     }
     
-    public String log(String user,String id,String start,String end,String state,String message,String errorCode){
+    public String log(String id,String start,String end,String state,String message,String errorCode){
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().log( ticket, user, id, start, end, state, message, errorCode);
+	    return lookUp().log( readTicket(), userId, id, start, end, state, message, errorCode);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 

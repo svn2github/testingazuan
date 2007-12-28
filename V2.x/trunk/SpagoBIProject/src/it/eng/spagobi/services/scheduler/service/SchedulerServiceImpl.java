@@ -35,200 +35,128 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     
 	public String getJobList(String token,String user){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.getJobList();
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
+		try {
+		    validateTicket(token, user);
+		    return supplier.getJobList();
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
 		    logger.debug("OUT");
-		    return supplier.getJobList( );
-		}	    
+		}		
+    
 	}
 	
 	public String getJobSchedulationList(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.getJobSchedulationList(jobName,jobGroup);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
+		try {
+		    validateTicket(token, user);
+		    return supplier.getJobSchedulationList(jobName,jobGroup);
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
 		    logger.debug("OUT");
-		    return supplier.getJobSchedulationList(jobName,jobGroup );
-		}	    
+		}		
+	    
 	}
 	
 	public String deleteSchedulation(String token,String user,String triggerName, String triggerGroup){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.deleteSchedulation(triggerName,triggerGroup);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
-		    logger.debug("OUT");
+		try {
+		    validateTicket(token, user);
 		    return supplier.deleteSchedulation(triggerName,triggerGroup);
-		}	    
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
+		    logger.debug("OUT");
+		}		
+    
 	}
 	
 	public String deleteJob(String token,String user,String jobName, String jobGroupName){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.deleteJob(jobName,jobGroupName);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
-		    logger.debug("OUT");
+		try {
+		    validateTicket(token, user);
 		    return supplier.deleteJob(jobName,jobGroupName);
-		}	    
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
+		    logger.debug("OUT");
+		}		
+    
 	}
 	
 	public String defineJob(String token,String user,String xmlRequest){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.defineJob(xmlRequest);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
-		    logger.debug("OUT");
+		try {
+		    validateTicket(token, user);
 		    return supplier.defineJob(xmlRequest);
-		}	    
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
+		    logger.debug("OUT");
+		}		
+    
 	}
 	
 	public String getJobDefinition(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.getJobDefinition(jobName,jobGroup);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
-		    logger.debug("OUT");
+		try {
+		    validateTicket(token, user);
 		    return supplier.getJobDefinition(jobName,jobGroup);
-		}	    
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
+		    logger.debug("OUT");
+		}		
+    
 	}
 	
 	public String scheduleJob(String token,String user,String xmlRequest){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.scheduleJob(xmlRequest);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
-		    logger.debug("OUT");
+		try {
+		    validateTicket(token, user);
 		    return supplier.scheduleJob(xmlRequest);
-		}	    
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
+		    logger.debug("OUT");
+		}		
+	    
 	}
 	
 	public String getJobSchedulationDefinition(String token,String user,String triggerName, String triggerGroup){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.getJobSchedulationDefinition(triggerName,triggerGroup);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
-		    logger.debug("OUT");
+		try {
+		    validateTicket(token, user);
 		    return supplier.getJobSchedulationDefinition(triggerName,triggerGroup);
-		}	    
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
+		    logger.debug("OUT");
+		}		
+	    
 	}
 	
 	public String existJobDefinition(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
-		if (activeSso) {
-		    try {
-			if (validateTicket(token,user)) {
-			    return supplier.existJobDefinition(jobName,jobGroup);
-			} else {
-			    logger.error("Token NOT VALID");
-			    return null;
-			}
-		    } catch (SecurityException e) {
-			logger.error("SecurityException", e);
-			return null;
-		    } finally {
-			logger.debug("OUT");
-		    }
-		} else {
-		    logger.debug("OUT");
+		try {
+		    validateTicket(token, user);
 		    return supplier.existJobDefinition(jobName,jobGroup);
-		}    
+		} catch (SecurityException e) {
+		    logger.error("SecurityException", e);
+		    return null;
+		} finally {
+		    logger.debug("OUT");
+		}		
+  
 	}
 	
 }

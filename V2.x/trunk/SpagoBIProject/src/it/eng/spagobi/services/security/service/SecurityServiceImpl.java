@@ -34,25 +34,16 @@ public class SecurityServiceImpl extends AbstractServiceImpl implements Security
  */
 public SpagoBIUserProfile getUserProfile(String token,String userId) {
         logger.debug("IN");
-	
-	if (activeSso){
-		try {
-		    if (validateTicket(token,userId)){
-			return supplier.createUserProfile(userId);
-		    }else{
-			logger.error("Token NOT VALID");
-			return null;
-		    }
-		} catch (SecurityException e) {
-		    logger.error("SecurityException",e);
-		    return null;
-		}finally{
-		    logger.debug("OUT");
-		}
-	}else{
-	        logger.debug("OUT");
-		return supplier.createUserProfile(userId);	    
-	}
+	try {
+	    validateTicket(token, userId);
+	    return supplier.createUserProfile(userId);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
+	    logger.debug("OUT");
+	}	
+
 	
     }
 /**
@@ -60,29 +51,18 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
  */
     public boolean isAuthorized(String token,String userId, String idFolder, String state) {
         logger.debug("IN");
-	
-	if (activeSso){
-		try {
-		    if (validateTicket(token,userId)){
-			SpagoBIUserProfile profile= supplier.createUserProfile(userId);
-			UserProfile userProfile=new UserProfile(profile);			
-			return ObjectsAccessVerifier.canExec(new Integer(idFolder), userProfile);
-		    }else{
-			logger.error("Token NOT VALID");
-			return false;
-		    }
-		} catch (SecurityException e) {
-		    logger.error("SecurityException",e);
-		    return false;
-		}finally{
-		    logger.debug("OUT"); 
-		}
-	}else {
+	try {
+	        validateTicket(token, userId);
 		SpagoBIUserProfile profile= supplier.createUserProfile(userId);
-		UserProfile userProfile=new UserProfile(profile);
-	        logger.debug("OUT");
-		return ObjectsAccessVerifier.canExec(new Integer(idFolder), userProfile);	    
-	}
+		UserProfile userProfile=new UserProfile(profile);			
+		return ObjectsAccessVerifier.canExec(new Integer(idFolder), userProfile);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return false;
+	} finally {
+	    logger.debug("OUT");
+	}	
+
 
     }
     
@@ -93,12 +73,8 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
         logger.debug("IN");
 	
 	try {
-	    if (validateTicket(token,userId)){
-		return supplier.checkAuthorization(userId,function);
-	    }else{
-		logger.error("Token NOT VALID");
-		return false;
-	    }
+	    validateTicket(token,userId);
+            return supplier.checkAuthorization(userId,function);
 	} catch (SecurityException e) {
 	    logger.error("SecurityException",e);
 	    return false;

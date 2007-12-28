@@ -18,46 +18,28 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
     }
     public SpagoBiDataSource getDataSource(String token,String user, String documentId) {
 	logger.debug("IN");
-	
-	if (activeSso){
-		try {
-		    if (validateTicket(token,user)){
-			return supplier.getDataSource(documentId);
-		    }else{
-			logger.error("Token NOT VALID");
-			return null;
-		    }
-		} catch (SecurityException e) {
-		    logger.error("SecurityException",e);
-		    return null;
-		}finally{
-		    logger.debug("OUT");
-		}
-	}else {
-	logger.debug("OUT");
-	return supplier.getDataSource(documentId);
-	}
+	try {
+	    validateTicket(token, user);
+	    return supplier.getDataSource(documentId);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
+	    logger.debug("OUT");
+	}	
+
     }
     public SpagoBiDataSource[] getAllDataSource(String token,String user){
 	logger.debug("IN");
-	
-	if (activeSso){
-		try {
-		    if (validateTicket(token,user)){
-			return supplier.getAllDataSource();
-		    }else{
-			logger.error("Token NOT VALID");
-			return null;
-		    }
-		} catch (SecurityException e) {
-		    e.printStackTrace();
-		    return null;
-		}finally{
-		    logger.debug("OUT");
-		}
-	}else {
-	logger.debug("OUT");
-	return supplier.getAllDataSource();
-	}
+	try {
+	    validateTicket(token, user);
+	    return supplier.getAllDataSource();
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
+	    logger.debug("OUT");
+	}	
+
     }
 }

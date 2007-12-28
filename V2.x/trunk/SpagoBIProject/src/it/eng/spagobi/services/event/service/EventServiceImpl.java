@@ -16,27 +16,15 @@ public class EventServiceImpl extends AbstractServiceImpl {
     public String fireEvent(String token, String user, String description,
 	    String parameters, String rolesHandler, String presentationHandler) {
 	logger.debug("IN");
-	
-	if (activeSso) {
-	    try {
-		if (validateTicket(token,user)) {
-		    return fireEvent(user, description, parameters,
-			    rolesHandler, presentationHandler);
-		} else {
-		    logger.error("Token NOT VALID");
-		    return null;
-		}
-	    } catch (SecurityException e) {
-		logger.error("SecurityException", e);
-		return null;
-	    } finally {
-		logger.debug("OUT");
-	    }
-	} else {
+	try {
+	    validateTicket(token, user);
+	    return fireEvent(user, description, parameters,rolesHandler, presentationHandler);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
 	    logger.debug("OUT");
-	    return fireEvent(user, description, parameters, rolesHandler,
-		    presentationHandler);
-	}
+	}	
 
     }
 

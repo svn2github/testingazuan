@@ -17,8 +17,8 @@ public class ContentServiceProxy extends AbstractServiceProxy{
     static private Logger logger = Logger.getLogger(ContentServiceProxy.class);
 
 
-    public ContentServiceProxy(HttpSession session) {
-	super( session);
+    public ContentServiceProxy(String user,HttpSession session) {
+	super( user,session);
     }
     private ContentServiceProxy() {
 	super();
@@ -40,15 +40,10 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
     }
     
-    public Content readTemplate(String user, String document) {
+    public Content readTemplate(String document) {
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    
-	    return lookUp().readTemplate(ticket, user, document);
+	    return lookUp().readTemplate(readTicket(), userId, document);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -58,14 +53,10 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	return null;
     }
     
-    public String publishTemplate( String user, HashMap attributes) {
+    public String publishTemplate( HashMap attributes) {
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().publishTemplate(ticket, user, attributes);
+	    return lookUp().publishTemplate(readTicket(), userId, attributes);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -75,14 +66,10 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	return null;
     }
     
-    public String mapCatalogue( String user, String operation,String path,String featureName,String mapName){
+    public String mapCatalogue( String operation,String path,String featureName,String mapName){
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().mapCatalogue(ticket, user, operation,path,featureName,mapName);
+	    return lookUp().mapCatalogue(readTicket(), userId, operation,path,featureName,mapName);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -92,14 +79,10 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	return null;	
     }
     
-    public Content readSubObjectContent(String user,String nameSubObject){
+    public Content readSubObjectContent(String nameSubObject){
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().readSubObjectContent(ticket, user, nameSubObject);
+	    return lookUp().readSubObjectContent(readTicket(), userId, nameSubObject);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -109,14 +92,10 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	return null;
     }
     
-    public String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
+    public String saveSubObject(String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().saveSubObject(ticket, user, documentiId,analysisName, analysisDescription, visibilityBoolean, content);
+	    return lookUp().saveSubObject(readTicket(), userId, documentiId,analysisName, analysisDescription, visibilityBoolean, content);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -126,14 +105,10 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	return null;
     }
     
-    public String saveObjectTemplate(String user,String documentiId,String templateName,String content){
+    public String saveObjectTemplate(String documentiId,String templateName,String content){
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().saveObjectTemplate(ticket, user, documentiId, templateName, content);
+	    return lookUp().saveObjectTemplate(readTicket(), userId, documentiId, templateName, content);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
@@ -143,14 +118,10 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	return null;
     }
     
-    public Content downloadAll(String user,String biobjectId,String fileName){
+    public Content downloadAll(String biobjectId,String fileName){
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-	    return lookUp().downloadAll(ticket, user, biobjectId, fileName);
+	    return lookUp().downloadAll(readTicket(), userId, biobjectId, fileName);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 

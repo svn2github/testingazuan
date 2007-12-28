@@ -51,26 +51,16 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
     public String mapCatalogue(String token, String user, String operation,String path,String featureName,String mapName) {
 
 	logger.debug("IN");
-	
-	if (activeSso) {
-	    try {
-		if (validateTicket(token,user)) {
-		    return mapCatalogue(user, operation, path, featureName, mapName);
-		} else {
-		    logger.error("Token NOT VALID");
-		    return null;
-		}
-	    } catch (SecurityException e) {
-		logger.error("SecurityException", e);
-		return null;
-	    } finally {
-		logger.debug("OUT");
-	    }
-	} else {
+	try {
+	    validateTicket(token, user);
+	    return mapCatalogue(user, operation, path, featureName, mapName);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
 	    logger.debug("OUT");
-	    // operazione locale
-	    return mapCatalogue(user, operation,path, featureName, mapName);
-	}
+	}	
+
     }
 
     private String mapCatalogue(String user, String operation,String path,String featureName,String mapName) {

@@ -20,37 +20,26 @@ import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Decoder;
 
-public class PublishImpl extends AbstractServiceImpl{
+public class PublishImpl extends AbstractServiceImpl {
 
     static private Logger logger = Logger.getLogger(PublishImpl.class);
 
     public String publishTemplate(String token, String user, HashMap attributes) {
 	// TODO IMPLEMENTARE I CONTROLLI
-	PublishImpl helper=new PublishImpl();
-	        logger.debug("IN");
-		
-		if (activeSso){
-			try {
-			    if (validateTicket(token,user)){
-				return helper.publishTemplate( user, attributes);
-			    }else{
-				logger.error("Token NOT VALID");
-				return null;
-			    }
-			} catch (SecurityException e) {
-			    logger.error("SecurityException",e);
-			    return null;
-			}finally{
-			    logger.debug("OUT");
-			}
-		}else{
-		        logger.debug("OUT");
-		        return helper.publishTemplate( user, attributes);
-		}
-	    }
-    
+	PublishImpl helper = new PublishImpl();
+	logger.debug("IN");
+	try {
+	    validateTicket(token, user);
+	    return helper.publishTemplate(user, attributes);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
+	    logger.debug("OUT");
+	}
 
-    
+    }
+
     private String publishTemplate(String user, HashMap attributes) {
 	logger.debug("IN");
 	BASE64Decoder decoder = new BASE64Decoder();
@@ -102,7 +91,7 @@ public class PublishImpl extends AbstractServiceImpl{
 		    t = domain.getValueId().intValue();
 	    }
 	} catch (EMFUserError e2) {
-	    logger.error("Error while retive object type",e2);
+	    logger.error("Error while retive object type", e2);
 	}
 
 	Integer typeIdInt = new Integer(t);
@@ -112,7 +101,7 @@ public class PublishImpl extends AbstractServiceImpl{
 	try {
 	    engines = DAOFactory.getEngineDAO().loadAllEngines();
 	} catch (EMFUserError e) {
-	    logger.error("Error while retrive engine",e);
+	    logger.error("Error while retrive engine", e);
 	}
 	for (int i = 0; i < engines.size(); i++) {
 	    engine = (Engine) engines.get(i);
@@ -128,17 +117,17 @@ public class PublishImpl extends AbstractServiceImpl{
 
 	obj.setEngine(engine);
 
-	String template = (String) mapPar.get("TEMPLATE");	
+	String template = (String) mapPar.get("TEMPLATE");
 	ObjTemplate objTemp = obj.getActiveTemplate();
 	objTemp.setName("etlTemplate.xml");
 	objTemp.setContent(template.getBytes());
 
 	Domain domain = null;
 	try {
-	    DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);	    
+	    DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);
 	    domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 	} catch (EMFUserError e1) {
-	    logger.error("Error while retrive doomain",e1);
+	    logger.error("Error while retrive doomain", e1);
 	}
 	obj.setBiObjectTypeCode(domain.getValueCd());
 
@@ -169,7 +158,7 @@ public class PublishImpl extends AbstractServiceImpl{
 		    t = domain.getValueId().intValue();
 	    }
 	} catch (EMFUserError e2) {
-	    logger.error("Error while retrive object type from domain",e2);
+	    logger.error("Error while retrive object type from domain", e2);
 	}
 
 	Integer typeIdInt = new Integer(t);
@@ -179,7 +168,7 @@ public class PublishImpl extends AbstractServiceImpl{
 	try {
 	    engines = DAOFactory.getEngineDAO().loadAllEngines();
 	} catch (EMFUserError e) {
-	    logger.error("Error while retrive engines",e);
+	    logger.error("Error while retrive engines", e);
 	}
 	for (int i = 0; i < engines.size(); i++) {
 	    engine = (Engine) engines.get(i);
@@ -197,16 +186,14 @@ public class PublishImpl extends AbstractServiceImpl{
 
 	obj.setEngine(engine);
 
-	
-	String template = (String) mapPar.get("TEMPLATE");	
+	String template = (String) mapPar.get("TEMPLATE");
 	ObjTemplate objTemp = obj.getActiveTemplate();
 	objTemp.setName("etlTemplate.xml");
-	objTemp.setContent(template.getBytes());	
+	objTemp.setContent(template.getBytes());
 
-	
 	Domain domain = null;
 	try {
-	    DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);	 
+	    DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);
 	    domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 	} catch (EMFUserError e1) {
 	    logger.error("Error while reading domain by type");
@@ -222,7 +209,7 @@ public class PublishImpl extends AbstractServiceImpl{
 	try {
 	    functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 	} catch (EMFUserError e) {
-	    logger.error("Error while reading functionalities",e);
+	    logger.error("Error while reading functionalities", e);
 	}
 
 	List funcs = new ArrayList();

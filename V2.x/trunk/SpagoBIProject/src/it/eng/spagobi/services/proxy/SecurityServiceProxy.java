@@ -20,8 +20,8 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
     static private Logger logger = Logger.getLogger(SecurityServiceProxy.class);
     
 
-    public SecurityServiceProxy(HttpSession session){
-	super(session);
+    public SecurityServiceProxy(String user,HttpSession session){
+	super(user,session);
     }    
  
     private SecurityServiceProxy() {
@@ -44,14 +44,10 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
 	}
     }
     
-    public IEngUserProfile getUserProfile(String userId) throws SecurityException{
+    public IEngUserProfile getUserProfile() throws SecurityException{
 	logger.debug("IN");
 	try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-            SpagoBIUserProfile user= lookUp().getUserProfile(ticket,userId);
+            SpagoBIUserProfile user= lookUp().getUserProfile(readTicket(),userId);
             return new UserProfile(user);
         } catch (Exception e) {
             logger.error("Error during service execution",e);
@@ -80,14 +76,10 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
      * @param function
      * @return
      */    
-    public boolean isAuthorized(String userId,String folderId,String mode) {
+    public boolean isAuthorized(String folderId,String mode) {
 	logger.debug("IN");
         try {
-	    String ticket = "";
-	    if (ssoIsActive){
-		ticket=readTicket();
-	    }
-            return lookUp().isAuthorized(ticket,userId,folderId, mode);
+            return lookUp().isAuthorized(readTicket(),userId,folderId, mode);
         } catch (Exception e) {
             logger.error("Error during service execution",e);
         }finally{

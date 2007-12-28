@@ -57,8 +57,8 @@ public class MapCatalogueAccessUtils {
 	
 	public String getStandardHierarchy(HttpSession sessione,String userId) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy(session);
-	String ris = proxy.mapCatalogue(userId, GET_STANDARD_HIERARCHY, null, null, null);
+	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
+	String ris = proxy.mapCatalogue( GET_STANDARD_HIERARCHY, null, null, null);
 	if (ris == null)
 	    throw new Exception("Error while getting default hierarchy");
 	if (ris.equalsIgnoreCase(ERROR_HIERARCHY_NOT_FOUND)) {
@@ -69,8 +69,8 @@ public class MapCatalogueAccessUtils {
 	
 	public List getMapNamesByFeature(String userId,String featureName) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy(session);
-	String ris = proxy.mapCatalogue(userId, GET_MAPS_BY_FEATURE, null, featureName, null);
+	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
+	String ris = proxy.mapCatalogue( GET_MAPS_BY_FEATURE, null, featureName, null);
 	if (ris == null)
 	    throw new Exception("Error while reading maps about feature " + featureName);
 	if (ris.equalsIgnoreCase(ERROR_FEATURE_NOT_FOUND)) {
@@ -92,8 +92,8 @@ public class MapCatalogueAccessUtils {
 
 	public List getFeatureNamesInMap(String userId,String mapName) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy(session);
-	String ris = proxy.mapCatalogue(userId, GET_FEATURES_IN_MAP, null, null, mapName);
+	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
+	String ris = proxy.mapCatalogue( GET_FEATURES_IN_MAP, null, null, mapName);
 
 	if (ris == null)
 	    throw new Exception("Error while reading features about map " + mapName);
@@ -113,8 +113,8 @@ public class MapCatalogueAccessUtils {
 	
 	public String getMapUrl(String userId,String mapName) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy(session);
-	String ris = proxy.mapCatalogue(userId, GET_MAP_URL, null, null, mapName);
+	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
+	String ris = proxy.mapCatalogue(GET_MAP_URL, null, null, mapName);
 
 	if (ris == null)
 	    throw new Exception("Error while reading map url " + mapName);
@@ -127,8 +127,8 @@ public class MapCatalogueAccessUtils {
 	
 	public List getAllMapNames(String userId) throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy(session);
-	String ris = proxy.mapCatalogue(userId, GET_ALL_MAP_NAMES, null, null, null);
+	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
+	String ris = proxy.mapCatalogue( GET_ALL_MAP_NAMES, null, null, null);
 
 	if (ris == null)
 	    throw new Exception("Error while reading maps ");
@@ -146,8 +146,8 @@ public class MapCatalogueAccessUtils {
     }
 	
 	public List getAllFeatureNames(String userId) throws Exception {
-	ContentServiceProxy proxy = new ContentServiceProxy(session);
-	String ris = proxy.mapCatalogue(userId, GET_ALL_FEATURE_NAMES, null, null, null);
+	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
+	String ris = proxy.mapCatalogue( GET_ALL_FEATURE_NAMES, null, null, null);
 	if (ris == null)
 	    throw new Exception("Error while reading Features ");
 

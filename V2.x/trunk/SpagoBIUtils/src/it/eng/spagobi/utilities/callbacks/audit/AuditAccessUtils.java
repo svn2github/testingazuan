@@ -92,8 +92,8 @@ public class AuditAccessUtils {
 		errorMessage = errorMessage.substring(0, 390);
 	    }
 
-	    AuditServiceProxy proxy = new AuditServiceProxy(sessione);
-	    String ris = proxy.log(userId, auditId, startTime != null ? startTime
+	    AuditServiceProxy proxy = new AuditServiceProxy(userId,sessione);
+	    String ris = proxy.log( auditId, startTime != null ? startTime
 		    .toString() : "",
 		    endTime != null ? endTime.toString() : "",
 		    executionState != null ? executionState : "",

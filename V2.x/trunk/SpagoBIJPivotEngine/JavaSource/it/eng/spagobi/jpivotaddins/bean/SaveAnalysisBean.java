@@ -132,9 +132,9 @@ public class SaveAnalysisBean extends ComponentSupport {
 		    if (PUBLIC_VISIBLITY.equalsIgnoreCase(analysisVisibility)) 
 				visibilityBoolean = "true";
 		    
-		    ContentServiceProxy proxy=new ContentServiceProxy(session);
+		    ContentServiceProxy proxy=new ContentServiceProxy(user,session);
 		    try {
-               	        String result=proxy.saveSubObject(user,documentId, analysisName,analysisDescription, 
+               	        String result=proxy.saveSubObject(documentId, analysisName,analysisDescription, 
 				    visibilityBoolean, xmlString);			
 		        session.setAttribute("saveSubObjectMessage", result);
 		        // if the saving operation has no success, the previous 

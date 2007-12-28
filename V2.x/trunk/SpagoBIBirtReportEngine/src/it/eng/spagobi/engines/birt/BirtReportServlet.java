@@ -185,8 +185,8 @@ public class BirtReportServlet extends HttpServlet {
 	}
 	
 	private InputStream getTemplateContent(HttpServletRequest servletRequest) throws IOException {
-		ContentServiceProxy contentProxy = new ContentServiceProxy(servletRequest.getSession());;
-		Content template = contentProxy.readTemplate(userId, documentId);
+		ContentServiceProxy contentProxy = new ContentServiceProxy(userId, servletRequest.getSession());;
+		Content template = contentProxy.readTemplate(documentId);
 		logger.debug("Read the template."+template.getFileName());
 		InputStream is = null;		
 		BASE64Decoder bASE64Decoder = new BASE64Decoder();
@@ -249,8 +249,8 @@ public class BirtReportServlet extends HttpServlet {
 				throw new ConnectionParameterNotValidException("No default connection defined in " +
 						"engine-config.xml file.");
 		}
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);		
-		SpagoBiDataSource ds = proxyDS.getDataSource(userId,documentId);
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);		
+		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 		//  get connection
 		String jndi = ds.getJndiName();
 		if (jndi != null && !jndi.equals("")) 
@@ -271,8 +271,8 @@ public class BirtReportServlet extends HttpServlet {
 				throw new ConnectionParameterNotValidException("No default connection defined in " +
 						"engine-config.xml file.");
 		}
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);		
-		return  proxyDS.getDataSource(userId,documentId);		
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);		
+		return  proxyDS.getDataSource(documentId);		
 	}
 	
 	

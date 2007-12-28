@@ -126,7 +126,7 @@
  <!-- 	
   <filter-mapping>
     <filter-name>CAS_Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/BirtReportServlet/*</url-pattern>
  </filter-mapping>
 
  --> 	
@@ -202,6 +202,11 @@
         <servlet-name>BirtReportServlet</servlet-name>
         <url-pattern>/BirtReportServlet</url-pattern>
     </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>BirtReportServlet</servlet-name>
+        <url-pattern>/BirtReportServletScheduler</url-pattern>
+    </servlet-mapping>    
 	
 	<!--
 	<servlet-mapping>

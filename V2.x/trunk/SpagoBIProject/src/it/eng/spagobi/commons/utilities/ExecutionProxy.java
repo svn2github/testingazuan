@@ -18,11 +18,12 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
@@ -35,137 +36,149 @@ import java.util.Map;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.log4j.Logger;
 
 public class ExecutionProxy {
 
-	private BIObject biObject = null;
-	
-	private String returnedContentType = null;
-	
-	public BIObject getBiObject() {
-		return biObject;
-	}
-	
-	public void setBiObject(BIObject biObject) {
-		this.biObject = biObject;
-	}
-	
-	public byte[] exec(IEngUserProfile profile) {
-		byte[] response = new byte[0];
-		try{
-			if(biObject==null)
-				return response;
-			// get the engine of the bionject
-			Engine eng = biObject.getEngine();
-			// if engine is not an external it's not possible to call it using url
-			if(!EngineUtilities.isExternal(eng))
-				return response;
-			// get driver class 
-			String driverClassName = eng.getDriverName();
-			// get the url of the engine
-			String urlEngine = eng.getUrl();
-			// build an instance of the driver
-			IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
-			// get the map of parameter to send to the engine
-			Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
-			
-			// set spagobi context url
-			if(!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
-				String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
-				if(sbiconturl!=null) {
-					mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
-				}
-			}
-			
-			// set country and language (locale)
-			Locale locale = GeneralUtilities.getDefaultLocale();
-			if(!mapPars.containsKey(SpagoBIConstants.COUNTRY)) {
-				String country = locale.getCountry();
-				mapPars.put(SpagoBIConstants.COUNTRY, country);
-			}
-			if(!mapPars.containsKey(SpagoBIConstants.LANGUAGE)) {
-				String language = locale.getLanguage();
-				mapPars.put(SpagoBIConstants.LANGUAGE, language);
-			}
-			
-			
-		    // AUDIT
-			AuditManager auditManager = AuditManager.getInstance();
-			Integer executionId = auditManager.insertAudit(biObject, profile, "", "SCHEDULATION");
-			// adding parameters for AUDIT updating
-			if (executionId != null) {
-				mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
-			}
-			
-			// built the request to sent to the engine
-			Iterator iterMapPar = mapPars.keySet().iterator();
-			HttpClient client = new HttpClient();
-		    PostMethod httppost = new PostMethod(urlEngine);
-		    while(iterMapPar.hasNext()){
-		    	String parurlname = (String)iterMapPar.next();
-		    	String parvalue = (String)mapPars.get(parurlname);
-		    	httppost.addParameter(parurlname, parvalue);
-		    }
-		    // sent request to the engine
-		    int statusCode = client.executeMethod(httppost);
-		    response = httppost.getResponseBody();
-		    
-		    Header headContetType =  httppost.getResponseHeader("Content-Type");
-		    if(headContetType!=null) {
-		    	returnedContentType = headContetType.getValue();
-		    } else {
-		    	returnedContentType = "application/octet-stream";
-		    }
-		    
-		    httppost.releaseConnection();
-		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					            "execute", "Error while executing object ", e);
-		}
+    static private Logger logger = Logger.getLogger(ExecutionProxy.class);
+    static private String schedulerExtension = "Scheduler";
+    
+    private BIObject biObject = null;
+
+    private String returnedContentType = null;
+
+    public BIObject getBiObject() {
+	return biObject;
+    }
+
+    public void setBiObject(BIObject biObject) {
+	this.biObject = biObject;
+    }
+
+    public byte[] exec(IEngUserProfile profile) {
+	logger.debug("IN");
+	byte[] response = new byte[0];
+	try {
+	    if (biObject == null)
 		return response;
-	}
+	    // get the engine of the bionject
+	    Engine eng = biObject.getEngine();
+	    // if engine is not an external it's not possible to call it using
+	    // url
+	    if (!EngineUtilities.isExternal(eng))
+		return response;
+	    // get driver class
+	    String driverClassName = eng.getDriverName();
+	    // get the url of the engine
+	    
+	    String urlEngine = eng.getUrl();
+	    
+	    if (UserProfile.isSchedulerUser((String)profile.getUserUniqueIdentifier())){
+		// IF THE USER IS A SCHEDULER ADD THE SCEHDULER EXTENSION 
+		urlEngine = urlEngine+schedulerExtension;
+	    }
+	    
+	    // build an instance of the driver
+	    IEngineDriver aEngineDriver = (IEngineDriver) Class.forName(driverClassName).newInstance();
+	    // get the map of parameter to send to the engine
+	    Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
 
-	public String getReturnedContentType() {
-		return returnedContentType;
-	}
+	    // set spagobi context url
+	    if (!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
+		String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		if (sbiconturl != null) {
+		    mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
+		}
+	    }
 
-	public void setReturnedContentType(String returnedContentType) {
-		this.returnedContentType = returnedContentType;
+	    // set country and language (locale)
+	    Locale locale = GeneralUtilities.getDefaultLocale();
+	    if (!mapPars.containsKey(SpagoBIConstants.COUNTRY)) {
+		String country = locale.getCountry();
+		mapPars.put(SpagoBIConstants.COUNTRY, country);
+	    }
+	    if (!mapPars.containsKey(SpagoBIConstants.LANGUAGE)) {
+		String language = locale.getLanguage();
+		mapPars.put(SpagoBIConstants.LANGUAGE, language);
+	    }
+
+	    // AUDIT
+	    AuditManager auditManager = AuditManager.getInstance();
+	    Integer executionId = auditManager.insertAudit(biObject, profile, "", "SCHEDULATION");
+	    // adding parameters for AUDIT updating
+	    if (executionId != null) {
+		mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
+	    }
+
+	    // built the request to sent to the engine
+	    Iterator iterMapPar = mapPars.keySet().iterator();
+	    HttpClient client = new HttpClient();
+	    PostMethod httppost = new PostMethod(urlEngine);
+	    while (iterMapPar.hasNext()) {
+		String parurlname = (String) iterMapPar.next();
+		String parvalue = (String) mapPars.get(parurlname);
+		httppost.addParameter(parurlname, parvalue);
+	    }
+	    // sent request to the engine
+	    int statusCode = client.executeMethod(httppost);
+	    logger.debug("statusCode="+statusCode);
+	    response = httppost.getResponseBody();
+	    logger.debug("response="+response.toString());
+	    Header headContetType = httppost.getResponseHeader("Content-Type");
+	    if (headContetType != null) {
+		returnedContentType = headContetType.getValue();
+	    } else {
+		returnedContentType = "application/octet-stream";
+	    }
+
+	    httppost.releaseConnection();
+	} catch (Exception e) {
+	    logger.error("Error while executing object ", e);
 	}
-	
-	public String getFileExtensionFromContType(String contentType) {
-		String extension = "";
-		if(contentType.equalsIgnoreCase("text/html")) {
-			extension = ".html";
-		} else if (contentType.equalsIgnoreCase("text/xml")) {
-			extension = ".xml";
-		} else if (contentType.equalsIgnoreCase("text/plain")) {
-			extension = ".txt";
-		} else if (contentType.equalsIgnoreCase("text/csv")) {
-			extension = ".csv";
-		} else if (contentType.equalsIgnoreCase("application/pdf")) {
-			extension = ".pdf";
-		} else if (contentType.equalsIgnoreCase("application/rtf")) {
-			extension = ".pdf";
-		} else if (contentType.equalsIgnoreCase("application/vnd.ms-excel")) {
-			extension = ".xls";
-		} else if (contentType.equalsIgnoreCase("application/msword")) {
-			extension = ".word";
-		} else if (contentType.equalsIgnoreCase("image/jpeg")) {
-			extension = ".jpg";
-		} else if (contentType.equalsIgnoreCase("application/powerpoint")) {
-			extension = ".ppt";
-		} else if (contentType.equalsIgnoreCase("application/vnd.ms-powerpoint")) {
-			extension = ".ppt";
-		} else if (contentType.equalsIgnoreCase("application/x-mspowerpoint")) {
-			extension = ".ppt";
-		} else if (contentType.equalsIgnoreCase("image/svg+xml")) {
-			extension = ".svg";
-		} 
-		
-		
-		// TODO complete list
-		return extension;
+	logger.debug("OUT");
+	return response;
+    }
+
+    public String getReturnedContentType() {
+	return returnedContentType;
+    }
+
+    public void setReturnedContentType(String returnedContentType) {
+	this.returnedContentType = returnedContentType;
+    }
+
+    public String getFileExtensionFromContType(String contentType) {
+	logger.debug("IN");
+	String extension = "";
+	if (contentType.equalsIgnoreCase("text/html")) {
+	    extension = ".html";
+	} else if (contentType.equalsIgnoreCase("text/xml")) {
+	    extension = ".xml";
+	} else if (contentType.equalsIgnoreCase("text/plain")) {
+	    extension = ".txt";
+	} else if (contentType.equalsIgnoreCase("text/csv")) {
+	    extension = ".csv";
+	} else if (contentType.equalsIgnoreCase("application/pdf")) {
+	    extension = ".pdf";
+	} else if (contentType.equalsIgnoreCase("application/rtf")) {
+	    extension = ".pdf";
+	} else if (contentType.equalsIgnoreCase("application/vnd.ms-excel")) {
+	    extension = ".xls";
+	} else if (contentType.equalsIgnoreCase("application/msword")) {
+	    extension = ".word";
+	} else if (contentType.equalsIgnoreCase("image/jpeg")) {
+	    extension = ".jpg";
+	} else if (contentType.equalsIgnoreCase("application/powerpoint")) {
+	    extension = ".ppt";
+	} else if (contentType.equalsIgnoreCase("application/vnd.ms-powerpoint")) {
+	    extension = ".ppt";
+	} else if (contentType.equalsIgnoreCase("application/x-mspowerpoint")) {
+	    extension = ".ppt";
+	} else if (contentType.equalsIgnoreCase("image/svg+xml")) {
+	    extension = ".svg";
 	}
-	
+	logger.debug("OUT");
+	return extension;
+    }
+
 }

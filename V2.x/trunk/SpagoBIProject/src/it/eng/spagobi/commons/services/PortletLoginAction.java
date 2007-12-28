@@ -95,49 +95,6 @@ public class PortletLoginAction extends AbstractHttpAction {
 	}
 	logger.debug("OUT");
     }
-  /*  
-    private String readT() {
-	PostMethod httppost = null;
-	byte[] responseBody = null;
-	try {
-
-	    HttpClient client = new HttpClient();
-
-	    httppost = new PostMethod("https://localhost:8443/SpagoBI/ReadTicket");
-	    NameValuePair[] parameters = { new NameValuePair("TIKET", "TIKET") };
-
-	    DefaultMethodRetryHandler retryhandler = new DefaultMethodRetryHandler();
-	    retryhandler.setRequestSentRetryEnabled(false);
-	    retryhandler.setRetryCount(3);
-	    httppost.setMethodRetryHandler(retryhandler);
-	    httppost.setRequestBody(parameters);
-
-	    // Execute the method.
-	    int statusCode = client.executeMethod(httppost);
-	    if (statusCode != HttpStatus.SC_OK) {
-		logger.error("Method failed: " + httppost.getStatusLine());
-	    }
-
-	    responseBody = httppost.getResponseBody();
-	} catch (Exception e) {
-	    logger.error("Exception",e);
-	} finally {
-	    // Release the connection.
-	    try {
-		if (httppost != null)
-		    httppost.releaseConnection();
-	    } catch (Exception e) {
-		logger.error("Exception",e);
-	    }
-	}
-	if (responseBody == null){
-	    logger.error("responseBody == null");
-	    return "";
-	}
-	String idStr = new String(responseBody);
-
-	return idStr;
-    }
-*/
+ 
 }
 

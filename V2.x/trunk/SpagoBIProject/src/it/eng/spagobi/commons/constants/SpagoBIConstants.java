@@ -26,6 +26,7 @@ package it.eng.spagobi.commons.constants;
  */
 public class SpagoBIConstants {
 
+
 	public static final String PAGE = "PAGE";
 	public static final String URL = "URL";
 	public static final String OBJECT_ID = "OBJECT_ID";

@@ -12,6 +12,7 @@ import java.util.Map;
 public class UserProfile implements IEngUserProfile {
     
         private static String WORKFLOW_USER_NAME = "[SYSTEM - WORKFLOW]";
+        private static String SCHEDULER_USER_NAME = "scheduler";
     
 	private String userUniqueIdentifier = null;
 	private Map userAttributes = null;
@@ -47,7 +48,24 @@ public class UserProfile implements IEngUserProfile {
 	profile.userAttributes = new HashMap();
 	profile.userAttributes.put("password", WORKFLOW_USER_NAME);
 	return profile;
-    }      
+    } 
+    
+    /**
+     * Usato solo per lanciare i job
+     * @param user
+     * @param psw
+     */    
+    public static final UserProfile createSchedulerUserProfile(){
+	UserProfile profile=new UserProfile(SCHEDULER_USER_NAME);
+	profile.roles = new ArrayList();
+	profile.userAttributes = new HashMap();
+	return profile;
+    }    
+    
+    public static boolean isSchedulerUser(String userid){
+	return SCHEDULER_USER_NAME.equals(userid);
+    }
+
 	
     public Collection getFunctionalities() throws EMFInternalError {
 	return functionalities;

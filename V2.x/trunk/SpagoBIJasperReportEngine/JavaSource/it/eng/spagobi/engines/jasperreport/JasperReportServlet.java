@@ -210,8 +210,8 @@ public class JasperReportServlet extends HttpServlet {
      */
     private Connection getConnection(HttpSession session,String userId,String documentId) {
 	logger.debug("IN.documentId:"+documentId);
-	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);
-	SpagoBiDataSource ds = proxyDS.getDataSource(userId,documentId);
+	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
+	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 	if (ds==null) return null;
 	// get connection
 	String jndi = ds.getJndiName();

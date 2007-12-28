@@ -85,7 +85,7 @@ public class JasperReportRunner {
 	private static transient Logger logger = Logger.getLogger(JasperReportRunner.class);
 	public static final String JS_FILE_ZIP = "JS_File";
 	public static final String JS_EXT_ZIP = ".zip";
-	private ContentServiceProxy contentProxy=null;
+	
 	private String documentId=null;
 	private String userId=null;	
 	
@@ -97,7 +97,6 @@ public class JasperReportRunner {
 	 */
 	public JasperReportRunner(HttpSession session) {
 		super();
-		contentProxy=new ContentServiceProxy(session);
 	}
 	
 	/**
@@ -133,14 +132,15 @@ public class JasperReportRunner {
 	    	String executionId = uuid_local.toString();
 	    	executionId = executionId.replaceAll("-", "");
 	    	String flgTemplateStandard = "true";
+	    	ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
 			
 //			 all jar needed by JR to succesfully compile a report should be on this path
 			// (by default is WEB_INF/lib)
 			setJRClasspath(getJRLibDir(servletContext));
-
-			Content template=contentProxy.readTemplate(userId, documentId);
+			
+			Content template=contentProxy.readTemplate( documentId);
 			logger.debug("Read the template."+template.getFileName());
 			InputStream is = null;		
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
@@ -187,7 +187,7 @@ public class JasperReportRunner {
 			
 			
 			// compile subreports
-			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId));
+			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId),contentProxy);
 						
 			// set classloader
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
@@ -547,7 +547,7 @@ public class JasperReportRunner {
 	
 	
 	
-	private File[] compileSubreports(Map params, File destDir) throws JRException, Exception {
+	private File[] compileSubreports(Map params, File destDir,ContentServiceProxy contentProxy) throws JRException, Exception {
 	    	logger.debug("IN");
  		String subrptnumStr = (String)params.get("srptnum");
 		int subrptnum = Integer.parseInt(subrptnumStr);
@@ -576,8 +576,7 @@ public class JasperReportRunner {
 		}
 				
 		for(int i = 0; i < subreports.length; i++) {
-		    
-			Content template=contentProxy.readTemplate(userId, subreports[i]);
+			Content template=contentProxy.readTemplate(subreports[i]);
 			logger.debug("Read the template.(subreport)"+template.getFileName());
 			InputStream is = null;		
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();

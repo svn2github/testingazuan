@@ -9,8 +9,6 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -40,7 +38,8 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 /**
  * Process jasper report execution requests and returns bytes of the filled
@@ -79,7 +78,7 @@ public class JasperReportServlet extends HttpServlet {
      */
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 	logger.debug("Start processing a new request...");
-
+        Monitor monitor =MonitorFactory.start("JasperReportServlet.service");
 	HttpSession session = request.getSession();
 	logger.debug("documentId IN Session:"+(String)session.getAttribute("document"));
 	// USER PROFILE
@@ -172,7 +171,7 @@ public class JasperReportServlet extends HttpServlet {
 			.currentTimeMillis()), "EXECUTION_FAILED", e.getMessage(), null);
 	    return;
 	}
-
+	monitor.stop();
 	logger.debug("Request processed");
     }
 

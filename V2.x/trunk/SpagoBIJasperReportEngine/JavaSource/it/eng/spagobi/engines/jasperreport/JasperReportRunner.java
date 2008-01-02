@@ -69,6 +69,8 @@ import org.safehaus.uuid.UUIDGenerator;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
@@ -112,6 +114,7 @@ public class JasperReportRunner {
 	public void runReport(Connection conn, Map parameters, OutputStream out, ServletContext servletContext, 
 			                HttpServletResponse servletResponse, HttpServletRequest servletRequest) throws Exception {
 	    	logger.debug("IN");
+	    	Monitor monitor =MonitorFactory.start("JasperReportRunner.service");
 		documentId=(String)servletRequest.getParameter("document");
 		
 		HttpSession session=servletRequest.getSession();
@@ -185,10 +188,10 @@ public class JasperReportRunner {
 			    }
 			}
 			
-			
+			Monitor monitorSubReport =MonitorFactory.start("JasperReportRunner.compileSubReport");
 			// compile subreports
 			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId),contentProxy);
-						
+			monitorSubReport.stop();		
 			// set classloader
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
 			ClassLoader current = URLClassLoader.newInstance(new URL[]{getJRCompilationDir(servletContext, executionId).toURL()}, previous);
@@ -199,7 +202,9 @@ public class JasperReportRunner {
 			setJRTempDir(tmpDirectory);
 								
 			logger.debug("Compiling template file ...");
+			Monitor monitorCompileTemplate =MonitorFactory.start("JasperReportRunner.compileTemplate");
 			JasperReport report  = JasperCompileManager.compileReport(is);
+			monitorCompileTemplate.start();
 			logger.debug("Template file compiled  succesfully");
 			
 			// Create the virtualizer									
@@ -209,7 +214,9 @@ public class JasperReportRunner {
 			}
 			
 			logger.debug("Filling report ...");
+			Monitor monitorFillingReport =MonitorFactory.start("JasperReportRunner.FillingReport");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, conn);
+			monitorFillingReport.stop();
 			logger.debug("Report filled succesfully");
 						
 			logger.debug("Exporting report ...");
@@ -219,7 +226,7 @@ public class JasperReportRunner {
 				outputType = ExporterFactory.getDefaultType();
 			}
 			logger.debug("Output format is [" + outputType + "]");
-			
+			Monitor monitorExportReport =MonitorFactory.start("JasperReportRunner.ExportReport");
 			JRExporter exporter = ExporterFactory.getExporter(outputType);	
 			String mimeType = ExporterFactory.getMIMEType(outputType);
 			
@@ -290,6 +297,7 @@ public class JasperReportRunner {
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 			exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
 			exporter.exportReport();
+			monitorExportReport.stop();
 			logger.debug("Report exported succesfully");
 	        
 	        
@@ -301,6 +309,7 @@ public class JasperReportRunner {
 			File tmpDir = getJRTempDir(servletContext, executionId).getParentFile();			
 			util.deleteDirectory(tmpDir);
 			logger.debug("Delating temporary directory: " + tmpDir);
+			monitor.stop();
 		}
 	        
 		try{			

@@ -7,6 +7,9 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSourceService {
     static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
     private DataSourceSupplier supplier=new DataSourceSupplier();
@@ -18,6 +21,7 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
     }
     public SpagoBiDataSource getDataSource(String token,String user, String documentId) {
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.service.datasource.getDataSource");
 	try {
 	    validateTicket(token, user);
 	    return supplier.getDataSource(documentId);
@@ -25,12 +29,14 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
 	    logger.error("SecurityException", e);
 	    return null;
 	} finally {
+	    monitor.stop();
 	    logger.debug("OUT");
 	}	
 
     }
     public SpagoBiDataSource[] getAllDataSource(String token,String user){
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.service.datasource.getAllDataSource");
 	try {
 	    validateTicket(token, user);
 	    return supplier.getAllDataSource();
@@ -38,6 +44,7 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
 	    logger.error("SecurityException", e);
 	    return null;
 	} finally {
+	    monitor.stop();
 	    logger.debug("OUT");
 	}	
 

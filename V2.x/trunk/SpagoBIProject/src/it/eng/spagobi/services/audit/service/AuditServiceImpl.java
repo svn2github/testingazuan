@@ -6,12 +6,16 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 public class AuditServiceImpl extends AbstractServiceImpl{
 
     static private Logger logger = Logger.getLogger(AuditServiceImpl.class);
     
     public String log(String token,String user,String id,String start,String end,String state,String message,String errorCode){
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.service.audit.log");
 	try {
 	    validateTicket(token, user);
 	    return log( user, id, start, end, state, message, errorCode);
@@ -19,6 +23,7 @@ public class AuditServiceImpl extends AbstractServiceImpl{
 	    logger.error("SecurityException", e);
 	    return null;
 	} finally {
+	    monitor.stop();
 	    logger.debug("OUT");
 	}	
 

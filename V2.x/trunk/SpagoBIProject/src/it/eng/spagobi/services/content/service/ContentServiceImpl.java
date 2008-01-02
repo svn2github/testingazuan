@@ -17,6 +17,9 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import sun.misc.BASE64Encoder;
 
 public class ContentServiceImpl extends AbstractServiceImpl{
@@ -30,7 +33,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     
     public Content readTemplate(String token, String user, String document) {
 // TODO IMPLEMENTARE I CONTROLLI
-	
+	Monitor monitor =MonitorFactory.start("spagobi.service.content.readTemplate");
         logger.debug("IN");
         try {
             validateTicket(token,user);
@@ -39,12 +42,14 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    logger.error("SecurityException",e);
 	    return null;
 	}finally{
+	    monitor.stop();
 	    logger.debug("OUT");
 	}        
     }
 
     public Content readSubObjectContent(String token,String user,String subObjectId){
         logger.debug("IN");
+        Monitor monitor =MonitorFactory.start("spagobi.service.content.readSubObjectContent");
         try {
             validateTicket(token,user);
             return readSubObjectContent(user,subObjectId);
@@ -52,6 +57,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    logger.error("SecurityException",e);
 	    return null;
 	}finally{
+	    monitor.stop();	    
 	    logger.debug("OUT");
 	} 
 
@@ -59,6 +65,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     
     public String saveSubObject(String token,String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
         logger.debug("IN");
+        Monitor monitor =MonitorFactory.start("spagobi.service.content.saveSubObject");
         try {
             validateTicket(token,user);
             return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
@@ -66,6 +73,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    logger.error("SecurityException",e);
 	    return null;
 	}finally{
+	    monitor.stop();	   
 	    logger.debug("OUT");
 	}	
 
@@ -73,6 +81,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     
     public String saveObjectTemplate(String token,String user,String documentiId,String templateName,String content){
         logger.debug("IN");
+        Monitor monitor =MonitorFactory.start("spagobi.service.content.saveObjectTemplate");
         try {
             validateTicket(token,user);
             return saveObjectTemplate(user,documentiId,templateName,content);
@@ -80,6 +89,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    logger.error("SecurityException",e);
 	    return null;
 	}finally{
+	    monitor.stop();	   
 	    logger.debug("OUT");
 	}
 

@@ -10,12 +10,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 public class EventServiceImpl extends AbstractServiceImpl {
     static private Logger logger = Logger.getLogger(EventServiceImpl.class);
 
     public String fireEvent(String token, String user, String description,
 	    String parameters, String rolesHandler, String presentationHandler) {
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.service.event.fireEvent");
 	try {
 	    validateTicket(token, user);
 	    return fireEvent(user, description, parameters,rolesHandler, presentationHandler);
@@ -23,6 +27,7 @@ public class EventServiceImpl extends AbstractServiceImpl {
 	    logger.error("SecurityException", e);
 	    return null;
 	} finally {
+	    monitor.stop();
 	    logger.debug("OUT");
 	}	
 

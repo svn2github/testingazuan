@@ -27,6 +27,9 @@ import org.quartz.TriggerUtils;
 import org.quartz.impl.StdSchedulerFactory;
 import org.safehaus.uuid.UUIDGenerator;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 
 public class SchedulerServiceImpl extends AbstractServiceImpl{
 
@@ -35,6 +38,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     
 	public String getJobList(String token,String user){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobList");
 		try {
 		    validateTicket(token, user);
 		    return supplier.getJobList();
@@ -42,6 +46,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
     
@@ -49,6 +54,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String getJobSchedulationList(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobSchedulationList");
 		try {
 		    validateTicket(token, user);
 		    return supplier.getJobSchedulationList(jobName,jobGroup);
@@ -56,6 +62,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
 	    
@@ -63,6 +70,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String deleteSchedulation(String token,String user,String triggerName, String triggerGroup){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.deleteSchedulation");
 		try {
 		    validateTicket(token, user);
 		    return supplier.deleteSchedulation(triggerName,triggerGroup);
@@ -70,6 +78,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
     
@@ -77,6 +86,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String deleteJob(String token,String user,String jobName, String jobGroupName){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.deleteJob");
 		try {
 		    validateTicket(token, user);
 		    return supplier.deleteJob(jobName,jobGroupName);
@@ -84,6 +94,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
     
@@ -91,6 +102,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String defineJob(String token,String user,String xmlRequest){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.defineJob");
 		try {
 		    validateTicket(token, user);
 		    return supplier.defineJob(xmlRequest);
@@ -98,6 +110,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
     
@@ -105,6 +118,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String getJobDefinition(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobDefinition");
 		try {
 		    validateTicket(token, user);
 		    return supplier.getJobDefinition(jobName,jobGroup);
@@ -112,6 +126,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
     
@@ -119,6 +134,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String scheduleJob(String token,String user,String xmlRequest){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.scheduleJob");
 		try {
 		    validateTicket(token, user);
 		    return supplier.scheduleJob(xmlRequest);
@@ -126,6 +142,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
 	    
@@ -133,6 +150,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String getJobSchedulationDefinition(String token,String user,String triggerName, String triggerGroup){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobSchedulationDefinition");
 		try {
 		    validateTicket(token, user);
 		    return supplier.getJobSchedulationDefinition(triggerName,triggerGroup);
@@ -140,6 +158,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
 	    
@@ -147,6 +166,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	
 	public String existJobDefinition(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.existJobDefinition");
 		try {
 		    validateTicket(token, user);
 		    return supplier.existJobDefinition(jobName,jobGroup);
@@ -154,6 +174,7 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 		    logger.error("SecurityException", e);
 		    return null;
 		} finally {
+		    monitor.stop();
 		    logger.debug("OUT");
 		}		
   

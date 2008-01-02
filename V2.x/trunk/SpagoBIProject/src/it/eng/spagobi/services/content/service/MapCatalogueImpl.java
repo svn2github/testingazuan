@@ -23,6 +23,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import sun.misc.BASE64Encoder;
 
 public class MapCatalogueImpl extends AbstractServiceImpl {
@@ -51,6 +54,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
     public String mapCatalogue(String token, String user, String operation,String path,String featureName,String mapName) {
 
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.service.content.mapCatalogue");
 	try {
 	    validateTicket(token, user);
 	    return mapCatalogue(user, operation, path, featureName, mapName);
@@ -58,6 +62,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	    logger.error("SecurityException", e);
 	    return null;
 	} finally {
+	    monitor.stop();
 	    logger.debug("OUT");
 	}	
 

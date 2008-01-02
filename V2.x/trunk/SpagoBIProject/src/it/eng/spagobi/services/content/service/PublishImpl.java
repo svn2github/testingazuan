@@ -18,6 +18,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import sun.misc.BASE64Decoder;
 
 public class PublishImpl extends AbstractServiceImpl {
@@ -28,6 +31,7 @@ public class PublishImpl extends AbstractServiceImpl {
 	// TODO IMPLEMENTARE I CONTROLLI
 	PublishImpl helper = new PublishImpl();
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.service.content.publishTemplate");
 	try {
 	    validateTicket(token, user);
 	    return helper.publishTemplate(user, attributes);
@@ -35,6 +39,7 @@ public class PublishImpl extends AbstractServiceImpl {
 	    logger.error("SecurityException", e);
 	    return null;
 	} finally {
+	    monitor.stop();
 	    logger.debug("OUT");
 	}
 

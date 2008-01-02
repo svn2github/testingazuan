@@ -10,6 +10,9 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 /**
  * This class create the user profile and implements the security check
  * @author Bernabei Angelo
@@ -34,6 +37,7 @@ public class SecurityServiceImpl extends AbstractServiceImpl implements Security
  */
 public SpagoBIUserProfile getUserProfile(String token,String userId) {
         logger.debug("IN");
+        Monitor monitor =MonitorFactory.start("spagobi.service.security.getUserProfile");
 	try {
 	    validateTicket(token, userId);
 	    return supplier.createUserProfile(userId);
@@ -41,6 +45,7 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
 	    logger.error("SecurityException", e);
 	    return null;
 	} finally {
+	    monitor.stop();
 	    logger.debug("OUT");
 	}	
 
@@ -51,6 +56,7 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
  */
     public boolean isAuthorized(String token,String userId, String idFolder, String state) {
         logger.debug("IN");
+        Monitor monitor =MonitorFactory.start("spagobi.service.security.isAuthorized");
 	try {
 	        validateTicket(token, userId);
 		SpagoBIUserProfile profile= supplier.createUserProfile(userId);
@@ -60,6 +66,7 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
 	    logger.error("SecurityException", e);
 	    return false;
 	} finally {
+	    monitor.stop();	    
 	    logger.debug("OUT");
 	}	
 
@@ -71,7 +78,7 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
      */
     public boolean checkAuthorization(String token,String userId,String function) {
         logger.debug("IN");
-	
+        Monitor monitor =MonitorFactory.start("spagobi.service.security.checkAuthorization");	
 	try {
 	    validateTicket(token,userId);
             return supplier.checkAuthorization(userId,function);
@@ -79,7 +86,8 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
 	    logger.error("SecurityException",e);
 	    return false;
 	}finally{
-	        logger.debug("OUT");
+	    monitor.stop();	    
+	    logger.debug("OUT");
 	}
 	
     }

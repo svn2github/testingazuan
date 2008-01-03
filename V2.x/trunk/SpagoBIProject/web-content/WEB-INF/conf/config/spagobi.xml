@@ -40,12 +40,12 @@
     
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
-		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoGroupAsRoleSecurityProviderImpl">
+		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
 			<CONFIG>
 				<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
 			</CONFIG>
 		</PORTAL-SECURITY-CLASS>
-		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoGroupAsRoleUserProfileFactoryImpl">
+		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
 		</USER-PROFILE-FACTORY-CLASS>
     	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
 	 </SECURITY>
@@ -168,7 +168,8 @@
  		<DAO name="SnapshotDAO" implementation="it.eng.spagobi.analiticalmodel.document.dao.SnapshotDAOHibImpl"/>
  		<DAO name="GeoFeatureDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoFeaturesDAOHibImpl"/>  
 		<DAO name="GeoMapDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoMapsDAOHibImpl"/>  
-		<DAO name="GeoMapFeatureDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoMapFeaturesDAOHibImpl"/>  				 						
+		<DAO name="GeoMapFeatureDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoMapFeaturesDAOHibImpl"/>
+		<DAO name="UserFunctionalityDAO" implementation="it.eng.spagobi.commons.dao.UserFunctionalityDAO"/>
  						
 	 </DAO-CONF>     
      

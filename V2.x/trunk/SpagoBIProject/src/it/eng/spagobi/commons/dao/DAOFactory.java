@@ -257,6 +257,14 @@ public class DAOFactory {
 	public static ISbiGeoMapFeaturesDAO getSbiGeoMapFeaturesDAO() throws EMFUserError {
 		return (ISbiGeoMapFeaturesDAO)createDAOInstance("GeoMapFeatureDAO");
 	}
-	
+	/**
+	 * Creates a DAO instance for a BI object
+	 * 
+	 * @return a DAO instance for the BIObject
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IUserFunctionalityDAO getUserFunctionalityDAO() throws EMFUserError {
+		return (IUserFunctionalityDAO)createDAOInstance("UserFunctionalityDAO");
+	}	
 		
 }

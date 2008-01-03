@@ -62,6 +62,8 @@ import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.Iterator;
 import java.util.List;
@@ -100,6 +102,34 @@ public class ExporterMetadata {
 		} catch (Exception e) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertDomain",
 					"Error while inserting domain into export database " + e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}
+	}
+	
+	public void insertDataSource(DataSource ds, Session session) throws EMFUserError {
+		try {
+			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiDataSource where dsId = " + ds.getDsId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			SbiDataSource hibDS = new SbiDataSource(ds.getDsId());
+			hibDS.setDescr(ds.getDescr());
+			hibDS.setDriver(ds.getDriver());
+			hibDS.setJndi(ds.getJndi());
+			hibDS.setLabel(ds.getLabel());
+			hibDS.setPwd(ds.getPwd());
+			hibDS.setUrl_connection(ds.getUrlConnection());
+			hibDS.setUser(ds.getUser());
+			
+		// va aggiunto il legame con gli engine e il doc ????
+			
+			session.save(hibDS);
+			tx.commit();
+		} catch (Exception e) {
+			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertDS",
+					"Error while inserting dataSource into export database " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 	}

@@ -30,6 +30,14 @@ public class UserProfile implements IEngUserProfile {
 		}
 	        
 	}
+	functionalities=new ArrayList();
+	if (profile.getFunctions()!=null) {
+	    int l=profile.getFunctions().length;
+		for (int i=0;i<l;i++){
+		    functionalities.add(profile.getFunctions()[i]);
+		}
+	        
+	}	
 	userAttributes=profile.getAttributes();
     }
     

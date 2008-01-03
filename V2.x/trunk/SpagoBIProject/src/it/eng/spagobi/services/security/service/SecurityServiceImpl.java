@@ -1,7 +1,10 @@
 package it.eng.spagobi.services.security.service;
 
 
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IUserFunctionalityDAO;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.security.SecurityService;
@@ -40,7 +43,8 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
         Monitor monitor =MonitorFactory.start("spagobi.service.security.getUserProfile");
 	try {
 	    validateTicket(token, userId);
-	    return supplier.createUserProfile(userId);
+	    SpagoBIUserProfile user=supplier.createUserProfile(userId);
+	    return user;
 	} catch (SecurityException e) {
 	    logger.error("SecurityException", e);
 	    return null;
@@ -91,6 +95,8 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
 	}
 	
     }
+    
+
     
     
 	

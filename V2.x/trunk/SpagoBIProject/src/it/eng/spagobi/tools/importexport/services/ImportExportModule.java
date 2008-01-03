@@ -35,17 +35,23 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
+import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.importexport.IExportManager;
 import it.eng.spagobi.tools.importexport.IImportManager;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
 import it.eng.spagobi.tools.importexport.ImportResultInfo;
 import it.eng.spagobi.tools.importexport.MetadataAssociations;
 import it.eng.spagobi.tools.importexport.TransformManager;
+import it.eng.spagobi.tools.importexport.UserAssociationsKeeper;
+import it.eng.spagobi.tools.importexport.bo.AssociationFile;
+import it.eng.spagobi.tools.importexport.dao.AssociationFileDAO;
+import it.eng.spagobi.tools.importexport.dao.IAssociationFileDAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -135,7 +141,8 @@ public class ImportExportModule extends AbstractModule {
 		if((exportFileName==null) || (exportFileName.trim().equals(""))) {
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "exportConf",
      							  "Missing name of the exported file");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8006", "component_impexp_messages");
+			throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportFileName", "8006", "component_impexp_messages");
+			//throw new EMFUserError(EMFErrorSeverity.ERROR, "8006", "component_impexp_messages");
 		}
 		try{
 			String exportSubObject = (String)request.getAttribute("exportSubObj");
@@ -195,14 +202,62 @@ public class ImportExportModule extends AbstractModule {
 	 */
 	private void importConf(SourceBean request, SourceBean response) throws EMFUserError {
 		IImportManager impManager = null;
-		// get content and name of the uploaded archive
-		UploadedFile archive = (UploadedFile)request.getAttribute("UPLOADED_FILE");
+		// get exported file and eventually the associations file
+		UploadedFile archive = null;
+		UploadedFile associationsFile = null;
+		List uplFiles = request.getAttributeAsList("UPLOADED_FILE");
+		Iterator uplFilesIter = uplFiles.iterator();
+		while(uplFilesIter.hasNext()) {
+			UploadedFile uplFile = (UploadedFile)uplFilesIter.next();
+			String nameInForm = uplFile.getFieldNameInForm();
+			if(nameInForm.equals("exportedArchive")) {
+				archive = uplFile;
+			} else if(nameInForm.equals("associationsFile")) {
+				associationsFile = uplFile;
+			}
+		}
+		// check that the name of the uploaded archive is not empty
 		String archiveName = archive.getFileName();
 		if(archiveName.trim().equals("")){
 			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "importConf",
 			  					   "Missing exported file");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8007", "component_impexp_messages");
+			try {
+				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportLoopbackStopImport");
+			} catch (SourceBeanException e) {
+				SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "importConf",
+			                       "Error while populating response source bean " + e);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+			}
+			throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportedArchive", "8007", "component_impexp_messages");
 		}
+		// check if the name of associations file is empty (in this case set null to the variable)
+		String associationsFileName = associationsFile.getFileName();
+		if(associationsFileName.trim().equals("")){
+			associationsFile = null;
+		}
+		// if the association file is empty then check if there is an association id
+		// rebuild the uploaded file and assign it to associationsFile
+		if(associationsFile==null) {
+			String assId =  (String)request.getAttribute("hidAssId");
+			if( (assId!=null) && !assId.trim().equals("") ) {
+				IAssociationFileDAO assfiledao = new AssociationFileDAO();
+				AssociationFile assFile = assfiledao.loadFromID(assId);
+				byte[] content = assfiledao.getContent(assFile);
+				UploadedFile uplFile = new UploadedFile();
+				uplFile.setSizeInBytes(content.length);
+				uplFile.setFileContent(content);
+				uplFile.setFileName("association.xml");
+				uplFile.setFieldNameInForm("");
+				associationsFile = uplFile;
+			}
+ 		}
+		// get the association mode 
+		String assMode = IImportManager.IMPORT_ASS_DEFAULT_MODE;
+		String assKindFromReq =  (String)request.getAttribute("importAssociationKind");
+		if(assKindFromReq.equalsIgnoreCase("predefinedassociations")) {
+			assMode = IImportManager.IMPORT_ASS_PREDEFINED_MODE;
+		}
+		// get bytes of the archive
 		byte[] archiveBytes = archive.getFileContent();
 		try{
 			// get path of the import tmp directory
@@ -217,13 +272,23 @@ public class ImportExportModule extends AbstractModule {
 			TransformManager transManager = new TransformManager();
 			archiveBytes = transManager.applyTransformations(archiveBytes, archiveName, pathImpTmpFolder);
 			
-			
 			// instance the importer class
 			String impClassName = (String)importerSB.getAttribute("class");
 	        Class impClass = Class.forName(impClassName);
 			impManager = (IImportManager)impClass.newInstance();
 			// prepare import environment
 			impManager.prepareImport(pathImpTmpFolder, archiveName, archiveBytes);
+			
+			// if the associations file has been uploaded fill the association keeper
+			if(associationsFile!=null) {
+				byte[] assFilebys = associationsFile.getFileContent();
+				String assFileStr = new String(assFilebys);
+				impManager.getUserAssociation().fillFromXml(assFileStr);
+			}
+			
+			// set into import manager the association import mode 
+			impManager.setImpAssMode(assMode);
+			
 			// start import operations
 			String exportVersion = impManager.getExportVersion();
 			String curVersion = impManager.getCurrentVersion();
@@ -287,9 +352,32 @@ public class ImportExportModule extends AbstractModule {
 			while(iterExpRoles.hasNext()){
 				String expRoleId = (String)iterExpRoles.next();
 				String roleAssociateId = (String)request.getAttribute("roleAssociated"+expRoleId);
-				if(!roleAssociateId.trim().equals(""))
+				if(!roleAssociateId.trim().equals("")) {
 					metaAss.insertCoupleRole(new Integer(expRoleId), new Integer(roleAssociateId));
+					// insert into user associations
+					try{
+						Object existingRoleObj = impManager.getExistingObject(new Integer(roleAssociateId), SbiExtRoles.class); 
+						Object exportedRoleObj = impManager.getExportedObject(new Integer(expRoleId), SbiExtRoles.class);
+						if( (existingRoleObj!=null) && (exportedRoleObj!=null) ) {
+							SbiExtRoles existingRole = (SbiExtRoles)existingRoleObj;
+							SbiExtRoles exportedRole = (SbiExtRoles)exportedRoleObj;
+							UserAssociationsKeeper usrAssKeep = impManager.getUserAssociation();
+							String expRoleName = exportedRole.getName();
+							String exiRoleName = existingRole.getName();
+							usrAssKeep.recordRoleAssociation(expRoleName, exiRoleName);
+						} else {
+							throw new Exception("hibernate object of existing or exported role not recovered");
+						}
+					} catch (Exception e) {
+						SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(),
+								              "associateRoles", "Error while recording user role association", e);
+					}
+					
+				}
 			}
+			// check role associations
+			impManager.checkRoleReferences(metaAss.getRoleIDAssociation());
+			// get the existing and exported engines
             List exportedEngines = impManager.getExportedEngines();
 			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 			List currentEngines = engineDAO.loadAllEngines();
@@ -336,8 +424,26 @@ public class ImportExportModule extends AbstractModule {
 			while(iterExpEngines.hasNext()){
 				String expEngineId = (String)iterExpEngines.next();
 				String engineAssociateId = (String)request.getAttribute("engineAssociated"+expEngineId);
-				if(!engineAssociateId.trim().equals(""))
+				if(!engineAssociateId.trim().equals("")) {
 					metaAss.insertCoupleEngine(new Integer(expEngineId), new Integer(engineAssociateId));
+				
+					// insert into user associations
+					try{
+						Object existingEngineObj = impManager.getExistingObject(new Integer(engineAssociateId), SbiEngines.class); 
+						Object exportedEngineObj = impManager.getExportedObject(new Integer(expEngineId), SbiEngines.class);
+						if( (existingEngineObj!=null) && (exportedEngineObj!=null) ) {
+							SbiEngines existingEngine = (SbiEngines)existingEngineObj;
+							SbiEngines exportedEngine = (SbiEngines)exportedEngineObj;
+							impManager.getUserAssociation().recordEngineAssociation(exportedEngine.getLabel(), existingEngine.getLabel());
+						} else {
+							throw new Exception("hibernate object of existing or exported engine not recovered");
+						}
+					} catch (Exception e) {
+						SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(),
+								              "associateEngines", "Error while recording user engine association", e);
+					}
+					
+				}
 			}
 			List exportedConnection = impManager.getExportedConnections();
 			Map currentConnections = getCurrentConnectionInfo();
@@ -387,6 +493,7 @@ public class ImportExportModule extends AbstractModule {
 				String connNameAss = (String)request.getAttribute("connAssociated"+ expConnName);
 				if(!connNameAss.equals("")) {
 					metaAss.insertCoupleConnections(expConnName, connNameAss);
+					impManager.getUserAssociation().recordConnectionAssociation(expConnName, connNameAss);
 				} else {
 					SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "associateConnections",
 	                        			"Exported connection " +expConnName+" is not associate to a current " +

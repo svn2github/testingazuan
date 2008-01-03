@@ -144,7 +144,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div style="clear:left;margin-bottom:10px;">
 			<spagobi:treeObjects moduleName="TreeObjectsModule"  
-				htmlGeneratorClass="it.eng.spagobi.tools.importexport.presentation.AdminExportTreeHtmlGenerator" />
+				htmlGeneratorClass="it.eng.spagobi.tools.importexport.publishers.AdminExportTreeHtmlGenerator" />
 		</div>
 	</div>
 	</form>
@@ -159,16 +159,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input type="hidden" name="PAGE" value="ImportExportPage" />
 	<% } %>
  	<div style="float:left;width:45%" class="div_detail_area_forms">
-		<div class='portlet-section-header' style="float:left;width:88%;">
+		<div class='portlet-section-header' style="float:left;width:78%;">
 				<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>
 		</div>
-		<div style="float:left;width:10%;">
+		<div style="float:left;width:20%;">
 		  <center>
-			<a href="javascript:document.getElementById('importForm').submit()">
+			<a class='link_without_dec' href="javascript:document.getElementById('importForm').submit()">
 					<img src= '<%= urlBuilder.getResourceLink(request, "/img/tools/importexport/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' />
 				</a>
+			&nbsp;
+			<a class='link_without_dec' href="javascript:showAssList('MANAGE')">
+					<img src= '<%= urlBuilder.getResourceLink(request, "/img/association32.jpg") %>'
+						width="28px" height="28px"
+						title='<spagobi:message key = "impexp.manageAss" bundle="component_impexp_messages"/>' 
+						alt='<spagobi:message key = "impexp.manageAss" bundle="component_impexp_messages"/>' />
+			</a>
 			</center>
 		</div>
 		<div style="clear:left;margin-bottom:10px;padding-top:10px;">
@@ -182,13 +189,53 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<input type="file"  name="exportedArchive" />
 					</td>
 				</tr>
+				<tr height='20px'><td colspan="2"></td></tr>
 				<tr>
+					<td colspan="2" />
+						<fieldset class='fieldset'>
+							<legend class='form_legend'>
+								<spagobi:message key = "impexp.Associations" bundle="component_impexp_messages"/>
+							</legend>
+							<input type="radio"  name="importAssociationKind" CHECKED value="noassociations"  
+						       onclick="document.getElementById('rowChoseAssFile').style.display='none'"/>
+						    <spagobi:message key = "impexp.withoutAss" bundle="component_impexp_messages"/>
+						    <br/>
+						    <input type="radio"  name="importAssociationKind" value="predefinedassociations"
+						       onclick="document.getElementById('rowChoseAssFile').style.display='inline' "/>
+						    <spagobi:message key = "impexp.mandatoryAss" bundle="component_impexp_messages"/>
+						    <br/>     
+						    <input type="radio"  name="importAssociationKind" value="defaultassociations"
+						       onclick="document.getElementById('rowChoseAssFile').style.display='inline'" /> 
+						    <spagobi:message key = "impexp.defaultAss" bundle="component_impexp_messages"/>
+						    <br/>
+						    <br/>
+						    <table id="rowChoseAssFile" style='display:none;'>
+						    	<tr height='25px'>
 					<td>
+						    			<spagobi:message key = "impexp.savedAss" bundle="component_impexp_messages"/>
+										: &nbsp;&nbsp;
+						    		</td>
+						    		<td>
+						    			<input type="text" id="textReadOnlyAssName" name="textReadOnlyAssName" readonly value="" />
+						    			<input type="hidden" id="hidAssId" name="hidAssId" value="" />
+						    			<a class='link_without_dec' href="javascript:showAssList('SELECT')">
+						    				<img src= '<%= urlBuilder.getResourceLink(request, "/img/detail.gif") %>'
+												 title='<spagobi:message key = "impexp.selectFromList" bundle="component_impexp_messages"/>' 
+												alt='<spagobi:message key = "impexp.selectFromList" bundle="component_impexp_messages"/>' />
+										</a>
+						    		</td>
+						    	</tr>
+						    	<tr height='25px'>
+						    		<td>
 						<spagobi:message key = "SBISet.importexport.fileAssociation" bundle="component_impexp_messages"/>
-						:
+										: &nbsp;&nbsp;
 					</td>
 					<td> 
 						<input type="file"  name="associationsFile" />
+						    		</td>
+						    	</tr>
+						    </table>
+						</fieldset>
 					</td>
 				</tr>
 			</table>
@@ -224,6 +271,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<li>
 					<a style='text-decoration:none;color:#CC0000;' href='<%=downloadAssUrl%>'>
 						<spagobi:message key = "Sbi.downloadAss" bundle="component_impexp_messages"/>
+					</a>
+				</li>
+				<li>
+					<a style='text-decoration:none;color:#CC0000;' href='javascript:openCloseSaveAssForm()'>
+						<spagobi:message key = "impexp.saveAss" bundle="component_impexp_messages"/>
 					</a>
 				</li>
 			</ul>
@@ -285,5 +337,169 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <% 
 	}
 %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	<div id="divSaveAssFileForm" name="divSaveAssFileForm" style="display:none;" >
+		<table>
+			<tr height='25px'>
+				<td>&nbsp;&nbsp;
+					<spagobi:message key = "impexp.name" bundle="component_impexp_messages"/>:
+				</td>
+				<td><input type="text" name="NAME" id="nameNewAssToSave"/></td>
+			</tr>
+			<tr height='25px'>
+				<td>&nbsp;&nbsp;
+					<spagobi:message key = "impexp.description" bundle="component_impexp_messages"/>:
+				</td>
+				<td><input type="text" name="DESCRIPTION" id="descriptionNewAssToSave"/></td>
+			</tr>
+			<tr height='45px' valign='middle'>
+				<td>&nbsp;</td>
+				<td>
+				   <a class='link_without_dec' href='javascript:saveAss()'>
+					   <img src= '<%= urlBuilder.getResourceLink(request, "/img/Save.gif") %>'
+							title='<spagobi:message key = "impexp.save" bundle="component_impexp_messages"/>' 
+							alt='<spagobi:message key = "impexp.save" bundle="component_impexp_messages"/>' />
+					</a>
+				</td>
+			</tr>
+			<tr height='45px' valign='middle'>
+				<td>&nbsp;</td>
+				<td><div id="divshowresultsave">&nbsp;</div></td>
+			</tr>
+		</table>
+	</div>
+	
+
+	<script>
+	
+	    winlistass = null;
+
+		function showAssList(modality) {
+			if(winlistass!=null) return;
+			getlisturl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
+			getlisturl += "/servlet/AdapterHTTP?";
+			getlisturl += "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=GET_ASSOCIATION_FILE_LIST";
+			getlisturl += "&MODALITY=" + modality;
+			winlistass = new Window('win_list_ass', {className: "alphacube", title: "<spagobi:message key = "impexp.listAssFile" bundle="component_impexp_messages"/>", width:550, height:350, hideEffect:Element.hide, showEffect:Element.show, destroyOnClose:true});
+       		winlistass.setURL(getlisturl);
+       		winlistass.setDestroyOnClose();
+       		winlistass.showCenter();
+	 	} 
+	    
+	    
+	    winsaveass = null;
+	    
+	    function openCloseSaveAssForm() {
+			winsaveass = new Window('win_save_ass', {className: "alphacube", title: "<spagobi:message key = "impexp.saveAss" bundle="component_impexp_messages"/>", width:300, height:130, hideEffect:Element.hide, showEffect:Element.show, destroyOnClose:true});
+       		winsaveass.setContent('divSaveAssFileForm', false, false);
+       		winsaveass.setDestroyOnClose();
+       		winsaveass.showCenter();
+		}
+		
+		
+		observerClose = {
+      		onClose: function(eventName, win) {
+        		if(win == winlistass) {
+          			winlistass = null;
+        		}
+        		if(win == winsaveass) {
+        			document.getElementById('divSaveAssFileForm').style.display='none';
+        		}
+     		 }
+   	 	}
+   		Windows.addObserver(observerClose);
+		
+		
+		
+		
+		
+		
+		function selectAssFile(idass, nameass) {
+	    	text = document.getElementById('textReadOnlyAssName');
+	    	hid = document.getElementById('hidAssId');
+	        text.value=nameass;
+	        hid.value=idass;
+	        Windows.closeAll();
+	    }
+		
+		
+		function saveAss() {
+       		saveAssUrl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
+			saveAssUrl += "/servlet/AdapterHTTP?";
+			pars = "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=SAVE_ASSOCIATION_FILE";
+			<%
+				if( (iri!=null) && (iri.getPathAssociationsFile()!=null) && !iri.getPathAssociationsFile().equals("") ) {	
+					String pathassfile = iri.getPathAssociationsFile();
+					pathassfile = pathassfile.replaceAll("\\\\", "/");
+			%>
+			pars += "&PATH=<%=pathassfile%>";
+			<%
+				}
+			%>
+			nameass = document.getElementById('nameNewAssToSave').value;
+			if(nameass==""){
+				alert('Nome non specificato !');
+				return;
+			} 
+			pars += "&NAME=" + nameass;
+			descriptionass = document.getElementById('descriptionNewAssToSave').value;
+			pars += "&DESCRIPTION=" + descriptionass;
+			new Ajax.Request(saveAssUrl,
+          		{
+            		method: 'post',
+            		parameters: pars,
+            		onSuccess: function(transport){
+                    	        	response = transport.responseText || "";
+                        	    	showSaveAssResult(response);
+                        	   },
+            		onFailure: somethingWentWrongSaveAss
+         		 }
+       		 );
+	 	} 
+	 	
+	 	function somethingWentWrongSaveAss() {
+	        divres = document.getElementById('divshowresultsave');
+			divres.innerHTML="Non è possibile invocare il servizio di salvataggio";
+     	}
+     
+	    function showSaveAssResult(response) {
+			divres = document.getElementById('divshowresultsave');
+			divres.innerHTML=response;
+	    }
+	    
+	    
+	</script>
+
+
+
 
 </div>

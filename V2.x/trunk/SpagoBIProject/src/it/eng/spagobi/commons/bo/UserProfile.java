@@ -106,7 +106,8 @@ public class UserProfile implements IEngUserProfile {
     }
 
     public boolean isAbleToExecuteAction(String arg0) throws EMFInternalError {
-	return true;
+	if (this.functionalities.contains(arg0)) return true;
+	else return false;
     }
 
     public boolean isAbleToExecuteModuleInPage(String arg0, String arg1)

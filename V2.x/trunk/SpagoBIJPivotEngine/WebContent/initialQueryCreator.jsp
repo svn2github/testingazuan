@@ -222,8 +222,11 @@ if (selectedSchema != null) {
 			
 			//calls service for gets data source object
 			
-			String userId=request.getParameter("user");
+			//String userId=request.getParameter("user");
+			String userId=(String)session.getAttribute("userId");
 			String documentId = (String)session.getAttribute("document");
+			System.out.println("userId: " + userId);
+			System.out.println("documentId: " + documentId);
 			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
 			SpagoBiDataSource ds = proxyDS.getDataSource( documentId);
 			if (ds == null || (ds.getJndiName()==null && (ds.getDriver()==null || 

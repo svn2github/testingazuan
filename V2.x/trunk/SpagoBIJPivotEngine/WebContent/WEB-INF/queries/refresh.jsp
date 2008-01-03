@@ -10,7 +10,7 @@ LICENSE: see LICENSE.txt file
 				 java.util.List,
 				 com.thoughtworks.xstream.XStream,
 				 it.eng.spagobi.jpivotaddins.bean.*,
-				 it.eng.spagobi.jpivotaddins.to.*,
+				 it.eng.spagobi.jpivotaddins.*,
 				 it.eng.spagobi.jpivotaddins.util.*,
 				 java.io.InputStream,
 				 sun.misc.BASE64Decoder,
@@ -31,10 +31,11 @@ try {
 	AnalysisBean analysis = (AnalysisBean) session.getAttribute("analysisBean");;
 	String query = analysis.getMdxQuery();	
 	String reference = analysis.getCatalogUri();
+	String userId = (String)session.getAttribute("userId");
 	String documentId = (String)session.getAttribute("document");
 	// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG
 	//calls service for gets data source object
-	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy();
+	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
 	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 	
 	if(ds != null  && !ds.getJndiName().equals("")) {

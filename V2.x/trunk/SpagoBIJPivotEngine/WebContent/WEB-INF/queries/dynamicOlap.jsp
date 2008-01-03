@@ -36,12 +36,12 @@ LICENSE: see LICENSE.txt file
 		SaveAnalysisBean analysisBean = (SaveAnalysisBean) session.getAttribute("save01");
 		String nameSubObject = request.getParameter("nameSubObject");
 		String userId = (String)session.getAttribute("userId");
-		String documentId = (String)session.getAttribute("document");
-		ContentServiceProxy contentProxy = new ContentServiceProxy(session);
+		String documentId = (String)session.getAttribute("document");		
+		ContentServiceProxy contentProxy = new ContentServiceProxy(userId, session);
 				
-		//calls service for gets data source object
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(session);
-		SpagoBiDataSource ds = proxyDS.getDataSource(userId,documentId);
+		//calls service for gets data source object		
+		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
+		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {
@@ -58,7 +58,7 @@ LICENSE: see LICENSE.txt file
 			analysisBean.setAnalysisVisibility(visSO);			
 			// get content from cms
 			String subObjectId = request.getParameter("subobjectId");
-			Content subObject=contentProxy.readSubObjectContent(userId,subObjectId);
+			Content subObject=contentProxy.readSubObjectContent(subObjectId);
 			String subobjdata64Coded = subObject.getContent();
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
@@ -81,7 +81,7 @@ LICENSE: see LICENSE.txt file
 		} else {
 			//String templateBase64Coded = request.getParameter("template");
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			Content template = contentProxy.readTemplate(userId, documentId);
+			Content template = contentProxy.readTemplate(documentId);
 			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			is = new java.io.ByteArrayInputStream(templateContent);
 

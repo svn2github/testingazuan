@@ -23,10 +23,12 @@ package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IUserFunctionalityDAO;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
@@ -47,8 +50,10 @@ import org.exoplatform.services.organization.OrganizationService;
  * Implementation of the IEngUserProfile interface Factory. Defines methods 
  * to get a IEngUserProfile starting from the exo user information 
  */
-public class ExoGroupAsRoleUserProfileFactoryImpl implements ISecurityServiceSupplier {
+public class ExoUserProfileImpl implements ISecurityServiceSupplier {
 	
+    static private Logger logger = Logger.getLogger(ExoUserProfileImpl.class);
+    
 	/**
 	 * Return an IEngUserProfile implementation starting the Principal of the user 
 	 * @param principal Principal of the current user
@@ -59,10 +64,12 @@ public class ExoGroupAsRoleUserProfileFactoryImpl implements ISecurityServiceSup
 	}
 
         public boolean checkAuthorization(String userId,String function){
+            logger.warn("checkAuthorization NOT implemented");
             return true;
         }
         
         private SpagoBIUserProfile createSpagoBIUserProfile(String userId){
+            logger.debug("IN. userId="+userId);
             SpagoBIUserProfile profile=new SpagoBIUserProfile();
             profile.setUserId(userId);
             ArrayList roles = new ArrayList();	
@@ -105,16 +112,13 @@ public class ExoGroupAsRoleUserProfileFactoryImpl implements ISecurityServiceSup
     			continue;	
 				}
 				roles.add(group.getId());
+				logger.debug("Roles load into SpagoBI profile: " + group.getId());
 			}
-			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-                            "<init>", "Roles load into SpagoBI profile: " + roles);
+
 			
 			//start load profile attributes 
-
 			userAttributes = SecurityProviderUtilities.getUserProfileAttributes(userId, service);
-			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-                            "<init>", "Attributes load into SpagoBI profile: " + userAttributes);
-
+			logger.debug("Attributes load into SpagoBI profile: " + userAttributes);
 			// end load profile attributes
 			
     		String[] roleStr=new String[roles.size()];
@@ -123,11 +127,27 @@ public class ExoGroupAsRoleUserProfileFactoryImpl implements ISecurityServiceSup
     		}
     		profile.setRoles(roleStr);
     		profile.setAttributes(userAttributes);
+    		profile.setFunctions(readFunctionality(profile.getRoles()));
 		
 		} catch(Exception e){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "<init>", "Exception ",e);
+		    logger.error("Exception",e);
 		}
+		logger.debug("OUT");
 		return profile;
         }
         
+        private String[] readFunctionality(String[] roles){
+        	logger.debug("IN");
+        	try {
+        	    IUserFunctionalityDAO dao=DAOFactory.getUserFunctionalityDAO();
+        	    return dao.readUserFunctionality(roles);
+        	} catch (EMFUserError e) {
+        	    logger.error("EMFUserError",e);
+        	} catch (Exception e) {
+        	    logger.error("Exception",e);
+        	} finally{
+        	    logger.debug("OUT");
+        	}
+        	return null;
+        }        
 }

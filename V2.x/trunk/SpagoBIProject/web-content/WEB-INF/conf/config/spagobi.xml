@@ -73,7 +73,7 @@
      <!--  SqlServer: Uncomment the row below and edit the file to provide connection info -->
      <!--   hibernate.cfg.sqlserver.xml -->
      
-	 <HIBERNATE-CFGFILE>hibernate.cfg.mysql.xml</HIBERNATE-CFGFILE>
+	 <HIBERNATE-CFGFILE>hibernate.cfg.hsql.xml</HIBERNATE-CFGFILE>
 	
      <!-- ********************* END DATABASE CONFIGURATION ************************ -->
      

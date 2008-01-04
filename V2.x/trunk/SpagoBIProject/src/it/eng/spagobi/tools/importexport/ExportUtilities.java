@@ -53,7 +53,7 @@ public class ExportUtilities {
 		try {
 	        Thread curThread = Thread.currentThread();
 	        ClassLoader classLoad = curThread.getContextClassLoader();
-	        String resource = "it/eng/spagobi/importexport/metadata/exportdb/metadata.script";
+	        String resource = "it/eng/spagobi/tools/importexport/metadata/exportdb/metadata.script";
 	        ismetadata = classLoad.getResourceAsStream(resource);
 	        String pathDBFile = pathDBFolder + "/metadata.script";
 	        fos = new FileOutputStream(pathDBFile);
@@ -94,7 +94,7 @@ public class ExportUtilities {
 		try {
 	        Thread curThread = Thread.currentThread();
 	        ClassLoader classLoad = curThread.getContextClassLoader();
-	        String resource = "it/eng/spagobi/importexport/metadata/exportdb/metadata.properties";
+	        String resource = "it/eng/spagobi/tools/importexport/metadata/exportdb/metadata.properties";
 	        ismetadata = classLoad.getResourceAsStream(resource);
 	        String pathDBFile = pathDBFolder + "/metadata.properties";
 	        fos = new FileOutputStream(pathDBFile);
@@ -132,7 +132,7 @@ public class ExportUtilities {
 	 */
 	public static SessionFactory getHibSessionExportDB(String pathDBFolder) throws EMFUserError {
 		Configuration conf = new Configuration();
-		String resource = "it/eng/spagobi/importexport/metadata/hibernate.cfg.hsql.export.xml";
+		String resource = "it/eng/spagobi/tools/importexport/metadata/hibernate.cfg.hsql.export.xml";
 		conf = conf.configure(resource);
 		String hsqlJdbcString = "jdbc:hsqldb:file:" + pathDBFolder + "/metadata;shutdown=true";
 		conf.setProperty("hibernate.connection.url",hsqlJdbcString);

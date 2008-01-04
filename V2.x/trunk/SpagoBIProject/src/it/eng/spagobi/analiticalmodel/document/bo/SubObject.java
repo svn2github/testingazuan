@@ -14,7 +14,14 @@ public class SubObject implements Serializable {
 	private Date lastChangeDate;
 	private Date creationDate;
 	private byte[] content;
+	private Integer binaryContentId=null;
 	
+	public Integer getBinaryContentId() {
+	    return binaryContentId;
+	}
+	public void setBinaryContentId(Integer binaryContentId) {
+	    this.binaryContentId = binaryContentId;
+	}
 	public Integer getId() {
 		return id;
 	}

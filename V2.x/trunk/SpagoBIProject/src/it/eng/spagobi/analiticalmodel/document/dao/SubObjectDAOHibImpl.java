@@ -176,6 +176,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		subobj.setName(hibsub.getName());
 		subobj.setOwner(hibsub.getOwner());
 		subobj.setContent(hibsub.getSbiBinContents().getContent());
+		subobj.setBinaryContentId(hibsub.getSbiBinContents().getId());
 		return subobj;
 	}
 

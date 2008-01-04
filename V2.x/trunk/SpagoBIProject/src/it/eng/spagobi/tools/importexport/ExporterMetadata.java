@@ -24,10 +24,14 @@ package it.eng.spagobi.tools.importexport;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreportsId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -56,18 +60,21 @@ import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -77,6 +84,8 @@ import org.hibernate.Transaction;
  */
 public class ExporterMetadata {
 
+    static private Logger logger = Logger.getLogger(ExporterMetadata.class);
+    
 	/**
 	 * Insert a domain into the exported database
 	 * @param domain Domain object to export
@@ -84,6 +93,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertDomain(Domain domain, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiDomains where valueId = " + domain.getValueId());
@@ -100,13 +110,15 @@ public class ExporterMetadata {
 			session.save(hibDomain);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertDomain",
-					"Error while inserting domain into export database " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		    logger.error("Error while inserting domain into export database ",e);
+        	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
 	public void insertDataSource(DataSource ds, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiDataSource where dsId = " + ds.getDsId());
@@ -128,9 +140,10 @@ public class ExporterMetadata {
 			session.save(hibDS);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertDS",
-					"Error while inserting dataSource into export database " + e);
+			logger.error("Error while inserting dataSource into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -141,6 +154,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertEngine(Engine engine, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiEngines where engineId = " + engine.getId());
@@ -163,16 +177,79 @@ public class ExporterMetadata {
 			hibEngine.setClassNm(engine.getClassName());
 			SbiDomains engineTypeDom = (SbiDomains)session.load(SbiDomains.class, engine.getEngineTypeId());
 			hibEngine.setEngineType(engineTypeDom);
+			SbiDataSource ds=(SbiDataSource)session.load(SbiDataSource.class, engine.getDataSourceId());
+			hibEngine.setDataSource(ds);
 			session.save(hibEngine);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertEngine",
-					"Error while inserting engine into export database " + e);
+			logger.error("Error while inserting engine into export database " ,e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
-	
-	
+	/**
+	 * Insert all SubObject and their binary content
+	 * @param biobj
+	 * @param subObjectLis
+	 * @param session
+	 * @throws EMFUserError
+	 */
+	public void insertSubObject(BIObject biobj, List subObjectLis, Session session) throws EMFUserError {
+	    logger.debug("IN");
+	    Iterator iter=subObjectLis.iterator();
+	    while(iter.hasNext()){
+		insertSubObject(biobj,(SubObject)iter.next(),session);
+	    }
+	    logger.debug("OUT");
+	}
+	/**
+	 * Insert a single sub object and their binary content
+	 * @param biobj
+	 * @param subObject
+	 * @param session
+	 * @throws EMFUserError
+	 */
+	private void insertSubObject(BIObject biobj, SubObject subObject, Session session) throws EMFUserError {
+	    logger.debug("IN");
+		try {
+			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiSubObjects where subObjId = " + subObject.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+			    	logger.warn("Exist another SbiSubObjects");
+				return;
+			}
+			
+			SbiObjects hibBIObj = new SbiObjects(biobj.getId());
+
+			
+			SbiBinContents hibBinContent = new SbiBinContents();
+			hibBinContent.setId(subObject.getBinaryContentId());
+			hibBinContent.setContent(subObject.getContent());
+			
+			SbiSubObjects sub=new SbiSubObjects();
+			sub.setCreationDate(subObject.getCreationDate());
+			sub.setDescription(subObject.getDescription());
+			sub.setIsPublic(subObject.getIsPublic());
+			sub.setName(subObject.getName());
+			sub.setOwner(subObject.getOwner());
+			sub.setLastChangeDate(subObject.getLastChangeDate());
+			sub.setSbiBinContents(hibBinContent);
+			sub.setSbiObject(hibBIObj);
+			
+			
+			session.save(sub);
+			session.save(hibBinContent);
+			tx.commit();
+
+		} catch (Exception e) {
+			logger.error("Error while inserting biobject into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
+		}
+	}	
 	/**
 	 * Insert a biobject into the exported database
 	 * @param biobj BIObject to export
@@ -180,6 +257,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertBIObject(BIObject biobj, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiObjects where biobjId = " + biobj.getId());
@@ -207,15 +285,66 @@ public class ExporterMetadata {
 			Integer visFlagIn = biobj.getVisible();
 			Short visFlagSh = new Short(visFlagIn.toString());
 			hibBIObj.setVisible(visFlagSh);
+			SbiDataSource ds=(SbiDataSource)session.load(SbiDataSource.class, biobj.getDataSourceId());
+			hibBIObj.setDataSource(ds);			
 			session.save(hibBIObj);
 			tx.commit();
+			insertBIObjectTemplate(hibBIObj,biobj.getActiveTemplate(),session);
+			
+			
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
-					"Error while inserting biobject into export database " + e);
+			logger.error("Error while inserting biobject into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
+	/**
+	 * Insert Object Template and Binary Content
+	 * @param hibBIObj
+	 * @param biobjTempl
+	 * @param session
+	 * @throws EMFUserError
+	 */
+	private void insertBIObjectTemplate(SbiObjects hibBIObj,ObjTemplate biobjTempl, Session session) throws EMFUserError {
+	    logger.debug("IN");
+	    
+		try {
+			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiObjTemplates where objTempId = " + biobjTempl.getBiobjId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			
+			IBinContentDAO contdao = DAOFactory.getBinContentDAO();
+			byte[] template = contdao.getBinContent(biobjTempl.getBinId());
+			
+			SbiBinContents hibBinContent = new SbiBinContents();
+			SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
+			hibObjTemplate.setObjTempId(biobjTempl.getBiobjId());
+			hibBinContent.setId(biobjTempl.getBinId());
+			hibBinContent.setContent(template);
+
+			
+			hibObjTemplate.setActive(new Boolean(true));
+			hibObjTemplate.setCreationDate(biobjTempl.getCreationDate());
+			hibObjTemplate.setName(biobjTempl.getName());
+			hibObjTemplate.setProg(biobjTempl.getProg());
+			hibObjTemplate.setSbiBinContents(hibBinContent);
+			hibObjTemplate.setSbiObject(hibBIObj);
+			
+			session.save(hibBinContent);
+			session.save(hibObjTemplate);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting biobject into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
+		}
+	}	
 	
 	/**
 	 * Insert a BIObject Parameter into the exported database
@@ -224,6 +353,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertBIObjectParameter(BIObjectParameter biobjpar,  Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiObjPar where objParId = " + biobjpar.getId());
@@ -271,9 +401,10 @@ public class ExporterMetadata {
 			tx.commit();
 		
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObjectParameter",
-					               "Error while inserting BIObjectParameter into export database " + e);
+			logger.error("Error while inserting BIObjectParameter into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -288,6 +419,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertParameter(Parameter param, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiParameters where parId = " + param.getId());
@@ -308,9 +440,10 @@ public class ExporterMetadata {
 			session.save(hibParam);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParameter",
-					"Error while inserting parameter into export database " + e);
+			logger.error("Error while inserting parameter into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -323,6 +456,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertParUse(ParameterUse parUse, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiParuse where useId = " + parUse.getUseID());
@@ -349,9 +483,10 @@ public class ExporterMetadata {
 			session.save(hibParuse);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParUse",
-					"Error while inserting parameter use into export database " + e);
+			logger.error("Error while inserting parameter use into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -366,6 +501,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertBiParamDepend(List biparams, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Iterator iterBIParams = biparams.iterator();
 			while(iterBIParams.hasNext()) {
@@ -403,9 +539,10 @@ public class ExporterMetadata {
 			}
 			    
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBiParamDepend",
-					"Error while inserting parameter dependencied into export database " + e);
+			logger.error("Error while inserting parameter dependencied into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -422,6 +559,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertLov(ModalitiesValue lov, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiLov where lovId = " + lov.getId());
@@ -440,9 +578,10 @@ public class ExporterMetadata {
 			session.save(hibLov);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertLov",
-					"Error while inserting lov into export database " + e);
+			logger.error("Error while inserting lov into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -455,6 +594,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertCheck(Check check, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiChecks where checkId = " + check.getCheckId());
@@ -474,9 +614,10 @@ public class ExporterMetadata {
 			session.save(hibCheck);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertCheck",
-					"Error while inserting check into export database " + e);
+			logger.error("Error while inserting check into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -489,6 +630,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertParuseCheck(ParameterUse parUse, Check check, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer paruseId = parUse.getUseID();
@@ -511,9 +653,10 @@ public class ExporterMetadata {
 			session.save(hibParuseCheck);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParuseCheck",
-					               "Error while inserting paruse and check association into export database " + e);
+			logger.error("Error while inserting paruse and check association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -527,6 +670,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertParuseRole(ParameterUse parUse, Role role, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer paruseId = parUse.getUseID();
@@ -548,9 +692,10 @@ public class ExporterMetadata {
 			session.save(hibParuseDet);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertParuseDet",
-					               "Error while inserting paruse and role association into export database " + e);
+			logger.error("Error while inserting paruse and role association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -563,6 +708,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertSubReportAssociation(Subreport sub, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer masterId = sub.getMaster_rpt_id();
@@ -585,9 +731,10 @@ public class ExporterMetadata {
 			session.save(hibSubreport);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertSubReportAssociation",
-					               "Error while inserting subreport " + e);
+			logger.error("Error while inserting subreport " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -602,6 +749,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertFunctionality(LowFunctionality funct, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {			
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiFunctions where funct_id = " + funct.getId());
@@ -646,8 +794,7 @@ public class ExporterMetadata {
 			}
 			
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertFunctionality",
-					"Error while inserting Functionality into export database " + e);
+			logger.error("Error while inserting Functionality into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
 		
@@ -658,6 +805,7 @@ public class ExporterMetadata {
 			LowFunctionality functPar = lowFunctDAO.loadLowFunctionalityByID(parentId, false);
 			insertFunctionality(functPar, session);
 		}
+		logger.debug("OUT");
 		
 	}
 	
@@ -672,6 +820,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertRole(Role role, Session session) throws EMFUserError {
+	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiExtRoles where extRoleId = " + role.getId());
@@ -689,9 +838,10 @@ public class ExporterMetadata {
 			session.save(hibRole);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertRole",
-					"Error while inserting role into export database " + e);
+			logger.error("Error while inserting role into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -707,7 +857,8 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertFunctRole(Role role, LowFunctionality funct, Integer stateId, String stateCD, Session session) throws EMFUserError {
-		try {
+	    logger.debug("IN");
+	    try {
 			Transaction tx = session.beginTransaction();
 			Integer roleid = role.getId();
 			Integer functid = funct.getId();
@@ -731,9 +882,10 @@ public class ExporterMetadata {
 			session.save(hibFunctRole);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertFunctRole",
-					               "Error while inserting function and role association into export database " + e);
+			logger.error("Error while inserting function and role association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -747,7 +899,8 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertObjFunct(BIObject biobj, LowFunctionality funct, Session session) throws EMFUserError {
-		try {
+	    logger.debug("IN");
+	    try {
 			Transaction tx = session.beginTransaction();
 			Integer biobjid = biobj.getId();
 			Integer functid = funct.getId();
@@ -769,9 +922,10 @@ public class ExporterMetadata {
 			session.save(hibObjFunct);
 			tx.commit();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObjFunct",
-					               "Error while inserting function and object association into export database " + e);
+			logger.error("Error while inserting function and object association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
